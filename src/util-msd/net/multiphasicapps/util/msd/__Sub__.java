@@ -17,6 +17,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -181,7 +182,7 @@ final class __Sub__<V>
 	@Override
 	public V element()
 	{
-		throw new Error("TODO");
+		return getFirst();
 	}
 	
 	/**
@@ -251,7 +252,7 @@ final class __Sub__<V>
 	@Override
 	public boolean offer(V __a)
 	{
-		throw new Error("TODO");
+		return offerLast(__a);
 	}
 
 	/**
@@ -261,7 +262,17 @@ final class __Sub__<V>
 	@Override
 	public boolean offerFirst(V __a)
 	{
-		throw new Error("TODO");
+		try
+		{
+			addFirst(__a);
+			return true;
+		}
+		
+		// Exceeds capacity
+		catch (IllegalStateException e)
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -271,7 +282,17 @@ final class __Sub__<V>
 	@Override
 	public boolean offerLast(V __a)
 	{
-		throw new Error("TODO");
+		try
+		{
+			addLast(__a);
+			return true;
+		}
+		
+		// Exceeds capacity
+		catch (IllegalStateException e)
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -281,7 +302,7 @@ final class __Sub__<V>
 	@Override
 	public V peek()
 	{
-		throw new Error("TODO");
+		return peekFirst();
 	}
 
 	/**
@@ -291,7 +312,16 @@ final class __Sub__<V>
 	@Override
 	public V peekFirst()
 	{
-		throw new Error("TODO");
+		try
+		{
+			return getFirst();
+		}
+		
+		// Empty
+		catch (NoSuchElementException e)
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -301,7 +331,16 @@ final class __Sub__<V>
 	@Override
 	public V peekLast()
 	{
-		throw new Error("TODO");
+		try
+		{
+			return getLast();
+		}
+		
+		// Empty
+		catch (NoSuchElementException e)
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -311,7 +350,7 @@ final class __Sub__<V>
 	@Override
 	public V poll()
 	{
-		throw new Error("TODO");
+		return pollFirst();
 	}
 
 	/**
@@ -321,7 +360,16 @@ final class __Sub__<V>
 	@Override
 	public V pollFirst()
 	{
-		throw new Error("TODO");
+		try
+		{
+			return removeFirst();
+		}
+		
+		// Empty
+		catch (NoSuchElementException e)
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -331,7 +379,16 @@ final class __Sub__<V>
 	@Override
 	public V pollLast()
 	{
-		throw new Error("TODO");
+		try
+		{
+			return removeLast();
+		}
+		
+		// Empty
+		catch (NoSuchElementException e)
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -341,7 +398,7 @@ final class __Sub__<V>
 	@Override
 	public V pop()
 	{
-		throw new Error("TODO");
+		return removeFirst();
 	}
 
 	/**
@@ -351,7 +408,7 @@ final class __Sub__<V>
 	@Override
 	public void push(V __a)
 	{
-		throw new Error("TODO");
+		addFirst(__a);
 	}
 
 	/**
@@ -371,7 +428,7 @@ final class __Sub__<V>
 	@Override
 	public V remove()
 	{
-		throw new Error("TODO");
+		return removeFirst();
 	}
 
 	/**
