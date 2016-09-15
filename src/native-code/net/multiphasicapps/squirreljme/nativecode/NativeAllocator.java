@@ -148,5 +148,23 @@ public class NativeAllocator
 	{
 		return recordState().toString();
 	}
+	
+	/**
+	 * Removes the specified register from all of the queues.
+	 *
+	 * @param __r The register to remove.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/15
+	 */
+	public void __removeRegister(NativeRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Remove it
+		this._msd.remove(__r);
+	}
 }
 
