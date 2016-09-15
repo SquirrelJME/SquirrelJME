@@ -66,7 +66,7 @@ public class BasicCodeWriter
 		this.pool = __ns._pool;
 		
 		// Create code writer instance
-		this.writer = __ns._codewriter.create();
+		this.writer = __ns._jitoutput.createCodeWriter();
 	}
 	
 	/**

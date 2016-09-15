@@ -20,3 +20,8 @@ A large number of arguments are going to be passed to it, so as such there
 should be a configuration system of sorts. This would be similar to `JITConfig`
 and would allow settings to grow accordingly.
 
+## 10:04
+
+The `BasicOutput` class can be used to store caches of the factory and the
+configuration as needed. In fact, it can be used to create code writers.
+

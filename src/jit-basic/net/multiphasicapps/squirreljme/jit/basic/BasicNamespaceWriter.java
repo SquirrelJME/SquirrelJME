@@ -42,6 +42,9 @@ public class BasicNamespaceWriter
 	/** The namespace name. */
 	protected final String name;
 	
+	/** The JIT output used to create this. */
+	final BasicOutput _jitoutput;
+	
 	/** The configuration. */
 	final JITConfig _config;
 	
@@ -51,12 +54,6 @@ public class BasicNamespaceWriter
 	/** The basic global pool. */
 	final BasicConstantPool _pool =
 		new BasicConstantPool();
-	
-	/** The code writer factory. */
-	final NativeCodeWriterFactory _codewriter;
-	
-	/** The Native ABI. */
-	final NativeABI _abi;
 	
 	/** Classes in the namespace. */
 	private final List<__Class__> _classes =
@@ -87,43 +84,24 @@ public class BasicNamespaceWriter
 	 * @param __conf The configuration used.
 	 * @param __name The name of the namespace.
 	 * @param __os The output executable.
+	 * @param __jo The JITOutput used to created this.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/11
 	 */
 	public BasicNamespaceWriter(JITConfig __conf, String __name,
-		OutputStream __os)
+		OutputStream __os, BasicOutput __jo)
 		throws NullPointerException
 	{
-		if (__conf == null || __name == null || __os == null)
+		if (__conf == null || __name == null || __os == null || __jo == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this._config = __conf;
 		this.name = __name;
+		this._jitoutput = __jo;
 		
 		// Get the triplet
 		JITTriplet triplet = __conf.triplet();
-		
-		// {@squirreljme.error BV0b No native ABI provider has been specified.
-		// (The configuration)}
-		NativeABIProvider abiprov = __conf.<NativeABIProvider>
-			getAsClass(BasicOutputFactory.NATIVE_ABI_FACTORY_PROPERTY,
-			NativeABIProvider.class);
-		if (abiprov == null)
-			throw new JITException(String.format("BV0b %s", __conf));
-		NativeABI abi = abiprov.byName(__conf.getProperty(
-			BasicOutputFactory.NATIVE_ABI_PROPERTY), triplet.bits(),
-			triplet.floatingPoint());
-		this._abi = abi;
-		
-		// {@squirreljme.error BV01 No native code factory was set in the
-		// configuration. (The configuration)}
-		NativeCodeWriterFactory codewriter = __conf.<NativeCodeWriterFactory>
-			getAsClass(BasicOutputFactory.NATIVE_CODE_WRITER_PROPERTY,
-			NativeCodeWriterFactory.class);
-		if (codewriter == null)
-			throw new JITException(String.format("BV01 %s", __conf));
-		this._codewriter = codewriter;
 		
 		// Initialize output stream
 		ExtendedDataOutputStream output;
