@@ -22,18 +22,45 @@ public class NativeCodeWriterOptionsBuilder
 	protected final Object lock =
 		new Object();
 	
+	/** The ABI to use for register allocation and method calls. */
+	volatile NativeABI _abi;
+	
 	/**
 	 * Builds the native code writer options.
 	 *
 	 * @return An immutable set of options.
+	 * @throws NativeCodeException If not enough information was specified.
 	 * @since 2016/09/15
 	 */
 	public final NativeCodeWriterOptions build()
+		throws NativeCodeException
 	{
 		// Lock
 		synchronized (this.lock)
 		{
 			return new NativeCodeWriterOptions(this);
+		}
+	}
+	
+	/**
+	 * Sets the ABI to use which determines which registers are used for
+	 * method calls.
+	 *
+	 * @param __abi The ABI to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/15
+	 */
+	public final void setABI(NativeABI __abi)
+		throws NullPointerException
+	{
+		// Check
+		if (__abi == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._abi = __abi;
 		}
 	}
 }

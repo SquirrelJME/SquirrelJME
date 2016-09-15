@@ -157,7 +157,15 @@ public class BasicOutput
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
-			throw new Error("TODO");
+			// Create builder
+			NativeCodeWriterOptionsBuilder b =
+				new NativeCodeWriterOptionsBuilder();
+			
+			// Set the ABI
+			b.setABI(nativeABI());
+			
+			// Store
+			this._options = new WeakReference<>((rv = b.build()));
 		}
 		
 		// Return

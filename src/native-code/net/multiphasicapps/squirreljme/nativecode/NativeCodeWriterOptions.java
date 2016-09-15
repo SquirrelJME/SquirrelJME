@@ -20,21 +20,41 @@ package net.multiphasicapps.squirreljme.nativecode;
  */
 public final class NativeCodeWriterOptions
 {
+	/** The ABI to use. */
+	protected final NativeABI abi;
+	
 	/**
 	 * Initialize the native code writer.
 	 *
 	 * @param __b The builder containing options to set.
+	 * @throws NativeCodeException If not enough information was specified.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
 	NativeCodeWriterOptions(NativeCodeWriterOptionsBuilder __b)
-		throws NullPointerException
+		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error AR04 An ABI was not specified in the
+		// configuration.}
+		NativeABI abi = __b._abi;
+		if (abi == null)
+			throw new NativeCodeException("AR04");
+		this.abi = abi;
+	}
+	
+	/**
+	 * Returns the ABI to use.
+	 *
+	 * @return The ABI to use.
+	 * @since 2016/09/15
+	 */
+	public NativeABI abi()
+	{
+		return this.abi;
 	}
 }
 
