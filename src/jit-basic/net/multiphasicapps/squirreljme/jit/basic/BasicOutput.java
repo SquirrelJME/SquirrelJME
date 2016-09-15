@@ -98,7 +98,7 @@ public class BasicOutput
 	 */
 	public NativeCodeWriter createCodeWriter()
 	{
-		throw new Error("TODO");
+		return nativeCodeWriterFactory().create(nativeCodeWriterOptions());
 	}
 	
 	/**
