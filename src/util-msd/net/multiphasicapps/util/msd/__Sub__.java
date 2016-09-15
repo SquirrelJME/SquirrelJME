@@ -28,6 +28,9 @@ import java.util.Set;
 final class __Sub__<V>
 	implements Deque<V>
 {
+	/** The owning multi-set. */
+	final MultiSetDeque<V> _msd;
+	
 	/** The list which acts as a queue. */
 	final List<V> _deque;
 	
@@ -53,7 +56,8 @@ final class __Sub__<V>
 		if (__msd == null)
 			throw new NullPointerException("NARG");
 		
-		// Set limit
+		// Set
+		this._msd = __msd;
 		this._limit = __l;
 		
 		// Base on a list
@@ -202,7 +206,13 @@ final class __Sub__<V>
 	@Override
 	public V getFirst()
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error BZ04 The deque is empty.}
+		List<V> deque = this._deque;
+		if (deque.size() <= 0)
+			throw new NoSuchElementException("BZ04");
+		
+		// Just get it
+		return deque.get(0);
 	}
 
 	/**
@@ -447,8 +457,25 @@ final class __Sub__<V>
 	 */
 	@Override
 	public V removeFirst()
+		throws NoSuchElementException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error BZ03 The deque is empty.}
+		List<V> deque = this._deque;
+		if (deque.size() <= 0)
+			throw new NoSuchElementException("BZ03");
+		
+		// Remove it
+		V rv = deque.remove(0);
+		
+		// The value is gone from this collection now so remove it
+		Set<V> set = this._set;
+		set.remove(rv);
+		
+		// Remove from all over queues
+		this._msd.remove(rv);
+		
+		// Return
+		return rv;
 	}
 
 	/**
@@ -467,6 +494,7 @@ final class __Sub__<V>
 	 */
 	@Override
 	public V removeLast()
+		throws NoSuchElementException
 	{
 		throw new Error("TODO");
 	}
