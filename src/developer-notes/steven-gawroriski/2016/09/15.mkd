@@ -6,3 +6,11 @@ I will need a name based API factory creator that can use the JITConfig, this
 way the ABI can be stored in the JIT configuration and used without requiring
 a built-in setup.
 
+## 08:12
+
+Ok, so what is needed is the native code writer should be given the ABI this
+way it has said information from the start. The ABI information can be used
+along with the allocator to handle method calls. One considering is that the
+native code writer should be the class which initializes the register
+allocator.
+
