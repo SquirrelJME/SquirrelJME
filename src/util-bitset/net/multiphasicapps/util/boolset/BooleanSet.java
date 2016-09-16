@@ -20,6 +20,18 @@ package net.multiphasicapps.util.boolset;
 public interface BooleanSet
 {
 	/**
+	 * Obtains the value of the bit at the given index.
+	 *
+	 * @param __i The index of the bit to get.
+	 * @return The current state of the bit.
+	 * @throws IndexOutOfBoundsException If the bit is negative or exceeds
+	 * the capacity of the set.
+	 * @since 2016/09/16
+	 */
+	public abstract boolean get(int __i)
+		throws IndexOutOfBoundsException;
+	
+	/**
 	 * Sets the specified bit to the given state.
 	 *
 	 * @param __i The bit to set.

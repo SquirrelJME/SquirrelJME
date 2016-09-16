@@ -79,7 +79,14 @@ class __CodeWriter__
 		// Debug
 		System.err.printf("DEBUG -- At %d (is %d)%n", __pos, __code);
 		
-		throw new Error("TODO");
+		// If this is a jump target then restore the current stack cache state
+		if (this._jumptargets.get(__pos))
+		{
+			throw new Error("TODO");
+		}
+		
+		// Forward
+		this.codewriter.atInstruction(__code, __pos);
 	}
 	
 	/**

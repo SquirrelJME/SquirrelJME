@@ -52,6 +52,23 @@ public class FixedSizeBooleanSet
 	 * @since 2016/09/16
 	 */
 	@Override
+	public boolean get(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error CH0e Cannot get a bit which is outside the
+		// bounds of the set.}
+		if (__i < 0 || __i >= this.size)
+			throw new IndexOutOfBoundsException("CH0e");
+		
+		// Get it
+		return (0 != (this._bits[__i >>> 3] & (1 << (__i & 7))));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
 	public boolean set(int __i, boolean __v)
 		throws IndexOutOfBoundsException
 	{

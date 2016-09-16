@@ -118,6 +118,11 @@ public class BasicCodeWriter
 	@Override
 	public void atInstruction(int __code, int __pos)
 	{
+		// If this is a jump target then restore the register allocation state
+		if (this._jumptargets.get(__pos))
+			throw new Error("TODO");
+		
+		// Record native code entry position
 		throw new Error("TODO");
 	}
 	
