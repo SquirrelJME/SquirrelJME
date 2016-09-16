@@ -217,6 +217,10 @@ public class BasicCodeWriter
 		if (__link == null || __args == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		System.err.printf("DEBUG -- Basic Invoke %s (%s) -> %s%n",
+			__link, Arrays.<CodeVariable>asList(__args), __rv);
+		
 		throw new Error("TODO");
 	}
 	

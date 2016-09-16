@@ -185,7 +185,19 @@ class __CodeWriter__
 		System.err.printf("DEBUG -- Invoke %s (%s) -> %s%n",
 			__link, Arrays.<CodeVariable>asList(__args), __rv);
 		
-		throw new Error("TODO");
+		// Load the cached state of all stack variables
+		CodeVariable[] stack = this._cache._stack;
+		int n = __args.length;
+		for (int i = 0; i < n; i++)
+			__args[i] = stack[__args[i].id()];
+		
+		// Forward call
+		this.codewriter.invokeMethod(__link, __rv, __args);
+		
+		// If the method has a return value, cache the stack value to itself
+		// to indicate that it is not cached
+		if (__rv != null && __rv.isStack())
+			stack[__rv.id()] = __rv;
 	}
 	
 	/**
