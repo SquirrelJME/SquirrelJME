@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
@@ -118,6 +119,40 @@ public class BasicCodeWriter
 	}
 	
 	/**
+	 * Converts a field type to a register type.
+	 *
+	 * @param __f The field symbol to convert.
+	 * @return The native register type for the given field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/15
+	 */
+	public NativeRegisterType fieldToRegisterType(FieldSymbol __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__f.toString())
+		{
+				// boolean, byte
+			case "Z":
+			case "B":
+				return NativeRegisterIntegerType.BYTE;
+				
+				// short, char
+			case "S":
+			case "C":
+				return NativeRegisterIntegerType.SHORT;
+			
+				// Unknown, use default means
+			default:
+				return stackMapToRegisterType(StackMapType.bySymbol(__f));
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/14
 	 */
@@ -143,7 +178,11 @@ public class BasicCodeWriter
 		// Convert input arguments to types
 		List<NativeRegisterType> args = new ArrayList<>();
 		for (StackMapType t : __t)
+		{
+			
+			
 			args.add(stackMapToRegisterType(t));
+		}
 			
 		// Debug
 		System.err.printf("DEBUG -- Primed args in: %s -> %s%n",
