@@ -113,7 +113,13 @@ class __CodeWriter__
 	public void jumpTargets(int[] __t)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Fill in jump targets
+		BooleanSet jumptargets = this._jumptargets;
+		for (int i : __t)
+			jumptargets.set(i, true);
+		
+		// Forward
+		this.codewriter.jumpTargets(__t);
 	}
 	
 	/**
