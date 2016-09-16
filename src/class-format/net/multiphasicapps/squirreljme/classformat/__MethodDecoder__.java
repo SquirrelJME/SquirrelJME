@@ -33,10 +33,13 @@ class __MethodDecoder__
 	private volatile boolean _hitmcode;
 	
 	/** Method flags. */
-	private volatile MethodFlags _mflags;
+	volatile MethodFlags _mflags;
+	
+	/** The method name. */
+	volatile IdentifierSymbol _mname;
 	
 	/** Method type. */
-	private volatile MethodSymbol _mtype;
+	volatile MethodSymbol _mtype;
 	
 	/** The output description stream. */
 	private volatile MethodDescriptionStream _desc;
@@ -105,6 +108,7 @@ class __MethodDecoder__
 		
 		// Needed for code
 		this._mflags = mf;
+		this._mname = name;
 		this._mtype = type;
 		
 		// Handle attributes
@@ -158,8 +162,7 @@ class __MethodDecoder__
 				
 				// Setup decoder and give the writer the
 				// program
-				new __CodeDecoder__(this, __is,
-					this._mflags, this._mtype, mlw).__decode();
+				new __CodeDecoder__(this, __is, mlw).__decode();
 				
 				// Done
 				return;

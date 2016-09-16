@@ -50,10 +50,10 @@ public final class ClassDecoder
 	private volatile ConstantPool _pool;
 	
 	/** Class flags. */
-	private volatile ClassFlags _flags;
+	volatile ClassFlags _flags;
 	
 	/** The name of this class. */
-	private volatile ClassNameSymbol _classname;
+	volatile ClassNameSymbol _classname;
 	
 	/**
 	 * This initializes the decoder for classes.

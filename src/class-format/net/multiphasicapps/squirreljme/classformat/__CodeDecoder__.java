@@ -19,6 +19,7 @@ import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 
 /**
@@ -49,8 +50,8 @@ final class __CodeDecoder__
 	/** The method flags. */
 	final MethodFlags _flags;
 	
-	/** The method type. */
-	final MethodSymbol _type;
+	/** The method reference. */
+	final MethodReference _ref;
 	
 	/** The input code attribute data. */
 	private final DataInputStream _input;
@@ -79,13 +80,11 @@ final class __CodeDecoder__
 	 * @since 2016/08/18
 	 */
 	__CodeDecoder__(__MethodDecoder__ __cd, DataInputStream __dis,
-		MethodFlags __f, MethodSymbol __t,
 		CodeDescriptionStream __mlw)
 		throws NullPointerException
 	{
 		// Check
-		if (__cd == null || __dis == null || __f == null || __t == null ||
-			__mlw == null)
+		if (__cd == null || __dis == null || __mlw == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -93,10 +92,13 @@ final class __CodeDecoder__
 		ClassDecoder classdec = __cd._classdecoder;
 		this._classdecoder = classdec;
 		this._input = __dis;
-		this._flags = __f;
-		this._type = __t;
+		this._flags = __cd._mflags;
 		this._writer = __mlw;
 		this.pool = __cd._pool;
+		
+		// Create reference
+		this._ref = new MethodReference(classdec._classname, __cd._mname,
+			__cd._mtype, classdec._flags.isInterface());
 	}
 	
 	/**
@@ -153,9 +155,10 @@ final class __CodeDecoder__
 		
 		// If no stack map table exists then setup an initial implicit state
 		Map<Integer, __SMTState__> smt;
+		MethodReference ref = this._ref;
 		if ((smt = this._smt) == null)
 			this._smt = (smt = __SMTParser__.__initialState(this._flags,
-				this._type, maxstack, maxlocals));
+				ref.memberType(), maxstack, maxlocals));
 		
 		// Parse the byte code now
 		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
@@ -169,8 +172,9 @@ final class __CodeDecoder__
 			
 			// Reset and decode operations
 			dis.reset();
-			new __OpParser__(writer, dis, smt, this._decoder._classflags,
-				pool).__decodeAll();
+			__MethodDecoder__ decoder = this._decoder;
+			new __OpParser__(writer, dis, smt, decoder._classflags,
+				pool, ref).__decodeAll();
 		}
 		
 		// Done
@@ -204,7 +208,8 @@ final class __CodeDecoder__
 				
 				// Parse and store result
 				this._smt = new __SMTParser__(!old, __is, this._flags,
-					this._type, this._maxstack, this._maxlocals).result();
+					this._ref.memberType(), this._maxstack,
+					this._maxlocals).result();
 				return;
 			
 				// Unknown

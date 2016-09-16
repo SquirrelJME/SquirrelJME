@@ -53,7 +53,6 @@ public interface CodeDescriptionStream
 	 * Invokes the given method using the specified linkage and invocation
 	 * type.
 	 *
-	 * @param __type The type of invocation performed.
 	 * @param __link The method linkage.
 	 * @param __rv The variable to obtain the return value.
 	 * @param __args The input arguments to the method.
@@ -61,8 +60,8 @@ public interface CodeDescriptionStream
 	 * if there is no return value.
 	 * @since 2016/09/16
 	 */
-	public abstract void invokeMethod(MethodInvokeType __type,
-		MethodLinkage __link, CodeVariable __rv, CodeVariable... __args)
+	public abstract void invokeMethod(MethodLinkage __link, CodeVariable __rv,
+		CodeVariable... __args)
 		throws NullPointerException;
 	
 	/**

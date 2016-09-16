@@ -209,12 +209,12 @@ public class BasicCodeWriter
 	 * @since 2016/09/16
 	 */
 	@Override
-	public void invokeMethod(MethodInvokeType __type,
-		MethodLinkage __link, CodeVariable __rv, CodeVariable... __args)
+	public void invokeMethod(MethodLinkage __link, CodeVariable __rv,
+		CodeVariable... __args)
 		throws NullPointerException
 	{
 		// Check
-		if (__type == null || __link == null || __args == null)
+		if (__link == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");

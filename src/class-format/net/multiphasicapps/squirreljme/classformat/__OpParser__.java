@@ -40,6 +40,9 @@ final class __OpParser__
 	/** The code description writer. */
 	protected final CodeDescriptionStream writer;
 	
+	/** The method this is in. */
+	protected final MethodReference methodref;
+	
 	/** The stack map table. */
 	private final Map<Integer, __SMTState__> _smt;
 	
@@ -54,18 +57,19 @@ final class __OpParser__
 	 * @param __smt The stack map table.
 	 * @param __cf The class flags.
 	 * @param __pool The constant pool.
+	 * @param __mr This method reference.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
 	__OpParser__(CodeDescriptionStream __desc,
 		ExtendedDataInputStream __dis,
 		Map<Integer, __SMTState__> __smt, ClassFlags __cf,
-		ConstantPool __pool)
+		ConstantPool __pool, MethodReference __mr)
 		throws NullPointerException
 	{
 		// Check
 		if (__dis == null || __smt == null || __cf == null || __pool == null ||
-			__desc == null)
+			__desc == null || __mr == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -74,6 +78,7 @@ final class __OpParser__
 		this._smt = __smt;
 		this.pool = __pool;
 		this.writer = __desc;
+		this.methodref = __mr;
 		
 		// Set working state
 		this._smwork = new __SMTState__(__smt.get(0));
@@ -600,9 +605,12 @@ final class __OpParser__
 		stack.__pop(this, popcount);
 		
 		// Send in the call
-		if (true)
-			throw new Error("TODO");
-		/*this.writer.invoke(__type, __pid, ref, st, sp, rvi);*/
+		CodeVariable[] vargs = new CodeVariable[popcount];
+		for (int i = 0, b = end; i < popcount; i++, b++)
+			vargs[i] = CodeVariable.of(true, b);
+		this.writer.invokeMethod(new MethodLinkage(this.methodref, ref,
+			__type), (rv != null ? (popcount > 0 ? vargs[0] :
+			CodeVariable.of(true, end)) : null), vargs);
 		
 		// Push return value if there is one
 		if (rv != null)
