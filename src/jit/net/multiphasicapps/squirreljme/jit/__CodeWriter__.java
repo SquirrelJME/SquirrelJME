@@ -76,6 +76,9 @@ class __CodeWriter__
 	@Override
 	public void atInstruction(int __code, int __pos)
 	{
+		// Debug
+		System.err.printf("DEBUG -- At %d (is %d)%n", __pos, __code);
+		
 		throw new Error("TODO");
 	}
 	
