@@ -12,3 +12,8 @@ determine which byte code addresses need to have state stored for them. I need
 this because I will have to restore the state and any local registers which
 are allocated.
 
+## 09:17
+
+I believe I will follow the previous simplicity of flushing the regsiter
+allocations when a jump target is reached.
+
