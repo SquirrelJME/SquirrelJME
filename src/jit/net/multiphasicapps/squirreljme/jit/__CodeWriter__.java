@@ -189,7 +189,11 @@ class __CodeWriter__
 		CodeVariable[] stack = this._cache._stack;
 		int n = __args.length;
 		for (int i = 0; i < n; i++)
-			__args[i] = stack[__args[i].id()];
+		{
+			CodeVariable var = __args[i];
+			if (var.isStack())
+				__args[i] = stack[var.id()];
+		}
 		
 		// Forward call
 		this.codewriter.invokeMethod(__link, __rv, __args);
