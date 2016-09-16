@@ -226,8 +226,21 @@ public class BasicCodeWriter
 		
 		// Map variables to allocations
 		Map<CodeVariable, NativeAllocation> vartoalloc = this._vartoalloc;
+		for (int tn = __t.length, ai = 0, i = 0; i < tn; i++)
+		{
+			// Get stack type
+			StackMapType smt = __t[i];
+			
+			// Place it at the local position
+			vartoalloc.put(CodeVariable.of(false, i), allocs[ai++]);
+			
+			// Skip the top of a wide variable
+			if (smt.isWide())
+				i++;
+		}
 		
-		throw new Error("TODO");
+		// Debug
+		System.err.printf("DEBUG -- Primed args alloc: %s%n", vartoalloc);
 	}
 	
 	/**

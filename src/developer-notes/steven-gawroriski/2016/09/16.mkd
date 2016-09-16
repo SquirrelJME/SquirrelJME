@@ -1,0 +1,7 @@
+# 2016/09/16
+
+## 07:47
+
+Assigning native allocations to local variables seemed complex at first, but
+was quite simple.
+
