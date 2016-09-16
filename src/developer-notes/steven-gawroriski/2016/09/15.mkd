@@ -53,3 +53,13 @@ I should just do that now otherwise there will just be lots of duplicate code.
 Currently for argument handling the argument sizes could be considered
 very easily.
 
+## 21:39
+
+So what I need now is a Java stack/local type that is just rather generic for
+the base class at least.
+
+## 21:50
+
+I actually do not need to remove stack variables, values which are cached will
+just use other variables instead.
+
