@@ -45,3 +45,11 @@ type in a specific location so to speak.
 So what I will need for the allocator on the code writer side is just an
 association of which locals are associated with what `NativeAllocations`.
 
+## 20:59
+
+One thing I can do is handle 8-bit and 16-bit systems right now. Essentially I
+planned to write another JIT that could write code for these systems, however
+I should just do that now otherwise there will just be lots of duplicate code.
+Currently for argument handling the argument sizes could be considered
+very easily.
+
