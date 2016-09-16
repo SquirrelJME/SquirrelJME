@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.jit.basic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.MethodFlags;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
@@ -31,6 +33,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is used to parse stack cached Java byte code to produce native machine
@@ -61,6 +64,10 @@ public class BasicCodeWriter
 	
 	/** The JIT configuration .*/
 	protected final JITConfig config;
+	
+	/** Variable to allocation mapping. */
+	private final Map<CodeVariable, NativeAllocation> _vartoalloc =
+		new SortedTreeMap<>();
 	
 	/** The current piece of code being written. */
 	final __Code__ _code;
@@ -216,6 +223,9 @@ public class BasicCodeWriter
 		// Debug
 		System.err.printf("DEBUG -- Primed args out: %s%n",
 			Arrays.<NativeAllocation>asList(allocs));
+		
+		// Map variables to allocations
+		Map<CodeVariable, NativeAllocation> vartoalloc = this._vartoalloc;
 		
 		throw new Error("TODO");
 	}
