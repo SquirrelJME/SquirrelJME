@@ -641,7 +641,13 @@ final class __OpParser__
 				__from, was, __t));
 		
 		// Cache it on the stack
-		smwork._stack.push(was);
+		__SMTStack__ stack = smwork._stack;
+		int top = stack.top();
+		stack.push(was);
+		
+		// Send copy operation
+		this.writer.copy(__t, CodeVariable.of(false, __from),
+			CodeVariable.of(true, top));
 		
 		// Implicit next
 		return IMPLICIT_NEXT;

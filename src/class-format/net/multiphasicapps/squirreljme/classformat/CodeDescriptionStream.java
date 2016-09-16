@@ -37,6 +37,19 @@ public interface CodeDescriptionStream
 	public abstract void codeLength(int __n);
 	
 	/**
+	 * Copies the value of one variable to another.
+	 *
+	 * @param __type The type of value to copy.
+	 * @param __from The source variable.
+	 * @param __to The destination variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/16
+	 */
+	public abstract void copy(StackMapType __type, CodeVariable __from,
+		CodeVariable __to)
+		throws NullPointerException;
+	
+	/**
 	 * This is called when the jump targets in the code parser are known. This
 	 * may be used by the code being given this information to determine if
 	 * state may need to be stored for a given position.

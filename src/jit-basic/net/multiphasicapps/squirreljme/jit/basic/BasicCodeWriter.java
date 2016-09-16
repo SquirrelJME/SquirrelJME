@@ -120,10 +120,14 @@ public class BasicCodeWriter
 	{
 		// If this is a jump target then restore the register allocation state
 		if (this._jumptargets.get(__pos))
-			throw new Error("TODO");
+		{
+			// Restore state
+			if (true)
+				throw new Error("TODO");
 		
-		// Record native code entry position
-		throw new Error("TODO");
+			// Record native code entry position
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -146,6 +150,22 @@ public class BasicCodeWriter
 	{
 		// Valid jump target positions
 		this._jumptargets = new FixedSizeBooleanSet(__n);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
+	public void copy(StackMapType __type, CodeVariable __from,
+		CodeVariable __to)
+		throws NullPointerException
+	{
+		// Check
+		if (__type == null || __from == null || __to == null)
+			throw new NullPointerException("NARG");;
+		
+		throw new Error("TODO");
 	}
 	
 	/**

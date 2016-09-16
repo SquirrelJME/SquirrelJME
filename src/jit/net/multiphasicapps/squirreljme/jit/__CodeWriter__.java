@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
+import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.MethodFlags;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
@@ -113,6 +114,25 @@ class __CodeWriter__
 		
 		// Forward
 		this.codewriter.codeLength(__n);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
+	public void copy(StackMapType __type, CodeVariable __from,
+		CodeVariable __to)
+		throws NullPointerException
+	{
+		// Check
+		if (__type == null || __from == null || __to == null)
+			throw new NullPointerException("NARG");;
+		
+		// Debug
+		System.err.printf("DEBUG -- %s:%s -> %s%n", __type, __from, __to);
+		
+		throw new Error("TODO");
 	}
 	
 	/**
