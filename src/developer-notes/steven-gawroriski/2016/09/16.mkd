@@ -17,3 +17,7 @@ are allocated.
 I believe I will follow the previous simplicity of flushing the regsiter
 allocations when a jump target is reached.
 
+## 14:00
+
+Stack caching is simple.
+

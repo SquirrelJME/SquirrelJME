@@ -43,6 +43,9 @@ class __CodeWriter__
 	/** The code writer. */
 	protected final JITCodeWriter codewriter;
 	
+	/** The state of the stack cache. */
+	volatile __CacheState__ _cache;
+	
 	/** Jump target locations. */
 	volatile BooleanSet _jumptargets;
 	
@@ -78,7 +81,8 @@ class __CodeWriter__
 	public void atInstruction(int __code, int __pos)
 	{
 		// Debug
-		System.err.printf("DEBUG -- At %d (is %d)%n", __pos, __code);
+		System.err.printf("DEBUG -- At %d (is %d) <%s>%n", __pos, __code,
+			this._cache);
 		
 		// If this is a jump target then restore the current stack cache state
 		if (this._jumptargets.get(__pos))
@@ -132,7 +136,33 @@ class __CodeWriter__
 		// Debug
 		System.err.printf("DEBUG -- %s:%s -> %s%n", __type, __from, __to);
 		
-		throw new Error("TODO");
+		// Destination is the stack? Cache it
+		if (__to.isStack())
+		{
+			__CacheState__ cache = this._cache;
+			
+			// If the source is the stack, see if it caches another value
+			if (__from.isStack())
+			{
+				CodeVariable var = cache._stack[__from.id()];
+				
+				// If the variable is a local variable then cache its value
+				// and not the stack entry it points to
+				if (var.isLocal())
+					__from = var;
+			}
+			
+			// Store in the cache
+			cache._stack[__to.id()] = __from;
+		}
+		
+		// The destination is a local variable, the model for SquirrelJME is
+		// that locals are always saved when they are written to (for exception
+		// handling purposes).
+		else
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -159,6 +189,9 @@ class __CodeWriter__
 	@Override
 	public void variableCounts(int __ms, int __ml)
 	{
+		// Setup cache
+		this._cache = new __CacheState__(__ms);
+		
 		// Forward to the sub-jit
 		JITCodeWriter codewriter = this.codewriter;
 		codewriter.variableCounts(__ms, __ml);
