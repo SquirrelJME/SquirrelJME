@@ -29,6 +29,14 @@ public interface CodeDescriptionStream
 	public abstract void atInstruction(int __code, int __pos);
 	
 	/**
+	 * This specifies the length of the program.
+	 *
+	 * @param __n The number of bytes the byte code is.
+	 * @since 2016/09/16
+	 */
+	public abstract void codeLength(int __n);
+	
+	/**
 	 * This is called when the jump targets in the code parser are known. This
 	 * may be used by the code being given this information to determine if
 	 * state may need to be stored for a given position.

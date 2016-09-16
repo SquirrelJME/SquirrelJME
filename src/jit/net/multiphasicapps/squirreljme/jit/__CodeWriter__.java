@@ -18,6 +18,8 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.util.boolset.BooleanSet;
+import net.multiphasicapps.util.boolset.FixedSizeBooleanSet;
 
 /**
  * This acts as the middle layer between the class format decoded class files
@@ -39,6 +41,9 @@ class __CodeWriter__
 	
 	/** The code writer. */
 	protected final JITCodeWriter codewriter;
+	
+	/** Jump target locations. */
+	volatile BooleanSet _jumptargets;
 	
 	/**
 	 * Initialize the code writer.
@@ -84,6 +89,20 @@ class __CodeWriter__
 	{
 		// Forward
 		this.codewriter.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
+	public void codeLength(int __n)
+	{
+		// Valid jump target positions
+		this._jumptargets = new FixedSizeBooleanSet(__n);
+		
+		// Forward
+		this.codewriter.codeLength(__n);
 	}
 	
 	/**

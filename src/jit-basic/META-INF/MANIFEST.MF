@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-basic
 X-SquirrelJME-UUID: d1f5f841-7887-4183-85ab-75c2e428ebaf
 X-SquirrelJME-Depends: cldc-compact, jit, native-code,
- util-sorted
+ util-sorted, util-bitset
 X-SquirrelJME-Error: BV
 LIBlet-Title: JIT (Basic)
 LIBlet-Vendor: Steven Gawroriski

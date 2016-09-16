@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: util-bitset
+X-SquirrelJME-UUID: a04ee58f-d148-4aa7-b9d3-52a6f0aecdf6
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: CH
+LIBlet-Title: BitSet Utility
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains an implementation of a BitSet 
+ which efficiently stores a large range of boolean values of a 
+ given size.
+

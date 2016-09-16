@@ -131,6 +131,9 @@ final class __CodeDecoder__
 			throw new ClassFormatException(String.format("AY36 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
+		// Set code length
+		writer.codeLength(codelen);
+		
 		// Read code and save it for later after the exception table and
 		// possibly the stack map table parse has been parsed
 		byte[] code = new byte[codelen];

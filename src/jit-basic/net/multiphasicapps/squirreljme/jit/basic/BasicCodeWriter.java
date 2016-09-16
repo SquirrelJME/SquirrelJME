@@ -33,6 +33,8 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
+import net.multiphasicapps.util.boolset.BooleanSet;
+import net.multiphasicapps.util.boolset.FixedSizeBooleanSet;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -68,6 +70,9 @@ public class BasicCodeWriter
 	/** Variable to allocation mapping. */
 	private final Map<CodeVariable, NativeAllocation> _vartoalloc =
 		new SortedTreeMap<>();
+	
+	/** Jump targets where entry state must be stored. */
+	private volatile BooleanSet _jumptargets;
 	
 	/** The current piece of code being written. */
 	final __Code__ _code;
@@ -125,6 +130,17 @@ public class BasicCodeWriter
 		throws JITException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
+	public void codeLength(int __n)
+	{
+		// Valid jump target positions
+		this._jumptargets = new FixedSizeBooleanSet(__n);
 	}
 	
 	/**
