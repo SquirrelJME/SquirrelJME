@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.classformat.MethodFlags;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
@@ -175,15 +177,33 @@ public class BasicCodeWriter
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Convert input arguments to types
+		// Instead of using the stack map types, convert the actual method
+		// types used to use their minimal representation. This makes calling
+		// methods a bit more efficient on 8-bit and 16-bit CPUs
+		__Method__ method = this._code._method;
+		MethodFlags flags = method._flags;
+		MethodSymbol sym = method._type.get();
+		
+		// Add the this reference
 		List<NativeRegisterType> args = new ArrayList<>();
-		for (StackMapType t : __t)
+		if (!flags.isStatic())
+			args.add(stackMapToRegisterType(StackMapType.OBJECT));
+		
+		// Go through arguments and add their types
+		int n = sym.argumentCount();
+		for (int i = 0; i < n; i++)
 		{
+			FieldSymbol f = sym.get(i);
+			StackMapType t = StackMapType.bySymbol(f);
 			
+			// Add native type
+			args.add(fieldToRegisterType(f));
 			
-			args.add(stackMapToRegisterType(t));
+			// Handle tops of long/double potentially
+			if (t.isWide())
+				throw new Error("TODO");
 		}
-			
+		
 		// Debug
 		System.err.printf("DEBUG -- Primed args in: %s -> %s%n",
 			Arrays.<StackMapType>asList(__t), args);

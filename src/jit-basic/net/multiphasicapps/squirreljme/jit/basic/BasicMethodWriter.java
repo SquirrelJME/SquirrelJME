@@ -79,7 +79,8 @@ public class BasicMethodWriter
 		throws JITException
 	{
 		// Create table entry
-		__Code__ entry = new __Code__();
+		__Method__ method = this._method;
+		__Code__ entry = new __Code__(method);
 		
 		// Align output and store start position
 		ExtendedDataOutputStream output = this.output;
@@ -98,7 +99,7 @@ public class BasicMethodWriter
 		
 		// Add to namespace
 		BasicNamespaceWriter namespace = this.namespace;
-		this._method._codedx = namespace.__addCode(entry);
+		method._codedx = namespace.__addCode(entry);
 		
 		// Create wrapping code
 		BasicCodeWriter code = new BasicCodeWriter(namespace, output, entry);

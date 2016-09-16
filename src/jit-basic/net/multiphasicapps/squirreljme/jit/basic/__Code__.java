@@ -18,5 +18,25 @@ package net.multiphasicapps.squirreljme.jit.basic;
 class __Code__
 	extends __Positioned__
 {
+	/** The method containing this code. */
+	final __Method__ _method;
+	
+	/**
+	 * Initializes the code information.
+	 *
+	 * @param __m The owning method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/15
+	 */
+	__Code__(__Method__ __m)
+		throws NullPointerException
+	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._method = __m;
+	}
 }
 
