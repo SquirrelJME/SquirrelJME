@@ -17,6 +17,8 @@ import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.MethodFlags;
+import net.multiphasicapps.squirreljme.classformat.MethodInvokeType;
+import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
@@ -200,6 +202,22 @@ public class BasicCodeWriter
 			default:
 				return stackMapToRegisterType(StackMapType.bySymbol(__f));
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
+	public void invokeMethod(MethodInvokeType __type,
+		MethodLinkage __link, CodeVariable __rv, CodeVariable... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__type == null || __link == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

@@ -11,10 +11,13 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.MethodFlags;
+import net.multiphasicapps.squirreljme.classformat.MethodInvokeType;
+import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
@@ -163,6 +166,26 @@ class __CodeWriter__
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/16
+	 */
+	@Override
+	public void invokeMethod(MethodInvokeType __type,
+		MethodLinkage __link, CodeVariable __rv, CodeVariable... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__type == null || __link == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Invoke %s %s (%s) -> %s%n", __type,
+			__link, Arrays.<CodeVariable>asList(__args), __rv);
+		
+		throw new Error("TODO");
 	}
 	
 	/**
