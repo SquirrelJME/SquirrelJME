@@ -1,4 +1,4 @@
-# Multi-Phasic Applications: SquirrelJME
+# SquirrelJME
 
  * Copyright (C) 2013-2016 Steven Gawroriski
    <steven@multiphasicapps.net>
