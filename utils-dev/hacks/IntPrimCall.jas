@@ -1,0 +1,259 @@
+; -*- Mode: Jasmin; indent-tabs-mode: t; tab-width: 4 -*-
+; ---------------------------------------------------------------------------
+; Multi-Phasic Applications: SquirrelJME
+;     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
+;     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+; ---------------------------------------------------------------------------
+; SquirrelJME is under the GNU General Public License v3+, or later.
+; For more information see license.mkd.
+; ---------------------------------------------------------------------------
+; This is a test of the virtual machine where methods of all the int-based
+; primitive types are passed to methods using wide values rather than
+; correctly narrowed ones
+
+.class IntPrimCall
+.super java/lang/Object
+
+; Returns the input boolean value
+.method public static callBoolean(Z)Z
+	iload_0
+	ireturn
+.end method
+
+; Returns the input byte value
+.method public static callByte(B)B
+	iload_0
+	ireturn
+.end method
+
+; Returns the input short value
+.method public static callShort(S)S
+	iload_0
+	ireturn
+.end method
+
+; Returns the input char value
+.method public static callCharacter(C)C
+	iload_0
+	ireturn
+.end method
+
+; Returns the input int value
+.method public static callInteger(I)I
+	iload_0
+	ireturn
+.end method
+
+; Prints an integer value
+.method public static printInt(I)V
+	.limit stack 2
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	iload_0
+	invokevirtual java/io/PrintStream/println(I)V
+	return
+.end method
+
+; Prints a string value
+.method public static printString(Ljava/lang/String;)V
+	.limit stack 3
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	dup
+	aload_0
+	invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+	ldc ":\t"
+	invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+	return
+.end method
+
+; Sends very large values to each method and then prints their resulting
+; value
+.method public static main([Ljava/lang/String;)V
+	; Should be enough, despite lots of waste
+	.limit stack 42
+	
+	; Even
+	ldc "boo 0xCAFEBABE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABE
+	invokestatic IntPrimCall/callBoolean(Z)Z
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Odd
+	ldc "boo 0xCAFEBABF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABF
+	invokestatic IntPrimCall/callBoolean(Z)Z
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Positive unless masked
+	ldc "boo 0x7FFFFFFF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFF
+	invokestatic IntPrimCall/callBoolean(Z)Z
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; bool-even
+	ldc "boo 0x7FFFFFFE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFE
+	invokestatic IntPrimCall/callBoolean(Z)Z
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; byte-pos
+	ldc "boo 0x7FFFFF7F"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFF7F
+	invokestatic IntPrimCall/callBoolean(Z)Z
+	invokestatic IntPrimCall/printInt(I)V
+	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	; Even
+	ldc "byt 0xCAFEBABE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABE
+	invokestatic IntPrimCall/callByte(B)B
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Odd
+	ldc "byt 0xCAFEBABF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABF
+	invokestatic IntPrimCall/callByte(B)B
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Positive unless masked
+	ldc "byt 0x7FFFFFFF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFF
+	invokestatic IntPrimCall/callByte(B)B
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; bool-even
+	ldc "byt 0x7FFFFFFE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFE
+	invokestatic IntPrimCall/callByte(B)B
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; byte-pos
+	ldc "byt 0x7FFFFF7F"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFF7F
+	invokestatic IntPrimCall/callByte(B)B
+	invokestatic IntPrimCall/printInt(I)V
+	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	; Even
+	ldc "sho 0xCAFEBABE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABE
+	invokestatic IntPrimCall/callShort(S)S
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Odd
+	ldc "sho 0xCAFEBABF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABF
+	invokestatic IntPrimCall/callShort(S)S
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Positive unless masked
+	ldc "sho 0x7FFFFFFF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFF
+	invokestatic IntPrimCall/callShort(S)S
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; bool-even
+	ldc "sho 0x7FFFFFFE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFE
+	invokestatic IntPrimCall/callShort(S)S
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; byte-pos
+	ldc "sho 0x7FFFFF7F"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFF7F
+	invokestatic IntPrimCall/callShort(S)S
+	invokestatic IntPrimCall/printInt(I)V
+	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	; Even
+	ldc "cha 0xCAFEBABE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABE
+	invokestatic IntPrimCall/callCharacter(C)C
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Odd
+	ldc "cha 0xCAFEBABF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABF
+	invokestatic IntPrimCall/callCharacter(C)C
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Positive unless masked
+	ldc "cha 0x7FFFFFFF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFF
+	invokestatic IntPrimCall/callCharacter(C)C
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; bool-even
+	ldc "cha 0x7FFFFFFE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFE
+	invokestatic IntPrimCall/callCharacter(C)C
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; byte-pos
+	ldc "cha 0x7FFFFF7F"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFF7F
+	invokestatic IntPrimCall/callCharacter(C)C
+	invokestatic IntPrimCall/printInt(I)V
+	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	; Even
+	ldc "int 0xCAFEBABE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABE
+	invokestatic IntPrimCall/callInteger(I)I
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Odd
+	ldc "int 0xCAFEBABF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0xCAFEBABF
+	invokestatic IntPrimCall/callInteger(I)I
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; Positive unless masked
+	ldc "int 0x7FFFFFFF"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFF
+	invokestatic IntPrimCall/callInteger(I)I
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; bool-even
+	ldc "int 0x7FFFFFFE"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFFFE
+	invokestatic IntPrimCall/callInteger(I)I
+	invokestatic IntPrimCall/printInt(I)V
+	
+	; byte-pos
+	ldc "int 0x7FFFFF7F"
+	invokestatic IntPrimCall/printString(Ljava/lang/String;)V
+	ldc 0x7FFFFF7F
+	invokestatic IntPrimCall/callInteger(I)I
+	invokestatic IntPrimCall/printInt(I)V
+	
+	return
+.end method
+

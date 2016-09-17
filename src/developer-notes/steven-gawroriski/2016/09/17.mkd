@@ -127,3 +127,99 @@ values, but that would add to the complexity.
 
 The callee could handle that though.
 
+## 10:13
+
+Going to setup jasmin and store these hacks in the repository. At least this
+way I can store my findings and not have to painfully hexedit classes.
+
+## 10:40
+
+Actually, compared to Zero, JamVM is quite incorrect.
+
+## 10:43
+
+This is the results of my short program on Zero:
+
+	boolean 0xCAFEBABE
+	0
+	boolean 0xCAFEBABF
+	1
+	byte 0xCAFEBABE
+	-66
+	byte 0xCAFEBABF
+	-65
+	short 0xCAFEBABE
+	-17730
+	short 0xCAFEBABF
+	-17729
+	char 0xCAFEBABE
+	47806
+	char 0xCAFEBABF
+	47807
+	int 0xCAFEBABE
+	-889275714
+	int 0xCAFEBABF
+	-889275713
+
+And this is JamVM
+
+	boolean 0xCAFEBABE
+	-889275714
+	boolean 0xCAFEBABF
+	-889275713
+	byte 0xCAFEBABE
+	-889275714
+	byte 0xCAFEBABF
+	-889275713
+	short 0xCAFEBABE
+	-889275714
+	short 0xCAFEBABF
+	-889275713
+	char 0xCAFEBABE
+	-889275714
+	char 0xCAFEBABF
+	-889275713
+	int 0xCAFEBABE
+	-889275714
+	int 0xCAFEBABF
+	-889275713
+
+So as you can see, Zero does return value conversion.
+
+## 10:46
+
+I actually need to add another value, which is not negative, but ones where the
+lower bits would indicate a negative. This means 0x7FFFFFFFF.
+
+## 10:54
+
+So my revised code gives
+
+	boo 0xCAFEBABE: 0
+	boo 0xCAFEBABF: 1
+	boo 0x7FFFFFFF: 1
+	boo 0x7FFFFFFE: 0
+	boo 0x7FFFFF7F: 1
+	byt 0xCAFEBABE: -66
+	byt 0xCAFEBABF: -65
+	byt 0x7FFFFFFF: -1
+	byt 0x7FFFFFFE: -2
+	byt 0x7FFFFF7F: 127
+	sho 0xCAFEBABE: -17730
+	sho 0xCAFEBABF: -17729
+	sho 0x7FFFFFFF: -1
+	sho 0x7FFFFFFE: -2
+	sho 0x7FFFFF7F: -129
+	cha 0xCAFEBABE: 47806
+	cha 0xCAFEBABF: 47807
+	cha 0x7FFFFFFF: 65535
+	cha 0x7FFFFFFE: 65534
+	cha 0x7FFFFF7F: 65407
+	int 0xCAFEBABE: -889275714
+	int 0xCAFEBABF: -889275713
+	int 0x7FFFFFFF: 2147483647
+	int 0x7FFFFFFE: 2147483646
+	int 0x7FFFFF7F: 2147483519
+
+Which means return values before they are placed into the return registers or
+otherwise, are masked and then sign extended if applicable.

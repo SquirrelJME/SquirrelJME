@@ -255,6 +255,9 @@ do
 			sed 'y/qwertyuiopasdfghjklzxcvbnm/QWERTYUIOPASDFGHJKLZXCVBNM/' |
 				sed 's/^\(.\{1,13\}\).*\(.\{11\}\)$/\1\2/')"
 			
+				# Binary name
+				__bname="$(echo "$__tpack.$__tclas" | sed 's/\./\\\//g')"
+				
 				# C stuff
 				__cheadgard="SJME_hG${__cheadclip}"
 				__ccxxisbad="SJME_cX${__cheadclip}"
@@ -307,7 +310,8 @@ do
 					| sed 's/ZZZCHEADERGUARDZZZ/'"$__cheadgard"'/g' \
 					| sed 's/ZZZCXXISBADZZZ/'"$__ccxxisbad"'/g' \
 					| sed 's/ZZZUUIDZZZ/'"$__uuid"'/g' \
-					| sed 's/ZZZNEXTERRZZZ/'"$__nexterr"'/g' > "$__afil"
+					| sed 's/ZZZNEXTERRZZZ/'"$__nexterr"'/g' \
+					| sed 's/ZZZBINAMEZZZ/'"$__bname"'/g' > "$__afil"
 		
 			# Not wanting a template
 			else
