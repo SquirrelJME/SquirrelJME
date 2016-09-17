@@ -188,17 +188,9 @@ public class BasicCodeWriter
 		// Depends
 		switch (__f.toString())
 		{
-				// boolean, byte
-			case "Z":
-			case "B":
-				return NativeRegisterIntegerType.BYTE;
-				
-				// short, char
-			case "S":
-			case "C":
-				return NativeRegisterIntegerType.SHORT;
-			
-				// Unknown, use default means
+				// Always use the default type because arguments are passed
+				// to methods as if they were int, despite if it was boolean
+				// However, return values are masked to their size.
 			default:
 				return stackMapToRegisterType(StackMapType.bySymbol(__f));
 		}

@@ -1,2 +1,129 @@
 # 2016/09/17
 
+## 07:44
+
+I believe for the short register selection that when it comes to `char` I will
+treat it as `int`, this way I can sign extend negative shorter values in
+conversion. Otherwise I would need additional flagging to determine if a value
+is currently unsigned. However, `char` although being unsigned can be cast to
+`int` simply.
+
+## 07:51
+
+I will actually need to test `boolean` otherwise I will have to grow it to
+`int`. Right now its only values are 0 and 1. One thing to consider though are
+methods that return shorter types, however they will always have to be
+integer sized.
+
+## 07:55
+
+`baload` sign extends the boolean to the integer value, so does this mean
+that `false` is `0` and `true` is `-1`?
+
+## 08:04
+
+Using some hex editing, and looking at the `javap` output, it just is 1.
+
+## 08:08
+
+Since JamVM differs, going with zero.
+
+Zero gives me:
+
+	--> true
+	--> -889275714
+	cafebabe
+
+If I then rewrite this integer call to the `boolean` call, I get:
+
+	--> true
+	--> true
+	00000000
+
+If I change 0xCAFEBABE to 0xCAFEBABF, I get:
+
+	--> true
+	--> true
+	00000001
+
+So this means that on return in a boolean method, the value either becomes zero
+or one, but it only considers the first bit. However the input arguments are
+modified. What I should do then is modify it so that `boolean`'s boxing is with
+`Integer` instead of `Boolean`.
+
+## 08:19
+
+So this is my program:
+
+	public class Foo
+	{
+		public static boolean foo(boolean __a)
+		{
+			System.err.printf("--> %b%n", __a);
+			return __a;
+		}
+	
+		public static int foo(int __a)
+		{
+			System.err.printf("--> %d%n", __a);
+			return __a;
+		}
+	
+		public static char foo(char __a)
+		{
+			System.err.printf("--> %d%n", (int)__a);
+			return __a;
+		}
+	
+		public static void main(String... __args)
+		{
+			foo(true);
+			foo('a');
+			foo(0x12345678);
+			System.err.printf("%08x%n", foo(0xCAFEBABE));
+		}
+	}
+
+I hexedit boolean's foo to print %d instead. So I get initially:
+
+	--> 1
+	--> 97
+	--> 305419896
+	--> -889275714
+	cafebabe
+
+Changing to boolean gives me:
+
+	--> 1
+	--> 97
+	--> 305419896
+	--> -889275714
+	00000000
+
+Changing to char gives me
+
+	--> 1
+	--> 97
+	--> 305419896
+	--> -889275714
+	0000babe
+
+Changing to int gives me
+
+	--> 1
+	--> 97
+	--> 305419896
+	--> -889275714
+	cafebabe
+
+So this means that input values are passed as-is, while return values are
+masked to their lower bits. This means that the handling should be on the
+caller's side since the callee returns large values. Then since all arguments
+are passed unchanged, I really cannot pass anything lower than `int` even
+though it would save space. The only exception would be if I could detect small
+values, but that would add to the complexity.
+
+## 08:29
+
+The callee could handle that though.
+
