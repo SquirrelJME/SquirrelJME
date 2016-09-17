@@ -17,11 +17,15 @@
 ; Returns the input boolean value
 .method public static callBoolean(Z)Z
 	iload_0
+	invokestatic IntPrimCall/printIntValue(I)V
+	iload_0
 	ireturn
 .end method
 
 ; Returns the input byte value
 .method public static callByte(B)B
+	iload_0
+	invokestatic IntPrimCall/printIntValue(I)V
 	iload_0
 	ireturn
 .end method
@@ -29,17 +33,23 @@
 ; Returns the input short value
 .method public static callShort(S)S
 	iload_0
+	invokestatic IntPrimCall/printIntValue(I)V
+	iload_0
 	ireturn
 .end method
 
 ; Returns the input char value
 .method public static callCharacter(C)C
 	iload_0
+	invokestatic IntPrimCall/printIntValue(I)V
+	iload_0
 	ireturn
 .end method
 
 ; Returns the input int value
 .method public static callInteger(I)I
+	iload_0
+	invokestatic IntPrimCall/printIntValue(I)V
 	iload_0
 	ireturn
 .end method
@@ -50,6 +60,40 @@
 	getstatic java/lang/System/out Ljava/io/PrintStream;
 	iload_0
 	invokevirtual java/io/PrintStream/println(I)V
+	return
+.end method
+
+; Prints an integer value
+.method public static printIntValue(I)V
+	.limit stack 7
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	; object
+	
+	ldc "<0x%08X>: "
+	; object string
+	
+	ldc 1
+	; object string int
+	
+	anewarray Ljava/lang/Object;
+	; object string array
+	
+	dup
+	; object string array array
+	
+	ldc 0
+	; object string array array int
+	
+	iload_0
+	; object string array array int int
+	
+	invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
+	; object string array array int object
+	
+	aastore
+	; object string array
+	
+	invokevirtual java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	return
 .end method
 
