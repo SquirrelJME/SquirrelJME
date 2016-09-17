@@ -221,6 +221,26 @@ public class BasicCodeWriter
 		System.err.printf("DEBUG -- Basic Invoke %s (%s) -> %s%n",
 			__link, Arrays.<CodeVariable>asList(__args), __rv);
 		
+		// Get alocations which make up the arguments
+		Map<CodeVariable, NativeAllocation> vartoalloc = this._vartoalloc;
+		int n = __args.length;
+		NativeAllocation[] nas = new NativeAllocation[n];
+		for (int i = 0; i < n; i++)
+		{
+			CodeVariable var;
+			NativeAllocation na;
+			nas[i] = (na = vartoalloc.get((var = __args[i])));
+			
+			// {@squirreljme.error BV0e The input variable does not have an
+			// assigned allocation. (The code variable)}
+			if (na == null)
+				throw new JITException(String.format("BV0e %s", var));
+		}
+		
+		// Debug
+		System.err.printf("DEBUG -- Allocated: %s%n",
+			Arrays.<NativeAllocation>asList(nas));
+		
 		throw new Error("TODO");
 	}
 	
