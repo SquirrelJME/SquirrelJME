@@ -8,6 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -25,6 +26,10 @@ import java.util.Objects;
 public class Bootstrap
 	implements Runnable
 {
+	/** The project which contains the bootstrap to build. */
+	public static final String BOOTSTRAP_PROJECT =
+		"bootstrap";
+	
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
 	
@@ -33,6 +38,9 @@ public class Bootstrap
 	
 	/** Contrib root. */
 	public static final Path CONTRIB_ROOT;
+	
+	/** Input program arguments. */
+	private final String[] _args;
 	
 	/**
 	 * Initializes some details.
@@ -63,7 +71,8 @@ public class Bootstrap
 		if (__args == null)
 			__args = new String[0];
 		
-		throw new Error("TODO");
+		// Set
+		this._args = __args.clone();
 	}
 	
 	/**
@@ -72,6 +81,35 @@ public class Bootstrap
 	 */
 	@Override
 	public void run()
+	{
+		// Could fail
+		try
+		{
+			// Locate the directories that contains all of the source code
+			// along with dependencies for the bootstrap
+			Path[] sources = __locateSources();
+		
+			throw new Error("TODO");
+		}
+		
+		// Failed
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Locates all source directories which are associated with the bootstrap
+	 * and all dependencies.
+	 *
+	 * @return An array containing the set of source directories that are
+	 * considered part of the bootstrap.
+	 * @throws IOException On read errors.
+	 * @since 2016/09/18
+	 */
+	private Path[] __locateSources()
+		throws IOException
 	{
 		throw new Error("TODO");
 	}
