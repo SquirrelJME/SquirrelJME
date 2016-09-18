@@ -171,6 +171,25 @@ public final class NativeABI
 	}
 	
 	/**
+	 * Checks if the specified register is an argument register.
+	 *
+	 * @param __r The register to check.
+	 * @return {@code true} if the register is an argument register.
+	 * @since 2016/09/17
+	 */
+	public final boolean isArgument(NativeRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Arguments are checked
+		return this._int._args.contains(__r) ||
+			this._float._args.contains(__r);
+	}
+	
+	/**
 	 * Checks if the specified register is a callee saved register.
 	 *
 	 * @param __r The register to check if it is callee saved.
@@ -185,7 +204,30 @@ public final class NativeABI
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Only considered if it is in the saved set
+		return this._int._ssaved.contains(__r) ||
+			this._float._ssaved.contains(__r);
+	}
+	
+	/**
+	 * Checks if the specified register is an other kind of usage register.
+	 *
+	 * @param __r The register to check.
+	 * @return {@code true} if the register is not an argument, saved,
+	 * temporary register, or stack register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/17
+	 */
+	public final boolean isOther(NativeRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Only if it is not anything
+		return !isArgument(__r) && !isSaved(__r) && !isTemporary(__r) &&
+			!stack().equals(__r);
 	}
 	
 	/**
@@ -203,7 +245,9 @@ public final class NativeABI
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Temporaries are checked
+		return this._int._stemps.contains(__r) ||
+			this._float._stemps.contains(__r);
 	}
 	
 	/**
