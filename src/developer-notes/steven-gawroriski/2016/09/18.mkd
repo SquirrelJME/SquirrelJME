@@ -90,3 +90,9 @@ all at once, it is possible to use the bootstrap as a seed of sorts. I could
 potentially adjust the script that if no Java compiler is detected in PATH
 that it instead runs the bootstrap directly.
 
+## 14:23
+
+The new bootstrapper should be around half the size of the older build system.
+Of course, I have to implement the old build system part into the new bootstrap
+system.
+

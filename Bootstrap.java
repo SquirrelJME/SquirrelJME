@@ -12,8 +12,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
@@ -21,6 +25,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -308,7 +313,8 @@ public class Bootstrap
 			}
 			
 			// Move JAR
-			Files.move(tjar, BOOTSTRAP_JAR_PATH);
+			Files.move(tjar, BOOTSTRAP_JAR_PATH,
+				StandardCopyOption.REPLACE_EXISTING);
 		}
 		
 		// Clear temporary files
@@ -345,7 +351,60 @@ public class Bootstrap
 	private void __launch()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Setup class loader
+		URLClassLoader ucl = new URLClassLoader(new URL[]{
+			BOOTSTRAP_JAR_PATH.toUri().toURL()}, getClass().getClassLoader());
+		
+		// Set the context class loader which is used by ServiceLoader,
+		// otherwise services will not be found
+		Thread.currentThread().setContextClassLoader(ucl);
+		
+		// Could fail
+		try
+		{
+			// Get the bootstrapper class
+			Class<?> bootstrap = Class.forName(
+				"net.multiphasicapps.squirreljme.bootstrap.Main",
+				false, ucl);
+			
+			// And helper interfaces
+			Class<?> helpcc = Class.forName("net.multiphasicapps." +
+				"squirreljme.bootstrap.base.compiler.BootCompiler", false,
+				ucl);
+			Class<?> helpln = Class.forName("net.multiphasicapps." +
+				"squirreljme.bootstrap.base.launcher.BootLauncher",
+				false, ucl);
+			
+			// Get the main method which gets those helper instances
+			Method main = bootstrap.getDeclaredMethod("main",
+				helpcc, helpln, String[].class);
+			
+			// Invoke it
+			main.invoke(null, Proxy.newProxyInstance(ucl, new Class[]{helpcc},
+				new __CompilerProxy__()), Proxy.newProxyInstance(ucl,
+				new Class[]{helpln}, new __LauncherProxy__()), this._args);
+		}
+			
+		// Called code failed to invoke, throw wrapped exception instead
+		catch (InvocationTargetException e)
+		{
+			Throwable c = e.getCause();
+			
+			// Unchecked exceptions?
+			if (c instanceof RuntimeException)
+				throw (RuntimeException)c;
+			else if (c instanceof Error)
+				throw (Error)c;
+			
+			// Otherwise wrap the original
+			throw new RuntimeException(e);
+		}
+		
+		// Could not execute the main class
+		catch (ReflectiveOperationException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
