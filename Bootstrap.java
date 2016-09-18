@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.attribute.FileTime;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -41,6 +43,10 @@ public class Bootstrap
 	/** The project which contains the bootstrap to build. */
 	public static final String BOOTSTRAP_PROJECT =
 		"bootstrap";
+	
+	/** The bootstrap JAR file, which is not a project. */
+	public static final Path BOOTSTRAP_JAR_PATH =
+		Paths.get("sjmeboot.jar");
 	
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
@@ -102,8 +108,13 @@ public class Bootstrap
 			Path[] sources = __locateSources();
 			System.err.printf("DEBUG -- Located: %s%n",
 				Arrays.asList(sources));
-		
-			throw new Error("TODO");
+			
+			// Is the bootstrap technically out of date? Build it if so
+			if (__outOfDate(sources))
+				__build(sources);
+			
+			// Launch it
+			__launch();
 		}
 		
 		// Failed
@@ -111,6 +122,37 @@ public class Bootstrap
 		{
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * Builds the bootstrap.
+	 *
+	 * @param __src Source directories to include in the build.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	private void __build(Path[] __src)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Launches the bootstrap with the proxy classes which are used to
+	 * specify the compiler to access along with the native launch system.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/09/18
+	 */
+	private void __launch()
+		throws IOException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -168,6 +210,30 @@ public class Bootstrap
 		
 		// Return them
 		return rv.<Path>toArray(new Path[rv.size()]);
+	}
+	
+	/**
+	 * Checks if the bootstrap is out of date.
+	 *
+	 * @param __src The sources to check.
+	 * @return {@code true} if the bootstrap is out of date and needs to be
+	 * built.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	private boolean __outOfDate(Path[] __src)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// If the output JAR does not exist then it is always out of date
+		if (!Files.exists(BOOTSTRAP_JAR_PATH))
+			return true;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
