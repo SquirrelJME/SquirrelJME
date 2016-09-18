@@ -41,6 +41,10 @@ then
 fi
 
 # Run it
-"$JAVA" $JAVA_OPTIONS "-Dproject.root=$__exedir" "$BOOTSTRAP_CLASS" $*
+"$JAVA" $JAVA_OPTIONS \
+	"-Dproject.root=$__exedir" \
+	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir/src" \
+	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
+	"$BOOTSTRAP_CLASS" $*
 exit $?
 

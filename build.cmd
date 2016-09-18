@@ -57,7 +57,10 @@ if not exist %__HB_VCLS% (
 )
 
 REM Execute Java
-%JAVA% -Dproject.root=%__EXEDIR% %BOOTSTRAP_CLASS% %*
+%JAVA% -Dproject.root=%__EXEDIR% ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR%\src ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
+	%BOOTSTRAP_CLASS% %*
 
 REM End of script, return with java command error (hopefully)
 exit /b %ERRORLEVEL%

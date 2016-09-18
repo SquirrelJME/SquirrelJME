@@ -22,13 +22,22 @@ import net.multiphasicapps.squirreljme.projects.ProjectList;
  */
 public class Bootstrapper
 {
+	/** The project list to use. */
+	protected final ProjectList projects;
+	
+	/** The bootstrap compiler. */
+	protected final BootCompiler compiler;
+	
+	/** The bootstrap launcher. */
+	protected final BootLauncher launcher;
+	
 	/**
 	 * Initializes the bootstrapper.
 	 *
 	 * @param __pl The package list.
-	 * @param __bc The compier for packages, optional.
-	 * @param __bl The launcher for packages, optional.
-	 * @throws NullPointerException If no package list was specified.
+	 * @param __bc The compier for projects, optional.
+	 * @param __bl The launcher for projects, optional.
+	 * @throws NullPointerException If no project list was specified.
 	 * @since 2016/09/18
 	 */
 	public Bootstrapper(ProjectList __pl, BootCompiler __bc, BootLauncher __bl)
@@ -37,6 +46,34 @@ public class Bootstrapper
 		// Check
 		if (__pl == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.projects = __pl;
+		this.compiler = __bc;
+		this.launcher = __bl;
+		
+		// {@squirreljme.error CL01 No bootstrap compiler was specified,
+		// projects cannot be built.}
+		if (__bc == null)
+			System.err.println("CL01");
+		
+		// {@squirreljme.error CL02 No bootstrap launcher was specified,
+		// projects cannot be launched.}
+		if (__bl == null)
+			System.err.println("CL02");
+	}
+	
+	/**
+	 * Runs the specified set of input commands.
+	 *
+	 * @param __args The bootstrap arguments to run.
+	 * @since 2016/09/18
+	 */
+	public void run(String... __args)
+	{
+		// Force to exist
+		if (__args == null)
+			__args = new String[0];
 		
 		throw new Error("TODO");
 	}
