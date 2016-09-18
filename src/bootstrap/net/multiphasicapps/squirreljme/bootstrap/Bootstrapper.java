@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.bootstrap;
 
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
@@ -124,11 +125,13 @@ public class Bootstrapper
 	 *
 	 * @param __n The binary to get and potentially build.
 	 * @return The binary for the given project.
+	 * @throws RuntimeException If the binary project could not be obtained
+	 * or built.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
 	ProjectInfo __getBinary(ProjectName __n)
-		throws NullPointerException
+		throws RuntimeException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -136,7 +139,8 @@ public class Bootstrapper
 		
 		// {@squirreljme.error CL04 The specified project does not exist.
 		// (The name of the project)}
-		ProjectGroup group = this.projects.get(__n);
+		ProjectList projects = this.projects;
+		ProjectGroup group = projects.get(__n);
 		if (group == null)
 			throw new RuntimeException(String.format("CL04 %s", __n));
 		
@@ -150,9 +154,35 @@ public class Bootstrapper
 			if (src == null)
 				return rv;
 			
-			// Otherwise check if it is out of date or any ofs its dependencies
-			// are out of date.
-			throw new Error("TODO");
+			// If the binary is up to date, make sure the dependencies are
+			// also up to date
+			FileTime btime;
+			if ((btime = rv.date()).compareTo(src.date()) >= 0)
+			{
+				// Recursively get the dependencies for the project
+				boolean outofdate = false;
+				for (ProjectName depn : rv.dependencies())
+				{
+					// {@squirreljme.error CL05 A dependent project does not
+					// have an associated group, there are no binaries or
+					// sources for it. (This project; The dependency)}
+					ProjectGroup depg = projects.get(depn);
+					if (depg == null)
+						throw new RuntimeException(String.format("CL05 %s %s",
+							__n, depn));
+					
+					// Get the binary for that dependency
+					ProjectInfo depi = __getBinary(depn);
+					
+					// Is a dependency newer than the binary?
+					if (depi.date().compareTo(btime) > 0)
+						outofdate |= true;
+				}
+			
+				// If not out of date then use it
+				if (!outofdate)
+					return rv;
+			}
 		}
 		
 		// It must be compiled
