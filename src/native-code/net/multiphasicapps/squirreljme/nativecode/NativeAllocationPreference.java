@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * DESCRIBE THIS.
+ * This selects which registers are used to be selected for allocation.
  *
  * @since 2016/09/18
  */
