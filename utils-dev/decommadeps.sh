@@ -64,8 +64,7 @@ do
 	echo "" >> /tmp/$$
 	
 	# Copy over the project
-	cat /tmp/$$
-	#"$__file"
+	mv /tmp/$$ "$__file"
 done
 
 # Spacer
