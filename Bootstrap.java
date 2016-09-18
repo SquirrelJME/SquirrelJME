@@ -93,7 +93,8 @@ public class Bootstrap
 		
 		// Set manifest
 		BOOTSTRAP_MANIFEST = SOURCE_ROOT.resolve(BOOTSTRAP_PROJECT).
-			resolve("META-INF").resolve("MANIFEST.MF");
+			resolve("net").resolve("multiphasicapps").resolve("squirreljme").
+			resolve("bootstrap").resolve("BOOT.MF");
 	}
 	
 	/**
