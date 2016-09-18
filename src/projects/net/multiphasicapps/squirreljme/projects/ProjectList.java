@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.zip.blockreader.ZipFile;
@@ -95,6 +97,48 @@ public class ProjectList
 					}
 				}
 			}
+		
+		// Handle source projects
+		for (Path sp : __s)
+		{
+			// Go through
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(sp))
+			{
+				for (Path p : ds)
+				{
+					// Try opening the manifest
+					Path manpath = p.resolve("META-INF").
+						resolve("MANIFEST.MF");
+					try (FileChannel fc = FileChannel.open(manpath,
+						StandardOpenOption.READ))
+					{
+						// Load manifest
+						JavaManifest man = new JavaManifest(
+							Channels.newInputStream(fc));
+				
+						// Load project
+						ProjectInfo pi = new ProjectInfo(this, p, false, man,
+							false);
+				
+						// Add to mapping
+						ProjectName name = pi.name();
+						ProjectGroup pg = target.get(name);
+						if (pg == null)
+							target.put(name,
+								(pg = new ProjectGroup(this, name)));
+				
+						// Associate source
+						pg.__setSource(pi);
+					}
+			
+					// Not a valid manifest or it is missing
+					catch (IOException|InvalidProjectException e)
+					{
+						continue;
+					}
+				}
+			}
+		}
 		
 		// Lock
 		this.projects = UnmodifiableMap.<ProjectName, ProjectGroup>of(target);

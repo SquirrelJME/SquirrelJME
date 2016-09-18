@@ -14,6 +14,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
+import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
 import net.multiphasicapps.squirreljme.projects.ProjectName;
@@ -133,6 +134,28 @@ public class Bootstrapper
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error CL04 The specified project does not exist.
+		// (The name of the project)}
+		ProjectGroup group = this.projects.get(__n);
+		if (group == null)
+			throw new RuntimeException(String.format("CL04 %s", __n));
+		
+		// Try to get the binary for it
+		ProjectInfo rv = group.binary();
+		if (rv != null)
+		{
+			// If there is no source package for the binary then use it
+			// regardless
+			ProjectInfo src = group.source();
+			if (src == null)
+				return rv;
+			
+			// Otherwise check if it is out of date or any ofs its dependencies
+			// are out of date.
+			throw new Error("TODO");
+		}
+		
+		// It must be compiled
 		throw new Error("TODO");
 	}
 	

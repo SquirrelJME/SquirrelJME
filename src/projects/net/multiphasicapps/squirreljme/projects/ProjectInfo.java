@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.Path;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -76,7 +77,7 @@ public class ProjectInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	public ProjectInfo(ProjectList __l, Path __p, ZipFile __zip, boolean __bin)
+	ProjectInfo(ProjectList __l, Path __p, ZipFile __zip, boolean __bin)
 		throws InvalidProjectException, IOException, NullPointerException
 	{
 		this(__l, __p, true, __loadManifestFromZIP(__zip), __bin);
@@ -94,7 +95,7 @@ public class ProjectInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	private ProjectInfo(ProjectList __l, Path __p, boolean __zz,
+	ProjectInfo(ProjectList __l, Path __p, boolean __zz,
 		JavaManifest __man, boolean __bin)
 		throws InvalidProjectException, NullPointerException
 	{
@@ -136,6 +137,31 @@ public class ProjectInfo
 		
 		// Compare by name
 		return this.name.compareTo(__pi.name);
+	}
+	
+	/**
+	 * Returns the date of the project's binary file or source tree.
+	 *
+	 * @return The date of the project.
+	 * @throws InvalidProjectException If the date could not be read.
+	 */
+	public final FileTime date()
+		throws InvalidProjectException
+	{
+		try
+		{
+			if (false)
+				throw new IOException();
+			
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error CI08 Could not get the latest modification
+		// date of the project.}
+		catch (IOException e)
+		{
+			throw new InvalidProjectException("CI08", e);
+		}
 	}
 	
 	/**

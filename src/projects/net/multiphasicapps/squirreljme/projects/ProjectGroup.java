@@ -160,5 +160,32 @@ public final class ProjectGroup
 			this._bin = __pi;
 		}
 	}
+	
+	/**
+	 * Sets the source project.
+	 *
+	 * @param __pi The project to set.
+	 * @throws IllegalStateException If the name does not match.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	final void __setSource(ProjectInfo __pi)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__pi == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CI09 Attempt to set source project to a group
+		// of a different name.}
+		if (!this.name.equals(__pi.name()))
+			throw new IllegalStateException("CI09");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._src = __pi;
+		}
+	}
 }
 
