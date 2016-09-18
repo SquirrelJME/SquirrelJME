@@ -236,3 +236,10 @@ determine which registers do not have to be saved to the stack for a call.
 Another thing to consider is that the native allocation might need a stack
 flag if not already done.
 
+## 21:35
+
+Before a method is invoked, if stack values being popped are cached off each
+other then they should have their original values copied before the invoke
+is generated. This way, it is handled by the JIT and values do not point to
+illegal values.
+

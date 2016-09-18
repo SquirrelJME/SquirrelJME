@@ -187,13 +187,15 @@ class __CodeWriter__
 		
 		// Load the cached state of all stack variables
 		CodeVariable[] stack = this._cache._stack;
-		int n = __args.length;
-		for (int i = 0; i < n; i++)
+		for (int i = 0, n = __args.length; i < n; i++)
 		{
 			CodeVariable var = __args[i];
 			if (var.isStack())
 				__args[i] = stack[var.id()];
 		}
+		
+		// Decache stack variables referring to other stack entries
+		__decache(__d);
 		
 		// Forward call
 		this.codewriter.invokeMethod(__link, __d, __rv, __args);
@@ -264,6 +266,36 @@ class __CodeWriter__
 		// Prime
 		codewriter.primeArguments(vars.<StackMapType>toArray(
 			new StackMapType[vars.size()]));
+	}
+	
+	/**
+	 * Decaches values which are cached on the stack that refer to stack
+	 * entry at or exceeding the specified depth.
+	 *
+	 * @param __d The stack depth to limit cached values to, any entry which
+	 * refers to an entry is explictily copied and becomes a unique reference
+	 * if applicable.
+	 * @since 2016/09/17
+	 */
+	private void __decache(int __d)
+	{
+		CodeVariable[] stack = this._cache._stack;
+		int n = stack.length;
+		for (int i = 0; i < n; i++)
+		{
+			CodeVariable var = stack[i];
+			
+			// Not allocated
+			if (var == null)
+				continue;
+			
+			// The cache exceeds the stack, it must be copied
+			int id;
+			if (var.isStack() && (id = var.id()) >= __d)
+			{
+				throw new Error("TODO");
+			}
+		}
 	}
 }
 
