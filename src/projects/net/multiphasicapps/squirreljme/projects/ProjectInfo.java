@@ -31,11 +31,11 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/06/15
  */
-public class PackageInfo
-	implements Comparable<PackageInfo>
+public class ProjectInfo
+	implements Comparable<ProjectInfo>
 {
 	/** The owning package list. */
-	protected final PackageList plist;
+	protected final ProjectList plist;
 	
 	/** The package manifest. */
 	protected final JavaManifest manifest;
@@ -47,19 +47,19 @@ public class PackageInfo
 	protected final boolean iszip;
 	
 	/** The name of this package. */
-	protected final PackageName name;
+	protected final ProjectName name;
 	
 	/** Package groups this package is in. */
 	private volatile Reference<Set<String>> _groups;
 	
 	/** The dependencies of this package. */
-	private volatile Reference<Set<PackageInfo>> _depends;
+	private volatile Reference<Set<ProjectInfo>> _depends;
 	
 	/** Optional dependencies. */
-	private volatile Reference<Set<PackageInfo>> _odepends;
+	private volatile Reference<Set<ProjectInfo>> _odepends;
 	
 	/** Recursive dependencies. */
-	private volatile Reference<Set<PackageInfo>> _rdepends;
+	private volatile Reference<Set<ProjectInfo>> _rdepends;
 	
 	/**
 	 * Initializes the package information from the given ZIP.
@@ -72,7 +72,7 @@ public class PackageInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	public PackageInfo(PackageList __l, Path __p, ZipFile __zip)
+	public ProjectInfo(ProjectList __l, Path __p, ZipFile __zip)
 		throws InvalidPackageException, IOException, NullPointerException
 	{
 		this(__l, __p, true, __loadManifestFromZIP(__zip));
@@ -89,7 +89,7 @@ public class PackageInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	private PackageInfo(PackageList __l, Path __p, boolean __zz,
+	private ProjectInfo(ProjectList __l, Path __p, boolean __zz,
 		JavaManifest __man)
 		throws InvalidPackageException, NullPointerException
 	{
@@ -113,7 +113,7 @@ public class PackageInfo
 			throw new InvalidPackageException(String.format("CI04 %s", __p));
 		
 		// Set name
-		this.name = new PackageName(rname);
+		this.name = new ProjectName(rname);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class PackageInfo
 	 * @since 2016/09/06
 	 */
 	@Override
-	public int compareTo(PackageInfo __pi)
+	public int compareTo(ProjectInfo __pi)
 		throws NullPointerException
 	{
 		// Check
@@ -139,7 +139,7 @@ public class PackageInfo
 	 * @throws IllegalStateException If a dependency is missing.
 	 * @since 2016/06/25
 	 */
-	public final Set<PackageInfo> dependencies()
+	public final Set<ProjectInfo> dependencies()
 		throws IllegalStateException
 	{
 		return dependencies(false);
@@ -154,19 +154,19 @@ public class PackageInfo
 	 * @throws IllegalStateException If a dependency is missing.
 	 * @since 2016/07/22
 	 */
-	public final Set<PackageInfo> dependencies(boolean __opt)
+	public final Set<ProjectInfo> dependencies(boolean __opt)
 		throws IllegalStateException
 	{
 		// Get
-		Reference<Set<PackageInfo>> ref = (__opt ? this._odepends :
+		Reference<Set<ProjectInfo>> ref = (__opt ? this._odepends :
 			this._depends);
-		Set<PackageInfo> rv;
+		Set<ProjectInfo> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<PackageInfo> deps = new SortedTreeSet<>();
+			Set<ProjectInfo> deps = new SortedTreeSet<>();
 			
 			// Read the manifest
 			JavaManifest man = manifest();
@@ -175,7 +175,7 @@ public class PackageInfo
 			// Get the dependency field
 			String pids = attr.get((__opt ? "X-SquirrelJME-Optional" :
 				"X-SquirrelJME-Depends"));
-			PackageList plist = this.plist;
+			ProjectList plist = this.plist;
 			if (pids != null)
 			{
 				int n = pids.length();
@@ -203,7 +203,7 @@ public class PackageInfo
 					// {@squirreljme.error CI01 A required dependency of a
 					// package does not exist. (This package; The missing
 					// dependency)}
-					PackageInfo ddd = plist.get(spl);
+					ProjectInfo ddd = plist.get(spl);
 					if (!__opt && ddd == null)
 						throw new IllegalStateException(String.format(
 							"CI01 %s %s", this.name, spl));
@@ -218,7 +218,7 @@ public class PackageInfo
 			}
 			
 			// Lock
-			rv = UnmodifiableSet.<PackageInfo>of(deps);
+			rv = UnmodifiableSet.<ProjectInfo>of(deps);
 			ref = new WeakReference<>(rv);
 			if (__opt)
 				this._odepends = ref;
@@ -238,11 +238,11 @@ public class PackageInfo
 	public boolean equals(Object __o)
 	{
 		// Must be another package
-		if (!(__o instanceof PackageInfo))
+		if (!(__o instanceof ProjectInfo))
 			return false;
 		
 		// Compare the name
-		return this.name.equals(((PackageInfo)__o).name);
+		return this.name.equals(((ProjectInfo)__o).name);
 	}
 	
 	/**
@@ -338,7 +338,7 @@ public class PackageInfo
 	 * @return The package name.
 	 * @since 2016/06/15
 	 */
-	public final PackageName name()
+	public final ProjectName name()
 	{
 		return this.name;
 	}
@@ -361,27 +361,27 @@ public class PackageInfo
 	 * @return The set of all dependencies.
 	 * @since 2016/07/22
 	 */
-	public final Set<PackageInfo> recursiveDependencies()
+	public final Set<ProjectInfo> recursiveDependencies()
 	{
 		// Get
-		Reference<Set<PackageInfo>> ref = this._rdepends;
-		Set<PackageInfo> rv;
+		Reference<Set<ProjectInfo>> ref = this._rdepends;
+		Set<ProjectInfo> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<PackageInfo> deps = new SortedTreeSet<>();
+			Set<ProjectInfo> deps = new SortedTreeSet<>();
 			
 			// Start at the root
-			Deque<PackageInfo> deq = new LinkedList<>();
+			Deque<ProjectInfo> deq = new LinkedList<>();
 			deq.offerLast(this);
 			
 			// Keep going
 			while (!deq.isEmpty())
 			{
 				// Ignore already calculated packages
-				PackageInfo pi = deq.pollFirst();
+				ProjectInfo pi = deq.pollFirst();
 				if (deps.contains(pi))
 					continue;
 				
@@ -389,12 +389,12 @@ public class PackageInfo
 				deps.add(pi);
 				
 				// Add all dependencies to the queue
-				for (PackageInfo z : pi.dependencies())
+				for (ProjectInfo z : pi.dependencies())
 					deq.offerLast(z);
 			}
 			
 			// Lock
-			rv = UnmodifiableSet.<PackageInfo>of(deps);
+			rv = UnmodifiableSet.<ProjectInfo>of(deps);
 			this._rdepends = new WeakReference<>(rv);
 		}
 		

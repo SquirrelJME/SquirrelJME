@@ -29,11 +29,11 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/06/15
  */
-public class PackageList
-	extends AbstractMap<PackageName, PackageInfo>
+public class ProjectList
+	extends AbstractMap<ProjectName, ProjectInfo>
 {
 	/** The mapping of packages. */
-	protected final Map<PackageName, PackageInfo> packages;
+	protected final Map<ProjectName, ProjectInfo> packages;
 	
 	/**
 	 * This initializes the package list.
@@ -46,7 +46,7 @@ public class PackageList
 	 * @throws NullPointerException If both arguments are null
 	 * @since 2016/06/15
 	 */
-	public PackageList(Path __j, Path... __s)
+	public ProjectList(Path __j, Path... __s)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -54,7 +54,7 @@ public class PackageList
 			throw new NullPointerException("NARG");
 		
 		// The target map
-		Map<PackageName, PackageInfo> target = new SortedTreeMap<>();
+		Map<ProjectName, ProjectInfo> target = new SortedTreeMap<>();
 		
 		// Go through binary JAR files
 		if (__j != null)
@@ -75,7 +75,7 @@ public class PackageList
 						ZipFile zip = ZipFile.open(fc);
 					
 						// Load package information
-						PackageInfo pi = new PackageInfo(this, p, zip);
+						ProjectInfo pi = new ProjectInfo(this, p, zip);
 					
 						// Add to mapping
 						target.put(pi.name(), pi);
@@ -90,7 +90,7 @@ public class PackageList
 			}
 		
 		// Lock
-		this.packages = UnmodifiableMap.<PackageName, PackageInfo>of(target);
+		this.packages = UnmodifiableMap.<ProjectName, ProjectInfo>of(target);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class PackageList
 	public boolean containsKey(Object __o)
 	{
 		if (__o instanceof String)
-			return this.packages.containsKey(new PackageName((String)__o));
+			return this.packages.containsKey(new ProjectName((String)__o));
 		return this.packages.containsKey(__o);
 	}
 	
@@ -110,7 +110,7 @@ public class PackageList
 	 * @since 2016/06/15
 	 */
 	@Override
-	public Set<Map.Entry<PackageName, PackageInfo>> entrySet()
+	public Set<Map.Entry<ProjectName, ProjectInfo>> entrySet()
 	{
 		return this.packages.entrySet();
 	}
@@ -120,10 +120,10 @@ public class PackageList
 	 * @since 2016/06/19
 	 */
 	@Override
-	public PackageInfo get(Object __o)
+	public ProjectInfo get(Object __o)
 	{
 		if (__o instanceof String)
-			return this.packages.get(new PackageName((String)__o));
+			return this.packages.get(new ProjectName((String)__o));
 		return this.packages.get(__o);
 	}
 	

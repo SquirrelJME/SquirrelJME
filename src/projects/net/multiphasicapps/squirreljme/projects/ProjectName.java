@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.projects;
  *
  * @since 2016/06/15
  */
-public final class PackageName
-	implements Comparable<PackageName>
+public final class ProjectName
+	implements Comparable<ProjectName>
 {
 	/** The name of the package. */
 	protected final String name;
@@ -29,7 +29,7 @@ public final class PackageName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	public PackageName(String __s)
+	public ProjectName(String __s)
 		throws InvalidPackageException, NullPointerException
 	{
 		// Check
@@ -72,7 +72,7 @@ public final class PackageName
 	 * @since 2016/06/15
 	 */
 	@Override
-	public int compareTo(PackageName __pn)
+	public int compareTo(ProjectName __pn)
 	{
 		return __compareTo(__pn);
 	}
@@ -85,8 +85,8 @@ public final class PackageName
 	public boolean equals(Object __o)
 	{
 		// If another package, use normal comparison
-		if (__o instanceof PackageName)
-			return 0 == __compareTo((PackageName)__o);
+		if (__o instanceof ProjectName)
+			return 0 == __compareTo((ProjectName)__o);
 		
 		// If a string, compare as if it were a package name
 		else if (__o instanceof String)
@@ -124,7 +124,7 @@ public final class PackageName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	private final int __compareTo(PackageName __pn)
+	private final int __compareTo(ProjectName __pn)
 		throws NullPointerException
 	{
 		// Check
