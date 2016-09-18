@@ -40,3 +40,16 @@ registers, stack, or both.
 `BasicCodeWriter` triggered my code size warning despite it only being about
 500 lines long. I suppose I could ignore it however.
 
+## 08:41
+
+JSR 239 has fixed point support, which means a software rasterizer could
+potentially work a bit faster if no floating point is available. However one
+thing to consider is the floating point parts. I would suppose that when it
+comes to actual rendering, that it would use either floating point or fixed
+point but render that data directly. So drawing a triangle using the fixed
+point functions will draw it using fixed point, while floating point would
+draw it using floating point. Floating point would be far more accurate, but
+when it comes to fixed point drawing it would not have to convert to float
+or vice versa. Other drivers however might convert float to fixed or vice
+versa.
+
