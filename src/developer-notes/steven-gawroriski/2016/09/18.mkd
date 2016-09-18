@@ -96,3 +96,31 @@ The new bootstrapper should be around half the size of the older build system.
 Of course, I have to implement the old build system part into the new bootstrap
 system.
 
+## 15:01
+
+So what I need is a means of getting the binary project of a given project
+along with anything that is optional. This means that there is potential to
+have co-dependencies which I have previous talked about. However, first I
+should re-implement the build stuff that is missing, this way I can resume
+working on the cross compiler potentially. Although technically I can use the
+old build system to do so. At least with this new build setup the bulk of
+the project building will be completely within the scope of SquirrelJME. So
+technically if I added a custom launcher (for example an interpreter or
+bridge to `launcher`) and a compiler, I would have a completely self contained
+system where I can build SquirrelJME on SquirrelJME. Following the build system
+reimplementation, I need to adjust the target builder a bit potentially so
+that it is possible to give profiles or some kind of configuration-like thing
+where I can select projects to use. So a minimal configuration would contain
+the bare minimum, while a full configuration would include every package. When
+it comes to targets for a given system, say for autobuilds, I would want to
+choose the configuration that fits the best. So this means that targets such
+as the Nintendo 64 and Sega Dreamcast will get the full configuration meaning
+that all projects would be included in the output binary. And as such, they
+would be the complete suite. Doing it this way then means that it will not be
+needed to have special operating system specific projects which depend on
+other projects. So in essence, I would have had a "os-nintendo-n64" which
+would depend on stuff such as say the LCDUI code (when it pops around in the
+future). With configurations, I would then be able to explicitely specify
+which set of default projects to include. Of course for demo purposes I would
+want the best choice.
+
