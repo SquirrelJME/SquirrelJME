@@ -10,3 +10,10 @@ driver interface that the standard code set uses. So I would essentially have
 a software rasterizer, but for example on the N64 I can have a driver which
 uses that GPU.
 
+## 00:08
+
+The `sloccount` of the JD disassembled classes (they are virtually all
+interfaces and abstract classes) is only 1,273 lines. So the API itself is
+very small indeed. However, I may be getting a bit ahead of myself a bit since
+I do not even have a fully working compiler yet.
+
