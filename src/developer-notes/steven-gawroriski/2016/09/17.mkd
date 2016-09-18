@@ -243,3 +243,11 @@ other then they should have their original values copied before the invoke
 is generated. This way, it is handled by the JIT and values do not point to
 illegal values.
 
+## 23:55
+
+I believe for graphics, the simplest choice I could choose is JSR 239 which
+implements OpenGL ES 1.1. Although very out of date, I am just a single
+person. Luckily the older SDKs contain the given JAR for it, which means it
+is testable. The 3.4 SDK only contains 1.0 of the specification, however that
+should be good enough.
+
