@@ -425,7 +425,21 @@ public class Bootstrap
 		if (!Files.exists(BOOTSTRAP_JAR_PATH))
 			return true;
 		
-		throw new Error("TODO");
+		// Get the JAR date
+		FileTime jart = Files.getLastModifiedTime(BOOTSTRAP_JAR_PATH);
+		
+		// Grab all files
+		Set<Path> files = new HashSet<>();
+		for (Path p : __src)
+			__walk(files, p);
+		
+		// Go through all of them and see if any file is newer
+		for (Path p : files)
+			if (Files.getLastModifiedTime(p).compareTo(jart) > 0)
+				return true;
+		
+		// No source file is newer
+		return false;
 	}
 	
 	/**
