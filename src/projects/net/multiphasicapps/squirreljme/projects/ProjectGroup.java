@@ -11,7 +11,16 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
+import net.multiphasicapps.zip.blockreader.ZipFile;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This is a project group which contains a reference to binary and/or
@@ -104,11 +113,56 @@ public final class ProjectGroup
 		
 		// {@squirreljme.error CI0a Cannot build the project because it does
 		// not have source code available.}
+		ProjectList list = this.list;
 		ProjectInfo src = source();
 		if (src == null)
 			throw new MissingSourceException("CI0a");
 		
-		throw new Error("TODO");
+		// Temporary output JAR name
+		Path tempjarname = Files.createTempFile("squirreljme-compile",
+			this.name.toString());
+		
+		// Need to build the output JAR
+		try
+		{
+			// Create output ZIP to compile into
+			try (final ZipStreamWriter zip = new ZipStreamWriter(
+				Channels.newOutputStream(FileChannel.open(tempjarname,
+				StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
+			{
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Determine the name of the binary
+			ProjectInfo bin = binary();
+			Path jarname = (bin != null ? bin.path() :
+				list.binaryPath().resolve(this.name.toString() + ".jar"));
+			
+			// Replace any existing binary
+			Files.move(tempjarname, jarname,
+				StandardCopyOption.REPLACE_EXISTING);
+			
+			// Initialize project information
+			try (ZipFile zip = ZipFile.open(FileChannel.open(jarname,
+				StandardOpenOption.READ)))
+			{
+				bin = new ProjectInfo(list, jarname, zip, true);
+			}
+			
+			// Set binary file
+			__setBinary(bin);
+			
+			// Return it
+			return bin;
+		}
+		
+		// Delete any temporary files
+		finally
+		{
+			// Delete it
+			Files.delete(tempjarname);	
+		}
 	}
 	
 	/**

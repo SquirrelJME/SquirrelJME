@@ -16,6 +16,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.AbstractMap;
 import java.util.ArrayDeque;
@@ -41,6 +42,9 @@ public class ProjectList
 	/** The mapping of projects. */
 	protected final Map<ProjectName, ProjectGroup> projects;
 	
+	/** The output binary directory. */
+	protected final Path binarydir;
+	
 	/**
 	 * This initializes the project list.
 	 *
@@ -58,6 +62,10 @@ public class ProjectList
 		// Check
 		if (__j == null && __s == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.binarydir = (__j != null ? __j :
+			Paths.get(System.getProperty("user.dir", ".")));
 		
 		// The target map
 		Map<ProjectName, ProjectGroup> target = new SortedTreeMap<>();
@@ -146,6 +154,17 @@ public class ProjectList
 		
 		// Lock
 		this.projects = UnmodifiableMap.<ProjectName, ProjectGroup>of(target);
+	}
+	
+	/**
+	 * Returns the path where binary files are to be placed.
+	 *
+	 * @return The binary project path.
+	 * @since 2016/09/18
+	 */
+	public final Path binaryPath()
+	{
+		return this.binarydir;
 	}
 	
 	/**

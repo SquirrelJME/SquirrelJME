@@ -285,6 +285,27 @@ public class ExtendedDataInputStream
 	}
 	
 	/**
+	 * Reads the next line of bytes, treating them as characters (0-255).
+	 *
+	 * Reading stops when a newline is encountered, which is discarded from
+	 * the input.
+	 *
+	 * If a carriage return is read then if the next character is a newline,
+	 * they are both discarded, otherwise the carriage return is discarded.
+	 * Reading stops in either case.
+	 *
+	 * @return The read line or {@code null} if the end of file was reached
+	 * before any bytes were read.
+	 * @throws IOException On read errors.
+	 * @since 2016/09/18
+	 */
+	public String readLine()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
 	 */

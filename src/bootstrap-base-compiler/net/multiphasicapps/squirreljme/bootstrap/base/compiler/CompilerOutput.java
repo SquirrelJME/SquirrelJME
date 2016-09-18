@@ -10,27 +10,28 @@
 
 package net.multiphasicapps.squirreljme.bootstrap.base.compiler;
 
+import java.io.InputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
- * This is the interface which is used to describe a compiler.
+ * This interface is used to allow classes utilizing the compiler to place
+ * output files in a target JAR potentially.
  *
  * @since 2016/09/18
  */
-public interface BootCompiler
+public interface CompilerOutput
 {
 	/**
-	 * Compiles the specified files with the implementing bootstrap
-	 * compiler.
+	 * This is called when a file has been compiled, the bytes which make up
+	 * the file are provided via the given {@link InputStream}.
 	 *
-	 * @param __co The output of the compiler.
-	 * @return {@code true} if compilation has succeeded, otherwise this will
-	 * return {@code false}.
+	 * @param __n The name of the file being written, this is normalized to
+	 * the name of entries in ZIP files.
+	 * @param __is The bytes which make up the file.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/09/18
 	 */
-	public abstract boolean compile(CompilerOutput __co)
+	public abstract void output(String __n, InputStream __is)
 		throws IOException;
 }
 
