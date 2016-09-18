@@ -21,7 +21,9 @@ for __file in */META-INF/MANIFEST.MF
 do
 	# Remove any continuations and force them in single line sets, then
 	# convert them back
-	tr '\n' '\v' < "$__file" | sed 's/\( *\)\v \( *\)/\1\2/g' | \
+	# Also remove trailing newlines to fix them at one
+	tr '\n' '\v' < "$__file" | sed 's/\v$//g' | \
+		sed 's/\( *\)\v \( *\)/\1\2/g' | \
 		sed 's/  */ /g' | tr '\v' '\n' | \
 		while read -r __line
 	do
@@ -55,13 +57,14 @@ do
 				echo " $__fold"
 			fi
 		done
-		
-		# End in a newline
-		echo
 	done > /tmp/$$
 	
+	# Add an extra newline
+	echo "" >> /tmp/$$
+	
 	# Copy over the project
-	mv /tmp/$$ "$__file"
+	cat /tmp/$$
+	#"$__file"
 done
 
 # Spacer
