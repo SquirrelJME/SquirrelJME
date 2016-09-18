@@ -193,13 +193,13 @@ public class ProjectInfo
 					if (c <= ' ')
 						continue;
 					
-					// Find the next comma
+					// Find the next space
 					int j;
 					for (j = i + 1; j < n; j++)
 					{
 						char d = pids.charAt(j);
 						
-						if (d == ',')
+						if (d == ' ')
 							break;
 					}
 					
