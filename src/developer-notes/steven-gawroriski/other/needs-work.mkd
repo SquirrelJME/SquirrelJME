@@ -2,6 +2,8 @@
 
 This is the list of code that currently needs work:
 
+ * Add configurations to the target build system so that a default set of
+   packages may be selected for inclusion (such as "minimal", "game", etc.)
  * `ByteDeque` needs a slightly more efficient get from the tail end.
  * Create a new build system (projects) that can run on SquirrelJME.
  * Emulators
