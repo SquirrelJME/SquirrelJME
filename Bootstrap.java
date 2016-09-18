@@ -8,6 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -32,6 +33,10 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.tools.JavaCompiler;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
 
 /**
  * This is the bootstrap which builds the bootstrap system and then launches
@@ -148,6 +153,37 @@ public class Bootstrap
 		{
 			// Setup temporary directory
 			tempdir = Files.createTempDirectory("squirreljme-bootstrap");
+			
+			// Obtain the Java compiler
+			JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+			if (javac == null)
+				throw new RuntimeException("No Java compiler exists.");
+			
+			// Create file manager instance
+			StandardJavaFileManager jfm = javac.getStandardFileManager(null,
+				null, null);
+			
+			// Output to the temporary directory
+			{
+				// Need to wrap
+				Set<File> dir = new HashSet<>();
+				dir.add(tempdir.toFile());
+				
+				// Output classes and sources there
+				jfm.setLocation(StandardLocation.CLASS_OUTPUT, dir);
+				jfm.setLocation(StandardLocation.SOURCE_OUTPUT, dir);
+			}
+			
+			// Set source code locations to the input source paths
+			{
+				// Add standard files to the source path
+				Set<File> dir = new TreeSet<>();
+				for (Path p : __src)
+					dir.add(p.toFile());
+				
+				// Set source location
+				jfm.setLocation(StandardLocation.SOURCE_PATH, dir);
+			}
 			
 			throw new Error("TODO");
 		}
