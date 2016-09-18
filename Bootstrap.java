@@ -11,13 +11,8 @@
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
@@ -609,68 +604,6 @@ public class Bootstrap
 		
 		// Return it
 		return sb.toString();
-	}
-	
-	/**
-	 * This acts as a proxy for the bootstrap system so it has access to the
-	 * system's Java compiler.
-	 *
-	 * @since 2016/09/18
-	 */
-	private class __CompilerProxy__
-		implements InvocationHandler
-	{
-		/**
-		 * Initializes the compiler proxy.
-		 *
-		 * @since 2016/09/18
-		 */
-		private __CompilerProxy__()
-		{
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/09/18
-		 */
-		@Override
-		public Object invoke(Object __p, Method __m, Object[] __args)
-			throws Throwable
-		{
-			System.err.println("DEBUG -- Compiler Proxy!");
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
-	 * This acts as a proxy for the bootstrap launcher system so that JARs
-	 * can be loaded and execute natively.
-	 *
-	 * @since 2016/09/18
-	 */
-	private class __LauncherProxy__
-		implements InvocationHandler
-	{
-		/**
-		 * Initializes the launcher proxy.
-		 *
-		 * @since 2016/09/18
-		 */
-		private __LauncherProxy__()
-		{
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/09/18
-		 */
-		@Override
-		public Object invoke(Object __p, Method __m, Object[] __args)
-			throws Throwable
-		{
-			System.err.println("DEBUG -- Launcher Proxy!");
-			throw new Error("TODO");
-		}
 	}
 }
 
