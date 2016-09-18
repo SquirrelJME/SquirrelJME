@@ -64,3 +64,13 @@ required to run things. I just need a class loader interface along with a
 Java compiler interface also. This way if I write an internal compiler then
 I can use that instead. This build system would be fully self contained.
 
+## 11:20
+
+Ok, so the `Package` classes will turn into `Project` instead. This is so it
+does not get confused with Java packages. Following that, I am going to
+change `ProjectList` to instead map for `ProjectGroup` which contains binary
+and/or source `ProjectInfo`. This way, it is possible for source packages to
+be compiled internally and initialized when neeeded. The bootstrap system will
+definitely need to perform this task. I thought about having `ProjectInfo`
+having a `binary()` and `source()` methods but that would be too complex.
+
