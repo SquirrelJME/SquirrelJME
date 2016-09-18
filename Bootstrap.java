@@ -126,8 +126,6 @@ public class Bootstrap
 			// Locate the directories that contains all of the source code
 			// along with dependencies for the bootstrap
 			Path[] sources = __locateSources();
-			System.err.printf("DEBUG -- Located: %s%n",
-				Arrays.asList(sources));
 			
 			// Is the bootstrap technically out of date? Build it if so
 			if (__outOfDate(sources))
@@ -250,10 +248,6 @@ public class Bootstrap
 					}
 				}
 			}
-			
-			// Debug
-			System.err.printf("DEBUG -- CC: %s || JAR: %s%n", ccthese,
-				jarthese);
 			
 			// Setup Java Compiler
 			JavaCompiler.CompilationTask task = javac.getTask(null,
