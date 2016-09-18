@@ -59,7 +59,8 @@ do
 		done
 	done > /tmp/$$
 	
-	# Add an extra newline
+	# Add a few extra newline
+	echo "" >> /tmp/$$
 	echo "" >> /tmp/$$
 	
 	# Copy over the project
