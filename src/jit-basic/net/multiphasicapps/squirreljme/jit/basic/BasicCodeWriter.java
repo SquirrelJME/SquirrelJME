@@ -258,7 +258,7 @@ public class BasicCodeWriter
 			if (k.isStack() && k.id() >= __d)
 				continue;
 			
-			// Determine if the allocation for this variable are using any
+			// Determine if the allocation for this variable is using any
 			// temporary registers.
 			boolean hastemp = false;
 			for (NativeRegister r : v.registers())
