@@ -36,6 +36,8 @@ import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -260,7 +262,53 @@ public class Bootstrap
 			if (!task.call())
 				throw new RuntimeException("Compilation failed!");
 			
-			throw new Error("TODO");
+			// Add any file that was created in the output to the JAR set
+			{
+				Set<Path> outs = new HashSet<>();
+				__walk(outs, tempdir);
+				
+				// Add all
+				for (Path p : outs)
+					jarthese.put(__zipName(tempdir, p), p);
+			}
+			
+			// Create JAR
+			Path tjar = tempdir.resolve("temp.jar");
+			try (ZipOutputStream zos = new ZipOutputStream(Channels.
+				newOutputStream(FileChannel.open(tjar,
+					StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
+			{
+				// Compress all files
+				zos.setMethod(ZipOutputStream.DEFLATED);
+				
+				// Add standard JAR files
+				for (Map.Entry<String, Path> e : jarthese.entrySet())
+				{
+					// Cannot add directories
+					Path v = e.getValue();
+					if (Files.isDirectory(v))
+						continue;
+					
+					// Create entry for file
+					ZipEntry ze = new ZipEntry(e.getKey());
+					
+					// Put it
+					zos.putNextEntry(ze);
+					
+					// Copy file to the stream
+					Files.copy(v, zos);
+					
+					// Close it
+					zos.closeEntry();
+				}
+				
+				// Finish writing the ZIP and then flush it
+				zos.finish();
+				zos.flush();
+			}
+			
+			// Move JAR
+			Files.move(tjar, BOOTSTRAP_JAR_PATH);
 		}
 		
 		// Clear temporary files
