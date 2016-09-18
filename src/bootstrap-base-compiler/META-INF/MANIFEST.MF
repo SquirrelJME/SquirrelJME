@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: bootstrap-base-compiler
+X-SquirrelJME-UUID: ea175408-dace-4a48-bca8-61e1a73e0bc5
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: CP
+LIBlet-Title: Bootstrap JAR Compiler Interfaces
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains base interfaces which 
+ are used to implement a Java compiler so that the bootstrap 
+ system may build.
+

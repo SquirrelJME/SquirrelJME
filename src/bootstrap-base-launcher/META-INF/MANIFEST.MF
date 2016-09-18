@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: bootstrap-base-launcher
+X-SquirrelJME-UUID: 9825e62f-4518-4744-9aae-598e3698d200
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: CO
+LIBlet-Title: Bootstrap JAR Launcher Interfaces
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project provides interfaces which 
+ are used so that the bootstrap system can load a JAR and 
+ start executing code within it.
+

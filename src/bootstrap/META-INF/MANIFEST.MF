@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: bootstrap
+X-SquirrelJME-UUID: cc62c968-ffa9-402d-9641-2174cc154dc3
+X-SquirrelJME-Depends: cldc-compact, projects,
+ bootstrap-base-compiler, bootstrap-base-launcher
+X-SquirrelJME-Error: CL
+LIBlet-Title: Bootstrap Build System
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project is used to bootstrap the 
+ SquirrelJME build environment and then perform compilation 
+ of projects. Projects are able to be compiled, launched, 
+ and other such things.
+
