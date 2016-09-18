@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 
@@ -176,6 +177,52 @@ public class ProjectList
 		if (__o instanceof String)
 			return this.projects.get(new ProjectName((String)__o));
 		return this.projects.get(__o);
+	}
+	
+	/**
+	 * Recursively obtains all of the dependencies of the given project name
+	 * and any of their dependencies.
+	 *
+	 * @param __t The type of dependencies to obtain.
+	 * @param __n The name of the dependency to get for.
+	 * @param __opt If {@code true} then any optional packages are also
+	 * included.
+	 * @return A set containing the dependencies of the given project.
+	 * @throws MissingDependencyException If a depdendency is missing.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public Set<ProjectInfo> recursiveDependencies(ProjectType __t,
+		ProjectName __n, boolean __opt)
+		throws MissingDependencyException, NullPointerException
+	{
+		return recursiveDependencies(new SortedTreeSet<ProjectInfo>(), __t,
+			__n, __opt);
+	}
+	
+	/**
+	 * Recursively obtains all of the dependencies of the given project name
+	 * and any of their dependencies.
+	 *
+	 * @param __rv The target set to be given dependencies.
+	 * @param __t The type of dependencies to obtain.
+	 * @param __n The name of the dependency to get for.
+	 * @param __opt If {@code true} then any optional packages are also
+	 * included.
+	 * @return The target set.
+	 * @throws MissingDependencyException If a depdendency is missing.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public Set<ProjectInfo> recursiveDependencies(Set<ProjectInfo> __rv,
+		ProjectType __t, ProjectName __n, boolean __opt)
+		throws MissingDependencyException, NullPointerException
+	{
+		// Check
+		if (__rv == null || __t == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

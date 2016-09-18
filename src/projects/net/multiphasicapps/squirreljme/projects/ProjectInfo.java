@@ -378,9 +378,22 @@ public class ProjectInfo
 	 * @since 2016/06/25
 	 */
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		return this.name.toString();
+	}
+	
+	/**
+	 * Returns the type of project that this is.
+	 *
+	 * @return The project type.
+	 * @since 2016/09/18
+	 */
+	public final ProjectType type()
+	{
+		if (this.isbinary)
+			return ProjectType.BINARY;
+		return ProjectType.SOURCE;
 	}
 	
 	/**
