@@ -35,3 +35,8 @@ copying the value to that. Essentially, I need a pure stack allocation.
 So the register allocator will need an allocate method which can allocate to
 registers, stack, or both.
 
+## 01:20
+
+`BasicCodeWriter` triggered my code size warning despite it only being about
+500 lines long. I suppose I could ignore it however.
+
