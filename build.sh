@@ -21,7 +21,7 @@ __exedir="$(dirname -- "$0")"
 : ${JAVAC:=javac}
 
 # The class to use for bootstrapping
-: ${BOOTSTRAP_CLASS:=Build}
+: ${BOOTSTRAP_CLASS:=Bootstrap}
 
 # The build class is missing or out of date?
 if [ ! -f "$BOOTSTRAP_CLASS.class" ] || \
