@@ -260,6 +260,10 @@ public class BasicCodeWriter
 			for (NativeRegister r : v.registers())
 				if (abi.isTemporary(r))
 				{
+					// Debug
+					System.err.printf("DEBUG -- Save register %s (%s)%n", r,
+						k);
+					
 					throw new Error("TODO");
 				}
 		}
