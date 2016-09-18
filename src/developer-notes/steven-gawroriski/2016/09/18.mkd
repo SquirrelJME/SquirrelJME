@@ -53,3 +53,14 @@ when it comes to fixed point drawing it would not have to convert to float
 or vice versa. Other drivers however might convert float to fixed or vice
 versa.
 
+## 09:40
+
+I rather feel like rewriting the build system to be a bit better. One thing I
+need are profiles. Essentially, stuff such as "minimal" and "opengl" which
+include packages. These would be included in the build for the target binary
+and select which packages are available for usage. I should also simplify the
+bootstrap build system and basically just explicitely compile the packages
+required to run things. I just need a class loader interface along with a
+Java compiler interface also. This way if I write an internal compiler then
+I can use that instead. This build system would be fully self contained.
+

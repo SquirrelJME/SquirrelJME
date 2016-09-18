@@ -119,6 +119,22 @@ public class NativeAllocator
 			(__at.claimRegisters() && __pref == null))
 			throw new NullPointerException("NARG");
 		
+		// Get queues to source registers from
+		Deque<NativeRegister> saved, temp;
+		if (__rt.isFloat())
+		{
+			saved = this._savedfloatq;
+			temp = this._tempfloatq;
+			
+		}
+		
+		// Integer
+		else
+		{
+			saved = this._savedintq;
+			temp = this._tempfloatq;
+		}
+		
 		throw new Error("TODO");
 	}
 	
