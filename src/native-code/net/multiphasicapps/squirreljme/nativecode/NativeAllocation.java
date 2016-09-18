@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
@@ -34,6 +35,9 @@ public final class NativeAllocation
 	/** The stack length. */
 	protected final int stacklen;
 	
+	/** The value type of this allocation. */
+	protected final NativeRegisterType valuetype;
+	
 	/** The allocated register set. */
 	protected final List<NativeRegister> registers;
 	
@@ -48,20 +52,26 @@ public final class NativeAllocation
 	 * this must be negative.
 	 * @param __sl The number of bytes used on the stack, if not used then
 	 * the value must be zero.
+	 * @param __vt The value type, the type of value to store in this
+	 * allocation, this is optional.
 	 * @param __r The registers used in the allocation, this is used
 	 * directly.
 	 * @param NativeCodeException If the stack requirements are not met;
 	 * neither any stack or registers are allocated; or a register is
 	 * duplicated.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __vt}.
 	 * @since 2016/09/09
 	 */
-	NativeAllocation(int __sp, int __sl, NativeRegister... __r)
+	NativeAllocation(int __sp, int __sl, NativeRegisterType __vt,
+		NativeRegister... __r)
 		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__r == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.valuetype = __vt;
 		
 		// {@squirreljme.error AR01 If the stack is not used then the length
 		// must be zero and the stack position must be negative. (The stack
@@ -109,7 +119,8 @@ public final class NativeAllocation
 		NativeAllocation o = (NativeAllocation)__o;
 		return this.stackpos == o.stackpos &&
 			this.stacklen == o.stacklen &&
-			this.registers.equals(o.registers);
+			this.registers.equals(o.registers) &&
+			Objects.equals(this.valuetype, o.valuetype);
 	}
 	
 	/**
@@ -119,7 +130,8 @@ public final class NativeAllocation
 	@Override
 	public final int hashCode()
 	{
-		return (~this.stackpos) ^ (this.stacklen) ^ this.registers.hashCode();
+		return (~this.stackpos) ^ (this.stacklen) ^ this.registers.hashCode() ^
+			Objects.hashCode(this.valuetype);
 	}
 	
 	/**
@@ -175,20 +187,32 @@ public final class NativeAllocation
 			int stacklen = this.stacklen;
 			List<NativeRegister> registers = this.registers;
 			
-			// Stack and registers
-			if (stacklen > 0 && !registers.isEmpty())
-				rv = registers.toString() + "+" + stacklen + "(@" + stackpos +
-					")";
+			// Setup
+			StringBuilder sb = new StringBuilder();
 			
-			// Registers only
-			else if (stacklen <= 0)
-				rv = registers.toString();
+			// registers?
+			if (!registers.isEmpty())
+				sb.append(registers.toString());
 			
-			// Stack only
-			else
-				rv = stacklen + "(@" + stackpos + ")";
+			// Stack?
+			if (stacklen > 0)
+			{
+				sb.append(stacklen);
+				sb.append("(@");
+				sb.append(stackpos);
+				sb.append(')');
+			}
+			
+			// Value type?
+			NativeRegisterType vt = this.valuetype;
+			if (vt != null)
+			{
+				sb.append('~');
+				sb.append(vt);
+			}
 			
 			// Cache
+			rv = sb.toString();
 			this._string = new WeakReference<>(rv);
 		}
 		
@@ -237,6 +261,18 @@ public final class NativeAllocation
 	public final boolean useStack()
 	{
 		return this.stacklen > 0;
+	}
+	
+	/**
+	 * Returns the type of value that is stored within this allocation.
+	 *
+	 * @return The allocation value type, may be {@code null} if it is not
+	 * specified.
+	 * @since 2016/09/18
+	 */
+	public final NativeRegisterType valueType()
+	{
+		return this.valuetype;
 	}
 }
 

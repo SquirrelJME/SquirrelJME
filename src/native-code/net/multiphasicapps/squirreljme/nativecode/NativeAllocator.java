@@ -227,7 +227,7 @@ public class NativeAllocator
 			}
 			
 			// Create and store allocation in the resultant value
-			NativeAllocation na = new NativeAllocation(stackpos, stacklen,
+			NativeAllocation na = new NativeAllocation(stackpos, stacklen, t,
 				rawr.<NativeRegister>toArray(new NativeRegister[rawr.size()]));
 			rv[i] = na;
 			
