@@ -82,3 +82,11 @@ I believe I need to change my syntax highlighting theme.
 
 I could remove the commas from the build dependencies to simplify things.
 
+## 14:17
+
+So the bulk of the bootstrap code, instead of relying on the host VM libraries,
+for the most part depends soley on my own code. Since the bootstrap is built
+all at once, it is possible to use the bootstrap as a seed of sorts. I could
+potentially adjust the script that if no Java compiler is detected in PATH
+that it instead runs the bootstrap directly.
+
