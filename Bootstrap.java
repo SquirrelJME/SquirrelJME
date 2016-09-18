@@ -255,6 +255,17 @@ public class Bootstrap
 			System.err.printf("DEBUG -- CC: %s || JAR: %s%n", ccthese,
 				jarthese);
 			
+			// Setup Java Compiler
+			JavaCompiler.CompilationTask task = javac.getTask(null,
+				jfm, null, Arrays.<String>asList("-source", "1.7",
+					"-target", "1.7", "-g", "-Xlint:deprecation",
+					"-Xlint:unchecked"), null,
+					ccthese);
+			
+			// Execute
+			if (!task.call())
+				throw new RuntimeException("Compilation failed!");
+			
 			throw new Error("TODO");
 		}
 		
