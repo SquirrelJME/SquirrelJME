@@ -17,3 +17,10 @@ interfaces and abstract classes) is only 1,273 lines. So the API itself is
 very small indeed. However, I may be getting a bit ahead of myself a bit since
 I do not even have a fully working compiler yet.
 
+## 00:12
+
+Since JD's output is rather ugly, I can actually have a doclet which outputs
+Java source code. For my previous project (attempted to implement the entire
+Java 8 library, about 4000 classes) used something such as this. However that
+code is a bit old and rather ugly.
+
