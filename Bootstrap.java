@@ -280,13 +280,8 @@ public class Bootstrap
 				{
 					Path p = it.next();
 					
-					// Delete directory
-					if (Files.isDirectory(p))
-						System.err.printf("DEBUG -- Delete dir %s%n", p);
-					
-					// Delete file
-					else
-						System.err.printf("DEBUG -- Delete file %s%n", p);
+					// Delete it
+					Files.delete(p);
 				}
 			}
 		}
