@@ -63,6 +63,10 @@ public class Bootstrap
 	public static final String BOOTSTRAP_PROJECT =
 		"bootstrap";
 	
+	/** Special project to bridge Java SE to SquirrelJME's bootstrap. */
+	public static final String SPECIAL_PROJECT =
+		"bootstrap-javase-bridge";
+	
 	/** The bootstrap JAR file, which is not a project. */
 	public static final Path BOOTSTRAP_JAR_PATH =
 		Paths.get("sjmeboot.jar");
@@ -361,34 +365,18 @@ public class Bootstrap
 	private void __launch()
 		throws IOException
 	{
-		// Get the system class loader
-		ClassLoader syscl = ClassLoader.getSystemClassLoader();
-		
 		// Could fail
 		try
 		{
-			// Get the bootstrapper class
-			Class<?> bootstrap = Class.forName(
-				"net.multiphasicapps.squirreljme.bootstrap.Main",
-				false, syscl);
+			Class<?> maincl = Class.forName(
+				"net.multiphasicapps.squirreljme.bootstrap.javase.Main");
 			
-			// And helper interfaces
-			Class<?> helpcc = Class.forName("net.multiphasicapps." +
-				"squirreljme.bootstrap.base.compiler.BootCompiler", true,
-				syscl);
-			Class<?> helpln = Class.forName("net.multiphasicapps." +
-				"squirreljme.bootstrap.base.launcher.BootLauncher",
-				true, syscl);
-			
-			// Get the main method which gets those helper instances
-			Method main = bootstrap.getDeclaredMethod("main",
-				helpcc, helpln, String[].class);
+			// Find the main class
+			Method main = maincl.getDeclaredMethod("main",
+				String[].class);
 			
 			// Invoke it
-			main.invoke(null,
-				Proxy.newProxyInstance(syscl, new Class[]{helpcc},
-				new __CompilerProxy__()), Proxy.newProxyInstance(syscl,
-				new Class[]{helpln}, new __LauncherProxy__()), this._args);
+			main.invoke(null, (Object)this._args);
 		}
 			
 		// Called code failed to invoke, throw wrapped exception instead
@@ -432,6 +420,7 @@ public class Bootstrap
 		Set<String> did = new HashSet<>();
 		Deque<String> q = new ArrayDeque<>();
 		q.push(BOOTSTRAP_PROJECT);
+		q.push(SPECIAL_PROJECT);
 		while (!q.isEmpty())
 		{
 			// Grab

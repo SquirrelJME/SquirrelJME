@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 15ffb6ef-b6ef-4557-9bdf-41afbe7b9169
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: DE
+
