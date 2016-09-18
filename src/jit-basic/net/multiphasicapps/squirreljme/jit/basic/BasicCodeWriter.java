@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
+import net.multiphasicapps.squirreljme.nativecode.NativeAllocationType;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
@@ -238,6 +239,7 @@ public class BasicCodeWriter
 		// Go through all allocations and allocate any temporary registers
 		// and store their value onto the stack
 		NativeABI abi = this.options.abi();
+		NativeAllocator allocator = this.allocator;
 		for (Map.Entry<CodeVariable, NativeAllocation> e :
 			vartoalloc.entrySet())
 		{
@@ -256,16 +258,34 @@ public class BasicCodeWriter
 			if (k.isStack() && k.id() >= __d)
 				continue;
 			
-			// Save any temporary registers which may be used
+			// Determine if the allocation for this variable are using any
+			// temporary registers.
+			boolean hastemp = false;
 			for (NativeRegister r : v.registers())
 				if (abi.isTemporary(r))
 				{
-					// Debug
-					System.err.printf("DEBUG -- Save register %s (%s)%n", r,
-						k);
-					
-					throw new Error("TODO");
+					hastemp = true;
+					break;
 				}
+			
+			// Save any temporary registers which may be used
+			if (hastemp)
+			{
+				// Debug
+				System.err.printf("DEBUG -- Save temporary %s%n", k);
+				
+				// Allocate the value onto the stack
+				NativeAllocation ons = allocator.allocate(null,
+					NativeAllocationType.STACK, v.valueType());
+				
+				// Copy the stored value to the stack
+				if (true)
+					throw new Error("TODO");
+				
+				// Update the allocation state to indicate that the value
+				// is now on the stack
+				throw new Error("TODO");
+			}
 		}
 		
 		throw new Error("TODO");
