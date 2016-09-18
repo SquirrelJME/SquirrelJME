@@ -91,15 +91,22 @@ public final class ProjectGroup
 	 * @param __bc The compiler to use for compilation.
 	 * @return The binary project information.
 	 * @throws IOException On read/write errors.
+	 * @throws MissingSourceException If the project has no source code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
 	public final ProjectInfo compileSource(BootCompiler __bc)
-		throws IOException, NullPointerException
+		throws IOException, MissingSourceException, NullPointerException
 	{
 		// Check
 		if (__bc == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CI0a Cannot build the project because it does
+		// not have source code available.}
+		ProjectInfo src = source();
+		if (src == null)
+			throw new MissingSourceException("CI0a");
 		
 		throw new Error("TODO");
 	}
