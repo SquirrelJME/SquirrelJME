@@ -20,15 +20,20 @@ __exedir="$(dirname -- "$0")"
 : ${JAVA:=java}
 : ${JAVAC:=javac}
 
+# The class to use for bootstrapping
+: ${BOOTSTRAP_CLASS:=Build}
+
 # The build class is missing or out of date?
-if [ ! -f "Build.class" ] || [ "$__exedir/Build.java" -nt "Build.class" ]
+if [ ! -f "$BOOTSTRAP_CLASS.class" ] || \
+	[ "$__exedir/$BOOTSTRAP_CLASS.java" -nt "$BOOTSTRAP_CLASS.class" ]
 then
 	# Clear potential old stuff
-	rm -f "Build.class" "Build\$*.class"
+	rm -f "$BOOTSTRAP_CLASS.class" "$BOOTSTRAP_CLASS\$*.class"
 	
 	# Build it
 	echo "Building the build system..." 1>&2
-	if ! "$JAVAC" -source 1.7 -target 1.7 -d . "$__exedir/Build.java"
+	if ! "$JAVAC" -source 1.7 -target 1.7 -d . \
+		"$__exedir/$BOOTSTRAP_CLASS.java"
 	then
 		echo "Failed to build the build system." 1>&2
 		exit 1
@@ -36,6 +41,6 @@ then
 fi
 
 # Run it
-"$JAVA" $JAVA_OPTIONS "-Dproject.root=$__exedir" "Build" $*
+"$JAVA" $JAVA_OPTIONS "-Dproject.root=$__exedir" "$BOOTSTRAP_CLASS" $*
 exit $?
 
