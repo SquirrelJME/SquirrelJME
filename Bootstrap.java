@@ -361,48 +361,8 @@ public class Bootstrap
 	private void __launch()
 		throws IOException
 	{
-		// The URL to utilize
-		URL useurl = BOOTSTRAP_JAR_PATH.toUri().toURL();
-		
-		// Java when it comes to multiple class loaders can get very glitchy
-		// especially when it comes to classes which are initialized in one
-		// class loader where sub-class loader instances are completely
-		// invisible. This affects Proxy which when it comes to methods which
-		// are implemented in an interface, completely cannot find them.
-		// So instead of making a new class loader, see if it is possible to
-		// hijack the system one to place our class there
+		// Get the system class loader
 		ClassLoader syscl = ClassLoader.getSystemClassLoader();
-		URLClassLoader ucl = null;
-		if (syscl instanceof URLClassLoader)
-			try
-			{
-				// Get the add URL method
-				Method m = URLClassLoader.class.getDeclaredMethod("addURL",
-					URL.class);
-				
-				// Make it accessible
-				m.setAccessible(true);
-				
-				// Call it with our URL
-				m.invoke(syscl, useurl);
-				
-				// If this point was reached then it worked
-				ucl = (URLClassLoader)syscl;
-			}
-			
-			// Ignore
-			catch (ReflectiveOperationException|SecurityException e)
-			{
-				e.printStackTrace();
-			}
-		
-		// Otherwise just forward it
-		if (ucl == null)
-			ucl = new URLClassLoader(new URL[]{useurl}, syscl);
-		
-		// Set the context class loader which is used by ServiceLoader,
-		// otherwise services will not be found
-		Thread.currentThread().setContextClassLoader(ucl);
 		
 		// Could fail
 		try
@@ -410,22 +370,23 @@ public class Bootstrap
 			// Get the bootstrapper class
 			Class<?> bootstrap = Class.forName(
 				"net.multiphasicapps.squirreljme.bootstrap.Main",
-				false, ucl);
+				false, syscl);
 			
 			// And helper interfaces
 			Class<?> helpcc = Class.forName("net.multiphasicapps." +
 				"squirreljme.bootstrap.base.compiler.BootCompiler", true,
-				null);
+				syscl);
 			Class<?> helpln = Class.forName("net.multiphasicapps." +
 				"squirreljme.bootstrap.base.launcher.BootLauncher",
-				true, null);
+				true, syscl);
 			
 			// Get the main method which gets those helper instances
 			Method main = bootstrap.getDeclaredMethod("main",
 				helpcc, helpln, String[].class);
 			
 			// Invoke it
-			main.invoke(null, Proxy.newProxyInstance(syscl, new Class[]{helpcc},
+			main.invoke(null,
+				Proxy.newProxyInstance(syscl, new Class[]{helpcc},
 				new __CompilerProxy__()), Proxy.newProxyInstance(syscl,
 				new Class[]{helpln}, new __LauncherProxy__()), this._args);
 		}

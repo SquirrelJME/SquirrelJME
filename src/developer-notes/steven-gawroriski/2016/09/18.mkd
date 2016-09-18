@@ -153,3 +153,10 @@ Probably one thing to try would be after a build, relaunch with a special
 flag so that way I know it is a secondary launch after an initial bootstrap
 build. So essentially, run java twice.
 
+## 19:21
+
+That fails also. So regardless, things are broken with proxies. I suppose the
+only thing left would be to have a special project which is not technically
+a project but it used by the bootstrap system to bridge. Then I can continue
+with the double execute.
+
