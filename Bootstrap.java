@@ -351,9 +351,44 @@ public class Bootstrap
 	private void __launch()
 		throws IOException
 	{
-		// Setup class loader
-		URLClassLoader ucl = new URLClassLoader(new URL[]{
-			BOOTSTRAP_JAR_PATH.toUri().toURL()}, getClass().getClassLoader());
+		// The URL to utilize
+		URL useurl = BOOTSTRAP_JAR_PATH.toUri().toURL();
+		
+		// Java when it comes to multiple class loaders can get very glitchy
+		// especially when it comes to classes which are initialized in one
+		// class loader where sub-class loader instances are completely
+		// invisible. This affects Proxy which when it comes to methods which
+		// are implemented in an interface, completely cannot find them.
+		// So instead of making a new class loader, see if it is possible to
+		// hijack the system one to place our class there
+		ClassLoader syscl = ClassLoader.getSystemClassLoader();
+		URLClassLoader ucl = null;
+		if (syscl instanceof URLClassLoader)
+			try
+			{
+				// Get the add URL method
+				Method m = URLClassLoader.class.getDeclaredMethod("addURL",
+					URL.class);
+				
+				// Make it accessible
+				m.setAccessible(true);
+				
+				// Call it with our URL
+				m.invoke(syscl, useurl);
+				
+				// If this point was reached then it worked
+				ucl = (URLClassLoader)syscl;
+			}
+			
+			// Ignore
+			catch (ReflectiveOperationException|SecurityException e)
+			{
+				e.printStackTrace();
+			}
+		
+		// Otherwise just forward it
+		if (ucl == null)
+			ucl = new URLClassLoader(new URL[]{useurl}, syscl);
 		
 		// Set the context class loader which is used by ServiceLoader,
 		// otherwise services will not be found
@@ -369,11 +404,11 @@ public class Bootstrap
 			
 			// And helper interfaces
 			Class<?> helpcc = Class.forName("net.multiphasicapps." +
-				"squirreljme.bootstrap.base.compiler.BootCompiler", false,
+				"squirreljme.bootstrap.base.compiler.BootCompiler", true,
 				ucl);
 			Class<?> helpln = Class.forName("net.multiphasicapps." +
 				"squirreljme.bootstrap.base.launcher.BootLauncher",
-				false, ucl);
+				true, ucl);
 			
 			// Get the main method which gets those helper instances
 			Method main = bootstrap.getDeclaredMethod("main",
@@ -381,8 +416,8 @@ public class Bootstrap
 			
 			// Invoke it
 			main.invoke(null, Proxy.newProxyInstance(ucl, new Class[]{helpcc},
-				new __CompilerProxy__()), Proxy.newProxyInstance(ucl,
-				new Class[]{helpln}, new __LauncherProxy__()), this._args);
+				new __CompilerProxy__(ucl)), Proxy.newProxyInstance(ucl,
+				new Class[]{helpln}, new __LauncherProxy__(ucl)), this._args);
 		}
 			
 		// Called code failed to invoke, throw wrapped exception instead
@@ -626,6 +661,21 @@ public class Bootstrap
 		implements InvocationHandler
 	{
 		/**
+		 * Initializes the compiler proxy.
+		 *
+		 * @param __cl The class loader used to load the interface.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/09/18
+		 */
+		private __CompilerProxy__(ClassLoader __cl)
+			throws NullPointerException
+		{
+			// Check
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/09/18
 		 */
@@ -633,6 +683,7 @@ public class Bootstrap
 		public Object invoke(Object __p, Method __m, Object[] __args)
 			throws Throwable
 		{
+			System.err.println("DEBUG -- Compiler Proxy!");
 			throw new Error("TODO");
 		}
 	}
@@ -647,6 +698,21 @@ public class Bootstrap
 		implements InvocationHandler
 	{
 		/**
+		 * Initializes the launcher proxy.
+		 *
+		 * @param __cl The class loader used to load the interface.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/09/18
+		 */
+		private __LauncherProxy__(ClassLoader __cl)
+			throws NullPointerException
+		{
+			// Check
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/09/18
 		 */
@@ -654,6 +720,7 @@ public class Bootstrap
 		public Object invoke(Object __p, Method __m, Object[] __args)
 			throws Throwable
 		{
+			System.err.println("DEBUG -- Launcher Proxy!");
 			throw new Error("TODO");
 		}
 	}

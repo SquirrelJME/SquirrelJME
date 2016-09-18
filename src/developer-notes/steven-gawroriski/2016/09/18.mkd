@@ -136,3 +136,14 @@ I will need a project contents browser. The base browser can be derived from
 the bootstrap compiler interfaces, well it is not required. I just need a way
 to give the bootstrap compiler source code to compile along with options.
 
+## 18:42
+
+Now that `BootCompiler` has a method, it fails to find classes.
+
+## 19:02
+
+So now I am suffering from `ClassLoader` woes. The `ClassLoader` stuff is
+near impossible to debug. When it comes to dynamically loading classes and
+interfaces via proxies, if they cross `ClassLoader` bounds then things
+start to explode.
+
