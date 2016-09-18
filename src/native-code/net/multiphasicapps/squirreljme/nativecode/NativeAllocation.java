@@ -23,6 +23,10 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  * This represents a single allocation which specifies that something is either
  * on the stack, inside of registers, or both.
  *
+ * When an allocation uses both registers and stack space, the registers will
+ * store the least significant part of the value (the lower bits) while the
+ * stack will get the most significant part (the higher bits).
+ *
  * This class is immutable.
  *
  * @since 2016/09/09
