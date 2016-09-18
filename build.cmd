@@ -24,7 +24,7 @@ cmd /c "exit /b 0"
 REM Set some variables
 if not defined JAVA set JAVA=java
 if not defined JAVAC set JAVAC=javac
-if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=Build
+if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=Bootstrap
 
 REM Make sure commands exist (try to call them(
 %JAVA% -version 2> NUL > NUL
@@ -58,10 +58,25 @@ if not exist %__HB_VCLS% (
 
 REM Execute Java
 %JAVA% -Dproject.root=%__EXEDIR% ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=true
 	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR%\src ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
 	%BOOTSTRAP_CLASS% %*
 
-REM End of script, return with java command error (hopefully)
+REM Failed to build the bootstrap (stage 1)
+if %ERRORLEVEL% neq 0 (
+	echo Failed to build the build system.
+	exit /b %ERRORLEVEL%
+)
+
+REM Execute Java, since Proxy interfaces are a mess, a double invocation of
+REM the JVM is performed.
+%JAVA% -Dproject.root=%__EXEDIR% ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=false
+	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR%\src ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
+	-classpath .;sjmeboot.jar %BOOTSTRAP_CLASS% %*
+
+REM Failed?
 exit /b %ERRORLEVEL%
 

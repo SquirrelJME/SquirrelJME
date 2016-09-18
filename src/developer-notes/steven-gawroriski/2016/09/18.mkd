@@ -160,3 +160,7 @@ only thing left would be to have a special project which is not technically
 a project but it used by the bootstrap system to bridge. Then I can continue
 with the double execute.
 
+## 19:31
+
+Double JVM invoke has a speed cost, but it works.
+
