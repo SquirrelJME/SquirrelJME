@@ -16,6 +16,7 @@ import java.lang.reflect.Proxy;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +25,9 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.jar.Manifest;
+import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.Set;
@@ -139,7 +142,61 @@ public class Bootstrap
 		if (__src == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Will generate a number of temporary files
+		Path tempdir = null;
+		try
+		{
+			// Setup temporary directory
+			tempdir = Files.createTempDirectory("squirreljme-bootstrap");
+			
+			throw new Error("TODO");
+		}
+		
+		// Clear temporary files
+		finally
+		{
+			if (tempdir != null)
+			{
+				// Deletion queue, files are deleted from last to first
+				NavigableSet<Path> delete = new TreeSet<>();
+				
+				// Walk directories
+				Deque<Path> q = new ArrayDeque<>();
+				q.push(tempdir);
+				while (!q.isEmpty())
+				{
+					// Add to the deletion set always
+					Path p = q.remove();
+					delete.add(p);
+					
+					// If it is a directory then add files inside of it to
+					// the queue
+					if (Files.isDirectory(p))
+						try (DirectoryStream<Path> ds =
+							Files.newDirectoryStream(p))
+						{
+							for (Path s : ds)
+								q.push(s);
+						}
+				}
+				
+				// Delete them all
+				Iterator<Path> it = delete.descendingIterator();
+				while (it.hasNext())
+				{
+					Path p = it.next();
+					
+					// Delete directory
+					if (Files.isDirectory(p))
+						System.err.printf("DEBUG -- Delete dir %s%n", p);
+					
+					// Delete file
+					else
+						System.err.printf("DEBUG -- Delete file %s%n", p);
+						
+				}
+			}
+		}
 	}
 	
 	/**
