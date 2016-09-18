@@ -24,6 +24,7 @@ cmd /c "exit /b 0"
 REM Set some variables
 if not defined JAVA set JAVA=java
 if not defined JAVAC set JAVAC=javac
+if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=Build
 
 REM Make sure commands exist (try to call them(
 %JAVA% -version 2> NUL > NUL
@@ -39,8 +40,8 @@ if %ERRORLEVEL% neq 0 (
 )
 
 REM If the build system class does not exist, compile it
-set __HB_VCLS=Build.class
-set __HB_VSRC=%__EXEDIR%\Build.java
+set __HB_VCLS=%BOOTSTRAP_CLASS%.class
+set __HB_VSRC=%__EXEDIR%\%BOOTSTRAP_CLASS%.java
 if not exist %__HB_VCLS% (
 	echo Compiling the build system...
 	
@@ -56,7 +57,7 @@ if not exist %__HB_VCLS% (
 )
 
 REM Execute Java
-%JAVA% -Dproject.root=%__EXEDIR% Build %*
+%JAVA% -Dproject.root=%__EXEDIR% %BOOTSTRAP_CLASS% %*
 
 REM End of script, return with java command error (hopefully)
 exit /b %ERRORLEVEL%
