@@ -24,3 +24,9 @@ Java source code. For my previous project (attempted to implement the entire
 Java 8 library, about 4000 classes) used something such as this. However that
 code is a bit old and rather ugly.
 
+
+## 00:17
+
+Register saving is just for the most part allocating some stack area and then
+copying the value to that. Essentially, I need a pure stack allocation.
+
