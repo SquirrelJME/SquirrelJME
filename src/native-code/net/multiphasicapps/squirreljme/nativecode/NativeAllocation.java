@@ -123,28 +123,6 @@ public final class NativeAllocation
 	}
 	
 	/**
-	 * Does this allocation have any registers?
-	 *
-	 * @return {@code true} if there are registers used in the allocation.
-	 * @since 2016/09/17
-	 */
-	public final boolean hasRegister()
-	{
-		return !this.registers.isEmpty();
-	}
-	
-	/**
-	 * Does this allocation use any stack space?
-	 *
-	 * @return {@code true} if stack space is being used.
-	 * @since 2016/09/17
-	 */
-	public final boolean isOnStack()
-	{
-		return (this.stacklen > 0);
-	}
-	
-	/**
 	 * Returns the list of used registers.
 	 *
 	 * @return The register list.
@@ -216,6 +194,27 @@ public final class NativeAllocation
 		
 		// Return
 		return rv;
+	}
+	
+	/**
+	 * Returns the allocation type.
+	 *
+	 * @return The allocation type.
+	 * @since 2016/09/18
+	 */
+	public final NativeAllocationType type()
+	{
+		// Both registers and stack?
+		boolean r = useRegisters(), s = useStack();
+		if (r && s)
+			return NativeAllocationType.BOTH;
+		
+		// Registers only
+		else if (r)
+			return NativeAllocationType.REGISTER;
+		
+		// Stack only
+		return NativeAllocationType.STACK;
 	}
 	
 	/**

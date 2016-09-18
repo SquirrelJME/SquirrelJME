@@ -30,3 +30,8 @@ code is a bit old and rather ugly.
 Register saving is just for the most part allocating some stack area and then
 copying the value to that. Essentially, I need a pure stack allocation.
 
+## 00:27
+
+So the register allocator will need an allocate method which can allocate to
+registers, stack, or both.
+

@@ -246,7 +246,7 @@ public class BasicCodeWriter
 			
 			// If the allocation is already on the stack then nothing must
 			// be copied
-			if (!v.hasRegister())
+			if (!v.useRegisters())
 				continue;
 			
 			// If the variable to be stored is allocated to a stack

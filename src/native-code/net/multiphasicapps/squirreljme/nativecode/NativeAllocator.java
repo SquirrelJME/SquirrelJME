@@ -98,6 +98,31 @@ public class NativeAllocator
 	}
 	
 	/**
+	 * Attempts to allocate the given type using a specified set of registers.
+	 *
+	 * @param __pref The type of preference when allocating registers.
+	 * @param __at The type of allocation to perform.
+	 * @param __rt The register to allocate.
+	 * @throws NativeAllocationMustSpillException If allocating only registers
+	 * and there are not enough registers available to store a value of the
+	 * given type.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __pref} if {@code __at} does not use any registers.
+	 * @since 2016/09/18
+	 */
+	public final NativeAllocation allocate(NativeAllocationPreference __pref,
+		NativeAllocationType __at, NativeRegisterType __rt)
+		throws NativeAllocationMustSpillException, NullPointerException
+	{
+		// Check
+		if (__at == null || __rt == null ||
+			(__at.claimRegisters() && __pref == null))
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Goes through the input arguments and creates allocations for all of
 	 * the input allocation values based on their types.
 	 *
