@@ -67,13 +67,13 @@ public class ProjectInfo
 	 * @param __l The package list which contains this package.
 	 * @param __p The path to the package.
 	 * @param __zip The ZIP file for the package data.
-	 * @throws InvalidPackageException If this is not a valid package.
+	 * @throws InvalidProjectException If this is not a valid package.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
 	public ProjectInfo(ProjectList __l, Path __p, ZipFile __zip)
-		throws InvalidPackageException, IOException, NullPointerException
+		throws InvalidProjectException, IOException, NullPointerException
 	{
 		this(__l, __p, true, __loadManifestFromZIP(__zip));
 	}
@@ -85,13 +85,13 @@ public class ProjectInfo
 	 * @param __p The path to the package.
 	 * @param __zz Is this a ZIP file?
 	 * @param __man The manifest data.
-	 * @throws InvalidPackageException If this is not a valid package.
+	 * @throws InvalidProjectException If this is not a valid package.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
 	private ProjectInfo(ProjectList __l, Path __p, boolean __zz,
 		JavaManifest __man)
-		throws InvalidPackageException, NullPointerException
+		throws InvalidProjectException, NullPointerException
 	{
 		// Check
 		if (__l == null || __p == null || __man == null)
@@ -110,7 +110,7 @@ public class ProjectInfo
 		// package name, it is likely not a package. (The path to the package)}
 		String rname = main.get("X-SquirrelJME-Name");
 		if (rname == null)
-			throw new InvalidPackageException(String.format("CI04 %s", __p));
+			throw new InvalidProjectException(String.format("CI04 %s", __p));
 		
 		// Set name
 		this.name = new ProjectName(rname);
@@ -417,13 +417,13 @@ public class ProjectInfo
 	 *
 	 * @parma __zip The ZIP to load the manifest from.
 	 * @return The parsed manifest data.
-	 * @throws InvalidPackageException If the package is not valid.
+	 * @throws InvalidProjectException If the package is not valid.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
 	private static JavaManifest __loadManifestFromZIP(ZipFile __zip)
-		throws InvalidPackageException, IOException, NullPointerException
+		throws InvalidProjectException, IOException, NullPointerException
 	{
 		// Check
 		if (__zip == null)
@@ -434,7 +434,7 @@ public class ProjectInfo
 		
 		// {@squirreljme.error CI02 No manifest exists in the JAR.}
 		if (ent == null)
-			throw new InvalidPackageException("CI02");
+			throw new InvalidProjectException("CI02");
 		
 		// Open input stream
 		try (InputStream is = ent.open())
@@ -445,7 +445,7 @@ public class ProjectInfo
 		// {@squirreljme.error CI03 The manifest is not correctly formed.}
 		catch (JavaManifestException e)
 		{
-			throw new InvalidPackageException("CI03", e);
+			throw new InvalidProjectException("CI03", e);
 		}
 	}
 }

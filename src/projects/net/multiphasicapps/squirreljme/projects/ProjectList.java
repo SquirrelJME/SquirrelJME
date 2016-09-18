@@ -82,7 +82,7 @@ public class ProjectList
 					}
 				
 					// Not a valid ZIP or package, ignore
-					catch (IOException|InvalidPackageException e)
+					catch (IOException|InvalidProjectException e)
 					{
 						continue;
 					}

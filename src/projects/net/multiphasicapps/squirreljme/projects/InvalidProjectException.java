@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.projects;
  *
  * @since 2016/06/15
  */
-public class InvalidPackageException
+public class InvalidProjectException
 	extends RuntimeException
 {
 	/**
@@ -24,7 +24,7 @@ public class InvalidPackageException
 	 *
 	 * @since 2016/06/15
 	 */
-	public InvalidPackageException()
+	public InvalidProjectException()
 	{
 	}
 	
@@ -34,7 +34,7 @@ public class InvalidPackageException
 	 * @param __m The message.
 	 * @since 2016/06/15
 	 */
-	public InvalidPackageException(String __m)
+	public InvalidProjectException(String __m)
 	{
 		super(__m);
 	}
@@ -46,7 +46,7 @@ public class InvalidPackageException
 	 * @param __c The cause.
 	 * @since 2016/06/15
 	 */
-	public InvalidPackageException(String __m, Throwable __c)
+	public InvalidProjectException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,7 +57,7 @@ public class InvalidPackageException
 	 * @param __c The cause.
 	 * @since 2016/06/15
 	 */
-	public InvalidPackageException(Throwable __c)
+	public InvalidProjectException(Throwable __c)
 	{
 		super(__c);
 	}

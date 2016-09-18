@@ -25,12 +25,12 @@ public final class ProjectName
 	 * Initializes the package name.
 	 *
 	 * @param __s The name of the package.
-	 * @throws InvalidPackageException If the specified name is not valid.
+	 * @throws InvalidProjectException If the specified name is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
 	public ProjectName(String __s)
-		throws InvalidPackageException, NullPointerException
+		throws InvalidProjectException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -51,7 +51,7 @@ public final class ProjectName
 			boolean upper = (c >= 'A' && c <= 'Z');
 			if (!((c >= 'a' && c <= 'z') || upper ||
 				(c >= '0' && c <= '9') || c == '-'))
-				throw new InvalidPackageException(String.format("CI05 %s",
+				throw new InvalidProjectException(String.format("CI05 %s",
 					__s));
 			
 			// Lower?
