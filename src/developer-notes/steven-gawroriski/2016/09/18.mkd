@@ -74,3 +74,7 @@ be compiled internally and initialized when neeeded. The bootstrap system will
 definitely need to perform this task. I thought about having `ProjectInfo`
 having a `binary()` and `source()` methods but that would be too complex.
 
+## 11:51
+
+I believe I need to change my syntax highlighting theme.
+

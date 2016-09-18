@@ -27,32 +27,35 @@ import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
- * This contains information about a single binary or source package.
+ * This contains information about a single binary or source project.
  *
  * @since 2016/06/15
  */
 public class ProjectInfo
 	implements Comparable<ProjectInfo>
 {
-	/** The owning package list. */
+	/** The owning project list. */
 	protected final ProjectList plist;
 	
-	/** The package manifest. */
+	/** The project manifest. */
 	protected final JavaManifest manifest;
 	
-	/** The path to the package. */
+	/** The path to the project. */
 	protected final Path path;
 	
 	/** Is this a ZIP file? */
 	protected final boolean iszip;
 	
-	/** The name of this package. */
+	/** The name of this project. */
 	protected final ProjectName name;
 	
-	/** Package groups this package is in. */
+	/** Is this a binary project? */
+	protected final boolean isbinary;
+	
+	/** Package groups this project is in. */
 	private volatile Reference<Set<String>> _groups;
 	
-	/** The dependencies of this package. */
+	/** The dependencies of this project. */
 	private volatile Reference<Set<ProjectInfo>> _depends;
 	
 	/** Optional dependencies. */
@@ -62,35 +65,37 @@ public class ProjectInfo
 	private volatile Reference<Set<ProjectInfo>> _rdepends;
 	
 	/**
-	 * Initializes the package information from the given ZIP.
+	 * Initializes the project information from the given ZIP.
 	 *
-	 * @param __l The package list which contains this package.
-	 * @param __p The path to the package.
-	 * @param __zip The ZIP file for the package data.
-	 * @throws InvalidProjectException If this is not a valid package.
+	 * @param __l The project list which contains this project.
+	 * @param __p The path to the project.
+	 * @param __zip The ZIP file for the project data.
+	 * @param __bin Is this a binary project?
+	 * @throws InvalidProjectException If this is not a valid project.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	public ProjectInfo(ProjectList __l, Path __p, ZipFile __zip)
+	public ProjectInfo(ProjectList __l, Path __p, ZipFile __zip, boolean __bin)
 		throws InvalidProjectException, IOException, NullPointerException
 	{
-		this(__l, __p, true, __loadManifestFromZIP(__zip));
+		this(__l, __p, true, __loadManifestFromZIP(__zip), __bin);
 	}
 	
 	/**
-	 * Initializes the package information using the given manifest.
+	 * Initializes the project information using the given manifest.
 	 *
-	 * @param __l The package list which contains this package.
-	 * @param __p The path to the package.
+	 * @param __l The project list which contains this project.
+	 * @param __p The path to the project.
 	 * @param __zz Is this a ZIP file?
 	 * @param __man The manifest data.
-	 * @throws InvalidProjectException If this is not a valid package.
+	 * @param __bin Is this a binary project?
+	 * @throws InvalidProjectException If this is not a valid project.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
 	private ProjectInfo(ProjectList __l, Path __p, boolean __zz,
-		JavaManifest __man)
+		JavaManifest __man, boolean __bin)
 		throws InvalidProjectException, NullPointerException
 	{
 		// Check
@@ -102,12 +107,13 @@ public class ProjectInfo
 		this.path = __p;
 		this.iszip = __zz;
 		this.manifest = __man;
+		this.isbinary = __bin;
 		
 		// Get main attributes
 		JavaManifestAttributes main = __man.getMainAttributes();
 		
-		// {@squirreljme.error CI04 The package manifest does not specify the
-		// package name, it is likely not a package. (The path to the package)}
+		// {@squirreljme.error CI04 The project manifest does not specify the
+		// project name, it is likely not a project. (The path to the project)}
 		String rname = main.get("X-SquirrelJME-Name");
 		if (rname == null)
 			throw new InvalidProjectException(String.format("CI04 %s", __p));
@@ -133,29 +139,29 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns all of the packages that this package depends on.
+	 * Returns all of the projects that this project depends on.
 	 *
-	 * @return The set of packages this package depends on.
-	 * @throws IllegalStateException If a dependency is missing.
+	 * @return The set of projects this project depends on.
+	 * @throws MissingDependencyException If a dependency is missing.
 	 * @since 2016/06/25
 	 */
 	public final Set<ProjectInfo> dependencies()
-		throws IllegalStateException
+		throws MissingDependencyException
 	{
 		return dependencies(false);
 	}
 	
 	/**
-	 * Returns all of the packages that this package depends on.
+	 * Returns all of the projects that this project depends on.
 	 *
 	 * @param __opt Select optional dependencies instead.
-	 * @return The set of packages this package depends on. If optional
+	 * @return The set of projects this project depends on. If optional
 	 * dependencies are specified, they are only included if they exist.
-	 * @throws IllegalStateException If a dependency is missing.
+	 * @throws MissingDependencyException If a dependency is missing.
 	 * @since 2016/07/22
 	 */
 	public final Set<ProjectInfo> dependencies(boolean __opt)
-		throws IllegalStateException
+		throws MissingDependencyException
 	{
 		// Get
 		Reference<Set<ProjectInfo>> ref = (__opt ? this._odepends :
@@ -201,12 +207,21 @@ public class ProjectInfo
 					String spl = pids.substring(i, j).trim();
 					
 					// {@squirreljme.error CI01 A required dependency of a
-					// package does not exist. (This package; The missing
+					// project does not exist. (This project; The missing
 					// dependency)}
-					ProjectInfo ddd = plist.get(spl);
-					if (!__opt && ddd == null)
-						throw new IllegalStateException(String.format(
+					ProjectGroup grp = plist.get(spl);
+					if (!__opt && grp == null)
+						throw new MissingDependencyException(String.format(
 							"CI01 %s %s", this.name, spl));
+					
+					// {@squirreljme.error CI07 A required dependency of a
+					// project exists but does not have a binary project
+					// associated with it. (This project; The missing
+					// dependency)}
+					ProjectInfo ddd = grp.binary();
+					if (!__opt && ddd == null)
+						throw new MissingDependencyException(String.format(
+							"CI07 %s %s", this.name, spl));
 					
 					// Add it
 					else if (ddd != null)
@@ -237,7 +252,7 @@ public class ProjectInfo
 	@Override
 	public boolean equals(Object __o)
 	{
-		// Must be another package
+		// Must be another project
 		if (!(__o instanceof ProjectInfo))
 			return false;
 		
@@ -246,11 +261,11 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns the package groups that this package is a part of, this
-	 * information is used by the target build system to include extra packages
+	 * Returns the project groups that this project is a part of, this
+	 * information is used by the target build system to include extra projects
 	 * that may be needed on a target system.
 	 *
-	 * @return The set of package groups.
+	 * @return The set of project groups.
 	 * @since 2016/09/02
 	 */
 	public final Set<String> groups()
@@ -322,9 +337,9 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns the manifest of this package.
+	 * Returns the manifest of this project.
 	 *
-	 * @return The package manifest.
+	 * @return The project manifest.
 	 * @since 2016/06/15
 	 */
 	public final JavaManifest manifest()
@@ -333,9 +348,9 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns the name of this package.
+	 * Returns the name of this project.
 	 *
-	 * @return The package name.
+	 * @return The project name.
 	 * @since 2016/06/15
 	 */
 	public final ProjectName name()
@@ -344,9 +359,9 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns the path to this package.
+	 * Returns the path to this project.
 	 *
-	 * @return The package path.
+	 * @return The project path.
 	 * @since 2016/06/19
 	 */
 	public final Path path()
@@ -355,8 +370,8 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns a set containing this package and every dependency of this
-	 * package and the dependencies of the dependencies.
+	 * Returns a set containing this project and every dependency of this
+	 * project and the dependencies of the dependencies.
 	 *
 	 * @return The set of all dependencies.
 	 * @since 2016/07/22
@@ -380,12 +395,12 @@ public class ProjectInfo
 			// Keep going
 			while (!deq.isEmpty())
 			{
-				// Ignore already calculated packages
+				// Ignore already calculated projects
 				ProjectInfo pi = deq.pollFirst();
 				if (deps.contains(pi))
 					continue;
 				
-				// Add the current package
+				// Add the current project
 				deps.add(pi);
 				
 				// Add all dependencies to the queue
@@ -417,7 +432,7 @@ public class ProjectInfo
 	 *
 	 * @parma __zip The ZIP to load the manifest from.
 	 * @return The parsed manifest data.
-	 * @throws InvalidProjectException If the package is not valid.
+	 * @throws InvalidProjectException If the project is not valid.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15

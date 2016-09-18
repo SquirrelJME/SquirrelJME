@@ -25,24 +25,24 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
- * This contains a mapping of every package which is available to SquirrelJME.
+ * This contains a mapping of every project which is available to SquirrelJME.
  *
  * @since 2016/06/15
  */
 public class ProjectList
-	extends AbstractMap<ProjectName, ProjectInfo>
+	extends AbstractMap<ProjectName, ProjectGroup>
 {
-	/** The mapping of packages. */
-	protected final Map<ProjectName, ProjectInfo> packages;
+	/** The mapping of projects. */
+	protected final Map<ProjectName, ProjectGroup> projects;
 	
 	/**
-	 * This initializes the package list.
+	 * This initializes the project list.
 	 *
 	 * @param __j The directory containing pre-built JAR files, if {@code null}
-	 * then binary packages are not available.
-	 * @param __s The directories containing source packages, if {@code null}
-	 * then source packages are not available.
-	 * @throws IOException If there is an error reading the package list.
+	 * then binary projects are not available.
+	 * @param __s The directories containing source projects, if {@code null}
+	 * then source projects are not available.
+	 * @throws IOException If there is an error reading the project list.
 	 * @throws NullPointerException If both arguments are null
 	 * @since 2016/06/15
 	 */
@@ -54,7 +54,7 @@ public class ProjectList
 			throw new NullPointerException("NARG");
 		
 		// The target map
-		Map<ProjectName, ProjectInfo> target = new SortedTreeMap<>();
+		Map<ProjectName, ProjectGroup> target = new SortedTreeMap<>();
 		
 		// Go through binary JAR files
 		if (__j != null)
@@ -74,14 +74,21 @@ public class ProjectList
 						// Open as ZIP
 						ZipFile zip = ZipFile.open(fc);
 					
-						// Load package information
-						ProjectInfo pi = new ProjectInfo(this, p, zip);
+						// Load project information
+						ProjectInfo pi = new ProjectInfo(this, p, zip, true);
 					
 						// Add to mapping
-						target.put(pi.name(), pi);
+						ProjectName name = pi.name();
+						ProjectGroup pg = target.get(name);
+						if (pg == null)
+							target.put(name,
+								(pg = new ProjectGroup(this, name)));
+						
+						// Associate binary
+						pg.__setBinary(pi);
 					}
 				
-					// Not a valid ZIP or package, ignore
+					// Not a valid ZIP or project, ignore
 					catch (IOException|InvalidProjectException e)
 					{
 						continue;
@@ -90,7 +97,7 @@ public class ProjectList
 			}
 		
 		// Lock
-		this.packages = UnmodifiableMap.<ProjectName, ProjectInfo>of(target);
+		this.projects = UnmodifiableMap.<ProjectName, ProjectGroup>of(target);
 	}
 	
 	/**
@@ -101,8 +108,8 @@ public class ProjectList
 	public boolean containsKey(Object __o)
 	{
 		if (__o instanceof String)
-			return this.packages.containsKey(new ProjectName((String)__o));
-		return this.packages.containsKey(__o);
+			return this.projects.containsKey(new ProjectName((String)__o));
+		return this.projects.containsKey(__o);
 	}
 	
 	/**
@@ -110,9 +117,9 @@ public class ProjectList
 	 * @since 2016/06/15
 	 */
 	@Override
-	public Set<Map.Entry<ProjectName, ProjectInfo>> entrySet()
+	public Set<Map.Entry<ProjectName, ProjectGroup>> entrySet()
 	{
-		return this.packages.entrySet();
+		return this.projects.entrySet();
 	}
 	
 	/**
@@ -120,11 +127,11 @@ public class ProjectList
 	 * @since 2016/06/19
 	 */
 	@Override
-	public ProjectInfo get(Object __o)
+	public ProjectGroup get(Object __o)
 	{
 		if (__o instanceof String)
-			return this.packages.get(new ProjectName((String)__o));
-		return this.packages.get(__o);
+			return this.projects.get(new ProjectName((String)__o));
+		return this.projects.get(__o);
 	}
 	
 	/**
@@ -134,7 +141,7 @@ public class ProjectList
 	@Override
 	public int size()
 	{
-		return this.packages.size();
+		return this.projects.size();
 	}
 }
 

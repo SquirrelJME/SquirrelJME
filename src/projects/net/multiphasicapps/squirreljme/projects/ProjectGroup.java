@@ -11,19 +11,29 @@
 package net.multiphasicapps.squirreljme.projects;
 
 /**
- * This is a package group which contains a reference to binary and/or
- * source packages.
+ * This is a project group which contains a reference to binary and/or
+ * source projects.
  *
  * @since 2016/09/18
  */
 public final class ProjectGroup
 	implements Comparable<ProjectGroup>
 {
-	/** The owning package list. */
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** The owning project list. */
 	protected final ProjectList list;
 	
-	/** The name of the package group. */
+	/** The name of the project group. */
 	protected final ProjectName name;
+	
+	/** The current binary project. */
+	private volatile ProjectInfo _bin;
+	
+	/** The current source project. */
+	private volatile ProjectInfo _src;
 	
 	/**
 	 * Initializes the project group.
@@ -43,6 +53,23 @@ public final class ProjectGroup
 		// Set
 		this.list = __pl;
 		this.name = __n;
+	}
+	
+	/**
+	 * This returns the associated binary project which contains class files
+	 * and other resource.
+	 *
+	 * @return The binary project information, or {@code null} if there is no
+	 * binary project.
+	 * @since 2016/09/18
+	 */
+	public final ProjectInfo binary()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._bin;
+		}
 	}
 	
 	/**
@@ -81,6 +108,23 @@ public final class ProjectGroup
 	}
 	
 	/**
+	 * This returns the associated source project which contains source code
+	 * and other resource.
+	 *
+	 * @return The source project information, or {@code null} if there is no
+	 * source project.
+	 * @since 2016/09/18
+	 */
+	public final ProjectInfo source()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._src;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/18
 	 */
@@ -88,6 +132,33 @@ public final class ProjectGroup
 	public final String toString()
 	{
 		return this.name.toString();
+	}
+	
+	/**
+	 * Sets the binary project.
+	 *
+	 * @param __pi The project to set.
+	 * @throws IllegalStateException If the name does not match.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	final void __setBinary(ProjectInfo __pi)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__pi == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CI06 Attempt to set binary project to a group
+		// of a different name.}
+		if (!this.name.equals(__pi.name()))
+			throw new IllegalStateException("CI06");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._bin = __pi;
+		}
 	}
 }
 

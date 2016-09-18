@@ -22,6 +22,7 @@ import java.util.Iterator;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
+import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
 
@@ -112,10 +113,11 @@ public class PackageBrowser
 		// Remove it
 		String base = __ns.substring(0, __ns.length() - 4);
 		
-		// {@squirreljme.error DW05 The specified package does not exist. (The
-		// package name)}
-		ProjectInfo pi = this.plist.get(base);
-		if (pi == null)
+		// {@squirreljme.error DW05 The specified project does not exist. (The
+		// project name)}
+		ProjectGroup grp = this.plist.get(base);
+		ProjectInfo pi;
+		if (grp == null || (pi = grp.binary()) == null)
 			throw new JITException(String.format("DW05 %s", base));
 		
 		// Create directory

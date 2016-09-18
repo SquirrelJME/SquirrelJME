@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
+import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
 
@@ -81,11 +82,12 @@ public final class BuildConfig
 		{
 			// Find package
 			String s = __ep[i];
-			ProjectInfo pk = plist.get(s);
+			ProjectGroup pg = plist.get(s);
+			ProjectInfo pk;
 			
 			// {@squirreljme.error DW09 The specified project to be included
 			// in the output binary does not exist. (The missing project)}
-			if (pk == null)
+			if (pg == null || (pk = pg.binary()) == null)
 				throw new IllegalArgumentException(String.format("DW09 %s",
 					s));
 			

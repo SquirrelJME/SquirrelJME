@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
@@ -59,8 +60,9 @@ class __PackageSelection__
 		
 		// {@squirreljme.error DW0k Cannot build the target because the Java
 		// Virtual Machine project could not be found.}
-		ProjectInfo jvmproj = plist.get("jvm");
-		if (jvmproj == null)
+		ProjectGroup vmgrp = plist.get("jvm");
+		ProjectInfo jvmproj;
+		if (vmgrp == null || (jvmproj = vmgrp.binary()) == null)
 			throw new IllegalStateException("DW0k");
 		jvm.addAll(jvmproj.recursiveDependencies());
 		
@@ -71,8 +73,13 @@ class __PackageSelection__
 		// along with the JVM
 		String[] groups = __bi.__packageGroup();
 		int n = groups.length;
-		for (ProjectInfo pi : plist.values())
+		for (ProjectGroup pgrp : plist.values())
 		{
+			// Only consider projects with binaries
+			ProjectInfo pi = pgrp.binary();
+			if (pi == null)
+				continue;
+			
 			Set<String> pigs = pi.groups();
 			
 			// If this is a test package then include it
