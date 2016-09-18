@@ -126,7 +126,7 @@ want the best choice.
 
 ## 16:25
 
-The dependencies will need to change from being `PackageInfo` to being
-`PackageName`, because now with binaries and sources it can get a bit
+The dependencies will need to change from being `ProjectInfo` to being
+`ProjectName`, because now with binaries and sources it can get a bit
 ambigious and confusion.
 

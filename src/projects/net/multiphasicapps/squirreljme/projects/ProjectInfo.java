@@ -57,13 +57,10 @@ public class ProjectInfo
 	private volatile Reference<Set<String>> _groups;
 	
 	/** The dependencies of this project. */
-	private volatile Reference<Set<ProjectInfo>> _depends;
+	private volatile Reference<Set<ProjectName>> _depends;
 	
-	/** Optional dependencies. */
-	private volatile Reference<Set<ProjectInfo>> _odepends;
-	
-	/** Recursive dependencies. */
-	private volatile Reference<Set<ProjectInfo>> _rdepends;
+	/** Optional dependencies of this project. */
+	private volatile Reference<Set<ProjectName>> _odepends;
 	
 	/**
 	 * Initializes the project information from the given ZIP.
@@ -171,7 +168,7 @@ public class ProjectInfo
 	 * @throws MissingDependencyException If a dependency is missing.
 	 * @since 2016/06/25
 	 */
-	public final Set<ProjectInfo> dependencies()
+	public final Set<ProjectName> dependencies()
 		throws MissingDependencyException
 	{
 		return dependencies(false);
@@ -186,19 +183,19 @@ public class ProjectInfo
 	 * @throws MissingDependencyException If a dependency is missing.
 	 * @since 2016/07/22
 	 */
-	public final Set<ProjectInfo> dependencies(boolean __opt)
+	public final Set<ProjectName> dependencies(boolean __opt)
 		throws MissingDependencyException
 	{
 		// Get
-		Reference<Set<ProjectInfo>> ref = (__opt ? this._odepends :
+		Reference<Set<ProjectName>> ref = (__opt ? this._odepends :
 			this._depends);
-		Set<ProjectInfo> rv;
+		Set<ProjectName> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<ProjectInfo> deps = new SortedTreeSet<>();
+			Set<ProjectName> deps = new SortedTreeSet<>();
 			
 			// Read the manifest
 			JavaManifest man = manifest();
@@ -207,7 +204,6 @@ public class ProjectInfo
 			// Get the dependency field
 			String pids = attr.get((__opt ? "X-SquirrelJME-Optional" :
 				"X-SquirrelJME-Depends"));
-			ProjectList plist = this.plist;
 			if (pids != null)
 			{
 				int n = pids.length();
@@ -232,26 +228,8 @@ public class ProjectInfo
 					// Split string
 					String spl = pids.substring(i, j).trim();
 					
-					// {@squirreljme.error CI01 A required dependency of a
-					// project does not exist. (This project; The missing
-					// dependency)}
-					ProjectGroup grp = plist.get(spl);
-					if (!__opt && grp == null)
-						throw new MissingDependencyException(String.format(
-							"CI01 %s %s", this.name, spl));
-					
-					// {@squirreljme.error CI07 A required dependency of a
-					// project exists but does not have a binary project
-					// associated with it. (This project; The missing
-					// dependency)}
-					ProjectInfo ddd = grp.binary();
-					if (!__opt && ddd == null)
-						throw new MissingDependencyException(String.format(
-							"CI07 %s %s", this.name, spl));
-					
 					// Add it
-					else if (ddd != null)
-						deps.add(ddd);
+					deps.add(new ProjectName(spl));
 					
 					// Skip
 					i = j;
@@ -259,7 +237,7 @@ public class ProjectInfo
 			}
 			
 			// Lock
-			rv = UnmodifiableSet.<ProjectInfo>of(deps);
+			rv = UnmodifiableSet.<ProjectName>of(deps);
 			ref = new WeakReference<>(rv);
 			if (__opt)
 				this._odepends = ref;
@@ -393,54 +371,6 @@ public class ProjectInfo
 	public final Path path()
 	{
 		return this.path;
-	}
-	
-	/**
-	 * Returns a set containing this project and every dependency of this
-	 * project and the dependencies of the dependencies.
-	 *
-	 * @return The set of all dependencies.
-	 * @since 2016/07/22
-	 */
-	public final Set<ProjectInfo> recursiveDependencies()
-	{
-		// Get
-		Reference<Set<ProjectInfo>> ref = this._rdepends;
-		Set<ProjectInfo> rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-		{
-			// Target
-			Set<ProjectInfo> deps = new SortedTreeSet<>();
-			
-			// Start at the root
-			Deque<ProjectInfo> deq = new LinkedList<>();
-			deq.offerLast(this);
-			
-			// Keep going
-			while (!deq.isEmpty())
-			{
-				// Ignore already calculated projects
-				ProjectInfo pi = deq.pollFirst();
-				if (deps.contains(pi))
-					continue;
-				
-				// Add the current project
-				deps.add(pi);
-				
-				// Add all dependencies to the queue
-				for (ProjectInfo z : pi.dependencies())
-					deq.offerLast(z);
-			}
-			
-			// Lock
-			rv = UnmodifiableSet.<ProjectInfo>of(deps);
-			this._rdepends = new WeakReference<>(rv);
-		}
-		
-		// Return
-		return rv;
 	}
 	
 	/**
