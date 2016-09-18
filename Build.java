@@ -1047,7 +1047,7 @@ public class Build
 			Set<Project> xdeps = new TreeSet<>();
 			String odeps = attr.getValue("X-SquirrelJME-Depends");
 			if (odeps != null)
-				for (String s : odeps.split(Pattern.quote(",")))
+				for (String s : odeps.split(Pattern.quote(" ")))
 					try
 					{
 						xdeps.add(getProject(s.trim()));
@@ -1063,7 +1063,7 @@ public class Build
 			Set<Project> pdeps = new TreeSet<>();
 			String qdeps = attr.getValue("X-SquirrelJME-Optional");
 			if (qdeps != null)
-				for (String s : qdeps.split(Pattern.quote(",")))
+				for (String s : qdeps.split(Pattern.quote(" ")))
 					try
 					{
 						pdeps.add(getProject(s.trim()));
