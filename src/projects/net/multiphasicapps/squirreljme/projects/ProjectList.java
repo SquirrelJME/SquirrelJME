@@ -18,7 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.AbstractMap;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -222,7 +225,68 @@ public class ProjectList
 		if (__rv == null || __t == null || __n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Package name queue
+		Deque<ProjectName> q = new ArrayDeque<>();
+		Set<ProjectName> did = new HashSet<>();
+		q.push(__n);
+		
+		// Go through the queue
+		while (!q.isEmpty())
+		{
+			// Locate project detail
+			ProjectName name = q.pop();
+			ProjectGroup grp = get(name);
+			
+			// Did this already? Ignore
+			if (did.contains(name))
+				continue;
+			did.add(name);
+			
+			// {@squirreljme.error CI01 A project eventually depends on another
+			// project which does not exist. (The project being looked up;
+			// The missing dependency)}
+			if (grp == null)
+				throw new MissingDependencyException(String.format(
+					"CI01 %s %s", __n, name));
+			
+			// {@squirreljme.error CI07 A dependency for a project exists
+			// however it is not available for the given project type. (The
+			// project being looked up; The unavailable dependency; The type
+			// of project requested)}
+			ProjectInfo info = grp.ofType(__t);
+			if (info == null)
+				throw new MissingDependencyException(String.format(
+					"CI07 %s %s %s", __n, name, __t));
+			
+			// Add information
+			__rv.add(info);
+			
+			// Go through required depends and add them
+			for (ProjectName rn : info.dependencies())
+				q.push(rn);
+			
+			// Go through optional ones if requested, these are not
+			// required to exist under a given type
+			if (__opt)
+				for (ProjectName on : info.dependencies(true))
+				{
+					// Group must exist
+					ProjectGroup og = get(on);
+					if (og == null)
+						continue;
+					
+					// And info must exist of the given type
+					ProjectInfo oi = og.ofType(__t);
+					if (oi == null)
+						continue;
+					
+					// Add name for later processing
+					q.push(on);
+				}
+		}
+		
+		// Return the target set
+		return __rv;
 	}
 	
 	/**

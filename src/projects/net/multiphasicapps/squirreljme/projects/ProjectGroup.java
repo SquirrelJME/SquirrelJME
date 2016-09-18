@@ -108,6 +108,39 @@ public final class ProjectGroup
 	}
 	
 	/**
+	 * Returns the project information of the specified type.
+	 *
+	 * @param __t The type to get the project information for.
+	 * @return The project information of the given type or {@code null} if
+	 * it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public final ProjectInfo ofType(ProjectType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__t)
+		{
+				// Binary?
+			case BINARY:
+				return binary();
+				
+				// Source?
+			case SOURCE:
+				return source();
+				
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * This returns the associated source project which contains source code
 	 * and other resource.
 	 *
