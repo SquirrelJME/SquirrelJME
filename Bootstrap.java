@@ -24,16 +24,20 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.jar.Manifest;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.TreeMap;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
@@ -55,6 +59,9 @@ public class Bootstrap
 	/** The bootstrap JAR file, which is not a project. */
 	public static final Path BOOTSTRAP_JAR_PATH =
 		Paths.get("sjmeboot.jar");
+	
+	/** The bootstrap manifest file. */
+	public static final Path BOOTSTRAP_MANIFEST;
 	
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
@@ -83,6 +90,10 @@ public class Bootstrap
 		// Resolve other paths
 		SOURCE_ROOT = PROJECT_ROOT.resolve("src");
 		CONTRIB_ROOT = PROJECT_ROOT.resolve("contrib");
+		
+		// Set manifest
+		BOOTSTRAP_MANIFEST = SOURCE_ROOT.resolve(BOOTSTRAP_PROJECT).
+			resolve("META-INF").resolve("MANIFEST.MF");
 	}
 	
 	/**
@@ -185,6 +196,64 @@ public class Bootstrap
 				jfm.setLocation(StandardLocation.SOURCE_PATH, dir);
 			}
 			
+			// Source code to compile
+			Set<JavaFileObject> ccthese = new TreeSet<>(
+				new Comparator<JavaFileObject>()
+				{
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/09/18
+					 */
+					@Override
+					public int compare(JavaFileObject __a, JavaFileObject __b)
+					{
+						return __a.toUri().compareTo(__b.toUri());
+					}
+				});
+			
+			// Setup base JAR content to include the bootstrap's manifest
+			Map<String, Path> jarthese = new TreeMap<>();
+			jarthese.put("META-INF/MANIFEST.MF", BOOTSTRAP_MANIFEST);
+			
+			// Determine the files to get compiled or placed in the JAR
+			{
+				// Wall all source directories
+				for (Path p : __src)
+				{
+					// Walk this set
+					Set<Path> maybe = new HashSet<>();
+					__walk(maybe, p);
+					
+					// Go through and determine which ones are to be compiled
+					// and which ones get JARed
+					for (Path s : maybe)
+					{
+						String fn = s.getFileName().toString();
+						
+						// Compile?
+						if (fn.endsWith(".java"))
+						{
+							for (JavaFileObject o :
+								jfm.getJavaFileObjects(s.toFile()))
+								ccthese.add(o);
+						}
+						
+						// JAR it, do not consider manifests however
+						else if (!Files.isDirectory(s))
+						{
+							String zn = __zipName(p, s);
+							if (zn.equals("META-INF/MANIFEST.MF"))
+								continue;
+							jarthese.put(zn, s);
+						}
+					}
+				}
+			}
+			
+			// Debug
+			System.err.printf("DEBUG -- CC: %s || JAR: %s%n", ccthese,
+				jarthese);
+			
 			throw new Error("TODO");
 		}
 		
@@ -197,24 +266,7 @@ public class Bootstrap
 				NavigableSet<Path> delete = new TreeSet<>();
 				
 				// Walk directories
-				Deque<Path> q = new ArrayDeque<>();
-				q.push(tempdir);
-				while (!q.isEmpty())
-				{
-					// Add to the deletion set always
-					Path p = q.remove();
-					delete.add(p);
-					
-					// If it is a directory then add files inside of it to
-					// the queue
-					if (Files.isDirectory(p))
-						try (DirectoryStream<Path> ds =
-							Files.newDirectoryStream(p))
-						{
-							for (Path s : ds)
-								q.push(s);
-						}
-				}
+				__walk(delete, tempdir);
 				
 				// Delete them all
 				Iterator<Path> it = delete.descendingIterator();
@@ -229,7 +281,6 @@ public class Bootstrap
 					// Delete file
 					else
 						System.err.printf("DEBUG -- Delete file %s%n", p);
-						
 				}
 			}
 		}
@@ -281,8 +332,7 @@ public class Bootstrap
 			rv.add(srcdir);
 			
 			// Obtain the path to the manifest
-			Path manpath = srcdir.resolve("META-INF").
-				resolve("MANIFEST.MF");
+			Path manpath = srcdir.resolve("META-INF").resolve("MANIFEST.MF");
 			
 			// Try to open it
 			try (InputStream is = Channels.newInputStream(
@@ -370,6 +420,78 @@ public class Bootstrap
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Walks the given path and adds all files recursively to the given set.
+	 *
+	 * @param __dest The destination set.
+	 * @param __p The path to walk.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	private static void __walk(Set<Path> __dest, Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dest == null || __p == null)
+			throw new NullPointerException("NARG");
+		
+		// Walk through the file tree
+		Deque<Path> q = new ArrayDeque<>();
+		q.push(__p);
+		while (!q.isEmpty())
+		{
+			// Add to the set always
+			Path p = q.remove();
+			__dest.add(p);
+			
+			// If it is a directory then add files inside of it to
+			// the queue
+			if (Files.isDirectory(p))
+				try (DirectoryStream<Path> ds =
+					Files.newDirectoryStream(p))
+				{
+					for (Path s : ds)
+						q.push(s);
+				}
+		}
+	}
+	
+	/**
+	 * Calculates the name that a file would appear as inside of a ZIP file.
+	 *
+	 * @param __root The root path.
+	 * @param __p The file to add.
+	 * @return The ZIP compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private static String __zipName(Path __root, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __p == null)
+			throw new NullPointerException();
+		
+		// Calculate relative name
+		Path rel = __root.toAbsolutePath().relativize(__p.toAbsolutePath());
+		
+		// Build name
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : rel)
+		{
+			// Prefix slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp);
+		}
+		
+		// Return it
+		return sb.toString();
 	}
 	
 	/**
