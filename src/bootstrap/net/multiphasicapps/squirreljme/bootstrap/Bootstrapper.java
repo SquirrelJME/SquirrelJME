@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.bootstrap;
 
+import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -146,11 +147,11 @@ public class Bootstrapper
 		
 		// Try to get the binary for it
 		ProjectInfo rv = group.binary();
+		ProjectInfo src = group.source();
 		if (rv != null)
 		{
 			// If there is no source package for the binary then use it
 			// regardless
-			ProjectInfo src = group.source();
 			if (src == null)
 				return rv;
 			
@@ -185,10 +186,32 @@ public class Bootstrapper
 			}
 		}
 		
+		// {@squirreljme.error CL06 Cannot build a project which has no source
+		// code available. (The project name)}
+		if (src == null)
+			throw new RuntimeException(String.format("CL06 %s", __n));
+		
 		// It must be compiled
 		System.err.printf("*** Building %s...%n", __n);
 		
-		throw new Error("TODO");
+		// {@squirreljme.error Cannot build the specified project because a
+		// compiler is not available for usage. (The project name)}
+		BootCompiler bc = this.compiler;
+		if (bc == null)
+			throw new RuntimeException(String.format("CL07 %s", __n));
+		
+		// Compile it
+		try
+		{
+			return group.compileSource(bc);
+		}
+		
+		// {@squirreljme.error CL08 There was a read/write error while
+		// attempting to build the project. (The project name)}
+		catch (IOException e)
+		{
+			throw new RuntimeException(String.format("CL08 %s", __n), e);
+		}
 	}
 	
 	/**

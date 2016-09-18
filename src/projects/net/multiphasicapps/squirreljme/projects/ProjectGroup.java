@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.io.IOException;
+import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
+
 /**
  * This is a project group which contains a reference to binary and/or
  * source projects.
@@ -80,6 +83,25 @@ public final class ProjectGroup
 	public final int compareTo(ProjectGroup __o)
 	{
 		return this.name.compareTo(__o.name);
+	}
+	
+	/**
+	 * Compiles the source code for this project.
+	 *
+	 * @param __bc The compiler to use for compilation.
+	 * @return The binary project information.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public final ProjectInfo compileSource(BootCompiler __bc)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__bc == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
