@@ -22,8 +22,8 @@ import java.util.Iterator;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
-import net.multiphasicapps.squirreljme.projects.PackageInfo;
-import net.multiphasicapps.squirreljme.projects.PackageList;
+import net.multiphasicapps.squirreljme.projects.ProjectInfo;
+import net.multiphasicapps.squirreljme.projects.ProjectList;
 
 /**
  * This is a browser which goes through packages and is able to search through
@@ -44,7 +44,7 @@ public class PackageBrowser
 		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump");
 
 	/** The list of packages available. */
-	protected final PackageList plist;
+	protected final ProjectList plist;
 	
 	/** The owning build instance. */
 	private final BuildInstance _instance;
@@ -57,7 +57,7 @@ public class PackageBrowser
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/20
 	 */
-	PackageBrowser(BuildInstance __bi, PackageList __pl)
+	PackageBrowser(BuildInstance __bi, ProjectList __pl)
 		throws NullPointerException
 	{
 		// Check
@@ -114,7 +114,7 @@ public class PackageBrowser
 		
 		// {@squirreljme.error DW05 The specified package does not exist. (The
 		// package name)}
-		PackageInfo pi = this.plist.get(base);
+		ProjectInfo pi = this.plist.get(base);
 		if (pi == null)
 			throw new JITException(String.format("DW05 %s", base));
 		

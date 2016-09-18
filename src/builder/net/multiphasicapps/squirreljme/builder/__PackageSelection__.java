@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.projects.PackageInfo;
-import net.multiphasicapps.squirreljme.projects.PackageList;
+import net.multiphasicapps.squirreljme.projects.ProjectInfo;
+import net.multiphasicapps.squirreljme.projects.ProjectList;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
@@ -28,11 +28,11 @@ import net.multiphasicapps.util.sorted.SortedTreeSet;
 class __PackageSelection__
 {
 	/** All projects to be included. */
-	final Set<PackageInfo> _all =
+	final Set<ProjectInfo> _all =
 		new SortedTreeSet<>();
 	
 	/** The JVM classpath. */
-	final Set<PackageInfo> _jvm =
+	final Set<ProjectInfo> _jvm =
 		new SortedTreeSet<>();
 	
 	/**
@@ -53,13 +53,13 @@ class __PackageSelection__
 			throw new NullPointerException("NARG");
 		
 		// Get the package list
-		PackageList plist = __conf.packageList();
-		Set<PackageInfo> jvm = this._jvm;
-		Set<PackageInfo> all = this._all;
+		ProjectList plist = __conf.packageList();
+		Set<ProjectInfo> jvm = this._jvm;
+		Set<ProjectInfo> all = this._all;
 		
 		// {@squirreljme.error DW0k Cannot build the target because the Java
 		// Virtual Machine project could not be found.}
-		PackageInfo jvmproj = plist.get("jvm");
+		ProjectInfo jvmproj = plist.get("jvm");
 		if (jvmproj == null)
 			throw new IllegalStateException("DW0k");
 		jvm.addAll(jvmproj.recursiveDependencies());
@@ -71,7 +71,7 @@ class __PackageSelection__
 		// along with the JVM
 		String[] groups = __bi.__packageGroup();
 		int n = groups.length;
-		for (PackageInfo pi : plist.values())
+		for (ProjectInfo pi : plist.values())
 		{
 			Set<String> pigs = pi.groups();
 			
@@ -89,7 +89,7 @@ class __PackageSelection__
 		}
 		
 		// Add any extra projects to be included in the all set
-		for (PackageInfo p : __conf.extraProjects())
+		for (ProjectInfo p : __conf.extraProjects())
 			all.addAll(p.recursiveDependencies());
 		
 		// Add JVM packages to the all list

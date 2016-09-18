@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.bootstrap;
 
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
-import net.multiphasicapps.squirreljme.projects.PackageList;
+import net.multiphasicapps.squirreljme.projects.ProjectList;
 
 /**
  * This is the bootstrapper which is used to build and potentially launch
@@ -31,7 +31,7 @@ public class Bootstrapper
 	 * @throws NullPointerException If no package list was specified.
 	 * @since 2016/09/18
 	 */
-	public Bootstrapper(PackageList __pl, BootCompiler __bc, BootLauncher __bl)
+	public Bootstrapper(ProjectList __pl, BootCompiler __bc, BootLauncher __bl)
 		throws NullPointerException
 	{
 		// Check

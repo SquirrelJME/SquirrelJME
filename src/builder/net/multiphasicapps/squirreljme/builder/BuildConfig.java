@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
-import net.multiphasicapps.squirreljme.projects.PackageInfo;
-import net.multiphasicapps.squirreljme.projects.PackageList;
+import net.multiphasicapps.squirreljme.projects.ProjectInfo;
+import net.multiphasicapps.squirreljme.projects.ProjectList;
 
 /**
  * This is used to configure what should be built.
@@ -37,10 +37,10 @@ public final class BuildConfig
 	protected final String altexename;
 	
 	/** The package list. */
-	protected final PackageList plist;
+	protected final ProjectList plist;
 	
 	/** Extra projects to add. */
-	private final PackageInfo[] _extraprojects;
+	private final ProjectInfo[] _extraprojects;
 	
 	/** The JIT configuration used. */
 	volatile JITConfig _jitconf;
@@ -60,7 +60,7 @@ public final class BuildConfig
 	 */
 	BuildConfig(JITTriplet __trip,
 		boolean __jit, boolean __tests, String __altexe, String[] __ep,
-		PackageList __pl)
+		ProjectList __pl)
 		throws NullPointerException
 	{
 		// Check
@@ -76,12 +76,12 @@ public final class BuildConfig
 		
 		// Find projects
 		int n = __ep.length;
-		PackageInfo[] extraprojects = new PackageInfo[n];
+		ProjectInfo[] extraprojects = new ProjectInfo[n];
 		for (int i = 0; i < n; i++)
 		{
 			// Find package
 			String s = __ep[i];
-			PackageInfo pk = plist.get(s);
+			ProjectInfo pk = plist.get(s);
 			
 			// {@squirreljme.error DW09 The specified project to be included
 			// in the output binary does not exist. (The missing project)}
@@ -112,7 +112,7 @@ public final class BuildConfig
 	 * @return The extra projects to include.
 	 * @since 2016/08/16
 	 */
-	public final PackageInfo[] extraProjects()
+	public final ProjectInfo[] extraProjects()
 	{
 		return this._extraprojects.clone();
 	}
@@ -134,7 +134,7 @@ public final class BuildConfig
 	 * @return The package list.
 	 * @since 2016/09/02
 	 */
-	public final PackageList packageList()
+	public final ProjectList packageList()
 	{
 		return this.plist;
 	}

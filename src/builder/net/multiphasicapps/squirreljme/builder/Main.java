@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
-import net.multiphasicapps.squirreljme.projects.PackageList;
+import net.multiphasicapps.squirreljme.projects.ProjectList;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -91,7 +91,7 @@ public class Main
 		
 		// Load the package list
 		out.println("Loading the package lists...");
-		PackageList plist = new PackageList(Paths.get(
+		ProjectList plist = new ProjectList(Paths.get(
 			System.getProperty("user.dir")));
 		
 		// Setup build configuration
