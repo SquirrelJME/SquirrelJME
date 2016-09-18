@@ -33,6 +33,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
@@ -255,7 +256,12 @@ public class BasicCodeWriter
 			if (k.isStack() && k.id() >= __d)
 				continue;
 			
-			throw new Error("TODO");
+			// Save any temporary registers which may be used
+			for (NativeRegister r : v.registers())
+				if (abi.isTemporary(r))
+				{
+					throw new Error("TODO");
+				}
 		}
 		
 		throw new Error("TODO");
