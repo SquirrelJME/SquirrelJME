@@ -8,13 +8,25 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.jar.Manifest;
 import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This is the bootstrap which builds the bootstrap system and then launches
@@ -88,6 +100,8 @@ public class Bootstrap
 			// Locate the directories that contains all of the source code
 			// along with dependencies for the bootstrap
 			Path[] sources = __locateSources();
+			System.err.printf("DEBUG -- Located: %s%n",
+				Arrays.asList(sources));
 		
 			throw new Error("TODO");
 		}
@@ -111,7 +125,49 @@ public class Bootstrap
 	private Path[] __locateSources()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Setup return value
+		Set<Path> rv = new TreeSet<>();
+		
+		// Queue dependencies and parse them
+		Set<String> did = new HashSet<>();
+		Deque<String> q = new ArrayDeque<>();
+		q.push(BOOTSTRAP_PROJECT);
+		while (!q.isEmpty())
+		{
+			// Grab
+			String p = q.remove();
+			
+			// If it was done already or is ignored, do not handle it
+			if (did.contains(p) || __ignoreProject(p))
+				continue;
+			
+			// The source directory is included in compilation
+			Path srcdir = SOURCE_ROOT.resolve(p);
+			rv.add(srcdir);
+			
+			// Obtain the path to the manifest
+			Path manpath = srcdir.resolve("META-INF").
+				resolve("MANIFEST.MF");
+			
+			// Try to open it
+			try (InputStream is = Channels.newInputStream(
+				FileChannel.open(manpath, StandardOpenOption.READ)))
+			{
+				// Decode the manifest
+				Manifest man = new Manifest(is);
+				
+				// Get the dependencies for this, if they exist, if they do
+				// then add them to the queue for handling
+				String deps = man.getMainAttributes().
+					getValue("x-squirreljme-depends");
+				if (deps != null)
+					for (String d : deps.split(Pattern.quote(" ")))
+						q.push(d);
+			}
+		}
+		
+		// Return them
+		return rv.<Path>toArray(new Path[rv.size()]);
 	}
 	
 	/**
@@ -124,6 +180,37 @@ public class Bootstrap
 	{
 		// Create and run
 		new Bootstrap(__args).run();
+	}
+	
+	/**
+	 * Checks if the specified project name is to be ignored so that it is
+	 * not included for compilation of the bootstrap.
+	 *
+	 * @param __s The project to check if it is ignored.
+	 * @return {@code true} if the project is to be ignored.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	private static boolean __ignoreProject(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__s)
+		{
+				// Uses the host Java SE library, so these do not need to
+				// be compiled at all
+			case "cldc-compact":
+			case "cldc-full":
+				return true;
+			
+				// Do not ignore
+			default:
+				return false;
+		}
 	}
 	
 	/**
