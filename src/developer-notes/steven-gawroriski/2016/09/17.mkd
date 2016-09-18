@@ -223,3 +223,16 @@ So my revised code gives
 
 Which means return values before they are placed into the return registers or
 otherwise, are masked and then sign extended if applicable.
+
+## 21:15
+
+So this just means that return values do not have to use a full integer
+register which is OK-ish on lower bit systems.
+
+## 21:22
+
+Invoke can use a marker indicating the new stack base, that is to help the JITs
+determine which registers do not have to be saved to the stack for a call.
+Another thing to consider is that the native allocation might need a stack
+flag if not already done.
+

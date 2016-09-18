@@ -54,14 +54,16 @@ public interface CodeDescriptionStream
 	 * type.
 	 *
 	 * @param __link The method linkage.
+	 * @param __d The depth of the Java stack when all arguments have been
+	 * popped and no return value has been pushed.
 	 * @param __rv The variable to obtain the return value.
 	 * @param __args The input arguments to the method.
 	 * @throws NullPointerException On null arguments, except for {@code __rv}
 	 * if there is no return value.
 	 * @since 2016/09/16
 	 */
-	public abstract void invokeMethod(MethodLinkage __link, CodeVariable __rv,
-		CodeVariable... __args)
+	public abstract void invokeMethod(MethodLinkage __link, int __d,
+		CodeVariable __rv, CodeVariable... __args)
 		throws NullPointerException;
 	
 	/**

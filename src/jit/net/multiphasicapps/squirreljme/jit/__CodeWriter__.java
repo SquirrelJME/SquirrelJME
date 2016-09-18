@@ -173,7 +173,7 @@ class __CodeWriter__
 	 * @since 2016/09/16
 	 */
 	@Override
-	public void invokeMethod(MethodLinkage __link, CodeVariable __rv,
+	public void invokeMethod(MethodLinkage __link, int __d, CodeVariable __rv,
 		CodeVariable... __args)
 		throws NullPointerException
 	{
@@ -196,7 +196,7 @@ class __CodeWriter__
 		}
 		
 		// Forward call
-		this.codewriter.invokeMethod(__link, __rv, __args);
+		this.codewriter.invokeMethod(__link, __d, __rv, __args);
 		
 		// If the method has a return value, cache the stack value to itself
 		// to indicate that it is not cached

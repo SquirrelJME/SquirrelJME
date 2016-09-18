@@ -609,7 +609,7 @@ final class __OpParser__
 		for (int i = 0, b = end; i < popcount; i++, b++)
 			vargs[i] = CodeVariable.of(true, b);
 		this.writer.invokeMethod(new MethodLinkage(this.methodref, ref,
-			__type), (rv != null ? (popcount > 0 ? vargs[0] :
+			__type), end, (rv != null ? (popcount > 0 ? vargs[0] :
 			CodeVariable.of(true, end)) : null), vargs);
 		
 		// Push return value if there is one

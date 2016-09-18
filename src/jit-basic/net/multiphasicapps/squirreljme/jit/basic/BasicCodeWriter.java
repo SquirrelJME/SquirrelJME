@@ -27,6 +27,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
@@ -165,7 +166,7 @@ public class BasicCodeWriter
 	{
 		// Check
 		if (__type == null || __from == null || __to == null)
-			throw new NullPointerException("NARG");;
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
@@ -201,7 +202,7 @@ public class BasicCodeWriter
 	 * @since 2016/09/16
 	 */
 	@Override
-	public void invokeMethod(MethodLinkage __link, CodeVariable __rv,
+	public void invokeMethod(MethodLinkage __link, int __d, CodeVariable __rv,
 		CodeVariable... __args)
 		throws NullPointerException
 	{
@@ -232,6 +233,30 @@ public class BasicCodeWriter
 		// Debug
 		System.err.printf("DEBUG -- Allocated: %s%n",
 			Arrays.<NativeAllocation>asList(nas));
+		
+		// Go through all allocations and allocate any temporary registers
+		// and store their value onto the stack
+		NativeABI abi = this.options.abi();
+		for (Map.Entry<CodeVariable, NativeAllocation> e :
+			vartoalloc.entrySet())
+		{
+			CodeVariable k = e.getKey();
+			NativeAllocation v = e.getValue();
+			
+			// If the allocation is already on the stack then nothing must
+			// be copied
+			if (!v.hasRegister())
+				continue;
+			
+			// If the variable to be stored is allocated to a stack
+			// variable then do not store it if it exceeds the stack depth.
+			// These values are popped into arguments and as such are lost
+			// in the method call (assuming they are not cached)
+			if (k.isStack() && k.id() >= __d)
+				continue;
+			
+			throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 	}

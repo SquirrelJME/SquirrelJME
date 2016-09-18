@@ -123,6 +123,28 @@ public final class NativeAllocation
 	}
 	
 	/**
+	 * Does this allocation have any registers?
+	 *
+	 * @return {@code true} if there are registers used in the allocation.
+	 * @since 2016/09/17
+	 */
+	public final boolean hasRegister()
+	{
+		return !this.registers.isEmpty();
+	}
+	
+	/**
+	 * Does this allocation use any stack space?
+	 *
+	 * @return {@code true} if stack space is being used.
+	 * @since 2016/09/17
+	 */
+	public final boolean isOnStack()
+	{
+		return (this.stacklen > 0);
+	}
+	
+	/**
 	 * Returns the list of used registers.
 	 *
 	 * @return The register list.
