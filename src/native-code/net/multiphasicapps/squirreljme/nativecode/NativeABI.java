@@ -92,16 +92,104 @@ public final class NativeABI
 		this._stack = stack;
 		
 		// Fill integer registers
-		this._intregs = UnmodifiableMap.<NativeRegister,
-			NativeRegisterIntegerType>of(new LinkedHashMap<>(__b._intregs));
+		Map<NativeRegister, NativeRegisterIntegerType> irs;
+		this._intregs = (irs = UnmodifiableMap.<NativeRegister,
+			NativeRegisterIntegerType>of(new LinkedHashMap<>(__b._intregs)));
 			
 		// Fill floating point registers
-		this._floatregs = UnmodifiableMap.<NativeRegister,
-			NativeRegisterFloatType>of(new LinkedHashMap<>(__b._floatregs));
+		Map<NativeRegister, NativeRegisterFloatType> frs;
+		this._floatregs = (frs = UnmodifiableMap.<NativeRegister,
+			NativeRegisterFloatType>of(new LinkedHashMap<>(__b._floatregs)));
+		
+		// {@squirreljme.error AR05 A register is both an integer type and a
+		// floating point type, however they differ in size. (The register; The
+		// integer type; The floating point type; The number of bytes used to
+		// store the integer value; The number of bytes used to store the
+		// floating point value)}
+		for (Map.Entry<NativeRegister, NativeRegisterFloatType> e :
+			frs.entrySet())
+		{
+			NativeRegister k = e.getKey();
+			NativeRegisterFloatType v = e.getValue();
+			
+			// Does it also have an associated integer register
+			NativeRegisterIntegerType i = irs.get(k);
+			int a, b;
+			if (i != null && (a = i.bytes()) != (b = v.bytes()))
+				throw new NativeCodeException(String.format(
+					"AR05 %s %s %s %d %d", k, i, v, a, b));
+		}
 		
 		// Setup integer and float registers
 		this._int = new __Group__(false, __b);
 		this._float = new __Group__(true, __b);
+	}
+	
+	/**
+	 * Returns the total number of bytes which are used in a given allocation.
+	 *
+	 * @param __na The allocation to get the total used size for.
+	 * @return The number of bytes used in the allocation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public final int allocationTotalConsumed(NativeAllocation __na)
+		throws NullPointerException
+	{
+		// Check
+		if (__na == null)
+			throw new NullPointerException("NARG");
+		
+		// Start with the stack
+		int rv = __na.stackLength();
+		
+		// And add all register sizes
+		List<NativeRegister> regs = __na.registers();
+		for (int i = 0, n = regs.size(); i < n; i++)
+			rv += registerType(regs.get(i)).bytes();
+		return rv;
+	}
+	
+	/**
+	 * Returns the size of the allocation. If a value is associated with the
+	 * allocation then that size is used, otherwise the stack space along with
+	 * the register space is used.
+	 *
+	 * @param __na The allocation to get the size for.
+	 * @return The number of bytes used for the allocation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public final int allocationValueSize(NativeAllocation __na)
+		throws NullPointerException
+	{
+		// Check
+		if (__na == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the value type size first
+		NativeRegisterType vt = __na.valueType();
+		if (vt != null)
+			return vt.bytes();
+		
+		// Otherwise add all bytes together
+		return allocationTotalConsumed(__na);
+	}
+	
+	/**
+	 * Returns the number of bytes which are wasted in the allocation that
+	 * over-represents the value of a given type. For example, storing a
+	 * 32-bit {@code int} in a 64-bit register wastes 4 byts of space.
+	 *
+	 * @param __na The allocation to get the wasted byte count.
+	 * @return The number of wasted bytes in the allocation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public final int allocationWastedSpace(NativeAllocation __na)
+		throws NullPointerException
+	{
+		return allocationTotalConsumed(__na) - allocationValueSize(__na);
 	}
 	
 	/**
@@ -137,7 +225,7 @@ public final class NativeABI
 	 * register.
 	 *
 	 * @param __r The register to get the value size of.
-	 * @return The float type.
+	 * @return The float type or {@code null} if not a float register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
@@ -156,7 +244,7 @@ public final class NativeABI
 	 * register.
 	 *
 	 * @param __r The register to get the value size of.
-	 * @return The integer type.
+	 * @return The integer type or {@code null} if not an integer register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
@@ -259,6 +347,26 @@ public final class NativeABI
 	public final int pointerSize()
 	{
 		return this._pointersize;
+	}
+	
+	/**
+	 * Returns the type of a given register. The integer type is preferred
+	 * if a register also stores floating point values.
+	 *
+	 * @param __r The register to get the type for.
+	 * @return The type of the register, if it is both a floating point type
+	 * and an integer type then only the integer type will be returned.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public NativeRegisterType registerType(NativeRegister __r)
+		throws NullPointerException
+	{
+		NativeRegisterIntegerType i = intType(__r);
+		NativeRegisterFloatType f = floatType(__r);
+		
+		// Prefer integer first
+		return (i != null ? i : f);
 	}
 	
 	/**
