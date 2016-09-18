@@ -1,0 +1,12 @@
+# 2016/09/18
+
+## 00:04
+
+API wise, it is very small which means it will be easier to implement. I can
+have internally driver sets for it. Also due to the age of OpenGL it is more
+targetted for older systems. So I could essentially dynamically load OpenGL
+libraries potentially and use those for rendering. I would need to have a
+driver interface that the standard code set uses. So I would essentially have
+a software rasterizer, but for example on the N64 I can have a driver which
+uses that GPU.
+
