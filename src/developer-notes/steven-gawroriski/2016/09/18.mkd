@@ -78,3 +78,7 @@ having a `binary()` and `source()` methods but that would be too complex.
 
 I believe I need to change my syntax highlighting theme.
 
+## 12:26
+
+I could remove the commas from the build dependencies to simplify things.
+
