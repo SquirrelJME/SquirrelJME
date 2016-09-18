@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.bootstrap.javase;
 
 import java.io.IOException;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerOutput;
 
@@ -22,6 +24,23 @@ import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerOutput;
 public class BridgedJavaCompiler
 	implements BootCompiler
 {
+	/** The Java compiler instance. */
+	protected final JavaCompiler javac;
+	
+	/**
+	 * Initializes the bridged compiler.
+	 *
+	 * @since 2016/09/18
+	 */
+	public BridgedJavaCompiler()
+	{
+		// {@squirreljme.error DE01 No system Java compiler is available.}
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		if (javac == null)
+			throw new RuntimeException("DE01");
+		this.javac = javac;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/18
