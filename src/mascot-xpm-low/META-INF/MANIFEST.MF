@@ -5,8 +5,8 @@ X-SquirrelJME-Depends: mascot
 LIBlet-Title: SquirrelJME Mascot (Low Res XPM)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This package contains the low resolution
-  versions of the mascot as encoded XPM images.
-  NOTE THAT THE LOW RESOLUTION XPM IMAGES ARE THE ACTUAL
-  SOURCE IMAGES.
+LIBlet-Description: This package contains the low resolution versions 
+ of the mascot as encoded XPM images. NOTE THAT THE LOW RESOLUTION XPM 
+ IMAGES ARE THE ACTUAL SOURCE IMAGES.
+
 

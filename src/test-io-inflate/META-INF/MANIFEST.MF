@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: test-io-inflate
 X-SquirrelJME-UUID: 22f2f584-5d5a-4ecd-bdfd-d307de1e1f6a
-X-SquirrelJME-Depends: test-base, io-inflate
+X-SquirrelJME-Depends: test-base io-inflate
 X-SquirrelJME-Group: tests
 LIBlet-Title: RFC1951 Inflate Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains tests to determine
-  if RFC1951 compatible decompression works.
+
+

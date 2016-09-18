@@ -7,8 +7,8 @@ X-SquirrelJME-StandardLib: microedition.rms;0.0.0
 LIBlet-Title: MEEP Record Management System
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the implementation of the 
- record management system which is used to manage records which
- may be used instead of the filesystem (if a filesystem is not
- supported).
+LIBlet-Description: This contains the implementation of the record 
+ management system which is used to manage records whichmay be used 
+ instead of the filesystem (if a filesystem is notsupported).
+
 

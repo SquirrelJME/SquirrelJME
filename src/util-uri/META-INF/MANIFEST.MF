@@ -6,7 +6,8 @@ X-SquirrelJME-Error: DU
 LIBlet-Title: URIs
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides interfaces to create and 
- manage URIs which are used in many locations from the local 
- disk to the internet.
+LIBlet-Description: This provides interfaces to create and manage 
+ URIs which are used in many locations from the local disk to the 
+ internet.
+
 

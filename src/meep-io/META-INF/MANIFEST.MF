@@ -7,6 +7,7 @@ X-SquirrelJME-StandardLib: microedition.io;0.0.0
 LIBlet-Title: MEEP Input/Output
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the interfaces for application 
- push registries and communication between midlets.
+LIBlet-Description: This contains the interfaces for application push 
+ registries and communication between midlets.
+
 

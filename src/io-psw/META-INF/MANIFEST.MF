@@ -6,6 +6,7 @@ X-SquirrelJME-Error: BO
 LIBlet-Title: PrintStream Writer
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains a Writer which
- utilizes a PrintStream.
+LIBlet-Description: This project contains a Writer whichutilizes a 
+ PrintStream.
+
 

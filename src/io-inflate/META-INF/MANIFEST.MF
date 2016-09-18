@@ -1,15 +1,13 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: io-inflate
 X-SquirrelJME-UUID: b0ee8a43-da57-4fcd-834a-64d0327c457b
-X-SquirrelJME-Depends: io-datapipe,
- util-huffmantree,
- io-slidingwindow,
+X-SquirrelJME-Depends: io-datapipe util-huffmantree io-slidingwindow 
  io-bits
 X-SquirrelJME-Error: AF
 LIBlet-Title: Extra IO Inflate Algorithm
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the support for the
-  inflation (decompression) of RFC1951 (deflated) streams
-  of data.
+LIBlet-Description: This contains the support for the inflation 
+ (decompression) of RFC1951 (deflated) streams of data.
+
 

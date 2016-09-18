@@ -6,7 +6,7 @@ X-SquirrelJME-Error: CH
 LIBlet-Title: BitSet Utility
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains an implementation of a BitSet 
- which efficiently stores a large range of boolean values of a 
- given size.
+LIBlet-Description: This contains an implementation of a BitSet which 
+ efficiently stores a large range of boolean values of a given size.
+
 

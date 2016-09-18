@@ -6,6 +6,7 @@ X-SquirrelJME-Error: BN
 LIBlet-Title: Native Path Manager (POSIX)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the native path manager 
- for POSIX based systems.
+LIBlet-Description: This contains the native path manager for POSIX 
+ based systems.
+
 

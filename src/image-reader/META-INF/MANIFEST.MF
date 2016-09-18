@@ -6,6 +6,7 @@ X-SquirrelJME-Error: BM
 LIBlet-Title: Base Image Reader Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides basic interfaces used for
-  reading images.
+LIBlet-Description: This provides basic interfaces used for reading 
+ images.
+
 

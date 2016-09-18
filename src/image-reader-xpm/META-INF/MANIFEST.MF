@@ -6,6 +6,6 @@ X-SquirrelJME-Error: AT
 LIBlet-Title: XPM Image Reader
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides read support for XPM based
-  images.
+LIBlet-Description: This provides read support for XPM based images.
+
 

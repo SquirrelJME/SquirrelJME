@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: zip-reader-stream
 X-SquirrelJME-UUID: a57bdac6-eae3-456f-bf2b-a57caa65569d
-X-SquirrelJME-Depends: cldc-compact, io-data, zip, io-crc32,
- io-dynhistin
+X-SquirrelJME-Depends: cldc-compact io-data zip io-crc32 io-dynhistin
 X-SquirrelJME-Error: BG
 LIBlet-Title: Stream ZIP Reader
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This allows reading of ZIP files which have 
- been sourced from an input stream. Due to the design of ZIP 
- files, they do not need to be accessed through a block level 
- access.
+LIBlet-Description: This allows reading of ZIP files which have been 
+ sourced from an input stream. Due to the design of ZIP files, they do 
+ not need to be accessed through a block level access.
+
 

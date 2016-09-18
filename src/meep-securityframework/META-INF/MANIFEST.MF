@@ -7,7 +7,7 @@ X-SquirrelJME-StandardLib: microedition.securityframework;0.0.0
 LIBlet-Title: MEEP Security Framework
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is used to control and potentially 
- grant or deny access to specific features that applications
- may use.
+LIBlet-Description: This is used to control and potentially grant or 
+ deny access to specific features that applicationsmay use.
+
 

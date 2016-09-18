@@ -6,6 +6,7 @@ X-SquirrelJME-Error: CE
 LIBlet-Title: Sorted Set and Map
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains a sorted implementation 
- of a Map and a Set.
+LIBlet-Description: This project contains a sorted implementation of 
+ a Map and a Set.
+
 

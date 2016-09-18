@@ -6,6 +6,7 @@ X-SquirrelJME-Error: AW
 LIBlet-Title: Native Code (MIPS)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains generators for native 
- MIPS machine code.
+LIBlet-Description: This project contains generators for native MIPS 
+ machine code.
+
 

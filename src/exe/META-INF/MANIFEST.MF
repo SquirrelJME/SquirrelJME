@@ -6,7 +6,8 @@ X-SquirrelJME-Error: BR
 LIBlet-Title: Executable Linker
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the base support 
- for executable linkers that the JIT uses to generate 
- target SquirrelJME binaries.
+LIBlet-Description: This project contains the base support for 
+ executable linkers that the JIT uses to generate target SquirrelJME 
+ binaries.
+
 

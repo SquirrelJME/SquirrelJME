@@ -6,7 +6,7 @@ X-SquirrelJME-Error: CA
 LIBlet-Title: Virtual Filesystem
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains a virtual 
- file system which is completely backed by file volume 
- providers.
+LIBlet-Description: This project contains a virtual file system which 
+ is completely backed by file volume providers.
+
 

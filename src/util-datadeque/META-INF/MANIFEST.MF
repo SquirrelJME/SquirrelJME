@@ -6,6 +6,7 @@ X-SquirrelJME-Error: AE
 LIBlet-Title: Byte Deque Utility
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to a dynamically
-  sized byte buffer with a Deque-like interface.
+LIBlet-Description: This provides access to a dynamically sized byte 
+ buffer with a Deque-like interface.
+
 

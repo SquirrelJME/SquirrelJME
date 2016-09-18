@@ -7,6 +7,7 @@ X-SquirrelJME-Group: tests
 LIBlet-Title: Test Base
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is the base interface for a test framework
- which is to make sure that things operate correctly.
-Main-Class: net.multiphasicapps.tests.DefaultTestCaller
+LIBlet-Description: This is the base interface for a test 
+ frameworkwhich is to make sure that things operate correctly.
+
+

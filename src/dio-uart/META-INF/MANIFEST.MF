@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: dio-uart
 X-SquirrelJME-UUID: dc4c49eb-90b2-4845-9a87-bba0d21e2160
-X-SquirrelJME-Depends: dio, dio-modem
+X-SquirrelJME-Depends: dio dio-modem
 X-SquirrelJME-Error: CX
 X-SquirrelJME-StandardLib: dio.uart;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (UART)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides access to serial UARTs.
+
 

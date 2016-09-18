@@ -6,7 +6,8 @@ X-SquirrelJME-Error: CP
 LIBlet-Title: Bootstrap JAR Compiler Interfaces
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains base interfaces which 
- are used to implement a Java compiler so that the bootstrap 
- system may build.
+LIBlet-Description: This project contains base interfaces which are 
+ used to implement a Java compiler so that the bootstrap system may 
+ build.
+
 

@@ -7,6 +7,7 @@ X-SquirrelJME-StandardLib: microedition.liblets;0.0.0
 LIBlet-Title: MEEP Application Suites and LIBlets
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides support for application suites 
- and LIBlets.
+LIBlet-Description: This provides support for application suites and 
+ LIBlets.
+
 

@@ -7,10 +7,10 @@ X-SquirrelJME-Error: AD
 LIBlet-Title: Base Terminal Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains classes which are 
- used to provide a generic implementation of terminals. A 
- terminal is a block of character cells with attributes. 
- Since there are number of systems that vary depending on 
- their terminal support, support may vary although the 
- classes here intend to be expressive enough.
+LIBlet-Description: This project contains classes which are used to 
+ provide a generic implementation of terminals. A terminal is a block 
+ of character cells with attributes. Since there are number of systems 
+ that vary depending on their terminal support, support may vary 
+ although the classes here intend to be expressive enough.
+
 

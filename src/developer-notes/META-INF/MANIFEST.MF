@@ -5,7 +5,8 @@ X-SquirrelJME-Depends: cldc-compact
 LIBlet-Title: Developer Nodes
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This package contains notes which are written by
-  developers for the purpose of progressive documentation, feel, and
-  reason for doing thing.
+LIBlet-Description: This package contains notes which are written by 
+ developers for the purpose of progressive documentation, feel, and 
+ reason for doing thing.
+
 

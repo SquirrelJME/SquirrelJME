@@ -8,8 +8,9 @@ LIBlet-Title: MEEP Provisioning
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for provisioning new 
- MIDlets and LIBlets which may exist on the network and can be
- seen in a way as a remote application downloader and installer
- except by a more concrete means. It is possible for applications
- to automatically be updated.
+ MIDlets and LIBlets which may exist on the network and can beseen in 
+ a way as a remote application downloader and installerexcept by a 
+ more concrete means. It is possible for applicationsto automatically 
+ be updated.
+
 

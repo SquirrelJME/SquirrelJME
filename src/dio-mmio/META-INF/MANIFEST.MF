@@ -7,6 +7,6 @@ X-SquirrelJME-StandardLib: dio.mmio;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (MMIO)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to memory mapped 
- I/O devices.
+LIBlet-Description: This provides access to memory mapped I/O devices.
+
 

@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: zip-reader-block
 X-SquirrelJME-UUID: 71331290-14ad-490a-b0ed-139ec86b1767
-X-SquirrelJME-Depends: cldc-full,
- io-inflate, io-region, zip
+X-SquirrelJME-Depends: cldc-full io-inflate io-region zip
 X-SquirrelJME-Error: AM
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains support for ZIP and JAR files due to
- the fact that JavaME lacks support for these in the form of a
- standard interface.
+LIBlet-Description: This contains support for ZIP and JAR files due 
+ tothe fact that JavaME lacks support for these in the form of 
+ astandard interface.
+
 

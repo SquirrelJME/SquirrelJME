@@ -6,6 +6,7 @@ X-SquirrelJME-Optional: image-reader-xpm
 LIBlet-Title: All Image Readers
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is a meta package which has optional
-  dependencies on all image formats that can be read.
+LIBlet-Description: This is a meta package which has optional 
+ dependencies on all image formats that can be read.
+
 

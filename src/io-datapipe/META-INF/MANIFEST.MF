@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: io-datapipe
 X-SquirrelJME-UUID: 558ba8fd-4a7c-4e47-a4d7-f3a315564944
-X-SquirrelJME-Depends: io-datasink, io-datafaucet
+X-SquirrelJME-Depends: io-datasink io-datafaucet
 X-SquirrelJME-Error: AC
 LIBlet-Title: Extra IO Data Pipe
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the base class for the
-  data pipe interfaces which takes input bytes and
-  translates them into an output.
+LIBlet-Description: This contains the base class for the data pipe 
+ interfaces which takes input bytes and translates them into an output.
+
 

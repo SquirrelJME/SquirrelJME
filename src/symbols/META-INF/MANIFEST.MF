@@ -6,7 +6,8 @@ X-SquirrelJME-Error: AL
 LIBlet-Title: Java Descriptors
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains parsers and handlers which are able
- to read, provide, and construct information that is related to binary
- names, identifiers, method descriptors, and field descriptors.
+LIBlet-Description: This contains parsers and handlers which are 
+ ableto read, provide, and construct information that is related to 
+ binarynames, identifiers, method descriptors, and field descriptors.
+
 

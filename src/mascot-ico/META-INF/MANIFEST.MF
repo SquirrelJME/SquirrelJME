@@ -5,8 +5,8 @@ X-SquirrelJME-Depends: mascot
 LIBlet-Title: SquirrelJME Mascot (Windows Icon)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This package contains an encoded Windows
-  or ReactOS compatible icon image.
-  NOTE THAT THE LOW RESOLUTION XPM IMAGES ARE THE ACTUAL
-  SOURCE IMAGES, NOT THE OTHER WAY AROUND.
+LIBlet-Description: This package contains an encoded Windows or 
+ ReactOS compatible icon image. NOTE THAT THE LOW RESOLUTION XPM 
+ IMAGES ARE THE ACTUAL SOURCE IMAGES, NOT THE OTHER WAY AROUND.
+
 

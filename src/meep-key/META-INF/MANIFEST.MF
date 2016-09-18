@@ -7,6 +7,7 @@ X-SquirrelJME-StandardLib: microedition.key;0.0.0
 LIBlet-Title: MEEP Key Events
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains classes for handling key 
- and other user input events.
+LIBlet-Description: This contains classes for handling key and other 
+ user input events.
+
 

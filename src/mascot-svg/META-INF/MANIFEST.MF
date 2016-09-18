@@ -8,3 +8,4 @@ LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains the original mascot 
  manually converted to SVG.
 
+

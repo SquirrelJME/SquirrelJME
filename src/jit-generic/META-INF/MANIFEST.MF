@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-generic
 X-SquirrelJME-UUID: fd1eb39f-672c-4764-9f1b-61e31e0f40e8
-X-SquirrelJME-Depends: jit, io-data, os-generic,
- util-unmodifiable, native-code
+X-SquirrelJME-Depends: jit io-data os-generic util-unmodifiable 
+ native-code
 X-SquirrelJME-Error: BA
 LIBlet-Title: JIT (Generic)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the generic JIT 
- which is used as a base for all JITs that target modern 
- and non-esoteric CPUs.
+LIBlet-Description: This project contains the generic JIT which is 
+ used as a base for all JITs that target modern and non-esoteric CPUs.
+
 

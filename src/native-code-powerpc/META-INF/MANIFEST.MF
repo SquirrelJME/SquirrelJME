@@ -6,6 +6,7 @@ X-SquirrelJME-Error: BT
 LIBlet-Title: Native Code (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains code generators for 
- PowerPC machine code.
+LIBlet-Description: This project contains code generators for PowerPC 
+ machine code.
+
 

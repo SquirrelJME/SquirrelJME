@@ -6,6 +6,7 @@ X-SquirrelJME-Error: BK
 LIBlet-Title: ByteDeque Streams
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains standard I/O streams 
- which can write to ByteDeques.
+LIBlet-Description: This contains standard I/O streams which can 
+ write to ByteDeques.
+
 

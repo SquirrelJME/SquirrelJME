@@ -6,8 +6,8 @@ X-SquirrelJME-Error: BL
 LIBlet-Title: Native Path Manager
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the base interfaces which 
- are used to manage file system paths for native systems. 
- This project is used both by the native operating system 
- support code and the emulator.
+LIBlet-Description: This contains the base interfaces which are used 
+ to manage file system paths for native systems. This project is used 
+ both by the native operating system support code and the emulator.
+
 

@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: os-generic
 X-SquirrelJME-UUID: c85d49ec-35e9-41df-bebf-1654a3928f71
-X-SquirrelJME-Depends: jit-base, io-data, symbols
+X-SquirrelJME-Depends: jit-base io-data symbols
 X-SquirrelJME-Error: AQ
 X-SquirrelJME-Group: os-generic
 Main-Class: net.multiphasicapps.squirreljme.os.generic.Main
 LIBlet-Title: Operating System (Generic)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the base support for 
- operating systems which use the generic JIT blob format.
+LIBlet-Description: This contains the base support for operating 
+ systems which use the generic JIT blob format.
+
 

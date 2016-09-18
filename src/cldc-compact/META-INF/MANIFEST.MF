@@ -6,7 +6,7 @@ X-SquirrelJME-Configuration: CLDC-1.8-Compact
 LIBlet-Title: CLDC 8 Compact
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is the standard JavaME 8 Connection 
- Limited Device Configuration which contains the core classes 
- used by Java ME.
+LIBlet-Description: This is the standard JavaME 8 Connection Limited 
+ Device Configuration which contains the core classes used by Java ME.
+
 

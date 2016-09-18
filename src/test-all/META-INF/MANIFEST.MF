@@ -2,21 +2,16 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: test-all
 X-SquirrelJME-UUID: a788b5a5-3e1a-4aca-bbd3-aac405e6cb80
 X-SquirrelJME-Depends: test-base
-X-SquirrelJME-Optional: test-contrib-all, 
- test-cldc-compact,
- test-io-inflate,
- test-io-slidingwindow,
- test-paths-posix,
- test-util-huffmantree,
- test-util-sorted,
- test-util-uri,
- test-zip-reader-stream,
- test-zip-writer-stream
+X-SquirrelJME-Optional: test-contrib-all test-cldc-compact 
+ test-io-inflate test-io-slidingwindow test-paths-posix 
+ test-util-huffmantree test-util-sorted test-util-uri 
+ test-zip-reader-stream test-zip-writer-stream
 X-SquirrelJME-Group: tests
 Main-Class: net.multiphasicapps.tests.DefaultTestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is a meta package which depends on all 
- the available tests to make sure that everything works.
+LIBlet-Description: This is a meta package which depends on all the 
+ available tests to make sure that everything works.
+
 

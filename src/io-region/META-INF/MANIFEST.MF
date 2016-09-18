@@ -6,6 +6,7 @@ X-SquirrelJME-Error: AP
 LIBlet-Title: Extra IO Regions
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains input stream region
-  limits and control.
+LIBlet-Description: This contains input stream region limits and 
+ control.
+
 

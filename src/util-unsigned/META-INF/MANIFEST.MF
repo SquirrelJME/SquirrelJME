@@ -5,6 +5,7 @@ X-SquirrelJME-Depends: cldc-compact
 LIBlet-Title: Unsigned Operations
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides extra methods which are
-  used to more easily handle unsigned values.
+LIBlet-Description: This provides extra methods which are used to 
+ more easily handle unsigned values.
+
 

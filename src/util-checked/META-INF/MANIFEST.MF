@@ -6,6 +6,7 @@ X-SquirrelJME-Error: AV
 LIBlet-Title: Checked Collections
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides collections which are
-  checked so that their value types are not violated.
+LIBlet-Description: This provides collections which are checked so 
+ that their value types are not violated.
+
 

@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: io-cpp
 X-SquirrelJME-UUID: 88a544a1-a838-479f-9108-87e351d47ea1
-X-SquirrelJME-Depends: cldc-compact, util-checked
+X-SquirrelJME-Depends: cldc-compact util-checked
 X-SquirrelJME-Error: AU
 LIBlet-Title: C Preprocessor
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This takes an input stream of characters
-  and performs C preprocessor translation and provides
-  tokenization of the input data.
+LIBlet-Description: This takes an input stream of characters and 
+ performs C preprocessor translation and provides tokenization of the 
+ input data.
+
 
