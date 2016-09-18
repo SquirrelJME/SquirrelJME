@@ -40,11 +40,28 @@ then
 	fi
 fi
 
-# Run it
-"$JAVA" $JAVA_OPTIONS \
+# Run it once to build the bootstrap
+if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dproject.root=$__exedir" \
+	"-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=true" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir/src" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
 	"$BOOTSTRAP_CLASS" $*
-exit $?
+then
+	exit $?
+fi
+
+# Run it twice to actually perform the work
+if [ "$BOOTSTRAP_CLASS" != "Build" ]
+then
+	if ! "$JAVA" $JAVA_OPTIONS \
+		"-Dproject.root=$__exedir" \
+		"-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=false" \
+		"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir/src" \
+		"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
+		-classpath ".:sjmeboot.jar" "$BOOTSTRAP_CLASS" $*
+	then
+		exit $?
+	fi
+fi
 

@@ -147,3 +147,9 @@ near impossible to debug. When it comes to dynamically loading classes and
 interfaces via proxies, if they cross `ClassLoader` bounds then things
 start to explode.
 
+## 19:10
+
+Probably one thing to try would be after a build, relaunch with a special
+flag so that way I know it is a secondary launch after an initial bootstrap
+build. So essentially, run java twice.
+

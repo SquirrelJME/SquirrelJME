@@ -67,6 +67,11 @@ public class Bootstrap
 	public static final Path BOOTSTRAP_JAR_PATH =
 		Paths.get("sjmeboot.jar");
 	
+	/** Only build? */
+	public static final boolean ONLY_BUILD =
+		Boolean.getBoolean("net.multiphasicapps.squirreljme.bootstrap." +
+		"onlybuild");
+	
 	/** The bootstrap manifest file. */
 	public static final Path BOOTSTRAP_MANIFEST;
 	
@@ -130,16 +135,21 @@ public class Bootstrap
 		// Could fail
 		try
 		{
-			// Locate the directories that contains all of the source code
-			// along with dependencies for the bootstrap
-			Path[] sources = __locateSources();
+			// Only build the bootstrap, do not launch it yet
+			if (ONLY_BUILD)
+			{
+				// Locate the directories that contains all of the source code
+				// along with dependencies for the bootstrap
+				Path[] sources = __locateSources();
 			
-			// Is the bootstrap technically out of date? Build it if so
-			if (__outOfDate(sources))
-				__build(sources);
+				// Is the bootstrap technically out of date? Build it if so
+				if (__outOfDate(sources))
+					__build(sources);
+			}
 			
-			// Launch it
-			__launch();
+			// Launch it, but only if it is not only being build
+			else
+				__launch();
 		}
 		
 		// Failed
@@ -405,19 +415,19 @@ public class Bootstrap
 			// And helper interfaces
 			Class<?> helpcc = Class.forName("net.multiphasicapps." +
 				"squirreljme.bootstrap.base.compiler.BootCompiler", true,
-				ucl);
+				null);
 			Class<?> helpln = Class.forName("net.multiphasicapps." +
 				"squirreljme.bootstrap.base.launcher.BootLauncher",
-				true, ucl);
+				true, null);
 			
 			// Get the main method which gets those helper instances
 			Method main = bootstrap.getDeclaredMethod("main",
 				helpcc, helpln, String[].class);
 			
 			// Invoke it
-			main.invoke(null, Proxy.newProxyInstance(ucl, new Class[]{helpcc},
-				new __CompilerProxy__(ucl)), Proxy.newProxyInstance(ucl,
-				new Class[]{helpln}, new __LauncherProxy__(ucl)), this._args);
+			main.invoke(null, Proxy.newProxyInstance(syscl, new Class[]{helpcc},
+				new __CompilerProxy__()), Proxy.newProxyInstance(syscl,
+				new Class[]{helpln}, new __LauncherProxy__()), this._args);
 		}
 			
 		// Called code failed to invoke, throw wrapped exception instead
@@ -663,16 +673,10 @@ public class Bootstrap
 		/**
 		 * Initializes the compiler proxy.
 		 *
-		 * @param __cl The class loader used to load the interface.
-		 * @throws NullPointerException On null arguments.
 		 * @since 2016/09/18
 		 */
-		private __CompilerProxy__(ClassLoader __cl)
-			throws NullPointerException
+		private __CompilerProxy__()
 		{
-			// Check
-			if (__cl == null)
-				throw new NullPointerException("NARG");
 		}
 		
 		/**
@@ -700,16 +704,10 @@ public class Bootstrap
 		/**
 		 * Initializes the launcher proxy.
 		 *
-		 * @param __cl The class loader used to load the interface.
-		 * @throws NullPointerException On null arguments.
 		 * @since 2016/09/18
 		 */
-		private __LauncherProxy__(ClassLoader __cl)
-			throws NullPointerException
+		private __LauncherProxy__()
 		{
-			// Check
-			if (__cl == null)
-				throw new NullPointerException("NARG");
 		}
 		
 		/**
