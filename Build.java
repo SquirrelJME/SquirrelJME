@@ -205,19 +205,19 @@ public class Build
 		// Get the command to use
 		String command = __args.pollFirst();
 		if (command == null)
-			command = "native";
+			command = "target";
 		
 		// Depends on the command
 		Project pp;
 		switch (command)
 		{
 				// Compile native SquirrelJME and possibly simulate 
-			case "native":
+			case "target":
 				__launch(0, getProject("builder-all"), __args);
 				break;
 			
 				// Run tests on the host
-			case "host-tests":
+			case "tests":
 				__launch(0, getProject("test-all"), __args);
 				break;
 				

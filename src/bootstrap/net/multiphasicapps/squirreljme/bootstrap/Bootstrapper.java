@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.bootstrap;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -71,11 +73,37 @@ public class Bootstrapper
 	 */
 	public void run(String... __args)
 	{
-		// Force to exist
-		if (__args == null)
-			__args = new String[0];
+		// Force to exist, default to target compilation when nothing has
+		// be specified.
+		if (__args == null || __args.length <= 0)
+			__args = new String[]{"target"};
 		
-		throw new Error("TODO");
+		// Add arguments to queue
+		Deque<String> args = new ArrayDeque<>();
+		for (String a : __args)
+			args.offerLast(a);
+		
+		// Depends
+		switch (args.peekFirst())
+		{
+				// Run tests on the host
+			case "tests":
+				throw new Error("TODO");
+				
+				// Launch the given project
+			case "launch":
+				throw new Error("TODO");
+				
+				// Build the given project
+			case "build":
+				throw new Error("TODO");
+			
+				// Cross compile SquirrelJME's target binary
+			case "target":
+				args.removeFirst();
+			default:
+				throw new Error("TODO");
+		}
 	}
 }
 
