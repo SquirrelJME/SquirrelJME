@@ -14,7 +14,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
+import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
+import net.multiphasicapps.squirreljme.projects.ProjectName;
 
 /**
  * This is the bootstrapper which is used to build and potentially launch
@@ -88,22 +90,72 @@ public class Bootstrapper
 		{
 				// Run tests on the host
 			case "tests":
-				throw new Error("TODO");
+				args.removeFirst();
+				args.offerFirst("test-all");
 				
 				// Launch the given project
 			case "launch":
-				throw new Error("TODO");
+				args.removeFirst();
+				__launch(__getBinary(new ProjectName(args.removeFirst())),
+					args.<String>toArray(new String[args.size()]));
+				return;
 				
-				// Build the given project
+				// Build the given project(s)
 			case "build":
-				throw new Error("TODO");
+				args.removeFirst();
+				while (!args.isEmpty())
+					__getBinary(new ProjectName(args.remove()));
+				return;
 			
 				// Cross compile SquirrelJME's target binary
 			case "target":
 				args.removeFirst();
 			default:
-				throw new Error("TODO");
+				__launch(__getBinary(new ProjectName("builder-all")),
+					args.<String>toArray(new String[args.size()]));
+				return;
 		}
+	}
+	
+	/**
+	 * Returns the binary for the given project, building dependencies if they
+	 * are missing.
+	 *
+	 * @param __n The binary to get and potentially build.
+	 * @return The binary for the given project.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	ProjectInfo __getBinary(ProjectName __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Launches the specified binary with the given set of arguments.
+	 *
+	 * @param __bin The binary to launch.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException If no binary was specified.
+	 * @since 2016/09/18
+	 */
+	void __launch(ProjectInfo __bin, String... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__bin == null)
+			throw new NullPointerException("NARG");
+		
+		// Force to exist
+		if (__args == null)
+			__args = new String[0];
+		
+		throw new Error("TODO");
 	}
 }
 
