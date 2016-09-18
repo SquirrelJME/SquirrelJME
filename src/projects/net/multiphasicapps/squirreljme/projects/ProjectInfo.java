@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.attribute.FileTime;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -35,6 +37,10 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
 public class ProjectInfo
 	implements Comparable<ProjectInfo>
 {
+	/** The earliest date. */
+	private static final FileTime _EARLIEST_DATE =
+		FileTime.fromMillis(Long.MIN_VALUE);
+	
 	/** The owning project list. */
 	protected final ProjectList plist;
 	
@@ -61,6 +67,9 @@ public class ProjectInfo
 	
 	/** Optional dependencies of this project. */
 	private volatile Reference<Set<ProjectName>> _odepends;
+	
+	/** Cached date. */
+	private volatile Reference<FileTime> _date;
 	
 	/**
 	 * Initializes the project information from the given ZIP.
@@ -147,10 +156,28 @@ public class ProjectInfo
 	{
 		try
 		{
-			if (false)
-				throw new IOException();
+			// Get
+			Reference<FileTime> ref = this._date;
+			FileTime rv;
 			
-			throw new Error("TODO");
+			// Cache?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// If not a directory, get the time of the file
+				Path root = this.path;
+				if (!Files.isDirectory(root))
+					rv = Files.getLastModifiedTime(root);
+				
+				// Otherwise browse through all of them
+				else
+					rv = __recursiveDate(root);
+				
+				// Cache it
+				this._date = new WeakReference<>(rv);
+			}
+			
+			// Return it
+			return rv;
 		}
 		
 		// {@squirreljme.error CI08 Could not get the latest modification
@@ -431,6 +458,46 @@ public class ProjectInfo
 		{
 			throw new InvalidProjectException("CI03", e);
 		}
+	}
+	
+	/**
+	 * Walks the directory tree and returns the highest modification date.
+	 *
+	 * @param __p The path to search through.
+	 * @return The highest modification time.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	private static FileTime __recursiveDate(Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Start at the earliest date
+		FileTime rv = _EARLIEST_DATE;
+		
+		// Look at all entries
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
+		{
+			for (Path p : ds)
+			{
+				FileTime tt;
+				if (Files.isDirectory(p))
+					tt = __recursiveDate(p);
+				else
+					tt = Files.getLastModifiedTime(p);
+				
+				// Use this date instead?
+				if (tt.compareTo(rv) > 0)
+					rv = tt;
+			}
+		}
+		
+		// Return the latest
+		return rv;
 	}
 }
 

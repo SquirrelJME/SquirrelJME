@@ -186,6 +186,8 @@ public class Bootstrapper
 		}
 		
 		// It must be compiled
+		System.err.printf("*** Building %s...%n", __n);
+		
 		throw new Error("TODO");
 	}
 	
