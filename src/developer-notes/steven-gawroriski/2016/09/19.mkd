@@ -4,3 +4,10 @@
 
 I suppose today is a bit slower than yesterday.
 
+## 14:22
+
+I would say for projects, I will need a way to list their contents in a way
+that is managed by the information class. Basically a `ProjectDirectory` which
+can be referenced. It would likely be best if it were `Closeable` where each
+directory request is unique.
+
