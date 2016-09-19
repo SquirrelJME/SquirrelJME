@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
@@ -162,6 +163,7 @@ public final class ProjectGroup
 				// Determine the files to be compiled. If any files are not
 				// being compiled then place them in the output JAR during the
 				// scanning set (simplifies things)
+				byte[] buf = null;
 				for (String s : src.contents())
 					if (__isValidJavaFileName(s))
 						ccthese.add(s);
@@ -171,8 +173,30 @@ public final class ProjectGroup
 						if (s.equals("META-INF/MANIFEST.MF"))
 							continue;
 						
-						throw new Error("TODO");
+						// Missing buffer?
+						if (buf == null)
+							buf = new byte[4096];
+						
+						// Copy the data
+						try (OutputStream os = zip.nextEntry(s,
+							ZipCompressionType.DEFAULT_COMPRESSION);
+							InputStream is = src.open(s))
+						{
+							for (;;)
+							{
+								// Read
+								int rc = is.read(buf);
+								
+								// EOF?
+								if (rc < 0)
+									break;
+								
+								// Write
+								os.write(buf, 0, rc);
+							}
+						}
 					}
+				buf = null;
 				
 				// Call the compiler
 				// Any calls that are made to the CompilerOutput would have
