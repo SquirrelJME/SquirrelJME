@@ -365,9 +365,22 @@ public class ProjectInfo
 	 * @since 2016/09/06
 	 */
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		return this.name.hashCode();
+	}
+	
+	/**
+	 * Is this project an executable MIDlet?
+	 *
+	 * @return {@code true} if it is a MIDlet.
+	 * @since 2016/09/19
+	 */
+	public final boolean isMIDlet()
+	{
+		// Just check to see if the first MIDlet information is defined
+		return (null != manifest().getMainAttributes().get(
+			new JavaManifestKey("MIDlet-1")));
 	}
 	
 	/**

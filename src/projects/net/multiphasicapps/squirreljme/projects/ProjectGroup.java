@@ -416,12 +416,68 @@ public final class ProjectGroup
 		MutableJavaManifestAttributes attr = __man.getMainAttributes();
 		
 		// Try to get the version number of the project manager
-		ProjectGroup pmgrp = this.list.get("projects");
+		ProjectList list = this.list;
+		ProjectGroup pmgrp = list.get("projects");
 		ProjectInfo pminf = (pmgrp == null ? null : pmgrp.any());
 		attr.put(new JavaManifestKey("Created-By"),
 			(pminf != null ? pminf.version() : "0.0.0") + " (SquirrelJME)");
 		
-		throw new Error("TODO");
+		// Is this a MIDlet?
+		boolean ismidlet = __src.isMIDlet();
+		
+		// Add required and optional dependencies
+		boolean req = false;
+		int depid = 0;
+		do
+		{
+			// Flip
+			req = !req;
+			
+			// Go through dependencies
+			for (ProjectName dn : __src.dependencies(req))
+			{
+				// {@squirreljme.error CI0b The project has a required
+				// dependency on the specified project, however it does not
+				// exist. (This project; The dependency)}
+				ProjectGroup dg = list.get(dn);
+				if (req && dg == null)
+					throw new MissingDependencyException(String.format(
+						"CI0b %s %s", __src.name(), dn));
+				
+				// Get any information about it
+				ProjectInfo di = (dg != null ? dg.any() : null);
+				
+				// Determine string form
+				// If there is an optional dependency on a project which is
+				// missing then use a special SquirrelJME specfic optional
+				String format = (di != null ?
+					String.format("liblet;%s;%s;%s;%s+",
+						(!req ? "optional" : "required"), di.title(),
+						di.vendor(), di.version()) :
+					String.format("x-squirreljme-namespace;optional;%s;;",
+						dn));
+				
+				// Add liblet dependency
+				attr.put(new JavaManifestKey(String.format(
+					"LIBlet-Dependency-%d", depid)), format);
+				
+				// If this is a MIDlet then add the library as a dependency
+				if (ismidlet)
+					attr.put(new JavaManifestKey(String.format(
+						"MIDlet-Dependency-%d", depid)), format);
+				
+				// Increase dependency ID
+				depid++;
+			}
+		} while (!req);
+		
+		// If it is a midlet then it must have these attributes also
+		if (ismidlet)
+		{
+			attr.put(new JavaManifestKey("MIDlet-Name"), __src.title());
+			attr.put(new JavaManifestKey("MIDlet-Vendor"), __src.vendor());
+			attr.put(new JavaManifestKey("MIDlet-Version"), __src.version());
+		}
 	}
 	
 	/**
