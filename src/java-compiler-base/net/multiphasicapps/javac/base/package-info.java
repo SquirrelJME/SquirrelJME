@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This contains the compiler interface.
+ * This package contains the compiler interface.
  *
  * @since 2016/09/18
  */
