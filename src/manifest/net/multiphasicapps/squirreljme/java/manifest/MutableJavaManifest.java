@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.java.manifest;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +25,10 @@ import java.util.Set;
 public class MutableJavaManifest
 	extends AbstractMap<String, MutableJavaManifestAttributes>
 {
+	/** Main attributes. */
+	protected final Map<String, MutableJavaManifestAttributes> attributes =
+		new LinkedHashMap<>();
+	
 	/**
 	 * This initializes a new empty manifest.
 	 *
@@ -31,6 +36,8 @@ public class MutableJavaManifest
 	 */
 	public MutableJavaManifest()
 	{
+		// Always add a main attribute
+		this.attributes.put("", new MutableJavaManifestAttributes());
 	}
 	
 	/**
@@ -47,7 +54,18 @@ public class MutableJavaManifest
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through and add
+		for (Map.Entry<String, JavaManifestAttributes> e : __man.entrySet())
+		{
+			// Create new attribute set
+			MutableJavaManifestAttributes attr;
+			put(e.getKey(), (attr = new MutableJavaManifestAttributes()));
+			
+			// Copy values
+			for (Map.Entry<JavaManifestKey, String> f :
+				e.getValue().entrySet())
+				attr.put(f.getKey(), f.getValue());
+		}
 	}
 	
 	/**
@@ -58,7 +76,7 @@ public class MutableJavaManifest
 	public final Set<Map.Entry<String, MutableJavaManifestAttributes>>
 		entrySet()
 	{
-		throw new Error("TODO");
+		return this.attributes.entrySet();
 	}
 	
 	/**
@@ -69,7 +87,24 @@ public class MutableJavaManifest
 	 */
 	public final MutableJavaManifestAttributes getMainAttributes()
 	{
-		throw new Error("TODO");
+		return get("");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/19
+	 */
+	@Override
+	public final MutableJavaManifestAttributes put(String __k,
+		MutableJavaManifestAttributes __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Put
+		return this.attributes.put(__k, __v);
 	}
 	
 	/**

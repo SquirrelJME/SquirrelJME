@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.java.manifest;
 
 import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +23,10 @@ import java.util.Set;
 public class MutableJavaManifestAttributes
 	extends AbstractMap<JavaManifestKey, String>
 {
+	/** The manifest values. */
+	protected final Map<JavaManifestKey, String> values =
+		new LinkedHashMap<>();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/19
@@ -29,7 +34,23 @@ public class MutableJavaManifestAttributes
 	@Override
 	public final Set<Map.Entry<JavaManifestKey, String>> entrySet()
 	{
-		throw new Error("TODO");
+		return this.values.entrySet();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/19
+	 */
+	@Override
+	public String put(JavaManifestKey __k, String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return this.values.put(__k, __v);
 	}
 }
 
