@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -72,6 +73,9 @@ public class ProjectInfo
 	
 	/** Cached date. */
 	private volatile Reference<FileTime> _date;
+	
+	/** Cached contents. */
+	private volatile Reference<Iterable<String>> _contents;
 	
 	/**
 	 * Initializes the project information from the given ZIP.
@@ -141,7 +145,32 @@ public class ProjectInfo
 	public final Iterable<String> contents()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<Iterable<String>> ref = this._contents;
+		Iterable<String> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Resulting set
+			Set<String> into = new LinkedHashSet<>();
+			
+			// Get contents from the ZIP?
+			Path path = this.path;
+			if (this.iszip)
+				throw new Error("TODO");
+			
+			// Get contents from the directory tree
+			else
+				__recursiveWalk(into, path, path);
+			
+			// Lock
+			rv = UnmodifiableSet.<String>of(into);
+			this._contents = new WeakReference<>(rv);
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -587,6 +616,76 @@ public class ProjectInfo
 		
 		// Return the latest
 		return rv;
+	}
+	
+	/**
+	 * Recursively walks the directory tree to obtain project content file
+	 * names.
+	 *
+	 * @param __into The set to write into.
+	 * @param __root The root directory.
+	 * @param __at The current scan position.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	private static void __recursiveWalk(Set<String> __into, Path __root,
+		Path __at)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__into == null || __root == null || __at == null)
+			throw new NullPointerException("NARG");
+		
+		// Look at all entries
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__at))
+		{
+			for (Path p : ds)
+			{
+				// Go deeper
+				if (Files.isDirectory(p))
+					__recursiveWalk(__into, __root, p);
+				
+				// Add file
+				else
+					__into.add(__zipName(__root, p));
+			}
+		}
+	}
+	
+	/**
+	 * Calculates the name that a file would appear as inside of a ZIP file.
+	 *
+	 * @param __root The root path.
+	 * @param __p The file to add.
+	 * @return The ZIP compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private static String __zipName(Path __root, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __p == null)
+			throw new NullPointerException();
+		
+		// Calculate relative name
+		Path rel = __root.toAbsolutePath().relativize(__p.toAbsolutePath());
+		
+		// Build name
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : rel)
+		{
+			// Prefix slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp);
+		}
+		
+		// Return it
+		return sb.toString();
 	}
 }
 
