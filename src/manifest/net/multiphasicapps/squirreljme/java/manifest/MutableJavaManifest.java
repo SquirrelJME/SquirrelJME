@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.java.manifest;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,11 +22,17 @@ import java.util.Set;
 /**
  * This is a mutable version of {@link JavaManifest}.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/09/19
  */
 public class MutableJavaManifest
 	extends AbstractMap<String, MutableJavaManifestAttributes>
 {
+	/** The maximum number of columns a manifest may have. */
+	private static final int _COLUMN_LIMIT =
+		72;
+	
 	/** Main attributes. */
 	protected final Map<String, MutableJavaManifestAttributes> attributes =
 		new LinkedHashMap<>();
@@ -122,7 +130,126 @@ public class MutableJavaManifest
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create writer to write data
+		Writer w = new OutputStreamWriter(__os, "utf-8");
+		
+		// Write main attribute first
+		__write(w, getMainAttributes());
+		
+		// Write other attributes
+		for (Map.Entry<String, MutableJavaManifestAttributes> e :
+			this.attributes.entrySet())
+		{
+			// Ignore the main attribute
+			String k = e.getKey();
+			if (k.equals(""))
+				continue;
+			
+			// Sub-attributes are always spaced after the previous one
+			w.write("\r\n");
+			
+			// Write the name
+			__write(w, "Name", k);
+			
+			// Write values
+			__write(w, e.getValue());
+		}
+	}
+	
+	/**
+	 * Writes attributes to the output.
+	 *
+	 * @param __w The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	private void __write(Writer __w, MutableJavaManifestAttributes __a)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__w == null || __a == null)
+			throw new NullPointerException("NARG");
+		
+		// The attribute version is always first
+		JavaManifestKey verk = new JavaManifestKey("MANIFEST-VERSION");
+		String ver = __a.get(verk);
+		if (ver != null)
+			__write(__w, "MANIFEST-VERSION", ver);
+		
+		// Write all value
+		for (Map.Entry<JavaManifestKey, String> e : __a.entrySet())
+		{
+			// Do not write the version twice
+			JavaManifestKey k = e.getKey();
+			if (verk.equals(k))
+				continue;
+			
+			// Write pair
+			__write(__w, k.toString(), e.getValue());
+		}
+	}
+	
+	/**
+	 * Writes the given key and value to the output.
+	 *
+	 * @param __w The stream to write to.
+	 * @param __k The key to write.
+	 * @param __v The value to write.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	private void __write(Writer __w, String __k, String __v)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__w == null || __k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Write pair
+		int col = 0;
+		for (int z = 0; z < z; z++)
+		{
+			String s = (z == 0 ? __k : __v);
+			
+			// Print it
+			int n = s.length();
+			for (int i = 0; i < n; i++)
+			{
+				// Ignore out of range characters
+				char c = s.charAt(i);
+				if (c < ' ')
+					continue;
+				
+				// Would be on a new line?
+				int nextcol = col + 1;
+				if (nextcol >= _COLUMN_LIMIT)
+				{
+					__w.write("\r\n");
+					
+					// Indent next line with space as long as this is not
+					// the last character being written
+					if (i + 1 < n)
+						__w.write(' ');
+					
+					// Set next column
+					nextcol = 1;
+				}
+				
+				// Write the character
+				__w.write(c);
+				
+				// Set new column
+				col = nextcol;
+			}
+			
+			// Add spacer
+			if (z == 0)
+			{
+				__w.write(": ");
+				col += 2;
+			}
+		}
 	}
 }
 
