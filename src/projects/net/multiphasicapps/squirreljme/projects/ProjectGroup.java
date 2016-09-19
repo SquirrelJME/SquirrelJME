@@ -79,6 +79,26 @@ public final class ProjectGroup
 	}
 	
 	/**
+	 * Attempts to return the binary project and if that does not exist then
+	 * the source one will be returned if that exists.
+	 *
+	 * @return Either the binary project or the source one, or {@code null} if
+	 * neither exist.
+	 * @since 2016/09/19
+	 */
+	public final ProjectInfo any()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			ProjectInfo rv = this._bin;
+			if (rv != null)
+				return rv;
+			return this._src;
+		}
+	}
+	
+	/**
 	 * This returns the associated binary project which contains class files
 	 * and other resource.
 	 *
@@ -203,7 +223,7 @@ public final class ProjectGroup
 				// been placed in the JAR, so adding does not have to be
 				// performed following this.
 				__bc.compile(co, ci, Arrays.<String>asList("-target", "1.7",
-					"-source", "1.7", "-g"), ccthese);
+					"-source", "1.7", "-g", "-Xlint:deprecation"), ccthese);
 			}
 			
 			// Determine the name of the binary
@@ -377,6 +397,34 @@ public final class ProjectGroup
 	}
 	
 	/**
+	 * Initializes the manifest that is to be used on the binary output file.
+	 *
+	 * @param __man The manifest to write to.
+	 * @param __src The source project to source data from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	final void __setupManifest(MutableJavaManifest __man,
+		ProjectInfo __src)
+		throws NullPointerException
+	{
+		// Check
+		if (__man == null || __src == null)
+			throw new NullPointerException("NARG");
+		
+		// Get main attributes
+		MutableJavaManifestAttributes attr = __man.getMainAttributes();
+		
+		// Try to get the version number of the project manager
+		ProjectGroup pmgrp = this.list.get("projects");
+		ProjectInfo pminf = (pmgrp == null ? null : pmgrp.any());
+		attr.put(new JavaManifestKey("Created-By"),
+			(pminf != null ? pminf.version() : "0.0.0") + " (SquirrelJME)");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Checks whether the given file is a valid Java file name.
 	 *
 	 * @param __s The file name to check.
@@ -396,28 +444,6 @@ public final class ProjectGroup
 		
 		// Remove the extension
 		__s = __s.substring(0, __s.length() - 5);
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Initializes the manifest that is to be used on the binary output file.
-	 *
-	 * @param __man The manifest to write to.
-	 * @param __src The source project to source data from.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/19
-	 */
-	final static void __setupManifest(MutableJavaManifest __man,
-		ProjectInfo __src)
-		throws NullPointerException
-	{
-		// Check
-		if (__man == null || __src == null)
-			throw new NullPointerException("NARG");
-		
-		// Get main attributes
-		MutableJavaManifestAttributes attr = __man.getMainAttributes();
 		
 		throw new Error("TODO");
 	}

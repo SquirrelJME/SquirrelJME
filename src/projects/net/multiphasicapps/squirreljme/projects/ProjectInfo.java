@@ -25,6 +25,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
@@ -437,6 +438,19 @@ public class ProjectInfo
 	}
 	
 	/**
+	 * Returns the title of this project.
+	 *
+	 * @return The project title or {@code null} if it was not
+	 * specified.
+	 * @since 2016/09/19
+	 */
+	public final String title()
+	{
+		return manifest().getMainAttributes().get(
+			new JavaManifestKey("LIBlet-Title"));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/06/25
 	 */
@@ -457,6 +471,32 @@ public class ProjectInfo
 		if (this.isbinary)
 			return ProjectType.BINARY;
 		return ProjectType.SOURCE;
+	}
+	
+	/**
+	 * Returns the vendor of this project.
+	 *
+	 * @return The project vendor or {@code null} if it was not
+	 * specified.
+	 * @since 2016/09/19
+	 */
+	public final String vendor()
+	{
+		return manifest().getMainAttributes().get(
+			new JavaManifestKey("LIBlet-Vendor"));
+	}
+	
+	/**
+	 * Returns the version number of this project.
+	 *
+	 * @return The project version number or {@code null} if it was not
+	 * specified.
+	 * @since 2016/09/19
+	 */
+	public final String version()
+	{
+		return manifest().getMainAttributes().get(
+			new JavaManifestKey("LIBlet-Version"));
 	}
 	
 	/**
