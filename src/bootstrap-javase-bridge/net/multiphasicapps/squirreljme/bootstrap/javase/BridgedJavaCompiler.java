@@ -67,9 +67,7 @@ public class BridgedJavaCompiler
 		
 		// Setup virtual file manager to wrap the compiler inputs and
 		// outputs
-		StandardJavaFileManager jfm = null;
-		if (true)
-			throw new Error("TODO");
+		StandardJavaFileManager jfm = new __FileManager__(__co, __ci);
 		
 		// Determine files to compile
 		Set<JavaFileObject> ccthese = new LinkedHashSet<>();
