@@ -14,6 +14,7 @@ import java.io.IOException;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
+import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerInput;
 import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerOutput;
 
 /**
@@ -46,7 +47,7 @@ public class BridgedJavaCompiler
 	 * @since 2016/09/18
 	 */
 	@Override
-	public boolean compile(CompilerOutput __co)
+	public boolean compile(CompilerOutput __co, CompilerInput __ci)
 		throws IOException
 	{
 		throw new Error("TODO");

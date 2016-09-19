@@ -130,14 +130,15 @@ public final class ProjectGroup
 				Channels.newOutputStream(FileChannel.open(tempjarname,
 				StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
 			{
-				// Setup compiler output
+				// Setup compiler output and input
 				__CompilerOutput__ co = new __CompilerOutput__(zip);
+				__CompilerInput__ ci = new __CompilerInput__(list, src);
 				
 				if (true)
 					throw new Error("TODO");
 				
 				// Call the compiler
-				__bc.compile(co);
+				__bc.compile(co, ci);
 			}
 			
 			// Determine the name of the binary

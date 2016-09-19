@@ -25,12 +25,13 @@ public interface BootCompiler
 	 * compiler.
 	 *
 	 * @param __co The output of the compiler.
+	 * @param __ci File input for the compiler.
 	 * @return {@code true} if compilation has succeeded, otherwise this will
 	 * return {@code false}.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/09/18
 	 */
-	public abstract boolean compile(CompilerOutput __co)
+	public abstract boolean compile(CompilerOutput __co, CompilerInput __ci)
 		throws IOException;
 }
 
