@@ -501,7 +501,34 @@ public final class ProjectGroup
 		// Remove the extension
 		__s = __s.substring(0, __s.length() - 5);
 		
-		throw new Error("TODO");
+		// Go through all characters
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Ok
+			if (Character.isLowerCase(c) || Character.isUpperCase(c) ||
+				Character.isDigit(c) || c == '_' || c == '/')
+				continue;
+			
+			// Get the last slash and the last dash
+			int ls = __s.lastIndexOf('/');
+			int ld = __s.lastIndexOf('-');
+			
+			// Cannot be package-info if...
+			// Illegal character before the last slash
+			// There is no last slash
+			// Dash is before the slash, or is missing
+			if (i < ls || ls < 0 || ld < ls)
+				return false;
+			
+			// Check if it ends with the package info
+			return __s.endsWith("/package-info");
+		}
+		
+		// Valid
+		return true;
 	}
 }
 
