@@ -168,3 +168,7 @@ Double JVM invoke has a speed cost, but it works.
 
 So to recap, I just need to write the compiler and then the launcher.
 
+## 21:43
+
+So perhaps I need a compiler directory of sorts.
+

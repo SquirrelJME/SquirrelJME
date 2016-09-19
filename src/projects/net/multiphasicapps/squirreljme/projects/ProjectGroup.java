@@ -126,7 +126,7 @@ public final class ProjectGroup
 		try
 		{
 			// Create output ZIP to compile into
-			try (final ZipStreamWriter zip = new ZipStreamWriter(
+			try (ZipStreamWriter zip = new ZipStreamWriter(
 				Channels.newOutputStream(FileChannel.open(tempjarname,
 				StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
 			{
