@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bootstrap.base.compiler;
+package net.multiphasicapps.javac.base;
 
 /**
  * This interface is used to allow access to input source files and classes

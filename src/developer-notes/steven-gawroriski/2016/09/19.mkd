@@ -11,3 +11,9 @@ that is managed by the information class. Basically a `ProjectDirectory` which
 can be referenced. It would likely be best if it were `Closeable` where each
 directory request is unique.
 
+## 15:48
+
+However, this code will likely be shared with the actual Java compiler I would
+write in the future, to interact with it that is. As such, it should be treated
+as such.
+

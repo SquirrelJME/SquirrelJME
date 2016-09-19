@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.projects;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerInput;
+import net.multiphasicapps.javac.base.CompilerInput;
 
 /**
  * DESCRIBE THIS.

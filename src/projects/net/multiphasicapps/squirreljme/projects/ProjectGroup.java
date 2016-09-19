@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
+import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -104,7 +104,7 @@ public final class ProjectGroup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public final ProjectInfo compileSource(BootCompiler __bc)
+	public final ProjectInfo compileSource(Compiler __bc)
 		throws IOException, MissingSourceException, NullPointerException
 	{
 		// Check

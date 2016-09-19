@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
+import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
@@ -33,7 +33,7 @@ public class Bootstrapper
 	protected final ProjectList projects;
 	
 	/** The bootstrap compiler. */
-	protected final BootCompiler compiler;
+	protected final Compiler compiler;
 	
 	/** The bootstrap launcher. */
 	protected final BootLauncher launcher;
@@ -47,7 +47,7 @@ public class Bootstrapper
 	 * @throws NullPointerException If no project list was specified.
 	 * @since 2016/09/18
 	 */
-	public Bootstrapper(ProjectList __pl, BootCompiler __bc, BootLauncher __bl)
+	public Bootstrapper(ProjectList __pl, Compiler __bc, BootLauncher __bl)
 		throws NullPointerException
 	{
 		// Check
@@ -196,7 +196,7 @@ public class Bootstrapper
 		
 		// {@squirreljme.error Cannot build the specified project because a
 		// compiler is not available for usage. (The project name)}
-		BootCompiler bc = this.compiler;
+		Compiler bc = this.compiler;
 		if (bc == null)
 			throw new RuntimeException(String.format("CL07 %s", __n));
 		

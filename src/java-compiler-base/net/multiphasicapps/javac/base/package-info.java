@@ -14,5 +14,5 @@
  * @since 2016/09/18
  */
 
-package net.multiphasicapps.squirreljme.bootstrap.base.compiler;
+package net.multiphasicapps.javac.base;
 

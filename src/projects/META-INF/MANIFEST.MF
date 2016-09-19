@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: projects
 X-SquirrelJME-UUID: ae182ee0-9e2d-49cf-b15a-015fb18bdd7d
 X-SquirrelJME-Depends: cldc-full manifest zip-reader-block 
- util-unmodifiable util-sorted bootstrap-base-compiler 
+ util-unmodifiable util-sorted java-compiler-base 
  zip-writer-stream
 X-SquirrelJME-Error: CI
 LIBlet-Title: SquirrelJME Project Interface

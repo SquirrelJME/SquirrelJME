@@ -13,9 +13,9 @@ package net.multiphasicapps.squirreljme.bootstrap.javase;
 import java.io.IOException;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerInput;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerOutput;
+import net.multiphasicapps.javac.base.Compiler;
+import net.multiphasicapps.javac.base.CompilerInput;
+import net.multiphasicapps.javac.base.CompilerOutput;
 
 /**
  * This bridges Java SE's compiler to the SquirrelJME bootstrap system.
@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerOutput;
  * @since 2016/09/18
  */
 public class BridgedJavaCompiler
-	implements BootCompiler
+	implements Compiler
 {
 	/** The Java compiler instance. */
 	protected final JavaCompiler javac;

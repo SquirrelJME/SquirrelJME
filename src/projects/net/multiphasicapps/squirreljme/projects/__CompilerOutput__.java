@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.CompilerOutput;
+import net.multiphasicapps.javac.base.CompilerOutput;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bootstrap.base.compiler;
+package net.multiphasicapps.javac.base;
 
 import java.io.InputStream;
 import java.io.IOException;

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ServiceLoader;
-import net.multiphasicapps.squirreljme.bootstrap.base.compiler.BootCompiler;
+import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
 
@@ -50,7 +50,7 @@ public class Main
 	public static void main(String... __args)
 	{
 		// Forward call and just use defaults, if applicable
-		main(__defaultBootCompiler(), __defaultBootLauncher(), __args);
+		main(__defaultCompiler(), __defaultBootLauncher(), __args);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class Main
 	 * @param __args Program arguments.
 	 * @since 2016/09/18
 	 */
-	public static void main(BootCompiler __bc, BootLauncher __bl,
+	public static void main(Compiler __bc, BootLauncher __bl,
 		String... __args)
 	{
 		// Force to exist
@@ -100,7 +100,7 @@ public class Main
 	 * @return A default boot compiler or {@code null} if none was found.
 	 * @since 2016/09/18
 	 */
-	private static BootCompiler __defaultBootCompiler()
+	private static Compiler __defaultCompiler()
 	{
 		return null;
 	}
