@@ -222,8 +222,9 @@ public final class ProjectGroup
 				// Any calls that are made to the CompilerOutput would have
 				// been placed in the JAR, so adding does not have to be
 				// performed following this.
-				__bc.compile(co, ci, Arrays.<String>asList("-target", "1.7",
-					"-source", "1.7", "-g", "-Xlint:deprecation"), ccthese);
+				__bc.compile(System.err, co, ci, Arrays.<String>asList(
+					"-target", "1.7", "-source", "1.7", "-g",
+					"-Xlint:deprecation"), ccthese);
 			}
 			
 			// Determine the name of the binary

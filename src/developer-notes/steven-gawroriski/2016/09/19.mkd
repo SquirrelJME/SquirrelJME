@@ -22,3 +22,8 @@ as such.
 `CompilerDirectory` is not actually needed because that is handled by the
 `CompilerInput` class.
 
+## 18:07
+
+So all I have to do for the most part is write the bridged Java compiler
+portion.
+

@@ -11,7 +11,13 @@
 package net.multiphasicapps.squirreljme.bootstrap.javase;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.javac.base.CompilerInput;
@@ -47,15 +53,36 @@ public class BridgedJavaCompiler
 	 * @since 2016/09/18
 	 */
 	@Override
-	public boolean compile(CompilerOutput __co, CompilerInput __ci,
-		Iterable<String> __opts, Iterable<String> __files)
+	public boolean compile(PrintStream __log, CompilerOutput __co,
+		CompilerInput __ci, Iterable<String> __opts, Iterable<String> __files)
 		throws IOException
 	{
 		// Check
-		if (__co == null || __ci == null || __opts == null || __files == null)
+		if (__log == null || __co == null || __ci == null || __opts == null ||
+			__files == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get the compiler
+		JavaCompiler javac = this.javac;
+		
+		// Setup virtual file manager to wrap the compiler inputs and
+		// outputs
+		StandardJavaFileManager jfm = null;
+		if (true)
+			throw new Error("TODO");
+		
+		// Determine files to compile
+		Set<JavaFileObject> ccthese = new LinkedHashSet<>();
+		for (String f : __files)
+			for (JavaFileObject o : jfm.getJavaFileObjects(f))
+				ccthese.add(o);
+		
+		// Create the compilation task
+		JavaCompiler.CompilationTask task = javac.getTask(
+			new OutputStreamWriter(__log), jfm, null, __opts, null, ccthese);
+		
+		// Run the task
+		return task.call();
 	}
 }
 

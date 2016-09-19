@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.base;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Iterator;
 
 /**
@@ -23,6 +24,7 @@ public interface Compiler
 	/**
 	 * Compiles the specified files.
 	 *
+	 * @param __log Where is the compilation log written to?
 	 * @param __co The output of the compiler.
 	 * @param __ci File input for the compiler.
 	 * @param __opts The options that modify the state of compilation.
@@ -32,8 +34,8 @@ public interface Compiler
 	 * @throws IOException On read/write errors.
 	 * @since 2016/09/18
 	 */
-	public abstract boolean compile(CompilerOutput __co, CompilerInput __ci,
-		Iterable<String> __opts, Iterable<String> __files)
+	public abstract boolean compile(PrintStream __log, CompilerOutput __co,
+		CompilerInput __ci, Iterable<String> __opts, Iterable<String> __files)
 		throws IOException;
 }
 

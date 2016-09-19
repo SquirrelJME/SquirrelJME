@@ -27,13 +27,15 @@ public interface CompilerInput
 	/**
 	 * Opens the file associated with the input name.
 	 *
+	 * @param __src If {@code true} then obtain source code, otherwise a
+	 * class file is requested.
 	 * @param __name The name of the file.
 	 * @return The stream for the file data.
 	 * @throws IOException On read errors.
 	 * @throws NoSuchFileException If the file does not exist.
 	 * @since 2016/09/19
 	 */
-	public abstract InputStream input(String __name)
+	public abstract InputStream input(boolean __src, String __name)
 		throws IOException, NoSuchFileException;
 }
 

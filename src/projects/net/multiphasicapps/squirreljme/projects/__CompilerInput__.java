@@ -55,7 +55,7 @@ class __CompilerInput__
 	 * @since 2016/09/19
 	 */
 	@Override
-	public InputStream input(String __name)
+	public InputStream input(boolean __src, String __name)
 		throws IOException, NoSuchFileException
 	{
 		throw new Error("TODO");
