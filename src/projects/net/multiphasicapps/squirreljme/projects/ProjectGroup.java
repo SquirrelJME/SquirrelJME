@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -18,9 +19,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.Set;
 import net.multiphasicapps.javac.base.Compiler;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.java.manifest.MutableJavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.
+	MutableJavaManifestAttributes;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This is a project group which contains a reference to binary and/or
@@ -134,11 +144,42 @@ public final class ProjectGroup
 				__CompilerOutput__ co = new __CompilerOutput__(zip);
 				__CompilerInput__ ci = new __CompilerInput__(list, src);
 				
-				if (true)
-					throw new Error("TODO");
+				// Setup target manifest
+				MutableJavaManifest man = new MutableJavaManifest(
+					src.manifest());
+				__setupManifest(man, src);
+				
+				// Write the manifest
+				try (OutputStream os = zip.nextEntry("META-INF/MANIFEST.MF",
+					ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					man.write(os);
+				}
+				
+				// Files to be compiled
+				Set<String> ccthese = new SortedTreeSet<>();
+				
+				// Determine the files to be compiled. If any files are not
+				// being compiled then place them in the output JAR during the
+				// scanning set (simplifies things)
+				for (String s : src.contents())
+					if (__isValidJavaFileName(s))
+						ccthese.add(s);
+					else
+					{
+						// Ignore the manifest
+						if (s.equals("META-INF/MANIFEST.MF"))
+							continue;
+						
+						throw new Error("TODO");
+					}
 				
 				// Call the compiler
-				__bc.compile(co, ci);
+				// Any calls that are made to the CompilerOutput would have
+				// been placed in the JAR, so adding does not have to be
+				// performed following this.
+				__bc.compile(co, ci, Arrays.<String>asList("-target", "1.7",
+					"-source", "1.7", "-g"), ccthese);
 			}
 			
 			// Determine the name of the binary
@@ -309,6 +350,52 @@ public final class ProjectGroup
 		{
 			this._src = __pi;
 		}
+	}
+	
+	/**
+	 * Checks whether the given file is a valid Java file name.
+	 *
+	 * @param __s The file name to check.
+	 * @return If {@code true} then the file is valid.
+	 * @since 2016/09/19
+	 */
+	private static boolean __isValidJavaFileName(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Only consider Java sources
+		if (!__s.endsWith(".java"))
+			return false;
+		
+		// Remove the extension
+		__s = __s.substring(0, __s.length() - 5);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Initializes the manifest that is to be used on the binary output file.
+	 *
+	 * @param __man The manifest to write to.
+	 * @param __src The source project to source data from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	final static void __setupManifest(MutableJavaManifest __man,
+		ProjectInfo __src)
+		throws NullPointerException
+	{
+		// Check
+		if (__man == null || __src == null)
+			throw new NullPointerException("NARG");
+		
+		// Get main attributes
+		MutableJavaManifestAttributes attr = __man.getMainAttributes();
+		
+		throw new Error("TODO");
 	}
 }
 

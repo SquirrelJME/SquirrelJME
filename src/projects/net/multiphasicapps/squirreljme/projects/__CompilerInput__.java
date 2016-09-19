@@ -16,7 +16,8 @@ import java.nio.file.NoSuchFileException;
 import net.multiphasicapps.javac.base.CompilerInput;
 
 /**
- * DESCRIBE THIS.
+ * This allows the compiler to read input source files to be compiled from
+ * the source project information.
  *
  * @since 2016/09/19
  */

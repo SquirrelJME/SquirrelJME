@@ -47,9 +47,14 @@ public class BridgedJavaCompiler
 	 * @since 2016/09/18
 	 */
 	@Override
-	public boolean compile(CompilerOutput __co, CompilerInput __ci)
+	public boolean compile(CompilerOutput __co, CompilerInput __ci,
+		Iterable<String> __opts, Iterable<String> __files)
 		throws IOException
 	{
+		// Check
+		if (__co == null || __ci == null || __opts == null || __files == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }

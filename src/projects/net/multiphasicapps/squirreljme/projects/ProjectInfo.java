@@ -17,6 +17,7 @@ import java.lang.ref.WeakReference;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -130,11 +131,24 @@ public class ProjectInfo
 	}
 	
 	/**
+	 * Returns the contents of this project.
+	 *
+	 * @return The project contents.
+	 * @throws IOException On read errors.
+	 * @since 2016/09/19
+	 */
+	public final Iterable<String> contents()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/06
 	 */
 	@Override
-	public int compareTo(ProjectInfo __pi)
+	public final int compareTo(ProjectInfo __pi)
 		throws NullPointerException
 	{
 		// Check
@@ -387,6 +401,28 @@ public class ProjectInfo
 	public final ProjectName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * This opens the specified file that exists within this project and
+	 * returns the stream of bytes to its data.
+	 *
+	 * @param __n The name of the file to open, this matches the format used
+	 * in ZIP files.
+	 * @return The data stream for the file data.
+	 * @throws IOException On read errors.
+	 * @throws NoSuchFileException If the specified file does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	public final InputStream open(String __n)
+		throws IOException, NoSuchFileException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

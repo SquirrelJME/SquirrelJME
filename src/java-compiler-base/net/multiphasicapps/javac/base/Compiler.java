@@ -25,12 +25,15 @@ public interface Compiler
 	 *
 	 * @param __co The output of the compiler.
 	 * @param __ci File input for the compiler.
+	 * @param __opts The options that modify the state of compilation.
+	 * @param __files The source code files to be compiled.
 	 * @return {@code true} if compilation has succeeded, otherwise this will
 	 * return {@code false}.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/09/18
 	 */
-	public abstract boolean compile(CompilerOutput __co, CompilerInput __ci)
+	public abstract boolean compile(CompilerOutput __co, CompilerInput __ci,
+		Iterable<String> __opts, Iterable<String> __files)
 		throws IOException;
 }
 
