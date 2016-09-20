@@ -10,25 +10,32 @@
 
 package net.multiphasicapps.squirreljme.bootstrap.javase;
 
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
+	ResourceAccessor;
+
 /**
- * This is the main entry point for the bootstrap bridge from Java SE to
- * SquirrelJME's bootstrap.
+ * This is used to launch programs that want to be run on the Java SE VM.
  *
- * @since 2016/09/18
+ * @since 2016/09/20
  */
-public class Main
+public class BridgedLauncher
+	implements BootLauncher
 {
 	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/09/18
+	 * {@inheritDoc}
+	 * @since 2016/09/20
 	 */
-	public static void main(String... __args)
+	@Override
+	public boolean launch(ResourceAccessor __ra, String __main,
+		String... __args)
+		throws NullPointerException
 	{
-		// Forward call
-		net.multiphasicapps.squirreljme.bootstrap.Main.main(
-			new BridgedJavaCompiler(), new BridgedLauncher(), __args);
+		// Check
+		if (__ra == null || __main == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

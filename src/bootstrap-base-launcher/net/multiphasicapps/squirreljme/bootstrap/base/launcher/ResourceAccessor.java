@@ -8,27 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bootstrap.javase;
+package net.multiphasicapps.squirreljme.bootstrap.base.launcher;
+
+import java.io.InputStream;
 
 /**
- * This is the main entry point for the bootstrap bridge from Java SE to
- * SquirrelJME's bootstrap.
+ * This is used to access resources such as classes and acts as the class
+ * path for the current program.
  *
- * @since 2016/09/18
+ * Class files are read as if they were normal resources in class file form.
+ *
+ * @since 2016/09/20
  */
-public class Main
+public interface ResourceAccessor
 {
 	/**
-	 * Main entry point.
+	 * Opens the specified resource.
 	 *
-	 * @param __args Program arguments.
-	 * @since 2016/09/18
+	 * @param __n The name of the resource to open, matches the format used
+	 * in ZIP files.
+	 * @return An input stream for the given resource or {@code null} if it
+	 * does not exist.
+	 * @since 2016/09/20
 	 */
-	public static void main(String... __args)
-	{
-		// Forward call
-		net.multiphasicapps.squirreljme.bootstrap.Main.main(
-			new BridgedJavaCompiler(), new BridgedLauncher(), __args);
-	}
+	public abstract InputStream open(String __n);
 }
 
