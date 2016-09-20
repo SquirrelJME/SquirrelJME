@@ -197,6 +197,10 @@ class __CompilerOutput__
 				
 				// And add to the done queue
 				done.put(name, this);
+				
+				// Flush the compiler output early to write as many files as
+				// possible so they do not crowd memory
+				ccout.flush();
 			}
 		}
 		
