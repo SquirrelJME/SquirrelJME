@@ -35,4 +35,8 @@ It seems that everything is rebuilt:
 	dbin: 2016-09-20T14:33:33Z
 	dsrc: 2016-09-18T16:51:35Z]
 
+## 13:51
+
+So I thought about it. I need to change the compilation stuff to another
+method and have the `compileSource` just be recursive itself always.
 
