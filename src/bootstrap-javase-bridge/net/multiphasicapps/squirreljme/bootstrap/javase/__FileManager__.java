@@ -136,11 +136,19 @@ class __FileManager__
 	 */
 	@Override
 	public JavaFileObject getJavaFileForOutput(
-		JavaFileManager.Location __a, String __b, JavaFileObject.Kind __c,
-		FileObject __d)
+		JavaFileManager.Location __loc, String __cn, JavaFileObject.Kind __k,
+		FileObject __sib)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error DE04 Only class file output is supported.}
+		if (!JavaFileObject.Kind.CLASS.equals(__k))
+			throw new IllegalArgumentException("DE04");
+		
+		// Convert class to "class" name
+		String name = __cn.replace('.', '/') + __k.extension;
+		
+		// Open output file
+		return new __FileObject__(this, this.output, name);
 	}
 	
 	/**
@@ -383,7 +391,8 @@ class __FileManager__
 		extends File> __b)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Ignore any location setting as all locations are completely
+		// internal
 	}
 }
 
