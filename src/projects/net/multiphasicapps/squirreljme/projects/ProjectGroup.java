@@ -59,6 +59,9 @@ public final class ProjectGroup
 	/** The current source project. */
 	private volatile ProjectInfo _src;
 	
+	/** Was this project just compiled? */
+	private volatile boolean _justcompiled;
+	
 	/**
 	 * Initializes the project group.
 	 *
@@ -195,8 +198,27 @@ public final class ProjectGroup
 			dg.compileSource(__bc, __opt);
 		}
 		
+		// If compiling a project and it has a binary, it might not really be
+		// needed to compile its code if it is up to date
+		ProjectInfo bin = null, maybe = binary();
+		if (maybe != null)
+		{
+			// Get base dates
+			FileTime pbin = maybe.date(),
+				psrc = src.date();
+			
+			// If the binary was just compiled, do not compile it twice
+			// If the source is newer than the binary then recompile it
+			// Also recompile if any dependency has source code newer than the
+			// binary
+			if (this._justcompiled || psrc.compareTo(pbin) > 0 ||
+				__dependencySourceDate(name).compareTo(pbin) > 0)
+				bin = maybe;
+		} 
+		
 		// Perform compilation
-		ProjectInfo bin = __compile(__bc);
+		if (bin == null)
+			bin = __compile(__bc);
 		
 		// Compile any optional dependencies if requested following the
 		// compilation of this one
@@ -444,6 +466,9 @@ public final class ProjectGroup
 			
 			// Set binary file
 			__setBinary(bin);
+			
+			// Set the just compiled flag
+			this._justcompiled = true;
 		}
 		
 		// Delete any temporary files, if they exist
@@ -463,6 +488,54 @@ public final class ProjectGroup
 		
 		// Return it
 		return bin;
+	}
+	
+	/**
+	 * Returns the highest file time that is associated with source code in
+	 * a dependency.
+	 *
+	 * @param __at The current project name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/20
+	 */
+	private FileTime __dependencySourceDate(ProjectName __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the group
+		ProjectList list = this.list;
+		ProjectGroup grp = list.get(__at);
+		
+		// If missing, use the earliest date possible
+		ProjectInfo src;
+		if (grp == null || null == (src = grp.source()))
+			return FileTime.fromMillis(Long.MIN_VALUE);
+		
+		// Fix on the base date
+		FileTime rv = src.date();
+		
+		// Go through all dependencies to see if they have newer sources
+		for (ProjectName dn : src.dependencies())
+		{
+			// Do not consider any projects that do not exist
+			ProjectGroup dg = list.get(dn);
+			ProjectInfo ds;
+			if (dg == null || null == (ds = dg.source()))
+				continue;
+			
+			// Get their date
+			FileTime dd = dg.__dependencySourceDate(dn);
+			
+			// If the date is newer, use it
+			if (dd.compareTo(rv) > 0)
+				rv = dd;
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -489,6 +562,9 @@ public final class ProjectGroup
 		synchronized (this.lock)
 		{
 			this._bin = __pi;
+			
+			// Clear the just compiled flag
+			this._justcompiled = false;
 		}
 	}
 	
