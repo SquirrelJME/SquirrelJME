@@ -149,7 +149,9 @@ public class Bootstrapper
 		// up to date then it will not be built
 		try
 		{
-			return group.compileSource(this.compiler);
+			// Also include optional projects since the build system for
+			// the most part depends on that
+			return group.compileSource(this.compiler, true);
 		}
 		
 		// {@squirreljme.error CL05 Failed to build the specified project.

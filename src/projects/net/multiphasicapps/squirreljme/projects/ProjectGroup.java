@@ -141,6 +141,26 @@ public final class ProjectGroup
 		throws CompilationFailedException, IOException, MissingSourceException,
 			NullPointerException
 	{
+		return compileSource(__bc, false);
+	}
+	
+	/**
+	 * Compiles the source code for this project.
+	 *
+	 * @param __bc The compiler to use for compilation.
+	 * @param __opt If {@code true} then optional dependencies are also checked
+	 * and rebuild as needed (if they exist).
+	 * @return The binary project information.
+	 * @throws CompilationFailedException If project compilation failed.
+	 * @throws IOException On read/write errors.
+	 * @throws MissingSourceException If the project has no source code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	public final ProjectInfo compileSource(Compiler __bc, boolean __opt)
+		throws CompilationFailedException, IOException, MissingSourceException,
+			NullPointerException
+	{
 		// Check
 		if (__bc == null)
 			throw new NullPointerException("NARG");
@@ -153,13 +173,20 @@ public final class ProjectGroup
 			throw new MissingSourceException("CI0a");
 		
 		// Recursively build any dependencies which are out of date, except
-		// for this project
-		if (!__recursiveBuildDepends(__bc))
+		// for this project, Initially only consider required dependencies
+		if (!__recursiveBuildDepends(__bc, false))
 		{
 			// If there is a binary then use it
 			ProjectInfo bin = binary();
 			if (bin != null)
+			{
+				// If compiling optionals, run through them now
+				if (__opt)
+					__recursiveBuildDepends(__bc, true);
+				
+				// Return the binary
 				return bin;
+			}
 		}
 		
 		// {@squirreljme.error CI0i This project is currently being
@@ -172,6 +199,7 @@ public final class ProjectGroup
 			name.toString());
 		
 		// Need to build the output JAR
+		ProjectInfo bin = null;
 		try
 		{
 			// Create output ZIP to compile into
@@ -251,7 +279,7 @@ public final class ProjectGroup
 			}
 			
 			// Determine the name of the binary
-			ProjectInfo bin = binary();
+			bin = binary();
 			Path jarname = (bin != null ? bin.path() :
 				list.binaryPath().resolve(this.name.toString() + ".jar"));
 			
@@ -268,12 +296,9 @@ public final class ProjectGroup
 			
 			// Set binary file
 			__setBinary(bin);
-			
-			// Return it
-			return bin;
 		}
 		
-		// Delete any temporary files
+		// Delete any temporary files, if they exist
 		finally
 		{
 			// Delete it
@@ -287,6 +312,13 @@ public final class ProjectGroup
 			{
 			}
 		}
+		
+		// If compiling optionals, run through them now
+		if (__opt)
+			__recursiveBuildDepends(__bc, true);
+		
+		// Return it
+		return bin;
 	}
 	
 	/**
@@ -380,12 +412,13 @@ public final class ProjectGroup
 	 * binary.
 	 *
 	 * @param __bc The compiler to use.
+	 * @param __opt If {@code true} then optional projects are considered.
 	 * @return {@code false} if no builds were ever performed.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/20
 	 */
-	final boolean __recursiveBuildDepends(Compiler __bc)
+	final boolean __recursiveBuildDepends(Compiler __bc, boolean __opt)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -408,14 +441,19 @@ public final class ProjectGroup
 		// Go through all required dependencies, even if the binary is out of
 		// date, all of the dependencies must be checked and built also
 		ProjectList list = this.list;
-		for (ProjectName dn : src.dependencies())
-		{
+		for (ProjectName dn : src.dependencies(__opt))
+		{System.err.printf("DEBUG -- Consider %s -> %s (%s)%n", this.name,
+			dn, __opt);
 			// {@squirreljme.error CI0h The specified project is missing a
 			// required dependency. (This project; The dependency)}
+			// Ignore optionals though
 			ProjectGroup dg = list.get(dn);
 			if (dg == null)
-				throw new MissingDependencyException(String.format(
-					"CI0h %s", src.name(), dn));
+				if (__opt)
+					continue;
+				else
+					throw new MissingDependencyException(String.format(
+						"CI0h %s", src.name(), dn));
 			
 			// Get binaries and sources
 			ProjectInfo dbin = dg.binary();
@@ -431,16 +469,41 @@ public final class ProjectGroup
 			else if (dbin == null || dsrc.date().compareTo(dbin.date()) > 0)
 			{
 				// Compile it
-				dg.compileSource(__bc);
+				try
+				{
+					dg.compileSource(__bc);
 				
-				// Always changed
-				rv = true;
+					// Always changed
+					rv = true;
+				}
+				
+				// If the project is invalid and optional packages are not
+				// being compiled then fail here
+				catch (InvalidProjectException e)
+				{
+					// Only throw if not optional
+					if (!__opt)
+						throw e;
+					
+					// {@squirreljme.error CI0j Could not compile the optional
+					// dependency due to the specified reason. (The optional
+					// dependency; The reason for it)}
+					System.err.printf("CI0j %s %s%n", dn, e.toString());
+				}
 			}
 			
 			// If the dependency is newer than this source code then it must
 			// be recompiled
 			else if (dbin.date().compareTo(srctime) > 0)
 				rv = true;
+			
+			// Check deeper into the tree to see if any dependencies
+			// have changed
+			rv |= dg.__recursiveBuildDepends(__bc, false);
+			
+			// If considering optionals then check all of them also
+			if (__opt)
+				dg.__recursiveBuildDepends(__bc, true);
 		}
 		
 		// Return if a build was done at all
