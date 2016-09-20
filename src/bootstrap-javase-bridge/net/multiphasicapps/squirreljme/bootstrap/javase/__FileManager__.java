@@ -14,7 +14,9 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
@@ -147,7 +149,7 @@ class __FileManager__
 	public Iterable<? extends JavaFileObject> getJavaFileObjects(
 		File... __a)
 	{
-		throw new Error("TODO");
+		return getJavaFileObjectsFromFiles(Arrays.<File>asList(__a));
 	}
 	
 	/**
@@ -158,7 +160,7 @@ class __FileManager__
 	public Iterable<? extends JavaFileObject> getJavaFileObjects(
 		String... __a)
 	{
-		throw new Error("TODO");
+		return getJavaFileObjectsFromStrings(Arrays.<String>asList(__a));
 	}
 	
 	/**
@@ -169,7 +171,11 @@ class __FileManager__
 	public Iterable<? extends JavaFileObject>
 		getJavaFileObjectsFromFiles(Iterable<? extends File> __a)
 	{
-		throw new Error("TODO");
+		// Forward call to string version
+		Set<String> args = new LinkedHashSet<>();
+		for (File f : __a)
+			args.add(String.valueOf(f));
+		return getJavaFileObjectsFromStrings(args);
 	}
 	
 	/**
