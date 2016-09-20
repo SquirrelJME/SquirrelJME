@@ -270,11 +270,16 @@ public class ProjectList
 				throw new MissingDependencyException(String.format(
 					"CI01 %s %s", __n, name));
 			
+			// If our own project lacks a dependency of this type then use
+			// any
+			ProjectInfo info = grp.ofType(__t);
+			if (info == null && name.equals(__n))
+				info = grp.any();
+			
 			// {@squirreljme.error CI07 A dependency for a project exists
 			// however it is not available for the given project type. (The
 			// project being looked up; The unavailable dependency; The type
 			// of project requested)}
-			ProjectInfo info = grp.ofType(__t);
 			if (info == null)
 				throw new MissingDependencyException(String.format(
 					"CI07 %s %s %s", __n, name, __t));

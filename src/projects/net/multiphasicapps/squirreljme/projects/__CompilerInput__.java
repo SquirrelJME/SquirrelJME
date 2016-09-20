@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.NoSuchFileException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.javac.base.CompilerInput;
@@ -62,9 +63,18 @@ class __CompilerInput__
 		this.info = __src;
 		
 		// Determine projects that make up the class path
+		ProjectName name = __src.name();
 		Collection<ProjectInfo> bins = __pl.recursiveDependencies(
-			new LinkedHashSet<ProjectInfo>(), ProjectType.BINARY, __src.name(),
-			false);
+			new LinkedHashSet<ProjectInfo>(), ProjectType.BINARY, name, false);
+		
+		// Never include the binary for our own project (since it is being
+		// built, the classes might be out of date)
+		Iterator<ProjectInfo> it = bins.iterator();
+		while (it.hasNext())
+			if (name.equals(it.next().name()))
+				it.remove();
+		
+		// Set it
 		this._bin = bins.<ProjectInfo>toArray(new ProjectInfo[bins.size()]);
 	}
 	

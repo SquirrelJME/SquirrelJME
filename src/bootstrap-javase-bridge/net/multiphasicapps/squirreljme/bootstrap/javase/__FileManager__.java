@@ -272,7 +272,7 @@ class __FileManager__
 			name = name.substring(0, ld);
 		
 		// Convert any slashes to dots
-		return __b.getName().replace('/', '.');
+		return name.replace('/', '.');
 	}
 	
 	/**

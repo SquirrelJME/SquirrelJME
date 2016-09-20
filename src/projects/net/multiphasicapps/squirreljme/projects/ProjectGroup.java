@@ -130,13 +130,15 @@ public final class ProjectGroup
 	 *
 	 * @param __bc The compiler to use for compilation.
 	 * @return The binary project information.
+	 * @throws CompilationFailedException If project compilation failed.
 	 * @throws IOException On read/write errors.
 	 * @throws MissingSourceException If the project has no source code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
 	public final ProjectInfo compileSource(Compiler __bc)
-		throws IOException, MissingSourceException, NullPointerException
+		throws CompilationFailedException, IOException, MissingSourceException,
+			NullPointerException
 	{
 		// Check
 		if (__bc == null)
@@ -150,8 +152,9 @@ public final class ProjectGroup
 			throw new MissingSourceException("CI0a");
 		
 		// Temporary output JAR name
+		ProjectName name = this.name;
 		Path tempjarname = Files.createTempFile("squirreljme-compile",
-			this.name.toString());
+			name.toString());
 		
 		// Need to build the output JAR
 		try
@@ -222,9 +225,13 @@ public final class ProjectGroup
 				// Any calls that are made to the CompilerOutput would have
 				// been placed in the JAR, so adding does not have to be
 				// performed following this.
-				__bc.compile(System.err, co, ci, Arrays.<String>asList(
+				// {@squirreljme.error CI0c Failed to compile the source code
+				// for the specified project. (The project name)}
+				if (!__bc.compile(System.err, co, ci, Arrays.<String>asList(
 					"-target", "1.7", "-source", "1.7", "-g",
-					"-Xlint:deprecation"), ccthese);
+					"-Xlint:deprecation"), ccthese))
+					throw new CompilationFailedException(String.format(
+						"CI0c %s", name));
 			}
 			
 			// Determine the name of the binary
@@ -254,7 +261,15 @@ public final class ProjectGroup
 		finally
 		{
 			// Delete it
-			Files.delete(tempjarname);	
+			try
+			{
+				Files.delete(tempjarname);
+			}
+			
+			// Ignore
+			catch (IOException e)
+			{
+			}
 		}
 	}
 	
