@@ -22,6 +22,7 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import net.multiphasicapps.javac.base.CompilerInput;
 import net.multiphasicapps.javac.base.CompilerOutput;
 
@@ -89,7 +90,8 @@ class __FileManager__
 	@Override
 	public ClassLoader getClassLoader(JavaFileManager.Location __a)
 	{
-		throw new Error("TODO");
+		// No plug-ins permitted at all
+		return null;
 	}
 	
 	/**
@@ -230,7 +232,23 @@ class __FileManager__
 	@Override
 	public boolean hasLocation(JavaFileManager.Location __a)
 	{
-		throw new Error("TODO");
+		// Only use standard locations
+		if (!(__a instanceof StandardLocation))
+			return false;
+		
+		// Depends
+		switch ((StandardLocation)__a)
+		{
+				// Knows class input and output
+			case CLASS_OUTPUT:
+			case CLASS_PATH:
+			case SOURCE_PATH:
+				return true;
+			
+				// Unknown
+			default:
+				return false;
+		}
 	}
 	
 	/**
