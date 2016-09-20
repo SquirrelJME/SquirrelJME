@@ -122,8 +122,7 @@ class __FileObject__
 		
 		// Read in all the characters
 		StringBuilder sb = new StringBuilder();
-		try (Reader r = new InputStreamReader(
-			input.input(__isSource(), this.name), "utf-8"))
+		try (Reader r = new InputStreamReader(openInputStream(), "utf-8"))
 		{
 			char[] buf = new char[2048];
 			for (;;)
@@ -219,7 +218,7 @@ class __FileObject__
 	public InputStream openInputStream()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return input.input(__isSource(), this.name);
 	}
 	
 	/**

@@ -304,10 +304,6 @@ class __FileManager__
 		__l, String __pk, Set<JavaFileObject.Kind> __kinds, boolean __rec)
 		throws IOException
 	{
-		// Debug
-		System.err.printf("DEBUG -- list(%s, %s, %s, %b)%n", __l, __pk,
-			__kinds, __rec);
-		
 		// Setup target
 		Set<JavaFileObject> rv = new LinkedHashSet<>();
 		
