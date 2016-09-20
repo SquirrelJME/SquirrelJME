@@ -154,6 +154,9 @@ public class MutableJavaManifest
 			// Write values
 			__write(w, e.getValue());
 		}
+		
+		// Flush the output in case of queues
+		w.flush();
 	}
 	
 	/**
