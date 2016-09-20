@@ -165,34 +165,182 @@ public final class ProjectGroup
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CI0a Cannot build the project because it does
-		// not have source code available.}
+		// If there is no source code, alternatively try the binary
+		ProjectName name = this.name;
 		ProjectList list = this.list;
 		ProjectInfo src = source();
 		if (src == null)
-			throw new MissingSourceException("CI0a");
-		
-		// Recursively build any dependencies which are out of date, except
-		// for this project, Initially only consider required dependencies
-		if (!__recursiveBuildDepends(__bc, false))
 		{
-			// If there is a binary then use it
 			ProjectInfo bin = binary();
-			if (bin != null)
-			{
-				// If compiling optionals, run through them now
-				if (__opt)
-					__recursiveBuildDepends(__bc, true);
-				
-				// Return the binary
-				return bin;
-			}
+			
+			// {@squirreljme.error CI0a Cannot build the project because it
+			// does not have source code available.}
+			if (bin == null)
+				throw new MissingSourceException("CI0a");
+			return bin;
 		}
+		
+		// Go through all dependencies and compile those also
+		for (ProjectName dn : src.dependencies(false))
+		{
+			// {@squirreljme.error CI0l Cannot compile the specified project
+			// because the dependency does not exist. (The project being
+			// compiled; The dependency that is missing)}
+			ProjectGroup dg = list.get(dn);
+			if (dg == null)
+				throw new MissingDependencyException(String.format(
+					"CI0l %s %s", name, dn));
+			
+			// Perform compilation on it
+			dg.compileSource(__bc, __opt);
+		}
+		
+		// Perform compilation
+		ProjectInfo bin = __compile(__bc);
+		
+		// Compile any optional dependencies if requested following the
+		// compilation of this one
+		if (__opt)
+			for (ProjectName dn : src.dependencies(true))
+			{
+				// Ignore dependencies which do not exist
+				ProjectGroup dg = list.get(dn);
+				if (dg == null)
+					continue;
+				
+				// Compile it
+				try
+				{
+					dg.compileSource(__bc, __opt);
+				}
+				
+				// Failed to build it, ignore
+				catch (InvalidProjectException e)
+				{
+					// {@squirreljme.error CI0k Failed to compile an optional
+					// dependency, it will be ignored. (This project; The
+					// dependency; The reason why it failed)}
+					System.err.printf("CI0k %s %s %s%n", name, dn,
+						e.toString());
+				}
+			}
+		
+		// Return the output binary
+		return bin;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/18
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof ProjectGroup))
+			return false;
+		
+		// Compare
+		return this.name.equals(((ProjectGroup)__o).name);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/18
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.name.hashCode();
+	}
+	
+	/**
+	 * Returns the project information of the specified type.
+	 *
+	 * @param __t The type to get the project information for.
+	 * @return The project information of the given type or {@code null} if
+	 * it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	public final ProjectInfo ofType(ProjectType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__t)
+		{
+				// Binary?
+			case BINARY:
+				return binary();
+				
+				// Source?
+			case SOURCE:
+				return source();
+				
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * This returns the associated source project which contains source code
+	 * and other resource.
+	 *
+	 * @return The source project information, or {@code null} if there is no
+	 * source project.
+	 * @since 2016/09/18
+	 */
+	public final ProjectInfo source()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._src;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/18
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.name.toString();
+	}
+	
+	/**
+	 * Compiles the specified project and caches the output binary.
+	 *
+	 * @param __bc The compiler interface to use.
+	 * @return The resulting binary.
+	 * @throws CompilationFailedException If compilation failed.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/20
+	 */
+	final ProjectInfo __compile(Compiler __bc)
+		throws CompilationFailedException, IOException, NullPointerException
+	{
+		// Check
+		if (__bc == null)
+			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error CI0i This project is currently being
 		// compiled. (The project name)}
 		ProjectName name = this.name;
 		System.err.printf("CI0i %s%n", name);
+		
+		// {@squirreljme.error CI0j Compilation step called for the specified
+		// project, however it has no source code. (The project name)}
+		ProjectInfo src = source();
+		if (src == null)
+			throw new MissingSourceException(String.format("CI0j %s", name));
 		
 		// Temporary output JAR name
 		Path tempjarname = Files.createTempFile("squirreljme-compile",
@@ -313,206 +461,8 @@ public final class ProjectGroup
 			}
 		}
 		
-		// If compiling optionals, run through them now
-		if (__opt)
-			__recursiveBuildDepends(__bc, true);
-		
 		// Return it
 		return bin;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/18
-	 */
-	@Override
-	public final boolean equals(Object __o)
-	{
-		// Check
-		if (!(__o instanceof ProjectGroup))
-			return false;
-		
-		// Compare
-		return this.name.equals(((ProjectGroup)__o).name);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/18
-	 */
-	@Override
-	public final int hashCode()
-	{
-		return this.name.hashCode();
-	}
-	
-	/**
-	 * Returns the project information of the specified type.
-	 *
-	 * @param __t The type to get the project information for.
-	 * @return The project information of the given type or {@code null} if
-	 * it is not set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/18
-	 */
-	public final ProjectInfo ofType(ProjectType __t)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends
-		switch (__t)
-		{
-				// Binary?
-			case BINARY:
-				return binary();
-				
-				// Source?
-			case SOURCE:
-				return source();
-				
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}
-	}
-	
-	/**
-	 * This returns the associated source project which contains source code
-	 * and other resource.
-	 *
-	 * @return The source project information, or {@code null} if there is no
-	 * source project.
-	 * @since 2016/09/18
-	 */
-	public final ProjectInfo source()
-	{
-		// Lock
-		synchronized (this.lock)
-		{
-			return this._src;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/18
-	 */
-	@Override
-	public final String toString()
-	{
-		return this.name.toString();
-	}
-	
-	/**
-	 * Recursively attempts to build the dependencies for the current
-	 * {@code __src} project if the dependency is out of date or has a missing
-	 * binary.
-	 *
-	 * @param __bc The compiler to use.
-	 * @param __opt If {@code true} then optional projects are considered.
-	 * @return {@code false} if no builds were ever performed.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/20
-	 */
-	final boolean __recursiveBuildDepends(Compiler __bc, boolean __opt)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__bc == null)
-			throw new NullPointerException("NARG");
-		
-		// Get binary and source
-		ProjectInfo bin = binary();
-		ProjectInfo src = source();
-		
-		// Ignore if no source
-		if (src == null)
-			return false;
-		
-		// Quickly determine if the binary is out of date
-		FileTime srctime = src.date();
-		boolean rv = ((bin != null && srctime.compareTo(bin.date()) > 0) ||
-			bin == null);
-		
-		// Go through all required dependencies, even if the binary is out of
-		// date, all of the dependencies must be checked and built also
-		ProjectList list = this.list;
-		for (ProjectName dn : src.dependencies(__opt))
-		{
-			// {@squirreljme.error CI0h The specified project is missing a
-			// required dependency. (This project; The dependency)}
-			// Ignore optionals though
-			ProjectGroup dg = list.get(dn);
-			if (dg == null)
-				if (__opt)
-					continue;
-				else
-					throw new MissingDependencyException(String.format(
-						"CI0h %s", src.name(), dn));
-			
-			// Get binaries and sources
-			ProjectInfo dbin = dg.binary();
-			ProjectInfo dsrc = dg.source();
-			
-			// If there is a binary but no source then it is a binary only
-			// package, assume it is always up to date.
-			if (dbin != null && dsrc == null)
-				continue;
-			
-			// If there is no binary then the dependency must be built
-			// Or if there is a binary and its source is newer than its binary
-			// Or the dependency source is newer than our own source
-			else if (dbin == null || dsrc.date().compareTo(dbin.date()) > 0 ||
-				dsrc.date().compareTo(srctime) > 0)
-			{
-				// Debug
-				System.err.printf(
-					"DEBUG -- Out of date! %s -> %s/%s [%s %s %s]%n",
-					this.name, dbin, dsrc, srctime, (dbin == null ? null :
-					dbin.date()), dsrc.date());
-				
-				// Compile it
-				try
-				{
-					dg.compileSource(__bc);
-				
-					// Always changed
-					rv = true;
-				}
-				
-				// If the project is invalid and optional packages are not
-				// being compiled then fail here
-				catch (InvalidProjectException e)
-				{
-					// Only throw if not optional
-					if (!__opt)
-						throw e;
-					
-					// {@squirreljme.error CI0j Could not compile the optional
-					// dependency due to the specified reason. (The optional
-					// dependency; The reason for it)}
-					System.err.printf("CI0j %s %s%n", dn, e.toString());
-				}
-			}
-			
-			// Check deeper into the tree to see if any dependencies
-			// have changed
-			rv |= dg.__recursiveBuildDepends(__bc, false);
-			
-			// If considering optionals then check all of them also
-			if (__opt)
-				dg.__recursiveBuildDepends(__bc, true);
-				
-			System.err.printf("DEBUG -- Consider %s -> %s (%s)? %s%n",
-				this.name, dn, __opt, rv);
-		}
-		
-		// Return if a build was done at all
-		return rv;
 	}
 	
 	/**
