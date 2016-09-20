@@ -4,3 +4,8 @@
 
 it is quite dark outside.
 
+## 07:25
+
+The `CompilerOutput` originally had `InputStream` but that would complicate
+things greatly. Also `CompilerOutput` should be flushable.
+

@@ -12,6 +12,7 @@ package net.multiphasicapps.javac.base;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This interface is used to allow classes utilizing the compiler to place
@@ -22,16 +23,16 @@ import java.io.IOException;
 public interface CompilerOutput
 {
 	/**
-	 * This is called when a file has been compiled, the bytes which make up
-	 * the file are provided via the given {@link InputStream}.
+	 * This is called when a file has been or is being compiled and it is
+	 * required to output the file.
 	 *
-	 * @param __n The name of the file being written, this is normalized to
-	 * the name of entries in ZIP files.
-	 * @param __is The bytes which make up the file.
+	 * @param __n The name of the file being written, this should match the
+	 * same format that is used in ZIP files.
+	 * @return An output stream which writes bytes to the output.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/09/18
 	 */
-	public abstract void output(String __n, InputStream __is)
+	public abstract OutputStream output(String __n)
 		throws IOException;
 }
 

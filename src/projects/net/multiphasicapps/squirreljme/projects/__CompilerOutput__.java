@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.javac.base.CompilerOutput;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -50,11 +51,11 @@ class __CompilerOutput__
 	 * @since 2016/09/18
 	 */
 	@Override
-	public void output(String __n, InputStream __is)
+	public OutputStream output(String __n)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__n == null || __is == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");

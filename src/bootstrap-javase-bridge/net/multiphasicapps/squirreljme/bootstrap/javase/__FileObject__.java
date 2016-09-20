@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.JavaFileObject;
@@ -94,7 +96,8 @@ class __FileObject__
 	@Override
 	public boolean delete()
 	{
-		throw new Error("TODO");
+		// Unsupported
+		return false;
 	}
 	
 	/**
@@ -104,7 +107,8 @@ class __FileObject__
 	@Override
 	public Modifier getAccessLevel()
 	{
-		throw new Error("TODO");
+		// Unknown
+		return null;
 	}
 	
 	/**
@@ -175,7 +179,8 @@ class __FileObject__
 	@Override
 	public long getLastModified()
 	{
-		throw new Error("TODO");
+		// Unsupported
+		return 0L;
 	}
 	
 	/**
@@ -195,7 +200,8 @@ class __FileObject__
 	@Override
 	public NestingKind getNestingKind()
 	{
-		throw new Error("TODO");
+		// Unknown
+		return null;
 	}
 	
 	/**
@@ -246,7 +252,13 @@ class __FileObject__
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error DE05 Attempted to open input file as output.}
+		CompilerOutput output = this.output;
+		if (output == null)
+			throw new IllegalStateException("DE05");
+		
+		// Forward
+		return output.output(this.name);
 	}
 	
 	/**
@@ -257,7 +269,7 @@ class __FileObject__
 	public Reader openReader(boolean __a)
 		throws IOException
 	{
-		throw new Error("TODO");
+		return new InputStreamReader(openInputStream(), "utf-8");
 	}
 	
 	/**
@@ -268,7 +280,7 @@ class __FileObject__
 	public Writer openWriter()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return new OutputStreamWriter(openOutputStream(), "utf-8");
 	}
 	
 	/**
@@ -278,7 +290,17 @@ class __FileObject__
 	@Override
 	public URI toUri()
 	{
-		throw new Error("TODO");
+		// Can fail, but it should not
+		try
+		{
+			return new URI("squirreljme", this.name, null);
+		}
+		
+		// {@squirreljme.error DE06 Could not create a URI for the file.}
+		catch (URISyntaxException e)
+		{
+			throw new RuntimeException("DE06", e);
+		}
 	}
 	
 	/**
