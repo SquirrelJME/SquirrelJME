@@ -206,8 +206,25 @@ class __FileObject__
 	public boolean isNameCompatible(String __sn, JavaFileObject.Kind
 		__k)
 	{
-		// Compare file name
-		return this.name.equals(__sn.replace('.', '/') + __k.extension);
+		// Get name
+		String name = this.name;
+		
+		// Does not match extension?
+		if (!name.endsWith(__k.extension))
+			return false;
+		
+		// Only consider anything after the last slash
+		int ls = name.lastIndexOf('/');
+		if (ls > 0)
+			name = name.substring(ls + 1);
+		
+		// And remove the extension
+		int ld = name.lastIndexOf('.');
+		if (ld > 0)
+			name = name.substring(0, ld);
+		
+		// Compare base
+		return name.equals(__sn);
 	}
 	
 	/**
