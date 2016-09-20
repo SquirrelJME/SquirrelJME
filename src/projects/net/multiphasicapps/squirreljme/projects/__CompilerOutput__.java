@@ -51,6 +51,17 @@ class __CompilerOutput__
 	 * @since 2016/09/18
 	 */
 	@Override
+	public void flush()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/18
+	 */
+	@Override
 	public OutputStream output(String __n)
 		throws IOException, NullPointerException
 	{

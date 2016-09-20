@@ -80,7 +80,8 @@ class __FileManager__
 	public void flush()
 		throws IOException
 	{
-		// Do nothing
+		// Forward to output
+		this.output.flush();
 	}
 	
 	/**

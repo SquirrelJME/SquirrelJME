@@ -12,6 +12,7 @@ package net.multiphasicapps.javac.base;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.Flushable;
 import java.io.OutputStream;
 
 /**
@@ -21,6 +22,7 @@ import java.io.OutputStream;
  * @since 2016/09/18
  */
 public interface CompilerOutput
+	extends Flushable
 {
 	/**
 	 * This is called when a file has been or is being compiled and it is
