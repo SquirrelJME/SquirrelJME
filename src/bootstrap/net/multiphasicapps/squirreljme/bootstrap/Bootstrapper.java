@@ -145,72 +145,18 @@ public class Bootstrapper
 		if (group == null)
 			throw new RuntimeException(String.format("CL04 %s", __n));
 		
-		// Try to get the binary for it
-		ProjectInfo rv = group.binary();
-		ProjectInfo src = group.source();
-		if (rv != null)
-		{
-			// If there is no source package for the binary then use it
-			// regardless
-			if (src == null)
-				return rv;
-			
-			// If the binary is up to date, make sure the dependencies are
-			// also up to date
-			FileTime btime;
-			if ((btime = rv.date()).compareTo(src.date()) >= 0)
-			{
-				// Recursively get the dependencies for the project
-				boolean outofdate = false;
-				for (ProjectName depn : rv.dependencies())
-				{
-					// {@squirreljme.error CL05 A dependent project does not
-					// have an associated group, there are no binaries or
-					// sources for it. (This project; The dependency)}
-					ProjectGroup depg = projects.get(depn);
-					if (depg == null)
-						throw new RuntimeException(String.format("CL05 %s %s",
-							__n, depn));
-					
-					// Get the binary for that dependency
-					ProjectInfo depi = __getBinary(depn);
-					
-					// Is a dependency newer than the binary?
-					if (depi.date().compareTo(btime) > 0)
-						outofdate |= true;
-				}
-			
-				// If not out of date then use it
-				if (!outofdate)
-					return rv;
-			}
-		}
-		
-		// {@squirreljme.error CL06 Cannot build a project which has no source
-		// code available. (The project name)}
-		if (src == null)
-			throw new RuntimeException(String.format("CL06 %s", __n));
-		
-		// It must be compiled
-		System.err.printf("*** Building %s...%n", __n);
-		
-		// {@squirreljme.error Cannot build the specified project because a
-		// compiler is not available for usage. (The project name)}
-		Compiler bc = this.compiler;
-		if (bc == null)
-			throw new RuntimeException(String.format("CL07 %s", __n));
-		
-		// Compile it
+		// Try to compile the source for it if it is out of date, if it is
+		// up to date then it will not be built
 		try
 		{
-			return group.compileSource(bc);
+			return group.compileSource(this.compiler);
 		}
 		
-		// {@squirreljme.error CL08 There was a read/write error while
-		// attempting to build the project. (The project name)}
+		// {@squirreljme.error CL05 Failed to build the specified project.
+		// (The project name)}
 		catch (IOException e)
 		{
-			throw new RuntimeException(String.format("CL08 %s", __n), e);
+			throw new RuntimeException(String.format("CL05 %s", __n), e);
 		}
 	}
 	

@@ -151,6 +151,11 @@ public final class ProjectGroup
 		if (src == null)
 			throw new MissingSourceException("CI0a");
 		
+		// Recursively build any dependencies which are out of date, except
+		// for this project
+		if (!__recursiveBuildDepends(__bc, src, src))
+			return binary();
+		
 		// Temporary output JAR name
 		ProjectName name = this.name;
 		Path tempjarname = Files.createTempFile("squirreljme-compile",
@@ -356,6 +361,30 @@ public final class ProjectGroup
 	public final String toString()
 	{
 		return this.name.toString();
+	}
+	
+	/**
+	 * Recursively attempts to build the dependencies for the current
+	 * {@code __at} project if the dependency is out of date or has a missing
+	 * binary.
+	 *
+	 * @param __bc The compiler to use.
+	 * @param __root The root project.
+	 * @param __at The current at project.
+	 * @return {@code false} if no builds were ever performed.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/20
+	 */
+	final boolean __recursiveBuildDepends(Compiler __bc, ProjectInfo __root,
+		ProjectInfo __at)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__bc == null || __root == null || __at == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
