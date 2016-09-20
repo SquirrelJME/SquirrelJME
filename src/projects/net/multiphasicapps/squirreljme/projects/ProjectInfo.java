@@ -525,6 +525,17 @@ public class ProjectInfo
 	}
 	
 	/**
+	 * Returns the owning project list.
+	 *
+	 * @return The project list.
+	 * @since 2016/09/20
+	 */
+	public final ProjectList projectList()
+	{
+		return this.plist;
+	}
+	
+	/**
 	 * Returns the title of this project.
 	 *
 	 * @return The project title or {@code null} if it was not

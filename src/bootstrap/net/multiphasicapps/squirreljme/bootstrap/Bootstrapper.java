@@ -165,6 +165,8 @@ public class Bootstrapper
 	/**
 	 * Launches the specified binary with the given set of arguments.
 	 *
+	 * The VM terminates following this call.
+	 *
 	 * @param __bin The binary to launch.
 	 * @param __args The arguments to the call.
 	 * @throws NullPointerException If no binary was specified.
@@ -181,7 +183,11 @@ public class Bootstrapper
 		if (__args == null)
 			__args = new String[0];
 		
-		throw new Error("TODO");
+		// Launch program
+		if (!this.launcher.launch(new __Resources__(__bin), __bin.mainClass(),
+			__args))
+			System.exit(1);
+		System.exit(0);
 	}
 }
 
