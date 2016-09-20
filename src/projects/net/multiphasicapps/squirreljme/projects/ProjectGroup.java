@@ -211,8 +211,8 @@ public final class ProjectGroup
 			// If the source is newer than the binary then recompile it
 			// Also recompile if any dependency has source code newer than the
 			// binary
-			if (this._justcompiled || psrc.compareTo(pbin) > 0 ||
-				__dependencySourceDate(name).compareTo(pbin) > 0)
+			if (this._justcompiled ||
+				__dependencySourceDate(name).compareTo(pbin) <= 0)
 				bin = maybe;
 		} 
 		
