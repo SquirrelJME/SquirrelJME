@@ -91,7 +91,21 @@ class __CompilerInput__
 		if (__src)
 			return info.open(__name);
 		
-		throw new Error("TODO");
+		// Go through all binaries to find the file
+		for (ProjectInfo bin : this._bin)
+			try
+			{
+				return bin.open(__name);
+			}
+			
+			// Ignore
+			catch (NoSuchFileException e)
+			{
+			}
+		
+		// {@squirreljme.error CI0d The specified non-source file does not
+		// exist in any project. (The requested file)}
+		throw new NoSuchFileException(String.format("CI0d %s", __name));
 	}
 
 	/**
