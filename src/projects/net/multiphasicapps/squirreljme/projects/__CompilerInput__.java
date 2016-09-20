@@ -58,6 +58,11 @@ class __CompilerInput__
 	public InputStream input(boolean __src, String __name)
 		throws IOException, NoSuchFileException
 	{
+		// If source code, read from the project being compiled
+		ProjectInfo info = this.info;
+		if (__src)
+			return info.open(__name);
+		
 		throw new Error("TODO");
 	}
 }

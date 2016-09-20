@@ -122,8 +122,8 @@ class __FileObject__
 		
 		// Read in all the characters
 		StringBuilder sb = new StringBuilder();
-		try (Reader r = new InputStreamReader(input.input(true, this.name),
-			"utf-8"))
+		try (Reader r = new InputStreamReader(
+			input.input(__isSource(), this.name), "utf-8"))
 		{
 			char[] buf = new char[2048];
 			for (;;)
@@ -262,6 +262,17 @@ class __FileObject__
 	public URI toUri()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Is this source code?
+	 *
+	 * @return {@code true} if source code.
+	 * @since 2016/09/19
+	 */
+	private boolean __isSource()
+	{
+		return JavaFileObject.Kind.SOURCE == getKind();
 	}
 }
 

@@ -14,11 +14,14 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -465,7 +468,33 @@ public class ProjectInfo
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// If this refers to a ZIP file then open it as one
+		Path path = this.path;
+		if (this.iszip)
+			throw new Error("TODO");
+		
+		// Otherwise
+		else
+		{
+			// Resolve path
+			int n = __n.length();
+			for (int i = 0; i < n; i++)
+			{
+				// Find next slash
+				int j;
+				for (j = i + 1; j < n; j++)
+					if (__n.charAt(i) == '/')
+						break;
+				
+				// Split resolve
+				path = path.resolve(__n.substring(i, j));
+				i = j;
+			}
+			
+			// Open the file
+			return Channels.newInputStream(FileChannel.open(path,
+				StandardOpenOption.READ));
+		}
 	}
 	
 	/**
