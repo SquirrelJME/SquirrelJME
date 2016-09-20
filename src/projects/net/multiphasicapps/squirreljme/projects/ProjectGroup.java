@@ -442,8 +442,7 @@ public final class ProjectGroup
 		// date, all of the dependencies must be checked and built also
 		ProjectList list = this.list;
 		for (ProjectName dn : src.dependencies(__opt))
-		{System.err.printf("DEBUG -- Consider %s -> %s (%s)%n", this.name,
-			dn, __opt);
+		{
 			// {@squirreljme.error CI0h The specified project is missing a
 			// required dependency. (This project; The dependency)}
 			// Ignore optionals though
@@ -466,8 +465,16 @@ public final class ProjectGroup
 			
 			// If there is no binary then the dependency must be built
 			// Or if there is a binary and its source is newer than its binary
-			else if (dbin == null || dsrc.date().compareTo(dbin.date()) > 0)
+			// Or the dependency source is newer than our own source
+			else if (dbin == null || dsrc.date().compareTo(dbin.date()) > 0 ||
+				dsrc.date().compareTo(srctime) > 0)
 			{
+				// Debug
+				System.err.printf(
+					"DEBUG -- Out of date! %s -> %s/%s [%s %s %s]%n",
+					this.name, dbin, dsrc, srctime, (dbin == null ? null :
+					dbin.date()), dsrc.date());
+				
 				// Compile it
 				try
 				{
@@ -492,11 +499,6 @@ public final class ProjectGroup
 				}
 			}
 			
-			// If the dependency is newer than this source code then it must
-			// be recompiled
-			else if (dbin.date().compareTo(srctime) > 0)
-				rv = true;
-			
 			// Check deeper into the tree to see if any dependencies
 			// have changed
 			rv |= dg.__recursiveBuildDepends(__bc, false);
@@ -504,6 +506,9 @@ public final class ProjectGroup
 			// If considering optionals then check all of them also
 			if (__opt)
 				dg.__recursiveBuildDepends(__bc, true);
+				
+			System.err.printf("DEBUG -- Consider %s -> %s (%s)? %s%n",
+				this.name, dn, __opt, rv);
 		}
 		
 		// Return if a build was done at all

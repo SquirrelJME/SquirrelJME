@@ -26,3 +26,13 @@ Actually it is the writter which has the issue.
 
 I need to flush on close so that memory is not piled into.
 
+## 10:36
+
+It seems that everything is rebuilt:
+
+	DEBUG -- Out of date! builder -> basic-assets/basic-assets [
+	isrc: 2016-09-18T20:43:43Z
+	dbin: 2016-09-20T14:33:33Z
+	dsrc: 2016-09-18T16:51:35Z]
+
+
