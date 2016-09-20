@@ -161,7 +161,12 @@ public class ProjectInfo
 			// Get contents from the ZIP?
 			Path path = this.path;
 			if (this.iszip)
-				throw new Error("TODO");
+				try (ZipFile zip = ZipFile.open(FileChannel.open(path,
+						StandardOpenOption.READ)))
+				{
+					for (ZipEntry e : zip)
+						into.add(e.name());
+				}
 			
 			// Get contents from the directory tree
 			else

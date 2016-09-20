@@ -358,9 +358,6 @@ class __FileManager__
 			if (!hit)
 				continue;
 			
-			// Debug
-			System.err.printf("DEBUG -- Listed %s%n", f);
-			
 			// Add file
 			rv.add(new __FileObject__(this, input, f));
 		};
