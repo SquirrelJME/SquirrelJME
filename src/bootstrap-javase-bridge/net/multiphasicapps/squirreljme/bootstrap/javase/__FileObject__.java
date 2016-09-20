@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.bootstrap.javase;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -114,7 +115,32 @@ class __FileObject__
 	public CharSequence getCharContent(boolean __a)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error DE03 This file was opened for output.}
+		CompilerInput input = this.input;
+		if (input == null)
+			throw new IllegalStateException("DE03");
+		
+		// Read in all the characters
+		StringBuilder sb = new StringBuilder();
+		try (Reader r = new InputStreamReader(input.input(true, this.name),
+			"utf-8"))
+		{
+			char[] buf = new char[2048];
+			for (;;)
+			{
+				int rc = r.read(buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Write
+				sb.append(buf, 0, rc);
+			}
+		}
+		
+		// Return it
+		return sb;
 	}
 	
 	/**
