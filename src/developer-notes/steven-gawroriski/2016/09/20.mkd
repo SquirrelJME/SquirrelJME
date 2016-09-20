@@ -14,3 +14,11 @@ things greatly. Also `CompilerOutput` should be flushable.
 So now I have writing of output JARs. What I need now however is to see why
 the manifest writing to the output does not work at all.
 
+## 07:54
+
+My manifest parser has an issue, it ignores spaces at the end of a line.
+
+## 07:58
+
+Actually it is the writter which has the issue.
+

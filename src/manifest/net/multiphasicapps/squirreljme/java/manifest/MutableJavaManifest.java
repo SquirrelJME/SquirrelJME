@@ -31,7 +31,7 @@ public class MutableJavaManifest
 {
 	/** The maximum number of columns a manifest may have. */
 	private static final int _COLUMN_LIMIT =
-		72;
+		71;
 	
 	/** Main attributes. */
 	protected final Map<String, MutableJavaManifestAttributes> attributes =
@@ -228,6 +228,10 @@ public class MutableJavaManifest
 				int nextcol = col + 1;
 				if (nextcol >= _COLUMN_LIMIT)
 				{
+					// If the next character is a space then it will
+					// be lost on the following line.
+					if (i + 1 < n && s.charAt(i + 1) == ' ')
+						__w.write(' ');
 					__w.write("\r\n");
 					
 					// Indent next line with space as long as this is not
