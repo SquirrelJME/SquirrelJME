@@ -124,7 +124,23 @@ class __FileObject__
 	@Override
 	public JavaFileObject.Kind getKind()
 	{
-		throw new Error("TODO");
+		// Depends on the extension
+		String name = this.name;
+		
+		// Java source code
+		if (name.endsWith(".java"))
+			return JavaFileObject.Kind.SOURCE;
+		
+		// Java class file
+		else if (name.endsWith(".class"))
+			return JavaFileObject.Kind.CLASS;
+		
+		// HTML
+		else if (name.endsWith(".htm") || name.endsWith(".html"))
+			return JavaFileObject.Kind.HTML;
+		
+		// Unknoen
+		return JavaFileObject.Kind.OTHER;
 	}
 	
 	/**
@@ -144,7 +160,7 @@ class __FileObject__
 	@Override
 	public String getName()
 	{
-		throw new Error("TODO");
+		return this.name;
 	}
 	
 	/**

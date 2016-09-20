@@ -68,7 +68,7 @@ class __FileManager__
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Do nothing
 	}
 	
 	/**
@@ -79,7 +79,7 @@ class __FileManager__
 	public void flush()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Do nothing
 	}
 	
 	/**
