@@ -80,6 +80,9 @@ public class ProjectInfo
 	/** Cached contents. */
 	private volatile Reference<Iterable<String>> _contents;
 	
+	/** Opened ZIP file. */
+	private volatile __OpenZip__ _ozip;
+	
 	/**
 	 * Initializes the project information from the given ZIP.
 	 *
@@ -476,7 +479,15 @@ public class ProjectInfo
 		// If this refers to a ZIP file then open it as one
 		Path path = this.path;
 		if (this.iszip)
-			throw new Error("TODO");
+		{
+			// If ZIP not opened, then open it
+			__OpenZip__ ozip = this._ozip;
+			if (ozip == null)
+				this._ozip = (ozip = new __OpenZip__(this, path));
+			
+			// Forward open
+			return ozip.open(__n);
+		}
 		
 		// Otherwise
 		else
