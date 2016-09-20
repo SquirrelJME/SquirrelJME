@@ -46,3 +46,16 @@ So now I would consider the refactor of the build system very nearly complete.
 All I must do now is to recreate the launch system and bridge that with
 Java SE.
 
+## 14:34
+
+The launch system could actually reuse some of the compiler bits, that is when
+it comes to input. But not really, it can be much lighter. The only thing that
+has to be considered is file name resource lookup and such. Anything that is
+launched will be done so with custom class loaders. I suppose what I can do
+is when something is launched, I can perform the actual work in another thread
+and then just wait on it to finish or throw an exception. That should prevent
+extra junk in the callstack that is not needed, just as invoke and such. Well,
+there still would be the native method invoke however. I do need to take
+`main` being static into consideration. This would just mean that on
+SquirrelJME itself, the launcher would be like it was interpreted.
+
