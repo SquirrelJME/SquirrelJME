@@ -204,10 +204,30 @@ class __FileObject__
 	 * @since 2016/09/19
 	 */
 	@Override
-	public boolean isNameCompatible(String __a, JavaFileObject.Kind
-		__b)
+	public boolean isNameCompatible(String __sn, JavaFileObject.Kind
+		__k)
 	{
-		throw new Error("TODO");
+		// Determine the extension
+		String ext;
+		switch (__k)
+		{
+				// Source code
+			case SOURCE:
+				ext = ".java";
+				break;
+			
+				// Class file
+			case CLASS:
+				ext = ".class";
+				break;
+				
+				// Unknown, ignore
+			default:
+				return false;
+		}
+		
+		// Compare file name
+		return this.name.equals(__sn.replace('.', '/') + ext);
 	}
 	
 	/**
