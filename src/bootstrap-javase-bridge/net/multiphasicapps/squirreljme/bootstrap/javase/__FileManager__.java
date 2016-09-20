@@ -186,7 +186,20 @@ class __FileManager__
 	public Iterable<? extends JavaFileObject>
 		getJavaFileObjectsFromStrings(Iterable<String> __a)
 	{
-		throw new Error("TODO");
+		Set<JavaFileObject> rv = new LinkedHashSet<>();
+		CompilerInput input = this.input;
+		for (String s : __a)
+			if (s.endsWith(".java"))
+				rv.add(new __FileObject__(this, input, s));
+			
+			// {@squirreljme.error DE02 Do not know how to handle getting a
+			// file object from the given file name. (The name of the file)}
+			else
+				throw new IllegalArgumentException(String.format("DE02 %s",
+					s));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
