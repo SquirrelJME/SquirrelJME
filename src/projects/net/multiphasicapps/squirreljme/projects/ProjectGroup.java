@@ -530,6 +530,9 @@ public final class ProjectGroup
 		// Is this a MIDlet?
 		boolean ismidlet = __src.isMIDlet();
 		
+		// Class path (includes optionals)
+		StringBuilder cp = new StringBuilder();
+		
 		// Add required and optional dependencies
 		int depid = 0;
 		for (int z = 0; z < 2; z++)
@@ -540,6 +543,10 @@ public final class ProjectGroup
 			// Go through dependencies
 			for (ProjectName dn : __src.dependencies(!req))
 			{
+				// Add it regardless
+				cp.append(dn);
+				cp.append(".jar ");
+				
 				// {@squirreljme.error CI0b The project has a required
 				// dependency on the specified project, however it does not
 				// exist. (This project; The dependency)}
@@ -582,6 +589,9 @@ public final class ProjectGroup
 			attr.put(new JavaManifestKey("MIDlet-Vendor"), __src.vendor());
 			attr.put(new JavaManifestKey("MIDlet-Version"), __src.version());
 		}
+		
+		// Classpath
+		attr.put(new JavaManifestKey("Class-Path"), cp.toString());
 	}
 	
 	/**
