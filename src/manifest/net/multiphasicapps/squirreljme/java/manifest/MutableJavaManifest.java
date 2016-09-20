@@ -208,7 +208,7 @@ public class MutableJavaManifest
 		
 		// Write pair
 		int col = 0;
-		for (int z = 0; z < z; z++)
+		for (int z = 0; z < 2; z++)
 		{
 			String s = (z == 0 ? __k : __v);
 			
