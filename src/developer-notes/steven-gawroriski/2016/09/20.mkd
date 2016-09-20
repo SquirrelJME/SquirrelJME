@@ -22,3 +22,7 @@ My manifest parser has an issue, it ignores spaces at the end of a line.
 
 Actually it is the writter which has the issue.
 
+## 10:01
+
+I need to flush on close so that memory is not piled into.
+

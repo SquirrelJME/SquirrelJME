@@ -238,8 +238,7 @@ public class MutableJavaManifest
 					
 					// Indent next line with space as long as this is not
 					// the last character being written
-					if (i + 1 < n)
-						__w.write(' ');
+					__w.write(' ');
 					
 					// Set next column
 					nextcol = 1;
