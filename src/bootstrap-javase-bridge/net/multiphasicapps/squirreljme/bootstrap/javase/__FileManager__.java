@@ -260,7 +260,19 @@ class __FileManager__
 	public String inferBinaryName(JavaFileManager.Location __a,
 		JavaFileObject __b)
 	{
-		throw new Error("TODO");
+		// Get name
+		String name = __b.getName();
+		
+		// Try to remove the extension
+		int ls = name.lastIndexOf('/'),
+			ld = name.lastIndexOf('.');
+		
+		// Remove everything up to the extension
+		if (ld > ls && ld >= 0)
+			name = name.substring(0, ld);
+		
+		// Convert any slashes to dots
+		return __b.getName().replace('/', '.');
 	}
 	
 	/**
