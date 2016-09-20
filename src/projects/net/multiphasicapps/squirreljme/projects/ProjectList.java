@@ -252,6 +252,7 @@ public class ProjectList
 		q.push(__n);
 		
 		// Go through the queue
+		ProjectName lastproc = null;
 		while (!q.isEmpty())
 		{
 			// Locate project detail
@@ -265,10 +266,10 @@ public class ProjectList
 			
 			// {@squirreljme.error CI01 A project eventually depends on another
 			// project which does not exist. (The project being looked up;
-			// The missing dependency)}
+			// The missing dependency; The last processed dependency)}
 			if (grp == null)
 				throw new MissingDependencyException(String.format(
-					"CI01 %s %s", __n, name));
+					"CI01 %s %s %s", __n, name, lastproc));
 			
 			// If our own project lacks a dependency of this type then use
 			// any
@@ -309,6 +310,9 @@ public class ProjectList
 					// Add name for later processing
 					q.push(on);
 				}
+			
+			// Set last processed
+			lastproc = name;
 		}
 		
 		// Return the target set

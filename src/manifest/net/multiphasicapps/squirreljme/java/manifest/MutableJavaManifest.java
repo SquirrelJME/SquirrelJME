@@ -226,13 +226,15 @@ public class MutableJavaManifest
 				
 				// Would be on a new line?
 				int nextcol = col + 1;
+				boolean newline = false;
 				if (nextcol >= _COLUMN_LIMIT)
 				{
-					// If the next character is a space then it will
+					// If the current character is a space then it will
 					// be lost on the following line.
-					if (i + 1 < n && s.charAt(i + 1) == ' ')
+					if (c == ' ')
 						__w.write(' ');
 					__w.write("\r\n");
+					newline = true;
 					
 					// Indent next line with space as long as this is not
 					// the last character being written
@@ -243,8 +245,10 @@ public class MutableJavaManifest
 					nextcol = 1;
 				}
 				
-				// Write the character
-				__w.write(c);
+				// Write the character, but if a space was written early then
+				// do not write it
+				if ((c == ' ' && !newline) || c != ' ')
+					__w.write(c);
 				
 				// Set new column
 				col = nextcol;

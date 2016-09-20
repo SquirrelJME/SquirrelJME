@@ -233,7 +233,8 @@ public final class JavaManifest
 						}
 						
 						// Add it to the line data
-						curval.append(c);
+						if (stage != _STAGE_VALUE_PADDING)
+							curval.append(c);
 					}
 					break;
 				
