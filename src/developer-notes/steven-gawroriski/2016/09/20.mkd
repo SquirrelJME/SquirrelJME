@@ -9,3 +9,8 @@ it is quite dark outside.
 The `CompilerOutput` originally had `InputStream` but that would complicate
 things greatly. Also `CompilerOutput` should be flushable.
 
+## 07:47
+
+So now I have writing of output JARs. What I need now however is to see why
+the manifest writing to the output does not work at all.
+

@@ -14,10 +14,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.javac.base.CompilerOutput;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This implements the compiler output which writes to a ZIP file for any
@@ -77,7 +79,27 @@ class __CompilerOutput__
 			if (done.isEmpty())
 				return;
 			
-			throw new Error("TODO");
+			// Go through all the done files
+			Iterator<Map.Entry<String, __Stream__>> it = done.entrySet().
+				iterator();
+			ZipStreamWriter zip = this.zip;
+			while (it.hasNext())
+			{
+				// Get the details
+				Map.Entry<String, __Stream__> e = it.next();
+				String k = e.getKey();
+				__Stream__ v = e.getValue();
+				
+				// Never write it again
+				it.remove();
+				
+				// Write to the output
+				try (OutputStream os = zip.nextEntry(k,
+					ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					v.wrapped.writeTo(os);
+				}
+			}
 		}
 	}
 	
