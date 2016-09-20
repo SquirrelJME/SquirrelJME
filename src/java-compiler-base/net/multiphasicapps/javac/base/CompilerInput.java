@@ -37,5 +37,17 @@ public interface CompilerInput
 	 */
 	public abstract InputStream input(boolean __src, String __name)
 		throws IOException, NoSuchFileException;
+	
+	/**
+	 * Lists all files which are visible to this input.
+	 *
+	 * @param __src If {@code true} then only the source path is to be
+	 * considered, otherwise the class path should be read.
+	 * @return An iterable over every file which is available.
+	 * @throws IOException On read errors.
+	 * @since 2016/09/19
+	 */
+	public abstract Iterable<String> list(boolean __src)
+		throws IOException;
 }
 

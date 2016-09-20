@@ -207,27 +207,8 @@ class __FileObject__
 	public boolean isNameCompatible(String __sn, JavaFileObject.Kind
 		__k)
 	{
-		// Determine the extension
-		String ext;
-		switch (__k)
-		{
-				// Source code
-			case SOURCE:
-				ext = ".java";
-				break;
-			
-				// Class file
-			case CLASS:
-				ext = ".class";
-				break;
-				
-				// Unknown, ignore
-			default:
-				return false;
-		}
-		
 		// Compare file name
-		return this.name.equals(__sn.replace('.', '/') + ext);
+		return this.name.equals(__sn.replace('.', '/') + __k.extension);
 	}
 	
 	/**

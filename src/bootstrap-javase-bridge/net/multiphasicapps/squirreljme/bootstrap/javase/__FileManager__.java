@@ -242,6 +242,7 @@ class __FileManager__
 				// Knows class input and output
 			case CLASS_OUTPUT:
 			case CLASS_PATH:
+			case PLATFORM_CLASS_PATH:
 			case SOURCE_PATH:
 				return true;
 			
@@ -288,10 +289,84 @@ class __FileManager__
 	 */
 	@Override
 	public Iterable<JavaFileObject> list(JavaFileManager.Location
-		__a, String __b, Set<JavaFileObject.Kind> __c, boolean __d)
+		__l, String __pk, Set<JavaFileObject.Kind> __kinds, boolean __rec)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Debug
+		System.err.printf("DEBUG -- list(%s, %s, %s, %b)%n", __l, __pk,
+			__kinds, __rec);
+		
+		// Setup target
+		Set<JavaFileObject> rv = new LinkedHashSet<>();
+		
+		// Go through input files
+		CompilerInput input = this.input;
+		
+		// Determine which input file source to use
+		Iterable<String> files;
+		if (!(__l instanceof StandardLocation))
+			return rv;
+		else
+			switch ((StandardLocation)__l)
+			{
+					// Class inputs
+				case CLASS_PATH:
+				case PLATFORM_CLASS_PATH:
+					files = input.list(false);
+					break;
+				
+					// Source inputs
+				case SOURCE_PATH:
+					files = input.list(true);
+					break;
+			
+					// Unknown, return nothing
+				default:
+					return rv;
+			}
+		
+		// Prefix to consider?
+		String prefix = (__pk == null ? "" : __pk.replace('.', '/') + "/");
+		int prefixn = prefix.length();
+		
+		// Go through all files
+		for (String f : files)
+		{
+			// Prefix does not match?
+			if (!f.startsWith(prefix))
+				continue;
+			
+			// If not recursive, then the last slash that appears must be
+			// at the same length of the prefix
+			if (!__rec)
+			{
+				int ls = Math.max(-1, f.lastIndexOf('/')) + 1;
+				if (ls != prefixn)
+					continue;
+			}
+			
+			// Only consider files with these extensions
+			boolean hit = false;
+			for (JavaFileObject.Kind k : __kinds)
+				if (f.endsWith(k.extension))
+				{
+					hit = true;
+					break;
+				}
+			
+			// Missed extension?
+			if (!hit)
+				continue;
+			
+			// Debug
+			System.err.printf("DEBUG -- Listed %s%n", f);
+			
+			// Add file
+			rv.add(new __FileObject__(this, input, f));
+		};
+		
+		// Return
+		return rv;
 	}
 	
 	/**

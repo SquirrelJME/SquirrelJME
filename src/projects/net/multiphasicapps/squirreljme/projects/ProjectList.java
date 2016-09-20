@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.AbstractMap;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -214,7 +215,7 @@ public class ProjectList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public Set<ProjectInfo> recursiveDependencies(ProjectType __t,
+	public Collection<ProjectInfo> recursiveDependencies(ProjectType __t,
 		ProjectName __n, boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
@@ -236,8 +237,9 @@ public class ProjectList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public Set<ProjectInfo> recursiveDependencies(Set<ProjectInfo> __rv,
-		ProjectType __t, ProjectName __n, boolean __opt)
+	public Collection<ProjectInfo> recursiveDependencies(
+		Collection<ProjectInfo> __rv, ProjectType __t, ProjectName __n,
+		boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
 		// Check
