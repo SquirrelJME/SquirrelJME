@@ -242,11 +242,12 @@ public final class ProjectGroup
 				// performed following this.
 				// {@squirreljme.error CI0c Failed to compile the source code
 				// for the specified project. (The project name)}
-				if (!__bc.compile(System.err, co, ci, Arrays.<String>asList(
-					"-target", "1.7", "-source", "1.7", "-g",
-					"-Xlint:deprecation"), ccthese))
-					throw new CompilationFailedException(String.format(
-						"CI0c %s", name));
+				if (!ccthese.isEmpty())
+					if (!__bc.compile(System.err, co, ci, Arrays.<String>
+						asList("-target", "1.7", "-source", "1.7", "-g",
+						"-Xlint:deprecation"), ccthese))
+						throw new CompilationFailedException(String.format(
+							"CI0c %s", name));
 			}
 			
 			// Determine the name of the binary

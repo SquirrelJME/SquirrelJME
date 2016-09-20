@@ -8,45 +8,18 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package java.nio.file.attribute;
+package java.nio.file;
 
-public final class FileTime
-	implements Comparable<FileTime>
+public enum StandardCopyOption
+	implements CopyOption
 {
-	private FileTime()
-	{
-		super();
-		throw new Error("TODO");
-	}
+	ATOMIC_MOVE,
 	
-	public int compareTo(FileTime __a)
-	{
-		throw new Error("TODO");
-	}
+	COPY_ATTRIBUTES,
 	
-	public boolean equals(Object __a)
-	{
-		throw new Error("TODO");
-	}
+	REPLACE_EXISTING,
 	
-	public int hashCode()
-	{
-		throw new Error("TODO");
-	}
-	
-	public long toMillis()
-	{
-		throw new Error("TODO");
-	}
-	
-	public String toString()
-	{
-		throw new Error("TODO");
-	}
-	
-	public static FileTime fromMillis(long __v)
-	{
-		throw new Error("TODO");
-	}
+	/** End. */
+	;
 }
 
