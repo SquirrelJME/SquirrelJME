@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -153,11 +154,20 @@ public final class ProjectGroup
 		
 		// Recursively build any dependencies which are out of date, except
 		// for this project
-		if (!__recursiveBuildDepends(__bc, src, src))
-			return binary();
+		if (!__recursiveBuildDepends(__bc))
+		{
+			// If there is a binary then use it
+			ProjectInfo bin = binary();
+			if (bin != null)
+				return bin;
+		}
+		
+		// {@squirreljme.error CI0i This project is currently being
+		// compiled. (The project name)}
+		ProjectName name = this.name;
+		System.err.printf("CI0i %s%n", name);
 		
 		// Temporary output JAR name
-		ProjectName name = this.name;
 		Path tempjarname = Files.createTempFile("squirreljme-compile",
 			name.toString());
 		
@@ -365,26 +375,74 @@ public final class ProjectGroup
 	
 	/**
 	 * Recursively attempts to build the dependencies for the current
-	 * {@code __at} project if the dependency is out of date or has a missing
+	 * {@code __src} project if the dependency is out of date or has a missing
 	 * binary.
 	 *
 	 * @param __bc The compiler to use.
-	 * @param __root The root project.
-	 * @param __at The current at project.
 	 * @return {@code false} if no builds were ever performed.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/20
 	 */
-	final boolean __recursiveBuildDepends(Compiler __bc, ProjectInfo __root,
-		ProjectInfo __at)
+	final boolean __recursiveBuildDepends(Compiler __bc)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__bc == null || __root == null || __at == null)
+		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get binary and source
+		ProjectInfo bin = binary();
+		ProjectInfo src = source();
+		
+		// Ignore if no source
+		if (src == null)
+			return false;
+		
+		// Quickly determine if the binary is out of date
+		FileTime srctime = src.date();
+		boolean rv = ((bin != null && srctime.compareTo(bin.date()) > 0) ||
+			bin == null);
+		
+		// Go through all required dependencies, even if the binary is out of
+		// date, all of the dependencies must be checked and built also
+		ProjectList list = this.list;
+		for (ProjectName dn : src.dependencies())
+		{
+			// {@squirreljme.error CI0h The specified project is missing a
+			// required dependency. (This project; The dependency)}
+			ProjectGroup dg = list.get(dn);
+			if (dg == null)
+				throw new MissingDependencyException(String.format(
+					"CI0h %s", src.name(), dn));
+			
+			// Get binaries and sources
+			ProjectInfo dbin = dg.binary();
+			ProjectInfo dsrc = dg.source();
+			
+			// If there is a binary but no source then it is a binary only
+			// package, assume it is always up to date.
+			if (dbin != null && dsrc == null)
+				continue;
+			
+			// If there is no binary then the dependency must be built
+			else if (dbin == null)
+			{
+				// Compile it
+				dg.compileSource(__bc);
+				
+				// Always changed
+				rv = true;
+			}
+			
+			// If the dependency is newer than this source code then it must
+			// be recompiled
+			else if (dbin.date().compareTo(srctime) > 0)
+				rv = true;
+		}
+		
+		// Return if a build was done at all
+		return rv;
 	}
 	
 	/**

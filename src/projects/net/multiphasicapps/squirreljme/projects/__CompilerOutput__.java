@@ -236,10 +236,10 @@ class __CompilerOutput__
 		public void write(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			// {@squirreljme.error CI0f Cannot write multiple bytes after the
+			// {@squirreljme.error CI0g Cannot write multiple bytes after the
 			// output has been closed.}
 			if (this._closed)
-				throw new IOException("CI0f");
+				throw new IOException("CI0g");
 			
 			// Forward
 			this.wrapped.write(__b, __o, __l);
