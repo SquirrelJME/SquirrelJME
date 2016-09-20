@@ -250,6 +250,9 @@ public class MutableJavaManifest
 				col += 2;
 			}
 		}
+		
+		// Write newline
+		__w.write("\r\n");
 	}
 }
 
