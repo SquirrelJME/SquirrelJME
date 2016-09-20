@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.javac.base.CompilerOutput;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -25,8 +28,20 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 class __CompilerOutput__
 	implements CompilerOutput
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The output ZIP. */
 	protected final ZipStreamWriter zip;
+	
+	/** Outputs which are currently being written to (not closed). */
+	private final Map<String, __Stream__> _waiting =
+		new LinkedHashMap<>();
+	
+	/** Output streams which have been closed, to be written to the ZIP. */
+	private final Map<String, __Stream__> _done =
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the compiler output.
@@ -54,7 +69,16 @@ class __CompilerOutput__
 	public void flush()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Nothing to be done?
+			Map<String, __Stream__> done = this._done;
+			if (done.isEmpty())
+				return;
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -69,7 +93,135 @@ class __CompilerOutput__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Setup new stream
+			__Stream__ rv = new __Stream__(__n);
+			
+			// Store into the files being written
+			Map<String, __Stream__> waiting = this._waiting;
+			waiting.put(__n, rv);
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Wrapped streams for potential flushing.
+	 *
+	 * @since 2016/09/20
+	 */
+	private final class __Stream__
+		extends OutputStream
+	{
+		/** The wrapped stream to write to. */
+		protected final ByteArrayOutputStream wrapped =
+			new ByteArrayOutputStream();
+		
+		/** The name of this file. */
+		protected final String name;
+		
+		/** Has this been closed? */
+		private volatile boolean _closed;
+		
+		/**
+		 * Initializes the stream.
+		 *
+		 * @param __n The name of this file.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/09/20
+		 */
+		private __Stream__(String __n)
+			throws NullPointerException
+		{
+			// Check
+			if (__n == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.name = __n;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/20
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			// Need to lock on the compiler output to prevent race conditions
+			// where a file is closed multiple times and placed into the done
+			// queue multiple times
+			__CompilerOutput__ ccout = __CompilerOutput__.this;
+			synchronized (ccout.lock)
+			{
+				// Ignore if closed
+				if (this._closed)
+					return;
+			
+				// Mark closed
+				this._closed = true;
+				
+				// Get both queues
+				Map<String, __Stream__> waiting = ccout._waiting;
+				Map<String, __Stream__> done = ccout._done;
+				
+				// Remove from the waiting queue
+				String name = this.name;
+				waiting.remove(name);
+				
+				// And add to the done queue
+				done.put(name, this);
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/20
+		 */
+		@Override
+		public void flush()
+			throws IOException
+		{
+			// Flushing a byte array output is pointless
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/20
+		 */
+		@Override
+		public void write(int __b)
+			throws IOException
+		{
+			// {@squirreljme.error CI0f Cannot write a single byte after the
+			// output has been closed.}
+			if (this._closed)
+				throw new IOException("CI0f");
+			
+			// Forward
+			this.wrapped.write(__b);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/20
+		 */
+		@Override
+		public void write(byte[] __b, int __o, int __l)
+			throws IOException
+		{
+			// {@squirreljme.error CI0f Cannot write multiple bytes after the
+			// output has been closed.}
+			if (this._closed)
+				throw new IOException("CI0f");
+			
+			// Forward
+			this.wrapped.write(__b, __o, __l);
+		}
 	}
 }
 

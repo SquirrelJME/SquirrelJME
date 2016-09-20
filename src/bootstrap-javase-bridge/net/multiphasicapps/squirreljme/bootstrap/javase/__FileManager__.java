@@ -69,7 +69,9 @@ class __FileManager__
 	public void close()
 		throws IOException
 	{
-		// Do nothing
+		// Flush the output writer so that any entries which are waiting to
+		// be written are written to the ZIP
+		this.output.flush();
 	}
 	
 	/**
