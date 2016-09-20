@@ -40,3 +40,9 @@ It seems that everything is rebuilt:
 So I thought about it. I need to change the compilation stuff to another
 method and have the `compileSource` just be recursive itself always.
 
+## 14:31
+
+So now I would consider the refactor of the build system very nearly complete.
+All I must do now is to recreate the launch system and bridge that with
+Java SE.
+
