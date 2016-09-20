@@ -427,7 +427,8 @@ public final class ProjectGroup
 				continue;
 			
 			// If there is no binary then the dependency must be built
-			else if (dbin == null)
+			// Or if there is a binary and its source is newer than its binary
+			else if (dbin == null || dsrc.date().compareTo(dbin.date()) > 0)
 			{
 				// Compile it
 				dg.compileSource(__bc);
@@ -530,15 +531,14 @@ public final class ProjectGroup
 		boolean ismidlet = __src.isMIDlet();
 		
 		// Add required and optional dependencies
-		boolean req = false;
 		int depid = 0;
-		do
+		for (int z = 0; z < 2; z++)
 		{
-			// Flip
-			req = !req;
+			// Required?
+			boolean req = (z == 0);
 			
 			// Go through dependencies
-			for (ProjectName dn : __src.dependencies(req))
+			for (ProjectName dn : __src.dependencies(!req))
 			{
 				// {@squirreljme.error CI0b The project has a required
 				// dependency on the specified project, however it does not
@@ -573,7 +573,7 @@ public final class ProjectGroup
 				// Increase dependency ID
 				depid++;
 			}
-		} while (!req);
+		}
 		
 		// If it is a midlet then it must have these attributes also
 		if (ismidlet)
