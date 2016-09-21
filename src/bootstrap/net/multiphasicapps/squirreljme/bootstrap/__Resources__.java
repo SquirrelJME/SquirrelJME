@@ -13,8 +13,12 @@ package net.multiphasicapps.squirreljme.bootstrap;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 	ResourceAccessor;
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
+	ResourceReference;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -65,7 +69,7 @@ class __Resources__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Browse theough all projects
+		// Browse through all projects
 		for (ProjectInfo info : this._from)
 			try
 			{
@@ -90,6 +94,38 @@ class __Resources__
 		
 		// Not found
 		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/21
+	 */
+	@Override
+	public Iterable<ResourceReference> reference(String __n)
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Return value
+		List<ResourceReference> rv = new ArrayList<>();
+		
+		// Browse through all projects
+		for (ProjectInfo info : this._from)
+			try
+			{
+				// If the project contains the resource then refer to it later
+				if (info.contents().contains(__n))
+					rv.add(new __Reference__(info, __n));
+			}
+			
+			// Ignore
+			catch (IOException e)
+			{
+			}
+		
+		// return
+		return rv;
 	}
 }
 

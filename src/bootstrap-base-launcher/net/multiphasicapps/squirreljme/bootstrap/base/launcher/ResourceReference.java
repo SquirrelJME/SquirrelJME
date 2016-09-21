@@ -13,32 +13,19 @@ package net.multiphasicapps.squirreljme.bootstrap.base.launcher;
 import java.io.InputStream;
 
 /**
- * This is used to access resources such as classes and acts as the class
- * path for the current program.
+ * This is a reference to a resource which is used to access resources
+ * potentially at a later time.
  *
- * Class files are read as if they were normal resources in class file form.
- *
- * @since 2016/09/20
+ * @since 2016/09/21
  */
-public interface ResourceAccessor
+public interface ResourceReference
 {
 	/**
 	 * Opens the specified resource.
 	 *
-	 * @param __n The name of the resource to open, matches the format used
-	 * in ZIP files.
-	 * @return An input stream for the given resource or {@code null} if it
-	 * does not exist.
-	 * @since 2016/09/20
-	 */
-	public abstract InputStream open(String __n);
-	
-	/**
-	 * Return an iteration of reference under the given name.
-	 *
-	 * @param __n The name of the resource to get references for.
+	 * @return An input stream of the resource data.
 	 * @since 2016/09/21
 	 */
-	public abstract Iterable<ResourceReference> reference(String __n);
+	public abstract InputStream open();
 }
 
