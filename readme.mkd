@@ -35,26 +35,27 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
      * `cd squirreljme`
      * `fossil open ../squirreljme.fossil`
    * Trunk Source Snapshot (`fossil serve` only):
-     * [TAR.GZ](../../tarball/squirreljme-trunk.tar.gz?uuid=trunk)
-     * [ZIP](../../zip/squirreljme-trunk.zip?uuid=trunk)
+     * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
+     * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
    * Read-Only Mirrors:
      * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
      * GitHub: <http://github.com/mpasteven/SquirrelJME/>
      * Tor: <http://x3v3lxoxpxu3hitk.onion/>
        (`fossil clone -u http://x3v3lxoxpxu3hitk.onion/ squirreljme.fossil`)
 
+## Documents
+
+ * [Developer Notes](/uv/developer-notes/index.mkd)
+   * [Alternative URL](http://multiphasicapps.net/uv/developer-notes/index.mkd)
+     (Links to the main repository)
+ * [Manual](src/manual/index.mkd)
+ * [Why?](src/manual/user/why.mkd)
+
 ## Links
 
- * [Why?](src/manual/user/why.mkd)
- * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
+ * [Twitter](https://twitter.com/MultiPhasicApps)
  * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
  * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
- * [Manual](src/manual/index.mkd)
- * [Developer Notes](src/developer-notes/index.mkd)
-
-## Social
-
- * [Twitter](https://twitter.com/MultiPhasicApps)
  * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
 
 ## Goals
