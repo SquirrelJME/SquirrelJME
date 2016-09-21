@@ -142,6 +142,9 @@ public class NativeAllocator
 			}
 		}
 		
+		// ABI needed for register sizes
+		NativeABI abi = this.abi;
+		
 		// Allocating from registers?
 		Set<NativeRegister> regclaim = new LinkedHashSet<>();
 		int bytesleft = __rt.bytes();
@@ -160,7 +163,15 @@ public class NativeAllocator
 			// registers
 			for (NativeRegister r : queue)
 			{
-				throw new Error("TODO");
+				NativeRegisterType t = abi.registerType(r);
+				
+				// Consider this register
+				regclaim.add(r);
+				bytesleft -= t.bytes();
+				
+				// Claimed all of the required registers?
+				if (bytesleft <= 0)
+					break;
 			}
 		}
 		
