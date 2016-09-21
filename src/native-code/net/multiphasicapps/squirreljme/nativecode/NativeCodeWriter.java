@@ -21,6 +21,19 @@ package net.multiphasicapps.squirreljme.nativecode;
 public interface NativeCodeWriter
 {
 	/**
+	 * Copies the value contain in one allocation to another allocation.
+	 *
+	 * @param __src The source allocation.
+	 * @param __dest The destination allocation.
+	 * @throws NativeCodeException If the copy operation could not be
+	 * performed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/21
+	 */
+	public abstract void copy(NativeAllocation __src, NativeAllocation __dest)
+		throws NativeCodeException, NullPointerException;
+	
+	/**
 	 * Returns the configuration that was used to configure the writer.
 	 *
 	 * @return The configuration used to configure the writer.

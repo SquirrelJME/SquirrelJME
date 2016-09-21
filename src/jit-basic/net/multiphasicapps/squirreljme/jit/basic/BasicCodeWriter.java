@@ -233,8 +233,14 @@ public class BasicCodeWriter
 		}
 		
 		// Debug
-		System.err.printf("DEBUG -- Allocated: %s%n",
+		System.err.printf("DEBUG -- Invoke initial VTA: %s%n", vartoalloc);
+		
+		// Debug
+		System.err.printf("DEBUG -- Allocated (For Invoke): %s%n",
 			Arrays.<NativeAllocation>asList(nas));
+		
+		// Will need to write the instructions
+		NativeCodeWriter writer = this.writer;
 		
 		// Go through all allocations and allocate any temporary registers
 		// and store their value onto the stack
@@ -280,14 +286,16 @@ public class BasicCodeWriter
 					ons);
 				
 				// Copy the stored value to the stack
-				if (true)
-					throw new Error("TODO");
+				writer.copy(v, ons);
 				
 				// Update the allocation state to indicate that the value
 				// is now on the stack
-				throw new Error("TODO");
+				vartoalloc.put(k, ons);
 			}
 		}
+		
+		// Debug
+		System.err.printf("DEBUG -- Invoke VTA after save: %s%n", vartoalloc);
 		
 		throw new Error("TODO");
 	}

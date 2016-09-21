@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.nativecode.mips;
 
+import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 
@@ -40,6 +42,21 @@ public class MIPSWriter
 		
 		// Set
 		this.options = __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/21
+	 */
+	@Override
+	public void copy(NativeAllocation __src, NativeAllocation __dest)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
