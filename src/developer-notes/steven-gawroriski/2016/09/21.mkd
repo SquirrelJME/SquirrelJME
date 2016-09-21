@@ -4,3 +4,9 @@
 
 Today is the last day of summer.
 
+## 06:58
+
+The resource accessor will need a specific means of obtaining a set of
+resources under a given name and returning a kind of reference to them. This
+would be used so that `ServiceLoader` operates correctly in launched programs.
+
