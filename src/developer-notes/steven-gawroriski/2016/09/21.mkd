@@ -10,3 +10,8 @@ The resource accessor will need a specific means of obtaining a set of
 resources under a given name and returning a kind of reference to them. This
 would be used so that `ServiceLoader` operates correctly in launched programs.
 
+## 10:44
+
+This means the build system refactor has been completed. I just need to test
+it on Windows.
+
