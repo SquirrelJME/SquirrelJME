@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.bootstrap;
 
 import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 	ResourceAccessor;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
@@ -63,7 +65,27 @@ class __Resources__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Browse theough all projects
+		for (ProjectInfo info : this._from)
+			try
+			{
+				return info.open(__n);
+			}
+			
+			// Ignore if it does not exist
+			catch (NoSuchFileException e)
+			{
+			}
+			
+			// {@squirreljme.error CL06 Failed to access the resource. (The
+			// name of the resource)}
+			catch (IOException e)
+			{
+				throw new RuntimeException(String.format("CL06 %s", __n), e);
+			}
+		
+		// Not found
+		return null;
 	}
 }
 
