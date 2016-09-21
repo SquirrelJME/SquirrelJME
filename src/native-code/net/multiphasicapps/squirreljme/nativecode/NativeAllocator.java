@@ -185,7 +185,27 @@ public class NativeAllocator
 			// Allocating from the stack?
 			if (usestack)
 			{
-				throw new Error("TODO");
+				// Determine the highest stack position that is available
+				int hipos = 0;
+				for (NativeAllocation a : allocs)
+				{
+					// Ignore unused stack positions
+					int ap = a.stackPosition();
+					if (ap < 0)
+						continue;
+					
+					// Determine the end position
+					int al = a.stackLength();
+					int at = ap + al;
+					
+					// Use the higher position
+					if (at > hipos)
+						hipos = at;
+				}
+				
+				// Use that position
+				stackpos = hipos;
+				stacklen = bytesleft;
 			}
 			
 			// {@squirreljme.error AR06 Could not store a value of the

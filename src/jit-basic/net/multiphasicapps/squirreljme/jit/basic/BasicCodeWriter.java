@@ -271,12 +271,12 @@ public class BasicCodeWriter
 			// Save any temporary registers which may be used
 			if (hastemp)
 			{
-				// Debug
-				System.err.printf("DEBUG -- Save temporary %s%n", k);
-				
 				// Allocate the value onto the stack
 				NativeAllocation ons = allocator.allocate(null,
 					NativeAllocationType.STACK, v.valueType());
+				
+				// Debug
+				System.err.printf("DEBUG -- Save temporary %s -> %n", k, ons);
 				
 				// Copy the stored value to the stack
 				if (true)
