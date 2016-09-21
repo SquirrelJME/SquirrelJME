@@ -15,3 +15,16 @@ would be used so that `ServiceLoader` operates correctly in launched programs.
 This means the build system refactor has been completed. I just need to test
 it on Windows.
 
+## 12:27
+
+I am considering moving all of my developer notes to outside of the repository
+and into unversioned space. However, I would need an efficient means of editing
+them. For the most part, any notes that I do write remain the same and sort
+of bloat the repository. It would considerably cut down the number of revisions
+where I just type notes.
+
+## 12:39
+
+I would need to rewrite some of the blog scripts however. Although it should
+make things a bit easier and remove a project containing notes.
+
