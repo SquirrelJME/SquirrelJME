@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -78,7 +79,7 @@ public class ProjectInfo
 	private volatile Reference<FileTime> _date;
 	
 	/** Cached contents. */
-	private volatile Reference<Iterable<String>> _contents;
+	private volatile Reference<Collection<String>> _contents;
 	
 	/** Opened ZIP file. */
 	private volatile __OpenZip__ _ozip;
@@ -148,12 +149,12 @@ public class ProjectInfo
 	 * @throws IOException On read errors.
 	 * @since 2016/09/19
 	 */
-	public final Iterable<String> contents()
+	public final Collection<String> contents()
 		throws IOException
 	{
 		// Get
-		Reference<Iterable<String>> ref = this._contents;
-		Iterable<String> rv;
+		Reference<Collection<String>> ref = this._contents;
+		Collection<String> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))

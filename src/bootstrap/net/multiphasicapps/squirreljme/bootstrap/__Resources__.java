@@ -69,7 +69,11 @@ class __Resources__
 		for (ProjectInfo info : this._from)
 			try
 			{
-				return info.open(__n);
+				// Check the content set first since that is cached, otherwise
+				// if the package is a ZIP and only one thing streams from it
+				// at a time then it will be opened and closed many times
+				if (info.contents().contains(__n))
+					return info.open(__n);
 			}
 			
 			// Ignore if it does not exist
