@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.risc.RISCWriter;
 
 /**
  * This writes PowerPC machine code.
@@ -22,11 +23,9 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
  * @since 2016/09/14
  */
 public class PowerPCWriter
+	extends RISCWriter
 	implements NativeCodeWriter
 {
-	/** The options to use for code generation. */
-	protected final NativeCodeWriterOptions options;
-	
 	/** The instruction writer. */
 	protected final PowerPCOutputStream output;
 	
@@ -41,38 +40,14 @@ public class PowerPCWriter
 	public PowerPCWriter(NativeCodeWriterOptions __o, OutputStream __os)
 		throws NullPointerException
 	{
+		super(__o);
+		
 		// Check
-		if (__o == null)
+		if (__os == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.options = __o;
 		this.output = new PowerPCOutputStream(__o, __os);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/21
-	 */
-	@Override
-	public void copy(NativeAllocation __src, NativeAllocation __dest)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__src == null || __dest == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/15
-	 */
-	@Override
-	public final NativeCodeWriterOptions options()
-	{
-		return this.options;
 	}
 }
 

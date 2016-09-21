@@ -8,46 +8,70 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.nativecode.mips;
+package net.multiphasicapps.squirreljme.nativecode.risc;
 
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
-import net.multiphasicapps.squirreljme.nativecode.risc.RISCWriter;
 
 /**
- * This writes MIPS machine code.
+ * This is the base class for writes which implement native code writers for
+ * RISC-like systems.
  *
- * @since 2016/09/14
+ * RISC systems do not have memory to memory operations, only register to
+ * register, register to memory, and memory to register.
+ *
+ * @since 2016/09/21
  */
-public class MIPSWriter
-	extends RISCWriter
+public abstract class RISCWriter
 	implements NativeCodeWriter
 {
-	/** The instruction writer. */
-	protected final MIPSOutputStream output;
+	/** The options to use for code generation. */
+	protected final NativeCodeWriterOptions options;
 	
 	/**
 	 * Initializes the native code generator.
 	 *
 	 * @param __o The options to use.
-	 * @param __os The output stream of machine code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public MIPSWriter(NativeCodeWriterOptions __o, OutputStream __os)
+	public RISCWriter(NativeCodeWriterOptions __o)
 		throws NullPointerException
 	{
-		super(__o);
-		
 		// Check
-		if (__os == null)
+		if (__o == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.output = new MIPSOutputStream(__o, __os);
+		this.options = __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/21
+	 */
+	@Override
+	public final void copy(NativeAllocation __src, NativeAllocation __dest)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/15
+	 */
+	@Override
+	public final NativeCodeWriterOptions options()
+	{
+		return this.options;
 	}
 }
 
