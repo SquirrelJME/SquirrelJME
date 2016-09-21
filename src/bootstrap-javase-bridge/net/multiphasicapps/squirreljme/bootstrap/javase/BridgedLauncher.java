@@ -15,11 +15,16 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 	ResourceAccessor;
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
+	ResourceReference;
 
 /**
  * This is used to launch programs that want to be run on the Java SE VM.
@@ -127,6 +132,25 @@ public class BridgedLauncher
 	}
 	
 	/**
+	 * Wraps the resource reference as an URL.
+	 *
+	 * @param __ref The resource reference.
+	 * @param __n The name of the resource.
+	 * @return The URL to the resource.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/21
+	 */
+	private static URL __url(ResourceReference __ref, String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__ref == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * This is the internal class loader which
 	 *
 	 * @since 2016/09/21
@@ -220,6 +244,37 @@ public class BridgedLauncher
 				// Rethrow
 				throw e;
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/21
+		 */
+		@Override
+		protected URL findResource(String __n)
+		{
+			// Return the first resource that is found
+			for (ResourceReference rv : this.accessor.reference(__n))
+				return __url(rv, __n);
+			return null;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/21
+		 */
+		@Override
+		protected Enumeration<URL> findResources(String __n)
+		{
+			// Setup
+			List<URL> rv = new ArrayList<>();
+			
+			// Go through all resources
+			for (ResourceReference ref : this.accessor.reference(__n))
+				rv.add(__url(ref, __n));
+			
+			// Enumerate
+			return Collections.<URL>enumeration(rv);
 		}
 	}
 }
