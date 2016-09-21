@@ -36,13 +36,20 @@ import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 public class BridgedLauncher
 	implements BootLauncher
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** Completion status. */
+	private volatile boolean _ok;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/20
 	 */
 	@Override
-	public boolean launch(ResourceAccessor __ra, String __main,
-		String... __args)
+	public boolean launch(ResourceAccessor __ra, final String __main,
+		final String... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -50,47 +57,80 @@ public class BridgedLauncher
 			throw new NullPointerException("NARG");
 		
 		// Setup class loader
-		__Loader__ ld = new __Loader__(__ra);
+		final __Loader__ ld = new __Loader__(__ra);
 		
 		// Change context
 		Thread.currentThread().setContextClassLoader(ld);
 		
-		try
-		{
-			// Find the main class
-			Class<?> cl = Class.forName(__main, true, ld);
+		// Setup thread
+		Thread t = new Thread(new Runnable()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/09/21
+				 */
+				public void run()
+				{
+					try
+					{
+						// Find the main class
+						Class<?> cl = Class.forName(__main, true, ld);
 			
-			// Find the main method
-			Method m = cl.getDeclaredMethod("main", String[].class);
+						// Find the main method
+						Method m = cl.getDeclaredMethod("main", String[].class);
 			
-			// Invoke it with the arguments
-			m.invoke(null, (Object)__args);
-			
-			// Ok
-			return true;
-		}
+						// Invoke it with the arguments
+						m.invoke(null, (Object)__args);
+						
+						// Set OK
+						synchronized (BridgedLauncher.this.lock)
+						{
+							BridgedLauncher.this._ok = true;
+						}
+					}
 		
-		// Invocation failed
-		catch (InvocationTargetException e)
-		{
-			Throwable t = e.getCause();
+					// Invocation failed
+					catch (InvocationTargetException e)
+					{
+						Throwable t = e.getCause();
 			
-			if (t instanceof Error)
-				throw (Error)t;
-			if (t instanceof RuntimeException)
-				throw (RuntimeException)t;
+						if (t instanceof Error)
+							throw (Error)t;
+						if (t instanceof RuntimeException)
+							throw (RuntimeException)t;
 			
-			// {@squirreljme.error DE08 Exception was thrown in the launched
-			// program.}
-			throw new RuntimeException("DE08", e);
-		}
+						// {@squirreljme.error DE08 Exception was thrown in the
+						// launched program.}
+						throw new RuntimeException("DE08", e);
+					}
 		
-		// {@squirreljme.error DE07 Could not launch the the specified
-		// program.}
-		catch (ReflectiveOperationException e)
-		{
-			throw new RuntimeException("DE07", e);
-		}
+					// {@squirreljme.error DE07 Could not launch the the
+					// specified program.}
+					catch (ReflectiveOperationException e)
+					{
+						throw new RuntimeException("DE07", e);
+					}
+				}
+			});
+		
+		// Start it and block
+		t.start();
+		for (;;)
+			try
+			{
+				// Join
+				t.join();
+				
+				// Terminated, determine status
+				synchronized (this.lock)
+				{
+					return this._ok;
+				}
+			}
+			
+			catch (InterruptedException e)
+			{
+			}
 	}
 	
 	/**
