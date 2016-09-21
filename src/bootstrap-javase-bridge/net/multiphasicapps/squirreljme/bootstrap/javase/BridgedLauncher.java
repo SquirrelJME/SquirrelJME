@@ -208,6 +208,16 @@ public class BridgedLauncher
 			{
 				throw new LinkageError(String.format("DE0a %s", __n), e);
 			}
+			
+			// if these occur then print the exception
+			catch (RuntimeException|Error e)
+			{
+				// Print it
+				e.printStackTrace();
+				
+				// Rethrow
+				throw e;
+			}
 		}
 	}
 }

@@ -62,7 +62,7 @@ class __Resources__
 		// Check
 		if (__n == null)
 			throw new NullPointerException("NARG");
-			
+		
 		throw new Error("TODO");
 	}
 }
