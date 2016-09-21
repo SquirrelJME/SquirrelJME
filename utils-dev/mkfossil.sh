@@ -112,6 +112,9 @@ then
 	do
 		fossil config push "$__conf" "/tmp/$$.fsl"
 	done
+	
+	# Scrub
+	fossil scrub --force --verily "/tmp/$$.fsl"
 
 	# Rebuild
 	#echo "Rebuilding..." 1>&2
