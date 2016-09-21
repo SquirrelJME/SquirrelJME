@@ -74,6 +74,9 @@ public class MIPSABI
 		// Setup
 		NativeABIBuilder ab = new NativeABIBuilder();
 		
+		// Align stack values to 4 bytes for easier reading
+		ab.stackValueAlignment(4);
+		
 		// Floating point?
 		boolean hasfloat = __f.isAnyHardware();
 		

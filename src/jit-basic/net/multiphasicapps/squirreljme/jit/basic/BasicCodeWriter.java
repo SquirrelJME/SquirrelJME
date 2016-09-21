@@ -276,7 +276,8 @@ public class BasicCodeWriter
 					NativeAllocationType.STACK, v.valueType());
 				
 				// Debug
-				System.err.printf("DEBUG -- Save temporary %s -> %n", k, ons);
+				System.err.printf("DEBUG -- Save temporary %s -> %s%n", k,
+					ons);
 				
 				// Copy the stored value to the stack
 				if (true)

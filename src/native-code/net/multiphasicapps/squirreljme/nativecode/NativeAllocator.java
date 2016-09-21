@@ -203,6 +203,12 @@ public class NativeAllocator
 						hipos = at;
 				}
 				
+				// Align values stored on the stack to a specific alignment
+				// so CPUs can read them easier
+				int svalign = abi.stackValueAlignment();
+				if (svalign != 1)
+					hipos = hipos + (svalign - (hipos % svalign));
+				
 				// Use that position
 				stackpos = hipos;
 				stacklen = bytesleft;

@@ -53,6 +53,9 @@ public final class NativeABI
 	/** The size of pointers. */
 	private final int _pointersize;
 	
+	/** The stack value alignment. */
+	private final int _stackvaluealign;
+	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -123,6 +126,9 @@ public final class NativeABI
 		// Setup integer and float registers
 		this._int = new __Group__(false, __b);
 		this._float = new __Group__(true, __b);
+		
+		// Copy alignment
+		this._stackvaluealign = __b._stackvaluealign;
 	}
 	
 	/**
@@ -436,6 +442,18 @@ public final class NativeABI
 	public final NativeStackDirection stackDirection()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This returns the alignment of stack allocations.
+	 *
+	 * @return The number of bytes that each allocation on the stack must be
+	 * aligned to.
+	 * @since 2016/09/21
+	 */
+	public final int stackValueAlignment()
+	{
+		return this._stackvaluealign;
 	}
 	
 	/**

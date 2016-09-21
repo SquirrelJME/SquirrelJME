@@ -67,6 +67,10 @@ public final class NativeABIBuilder
 	volatile int _pointersize =
 		-1;
 	
+	/** The stack value alignment. */
+	volatile int _stackvaluealign =
+		1;
+	
 	/**
 	 * Adds an argument register.
 	 *
@@ -224,7 +228,9 @@ public final class NativeABIBuilder
 	public final void pointerSize(int __b)
 		throws NativeCodeException
 	{
-		// {@squirreljme.error AR1k 
+		// {@squirreljme.error AR1k An attempt was made to set the pointer
+		// size used in the ABI to a value that is zero, negative, or not a
+		// multiple of eight. (The specified size)}
 		if (__b <= 0 || Integer.bitCount(__b) != 1 || (__b & 7) != 0)
 			throw new NativeCodeException(String.format("AR1k %d", __b));
 		
@@ -303,6 +309,29 @@ public final class NativeABIBuilder
 		synchronized (this.lock)
 		{
 			this._stackdir = __d;
+		}
+	}
+	
+	/**
+	 * Sets the alignment of values on the stack.
+	 *
+	 * @param __a The alignment to use for values.
+	 * @throws NativeCodeException If the alignment requested is zero or
+	 * negative.
+	 * @since 2016/09/21
+	 */
+	public final void stackValueAlignment(int __a)
+		throws NativeCodeException
+	{
+		// {@squirreljme.error AR07 Cannot set the stack value alignment to
+		// a zero or negative value. (The alignment count)}
+		if (__a <= 0)
+			throw new NativeCodeException(String.format("AR07 %s", __a));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._stackvaluealign = __a;
 		}
 	}
 	
