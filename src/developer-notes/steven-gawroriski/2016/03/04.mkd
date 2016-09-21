@@ -1,8 +1,0 @@
-# 2016/03/04
-
-## 14:52
-
-Using `Arrays.<T, U>copyOf(U[], int, Class<? extends T[]>)` one can create an
-array of an unknown type by using only the given class. So the resulting
-array is of the desired type and the requested size.
-

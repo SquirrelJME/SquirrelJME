@@ -1,8 +1,0 @@
-# 2016/04/28
-
-## 09:53
-
-All of my `AbstractList` implementations should implement `RandomAccess`,
-otherwise sort and such will take much longer. This means my unmodifiable list
-will need a variant which is randomly accessible and one that is not.
-

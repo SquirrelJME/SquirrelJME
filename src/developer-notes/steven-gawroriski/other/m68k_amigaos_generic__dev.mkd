@@ -1,5 +1,0 @@
-# Motorolla 68000: Amiga OS
-
-This is the classic version of Amiga OS which can run on the original systems,
-emulators, and pretty awesome FPGA recreations of the original hardware.
-
