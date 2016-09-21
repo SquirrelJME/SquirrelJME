@@ -15,9 +15,6 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Go to the blog base
-cd "$__exedir/../src/developer-notes"
-
 # Uppercase author name
 __upperauth()
 {
@@ -63,7 +60,9 @@ __primary()
 	__oldmont=0
 
 	# Go through all files
-	find -type f | grep '[0-9]\{4\}\/[0-9][0-9]\/[0-9][0-9]\.mkd$' | \
+	fossil unversion ls | grep '^developer-notes\/' | \
+		sed 's/^developer-notes\///g' | \
+		grep '[0-9]\{4\}\/[0-9][0-9]\/[0-9][0-9]\.mkd$' | \
 		sed 's/^\.\///g' | while read __preline
 	do
 		# Slash separated
@@ -162,7 +161,8 @@ __secondary()
 	
 	# Go through all
 	__la=""
-	find -type f | \
+	fossil unversion ls | grep '^developer-notes\/' | \
+		sed 's/^developer-notes\///g' | \
 		grep '[a-zA-Z0-9_\-]\{1,\}\/other\/[a-zA-Z0-9_\-]\{1,\}\.mkd' | \
 		sort | while read __line
 	do
@@ -173,7 +173,8 @@ __secondary()
 			sed 's/.*\/\([a-zA-Z0-9_\-]\{1,\}\)\.mkd/\1/g')"
 		
 		# Find the first header field
-		__head="$(grep '^#[^#]' "$__line" | head -n 1 | \
+		__head="$(fossil unversion cat "developer-notes/$__line" | \
+			grep '^#[^#]' | head -n 1 | \
 			sed 's/^#*[ \t]*\(.*\)[ \t]*/\1/g')"
 		
 		# Did the author change?
@@ -194,6 +195,9 @@ __secondary()
 # Print both
 if (__primary && __secondary) > /tmp/$$
 then
-	mv /tmp/$$ index.mkd
+	fossil unversion add /tmp/$$ --as developer-notes/index.mkd
 fi
+
+# Delete temporary file
+rm -f /tmp/$$
 

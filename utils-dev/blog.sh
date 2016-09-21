@@ -15,17 +15,6 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Requires command
-if [ "$#" -lt "1" ]
-then
-	echo "Usage: $0 (command) [...]"
-	exit 1
-fi
-
-# Get command and shift down
-__cmd=$1
-shift 1
-
 # Current user
 __myname="$($__exedir/myname.sh)"
 
@@ -33,36 +22,36 @@ __myname="$($__exedir/myname.sh)"
 __nowyear="$(date +%Y)"
 __nowmont="$(date +%m)"
 __nowdayy="$(date +%d)"
-
-# Note list file
-__notelist="$__exedir/../src/developer-notes/index.mkd"
-
-__nowtime="$__nowyear$__nowmont$__nowdayy"
 __htmtime="$__nowyear\/$__nowmont\/$__nowdayy"
-#__nowfile="$__exedir/../chm/blog/$__nowtime.htm"
-__sublet="$__nowyear/$__nowmont/$__nowdayy.mkd"
-__basedir="$__myname/$__sublet"
-__nowfile="$__exedir/../src/developer-notes/$__basedir"
 
-# Create if missing
-if [ ! -f "$__nowfile" ]
+# Determine the name of the file
+__fname="developer-notes/$__myname/$__nowyear/$__nowmont/$__nowdayy.mkd"
+
+# Does it need to be added into unversioned space?
+__job=0
+if [ "$( (fossil unversion ls; echo "$__fname") | sort | uniq -d | wc -l)" \
+	-eq "0" ]
 then
-	echo "Does not exist, creating."
-	"$__exedir/create.sh" "$__nowfile"
-	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" > "$__nowfile"
+	# Create temporary
+	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" > /tmp/$$
 	
-	# Open the blog for editing early
-	"$__cmd" $* "$__nowfile" &
-	__job=$!
+	# Add to unversioned space
+	fossil unversion add /tmp/$$ --as "$__fname"
 	
 	# Rebuild the blog index
 	"$__exedir/indexblog.sh"
+	__job="$!"
 	
-	# Resume it
-	fg "$__job"
+	# Delete temporary
+	rm -f /tmp/$$
+fi
 
-# Open it
-else
-	"$__cmd" $* "$__nowfile"
+# Edit it
+fossil unversion edit "$__fname"
+
+# Foreground the background job
+if [ "$__job" -ne "0" ]
+then
+	fg "$__job"
 fi
 

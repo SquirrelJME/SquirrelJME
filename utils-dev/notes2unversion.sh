@@ -16,3 +16,11 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Copy all notes to unversioned areas
+(cd "$__exedir/../src/developer-notes"; find -type f | sed 's/^\.\///g' | \
+	grep '\.mkd' | grep '\/') | while read __line
+do
+	fossil unversion add "$__exedir/../src/developer-notes/$__line" \
+		--as "developer-notes/$__line"
+done
+
