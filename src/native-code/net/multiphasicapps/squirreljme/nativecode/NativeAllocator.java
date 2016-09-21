@@ -119,9 +119,13 @@ public class NativeAllocator
 			(__at.claimRegisters() && __pref == null))
 			throw new NullPointerException("NARG");
 		
+		// Performing some allocation types?
+		boolean usereg = __at.claimRegisters();
+		boolean usestack = __at.claimStack();
+		
 		// If prefering any allocation type, then a recursive call can be made
 		// to this method.
-		if (__pref == NativeAllocationPreference.ANY)
+		if (usereg && __pref == NativeAllocationPreference.ANY)
 		{
 			// Try temporary registers first
 			try
@@ -138,22 +142,64 @@ public class NativeAllocator
 			}
 		}
 		
-		// Get queues to source registers from
-		Deque<NativeRegister> saved, temp;
-		if (__rt.isFloat())
+		// Allocating from registers?
+		Set<NativeRegister> regclaim = new LinkedHashSet<>();
+		int bytesleft = __rt.bytes();
+		Deque<NativeRegister> queue = null;
+		if (usereg)
 		{
-			saved = this._savedfloatq;
-			temp = this._tempfloatq;
+			// Get queues to source registers from
+			boolean wantsaved = (__pref == NativeAllocationPreference.
+				ONLY_SAVED);
+			if (__rt.isFloat())
+				queue = (wantsaved ? this._savedfloatq : this._tempfloatq);
+			else
+				queue = (wantsaved ? this._savedintq : this._tempfloatq);
+			
+			// Go through the register queue and attempt to claim the
+			// registers
+			for (NativeRegister r : queue)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
-		// Integer
-		else
+		// Needed to determine the stack location
+		Set<NativeAllocation> allocs = this._allocs;
+	
+		// Bytes remaining for allocation?
+		int stackpos = -1, stacklen = 0;
+		if (bytesleft > 0)
 		{
-			saved = this._savedintq;
-			temp = this._tempfloatq;
+			// Allocating from the stack?
+			if (usestack)
+			{
+				throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error AR06 Could not store a value of the
+			// specified type in registers because there is not enough free
+			// register space. (The type to allocate; The number of bytes
+			// needed for allocation)}
+			else
+				throw new NativeAllocationMustSpillException(
+					String.format("AR06 %s %d", __rt, bytesleft));
 		}
 		
-		throw new Error("TODO");
+		// Setup allocation
+		NativeAllocation rv = new NativeAllocation(stackpos, stacklen, __rt,
+			regclaim.<NativeRegister>toArray(
+			new NativeRegister[regclaim.size()]));
+		
+		// The registers were grabbed from the queue so remove them
+		for (NativeRegister r : regclaim)
+			queue.remove(r);
+		
+		// Remember it
+		allocs.add(rv);
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
