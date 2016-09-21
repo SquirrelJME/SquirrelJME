@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 
@@ -26,14 +27,14 @@ public class PowerPCWriterFactory
 	 * @since 2016/09/14
 	 */
 	@Override
-	public PowerPCWriter create(NativeCodeWriterOptions __o)
+	public PowerPCWriter create(NativeCodeWriterOptions __o, OutputStream __os)
 		throws NullPointerException
 	{
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		return new PowerPCWriter(__o);
+		return new PowerPCWriter(__o, __os);
 	}
 }
 

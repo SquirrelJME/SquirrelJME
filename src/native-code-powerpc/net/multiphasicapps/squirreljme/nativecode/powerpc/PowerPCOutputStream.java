@@ -8,34 +8,43 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.nativecode.mips;
+package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 
 /**
- * This is a factory which creates native code writers for MIPS based
- * systems.
+ * This is an output stream which writes PowerPC machine code.
  *
- * @since 2016/09/10
+ * @since 2016/09/21
  */
-public class MIPSWriterFactory
-	implements NativeCodeWriterFactory
+public class PowerPCOutputStream
+	extends DataOutputStream
 {
+	/** The options used for the output. */
+	protected final NativeCodeWriterOptions options;
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/14
+	 * Initializes the machine code output stream.
+	 *
+	 * @param __o The options used for code generation.
+	 * @param __os The output stream where bytes are written to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/21
 	 */
-	@Override
-	public MIPSWriter create(NativeCodeWriterOptions __o, OutputStream __os)
+	public PowerPCOutputStream(NativeCodeWriterOptions __o, OutputStream __os)
 		throws NullPointerException
 	{
+		super(__os);
+		
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		return new MIPSWriter(__o, __os);
+		// Set
+		this.options = __o;
 	}
 }
 

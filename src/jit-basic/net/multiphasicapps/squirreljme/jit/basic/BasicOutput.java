@@ -93,12 +93,14 @@ public class BasicOutput
 	 * Creates a native code writer for generating code for the given target
 	 * machine.
 	 *
+	 * @param __os The output stream to write to.
 	 * @return The native code writer.
 	 * @since 2016/09/15
 	 */
-	public NativeCodeWriter createCodeWriter()
+	public NativeCodeWriter createCodeWriter(OutputStream __os)
 	{
-		return nativeCodeWriterFactory().create(nativeCodeWriterOptions());
+		return nativeCodeWriterFactory().create(nativeCodeWriterOptions(),
+			__os);
 	}
 	
 	/**

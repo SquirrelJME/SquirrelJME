@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.nativecode;
 
+import java.io.OutputStream;
+
 /**
  * This factory is used to initialize native code writers.
  *
@@ -21,11 +23,13 @@ public interface NativeCodeWriterFactory
 	 * Creates the native code writer to be used for native code output.
 	 *
 	 * @param __n The options for the native code generator.
+	 * @param __os The output streamm where instructions are written to.
 	 * @return The native code writer for native code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/14
 	 */
-	public abstract NativeCodeWriter create(NativeCodeWriterOptions __o)
+	public abstract NativeCodeWriter create(NativeCodeWriterOptions __o,
+		OutputStream __os)
 		throws NullPointerException;
 }
 

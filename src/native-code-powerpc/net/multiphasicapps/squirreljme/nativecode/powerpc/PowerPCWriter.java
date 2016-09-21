@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
@@ -26,14 +27,18 @@ public class PowerPCWriter
 	/** The options to use for code generation. */
 	protected final NativeCodeWriterOptions options;
 	
+	/** The instruction writer. */
+	protected final PowerPCOutputStream output;
+	
 	/**
 	 * Initializes the native code generator.
 	 *
 	 * @param __o The options to use.
+	 * @param __os The output stream of machine code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public PowerPCWriter(NativeCodeWriterOptions __o)
+	public PowerPCWriter(NativeCodeWriterOptions __o, OutputStream __os)
 		throws NullPointerException
 	{
 		// Check
@@ -42,6 +47,7 @@ public class PowerPCWriter
 		
 		// Set
 		this.options = __o;
+		this.output = new PowerPCOutputStream(__o, __os);
 	}
 	
 	/**

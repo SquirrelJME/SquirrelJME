@@ -108,7 +108,7 @@ public class BasicCodeWriter
 		
 		// Create code writer instance
 		NativeCodeWriter writer;
-		this.writer = (writer = __ns._jitoutput.createCodeWriter());
+		this.writer = (writer = __ns._jitoutput.createCodeWriter(__o));
 		NativeCodeWriterOptions options;
 		this.options = (options = writer.options());
 		
