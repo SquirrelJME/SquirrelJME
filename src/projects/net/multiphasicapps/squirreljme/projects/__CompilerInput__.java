@@ -62,14 +62,16 @@ class __CompilerInput__
 		this.list = __pl;
 		this.info = __src;
 		
-		// Determine projects that make up the class path
-		ProjectName name = __src.name();
-		Collection<ProjectInfo> bins = __pl.recursiveDependencies(
-			new LinkedHashSet<ProjectInfo>(), ProjectType.BINARY, name, false);
+		// Go through all dependencies of the source package and add every
+		// binary dependency of it
+		Collection<ProjectInfo> bins = new LinkedHashSet<>();
+		for (ProjectName dn : __src.dependencies())
+			__pl.recursiveDependencies(bins, ProjectType.BINARY, dn, false);
 		
 		// Never include the binary for our own project (since it is being
 		// built, the classes might be out of date)
 		Iterator<ProjectInfo> it = bins.iterator();
+		ProjectName name = __src.name();
 		while (it.hasNext())
 			if (name.equals(it.next().name()))
 				it.remove();
