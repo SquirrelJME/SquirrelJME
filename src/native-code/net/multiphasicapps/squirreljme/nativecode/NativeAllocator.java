@@ -119,13 +119,31 @@ public class NativeAllocator
 			(__at.claimRegisters() && __pref == null))
 			throw new NullPointerException("NARG");
 		
+		// If prefering any allocation type, then a recursive call can be made
+		// to this method.
+		if (__pref == NativeAllocationPreference.ANY)
+		{
+			// Try temporary registers first
+			try
+			{
+				return allocate(NativeAllocationPreference.ONLY_TEMPORARY,
+					__at, __rt);
+			}
+			
+			// If that fails, go for saved ones
+			catch (NativeAllocationMustSpillException e)
+			{
+				return allocate(NativeAllocationPreference.ONLY_SAVED,
+					__at, __rt);
+			}
+		}
+		
 		// Get queues to source registers from
 		Deque<NativeRegister> saved, temp;
 		if (__rt.isFloat())
 		{
 			saved = this._savedfloatq;
 			temp = this._tempfloatq;
-			
 		}
 		
 		// Integer
