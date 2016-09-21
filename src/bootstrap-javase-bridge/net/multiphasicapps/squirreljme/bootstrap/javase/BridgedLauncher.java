@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -140,14 +142,56 @@ public class BridgedLauncher
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/21
 	 */
-	private static URL __url(ResourceReference __ref, String __n)
+	private static URL __url(final ResourceReference __ref, String __n)
 		throws NullPointerException
 	{
 		// Check
 		if (__ref == null || __n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		try
+		{
+			return new URL("squirreljme", null, 0, __n, new URLStreamHandler()
+				{
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/09/21
+					 */
+					@Override
+					protected URLConnection openConnection(URL __u)
+						throws IOException
+					{
+						return new URLConnection(__u)
+							{
+								/**
+								 * {@inheritDoc}
+								 * @since 2016/09/21
+								 */
+								@Override
+								public void connect()
+								{
+								}
+							
+								/**
+								 * {@inheritDoc}
+								 * @since 2016/09/21
+								 */
+								@Override
+								public InputStream getInputStream()
+									throws IOException
+								{
+									return __ref.open();
+								}
+							};
+					}
+				});
+		}
+		
+		// {@squirreljme.error DE0b Could not wrap the resource.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("DE0b", e);
+		}
 	}
 	
 	/**
