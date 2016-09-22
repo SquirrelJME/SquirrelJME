@@ -11,10 +11,13 @@
 package net.multiphasicapps.squirreljme.nativecode.risc;
 
 import java.io.OutputStream;
+import java.util.List;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 
 /**
  * This is the base class for writes which implement native code writers for
@@ -30,6 +33,9 @@ public abstract class RISCWriter
 {
 	/** The options to use for code generation. */
 	protected final NativeCodeWriterOptions options;
+	
+	/** The ABI to use. */
+	protected final NativeABI abi;
 	
 	/**
 	 * Initializes the native code generator.
@@ -47,6 +53,7 @@ public abstract class RISCWriter
 		
 		// Set
 		this.options = __o;
+		this.abi = __o.abi();
 	}
 	
 	/**
@@ -61,7 +68,46 @@ public abstract class RISCWriter
 		if (__src == null || __dest == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get destination usage
+		boolean sr = __src.useRegisters(), ss = __src.useStack();
+		boolean dr = __dest.useRegisters(), ds = __dest.useStack();
+		
+		// Needed so that only the minimum number of bytes are copied
+		NativeABI abi = this.abi;
+		int bytesleft = abi.allocationValueSize(__src), byteshift = 0;
+		
+		// Destination 
+		List<NativeRegister> dstregs = __dest.registers();
+		int dstrat = 0, dstcnt = dstregs.size();
+		
+		// Copy the least significant part of the value first (always stored
+		// in the register portion)
+		if (bytesleft > 0 && sr)
+		{
+			// Will need to go through all of them
+			List<NativeRegister> srcregs = __src.registers();
+			int srcrat = 0, srccnt = srcregs.size();
+			
+			// Destination least significant
+			while (bytesleft > 0 && srcrat < srccnt && dr)
+				throw new Error("TODO");
+			
+			// Destination most significant
+			while (bytesleft > 0 && srcrat < srccnt && ds)
+				throw new Error("TODO");
+		}
+		
+		// Copy the most significant part of the value last
+		if (bytesleft > 0 && ss)
+		{
+			// Destination least significant
+			while (bytesleft > 0 && dstrat < dstcnt && dr)
+				throw new Error("TODO");
+			
+			// Destination most significant
+			while (bytesleft > 0 && ds)
+				throw new Error("TODO");
+		}
 	}
 	
 	/**
