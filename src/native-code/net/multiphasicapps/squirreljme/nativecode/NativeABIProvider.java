@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.nativecode;
 
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 
 /**
  * This interface is used with the service loader and is used to provide access
@@ -24,14 +25,13 @@ public interface NativeABIProvider
 	 * Returns the ABI by the given name.
 	 *
 	 * @param __n The name of the ABI to choose.
-	 * @param __b The number of bits in the CPU.
-	 * @param __f The native floating point type.
+	 * @param __t The CPU to target.
 	 * @return The ABI to use for the given CPU type.
 	 * @throws NativeCodeException If the ABI is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public abstract NativeABI byName(String __n, int __b, NativeFloatType __f)
+	public abstract NativeABI byName(String __n, NativeTarget __t)
 		throws NativeCodeException, NullPointerException;
 }
 

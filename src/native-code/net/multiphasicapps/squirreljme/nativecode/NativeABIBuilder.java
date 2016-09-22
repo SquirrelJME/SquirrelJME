@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 
 /**
  * This class is used to generate instances of {@link NativeABI} which is
@@ -64,16 +65,12 @@ public final class NativeABIBuilder
 	volatile int _stackalign =
 		-1;
 	
-	/** The pointer size. */
-	volatile int _pointersize =
-		-1;
-	
 	/** The stack value alignment. */
 	volatile int _stackvaluealign =
 		1;
 	
-	/** The endianess of the CPU. */
-	volatile NativeEndianess _endianess;
+	/** The native target. */
+	volatile NativeTarget _nativetarget;
 	
 	/**
 	 * Adds an argument register.
@@ -222,47 +219,23 @@ public final class NativeABIBuilder
 	}
 	
 	/**
-	 * Sets the used endianess of the CPU.
+	 * Sets the native target of the specified CPU.
 	 *
-	 * @param __e The endianess to use.
+	 * @param __t The native target.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/22
 	 */
-	public final void endianess(NativeEndianess __e)
+	public final void nativeTarget(NativeTarget __t)
 		throws NullPointerException
 	{
 		// Check
-		if (__e == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Lock
 		synchronized (this.lock)
 		{
-			this._endianess = __e;
-		}
-	}
-	
-	/**
-	 * Sets the pointer size.
-	 *
-	 * @param __b The number of bits used for pointers.
-	 * @throws NativeCodeException If the number of bits is zero or negative;
-	 * is not a power of two; or is not a multiple of eight.
-	 * @since 2016/09/08
-	 */
-	public final void pointerSize(int __b)
-		throws NativeCodeException
-	{
-		// {@squirreljme.error AR1k An attempt was made to set the pointer
-		// size used in the ABI to a value that is zero, negative, or not a
-		// multiple of eight. (The specified size)}
-		if (__b <= 0 || Integer.bitCount(__b) != 1 || (__b & 7) != 0)
-			throw new NativeCodeException(String.format("AR1k %d", __b));
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			this._pointersize = __b;
+			this._nativetarget = __t;
 		}
 	}
 	

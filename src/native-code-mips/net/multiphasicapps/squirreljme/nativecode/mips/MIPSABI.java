@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.nativecode.mips;
 
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeABIBuilder;
 import net.multiphasicapps.squirreljme.nativecode.NativeABIProvider;
@@ -32,11 +33,11 @@ public class MIPSABI
 	 * @since 2016/09/15
 	 */
 	@Override
-	public NativeABI byName(String __n, int __b, NativeFloatType __f)
+	public NativeABI byName(String __n, NativeTarget __t)
 		throws NativeCodeException, NullPointerException
 	{
 		// Check
-		if (__n == null || __f == null)
+		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// Depends
@@ -44,7 +45,7 @@ public class MIPSABI
 		{
 				// Embedded ABI
 			case "eabi":
-				return MIPSABI.eabi(__b, __f);
+				return MIPSABI.eabi(__t);
 			
 				// {@squirreljme.error AW03 Unknown ABI. (The ABI)}
 			default:
@@ -58,32 +59,34 @@ public class MIPSABI
 	 * This ABI is described at
 	 * {@link http://www.cygwin.com/ml/binutils/2003-06/msg00436.html}.
 	 *
-	 * @param __b The number of bits the CPU is.
-	 * @param __f The floating point type.
+	 * @param __t The native target
 	 * @return The ABI.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public static NativeABI eabi(int __b, NativeFloatType __f)
+	public static NativeABI eabi(NativeTarget __t)
 		throws NullPointerException
 	{
 		// Check
-		if (__f == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup
 		NativeABIBuilder ab = new NativeABIBuilder();
 		
+		// Set target
+		ab.nativeTarget(__t);
+		
 		// Align stack values to 4 bytes for easier reading
 		ab.stackValueAlignment(4);
 		
 		// Floating point?
-		boolean hasfloat = __f.isAnyHardware();
+		NativeFloatType floattype = __t.floatingPoint();
+		boolean hasfloat = floattype.isAnyHardware();
 		
 		// Add integer registers
-		ab.pointerSize(__b);
 		NativeRegisterIntegerType rtint =
-			NativeABIBuilder.intRegisterType(__b);
+			NativeABIBuilder.intRegisterType(__t.bits());
 		for (int i = 0; i <= 31; i++)
 			ab.addRegister(MIPSRegister.of(false, i), rtint);
 		
@@ -92,7 +95,7 @@ public class MIPSABI
 		{
 			// Determine the floating point size
 			NativeRegisterFloatType flt =
-				NativeABIBuilder.floatRegisterType(__f);
+				NativeABIBuilder.floatRegisterType(floattype);
 			
 			// Add them
 			for (int i = 0; i <= 31; i++)

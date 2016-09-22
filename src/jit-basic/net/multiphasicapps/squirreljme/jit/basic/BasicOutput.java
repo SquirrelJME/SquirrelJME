@@ -133,8 +133,7 @@ public class BasicOutput
 			// any ABI. (The configuration)}
 			NativeTarget nativetarget = triplet.nativeTarget();
 			rv = abiprov.byName(config.getProperty(
-				BasicOutputFactory.NATIVE_ABI_PROPERTY), nativetarget.bits(),
-				nativetarget.floatingPoint());
+				BasicOutputFactory.NATIVE_ABI_PROPERTY), nativetarget);
 			if (rv == null)
 				throw new JITException(String.format("BV0d %s", config));
 			

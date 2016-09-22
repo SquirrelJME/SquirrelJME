@@ -52,14 +52,11 @@ public final class NativeABI
 	/** Floating point registers. */
 	private final Map<NativeRegister, NativeRegisterFloatType> _floatregs;
 	
-	/** The size of pointers. */
-	private final int _pointersize;
-	
 	/** The stack value alignment. */
 	private final int _stackvaluealign;
 	
-	/** The endianess of the CPU. */
-	private final NativeEndianess _endianess;
+	/** The native CPU target. */
+	private final NativeTarget _nativetarget;
 	
 	/**
 	 * Initializes the ABI from the given builder.
@@ -75,17 +72,11 @@ public final class NativeABI
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AR1j The pointer size was not set.}
-		int pointersize = __b._pointersize;
-		if (pointersize <= 0)
+		// {@squirreljme.error AR1j The native target was not specified.}
+		NativeTarget nativetarget = __b._nativetarget;
+		if (nativetarget == null)
 			throw new NativeCodeException("AR1j");
-		this._pointersize = pointersize;
-	
-		// {@squirreljme.error AR08 The endianess of the CPU was not set.}
-		NativeEndianess endianess = __b._endianess;
-		if (endianess == null)
-			throw new NativeCodeException("AR08");
-		this._endianess = endianess;
+		this._nativetarget = nativetarget;
 		
 		// {@squirreljme.error AR0v The stack alignment was not set.}
 		int stackalign = __b._stackalign;
@@ -356,14 +347,14 @@ public final class NativeABI
 	}
 	
 	/**
-	 * Returns the size of pointers used by this architecture.
+	 * Returns the native target.
 	 *
-	 * @return The pointer size in bits.
-	 * @since 2016/09/08
+	 * @return The native target.
+	 * @since 2016/09/22
 	 */
-	public final int pointerSize()
+	public final NativeTarget nativeTarget()
 	{
-		return this._pointersize;
+		return this._nativetarget;
 	}
 	
 	/**

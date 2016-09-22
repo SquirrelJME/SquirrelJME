@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.nativecode.risc;
 
 import java.io.OutputStream;
 import java.util.List;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
@@ -74,7 +75,8 @@ public abstract class RISCWriter
 		
 		// Get CPU endianess and word size
 		NativeABI abi = this.abi;
-		int cpubytes = abi.pointerSize() / 8;
+		NativeTarget nativetarget = abi.nativeTarget();
+		int cpubytes = nativetarget.bits() / 8;
 		
 		// Needed so that only the minimum number of bytes are copied
 		int bytesleft = abi.allocationValueSize(__src), byteshift = 0;
