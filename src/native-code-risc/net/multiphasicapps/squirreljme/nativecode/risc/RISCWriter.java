@@ -94,7 +94,12 @@ public abstract class RISCWriter
 			
 			// Destination most significant
 			while (bytesleft > 0 && srcrat < srccnt && ds)
+			{
+				// Get the next source register
+				NativeRegister next = srcregs.get(srcrat++);
+				
 				throw new Error("TODO");
+			}
 		}
 		
 		// Copy the most significant part of the value last
