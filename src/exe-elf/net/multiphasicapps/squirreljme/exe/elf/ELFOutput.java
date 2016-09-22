@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
@@ -65,7 +65,7 @@ public class ELFOutput
 		new ArrayList<>();
 	
 	/** The endianess used. */
-	volatile JITCPUEndian _endianess;
+	volatile NativeEndianess _endianess;
 	
 	/** The word size of the CPU. */
 	volatile int _wordsize =
@@ -283,7 +283,7 @@ public class ELFOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/15
 	 */
-	public void setEndianess(JITCPUEndian __e)
+	public void setEndianess(NativeEndianess __e)
 		throws NullPointerException
 	{
 		// Check

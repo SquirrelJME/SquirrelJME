@@ -19,7 +19,7 @@ import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
@@ -120,7 +120,7 @@ public final class GenericNamespaceWriter
 			
 			// Set endianess
 			DataEndianess end;
-			JITCPUEndian jitend;
+			NativeEndianess jitend;
 			switch ((jitend = config.triplet().endianess()))
 			{
 				case BIG:

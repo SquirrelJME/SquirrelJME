@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.classformat.MethodInvokeType;
 import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
 import net.multiphasicapps.squirreljme.classformat.MethodReference;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
-import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
@@ -44,7 +44,7 @@ public final class GenericMethodWriter
 	protected final ExtendedDataOutputStream output;
 	
 	/** The output endianess. */
-	protected final JITCPUEndian endianess;
+	protected final NativeEndianess endianess;
 	
 	/** The bit level of the CPU. */
 	protected final int wordsize;
@@ -91,7 +91,7 @@ public final class GenericMethodWriter
 		this.output = dos;
 		
 		// Set endianess
-		JITCPUEndian endianess;
+		NativeEndianess endianess;
 		JITTriplet triplet = __conf.triplet();
 		switch ((endianess = triplet.endianess()))
 		{

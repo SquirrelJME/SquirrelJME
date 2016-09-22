@@ -72,8 +72,11 @@ public abstract class RISCWriter
 		boolean sr = __src.useRegisters(), ss = __src.useStack();
 		boolean dr = __dest.useRegisters(), ds = __dest.useStack();
 		
-		// Needed so that only the minimum number of bytes are copied
+		// Get CPU endianess and word size
 		NativeABI abi = this.abi;
+		int cpubytes = abi.pointerSize() / 8;
+		
+		// Needed so that only the minimum number of bytes are copied
 		int bytesleft = abi.allocationValueSize(__src), byteshift = 0;
 		
 		// Destination 

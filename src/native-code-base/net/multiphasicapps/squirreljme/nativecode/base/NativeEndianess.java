@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.nativecode.base;
 
 /**
  * This indicates the endianess of a given CPU.
  *
  * @since 2016/07/02
  */
-public enum JITCPUEndian
+public enum NativeEndianess
 {
 	/** Big endian (most significant bit first). */
 	BIG("big"),
@@ -39,7 +39,7 @@ public enum JITCPUEndian
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/03
 	 */
-	private JITCPUEndian(String __n)
+	private NativeEndianess(String __n)
 		throws NullPointerException
 	{
 		// Check
@@ -68,22 +68,22 @@ public enum JITCPUEndian
 	 * @throws IllegalArgumentException If the input string is not known.
 	 * @since 2016/07/03
 	 */
-	public static JITCPUEndian of(String __s)
+	public static NativeEndianess of(String __s)
 		throws IllegalArgumentException
 	{
 		switch (__s)
 		{
 				// Big endian
 			case "big":
-				return JITCPUEndian.BIG;
+				return NativeEndianess.BIG;
 			
 				// Little endian
 			case "little":
-				return JITCPUEndian.LITTLE;
+				return NativeEndianess.LITTLE;
 				
 				// Undefined
 			case "undefined":
-				return JITCPUEndian.UNDEFINED;
+				return NativeEndianess.UNDEFINED;
 				
 				// {@squirreljme.error BQ0g Unknown endian.
 				// (The endian string)}

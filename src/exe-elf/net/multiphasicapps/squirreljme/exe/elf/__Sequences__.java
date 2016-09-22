@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
@@ -331,7 +331,7 @@ class __Sequences__
 			}
 			
 			// Write the endianess
-			JITCPUEndian end = owner._endianess;
+			NativeEndianess end = owner._endianess;
 			switch (end)
 			{
 					// Big

@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.base;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
@@ -33,7 +34,7 @@ public final class JITTriplet
 	protected final String cpuvar;
 	
 	/** The endianess of the CPU. */
-	protected final JITCPUEndian endianess;
+	protected final NativeEndianess endianess;
 	
 	/** The floating point type used. */
 	protected final NativeFloatType floating;
@@ -104,7 +105,7 @@ public final class JITTriplet
 		// Extract
 		this.architecture = __check(fullarch.substring(0, pdas));
 		this.cpuvar = __check(fullarch.substring(pplu + 1, pcom));
-		this.endianess = JITCPUEndian.of(__check(
+		this.endianess = NativeEndianess.of(__check(
 			fullarch.substring(pcom + 1, ptil)));
 		this.floating = NativeFloatType.of(__check(
 			fullarch.substring(ptil + 1)));
@@ -241,7 +242,7 @@ public final class JITTriplet
 	 * @return The endianess to target.
 	 * @since 2016/07/05
 	 */
-	public final JITCPUEndian endianess()
+	public final NativeEndianess endianess()
 	{
 		return this.endianess;
 	}

@@ -22,7 +22,7 @@ import net.multiphasicapps.squirreljme.fs.NativeFileSystem;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualFileSystem;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualMounts;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
@@ -75,8 +75,8 @@ public abstract class LinuxBuildInstance
 		
 		// {@squirreljme.error BU07 Only big endian or little endian Linux
 		// targets are supported.}
-		JITCPUEndian end = triplet.endianess();
-		if (end != JITCPUEndian.BIG && end != JITCPUEndian.LITTLE)
+		NativeEndianess end = triplet.endianess();
+		if (end != NativeEndianess.BIG && end != NativeEndianess.LITTLE)
 			throw new TargetNotSupportedException("BU07");
 	}
 	
