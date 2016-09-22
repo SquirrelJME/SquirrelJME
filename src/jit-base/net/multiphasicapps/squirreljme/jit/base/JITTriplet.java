@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 
 /**
  * This class provides a representation of triplets so that they may be
@@ -24,20 +25,8 @@ import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 public final class JITTriplet
 	implements Comparable<JITTriplet>
 {
-	/** The architecture. */
-	protected final String architecture;
-	
-	/** The number of bits used. */
-	protected final int bits;
-	
-	/** The variant of the CPU. */
-	protected final String cpuvar;
-	
-	/** The endianess of the CPU. */
-	protected final NativeEndianess endianess;
-	
-	/** The floating point type used. */
-	protected final NativeFloatType floating;
+	/** The native CPU target. */
+	protected final NativeTarget nativetarget;
 	
 	/** The operating system. */
 	protected final String os;
@@ -81,67 +70,12 @@ public final class JITTriplet
 		if (dotb < 0)
 			throw new IllegalArgumentException(String.format("BQ0a %s", __t));
 		
-		// Split into three forms
-		String fullarch = __t.substring(0, dota);
+		// Decode architecture
+		this.nativetarget = new NativeTarget(__t.substring(0, dota));
 		
 		// Store operating system and its variant
 		this.os = __check(__t.substring(dota + 1, dotb));
 		this.osvar = __check(__t.substring(dotb + 1));
-		
-		// Find all symbol locations in the architecture
-		int pdas = fullarch.indexOf('-'),
-			pplu = fullarch.indexOf('+'),
-			pcom = fullarch.indexOf(','),
-			ptil = fullarch.indexOf('~');
-		
-		// {@squirreljme.error BQ0b Expected the architecture part to be in
-		// the form of {@code name-bits+variant,endianess~float}. (The input
-		// triplet)}
-		if (pdas < 0 || pplu < 0 || pcom < 0 || pdas > pplu || pdas > pcom ||
-			pplu > pcom || ptil < 0 || pdas > ptil || pplu > ptil ||
-			pcom > ptil)
-			throw new IllegalArgumentException(String.format("BQ0b %s", __t));
-		
-		// Extract
-		this.architecture = __check(fullarch.substring(0, pdas));
-		this.cpuvar = __check(fullarch.substring(pplu + 1, pcom));
-		this.endianess = NativeEndianess.of(__check(
-			fullarch.substring(pcom + 1, ptil)));
-		this.floating = NativeFloatType.of(__check(
-			fullarch.substring(ptil + 1)));
-		
-		// Decode bits
-		try
-		{
-			// {@squirreljme.error BQ0c The specified word size in bits that
-			// the CPU uses is zero or negative. (The triplet; The bit count)}
-			int bits = Integer.decode(fullarch.substring(pdas + 1, pplu));
-			if (bits <= 0)
-				throw new IllegalArgumentException(String.format("BQ0c %s %d",
-					__t, bits));
-			
-			// Ok
-			this.bits = bits;
-		}
-		
-		// {@squirreljme.error BQ0d The word size of the CPU in bits is not
-		// a valid number. (The triplet)}
-		catch (NumberFormatException e)
-		{
-			throw new IllegalArgumentException(String.format("BQ0d %s", __t),
-				e);
-		}
-	}
-	
-	/**
-	 * Returns the associated architecture.
-	 *
-	 * @return The architecture to use.
-	 * @since 2016/07/05
-	 */
-	public final String architecture()
-	{
-		return this.architecture;
 	}
 	
 	/**
@@ -158,34 +92,15 @@ public final class JITTriplet
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			_archprop = new WeakReference<>((rv = this.architecture + "-" +
-				this.bits + "+" + this.cpuvar + "," +
-				this.endianess + "~" + this.floating));
+		{
+			NativeTarget nt = this.nativetarget;
+			_archprop = new WeakReference<>((rv = nt.architecture() + "-" +
+				nt.bits() + "+" + nt.architectureVariant() + "," +
+				nt.endianess() + "~" + nt.floatingPoint()));
+		}
 		
 		// Return
 		return rv;
-	}
-	
-	/**
-	 * Returns the variant of the architecture.
-	 *
-	 * @return The architecture variant.
-	 * @since 2016/07/05
-	 */
-	public final String architectureVariant()
-	{
-		return this.cpuvar;
-	}
-	
-	/**
-	 * Returns the number of used CPU bits.
-	 *
-	 * @return The CPU bit count.
-	 * @since 2016/07/05
-	 */
-	public final int bits()
-	{
-		return this.bits;
 	}
 	
 	/**
@@ -210,41 +125,8 @@ public final class JITTriplet
 		if (rv != 0)
 			return rv;
 		
-		// The architecture
-		rv = this.architecture.compareTo(__b.architecture);
-		if (rv != 0)
-			return rv;
-		
-		// Then the bits
-		int ab = this.bits, bb = __b.bits;
-		if (ab < bb)
-			return -1;
-		else if (ab > bb)
-			return 1;
-		
-		// The CPU variant
-		rv = this.cpuvar.compareTo(__b.cpuvar);
-		if (rv != 0)
-			return rv;
-		
-		// The endianess
-		rv = this.endianess.compareTo(__b.endianess);
-		if (rv != 0)
-			return rv;
-		
-		// The same
-		return 0;
-	}
-	
-	/**
-	 * Returns the endianess to target.
-	 *
-	 * @return The endianess to target.
-	 * @since 2016/07/05
-	 */
-	public final NativeEndianess endianess()
-	{
-		return this.endianess;
+		// Compare architecture last
+		return this.nativetarget.compareTo(__b.nativetarget);
 	}
 	
 	/**
@@ -259,32 +141,14 @@ public final class JITTriplet
 		{
 			JITTriplet o = (JITTriplet)__o;
 			
-			return this.architecture.equals(o.architecture) &&
-				this.bits == o.bits &&
-				this.cpuvar.equals(o.cpuvar) &&
-				this.endianess.equals(o.endianess) &&
+			return this.nativetarget.equals(o.nativetarget) &&
 				this.os.equals(o.os) &&
 				this.osvar.equals(o.osvar);
 		}
 		
-		// String
-		else if (__o instanceof String)
-			return toString().equals(((String)__o));
-		
 		// Unknown
 		else
 			return false;
-	}
-	
-	/**
-	 * Returns the floating point type of the triplet.
-	 *
-	 * @return The floating point type used.
-	 * @since 2016/08/29
-	 */
-	public final NativeFloatType floatingPoint()
-	{
-		return this.floating;
 	}
 	
 	/**
@@ -302,6 +166,17 @@ public final class JITTriplet
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Returns the native target of the triplet.
+	 *
+	 * @return The native target information.
+	 * @since 2016/09/22
+	 */
+	public final NativeTarget nativeTarget()
+	{
+		return this.nativetarget;
 	}
 	
 	/**
@@ -341,9 +216,12 @@ public final class JITTriplet
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			_package = new WeakReference<>((rv = this.architecture + "-" +
-				this.bits + "," + this.endianess + "." +
+		{
+			NativeTarget nt = this.nativetarget;
+			_package = new WeakReference<>((rv = nt.architecture() + "-" +
+				nt.bits() + "," + nt.endianess() + "." +
 				this.os + "." + this.osvar));
+		}
 		
 		// Return
 		return rv;
@@ -361,10 +239,8 @@ public final class JITTriplet
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			_string = new WeakReference<>((rv = this.architecture + "-" +
-				this.bits + "+" + this.cpuvar + "," +
-				this.endianess + "~" + this.floating + "." + this.os + "." +
-				this.osvar));
+			_string = new WeakReference<>((rv = this.nativetarget + "." +
+				this.os + "." + this.osvar));
 		
 		// Return
 		return rv;
@@ -382,52 +258,7 @@ public final class JITTriplet
 	private static final String __check(String __s)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// Check
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error BQ0e A fragment in a triplet cannot be empty.}
-		int n = __s.length();
-		if (n <= 0)
-			throw new IllegalArgumentException("BQ0e");
-		
-		// Check all characters
-		boolean upper = false;
-		for (int i = 0; i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			// {@squirreljme.error BQ0f The fragment in the input triplet
-			// contains an illegal character. (The fragment; The illegal
-			// character)}
-			boolean hasupper = (c >= 'A' && c <= 'Z');
-			if (!((c >= 'a' && c <= 'z') || hasupper ||
-				(c >= '0' && c <= '9')))
-				throw new IllegalArgumentException(String.format("BQ0f %s %c",
-					__s, c));
-			
-			// Uppercase?
-			upper |= hasupper;
-		}
-		
-		// No uppercase characters, keep
-		if (!upper)
-			return __s;
-		
-		// Make characters lowercase
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			if (c < 'A' || c > 'Z')
-				sb.append(c);
-			else
-				sb.append('a' + (c - 'A'));
-		}
-		
-		// Build it
-		return sb.toString();
+		return NativeTarget.normalizeAndCheckFragmentString(__s);
 	}
 }
 

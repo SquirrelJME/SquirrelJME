@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeABIProvider;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
@@ -106,7 +107,8 @@ public class BasicNamespaceWriter
 		// Initialize output stream
 		ExtendedDataOutputStream output;
 		this._output = (output = new ExtendedDataOutputStream(__os));
-		switch (triplet.endianess())
+		NativeTarget nativetarget = triplet.nativeTarget();
+		switch (nativetarget.endianess())
 		{
 			case BIG: output.setEndianess(DataEndianess.BIG); break;
 			case LITTLE: output.setEndianess(DataEndianess.LITTLE); break;

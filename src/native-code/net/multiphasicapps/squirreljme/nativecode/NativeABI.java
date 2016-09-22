@@ -17,6 +17,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
@@ -56,6 +58,9 @@ public final class NativeABI
 	/** The stack value alignment. */
 	private final int _stackvaluealign;
 	
+	/** The endianess of the CPU. */
+	private final NativeEndianess _endianess;
+	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -75,6 +80,12 @@ public final class NativeABI
 		if (pointersize <= 0)
 			throw new NativeCodeException("AR1j");
 		this._pointersize = pointersize;
+	
+		// {@squirreljme.error AR08 The endianess of the CPU was not set.}
+		NativeEndianess endianess = __b._endianess;
+		if (endianess == null)
+			throw new NativeCodeException("AR08");
+		this._endianess = endianess;
 		
 		// {@squirreljme.error AR0v The stack alignment was not set.}
 		int stackalign = __b._stackalign;

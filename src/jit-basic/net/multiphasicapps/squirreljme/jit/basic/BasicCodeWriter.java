@@ -27,6 +27,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocationType;
@@ -403,7 +404,8 @@ public class BasicCodeWriter
 		// Depends
 		JITConfig config = this.config;
 		JITTriplet triplet = config.triplet();
-		NativeFloatType floating = triplet.floatingPoint();
+		NativeTarget nativetarget = triplet.nativeTarget();
+		NativeFloatType floating = nativetarget.floatingPoint();
 		switch (__t)
 		{
 				// As-is
@@ -412,7 +414,7 @@ public class BasicCodeWriter
 			
 				// Depends on the pointer size
 			case OBJECT:
-				switch (triplet.bits())
+				switch (nativetarget.bits())
 				{
 					case 8: return NativeRegisterIntegerType.BYTE;
 					case 16: return NativeRegisterIntegerType.SHORT;

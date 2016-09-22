@@ -22,13 +22,14 @@ import net.multiphasicapps.squirreljme.fs.NativeFileSystem;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualFileSystem;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualMounts;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
 
 /**
@@ -58,7 +59,8 @@ public abstract class LinuxBuildInstance
 		// {@squirreljme.error BU04 The specified architecture is not
 		// supported by this build instance.}
 		JITTriplet triplet = __conf.triplet();
-		if (!triplet.architecture().equals(__arch))
+		NativeTarget nativetarget = triplet.nativeTarget();
+		if (!nativetarget.architecture().equals(__arch))
 			throw new TargetNotSupportedException(String.format("BU04 %s",
 				__arch));
 		
@@ -69,13 +71,13 @@ public abstract class LinuxBuildInstance
 		
 		// {@squirreljme.error BU06 Only 32-bit and 64-bit Linux targets
 		// are supported.}
-		int bits = triplet.bits();
+		int bits = nativetarget.bits();
 		if (bits != 32 && bits != 64)
 			throw new TargetNotSupportedException("BU06");
 		
 		// {@squirreljme.error BU07 Only big endian or little endian Linux
 		// targets are supported.}
-		NativeEndianess end = triplet.endianess();
+		NativeEndianess end = nativetarget.endianess();
 		if (end != NativeEndianess.BIG && end != NativeEndianess.LITTLE)
 			throw new TargetNotSupportedException("BU07");
 	}
@@ -154,7 +156,7 @@ public abstract class LinuxBuildInstance
 		// Always include Linux packages and any architecture specific
 		// Linux one also.
 		return new String[]{"os-generic", "os-linux",
-			"os-linux-" + this.triplet.architecture()};
+			"os-linux-" + this.triplet.nativeTarget().architecture()};
 	}
 }
 

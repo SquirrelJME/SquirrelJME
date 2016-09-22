@@ -22,10 +22,11 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
+import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.mips.MIPSVariant;
 
 /**
@@ -330,16 +331,17 @@ public class ELFOutput
 		synchronized (this.lock)
 		{
 			// Endianess
-			setEndianess(__t.endianess());
+			NativeTarget nativetarget = __t.nativeTarget();
+			setEndianess(nativetarget.endianess());
 			
 			// Word size
 			int bits;
-			setWordSize((bits = __t.bits()));
-			String archvar = __t.architectureVariant();
+			setWordSize((bits = nativetarget.bits()));
+			String archvar = nativetarget.architectureVariant();
 			
 			// Depends on the architecture
 			int flags = 0;
-			switch (__t.architecture())
+			switch (nativetarget.architecture())
 			{
 					// MIPS
 				case "mips":

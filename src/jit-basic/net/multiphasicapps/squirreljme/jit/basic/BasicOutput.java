@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeABIProvider;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
@@ -130,9 +131,10 @@ public class BasicOutput
 			
 			// {@squirreljme.error BV0d The native ABI factory did not return
 			// any ABI. (The configuration)}
+			NativeTarget nativetarget = triplet.nativeTarget();
 			rv = abiprov.byName(config.getProperty(
-				BasicOutputFactory.NATIVE_ABI_PROPERTY), triplet.bits(),
-				triplet.floatingPoint());
+				BasicOutputFactory.NATIVE_ABI_PROPERTY), nativetarget.bits(),
+				nativetarget.floatingPoint());
 			if (rv == null)
 				throw new JITException(String.format("BV0d %s", config));
 			

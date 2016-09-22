@@ -85,10 +85,10 @@ public enum NativeEndianess
 			case "undefined":
 				return NativeEndianess.UNDEFINED;
 				
-				// {@squirreljme.error BQ0g Unknown endian.
+				// {@squirreljme.error BX0g Unknown endian.
 				// (The endian string)}
 			default:
-				throw new IllegalArgumentException(String.format("BQ0g %s",
+				throw new IllegalArgumentException(String.format("BX0g %s",
 					__s));
 		}
 	}

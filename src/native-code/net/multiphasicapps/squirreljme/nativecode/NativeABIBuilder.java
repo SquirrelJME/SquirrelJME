@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
@@ -70,6 +71,9 @@ public final class NativeABIBuilder
 	/** The stack value alignment. */
 	volatile int _stackvaluealign =
 		1;
+	
+	/** The endianess of the CPU. */
+	volatile NativeEndianess _endianess;
 	
 	/**
 	 * Adds an argument register.
@@ -214,6 +218,27 @@ public final class NativeABIBuilder
 		synchronized (this.lock)
 		{
 			return new NativeABI(this);
+		}
+	}
+	
+	/**
+	 * Sets the used endianess of the CPU.
+	 *
+	 * @param __e The endianess to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/22
+	 */
+	public final void endianess(NativeEndianess __e)
+		throws NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._endianess = __e;
 		}
 	}
 	
