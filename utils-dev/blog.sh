@@ -39,7 +39,7 @@ then
 	fossil unversion add /tmp/$$ --as "$__fname"
 	
 	# Rebuild the blog index
-	"$__exedir/indexblog.sh"
+	"$__exedir/indexblog.sh" &
 	__job="$!"
 	
 	# Delete temporary
