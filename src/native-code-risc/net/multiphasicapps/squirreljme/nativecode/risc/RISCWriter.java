@@ -105,7 +105,7 @@ public abstract class RISCWriter
 		
 		// Figure out the bases needed for the source and the destination
 		int srcbase = (ss ? sd.base(__src.stackPosition(), bytesleft) : 0),
-			destbase = (ds ? sd.base(__src.stackPosition(), bytesleft) : 0);
+			destbase = (ds ? sd.base(__dest.stackPosition(), bytesleft) : 0);
 		
 		// Source registers from anything?
 		List<NativeRegister> xregs = (sr ? srcregs : (dr ? destregs :
@@ -119,7 +119,7 @@ public abstract class RISCWriter
 			NativeRegister xreg = xregs.get(xrat++);
 			
 			// Determine the number of bytes to consume in the copy operation
-			int consume = xreg.bytes();
+			int consume = abi.registerType(xreg).bytes();
 			
 			// Register to stack
 			if (sr)
