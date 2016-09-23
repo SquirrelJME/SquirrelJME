@@ -80,6 +80,8 @@ public abstract class RISCWriter
 			throw new NativeCodeException(String.format("DN01 %s %s", __src,
 				__dest));
 		
+		throw new Error("TODO");
+		/*
 		// Get CPU endianess and word size
 		NativeABI abi = this.abi;
 		NativeTarget nativetarget = abi.nativeTarget();
@@ -124,7 +126,7 @@ public abstract class RISCWriter
 			// Destination most significant
 			while (bytesleft > 0 && ds)
 				throw new Error("TODO");
-		}
+		}*/
 	}
 	
 	/**
