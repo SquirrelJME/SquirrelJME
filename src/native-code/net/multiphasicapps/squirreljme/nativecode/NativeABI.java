@@ -432,7 +432,7 @@ public final class NativeABI
 	 */
 	public final NativeRegister stack()
 	{
-		throw new Error("TODO");
+		return this._stack;
 	}
 	
 	/**
@@ -443,7 +443,7 @@ public final class NativeABI
 	 */
 	public final NativeStackDirection stackDirection()
 	{
-		throw new Error("TODO");
+		return this._stackdir;
 	}
 	
 	/**
