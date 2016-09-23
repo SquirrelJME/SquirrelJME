@@ -39,8 +39,7 @@ then
 	fossil unversion add /tmp/$$ --as "$__fname"
 	
 	# Rebuild the blog index
-	"$__exedir/indexblog.sh" &
-	__job="$!"
+	"$__exedir/indexblog.sh"
 	
 	# Delete temporary
 	rm -f /tmp/$$
@@ -49,9 +48,4 @@ fi
 # Edit it
 fossil unversion edit "$__fname"
 
-# Foreground the background job
-if [ "$__job" -ne "0" ]
-then
-	fg "$__job"
-fi
 
