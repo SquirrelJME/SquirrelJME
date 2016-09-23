@@ -34,9 +34,18 @@ public interface NativeCodeWriter
 		throws NativeCodeException, NullPointerException;
 	
 	/**
-	 * Reads from the source memory location, which may be register relative,
-	 * into the specified allocation.
+	 * Returns the configuration that was used to configure the writer.
 	 *
+	 * @return The configuration used to configure the writer.
+	 * @since 2016/09/15
+	 */
+	public abstract NativeCodeWriterOptions options();
+	
+	/**
+	 * Reads from the source memory location, which may be register relative,
+	 * into the specified register.
+	 *
+	 * @param __b The value size to write.
 	 * @param __base The base register to use for register-value relative
 	 * reads, may be {@code null} for absolute addresses.
 	 * @param __addr If {@code __base} is {@code null} then this is treated as
@@ -49,22 +58,15 @@ public interface NativeCodeWriter
 	 * {@code __base}.
 	 * @since 2016/09/23
 	 */
-	public abstract void load(NativeRegister __base, long __addr,
-		NativeAllocation __dest)
+	public abstract void registerLoad(int __b, NativeRegister __base,
+		long __addr, NativeRegister __dest)
 		throws NativeCodeException, NullPointerException;
 	
 	/**
-	 * Returns the configuration that was used to configure the writer.
-	 *
-	 * @return The configuration used to configure the writer.
-	 * @since 2016/09/15
-	 */
-	public abstract NativeCodeWriterOptions options();
-	
-	/**
-	 * This stores the given allocation and places it at the specified memory
+	 * This stores the given register and places it at the specified memory
 	 * address, which may be relative to a register value.
 	 *
+	 * @param __b The value size to write.
 	 * @param __src The source to read a value for writing to memory.
 	 * @param __base The base register to use for register-value relative
 	 * writes, may be {@code null} for absolute addresses.
@@ -77,8 +79,8 @@ public interface NativeCodeWriter
 	 * {@code __base}.
 	 * @since 2016/09/23
 	 */
-	public abstract void store(NativeAllocation __src, NativeRegister __base,
-		long __addr)
+	public abstract void registerStore(int __b, NativeRegister __src,
+		NativeRegister __base, long __addr)
 		throws NativeCodeException, NullPointerException;
 }
 

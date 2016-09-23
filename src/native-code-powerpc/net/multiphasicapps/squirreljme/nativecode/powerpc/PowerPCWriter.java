@@ -56,8 +56,8 @@ public class PowerPCWriter
 	 * @since 2016/09/23
 	 */
 	@Override
-	public void load(NativeRegister __base, long __addr,
-		NativeAllocation __dest)
+	public void registerLoad(int __b, NativeRegister __base, long __addr,
+		NativeRegister __dest)
 		throws NativeCodeException, NullPointerException
 	{
 		// Check
@@ -72,8 +72,8 @@ public class PowerPCWriter
 	 * @since 2016/09/23
 	 */
 	@Override
-	public void store(NativeAllocation __src, NativeRegister __base,
-		long __addr)
+	public void registerStore(int __b, NativeRegister __src,
+		NativeRegister __base, long __addr)
 		throws NativeCodeException, NullPointerException
 	{
 		// Check

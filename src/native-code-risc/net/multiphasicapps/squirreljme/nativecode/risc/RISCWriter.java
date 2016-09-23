@@ -100,17 +100,24 @@ public abstract class RISCWriter
 		// writing.
 		NativeABI abi = this.abi;
 		NativeTarget target = abi.nativeTarget();
-		NativeEndianess end = target.endianess();
+		boolean bigend = (target.endianess() == NativeEndianess.BIG);
 		NativeStackDirection sd = abi.stackDirection();
 		
 		// Figure out the bases needed for the source and the destination
 		int srcbase = (ss ? sd.base(__src.stackPosition(), bytesleft) : 0),
 			destbase = (ds ? sd.base(__dest.stackPosition(), bytesleft) : 0);
 		
+		// Determine the location write base (write from least significant to
+		// most significant)
+		int offwbase = (bigend ? bytesleft : 0);
+		
 		// Source registers from anything?
 		List<NativeRegister> xregs = (sr ? srcregs : (dr ? destregs :
 			abi.scratch(NativeRegisterKind.INTEGER)));
 		int xrat = 0, xcnt = xregs.size();
+		
+		// Need the stack register
+		NativeRegister stackreg = abi.stack();
 		
 		// Until all bytes are drained
 		while (bytesleft > 0)
@@ -119,19 +126,22 @@ public abstract class RISCWriter
 			NativeRegister xreg = xregs.get(xrat++);
 			
 			// Determine the number of bytes to consume in the copy operation
-			int consume = abi.registerType(xreg).bytes();
+			// Never consume more than what remains however
+			int consume = Math.min(bytesleft, abi.registerType(xreg).bytes());
+			
+			// On big endian systems, lower values are written at higher
+			// addresses. Since copying is from the base address (lower), this
+			// means that the offset must be calculated before a write
+			if (bigend)
+				offwbase -= consume;
 			
 			// Register to stack
 			if (sr)
-			{
-				throw new Error("TODO");
-			}
+				registerStore(consume, xreg, stackreg, destbase + offwbase);
 	
 			// Stack to register
 			else if (dr)
-			{
-				throw new Error("TODO");
-			}
+				registerLoad(consume, stackreg, srcbase + offwbase, xreg);
 	
 			// Stack to stack, this is the worst operation since values must be
 			// copied to the scratch registers first and then they have to be
@@ -145,6 +155,10 @@ public abstract class RISCWriter
 				// Scratch registers never run out, so reset
 				xrat = 0;
 			}
+			
+			// On little endian systems, writer higher values later in memory
+			if (!bigend)
+				offwbase += consume;
 			
 			// Those bytes were eaten
 			bytesleft -= consume;
