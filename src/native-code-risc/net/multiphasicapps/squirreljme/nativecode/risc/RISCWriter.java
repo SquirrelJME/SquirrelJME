@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.nativecode.risc;
 
 import java.io.OutputStream;
 import java.util.List;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
@@ -81,8 +82,11 @@ public abstract class RISCWriter
 			throw new NativeCodeException(String.format("DN01 %s %s", __src,
 				__dest));
 		
-		// Need the ABI for the stack direction
+		// Need the ABI for the stack direction and the offset for value
+		// writing.
 		NativeABI abi = this.abi;
+		NativeTarget target = abi.nativeTarget();
+		NativeEndianess end = target.endianess();
 		NativeStackDirection sd = abi.stackDirection();
 		
 		// Determine number of bytes to read
