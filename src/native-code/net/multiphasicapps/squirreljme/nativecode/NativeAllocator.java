@@ -103,6 +103,9 @@ public class NativeAllocator
 	 * @param __pref The type of preference when allocating registers.
 	 * @param __at The type of allocation to perform.
 	 * @param __rt The register to allocate.
+	 * @param __pure Perform a pure allocation, that is if registers are used
+	 * then all of them must fit into registers, otherwise it would be placed
+	 * on the stack.
 	 * @throws NativeAllocationMustSpillException If allocating only registers
 	 * and there are not enough registers available to store a value of the
 	 * given type.
@@ -111,13 +114,32 @@ public class NativeAllocator
 	 * @since 2016/09/18
 	 */
 	public final NativeAllocation allocate(NativeAllocationPreference __pref,
-		NativeAllocationType __at, NativeRegisterType __rt)
+		NativeAllocationType __at, NativeRegisterType __rt, boolean __pure)
 		throws NativeAllocationMustSpillException, NullPointerException
 	{
 		// Check
 		if (__at == null || __rt == null ||
 			(__at.claimRegisters() && __pref == null))
 			throw new NullPointerException("NARG");
+		
+		// If requesting a pure allocation, only when the allocation type is
+		// BOTH will there be a potential value splicing.
+		if (__pure && __at == NativeAllocationType.BOTH)
+		{
+			// Try allocating in registers
+			try
+			{
+				return allocate(__pref, NativeAllocationType.REGISTER, __rt,
+					true);
+			}
+			
+			// Could not fit, spill to stack
+			catch (NativeAllocationMustSpillException e)
+			{
+				return allocate(__pref, NativeAllocationType.STACK, __rt,
+					true);
+			}
+		}
 		
 		// Performing some allocation types?
 		boolean usereg = __at.claimRegisters();
@@ -131,14 +153,14 @@ public class NativeAllocator
 			try
 			{
 				return allocate(NativeAllocationPreference.ONLY_TEMPORARY,
-					__at, __rt);
+					__at, __rt, __pure);
 			}
 			
 			// If that fails, go for saved ones
 			catch (NativeAllocationMustSpillException e)
 			{
 				return allocate(NativeAllocationPreference.ONLY_SAVED,
-					__at, __rt);
+					__at, __rt, __pure);
 			}
 		}
 		

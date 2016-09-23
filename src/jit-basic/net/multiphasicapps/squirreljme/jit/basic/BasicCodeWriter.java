@@ -280,7 +280,7 @@ public class BasicCodeWriter
 			{
 				// Allocate the value onto the stack
 				NativeAllocation ons = allocator.allocate(null,
-					NativeAllocationType.STACK, v.valueType());
+					NativeAllocationType.STACK, v.valueType(), true);
 				
 				// Debug
 				System.err.printf("DEBUG -- Save temporary %s -> %s%n", k,

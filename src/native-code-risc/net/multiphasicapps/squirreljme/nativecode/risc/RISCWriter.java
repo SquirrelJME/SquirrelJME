@@ -73,6 +73,13 @@ public abstract class RISCWriter
 		boolean sr = __src.useRegisters(), ss = __src.useStack();
 		boolean dr = __dest.useRegisters(), ds = __dest.useStack();
 		
+		// {@squirreljme.error DN01 The RISC native code generator is unable
+		// to copy impure allocations that use both registers and stack.
+		// (The source allocation; The destination allocation)}
+		if (sr == ss || dr == ds)
+			throw new NativeCodeException(String.format("DN01 %s %s", __src,
+				__dest));
+		
 		// Get CPU endianess and word size
 		NativeABI abi = this.abi;
 		NativeTarget nativetarget = abi.nativeTarget();
