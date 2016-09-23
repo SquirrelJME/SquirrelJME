@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.nativecode;
 
+import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
+
 /**
  * This class contains options which are used to configure the native code
  * generator.
@@ -66,6 +68,17 @@ public final class NativeCodeWriterOptions
 	public final NativeAllocator createAllocator()
 	{
 		return new NativeAllocator(this.abi);
+	}
+	
+	/**
+	 * Returns the native target.
+	 *
+	 * @return The native target.
+	 * @since 2016/09/23
+	 */
+	public final NativeTarget nativeTarget()
+	{
+		return this.abi.nativeTarget();
 	}
 }
 
