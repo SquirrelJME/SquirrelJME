@@ -34,11 +34,51 @@ public interface NativeCodeWriter
 		throws NativeCodeException, NullPointerException;
 	
 	/**
+	 * Reads from the source memory location, which may be register relative,
+	 * into the specified allocation.
+	 *
+	 * @param __base The base register to use for register-value relative
+	 * reads, may be {@code null} for absolute addresses.
+	 * @param __addr If {@code __base} is {@code null} then this is treated as
+	 * an absolute address to read from, otherwise it is an address relative to
+	 * the value in a register.
+	 * @param __dest The destination to store the read value into.
+	 * @throws NativeCodeException If the read operation could not be
+	 * performed.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __base}.
+	 * @since 2016/09/23
+	 */
+	public abstract void load(NativeRegister __base, long __addr,
+		NativeAllocation __dest)
+		throws NativeCodeException, NullPointerException;
+	
+	/**
 	 * Returns the configuration that was used to configure the writer.
 	 *
 	 * @return The configuration used to configure the writer.
 	 * @since 2016/09/15
 	 */
 	public abstract NativeCodeWriterOptions options();
+	
+	/**
+	 * This stores the given allocation and places it at the specified memory
+	 * address, which may be relative to a register value.
+	 *
+	 * @param __src The source to read a value for writing to memory.
+	 * @param __base The base register to use for register-value relative
+	 * writes, may be {@code null} for absolute addresses.
+	 * @param __addr If {@code __base} is {@code null} then this is treated as
+	 * an absolute address to write to, otherwise it is an address relative to
+	 * the value in a register.
+	 * @throws NativeCodeException If the write operation could not be
+	 * performed.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __base}.
+	 * @since 2016/09/23
+	 */
+	public abstract void store(NativeAllocation __src, NativeRegister __base,
+		long __addr)
+		throws NativeCodeException, NullPointerException;
 }
 

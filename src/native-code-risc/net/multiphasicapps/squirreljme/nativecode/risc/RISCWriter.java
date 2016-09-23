@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
 
 /**
  * This is the base class for writes which implement native code writers for
@@ -80,25 +81,35 @@ public abstract class RISCWriter
 			throw new NativeCodeException(String.format("DN01 %s %s", __src,
 				__dest));
 		
-		// Register to register
-		if (sr && dr)
-			throw new Error("TODO");
+		// Need the ABI for the stack direction
+		NativeABI abi = this.abi;
+		NativeStackDirection sd = abi.stackDirection();
 		
-		// Register to stack
-		else if (sr && ds)
-			throw new Error("TODO");
+		// Determine number of bytes to read
+		int bytesleft = abi.allocationValueSize(__src);
 		
-		// Stack to register
-		else if (ss && dr)
-			throw new Error("TODO");
+		// Must write all bytes
+		while (bytesleft > 0)
+		{
+			// Register to register
+			if (sr && dr)
+				throw new Error("TODO");
 		
-		// Stack to stack
-		else
-			throw new Error("TODO");
+			// Register to stack
+			else if (sr && ds)
+				throw new Error("TODO");
+		
+			// Stack to register
+			else if (ss && dr)
+				throw new Error("TODO");
+		
+			// Stack to stack
+			else
+				throw new Error("TODO");
+		}
 		
 		/*
 		// Get CPU endianess and word size
-		NativeABI abi = this.abi;
 		NativeTarget nativetarget = abi.nativeTarget();
 		int cpubytes = nativetarget.bits() / 8;
 		

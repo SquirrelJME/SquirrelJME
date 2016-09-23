@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 import net.multiphasicapps.squirreljme.nativecode.risc.RISCWriter;
 
 /**
@@ -48,6 +49,38 @@ public class MIPSWriter
 		
 		// Set
 		this.output = new MIPSOutputStream(__o, __os);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public void load(NativeRegister __base, long __addr,
+		NativeAllocation __dest)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public void store(NativeAllocation __src, NativeRegister __base,
+		long __addr)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
