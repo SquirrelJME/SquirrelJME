@@ -80,7 +80,22 @@ public abstract class RISCWriter
 			throw new NativeCodeException(String.format("DN01 %s %s", __src,
 				__dest));
 		
-		throw new Error("TODO");
+		// Register to register
+		if (sr && dr)
+			throw new Error("TODO");
+		
+		// Register to stack
+		else if (sr && ds)
+			throw new Error("TODO");
+		
+		// Stack to register
+		else if (ss && dr)
+			throw new Error("TODO");
+		
+		// Stack to stack
+		else
+			throw new Error("TODO");
+		
 		/*
 		// Get CPU endianess and word size
 		NativeABI abi = this.abi;
