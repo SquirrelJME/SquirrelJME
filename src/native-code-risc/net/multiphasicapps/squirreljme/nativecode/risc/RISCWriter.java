@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterKind;
 import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
 
 /**
@@ -82,6 +83,19 @@ public abstract class RISCWriter
 			throw new NativeCodeException(String.format("DN01 %s %s", __src,
 				__dest));
 		
+		// The number of bytes to write
+		int bytesleft = abi.allocationValueSize(__src);
+		
+		// Need list of source and destination registers
+		List<NativeRegister> srcregs = __src.registers();
+		int srcrat = 0, srccnt = srcregs.size();
+		List<NativeRegister> destregs = __dest.registers();
+		int destrat = 0, destcnt = destregs.size();
+		
+		// Register to register, requires no stack work
+		if (sr && dr)
+			throw new Error("TODO");
+		
 		// Need the ABI for the stack direction and the offset for value
 		// writing.
 		NativeABI abi = this.abi;
@@ -89,74 +103,52 @@ public abstract class RISCWriter
 		NativeEndianess end = target.endianess();
 		NativeStackDirection sd = abi.stackDirection();
 		
-		// Determine number of bytes to read
-		int bytesleft = abi.allocationValueSize(__src);
+		// Figure out the bases needed for the source and the destination
+		int srcbase = (ss ? sd.base(__src.stackPosition(), bytesleft) : 0),
+			destbase = (ds ? sd.base(__src.stackPosition(), bytesleft) : 0);
 		
-		// Must write all bytes
+		// Source registers from anything?
+		List<NativeRegister> xregs = (sr ? srcregs : (dr ? destregs :
+			abi.scratch(NativeRegisterKind.INTEGER)));
+		int xrat = 0, xcnt = xregs.size();
+		
+		// Until all bytes are drained
 		while (bytesleft > 0)
 		{
-			// Register to register
-			if (sr && dr)
-				throw new Error("TODO");
-		
+			// Get the next register to act as the source/dest
+			NativeRegister xreg = xregs.get(xrat++);
+			
+			// Determine the number of bytes to consume in the copy operation
+			int consume = xreg.bytes();
+			
 			// Register to stack
-			else if (sr && ds)
-				throw new Error("TODO");
-		
-			// Stack to register
-			else if (ss && dr)
-				throw new Error("TODO");
-		
-			// Stack to stack
-			else
-				throw new Error("TODO");
-		}
-		
-		/*
-		// Get CPU endianess and word size
-		NativeTarget nativetarget = abi.nativeTarget();
-		int cpubytes = nativetarget.bits() / 8;
-		
-		// Needed so that only the minimum number of bytes are copied
-		int bytesleft = abi.allocationValueSize(__src), byteshift = 0;
-		
-		// Destination 
-		List<NativeRegister> dstregs = __dest.registers();
-		int dstrat = 0, dstcnt = dstregs.size();
-		
-		// Copy the least significant part of the value first (always stored
-		// in the register portion)
-		if (bytesleft > 0 && sr)
-		{
-			// Will need to go through all of them
-			List<NativeRegister> srcregs = __src.registers();
-			int srcrat = 0, srccnt = srcregs.size();
-			
-			// Destination least significant
-			while (bytesleft > 0 && srcrat < srccnt && dr)
-				throw new Error("TODO");
-			
-			// Destination most significant
-			while (bytesleft > 0 && srcrat < srccnt && ds)
+			if (sr)
 			{
-				// Get the next source register
-				NativeRegister next = srcregs.get(srcrat++);
-				
 				throw new Error("TODO");
 			}
-		}
-		
-		// Copy the most significant part of the value last
-		if (bytesleft > 0 && ss)
-		{
-			// Destination least significant
-			while (bytesleft > 0 && dstrat < dstcnt && dr)
+	
+			// Stack to register
+			else if (dr)
+			{
 				throw new Error("TODO");
+			}
+	
+			// Stack to stack, this is the worst operation since values must be
+			// copied to the scratch registers first and then they have to be
+			// copied to the destination. However, stack to stack causes a
+			// recursive call of this method.
+			else
+			{
+				if (true)
+					throw new Error("TODO");
+				
+				// Scratch registers never run out, so reset
+				xrat = 0;
+			}
 			
-			// Destination most significant
-			while (bytesleft > 0 && ds)
-				throw new Error("TODO");
-		}*/
+			// Those bytes were eaten
+			bytesleft -= consume;
+		}
 	}
 	
 	/**

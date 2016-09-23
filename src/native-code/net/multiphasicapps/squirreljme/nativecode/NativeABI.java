@@ -425,6 +425,24 @@ public final class NativeABI
 	}
 	
 	/**
+	 * This returns the list of scratch registers.
+	 *
+	 * @param __k The kind of scratch registers to get.
+	 * @return The list of scratch registers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/23
+	 */
+	public final List<NativeRegister> scratch(NativeRegisterKind __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the stack register.
 	 *
 	 * @return The stack register.
