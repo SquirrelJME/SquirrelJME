@@ -121,7 +121,8 @@ public class MIPSOutputStream
 				throw new NativeCodeException(String.format("AW04 %d", __b));
 		}
 		
-		throw new Error("TODO");
+		// Encode
+		typeI(op, base, src, __off);
 	}
 	
 	/**
