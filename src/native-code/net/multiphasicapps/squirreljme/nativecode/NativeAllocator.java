@@ -228,8 +228,9 @@ public class NativeAllocator
 				// Align values stored on the stack to a specific alignment
 				// so CPUs can read them easier
 				int svalign = abi.stackValueAlignment();
-				if (svalign != 1)
-					hipos = hipos + (svalign - (hipos % svalign));
+				int axp;
+				if (svalign != 1 && (axp = (hipos % svalign)) != 0)
+					hipos = hipos + (svalign - axp);
 				
 				// Use that position
 				stackpos = hipos;
