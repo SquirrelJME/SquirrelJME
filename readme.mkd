@@ -40,8 +40,8 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
    * Read-Only Mirrors:
      * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
      * GitHub: <http://github.com/mpasteven/SquirrelJME/>
-     * Tor: <http://x3v3lxoxpxu3hitk.onion/>
-       (`fossil clone -u http://x3v3lxoxpxu3hitk.onion/ squirreljme.fossil`)
+     * Tor: <http://squi4r3lclnuvwc2.onion/>
+       (`fossil clone -u http://squi4r3lclnuvwc2.onion/ squirreljme.fossil`)
 
 ## Documents
 
