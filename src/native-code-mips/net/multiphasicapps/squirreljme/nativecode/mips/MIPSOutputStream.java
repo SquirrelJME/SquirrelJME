@@ -62,16 +62,41 @@ public class MIPSOutputStream
 	 *
 	 * @param __b The size of the value to store.
 	 * @param __src The source register.
-	 * @param __base The base register.
+	 * @param __base The base register, may be {@code null} to specify that
+	 * register zero should be used instead (absolute address).
 	 * @param __off The offset from the base.
 	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NativeCodeException If the offset is out of range.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __base}.
 	 * @since 2016/09/23
 	 */
 	public final void mipsIntegerStore(int __b, NativeRegister __src,
 		NativeRegister __base, int __off)
-		throws IOException, NullPointerException
+		throws IOException, NativeCodeException, NullPointerException
 	{
+		// Absolute address?
+		if (__base == null)
+		{
+			// {@squirreljme.error AW06 Store at an absolute address is only
+			// valid for the first 32KiB of memory. (The absolute address)}
+			if (__off < 0 || __off > 32767)
+				throw new NativeCodeException(String.format(
+					"AW06 %d", __off));
+			
+			// Use Zero register
+			__base = MIPSRegister.R0;
+		}
+		
+		// {@squirreljme.error AW07 Relative register offset exceeds the
+		// permitted range. (The offset)}
+		if (__off < -32768 || __off > 32767)
+			throw new NativeCodeException(String.format("AW07 %d", __off));
+		
+		// Get registers
+		MIPSRegister src = ofInteger(__src);
+		MIPSRegister base = ofInteger(__base);
+		
 		// The opcode depends on the store size
 		int op;
 		switch (__b)
@@ -97,6 +122,37 @@ public class MIPSOutputStream
 		}
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Converts a native register to an integer MIPS register.
+	 *
+	 * @param __r The register to convert.
+	 * @return The converted register.
+	 * @throws NativeCodeException If it is not an integral MIPS registers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/24
+	 */
+	public MIPSRegister ofInteger(NativeRegister __r)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AW09 The input register is not a MIPS register.
+		// (The register)}
+		if (!(__r instanceof MIPSRegister))
+			throw new NativeCodeException(String.format("AW09 %s", __r));
+		
+		// {@squirreljme.error AW0a The specified register is a not an integer
+		// register. (The register)}
+		MIPSRegister rv = (MIPSRegister)__r;
+		if (!rv.isInteger())
+			throw new NativeCodeException(String.format("AW0a %s", rv));
+		
+		// Ok
+		return rv;
 	}
 	
 	/**

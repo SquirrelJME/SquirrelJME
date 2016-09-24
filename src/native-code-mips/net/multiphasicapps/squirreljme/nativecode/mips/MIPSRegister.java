@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
 public enum MIPSRegister
 	implements NativeRegister
 {
-	/** r0. */
+	/** r0, always zero. */
 	R0(false, 0),
 
 	/** r1. */
@@ -234,6 +234,28 @@ public enum MIPSRegister
 		// Set
 		this.isfloat = __float;
 		this.id = __id;
+	}
+	
+	/**
+	 * Is this a floating point register?
+	 *
+	 * @return {@code true} if a floating point register.
+	 * @since 2016/09/24
+	 */
+	public final boolean isFloat()
+	{
+		return this.isfloat;
+	}
+	
+	/**
+	 * Is this an integer register?
+	 *
+	 * @return {@code true} if an integer register.
+	 * @since 2016/09/24
+	 */
+	public final boolean isInteger()
+	{
+		return !this.isfloat;
 	}
 	
 	/**

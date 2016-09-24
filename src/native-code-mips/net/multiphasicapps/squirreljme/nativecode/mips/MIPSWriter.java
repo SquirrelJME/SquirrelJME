@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.nativecode.mips;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
@@ -80,7 +81,22 @@ public class MIPSWriter
 		if (__src == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error AW08 Address out of range. (The specified
+		// address)}
+		if (__addr < Integer.MIN_VALUE || __addr > Integer.MAX_VALUE)
+			throw new NativeCodeException(String.format("AW08 %d", __addr));
+		
+		// Forward
+		try
+		{
+			this.output.mipsIntegerStore(__b, __src, __base, (int)__addr);
+		}
+		
+		// {@squirreljme.error AW0b Failed to write the register store.}
+		catch (IOException e)
+		{
+			throw new NativeCodeException("AW0b", e);
+		}
 	}
 }
 
