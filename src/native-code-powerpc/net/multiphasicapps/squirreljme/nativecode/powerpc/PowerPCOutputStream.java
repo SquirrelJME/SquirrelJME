@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.nativecode.powerpc;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 
 /**
@@ -21,7 +23,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
  * @since 2016/09/21
  */
 public class PowerPCOutputStream
-	extends DataOutputStream
+	extends ExtendedDataOutputStream
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;

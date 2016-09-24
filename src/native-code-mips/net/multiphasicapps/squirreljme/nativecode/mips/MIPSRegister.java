@@ -237,6 +237,17 @@ public enum MIPSRegister
 	}
 	
 	/**
+	 * Returns the instruction ID.
+	 *
+	 * @return The instruction ID.
+	 * @since 2016/09/24
+	 */
+	public final int id()
+	{
+		return this.id;
+	}
+	
+	/**
 	 * Is this a floating point register?
 	 *
 	 * @return {@code true} if a floating point register.

@@ -13,6 +13,9 @@ package net.multiphasicapps.squirreljme.nativecode.mips;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
@@ -24,10 +27,13 @@ import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
  * @since 2016/09/21
  */
 public class MIPSOutputStream
-	extends DataOutputStream
+	extends ExtendedDataOutputStream
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;
+	
+	/** The endianess. */
+	protected final NativeEndianess endianess;
 	
 	/** Is this for a 64-bit CPU? */
 	private final boolean _sixfour;
@@ -55,6 +61,24 @@ public class MIPSOutputStream
 		// Determine some flags
 		NativeTarget nt = __o.nativeTarget();
 		this._sixfour = nt.bits() >= 64;
+		
+		// Set endianess
+		NativeEndianess nend;
+		this.endianess = (nend = nt.endianess());
+		switch (nend)
+		{
+			case BIG:
+				super.setEndianess(DataEndianess.BIG);
+				break;
+				
+			case LITTLE:
+				super.setEndianess(DataEndianess.LITTLE);
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -162,15 +186,30 @@ public class MIPSOutputStream
 	 * @param __op The opcode.
 	 * @param __rs The source register.
 	 * @param __rt The target register.
-	 * @param __imm The immediate.
+	 * @param __imm The immediate value, only the first 16-bits are considered.
 	 * @throws IOException On write errors.
+	 * @throws NativeCodeException If the opcode is out of range.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/23
 	 */
-	public final void typeI(int __op, NativeRegister __rs, NativeRegister __rt,
+	public final void typeI(int __op, MIPSRegister __rs, MIPSRegister __rt,
 		int __imm)
-		throws IOException
+		throws IOException, NativeCodeException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__rs == null || __rt == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AW0c The operation has an illegal bit set in its
+		// value. (The operation)}
+		if ((__op & (~0b111111)) != 0)
+			throw new NativeCodeException(String.format("AW0c %d", __op));
+		
+		// Build value to write to the output
+		super.writeInt((__op << 26) |
+			(__rs.id() << 21) |
+			(__rt.id() << 16) |
+			(__imm & 0xFFFF));
 	}
 	
 	/**
@@ -185,8 +224,8 @@ public class MIPSOutputStream
 	 * @throws IOException On write errors.
 	 * @since 2016/09/23
 	 */
-	public final void typeR(int __op, NativeRegister __rs, NativeRegister __rt,
-		NativeRegister __rd, int __sa, int __func)
+	public final void typeR(int __op, MIPSRegister __rs, MIPSRegister __rt,
+		MIPSRegister __rd, int __sa, int __func)
 		throws IOException
 	{
 		throw new Error("TODO");

@@ -133,6 +133,14 @@ case $__arch in
 		__ext=""
 		;;
 		
+		# MIPS64
+	"mips64")
+		__bin="mips mips64"
+		__buo="elf64-bigmips"
+		__bub="mips:mips"
+		__ext=""
+		;;
+		
 		# i386
 	"i386")
 		__bin="i686 i586 i486 i386 x86_64 amd64"

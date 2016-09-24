@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: native-code-powerpc
 X-SquirrelJME-UUID: 4d11bcec-a977-4bed-b3bf-ac3926af1aa4
-X-SquirrelJME-Depends: native-code-risc
+X-SquirrelJME-Depends: native-code-risc io-data
 X-SquirrelJME-Error: BT
 LIBlet-Title: Native Code (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
