@@ -142,7 +142,7 @@ public final class NativeArgumentInput<X>
 	public static <X> NativeArgumentInput<X>[] allocateArray(int __n)
 	{
 		return (NativeArgumentInput<X>[])
-			((Object)new NativeArgumentOutput[__n]);
+			((Object)new NativeArgumentInput[__n]);
 	}
 }
 

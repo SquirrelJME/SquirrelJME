@@ -263,7 +263,7 @@ public class NativeAllocator
 	 * @since 2016/09/25
 	 */
 	public final <X> NativeArgumentOutput<X>[] argumentAllocate(
-		boolean __store, NativeArgumentInput<X>... __t)
+		boolean __store, NativeArgumentInput<X>[] __t)
 		throws NullPointerException
 	{
 		// Check
