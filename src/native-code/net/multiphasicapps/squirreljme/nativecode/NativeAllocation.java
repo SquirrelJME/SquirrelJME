@@ -34,6 +34,10 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  */
 public final class NativeAllocation
 {
+	/** Empty array. */
+	private static final NativeRegister[] _EMPTY =
+		new NativeRegister[0];
+	
 	/** The stack position. */
 	protected final int stackpos;
 	
@@ -59,8 +63,7 @@ public final class NativeAllocation
 	 * the value must be zero.
 	 * @param __vt The value type, the type of value to store in this
 	 * allocation, this is optional.
-	 * @param __r The registers used in the allocation, this is used
-	 * directly.
+	 * @param __r The registers used in the allocation.
 	 * @param NativeCodeException If the stack requirements are not met;
 	 * neither any stack or registers are allocated; or a register is
 	 * duplicated.
@@ -85,8 +88,7 @@ public final class NativeAllocation
 	 * the value must be zero.
 	 * @param __vt The value type, the type of value to store in this
 	 * allocation, this is optional.
-	 * @param __r The registers used in the allocation, this is used
-	 * directly.
+	 * @param __r The registers used in the allocation.
 	 * @param NativeCodeException If the stack requirements are not met;
 	 * neither any stack or registers are allocated; or a register is
 	 * duplicated.
@@ -121,7 +123,7 @@ public final class NativeAllocation
 		this.stackpos = __sp;
 		this.stacklen = __sl;
 		this.registers = UnmodifiableList.<NativeRegister>of(
-			Arrays.<NativeRegister>asList(__r));
+			Arrays.<NativeRegister>asList((nr == 0 ? _EMPTY : __r.clone())));
 		
 		// {@squirreljme.error AR03 The specified register was specified
 		// multiple times in the allocation. (The register that was
