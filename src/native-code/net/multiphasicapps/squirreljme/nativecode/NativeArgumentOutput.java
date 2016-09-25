@@ -110,5 +110,20 @@ public final class NativeArgumentOutput<X>
 		return "{allocation=" + this.allocation + ", special=" +
 			this.special + "}";
 	}
+	
+	/**
+	 * Allocates an array using the specified special type.
+	 *
+	 * @param <X> The special value to store.
+	 * @param __n The number of elements to use.
+	 * @return An array for the given special type.
+	 * @since 2016/09/25
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <X> NativeArgumentOutput<X>[] allocateArray(int __n)
+	{
+		return (NativeArgumentOutput<X>[])
+			((Object)new NativeArgumentOutput[__n]);
+	}
 }
 

@@ -252,17 +252,18 @@ public class NativeAllocator
 	 * the input allocation values based on their types. Allocations may
 	 * optionally be stored.
 	 *
+	 * @param <X> The type of special value used for input.
 	 * @param __store If {@code true} then allocations are stored in this
 	 * allocator, otherwise {@code false} will return the allocations which
 	 * would have been used without modifying the state.
-	 * @param __t The type of value to store
+	 * @param __t The types of value to store.
 	 * @return The allocations for all input arguments, this array will be of
 	 * the same size as the input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/25
 	 */
-	public final NativeAllocation[] argumentAllocate(boolean __store,
-		NativeRegisterType... __t)
+	public final <X> NativeArgumentOutput<X>[] argumentAllocate(
+		boolean __store, NativeArgumentInput<X>... __t)
 		throws NullPointerException
 	{
 		// Check
@@ -272,10 +273,11 @@ public class NativeAllocator
 		// Ignore if empty
 		int n;
 		if ((n = __t.length) <= 0)
-			return new NativeAllocation[0];
+			return NativeArgumentOutput.<X>allocateArray(0);
 		
 		// Allocations will always match the input argument size
-		NativeAllocation[] rv = new NativeAllocation[n];
+		NativeArgumentOutput<X>[] rv =
+			NativeArgumentOutput.<X>allocateArray(n);
 		
 		// Use only argument registers
 		NativeABI abi = this.abi;
@@ -300,7 +302,8 @@ public class NativeAllocator
 		// Go through all arguments
 		for (int i = 0; i < n; i++)
 		{
-			NativeRegisterType t = __t[i];
+			NativeArgumentInput<X> nai = __t[i];
+			NativeRegisterType t = nai.type();
 			
 			// Clear the fill list
 			rawr.clear();
@@ -359,7 +362,7 @@ public class NativeAllocator
 			// Create and store allocation in the resultant value
 			NativeAllocation na = new NativeAllocation(stackpos, stacklen, t,
 				rawr.<NativeRegister>toArray(new NativeRegister[rawr.size()]));
-			rv[i] = na;
+			rv[i] = nai.output(na);
 			
 			// Remember this allocation, but only if it is requested
 			if (__store)

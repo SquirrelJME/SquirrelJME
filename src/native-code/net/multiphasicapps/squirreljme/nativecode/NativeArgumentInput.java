@@ -79,6 +79,25 @@ public final class NativeArgumentInput<X>
 	}
 	
 	/**
+	 * Returns an output which is associated with this input.
+	 *
+	 * @param __a The allocation to use.
+	 * @return The output associated with this input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/25
+	 */
+	public final NativeArgumentOutput<X> output(NativeAllocation __a)
+		throws NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Allocate the output
+		return new NativeArgumentOutput<X>(__a, this.special);
+	}
+	
+	/**
 	 * Returns the special value.
 	 *
 	 * @return The special value.
@@ -109,6 +128,21 @@ public final class NativeArgumentInput<X>
 	public final NativeRegisterType type()
 	{
 		return this.type;
+	}
+	
+	/**
+	 * Allocates an array using the specified special type.
+	 *
+	 * @param <X> The special value to store.
+	 * @param __n The number of elements to use.
+	 * @return An array for the given special type.
+	 * @since 2016/09/25
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <X> NativeArgumentInput<X>[] allocateArray(int __n)
+	{
+		return (NativeArgumentInput<X>[])
+			((Object)new NativeArgumentOutput[__n]);
 	}
 }
 
