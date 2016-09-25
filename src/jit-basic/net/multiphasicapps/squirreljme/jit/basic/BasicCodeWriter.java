@@ -366,7 +366,8 @@ public class BasicCodeWriter
 			Arrays.<StackMapType>asList(__t), args);
 		
 		// Allocate the register
-		NativeAllocation[] allocs = this.allocator.argumentAllocate(args);
+		NativeAllocation[] allocs = this.allocator.argumentAllocate(true,
+			args);
 		
 		// Debug
 		System.err.printf("DEBUG -- Primed args out: %s%n",

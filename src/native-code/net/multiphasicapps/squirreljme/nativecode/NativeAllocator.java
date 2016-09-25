@@ -249,22 +249,6 @@ public class NativeAllocator
 	
 	/**
 	 * Goes through the input arguments and creates allocations for all of
-	 * the input allocation values based on their types.
-	 *
-	 * @param __t The type of value to store
-	 * @return The allocations for all input arguments, this array will be of
-	 * the same size as the input.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/09
-	 */
-	public final NativeAllocation[] argumentAllocate(NativeRegisterType... __t)
-		throws NullPointerException
-	{
-		return argumentAllocate(true, __t);
-	}
-	
-	/**
-	 * Goes through the input arguments and creates allocations for all of
 	 * the input allocation values based on their types. Allocations may
 	 * optionally be stored.
 	 *
