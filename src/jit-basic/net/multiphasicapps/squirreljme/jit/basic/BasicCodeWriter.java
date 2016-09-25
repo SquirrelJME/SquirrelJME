@@ -313,7 +313,7 @@ public class BasicCodeWriter
 		// Allocate
 		if (true)
 			throw new Error("TODO");
-		NativeAllocation[] argallocs = argumentAllocate(false, null);
+		NativeAllocation[] argallocs = allocator.argumentAllocate(false, null);
 		
 		// Go through all arguments and move the into the argument registers
 		// and if those are overflowed then they are written into the target's
@@ -480,14 +480,14 @@ public class BasicCodeWriter
 			
 		// Add the this reference
 		List<NativeRegisterType> args = new ArrayList<>();
-		if (!flags.isStatic())
+		if (!__f.isStatic())
 			args.add(stackMapToRegisterType(StackMapType.OBJECT));
 		
 		// Go through arguments and add their types
-		int n = sym.argumentCount();
+		int n = __s.argumentCount();
 		for (int i = 0; i < n; i++)
 		{
-			FieldSymbol f = sym.get(i);
+			FieldSymbol f = __s.get(i);
 			StackMapType t = StackMapType.bySymbol(f);
 			
 			// Add native type
