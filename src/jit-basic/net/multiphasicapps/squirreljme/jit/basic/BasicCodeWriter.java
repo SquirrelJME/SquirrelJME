@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
@@ -235,13 +236,17 @@ public class BasicCodeWriter
 		
 		// Debug
 		System.err.printf("DEBUG -- Invoke initial VTA: %s%n", vartoalloc);
-		
-		// Debug
 		System.err.printf("DEBUG -- Allocated (For Invoke): %s%n",
 			Arrays.<NativeAllocation>asList(nas));
 		
 		// Will need to write the instructions
 		NativeCodeWriter writer = this.writer;
+		
+		// Original allocations of temporaries before they were saved, this is
+		// used for method invocations since values may be cached. A cached
+		// local could be in a temporary (if say the argument registers are
+		// temporary)
+		Map<CodeVariable, NativeAllocation> origtemp = new LinkedHashMap<>();
 		
 		// Go through all allocations and allocate any temporary registers
 		// and store their value onto the stack
@@ -292,11 +297,17 @@ public class BasicCodeWriter
 				// Update the allocation state to indicate that the value
 				// is now on the stack
 				vartoalloc.put(k, ons);
+				
+				// Store original temporary
+				origtemp.put(k, v);
 			}
 		}
 		
 		// Debug
-		System.err.printf("DEBUG -- Invoke VTA after save: %s%n", vartoalloc);
+		System.err.printf("DEBUG -- Invoke VTA after save: %s (changed: %s)%n",
+			vartoalloc, origtemp);
+		
+		//
 		
 		throw new Error("TODO");
 	}
