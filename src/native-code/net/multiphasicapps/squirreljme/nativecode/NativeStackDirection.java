@@ -60,5 +60,31 @@ public enum NativeStackDirection
 				throw new RuntimeException("OOPS");
 		}
 	}
+	
+	/**
+	 * Modifies a value and returns the value which is used for its direction,
+	 * positive values are for higher positions while negative values are for
+	 * lower positions. Depending on the direction, the value will be modified
+	 * accordingly so the stack pointer can move a given direction.
+	 *
+	 * @param __d The value to modify, more positive values are higher stack
+	 * values.
+	 * @return The modified value for the stack direction.
+	 * @since 2016/09/25
+	 */
+	public final int direction(int __d)
+	{
+		// Depends
+		switch (this)
+		{
+				// Known
+			case LOW_TO_HIGH: return __d;
+			case HIGH_TO_LOW: return -__d;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 

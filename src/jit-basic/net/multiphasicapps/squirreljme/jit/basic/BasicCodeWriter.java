@@ -303,12 +303,12 @@ public class BasicCodeWriter
 			}
 		}
 		
-		// Debug
-		System.err.printf("DEBUG -- Invoke VTA after save: %s (changed: %s)%n",
-			vartoalloc, origtemp);
-		
 		// The top of the stack is needed to set the new stack base
 		int stacksz = allocator.stackSize();
+		
+		// Debug
+		System.err.printf("DEBUG -- Invoke VTA after save: %s (changed: %s)" +
+			", stack size=%d%n", vartoalloc, origtemp, stacksz);
 		
 		// Go through all arguments and move the into the argument registers
 		// and if those are overflowed then they are written into the target's
@@ -316,6 +316,9 @@ public class BasicCodeWriter
 		int arglen = __args.length;
 		for (CodeVariable av : __args)
 		{
+			// Debug
+			System.err.printf("DEBUG -- Load argument: %s%n", av);
+			
 			throw new Error("TODO");
 		}
 		
