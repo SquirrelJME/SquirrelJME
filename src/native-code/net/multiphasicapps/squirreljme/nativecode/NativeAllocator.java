@@ -208,22 +208,7 @@ public class NativeAllocator
 			if (usestack)
 			{
 				// Determine the highest stack position that is available
-				int hipos = 0;
-				for (NativeAllocation a : allocs)
-				{
-					// Ignore unused stack positions
-					int ap = a.stackPosition();
-					if (ap < 0)
-						continue;
-					
-					// Determine the end position
-					int al = a.stackLength();
-					int at = ap + al;
-					
-					// Use the higher position
-					if (at > hipos)
-						hipos = at;
-				}
+				int hipos = stackSize();
 				
 				// Align values stored on the stack to a specific alignment
 				// so CPUs can read them easier
@@ -391,11 +376,41 @@ public class NativeAllocator
 	}
 	
 	/**
+	 * Returns the current stack length.
+	 *
+	 * @return The stack length.
+	 * @since 2016/09/25
+	 */
+	public final int stackSize()
+	{
+		// Calculate highest stack position
+		int hipos = 0;
+		for (NativeAllocation a : this._allocs)
+		{
+			// Ignore unused stack positions
+			int ap = a.stackPosition();
+			if (ap < 0)
+				continue;
+			
+			// Determine the end position
+			int al = a.stackLength();
+			int at = ap + al;
+			
+			// Use the higher position
+			if (at > hipos)
+				hipos = at;
+		}
+		
+		// Return it
+		return hipos;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/03
 	 */
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		return recordState().toString();
 	}
