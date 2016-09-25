@@ -574,7 +574,7 @@ final class __OpParser__
 				throw new ClassFormatException(String.format("AY3z %s", map));
 			
 			// Store
-			st[write++] = map;
+			st[write--] = map;
 			
 			// Increase the pop count
 			popcount++;
