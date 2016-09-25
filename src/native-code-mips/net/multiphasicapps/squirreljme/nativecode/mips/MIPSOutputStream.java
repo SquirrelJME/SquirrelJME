@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
 
 /**
  * This is an output stream which writes MIPS machine code.
@@ -28,6 +29,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
  */
 public class MIPSOutputStream
 	extends ExtendedDataOutputStream
+	implements RISCInstructionOutput
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;

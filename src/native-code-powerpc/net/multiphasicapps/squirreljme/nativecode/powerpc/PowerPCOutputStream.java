@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
 
 /**
  * This is an output stream which writes PowerPC machine code.
@@ -24,6 +25,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
  */
 public class PowerPCOutputStream
 	extends ExtendedDataOutputStream
+	implements RISCInstructionOutput
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;
