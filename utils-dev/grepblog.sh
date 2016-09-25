@@ -15,9 +15,30 @@ export LC_ALL=C
 # Usage
 if [ "$#" -le "0" ]
 then
-	echo "Usage: $0 (grep expression)"
+	echo "Usage: $0 (grep expression...)"
 	exit 1
 fi
+
+# Supports multiple greps of stdin
+__grep()
+{
+	# Single expression, used directly
+	if [ "$#" -eq "1" ]
+	then
+		grep "$1"
+		return $?
+	
+	# Group all of the expressions together then grep
+	else
+		grep $(while [ "$#" -ge "1" ]
+			do
+				echo "-e"
+				echo "$1"
+				shift
+			done)
+		return $?
+	fi
+}
 
 # Directory of this script
 __exedir="$(dirname -- "$0")"
@@ -27,7 +48,7 @@ fossil unversion ls | grep '^developer-notes/' | sort | \
 	while read __line
 do
 	# Grep contents for this note
-	fossil unversion cat "$__line" | grep -i "$1" > /tmp/$$
+	fossil unversion cat "$__line" | __grep $@ > /tmp/$$
 	
 	# Print search, but only if it has size
 	if [ -s "/tmp/$$" ]
