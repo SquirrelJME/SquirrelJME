@@ -58,6 +58,9 @@ public final class NativeABI
 	/** The native CPU target. */
 	private final NativeTarget _nativetarget;
 	
+	/** Special purpose register, which is optional. */
+	private final NativeRegister _special;
+	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -131,6 +134,9 @@ public final class NativeABI
 		
 		// Copy alignment
 		this._stackvaluealign = __b._stackvaluealign;
+		
+		// Special purpose
+		this._special = __b._special;
 	}
 	
 	/**
@@ -440,6 +446,18 @@ public final class NativeABI
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the optional special purpose register.
+	 *
+	 * @return The special purpose register or {@code null} if it has not been
+	 * set.
+	 * @since 2016/09/25
+	 */
+	public final NativeRegister special()
+	{
+		return this._special;
 	}
 	
 	/**

@@ -260,6 +260,27 @@ public class NativeAllocator
 	public final NativeAllocation[] argumentAllocate(NativeRegisterType... __t)
 		throws NullPointerException
 	{
+		return argumentAllocate(true, __t);
+	}
+	
+	/**
+	 * Goes through the input arguments and creates allocations for all of
+	 * the input allocation values based on their types. Allocations may
+	 * optionally be stored.
+	 *
+	 * @param __store If {@code true} then allocations are stored in this
+	 * allocator, otherwise {@code false} will return the allocations which
+	 * would have been used without modifying the state.
+	 * @param __t The type of value to store
+	 * @return The allocations for all input arguments, this array will be of
+	 * the same size as the input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/25
+	 */
+	public final NativeAllocation[] argumentAllocate(boolean __store,
+		NativeRegisterType... __t)
+		throws NullPointerException
+	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
@@ -290,7 +311,7 @@ public class NativeAllocator
 		int stackbase = 0;
 		
 		// Allocations that exist
-		Set<NativeAllocation> allocs = this._allocs;
+		Set<NativeAllocation> allocs = (__store ? this._allocs : null);
 		
 		// Go through all arguments
 		for (int i = 0; i < n; i++)
@@ -356,11 +377,12 @@ public class NativeAllocator
 				rawr.<NativeRegister>toArray(new NativeRegister[rawr.size()]));
 			rv[i] = na;
 			
-			// Remember this allocation
-			allocs.add(na);
+			// Remember this allocation, but only if it is requested
+			if (__store)
+				allocs.add(na);
 		}
 		
-		// Return it
+		// Return all of the allocations
 		return rv;
 	}
 	

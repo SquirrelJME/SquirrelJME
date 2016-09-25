@@ -310,6 +310,11 @@ public class BasicCodeWriter
 		System.err.printf("DEBUG -- Invoke VTA after save: %s (changed: %s)" +
 			", stack size=%d%n", vartoalloc, origtemp, stacksz);
 		
+		// Allocate
+		if (true)
+			throw new Error("TODO");
+		NativeAllocation[] argallocs = argumentAllocate(false, null);
+		
 		// Go through all arguments and move the into the argument registers
 		// and if those are overflowed then they are written into the target's
 		// stack
@@ -351,41 +356,17 @@ public class BasicCodeWriter
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Instead of using the stack map types, convert the actual method
-		// types used to use their minimal representation. This makes calling
-		// methods a bit more efficient on 8-bit and 16-bit CPUs
+		// Convert input stack map types into types used for allocation
 		__Method__ method = this._code._method;
-		MethodFlags flags = method._flags;
-		MethodSymbol sym = method._type.get();
-		
-		// Add the this reference
-		List<NativeRegisterType> args = new ArrayList<>();
-		if (!flags.isStatic())
-			args.add(stackMapToRegisterType(StackMapType.OBJECT));
-		
-		// Go through arguments and add their types
-		int n = sym.argumentCount();
-		for (int i = 0; i < n; i++)
-		{
-			FieldSymbol f = sym.get(i);
-			StackMapType t = StackMapType.bySymbol(f);
-			
-			// Add native type
-			args.add(fieldToRegisterType(f));
-			
-			// Handle tops of long/double potentially
-			if (t.isWide())
-				throw new Error("TODO");
-		}
+		NativeRegisterType[] args = __typesForMethodCall(method._flags,
+			method._type.get());
 		
 		// Debug
 		System.err.printf("DEBUG -- Primed args in: %s -> %s%n",
 			Arrays.<StackMapType>asList(__t), args);
 		
 		// Allocate the register
-		NativeAllocation[] allocs = this.allocator.argumentAllocate(
-			args.<NativeRegisterType>toArray(
-				new NativeRegisterType[args.size()]));
+		NativeAllocation[] allocs = this.allocator.argumentAllocate(args);
 		
 		// Debug
 		System.err.printf("DEBUG -- Primed args out: %s%n",
@@ -476,6 +457,49 @@ public class BasicCodeWriter
 	public void variableCounts(int __ms, int __ml)
 	{
 		// Ignore this
+	}
+	
+	/**
+	 * Determines the native register types which are used for the input
+	 * method symbol.
+	 *
+	 * @param __f The method flags.
+	 * @param __s The method symbol.
+	 * @return The native register types for the input arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/25
+	 */
+	private NativeRegisterType[] __typesForMethodCall(MethodFlags __f,
+		MethodSymbol __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null || __s == null)
+			throw new NullPointerException("NARG");
+			
+		// Add the this reference
+		List<NativeRegisterType> args = new ArrayList<>();
+		if (!flags.isStatic())
+			args.add(stackMapToRegisterType(StackMapType.OBJECT));
+		
+		// Go through arguments and add their types
+		int n = sym.argumentCount();
+		for (int i = 0; i < n; i++)
+		{
+			FieldSymbol f = sym.get(i);
+			StackMapType t = StackMapType.bySymbol(f);
+			
+			// Add native type
+			args.add(fieldToRegisterType(f));
+			
+			// Handle tops of long/double potentially
+			if (t.isWide())
+				throw new Error("TODO");
+		}
+		
+		// Convert
+		return args.<NativeRegisterType>toArray(new NativeRegisterType[
+			args.size()]);
 	}
 }
 
