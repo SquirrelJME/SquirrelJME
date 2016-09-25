@@ -221,26 +221,11 @@ public class BasicCodeWriter
 		System.err.printf("DEBUG -- Basic Invoke %s (%s) -> %s%n",
 			__link, Arrays.<CodeVariable>asList(__args), __rv);
 		
-		// Get alocations which make up the arguments
+		// Get variable allocated, needed for copying values around later
 		Map<CodeVariable, NativeAllocation> vartoalloc = this._vartoalloc;
-		int n = __args.length;
-		NativeAllocation[] nas = new NativeAllocation[n];
-		for (int i = 0; i < n; i++)
-		{
-			CodeVariable var;
-			NativeAllocation na;
-			nas[i] = (na = vartoalloc.get((var = __args[i])));
-			
-			// {@squirreljme.error BV0e The input variable does not have an
-			// assigned allocation. (The code variable)}
-			if (na == null)
-				throw new JITException(String.format("BV0e %s", var));
-		}
 		
 		// Debug
 		System.err.printf("DEBUG -- Invoke initial VTA: %s%n", vartoalloc);
-		System.err.printf("DEBUG -- Allocated (For Invoke): %s%n",
-			Arrays.<NativeAllocation>asList(nas));
 		
 		// Will need to write the instructions
 		NativeCodeWriter writer = this.writer;
@@ -320,6 +305,13 @@ public class BasicCodeWriter
 		// Debug
 		System.err.printf("DEBUG -- Call spec: %s%n", Arrays.asList(pargs));
 		
+		// Copy register values to target allocation positions from the cached
+		// sources as required.
+		int n = __args.length;
+		for (int i = 0; i < n; i++)
+		{
+			throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 	}
