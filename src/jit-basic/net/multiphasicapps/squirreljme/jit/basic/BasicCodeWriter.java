@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -294,6 +295,13 @@ public class BasicCodeWriter
 		// The top of the stack is needed to set the new stack base
 		int stacksz = allocator.stackSize();
 		
+		// Need to store space for one "reserved" value and the old stack
+		// pointer (just before the base of the resulting stack frame)
+		int pointerbytes = abi.pointerBytes();
+		int stackresvv = stacksz;
+		int stackoldsp = stackresvv + pointerbytes;
+		int endstacklen = stackoldsp + pointerbytes;
+		
 		// Debug
 		System.err.printf("DEBUG -- Invoke VTA after save: %s (changed: %s)" +
 			", stack size=%d%n", vartoalloc, origtemp, stacksz);
@@ -313,10 +321,63 @@ public class BasicCodeWriter
 			// The variable to pass
 			CodeVariable pass = __args[i];
 			
-			throw new Error("TODO");
+			// The target allocation, A low number of arguments to method calls
+			// are common, so making a faster lookup table is generally not
+			// needed. At worst, argument lookup is n^2.
+			NativeAllocation target = null;
+			for (NativeArgumentOutput<Integer> oa : pargs)
+				if (i == oa.special())
+				{
+					target = oa.allocation();
+					break;
+				}
+			
+			// Not allocated, ignore, likely top of long/double
+			if (target == null)
+				continue;
+			
+			// Get the source allocation, which might have been copied to the
+			// stack. If it was copied then use the original, otherwise if not
+			// it will use the standard allocation
+			NativeAllocation source = origtemp.get(pass);
+			if (source == null)
+				source = vartoalloc.get(pass);
+			
+			// The source and the target may be the same if the input arguments
+			// for a call are the same as the calling method's arguments
+			if (!source.equals(target))
+			{
+				// Debug
+				System.err.printf("DEBUG -- Arg Load: %s -> %s%n", source,
+					target);
+				
+				// Copy from the source allocation to the target, note that
+				// in the event of arguments passed on the stack, they must
+				// be forwarded to the destination stack size.
+				writer.copy(source, target.forwardStack(endstacklen));
+			
+				// Remove original temporary values because 
+				Iterator<Map.Entry<CodeVariable, NativeAllocation>> it =
+					origtemp.entrySet().iterator();
+				while (it.hasNext())
+					if (it.next().getValue().equals(target))
+						it.remove();
+			}
 		}
 		
-		throw new Error("TODO");
+		// Store the current stack pointer at the top of the stack (-n from
+		// the callee's stack pointer)
+		writer.copy(abi.stackAllocation(),
+			new NativeAllocation(stackoldsp, pointerbytes, abi.pointerType()));
+		
+		// Increment the stack pointer
+		if (true)
+			throw new Error("TODO");
+		
+		// Setup an allocation for the return value and use that at the top of
+		// the stack so that a copy operation is not required.
+		if (__rv != null)
+			throw new Error("TODO");
 	}
 	
 	/**
