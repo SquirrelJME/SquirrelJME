@@ -82,6 +82,34 @@ public class MIPSOutputStream
 	}
 	
 	/**
+	 * Adds the value of one register and an immediate value and places it in
+	 * the destination.
+	 *
+	 * @param __src The source register.
+	 * @param __imm The immediate to add.
+	 * @param __dest The destination.
+	 * @throws IOException On write errors.
+	 * @throws NativeCodeException If the value is out of range.
+	 */
+	public final void mipsIntegerAddImmediate(NativeRegister __src, long __imm,
+		NativeRegister __dest)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		// Small immediate?
+		if (__imm >= -32768 && __imm <= 32767)
+		{
+			typeI(0b001001, ofInteger(__src), ofInteger(__dest), (int)__imm);
+			return;
+		}
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Writes a store of an integer value.
 	 *
 	 * @param __b The size of the value to store.

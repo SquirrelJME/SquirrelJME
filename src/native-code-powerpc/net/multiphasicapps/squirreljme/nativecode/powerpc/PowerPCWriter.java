@@ -53,6 +53,22 @@ public class PowerPCWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public void integerAddImmediate(NativeRegister __a, long __b,
+		NativeRegister __dest)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__a == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/23
 	 */
 	@Override

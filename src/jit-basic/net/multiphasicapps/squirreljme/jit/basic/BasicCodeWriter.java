@@ -371,6 +371,11 @@ public class BasicCodeWriter
 			new NativeAllocation(stackoldsp, pointerbytes, abi.pointerType()));
 		
 		// Increment the stack pointer
+		NativeRegister stackreg = abi.stack();
+		writer.integerAddImmediate(stackreg,
+			abi.stackDirection().direction(endstacklen), stackreg);
+		
+		// Get the target call function pointer and call it
 		if (true)
 			throw new Error("TODO");
 		
