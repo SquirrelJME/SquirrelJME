@@ -310,6 +310,9 @@ public class BasicCodeWriter
 		int n = __args.length;
 		for (int i = 0; i < n; i++)
 		{
+			// The variable to pass
+			CodeVariable pass = __args[i];
+			
 			throw new Error("TODO");
 		}
 		
