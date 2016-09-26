@@ -53,10 +53,13 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
 ## Links
 
- * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
- * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
- * [Twitter](https://twitter.com/MultiPhasicApps)
- * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
+ * Locations where you can get support:
+   * [Freenode #squirreljme](ircs://irc.freenode.net:6697/squirreljme)
+   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
+   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
+ * Front facing social media:
+   * [Twitter](https://twitter.com/MultiPhasicApps)
+   * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
 
 ## Goals
 
@@ -79,8 +82,9 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
 ## Donations
 
-You may donate to SquirrelJME to help keep the author alive and to possibly
-help the purchase of various hardware:
+You may donate to SquirrelJME to which would be used by the author to keep the
+web server online, the purchasing of new hardware/software, and for the
+purchasing of food items for consumption.
 
  * BitCoin (**BTC/XBT**): [`1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M`](
    bitcoin:1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M)
@@ -89,14 +93,6 @@ help the purchase of various hardware:
  * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
    dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
  * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
-
-## Reporting Bugs/Features/Issues
-
-You may report bugs, suggest features, and reveal issues on the following:
-
- * My E-mail Address.
- * The mailing list.
- * The sub-Reddit.
 
 ## Important Statements
 
