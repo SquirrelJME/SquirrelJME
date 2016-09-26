@@ -33,35 +33,35 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  */
 public final class NativeABI
 {
+	/** The current stack register. */
+	protected final NativeRegister stack;
+	
+	/** The stack direction. */
+	protected final NativeStackDirection stackdir;
+	
+	/** The stack alignment. */
+	protected final int stackalign;
+	
+	/** The stack value alignment. */
+	protected final int stackvaluealign;
+	
+	/** The native CPU target. */
+	protected final NativeTarget nativetarget;
+	
+	/** Special purpose register, which is optional. */
+	protected final NativeRegister special;
+	
 	/** The integer group. */
 	private final __Group__ _int;
 	
 	/** The floating point group. */
 	private final __Group__ _float;
 	
-	/** The current stack register. */
-	private final NativeRegister _stack;
-	
-	/** The stack direction. */
-	private final NativeStackDirection _stackdir;
-	
-	/** The stack alignment. */
-	private final int _stackalign;
-	
 	/** Integer registers. */
 	private final Map<NativeRegister, NativeRegisterIntegerType> _intregs;
 	
 	/** Floating point registers. */
 	private final Map<NativeRegister, NativeRegisterFloatType> _floatregs;
-	
-	/** The stack value alignment. */
-	private final int _stackvaluealign;
-	
-	/** The native CPU target. */
-	private final NativeTarget _nativetarget;
-	
-	/** Special purpose register, which is optional. */
-	private final NativeRegister _special;
 	
 	/** The allocation used for the stack pointer. */
 	private volatile Reference<NativeAllocation> _stackalloc;
@@ -84,25 +84,25 @@ public final class NativeABI
 		NativeTarget nativetarget = __b._nativetarget;
 		if (nativetarget == null)
 			throw new NativeCodeException("AR1j");
-		this._nativetarget = nativetarget;
+		this.nativetarget = nativetarget;
 		
 		// {@squirreljme.error AR0v The stack alignment was not set.}
 		int stackalign = __b._stackalign;
 		if (stackalign <= 0)
 			throw new NativeCodeException("AR0v");
-		this._stackalign = stackalign;
+		this.stackalign = stackalign;
 		
 		// {@squirreljme.error AR0w The stack direction was not set.}
 		NativeStackDirection stackdir = __b._stackdir;
 		if (stackdir == null)
 			throw new NativeCodeException("AR0w");
-		this._stackdir = stackdir;
+		this.stackdir = stackdir;
 		
 		// {@squirreljme.error AR0x The stack register was not set.}
 		NativeRegister stack = __b._stack;
 		if (stack == null)
 			throw new NativeCodeException("AR0x");
-		this._stack = stack;
+		this.stack = stack;
 		
 		// Fill integer registers
 		Map<NativeRegister, NativeRegisterIntegerType> irs;
@@ -138,10 +138,10 @@ public final class NativeABI
 		this._float = new __Group__(true, __b);
 		
 		// Copy alignment
-		this._stackvaluealign = __b._stackvaluealign;
+		this.stackvaluealign = __b._stackvaluealign;
 		
 		// Special purpose
-		this._special = __b._special;
+		this.special = __b._special;
 	}
 	
 	/**
@@ -365,7 +365,7 @@ public final class NativeABI
 	 */
 	public final NativeTarget nativeTarget()
 	{
-		return this._nativetarget;
+		return this.nativetarget;
 	}
 	
 	/**
@@ -376,7 +376,7 @@ public final class NativeABI
 	 */
 	public final int pointerBytes()
 	{
-		return this._nativetarget.bits() / 8;
+		return this.nativetarget.bits() / 8;
 	}
 	
 	/**
@@ -387,7 +387,7 @@ public final class NativeABI
 	 */
 	public final NativeRegisterIntegerType pointerType()
 	{
-		switch (this._nativetarget.bits())
+		switch (this.nativetarget.bits())
 		{
 				// Map
 			case 8: return NativeRegisterIntegerType.BYTE;
@@ -495,7 +495,7 @@ public final class NativeABI
 	 */
 	public final NativeRegister special()
 	{
-		return this._special;
+		return this.special;
 	}
 	
 	/**
@@ -506,7 +506,7 @@ public final class NativeABI
 	 */
 	public final NativeRegister stack()
 	{
-		return this._stack;
+		return this.stack;
 	}
 	
 	/**
@@ -516,7 +516,7 @@ public final class NativeABI
 	 * @return The allocation used for stack entries.
 	 * @since 2016/09/25
 	 */
-	public final NativeAllocation stackAllocation()
+	public final NativeAllocation _stackallocation()
 	{
 		// Get
 		Reference<NativeAllocation> ref = this._stackalloc;
@@ -525,7 +525,7 @@ public final class NativeABI
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._stackalloc = new WeakReference<>((rv = new NativeAllocation(
-				-1, 0, pointerType(), this._stack)));
+				-1, 0, pointerType(), this.stack)));
 		
 		// Return
 		return rv;
@@ -539,7 +539,7 @@ public final class NativeABI
 	 */
 	public final NativeStackDirection stackDirection()
 	{
-		return this._stackdir;
+		return this.stackdir;
 	}
 	
 	/**
@@ -551,7 +551,7 @@ public final class NativeABI
 	 */
 	public final int stackValueAlignment()
 	{
-		return this._stackvaluealign;
+		return this.stackvaluealign;
 	}
 	
 	/**

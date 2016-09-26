@@ -102,6 +102,9 @@ public class MIPSABI
 				ab.addRegister(MIPSRegister.of(true, i), flt);
 		}
 		
+		// Use library links using the global pointer
+		ab.special(MIPSRegister.of(false, 28));
+		
 		// Stack grows down
 		ab.stack(MIPSRegister.of(false, 29));
 		ab.stackAlignment(8);
