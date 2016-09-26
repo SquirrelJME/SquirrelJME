@@ -223,7 +223,7 @@ public class MIPSOutputStream
 		
 		// {@squirreljme.error AW0d The base register used for a load is not
 		// an integer register. (The base register)}
-		else if (__base.isInteger())
+		else if (!__base.isInteger())
 			throw new NativeCodeException(String.format("AW0d %s", __base));
 		
 		// {@squirreljme.error AW0b Relative register offset exceeds the
@@ -311,7 +311,7 @@ public class MIPSOutputStream
 		
 		// {@squirreljme.error AW0e The base register used for a store is not
 		// an integer register. (The base register)}
-		else if (__base.isInteger())
+		else if (!__base.isInteger())
 			throw new NativeCodeException(String.format("AW0e %s", __base));
 		
 		// {@squirreljme.error AW07 Relative register offset exceeds the
