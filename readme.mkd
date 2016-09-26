@@ -53,9 +53,9 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
 ## Links
 
- * [Twitter](https://twitter.com/MultiPhasicApps)
  * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
  * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
+ * [Twitter](https://twitter.com/MultiPhasicApps)
  * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
 
 ## Goals
