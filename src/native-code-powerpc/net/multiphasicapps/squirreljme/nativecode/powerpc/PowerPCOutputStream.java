@@ -85,7 +85,23 @@ public class PowerPCOutputStream
 	public PowerPCRegister ofInteger(NativeRegister __r)
 		throws NativeCodeException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BT02 The input register is not a PowerPC register.
+		// (The register)}
+		if (!(__r instanceof PowerPCRegister))
+			throw new NativeCodeException(String.format("BT02 %s", __r));
+		
+		// {@squirreljme.error BT03 The specified register is a not an integer
+		// register. (The register)}
+		PowerPCRegister rv = (PowerPCRegister)__r;
+		if (!rv.isInteger())
+			throw new NativeCodeException(String.format("BT03 %s", rv));
+		
+		// Ok
+		return rv;
 	}
 }
 

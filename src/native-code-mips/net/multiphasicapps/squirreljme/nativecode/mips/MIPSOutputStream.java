@@ -104,7 +104,7 @@ public class MIPSOutputStream
 		// Small immediate?
 		if (__imm >= -32768 && __imm <= 32767)
 		{
-			typeI(0b001001, __src, __dest, (int)__imm);
+			mipsTypeI(0b001001, __src, __dest, (int)__imm);
 			return;
 		}
 		
@@ -163,34 +163,7 @@ public class MIPSOutputStream
 		}
 		
 		// Encode
-		typeI(op, __base, __src, __off);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/23
-	 */
-	@Override
-	public MIPSRegister ofInteger(NativeRegister __r)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__r == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AW09 The input register is not a MIPS register.
-		// (The register)}
-		if (!(__r instanceof MIPSRegister))
-			throw new NativeCodeException(String.format("AW09 %s", __r));
-		
-		// {@squirreljme.error AW0a The specified register is a not an integer
-		// register. (The register)}
-		MIPSRegister rv = (MIPSRegister)__r;
-		if (!rv.isInteger())
-			throw new NativeCodeException(String.format("AW0a %s", rv));
-		
-		// Ok
-		return rv;
+		mipsTypeI(op, __base, __src, __off);
 	}
 	
 	/**
@@ -205,7 +178,7 @@ public class MIPSOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/23
 	 */
-	public final void typeI(int __op, MIPSRegister __rs, MIPSRegister __rt,
+	public final void mipsTypeI(int __op, MIPSRegister __rs, MIPSRegister __rt,
 		int __imm)
 		throws IOException, NativeCodeException, NullPointerException
 	{
@@ -237,11 +210,38 @@ public class MIPSOutputStream
 	 * @throws IOException On write errors.
 	 * @since 2016/09/23
 	 */
-	public final void typeR(int __op, MIPSRegister __rs, MIPSRegister __rt,
+	public final void mipsTypeR(int __op, MIPSRegister __rs, MIPSRegister __rt,
 		MIPSRegister __rd, int __sa, int __func)
 		throws IOException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public MIPSRegister ofInteger(NativeRegister __r)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AW09 The input register is not a MIPS register.
+		// (The register)}
+		if (!(__r instanceof MIPSRegister))
+			throw new NativeCodeException(String.format("AW09 %s", __r));
+		
+		// {@squirreljme.error AW0a The specified register is a not an integer
+		// register. (The register)}
+		MIPSRegister rv = (MIPSRegister)__r;
+		if (!rv.isInteger())
+			throw new NativeCodeException(String.format("AW0a %s", rv));
+		
+		// Ok
+		return rv;
 	}
 }
 

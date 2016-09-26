@@ -283,10 +283,10 @@ public enum PowerPCRegister
 	public static PowerPCRegister of(boolean __float, int __i)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AW01 The register index is not within bounds
+		// {@squirreljme.error BT04 The register index is not within bounds
 		// of the valid register set. (The register index)}
 		if (__i < 0 || __i >= 32)
-			throw new IllegalArgumentException(String.format("AW01 %d", __i));
+			throw new IllegalArgumentException(String.format("BT04 %d", __i));
 		
 		// Floating point?
 		if (__float)
