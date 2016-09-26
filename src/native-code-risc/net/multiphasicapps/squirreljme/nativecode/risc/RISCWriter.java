@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.nativecode.risc;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
@@ -30,9 +31,10 @@ import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
  * RISC systems do not have memory to memory operations, only register to
  * register, register to memory, and memory to register.
  *
+ * @param <R> The register type used.
  * @since 2016/09/21
  */
-public abstract class RISCWriter
+public abstract class RISCWriter<R extends RISCRegister>
 	implements NativeCodeWriter
 {
 	/** The options to use for code generation. */
@@ -41,23 +43,30 @@ public abstract class RISCWriter
 	/** The ABI to use. */
 	protected final NativeABI abi;
 	
+	/** The RISC register output. */
+	protected final RISCInstructionOutput<R> output;
+	
 	/**
 	 * Initializes the native code generator.
 	 *
 	 * @param __o The options to use.
+	 * @param __rio The RISC instruction output where output instructions are
+	 * written to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public RISCWriter(NativeCodeWriterOptions __o)
+	public RISCWriter(NativeCodeWriterOptions __o,
+		RISCInstructionOutput<R> __rio)
 		throws NullPointerException
 	{
 		// Check
-		if (__o == null)
+		if (__o == null || __rio == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.options = __o;
 		this.abi = __o.abi();
+		this.output = __rio;
 	}
 	
 	/**
@@ -167,12 +176,86 @@ public abstract class RISCWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public final void integerAddImmediate(NativeRegister __a, long __b,
+		NativeRegister __dest)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__a == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		// Write it
+		try
+		{
+			RISCInstructionOutput<R> output = this.output;
+			output.integerAddImmediate(output.ofInteger(__a), __b,
+				output.ofInteger(__dest));
+		}
+		
+		// {@squirreljme.error AW0d Failed to write the add immediate
+		// operation.}
+		catch (IOException e)
+		{
+			throw new NativeCodeException("AW0d", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/15
 	 */
 	@Override
 	public final NativeCodeWriterOptions options()
 	{
 		return this.options;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public final void registerLoad(int __b, NativeRegister __base, long __addr,
+		NativeRegister __dest)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public final void registerStore(int __b, NativeRegister __src,
+		NativeRegister __base, long __addr)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		try
+		{
+			RISCInstructionOutput<R> output = this.output;
+			output.integerStore(__b, output.ofInteger(__src),
+				output.ofInteger(__base), (int)__addr);
+		}
+		
+		// {@squirreljme.error DN02 Failed to write the register store.}
+		catch (IOException e)
+		{
+			throw new NativeCodeException("DN02", e);
+		}
 	}
 }
 

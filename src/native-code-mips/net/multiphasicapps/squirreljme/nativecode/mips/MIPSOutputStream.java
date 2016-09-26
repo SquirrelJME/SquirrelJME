@@ -29,7 +29,7 @@ import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
  */
 public class MIPSOutputStream
 	extends ExtendedDataOutputStream
-	implements RISCInstructionOutput
+	implements RISCInstructionOutput<MIPSRegister>
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;
@@ -93,8 +93,8 @@ public class MIPSOutputStream
 	 * @throws IOException On write errors.
 	 * @throws NativeCodeException If the value is out of range.
 	 */
-	public final void mipsIntegerAddImmediate(NativeRegister __src, long __imm,
-		NativeRegister __dest)
+	public void integerAddImmediate(MIPSRegister __src, long __imm,
+		MIPSRegister __dest)
 		throws IOException, NativeCodeException, NullPointerException
 	{
 		// Check
@@ -104,7 +104,7 @@ public class MIPSOutputStream
 		// Small immediate?
 		if (__imm >= -32768 && __imm <= 32767)
 		{
-			typeI(0b001001, ofInteger(__src), ofInteger(__dest), (int)__imm);
+			typeI(0b001001, __src, __dest, (int)__imm);
 			return;
 		}
 		
@@ -112,21 +112,12 @@ public class MIPSOutputStream
 	}
 	
 	/**
-	 * Writes a store of an integer value.
-	 *
-	 * @param __b The size of the value to store.
-	 * @param __src The source register.
-	 * @param __base The base register, may be {@code null} to specify that
-	 * register zero should be used instead (absolute address).
-	 * @param __off The offset from the base.
-	 * @throws IOException On write errors.
-	 * @throws NativeCodeException If the offset is out of range.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __base}.
+	 * {@inheritDoc}
 	 * @since 2016/09/23
 	 */
-	public final void mipsIntegerStore(int __b, NativeRegister __src,
-		NativeRegister __base, int __off)
+	@Override
+	public void integerStore(int __b, MIPSRegister __src,
+		MIPSRegister __base, int __off)
 		throws IOException, NativeCodeException, NullPointerException
 	{
 		// Absolute address?
@@ -146,10 +137,6 @@ public class MIPSOutputStream
 		// permitted range. (The offset)}
 		if (__off < -32768 || __off > 32767)
 			throw new NativeCodeException(String.format("AW07 %d", __off));
-		
-		// Get registers
-		MIPSRegister src = ofInteger(__src);
-		MIPSRegister base = ofInteger(__base);
 		
 		// The opcode depends on the store size
 		int op;
@@ -176,18 +163,14 @@ public class MIPSOutputStream
 		}
 		
 		// Encode
-		typeI(op, base, src, __off);
+		typeI(op, __base, __src, __off);
 	}
 	
 	/**
-	 * Converts a native register to an integer MIPS register.
-	 *
-	 * @param __r The register to convert.
-	 * @return The converted register.
-	 * @throws NativeCodeException If it is not an integral MIPS registers.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/24
+	 * {@inheritDoc}
+	 * @since 2016/09/23
 	 */
+	@Override
 	public MIPSRegister ofInteger(NativeRegister __r)
 		throws NativeCodeException, NullPointerException
 	{

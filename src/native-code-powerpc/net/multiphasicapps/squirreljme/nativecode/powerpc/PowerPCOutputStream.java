@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
 
 /**
@@ -25,7 +27,7 @@ import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
  */
 public class PowerPCOutputStream
 	extends ExtendedDataOutputStream
-	implements RISCInstructionOutput
+	implements RISCInstructionOutput<PowerPCRegister>
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;
@@ -49,6 +51,41 @@ public class PowerPCOutputStream
 		
 		// Set
 		this.options = __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public void integerAddImmediate(PowerPCRegister __src, long __imm,
+		PowerPCRegister __dest)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public void integerStore(int __b, PowerPCRegister __src,
+		PowerPCRegister __base, int __off)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public PowerPCRegister ofInteger(NativeRegister __r)
+		throws NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
 	}
 }
 
