@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.jit.basic;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.classformat.MemberReference;
+import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
+import net.multiphasicapps.squirreljme.classformat.MethodReference;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
@@ -60,11 +63,51 @@ public class BasicConstantPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/14
 	 */
-	public BasicConstantEntry<IdentifierSymbol> addIdentifier(
+	public BasicConstantEntry<IdentifierSymbol> addIdentifierSymbol(
 		IdentifierSymbol __i)
 		throws NullPointerException
 	{
 		return this.<IdentifierSymbol>__storeToString(__i);
+	}
+	
+	/**
+	 * Adds a link to another method.
+	 *
+	 * @param __l The method link.
+	 * @return The entry reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/26
+	 */
+	public BasicConstantEntry<MethodLinkage> addMethodLinkage(
+		MethodLinkage __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		return this.<MethodLinkage>__store(__l,
+			addMethodReference(__l.from()), addMethodReference(__l.to()));
+	}
+	
+	/**
+	 * Adds a reference to anther method.
+	 *
+	 * @param __r The reference to the other method.
+	 * @return The entry for this reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/26
+	 */
+	public BasicConstantEntry<MethodReference> addMethodReference(
+		MethodReference __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Add it
+		return this.<MethodReference>__storeMemberReference(__r);
 	}
 	
 	/**
@@ -126,6 +169,28 @@ public class BasicConstantPool
 		
 		// Return it
 		return (BasicConstantEntry<T>)rv;
+	}
+	
+	/**
+	 * Stores a reference to a member reference.
+	 *
+	 * @param __v The member reference.
+	 * @return The entry refering to the reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/26
+	 */
+	private <T extends MemberReference> BasicConstantEntry<T> 
+		__storeMemberReference(T __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Add
+		return this.<T>__store(__v, addClassName(__v.className()),
+			addIdentifierSymbol(__v.memberName()),
+			__storeToString(__v.memberType()));
 	}
 	
 	/**

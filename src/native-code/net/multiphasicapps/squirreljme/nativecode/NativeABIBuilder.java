@@ -172,7 +172,7 @@ public final class NativeABIBuilder
 			// {@squirreljme.error AR1b Cannot add the specified register
 			// because it is the stack register, is temporary, or is a scratch
 			// register. (The register being added)}
-			if (this._temps.contains(__r) || this._stack.equals(__r) ||
+			if (this._temps.contains(__r) || __r.equals(this._stack) ||
 				this._scratch.contains(__r))
 				throw new NativeCodeException(String.format("AR1b %s", __r));
 			
@@ -202,7 +202,7 @@ public final class NativeABIBuilder
 			// {@squirreljme.error AR09 Cannot add the specified register
 			// because it is the stack register, is temporary, or is a saved
 			// register. (The register being added)}
-			if (this._temps.contains(__r) || this._stack.equals(__r) ||
+			if (this._temps.contains(__r) || __r.equals(this._stack) ||
 				this._scratch.contains(__r))
 				throw new NativeCodeException(String.format("AR09 %s", __r));
 			
@@ -231,7 +231,7 @@ public final class NativeABIBuilder
 			// {@squirreljme.error AR1c Cannot add the specified register
 			// because it is the stack register, is saved, is a scratch
 			// register. (The register being added)}
-			if (this._saved.contains(__r) || this._stack.equals(__r) ||
+			if (this._saved.contains(__r) || __r.equals(this._stack) ||
 				this._scratch.contains(__r))
 				throw new NativeCodeException(String.format("AR1c %s", __r));
 			

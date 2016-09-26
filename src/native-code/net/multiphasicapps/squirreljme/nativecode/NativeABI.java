@@ -496,6 +496,34 @@ public final class NativeABI
 	}
 	
 	/**
+	 * Returns the scratch register with the specified index or {@code null}
+	 * if there is none.
+	 *
+	 * @param __k The kind of scratch register to get.
+	 * @param __i The index of the given register.
+	 * @return The scratch register with that index or {@code null} if it was
+	 * not found.
+	 * @throws IndexOutOfBoundsException If the index is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/26
+	 */
+	public final NativeRegister scratch(NativeRegisterKind __k, int __i)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// {@squirreljme.error AR0a The scratch index is negative.}
+		if (__i < 0)
+			throw new IndexOutOfBoundsException("AR0a");
+		
+		// Get list
+		List<NativeRegister> scratches = scratch(__k);
+		
+		// Could be outside of bounds
+		if (__i >= scratches.size())
+			return null;
+		return scratches.get(__i);
+	}
+	
+	/**
 	 * Returns the optional special purpose register.
 	 *
 	 * @return The special purpose register or {@code null} if it has not been

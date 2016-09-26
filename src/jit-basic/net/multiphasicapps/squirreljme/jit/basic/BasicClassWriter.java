@@ -183,7 +183,7 @@ public class BasicClassWriter
 		
 		// Create new method
 		BasicConstantPool pool = this.pool;
-		__Method__ m = new __Method__(__f, pool.addIdentifier(__n),
+		__Method__ m = new __Method__(__f, pool.addIdentifierSymbol(__n),
 			pool.addMethodSymbol(__t));
 		
 		// Store class in the method table

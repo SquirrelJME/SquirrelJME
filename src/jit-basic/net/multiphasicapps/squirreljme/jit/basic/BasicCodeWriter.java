@@ -43,6 +43,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterKind;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
 import net.multiphasicapps.util.boolset.BooleanSet;
 import net.multiphasicapps.util.boolset.FixedSizeBooleanSet;
@@ -375,7 +376,12 @@ public class BasicCodeWriter
 		writer.integerAddImmediate(stackreg,
 			abi.stackDirection().direction(endstacklen), stackreg);
 		
-		// Get the target call function pointer and call it
+		// Determine offset to the index 
+		NativeRegister diff = abi.scratch(NativeRegisterKind.INTEGER, 0);
+		writer.registerLoad(pointerbytes, abi.special(),
+			pointerbytes * this.pool.addMethodLinkage(__link).index(), diff);
+		
+		// Treat the register as a function pointer and call it
 		if (true)
 			throw new Error("TODO");
 		
