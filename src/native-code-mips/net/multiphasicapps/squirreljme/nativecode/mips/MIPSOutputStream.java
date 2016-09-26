@@ -40,6 +40,9 @@ public class MIPSOutputStream
 	/** Is this for a 64-bit CPU? */
 	private final boolean _sixfour;
 	
+	/** Double float? */
+	private final boolean _doubles;
+	
 	/**
 	 * Initializes the machine code output stream.
 	 *
@@ -63,6 +66,9 @@ public class MIPSOutputStream
 		// Determine some flags
 		NativeTarget nt = __o.nativeTarget();
 		this._sixfour = nt.bits() >= 64;
+		
+		// Double floating point?
+		this._doubles = nt.floatingPoint().isHardwareDouble();
 		
 		// Set endianess
 		NativeEndianess nend;
@@ -109,61 +115,6 @@ public class MIPSOutputStream
 		}
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/23
-	 */
-	@Override
-	public void integerStore(int __b, MIPSRegister __src,
-		MIPSRegister __base, int __off)
-		throws IOException, NativeCodeException, NullPointerException
-	{
-		// Absolute address?
-		if (__base == null)
-		{
-			// {@squirreljme.error AW06 Store at an absolute address is only
-			// valid for the first 32KiB of memory. (The absolute address)}
-			if (__off < 0 || __off > 32767)
-				throw new NativeCodeException(String.format(
-					"AW06 %d", __off));
-			
-			// Use Zero register
-			__base = MIPSRegister.R0;
-		}
-		
-		// {@squirreljme.error AW07 Relative register offset exceeds the
-		// permitted range. (The offset)}
-		if (__off < -32768 || __off > 32767)
-			throw new NativeCodeException(String.format("AW07 %d", __off));
-		
-		// The opcode depends on the store size
-		int op;
-		switch (__b)
-		{
-				// Always supported
-			case 1: op = 0b101000; break;
-			case 2: op = 0b101001; break;
-			case 4: op = 0b101011; break;
-			
-				// 64-bits
-			case 8:
-				// {@squirreljme.error AW05 Storing 64-bit values it not
-				// supported by this CPU.}
-				if (!this._sixfour)
-					throw new NativeCodeException("AW05");
-				op = 0b111111;
-				break;
-			
-				// {@squirreljme.error AW04 Cannot store a value of the
-				// specified byte count. (The byte count)}
-			default:
-				throw new NativeCodeException(String.format("AW04 %d", __b));
-		}
-		
-		// Encode
-		mipsTypeI(op, __base, __src, __off);
 	}
 	
 	/**
@@ -242,6 +193,182 @@ public class MIPSOutputStream
 		
 		// Ok
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/26
+	 */
+	@Override
+	public void registerLoad(int __b, MIPSRegister __base, int __off,
+		MIPSRegister __dest)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		// Absolute address?
+		if (__base == null)
+		{
+			// {@squirreljme.error AW08 Load of an absolute address is only
+			// valid for the first 32KiB of memory. (The absolute address)}
+			if (__off < 0 || __off > 32767)
+				throw new NativeCodeException(String.format(
+					"AW08 %d", __off));
+			
+			// Use Zero register
+			__base = MIPSRegister.R0;
+		}
+		
+		// {@squirreljme.error AW0d The base register used for a load is not
+		// an integer register. (The base register)}
+		else if (__base.isInteger())
+			throw new NativeCodeException(String.format("AW0d %s", __base));
+		
+		// {@squirreljme.error AW0b Relative register offset exceeds the
+		// permitted range. (The offset)}
+		if (__off < -32768 || __off > 32767)
+			throw new NativeCodeException(String.format("AW0b %d", __off));
+		
+		// Float?
+		boolean isfloat = __dest.isFloat();
+		
+		// The opcode depends on the store size
+		int op;
+		switch (__b)
+		{
+				// 8-bit
+			case 1:
+				// {@squirreljme.error AW0h Cannot load 8-bit floating point
+				// value.}
+				if (isfloat)
+					throw new NativeCodeException("AW0h");
+				
+				op = 0b100000;
+				break;
+				
+				// 16-bit
+			case 2:
+				// {@squirreljme.error AW0i Cannot load 16-bit floating point
+				// value.}
+				if (isfloat)
+					throw new NativeCodeException("AW0i");
+				
+				op = 0b100001;
+				break;
+			
+				// Always supported
+			case 4:
+				op = (isfloat ? 0b110001 : 0b100011);
+				break;
+			
+				// 64-bits
+			case 8:
+				// {@squirreljme.error AW0j Loading 64-bit values it not
+				// supported by this CPU.}
+				if ((isfloat && !this._doubles) ||
+					(!isfloat && !this._sixfour))
+					throw new NativeCodeException("AW0j");
+				op = (isfloat ? 0b110101 : 0b110111);
+				break;
+			
+				// {@squirreljme.error AW0k Cannot load a value of the
+				// specified byte count. (The byte count)}
+			default:
+				throw new NativeCodeException(String.format("AW0k %d", __b));
+		}
+		
+		// Encode
+		mipsTypeI(op, __base, __dest, __off);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public void registerStore(int __b, MIPSRegister __src,
+		MIPSRegister __base, int __off)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// Absolute address?
+		if (__base == null)
+		{
+			// {@squirreljme.error AW06 Store at an absolute address is only
+			// valid for the first 32KiB of memory. (The absolute address)}
+			if (__off < 0 || __off > 32767)
+				throw new NativeCodeException(String.format(
+					"AW06 %d", __off));
+			
+			// Use Zero register
+			__base = MIPSRegister.R0;
+		}
+		
+		// {@squirreljme.error AW0e The base register used for a store is not
+		// an integer register. (The base register)}
+		else if (__base.isInteger())
+			throw new NativeCodeException(String.format("AW0e %s", __base));
+		
+		// {@squirreljme.error AW07 Relative register offset exceeds the
+		// permitted range. (The offset)}
+		if (__off < -32768 || __off > 32767)
+			throw new NativeCodeException(String.format("AW07 %d", __off));
+		
+		// Float?
+		boolean isfloat = __src.isFloat();
+		
+		// The opcode depends on the store size
+		int op;
+		switch (__b)
+		{
+				// 8-bit
+			case 1:
+				// {@squirreljme.error AW0g Cannot store 8-bit floating point
+				// value.}
+				if (isfloat)
+					throw new NativeCodeException("AW0g");
+				
+				op = 0b101000;
+				break;
+				
+				// 16-bit
+			case 2:
+				// {@squirreljme.error AW0f Cannot store 16-bit floating point
+				// value.}
+				if (isfloat)
+					throw new NativeCodeException("AW0f");
+				
+				op = 0b101001;
+				break;
+			
+				// Always supported
+			case 4:
+				op = (isfloat ? 0b111001 : 0b101011);
+				break;
+			
+				// 64-bits
+			case 8:
+				// {@squirreljme.error AW05 Storing 64-bit values it not
+				// supported by this CPU.}
+				if ((isfloat && !this._doubles) ||
+					(!isfloat && !this._sixfour))
+					throw new NativeCodeException("AW05");
+				op = (isfloat ? 0b111101 : 0b111111);
+				break;
+			
+				// {@squirreljme.error AW04 Cannot store a value of the
+				// specified byte count. (The byte count)}
+			default:
+				throw new NativeCodeException(String.format("AW04 %d", __b));
+		}
+		
+		// Encode
+		mipsTypeI(op, __base, __src, __off);
 	}
 }
 

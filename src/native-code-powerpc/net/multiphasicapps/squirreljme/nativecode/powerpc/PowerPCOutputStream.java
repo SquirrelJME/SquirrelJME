@@ -70,18 +70,6 @@ public class PowerPCOutputStream
 	 * @since 2016/09/25
 	 */
 	@Override
-	public void integerStore(int __b, PowerPCRegister __src,
-		PowerPCRegister __base, int __off)
-		throws IOException, NativeCodeException, NullPointerException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/25
-	 */
-	@Override
 	public PowerPCRegister ofInteger(NativeRegister __r)
 		throws NativeCodeException, NullPointerException
 	{
@@ -102,6 +90,30 @@ public class PowerPCOutputStream
 		
 		// Ok
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/26
+	 */
+	@Override
+	public void registerLoad(int __b, PowerPCRegister __base, int __off,
+		PowerPCRegister __dest)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public void registerStore(int __b, PowerPCRegister __src,
+		PowerPCRegister __base, int __off)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
 	}
 }
 

@@ -42,23 +42,6 @@ public interface RISCInstructionOutput<R extends RISCRegister>
 		throws IOException, NativeCodeException, NullPointerException;
 	
 	/**
-	 * Writes a store of an integer value.
-	 *
-	 * @param __b The size of the value to store.
-	 * @param __src The source register.
-	 * @param __base The base register, may be {@code null} to specify that
-	 * register zero should be used instead (absolute address).
-	 * @param __off The offset from the base.
-	 * @throws IOException On write errors.
-	 * @throws NativeCodeException If the offset is out of range.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __base}.
-	 * @since 2016/09/23
-	 */
-	public abstract void integerStore(int __b, R __src, R __base, int __off)
-		throws IOException, NativeCodeException, NullPointerException;
-	
-	/**
 	 * Checks that the given native register is a native register and of the
 	 * integer type for this output.
 	 *
@@ -71,5 +54,43 @@ public interface RISCInstructionOutput<R extends RISCRegister>
 	 */
 	public abstract R ofInteger(NativeRegister __r)
 		throws NativeCodeException, NullPointerException;
+		
+	/**
+	 * Loads a value at the specified memory address into the specified
+	 * register.
+	 *
+	 * @param __b The size of the value to load.
+	 * @param __base The base register, may be {@code null} to specificy that
+	 * the address is absolute.
+	 * @param __off The offset from the base register, or the absolute address
+	 * if it there is no base.
+	 * @param __dest The destination register.
+	 * @throws IOException On write errors.
+	 * @throws NativeCodeException If the offset is out of range or the base
+	 * register is not an integer register.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __base}.
+	 * @since 2016/09/26
+	 */
+	public abstract void registerLoad(int __b, R __base, int __off, R __dest)
+		throws IOException, NativeCodeException, NullPointerException;
+	
+	/**
+	 * Stores the specified register at the specified memory address.
+	 *
+	 * @param __b The size of the value to store.
+	 * @param __src The source register.
+	 * @param __base The base register, may be {@code null} to specify that
+	 * the address is absolute.
+	 * @param __off The offset from the base.
+	 * @throws IOException On write errors.
+	 * @throws NativeCodeException If the offset is out of range or the base
+	 * register is not an integer register.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __base}.
+	 * @since 2016/09/23
+	 */
+	public abstract void registerStore(int __b, R __src, R __base, int __off)
+		throws IOException, NativeCodeException, NullPointerException;
 }
 

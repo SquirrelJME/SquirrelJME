@@ -227,7 +227,19 @@ public abstract class RISCWriter<R extends RISCRegister>
 		if (__dest == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Forward
+		try
+		{
+			RISCInstructionOutput<R> output = this.output;
+			output.registerLoad(__b, output.ofInteger(__base), (int)__addr,
+				output.ofInteger(__dest));
+		}
+		
+		// {@squirreljme.error DN02 Failed to write the register store.}
+		catch (IOException e)
+		{
+			throw new NativeCodeException("DN02", e);
+		}
 	}
 	
 	/**
@@ -247,7 +259,7 @@ public abstract class RISCWriter<R extends RISCRegister>
 		try
 		{
 			RISCInstructionOutput<R> output = this.output;
-			output.integerStore(__b, output.ofInteger(__src),
+			output.registerStore(__b, output.ofInteger(__src),
 				output.ofInteger(__base), (int)__addr);
 		}
 		
