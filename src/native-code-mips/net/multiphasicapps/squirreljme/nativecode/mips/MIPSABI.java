@@ -102,6 +102,9 @@ public class MIPSABI
 				ab.addRegister(MIPSRegister.of(true, i), flt);
 		}
 		
+		// Register 1 becomes the scratch register
+		ab.addScratch(MIPSRegister.of(false, 1));
+		
 		// Use library links using the global pointer
 		ab.special(MIPSRegister.of(false, 28));
 		
@@ -119,7 +122,7 @@ public class MIPSABI
 			ab.addResult(MIPSRegister.of(false, i));
 	
 		// Temporary
-		for (int i = 1; i <= 15; i++)
+		for (int i = 2; i <= 15; i++)
 			ab.addTemporary(MIPSRegister.of(false, i));
 		for (int i = 24; i <= 25; i++)
 			ab.addTemporary(MIPSRegister.of(false, i));
@@ -142,8 +145,13 @@ public class MIPSABI
 			
 			// Temporary, make all registers temporary so that anything
 			// that is used, becomes caller saved
+			// Except #2, for scratch purposes
 			for (int i = 0; i <= 31; i++)
-				ab.addTemporary(MIPSRegister.of(true, i));
+				if (i != 2)
+					ab.addTemporary(MIPSRegister.of(true, i));
+			
+			// Floating point register to shall act as scratch
+			ab.addScratch(MIPSRegister.of(true, 2));
 		}
 		
 		// Build

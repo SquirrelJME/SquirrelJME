@@ -483,7 +483,16 @@ public final class NativeABI
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends
+		switch (__k)
+		{
+			case INTEGER: return _int._lscratch;
+			case FLOAT: return _float._lscratch;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -516,7 +525,7 @@ public final class NativeABI
 	 * @return The allocation used for stack entries.
 	 * @since 2016/09/25
 	 */
-	public final NativeAllocation _stackallocation()
+	public final NativeAllocation stackAllocation()
 	{
 		// Get
 		Reference<NativeAllocation> ref = this._stackalloc;
@@ -628,12 +637,18 @@ public final class NativeABI
 	
 		/** Temporary registers (set). */
 		private final Set<NativeRegister> _stemps;
+		
+		/** Scratch registers. (set). */
+		private final Set<NativeRegister> _sscratch;
 	
 		/** Saved registers (list). */
 		private final List<NativeRegister> _lsaved;
 	
 		/** Temporary registers (list). */
 		private final List<NativeRegister> _ltemps;
+		
+		/** Scratch registers. (list) */
+		private final List<NativeRegister> _lscratch;
 	
 		/** Arguments. */
 		private final List<NativeRegister> _args;
@@ -687,10 +702,21 @@ public final class NativeABI
 			this._ltemps = UnmodifiableList.<NativeRegister>of(
 				new ArrayList<>(temps));
 			
-			// {@squirreljme.error AR1e A register cannot be both saved
-			// and temporary. (The register)}
+			// Scratch registers
+			Iterable<NativeRegister> xscratch = __b._scratch;
+			Set<NativeRegister> scratch = new LinkedHashSet<>();
+			total += __fill(__float, xscratch, scratch);
+			this._sscratch = UnmodifiableSet.<NativeRegister>of(scratch);
+			this._lscratch = UnmodifiableList.<NativeRegister>of(
+				new ArrayList<>(scratch));
+			
+			// {@squirreljme.error AR1e A register may only be saved,
+			// temporary, or a scratch register. (The register)}
 			for (NativeRegister r : saved)
-				if (temps.contains(r))
+				if (temps.contains(r) || scratch.contains(r))
+					throw new NativeCodeException(String.format("AR1e %s", r));
+			for (NativeRegister r : temps)
+				if (scratch.contains(r))
 					throw new NativeCodeException(String.format("AR1e %s", r));
 			
 			// Make sure the collections have all matching types

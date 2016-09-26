@@ -41,11 +41,11 @@ public enum NativeStackDirection
 	public final int base(int __soff, int __len)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BX02 Illegal stack offset and/or length, the
+		// {@squirreljme.error AR08 Illegal stack offset and/or length, the
 		// length is zero, or the combined values overflow. (The stack offset;
 		// The length)}
 		if (__len <= 0 || (__soff + __len) < __soff)
-			throw new IllegalArgumentException(String.format("BX02 %d %d",
+			throw new IllegalArgumentException(String.format("AR08 %d %d",
 				__soff, __len));
 		
 		// Depends
