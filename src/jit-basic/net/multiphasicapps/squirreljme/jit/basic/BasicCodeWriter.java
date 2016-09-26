@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.MethodFlags;
 import net.multiphasicapps.squirreljme.classformat.MethodInvokeType;
 import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
+import net.multiphasicapps.squirreljme.classformat.MethodReference;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
@@ -33,6 +35,8 @@ import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocationType;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
+import net.multiphasicapps.squirreljme.nativecode.NativeArgumentInput;
+import net.multiphasicapps.squirreljme.nativecode.NativeArgumentOutput;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
@@ -207,37 +211,22 @@ public class BasicCodeWriter
 	 */
 	@Override
 	public void invokeMethod(MethodLinkage __link, int __d, CodeVariable __rv,
-		CodeVariable... __args)
+		StackMapType __rvt, CodeVariable[] __args, StackMapType[] __targs)
 		throws NullPointerException
 	{
 		// Check
-		if (__link == null || __args == null)
+		if (__link == null || __args == null || __targs == null)
 			throw new NullPointerException("NARG");
 		
 		// Debug
 		System.err.printf("DEBUG -- Basic Invoke %s (%s) -> %s%n",
 			__link, Arrays.<CodeVariable>asList(__args), __rv);
 		
-		// Get alocations which make up the arguments
+		// Get variable allocated, needed for copying values around later
 		Map<CodeVariable, NativeAllocation> vartoalloc = this._vartoalloc;
-		int n = __args.length;
-		NativeAllocation[] nas = new NativeAllocation[n];
-		for (int i = 0; i < n; i++)
-		{
-			CodeVariable var;
-			NativeAllocation na;
-			nas[i] = (na = vartoalloc.get((var = __args[i])));
-			
-			// {@squirreljme.error BV0e The input variable does not have an
-			// assigned allocation. (The code variable)}
-			if (na == null)
-				throw new JITException(String.format("BV0e %s", var));
-		}
 		
 		// Debug
 		System.err.printf("DEBUG -- Invoke initial VTA: %s%n", vartoalloc);
-		System.err.printf("DEBUG -- Allocated (For Invoke): %s%n",
-			Arrays.<NativeAllocation>asList(nas));
 		
 		// Will need to write the instructions
 		NativeCodeWriter writer = this.writer;
@@ -306,23 +295,94 @@ public class BasicCodeWriter
 		// The top of the stack is needed to set the new stack base
 		int stacksz = allocator.stackSize();
 		
+		// Need to store space for one "reserved" value and the old stack
+		// pointer (just before the base of the resulting stack frame)
+		int pointerbytes = abi.pointerBytes();
+		int stackresvv = stacksz;
+		int stackoldsp = stackresvv + pointerbytes;
+		int endstacklen = stackoldsp + pointerbytes;
+		
 		// Debug
 		System.err.printf("DEBUG -- Invoke VTA after save: %s (changed: %s)" +
 			", stack size=%d%n", vartoalloc, origtemp, stacksz);
 		
-		// Go through all arguments and move the into the argument registers
-		// and if those are overflowed then they are written into the target's
-		// stack
-		int arglen = __args.length;
-		for (CodeVariable av : __args)
+		// Allocate arguments that are needed for a method call to be setup
+		NativeArgumentOutput<Integer>[] pargs = __allocateArguments(false,
+			__targs);
+		
+		// Debug
+		System.err.printf("DEBUG -- Call spec: %s%n", Arrays.asList(pargs));
+		
+		// Copy register values to target allocation positions from the cached
+		// sources as required.
+		int n = __args.length;
+		for (int i = 0; i < n; i++)
 		{
-			// Debug
-			System.err.printf("DEBUG -- Load argument: %s%n", av);
+			// The variable to pass
+			CodeVariable pass = __args[i];
 			
-			throw new Error("TODO");
+			// The target allocation, A low number of arguments to method calls
+			// are common, so making a faster lookup table is generally not
+			// needed. At worst, argument lookup is n^2.
+			NativeAllocation target = null;
+			for (NativeArgumentOutput<Integer> oa : pargs)
+				if (i == oa.special())
+				{
+					target = oa.allocation();
+					break;
+				}
+			
+			// Not allocated, ignore, likely top of long/double
+			if (target == null)
+				continue;
+			
+			// Get the source allocation, which might have been copied to the
+			// stack. If it was copied then use the original, otherwise if not
+			// it will use the standard allocation
+			NativeAllocation source = origtemp.get(pass);
+			if (source == null)
+				source = vartoalloc.get(pass);
+			
+			// The source and the target may be the same if the input arguments
+			// for a call are the same as the calling method's arguments
+			if (!source.equals(target))
+			{
+				// Debug
+				System.err.printf("DEBUG -- Arg Load: %s -> %s%n", source,
+					target);
+				
+				// Copy from the source allocation to the target, note that
+				// in the event of arguments passed on the stack, they must
+				// be forwarded to the destination stack size.
+				writer.copy(source, target.forwardStack(endstacklen));
+			
+				// Remove original temporary values because 
+				Iterator<Map.Entry<CodeVariable, NativeAllocation>> it =
+					origtemp.entrySet().iterator();
+				while (it.hasNext())
+					if (it.next().getValue().equals(target))
+						it.remove();
+			}
 		}
 		
-		throw new Error("TODO");
+		// Store the current stack pointer at the top of the stack (-n from
+		// the callee's stack pointer)
+		writer.copy(abi.stackAllocation(),
+			new NativeAllocation(stackoldsp, pointerbytes, abi.pointerType()));
+		
+		// Increment the stack pointer
+		NativeRegister stackreg = abi.stack();
+		writer.integerAddImmediate(stackreg,
+			abi.stackDirection().direction(endstacklen), stackreg);
+		
+		// Get the target call function pointer and call it
+		if (true)
+			throw new Error("TODO");
+		
+		// Setup an allocation for the return value and use that at the top of
+		// the stack so that a copy operation is not required.
+		if (__rv != null)
+			throw new Error("TODO");
 	}
 	
 	/**
@@ -351,63 +411,28 @@ public class BasicCodeWriter
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Instead of using the stack map types, convert the actual method
-		// types used to use their minimal representation. This makes calling
-		// methods a bit more efficient on 8-bit and 16-bit CPUs
-		__Method__ method = this._code._method;
-		MethodFlags flags = method._flags;
-		MethodSymbol sym = method._type.get();
-		
-		// Add the this reference
-		List<NativeRegisterType> args = new ArrayList<>();
-		if (!flags.isStatic())
-			args.add(stackMapToRegisterType(StackMapType.OBJECT));
-		
-		// Go through arguments and add their types
-		int n = sym.argumentCount();
-		for (int i = 0; i < n; i++)
-		{
-			FieldSymbol f = sym.get(i);
-			StackMapType t = StackMapType.bySymbol(f);
-			
-			// Add native type
-			args.add(fieldToRegisterType(f));
-			
-			// Handle tops of long/double potentially
-			if (t.isWide())
-				throw new Error("TODO");
-		}
+		// Allocate the input arguments
+		NativeArgumentOutput<Integer>[] pargs = __allocateArguments(true, __t);
 		
 		// Debug
 		System.err.printf("DEBUG -- Primed args in: %s -> %s%n",
-			Arrays.<StackMapType>asList(__t), args);
+			Arrays.<StackMapType>asList(__t), Arrays.asList(pargs));
 		
-		// Allocate the register
-		NativeAllocation[] allocs = this.allocator.argumentAllocate(
-			args.<NativeRegisterType>toArray(
-				new NativeRegisterType[args.size()]));
-		
-		// Debug
-		System.err.printf("DEBUG -- Primed args out: %s%n",
-			Arrays.<NativeAllocation>asList(allocs));
-		
-		// Map variables to allocations
+		// Map code variables to argument positions
 		Map<CodeVariable, NativeAllocation> vartoalloc = this._vartoalloc;
-		for (int tn = __t.length, ai = 0, i = 0; i < tn; i++)
+		int n = pargs.length;
+		for (int i = 0; i < n; i++)
 		{
-			// Get stack type
-			StackMapType smt = __t[i];
+			// Get output
+			NativeArgumentOutput<Integer> out = pargs[i];
 			
-			// Place it at the local position
-			vartoalloc.put(CodeVariable.of(false, i), allocs[ai++]);
-			
-			// Skip the top of a wide variable
-			if (smt.isWide())
-				i++;
+			// Store
+			vartoalloc.put(CodeVariable.of(false, out.special()),
+				out.allocation());
 		}
 		
 		// Debug
-		System.err.printf("DEBUG -- Primed args alloc: %s%n", vartoalloc);
+		System.err.printf("DEBUG -- Primed args alloced: %s%n", vartoalloc);
 	}
 	
 	/**
@@ -476,6 +501,47 @@ public class BasicCodeWriter
 	public void variableCounts(int __ms, int __ml)
 	{
 		// Ignore this
+	}
+	
+	/**
+	 * This allocates
+	 *
+	 * @param __store Should the return allocations be stored in the allocator?
+	 * @param __t The types to allocate.
+	 * @return The allocation positions of the input types and the associated
+	 * index values based on the input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/25
+	 */
+	private NativeArgumentOutput<Integer>[] __allocateArguments(
+		boolean __store, StackMapType... __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Map input types to register types, values are mapped to their
+		// original input index, which permits top to be ignored.
+		List<NativeArgumentInput<Integer>> in = new ArrayList<>();
+		int n = __t.length;
+		for (int i = 0; i < n; i++)
+		{
+			StackMapType t = __t[i];
+			
+			// Add input
+			in.add(new NativeArgumentInput<>(stackMapToRegisterType(t),
+				Integer.valueOf(i)));
+			
+			// Skip top if this is wide
+			if (t.isWide())
+				i++;
+		}
+		
+		// Perform allocation
+		return this.allocator.<Integer>argumentAllocate(__store,
+			in.<NativeArgumentInput<Integer>>toArray(
+			NativeArgumentInput.<Integer>allocateArray(in.size())));
 	}
 }
 

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.nativecode;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -57,6 +59,12 @@ public final class NativeABI
 	
 	/** The native CPU target. */
 	private final NativeTarget _nativetarget;
+	
+	/** Special purpose register, which is optional. */
+	private final NativeRegister _special;
+	
+	/** The allocation used for the stack pointer. */
+	private volatile Reference<NativeAllocation> _stackalloc;
 	
 	/**
 	 * Initializes the ABI from the given builder.
@@ -131,6 +139,9 @@ public final class NativeABI
 		
 		// Copy alignment
 		this._stackvaluealign = __b._stackvaluealign;
+		
+		// Special purpose
+		this._special = __b._special;
 	}
 	
 	/**
@@ -358,6 +369,39 @@ public final class NativeABI
 	}
 	
 	/**
+	 * Returns the number of bytes that the target uses for pointers.
+	 *
+	 * @return The number of bytes in a pointer.
+	 * @since 2016/09/25
+	 */
+	public final int pointerBytes()
+	{
+		return this._nativetarget.bits() / 8;
+	}
+	
+	/**
+	 * Returns the integer register type which is used for pointers.
+	 *
+	 * @return The pointer type used.
+	 * @since 2016/09/25
+	 */
+	public final NativeRegisterIntegerType pointerType()
+	{
+		switch (this._nativetarget.bits())
+		{
+				// Map
+			case 8: return NativeRegisterIntegerType.BYTE;
+			case 16: return NativeRegisterIntegerType.SHORT;
+			case 32: return NativeRegisterIntegerType.INTEGER;
+			case 64: return NativeRegisterIntegerType.LONG;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Returns the type of a given register. The integer type is preferred
 	 * if a register also stores floating point values.
 	 *
@@ -443,6 +487,18 @@ public final class NativeABI
 	}
 	
 	/**
+	 * Returns the optional special purpose register.
+	 *
+	 * @return The special purpose register or {@code null} if it has not been
+	 * set.
+	 * @since 2016/09/25
+	 */
+	public final NativeRegister special()
+	{
+		return this._special;
+	}
+	
+	/**
 	 * Returns the stack register.
 	 *
 	 * @return The stack register.
@@ -451,6 +507,28 @@ public final class NativeABI
 	public final NativeRegister stack()
 	{
 		return this._stack;
+	}
+	
+	/**
+	 * This returns the allocation which represents the stack pointer which
+	 * may be used by the code generator for copy operations.
+	 *
+	 * @return The allocation used for stack entries.
+	 * @since 2016/09/25
+	 */
+	public final NativeAllocation stackAllocation()
+	{
+		// Get
+		Reference<NativeAllocation> ref = this._stackalloc;
+		NativeAllocation rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._stackalloc = new WeakReference<>((rv = new NativeAllocation(
+				-1, 0, pointerType(), this._stack)));
+		
+		// Return
+		return rv;
 	}
 	
 	/**

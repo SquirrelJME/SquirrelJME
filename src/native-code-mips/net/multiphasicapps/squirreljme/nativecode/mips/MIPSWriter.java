@@ -25,12 +25,9 @@ import net.multiphasicapps.squirreljme.nativecode.risc.RISCWriter;
  * @since 2016/09/14
  */
 public class MIPSWriter
-	extends RISCWriter
+	extends RISCWriter<MIPSRegister>
 	implements NativeCodeWriter
 {
-	/** The instruction writer. */
-	protected final MIPSOutputStream output;
-	
 	/**
 	 * Initializes the native code generator.
 	 *
@@ -40,63 +37,8 @@ public class MIPSWriter
 	 * @since 2016/09/15
 	 */
 	public MIPSWriter(NativeCodeWriterOptions __o, OutputStream __os)
-		throws NullPointerException
 	{
-		super(__o);
-		
-		// Check
-		if (__os == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.output = new MIPSOutputStream(__o, __os);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/23
-	 */
-	@Override
-	public void registerLoad(int __b, NativeRegister __base, long __addr,
-		NativeRegister __dest)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__dest == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/23
-	 */
-	@Override
-	public void registerStore(int __b, NativeRegister __src,
-		NativeRegister __base, long __addr)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__src == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AW08 Address out of range. (The specified
-		// address)}
-		if (__addr < Integer.MIN_VALUE || __addr > Integer.MAX_VALUE)
-			throw new NativeCodeException(String.format("AW08 %d", __addr));
-		
-		// Forward
-		try
-		{
-			this.output.mipsIntegerStore(__b, __src, __base, (int)__addr);
-		}
-		
-		// {@squirreljme.error AW0b Failed to write the register store.}
-		catch (IOException e)
-		{
-			throw new NativeCodeException("AW0b", e);
-		}
+		super(__o, new MIPSOutputStream(__o, __os));
 	}
 }
 

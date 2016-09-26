@@ -57,13 +57,17 @@ public interface CodeDescriptionStream
 	 * @param __d The depth of the Java stack when all arguments have been
 	 * popped and no return value has been pushed.
 	 * @param __rv The variable to obtain the return value.
-	 * @param __args The input arguments to the method.
+	 * @param __rvt The type of return value returned.
+	 * @param __cargs The input arguments to the method, the code variables
+	 * which are used.
+	 * @param __targ The stack map types for the input arguments.
 	 * @throws NullPointerException On null arguments, except for {@code __rv}
 	 * if there is no return value.
 	 * @since 2016/09/16
 	 */
 	public abstract void invokeMethod(MethodLinkage __link, int __d,
-		CodeVariable __rv, CodeVariable... __args)
+		CodeVariable __rv, StackMapType __rvt, CodeVariable[] __cargs,
+		StackMapType[] __targ)
 		throws NullPointerException;
 	
 	/**

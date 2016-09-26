@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.nativecode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +34,10 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  */
 public final class NativeAllocation
 {
+	/** Empty array. */
+	private static final NativeRegister[] _EMPTY =
+		new NativeRegister[0];
+	
 	/** The stack position. */
 	protected final int stackpos;
 	
@@ -58,15 +63,39 @@ public final class NativeAllocation
 	 * the value must be zero.
 	 * @param __vt The value type, the type of value to store in this
 	 * allocation, this is optional.
-	 * @param __r The registers used in the allocation, this is used
-	 * directly.
+	 * @param __r The registers used in the allocation.
+	 * @param NativeCodeException If the stack requirements are not met;
+	 * neither any stack or registers are allocated; or a register is
+	 * duplicated.
+	 * @throws NullPointerException On null arguments, except for {@code __vt}.
+	 * @since 2016/09/25
+	 */
+	public NativeAllocation(int __sp, int __sl, NativeRegisterType __vt,
+		Collection<NativeRegister> __r)
+		throws NativeCodeException, NullPointerException
+	{
+		this(__sp, __sl, __vt,
+			__r.<NativeRegister>toArray(new NativeRegister[__r.size()]));
+	}
+	
+	/**
+	 * Initializes the native allocation using the specified registers and
+	 * potential stack areas.
+	 *
+	 * @param __sp The position on the stack, if the stack is not used then
+	 * this must be negative.
+	 * @param __sl The number of bytes used on the stack, if not used then
+	 * the value must be zero.
+	 * @param __vt The value type, the type of value to store in this
+	 * allocation, this is optional.
+	 * @param __r The registers used in the allocation.
 	 * @param NativeCodeException If the stack requirements are not met;
 	 * neither any stack or registers are allocated; or a register is
 	 * duplicated.
 	 * @throws NullPointerException On null arguments, except for {@code __vt}.
 	 * @since 2016/09/09
 	 */
-	NativeAllocation(int __sp, int __sl, NativeRegisterType __vt,
+	public NativeAllocation(int __sp, int __sl, NativeRegisterType __vt,
 		NativeRegister... __r)
 		throws NativeCodeException, NullPointerException
 	{
@@ -94,7 +123,7 @@ public final class NativeAllocation
 		this.stackpos = __sp;
 		this.stacklen = __sl;
 		this.registers = UnmodifiableList.<NativeRegister>of(
-			Arrays.<NativeRegister>asList(__r));
+			Arrays.<NativeRegister>asList((nr == 0 ? _EMPTY : __r.clone())));
 		
 		// {@squirreljme.error AR03 The specified register was specified
 		// multiple times in the allocation. (The register that was
@@ -125,6 +154,24 @@ public final class NativeAllocation
 			this.stacklen == o.stacklen &&
 			this.registers.equals(o.registers) &&
 			Objects.equals(this.valuetype, o.valuetype);
+	}
+	
+	/**
+	 * Forwards the stack by this amount.
+	 *
+	 * @param __l The amount to forward the stack by.
+	 * @return An allocation with the forwarded stack position.
+	 * @since 2016/09/25
+	 */
+	public final NativeAllocation forwardStack(int __l)
+	{
+		// If no stack is used then ignore
+		if (!useStack())
+			return this;
+		
+		// Create new allocation
+		return new NativeAllocation(this.stackpos, this.stacklen,
+			this.valuetype, this.registers);
 	}
 	
 	/**

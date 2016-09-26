@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
 
 /**
  * This is an output stream which writes MIPS machine code.
@@ -28,6 +29,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
  */
 public class MIPSOutputStream
 	extends ExtendedDataOutputStream
+	implements RISCInstructionOutput<MIPSRegister>
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;
@@ -82,21 +84,40 @@ public class MIPSOutputStream
 	}
 	
 	/**
-	 * Writes a store of an integer value.
+	 * Adds the value of one register and an immediate value and places it in
+	 * the destination.
 	 *
-	 * @param __b The size of the value to store.
 	 * @param __src The source register.
-	 * @param __base The base register, may be {@code null} to specify that
-	 * register zero should be used instead (absolute address).
-	 * @param __off The offset from the base.
+	 * @param __imm The immediate to add.
+	 * @param __dest The destination.
 	 * @throws IOException On write errors.
-	 * @throws NativeCodeException If the offset is out of range.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __base}.
+	 * @throws NativeCodeException If the value is out of range.
+	 */
+	public void integerAddImmediate(MIPSRegister __src, long __imm,
+		MIPSRegister __dest)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		// Small immediate?
+		if (__imm >= -32768 && __imm <= 32767)
+		{
+			mipsTypeI(0b001001, __src, __dest, (int)__imm);
+			return;
+		}
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/23
 	 */
-	public final void mipsIntegerStore(int __b, NativeRegister __src,
-		NativeRegister __base, int __off)
+	@Override
+	public void integerStore(int __b, MIPSRegister __src,
+		MIPSRegister __base, int __off)
 		throws IOException, NativeCodeException, NullPointerException
 	{
 		// Absolute address?
@@ -116,10 +137,6 @@ public class MIPSOutputStream
 		// permitted range. (The offset)}
 		if (__off < -32768 || __off > 32767)
 			throw new NativeCodeException(String.format("AW07 %d", __off));
-		
-		// Get registers
-		MIPSRegister src = ofInteger(__src);
-		MIPSRegister base = ofInteger(__base);
 		
 		// The opcode depends on the store size
 		int op;
@@ -146,38 +163,7 @@ public class MIPSOutputStream
 		}
 		
 		// Encode
-		typeI(op, base, src, __off);
-	}
-	
-	/**
-	 * Converts a native register to an integer MIPS register.
-	 *
-	 * @param __r The register to convert.
-	 * @return The converted register.
-	 * @throws NativeCodeException If it is not an integral MIPS registers.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/24
-	 */
-	public MIPSRegister ofInteger(NativeRegister __r)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__r == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AW09 The input register is not a MIPS register.
-		// (The register)}
-		if (!(__r instanceof MIPSRegister))
-			throw new NativeCodeException(String.format("AW09 %s", __r));
-		
-		// {@squirreljme.error AW0a The specified register is a not an integer
-		// register. (The register)}
-		MIPSRegister rv = (MIPSRegister)__r;
-		if (!rv.isInteger())
-			throw new NativeCodeException(String.format("AW0a %s", rv));
-		
-		// Ok
-		return rv;
+		mipsTypeI(op, __base, __src, __off);
 	}
 	
 	/**
@@ -192,7 +178,7 @@ public class MIPSOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/23
 	 */
-	public final void typeI(int __op, MIPSRegister __rs, MIPSRegister __rt,
+	public final void mipsTypeI(int __op, MIPSRegister __rs, MIPSRegister __rt,
 		int __imm)
 		throws IOException, NativeCodeException, NullPointerException
 	{
@@ -224,11 +210,38 @@ public class MIPSOutputStream
 	 * @throws IOException On write errors.
 	 * @since 2016/09/23
 	 */
-	public final void typeR(int __op, MIPSRegister __rs, MIPSRegister __rt,
+	public final void mipsTypeR(int __op, MIPSRegister __rs, MIPSRegister __rt,
 		MIPSRegister __rd, int __sa, int __func)
 		throws IOException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/23
+	 */
+	@Override
+	public MIPSRegister ofInteger(NativeRegister __r)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AW09 The input register is not a MIPS register.
+		// (The register)}
+		if (!(__r instanceof MIPSRegister))
+			throw new NativeCodeException(String.format("AW09 %s", __r));
+		
+		// {@squirreljme.error AW0a The specified register is a not an integer
+		// register. (The register)}
+		MIPSRegister rv = (MIPSRegister)__r;
+		if (!rv.isInteger())
+			throw new NativeCodeException(String.format("AW0a %s", rv));
+		
+		// Ok
+		return rv;
 	}
 }
 

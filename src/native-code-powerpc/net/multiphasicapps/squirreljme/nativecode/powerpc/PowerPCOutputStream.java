@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.risc.RISCInstructionOutput;
 
 /**
  * This is an output stream which writes PowerPC machine code.
@@ -24,6 +27,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
  */
 public class PowerPCOutputStream
 	extends ExtendedDataOutputStream
+	implements RISCInstructionOutput<PowerPCRegister>
 {
 	/** The options used for the output. */
 	protected final NativeCodeWriterOptions options;
@@ -47,6 +51,57 @@ public class PowerPCOutputStream
 		
 		// Set
 		this.options = __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public void integerAddImmediate(PowerPCRegister __src, long __imm,
+		PowerPCRegister __dest)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public void integerStore(int __b, PowerPCRegister __src,
+		PowerPCRegister __base, int __off)
+		throws IOException, NativeCodeException, NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/25
+	 */
+	@Override
+	public PowerPCRegister ofInteger(NativeRegister __r)
+		throws NativeCodeException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BT02 The input register is not a PowerPC register.
+		// (The register)}
+		if (!(__r instanceof PowerPCRegister))
+			throw new NativeCodeException(String.format("BT02 %s", __r));
+		
+		// {@squirreljme.error BT03 The specified register is a not an integer
+		// register. (The register)}
+		PowerPCRegister rv = (PowerPCRegister)__r;
+		if (!rv.isInteger())
+			throw new NativeCodeException(String.format("BT03 %s", rv));
+		
+		// Ok
+		return rv;
 	}
 }
 

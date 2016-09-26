@@ -24,63 +24,19 @@ import net.multiphasicapps.squirreljme.nativecode.risc.RISCWriter;
  * @since 2016/09/14
  */
 public class PowerPCWriter
-	extends RISCWriter
+	extends RISCWriter<PowerPCRegister>
 	implements NativeCodeWriter
 {
-	/** The instruction writer. */
-	protected final PowerPCOutputStream output;
-	
 	/**
 	 * Initializes the native code generator.
 	 *
 	 * @param __o The options to use.
 	 * @param __os The output stream of machine code.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
 	public PowerPCWriter(NativeCodeWriterOptions __o, OutputStream __os)
-		throws NullPointerException
 	{
-		super(__o);
-		
-		// Check
-		if (__os == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.output = new PowerPCOutputStream(__o, __os);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/23
-	 */
-	@Override
-	public void registerLoad(int __b, NativeRegister __base, long __addr,
-		NativeRegister __dest)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__dest == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/23
-	 */
-	@Override
-	public void registerStore(int __b, NativeRegister __src,
-		NativeRegister __base, long __addr)
-		throws NativeCodeException, NullPointerException
-	{
-		// Check
-		if (__src == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
+		super(__o, new PowerPCOutputStream(__o, __os));
 	}
 }
 

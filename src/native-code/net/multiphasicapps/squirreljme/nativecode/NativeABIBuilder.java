@@ -72,6 +72,9 @@ public final class NativeABIBuilder
 	/** The native target. */
 	volatile NativeTarget _nativetarget;
 	
+	/** Special purpose register, is optional. */
+	volatile NativeRegister _special;
+	
 	/**
 	 * Adds an argument register.
 	 *
@@ -236,6 +239,22 @@ public final class NativeABIBuilder
 		synchronized (this.lock)
 		{
 			this._nativetarget = __t;
+		}
+	}
+	
+	/**
+	 * Sets the special purpose register that may be used for any purpose
+	 * required by the native code generator, as needed.
+	 *
+	 * @param __r The register to use, may be {@code null} to clear it.
+	 * @since 2016/09/25
+	 */
+	public final void special(NativeRegister __r)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._special = __r;
 		}
 	}
 	

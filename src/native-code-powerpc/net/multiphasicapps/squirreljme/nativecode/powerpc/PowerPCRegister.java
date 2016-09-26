@@ -8,18 +8,19 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.nativecode.mips;
+package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
 import net.multiphasicapps.squirreljme.nativecode.risc.RISCRegister;
 
 /**
- * This represents a MIPS CPU register.
+ * This represents a register which is used by the PowerPC CPU.
  *
- * @since 2016/09/01
+ * @since 2016/09/25
  */
-public enum MIPSRegister
+public enum PowerPCRegister
 	implements NativeRegister, RISCRegister
 {
 	/** r0, always zero. */
@@ -228,9 +229,9 @@ public enum MIPSRegister
 	 *
 	 * @param __float Is this a floating point register?
 	 * @param __id The register ID.
-	 * @since 2016/09/01
+	 * @since 2016/09/25
 	 */
-	private MIPSRegister(boolean __float, int __id)
+	private PowerPCRegister(boolean __float, int __id)
 	{
 		// Set
 		this.isfloat = __float;
@@ -241,7 +242,7 @@ public enum MIPSRegister
 	 * Returns the instruction ID.
 	 *
 	 * @return The instruction ID.
-	 * @since 2016/09/24
+	 * @since 2016/09/25
 	 */
 	public final int id()
 	{
@@ -252,7 +253,7 @@ public enum MIPSRegister
 	 * Is this a floating point register?
 	 *
 	 * @return {@code true} if a floating point register.
-	 * @since 2016/09/24
+	 * @since 2016/09/25
 	 */
 	public final boolean isFloat()
 	{
@@ -263,7 +264,7 @@ public enum MIPSRegister
 	 * Is this an integer register?
 	 *
 	 * @return {@code true} if an integer register.
-	 * @since 2016/09/24
+	 * @since 2016/09/25
 	 */
 	public final boolean isInteger()
 	{
@@ -271,21 +272,21 @@ public enum MIPSRegister
 	}
 	
 	/**
-	 * Returns an existing MIPS register.
+	 * Returns an existing PowerPC register.
 	 *
 	 * @param __float If {@code true} then a floating point register is used.
 	 * @param __i The register index to use.
 	 * @return The associated register.
 	 * @throws IllegalArgumentException If an illegal register was requested.
-	 * @since 2016/09/01
+	 * @since 2016/09/25
 	 */
-	public static MIPSRegister of(boolean __float, int __i)
+	public static PowerPCRegister of(boolean __float, int __i)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AW01 The register index is not within bounds
+		// {@squirreljme.error BT04 The register index is not within bounds
 		// of the valid register set. (The register index)}
 		if (__i < 0 || __i >= 32)
-			throw new IllegalArgumentException(String.format("AW01 %d", __i));
+			throw new IllegalArgumentException(String.format("BT04 %d", __i));
 		
 		// Floating point?
 		if (__float)

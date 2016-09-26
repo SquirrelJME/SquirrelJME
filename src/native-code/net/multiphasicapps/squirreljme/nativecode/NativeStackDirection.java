@@ -42,9 +42,9 @@ public enum NativeStackDirection
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BX02 Illegal stack offset and/or length, the
-		// length is zero, the stack offset is negative, or the combined values
-		// overflow. (The stack offset; The length)}
-		if (__soff < 0 || __len <= 0 || (__soff + __len) <= 0)
+		// length is zero, or the combined values overflow. (The stack offset;
+		// The length)}
+		if (__len <= 0 || (__soff + __len) < __soff)
 			throw new IllegalArgumentException(String.format("BX02 %d %d",
 				__soff, __len));
 		

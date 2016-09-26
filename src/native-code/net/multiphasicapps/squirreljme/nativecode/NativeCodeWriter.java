@@ -34,6 +34,22 @@ public interface NativeCodeWriter
 		throws NativeCodeException, NullPointerException;
 	
 	/**
+	 * Adds an immediate value to the specified register and places it in the
+	 * destination register.
+	 *
+	 * @param __a The first input register.
+	 * @param __b The immediate value to add.
+	 * @param __dest The destination.
+	 * @throws NativeCodeException If the add operationg could not be
+	 * performed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/25
+	 */
+	public abstract void integerAddImmediate(NativeRegister __a, long __b,
+		NativeRegister __dest)
+		throws NativeCodeException, NullPointerException;
+	
+	/**
 	 * Returns the configuration that was used to configure the writer.
 	 *
 	 * @return The configuration used to configure the writer.

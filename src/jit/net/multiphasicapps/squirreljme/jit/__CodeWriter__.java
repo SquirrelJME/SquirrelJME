@@ -174,11 +174,11 @@ class __CodeWriter__
 	 */
 	@Override
 	public void invokeMethod(MethodLinkage __link, int __d, CodeVariable __rv,
-		CodeVariable... __args)
+		StackMapType __rvt, CodeVariable[] __args, StackMapType[] __targs)
 		throws NullPointerException
 	{
 		// Check
-		if (__link == null || __args == null)
+		if (__link == null || __args == null || __targs == null)
 			throw new NullPointerException("NARG");
 		
 		// Debug
@@ -198,7 +198,8 @@ class __CodeWriter__
 		__decache(__d);
 		
 		// Forward call
-		this.codewriter.invokeMethod(__link, __d, __rv, __args);
+		this.codewriter.invokeMethod(__link, __d, __rv, __rvt,
+			__args, __targs);
 		
 		// If the method has a return value, cache the stack value to itself
 		// to indicate that it is not cached
