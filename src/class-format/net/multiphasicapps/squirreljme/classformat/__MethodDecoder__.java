@@ -154,8 +154,15 @@ class __MethodDecoder__
 				// Mark as hit, there may only be one
 				this._hitmcode = true;
 				
-				// Setup description
+				// If it was requested that no byte code is to be parsed then
+				// just report that no code was used
 				MethodDescriptionStream desc = this._desc;
+				if (this._classdecoder.options.contains(
+					ClassDecoderOption.NO_CODE))
+				{
+					desc.noCode();
+					return;
+				}
 				
 				// Need to read and completley skip code when done
 				CodeDescriptionStream mlw = desc.code();

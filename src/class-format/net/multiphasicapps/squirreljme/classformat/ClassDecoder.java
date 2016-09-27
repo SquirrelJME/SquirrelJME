@@ -12,11 +12,14 @@ package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This performs the decoding of the class file format.
@@ -40,6 +43,9 @@ public final class ClassDecoder
 	/** The output description stream. */
 	protected final ClassDescriptionStream output;
 	
+	/** Options used during decoding. */
+	protected final Set<ClassDecoderOption> options;
+	
 	/** Was the class decoded already? */
 	private volatile boolean _did;
 	
@@ -60,10 +66,12 @@ public final class ClassDecoder
 	 *
 	 * @param __dis The source for data input.
 	 * @param __out The interface that is told class details.
+	 * @param __cdo Options used for the class decoder.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	public ClassDecoder(DataInputStream __dis, ClassDescriptionStream __out)
+	public ClassDecoder(DataInputStream __dis, ClassDescriptionStream __out,
+		ClassDecoderOption... __cdo)
 		throws NullPointerException
 	{
 		// Check
@@ -73,6 +81,13 @@ public final class ClassDecoder
 		// Set
 		this.input = __dis;
 		this.output = __out;
+		
+		// Add options
+		Set<ClassDecoderOption> options = new HashSet<>();
+		if (__cdo != null)
+			for (ClassDecoderOption o : __cdo)
+				options.add(o);
+		this.options = UnmodifiableSet.<ClassDecoderOption>of(options);
 	}
 	
 	/**
@@ -196,6 +211,17 @@ public final class ClassDecoder
 		
 		// End class
 		output.endClass();
+	}
+	
+	/**
+	 * Returns the options used during decoding.
+	 *
+	 * @return The options to use during decoding.
+	 * @since 2016/09/27
+	 */
+	public final Set<ClassDecoderOption> options()
+	{
+		return this.options;
 	}
 	
 	/**
