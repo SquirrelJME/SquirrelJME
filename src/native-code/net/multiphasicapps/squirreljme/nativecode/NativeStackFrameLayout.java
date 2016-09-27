@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.nativecode;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This class represents the native stack frame which is used by the native
  * system to pass arguments and provide storage space for local variables.
@@ -22,6 +25,9 @@ public final class NativeStackFrameLayout
 	/** The current stack register. */
 	protected final NativeRegister stack;
 	
+	/** The stack frame register. */
+	protected final NativeRegister frame;
+	
 	/** The stack direction. */
 	protected final NativeStackDirection stackdir;
 	
@@ -30,6 +36,9 @@ public final class NativeStackFrameLayout
 	
 	/** The stack value alignment. */
 	protected final int stackvaluealign;
+	
+	/** The allocation used for the stack pointer. */
+	private volatile Reference<NativeAllocation> _stackalloc;
 	
 	/**
 	 * This initializes the stack frame layout.
@@ -63,8 +72,30 @@ public final class NativeStackFrameLayout
 			throw new NativeCodeException("AR0x");
 		this.stack = stack;
 		
+		// {@squirreljme.error AR0b The stack frame register was not set.}
+		NativeRegister frame = __b._frame;
+		if (frame == null)
+			throw new NativeCodeException("AR0b");
+		this.frame = frame;
+		
+		// {@squirreljme.error AR0c The frame pointer cannot be the stack
+		// pointer.}
+		if (stack.equals(frame))
+			throw new NativeCodeException("AR0c");
+		
 		// Copy alignment
 		this.stackvaluealign = __b._stackvaluealign;
+	}
+	
+	/**
+	 * Returns the stack frame register.
+	 *
+	 * @return The stack frame register.
+	 * @since 2016/09/27
+	 */
+	public final NativeRegister frameRegister()
+	{
+		return this.frame;
 	}
 	
 	/**

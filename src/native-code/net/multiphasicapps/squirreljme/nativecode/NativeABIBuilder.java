@@ -60,7 +60,7 @@ public final class NativeABIBuilder
 		new LinkedHashSet<>();
 	
 	/** The strack frame layout. */
-	volatile NativeStackFrameLayout _layout;
+	volatile NativeStackFrameLayout _stacklayout;
 	
 	/** The native target. */
 	volatile NativeTarget _nativetarget;
@@ -143,13 +143,11 @@ public final class NativeABIBuilder
 	 * Adds a callee saved register.
 	 *
 	 * @param __r The register that is callee saved.
-	 * @throws NativeCodeException If the register is temporary, is the stack
-	 * register, or is a scratch register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void addSaved(NativeRegister __r)
-		throws NativeCodeException, NullPointerException
+		throws NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -158,13 +156,6 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error AR1b Cannot add the specified register
-			// because it is the stack register, is temporary, or is a scratch
-			// register. (The register being added)}
-			if (this._temps.contains(__r) || __r.equals(this._stack) ||
-				this._scratch.contains(__r))
-				throw new NativeCodeException(String.format("AR1b %s", __r));
-			
 			this._saved.add(__r);
 		}
 	}
@@ -173,13 +164,11 @@ public final class NativeABIBuilder
 	 * Adds a scratch register.
 	 *
 	 * @param __r The register to add.
-	 * @throws NativeCodeException If the register is a saved, temporary, or
-	 * is the stack register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/26
 	 */
 	public final void addScratch(NativeRegister __r)
-		throws NativeCodeException, NullPointerException
+		throws NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -188,13 +177,6 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error AR09 Cannot add the specified register
-			// because it is the stack register, is temporary, or is a saved
-			// register. (The register being added)}
-			if (this._temps.contains(__r) || __r.equals(this._stack) ||
-				this._scratch.contains(__r))
-				throw new NativeCodeException(String.format("AR09 %s", __r));
-			
 			this._scratch.add(__r);
 		}
 	}
@@ -203,12 +185,11 @@ public final class NativeABIBuilder
 	 * Adds a caller saved register.
 	 *
 	 * @param __r The register that is caller saved.
-	 * @throws NativeCodeException If the register is saved or is the stack register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void addTemporary(NativeRegister __r)
-		throws NativeCodeException, NullPointerException
+		throws NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -217,13 +198,6 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error AR1c Cannot add the specified register
-			// because it is the stack register, is saved, is a scratch
-			// register. (The register being added)}
-			if (this._saved.contains(__r) || __r.equals(this._stack) ||
-				this._scratch.contains(__r))
-				throw new NativeCodeException(String.format("AR1c %s", __r));
-			
 			this._temps.add(__r);
 		}
 	}
@@ -300,7 +274,7 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			return this._layout;
+			return this._stacklayout;
 		}
 	}
 	

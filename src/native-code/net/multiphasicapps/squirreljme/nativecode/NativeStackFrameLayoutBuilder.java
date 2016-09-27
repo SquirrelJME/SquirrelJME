@@ -26,6 +26,9 @@ public class NativeStackFrameLayoutBuilder
 	/** The current stack register. */
 	volatile NativeRegister _stack;
 	
+	/** The frame register. */
+	volatile NativeRegister _frame;
+	
 	/** The stack direction. */
 	volatile NativeStackDirection _stackdir;
 	
@@ -38,16 +41,14 @@ public class NativeStackFrameLayoutBuilder
 		1;
 	
 	/**
-	 * Sets the stack register.
+	 * Sets the stack frame register.
 	 *
-	 * @param __r The register to use for the stack.
-	 * @throws NativeCodeException If the register is temporary, saved, or is
-	 * a scratch register.
+	 * @param __r The register to use.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/01
+	 * @since 2016/09/27
 	 */
-	public final void stackRegister(NativeRegister __r)
-		throws NativeCodeException, NullPointerException
+	public final void frameRegister(NativeRegister __r)
+		throws NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -56,14 +57,27 @@ public class NativeStackFrameLayoutBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error AR0p Cannot use the specified register as
-			// the stack register because it is saved and/or temporary, or is
-			// a scratch regiser. (The register to be used as the stack
-			// register)}
-			if (this._saved.contains(__r) || this._temps.contains(__r) ||
-				this._scratch.contains(__r))
-				throw new NativeCodeException(String.format("AR0p %s", __r));
-			
+			this._frame = __r;
+		}
+	}
+	
+	/**
+	 * Sets the stack register.
+	 *
+	 * @param __r The register to use for the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/01
+	 */
+	public final void stackRegister(NativeRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
 			this._stack = __r;
 		}
 	}

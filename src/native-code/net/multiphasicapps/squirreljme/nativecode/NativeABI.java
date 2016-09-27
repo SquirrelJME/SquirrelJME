@@ -54,9 +54,6 @@ public final class NativeABI
 	/** Floating point registers. */
 	private final Map<NativeRegister, NativeRegisterFloatType> _floatregs;
 	
-	/** The allocation used for the stack pointer. */
-	private volatile Reference<NativeAllocation> _stackalloc;
-	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -309,8 +306,10 @@ public final class NativeABI
 			throw new NullPointerException("NARG");
 		
 		// Only if it is not anything
+		NativeStackFrameLayout stacklayout = this.stacklayout;
 		return !isArgument(__r) && !isSaved(__r) && !isTemporary(__r) &&
-			!stack().equals(__r);
+			!stacklayout.stackRegister().equals(__r) &&
+			!stacklayout.frameRegister().equals(__r);
 	}
 	
 	/**
@@ -668,14 +667,21 @@ public final class NativeABI
 			this._sscratch = UnmodifiableSet.<NativeRegister>of(scratch);
 			this._lscratch = UnmodifiableList.<NativeRegister>of(
 				new ArrayList<>(scratch));
+				
+			// Get stack and frame registers
+			NativeStackFrameLayout stacklayout = NativeABI.this.stacklayout;
+			NativeRegister sp = stacklayout.stackRegister(),
+				fp = stacklayout.frameRegister();
 			
 			// {@squirreljme.error AR1e A register may only be saved,
-			// temporary, or a scratch register. (The register)}
+			// temporary, or a scratch register. It is either multiple types or
+			// are registers related to the stack. (The register)}
 			for (NativeRegister r : saved)
-				if (temps.contains(r) || scratch.contains(r))
+				if (temps.contains(r) || scratch.contains(r) || sp.equals(r) ||
+					fp.equals(r))
 					throw new NativeCodeException(String.format("AR1e %s", r));
 			for (NativeRegister r : temps)
-				if (scratch.contains(r))
+				if (scratch.contains(r) || sp.equals(r) || fp.equals(r))
 					throw new NativeCodeException(String.format("AR1e %s", r));
 			
 			// Make sure the collections have all matching types
