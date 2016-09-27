@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.classformat.ClassDecoder;
+import net.multiphasicapps.squirreljme.classformat.ClassDecoderOption;
 import net.multiphasicapps.squirreljme.classformat.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
@@ -101,7 +102,8 @@ public final class JIT
 			DataInputStream dis = new DataInputStream(this.input);
 			
 			// Start decoding the class
-			ClassDecoder cd = new ClassDecoder(dis, cw);
+			ClassDecoder cd = new ClassDecoder(dis, cw,
+				ClassDecoderOption.CALCULATE_ALL_VARIABLE_TYPES);
 			cd.decode();
 		}
 		
