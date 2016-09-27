@@ -270,6 +270,20 @@ class __CodeWriter__
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/27
+	 */
+	@Override
+	public abstract void variableTypes(byte[] __l, byte[] __s)
+	{
+		// This is not used by the base JIT code, but if it is called it will
+		// just forward it
+		// Note that if this information is used for a pre-allocated stack, it
+		// may potentially waste allocations.
+		this.codewriter.variableTypes(__l, __s);
+	}
+	
+	/**
 	 * Decaches values which are cached on the stack that refer to stack
 	 * entry at or exceeding the specified depth.
 	 *

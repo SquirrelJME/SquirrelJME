@@ -170,6 +170,16 @@ final class __CodeDecoder__
 			dis.mark(codelen);
 			writer.jumpTargets(new __JumpTargetCalc__(dis, codelen).targets());
 			
+			// Calculate all of the variable type for all operation positions
+			// if requested
+			if (this._classdecoder.options().contains(
+				ClassDecoderOption.CALCULATE_ALL_VARIABLE_TYPES))
+			{
+				dis.reset();
+				writer.variableTypes(new __VarTypeCalc__(dis, codelen, smt).
+					types());
+			}
+			
 			// Reset and decode operations
 			dis.reset();
 			__MethodDecoder__ decoder = this._decoder;

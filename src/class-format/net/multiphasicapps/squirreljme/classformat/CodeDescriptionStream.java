@@ -91,5 +91,19 @@ public interface CodeDescriptionStream
 	 * @since 2016/09/09
 	 */
 	public abstract void variableCounts(int __ms, int __ml);
+	
+	/**
+	 * This specifies the types of values that are used for each local variable
+	 * and stack slots. This may be used by a class parser to determine the
+	 * best means of allocating storage for these values.
+	 *
+	 * Each value in the array is a bitfield representing the ordinal of
+	 * {@link StackMapType}.
+	 *
+	 * @param __l The types used for local variables.
+	 * @param __s The types used for stack variables.
+	 * @since 2016/09/27
+	 */
+	public abstract void variableTypes(byte[] __l, byte[] __s);
 }
 
