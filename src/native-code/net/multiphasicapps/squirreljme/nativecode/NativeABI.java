@@ -33,17 +33,8 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  */
 public final class NativeABI
 {
-	/** The current stack register. */
-	protected final NativeRegister stack;
-	
-	/** The stack direction. */
-	protected final NativeStackDirection stackdir;
-	
-	/** The stack alignment. */
-	protected final int stackalign;
-	
-	/** The stack value alignment. */
-	protected final int stackvaluealign;
+	/** The stack frame layout. */
+	protected final NativeStackFrameLayout stacklayout;
 	
 	/** The native CPU target. */
 	protected final NativeTarget nativetarget;
@@ -80,29 +71,17 @@ public final class NativeABI
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AR1k No native stack layout was specified.}
+		NativeStackFrameLayout stacklayout = __b._stacklayout;
+		if (stacklayout == null)
+			throw new NativeCodeException("AR1k");
+		this.stacklayout = stacklayout;
+		
 		// {@squirreljme.error AR1j The native target was not specified.}
 		NativeTarget nativetarget = __b._nativetarget;
 		if (nativetarget == null)
 			throw new NativeCodeException("AR1j");
 		this.nativetarget = nativetarget;
-		
-		// {@squirreljme.error AR0v The stack alignment was not set.}
-		int stackalign = __b._stackalign;
-		if (stackalign <= 0)
-			throw new NativeCodeException("AR0v");
-		this.stackalign = stackalign;
-		
-		// {@squirreljme.error AR0w The stack direction was not set.}
-		NativeStackDirection stackdir = __b._stackdir;
-		if (stackdir == null)
-			throw new NativeCodeException("AR0w");
-		this.stackdir = stackdir;
-		
-		// {@squirreljme.error AR0x The stack register was not set.}
-		NativeRegister stack = __b._stack;
-		if (stack == null)
-			throw new NativeCodeException("AR0x");
-		this.stack = stack;
 		
 		// Fill integer registers
 		Map<NativeRegister, NativeRegisterIntegerType> irs;
@@ -136,9 +115,6 @@ public final class NativeABI
 		// Setup integer and float registers
 		this._int = new __Group__(false, __b);
 		this._float = new __Group__(true, __b);
-		
-		// Copy alignment
-		this.stackvaluealign = __b._stackvaluealign;
 		
 		// Special purpose
 		this.special = __b._special;
@@ -536,59 +512,14 @@ public final class NativeABI
 	}
 	
 	/**
-	 * Returns the stack register.
+	 * This returns the stack frame layout that is used for method calls.
 	 *
-	 * @return The stack register.
-	 * @since 2016/09/01
+	 * @return The native stack frame layout.
+	 * @since 2016/09/27
 	 */
-	public final NativeRegister stack()
+	public final NativeStackFrameLayout stackLayout()
 	{
-		return this.stack;
-	}
-	
-	/**
-	 * This returns the allocation which represents the stack pointer which
-	 * may be used by the code generator for copy operations.
-	 *
-	 * @return The allocation used for stack entries.
-	 * @since 2016/09/25
-	 */
-	public final NativeAllocation stackAllocation()
-	{
-		// Get
-		Reference<NativeAllocation> ref = this._stackalloc;
-		NativeAllocation rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			this._stackalloc = new WeakReference<>((rv = new NativeAllocation(
-				-1, 0, pointerType(), this.stack)));
-		
-		// Return
-		return rv;
-	}
-	
-	/**
-	 * Returns the direction of the stack.
-	 *
-	 * @return The stack direction.
-	 * @since 2016/09/01
-	 */
-	public final NativeStackDirection stackDirection()
-	{
-		return this.stackdir;
-	}
-	
-	/**
-	 * This returns the alignment of stack allocations.
-	 *
-	 * @return The number of bytes that each allocation on the stack must be
-	 * aligned to.
-	 * @since 2016/09/21
-	 */
-	public final int stackValueAlignment()
-	{
-		return this.stackvaluealign;
+		return this.stacklayout;
 	}
 	
 	/**
