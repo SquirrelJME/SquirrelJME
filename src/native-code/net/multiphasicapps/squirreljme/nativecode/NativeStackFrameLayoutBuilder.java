@@ -41,6 +41,21 @@ public class NativeStackFrameLayoutBuilder
 		1;
 	
 	/**
+	 * This builds the stack frame layout.
+	 *
+	 * @return The stack frame layout.
+	 * @since 2016/09/27
+	 */
+	public final NativeStackFrameLayout build()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return new NativeStackFrameLayout(this);
+		}
+	}
+	
+	/**
 	 * Sets the stack frame register.
 	 *
 	 * @param __r The register to use.

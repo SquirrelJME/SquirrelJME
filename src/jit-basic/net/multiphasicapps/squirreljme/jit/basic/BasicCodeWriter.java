@@ -45,6 +45,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterKind;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
+import net.multiphasicapps.squirreljme.nativecode.NativeStackFrameLayout;
 import net.multiphasicapps.util.boolset.BooleanSet;
 import net.multiphasicapps.util.boolset.FixedSizeBooleanSet;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
@@ -372,9 +373,10 @@ public class BasicCodeWriter
 			new NativeAllocation(stackoldsp, pointerbytes, abi.pointerType()));
 		
 		// Increment the stack pointer
-		NativeRegister stackreg = abi.stack();
+		NativeStackFrameLayout sfl = abi.stackLayout();
+		NativeRegister stackreg = sfl.stackRegister();
 		writer.integerAddImmediate(stackreg,
-			abi.stackDirection().direction(endstacklen), stackreg);
+			sfl.stackDirection().direction(endstacklen), stackreg);
 		
 		// Determine offset to the index 
 		NativeRegister diff = abi.scratch(NativeRegisterKind.INTEGER, 0);

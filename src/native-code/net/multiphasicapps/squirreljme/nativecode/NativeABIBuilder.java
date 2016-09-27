@@ -274,7 +274,7 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			return this._stacklayout;
+			this._stacklayout = __l;
 		}
 	}
 	

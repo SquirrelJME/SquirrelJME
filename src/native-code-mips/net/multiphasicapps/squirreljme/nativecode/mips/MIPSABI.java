@@ -19,6 +19,9 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
+import net.multiphasicapps.squirreljme.nativecode.NativeStackFrameLayout;
+import net.multiphasicapps.squirreljme.nativecode.
+	NativeStackFrameLayoutBuilder;
 
 /**
  * These are common ABIs that may be used on MIPS based systems.
@@ -73,12 +76,13 @@ public class MIPSABI
 		
 		// Setup
 		NativeABIBuilder ab = new NativeABIBuilder();
+		NativeStackFrameLayoutBuilder sb = new NativeStackFrameLayoutBuilder();
 		
 		// Set target
 		ab.nativeTarget(__t);
 		
 		// Align stack values to 4 bytes for easier reading
-		ab.stackValueAlignment(4);
+		sb.stackValueAlignment(4);
 		
 		// Floating point?
 		NativeFloatType floattype = __t.floatingPoint();
@@ -109,9 +113,10 @@ public class MIPSABI
 		ab.special(MIPSRegister.of(false, 28));
 		
 		// Stack grows down
-		ab.stack(MIPSRegister.of(false, 29));
-		ab.stackAlignment(8);
-		ab.stackDirection(NativeStackDirection.HIGH_TO_LOW);
+		sb.stackRegister(MIPSRegister.of(false, 29));
+		sb.frameRegister(MIPSRegister.of(false, 30));
+		sb.stackAlignment(8);
+		sb.stackDirection(NativeStackDirection.HIGH_TO_LOW);
 	
 		// Arguments
 		for (int i = 4; i <= 11; i++)
@@ -130,7 +135,6 @@ public class MIPSABI
 		// Saved registers
 		for (int i = 16; i <= 23; i++)
 			ab.addSaved(MIPSRegister.of(false, i));
-		ab.addSaved(MIPSRegister.of(false, 30));
 		
 		// Floating point?
 		if (hasfloat)
@@ -153,6 +157,9 @@ public class MIPSABI
 			// Floating point register to shall act as scratch
 			ab.addScratch(MIPSRegister.of(true, 2));
 		}
+		
+		// Add the stack layout
+		ab.stackLayout(sb.build());
 		
 		// Build
 		return ab.build();

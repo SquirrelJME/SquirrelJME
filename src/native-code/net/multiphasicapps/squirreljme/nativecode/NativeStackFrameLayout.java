@@ -37,9 +37,6 @@ public final class NativeStackFrameLayout
 	/** The stack value alignment. */
 	protected final int stackvaluealign;
 	
-	/** The allocation used for the stack pointer. */
-	private volatile Reference<NativeAllocation> _stackalloc;
-	
 	/**
 	 * This initializes the stack frame layout.
 	 *
@@ -107,28 +104,6 @@ public final class NativeStackFrameLayout
 	public final NativeRegister stackRegister()
 	{
 		return this.stack;
-	}
-	
-	/**
-	 * This returns the allocation which represents the stack pointer which
-	 * may be used by the code generator for copy operations.
-	 *
-	 * @return The allocation used for stack entries.
-	 * @since 2016/09/25
-	 */
-	public final NativeAllocation stackAllocation()
-	{
-		// Get
-		Reference<NativeAllocation> ref = this._stackalloc;
-		NativeAllocation rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			this._stackalloc = new WeakReference<>((rv = new NativeAllocation(
-				-1, 0, pointerType(), this.stack)));
-		
-		// Return
-		return rv;
 	}
 	
 	/**

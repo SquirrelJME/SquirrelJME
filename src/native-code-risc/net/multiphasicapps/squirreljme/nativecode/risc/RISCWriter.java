@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterKind;
 import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
+import net.multiphasicapps.squirreljme.nativecode.NativeStackFrameLayout;
 
 /**
  * This is the base class for writes which implement native code writers for
@@ -108,9 +109,10 @@ public abstract class RISCWriter<R extends RISCRegister>
 		// Need the ABI for the stack direction and the offset for value
 		// writing.
 		NativeABI abi = this.abi;
+		NativeStackFrameLayout sfl = abi.stackLayout();
 		NativeTarget target = abi.nativeTarget();
 		boolean bigend = (target.endianess() == NativeEndianess.BIG);
-		NativeStackDirection sd = abi.stackDirection();
+		NativeStackDirection sd = sfl.stackDirection();
 		
 		// Figure out the bases needed for the source and the destination
 		int srcbase = (ss ? sd.base(__src.stackPosition(), bytesleft) : 0),
@@ -126,7 +128,7 @@ public abstract class RISCWriter<R extends RISCRegister>
 		int xrat = 0, xcnt = xregs.size();
 		
 		// Need the stack register
-		NativeRegister stackreg = abi.stack();
+		NativeRegister stackreg = sfl.stackRegister();
 		
 		// Until all bytes are drained
 		while (bytesleft > 0)

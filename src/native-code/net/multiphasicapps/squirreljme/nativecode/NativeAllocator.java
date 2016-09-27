@@ -199,6 +199,9 @@ public class NativeAllocator
 		
 		// Needed to determine the stack location
 		Set<NativeAllocation> allocs = this._allocs;
+		
+		// Need the stack layout to find out how to place items
+		NativeStackFrameLayout nsl = abi.stackLayout();
 	
 		// Bytes remaining for allocation?
 		int stackpos = -1, stacklen = 0;
@@ -212,7 +215,7 @@ public class NativeAllocator
 				
 				// Align values stored on the stack to a specific alignment
 				// so CPUs can read them easier
-				int svalign = abi.stackValueAlignment();
+				int svalign = nsl.stackValueAlignment();
 				int axp;
 				if (svalign != 1 && (axp = (hipos % svalign)) != 0)
 					hipos = hipos + (svalign - axp);

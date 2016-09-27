@@ -54,6 +54,12 @@ public final class NativeABI
 	/** Floating point registers. */
 	private final Map<NativeRegister, NativeRegisterFloatType> _floatregs;
 	
+	/** The allocation used for the stack pointer. */
+	private volatile Reference<NativeAllocation> _stackalloc;
+	
+	/** The allocation used for the frame pointer. */
+	private volatile Reference<NativeAllocation> _framealloc;
+	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -229,6 +235,28 @@ public final class NativeABI
 			throw new NullPointerException("NARG");
 		
 		return this._floatregs.get(__r);
+	}
+	
+	/**
+	 * This returns the allocation which represents the frame pointer which
+	 * may be used by the code generator for copy operations.
+	 *
+	 * @return The allocation used for the frame pointer register.
+	 * @since 2016/09/27
+	 */
+	public final NativeAllocation frameAllocation()
+	{
+		// Get
+		Reference<NativeAllocation> ref = this._framealloc;
+		NativeAllocation rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._framealloc = new WeakReference<>((rv = new NativeAllocation(
+				-1, 0, pointerType(), this.stacklayout.frameRegister())));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
@@ -508,6 +536,28 @@ public final class NativeABI
 	public final NativeRegister special()
 	{
 		return this.special;
+	}
+	
+	/**
+	 * This returns the allocation which represents the stack pointer which
+	 * may be used by the code generator for copy operations.
+	 *
+	 * @return The allocation used for stack entries.
+	 * @since 2016/09/25
+	 */
+	public final NativeAllocation stackAllocation()
+	{
+		// Get
+		Reference<NativeAllocation> ref = this._stackalloc;
+		NativeAllocation rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._stackalloc = new WeakReference<>((rv = new NativeAllocation(
+				-1, 0, pointerType(), this.stacklayout.stackRegister())));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
