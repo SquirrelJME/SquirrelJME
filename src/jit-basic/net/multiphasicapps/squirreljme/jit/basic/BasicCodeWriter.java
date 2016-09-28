@@ -28,7 +28,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
-import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
@@ -509,6 +509,16 @@ public class BasicCodeWriter
 	public void variableCounts(int __ms, int __ml)
 	{
 		// Ignore this
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/28
+	 */
+	@Override
+	public void variableTypes(byte[] __l, byte[] __s)
+	{
+		// Ignored
 	}
 	
 	/**

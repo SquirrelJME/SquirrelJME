@@ -15,7 +15,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;

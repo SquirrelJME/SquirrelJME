@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.util.boolset.BooleanSet;
 import net.multiphasicapps.util.boolset.FixedSizeBooleanSet;
@@ -274,7 +275,7 @@ class __CodeWriter__
 	 * @since 2016/09/27
 	 */
 	@Override
-	public abstract void variableTypes(byte[] __l, byte[] __s)
+	public void variableTypes(byte[] __l, byte[] __s)
 	{
 		// This is not used by the base JIT code, but if it is called it will
 		// just forward it

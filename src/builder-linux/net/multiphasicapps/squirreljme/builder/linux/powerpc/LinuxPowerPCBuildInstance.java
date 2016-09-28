@@ -17,8 +17,8 @@ import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
-import net.multiphasicapps.squirreljme.jit.JITConfig;
-import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.nativecode.powerpc.PowerPCABI;
 import net.multiphasicapps.squirreljme.nativecode.powerpc.PowerPCWriterFactory;
 

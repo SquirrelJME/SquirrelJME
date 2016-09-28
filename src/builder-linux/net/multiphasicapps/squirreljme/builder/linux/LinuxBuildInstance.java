@@ -25,8 +25,8 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
-import net.multiphasicapps.squirreljme.jit.JITConfig;
-import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
@@ -143,7 +143,7 @@ public abstract class LinuxBuildInstance
 			throw new NullPointerException("NARG");
 		
 		// Use the basic JIT always
-		__conf.setOutputFactory(BasicOutputFactory.class);
+		__conf.setClass(JITConfig.FACTORY_PROPERTY, BasicOutputFactory.class);
 	}
 	
 	/**

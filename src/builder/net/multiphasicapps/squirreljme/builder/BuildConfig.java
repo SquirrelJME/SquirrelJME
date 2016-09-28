@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.JITConfig;
-import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;

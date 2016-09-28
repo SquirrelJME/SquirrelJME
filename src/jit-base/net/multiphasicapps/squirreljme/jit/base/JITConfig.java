@@ -8,15 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
@@ -73,9 +72,20 @@ public final class JITConfig
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Copy propertyes
-		this.properties = UnmodifiableMap.<String, String>of(
-			new LinkedHashMap<>(__b._properties));
+		// Get keys so that they can be sorted so that they appear in
+		// alphabetical order
+		Map<String, String> inprops = __b._properties;
+		String[] keys = inprops.keySet().<String>toArray(
+			new String[inprops.size()]);
+		Arrays.<String>sort(keys);
+		
+		// Copy properties
+		Map<String, String> target = new LinkedHashMap<>();
+		for (String k : keys)
+			target.put(k, inprops.get(k));
+		
+		// Lock in
+		this.properties = UnmodifiableMap.<String, String>of(target);
 	}
 	
 	/**
@@ -173,23 +183,6 @@ public final class JITConfig
 		
 		// Get
 		return this.properties.get(__k);
-	}
-	
-	/**
-	 * Returns the output factory that is used to generate code through the
-	 * JIT system.
-	 *
-	 * @return The JIT factory instance.
-	 * @throws JITException If the property was not set or the factory could
-	 * not be initialized.
-	 * @since 2016/09/10
-	 */
-	public final JITOutputFactory outputFactory()
-		throws JITException
-	{
-		// Forward
-		return this.<JITOutputFactory>getAsClass(FACTORY_PROPERTY,
-			JITOutputFactory.class);
 	}
 	
 	/**

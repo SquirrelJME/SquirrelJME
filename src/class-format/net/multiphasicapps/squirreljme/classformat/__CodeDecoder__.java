@@ -176,8 +176,9 @@ final class __CodeDecoder__
 				ClassDecoderOption.CALCULATE_ALL_VARIABLE_TYPES))
 			{
 				dis.reset();
-				writer.variableTypes(new __VarTypeCalc__(dis, codelen, smt).
-					types());
+				throw new Error("TODO");
+				/*writer.variableTypes(new __VarTypeCalc__(dis, codelen, smt).
+					types());*/
 			}
 			
 			// Reset and decode operations

@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.basic;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;

@@ -8,12 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
+import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This class is used to build instances of {@link JITConfig} which is used
@@ -29,7 +27,7 @@ public class JITConfigBuilder
 	
 	/** Properties that are associated with the JIT, ones to configure it. */
 	final Map<String, String> _properties =
-		new SortedTreeMap<>();
+		new HashMap<>();
 	
 	/**
 	 * Builds the configuration to use.
@@ -46,6 +44,25 @@ public class JITConfigBuilder
 		{
 			return new JITConfig(this);
 		}
+	}
+	
+	/**
+	 * Sets the property to the given class name.
+	 *
+	 * @param __k The property to set.
+	 * @param __cl The class name to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/28
+	 */
+	public final void setClass(String __k, Class<?> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		setProperty(__k, __cl.getName());
 	}
 	
 	/**
@@ -68,24 +85,6 @@ public class JITConfigBuilder
 		{
 			this._properties.put(__k, __v);
 		}
-	}
-	
-	/**
-	 * Sets the output factory to use during JIT compilation.
-	 *
-	 * @param __cl The output factory to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/10
-	 */
-	public final void setOutputFactory(Class<? extends JITOutputFactory> __cl)
-		throws NullPointerException
-	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		setProperty(JITConfig.FACTORY_PROPERTY, __cl.getName());
 	}
 	
 	/**

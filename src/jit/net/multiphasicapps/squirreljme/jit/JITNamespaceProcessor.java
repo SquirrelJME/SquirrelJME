@@ -16,8 +16,9 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
+import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
 
 /**
  * This class is used to process namespaces for JIT compilation and resource
@@ -93,7 +94,8 @@ public class JITNamespaceProcessor
 		
 		// {@squirreljme.error ED0v No output factory was specified in the
 		// output. (The configuration)}
-		JITOutputFactory fact = __conf.outputFactory();
+		JITOutputFactory fact = __conf.<JITOutputFactory>getAsClass(
+			JITConfig.FACTORY_PROPERTY, JITOutputFactory.class);
 		if (fact == null)
 			throw new JITException(String.format("ED0v %s", __conf));
 		
