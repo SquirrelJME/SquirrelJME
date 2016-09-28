@@ -18,11 +18,13 @@ import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.emulator.os.linux.LinuxDevFSFileSource;
 import net.multiphasicapps.squirreljme.emulator.os.linux.LinuxProcFSFileSource;
 import net.multiphasicapps.squirreljme.emulator.os.linux.LinuxSysFSFileSource;
+import net.multiphasicapps.squirreljme.exe.elf.ELFExecutableFactory;
 import net.multiphasicapps.squirreljme.fs.NativeFileSystem;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualFileSystem;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualMounts;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.basic.BasicOutput;
 import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.base.JITConfig;
@@ -141,6 +143,10 @@ public abstract class LinuxBuildInstance
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
+		
+		// Output ELF executables
+		__conf.setClass(BasicOutput.EXECUTABLE_FACTORY,
+			ELFExecutableFactory.class);
 		
 		// Use the basic JIT always
 		__conf.setClass(JITConfig.FACTORY_PROPERTY, BasicOutputFactory.class);

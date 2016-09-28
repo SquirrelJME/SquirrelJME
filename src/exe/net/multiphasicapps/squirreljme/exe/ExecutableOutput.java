@@ -45,9 +45,10 @@ public interface ExecutableOutput
 	 *
 	 * @param __os The stream to write binary data to.
 	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/28
 	 */
 	public abstract void writeOutput(OutputStream __os)
-		throws IOException;
+		throws IOException, NullPointerException;
 }
 
