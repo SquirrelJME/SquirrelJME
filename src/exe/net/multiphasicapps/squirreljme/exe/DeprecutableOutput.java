@@ -25,7 +25,7 @@ import java.io.OutputStream;
  * @since 2016/07/23
  */
 @Deprecated
-public interface ExecutableOutput
+public interface DeprecutableOutput
 {
 	/**
 	 * Adds a system property to be included in the target binary.

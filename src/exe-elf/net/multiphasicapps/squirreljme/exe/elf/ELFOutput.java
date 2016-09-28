@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
+import net.multiphasicapps.squirreljme.exe.DeprecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
@@ -35,7 +35,7 @@ import net.multiphasicapps.squirreljme.nativecode.mips.MIPSVariant;
  * @since 2016/08/07
  */
 public class ELFOutput
-	implements ExecutableOutput
+	implements DeprecutableOutput
 {
 	/** The size of the entry table. */
 	private static final int _ENTRY_SIZE =
