@@ -23,6 +23,9 @@ import net.multiphasicapps.squirreljme.classformat.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
+import net.multiphasicapps.squirreljme.jit.base.JITNamespaceOutput;
+import net.multiphasicapps.squirreljme.jit.base.JITNamespaceOutputShared;
+import net.multiphasicapps.squirreljme.jit.base.JITNamespaceOutputSingle;
 
 /**
  * This class is used to process namespaces for JIT compilation and resource
@@ -51,8 +54,11 @@ public class JITNamespaceProcessor
 	/** Progress indicator. */
 	protected final JITNamespaceProcessorProgress progress;
 	
-	/** Optional global output. */
-	protected final OutputStream globaloutstream;
+	/** The class which is used to generate where output code is placed. */
+	protected final JITNamespaceOutput nsoutput;
+	
+	/** Shared output stream, if such a thing exists. */
+	protected final OutputStream sharedoutput;
 	
 	/** The list of processed namespaces. */
 	private final List<String> _processed =
@@ -64,17 +70,18 @@ public class JITNamespaceProcessor
 	 * @param __conf The JIT configuration to use.
 	 * @param __b The namespace browser which is used for namespace input
 	 * and output.
-	 * @param __os An optional global output stream which may be {@code null}
+	 * @param __nso This is class which is capable of creating a single shared
+	 * output or multiple singlular outputs when generating namespaces.
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
-	 * @throws NullPointerException On null arguments, except for {@code __os}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
 	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceBrowser __b, OutputStream __os)
+		JITNamespaceBrowser __b, JITNamespaceOutput __nso)
 		throws JITException, NullPointerException
 	{
-		this(__conf, __b, __os, null);
+		this(__conf, __b, __nso, null);
 	}
 	
 	/**
@@ -87,21 +94,45 @@ public class JITNamespaceProcessor
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
 	 * @throws NullPointerException On null arguments, except for
-	 * {@code __os} and {@code __prog}.
+	 * {@code __prog}.
 	 * @since 2016/07/23
 	 */
 	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceBrowser __b, JITNamespaceProcessorProgress __prog)
+		JITNamespaceBrowser __b, JITNamespaceOutput __nso,
+		JITNamespaceProcessorProgress __prog)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__conf == null || __b == null)
+		if (__conf == null || __b == null || __nso == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.config = __conf;
 		this.browser = __b;
 		this.progress = __prog;
+		this.nsoutput = __nso;
+		
+		// If a shared output was requested then create it
+		OutputStream sharedoutput;
+		if (__nso instanceof JITNamespaceOutputShared)
+			try
+			{
+				sharedoutput = ((JITNamespaceOutputShared)__nso).
+					outputShared();
+			}
+			
+			// {@squirreljme.error ED06 Could not create the shared output.}
+			catch (IOException e)
+			{
+				throw new JITException("ED06", e);
+			}
+		
+		// No shared output used
+		else
+			sharedoutput = null;
+		
+		// Set
+		this.sharedoutput = sharedoutput;
 		
 		// {@squirreljme.error ED0v No output factory was specified in the
 		// output. (The configuration)}
@@ -116,6 +147,11 @@ public class JITNamespaceProcessor
 		if (output == null)
 			throw new JITException(String.format("ED0h %s", __conf));
 		this.output = output;
+		
+		// If shared output is being used then tell the output that it is being
+		// done so that it can setup an output binary if required
+		if (sharedoutput != null)
+			output.sharedOutput(sharedoutput);
 	}
 	
 	/**
@@ -126,7 +162,22 @@ public class JITNamespaceProcessor
 	public void close()
 		throws JITException
 	{
+		// Close it
 		this.output.close();
+		
+		// Also close the shared output
+		OutputStream so = this.sharedoutput;
+		if (so != null)
+			try
+			{
+				so.close();
+			}
+			
+			// {@squirreljme.error ED07 Could not close the shared output.}
+			catch (IOException e)
+			{
+				throw new JITException("ED07", e);
+			}
 	}
 	
 	/**
@@ -153,9 +204,11 @@ public class JITNamespaceProcessor
 			progress.progressNamespace(__ns);
 		
 		// Go through the directory for the given namespace
-		// Also create the cached output if it was requested
+		// Also create the cached output if a singular output form is used
+		JITNamespaceOutput nso = this.nsoutput;
 		JITNamespaceBrowser browser = this.browser;
-		try (OutputStream os = browser.createCache(__ns);
+		try (OutputStream os = ((nso instanceof JITNamespaceOutputSingle) ?
+				((JITNamespaceOutputSingle)nso).outputSingle(__ns) : null);
 			JITNamespaceWriter nsw = output.beginNamespace(__ns, os);
 			JITNamespaceBrowser.Directory dir =
 				browser.directoryOf(__ns))

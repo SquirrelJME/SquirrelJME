@@ -33,8 +33,8 @@ public interface JITOutput
 	 * unit and share the same data tables.
 	 *
 	 * @param __ns The namespace to output.
-	 * @param __os The stream to write namespace data to, this may be
-	 * {@code null} if it is not required to a target stream.
+	 * @param __os The stream to write namespace data to, this will be
+	 * {@code null} if the output itself is shared.
 	 * @throws JITException If starting a namespace could not be performed.
 	 * @throws NullPointerException On null arguments, except for {@code __os}.
 	 * @since 2016/07/06
@@ -58,5 +58,15 @@ public interface JITOutput
 	 * @since 2016/08/13
 	 */
 	public abstract JITConfig config();
+	
+	/**
+	 * This indicates that the output is to a single shared output stream.
+	 *
+	 * @param __os The stream for output to a shared target.
+	 * @throws JITException If it could not be handled.
+	 * @since 2016/09/28
+	 */
+	public abstract void sharedOutput(OutputStream __os)
+		throws JITException;
 }
 

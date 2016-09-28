@@ -37,10 +37,6 @@ import net.multiphasicapps.squirreljme.nativecode.
 public class BasicOutput
 	implements JITOutput
 {
-	/** Should all generated namespaces output to the same executable? */
-	public static final String SHARED_EXECUTABLE =
-		"net.multiphasicapps.squirreljme.jit.basic.sharedexec";
-	
 	/** The factory to use to generate output executables. */
 	public static final String EXECUTABLE_FACTORY =
 		"net.multiphasicapps.squirreljme.jit.basic.execfactory";
