@@ -21,6 +21,7 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
  *
  * @since 2016/09/14
  */
+@Deprecated
 public class BasicMethodWriter
 	implements JITMethodWriter
 {

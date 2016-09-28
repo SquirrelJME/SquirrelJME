@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/09/11
  */
+@Deprecated
 public class BasicConstantPool
 {
 	/** Stores objects that are stored in the pool. */

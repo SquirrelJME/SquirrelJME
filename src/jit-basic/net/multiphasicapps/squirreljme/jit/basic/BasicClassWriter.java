@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
  *
  * @since 2016/09/14
  */
+@Deprecated
 public class BasicClassWriter
 	extends __BaseWriter__
 	implements JITClassWriter

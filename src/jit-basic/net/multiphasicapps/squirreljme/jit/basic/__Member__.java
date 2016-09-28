@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
  *
  * @since 2016/09/14
  */
+@Deprecated
 abstract class __Member__<F extends MemberFlags, S extends MemberTypeSymbol>
 {
 	/** The flags used. */

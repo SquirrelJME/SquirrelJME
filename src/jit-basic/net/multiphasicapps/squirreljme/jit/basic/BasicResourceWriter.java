@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
  *
  * @since 2016/09/11
  */
+@Deprecated
 public class BasicResourceWriter
 	extends __BaseWriter__
 	implements JITResourceWriter

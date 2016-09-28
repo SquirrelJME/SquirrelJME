@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
  *
  * @since 2016/09/11
  */
+@Deprecated
 class __Resource__
 	extends __Positioned__
 {

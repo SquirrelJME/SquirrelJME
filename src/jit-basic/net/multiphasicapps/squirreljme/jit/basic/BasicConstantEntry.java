@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
  * @param <T> The entry type used.
  * @since 2016/09/11
  */
+@Deprecated
 public final class BasicConstantEntry<T>
 {
 	/** The entry index. */

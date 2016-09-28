@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
  *
  * @since 2016/09/11
  */
+@Deprecated
 abstract class __Positioned__
 {
 	/** The data start position. */

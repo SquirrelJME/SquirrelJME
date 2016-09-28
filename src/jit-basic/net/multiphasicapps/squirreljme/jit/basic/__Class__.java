@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  *
  * @since 2016/09/11
  */
+@Deprecated
 class __Class__
 	extends __Positioned__
 {

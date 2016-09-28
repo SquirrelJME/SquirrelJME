@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  *
  * @since 2016/09/14
  */
+@Deprecated
 class __Interface__
 {
 	/** The implemented interface. */

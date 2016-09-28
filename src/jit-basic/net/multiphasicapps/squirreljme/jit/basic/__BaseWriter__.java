@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  *
  * @since 2016/09/11
  */
+@Deprecated
 abstract class __BaseWriter__
 {
 	/** The owning namespace writer. */

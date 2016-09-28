@@ -33,6 +33,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
  *
  * @since 2016/09/11
  */
+@Deprecated
 public class BasicNamespaceWriter
 	implements JITNamespaceWriter
 {
