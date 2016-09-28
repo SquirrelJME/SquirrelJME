@@ -35,9 +35,6 @@ import net.multiphasicapps.util.boolset.FixedSizeBooleanSet;
 class __CodeWriter__
 	implements AutoCloseable, CodeDescriptionStream
 {
-	/** The owning JIT. */
-	protected final JIT jit;
-	
 	/** The namespace writer. */
 	protected final JITNamespaceWriter namespace;
 	
@@ -56,22 +53,20 @@ class __CodeWriter__
 	/**
 	 * Initialize the code writer.
 	 *
-	 * @param __jit The JIT used for compilation.
 	 * @param __nsw The namespace writer.
 	 * @param __mw The owning method writer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/14
 	 */
-	__CodeWriter__(JIT __jit, JITNamespaceWriter __nsw, __MethodWriter__ __mw,
+	__CodeWriter__(JITNamespaceWriter __nsw, __MethodWriter__ __mw,
 		JITCodeWriter __jcw)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null || __nsw == null || __mw == null || __jcw == null)
+		if (__nsw == null || __mw == null || __jcw == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.jit = __jit;
 		this.namespace = __nsw;
 		this.methodwriter = __mw;
 		this.codewriter = __jcw;

@@ -49,11 +49,11 @@ class __MethodWriter__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/10
 	 */
-	__MethodWriter__(JIT __jit, JITNamespaceWriter __nsw, __ClassWriter__ __cw,
+	__MethodWriter__(JITNamespaceWriter __nsw, __ClassWriter__ __cw,
 		JITMethodWriter __jmw, MethodFlags __f, MethodSymbol __d)
 		throws NullPointerException
 	{
-		super(__jit, __nsw, __cw);
+		super(__nsw, __cw);
 		
 		// Check
 		if (__jmw == null || __f == null || __d == null)
@@ -79,7 +79,7 @@ class __MethodWriter__
 		this._didcode = true;
 		
 		// Create
-		__CodeWriter__ code = new __CodeWriter__(this.jit, this.namespace,
+		__CodeWriter__ code = new __CodeWriter__(this.namespace,
 			this, this.methodwriter.code());
 		this._code = code;
 		return code;

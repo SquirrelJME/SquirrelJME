@@ -24,14 +24,13 @@ class __FieldWriter__
 	/**
 	 * Initializes the field writer.
 	 *
-	 * @param __jit The running JIT.
 	 * @param __nsw The namespace writer.
 	 * @param __cw The owning class writer.
 	 * @since 2016/09/10
 	 */
-	__FieldWriter__(JIT __jit, JITNamespaceWriter __nsw, __ClassWriter__ __cw)
+	__FieldWriter__(JITNamespaceWriter __nsw, __ClassWriter__ __cw)
 	{
-		super(__jit, __nsw, __cw);
+		super(__nsw, __cw);
 	}
 	
 	/**

@@ -33,9 +33,6 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 class __ClassWriter__
 	implements AutoCloseable, ClassDescriptionStream
 {
-	/** The owning JIT. */
-	protected final JIT jit;
-	
 	/** The namespace writer to use. */
 	protected final JITNamespaceWriter namespace;
 	
@@ -56,15 +53,14 @@ class __ClassWriter__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
-	__ClassWriter__(JIT __jit, JITNamespaceWriter __nsw)
+	__ClassWriter__(JITNamespaceWriter __nsw)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null || __nsw == null)
+		if (__nsw == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.jit = __jit;
 		this.namespace = __nsw;
 	}
 	
@@ -209,7 +205,7 @@ class __ClassWriter__
 			throw new JITException("ED04");
 		
 		// Create method writer
-		__MethodWriter__ rv = new __MethodWriter__(this.jit, this.namespace,
+		__MethodWriter__ rv = new __MethodWriter__(this.namespace,
 			this, writer.method(__f, __name, __type), __f, __type);
 		this._member = rv;
 		return rv;

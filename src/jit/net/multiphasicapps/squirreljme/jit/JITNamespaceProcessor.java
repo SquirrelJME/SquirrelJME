@@ -10,12 +10,16 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.classformat.ClassDecoder;
+import net.multiphasicapps.squirreljme.classformat.ClassDecoderOption;
+import net.multiphasicapps.squirreljme.classformat.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
@@ -187,11 +191,22 @@ public class JITNamespaceProcessor
 	private void __doClass(JITOutput __output, JITNamespaceWriter __nsw,
 		InputStream __is)
 	{
-		// Setup new JIT
-		JIT jit = new JIT(__output, __nsw, __is);
+		// Perform the JIT by running and parsing the class file.
+		try (__ClassWriter__ cw = new __ClassWriter__(__nsw))
+		{
+			// Setup data stream
+			DataInputStream dis = new DataInputStream(__is);
+			
+			// Start decoding the class
+			ClassDecoder cd = new ClassDecoder(dis, cw);
+			cd.decode();
+		}
 		
-		// Run the JIT
-		jit.run();
+		// {@squirreljme.error ED02 Failed to read the class file.}
+		catch (IOException|ClassFormatException e)
+		{
+			throw new JITException("ED02", e);
+		}
 	}
 	
 	/**

@@ -20,9 +20,6 @@ import net.multiphasicapps.squirreljme.classformat.MemberDescriptionStream;
 abstract class __MemberWriter__
 	implements MemberDescriptionStream
 {
-	/** The owning JIT. */
-	protected final JIT jit;
-	
 	/** The namespace writer used. */
 	protected final JITNamespaceWriter namespace;
 	
@@ -32,21 +29,19 @@ abstract class __MemberWriter__
 	/**
 	 * Initializes the base member writer.
 	 *
-	 * @param __jit The running JIT.
 	 * @param __nsw The namespace writer.
 	 * @param __cw The owning class writer.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/10
 	 */
-	__MemberWriter__(JIT __jit, JITNamespaceWriter __nsw, __ClassWriter__ __cw)
+	__MemberWriter__(JITNamespaceWriter __nsw, __ClassWriter__ __cw)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null || __nsw == null || __cw == null)
+		if (__nsw == null || __cw == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.jit = __jit;
 		this.namespace = __nsw;
 		this.classwriter = __cw;
 	}
