@@ -245,6 +245,7 @@ public class Main
 			
 			// Move it
 			Files.move(__temp, maybe);
+			__out[0] = maybe;
 			return;
 		}
 		
