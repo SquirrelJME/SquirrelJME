@@ -33,9 +33,10 @@ public interface JITOutput
 	 * unit and share the same data tables.
 	 *
 	 * @param __ns The namespace to output.
-	 * @param __os The stream to write namespace data to.
+	 * @param __os The stream to write namespace data to, this may be
+	 * {@code null} if it is not required to a target stream.
 	 * @throws JITException If starting a namespace could not be performed.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __os}.
 	 * @since 2016/07/06
 	 */
 	public abstract JITNamespaceWriter beginNamespace(String __ns,

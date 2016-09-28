@@ -51,6 +51,9 @@ public class JITNamespaceProcessor
 	/** Progress indicator. */
 	protected final JITNamespaceProcessorProgress progress;
 	
+	/** Optional global output. */
+	protected final OutputStream globaloutstream;
+	
 	/** The list of processed namespaces. */
 	private final List<String> _processed =
 		new LinkedList<>();
@@ -59,29 +62,32 @@ public class JITNamespaceProcessor
 	 * Initializes the namespace processor.
 	 *
 	 * @param __conf The JIT configuration to use.
-	 * @param __b The namespace browser.
+	 * @param __b The namespace browser which is used for namespace input
+	 * and output.
+	 * @param __os An optional global output stream which may be {@code null}
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __os}.
 	 * @since 2016/07/07
 	 */
 	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceBrowser __b)
+		JITNamespaceBrowser __b, OutputStream __os)
 		throws JITException, NullPointerException
 	{
-		this(__conf, __b, null);
+		this(__conf, __b, __os, null);
 	}
 	
 	/**
 	 * Initializes the namespace processor.
 	 *
 	 * @param __conf The JIT configuration to use.
-	 * @param __b The namespace browser.
-	 * @param __prog Progrress indicator for the processor.
+	 * @param __b The namespace browser which is used for namespace input
+	 * and output.
+	 * @param __prog Progress indicator for the processor.
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
 	 * @throws NullPointerException On null arguments, except for
-	 * {@code __prog}.
+	 * {@code __os} and {@code __prog}.
 	 * @since 2016/07/23
 	 */
 	public JITNamespaceProcessor(JITConfig __conf,

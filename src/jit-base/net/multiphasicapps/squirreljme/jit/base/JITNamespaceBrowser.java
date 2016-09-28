@@ -27,20 +27,6 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 public interface JITNamespaceBrowser
 {
 	/**
-	 * This returns an output stream which is used to write the namespace
-	 * binary cache which stores an executable result.
-	 *
-	 * @param __n The name of the namespace cache to write.
-	 * @return An output stream to the executable cache.
-	 * @throws IOException On write errors.
-	 * @throws JITException If it could not be created for another reason.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/11
-	 */
-	public abstract OutputStream createCache(String __n)
-		throws IOException, JITException, NullPointerException;
-	
-	/**
 	 * Obtains the directory of the given namespace.
 	 *
 	 * @param __ns The namespace to get the directory of.
