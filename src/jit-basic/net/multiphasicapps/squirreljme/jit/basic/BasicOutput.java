@@ -41,8 +41,15 @@ public class BasicOutput
 	public static final String SHARED_EXECUTABLE =
 		"net.multiphasicapps.squirreljme.jit.basic.sharedexec";
 	
+	/** The factory to use to generate output executables. */
+	public static final String EXECUTABLE_FACTORY =
+		"net.multiphasicapps.squirreljme.jit.basic.execfactory";
+	
 	/** The JIT configuration. */
 	protected final JITConfig config;
+	
+	/** The executable output, may be null if not shared. */
+	private final ExecutableOutput _exeout;
 	
 	/** The ABI to compile for. */
 	private volatile Reference<NativeABI> _abi;
@@ -52,6 +59,9 @@ public class BasicOutput
 	
 	/** Options for the native code generator. */
 	private volatile Reference<NativeCodeWriterOptions> _options;
+	
+	/** The output executable factory to use. */
+	private volatile Reference<ExecutableOutputFactory> _exefactory;
 	
 	/**
 	 * Initializes the basic output.
@@ -70,7 +80,19 @@ public class BasicOutput
 		this.config = __conf;
 		
 		// Use a shared executable?
+		if (Boolean.valueOf(__conf.getProperty(SHARED_EXECUTABLE)))
+		{
+			ExecutableOutput o = __exeFactory().createExecutable(__conf);
+			this._exeout = o;
+			
+			// {@squirreljme.error BV0f No shared executable was created.}
+			if (o == null)
+				throw new JITException("BV0f");
+		}
 		
+		// Not shared, created for each namespace
+		else
+			this._exeout = null;
 	}
 	
 	/**
@@ -85,8 +107,19 @@ public class BasicOutput
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
+		// If not using a shared executable then
+		JITConfig config = this.config;
+		ExecutableOutput exeout = this._exeout;
+		if (exeout == null)
+			exeout = __exeFactory().createExecutable(config);
+		
+		// {@squirreljme.error BV0g No executable could be created to store
+		// a namespace.}
+		if (exeout == null)
+			throw new JITException("BV0g");
+		
 		// Create
-		return new BasicNamespaceWriter(this.config, __ns, __os, this);
+		return new BasicNamespaceWriter(config, __ns, __os, this);
 	}
 	
 	/**
@@ -224,6 +257,33 @@ public class BasicOutput
 		}
 		
 		// Return
+		return rv;
+	}
+	
+	/**
+	 * This returns the factory to use for the generation of executables.
+	 *
+	 * @return The factory used for writing output executables.
+	 * @since 2016/09/28
+	 */
+	private ExecutableOutputFactory __exeFactory()
+	{
+		// Get
+		Reference<ExecutableOutputFactory> ref = this._exefactory;
+		ExecutableOutputFactory rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._exefactory = new WeakReference<>(
+				(rv = this.config.<ExecutableOutputFactory>getAsClass(
+					EXECUTABLE_FACTORY, ExecutableOutputFactory.class)));
+		
+		// {@squirreljme.error BV0e No output executable factory was
+		// specified.}
+		if (rv == null)
+			throw new JITException("BV0e");
+		
+		// Return it
 		return rv;
 	}
 }
