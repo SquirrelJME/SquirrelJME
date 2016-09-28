@@ -33,6 +33,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
  * @since 2016/07/07
  */
 public class JITNamespaceProcessor
+	implements AutoCloseable
 {
 	/** Cache copy size. */
 	private static final int _CACHE_SIZE =
@@ -109,6 +110,17 @@ public class JITNamespaceProcessor
 		if (output == null)
 			throw new JITException(String.format("ED0h %s", __conf));
 		this.output = output;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/28
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		this.output.close();
 	}
 	
 	/**

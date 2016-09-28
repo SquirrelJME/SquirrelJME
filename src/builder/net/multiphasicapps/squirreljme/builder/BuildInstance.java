@@ -177,19 +177,20 @@ public abstract class BuildInstance
 		JITConfig jconf = __makeJITConfig();
 		
 		// Setup namespace processor
-		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf,
-			this.browser, new __JITProgress__(System.err));
-		
-		// Process all packages to be built
-		Map<String, ProjectInfo> compiled = this._compiled;
-		for (ProjectInfo pi : ps._all)
+		try (JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf,
+			this.browser, new __JITProgress__(System.err)))
 		{
-			// Add namespace to compilation set
-			String na = pi.name() + ".jar";
-			compiled.put(na, pi);
+			// Process all packages to be built
+			Map<String, ProjectInfo> compiled = this._compiled;
+			for (ProjectInfo pi : ps._all)
+			{
+				// Add namespace to compilation set
+				String na = pi.name() + ".jar";
+				compiled.put(na, pi);
 			
-			// Process
-			jnp.processNamespace(na);
+				// Process
+				jnp.processNamespace(na);
+			}
 		}
 	}
 	

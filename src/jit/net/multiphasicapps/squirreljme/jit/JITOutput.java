@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  * @since 2016/07/04
  */
 public interface JITOutput
+	extends AutoCloseable
 {
 	/**
 	 * This begins a namespace which may contain resources and classes. All
@@ -40,6 +41,14 @@ public interface JITOutput
 	public abstract JITNamespaceWriter beginNamespace(String __ns,
 		OutputStream __os)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/28
+	 */
+	@Override
+	public abstract void close()
+		throws JITException;
 	
 	/**
 	 * Returns the configuration which is used to configure the JIT.

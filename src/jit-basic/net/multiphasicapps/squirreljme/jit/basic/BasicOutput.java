@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.basic;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
+import net.multiphasicapps.squirreljme.exe.ExecutableOutputFactory;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.base.JITConfig;
@@ -35,6 +37,10 @@ import net.multiphasicapps.squirreljme.nativecode.
 public class BasicOutput
 	implements JITOutput
 {
+	/** Should all generated namespaces output to the same executable? */
+	public static final String SHARED_EXECUTABLE =
+		"net.multiphasicapps.squirreljme.jit.basic.sharedexec";
+	
 	/** The JIT configuration. */
 	protected final JITConfig config;
 	
@@ -62,6 +68,9 @@ public class BasicOutput
 		
 		// Set
 		this.config = __conf;
+		
+		// Use a shared executable?
+		
 	}
 	
 	/**
@@ -78,6 +87,17 @@ public class BasicOutput
 		
 		// Create
 		return new BasicNamespaceWriter(this.config, __ns, __os, this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/28
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
