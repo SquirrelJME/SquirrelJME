@@ -35,15 +35,6 @@ import net.multiphasicapps.squirreljme.projects.ProjectList;
 public class PackageBrowser
 	implements JITNamespaceBrowser
 {
-	/**
-	 * {@squirreljme.property
-	 * net.multiphasicapps.squirreljme.builder.hexdump=(true/false)
-	 * Sets whether or not created cached content should be hexdumped to the
-	 * console for debugging purposes.}
-	 */
-	private static final boolean _HEX_DUMP_OUTPUT =
-		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump");
-
 	/** The list of packages available. */
 	protected final ProjectList plist;
 	
@@ -68,29 +59,6 @@ public class PackageBrowser
 		// Set
 		this._instance = __bi;
 		this.plist = __pl;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/11
-	 */
-	@Override
-	public OutputStream createCache(String __n)
-		throws IOException, JITException, NullPointerException
-	{
-		// Check
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		// Create
-		OutputStream rv = Channels.newOutputStream(FileChannel.open(
-			this._instance.temporaryDirectory().resolve(__n + ".squ"),
-			StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW));
-		
-		// Hexdump-wrap?
-		if (_HEX_DUMP_OUTPUT)
-			return new HexDumpOutputStream(rv, System.err);
-		return rv;
 	}
 	
 	/**

@@ -116,9 +116,6 @@ public class Main
 				tempdir = Files.createTempDirectory("squirreljme-build");
 				bi.__setTempDir(tempdir);
 				
-				// Build target
-				bi.compileBinary();
-				
 				// Build distribution
 				try (OutputStream os = __openOutputZip(actualzipfile[0],
 					actualzipfile);

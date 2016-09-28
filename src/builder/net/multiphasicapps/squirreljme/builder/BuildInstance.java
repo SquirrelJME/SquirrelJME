@@ -17,12 +17,13 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.base.JITConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITConfigBuilder;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
@@ -40,6 +41,15 @@ import net.multiphasicapps.zip.ZipCompressionType;
  */
 public abstract class BuildInstance
 {
+	/**
+	 * {@squirreljme.property
+	 * net.multiphasicapps.squirreljme.builder.hexdump=(true/false)
+	 * Sets whether or not the output compiled binary should be hexdumped to
+	 * the console for debugging purposes.}
+	 */
+	private static final boolean _HEX_DUMP_OUTPUT =
+		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump");
+	
 	/** The build configuration. */
 	protected final BuildConfig config;
 	
@@ -98,6 +108,14 @@ public abstract class BuildInstance
 	protected abstract void modifyOutputConfig(JITConfigBuilder __conf);
 	
 	/**
+	 * Names the output executable to use.
+	 *
+	 * @return The output executable name.
+	 * @since 2016/09/28
+	 */
+	protected abstract String nameExecutable();
+	
+	/**
 	 * This returns the package group that is used to determine which packages
 	 * of all of them to unconditionally include in the target JVM. These
 	 * package groups can be used include said packages for example if they
@@ -122,16 +140,21 @@ public abstract class BuildInstance
 		if (__zsw == null)
 			throw new NullPointerException("NARG");
 		
-		// Include the resultant binary
-		if (true)
-			throw new Error("TODO");
-		
 		// Write the triplet to the ZIP
 		try (OutputStream os = __zsw.nextEntry("target",
 			ZipCompressionType.DEFAULT_COMPRESSION);
 			PrintStream ps = new PrintStream(os, true, "utf-8"))
 		{
 			ps.println(this.config.triplet().toString());
+		}
+		
+		// Compile and generate the resulting binary
+		try (OutputStream os = __zsw.nextEntry(nameExecutable(),
+			ZipCompressionType.DEFAULT_COMPRESSION))
+		{
+			// Compile it and place in the target
+			__compileBinary((!_HEX_DUMP_OUTPUT ? os :
+				new HexDumpOutputStream(os, System.err)));
 		}
 		
 		// Include basic assets
@@ -156,40 +179,6 @@ public abstract class BuildInstance
 					// Write
 					os.write(buf, 0, rc);
 				}
-			}
-		}
-	}
-	
-	/**
-	 * Compiles the target binary.
-	 *
-	 * @throws IOException On read/write errors.
-	 * @since 2016/09/02
-	 */
-	public final void compileBinary()
-		throws IOException
-	{
-		// Select packages
-		BuildConfig config = this.config;
-		__PackageSelection__ ps = new __PackageSelection__(config, this);
-		
-		// Setup immutable config
-		JITConfig jconf = __makeJITConfig();
-		
-		// Setup namespace processor
-		try (JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf,
-			this.browser, new __JITProgress__(System.err)))
-		{
-			// Process all packages to be built
-			Map<String, ProjectInfo> compiled = this._compiled;
-			for (ProjectInfo pi : ps._all)
-			{
-				// Add namespace to compilation set
-				String na = pi.name() + ".jar";
-				compiled.put(na, pi);
-			
-				// Process
-				jnp.processNamespace(na);
 			}
 		}
 	}
@@ -228,6 +217,46 @@ public abstract class BuildInstance
 	protected final Path temporaryDirectory()
 	{
 		return this._tempdir;
+	}
+	
+	/**
+	 * Compiles the target binary.
+	 *
+	 * @param __os The single shared output target.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	private final void __compileBinary(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Select packages
+		BuildConfig config = this.config;
+		__PackageSelection__ ps = new __PackageSelection__(config, this);
+		
+		// Setup immutable config
+		JITConfig jconf = __makeJITConfig();
+		
+		// Setup namespace processor
+		try (JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf,
+			this.browser, __os, new __JITProgress__(System.err)))
+		{
+			// Process all packages to be built
+			Map<String, ProjectInfo> compiled = this._compiled;
+			for (ProjectInfo pi : ps._all)
+			{
+				// Add namespace to compilation set
+				String na = pi.name() + ".jar";
+				compiled.put(na, pi);
+			
+				// Process
+				jnp.processNamespace(na);
+			}
+		}
 	}
 	
 	/**

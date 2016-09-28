@@ -77,11 +77,49 @@ public class JITNamespaceProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceBrowser __b, JITNamespaceOutput __nso)
+	public JITNamespaceProcessor(JITConfig __conf, JITNamespaceBrowser __b,
+		JITNamespaceOutput __nso)
 		throws JITException, NullPointerException
 	{
 		this(__conf, __b, __nso, null);
+	}
+	
+	/**
+	 * Initializes the namespace processor using the given output stream, this
+	 * wraps another constructor.
+	 *
+	 * @param __conf As forwarded.
+	 * @param __b As forwarded.
+	 * @param __nso As forwarded.
+	 * @throws JITException As forwarded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/07
+	 */
+	public JITNamespaceProcessor(JITConfig __conf, JITNamespaceBrowser __b,
+		OutputStream __nso)
+		throws JITException, NullPointerException
+	{
+		this(__conf, __b, __wrapNSO(__nso), null);
+	}
+	
+	/**
+	 * Initializes the namespace processor using the given output stream, this
+	 * wraps another constructor.
+	 *
+	 * @param __conf As forwarded.
+	 * @param __b As forwarded.
+	 * @param __nso As forwarded.
+	 * @param __prog Optional progress indicator.
+	 * @throws JITException As forwarded.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __prog}.
+	 * @since 2016/07/07
+	 */
+	public JITNamespaceProcessor(JITConfig __conf, JITNamespaceBrowser __b,
+		OutputStream __nso, JITNamespaceProcessorProgress __prog)
+		throws JITException, NullPointerException
+	{
+		this(__conf, __b, __wrapNSO(__nso), __prog);
 	}
 	
 	/**
@@ -97,9 +135,8 @@ public class JITNamespaceProcessor
 	 * {@code __prog}.
 	 * @since 2016/07/23
 	 */
-	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceBrowser __b, JITNamespaceOutput __nso,
-		JITNamespaceProcessorProgress __prog)
+	public JITNamespaceProcessor(JITConfig __conf, JITNamespaceBrowser __b,
+		JITNamespaceOutput __nso, JITNamespaceProcessorProgress __prog)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -352,6 +389,37 @@ public class JITNamespaceProcessor
 		// {@squirreljme.error ED0i Could not allocate enough memory for a
 		// temporary working buffer.}
 		throw new JITException("ED0i");
+	}
+	
+	/**
+	 * This creates a wrapped shared namespace output which returns the input
+	 * {@link OutputStream}.
+	 *
+	 * @param __os The stream to wrap.
+	 * @return The shared output wrapping the given stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/28
+	 */
+	private static JITNamespaceOutputShared __wrapNSO(final OutputStream __os)
+		throws NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new JITNamespaceOutputShared()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/09/28
+				 */
+				@Override
+				public OutputStream outputShared()
+				{
+					return __os;
+				}
+			};
 	}
 }
 
