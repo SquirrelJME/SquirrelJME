@@ -109,46 +109,45 @@ public class Main
 		if (!cl._skipbuild)
 		{
 			// Delete unneeded files after a build
-			Path tempdir = null;
+			Path tempdir = null, tempzip = null;
 			try
 			{
+				// Create temporary output ZIP file
+				tempzip = Files.createTempFile("squirreljme-distribution",
+					".zip");
+				
 				// Create and register the temporary directory
 				tempdir = Files.createTempDirectory("squirreljme-build");
 				bi.__setTempDir(tempdir);
 				
 				// Build distribution
-				try (OutputStream os = __openOutputZip(actualzipfile[0],
-					actualzipfile);
+				try (OutputStream os = Channels.newOutputStream(
+					FileChannel.open(tempzip, StandardOpenOption.CREATE_NEW,
+					StandardOpenOption.WRITE));
 					ZipStreamWriter zsw = new ZipStreamWriter(os))
 				{
-					out.printf("Generating distribution at `%s`...%n",
-						actualzipfile[0]);
 					bi.buildDistribution(zsw);
 				}
 				
-				// Delete the output file so an illegal partial file does not
-				// exist
-				catch (IOException|RuntimeException|Error e)
-				{
-					// Delete it
+				// Move the ZIP to its true intended location
+				__moveZip(tempzip, actualzipfile);
+			}
+			
+			// Delete temporary directory and ZIP
+			finally
+			{
+				// Delete temporary ZIP?
+				if (tempzip != null)
 					try
 					{
-						Files.delete(actualzipfile[0]);
+						Files.delete(tempzip);
 					}
 					
 					// Ignore
-					catch (IOException f)
+					catch (IOException e)
 					{
 					}
-					
-					// Re-toss
-					throw e;
-				}
-			}
-			
-			// Delete temporary directory
-			finally
-			{
+				
 				// Delete if it exists
 				if (tempdir != null)
 					try
@@ -204,56 +203,54 @@ public class Main
 	}
 	
 	/**
-	 * Attempts to create output ZIP files which target a given system.
+	 * Moves the output ZIP to the intended location.
 	 *
-	 * @param __oz Alternative ZIP output name to use.
+	 * @param __temp The temporary ZIP name.
 	 * @param __out The path that was written.
-	 * @return An output stream to the output ZIP.
-	 * @throws IOException If it could not created.
-	 * @throws NullPointerException On null arguments, except for {@code __oz}.
-	 * @since 2016/07/20
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/28
 	 */
-	private static OutputStream __openOutputZip(Path __oz, Path[] __out)
+	private static void __moveZip(Path __temp, Path[] __out)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__out == null)
+		if (__temp == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		// Might already exist
-		try
+		// Predetermined name
+		Path p = __out[0];
+		if (p != null)
 		{
-			// Name to use
-			Path usepath = (__oz != null ? __oz : OUTPUT_ZIP_NAME);
+			// {@squirreljme.error DW06 The target distribution file already
+			// exists. (The path)}
+			if (Files.exists(p))
+				throw new IOException(String.format("DW06 %s", p));
 			
-			// Try it
-			__out[0] = usepath;
-			return Channels.newOutputStream(FileChannel.open(usepath,
-				StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE));
+			// Move it
+			Files.move(__temp, p);
+			return;
 		}
 		
-		// Try again
-		catch (FileAlreadyExistsException e)
+		// Try finding an output ZIP name that is not used
+		for (int i = 0; i < _MAX_ZIP_TRIES; i++)
 		{
-			for (int i = 1; i < _MAX_ZIP_TRIES && __oz == null; i++)
-				try
-				{
-					Path p = Paths.get(String.format(OUTPUT_ZIP_FORMAT, i));
-					__out[0] = p;
-					return Channels.newOutputStream(FileChannel.open(p,
-						StandardOpenOption.CREATE_NEW,
-						StandardOpenOption.WRITE));
-				}
-				
-				// Does not exist
-				catch (FileAlreadyExistsException f)
-				{
-					continue;
-				}
+			// The path to try
+			Path maybe = (i == 0 ? OUTPUT_ZIP_NAME :
+				Paths.get(String.format(OUTPUT_ZIP_FORMAT, i)));
 			
-			// {@squirreljme.error DW0m Could not create output ZIP file.}
-			throw new IOException("DW0m");
+			// Skip if it exists
+			if (Files.exists(maybe))
+				continue;
+			
+			// Move it
+			Files.move(__temp, maybe);
+			return;
 		}
+		
+		// {@squirreljme.error DW08 Could not find the name to use for the
+		// output ZIP file.}
+		throw new IOException("DW08");
 	}
 	
 	/**
