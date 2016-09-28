@@ -122,8 +122,9 @@ public class Main
 				
 				// Build distribution
 				try (OutputStream os = Channels.newOutputStream(
-					FileChannel.open(tempzip, StandardOpenOption.CREATE_NEW,
-					StandardOpenOption.WRITE));
+					FileChannel.open(tempzip, StandardOpenOption.CREATE,
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING));
 					ZipStreamWriter zsw = new ZipStreamWriter(os))
 				{
 					bi.buildDistribution(zsw);

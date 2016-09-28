@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -45,7 +46,10 @@ public class BasicOutput
 	protected final JITConfig config;
 	
 	/** The executable output, may be null if not shared. */
-	private final ExecutableOutput _exeout;
+	private volatile ExecutableOutput _exeout;
+	
+	/** Shared output, if applicable. */
+	private volatile OutputStream _sharedoutput;
 	
 	/** The ABI to compile for. */
 	private volatile Reference<NativeABI> _abi;
@@ -58,6 +62,9 @@ public class BasicOutput
 	
 	/** The output executable factory to use. */
 	private volatile Reference<ExecutableOutputFactory> _exefactory;
+	
+	/** Closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the basic output.
@@ -74,21 +81,6 @@ public class BasicOutput
 		
 		// Set
 		this.config = __conf;
-		
-		// Use a shared executable?
-		if (Boolean.valueOf(__conf.getProperty(SHARED_EXECUTABLE)))
-		{
-			ExecutableOutput o = __exeFactory().createExecutable(__conf);
-			this._exeout = o;
-			
-			// {@squirreljme.error BV0f No shared executable was created.}
-			if (o == null)
-				throw new JITException("BV0f");
-		}
-		
-		// Not shared, created for each namespace
-		else
-			this._exeout = null;
 	}
 	
 	/**
@@ -126,7 +118,24 @@ public class BasicOutput
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Already closed? Do nothing
+		if (this._closed)
+			return;
+		this._closed = true;
+		
+		// Generate output executable
+		try
+		{
+			OutputStream sharedoutput = this._sharedoutput;
+			if (sharedoutput != null)
+				this._exeout.writeOutput(sharedoutput);
+		}
+		
+		// {@squirreljme.error BV0j Could not generate the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BV0j", e);
+		}
 	}
 	
 	/**
@@ -254,6 +263,30 @@ public class BasicOutput
 		
 		// Return
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/28
+	 */
+	@Override
+	public void sharedOutput(OutputStream __os)
+		throws NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._sharedoutput = __os;
+		
+		// Create executable for write on closed
+		ExecutableOutput o = __exeFactory().createExecutable(this.config);
+		this._exeout = o;
+		
+		// {@squirreljme.error BV0i No executable output was created.}
+		if (o == null)
+			throw new JITException("BV0i");
 	}
 	
 	/**

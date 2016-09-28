@@ -148,6 +148,16 @@ public abstract class LinuxBuildInstance
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/09/28
+	 */
+	@Override
+	protected String nameExecutable()
+	{
+		return "squirreljme";
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/02
 	 */
 	@Override
