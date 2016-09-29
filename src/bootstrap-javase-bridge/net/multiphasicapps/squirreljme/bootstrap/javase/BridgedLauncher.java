@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.CaughtException;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 	ResourceAccessor;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
@@ -48,12 +49,12 @@ public class BridgedLauncher
 	 * @since 2016/09/20
 	 */
 	@Override
-	public boolean launch(ResourceAccessor __ra, final String __main,
-		final String... __args)
+	public Thread launch(ResourceAccessor __ra, final CaughtException __ce,
+		final String __main, final String... __args)
 		throws NullPointerException
 	{
 		// Check
-		if (__ra == null || __main == null || __args == null)
+		if (__ra == null || __ce == null || __main == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup class loader
@@ -62,8 +63,12 @@ public class BridgedLauncher
 		// Change context
 		Thread.currentThread().setContextClassLoader(ld);
 		
+		// Group any threads together and any threads launched by running
+		// programs (Java ME lacks ThreadGroup so they will never set it)
+		ThreadGroup tg = new ThreadGroup("squirreljme-launch");
+		
 		// Setup thread
-		Thread t = new Thread(new Runnable()
+		Thread t = new Thread(tg, new Runnable()
 			{
 				/**
 				 * {@inheritDoc}
@@ -93,7 +98,11 @@ public class BridgedLauncher
 					catch (InvocationTargetException e)
 					{
 						Throwable t = e.getCause();
-			
+						
+						// Mark it
+						__ce.throwable = t;
+						
+						// Rethrow potentially
 						if (t instanceof Error)
 							throw (Error)t;
 						if (t instanceof RuntimeException)
@@ -108,29 +117,17 @@ public class BridgedLauncher
 					// specified program.}
 					catch (ReflectiveOperationException e)
 					{
+						// Mark it
+						__ce.throwable = e;
+						
+						// Wrap
 						throw new RuntimeException("DE07", e);
 					}
 				}
-			});
+			}, "squirreljme-bootstrap");
 		
-		// Start it and block
-		t.start();
-		for (;;)
-			try
-			{
-				// Join
-				t.join();
-				
-				// Terminated, determine status
-				synchronized (this.lock)
-				{
-					return this._ok;
-				}
-			}
-			
-			catch (InterruptedException e)
-			{
-			}
+		// Return the created thread
+		return t;
 	}
 	
 	/**

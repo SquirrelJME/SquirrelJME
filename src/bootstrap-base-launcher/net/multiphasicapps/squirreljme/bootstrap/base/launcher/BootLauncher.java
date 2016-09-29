@@ -22,15 +22,15 @@ public interface BootLauncher
 	 * Launches the specified class with the given arguments.
 	 *
 	 * @param __ra The accessor for resources.
+	 * @param __ce A storage for any caught exceptions.
 	 * @param __main The main class to enter into.
 	 * @param __args The arguments to the main class.
-	 * @return {@code true} if the program launched and ran successfully
-	 * with no uncaught exceptions, otherwise {@code false}.
+	 * @return The main thread, it is not started.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/20
 	 */
-	public abstract boolean launch(ResourceAccessor __ra, String __main,
-		String... __args)
+	public abstract Thread launch(ResourceAccessor __ra, CaughtException __ce,
+		String __main, String... __args)
 		throws NullPointerException;
 }
 

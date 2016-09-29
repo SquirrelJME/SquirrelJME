@@ -16,6 +16,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.CaughtException;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -184,10 +185,17 @@ public class Bootstrapper
 			__args = new String[0];
 		
 		// Launch program
-		if (!this.launcher.launch(new __Resources__(__bin), __bin.mainClass(),
-			__args))
-			System.exit(1);
-		System.exit(0);
+		CaughtException ce = new CaughtException();
+		Thread t = this.launcher.launch(new __Resources__(__bin),
+			ce, __bin.mainClass(), __args);
+		
+		// Run the thread
+		t.run();
+		
+		// If one was caught then fail
+		Throwable x = ce.throwable;
+		if (x != null)
+			x.printStackTrace();
 	}
 }
 
