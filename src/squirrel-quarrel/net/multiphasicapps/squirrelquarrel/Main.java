@@ -26,7 +26,7 @@ public class Main
 	public static void main(String... __args)
 	{
 		// Create the main thread
-		Thread main = new Thread(new MainThread(__args));
+		Thread main = new Thread(new MainThread(__args), "SquirrelQuarrel");
 		
 		// Start it
 		main.start();
