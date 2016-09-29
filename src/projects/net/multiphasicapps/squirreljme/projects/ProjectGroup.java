@@ -62,6 +62,9 @@ public final class ProjectGroup
 	/** Was this project just compiled? */
 	private volatile boolean _justcompiled;
 	
+	/** Is the project in the compile state? */
+	private volatile boolean _inccstate;
+	
 	/**
 	 * Initializes the project group.
 	 *
@@ -183,72 +186,89 @@ public final class ProjectGroup
 			return bin;
 		}
 		
-		// Go through all dependencies and compile those also
-		for (ProjectName dn : src.dependencies(false))
-		{
-			// {@squirreljme.error CI0l Cannot compile the specified project
-			// because the dependency does not exist. (The project being
-			// compiled; The dependency that is missing)}
-			ProjectGroup dg = list.get(dn);
-			if (dg == null)
-				throw new MissingDependencyException(String.format(
-					"CI0l %s %s", name, dn));
-			
-			// Perform compilation on it
-			dg.compileSource(__bc, __opt);
-		}
-		
-		// If compiling a project and it has a binary, it might not really be
-		// needed to compile its code if it is up to date
+		// If this is in the compilation state then return it
 		ProjectInfo bin = null, maybe = binary();
-		if (maybe != null)
+		if (this._inccstate)
+			return maybe;
+		
+		// Otherwise build it
+		try
 		{
-			// Get base dates
-			FileTime pbin = maybe.date(),
-				psrc = src.date();
-			
-			// If the binary was just compiled, do not compile it twice
-			// If the source is newer than the binary then recompile it
-			// Also recompile if any dependency has source code newer than the
-			// binary
-			if (this._justcompiled ||
-				__dependencySourceDate(name).compareTo(pbin) <= 0)
-				bin = maybe;
-		} 
+			// Enter compilation state
+			this._inccstate = true;
 		
-		// Perform compilation
-		if (bin == null)
-			bin = __compile(__bc);
-		
-		// Compile any optional dependencies if requested following the
-		// compilation of this one
-		if (__opt)
-			for (ProjectName dn : src.dependencies(true))
+			// Go through all dependencies and compile those also
+			for (ProjectName dn : src.dependencies(false))
 			{
-				// Ignore dependencies which do not exist
+				// {@squirreljme.error CI0l Cannot compile the specified
+				// project because the dependency does not exist. (The project
+				// being compiled; The dependency that is missing)}
 				ProjectGroup dg = list.get(dn);
 				if (dg == null)
-					continue;
-				
-				// Compile it
-				try
-				{
-					dg.compileSource(__bc, __opt);
-				}
-				
-				// Failed to build it, ignore
-				catch (InvalidProjectException e)
-				{
-					// {@squirreljme.error CI0k Failed to compile an optional
-					// dependency, it will be ignored. (This project; The
-					// dependency; The reason why it failed)}
-					System.err.printf("CI0k %s %s %s%n", name, dn,
-						e.toString());
-				}
+					throw new MissingDependencyException(String.format(
+						"CI0l %s %s", name, dn));
+			
+				// Perform compilation on it
+				dg.compileSource(__bc, __opt);
 			}
 		
-		// Return the output binary
-		return bin;
+			// If compiling a project and it has a binary, it might not really
+			// be needed to compile its code if it is up to date
+			if (maybe != null)
+			{
+				// Get base dates
+				FileTime pbin = maybe.date(),
+					psrc = src.date();
+			
+				// If the binary was just compiled, do not compile it twice
+				// If the source is newer than the binary then recompile it
+				// Also recompile if any dependency has source code newer than
+				// the binary
+				if (this._justcompiled ||
+					__dependencySourceDate(name).compareTo(pbin) <= 0)
+					bin = maybe;
+			} 
+		
+			// Perform compilation
+			if (bin == null)
+				bin = __compile(__bc);
+		
+			// Compile any optional dependencies if requested following the
+			// compilation of this one
+			if (__opt)
+				for (ProjectName dn : src.dependencies(true))
+				{
+					// Ignore dependencies which do not exist
+					ProjectGroup dg = list.get(dn);
+					if (dg == null)
+						continue;
+				
+					// Compile it
+					try
+					{
+						dg.compileSource(__bc, __opt);
+					}
+				
+					// Failed to build it, ignore
+					catch (InvalidProjectException e)
+					{
+						// {@squirreljme.error CI0k Failed to compile an
+						// optional dependency, it will be ignored. (This
+						// project; The dependency; The reason why it failed)}
+						System.err.printf("CI0k %s %s %s%n", name, dn,
+							e.toString());
+					}
+				}
+		
+			// Return the output binary
+			return bin;
+		}
+		
+		// Clear the in compilation state
+		finally
+		{
+			this._inccstate = false;
+		}
 	}
 	
 	/**
