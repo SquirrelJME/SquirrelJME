@@ -186,16 +186,23 @@ public final class ProjectGroup
 			return bin;
 		}
 		
-		// If this is in the compilation state then return it
-		ProjectInfo bin = null, maybe = binary();
-		if (this._inccstate)
-			return maybe;
-		
 		// Otherwise build it
+		boolean enteredstate = false;
 		try
 		{
-			// Enter compilation state
-			this._inccstate = true;
+			// If this is in the compilation state then return it
+			ProjectInfo bin = null, maybe = binary();
+			synchronized (this.lock)
+			{
+				// This could be part of an optional build dependency which has
+				// been built already
+				if (this._inccstate)
+					return maybe;
+			
+				// Enter compilation state
+				enteredstate = true;
+				this._inccstate = true;
+			}
 		
 			// Go through all dependencies and compile those also
 			for (ProjectName dn : src.dependencies(false))
@@ -267,7 +274,11 @@ public final class ProjectGroup
 		// Clear the in compilation state
 		finally
 		{
-			this._inccstate = false;
+			if (enteredstate)
+				synchronized (this.lock)
+				{
+					this._inccstate = false;
+				}
 		}
 	}
 	
