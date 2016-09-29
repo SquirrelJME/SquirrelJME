@@ -25,7 +25,6 @@ import java.util.Random;
 import java.util.ServiceLoader;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
-import net.multiphasicapps.squirreljme.exe.DeprecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
