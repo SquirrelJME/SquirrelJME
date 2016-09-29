@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.squirreljme.exe.DeprecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeEndianess;
@@ -35,7 +34,6 @@ import net.multiphasicapps.squirreljme.nativecode.mips.MIPSVariant;
  * @since 2016/08/07
  */
 public class ELFOutput
-	implements DeprecutableOutput
 {
 	/** The size of the entry table. */
 	private static final int _ENTRY_SIZE =
@@ -44,10 +42,6 @@ public class ELFOutput
 	/** Lock. */
 	protected final Object lock =
 		new Object();
-	
-	/** System properties to put for initial execution. */
-	protected final Map<String, String> properties =
-		new LinkedHashMap<>();
 	
 	/** Class visible lock. */
 	final Object _lock =
@@ -90,41 +84,15 @@ public class ELFOutput
 	volatile long _baseaddr;
 	
 	/**
-	 * Adds a system property to be included in the target binary.
-	 *
-	 * @param __k The the key.
-	 * @param __v The value.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/24
-	 */
-	public void addSystemProperty(String __k, String __v)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__k == null || __v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			Map<String, String> properties = this.properties;
-			properties.put(__k, __v);
-		}
-	}
-	
-	/**
 	 * Generates the actual binary.
 	 *
 	 * @param __os The stream to write to.
-	 * @throws IllegalStateException If the output stream does not match an
-	 * optionally previously specified primed stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/15
 	 */
 	public void generate(OutputStream __os)
-		throws IllegalStateException, IOException, NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__os == null)
@@ -188,58 +156,6 @@ public class ELFOutput
 					throw new JITException(String.format("AX0b %d %d %s",
 						end, really, s.getClass()));
 			}
-		}
-	}
-	
-	/**
-	 * Inserts the namespace into the specified output.
-	 *
-	 * @param __name The name of the namespace.
-	 * @param __data The input namespace data.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/15
-	 */
-	public ELFProgram insertNamespace(String __name, InputStream __data)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__name == null || __data == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			List<ELFProgram> programs = this._programs;
-			ELFProgram rv;
-			programs.add((rv = new ELFProgram(this, __name, __data)));
-			return rv;
-		}
-	}
-	
-	/**
-	 * This primes the given stream for output for the given binary, generally
-	 * this should always be called first with the specified output stream in
-	 * the event the writer is capable of streamed output. If the writer does
-	 * not need to write to the stream as soon as possible then this method
-	 * can do nothing.
-	 *
-	 * @param __os The stream to prime.
-	 * @throws IllegalStateException If the output has already been primed.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/15
-	 */
-	public void primeOutput(OutputStream __os)
-		throws IllegalStateException, IOException, NullPointerException
-	{
-		// Check
-		if (__os == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
 		}
 	}
 	
@@ -314,7 +230,7 @@ public class ELFOutput
 	}
 	
 	/**
-	 *
+	 * Sets the ELF information and byte ordering from the specified triplet.
 	 *
 	 * @param __t The triplet to base information from.
 	 * @throws NullPointerException On null arguments.
