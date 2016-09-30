@@ -25,9 +25,11 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -174,7 +176,7 @@ public class Main
 			outfile = Paths.get("x-squirreljme-" + mainproj.name() + ".jar");
 		
 		// Merge them together into one
-		__merge(mainproj, projects, outfile, virtengine);
+		__merge(mainproj, projects, outfile, virtengine, optionals);
 	}
 	
 	/**
@@ -189,7 +191,7 @@ public class Main
 	 * @since 2016/09/29
 	 */
 	private static ProjectInfo __loadProjects(ProjectList __pl,
-		Set<ProjectInfo> __into, Deque<String> __from, boolean __opt)
+		Set<ProjectInfo> __into, Collection<String> __from, boolean __opt)
 		throws NullPointerException
 	{
 		// Check
@@ -200,10 +202,9 @@ public class Main
 		ProjectInfo rv = null;
 		
 		// Read all arguments
-		while (!__from.isEmpty())
+		for (String rpn : __from)
 		{
 			// Get group for this project
-			String rpn = __from.removeFirst();
 			ProjectGroup pg = __pl.get(rpn);
 			
 			// {@squirreljme.error DV04 No project with the specified name
@@ -289,27 +290,44 @@ public class Main
 	 * @param __p The projects to merge together.
 	 * @param __of The output file.
 	 * @param __virt The virtual engine to use.
+	 * @param __opt Include optional projects?
 	 * @throws NullPointerException On null arguments, except for
 	 * {@code __virt}.
 	 * @since 2016/09/29
 	 */
 	private static void __merge(ProjectInfo __main,
-		Collection<ProjectInfo> __p, Path __of, ProjectInfo __virt)
+		Collection<ProjectInfo> __p, Path __of, ProjectInfo __virt,
+		boolean __opt)
 		throws NullPointerException
 	{
 		// Check
 		if (__main == null || __p == null || __of == null)
 			throw new NullPointerException("NARG");
 		
-		// Use the original base for non-virtual projects
-		Collection<ProjectInfo> nonvirtual;
+		// Use the original base for non-virtual projects and virtual ones
+		Collection<ProjectInfo> nonvirtual, virtual;
 		if (__virt == null)
+		{
 			nonvirtual = __p;
+			virtual = Arrays.<ProjectInfo>asList();
+		}
 		
 		// Perform the load project stage for projects starting from the
 		// specified virtual project
 		else
-			throw new Error("TODO");
+		{
+			Set<ProjectInfo> workvirt = new HashSet<>();
+			
+			// Load virtual projects
+			ProjectInfo mainproj = __loadProjects(__main.projectList(),
+				workvirt, Arrays.<String>asList(__virt.name().toString()),
+				__opt);
+			
+			// Do not virtualize the virtual engine, but do virtualize the
+			// original input projects
+			nonvirtual = workvirt;
+			virtual = __p;
+		}
 		
 		// Perform the merge
 		Path tempjar = null;
