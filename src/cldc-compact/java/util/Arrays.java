@@ -10,6 +10,14 @@
 
 package java.util;
 
+/**
+ * This class contains utility methods which operate on arrays.
+ *
+ * {@squirreljme.error ZZ07 The sort range exceeds the array bounds.}
+ * {@squirreljme.error ZZ08 The from index exceeds the to index.}
+ *
+ * @since 2016/09/30
+ */
 public class Arrays
 {
 	private Arrays()
@@ -275,94 +283,317 @@ public class Arrays
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(int[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(int[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(int[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(long[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(long[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(long[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(short[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(short[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(short[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(char[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(char[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(char[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(byte[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(byte[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(byte[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(float[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(float[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(float[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(double[] __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length);
+	}
+	
+	public static void sort(double[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
-	public static void sort(double[] __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Sorts the specified array using the natural {@link Comparator}.
+	 *
+	 * @param __a The array to sort.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2016/09/30
+	 */
 	public static void sort(Object[] __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");	
+		
+		sort(__a, 0, __a.length, null);
 	}
 	
-	public static void sort(Object[] __a, int __b, int __c)
+	public static void sort(Object[] __a, int __from, int __to)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
-		throw new Error("TODO");
+		sort(__a, __from, __to, null);
 	}
 	
-	public static <T> void sort(T[] __a, Comparator<? super T> __b)
+	public static <T> void sort(T[] __a, Comparator<? super T> __comp)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		sort(__a, 0, __a.length, __comp);
 	}
 	
-	public static <T> void sort(T[] __a, int __b, int __c, Comparator<? super
-		T> __d)
+	public static <T> void sort(T[] __a, int __from, int __to,
+		Comparator<? super T> __comp)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		int an = __a.length;
+		if (__from < 0 || __to > an)
+			throw new ArrayIndexOutOfBoundsException("ZZ07");
+		if (__from > __to)
+			throw new IllegalArgumentException("ZZ08");
+		
+		// Pointless sort?
+		if (__from == __to)
+			return;
+		
 		throw new Error("TODO");
 	}
 }
