@@ -107,7 +107,7 @@ public class BasicOutput
 			throw new JITException("BV0g");
 		
 		// Create
-		return new BasicNamespaceWriter(config, __ns, __os, this);
+		return new ExecutableNamespaceWriter(this, exeout, __ns, __os);
 	}
 	
 	/**
