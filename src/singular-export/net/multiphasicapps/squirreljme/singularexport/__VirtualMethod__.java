@@ -49,7 +49,7 @@ class __VirtualMethod__
 	@Override
 	public CodeDescriptionStream code()
 	{
-		throw new Error("TODO");
+		return new __VirtualCode__(this._method);
 	}
 	
 	/**
