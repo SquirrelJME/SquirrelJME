@@ -11,9 +11,15 @@
 package net.multiphasicapps.squirreljme.singularexport;
 
 import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
@@ -21,6 +27,8 @@ import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
 import net.multiphasicapps.squirreljme.projects.ProjectType;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * Main entry class for the singular package export system.
@@ -108,7 +116,12 @@ public class Main
 		Set<ProjectInfo> projects = new SortedTreeSet<>();
 		ProjectInfo mainproj = __loadProjects(pl, projects, args, optionals);
 		
-		throw new Error("TODO");
+		// Use default output file?
+		if (outfile == null)
+			outfile = Paths.get("x-squirreljme-" + mainproj.name() + ".jar");
+		
+		// Merge them together into one
+		__merge(mainproj, projects, outfile, virtualize);
 	}
 	
 	/**
@@ -173,6 +186,67 @@ public class Main
 		
 		// Return the main project
 		return rv;
+	}
+	
+	/**
+	 * Merges all of the input binaries 
+	 *
+	 * @param __main The main class to get the manifest from.
+	 * @param __p The projects to merge together.
+	 * @param __of The output file.
+	 * @param __virt If {@code true} then the project is virtualized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/29
+	 */
+	private static void __merge(ProjectInfo __main,
+		Collection<ProjectInfo> __p, Path __of, boolean __virt)
+		throws NullPointerException
+	{
+		// Check
+		if (__main == null || __p == null || __of == null)
+			throw new NullPointerException("NARG");
+		
+		// Perform the merge
+		Path tempjar = null;
+		try
+		{
+			// Create file
+			tempjar = Files.createTempFile("squirreljme-merge", ".jar");
+			
+			// Write the output ZIP
+			try (ZipStreamWriter zsw = new ZipStreamWriter(Channels.
+				newOutputStream(FileChannel.open(tempjar,
+				StandardOpenOption.WRITE, StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING))))
+			{
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Ok, move the result
+			Files.move(tempjar, __of);
+		}
+		
+		// {@squirreljme.error DV06 Failed to read/write for project merge.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("DV06", e);
+		}
+		
+		// Delete temporaries
+		finally
+		{
+			// Delete it
+			try
+			{
+				Files.delete(tempjar);
+			}
+			
+			// Ignore
+			catch (IOException e)
+			{
+			}
+		}
 	}
 }
 
