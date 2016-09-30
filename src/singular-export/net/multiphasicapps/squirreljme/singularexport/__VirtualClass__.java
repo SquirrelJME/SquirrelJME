@@ -35,6 +35,39 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 class __VirtualClass__
 	implements ClassDescriptionStream
 {
+	/** The virtual package. */
+	protected final ClassNameSymbol virtualpackage;
+	
+	/** The class flags. */
+	volatile ClassFlags _flags;
+	
+	/** The name of this class. */
+	volatile ClassNameSymbol _thisname;
+	
+	/** The name of the super class. */
+	volatile ClassNameSymbol _supername;
+	
+	/** The implemented interfaces. */
+	volatile ClassNameSymbol[] _interfacenames;
+	
+	/**
+	 * Initializes the virtual class.
+	 *
+	 * @param __vpack The virtual package name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/30
+	 */
+	__VirtualClass__(ClassNameSymbol __vpack)
+		throws NullPointerException
+	{
+		// Check
+		if (__vpack == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.virtualpackage = __vpack;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/30
@@ -43,7 +76,8 @@ class __VirtualClass__
 	public void classFlags(ClassFlags __f)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Set
+		this._flags = __f;
 	}
 	
 	/**
@@ -54,7 +88,7 @@ class __VirtualClass__
 	public void className(ClassNameSymbol __n)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this._thisname = __SymbolUtil__.__virtualClass(__n);
 	}
 	
 	/**
@@ -65,7 +99,7 @@ class __VirtualClass__
 	public void constantPool(ConstantPool __pool)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Ignore the constant pool
 	}
 	
 	/**
@@ -97,7 +131,7 @@ class __VirtualClass__
 	@Override
 	public void fieldCount(int __n)
 	{
-		throw new Error("TODO");
+		// Ignore
 	}
 	
 	/**
@@ -108,7 +142,14 @@ class __VirtualClass__
 	public void interfaceClasses(ClassNameSymbol[] __i)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Virtualize interfaces
+		int n = __i.length;
+		ClassNameSymbol[] to = new ClassNameSymbol[n];
+		for (int i = 0; i < n; i++)
+			to[i] = __SymbolUtil__.__virtualClass(__i[i]);
+		
+		// Set
+		this._interfacenames = to;
 	}
 	
 	/**
@@ -130,7 +171,7 @@ class __VirtualClass__
 	@Override
 	public void methodCount(int __n)
 	{
-		throw new Error("TODO");
+		// Ignore
 	}
 	
 	/**
@@ -140,7 +181,18 @@ class __VirtualClass__
 	@Override
 	public void superClass(ClassNameSymbol __n)
 	{
-		throw new Error("TODO");
+		// Wrap super class normally
+		ClassNameSymbol vn;
+		if (__n != null)
+			vn = __SymbolUtil__.__virtualClass(__n);
+		
+		// Otherwise Object must extend a class, and as such make all classes
+		// extend the virtual engine's fake-Object
+		else
+			vn = ClassNameSymbol.of(virtualpackage + "/VirtualObject");
+		
+		// Set
+		this._supername = vn;;
 	}
 	
 	/**

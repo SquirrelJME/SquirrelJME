@@ -44,6 +44,8 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.java.manifest.MutableJavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.
 	MutableJavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -381,12 +383,12 @@ public class Main
 						continue;
 					
 					// Process
-					__process(zsw, pi, data, false);
+					__process(zsw, pi, data, null);
 				}
 				
 				// Handle virtual projects
 				for (ProjectInfo pi : virtual)
-					__process(zsw, pi, data, true);
+					__process(zsw, pi, data, __virt);
 				
 				// Write virtualized project names
 				try (PrintStream ps = new PrintStream(zsw.nextEntry(
@@ -463,18 +465,40 @@ public class Main
 	 * @param __zsw The output ZIP.
 	 * @param __pi The project information.
 	 * @param __data The output data as needed.
-	 * @param __virt Is this virtualized?
+	 * @param __virt The virtualization engine used.
 	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __virt}.
 	 * @since 2016/09/30
 	 */
 	private static void __process(ZipStreamWriter __zsw, ProjectInfo __pi,
-		__Data__ __data, boolean __virt)
+		__Data__ __data, ProjectInfo __virt)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__zsw == null || __pi == null || __data == null)
 			throw new NullPointerException("NARG");
+		
+		// The virtual package handler, Needs VirtualSquirrelJME and
+		// VirtualObject instances.
+		ClassNameSymbol vpack;
+		if (__virt == null)
+			vpack = null;
+		
+		// Depends on the manifest detail
+		else
+		{
+			// {@squirreljme.error DV0a The virtual engine lacks the
+			// X-SquirrelJME-VirtualEngine attribute which is used to define
+			// which package contains the virtual handlers.}
+			String vpn = __virt.manifest().getMainAttributes().get(
+				new JavaManifestKey("X-SquirrelJME-VirtualEngine"));
+			if (vpn == null)
+				throw new IllegalStateException("DV0a");
+			
+			// Set
+			vpack = ClassLoaderNameSymbol.of(vpn).asClassName();
+		}
 		
 		// Handle contents
 		byte[] buf = new byte[512];
@@ -485,7 +509,7 @@ public class Main
 			
 			// Non-virtual handling, pretty much straight through transfer of
 			// classes and such
-			if (!__virt)
+			if (__virt == null)
 			{
 				// Ignore manifests
 				if (c.equals("META-INF/MANIFEST.MF"))
@@ -506,11 +530,15 @@ public class Main
 			// Virtualizing class
 			else if (c.endsWith(".class"))
 			{
+				// {@squirreljme.error DV0b Virtualizing the specified class.
+				// (The class being virtualized)}
+				System.err.printf("DV0b %s%n", c);
+				
 				// Open the input class
 				try (DataInputStream dis = new DataInputStream(__pi.open(c)))
 				{
 					// Virtualize
-					__VirtualClass__ vc = new __VirtualClass__();
+					__VirtualClass__ vc = new __VirtualClass__(vpack);
 					new ClassDecoder(dis, vc).decode();
 					
 					// Write the output class
