@@ -30,7 +30,20 @@ public final class SquirrelJME
 	}
 	
 	/**
-	 * Returns the clas type of the specified object.
+	 * Returns the class object for the class that uses the specified name.
+	 *
+	 * @param __n The name of the class to get the class object for.
+	 * @return The class object for the given class or {@code null} if it was
+	 * not found.
+	 * @since 2016/09/30
+	 */
+	public static Class<?> classForName(String __n)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Returns the class type of the specified object.
 	 *
 	 * @param __o The object to get the class of.
 	 * @return The class type of the given object.

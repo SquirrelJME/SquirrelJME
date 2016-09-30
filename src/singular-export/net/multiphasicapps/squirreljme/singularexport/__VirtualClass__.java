@@ -151,7 +151,7 @@ class __VirtualClass__
 	public void version(ClassVersion __cv)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// ignore
 	}
 	
 	/**

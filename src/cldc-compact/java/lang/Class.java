@@ -221,7 +221,12 @@ public final class Class<T>
 		if (__a == null)
 			throw new NullPointerException();
 		
-		throw new Error("TODO");
+		// {@squirreljme.error ZZ09 Could not find the specified class. (The
+		// name of the class)}
+		Class<?> rv = SquirrelJME.classForName(__a);
+		if (rv == null)
+			throw new ClassNotFoundException(String.format("ZZ09 %s", __a));
+		return rv;
 	}
 }
 
