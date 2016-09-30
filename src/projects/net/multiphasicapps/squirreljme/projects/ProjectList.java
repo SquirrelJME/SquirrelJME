@@ -47,6 +47,11 @@ public class ProjectList
 	 */
 	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
 	
+	/**
+	 * This is the global project list which may be used
+	 */
+	static volatile ProjectList _GLOBAL_LIST;
+	
 	/** The mapping of projects. */
 	protected final Map<ProjectName, ProjectGroup> projects;
 	
@@ -162,6 +167,10 @@ public class ProjectList
 		
 		// Lock
 		this.projects = UnmodifiableMap.<ProjectName, ProjectGroup>of(target);
+		
+		// Set global list
+		if (ProjectList._GLOBAL_LIST == null)
+			ProjectList._GLOBAL_LIST = this;
 	}
 	
 	/**
@@ -334,6 +343,18 @@ public class ProjectList
 	public int size()
 	{
 		return this.projects.size();
+	}
+	
+	/**
+	 * This returns the first {@link ProjectList} which has been instantiated.
+	 *
+	 * @return The first initialized project list, or {@code null} if one was
+	 * never initialized.
+	 * @since 2016/09/29
+	 */
+	public static ProjectList getGlobalProjectList()
+	{
+		return ProjectList._GLOBAL_LIST;
 	}
 	
 	/**
