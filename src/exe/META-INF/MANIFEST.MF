@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: exe
 X-SquirrelJME-UUID: bfe4a098-c227-4037-8826-aa628aa3e4c9
-X-SquirrelJME-Depends: jit-base
+X-SquirrelJME-Depends: jit-base util-futurebuffer
 X-SquirrelJME-Error: BR
 LIBlet-Title: Executable Linker
 LIBlet-Vendor: Steven Gawroriski

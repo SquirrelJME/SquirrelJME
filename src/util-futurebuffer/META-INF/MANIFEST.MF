@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: util-futurebuffer
+X-SquirrelJME-UUID: 13d19a9b-a1c6-4dcc-ba5f-f235a0a26c3f
+X-SquirrelJME-Depends: util-growbuffer
+X-SquirrelJME-Error: DZ
+LIBlet-Title: Future Buffer
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a buffer where some bytes may be 
+ marked for changing in the future.
+

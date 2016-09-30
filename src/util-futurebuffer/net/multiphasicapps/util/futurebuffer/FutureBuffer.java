@@ -8,16 +8,22 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.util.growbuffer;
+package net.multiphasicapps.util.futurebuffer;
+
+import net.multiphasicapps.util.growbuffer.GrowBuffer;
 
 /**
- * This class provides a buffer which is capable of being grown or shrunk on
- * a single end.
+ * This class represents a buffer that can have some of its data defined in
+ * the future (potentially when more information is known).
  *
  * @since 2016/09/30
  */
-public class GrowBuffer
+public class FutureBuffer
 {
+	/** The backing grow buffer. */
+	protected final GrowBuffer buffer =
+		new GrowBuffer();
+	
 	/**
 	 * Returns the byte at the specified index.
 	 *
@@ -69,6 +75,72 @@ public class GrowBuffer
 	 * @since 2016/09/30
 	 */
 	public void get(int __i, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int bn = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > bn)
+			throw new IndexOutOfBoundsException("IOOB");
+			
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the byte at the specified index without performing future
+	 * modifications of the data.
+	 *
+	 * @param __i The index to get.
+	 * @return The byte at this index.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * buffer bounds.
+	 * @since 2016/09/30
+	 */
+	public byte getRaw(int __i)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads multiple bytes from the buffer without performing future
+	 * modifications of the data.
+	 *
+	 * @param __i The index to start reading values at.
+	 * @param __b The buffer to read bytes into.
+	 * @throws IndexOutOfBoundsException If the index is not within the buffer
+	 * bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/30
+	 */
+	public void getRaw(int __i, byte[] __b)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+			
+		// Forward
+		getRaw(__i, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads multiple bytes from the buffer without performing future
+	 * modifications of the data.
+	 *
+	 * @param __i The index to start reading values at.
+	 * @param __b The buffer to read bytes into.
+	 * @param __o The offset in the destination array to start writing values
+	 * at.
+	 * @param __l The number of bytes to read.
+	 * @throws IndexOutOfBoundsException If the index is not within the buffer
+	 * bounds, the length and/or offset are negative, or they exceed the bounds
+	 * of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/30
+	 */
+	public void getRaw(int __i, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
