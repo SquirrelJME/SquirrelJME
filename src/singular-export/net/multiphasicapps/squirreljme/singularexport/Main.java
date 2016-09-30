@@ -385,6 +385,32 @@ public class Main
 				for (ProjectInfo pi : virtual)
 					__process(zsw, pi, data, true);
 				
+				// Write virtualized project names
+				try (PrintStream ps = new PrintStream(zsw.nextEntry(
+					"$squirreljme$virtual-projects",
+					ZipCompressionType.DEFAULT_COMPRESSION), true, "utf-8"))
+				{
+					// Print project name
+					for (ProjectInfo pi : virtual)
+						ps.println(pi.name());
+					
+					// Flush
+					ps.flush();
+				}
+				
+				// Write virtualized resource map
+				try (PrintStream ps = new PrintStream(zsw.nextEntry(
+					"$squirreljme$virtual-resources",
+					ZipCompressionType.DEFAULT_COMPRESSION), true, "utf-8"))
+				{
+					// Print resource that exist
+					for (String k : data._resources.keySet())
+						ps.println(k);
+					
+					// Flush
+					ps.flush();
+				}
+				
 				// Write services
 				for (Map.Entry<String, List<String>> e :
 					data._services.entrySet())
