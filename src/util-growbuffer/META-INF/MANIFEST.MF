@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: util-growbuffer
+X-SquirrelJME-UUID: 861fd6c1-6188-4119-ba45-e4c706d256b0
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: DY
+LIBlet-Title: Growing/Shrinking Buffer
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is an array backed buffer which can be grown 
+ or shrunk at one end automatically.
+
