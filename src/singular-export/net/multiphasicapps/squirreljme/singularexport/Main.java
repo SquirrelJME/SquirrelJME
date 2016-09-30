@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.squirreljme.singularexport;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -21,9 +24,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -279,6 +286,9 @@ public class Main
 					mjm.write(os);
 				}
 				
+				// Services used
+				Map<String, List<String>> services = new HashMap<>();
+				
 				// Go through all projects and their files
 				byte[] buf = new byte[512];
 				for (ProjectInfo pi : __p)
@@ -295,6 +305,14 @@ public class Main
 						// Ignore manifests
 						if (c.equals("META-INF/MANIFEST.MF"))
 							continue;
+						
+						// Handle services using other means
+						if (c.startsWith("META-INF/services/"))
+						{
+							__service(services, c, new BufferedReader(
+								new InputStreamReader(pi.open(c), "utf-8")));
+							continue;
+						}
 						
 						// Copy it
 						try (OutputStream os = zsw.nextEntry(c,
@@ -314,6 +332,21 @@ public class Main
 								os.write(buf, 0, rc);
 							}
 						}
+					}
+				}
+				
+				// Write services
+				for (Map.Entry<String, List<String>> e : services.entrySet())
+				{
+					try (OutputStream os = zsw.nextEntry("META-INF/services/" +
+						e.getKey(), ZipCompressionType.DEFAULT_COMPRESSION);
+						PrintStream pos = new PrintStream(os, true))
+					{
+						for (String q : e.getValue())
+							pos.println(q);
+						
+						// Flush, just in case
+						pos.flush();
 					}
 				}
 			}
@@ -342,6 +375,38 @@ public class Main
 			{
 			}
 		}
+	}
+	
+	/**
+	 * Loads services from the service list.
+	 *
+	 * @param __svs The mapping of services to use.
+	 * @param __fn The file name containing the services.
+	 * @param __r The reader for the service list.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/29
+	 */
+	private static void __service(Map<String, List<String>> __svs, String __fn,
+		BufferedReader __r)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__svs == null || __fn == null || __r == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine list usage
+		String want = __fn.substring("META-INF/services/".length());
+		List<String> list = __svs.get(want);
+		
+		// Create if missing
+		if (list == null)
+			__svs.put(want, (list = new ArrayList<>()));
+		
+		// Add services to the list
+		String s;
+		while (null != (s = __r.readLine()))
+			list.add(s);
 	}
 }
 
