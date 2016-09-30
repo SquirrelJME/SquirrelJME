@@ -14,8 +14,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 
 /**
  * Data that may be used and generated during processing.
@@ -27,6 +30,37 @@ class __Data__
 	/** The services used. */
 	final Map<String, List<String>> _services =
 		new HashMap<>();
+	
+	/** Resources which are defined in the virtual resource table. */
+	final Map<String, String> _resources =
+		new HashMap<>();
+	
+	/**
+	 * Adds a resource to the resource list and returns the virtualized
+	 * name of it.
+	 *
+	 * @param __pi The project owning the resource.
+	 * @param __n The name of the resource.
+	 * @return The virtualize name of the resource.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/30
+	 */
+	String __addResource(ProjectInfo __pi, String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__pi == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		// Build virtual resource name representation
+		String rv = "$squirreljme$" + __pi.name() + "$/" + __n;
+		
+		// Add 
+		this._resources.put(rv, __n);
+		
+		// Return the virtual name
+		return rv;
+	}
 	
 	/**
 	 * Loads services from the service list.

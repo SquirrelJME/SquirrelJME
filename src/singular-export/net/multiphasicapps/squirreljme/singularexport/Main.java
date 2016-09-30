@@ -365,51 +365,25 @@ public class Main
 					mjm.write(os);
 				}
 				
-				// Go through all projects and their files
-				byte[] buf = new byte[512];
+				// Handle non-virtual projects
 				for (ProjectInfo pi : nonvirtual)
 				{
-					// Ignore the CLDC libraries
+					// Ignore the CLDC libraries because these would be handled
+					// by the host system (hopefully anyway) and due to the
+					// fact that these libraries are very much SquirrelJME
+					// only.
 					String pn = pi.name().toString();
 					if ((pn.equals("cldc-compact") ||
 						pn.equals("cldc-full")))
 						continue;
 					
-					// Copy contents
-					for (String c : pi.contents())
-					{
-						// Ignore manifests
-						if (c.equals("META-INF/MANIFEST.MF"))
-							continue;
-						
-						// Handle services using other means
-						if (c.startsWith("META-INF/services/"))
-						{
-							data.__servicesFile(c, new BufferedReader(
-								new InputStreamReader(pi.open(c), "utf-8")));
-							continue;
-						}
-						
-						// Copy it
-						try (OutputStream os = zsw.nextEntry(c,
-							ZipCompressionType.DEFAULT_COMPRESSION);
-							InputStream is = pi.open(c))
-						{
-							for (;;)
-							{
-								// Read
-								int rc = is.read(buf);
-								
-								// EOF?
-								if (rc < 0)
-									break;
-								
-								// Write
-								os.write(buf, 0, rc);
-							}
-						}
-					}
+					// Process
+					__process(zsw, pi, data, false);
 				}
+				
+				// Handle virtual projects
+				for (ProjectInfo pi : virtual)
+					__process(zsw, pi, data, true);
 				
 				// Write services
 				for (Map.Entry<String, List<String>> e :
@@ -451,6 +425,87 @@ public class Main
 			catch (IOException e)
 			{
 			}
+		}
+	}
+	
+	/**
+	 * Processes the given project.
+	 *
+	 * @param __zsw The output ZIP.
+	 * @param __pi The project information.
+	 * @param __data The output data as needed.
+	 * @param __virt Is this virtualized?
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/30
+	 */
+	private static void __process(ZipStreamWriter __zsw, ProjectInfo __pi,
+		__Data__ __data, boolean __virt)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__zsw == null || __pi == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		// Handle contents
+		byte[] buf = new byte[512];
+		for (String c : __pi.contents())
+		{
+			// If set then the data is copied directly using the given name
+			String copyname = null;
+			
+			// Non-virtual handling, pretty much straight through transfer of
+			// classes and such
+			if (!__virt)
+			{
+				// Ignore manifests
+				if (c.equals("META-INF/MANIFEST.MF"))
+					continue;
+			
+				// Handle services using other means
+				if (c.startsWith("META-INF/services/"))
+				{
+					__data.__servicesFile(c, new BufferedReader(
+						new InputStreamReader(__pi.open(c), "utf-8")));
+					continue;
+				}
+				
+				// Copy the data
+				copyname = c;
+			}
+			
+			// Virtualizing class
+			else if (false && c.endsWith(".class"))
+			{
+				throw new Error("TODO");
+			}
+			
+			// Virtualizing resource
+			else
+			{
+				// Add virtual resource to the resource list
+				copyname = __data.__addResource(__pi, c);
+			}
+			
+			// If copying the data with no processing, copy it
+			if (copyname != null)
+				try (OutputStream os = __zsw.nextEntry(copyname,
+					ZipCompressionType.DEFAULT_COMPRESSION);
+					InputStream is = __pi.open(c))
+				{
+					for (;;)
+					{
+						// Read
+						int rc = is.read(buf);
+				
+						// EOF?
+						if (rc < 0)
+							break;
+				
+						// Write
+						os.write(buf, 0, rc);
+					}
+				}
 		}
 	}
 }
