@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.singularexport;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.classformat.ClassDecoder;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
@@ -503,7 +506,21 @@ public class Main
 			// Virtualizing class
 			else if (c.endsWith(".class"))
 			{
-				throw new Error("TODO");
+				// Open the input class
+				try (DataInputStream dis = new DataInputStream(__pi.open(c)))
+				{
+					// Virtualize
+					__VirtualClass__ vc = new __VirtualClass__();
+					new ClassDecoder(dis, vc).decode();
+					
+					// Write the output class
+					try (DataOutputStream dos = new DataOutputStream(
+						__zsw.nextEntry(vc.__name(),
+						ZipCompressionType.DEFAULT_COMPRESSION)))
+					{
+						vc.__output(dos);
+					}
+				}
 			}
 			
 			// Virtualizing resource
