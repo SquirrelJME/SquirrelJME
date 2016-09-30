@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.singularexport;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.classformat.ClassDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.ClassFlags;
 import net.multiphasicapps.squirreljme.classformat.ClassVersion;
@@ -37,6 +39,10 @@ class __VirtualClass__
 {
 	/** The virtual package. */
 	protected final ClassNameSymbol virtualpackage;
+	
+	/** Methods. */
+	final List<__Method__> _methods =
+		new ArrayList<>();
 	
 	/** The class flags. */
 	volatile ClassFlags _flags;
@@ -161,7 +167,12 @@ class __VirtualClass__
 		IdentifierSymbol __name, MethodSymbol __type)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Remember it
+		__Method__ m = new __Method__(__f, __name, __type);
+		this._methods.add(m);
+		
+		// Set for decode
+		return new __VirtualMethod__(m);
 	}
 	
 	/**
