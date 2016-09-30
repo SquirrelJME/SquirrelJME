@@ -71,12 +71,14 @@ public class Main
 		for (String s : __args)
 			args.offerLast(s);
 		
-		// Include optional projects? Virtualize it?
-		boolean optionals = false,
-			virtualize = false;
+		// Include optional projects?
+		boolean optionals = false;
 		
 		// Output file
 		Path outfile = null;
+		
+		// The project to be used as the backing virtual engine
+		String virtenginename = null;
 		
 		// Handle all arguments
 		while (!args.isEmpty())
@@ -105,7 +107,7 @@ public class Main
 					
 					// Include a virtual environment
 				case "-v":
-					virtualize = true;
+					virtenginename = args.removeFirst();
 					break;
 				
 					// {@squirreljme.error DV01 Unknown command line
@@ -124,10 +126,44 @@ public class Main
 			throw new IllegalStateException("DV02");
 			
 		// {@squirreljme.error DV03 No projects were specified on the command
-		// line. Usage: [-a] [-o file] [-v] (projects).
-		// -a: Include optional dependencies.}
+		// line. Usage: [-a] [-o file] [-v project] (projects).
+		// -a: Include optional dependencies.
+		// -o: Output to this given file.
+		// -v: The project to use as a wrapper (main entry point) for the
+		// virtualized project set.}
 		if (args.isEmpty())
 			throw new IllegalArgumentException("DV03");
+		
+		// Locate the virtual engine to use as a abse
+		ProjectInfo virtengine = null;
+		if (virtenginename != null)
+		{
+			// {@squirreljme.error DV08 Could not find the project for the
+			// given virtual project. (The virtual engine name)}
+			ProjectGroup veg = pl.get(virtenginename);
+			if (veg == null)
+				throw new IllegalStateException(String.format("DV08 %s",
+					virtenginename));
+			
+			// Need to compile the virtual engine
+			try
+			{
+				virtengine = veg.compileSource(null, optionals);
+			
+				// {@squirreljme.error DV07 Could not obtain the binary for the
+				// virtual engine. (The virtual engine name)}
+				if (virtengine == null)
+					throw new IllegalStateException(String.format("DV07 %s",
+						virtenginename));
+			}
+			
+			// {@squirreljme.error DV09 Read/write error handling the virtual
+			// engine project.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("DV09");
+			}
+		}
 		
 		// Build and obtain binary projects to be included in the build
 		Set<ProjectInfo> projects = new SortedTreeSet<>();
@@ -138,7 +174,7 @@ public class Main
 			outfile = Paths.get("x-squirreljme-" + mainproj.name() + ".jar");
 		
 		// Merge them together into one
-		__merge(mainproj, projects, outfile, virtualize);
+		__merge(mainproj, projects, outfile, virtengine);
 	}
 	
 	/**
@@ -210,12 +246,13 @@ public class Main
 	 *
 	 * @param __main The main project.
 	 * @param __mjm The output manifest.
-	 * @param __virt Is this virtualized?
-	 * @throws NullPointerException On null arguments.
+	 * @param __virt The virtual engine to use.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __virt}.
 	 * @since 2016/09/29
 	 */
 	private static void __manifest(ProjectInfo __main,
-		MutableJavaManifest __mjm, boolean __virt)
+		MutableJavaManifest __mjm, ProjectInfo __virt)
 		throws NullPointerException
 	{
 		// Check
@@ -251,17 +288,28 @@ public class Main
 	 * @param __main The main class to get the manifest from.
 	 * @param __p The projects to merge together.
 	 * @param __of The output file.
-	 * @param __virt If {@code true} then the project is virtualized.
-	 * @throws NullPointerException On null arguments.
+	 * @param __virt The virtual engine to use.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __virt}.
 	 * @since 2016/09/29
 	 */
 	private static void __merge(ProjectInfo __main,
-		Collection<ProjectInfo> __p, Path __of, boolean __virt)
+		Collection<ProjectInfo> __p, Path __of, ProjectInfo __virt)
 		throws NullPointerException
 	{
 		// Check
 		if (__main == null || __p == null || __of == null)
 			throw new NullPointerException("NARG");
+		
+		// Use the original base for non-virtual projects
+		Collection<ProjectInfo> nonvirtual;
+		if (__virt == null)
+			nonvirtual = __p;
+		
+		// Perform the load project stage for projects starting from the
+		// specified virtual project
+		else
+			throw new Error("TODO");
 		
 		// Perform the merge
 		Path tempjar = null;
@@ -291,11 +339,11 @@ public class Main
 				
 				// Go through all projects and their files
 				byte[] buf = new byte[512];
-				for (ProjectInfo pi : __p)
+				for (ProjectInfo pi : nonvirtual)
 				{
 					// Ignore the CLDC libraries
 					String pn = pi.name().toString();
-					if (!__virt && (pn.equals("cldc-compact") ||
+					if ((pn.equals("cldc-compact") ||
 						pn.equals("cldc-full")))
 						continue;
 					
