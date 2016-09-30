@@ -319,6 +319,17 @@ public final class ProjectGroup
 	}
 	
 	/**
+	 * Returns the name of this group.
+	 *
+	 * @return The group name.
+	 * @since 2016/09/29
+	 */
+	public final ProjectName name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * Returns the project information of the specified type.
 	 *
 	 * @param __t The type to get the project information for.

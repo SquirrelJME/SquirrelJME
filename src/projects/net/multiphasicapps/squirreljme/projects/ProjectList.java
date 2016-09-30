@@ -25,6 +25,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -48,9 +49,10 @@ public class ProjectList
 	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
 	
 	/**
-	 * This is the global project list which may be used
+	 * This is the global project list which may be used to use a pre-existing
+	 * list so that there is no cost for reloading the same list.
 	 */
-	static volatile ProjectList _GLOBAL_LIST;
+	private static volatile ProjectList _GLOBAL_LIST;
 	
 	/** The mapping of projects. */
 	protected final Map<ProjectName, ProjectGroup> projects;
@@ -189,7 +191,7 @@ public class ProjectList
 	 * @since 2016/06/19
 	 */
 	@Override
-	public boolean containsKey(Object __o)
+	public final boolean containsKey(Object __o)
 	{
 		if (__o instanceof String)
 			return this.projects.containsKey(new ProjectName((String)__o));
@@ -201,7 +203,7 @@ public class ProjectList
 	 * @since 2016/06/15
 	 */
 	@Override
-	public Set<Map.Entry<ProjectName, ProjectGroup>> entrySet()
+	public final Set<Map.Entry<ProjectName, ProjectGroup>> entrySet()
 	{
 		return this.projects.entrySet();
 	}
@@ -211,7 +213,7 @@ public class ProjectList
 	 * @since 2016/06/19
 	 */
 	@Override
-	public ProjectGroup get(Object __o)
+	public final ProjectGroup get(Object __o)
 	{
 		if (__o instanceof String)
 			return this.projects.get(new ProjectName((String)__o));
@@ -231,7 +233,7 @@ public class ProjectList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public Collection<ProjectInfo> recursiveDependencies(ProjectType __t,
+	public final Collection<ProjectInfo> recursiveDependencies(ProjectType __t,
 		ProjectName __n, boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
@@ -253,7 +255,7 @@ public class ProjectList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public Collection<ProjectInfo> recursiveDependencies(
+	public final Collection<ProjectInfo> recursiveDependencies(
 		Collection<ProjectInfo> __rv, ProjectType __t, ProjectName __n,
 		boolean __opt)
 		throws MissingDependencyException, NullPointerException
@@ -340,7 +342,7 @@ public class ProjectList
 	 * @since 2016/06/19
 	 */
 	@Override
-	public int size()
+	public final int size()
 	{
 		return this.projects.size();
 	}

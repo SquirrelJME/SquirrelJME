@@ -82,7 +82,8 @@ public class BridgedLauncher
 						Class<?> cl = Class.forName(__main, true, ld);
 			
 						// Find the main method
-						Method m = cl.getDeclaredMethod("main", String[].class);
+						Method m = cl.getDeclaredMethod("main",
+							String[].class);
 			
 						// Invoke it with the arguments
 						m.invoke(null, (Object)__args);
@@ -124,7 +125,7 @@ public class BridgedLauncher
 						throw new RuntimeException("DE07", e);
 					}
 				}
-			}, "squirreljme-bootstrap");
+			}, "squirreljme-launch");
 		
 		// Return the created thread
 		return t;
@@ -141,8 +142,15 @@ public class BridgedLauncher
 	{
 		ClassLoader rv = Thread.currentThread().getContextClassLoader();
 		if (rv != null)
-			return null;
-		return ClassLoader.getSystemClassLoader();
+			return rv;
+		
+		// Try the system loader
+		rv = ClassLoader.getSystemClassLoader();
+		if (rv != null)
+			return rv;
+		
+		// {@squirreljme.error DE0c Could not find a class loader.}
+		throw new RuntimeException("DE0c");
 	}
 	
 	/**

@@ -10,11 +10,17 @@
 
 package net.multiphasicapps.squirreljme.singularexport;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
+import net.multiphasicapps.squirreljme.projects.ProjectType;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * Main entry class for the singular package export system.
@@ -40,6 +46,13 @@ public class Main
 		for (String s : __args)
 			args.offerLast(s);
 		
+		// Include optional projects? Virtualize it?
+		boolean optionals = false,
+			virtualize = false;
+		
+		// Output file
+		Path outfile = null;
+		
 		// Handle all arguments
 		while (!args.isEmpty())
 		{
@@ -55,6 +68,21 @@ public class Main
 			// Handle
 			switch (s)
 			{
+					// Include optional dependencies
+				case "-a":
+					optionals = true;
+					break;
+					
+					// The output file
+				case "-o":
+					outfile = Paths.get(args.removeFirst());
+					break;
+					
+					// Include a virtual environment
+				case "-v":
+					virtualize = true;
+					break;
+				
 					// {@squirreljme.error DV01 Unknown command line
 					// argument. (The switch)}
 				default:
@@ -71,11 +99,80 @@ public class Main
 			throw new IllegalStateException("DV02");
 			
 		// {@squirreljme.error DV03 No projects were specified on the command
-		// line.}
+		// line. Usage: [-a] [-o file] [-v] (projects).
+		// -a: Include optional dependencies.}
 		if (args.isEmpty())
 			throw new IllegalArgumentException("DV03");
 		
+		// Build and obtain binary projects to be included in the build
+		Set<ProjectInfo> projects = new SortedTreeSet<>();
+		ProjectInfo mainproj = __loadProjects(pl, projects, args, optionals);
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Loads all project binaries.
+	 *
+	 * @param __pl The project list to source projects from.
+	 * @param __into The destination set.
+	 * @param __from The source project name queue.
+	 * @param __opt Include optional dependencies?
+	 * @return The main project.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/29
+	 */
+	private static ProjectInfo __loadProjects(ProjectList __pl,
+		Set<ProjectInfo> __into, Deque<String> __from, boolean __opt)
+		throws NullPointerException
+	{
+		// Check
+		if (__into == null || __from == null)
+			throw new NullPointerException("NARG");	
+		
+		// The main project (the first one used)
+		ProjectInfo rv = null;
+		
+		// Read all arguments
+		while (!__from.isEmpty())
+		{
+			// Get group for this project
+			String rpn = __from.removeFirst();
+			ProjectGroup pg = __pl.get(rpn);
+			
+			// {@squirreljme.error DV04 No project with the specified name
+			// exists. (The project name)}
+			if (pg == null)
+				throw new IllegalArgumentException(String.format("DV04 %d",
+					rpn));
+			
+			// Compile it along with optional dependencies
+			ProjectInfo bin;
+			try
+			{
+				bin = pg.compileSource(null, __opt);
+			}
+			
+			// {@squirreljme.error DV05 Read/write error reading the project
+			// information.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("DV05", e);
+			}
+			
+			// Set main project if it has not been set, since there will need
+			// to be a known Main-Class or main MIDlet.
+			if (rv == null)
+				rv = bin;
+			
+			// Add dependencies
+			__into.add(bin);
+			__pl.recursiveDependencies(__into, ProjectType.BINARY, pg.name(),
+				__opt);
+		}
+		
+		// Return the main project
+		return rv;
 	}
 }
 
