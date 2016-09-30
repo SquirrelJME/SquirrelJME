@@ -336,6 +336,9 @@ public class Main
 			// Create file
 			tempjar = Files.createTempFile("squirreljme-merge", ".jar");
 			
+			// Working data needed for export
+			__Data__ data = new __Data__();
+			
 			// Write the output ZIP
 			try (ZipStreamWriter zsw = new ZipStreamWriter(Channels.
 				newOutputStream(FileChannel.open(tempjar,
@@ -351,9 +354,6 @@ public class Main
 				{
 					mjm.write(os);
 				}
-				
-				// Services used
-				Map<String, List<String>> services = new HashMap<>();
 				
 				// Go through all projects and their files
 				byte[] buf = new byte[512];
@@ -375,7 +375,7 @@ public class Main
 						// Handle services using other means
 						if (c.startsWith("META-INF/services/"))
 						{
-							__service(services, c, new BufferedReader(
+							data.__servicesFile(c, new BufferedReader(
 								new InputStreamReader(pi.open(c), "utf-8")));
 							continue;
 						}
@@ -402,7 +402,8 @@ public class Main
 				}
 				
 				// Write services
-				for (Map.Entry<String, List<String>> e : services.entrySet())
+				for (Map.Entry<String, List<String>> e :
+					data._services.entrySet())
 				{
 					try (OutputStream os = zsw.nextEntry("META-INF/services/" +
 						e.getKey(), ZipCompressionType.DEFAULT_COMPRESSION);
@@ -441,38 +442,6 @@ public class Main
 			{
 			}
 		}
-	}
-	
-	/**
-	 * Loads services from the service list.
-	 *
-	 * @param __svs The mapping of services to use.
-	 * @param __fn The file name containing the services.
-	 * @param __r The reader for the service list.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/29
-	 */
-	private static void __service(Map<String, List<String>> __svs, String __fn,
-		BufferedReader __r)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__svs == null || __fn == null || __r == null)
-			throw new NullPointerException("NARG");
-		
-		// Determine list usage
-		String want = __fn.substring("META-INF/services/".length());
-		List<String> list = __svs.get(want);
-		
-		// Create if missing
-		if (list == null)
-			__svs.put(want, (list = new ArrayList<>()));
-		
-		// Add services to the list
-		String s;
-		while (null != (s = __r.readLine()))
-			list.add(s);
 	}
 }
 
