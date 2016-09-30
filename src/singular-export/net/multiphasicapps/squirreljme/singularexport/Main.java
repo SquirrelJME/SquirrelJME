@@ -262,15 +262,25 @@ public class Main
 		
 		// Remove some keys in the main attribute set
 		MutableJavaManifestAttributes attr = __mjm.getMainAttributes();
-		Iterator<JavaManifestKey> it = attr.keySet().iterator();
+		Iterator<Map.Entry<JavaManifestKey, String>> it = attr.entrySet().
+			iterator();
 		while (it.hasNext())
 		{
-			String s = it.next().toString();
+			Map.Entry<JavaManifestKey, String> e = it.next();
+			String s = e.getKey().toString();
 			switch (s)
 			{
 					// Remove
 				case "class-path":
+				case "x-squirreljme-depends":
+				case "x-squirreljme-optional":
+				case "x-squirreljme-uuid":
 					it.remove();
+					break;
+					
+					// Modify
+				case "x-squirreljme-name":
+					e.setValue("x-squirreljme-" + __main.name());
 					break;
 					
 					// Potentially keep
