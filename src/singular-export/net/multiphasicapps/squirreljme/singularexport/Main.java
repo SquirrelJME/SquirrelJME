@@ -501,7 +501,7 @@ public class Main
 			}
 			
 			// Virtualizing class
-			else if (false && c.endsWith(".class"))
+			else if (c.endsWith(".class"))
 			{
 				throw new Error("TODO");
 			}
