@@ -52,5 +52,15 @@ public class MutableJavaManifestAttributes
 		// Forward
 		return this.values.put(__k, __v);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/29
+	 */
+	@Override
+	public String remove(Object __k)
+	{
+		return this.values.remove(__k);
+	}
 }
 
