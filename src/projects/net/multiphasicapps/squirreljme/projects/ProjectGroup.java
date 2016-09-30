@@ -135,12 +135,14 @@ public final class ProjectGroup
 	/**
 	 * Compiles the source code for this project.
 	 *
-	 * @param __bc The compiler to use for compilation.
+	 * @param __bc The compiler to use for compilation, if {@code null} then
+	 * a fallback compiler is attempted to be used.
 	 * @return The binary project information.
 	 * @throws CompilationFailedException If project compilation failed.
 	 * @throws IOException On read/write errors.
 	 * @throws MissingSourceException If the project has no source code.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no compiler was specified and there is
+	 * no compiler available for usage.
 	 * @since 2016/09/18
 	 */
 	public final ProjectInfo compileSource(Compiler __bc)
@@ -153,23 +155,32 @@ public final class ProjectGroup
 	/**
 	 * Compiles the source code for this project.
 	 *
-	 * @param __bc The compiler to use for compilation.
+	 * @param __bc The compiler to use for compilation, if {@code null} then
+	 * a fallback compiler is attempted to be used.
 	 * @param __opt If {@code true} then optional dependencies are also checked
 	 * and rebuild as needed (if they exist).
 	 * @return The binary project information.
 	 * @throws CompilationFailedException If project compilation failed.
 	 * @throws IOException On read/write errors.
 	 * @throws MissingSourceException If the project has no source code.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no compiler was specified and there is
+	 * no compiler available for usage.
 	 * @since 2016/09/19
 	 */
 	public final ProjectInfo compileSource(Compiler __bc, boolean __opt)
 		throws CompilationFailedException, IOException, MissingSourceException,
 			NullPointerException
 	{
-		// Check
+		// Try the fallback if one was not specified
 		if (__bc == null)
-			throw new NullPointerException("NARG");
+		{
+			__bc = ProjectList._SPECIFIED_FALLBACK_COMPILER;
+			
+			// {@squirreljme.error CI0m No fallback compiler could be used,
+			// project compilation is not possible.}
+			if (__bc == null)
+				throw new NullPointerException("CI0m");
+		}
 		
 		// If there is no source code, alternatively try the binary
 		ProjectName name = this.name;

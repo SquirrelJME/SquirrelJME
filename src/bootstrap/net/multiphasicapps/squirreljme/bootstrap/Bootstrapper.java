@@ -55,6 +55,11 @@ public class Bootstrapper
 		if (__pl == null)
 			throw new NullPointerException("NARG");
 		
+		// Set the project list compiler which could potentially be used
+		// in the future
+		if (__bc != null)
+			ProjectList.setFallbackCompiler(__bc);
+		
 		// Set
 		this.projects = __pl;
 		this.compiler = __bc;

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
@@ -40,6 +41,12 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
 public class ProjectList
 	extends AbstractMap<ProjectName, ProjectGroup>
 {
+	/**
+	 * This is a fallback compiler which may be specified when it is not known.
+	 * This sets an explicit compiler to use.
+	 */
+	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
+	
 	/** The mapping of projects. */
 	protected final Map<ProjectName, ProjectGroup> projects;
 	
@@ -327,6 +334,24 @@ public class ProjectList
 	public int size()
 	{
 		return this.projects.size();
+	}
+	
+	/**
+	 * Sets the fallback compiler to use if no default could be used.
+	 *
+	 * @param __cc The compiler to use as a fallback.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/29
+	 */
+	public static void setFallbackCompiler(Compiler __cc)
+		throws NullPointerException
+	{
+		// Check
+		if (__cc == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		ProjectList._SPECIFIED_FALLBACK_COMPILER = __cc;
 	}
 }
 
