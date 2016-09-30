@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: virtengine-cldc
+X-SquirrelJME-UUID: d732d53f-8640-4cf2-81af-c35d1a0e85a0
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: DX
+X-SquirrelJME-VirtualEngine: net.multiphasicapps.squirreljme.
+ virtengine.cldc
+Main-Class: net.multiphasicapps.squirreljme.virtengine.cldc.Main
+LIBlet-Title: CLDC Virtual Engine
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual engine which allows singularly 
+ exported projects to run the environment on CLDC 8 VMs such as 
+ SquirrelJME and the reference implementations.
+

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: singular-export
 X-SquirrelJME-UUID: fd4af38a-bd5b-4b96-ae2f-d0e6e21e4d28
 X-SquirrelJME-Depends: cldc-full projects util-sorted 
- zip-writer-stream
+ zip-writer-stream 
 X-SquirrelJME-Error: DV
 Main-Class: net.multiphasicapps.squirreljme.singularexport.Main
 LIBlet-Title: Singular Project Export

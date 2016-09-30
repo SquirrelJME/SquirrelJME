@@ -209,7 +209,7 @@ public class Main
 			// {@squirreljme.error DV04 No project with the specified name
 			// exists. (The project name)}
 			if (pg == null)
-				throw new IllegalArgumentException(String.format("DV04 %d",
+				throw new IllegalArgumentException(String.format("DV04 %s",
 					rpn));
 			
 			// Compile it along with optional dependencies
