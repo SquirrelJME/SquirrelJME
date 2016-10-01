@@ -48,6 +48,9 @@ public class MarkdownClass
 	/** The qualified name of this class. */
 	protected final String qualifiedname;
 	
+	/** The unqualified class name. */
+	protected final String unqualifiedname;
+	
 	/** The super class. */
 	protected final MarkdownClass superclass;
 	
@@ -88,6 +91,11 @@ public class MarkdownClass
 		// Setup qualified name
 		String qualifiedname = __cd.qualifiedName();
 		this.qualifiedname = qualifiedname;
+		
+		// Determine unqualified name, which is just from the last dot
+		int ld = qualifiedname.lastIndexOf('.');
+		this.unqualifiedname = (ld < 0 ? qualifiedname :
+			qualifiedname.substring(ld + 1));
 		
 		// Register class
 		__dm.__registerClass(__cd.qualifiedName(), this);
@@ -136,17 +144,43 @@ public class MarkdownClass
 	}
 	
 	/**
+	 * Returns the qualified name of this class.
+	 *
+	 * @return The qualified name of this class.
+	 * @since 2016/10/01
+	 */
+	public String qualifiedName()
+	{
+		return this.qualifiedname;
+	}
+	
+	/**
+	 * Returns the unqualified name of this class.
+	 *
+	 * @return The unqualified name.
+	 * @since 2016/10/01
+	 */
+	public String unqualifiedName()
+	{
+		return this.unqualifiedname;
+	}
+	
+	/**
 	 * Writes the class documentation details to the output markdown file.
 	 *
 	 * @since 2016/09/13
 	 */
 	public void writeOutput()
 	{
+		// Get main
+		DocletMain main = this.main;
+		
 		// Setup output
 		try (MarkdownWriter md = new MarkdownWriter(new __AppendToStdOut__()))
 		{
 			// Top level header
-			md.headerSameLevel(this.qualifiedname);
+			String qualifiedname = this.qualifiedname;
+			md.headerSameLevel(qualifiedname);
 			
 			// Write class tree last
 			md.headerSameLevel("Inheritance");
@@ -154,7 +188,11 @@ public class MarkdownClass
 			// Print super class, if there is one
 			MarkdownClass superclass = this.superclass;
 			if (superclass != null)
-				md.printf("Superclass: %s%n", superclass.qualifiedname);
+			{
+				md.print("Superclass: ");
+				md.uri(main.uriToClass(this, superclass), unqualifiedName());
+				md.println();
+			}
 			
 			// Classes which extend this class
 			for (MarkdownClass superclassof : this.superclassof.values())

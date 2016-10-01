@@ -16,6 +16,7 @@ import com.sun.javadoc.RootDoc;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +62,10 @@ public class DocletMain
 	/** The class table. */
 	protected final Map<String, MarkdownClass> classes =
 		new SortedTreeMap<>();
+	
+	/** Class to project mappings. */
+	protected final Map<MarkdownClass, String> classtoproject =
+		new HashMap<>();
 	
 	/** The name of this project. */
 	protected final String project;
@@ -188,6 +193,32 @@ public class DocletMain
 	}
 	
 	/**
+	 * Returns the project which contains the specified class.
+	 *
+	 * @param __cl The class to get the project for.
+	 * @return The project the given class is under.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	public String projectOfClass(MarkdownClass __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Get
+		Map<MarkdownClass, String> classtoproject = this.classtoproject;
+		
+		// If already cached, returned the cached value
+		String rv = classtoproject.get(__cl);
+		if (rv != null)
+			return rv;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/13
 	 */
@@ -209,6 +240,26 @@ public class DocletMain
 		for (MarkdownClass mc : this.classes.values())
 			if (mc._implicit)
 				mc.writeOutput();
+	}
+	
+	/**
+	 * Returns a relative URI from one class that may exist in one project to
+	 * another class which may be in another project.
+	 *
+	 * @param __from The source class.
+	 * @param __to The target class.
+	 * @return The relative URI from the source class to the destination.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	public String uriToClass(MarkdownClass __from, MarkdownClass __to)
+		throws NullPointerException
+	{
+		// Check
+		if (__from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

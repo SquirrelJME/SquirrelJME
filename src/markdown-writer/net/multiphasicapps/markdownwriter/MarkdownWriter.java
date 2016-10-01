@@ -19,6 +19,7 @@ import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Formatter;
+import java.util.Objects;
 
 /**
  * This is a class which writes markdown formatted text to the specified
@@ -39,6 +40,10 @@ public class MarkdownWriter
 	/** Markdown right column limit. */
 	public static final int RIGHT_COLUMN =
 		72;
+	
+	/** The newline sequence. */
+	private static final String _NEWLINE =
+		String.format("%n");
 	
 	/** Where text may be written to. */
 	protected final Appendable append;
@@ -250,6 +255,19 @@ public class MarkdownWriter
 	}
 	
 	/**
+	 * Prints the specified object.
+	 *
+	 * @param __o The object to print.
+	 * @throws IOException On write errors.
+	 * @since 2016/10/01
+	 */
+	public void print(Object __o)
+		throws IOException
+	{
+		append(Objects.toString(__o));
+	}
+	
+	/**
 	 * Prints formatted text to the output.
 	 *
 	 * @param __f The format specifier.
@@ -267,6 +285,32 @@ public class MarkdownWriter
 		
 		// Forma
 		this.formatter.format(__f, __args);
+	}
+	
+	/**
+	 * Prints the end of the line.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/01
+	 */
+	public void println()
+		throws IOException
+	{
+		printf(_NEWLINE);
+	}
+	
+	/**
+	 * Prints the specified object followed by a new line.
+	 *
+	 * @param __o The object to print.
+	 * @throws IOException On write errors.
+	 * @since 2016/10/01
+	 */
+	public void println(Object __o)
+		throws IOException
+	{
+		print(__o);
+		println();
 	}
 	
 	/**
