@@ -257,7 +257,7 @@ public class MarkdownClass
 			{
 				md.print("Superclass: ");
 				md.uri(main.uriToClassMarkdown(this, superclass),
-					unqualifiedName());
+					superclass.unqualifiedName());
 				md.println();
 			}
 			

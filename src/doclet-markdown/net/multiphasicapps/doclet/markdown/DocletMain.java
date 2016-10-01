@@ -319,9 +319,47 @@ public class DocletMain
 			pb = __to.markdownPath();
 		
 		// Same project?
-		if (false && ja.equals(jb))
+		if (ja.equals(jb))
 		{
-			throw new Error("TODO");
+			// Get both lists and their lengths, minus one (since only the
+			// package is cared about)
+			List<IdentifierSymbol> la = __from.binaryName().asList(),
+				lb = __to.binaryName().asList();
+			int na = la.size() - 1, nb = lb.size() - 1;
+			
+			// Determine the number of elements that are in common
+			int mm = Math.min(na, nb);
+			int common ;
+			for (common = 0; common < mm; common++)
+				if (!la.get(common).equals(lb.get(common)))
+					break;
+			
+			// Setup
+			StringBuilder sb = new StringBuilder();
+			
+			// For every fragment left in the first, dot dot
+			for (int i = common; i < na; i++)
+			{
+				if (sb.length() > 0)
+					sb.append("/");
+				sb.append("..");
+			}
+			
+			// For every fragment in the second, add directories
+			for (int i = common; i < nb; i++)
+			{
+				if (sb.length() > 0)
+					sb.append("/");
+				sb.append(MarkdownClass.__lowerString(lb.get(i).toString()));
+			}
+			
+			// And the markdown filename
+			if (sb.length() > 0)
+				sb.append('/');
+			sb.append(__to.markdownPath().getFileName().toString());
+			
+			// Build
+			return sb.toString();
 		}
 		
 		// Other ones, completely .. out and move in
