@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -27,6 +28,7 @@ import net.multiphasicapps.markdownwriter.MarkdownWriter;
 import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
@@ -239,30 +241,20 @@ public class DocletMain
 					continue;
 				
 				// Loop since some 
-				for (Path couldbe = pp.resolve(want); couldbe != null;)
+				Path couldbe = pp.resolve(want);
+				
+				// See if it exists
+				Path maybe = pp.resolve(couldbe);
+				if (Files.exists(maybe) && !Files.isDirectory(maybe))
 				{
-					// Need file
-					Path fn = couldbe.getFileName();
-					if (fn == null)
-						break;
-					
-					// See if it exists
-					Path maybe = couldbe.resolveSibling(fn.toString() +
-						".java");
-					if (Files.exists(pp.resolve(maybe)))
-					{
-						// Setup
-						rv = pp.getFileName().toString();
-					
-						// Cache
-						classtoproject.put(__cl, rv);
-					
-						// Use it
-						return rv;
-					}
-					
-					// Go to parent
-					couldbe = couldbe.getParent();
+					// Setup
+					rv = pp.getFileName().toString();
+				
+					// Cache
+					classtoproject.put(__cl, rv);
+				
+					// Use it
+					return rv;
 				}
 			}
 		}
@@ -326,8 +318,49 @@ public class DocletMain
 		Path pa = __from.markdownPath(),
 			pb = __to.markdownPath();
 		
-		// Use path to file
-		return pa.resolve(pb.toString()).toString();
+		// Same project?
+		if (false && ja.equals(jb))
+		{
+			throw new Error("TODO");
+		}
+		
+		// Other ones, completely .. out and move in
+		else
+		{
+			StringBuilder sb = new StringBuilder();
+			List<IdentifierSymbol> idl = __from.binaryName().asList();
+			
+			// Dot dot it all, but ignore the class name
+			boolean skipped = false;
+			for (IdentifierSymbol i : idl)
+			{
+				// Ignore the first element
+				if (!skipped)
+				{
+					skipped = true;
+					continue;
+				}
+				
+				// Add downpath
+				if (sb.length() > 0)
+					sb.append('/');
+				sb.append("..");
+			}
+			
+			// Add project
+			sb.append("/../");
+			sb.append(jb);
+			
+			// Append the second form
+			for (Path p : pb)
+			{
+				sb.append('/');
+				sb.append(p.toString());
+			}
+			
+			// Build
+			return sb.toString();
+		}
 	}
 	
 	/**

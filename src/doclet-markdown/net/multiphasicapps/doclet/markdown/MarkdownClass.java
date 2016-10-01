@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
+import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -56,7 +58,7 @@ public class MarkdownClass
 	protected final String unqualifiedname;
 	
 	/** The class name used. */
-	protected final ClassNameSymbol namesymbol;
+	protected final BinaryNameSymbol namesymbol;
 	
 	/** The containing class (will be null if not an inner class). */
 	protected final MarkdownClass containedin;
@@ -110,27 +112,38 @@ public class MarkdownClass
 		// Register class
 		__dm.__registerClass(__cd.qualifiedName(), this);
 		
+		// Get contained class
+		ClassDoc cin = __cd.containingClass();
+		MarkdownClass incl = (cin == null ? null : __dm.markdownClass(cin));
+		this.containedin = incl;
+		
+		// The symbol for this name is just this class
+		BinaryNameSymbol bns;
+		if (incl == null)
+			this.namesymbol = (bns = BinaryNameSymbol.of(
+				qualifiedname.replace('.', '/')));
+		
+		// Otherwise, use the parent class with a $ this class
+		else
+		{
+			// The simple name contains the dot in it, which must be removed
+			String sn = __cd.name();
+			int ldx = sn.lastIndexOf('.');
+			sn = sn.substring(ldx + 1);
+			
+			// Now use it
+			this.namesymbol = (bns = BinaryNameSymbol.of(
+				incl.namesymbol + "$" + sn));
+		}
+		
 		// Determine the base name path for this class
 		{
 			// Fill with fragments
 			List<String> bnp = new ArrayList<>();
 			int n = qualifiedname.length();
 			int base = 0;
-			for (int i = 0; i <= n; i++)
-			{
-				// Use an implicit dot so it gets treated as a fragment piece
-				char c = (i == n ? '.' : qualifiedname.charAt(i));
-				
-				// New grouping?
-				if (c == '.')
-				{
-					// Split
-					bnp.add(qualifiedname.substring(base, i));
-					
-					// Character after this one
-					base = i + 1;
-				}
-			}
+			for (IdentifierSymbol i : bns)
+				bnp.add(i.toString());
 		
 			// Setup
 			Path p;
@@ -155,28 +168,17 @@ public class MarkdownClass
 		// Add to superclass of list
 		if (superclass != null)
 			superclass.superclassof.put(qualifiedname, this);
-		
-		// Get contained class
-		ClassDoc cin = __cd.containingClass();
-		MarkdownClass incl = (cin == null ? null : __dm.markdownClass(cin));
-		this.containedin = incl;
-		
-		// The symbol for this name is just this class
-		if (incl == null)
-			this.namesymbol = ClassNameSymbol.of(
-				qualifiedname.replace('.', '/'));
-		
-		// Otherwise, use the parent class with a $ this class
-		else
-		{
-			// The simple name contains the dot in it, which must be removed
-			String sn = __cd.name();
-			int ldx = sn.lastIndexOf('.');
-			sn = sn.substring(ldx + 1);
-			
-			// Now use it
-			this.namesymbol = ClassNameSymbol.of(incl.namesymbol + "$" + sn);
-		}
+	}
+	
+	/**
+	 * Returns the class binary name.
+	 *
+	 * @return The class binary name.
+	 * @since 2016/10/01
+	 */
+	public BinaryNameSymbol binaryName()
+	{
+		return this.namesymbol;
 	}
 	
 	/**
