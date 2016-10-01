@@ -177,8 +177,6 @@ public class MarkdownClass
 			// Now use it
 			this.namesymbol = ClassNameSymbol.of(incl.namesymbol + "$" + sn);
 		}
-		
-		System.err.printf("DEBUG -- Name symbol = %s%n", this.namesymbol);
 	}
 	
 	/**

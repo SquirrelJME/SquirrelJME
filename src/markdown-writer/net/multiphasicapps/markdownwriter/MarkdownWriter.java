@@ -329,9 +329,9 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		append("<");
+		__put('<', true);
 		append(__uri);
-		append(">");
+		__put('>', true);
 	}
 	
 	/**
@@ -351,11 +351,12 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		append("[");
+		__put('[', true);
 		append(__uri);
-		append("](");
+		__put(']', true);
+		__put('(', true);
 		append(__text);
-		append(")");
+		__put(')', true);
 	}
 	
 	/**
@@ -376,13 +377,16 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		append("[");
+		__put('[', true);
 		append(__uri);
-		append("](");
+		__put(']', true);
+		__put('(', true);
 		append(__text);
-		append(" \"");
+		__put(' ', true);
+		__put('"', true);
 		append(__title);
-		append("\")");
+		__put('"', true);
+		__put(')', true);
 	}
 	
 	/**
