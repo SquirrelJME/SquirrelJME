@@ -201,6 +201,24 @@ public class DocletMain
 	}
 	
 	/**
+	 * Determines the path where to output based on the input path.
+	 *
+	 * @param __p The path to output at.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	public Path outputPath(Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Resolve
+		return this.outdir.resolve(__p);
+	}
+	
+	/**
 	 * Returns the project which contains the specified class.
 	 *
 	 * @param __cl The class to get the project for.

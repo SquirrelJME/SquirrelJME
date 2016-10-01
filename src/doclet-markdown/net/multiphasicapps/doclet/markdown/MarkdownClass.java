@@ -16,8 +16,10 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -241,8 +243,25 @@ public class MarkdownClass
 		// Get main
 		DocletMain main = this.main;
 		
+		// Determine
+		Path makemark = main.outputPath(this.basemarkdownpath);
+		
+		// Need to create directories
+		try
+		{
+			Files.createDirectories(makemark.getParent());
+		}
+		
+		// {@squirreljme.error CF05 Could not create directories for files.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("CF05", e);
+		}
+		
 		// Setup output
-		try (MarkdownWriter md = new MarkdownWriter(new __AppendToStdOut__()))
+		try (MarkdownWriter md = new MarkdownWriter(new OutputStreamWriter(
+			Channels.newOutputStream(FileChannel.open(makemark,
+			StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)))))
 		{
 			// Top level header
 			String qualifiedname = this.qualifiedname;
