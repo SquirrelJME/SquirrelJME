@@ -227,7 +227,7 @@ public class DocletMain
 			return Objects.toString(this.project, "unknown");
 		
 		// The class to find
-		Path want = __Util__.__classToPath(__cl);
+		Path want = __cl.containingClassFile();
 		
 		// Go through everything
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(pd))
@@ -311,7 +311,7 @@ public class DocletMain
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/01
 	 */
-	public String uriToClass(MarkdownClass __from, MarkdownClass __to)
+	public String uriToClassMarkdown(MarkdownClass __from, MarkdownClass __to)
 		throws NullPointerException
 	{
 		// Check
@@ -319,20 +319,15 @@ public class DocletMain
 			throw new NullPointerException("NARG");
 		
 		// Get projects for both classes
-		String pa = projectOfClass(__from),
-			pb = projectOfClass(__to);
+		String ja = projectOfClass(__from),
+			jb = projectOfClass(__to);
 		
-		// Convert to class names
-		BinaryNameSymbol la = ClassLoaderNameSymbol.of(
-			__from.qualifiedName()).asBinaryName(),
-			lb = ClassLoaderNameSymbol.of(
-				__from.qualifiedName()).asBinaryName();
+		// Get file paths for both
+		Path pa = __from.markdownPath(),
+			pb = __to.markdownPath();
 		
-		// Debug
-		System.err.printf("DEBUG -- %s (%s) -> %s (%s)%n", __from, pa,
-			__to, pb);
-		
-		throw new Error("TODO");
+		// Use path to file
+		return pa.resolve(pb.toString()).toString();
 	}
 	
 	/**

@@ -317,13 +317,21 @@ public class MarkdownWriter
 	 * Prints a URI to the output document.
 	 *
 	 * @param __uri The URI to print.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/01
 	 */
 	public void uri(String __uri)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__uri == null)
+			throw new NullPointerException("NARG");
+		
+		// Print it out
+		append("<");
+		append(__uri);
+		append(">");
 	}
 	
 	/**
@@ -331,13 +339,23 @@ public class MarkdownWriter
 	 *
 	 * @param __uri The URI to point to.
 	 * @param __text The display text for the URI.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/01
 	 */
 	public void uri(String __uri, String __text)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__uri == null || __text == null)
+			throw new NullPointerException("NARG");
+		
+		// Print it out
+		append("[");
+		append(__uri);
+		append("](");
+		append(__text);
+		append(")");
 	}
 	
 	/**
@@ -346,13 +364,25 @@ public class MarkdownWriter
 	 * @param __uri The URI to point to.
 	 * @param __text The display text for the URI.
 	 * @param __title The text text for the URI.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/01
 	 */
 	public void uri(String __uri, String __text, String __title)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__uri == null || __text == null || __title == null)
+			throw new NullPointerException("NARG");
+		
+		// Print it out
+		append("[");
+		append(__uri);
+		append("](");
+		append(__text);
+		append(" \"");
+		append(__title);
+		append("\")");
 	}
 	
 	/**

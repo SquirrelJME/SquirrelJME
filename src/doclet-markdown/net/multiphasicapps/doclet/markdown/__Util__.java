@@ -20,57 +20,5 @@ import java.nio.file.Paths;
  */
 class __Util__
 {
-	/**
-	 * Converts the qualified name of a class to a path.
-	 *
-	 * @param __cl The class to convert to a path.
-	 * @return The path for the given class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/10/01
-	 */
-	static Path __classToPath(MarkdownClass __cl)
-		throws NullPointerException
-	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Start with the blank path
-		Path rv = null;
-		
-		// Get the qualified name
-		String q = __cl.qualifiedName();
-		int n = q.length();
-		for (int i = 0; i < n; i++)
-		{
-			int nd = q.indexOf('.', i);
-			
-			// No more?
-			String m;
-			if (nd < 0)
-			{
-				m = q.substring(i);
-				nd = n;
-			}
-			
-			// Until the next dot
-			else
-				m = q.substring(i, nd);
-			
-			// Skip everything after it
-			i = nd;
-			
-			// Resolve
-			if (rv == null)
-				rv = Paths.get(m);
-			else
-				rv = rv.resolve(m);
-		}
-		
-		// At least always return an empty path
-		if (rv == null)
-			return Paths.get("");
-		return rv;
-	}
 }
 

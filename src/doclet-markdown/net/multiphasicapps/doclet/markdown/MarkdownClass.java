@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -45,11 +46,20 @@ public class MarkdownClass
 	/** The base path for the markdown file. */
 	protected final Path basemarkdownpath;
 	
+	/** The base path with Java extension. */
+	protected final Path basenamepathjava;
+	
 	/** The qualified name of this class. */
 	protected final String qualifiedname;
 	
 	/** The unqualified class name. */
 	protected final String unqualifiedname;
+	
+	/** The class name used. */
+	protected final ClassNameSymbol namesymbol;
+	
+	/** The containing class (will be null if not an inner class). */
+	protected final MarkdownClass containedin;
 	
 	/** The super class. */
 	protected final MarkdownClass superclass;
@@ -130,6 +140,10 @@ public class MarkdownClass
 			// Setup name for markdown file location
 			this.basemarkdownpath = __lowerPath(
 				p.resolveSibling(p.getFileName() + ".mkd"));
+			
+			// The path where the file should be, hopefully
+			this.basenamepathjava = p.resolveSibling(
+				p.getFileName() + ".java");
 		}
 		
 		// Get super class
@@ -141,6 +155,58 @@ public class MarkdownClass
 		// Add to superclass of list
 		if (superclass != null)
 			superclass.superclassof.put(qualifiedname, this);
+		
+		// Get contained class
+		ClassDoc cin = __cd.containingClass();
+		MarkdownClass incl = (cin == null ? null : __dm.markdownClass(cin));
+		this.containedin = incl;
+		
+		// The symbol for this name is just this class
+		if (incl == null)
+			this.namesymbol = ClassNameSymbol.of(
+				qualifiedname.replace('.', '/'));
+		
+		// Otherwise, use the parent class with a $ this class
+		else
+		{
+			// The simple name contains the dot in it, which must be removed
+			String sn = __cd.name();
+			int ldx = sn.lastIndexOf('.');
+			sn = sn.substring(ldx + 1);
+			
+			// Now use it
+			this.namesymbol = ClassNameSymbol.of(incl.namesymbol + "$" + sn);
+		}
+		
+		System.err.printf("DEBUG -- Name symbol = %s%n", this.namesymbol);
+	}
+	
+	/**
+	 * Returns the path which should contain the file.
+	 *
+	 * @return The containing file.
+	 * @since 2016/10/01
+	 */
+	public Path containingClassFile()
+	{
+		// If in another class, use that
+		MarkdownClass containedin = this.containedin;
+		if (containedin != null)
+			return containedin.containingClassFile();
+		
+		// Otherwise use the normal Java path
+		return this.basenamepathjava;
+	}
+	
+	/**
+	 * The path to the markdown file.
+	 *
+	 * @return The markdown path.
+	 * @since 2016/10/01
+	 */
+	public Path markdownPath()
+	{
+		return this.basemarkdownpath;
 	}
 	
 	/**
@@ -190,7 +256,8 @@ public class MarkdownClass
 			if (superclass != null)
 			{
 				md.print("Superclass: ");
-				md.uri(main.uriToClass(this, superclass), unqualifiedName());
+				md.uri(main.uriToClassMarkdown(this, superclass),
+					unqualifiedName());
 				md.println();
 			}
 			
