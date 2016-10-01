@@ -240,6 +240,8 @@ public class DocletMain
 				
 				// See if it exists
 				Path maybe = pp.resolve(want);
+				maybe = maybe.resolveSibling(maybe.getFileName().toString() +
+					".java");
 				if (Files.exists(maybe))
 				{
 					// Setup

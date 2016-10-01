@@ -35,7 +35,42 @@ class __Util__
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Start with the blank path
+		Path rv = null;
+		
+		// Get the qualified name
+		String q = __cl.qualifiedName();
+		int n = q.length();
+		for (int i = 0; i < n; i++)
+		{
+			int nd = q.indexOf('.', i);
+			
+			// No more?
+			String m;
+			if (nd < 0)
+			{
+				m = q.substring(i);
+				nd = n;
+			}
+			
+			// Until the next dot
+			else
+				m = q.substring(i, nd);
+			
+			// Skip everything after it
+			i = nd;
+			
+			// Resolve
+			if (rv == null)
+				rv = Paths.get(m);
+			else
+				rv = rv.resolve(m);
+		}
+		
+		// At least always return an empty path
+		if (rv == null)
+			return Paths.get("");
+		return rv;
 	}
 }
 
