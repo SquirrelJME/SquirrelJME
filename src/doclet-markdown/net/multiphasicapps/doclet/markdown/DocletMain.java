@@ -238,20 +238,31 @@ public class DocletMain
 				if (!Files.isDirectory(pp))
 					continue;
 				
-				// See if it exists
-				Path maybe = pp.resolve(want);
-				maybe = maybe.resolveSibling(maybe.getFileName().toString() +
-					".java");
-				if (Files.exists(maybe))
+				// Loop since some 
+				for (Path couldbe = pp.resolve(want); couldbe != null;)
 				{
-					// Setup
-					rv = pp.getFileName().toString();
+					// Need file
+					Path fn = couldbe.getFileName();
+					if (fn == null)
+						break;
 					
-					// Cache
-					classtoproject.put(__cl, rv);
+					// See if it exists
+					Path maybe = couldbe.resolveSibling(fn.toString() +
+						".java");
+					if (Files.exists(pp.resolve(maybe)))
+					{
+						// Setup
+						rv = pp.getFileName().toString();
 					
-					// Use it
-					return rv;
+						// Cache
+						classtoproject.put(__cl, rv);
+					
+						// Use it
+						return rv;
+					}
+					
+					// Go to parent
+					couldbe = couldbe.getParent();
 				}
 			}
 		}
