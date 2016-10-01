@@ -14,13 +14,19 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
+import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
@@ -215,7 +221,47 @@ public class DocletMain
 		if (rv != null)
 			return rv;
 		
-		throw new Error("TODO");
+		// Need project directory to mass scan directories
+		Path pd = this.projectsdir;
+		if (pd == null)
+			return Objects.toString(this.project, "unknown");
+		
+		// The class to find
+		Path want = __Util__.__classToPath(__cl);
+		
+		// Go through everything
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(pd))
+		{
+			for (Path pp : ds)
+			{
+				// Ignore non-files
+				if (!Files.isDirectory(pp))
+					continue;
+				
+				// See if it exists
+				Path maybe = pp.resolve(want);
+				if (Files.exists(maybe))
+				{
+					// Setup
+					rv = pp.getFileName().toString();
+					
+					// Cache
+					classtoproject.put(__cl, rv);
+					
+					// Use it
+					return rv;
+				}
+			}
+		}
+		
+		// {@squirreljme.error CF04 Could not list directory contents.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("CF04", e);
+		}
+		
+		// Unknown
+		return "unknown";
 	}
 	
 	/**
@@ -258,6 +304,20 @@ public class DocletMain
 		// Check
 		if (__from == null || __to == null)
 			throw new NullPointerException("NARG");
+		
+		// Get projects for both classes
+		String pa = projectOfClass(__from),
+			pb = projectOfClass(__to);
+		
+		// Convert to class names
+		BinaryNameSymbol la = ClassLoaderNameSymbol.of(
+			__from.qualifiedName()).asBinaryName(),
+			lb = ClassLoaderNameSymbol.of(
+				__from.qualifiedName()).asBinaryName();
+		
+		// Debug
+		System.err.printf("DEBUG -- %s (%s) -> %s (%s)%n", __from, pa,
+			__to, pb);
 		
 		throw new Error("TODO");
 	}

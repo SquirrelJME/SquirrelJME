@@ -97,6 +97,17 @@ public final class ClassLoaderNameSymbol
 	}
 	
 	/**
+	 * Returns this class loader symbol as a binary name symbol.
+	 *
+	 * @return The symbol as a binary name.
+	 * @since 2016/10/01
+	 */
+	public BinaryNameSymbol asBinaryName()
+	{
+		return asClassName().asBinaryName();
+	}
+	
+	/**
 	 * Returns this class loader symbol as a class name symbol.
 	 *
 	 * @return The symbol as a class name.

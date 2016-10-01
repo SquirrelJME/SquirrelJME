@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.doclet.markdown;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Extra utilities that may be needed.
  *
@@ -17,5 +20,22 @@ package net.multiphasicapps.doclet.markdown;
  */
 class __Util__
 {
+	/**
+	 * Converts the qualified name of a class to a path.
+	 *
+	 * @param __cl The class to convert to a path.
+	 * @return The path for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	static Path __classToPath(MarkdownClass __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 
