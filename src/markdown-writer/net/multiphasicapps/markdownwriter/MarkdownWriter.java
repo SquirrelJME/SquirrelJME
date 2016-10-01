@@ -139,6 +139,17 @@ public class MarkdownWriter
 	}
 	
 	/**
+	 * Returns the current column being written.
+	 *
+	 * @return The current column being written.
+	 * @since 2016/10/01
+	 */
+	public int currentColumn()
+	{
+		return this._column;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/13
 	 */
@@ -256,6 +267,48 @@ public class MarkdownWriter
 		
 		// Forma
 		this.formatter.format(__f, __args);
+	}
+	
+	/**
+	 * Prints a URI to the output document.
+	 *
+	 * @param __uri The URI to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	public void uri(String __uri)
+		throws NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Prints a URI to the output document with the given display text.
+	 *
+	 * @param __uri The URI to point to.
+	 * @param __text The display text for the URI.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	public void uri(String __uri, String __text)
+		throws NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Prints a URI to the output document with the given display text.
+	 *
+	 * @param __uri The URI to point to.
+	 * @param __text The display text for the URI.
+	 * @param __title The text text for the URI.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/01
+	 */
+	public void uri(String __uri, String __text, String __title)
+		throws NullPointerException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
