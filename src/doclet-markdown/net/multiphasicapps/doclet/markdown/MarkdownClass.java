@@ -171,6 +171,20 @@ public class MarkdownClass
 		// Add to superclass of list
 		if (superclass != null)
 			superclass.superclassof.put(qualifiedname, this);
+		
+		// Handle interfaces
+		Map<String, MarkdownClass> interfaces = this.interfaces;
+		for (ClassDoc in : __cd.interfaces())
+		{
+			// Locate class
+			MarkdownClass inc = __dm.markdownClass(in);
+			
+			// Implemented by this class
+			interfaces.put(inc.qualifiedname, inc);
+			
+			// That class implemented by this one
+			inc.interfacesof.put(qualifiedname, this);
+		}
 	}
 	
 	/**
@@ -275,6 +289,12 @@ public class MarkdownClass
 			ClassDoc doc = this.doc;
 			__writeDocFormatted(md, doc.commentText());
 			
+			// Fields
+			md.header(true, 2, "Fields");
+			
+			// Methods
+			md.header(true, 2, "Methods");
+			
 			// Write class tree last
 			md.header(true, 2, "Inheritance");
 			
@@ -297,9 +317,42 @@ public class MarkdownClass
 					superclass.unqualifiedName());
 			}
 			
+			// Print implemented interfaces
+			Collection<MarkdownClass> implints = this.interfaces.values();
+			if (!implints.isEmpty())
+			{
+				// Next item?
+				if (inhnext)
+					md.listNext();
+				inhnext = true;
+				
+				// List group title
+				md.print("Implements:");
+				
+				// Enter a new list
+				md.listStart();
+				boolean ilnext = false;
+				
+				// Print interfaces
+				for (MarkdownClass in : implints)
+				{
+					// Next?
+					if (ilnext)
+						md.listNext();
+					ilnext = true;
+					
+					// Link to it
+					md.uri(main.uriToClassMarkdown(this, in),
+						in.unqualifiedName());
+				}
+				
+				// End it
+				md.listEnd();
+			}
+			
 			// Classes which extend this class
 			Collection<MarkdownClass> scoflist = this.superclassof.values();
-			if (!superclassof.isEmpty())
+			if (!scoflist.isEmpty())
 			{
 				// Next item?
 				if (inhnext)
@@ -324,6 +377,39 @@ public class MarkdownClass
 					// Link to it
 					md.uri(main.uriToClassMarkdown(this, scof),
 						scof.unqualifiedName());
+				}
+				
+				// End
+				md.listEnd();
+			}
+			
+			// Classes which implement this class
+			Collection<MarkdownClass> icoflist = this.interfacesof.values();
+			if (!icoflist.isEmpty())
+			{
+				// Next item?
+				if (inhnext)
+					md.listNext();
+				inhnext = true;
+				
+				// Group title
+				md.print("Implemented by:");
+				
+				// Indent some more
+				md.listStart();	
+				boolean iconext = false;
+				
+				// Go through all interfaces (for this project only)
+				for (MarkdownClass icof : icoflist)
+				{
+					// Next item?
+					if (iconext)
+						md.listNext();
+					iconext = true;
+					
+					// Link to it
+					md.uri(main.uriToClassMarkdown(this, icof),
+						icof.unqualifiedName());
 				}
 				
 				// End

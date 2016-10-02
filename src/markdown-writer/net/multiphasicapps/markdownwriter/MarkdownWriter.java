@@ -158,6 +158,12 @@ public class MarkdownWriter
 		
 		// Setup section
 		__SectionHeader__ header = new __SectionHeader__(this, __abs, __level);
+		
+		// Print header text
+		append(__s);
+		
+		// Enter paragraph mode
+		paragraph();
 	}
 	
 	/**
@@ -194,6 +200,18 @@ public class MarkdownWriter
 		throws IOException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Enters paragraph mode which may be used .
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/02
+	 */
+	public void paragraph()
+		throws IOException
+	{
+		new __SectionParagraph__(this);
 	}
 	
 	/**

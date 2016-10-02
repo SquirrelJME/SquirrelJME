@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.markdownwriter;
 
+import java.io.IOException;
 import java.util.Deque;
 
 /**
@@ -37,11 +38,12 @@ abstract class __Section__
 	 * Initializes a new section.
 	 *
 	 * @param __mdw The writer where characters are placed.
+	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/02
 	 */
 	__Section__(MarkdownWriter __mdw)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__mdw == null)
@@ -53,6 +55,24 @@ abstract class __Section__
 		// Is there anything above this?
 		__Section__ sectionbefore = __mdw._section;
 		this.sectionbefore = sectionbefore;
+		
+		// If there is a section before this then end this
+		if (sectionbefore != null)
+			sectionbefore.__endSection();
+		
+		// Set new section
+		__mdw._section = this;
+	}
+	
+	/**
+	 * This may be replaced by sub-classes to end the specified section.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/02
+	 */
+	void __endSection()
+		throws IOException
+	{
 	}
 }
 

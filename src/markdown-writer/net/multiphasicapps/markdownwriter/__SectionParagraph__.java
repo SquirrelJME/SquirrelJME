@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.markdownwriter;
 
+import java.io.IOException;
+
 /**
  * This is for writing normal text that exists within a paragraph.
  *
@@ -22,9 +24,11 @@ class __SectionParagraph__
 	 * Initializes the paragraph.
 	 *
 	 * @param __mkd The owning writer.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */
 	__SectionParagraph__(MarkdownWriter __mdw)
+		throws IOException
 	{
 		super(__mdw);
 		

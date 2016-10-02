@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.markdownwriter;
 
+import java.io.IOException;
+
 /**
  * This section is used for the printing of headers.
  *
@@ -26,9 +28,11 @@ class __SectionHeader__
 	 * otherwise level adjustment will be relative.
 	 * @param __level The level to set to if absolute or relative from a
 	 * previous level.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */
 	__SectionHeader__(MarkdownWriter __mdw, boolean __abs, int __level)
+		throws IOException
 	{
 		super(__mdw);
 		

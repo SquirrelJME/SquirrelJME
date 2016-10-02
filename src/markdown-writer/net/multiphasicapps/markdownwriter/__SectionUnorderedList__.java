@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.markdownwriter;
 
+import java.io.IOException;
+
 /**
  * This is the unordered list section which is used to place non-numbered
  * bullet point lists.
@@ -23,9 +25,11 @@ class __SectionUnorderedList__
 	 * Initializes the unordered list section.
 	 *
 	 * @param __mkd The owning writer.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */
 	__SectionUnorderedList__(MarkdownWriter __mdw)
+		throws IOException
 	{
 		super(__mdw);
 		

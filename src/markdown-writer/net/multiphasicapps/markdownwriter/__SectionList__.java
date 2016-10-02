@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.markdownwriter;
 
+import java.io.IOException;
+
 /**
  * This is the base section for numerical values.
  *
@@ -22,9 +24,11 @@ abstract class __SectionList__
 	 * Initializes the base for lists.
 	 *
 	 * @param __mkd The owning writer.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/02
 	 */
 	__SectionList__(MarkdownWriter __mdw)
+		throws IOException
 	{
 		super(__mdw);
 		
