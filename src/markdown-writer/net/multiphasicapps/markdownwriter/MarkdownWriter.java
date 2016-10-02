@@ -39,7 +39,7 @@ public class MarkdownWriter
 {
 	/** Markdown right column limit. */
 	public static final int RIGHT_COLUMN =
-		72;
+		76;
 	
 	/** Where text may be written to. */
 	protected final Appendable append;
@@ -49,6 +49,9 @@ public class MarkdownWriter
 	
 	/** The current section being written. */
 	volatile __Section__ _section;
+	
+	/** The current text column. */
+	volatile int _column;
 	
 	/**
 	 * Initializes the markdown writer.
@@ -79,7 +82,7 @@ public class MarkdownWriter
 	public MarkdownWriter append(char __c)
 		throws IOException
 	{
-		__sectionedPut(__c, false);
+		__put(__c, false);
 		return this;
 	}
 	
@@ -103,7 +106,7 @@ public class MarkdownWriter
 		throws IOException
 	{
 		for (int i = __s; i < __e; i++)
-			__sectionedPut(__cs.charAt(i), false);
+			__put(__cs.charAt(i), false);
 		return this;
 	}
 	
@@ -302,9 +305,9 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		__sectionedPut('<', true);
+		__put('<', true);
 		append(__uri);
-		__sectionedPut('>', true);
+		__put('>', true);
 	}
 	
 	/**
@@ -324,12 +327,12 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		__sectionedPut('[', true);
+		__put('[', true);
 		append(__text);
-		__sectionedPut(']', true);
-		__sectionedPut('(', true);
+		__put(']', true);
+		__put('(', true);
 		append(__uri);
-		__sectionedPut(')', true);
+		__put(')', true);
 	}
 	
 	/**
@@ -350,16 +353,16 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		__sectionedPut('[', true);
+		__put('[', true);
 		append(__text);
-		__sectionedPut(']', true);
-		__sectionedPut('(', true);
+		__put(']', true);
+		__put('(', true);
 		append(__uri);
-		__sectionedPut(' ', true);
-		__sectionedPut('"', true);
+		__put(' ', true);
+		__put('"', true);
 		append(__title);
-		__sectionedPut('"', true);
-		__sectionedPut(')', true);
+		__put('"', true);
+		__put(')', true);
 	}
 	
 	/**
@@ -372,7 +375,7 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/09/13
 	 */
-	private void __sectionedPut(char __c, boolean __nospec)
+	void __put(char __c, boolean __nospec)
 		throws IOException
 	{
 		// Ignore CR
@@ -382,7 +385,23 @@ public class MarkdownWriter
 		// Direct place if no special handling
 		if (__nospec)
 		{
-			append(__c);
+			// Add it
+			this.append.append(__c);
+			
+			// Newline resets column
+			int column = this._column;
+			if (__c == '\n')
+				this._column = (column = 0);
+			
+			// Otherwise it goes up
+			else
+				this._column = (++column);
+			
+			// If at the end, go to the next line
+			if (column >= RIGHT_COLUMN)
+				__put('\n', true);
+			
+			// Done
 			return;
 		}
 		
@@ -394,10 +413,10 @@ public class MarkdownWriter
 		// Character needs escaping?
 		if (__c == '[' || __c == '(' || __c == '*' || __c == '_' ||
 			__c == '\\' || __c == '#' || __c == '<')
-			section.__sectionPut('\\');
+			section.__process('\\');
 		
 		// Place character
-		section.__sectionPut(__c);
+		section.__process(__c);
 	}
 }
 

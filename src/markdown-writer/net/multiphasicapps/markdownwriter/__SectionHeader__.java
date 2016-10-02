@@ -36,7 +36,10 @@ class __SectionHeader__
 	{
 		super(__mdw);
 		
-		throw new Error("TODO");
+		// Modify level
+		int level = this._level;
+		level = (__abs ? Math.min(1, __level) : Math.min(1, level + __level));
+		this._level = level;
 	}
 	
 	/**
@@ -44,10 +47,21 @@ class __SectionHeader__
 	 * @since 2016/10/02
 	 */
 	@Override
-	void __sectionPut(char __c)
+	void __process(char __c)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// If on column zero, add the header bits
+		MarkdownWriter writer = this.writer;
+		int level = this._level;
+		if (writer._column == 0)
+		{
+			for (int i = 0; i < level; i++)
+				writer.__put('#', true);
+			writer.__put(' ', true);
+		}
+		
+		// Add character
+		writer.__put(__c, true);
 	}
 }
 

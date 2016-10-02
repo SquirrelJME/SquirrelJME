@@ -41,7 +41,7 @@ class __SectionUnorderedList__
 	 * @since 2016/10/02
 	 */
 	@Override
-	void __sectionPut(char __c)
+	void __process(char __c)
 		throws IOException
 	{
 		throw new Error("TODO");

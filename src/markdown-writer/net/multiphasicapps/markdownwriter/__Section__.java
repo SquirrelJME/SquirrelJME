@@ -34,6 +34,9 @@ abstract class __Section__
 	volatile MarkdownTextStyle _style =
 		MarkdownTextStyle.NORMAL;
 	
+	/** The section header level. */
+	volatile int _level;
+	
 	/**
 	 * Initializes a new section.
 	 *
@@ -62,6 +65,9 @@ abstract class __Section__
 		
 		// Set new section
 		__mdw._section = this;
+		
+		// Set some basic details
+		this._level = (sectionbefore == null ? 1 : sectionbefore._level);
 	}
 	
 	/**
@@ -71,7 +77,7 @@ abstract class __Section__
 	 * @throws IOException On write errors.
 	 * @since 2016/10/02
 	 */
-	abstract void __sectionPut(char __c)
+	abstract void __process(char __c)
 		throws IOException;
 	
 	/**
