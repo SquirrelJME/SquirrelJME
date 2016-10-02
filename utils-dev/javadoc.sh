@@ -97,7 +97,7 @@ cat "javadoc/.classes" | while read __line
 do
 	# Name and markdown file
 	__name="$(echo "$__line" | cut -d ' ' -f 1)"
-	__file="$(echo "$__line" | cut -d ' ' -f 1)"
+	__file="$(echo "$__line" | cut -d ' ' -f 2 | sed 's/_/\\_/g')"
 	
 	# Print class list
 	echo " * [$__name]($__file)"
