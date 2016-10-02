@@ -33,10 +33,16 @@ __docroot="$(pwd)/javadoc"
 # Go to the project home directory so fossil works
 cd "$__exedir/.."
 
+# Count the number of documents that should exist
+__ad="$(find "$__exedir/../src" | grep '\.java$' | wc -l)"
+__hd="$(expr "$(expr "$__ad" "/" "2")" "+" "$(expr "$__ad" "/" "4")")"
+
 # If half of the documents fail to generate, then do not generate at all
-if [ "$(cd "$__docroot"; find -type f | grep '\.mkd$' | wc -l)" -lt "512" ]
+__nd="$(cd "$__docroot"; find -type f | grep '\.mkd$' | wc -l)"
+if [ "$__nd" -lt "$__hd" ]
 then
 	echo "Not enough documents, not going to update."
+	echo "$__nd did not meet threshold of $__hd for $__ad sources."
 	exit 1
 fi
 
