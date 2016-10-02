@@ -333,10 +333,10 @@ public class DocletMain
 		}
 		
 		// Write project index and such also
+		Path outpath = outputPath(Paths.get("classes.mkd"));
 		try (MarkdownWriter mdw = new MarkdownWriter(new OutputStreamWriter(
-			Channels.newOutputStream(FileChannel.open(outputPath(Paths.get(
-			"classes.mkd")), StandardOpenOption.WRITE,
-			StandardOpenOption.CREATE)), "utf-8")))
+			Channels.newOutputStream(FileChannel.open(outpath,
+			StandardOpenOption.WRITE, StandardOpenOption.CREATE)), "utf-8")))
 		{
 			// Project Title
 			mdw.header(true, 1, project);
@@ -371,10 +371,29 @@ public class DocletMain
 			mdw.listEnd();
 		}
 		
-		// {@squirreljme.error CF06 Failed to write the class table.}
-		catch (IOException e)
+		// Failed to write, delete the produced file
+		catch (RuntimeException|Error|IOException e)
 		{
-			throw new Error("CF06", e);
+			// Delete output markdown
+			try
+			{
+				Files.delete(outpath);
+			}
+			
+			// Ignore
+			catch (IOException f)
+			{
+			}
+			
+			// Rethrow exception
+			if (e instanceof RuntimeException)
+				throw (RuntimeException)e;
+			else if (e instanceof Error)
+				throw (Error)e;
+			
+			// {@squirreljme.error CF06 Failed to write the class table.}
+			else
+				throw new RuntimeException("CF06", e);
 		}
 	}
 	
