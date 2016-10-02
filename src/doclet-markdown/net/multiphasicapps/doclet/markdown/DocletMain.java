@@ -13,8 +13,11 @@ package net.multiphasicapps.doclet.markdown;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
@@ -34,6 +37,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
@@ -313,6 +317,9 @@ public class DocletMain
 		try
 		{
 			Files.createDirectories(outputPath(Paths.get("foo")).getParent());
+			
+			// Add to projects file
+			__addToFile(outdir.getParent().resolve("projects"), project);
 		}
 		
 		// {@squirreljme.error CF07 Failed to create output directories.}
@@ -335,6 +342,7 @@ public class DocletMain
 			boolean start = false;
 			
 			// Write all classes
+			Path classesoutdir = outdir.getParent().resolve("classes");
 			for (MarkdownClass mc : this.classes.values())
 				if (mc._implicit)
 				{
@@ -347,7 +355,12 @@ public class DocletMain
 					start = true;
 					
 					// Link to it
-					mdw.uri(mc.markdownPath().toString(), mc.qualifiedName());
+					String qn = mc.qualifiedName();
+					Path mdp;
+					mdw.uri((mdp = mc.markdownPath()).toString(), qn);
+					
+					// Add to the global class list
+					__addToFile(classesoutdir, qn + " " + outputPath(mdp));
 				}
 			
 			// End list
@@ -550,6 +563,49 @@ public class DocletMain
 		
 		// Processed
 		return true;
+	}
+	
+	/**
+	 * Adds a single file to the specified file and if required adds the given
+	 * string to the output file.
+	 *
+	 * @param __p The file to add to.
+	 * @param __str The string to add.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/02
+	 */
+	private static void __addToFile(Path __p, String __str)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null || __str == null)
+			throw new NullPointerException("NARG");
+		
+		// Read in lines
+		Set<String> lines = new SortedTreeSet<>();
+		if (Files.exists(__p))
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				Channels.newInputStream(FileChannel.open(__p,
+				StandardOpenOption.READ)), "utf-8")))
+			{
+				String s;
+				while (null != (s = br.readLine()))
+					lines.add(s);
+			}
+		
+		// Add our string
+		lines.add(__str);
+		
+		// Write lines
+		try (PrintStream ps = new PrintStream(Channels.newOutputStream(
+			FileChannel.open(__p, StandardOpenOption.WRITE,
+			StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)),
+			true, "utf-8"))
+		{
+			for (String s : lines)
+				ps.println(s);
+		}
 	}
 	
 	/**

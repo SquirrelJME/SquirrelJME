@@ -76,5 +76,30 @@ do
 		-bootclasspath "$__dpath" \
 		-sourcepath "$__dir" \
 		$__sf
-done 
+done
+
+# Generate Project Table of Contents
+(echo "# By Project"
+echo
+
+# Echo projects file
+cat "javadoc/projects" | while read __line
+do
+	echo " * [$__line]($__line/classes.mkd)"
+done) > javadoc/by-project.mkd
+
+# And every single class that exists
+(echo "# By Class"
+echo
+
+# Echo all class
+cat "javadoc/classes" | while read __line
+do
+	# Name and markdown file
+	__name="$(echo "$__line" | cut -d ' ' -f 1)"
+	__file="$(echo "$__line" | cut -d ' ' -f 1)"
+	
+	# Print class list
+	echo " * [$__name]($__file)"
+done) > javadoc/by-class.mkd
 
