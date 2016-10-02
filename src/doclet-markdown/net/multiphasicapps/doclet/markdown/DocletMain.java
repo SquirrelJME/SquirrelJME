@@ -313,6 +313,10 @@ public class DocletMain
 		for (ClassDoc cd : root.classes())
 			markdownClass(cd)._implicit = true;
 		
+		// The current project
+		String project = this.project;
+		Path outdir = this.outdir;
+		
 		// Need to create directories to place the class table
 		try
 		{
@@ -335,7 +339,7 @@ public class DocletMain
 			StandardOpenOption.CREATE)), "utf-8")))
 		{
 			// Project Title
-			mdw.headerSameLevel(this.project);
+			mdw.headerSameLevel(project);
 			
 			// Start list
 			mdw.listStart();
@@ -360,7 +364,7 @@ public class DocletMain
 					mdw.uri((mdp = mc.markdownPath()).toString(), qn);
 					
 					// Add to the global class list
-					__addToFile(classesoutdir, qn + " " + outputPath(mdp));
+					__addToFile(classesoutdir, qn + " project/" + mdp);
 				}
 			
 			// End list
