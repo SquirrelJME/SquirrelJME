@@ -189,10 +189,16 @@ public class Bootstrapper
 		if (__args == null)
 			__args = new String[0];
 		
+		// {@squirreljme.error CL07 No main class was specified for this
+		// project.}
+		String mainclass = __bin.mainClass();
+		if (mainclass == null)
+			throw new RuntimeException("CL08");
+		
 		// Launch program
 		CaughtException ce = new CaughtException();
 		Thread t = this.launcher.launch(new __Resources__(__bin),
-			ce, __bin.mainClass(), __args);
+			ce, mainclass, __args);
 		
 		// Run the thread
 		t.run();
