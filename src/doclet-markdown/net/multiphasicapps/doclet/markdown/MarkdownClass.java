@@ -266,17 +266,17 @@ public class MarkdownClass
 		{
 			// Top level header
 			String qualifiedname = this.qualifiedname;
-			md.headerSameLevel(qualifiedname);
+			md.header(true, 1, qualifiedname);
 			
 			// Description of the class
-			md.headerSameLevel("Description");
+			md.header(true, 2, "Description");
 			
 			// Describe the class
 			ClassDoc doc = this.doc;
 			__writeDocFormatted(md, doc.commentText());
 			
 			// Write class tree last
-			md.headerSameLevel("Inheritance");
+			md.header(true, 2, "Inheritance");
 			
 			// Start inheritence list tree
 			md.listStart();

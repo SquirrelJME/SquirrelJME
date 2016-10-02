@@ -41,36 +41,14 @@ public class MarkdownWriter
 	public static final int RIGHT_COLUMN =
 		72;
 	
-	/** The newline sequence. */
-	private static final String _NEWLINE =
-		String.format("%n");
-	
 	/** Where text may be written to. */
 	protected final Appendable append;
 	
 	/** Formatter to write output text. */
 	protected final Formatter formatter;
 	
-	/** The current style stack which selects which style to use. */
-	private final Deque<__State__> _stack =
-		new ArrayDeque<>();
-	
-	/** The current column being written to. */
-	private volatile int _column;
-	
-	/** Columns on the last line. */
-	private volatile int _lastcols;
-	
-	/**
-	 * Initializes the default state.*
-	 *
-	 * @since 2016/09/13
-	 */
-	{
-		__State__ init;
-		this._stack.push((init = new __State__()));
-		init._level = __LevelType__.HEADER;
-	}
+	/** The current section being written. */
+	volatile __Section__ _section;
 	
 	/**
 	 * Initializes the markdown writer.
@@ -101,7 +79,7 @@ public class MarkdownWriter
 	public MarkdownWriter append(char __c)
 		throws IOException
 	{
-		__put(__c);
+		__sectionedPut(__c, false);
 		return this;
 	}
 	
@@ -125,7 +103,7 @@ public class MarkdownWriter
 		throws IOException
 	{
 		for (int i = __s; i < __e; i++)
-			__put(__cs.charAt(i));
+			__sectionedPut(__cs.charAt(i), false);
 		return this;
 	}
 	
@@ -144,28 +122,6 @@ public class MarkdownWriter
 	}
 	
 	/**
-	 * Returns the current column being written.
-	 *
-	 * @return The current column being written.
-	 * @since 2016/10/01
-	 */
-	public int currentColumn()
-	{
-		return this._column;
-	}
-	
-	/**
-	 * Returns the current virtual column position.
-	 *
-	 * @return The virtual column position.
-	 * @since 2016/10/01
-	 */
-	public int currentVirualColumn()
-	{
-		return this._column;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/13
 	 */
@@ -180,89 +136,28 @@ public class MarkdownWriter
 	}
 	
 	/**
-	 * Prints a header that is of a lower level and enters that section.
+	 * Prints the specified header into the output document.
 	 *
+	 * @param __abs If {@code true} then the header is at the specified level,
+	 * otherwise if {@code false} it will be relative to the existing header
+	 * level.
+	 * @param __level If absolute then this level is set where the level is
+	 * based on an index of one, otherwise this will be the relative header
+	 * level adjustment from the current header level.
 	 * @param __s The text to print.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/13
 	 */
-	public void headerNextLevel(String __s)
+	public void header(boolean __abs, int __level, String __s)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Prints a header at the same level and enters the section.
-	 *
-	 * @param __s The text to print.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/13
-	 */
-	public void headerSameLevel(String __s)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		// Get the topmost stack item
-		Deque<__State__> stack = this._stack;
-		__State__ top;
-		
-		// Pop lists and other things until a header is reached
-		while ((top = stack.peek())._level != __LevelType__.HEADER)
-			throw new Error("TODO");
-		
-		// Setup new style and push it to the top
-		__State__ now = new __State__();
-		int depth = top._depth;
-		now._depth = depth;
-		now._level = __LevelType__.HEADER;
-		
-		// Add newline before the header, which may end a text style
-		__put('\n');
-		
-		// Replace the top-most stack entry since it is forever gone when
-		// new top-level headers are started
-		stack.pop();
-		stack.push(now);
-		
-		// Add new line if on a column, otherwise the header will appear
-		// after text on a line.
-		if (this._column > 0)
-			__put('\n');
-		
-		// Print opening hashes
-		for (int i = 1; i <= depth; i++)
-			__put('#', true);
-		
-		// Space hash
-		__put(' ');
-		
-		// Append the string
-		int n = __s.length();
-		for (int i = 0; i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			// Ignore these
-			if (c == '\n' || c == '\t')
-				continue;
-			
-			// Place it
-			__put(c);
-		}
-		
-		// Newline after header and an extra gap
-		__put('\n');
-		__put('\n');
+		// Setup section
+		__SectionHeader__ header = new __SectionHeader__(this, __abs, __level);
 	}
 	
 	/**
@@ -274,19 +169,7 @@ public class MarkdownWriter
 	public void listEnd()
 		throws IOException
 	{
-		// Get topmost state
-		Deque<__State__> stack = this._stack;
-		__State__ top = stack.peek();
-		
-		// If not a list, ignore
-		if (top._level != __LevelType__.LIST)
-			return;
-		
-		// Pop it off
-		stack.pop();
-		
-		// Add spacing line
-		__putNewline(true);
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -298,23 +181,7 @@ public class MarkdownWriter
 	public void listNext()
 		throws IOException
 	{
-		// Get topmost state
-		Deque<__State__> stack = this._stack;
-		__State__ top = stack.peek();
-		
-		// If not a list, ignore
-		if (top._level != __LevelType__.LIST)
-			return;
-		
-		// Add spacing line
-		__putNewline(true);
-		
-		// Indent to the asterisk
-		int indent = top._indent;
-		for (int i = 0; i < indent; i++)
-			__put(' ', true);
-		__put('*', true);
-		__put(' ', true);
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -326,31 +193,7 @@ public class MarkdownWriter
 	public void listStart()
 		throws IOException
 	{
-		// Add spacing newline for the list start, if not on the first column
-		if (currentVirualColumn() > 0)
-			println();
-		
-		// Get topmost state (for indentation level)
-		Deque<__State__> stack = this._stack;
-		__State__ top = stack.peek();
-		int indent = top._indent;
-		
-		// Create new state
-		__State__ now = new __State__();
-		now._level = __LevelType__.LIST;
-		
-		// If there is no indentation then indent only one:
-		//  * Indented once.
-		// However if there is another identation level, add 3
-		//  * Was indented once.
-		//    * Now here
-		now._indent = (indent == 0 ? 1 : indent + 3);
-		
-		// Push state
-		stack.push(now);
-		
-		// Go to the next item on the list
-		listNext();
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -363,7 +206,7 @@ public class MarkdownWriter
 	public void print(char __c)
 		throws IOException
 	{
-		__put(__c, false);
+		append(__c);
 	}
 	
 	/**
@@ -395,7 +238,7 @@ public class MarkdownWriter
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// Forma
+		// Format
 		this.formatter.format(__f, __args);
 	}
 	
@@ -408,7 +251,7 @@ public class MarkdownWriter
 	public void println()
 		throws IOException
 	{
-		printf(_NEWLINE);
+		append('\n');
 	}
 	
 	/**
@@ -441,9 +284,9 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		__put('<', true);
+		__sectionedPut('<', true);
 		append(__uri);
-		__put('>', true);
+		__sectionedPut('>', true);
 	}
 	
 	/**
@@ -463,12 +306,12 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		__put('[', true);
+		__sectionedPut('[', true);
 		append(__text);
-		__put(']', true);
-		__put('(', true);
+		__sectionedPut(']', true);
+		__sectionedPut('(', true);
 		append(__uri);
-		__put(')', true);
+		__sectionedPut(')', true);
 	}
 	
 	/**
@@ -489,33 +332,21 @@ public class MarkdownWriter
 			throw new NullPointerException("NARG");
 		
 		// Print it out
-		__put('[', true);
+		__sectionedPut('[', true);
 		append(__text);
-		__put(']', true);
-		__put('(', true);
+		__sectionedPut(']', true);
+		__sectionedPut('(', true);
 		append(__uri);
-		__put(' ', true);
-		__put('"', true);
+		__sectionedPut(' ', true);
+		__sectionedPut('"', true);
 		append(__title);
-		__put('"', true);
-		__put(')', true);
+		__sectionedPut('"', true);
+		__sectionedPut(')', true);
 	}
 	
 	/**
-	 * Places a single character into the output.
-	 *
-	 * @param __c The character to put.
-	 * @throws IOException On write errors.
-	 * @since 2016/09/13
-	 */
-	private void __put(char __c)
-		throws IOException
-	{
-		__put(__c, false);
-	}
-	
-	/**
-	 * Places a single character into the output.
+	 * Places a single character into the output sending the character to
+	 * be printed to the currently being written to section.
 	 *
 	 * @param __c The character to put.
 	 * @param __nospec If {@code true} then the character is not given
@@ -523,89 +354,14 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/09/13
 	 */
-	private void __put(char __c, boolean __nospec)
+	private void __sectionedPut(char __c, boolean __nospec)
 		throws IOException
 	{
-		// Write here
-		Appendable append = this.append;
-		int column = this._column;
-		int lastcols = this._lastcols;
-		__State__ state = this._stack.peek();
-		MarkdownTextStyle style = state._style;
+		// Ignore CR
+		if (__c == '\r')
+			return;
 		
-		// No special handling used
-		if (!__nospec)
-		{
-			// Ignore newline on column zero following a line with no
-			// columns
-			if (lastcols <= 0 && column <= 0 && (__c == '\r' || __c == '\n'))
-				return;
-			
-			// Right column exceeded? Move to the next line
-			if (column >= RIGHT_COLUMN)
-				__put('\n', true);
-			
-			// Escape?
-			if ((column <= 0 && __c == '#') || __c == '`' || __c == '\\' ||
-				(style.isNormal() && (__c == '*' || __c == '_' || __c == '(' ||
-				__c == '[')))
-				__put('\\', true);
-			
-			// Add it
-			__put(__c, true);
-			
-			// Column may have changed, adjust it
-			column = this._column;
-		}
-		
-		// Add it directly
-		else
-		{
-			append.append(__c);
-		
-			// Modify column, but only when raw since everything eventually
-			// reaches this point.
-			switch (__c)
-			{
-					// Tab, align to 4
-				case '\t':
-					column = ((column + 3) & (~3));
-					break;
-			
-					// A new line
-					// Remember old columns on line for newline based
-					// skipping
-				case '\r':
-				case '\n':
-					this._lastcols = column;
-					column = 0;
-					break;
-				
-					// Normal, add one character
-				default:
-					column = column + 1;
-					break;
-			}
-		
-			// Set
-			this._column = column;
-		}
+		throw new Error("TODO");
 	}
-	
-	/**
-	 * Puts a newline in the output.
-	 *
-	 * @param __spec Ignore special handling?
-	 * @throws IOException On write errors.
-	 * @since 2016/10/01
-	 */
-	private void __putNewline(boolean __nospec)
-		throws IOException
-	{
-		String nl = MarkdownWriter._NEWLINE;
-		int n = nl.length();
-		for (int i = 0; i < n; i++)
-			__put(nl.charAt(i), __nospec);
-	} 
 }
 

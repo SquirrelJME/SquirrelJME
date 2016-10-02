@@ -339,7 +339,7 @@ public class DocletMain
 			StandardOpenOption.CREATE)), "utf-8")))
 		{
 			// Project Title
-			mdw.headerSameLevel(project);
+			mdw.header(true, 1, project);
 			
 			// Start list
 			mdw.listStart();

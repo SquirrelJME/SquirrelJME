@@ -11,25 +11,24 @@
 package net.multiphasicapps.markdownwriter;
 
 /**
- * This is a structure which contains the current state of the markdown style.
+ * This is the base section for numerical values.
  *
- * @since 2016/09/13
+ * @since 2016/10/02
  */
-final class __State__
+abstract class __SectionList__
+	extends __Section__
 {
-	/** The current text style to use. */
-	volatile MarkdownTextStyle _style =
-		MarkdownTextStyle.NORMAL;
-	
-	/** The header depth. */
-	volatile int _depth =
-		1;
-	
-	/** The level type. */
-	volatile __LevelType__ _level;
-	
-	/** The current indentation level (in spaces). */
-	volatile int _indent =
-		0;
+	/**
+	 * Initializes the base for lists.
+	 *
+	 * @param __mkd The owning writer.
+	 * @since 2016/10/02
+	 */
+	__SectionList__(MarkdownWriter __mdw)
+	{
+		super(__mdw);
+		
+		throw new Error("TODO");
+	}
 }
 

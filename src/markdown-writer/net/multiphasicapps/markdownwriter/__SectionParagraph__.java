@@ -11,19 +11,24 @@
 package net.multiphasicapps.markdownwriter;
 
 /**
- * Specifies the type of level that is used.
+ * This is for writing normal text that exists within a paragraph.
  *
- * @since 2016/09/13
+ * @since 2016/10/02
  */
-enum __LevelType__
+class __SectionParagraph__
+	extends __Section__
 {
-	/** Header level. */
-	HEADER,
-	
-	/** List. */
-	LIST,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the paragraph.
+	 *
+	 * @param __mkd The owning writer.
+	 * @since 2016/10/02
+	 */
+	__SectionParagraph__(MarkdownWriter __mdw)
+	{
+		super(__mdw);
+		
+		throw new Error("TODO");
+	}
 }
 
