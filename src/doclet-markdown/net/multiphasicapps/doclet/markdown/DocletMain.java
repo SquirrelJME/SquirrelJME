@@ -319,7 +319,7 @@ public class DocletMain
 			Files.createDirectories(outputPath(Paths.get("foo")).getParent());
 			
 			// Add to projects file
-			__addToFile(outdir.getParent().resolve("projects"), project);
+			__addToFile(outdir.getParent().resolve(".projects"), project);
 		}
 		
 		// {@squirreljme.error CF07 Failed to create output directories.}
@@ -342,7 +342,7 @@ public class DocletMain
 			boolean start = false;
 			
 			// Write all classes
-			Path classesoutdir = outdir.getParent().resolve("classes");
+			Path classesoutdir = outdir.getParent().resolve(".classes");
 			for (MarkdownClass mc : this.classes.values())
 				if (mc._implicit)
 				{

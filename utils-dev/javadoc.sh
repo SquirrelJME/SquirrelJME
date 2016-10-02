@@ -83,7 +83,7 @@ done
 echo
 
 # Echo projects file
-cat "javadoc/projects" | while read __line
+cat "javadoc/.projects" | while read __line
 do
 	echo " * [$__line]($__line/classes.mkd)"
 done) > javadoc/by-project.mkd
@@ -93,7 +93,7 @@ done) > javadoc/by-project.mkd
 echo
 
 # Echo all class
-cat "javadoc/classes" | while read __line
+cat "javadoc/.classes" | while read __line
 do
 	# Name and markdown file
 	__name="$(echo "$__line" | cut -d ' ' -f 1)"
