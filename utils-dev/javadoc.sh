@@ -29,7 +29,7 @@ __pdir="$__exedir/../src"
 rm -f "javadoc"
 
 # Generate documentation for all projects
-for __dir in "$__exedir/../src/cldc-compact" # "$__exedir/../src/"*
+for __dir in "$__exedir/../src/"*
 do
 	# If not a directory and does not contain a manifest, ignore
 	if [ ! -d "$__dir" ] || [ ! -f "$__dir/META-INF/MANIFEST.MF" ]
