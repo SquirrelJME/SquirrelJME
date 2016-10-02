@@ -33,6 +33,13 @@ __docroot="$(pwd)/javadoc"
 # Go to the project home directory so fossil works
 cd "$__exedir/.."
 
+# If half of the documents fail to generate, then do not generate at all
+if [ "$(cd "$__docroot"; find -type f | grep '\.mkd$' | wc -l)" -lt "512" ]
+then
+	echo "Not enough documents, not going to update."
+	exit 1
+fi
+
 # Files in javadoc and unversioned space
 # Add a line that is different from A and B
 (cd "$__docroot"; find -type f | grep '\.mkd$' | sed 's/\.\///g'; \

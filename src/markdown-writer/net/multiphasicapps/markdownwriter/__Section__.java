@@ -77,6 +77,8 @@ abstract class __Section__
 	/**
 	 * This may be replaced by sub-classes to end the specified section.
 	 *
+	 * Classes should always call the super-class method first.
+	 *
 	 * @throws IOException On write errors.
 	 * @since 2016/10/02
 	 */
