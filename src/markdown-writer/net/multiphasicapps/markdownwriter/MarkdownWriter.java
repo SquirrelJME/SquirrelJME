@@ -255,6 +255,39 @@ public class MarkdownWriter
 	}
 	
 	/**
+	 * End a list.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/01
+	 */
+	public void listEnd()
+		throws IOException
+	{
+	}
+	
+	/**
+	 * Go the next item in the list.
+	 *
+	 * @throws IOException On write errros.
+	 * @since 2016/10/01
+	 */
+	public void listNext()
+		throws IOException
+	{
+	}
+	
+	/**
+	 * Start a list.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/01
+	 */
+	public void listStart()
+		throws IOException
+	{
+	}
+	
+	/**
 	 * Prints the specified object.
 	 *
 	 * @param __o The object to print.

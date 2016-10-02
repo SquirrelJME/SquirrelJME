@@ -14,10 +14,14 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -305,10 +309,56 @@ public class DocletMain
 		for (ClassDoc cd : root.classes())
 			markdownClass(cd)._implicit = true;
 		
-		// Write all classes
-		for (MarkdownClass mc : this.classes.values())
-			if (mc._implicit)
-				mc.writeOutput();
+		// Need to create directories to place the class table
+		try
+		{
+			Files.createDirectories(outputPath(Paths.get("foo")).getParent());
+		}
+		
+		// {@squirreljme.error CF07 Failed to create output directories.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("CF07", e);
+		}
+		
+		// Write project index and such also
+		try (MarkdownWriter mdw = new MarkdownWriter(new OutputStreamWriter(
+			Channels.newOutputStream(FileChannel.open(outputPath(Paths.get(
+			"classes.mkd")), StandardOpenOption.WRITE,
+			StandardOpenOption.CREATE)), "utf-8")))
+		{
+			// Project Title
+			mdw.headerSameLevel("this.project");
+			
+			// Start list
+			mdw.listStart();
+			boolean start = false;
+			
+			// Write all classes
+			for (MarkdownClass mc : this.classes.values())
+				if (mc._implicit)
+				{
+					// Write class markdown
+					mc.writeOutput();
+					
+					// Go to the next item on the list
+					if (start)
+						mdw.listNext();
+					start = true;
+					
+					// Link to it
+					mdw.uri(mc.markdownPath().toString(), mc.qualifiedName());
+				}
+			
+			// End list
+			mdw.listEnd();
+		}
+		
+		// {@squirreljme.error CF06 Failed to write the class table.}
+		catch (IOException e)
+		{
+			throw new Error("CF06", e);
+		}
 	}
 	
 	/**

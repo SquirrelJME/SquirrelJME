@@ -17,7 +17,7 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Generate JavaDoc
-if false
+if true
 then
 	rm -rf "javadoc"
 	if ! "$__exedir/javadoc.sh"
@@ -37,8 +37,8 @@ cd "$__exedir/.."
 # Add a line that is different from A and B
 (cd "$__docroot"; find -type f | grep '\.mkd$' | sed 's/\.\///g'; \
 	echo "@IgnoreA") | sort > /tmp/$$.a
-(fossil unversion ls | grep '^javadoc\/' | sed 's/^javadoc\///g';
-	echo "@IgnoreB") | sort > /tmp/$$.b
+(fossil unversion ls | grep '^javadoc\/' | grep '\.mkd$' | \
+	sed 's/^javadoc\///g'; echo "@IgnoreB") | sort > /tmp/$$.b
 
 # Go through all files
 # Set the unified diff surrounding change count to a really high value so that

@@ -25,6 +25,9 @@ fi
 # The project directory
 __pdir="$__exedir/../src"
 
+# Clear javadoc dir
+rm -f "javadoc"
+
 # Generate documentation for all projects
 for __dir in "$__exedir/../src/cldc-compact" # "$__exedir/../src/"*
 do
