@@ -34,17 +34,37 @@ __docroot="$(pwd)/javadoc"
 cd "$__exedir/.."
 
 # Files in javadoc and unversioned space
-(cd "$__docroot"; find -type f | grep '\.mkd$' | sed 's/\.\///g') | \
-	sort > /tmp/$$.a
-fossil unversion ls | grep '^javadoc\/' | sed 's/^javadoc\///g' | \
-	sort > /tmp/$$.b
+# Add a line that is different from A and B
+(cd "$__docroot"; find -type f | grep '\.mkd$' | sed 's/\.\///g'; \
+	echo "@IgnoreA") | sort > /tmp/$$.a
+(fossil unversion ls | grep '^javadoc\/' | sed 's/^javadoc\///g';
+	echo "@IgnoreB") | sort > /tmp/$$.b
 
 # Go through all files
-diff -u /tmp/$$.b /tmp/$$.a | grep '^[\-\+ ][^\-\+]' | while read -r __line
+# Set the unified diff surrounding change count to a really high value so that
+# all changes can possibly be detected. Otherwise, there would need to be a
+# second pass for files which were not changed, just to see if they were
+# changed (sort, sort, uniq).
+diff -U 99999 /tmp/$$.b /tmp/$$.a | grep '^[\-\+ ][^\-\+]' | \
+	while read -r __line
 do
 	# Get the change mode and the file
 	__mode="$(echo "$__line" | cut -c 1)"
 	__file="$(echo "$__line" | cut -c 2-)"
+	
+	# Space gone away?
+	if [ "$__mode" != "-" ] && [ "$__mode" != "+" ]
+	then
+		__file="$__mode$__file"
+		__mode="="
+	fi
+	
+	# Ignore?
+	__fcha="$(echo "$__file" | cut -c 1)"
+	if [ "$__fcha" = "@" ]
+	then
+		continue
+	fi
 	
 	# The unversioned target
 	__targ="javadoc/$__file"
@@ -60,11 +80,21 @@ do
 	# Removing file?
 	elif [ "$__mode" = "-" ]
 	then
-		echo "Removing $__file"
+		fossil unversion rm "$__targ"
 	
 	# Updating, if changed
 	else
-		echo "Update $__file"
+		# Get sha1 for both files
+		__was="$(fossil unversion cat "$__targ" | fossil sha1sum - | \
+			cut -d ' ' -f 1)"
+		__now="$(fossil sha1sum - < "$__docroot/$__file" | \
+			cut -d ' ' -f 1)"
+		
+		# Did the file change?
+		if [ "$__was" != "$__now" ]
+		then
+			fossil unversion add "$__docroot/$__file" --as "$__targ"
+		fi
 	fi
 done
 
