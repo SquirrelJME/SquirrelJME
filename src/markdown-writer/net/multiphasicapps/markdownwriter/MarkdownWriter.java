@@ -352,10 +352,10 @@ public class MarkdownWriter
 		
 		// Print it out
 		__put('[', true);
-		append(__uri);
+		append(__text);
 		__put(']', true);
 		__put('(', true);
-		append(__text);
+		append(__uri);
 		__put(')', true);
 	}
 	
@@ -378,10 +378,10 @@ public class MarkdownWriter
 		
 		// Print it out
 		__put('[', true);
-		append(__uri);
+		append(__text);
 		__put(']', true);
 		__put('(', true);
-		append(__text);
+		append(__uri);
 		__put(' ', true);
 		__put('"', true);
 		append(__title);
