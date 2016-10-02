@@ -268,6 +268,13 @@ public class MarkdownClass
 			String qualifiedname = this.qualifiedname;
 			md.headerSameLevel(qualifiedname);
 			
+			// Description of the class
+			md.headerSameLevel("Description");
+			
+			// Describe the class
+			ClassDoc doc = this.doc;
+			__writeDocFormatted(md, doc.commentText());
+			
 			// Write class tree last
 			md.headerSameLevel("Inheritance");
 			
@@ -401,6 +408,40 @@ public class MarkdownClass
 		
 		// Return
 		return sb.toString();
+	}
+	
+	/**
+	 * Writes formatted document text.
+	 *
+	 * @param __md The target writer.
+	 * @param __text The text to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException If no writer was specified.
+	 * @since 2016/10/02
+	 */
+	static void __writeDocFormatted(MarkdownWriter __md, String __text)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__md == null)
+			throw new NullPointerException("NARG");
+		
+		// Write nothing if there is nothing.
+		if (__text == null)
+		{
+			__md.print("No description.");
+			return;
+		}
+		
+		// Write all characters
+		int n = __text.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __text.charAt(i);
+			
+			// Print it normally
+			__md.print(c);
+		}
 	}
 }
 

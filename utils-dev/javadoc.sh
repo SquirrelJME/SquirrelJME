@@ -26,7 +26,7 @@ fi
 __pdir="$__exedir/../src"
 
 # Clear javadoc dir
-rm -f "javadoc"
+rm -rf -- "javadoc"
 
 # Generate documentation for all projects
 for __dir in "$__exedir/../src/"*

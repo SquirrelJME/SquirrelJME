@@ -354,6 +354,19 @@ public class MarkdownWriter
 	}
 	
 	/**
+	 * Prints a single character.
+	 *
+	 * @param __c The character to print.
+	 * @throws IOException On write errors.
+	 * @since 2016/10/02
+	 */
+	public void print(char __c)
+		throws IOException
+	{
+		__put(__c, false);
+	}
+	
+	/**
 	 * Prints the specified object.
 	 *
 	 * @param __o The object to print.
