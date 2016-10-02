@@ -31,7 +31,6 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
    * [Lex The SquirrelJME Mascot](usr/lex.mkd)
    * [Build Instructions](user/building.mkd)
    * [Limitations](user/limits.mkd)
-   * [Reddit Updates](user/reddit_notes.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
    * [Why Use This?](user/why.mkd)
  * Developer's Manual
@@ -39,7 +38,6 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
    * [Pitfalls](developer/pitfalls.mkd)
  * Maintainer's Manual
    * [Consistency Guidelines](maintainer/consistency.mkd)
-   * [Mascot Requirements](maintainer/mascot_req.mkd)
    * [Style Requirements](maintainer/style.mkd)
 
 # Donations
