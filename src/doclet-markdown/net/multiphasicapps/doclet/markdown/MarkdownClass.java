@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -270,19 +271,60 @@ public class MarkdownClass
 			// Write class tree last
 			md.headerSameLevel("Inheritance");
 			
+			// Start inheritence list tree
+			md.listStart();
+			boolean inhnext = false;
+			
 			// Print super class, if there is one
 			MarkdownClass superclass = this.superclass;
 			if (superclass != null)
 			{
+				// Go go next item?
+				if (inhnext)
+					md.listNext();
+				inhnext = true;
+				
+				// Print it
 				md.print("Superclass: ");
 				md.uri(main.uriToClassMarkdown(this, superclass),
 					superclass.unqualifiedName());
-				md.println();
 			}
 			
 			// Classes which extend this class
-			for (MarkdownClass superclassof : this.superclassof.values())
-				md.printf("Superclass of: %s%n", superclassof.qualifiedname);
+			Collection<MarkdownClass> scoflist = this.superclassof.values();
+			if (!superclassof.isEmpty())
+			{
+				// Next item?
+				if (inhnext)
+					md.listNext();
+				inhnext = true;
+				
+				// Group title
+				md.print("Superclass of:");
+				
+				// Indent some more
+				md.listStart();	
+				boolean sconext = false;
+				
+				// Go through all superclases (for this project only)
+				for (MarkdownClass scof : scoflist)
+				{
+					// Next item?
+					if (sconext)
+						md.listNext();
+					sconext = true;
+					
+					// Link to it
+					md.uri(main.uriToClassMarkdown(this, scof),
+						scof.unqualifiedName());
+				}
+				
+				// End
+				md.listEnd();
+			}
+			
+			// Stop list
+			md.listEnd();
 		}
 		
 		// {@squirreljme.error CF03 Could not write the output markdown file.}
