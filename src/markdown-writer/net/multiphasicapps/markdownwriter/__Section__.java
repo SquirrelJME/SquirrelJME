@@ -65,6 +65,16 @@ abstract class __Section__
 	}
 	
 	/**
+	 * Puts the specified character into the section as if it were written.
+	 *
+	 * @param __c The character to place.
+	 * @throws IOException On write errors.
+	 * @since 2016/10/02
+	 */
+	abstract void __sectionPut(char __c)
+		throws IOException;
+	
+	/**
 	 * This may be replaced by sub-classes to end the specified section.
 	 *
 	 * @throws IOException On write errors.

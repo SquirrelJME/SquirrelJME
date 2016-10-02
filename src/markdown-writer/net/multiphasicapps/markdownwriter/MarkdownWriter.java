@@ -379,7 +379,25 @@ public class MarkdownWriter
 		if (__c == '\r')
 			return;
 		
-		throw new Error("TODO");
+		// Direct place if no special handling
+		if (__nospec)
+		{
+			append(__c);
+			return;
+		}
+		
+		// Need section to always exist
+		__Section__ section = this._section;
+		if (section == null)
+			section = new __SectionParagraph__(this);
+		
+		// Character needs escaping?
+		if (__c == '[' || __c == '(' || __c == '*' || __c == '_' ||
+			__c == '\\' || __c == '#' || __c == '<')
+			section.__sectionPut('\\');
+		
+		// Place character
+		section.__sectionPut(__c);
 	}
 }
 

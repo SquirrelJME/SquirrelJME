@@ -35,5 +35,16 @@ class __SectionUnorderedList__
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/02
+	 */
+	@Override
+	void __sectionPut(char __c)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
 }
 
