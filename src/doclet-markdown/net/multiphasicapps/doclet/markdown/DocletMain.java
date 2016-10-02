@@ -360,11 +360,11 @@ public class DocletMain
 					
 					// Link to it
 					String qn = mc.qualifiedName();
-					Path mdp;
-					mdw.uri((mdp = mc.markdownPath()).toString(), qn);
+					String mdp = pathToString(mc.markdownPath());
+					mdw.uri(mdp, qn);
 					
 					// Add to the global class list
-					__addToFile(classesoutdir, qn + " project/" + mdp);
+					__addToFile(classesoutdir, qn + " " + project + "/" + mdp);
 				}
 			
 			// End list
@@ -544,6 +544,35 @@ public class DocletMain
 			default:
 				return 0;
 		}
+	}
+	
+	/**
+	 * Converts a path to a string using a neutral algorithm that is compatible
+	 * with URIs used by Markdown.
+	 *
+	 * @param __p The path to use.
+	 * @return The path converted to a string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/02
+	 */
+	public static String pathToString(Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Convert
+		StringBuilder sb = new StringBuilder();
+		for (Path p : __p)
+		{
+			if (sb.length() > 0)
+				sb.append("/");
+			sb.append(p.toString());
+		}
+		
+		// Return it
+		return sb.toString();
 	}
 	
 	/**
