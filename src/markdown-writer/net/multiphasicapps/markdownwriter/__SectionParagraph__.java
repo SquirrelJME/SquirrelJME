@@ -20,6 +20,10 @@ import java.io.IOException;
 class __SectionParagraph__
 	extends __Section__
 {
+	/** Just started the paragraph? */
+	volatile boolean _juststarted =
+		true;
+	
 	/**
 	 * Initializes the paragraph.
 	 *
@@ -31,8 +35,6 @@ class __SectionParagraph__
 		throws IOException
 	{
 		super(__mdw);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -43,7 +45,20 @@ class __SectionParagraph__
 	void __process(char __c)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// If the paragraph just started then add a spacing newline before
+		// its content
+		MarkdownWriter writer = this.writer;
+		if (this._juststarted)
+		{
+			// Write line
+			writer.__put('\n', true);
+			
+			// No longer started
+			this._juststarted = false;
+		}
+		
+		// Write character
+		writer.__put(__c, true);
 	}
 }
 
