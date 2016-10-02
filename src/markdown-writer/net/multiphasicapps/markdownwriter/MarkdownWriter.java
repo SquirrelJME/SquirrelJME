@@ -155,6 +155,17 @@ public class MarkdownWriter
 	}
 	
 	/**
+	 * Returns the current virtual column position.
+	 *
+	 * @return The virtual column position.
+	 * @since 2016/10/01
+	 */
+	public int currentVirualColumn()
+	{
+		return this._column;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/13
 	 */
@@ -263,6 +274,19 @@ public class MarkdownWriter
 	public void listEnd()
 		throws IOException
 	{
+		// Get topmost state
+		Deque<__State__> stack = this._stack;
+		__State__ top = stack.peek();
+		
+		// If not a list, ignore
+		if (top._level != __LevelType__.LIST)
+			return;
+		
+		// Pop it off
+		stack.pop();
+		
+		// Add spacing line
+		__putNewline(true);
 	}
 	
 	/**
@@ -274,6 +298,23 @@ public class MarkdownWriter
 	public void listNext()
 		throws IOException
 	{
+		// Get topmost state
+		Deque<__State__> stack = this._stack;
+		__State__ top = stack.peek();
+		
+		// If not a list, ignore
+		if (top._level != __LevelType__.LIST)
+			return;
+		
+		// Add spacing line
+		__putNewline(true);
+		
+		// Indent to the asterisk
+		int indent = top._indent;
+		for (int i = 0; i < indent; i++)
+			__put(' ', true);
+		__put('*', true);
+		__put(' ', true);
 	}
 	
 	/**
@@ -285,6 +326,31 @@ public class MarkdownWriter
 	public void listStart()
 		throws IOException
 	{
+		// Add spacing newline for the list start, if not on the first column
+		if (currentVirualColumn() > 0)
+			println();
+		
+		// Get topmost state (for indentation level)
+		Deque<__State__> stack = this._stack;
+		__State__ top = stack.peek();
+		int indent = top._indent;
+		
+		// Create new state
+		__State__ now = new __State__();
+		now._level = __LevelType__.LIST;
+		
+		// If there is no indentation then indent only one:
+		//  * Indented once.
+		// However if there is another identation level, add 3
+		//  * Was indented once.
+		//    * Now here
+		now._indent = (indent == 0 ? 1 : indent + 3);
+		
+		// Push state
+		stack.push(now);
+		
+		// Go to the next item on the list
+		listNext();
 	}
 	
 	/**
@@ -429,7 +495,7 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/09/13
 	 */
-	public void __put(char __c)
+	private void __put(char __c)
 		throws IOException
 	{
 		__put(__c, false);
@@ -444,7 +510,7 @@ public class MarkdownWriter
 	 * @throws IOException On write errors.
 	 * @since 2016/09/13
 	 */
-	public void __put(char __c, boolean __nospec)
+	private void __put(char __c, boolean __nospec)
 		throws IOException
 	{
 		// Write here
@@ -512,5 +578,21 @@ public class MarkdownWriter
 			this._column = column;
 		}
 	}
+	
+	/**
+	 * Puts a newline in the output.
+	 *
+	 * @param __spec Ignore special handling?
+	 * @throws IOException On write errors.
+	 * @since 2016/10/01
+	 */
+	private void __putNewline(boolean __nospec)
+		throws IOException
+	{
+		String nl = MarkdownWriter._NEWLINE;
+		int n = nl.length();
+		for (int i = 0; i < n; i++)
+			__put(nl.charAt(i), __nospec);
+	} 
 }
 

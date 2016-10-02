@@ -27,5 +27,9 @@ final class __State__
 	
 	/** The level type. */
 	volatile __LevelType__ _level;
+	
+	/** The current indentation level (in spaces). */
+	volatile int _indent =
+		0;
 }
 

@@ -20,6 +20,9 @@ enum __LevelType__
 	/** Header level. */
 	HEADER,
 	
+	/** List. */
+	LIST,
+	
 	/** End. */
 	;
 }
