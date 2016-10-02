@@ -178,7 +178,16 @@ public class MarkdownWriter
 	public void listEnd()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// End the list by 
+		__Section__ section = this._section;
+		if (section instanceof __SectionList__)
+		{
+			// Manual end of section
+			section.__endSection();
+			
+			// Go back to the section before this
+			this._section = section._sectionbefore;
+		}
 	}
 	
 	/**
@@ -190,7 +199,10 @@ public class MarkdownWriter
 	public void listNext()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Set new item on the list
+		__Section__ section = this._section;
+		if (section instanceof __SectionList__)
+			((__SectionList__)section)._newitem = true;
 	}
 	
 	/**
@@ -202,7 +214,8 @@ public class MarkdownWriter
 	public void listStart()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Start section
+		new __SectionUnorderedList__(this);
 	}
 	
 	/**

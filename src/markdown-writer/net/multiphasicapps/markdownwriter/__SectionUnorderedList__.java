@@ -33,7 +33,8 @@ class __SectionUnorderedList__
 	{
 		super(__mdw);
 		
-		throw new Error("TODO");
+		// Single character is used
+		this._cdepth = 1;
 	}
 	
 	/**
@@ -41,10 +42,10 @@ class __SectionUnorderedList__
 	 * @since 2016/10/02
 	 */
 	@Override
-	void __process(char __c)
+	void __listCharacters()
 		throws IOException
 	{
-		throw new Error("TODO");
+		this.writer.__put('*', true);
 	}
 }
 

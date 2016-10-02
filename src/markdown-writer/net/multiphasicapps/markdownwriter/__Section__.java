@@ -28,7 +28,7 @@ abstract class __Section__
 	protected final MarkdownWriter writer;
 	
 	/** The section that was at the top. */
-	protected final __Section__ sectionbefore;
+	final __Section__ _sectionbefore;
 	
 	/** The current text style to use. */
 	volatile MarkdownTextStyle _style =
@@ -56,18 +56,18 @@ abstract class __Section__
 		this.writer = __mdw;
 		
 		// Is there anything above this?
-		__Section__ sectionbefore = __mdw._section;
-		this.sectionbefore = sectionbefore;
+		__Section__ _sectionbefore = __mdw._section;
+		this._sectionbefore = _sectionbefore;
 		
 		// If there is a section before this then end this
-		if (sectionbefore != null)
-			sectionbefore.__endSection();
+		if (_sectionbefore != null)
+			_sectionbefore.__endSection();
 		
 		// Set new section
 		__mdw._section = this;
 		
 		// Set some basic details
-		this._level = (sectionbefore == null ? 1 : sectionbefore._level);
+		this._level = (_sectionbefore == null ? 1 : _sectionbefore._level);
 	}
 	
 	/**

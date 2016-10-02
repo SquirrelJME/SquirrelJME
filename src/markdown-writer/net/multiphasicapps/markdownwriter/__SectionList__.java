@@ -20,6 +20,16 @@ import java.io.IOException;
 abstract class __SectionList__
 	extends __Section__
 {
+	/** The current indentation level. */
+	volatile int _indent;
+	
+	/** The character depth (characters used for the bullet). */
+	volatile int _cdepth;
+	
+	/** Create new item entry? */
+	volatile boolean _newitem =
+		true;
+	
 	/**
 	 * Initializes the base for lists.
 	 *
@@ -32,8 +42,27 @@ abstract class __SectionList__
 	{
 		super(__mdw);
 		
-		throw new Error("TODO");
+		// If the section before this one is a list then
+		__Section__ sectionbefore = this._sectionbefore;
+		if (sectionbefore instanceof __SectionList__)
+		{
+			__SectionList__ was = (__SectionList__)sectionbefore;
+			this._indent = was._indent + 1 + was._cdepth;
+		}
+		
+		// Otherwise, start a new list
+		else
+			this._indent = 1;
 	}
+	
+	/**
+	 * Prints the list characters.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/02
+	 */
+	abstract void __listCharacters()
+		throws IOException;
 	
 	/**
 	 * {@inheritDoc}
@@ -43,7 +72,38 @@ abstract class __SectionList__
 	void __process(char __c)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// If writing a new item, write it
+		MarkdownWriter writer = this.writer;
+		if (this._newitem)
+		{
+			// Add new line
+			writer.__put('\n', true);
+			
+			// Indent with spaces first
+			int indent = this._indent;
+			for (int i = 0; i < indent; i++)
+				writer.__put(' ', true);
+			
+			// Add list characters
+			__listCharacters();
+			
+			// Add sapce
+			writer.__put(' ', true);
+			
+			// Do not write any more new items
+			this._newitem = false;
+		}
+		
+		// Indent?
+		if (writer._column == 0)
+		{
+			int indent = this._indent + 1 + this._cdepth;
+			for (int i = 0; i < indent; i++)
+				writer.__put(' ', true);
+		}
+		
+		// Write normal character
+		writer.__put(__c, true);
 	}
 }
 
