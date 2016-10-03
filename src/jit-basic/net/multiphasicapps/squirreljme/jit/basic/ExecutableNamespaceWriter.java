@@ -95,7 +95,8 @@ public class ExecutableNamespaceWriter
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Setup
+		return new ExecutableResourceWriter(this, __name);
 	}
 	
 	/**
