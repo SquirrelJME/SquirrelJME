@@ -14,13 +14,36 @@ import java.io.Flushable;
 import java.io.IOException;
 
 /**
- * Appends text to stdout.
+  * Appends text to stdout and the wrapped {@link Appendable}.
  *
  * @since 2016/09/13
  */
 class __AppendToStdOut__
 	implements Appendable, Flushable
 {
+	/** Where to append to additionally. */
+	protected final Appendable append;
+	
+	/**
+	 * Initializes the appender.
+	 *
+	 * @param __a Where to append to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/02
+	 */
+	__AppendToStdOut__(Appendable __a)
+		throws NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		this.append = __a;
+		
+		// Add a nice banner
+		System.out.println("\n----------------------------------------------");
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @sicne 2016/09/13
@@ -29,6 +52,7 @@ class __AppendToStdOut__
 	public __AppendToStdOut__ append(char __c)
 		throws IOException
 	{
+		this.append.append(__c);
 		System.out.append(__c);
 		return this;
 	}
@@ -41,6 +65,7 @@ class __AppendToStdOut__
 	public __AppendToStdOut__ append(CharSequence __cs)
 		throws IOException
 	{
+		this.append.append(__cs);
 		System.out.append(__cs);
 		return this;
 	}
@@ -53,6 +78,7 @@ class __AppendToStdOut__
 	public __AppendToStdOut__ append(CharSequence __cs, int __s, int __e)
 		throws IOException
 	{
+		this.append.append(__cs, __s, __e);
 		System.out.append(__cs, __s, __e);
 		return this;
 	}
@@ -65,6 +91,9 @@ class __AppendToStdOut__
 	public void flush()
 		throws IOException
 	{
+		Appendable append = this.append;
+		if (append instanceof Flushable)
+			((Flushable)append).flush();
 		System.out.flush();
 	}
 }

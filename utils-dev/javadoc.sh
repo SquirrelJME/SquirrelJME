@@ -66,6 +66,7 @@ do
 		-encoding "utf-8" \
 		-doclet net.multiphasicapps.doclet.markdown.DocletMain \
 		-d "javadoc/$__base" \
+		-J-Dnet.multiphasicapps.doclet.markdown.debug=true \
 		-squirreljme-project "$__base" \
 		-squirreljme-projectsdir "$__pdir" \
 		-squirreljme-depends "$__depscom" \
