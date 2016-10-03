@@ -57,6 +57,10 @@ class __SectionParagraph__
 			this._juststarted = false;
 		}
 		
+		// If this is whitespace then do not print it on the first column ever
+		if (__Section__.__isWhitespace(__c) && writer._column == 0)
+			return;
+		
 		// Write character
 		writer.__put(__c, true);
 	}

@@ -92,5 +92,17 @@ abstract class __Section__
 		throws IOException
 	{
 	}
+	
+	/**
+	 * Is this a whitespace character?
+	 *
+	 * @param __c The character to check.
+	 * @return {@code true} if it is whitespace.
+	 * @since 2016/10/02
+	 */
+	static boolean __isWhitespace(char __c)
+	{
+		return __c == ' ' || __c == '\t' || __c == '\n';
+	}
 }
 
