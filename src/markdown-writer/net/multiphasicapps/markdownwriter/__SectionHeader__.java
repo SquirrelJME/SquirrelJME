@@ -38,7 +38,7 @@ class __SectionHeader__
 		
 		// Modify level
 		int level = this._level;
-		level = (__abs ? Math.min(1, __level) : Math.min(1, level + __level));
+		level = (__abs ? Math.max(1, __level) : Math.max(1, level + __level));
 		this._level = level;
 	}
 	
