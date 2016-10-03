@@ -350,7 +350,7 @@ public class MarkdownWriter
 		append(__text);
 		__put(']', true);
 		__put('(', true);
-		append(__uri);
+		__unescapedURI(__uri);
 		__put(')', true);
 	}
 	
@@ -379,12 +379,24 @@ public class MarkdownWriter
 		append(__text);
 		__put(']', true);
 		__put('(', true);
-		append(__uri);
+		__unescapedURI(__uri);
 		__put(' ', true);
 		__put('"', true);
 		append(__title);
 		__put('"', true);
 		__put(')', true);
+	}
+	
+	/**
+	 * Returns {@code true} if the specified character is to be escaped.
+	 *
+	 * @return {@code true} if the character must be escaped.
+	 * @since 2016/10/02
+	 */
+	boolean __escaped(char __c)
+	{
+		return (__c == '[' || __c == '(' || __c == '*' || __c == '_' ||
+			__c == '\\' || __c == '<' || (__c == '#' && this._column == 0));
 	}
 	
 	/**
@@ -437,12 +449,57 @@ public class MarkdownWriter
 			section = new __SectionParagraph__(this);
 		
 		// Character needs escaping?
-		if (__c == '[' || __c == '(' || __c == '*' || __c == '_' ||
-			__c == '\\' || __c == '#' || __c == '<')
+		if (__escaped(__c))
 			section.__process('\\');
 		
 		// Place character
 		section.__process(__c);
+	}
+	
+	/**
+	 * Performs special handling for writing URI parts.
+	 *
+	 * @param __s The input URI.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/02
+	 */
+	void __unescapedURI(String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Never escape underscore
+			if (__escaped(c) || c == '"')
+				if (c == '_')
+					__put(c, true);
+				
+				// Percent encode anything else
+				else
+				{
+					byte[] b = Character.toString(c).getBytes("utf-8");
+					int q = b.length;
+					__put('%', false);
+					for (int l = 0; l < q; l++)
+					{
+						byte d = b[l];
+						__put(Character.forDigit((d >>> 4) & 0xF, 16), false);
+						__put(Character.forDigit(d & 0xF, 16), false);
+					}
+				}
+			
+			// Otherwise normal print
+			else
+				__put(c, false);
+		}
 	}
 }
 
