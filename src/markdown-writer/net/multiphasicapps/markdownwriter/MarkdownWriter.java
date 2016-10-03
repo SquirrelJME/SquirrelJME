@@ -317,6 +317,9 @@ public class MarkdownWriter
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
+		// Prime
+		__put('\0', false);
+		
 		// Print it out
 		__put('<', true);
 		append(__uri);
@@ -338,6 +341,9 @@ public class MarkdownWriter
 		// Check
 		if (__uri == null || __text == null)
 			throw new NullPointerException("NARG");
+		
+		// Prime
+		__put('\0', false);
 		
 		// Print it out
 		__put('[', true);
@@ -364,6 +370,9 @@ public class MarkdownWriter
 		// Check
 		if (__uri == null || __text == null || __title == null)
 			throw new NullPointerException("NARG");
+		
+		// Prime
+		__put('\0', false);
 		
 		// Print it out
 		__put('[', true);
@@ -398,6 +407,10 @@ public class MarkdownWriter
 		// Direct place if no special handling
 		if (__nospec)
 		{
+			// Ignore null
+			if (__c == 0)
+				return;
+			
 			// Add it
 			this.append.append(__c);
 			

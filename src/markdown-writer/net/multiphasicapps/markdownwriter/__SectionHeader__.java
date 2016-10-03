@@ -77,7 +77,8 @@ class __SectionHeader__
 		}
 		
 		// Add character
-		writer.__put(__c, true);
+		if (__c > 0)
+			writer.__put(__c, true);
 	}
 }
 
