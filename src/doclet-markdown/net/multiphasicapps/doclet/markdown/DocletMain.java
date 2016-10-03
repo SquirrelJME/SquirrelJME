@@ -369,6 +369,9 @@ public class DocletMain
 			
 			// End list
 			mdw.listEnd();
+			
+			// Flush
+			mdw.flush();
 		}
 		
 		// Failed to write, delete the produced file

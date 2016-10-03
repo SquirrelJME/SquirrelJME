@@ -118,6 +118,17 @@ public class MarkdownWriter
 	public void close()
 		throws IOException
 	{
+		// Flush before close
+		try
+		{
+			flush();
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+		}
+		
 		// Only close if it is closeable
 		Appendable append = this.append;
 		if (append instanceof Closeable)

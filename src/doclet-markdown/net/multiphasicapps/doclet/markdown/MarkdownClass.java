@@ -427,12 +427,32 @@ public class MarkdownClass
 			
 			// Stop list
 			md.listEnd();
+			
+			// Flush
+			md.flush();
 		}
 		
 		// {@squirreljme.error CF03 Could not write the output markdown file.}
-		catch (IOException e)
+		catch (RuntimeException|Error|IOException e)
 		{
-			throw new RuntimeException("CF03", e);
+			// Delete the output
+			try
+			{
+				Files.delete(makemark);
+			}
+			
+			// Ignore
+			catch (IOException f)
+			{
+			}
+			
+			// Throw as is or wrap?
+			if (e instanceof RuntimeException)
+				throw (RuntimeException)e;
+			else if (e instanceof Error)
+				throw (Error)e;
+			else
+				throw new RuntimeException("CF03", e);
 		}
 		
 		// End marker?

@@ -65,8 +65,14 @@ class __AppendToStdOut__
 	public __AppendToStdOut__ append(CharSequence __cs)
 		throws IOException
 	{
-		this.append.append(__cs);
-		System.out.append(__cs);
+		// Get the string first
+		String s = __cs.toString();
+		
+		// Append
+		this.append.append(s);
+		System.out.append(s);
+		
+		// Self
 		return this;
 	}
 	
@@ -78,8 +84,14 @@ class __AppendToStdOut__
 	public __AppendToStdOut__ append(CharSequence __cs, int __s, int __e)
 		throws IOException
 	{
-		this.append.append(__cs, __s, __e);
-		System.out.append(__cs, __s, __e);
+		// Get string to use
+		String s = __cs.subSequence(__s, __e).toString();
+		
+		// Append
+		this.append.append(s);
+		System.out.append(s);
+		
+		// Self
 		return this;
 	}
 	
