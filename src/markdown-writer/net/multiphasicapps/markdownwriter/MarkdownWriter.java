@@ -478,7 +478,7 @@ public class MarkdownWriter
 			char c = __s.charAt(i);
 			
 			// Never escape underscore
-			if (__escaped(c) || c == '"')
+			if (__escaped(c) || c == '"' || MarkdownWriter.__isWhitespace(c))
 				if (c == '_')
 					__put(c, true);
 				
@@ -500,6 +500,18 @@ public class MarkdownWriter
 			else
 				__put(c, false);
 		}
+	}
+	
+	/**
+	 * Is this a whitespace character?
+	 *
+	 * @param __c The character to check.
+	 * @return {@code true} if it is whitespace.
+	 * @since 2016/10/02
+	 */
+	static boolean __isWhitespace(char __c)
+	{
+		return __c == ' ' || __c == '\t' || __c == '\n';
 	}
 }
 

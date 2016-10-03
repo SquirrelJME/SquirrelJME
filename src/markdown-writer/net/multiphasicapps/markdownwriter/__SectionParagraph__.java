@@ -74,7 +74,7 @@ class __SectionParagraph__
 		}
 		
 		// If this is whitespace then do not print it on the first column ever
-		if (__Section__.__isWhitespace(__c) && writer._column == 0)
+		if (MarkdownWriter.__isWhitespace(__c) && writer._column == 0)
 			return;
 		
 		// Write character
