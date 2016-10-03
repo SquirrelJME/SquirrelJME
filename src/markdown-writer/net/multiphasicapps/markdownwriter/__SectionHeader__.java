@@ -47,6 +47,22 @@ class __SectionHeader__
 	 * @since 2016/10/02
 	 */
 	@Override
+	void __endSection()
+		throws IOException
+	{
+		super.__endSection();
+		
+		// Add newline after the first column
+		MarkdownWriter writer = this.writer;
+		if (writer._column > 0)
+			writer.__put('\n', true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/02
+	 */
+	@Override
 	void __process(char __c)
 		throws IOException
 	{
