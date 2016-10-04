@@ -110,6 +110,9 @@ __primary()
 			
 			# Set author
 			__oldauth="$__y_auth"
+			
+			# The year is invalidated, so clear it
+			__oldyear="0"
 		fi
 		
 		# New year?
