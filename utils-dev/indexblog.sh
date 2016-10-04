@@ -196,7 +196,7 @@ __primary()
 				if [ "$(fossil unversion cat "developer-notes/$__want" | \
 					wc -c)" -gt "0" ]
 				then
-					echo "["'`'"$__d"'`'"]($__want)"
+					echo "["**'`'"$__d"'`'**"]($__want)"
 				
 				# Otherwise write a very blank date there
 				else
