@@ -223,37 +223,6 @@ __primary()
 			# Stop first week special handling
 			__firstweek="0"
 		done
-	
-		
-		##### OLD CODE FOLLOWS ######
-		continue
-		
-		# Print the date
-		echo " * $__y_dayy: "
-	
-		# Print all authors
-		__i=0
-		while true
-		do
-			# Get author here
-			__y_auth="$(echo "$__line" | cut -d ' ' -f $(expr 4 + $__i))"
-		
-			# End loop?
-			if [ -z "$__y_auth" ]
-			then
-				break
-			fi
-		
-			__i="$(expr $__i + 1)"
-		
-			# The file path
-			__fpath="$__y_auth/$__y_year/$__y_mont/$__y_dayy.mkd"
-		
-			# Print author bracket
-			echo "   [$(__upperauth "$__y_auth")]($__fpath)"
-		done
-	
-		__y_auth="$(echo "$__line" | cut -d ' ' -f 4)"
 	done
 }
 
