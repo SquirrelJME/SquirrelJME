@@ -15,6 +15,12 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Counts arguments used
+__count_args()
+{
+	echo "$#"
+}
+
 # Uppercase author name
 __upperauth()
 {
@@ -56,6 +62,7 @@ __upperauth()
 __primary()
 {
 	# For usage
+	__oldauth="nobody"
 	__oldyear=0
 	__oldmont=0
 
@@ -71,13 +78,12 @@ __primary()
 		__x_mont="$(echo "$__preline" | cut -d '/' -f 3)"
 		__x_dayy="$(echo "$__preline" | cut -d '/' -f 4 | sed 's/\.mkd//g')"
 	
-		# Echo it in changed order so that the dates sort first, thus regardless
-		# of the author it is in chronological order
-		echo "$__x_year $__x_mont $__x_dayy $__x_auth"
+		# Sort by author first so that the documents can be grouped together
+		echo "$__x_auth $__x_year $__x_mont"
 
 	# Combine lines which share the same data and append authors on top of that
 	# line
-	done | sort | while read __postline
+	done | sort | uniq | while read __postline
 	do
 		# TODO
 		echo "$__postline"
@@ -86,22 +92,32 @@ __primary()
 	done | while read __line
 	do
 		# Space separated
-		__y_year="$(echo "$__line" | cut -d ' ' -f 1)"
-		__y_mont="$(echo "$__line" | cut -d ' ' -f 2)"
-		__y_dayy="$(echo "$__line" | cut -d ' ' -f 3)"
-	
-		# New year?
-		if [ "$__y_year" -ne "$__oldyear" ]
+		__y_auth="$(echo "$__line" | cut -d ' ' -f 1)"
+		__y_year="$(echo "$__line" | cut -d ' ' -f 2)"
+		__y_mont="$(echo "$__line" | cut -d ' ' -f 3)"
+		
+		# Author changed? Then print the author title
+		if [ "$__oldauth" != "$__y_auth" ]
 		then
 			# Starting header?
-			if [ "$__oldyear" -eq "0" ]
+			if [ "$__oldauth" = "nobody" ]
 			then
 				echo "# Developer Notes"
 			fi
+			
+			# Print title
+			echo "# $(__upperauth "$__y_auth")"
+			
+			# Set author
+			__oldauth="$__y_auth"
+		fi
 		
+		# New year?
+		if [ "$__y_year" -ne "$__oldyear" ]
+		then
 			# Print header
 			echo ""
-			echo "# $__y_year"
+			echo "## $__y_year"
 		
 			# For next header generation
 			__oldyear="$__y_year"
@@ -116,13 +132,102 @@ __primary()
 		then
 			# Print header
 			echo ""
-			echo "## $__y_mont"
+			echo "### $__y_mont"
 			echo ""
 		
 			# For later generation
 			__oldmont="$__y_mont"
 		fi
+		
+		# Go through the calendar for this month/year
+		# Convert anything that is not a number to a space, this removes the
+		# month and day names and removes any hidden escape sequences that may
+		# be used to highlight the current day
+		__firstweek="1"
+		cal "$__y_mont" "$__y_year" | sed 's/[^0-9\ ]/ /g' |
+			while read __week
+		do
+			# Remove the line that contains the year along with lines that
+			# contain days
+			if echo "$__week" | grep "$__y_year" > /dev/null
+			then
+				continue
+			fi
+			
+			# If there are no days in the week, do nothing
+			__days="$(__count_args $__week)"
+			if [ "$__days" -le "0" ]
+			then
+				continue
+			fi
+			
+			# Mark start
+			echo -n ' * '
+			
+			# If this is the first week then add a bunch of spaces at the
+			# start of the week so that it is aligned
+			if [ "$__firstweek" -eq "1" ]
+			then
+				# Add missing dates
+				__i="$__days"
+				while [ "$__i" -lt "7" ]
+				do
+					echo -n '`--` '
+					__i="$(expr "$__i" + 1)"
+				done
+				
+				# Go to next line to make a bit cleaner
+				echo
+			fi
+			
+			# Go through all days on the week
+			for __d in $__week
+			do
+				# Correct day to always use double digits
+				if [ "$(echo -n "$__d" | wc -c)" -eq "1" ]
+				then
+					__d="0$__d"
+				fi
+				
+				# Guess file name to use
+				__want="$__y_auth/$__y_year/$__y_mont/$__d.mkd"
+				
+				# If the file exists then link to it
+				if [ "$(fossil unversion cat "developer-notes/$__want" | \
+					wc -c)" -gt "0" ]
+				then
+					echo "["'`'"$__d"'`'"]($__want)"
+				
+				# Otherwise write a very blank date there
+				else
+					echo '`'"$__d"'`'
+				fi
+			done
+			
+			# For the last week, if any week has less then seven days add
+			# dashes following so it looks the same
+			if [ "$__firstweek" -eq "0" ] && [ "$__days" -lt "7" ]
+			then
+				# Add missing dates
+				__i="$__days"
+				while [ "$__i" -lt "7" ]
+				do
+					echo -n ' `--`'
+					__i="$(expr "$__i" + 1)"
+				done
+				
+				# Newline for safety
+				echo
+			fi
+			
+			# Stop first week special handling
+			__firstweek="0"
+		done
 	
+		
+		##### OLD CODE FOLLOWS ######
+		continue
+		
 		# Print the date
 		echo " * $__y_dayy: "
 	
