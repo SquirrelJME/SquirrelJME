@@ -26,7 +26,7 @@ then
 	__code="$(grep -i 'x-squirreljme-error' < "$__base/META-INF/MANIFEST.MF" |
 		cut -d ':' -f 2 | tr -d ' ')"
 	
-	echo "Project Error Code: $__code"
+	echo "Project Error Code: $__code" 1>&2
 fi
 
 # List errors
