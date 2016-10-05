@@ -15,6 +15,16 @@ import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public final class Class<T>
 {
+	/** This is the prefix that is used for assertion checks. */
+	private static final String _ASSERTION_PREFIX =
+		"net.multiphasicapps.squirreljme.noassert.";
+	
+	/** Has the assertion status been checked already? */
+	private volatile boolean _checkedassert;
+	
+	/** Is this class being asserted? */
+	private volatile boolean _useassert;
+	
 	/**
 	 * This method may or may not be called internally by the virtual machine
 	 * when it initializes a new class object for a given class type.
@@ -65,14 +75,23 @@ public final class Class<T>
 	 * class, this is used internally by the virtual machine to determine if
 	 * assertions should fail or not.
 	 *
-	 * In SquirrelJME, this always returns {@code true}.
+	 * In SquirrelJME, this defaults to returning {@code true}. To disable
+	 * assertions for a class or an entire package then the following system
+	 * property may be specified to disable them:
+	 * {@code net.multiphasicapps.squirreljme.noassert.(package)(.class)=true}.
 	 *
-	 * @return In SquirrelJME, always returns {@code true}.
+	 * @return In SquirrelJME this returns by default {@code true}, otherwise
+	 * this may return {@code false} if they are disabled for a class.
 	 * @since 2016/06/13
 	 */
 	public boolean desiredAssertionStatus()
 	{
-		return true;
+		// If assertions have been checked, they do not have to be rechecked
+		if (this._checkedassert)
+			return this._useassert;
+		
+		// Otherwise check it
+		return __checkAssertionStatus();
 	}
 	
 	public String getName()
@@ -226,6 +245,43 @@ public final class Class<T>
 		Class<?> rv = SquirrelJME.classForName(__a);
 		if (rv == null)
 			throw new ClassNotFoundException(String.format("ZZ09 %s", __a));
+		return rv;
+	}
+	
+	/**
+	 * This checks whether assertions should be **disabled** for this class (or
+	 * for the entire package).
+	 *
+	 * @return The assertions status to use.
+	 * @since 2016/10/09
+	 */
+	private final boolean __checkAssertionStatus()
+	{
+		// Default to true
+		boolean rv = true;
+		
+		// Determine class name
+		String cn = this.getName();
+		String prop = Class._ASSERTION_PREFIX + cn;
+		
+		// Disabled for this class?
+		if (Boolean.getBoolean(prop))
+			rv = false;
+		
+		// Disabled for this package?
+		else
+		{
+			// Find last dot, if there is none then this is just the default
+			// package so never bother checking the package
+			int ld = cn.lastIndexOf('.');
+			if (ld > 0 && Boolean.getBoolean(prop.substring(0,
+				prop.length() - (cn.length() - ld))))
+				rv = false;
+		}
+		
+		// Set as marked
+		this._checkedassert = true;
+		this._useassert = rv;
 		return rv;
 	}
 }
