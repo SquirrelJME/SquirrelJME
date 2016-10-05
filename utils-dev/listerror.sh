@@ -16,8 +16,16 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Allow a custom directory to be specified
+if [ "$#" -ge "1" ]
+then
+	__dir="$1"
+else
+	__dir="$(pwd)"
+fi
+
 # Get the directory of the project
-__base="$("$__exedir/projectbase.sh" "$(pwd)")"
+__base="$("$__exedir/projectbase.sh" "$__dir")"
 
 # Print error code, potentially
 echo "******** LIST OF ERRORS *********" 1>&2
