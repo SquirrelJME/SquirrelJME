@@ -32,9 +32,37 @@ __docroot="$(pwd)/javadoc"
 
 # Go to the project home directory so fossil works
 cd "$__exedir/.."
+__srcdir="$__exedir/../src"
+
+# Note 
+echo "Generating error list..."
+
+# Header
+echo "# List of Errors" > /tmp/$$
+echo "" >> /tmp/$$
+("$__exedir/listerror.sh" "$__srcdir" 2> /dev/null | while read __line
+do
+	# Extract code and description
+	__code="$(echo "$__line" | cut -c 1-4)"
+	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*]\)/\\\1/g')"
+	
+	# Add bullet item
+	echo " * ***$__code***: $__desc"
+done) >> /tmp/$$
+
+# Did the errors actually change?
+if [ "$(fossil unversion cat "errors.mkd" | fossil sha1sum - | \
+	cut -d ' ' -f 1)" != "$(fossil sha1sum - < /tmp/$$ | cut -d ' ' -f 1)" ]
+then
+	echo "Errors updated"
+	fossil unversion add /tmp/$$ --as "errors.mkd"
+else
+	echo "Errors untouched"
+fi
+rm -f /tmp/$$
 
 # Count the number of documents that should exist
-__ad="$(find "$__exedir/../src" | grep '\.java$' | wc -l)"
+__ad="$(find "$__srcdir" | grep '\.java$' | wc -l)"
 __hd="$(expr "$(expr "$__ad" "/" "2")" "+" "$(expr "$__ad" "/" "4")")"
 
 # If half of the documents fail to generate, then do not generate at all
