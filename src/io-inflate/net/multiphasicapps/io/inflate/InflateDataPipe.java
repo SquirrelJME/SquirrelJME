@@ -40,11 +40,11 @@ public class InflateDataPipe
 		48;
 	
 	/**
-	 * {@squirreljme.error AF01 The pipeline stalled, the stack trace for
-	 * this exception is not applicable.
+	 * {@squirreljme.error AF02 The pipeline stalled, the stack trace for
+	 * this exception is not applicable.}
 	 */
 	private static final PipeStalledException _STALLED =
-		new PipeStalledException("AF01");
+		new PipeStalledException("AF02");
 	
 	/** Shuffled bit values when reading values. */
 	private static final int[] _SHUFFLE_BITS =
