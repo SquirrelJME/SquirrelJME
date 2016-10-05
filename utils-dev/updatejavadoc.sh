@@ -47,7 +47,7 @@ do
 	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*]\)/\\\1/g')"
 	
 	# Add bullet item
-	echo " * ***$__code***: $__desc"
+	echo " * ***"'`'"$__code"'`'"***: $__desc"
 done) >> /tmp/$$
 
 # Did the errors actually change?
