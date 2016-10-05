@@ -1099,7 +1099,7 @@ public class InflateDataPipe
 			_qwait = (qwait += nb);
 		}
 		
-		// {@squirreljme.error Read input bits, however there are not
+		// {@squirreljme.error AF0q Read input bits, however there are not
 		// enough bits to statisfy the requested input.}
 		if (__b > qwait)
 			throw new NoSuchElementException("AF0q");

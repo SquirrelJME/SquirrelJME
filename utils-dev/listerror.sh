@@ -46,7 +46,7 @@ do
 		grep '##ER' | sed 's/^##ER[ \t]*//g' |
 		sed 's/##FI/<'"$(basename $__file)"'>/g' |
 		sed 's/\f[ \t]*\*[ \t]*/ /g' |
-		tr '\f' ' '| sed 's/[ \t]\{2,\}/ /g'
+		tr '\f' ' '| sed 's/[ \t\f]\{2,\}/ /g'
 done) | sort
 echo "*********************************" 1>&2
 

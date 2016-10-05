@@ -273,8 +273,8 @@ public final class BinaryNameSymbol
 	public IdentifierSymbol get(int __i)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error Request for a binary name identifier which is
-		// not within bounds. (The index; The number of identifiers)}
+		// {@squirreljme.error AL03 Request for a binary name identifier which
+		// is not within bounds. (The index; The number of identifiers)}
 		if (__i < 0 || __i >= count)
 			throw new IndexOutOfBoundsException(String.format("AL03 %d",
 				__i, count));
