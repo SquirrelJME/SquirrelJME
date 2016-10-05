@@ -44,7 +44,7 @@ echo "" >> /tmp/$$
 do
 	# Extract code and description
 	__code="$(echo "$__line" | cut -c 1-4)"
-	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*]\)/\\\1/g')"
+	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*<(\`]\)/\\\1/g')"
 	
 	# Add bullet item
 	echo " * ***"'`'"$__code"'`'"***: $__desc"
