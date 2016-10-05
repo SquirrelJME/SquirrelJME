@@ -111,8 +111,8 @@ public class DataSinkOutputStream
 		// Failed to flush
 		catch (CompleteSinkException|SinkProcessException e)
 		{
-			// {@squirreljme.error AA0a Could not flush the stream}
-			throw new IOException("AA0a", e);
+			// {@squirreljme.error AA0c Could not flush the stream}
+			throw new IOException("AA0c", e);
 		}
 	}
 	

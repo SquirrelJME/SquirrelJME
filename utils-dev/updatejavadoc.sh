@@ -40,8 +40,21 @@ echo "Generating error list..."
 # Header
 echo "# List of Errors" > /tmp/$$
 echo "" >> /tmp/$$
+__old="00"
 ("$__exedir/listerror.sh" "$__srcdir" 2> /dev/null | while read __line
 do
+	# Code prefix
+	__pref="$(echo "$__line" | cut -c 1-2)"
+	
+	# Did the prefix change?
+	if [ "$__old" != "$__pref" ]
+	then
+		echo ""
+		echo "# "'`'"$__pref"'`'
+		echo ""
+		__old="$__pref"
+	fi
+	
 	# Extract code and description
 	__code="$(echo "$__line" | cut -c 1-4)"
 	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*<(\`]\)/\\\1/g')"
