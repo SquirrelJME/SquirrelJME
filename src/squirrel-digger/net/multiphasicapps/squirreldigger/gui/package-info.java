@@ -9,11 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the software rasterizer which allows the game to
- * be rendered without requiring a GPU.
+ * This package contains the base for GUIs which are associated with outside
+ * rendering systems used to draw the game.
  *
  * @since 2016/10/06
  */
 
-package net.multiphasicapps.squirreldigger.soft;
+package net.multiphasicapps.squirreldigger.gui;
 
