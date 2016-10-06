@@ -8,38 +8,37 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreldigger;
+package net.multiphasicapps.squirreldigger.gui;
 
-import java.nio.file.Paths;
 import net.multiphasicapps.squirreldigger.game.Game;
-import net.multiphasicapps.squirreldigger.gui.lui.LUIGUI;
 
 /**
- * This is the classical main entry point.
+ * This is the base class for GUI interfaces.
  *
  * @since 2016/10/06
  */
-public class DefaultMain
+public abstract class GUI
+	implements Runnable
 {
+	/** The game to render for. */
+	protected final Game game;
+	
 	/**
-	 * Main entry point.
+	 * Initializes the base game.
 	 *
-	 * @param __args Program arguments.
+	 * @param __g The game to render for.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/06
 	 */
-	public static void main(String... __args)
+	public GUI(Game __g)
+		throws NullPointerException
 	{
-		// Force to exist
-		if (__args == null)
-			__args = new String[0];
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
 		
-		// Just use the console based interface for now
-		LUIGUI lg = new LUIGUI(
-			new Game(0L, Paths.get(System.getProperty("user.dir"))));
-		
-		// Execute loop
-		for (;;)
-			lg.run();
+		// Set
+		this.game = __g;
 	}
 }
 
