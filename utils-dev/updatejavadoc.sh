@@ -59,8 +59,54 @@ do
 	__code="$(echo "$__line" | cut -c 1-4)"
 	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*<(\`]\)/\\\1/g')"
 	
-	# Add bullet item
-	echo " * ***"'`'"$__code"'`'"***: $__desc"
+	# Are there parameters?
+	if echo "$__desc" | grep '([^)]*)[ \t]\{1,\}\\<' > /dev/null
+	then
+		# Extract and remove them
+		__parm="$(echo "$__desc" |
+			sed 's/^.*(\([^)]*\))[ \t]\{1,\}\\<.*$/\1/g' |
+			sed 's/[ \t]\{2,\}/ /g')"
+		__desc="$(echo "$__desc" |
+			sed 's/([^)]*)[ \t]\{1,\}\\</\\</g' |
+			sed 's/[ \t]\{2,\}/ /g')"
+		
+		# Base output
+		echo " * ***"'`'"$__code"'`'"***: $__desc"
+		
+		# No delimeter?
+		__nodelim="$(echo "$__parm" | grep '\;' > /dev/null; echo $?)"
+		
+		# Output all parameters
+		__i=1
+		while true
+		do
+			# Extract item
+			__item="$(echo "$__parm" | cut -d ';' -f "$__i" |
+				sed 's/^[ \t]*//g;s/[ \t]*$//g')"
+			
+			# Nothing
+			if [ -z "$__item" ]
+			then
+				break
+			fi
+			
+			# Print it
+			echo "   * $__item"
+			
+			# Increase
+			__i="$(expr "$__i" + 1)"
+			
+			# Stop if no delimeters are used
+			if [ "$__nodelim" -ne "0" ]
+			then
+				break;
+			fi
+		done
+		
+	# There are none
+	else
+		echo " * ***"'`'"$__code"'`'"***: $__desc"
+	fi
 done) >> /tmp/$$
 
 # Did the errors actually change?

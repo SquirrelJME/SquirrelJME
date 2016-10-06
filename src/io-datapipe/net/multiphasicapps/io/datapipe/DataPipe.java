@@ -37,7 +37,7 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * {@squirreljme.error AC06 Internal pipe input and output may only be
  * performed during processing.}
  * {@squirreljme.error AC0a The pipe dual state has not been
- * statisfied (input must be handled when the output is requested.}
+ * statisfied (input must be handled when the output is requested).}
  *
  * @since 2016/03/11
  */

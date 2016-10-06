@@ -385,7 +385,7 @@ public abstract class ZipFile
 				long ec = readStruct(__pos, varf);
 				
 				// {@squirreljme.error AM02 Read of array index which is not
-				// within the array bounds. (The structure index; The count})
+				// within the array bounds. (The structure index; The count)}
 				if (__ai < 0 || (long)__ai >= ec)
 					throw new ZipException(String.format("AM02 %d %d",
 						__ai, ec));

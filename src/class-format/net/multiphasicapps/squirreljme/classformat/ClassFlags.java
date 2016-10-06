@@ -166,7 +166,7 @@ public class ClassFlags
 		if (isInterface())
 		{
 			// {@squirreljme.error AY01 An interface must also be abstract.
-			// (The class flags}}
+			// (The class flags)}
 			if (!isAbstract())
 				throw new ClassFormatException(String.format("AY01 %s", this));
 			
