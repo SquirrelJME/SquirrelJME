@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreldigger;
 
 import java.nio.file.Paths;
+import net.multiphasicapps.squirreldigger.game.FrameTimer;
 import net.multiphasicapps.squirreldigger.game.Game;
 import net.multiphasicapps.squirreldigger.gui.lui.LUIGUI;
 
@@ -34,12 +35,12 @@ public class DefaultMain
 			__args = new String[0];
 		
 		// Just use the console based interface for now
+		Game g;
 		LUIGUI lg = new LUIGUI(
-			new Game(0L, Paths.get(System.getProperty("user.dir"))));
+			(g = new Game(0L, Paths.get(System.getProperty("user.dir")))));
 		
 		// Execute loop
-		for (;;)
-			lg.run();
+		new FrameTimer(g, lg).run();
 	}
 }
 

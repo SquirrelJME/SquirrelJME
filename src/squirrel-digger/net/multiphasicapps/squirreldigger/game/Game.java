@@ -19,7 +19,12 @@ import net.multiphasicapps.squirreldigger.game.chunk.ChunkManager;
  * @since 2016/10/06
  */
 public class Game
+	implements Runnable
 {
+	/** The framerate of the game. */
+	public static final int FRAME_RATE =
+		20;
+	
 	/** The seed used to generate the map structure. */
 	protected final long seed;
 	
@@ -42,6 +47,16 @@ public class Game
 		// Setup chunk manager
 		this.seed = __seed;
 		this.chunkmanager = new ChunkManager(__seed, __root);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/06
+	 */
+	@Override
+	public void run()
+	{
+		throw new Error("TODO");
 	}
 }
 
