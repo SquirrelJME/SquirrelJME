@@ -57,8 +57,89 @@
 #endif
 
 /******************************************************************************
+*************************** OPERATING SYSTEM DEFINES **************************
+******************************************************************************/
+
+/*-------------------------------- STANDARD C -------------------------------*/
+#if SQUIRRELJME_OS_ISSTDC == 1
+
+/** C99. */
+#include <stdint.h>
+
+/*--------------------------------- UNKNOWN ---------------------------------*/
+#else
+	#error Unhandled operating system defines.
+#endif
+
+/******************************************************************************
+*************************** BASE JAVA LEVEL SUPPORT ***************************
+******************************************************************************/
+
+/*----------------------------- TYPE DEFINITIONS ----------------------------*/
+
+/** Byte. */
+typedef int8_t jbyte;
+
+/** Short. */
+typedef int16_t jshort;
+
+/** Integer. */
+typedef int32_t jint;
+
+/** Long is virtualized. */
+typedef struct jlong
+{
+	jint bits[2];
+} jlong;
+
+/** Float is virtualized. */
+typedef struct jfloat
+{
+	jint bits;
+} jfloat;
+
+/** Double is virtualized. */
+typedef struct jdouble
+{
+	jlong bits;
+} jdouble;
+
+/** Character. */
+typedef uint16_t jchar;
+
+/*------------------------------- TYPE SUPPORT ------------------------------*/
+
+/******************************************************************************
 *************************** OPERATING SYSTEM SUPPORT **************************
 ******************************************************************************/
+
+/**
+ * File access structure.
+ *
+ * @since 2016/10/06
+ */
+typedef struct squirreljme_file squirreljme_file;
+
+/*-------------------------------- STANDARD C -------------------------------*/
+#if SQUIRRELJME_OS_ISSTDC == 1
+
+/** Need access to files. */
+#include <stdio.h>
+
+/**
+ * {@inheritDoc}
+ * @since 2016/10/06
+ */
+struct squirreljme_file
+{
+	/** File access pointer. */
+	FILE* file;
+};
+
+/*--------------------------------- UNKNOWN ---------------------------------*/
+#else
+	#error Unhandled operating system support.
+#endif
 
 /******************************************************************************
 ****************************** LIBRARY FUNCTIONS ******************************
@@ -71,6 +152,8 @@
 /******************************************************************************
 ***************************** JAVA VIRTUAL MACHINE ****************************
 ******************************************************************************/
+
+/*---------------------- BYTE CODE EXECUTION FUNCTIONS ----------------------*/
 
 /******************************************************************************
 ****************************** MAIN ENTRY POINTS ******************************
@@ -113,5 +196,4 @@ uint32_t PilotMain(uint16_t cmd, void* cmdpbp, uint16_t launchflags)
 #else
 	#error Unhandled main entry point.
 #endif
-
 
