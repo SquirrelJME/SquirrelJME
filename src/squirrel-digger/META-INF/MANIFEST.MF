@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: squirrel-digger
+X-SquirrelJME-UUID: 04aaa69c-cb63-4444-8c38-667040650214
+X-SquirrelJME-Depends: cldc-compact meep-lui meep-midlet
+X-SquirrelJME-Error: BA
+MicroEdition-Configuration: CLDC-1.8
+MicroEdition-Profile: MEEP-8.0
+MIDlet-1: Squirrel Digger (Console), , 
+ net.multiphasicapps.squirreldigger.ConsoleMain
+Main-Class: net.multiphasicapps.squirreldigger.DefaultMain
+LIBlet-Title: Squirrel Digger
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a game where you dig blocks.
+
