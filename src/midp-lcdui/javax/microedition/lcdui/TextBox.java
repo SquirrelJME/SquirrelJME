@@ -60,12 +60,22 @@ public class TextBox
 		throw new Error("TODO");
 	}
 	
+	public void setCaret(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setChars(char[] __a, int __b, int __c)
 	{
 		throw new Error("TODO");
 	}
 	
 	public void setConstraints(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setHighlight(int __i, int __l)
 	{
 		throw new Error("TODO");
 	}
