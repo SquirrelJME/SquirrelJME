@@ -24,7 +24,32 @@ public abstract class Displayable
 		throw new Error("TODO");
 	}
 	
+	public Command getCommand(int __p)
+	{
+		throw new Error("TODO");
+	}
+	
+	public CommandLayoutPolicy getCommandLayoutPolicy()
+	{
+		throw new Error("TODO");
+	}
+	
+	public Command[] getCommands()
+	{
+		throw new Error("TODO");
+	}
+	
+	public Display getCurrentDisplay()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
+	public Menu getMenu(int __p)
 	{
 		throw new Error("TODO");
 	}
@@ -44,6 +69,11 @@ public abstract class Displayable
 		throw new Error("TODO");
 	}
 	
+	public void invalidateCommandLayout()
+	{
+		throw new Error("TODO");
+	}
+	
 	public boolean isShown()
 	{
 		throw new Error("TODO");
@@ -54,7 +84,27 @@ public abstract class Displayable
 		throw new Error("TODO");
 	}
 	
+	public void removeCommandOrMenu(int __p)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setCommand(Command __c, int __p)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setCommandLayoutPolicy(CommandLayoutPolicy __p)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setCommandListener(CommandListener __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setMenu(Menu __m, int __p)
 	{
 		throw new Error("TODO");
 	}
