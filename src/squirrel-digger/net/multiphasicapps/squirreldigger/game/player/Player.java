@@ -21,10 +21,6 @@ import net.multiphasicapps.squirreldigger.game.Game;
  */
 public class Player
 {
-	/** Player lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The game this player is in. */
 	protected final Game game;
 	
@@ -59,7 +55,7 @@ public class Player
 	public void setController(Controller __c)
 	{
 		// Lock
-		synchronized (this.lock)
+		synchronized (this.game)
 		{
 			this._controller = __c;
 		}

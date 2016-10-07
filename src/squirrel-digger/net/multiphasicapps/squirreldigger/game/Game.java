@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreldigger.game.chunk.ChunkManager;
 import net.multiphasicapps.squirreldigger.game.entity.Entity;
+import net.multiphasicapps.squirreldigger.game.entity.EntityType;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
 import net.multiphasicapps.squirreldigger.game.player.Player;
 
@@ -33,10 +34,6 @@ public class Game
 	/** The framerate of the game. */
 	public static final int FRAME_RATE =
 		20;
-	
-	/** The lock for the game loop. */
-	protected final Object lock =
-		new Object();
 	
 	/** The seed used to generate the map structure. */
 	protected final long seed;
@@ -74,7 +71,7 @@ public class Game
 		
 		// Setup chunk manager
 		this.seed = __seed;
-		this.chunkmanager = new ChunkManager(__seed, __root);
+		this.chunkmanager = new ChunkManager(this, __seed, __root);
 	}
 	
 	/**
@@ -86,7 +83,7 @@ public class Game
 	public Player addPlayer()
 	{
 		// Lock
-		synchronized (this.lock)
+		synchronized (this)
 		{
 			// Create new player
 			Player rv = new Player(this);
@@ -108,13 +105,19 @@ public class Game
 	{
 		// Need frame
 		long currentframe = this._currentframe;
-		synchronized (this.lock)
+		synchronized (this)
 		{
 			// Are there any players to be added to the game?
 			List<Player> players = this._players;
 			Deque<Player> waitplayers = this._waitplayers;
 			if (!waitplayers.isEmpty())
-				players.add(waitplayers.removeFirst());
+			{
+				Player p = waitplayers.removeFirst();
+				
+				// Only add if it is below the maximum
+				if (players.size() < Integer.MAX_VALUE)
+					players.add(p);
+			}
 			
 			// Handle player specific logic
 			int n = players.size();
@@ -124,10 +127,17 @@ public class Game
 				Player p = players.get(i);
 				
 				// If the player has no entity then they either just joined or
-				// got killed
+				// got killed and are trying to respawn
 				Entity e = playermap.get(p);
 				if (e == null)
 				{
+					// Create new entity and map it to the player
+					e = new Entity(this);
+					playermap.put(p, e);
+					
+					// Make them a squirrel
+					e.initializeTo(EntityType.SQUIRREL);
+					
 					throw new Error("TODO");
 				}
 				

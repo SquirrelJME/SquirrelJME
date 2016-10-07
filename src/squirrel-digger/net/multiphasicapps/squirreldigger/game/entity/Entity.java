@@ -22,6 +22,9 @@ public class Entity
 	/** The game this entity is within. */
 	protected final Game game;
 	
+	/** The type of entity that this is. */
+	protected final EntityType type;
+	
 	/**
 	 * Initializes the entity.
 	 *
@@ -38,6 +41,27 @@ public class Entity
 		
 		// Set
 		this.game = __g;
+	}
+	
+	/**
+	 * Initializes the entity so that it is the given type.
+	 *
+	 * @param __t The type of entity to initialize to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/07
+	 */
+	public void initializeTo(EntityType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.game)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

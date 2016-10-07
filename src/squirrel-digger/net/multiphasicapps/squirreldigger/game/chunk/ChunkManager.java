@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreldigger.game.chunk;
 
 import java.nio.file.Path;
+import net.multiphasicapps.squirreldigger.game.Game;
 
 /**
  * This class is used to manage chunks which may be cached, loaded, and stored
@@ -20,6 +21,9 @@ import java.nio.file.Path;
  */
 public class ChunkManager
 {
+	/** The game that owns this chunk manager. */
+	protected final Game game;
+	
 	/** The seed used to generate map data. */
 	protected final long seed;
 	
@@ -29,16 +33,17 @@ public class ChunkManager
 	/**
 	 * Initializes the chunk manager.
 	 *
+	 * @param __g The game that owns this.
 	 * @param __seed The seed used for map generation.
 	 * @param __root The root directory where chunk data is stored.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/06
 	 */
-	public ChunkManager(long __seed, Path __root)
+	public ChunkManager(Game __g, long __seed, Path __root)
 		throws NullPointerException
 	{
 		// Check
-		if (__root == null)
+		if (__g == null || __root == null)
 			throw new NullPointerException("NARG");
 		
 		// Set

@@ -48,8 +48,10 @@ public abstract class GUI
 	 * @param __id The local ID of the player.
 	 * @return The local game controller or {@code null} if it is not valid
 	 * for the given player ID.
+	 * @throws IndexOutOfBoundsException If the player ID is negative.
 	 * @since 2016/10/06
 	 */
-	public abstract Controller localController(int __id);
+	public abstract Controller localController(int __id)
+		throws IndexOutOfBoundsException;
 }
 

@@ -82,7 +82,12 @@ public class LUIGUI
 	 */
 	@Override
 	public Controller localController(int __id)
+		throws IndexOutOfBoundsException
 	{
+		// {@squirreljme.error BA02 Request for a negative local player ID.}
+		if (__id < 0)
+			throw new IndexOutOfBoundsException("BA02");
+		
 		// Only the first player is valid
 		if (__id != 0)
 			return null;
