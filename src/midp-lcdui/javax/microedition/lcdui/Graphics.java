@@ -34,6 +34,12 @@ public class Graphics
 	public static final int SOLID =
 		0;
 	
+	public static final int SRC =
+		1;
+	
+	public static final int SRC_OVER =
+		0;
+	
 	public static final int TOP =
 		16;
 	
@@ -58,6 +64,12 @@ public class Graphics
 	}
 	
 	public void drawArc(int __a, int __b, int __c, int __d, int __e, int __f)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void drawARGB16(short[] __data, int __off, int __scanlen, int __x,
+		int __y, int __w, int __h)
 	{
 		throw new Error("TODO");
 	}
@@ -89,6 +101,12 @@ public class Graphics
 		throw new Error("TODO");
 	}
 	
+	public void drawRGB16(short[] __data, int __off, int __scanlen, int __x,
+		int __y, int __w, int __h)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void drawRect(int __a, int __b, int __c, int __d)
 	{
 		throw new Error("TODO");
@@ -96,6 +114,13 @@ public class Graphics
 	
 	public void drawRegion(Image __a, int __b, int __c, int __d, int __e, int
 		__f, int __g, int __h, int __i)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void drawRegion(Image __src, int __xsrc, int __ysrc, int __w,
+		int __h, int __trans, int __xdest, int __ydest, int __anch,
+		int __wdest, int __hdest)
 	{
 		throw new Error("TODO");
 	}
@@ -113,6 +138,11 @@ public class Graphics
 	
 	public void drawSubstring(String __a, int __b, int __c, int __d, int __e,
 		int __f)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void drawText(Text __t, int __x, int __y)
 	{
 		throw new Error("TODO");
 	}
@@ -135,6 +165,16 @@ public class Graphics
 	
 	public void fillTriangle(int __a, int __b, int __c, int __d, int __e, int
 		__f)
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getAlpha()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getBlendingMode()
 	{
 		throw new Error("TODO");
 	}
@@ -205,6 +245,26 @@ public class Graphics
 	}
 	
 	public int getTranslateY()
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setAlpha(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setAlphaColor(int __argb)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setAlphaColor(int __a, int __r, int __g, int __b)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setBlendingMode(int __m)
 	{
 		throw new Error("TODO");
 	}
