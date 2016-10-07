@@ -112,14 +112,21 @@ public class ChunkManager
 	 * @return The the chunk for the given index.
 	 * @since 2016/10/07
 	 */
-	public int chunkByChunkIndex(int __i)
+	public Chunk chunkByChunkIndex(int __i)
 	{
 		// Clip to the mask to force it to be valid
 		__i &= INDEX_MASK;
 		
-		// Lock
+		// Get mappings
 		Map<Reference<Chunk>, ChunkData> chunktodata = this._chunktodata;
 		Map<Integer, Reference<Chunk>> indextochunk = this._indextochunk;
+		
+		// If the chunk is loaded in memory, use it
+		Integer i = Integer.valueOf(__i);
+		Reference<Chunk> ref = indextochunk.get(i);
+		Chunk rv;
+		if (ref != null && null != (rv = ref.get()))
+			return rv;
 		
 		throw new Error("TODO");
 	}
@@ -133,7 +140,7 @@ public class ChunkManager
 	 * @return The chunk for this given position.
 	 * @since 2016/10/07
 	 */
-	public int chunkByChunkPosition(int __x, int __y, int __z)
+	public Chunk chunkByChunkPosition(int __x, int __y, int __z)
 	{
 		return chunkByChunkIndex(chunkPositionToIndex(__x, __y, __z));
 	}

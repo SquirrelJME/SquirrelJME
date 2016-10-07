@@ -44,7 +44,8 @@ public class Entity
 	}
 	
 	/**
-	 * Initializes the entity so that it is the given type.
+	 * Initializes the entity so that it is the given type as if it were
+	 * freshly spawned.
 	 *
 	 * @param __t The type of entity to initialize to.
 	 * @throws NullPointerException On null arguments.
@@ -57,7 +58,8 @@ public class Entity
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set the type
+		this._type = __t;
 	}
 }
 
