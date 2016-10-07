@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreldigger.gui;
 
 import net.multiphasicapps.squirreldigger.game.Game;
+import net.multiphasicapps.squirreldigger.game.player.Controller;
 
 /**
  * This is the base class for GUI interfaces.
@@ -40,5 +41,15 @@ public abstract class GUI
 		// Set
 		this.game = __g;
 	}
+	
+	/**
+	 * Returns the controller for the local game.
+	 *
+	 * @param __id The local ID of the player.
+	 * @return The local game controller or {@code null} if it is not valid
+	 * for the given player ID.
+	 * @since 2016/10/06
+	 */
+	public abstract Controller localController(int __id);
 }
 

@@ -21,6 +21,10 @@ import net.multiphasicapps.squirreldigger.game.Game;
  */
 public class Player
 {
+	/** Player lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The game this player is in. */
 	protected final Game game;
 	
@@ -43,6 +47,22 @@ public class Player
 		
 		// Set
 		this.game = __g;
+	}
+	
+	/**
+	 * Sets the controller to use for the player.
+	 *
+	 * @param __c The controller to use, {@code null} clears it (and makes the
+	 * player idle).
+	 * @since 2016/10/06
+	 */
+	public void setController(Controller __c)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._controller = __c;
+		}
 	}
 }
 

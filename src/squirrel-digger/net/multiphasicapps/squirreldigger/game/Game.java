@@ -80,7 +80,11 @@ public class Game
 	 */
 	public Player addPlayer()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

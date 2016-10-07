@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreldigger.gui.lui;
 import java.util.Iterator;
 import javax.microedition.lui.Display;
 import net.multiphasicapps.squirreldigger.game.Game;
+import net.multiphasicapps.squirreldigger.game.player.Controller;
 import net.multiphasicapps.squirreldigger.gui.GUI;
 
 /**
@@ -60,6 +61,20 @@ public class LUIGUI
 		
 		// Set
 		this.display = __d;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/06
+	 */
+	@Override
+	public Controller localController(int __id)
+	{
+		// Only the first player is valid
+		if (__id != 0)
+			return null;
+		
+		throw new Error("TODO");
 	}
 	
 	/**

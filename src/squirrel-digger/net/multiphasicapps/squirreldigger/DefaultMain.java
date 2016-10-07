@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreldigger;
 import java.nio.file.Paths;
 import net.multiphasicapps.squirreldigger.game.FrameTimer;
 import net.multiphasicapps.squirreldigger.game.Game;
+import net.multiphasicapps.squirreldigger.game.player.Controller;
 import net.multiphasicapps.squirreldigger.gui.lui.LUIGUI;
 
 /**
@@ -38,6 +39,19 @@ public class DefaultMain
 		Game g;
 		LUIGUI lg = new LUIGUI(
 			(g = new Game(0L, Paths.get(System.getProperty("user.dir")))));
+		
+		// Setup controllers
+		for (int i = 0; i < Integer.MAX_VALUE; i++)
+		{
+			Controller c = lg.localController(i);
+			
+			// No local players anymore
+			if (c == null)
+				break;
+			
+			// Add player and set controller
+			g.addPlayer().setController(c);
+		}
 		
 		// Execute loop
 		new FrameTimer(g, lg).run();
