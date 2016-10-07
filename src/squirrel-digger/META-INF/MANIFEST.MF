@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: squirrel-digger
 X-SquirrelJME-UUID: 04aaa69c-cb63-4444-8c38-667040650214
-X-SquirrelJME-Depends: cldc-full meep-lui meep-midlet
+X-SquirrelJME-Depends: cldc-full meep-lui meep-midlet 
+ media-api
 X-SquirrelJME-Error: BA
 MicroEdition-Configuration: CLDC-1.8
 MicroEdition-Profile: MEEP-8.0
