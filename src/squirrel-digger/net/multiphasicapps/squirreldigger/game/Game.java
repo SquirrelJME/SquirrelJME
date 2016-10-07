@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreldigger.game.chunk.ChunkManager;
+import net.multiphasicapps.squirreldigger.game.entity.Entity;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
 import net.multiphasicapps.squirreldigger.game.player.Player;
 
@@ -50,6 +51,10 @@ public class Game
 	/** Players waiting to join. */
 	private final Deque<Player> _waitplayers =
 		new ArrayDeque<>();
+	
+	/** The player to entity mapping. */
+	private final Map<Player, Entity> _playermap =
+		new HashMap<>();
 	
 	/** The current game frame. */
 	private volatile long _currentframe;
@@ -113,9 +118,18 @@ public class Game
 			
 			// Handle player specific logic
 			int n = players.size();
+			Map<Player, Entity> playermap = this._playermap;
 			for (int i = 0; i < n; i++)
 			{
 				Player p = players.get(i);
+				
+				// If the player has no entity then they either just joined or
+				// got killed
+				Entity e = playermap.get(p);
+				if (e == null)
+				{
+					throw new Error("TODO");
+				}
 				
 				throw new Error("TODO");
 			}
