@@ -20,6 +20,9 @@ public class TextField
 	public static final int CONSTRAINT_MASK =
 		65535;
 	
+	public static final int CURRENCY =
+		6;
+	
 	public static final int DECIMAL =
 		5;
 	
@@ -99,12 +102,22 @@ public class TextField
 		throw new Error("TODO");
 	}
 	
+	public void setCaret(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setChars(char[] __a, int __b, int __c)
 	{
 		throw new Error("TODO");
 	}
 	
 	public void setConstraints(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setHighlight(int __i, int __l)
 	{
 		throw new Error("TODO");
 	}
