@@ -109,7 +109,7 @@ public class Game
 			List<Player> players = this._players;
 			Deque<Player> waitplayers = this._waitplayers;
 			if (!waitplayers.isEmpty())
-				throw new Error("TODO");
+				players.add(waitplayers.removeFirst());
 			
 			// Handle player specific logic
 			int n = players.size();
@@ -119,9 +119,6 @@ public class Game
 				
 				throw new Error("TODO");
 			}
-			
-			if (true)
-				throw new Error("TODO");
 			
 			// Always increment the game frame
 			this._currentframe = currentframe + 1;
