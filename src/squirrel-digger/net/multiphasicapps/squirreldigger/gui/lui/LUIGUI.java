@@ -11,9 +11,11 @@
 package net.multiphasicapps.squirreldigger.gui.lui;
 
 import java.util.Iterator;
+import javax.microedition.key.InputDevice;
 import javax.microedition.lui.Display;
 import net.multiphasicapps.squirreldigger.game.Game;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
+import net.multiphasicapps.squirreldigger.game.player.NullController;
 import net.multiphasicapps.squirreldigger.gui.GUI;
 
 /**
@@ -30,6 +32,9 @@ public class LUIGUI
 {
 	/** The display to draw into. */
 	protected final Display display;
+	
+	/** The controller used. */
+	protected final Controller controller;
 	
 	/**
 	 * Initializes the line based GUI using the default display.
@@ -61,6 +66,14 @@ public class LUIGUI
 		
 		// Set
 		this.display = __d;
+		
+		// If the display has keyboard input then allow for it to be handled
+		if (__d instanceof InputDevice)
+			this.controller = new LUIController((InputDevice)__d);
+		
+		// Use null controller (idle)
+		else
+			this.controller = new NullController();
 	}
 	
 	/**
@@ -74,7 +87,8 @@ public class LUIGUI
 		if (__id != 0)
 			return null;
 		
-		throw new Error("TODO");
+		// Return the controller
+		return this.controller;
 	}
 	
 	/**
