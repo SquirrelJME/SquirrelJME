@@ -75,12 +75,22 @@ public abstract class Item
 		throw new Error("TODO");
 	}
 	
+	public Comand[] getCommands()
+	{
+		throw new Error("TODO");
+	}
+	
 	public String getLabel()
 	{
 		throw new Error("TODO");
 	}
 	
 	public int getLayout()
+	{
+		throw new Error("TODO");
+	}
+	
+	public ItemLayoutHint getLayoutHint()
 	{
 		throw new Error("TODO");
 	}
@@ -115,6 +125,11 @@ public abstract class Item
 		throw new Error("TODO");
 	}
 	
+	public void setCommand(Command __c, int __p)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setDefaultCommand(Command __a)
 	{
 		throw new Error("TODO");
@@ -131,6 +146,11 @@ public abstract class Item
 	}
 	
 	public void setLayout(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setLayoutHint(ItemLayoutHint __h)
 	{
 		throw new Error("TODO");
 	}
