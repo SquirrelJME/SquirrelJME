@@ -21,6 +21,12 @@ public class Image
 		throw new Error("TODO");
 	}
 	
+	public void getARGB16(short[] __data, int __off, int __scanlen, int __x,
+		int __y, int __w, int __h)
+	{
+		throw new Error("TODO");
+	}
+	
 	public Graphics getGraphics()
 	{
 		throw new Error("TODO");
@@ -37,12 +43,33 @@ public class Image
 		throw new Error("TODO");
 	}
 	
+	public void getRGB16(short[] __data, int __off, int __scanlen, int __x,
+		int __y, int __w, int __h)
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getWidth()
 	{
 		throw new Error("TODO");
 	}
 	
+	public boolean hasAlpha()
+	{
+		throw new Error("TODO");
+	}
+	
+	public boolean isAnimated()
+	{
+		throw new Error("TODO");
+	}
+	
 	public boolean isMutable()
+	{
+		throw new Error("TODO");
+	}
+	
+	public boolean isScalable()
 	{
 		throw new Error("TODO");
 	}
@@ -86,6 +113,18 @@ public class Image
 	
 	public static Image createRGBImage(int[] __a, int __b, int __c, boolean 
 		__d)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Image createImage(int __w, int __h, boolean __alpha,
+		int __fill)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Image createImage(Image __i, int __x, int __y, int __w,
+		int __h, int __trans, int __iw, int __ih)
 	{
 		throw new Error("TODO");
 	}
