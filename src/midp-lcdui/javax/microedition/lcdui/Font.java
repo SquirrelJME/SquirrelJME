@@ -149,6 +149,12 @@ public final class Font
 		throw new Error("TODO");
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		throw new Error("TODO");
+	}
+	
 	public boolean isBold()
 	{
 		throw new Error("TODO");
