@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import java.io.InputStream;
+import java.io.IOException;
 
 public final class Font
 {
@@ -27,6 +29,12 @@ public final class Font
 	
 	public static final int FONT_STATIC_TEXT =
 		0;
+	
+	public static final int FONT_IDLE_TEXT =
+		2;
+	
+	public static final int FONT_IDLE_HIGHLIGHTED_TEXT =
+		3;
 	
 	public static final int SIZE_LARGE =
 		16;
@@ -65,7 +73,33 @@ public final class Font
 		throw new Error("TODO");
 	}
 	
+	public Font deriveFont(int __pxs)
+	{
+		throw new Error("TODO");
+	}
+	
+	public Font deriveFont(int __style, int __pxs)
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getAscent()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getBaselinePosition()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getDescent()
 	{
 		throw new Error("TODO");
 	}
@@ -75,7 +109,32 @@ public final class Font
 		throw new Error("TODO");
 	}
 	
+	public String getFamily()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getLeading()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getMaxAscent()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getMaxDescent()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getPixelSize()
 	{
 		throw new Error("TODO");
 	}
@@ -120,6 +179,27 @@ public final class Font
 		throw new Error("TODO");
 	}
 	
+	public static Font createFont(InputStream __data)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Font[] getAvailableFonts()
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Font[] getAvailableFonts(int __style)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Font[] getAvailableFonts(int __face, int __style, int __pxs)
+	{
+		throw new Error("TODO");
+	}
+	
 	public static Font getDefaultFont()
 	{
 		throw new Error("TODO");
@@ -131,6 +211,21 @@ public final class Font
 	}
 	
 	public static Font getFont(int __a, int __b, int __c)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Font getFont(String __name, int __style, int __pxs)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static int getPixelSize(String __name)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static int getStyle(String __name)
 	{
 		throw new Error("TODO");
 	}
