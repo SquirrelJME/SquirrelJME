@@ -23,7 +23,7 @@ public class Entity
 	protected final Game game;
 	
 	/** The type of entity that this is. */
-	protected final EntityType type;
+	private volatile EntityType _type;
 	
 	/**
 	 * Initializes the entity.
