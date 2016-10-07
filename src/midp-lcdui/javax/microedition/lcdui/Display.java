@@ -15,31 +15,157 @@ import javax.microedition.midlet.MIDlet;
 public class Display
 {
 	public static final int ALERT =
-		3;
-	
+		 3;
+
 	public static final int CHOICE_GROUP_ELEMENT =
-		2;
-	
+		 2;
+
 	public static final int COLOR_BACKGROUND =
-		0;
-	
+		 0;
+
 	public static final int COLOR_BORDER =
-		4;
-	
+		 4;
+
 	public static final int COLOR_FOREGROUND =
-		1;
-	
+		 1;
+
 	public static final int COLOR_HIGHLIGHTED_BACKGROUND =
-		2;
-	
+		 2;
+
 	public static final int COLOR_HIGHLIGHTED_BORDER =
-		5;
-	
+		 5;
+
 	public static final int COLOR_HIGHLIGHTED_FOREGROUND =
-		3;
-	
+		 3;
+
+	public static final int COLOR_IDLE_BACKGROUND =
+		 6;
+
+	public static final int COLOR_IDLE_FOREGROUND =
+		 7;
+
+	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
+		 8;
+
+	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
+		 9;
+
+	public static final int COMMAND =
+		 5;
+
+	public static final int DISPLAY_HARDWARE_ABSENT =
+		 2;
+
+	public static final int DISPLAY_HARDWARE_DISABLED =
+		 1;
+
+	public static final int DISPLAY_HARDWARE_ENABLED =
+		 0;
+
 	public static final int LIST_ELEMENT =
-		1;
+		 1;
+
+	public static final int MENU =
+		 7;
+
+	public static final int MODE_ACTIVE =
+		 1;
+
+	public static final int MODE_NORMAL =
+		 0;
+
+	public static final int NOTIFICATION =
+		 6;
+
+	public static final int ORIENTATION_LANDSCAPE =
+		 2;
+
+	public static final int ORIENTATION_LANDSCAPE_180 =
+		 8;
+
+	public static final int ORIENTATION_PORTRAIT =
+		 1;
+
+	public static final int ORIENTATION_PORTRAIT_180 =
+		 4;
+
+	public static final int SOFTKEY_BOTTOM =
+		 800;
+
+	public static final int SOFTKEY_INDEX_MASK =
+		 15;
+
+	public static final int SOFTKEY_LEFT =
+		 820;
+
+	public static final int SOFTKEY_OFFSCREEN =
+		 880;
+
+	public static final int SOFTKEY_RIGHT =
+		 860;
+
+	public static final int SOFTKEY_TOP =
+		 840;
+
+	public static final int STATE_BACKGROUND =
+		 0;
+
+	public static final int STATE_FOREGROUND =
+		 2;
+
+	public static final int STATE_VISIBLE =
+		 1;
+
+	public static final int SUPPORTS_ALERTS =
+		 32;
+
+	public static final int SUPPORTS_COMMANDS =
+		 2;
+
+	public static final int SUPPORTS_FILESELECTORS =
+		 512;
+
+	public static final int SUPPORTS_FORMS =
+		 4;
+
+	public static final int SUPPORTS_IDLEITEM =
+		 2048;
+
+	public static final int SUPPORTS_INPUT_EVENTS =
+		 1;
+
+	public static final int SUPPORTS_LISTS =
+		 64;
+
+	public static final int SUPPORTS_MENUS =
+		 1024;
+
+	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
+		 8192;
+
+	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
+		 32768;
+
+	public static final int SUPPORTS_ORIENTATION_PORTRAIT =
+		 4096;
+
+	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 =
+		 16384;
+
+	public static final int SUPPORTS_TABBEDPANES =
+		 256;
+
+	public static final int SUPPORTS_TEXTBOXES =
+		 128;
+
+	public static final int SUPPORTS_TICKER =
+		 8;
+
+	public static final int SUPPORTS_TITLE =
+		 16;
+
+	public static final int TAB =
+		 4;
 	
 	private Display()
 	{
@@ -53,6 +179,11 @@ public class Display
 	}
 	
 	public boolean flashBacklight(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getActivityMode()
 	{
 		throw new Error("TODO");
 	}
@@ -72,12 +203,92 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	public int getCapabilities()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getColor(int __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	public CommandLayoutPolicy getCommandLayoutPolicy()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int[] getCommandPreferredPlacements(int __ct)
+	{
+		throw new Error("TODO");
+	}
+	
 	public Displayable getCurrent()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getDisplayState()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getDotPitch()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int[] getExactPlacementPositions(int __b)
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getHardwareState()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
+	public IdleItem getIdleItem()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int[] getMenuPreferredPlacements()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int[] getMenuSupportedPlacements()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getOrientation()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getWidth()
+	{
+		throw new Error("TODO");
+	}
+	
+	public boolean hasPointerEvents()
+	{
+		throw new Error("TODO");
+	}
+	
+	public boolean hasPointerMotionEvents()
+	{
+		throw new Error("TODO");
+	}
+	
+	public boolean isBuiltIn()
 	{
 		throw new Error("TODO");
 	}
@@ -97,6 +308,21 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	public void removeCurrent()
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setActivityMode(int __m)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setCurrent(Alert __a, Displayable __b)
 	{
 		throw new Error("TODO");
@@ -112,12 +338,37 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	public void setIdleItem(IdleItem __i)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setPreferredOrientation(int __o)
+	{
+		throw new Error("TODO");
+	}
+	
 	public boolean vibrate(int __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	public static void addDisplayListener(DisplayListener __dl)
+	{
+		throw new Error("TODO");
+	}
+	
 	public static Display getDisplay(MIDlet __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Display[] getDisplays(int __caps)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static void removeDisplayListener(DisplayListener __dl)
 	{
 		throw new Error("TODO");
 	}
