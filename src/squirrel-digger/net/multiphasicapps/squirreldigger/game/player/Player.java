@@ -54,11 +54,7 @@ public class Player
 	 */
 	public void setController(Controller __c)
 	{
-		// Lock
-		synchronized (this.game)
-		{
-			this._controller = __c;
-		}
+		this._controller = __c;
 	}
 }
 

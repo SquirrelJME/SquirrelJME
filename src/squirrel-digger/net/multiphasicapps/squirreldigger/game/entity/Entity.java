@@ -57,11 +57,7 @@ public class Entity
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock
-		synchronized (this.game)
-		{
-			throw new Error("TODO");
-		}
+		throw new Error("TODO");
 	}
 }
 

@@ -120,10 +120,8 @@ public class ChunkManager
 		// Lock
 		Map<Reference<Chunk>, ChunkData> chunktodata = this._chunktodata;
 		Map<Integer, Reference<Chunk>> indextochunk = this._indextochunk;
-		synchronized (this.game)
-		{
-			throw new Error("TODO");
-		}
+		
+		throw new Error("TODO");
 	}
 	
 	/**
