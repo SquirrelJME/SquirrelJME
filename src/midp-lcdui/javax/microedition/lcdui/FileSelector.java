@@ -18,10 +18,10 @@ public class FileSelector
 	extends Screen
 {
 	public static final Command CANCEL_COMMAND =
-		null;
+		new Command(null, -1, -1);
 	
 	public static final Command OK_COMMAND =
-		null;
+		new Command(null, -1, -1);
 	
 	public static final int DIRECTORY_CREATE =
 		3;

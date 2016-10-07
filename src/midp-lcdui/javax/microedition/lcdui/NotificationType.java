@@ -10,34 +10,29 @@
 
 package javax.microedition.lcdui;
 
-
-public class AlertType
+public final class NotificationType
 {
-	public static final AlertType ALARM =
-		new AlertType();
+	public static final NotificationType CALL =
+		new NotificationType(null, null);
 	
-	public static final AlertType CONFIRMATION =
-		new AlertType();
+	public static final NotificationType EMAIL =
+		new NotificationType(null, null);
 	
-	public static final AlertType ERROR =
-		new AlertType();
+	public static final NotificationType IM =
+		new NotificationType(null, null);
 	
-	public static final AlertType INFO =
-		new AlertType();
+	public static final NotificationType MMS =
+		new NotificationType(null, null);
 	
-	public static final AlertType WARNING =
-		new AlertType();
+	public static final NotificationType REMINDER =
+		new NotificationType(null, null);
 	
-	protected AlertType()
-	{
-		super();
-		throw new Error("TODO");
-	}
+	public static final NotificationType SMS =
+		new NotificationType(null, null);
 	
-	public boolean playSound(Display __a)
+	public NotificationType(String __dl, Image __di)
 	{
 		throw new Error("TODO");
 	}
 }
-
 
