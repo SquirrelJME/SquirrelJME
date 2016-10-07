@@ -49,7 +49,27 @@ public class Command
 		throw new Error("TODO");
 	}
 	
+	public Command(String __sl, String __ll, Image __i, int __type, int __pri)
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getCommandType()
+	{
+		throw new Error("TODO");
+	}
+	
+	public boolean getEnabled()
+	{
+		throw new Error("TODO");
+	}
+	
+	public Font getFont()
+	{
+		throw new Error("TODO");
+	}
+	
+	public Image getImage()
 	{
 		throw new Error("TODO");
 	}
@@ -65,6 +85,36 @@ public class Command
 	}
 	
 	public int getPriority()
+	{
+		throw new Error("TODO");
+	}
+	
+	public void onParentEnabled(boolean __e)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setEnabled(boolean __e)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setFont(Font __f)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setLabel(String __s)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setLongLabel(String __s)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setImage(Image __i)
 	{
 		throw new Error("TODO");
 	}
