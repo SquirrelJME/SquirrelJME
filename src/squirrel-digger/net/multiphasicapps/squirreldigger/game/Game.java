@@ -83,7 +83,14 @@ public class Game
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Create new player
+			Player rv = new Player(this);
+			
+			// Add to the queue of waiting players
+			this._waitplayers.offerLast(rv);
+			
+			// Return the given player
+			return rv;
 		}
 	}
 	
