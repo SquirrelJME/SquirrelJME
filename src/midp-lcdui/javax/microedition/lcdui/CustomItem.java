@@ -67,6 +67,11 @@ public abstract class CustomItem
 		throw new Error("TODO");
 	}
 	
+	public int getKeyCode(int __action)
+	{
+		throw new Error("TODO");
+	}
+	
 	protected void hideNotify()
 	{
 		throw new Error("TODO");
@@ -113,6 +118,16 @@ public abstract class CustomItem
 	}
 	
 	protected final void repaint(int __a, int __b, int __c, int __d)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setKeyListener(KeyListener __kl)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setPaintMode(boolean __opaque)
 	{
 		throw new Error("TODO");
 	}
