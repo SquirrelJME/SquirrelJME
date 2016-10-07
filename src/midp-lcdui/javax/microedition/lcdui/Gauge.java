@@ -35,7 +35,17 @@ public class Gauge
 		throw new Error("TODO");
 	}
 	
+	public int getIncrementValue()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getMaxValue()
+	{
+		throw new Error("TODO");
+	}
+	
+	public int getMinValue()
 	{
 		throw new Error("TODO");
 	}
@@ -50,7 +60,17 @@ public class Gauge
 		throw new Error("TODO");
 	}
 	
+	public void setIncrementValueint __v)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setMaxValue(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setMinValue(int __v)
 	{
 		throw new Error("TODO");
 	}
