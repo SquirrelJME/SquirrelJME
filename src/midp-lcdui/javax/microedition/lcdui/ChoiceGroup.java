@@ -77,12 +77,22 @@ public class ChoiceGroup
 		throw new Error("TODO");
 	}
 	
+	public boolean isEnabled(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
 	public boolean isSelected(int __a)
 	{
 		throw new Error("TODO");
 	}
 	
 	public void set(int __a, String __b, Image __c)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setEnabled(int __i, boolean __e)
 	{
 		throw new Error("TODO");
 	}
