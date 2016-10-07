@@ -14,6 +14,15 @@ package javax.microedition.lcdui;
 public abstract class Canvas
 	extends Displayable
 {
+	public static final int ACTIONS_ALL =
+		-2;
+	
+	public static final int ACTIONS_NAVIGATION =
+		-1;
+	
+	public static final int ACTIONS_NONE =
+		0;
+	
 	public static final int DOWN =
 		6;
 	
@@ -31,6 +40,24 @@ public abstract class Canvas
 	
 	public static final int GAME_D =
 		12;
+	
+	public static final int KEY_BACKSPACE =
+		8;
+	
+	public static final int KEY_DELETE =
+		127;
+	
+	public static final int KEY_DOWN =
+		-2;
+	
+	public static final int KEY_ENTER =
+		10;
+	
+	public static final int KEY_ESCAPE =
+		27;
+	
+	public static final int KEY_LEFT =
+		-3;
 	
 	public static final int KEY_NUM0 =
 		48;
@@ -65,8 +92,20 @@ public abstract class Canvas
 	public static final int KEY_POUND =
 		35;
 	
+	public static final int KEY_RIGHT =
+		-4;
+	
+	public static final int KEY_SELECT =
+		-5;
+	
+	public static final int KEY_SPACE =
+		32;
+	
 	public static final int KEY_STAR =
 		42;
+	
+	public static final int KEY_TAB =
+		9;
 	
 	public static final int LEFT =
 		2;
@@ -102,6 +141,11 @@ public abstract class Canvas
 	}
 	
 	public String getKeyName(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public int[] getSoftkeyLabelCoordinates(int __p)
 	{
 		throw new Error("TODO");
 	}
@@ -152,6 +196,11 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	protected abstract void paint(Graphics __g)
+	{
+		throw new Error("TODO");
+	}
+	
 	protected void pointerDragged(int __a, int __b)
 	{
 		throw new Error("TODO");
@@ -183,6 +232,21 @@ public abstract class Canvas
 	}
 	
 	public void setFullScreenMode(boolean __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setKeyListener(KeyListener __kl)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setPaintMode(boolean __opaque)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setRequiredActions(int __actions)
 	{
 		throw new Error("TODO");
 	}
