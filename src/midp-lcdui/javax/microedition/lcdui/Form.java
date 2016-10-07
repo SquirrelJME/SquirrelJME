@@ -62,6 +62,11 @@ public class Form
 		throw new Error("TODO");
 	}
 	
+	public FormLayoutPolicy getLayoutPolicy()
+	{
+		throw new Error("TODO");
+	}
+	
 	@Override
 	public int getWidth()
 	{
@@ -79,6 +84,16 @@ public class Form
 	}
 	
 	public void setItemStateListener(ItemStateListener __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setItemTraversalListener(ItemTraversalListener __itl)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void setLayoutPolicy(FormLayoutPolicy __p)
 	{
 		throw new Error("TODO");
 	}
