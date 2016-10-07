@@ -10,12 +10,27 @@
 
 package net.multiphasicapps.squirreldigger.game.chunk;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreldigger.game.Game;
 
 /**
  * This class is used to manage chunks which may be cached, loaded, and stored
  * by the game.
+ *
+ * Chunk IDs are stored as a single integer value with their position encoded
+ * in the integer data. This means that there is a limit of 1024x1024x1024
+ * chunks.
+ *
+ * Players and entities use the {@link Chunk} class to access chunk data and to
+ * potentially modify those chunks.
+ *
+ * Internally a semi-weak mapping of chunk data is mapped to the chunk
+ * references. If an iteration detects that a chunk is not loaded then it will
+ * be flushed to the disk and removed. If a chunk is requested and it is
+ * cached on the disk, it will be read.
  *
  * @since 2016/10/06
  */
@@ -29,6 +44,10 @@ public class ChunkManager
 	
 	/** The directory containing the chunk cache. */
 	protected final Path root;
+	
+	/** This is a queue to detect which chunks were collected. */
+	private final ReferenceQueue<Chunk> _queue =
+		new ReferenceQueue<>();
 	
 	/**
 	 * Initializes the chunk manager.
