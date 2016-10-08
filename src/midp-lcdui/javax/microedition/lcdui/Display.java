@@ -515,8 +515,24 @@ public class Display
 					if (__exit != oldexit &&
 						__exit != null && __exit._display != null)
 						throw new IllegalStateException("EB04");
-				
-					throw new Error("TODO");
+					
+					// Unown the old shown displayable
+					if (oldshow != null)
+						oldshow._display = null;
+					
+					// Set the new display
+					if (__show != null)
+						__show._display = this;
+					this._show = __show;
+					
+					// Remove old association
+					if (oldexit != null)
+						oldexit._display = null;
+					
+					// Own this one
+					if (__exit != null)
+						__exit._display = this;
+					this._dismissed = __exit;
 				}
 			}
 		}
