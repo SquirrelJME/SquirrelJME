@@ -20,5 +20,12 @@ package net.multiphasicapps.squirreljme.lcduilui;
  */
 public interface CommonDisplayProvider<R, D extends CommonDisplay<R>>
 {
+	/**
+	 * Returns the displays that are available to this provider.
+	 *
+	 * @return The displays provided by the provider.
+	 * @since 2016/10/08
+	 */
+	public abstract D[] getDisplays();
 }
 

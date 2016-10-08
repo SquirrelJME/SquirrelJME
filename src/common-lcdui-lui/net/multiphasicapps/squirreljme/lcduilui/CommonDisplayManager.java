@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.lcduilui;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
 
 /**
@@ -75,6 +77,25 @@ public class CommonDisplayManager<R, D extends CommonDisplay<R>,
 	private final class __DriverIterator__
 		implements Iterator<D>
 	{
+		/** Display list. */
+		protected final Iterator<D> displays;
+		
+		/**
+		 * Pre-fill displays from providers.
+		 *
+		 * @since 2016/10/08
+		 */
+		{
+			// Setup for filling
+			List<D> rv = new ArrayList<>();
+			for (P p : CommonDisplayManager.this.services)
+				for (D d : p.getDisplays())
+					rv.add(d);
+			
+			// Iterator
+			this.displays = rv.iterator();
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2016/10/08
@@ -82,7 +103,7 @@ public class CommonDisplayManager<R, D extends CommonDisplay<R>,
 		@Override
 		public boolean hasNext()
 		{
-			throw new Error("TODO");
+			return this.displays.hasNext();
 		}
 		
 		/**
@@ -92,7 +113,7 @@ public class CommonDisplayManager<R, D extends CommonDisplay<R>,
 		@Override
 		public D next()
 		{
-			throw new Error("TODO");
+			return this.displays.next();
 		}
 		
 		/**
