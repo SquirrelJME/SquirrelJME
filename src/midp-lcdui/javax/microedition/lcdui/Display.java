@@ -11,6 +11,10 @@
 package javax.microedition.lcdui;
 
 import javax.microedition.midlet.MIDlet;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayProvider;
@@ -176,7 +180,7 @@ public class Display
 		new CommonDisplayManager<>(Display.class, LCDUIDisplay.class,
 		LCDUIDisplayProvider.class);
 	
-	private Display()
+	Display()
 	{
 		super();
 		throw new Error("TODO");
@@ -367,13 +371,51 @@ public class Display
 		throw new Error("TODO");
 	}
 	
-	public static Display getDisplay(MIDlet __a)
+	/**
+	 * Obtains the display that is associated with the given MIDlet.
+	 *
+	 * @param __m The display to get the midlet for.
+	 * @return The display for the given midlet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/08
+	 */
+	public static Display getDisplay(MIDlet __m)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the first display that is available.
+		// In the runtime, each program only ever gets a single MIDlet and
+		// creating new MIDlets is illegal. Thus since getDisplays() has zero
+		// be the return value for this method, that is used here.
+		Display[] disp = getDisplays(0);
+		if (disp.length > 0)
+			return disp[0];
+		
+		// {@squirreljme.error EB01 Could not get the display for the specified
+		// MIDlet because no displays are available.}
+		throw new RuntimeException("EB01");
 	}
 	
+	/**
+	 * Obtains the displays which have the given capability from all internal
+	 * display providers.
+	 *
+	 * @param __caps The capabities to use, this is a bitfield and the values
+	 * include all of the {@code SUPPORT_} prefixed constans. If {@code 0} is
+	 * specified then capabilities are not checked.
+	 * @return An array containing the displays with these capabilities.
+	 * @since 2016/10/08
+	 */
 	public static Display[] getDisplays(int __caps)
 	{
+		// Go through internal display providers
+		List<Display> rv = new ArrayList<>();
+		for (LCDUIDisplay lcd : Display._DISPLAY_MANAGER)
+			throw new Error("TODO");
+		
 		throw new Error("TODO");
 	}
 	

@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.lcduilui.CommonDisplay;
  * @since 2016/10/08
  */
 public abstract class LCDUIDisplay
-	implements CommonDisplay<Display>
+	extends CommonDisplay<Display>
 {
 }
 

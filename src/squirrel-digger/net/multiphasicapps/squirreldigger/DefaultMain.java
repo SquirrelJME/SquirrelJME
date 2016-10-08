@@ -42,7 +42,7 @@ public class DefaultMain
 		
 		// Use console based interface or the GUI one?
 		GUI lg;
-		if (__args.length > 1 && __args[0].equals("-c"))
+		if (__args.length > 0 && "-c".equals(__args[0]))
 			lg = new LUIGUI(g);
 		
 		// Default to the LCD UI or otherwise on unknown arguments

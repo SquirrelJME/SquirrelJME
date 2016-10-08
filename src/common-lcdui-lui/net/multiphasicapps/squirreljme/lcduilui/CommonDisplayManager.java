@@ -10,18 +10,21 @@
 
 package net.multiphasicapps.squirreljme.lcduilui;
 
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
  * This is a base class that is used for managing displays that are
  * available for usage.
  *
- * @param <D> The type of class to wrap via the display manager.
+ * @param <R> The raw object to use for the display.
+ * @param <D> The driver for the given raw display.
  * @param <P> The common display provider to use
  * @since 2016/10/08
  */
 public class CommonDisplayManager<R, D extends CommonDisplay<R>,
 	P extends CommonDisplayProvider<R, D>>
+	implements Iterable<D>
 {
 	/** The class to provide a service for. */
 	protected final Class<D> driverclass;
@@ -52,6 +55,55 @@ public class CommonDisplayManager<R, D extends CommonDisplay<R>,
 		this.rawclass = __rl;
 		this.driverclass = __dl;
 		this.services = ServiceLoader.<P>load(__pl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public Iterator<D> iterator()
+	{
+		return new __DriverIterator__();
+	}
+	
+	/**
+	 * This iterators over internal drivers.
+	 *
+	 * @since 2016/10/08
+	 */
+	private final class __DriverIterator__
+		implements Iterator<D>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/10/08
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/10/08
+		 */
+		@Override
+		public D next()
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/10/08
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 

@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.lcduilui;
  * @param <R> The raw display type to use.
  * @since 2016/10/08
  */
-public interface CommonDisplay<R>
+public abstract class CommonDisplay<R>
 {
 }
 
