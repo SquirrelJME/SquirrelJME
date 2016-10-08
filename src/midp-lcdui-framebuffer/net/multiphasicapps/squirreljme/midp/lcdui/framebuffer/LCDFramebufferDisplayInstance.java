@@ -59,5 +59,27 @@ public class LCDFramebufferDisplayInstance
 		// by the very upper classes
 		return 0;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public boolean isInActiveMode()
+	{
+		// Forward
+		return this.framebuffer.isInActiveMode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public void setActiveMode(boolean __active)
+	{
+		// Forward to the framebuffer, which might not have any effect
+		this.framebuffer.setActiveMode(__active);
+	}
 }
 

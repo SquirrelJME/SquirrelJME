@@ -76,9 +76,11 @@ public class Display
 	public static final int MENU =
 		 7;
 
+	/** This is the activity mode that enables power saving inhibition. */
 	public static final int MODE_ACTIVE =
 		 1;
-
+	
+	/** This is the activity mode that is the default behavior. */
 	public static final int MODE_NORMAL =
 		 0;
 
@@ -212,9 +214,16 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the current activity mode that the display is within, if
+	 * active mode is set then the display will inhibit power saving features.
+	 *
+	 * @return Either {@link #MODE_ACTIVE} or {@link #MODE_NORMAL}.
+	 * @since 2016/10/08
+	 */
 	public int getActivityMode()
 	{
-		throw new Error("TODO");
+		return (this._instance.isInActiveMode() ? MODE_ACTIVE : MODE_NORMAL);
 	}
 	
 	public int getBestImageHeight(int __a)
@@ -353,9 +362,30 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Sets the activity mode of the display. If active mode is set then
+	 * power saving features are inhibited.
+	 *
+	 * @param __m The activity mode, either {@link #MODE_ACTIVE} or
+	 * {@link #MODE_NORMAL}.
+	 * @throws IllegalArgumentException If the specified mode is not valid.
+	 * @since 2016/10/08
+	 */
 	public void setActivityMode(int __m)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// Active?
+		LCDUIDisplayInstance instance = this._instance;
+		if (__m == MODE_ACTIVE)
+			instance.setActiveMode(true);
+		
+		// Normal
+		else if (__m == MODE_NORMAL)
+			instance.setActiveMode(false);
+		
+		// {@squirreljme.error EB02 Unknown activity mode specified.}
+		else
+			throw new IllegalArgumentException("EB02");
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)

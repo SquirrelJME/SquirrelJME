@@ -25,5 +25,24 @@ public interface CommonDisplayInstance
 	 * @since 2016/10/08
 	 */
 	public abstract int getCapabilities();
+	
+	/**
+	 * Returns {@code true} if the display is in active mode.
+	 *
+	 * @return {@code true} if in active mode.
+	 * @since 2016/10/08
+	 */
+	public abstract boolean isInActiveMode();
+	
+	/**
+	 * Either sets or clears active mode. Active mode when enabled causes
+	 * power saving to not occur, while when it is disabled may cause power
+	 * saving related events to occur.
+	 *
+	 * @param __active If {@code true} then active mode is enabled, otherwise
+	 * normal mode is used.
+	 * @since 2016/10/08
+	 */
+	public abstract void setActiveMode(boolean __active);
 }
 

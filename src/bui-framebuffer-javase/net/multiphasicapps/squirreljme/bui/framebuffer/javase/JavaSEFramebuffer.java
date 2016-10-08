@@ -26,6 +26,27 @@ public class JavaSEFramebuffer
 	 * @since 2016/10/08
 	 */
 	@Override
+	public boolean isInActiveMode()
+	{
+		// Not supported
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public void setActiveMode(boolean __active)
+	{
+		// Display sleeping and/or screensaver inhibition is not supported
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
 	public boolean supportsInputEvents()
 	{
 		// Always supports input
