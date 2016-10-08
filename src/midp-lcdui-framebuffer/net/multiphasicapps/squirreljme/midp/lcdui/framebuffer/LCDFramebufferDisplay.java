@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
 
+import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayInstance;
 
@@ -21,6 +22,27 @@ import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayInstance;
 public class LCDFramebufferDisplay
 	extends LCDUIDisplay
 {
+	/** The framebuffer this wraps. */
+	protected final Framebuffer framebuffer;
+	
+	/**
+	 * Initializes the framebuffer wrapper.
+	 *
+	 * @param __f The framebuffer to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/08
+	 */
+	public LCDFramebufferDisplay(Framebuffer __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.framebuffer = __f;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/08

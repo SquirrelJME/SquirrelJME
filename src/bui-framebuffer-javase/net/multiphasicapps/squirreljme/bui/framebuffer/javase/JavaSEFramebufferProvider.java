@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.bui.framebuffer.javase;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 import net.multiphasicapps.squirreljme.bui.framebuffer.FramebufferProvider;
 
@@ -22,6 +24,9 @@ import net.multiphasicapps.squirreljme.bui.framebuffer.FramebufferProvider;
 public class JavaSEFramebufferProvider
 	implements FramebufferProvider
 {
+	/** The pre-existing framebuffer. */
+	private volatile Reference<Framebuffer> _framebuffer;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/08
@@ -29,7 +34,17 @@ public class JavaSEFramebufferProvider
 	@Override
 	public Framebuffer[] uis()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<Framebuffer> ref = this._framebuffer;
+		Framebuffer rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._framebuffer = new WeakReference<>(
+				(rv = new JavaSEFramebuffer()));
+		
+		// Fill
+		return new Framebuffer[]{rv};
 	}
 }
 
