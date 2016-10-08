@@ -8,11 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.bui;
+
 /**
- * This package contains the base support for displays.
+ * This class is used as a base for basic UI managers.
  *
+ * @param <U> The UI to provide.
+ * @param <P> The provider for the given UI.
  * @since 2016/10/08
  */
-
-package net.multiphasicapps.squirreljme.displays;
+public abstract class BasicUIManager<U extends BasicUI,
+	P extends BasicUIProvider<U>>
+{
+}
 

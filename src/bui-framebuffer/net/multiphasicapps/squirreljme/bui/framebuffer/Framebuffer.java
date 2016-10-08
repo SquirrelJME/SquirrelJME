@@ -8,11 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.bui.framebuffer;
+
+import net.multiphasicapps.squirreljme.bui.BasicUI;
+
 /**
- * This package contains the support for framebuffers.
+ * This interface describes a framebuffer interface.
  *
  * @since 2016/10/08
  */
-
-package net.multiphasicapps.squirreljme.displays.framebuffer;
+public interface Framebuffer
+	extends BasicUI
+{
+}
 

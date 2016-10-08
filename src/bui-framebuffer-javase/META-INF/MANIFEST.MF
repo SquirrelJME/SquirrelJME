@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: bui-framebuffer-javase
+X-SquirrelJME-UUID: 495f1492-2944-4bb0-b55a-45f03c562ebb
+X-SquirrelJME-Depends: bui
+X-SquirrelJME-Error: EI
+LIBlet-Title: JavaSE Framebuffer Interface
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a framebuffer interface which 
+ implements a Framebuffer that runs above Java SE's Swing 
+ user interface. Note that due to the dependence on Swing 
+ this project cannot be compiled for SquirrelJME.
+
