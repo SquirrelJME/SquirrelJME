@@ -13,10 +13,10 @@ package net.multiphasicapps.squirreljme.meep.lui.terminal;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.displays.terminal.DefaultTerminal;
+import net.multiphasicapps.squirreljme.displays.terminal.Terminal;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayProvider;
-import net.multiphasicapps.squirreljme.terminal.DefaultTerminal;
-import net.multiphasicapps.squirreljme.terminal.Terminal;
 import net.multiphasicapps.util.empty.EmptyIterator;
 
 /**

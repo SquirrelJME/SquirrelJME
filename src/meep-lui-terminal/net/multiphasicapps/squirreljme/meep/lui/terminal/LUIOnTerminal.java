@@ -10,11 +10,11 @@
 
 package net.multiphasicapps.squirreljme.meep.lui.terminal;
 
+import net.multiphasicapps.squirreljme.displays.terminal.Terminal;
+import net.multiphasicapps.squirreljme.displays.terminal.TerminalScreen;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayScreen;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayUpdateNotifier;
-import net.multiphasicapps.squirreljme.terminal.Terminal;
-import net.multiphasicapps.squirreljme.terminal.TerminalScreen;
 
 /**
  * This implements the LUI display on top of an existing terminal.
