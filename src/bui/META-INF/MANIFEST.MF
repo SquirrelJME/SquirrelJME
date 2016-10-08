@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: displays
+X-SquirrelJME-Name: bui
 X-SquirrelJME-UUID: 3779ab2a-d887-491b-95ad-78b3fb5fef9a
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: EG
-LIBlet-Title: Base Display Support
+LIBlet-Title: Base UI Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains the base support for 
- display interfaces.
+ user interfaces.
 

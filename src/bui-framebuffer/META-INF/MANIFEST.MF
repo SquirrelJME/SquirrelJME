@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: displays-framebuffer
+X-SquirrelJME-Name: bui-framebuffer
 X-SquirrelJME-UUID: 92dccef9-0aa3-4594-a624-af4766eb39b3
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: bui
 X-SquirrelJME-Error: EE
 LIBlet-Title: Framebuffer Support
 LIBlet-Vendor: Steven Gawroriski

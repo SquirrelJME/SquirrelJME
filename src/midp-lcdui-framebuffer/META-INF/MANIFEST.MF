@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: midp-lcdui-framebuffer
 X-SquirrelJME-UUID: defc89b7-d3dd-407f-8059-14515d61497a
-X-SquirrelJME-Depends: displays-framebuffer midp-lcdui
+X-SquirrelJME-Depends: bui-framebuffer midp-lcdui
 X-SquirrelJME-Error: EF
 LIBlet-Title: MIDP LCDUI Framebuffer
 LIBlet-Vendor: Steven Gawroriski
