@@ -232,6 +232,17 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * This returns the capabilities that the display supports. This means that
+	 * displays which do not support specific widget types can be known so that
+	 * potential alternative handling may be performed.
+	 *
+	 * The capabilities are the constants starting with {@code SUPPORTS_}
+	 *
+	 * @return A bit field where set bits indicate supported capabilities, if
+	 * {@code 0} is returned then only a {@link Canvas} is supported.
+	 * @since 2016/10/08
+	 */
 	public int getCapabilities()
 	{
 		throw new Error("TODO");
