@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: bui-framebuffer-javase
 X-SquirrelJME-UUID: 495f1492-2944-4bb0-b55a-45f03c562ebb
-X-SquirrelJME-Depends: bui
+X-SquirrelJME-Depends: bui-framebuffer
 X-SquirrelJME-Error: EI
 LIBlet-Title: JavaSE Framebuffer Interface
 LIBlet-Vendor: Steven Gawroriski

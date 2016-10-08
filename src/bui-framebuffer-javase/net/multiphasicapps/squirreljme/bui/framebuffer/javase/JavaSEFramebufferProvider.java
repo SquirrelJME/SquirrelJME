@@ -19,8 +19,17 @@ import net.multiphasicapps.squirreljme.bui.framebuffer.FramebufferProvider;
  *
  * @since 2016/10/08
  */
-public class JavaSEFrameBufferProvider
+public class JavaSEFramebufferProvider
 	implements FramebufferProvider
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public Framebuffer[] uis()
+	{
+		throw new Error("TODO");
+	}
 }
 
