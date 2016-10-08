@@ -89,7 +89,7 @@ public class CommonDisplayManager<R, D extends CommonDisplay<R>,
 			// Setup for filling
 			List<D> rv = new ArrayList<>();
 			for (P p : CommonDisplayManager.this.services)
-				for (D d : p.getDisplays())
+				for (D d : p.displays())
 					rv.add(d);
 			
 			// Iterator

@@ -8,24 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcduilui;
-
 /**
- * This interface is used by the common display manager for implementation of
- * display providers.
+ * This provides an implementation of the LCDUI interface on top of a generic
+ * framebuffer.
  *
- * @param <R> The raw display type used.
- * @param <D> The type of displays to enumerate.
  * @since 2016/10/08
  */
-public interface CommonDisplayProvider<R, D extends CommonDisplay<R>>
-{
-	/**
-	 * Returns the displays that are available to this provider.
-	 *
-	 * @return The displays provided by the provider.
-	 * @since 2016/10/08
-	 */
-	public abstract D[] displays();
-}
+
+package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
 

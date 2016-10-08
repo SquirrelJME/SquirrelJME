@@ -8,24 +8,27 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcduilui;
+package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
+
+import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
+import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayProvider;
 
 /**
- * This interface is used by the common display manager for implementation of
- * display providers.
+ * This provides access to the framebuffer based display driver.
  *
- * @param <R> The raw display type used.
- * @param <D> The type of displays to enumerate.
  * @since 2016/10/08
  */
-public interface CommonDisplayProvider<R, D extends CommonDisplay<R>>
+public class LCDFramebufferDisplayProvider
+	implements LCDUIDisplayProvider
 {
 	/**
-	 * Returns the displays that are available to this provider.
-	 *
-	 * @return The displays provided by the provider.
+	 * {@inheritDoc}
 	 * @since 2016/10/08
 	 */
-	public abstract D[] displays();
+	@Override
+	public LCDUIDisplay[] displays()
+	{
+		throw new Error("TODO");
+	}
 }
 
