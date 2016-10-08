@@ -245,7 +245,7 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		throw new Error("TODO");
+		return this._instance.getCapabilities();
 	}
 	
 	public int getColor(int __a)

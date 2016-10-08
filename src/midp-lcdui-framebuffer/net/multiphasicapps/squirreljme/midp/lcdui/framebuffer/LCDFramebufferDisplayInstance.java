@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
 
+import javax.microedition.lcdui.Display;
 import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayInstance;
 
@@ -41,6 +42,22 @@ public class LCDFramebufferDisplayInstance
 		
 		// Set
 		this.framebuffer = __fb;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public int getCapabilities()
+	{
+		// If it supports input, say as such
+		if (this.framebuffer.supportsInputEvents())
+			return Display.SUPPORTS_INPUT_EVENTS;
+		
+		// Otherwise only canvases are supported, Forms will be virtualized
+		// by the very upper classes
+		return 0;
 	}
 }
 

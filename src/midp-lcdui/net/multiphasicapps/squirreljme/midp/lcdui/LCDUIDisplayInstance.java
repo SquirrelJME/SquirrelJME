@@ -15,6 +15,9 @@ import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayInstance;
 /**
  * This is an instance of an LCD UI display.
  *
+ * Capabilities that are not supported by the display instance may be
+ * virtualized by the baseline LCDUI Display code.
+ *
  * @since 2016/10/08
  */
 public interface LCDUIDisplayInstance

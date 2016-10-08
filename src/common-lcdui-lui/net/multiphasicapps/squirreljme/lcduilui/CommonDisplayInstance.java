@@ -17,5 +17,13 @@ package net.multiphasicapps.squirreljme.lcduilui;
  */
 public interface CommonDisplayInstance
 {
+	/**
+	 * This returns the capabilities of a given display, which is dependent
+	 * on the display this represents.
+	 *
+	 * @return The bitflag of supported capabilities.
+	 * @since 2016/10/08
+	 */
+	public abstract int getCapabilities();
 }
 

@@ -75,14 +75,19 @@ public class LCDFramebufferDisplay
 	@Override
 	public boolean hasCapabilities(int __caps)
 	{
-		// If input events were requested then make sure the framebuffer
+		// If checking for any capability (or canvas only), return true
+		// always
+		if (__caps == 0)
+			return true;
+		
+		// If only input events were requested then make sure the framebuffer
 		// also supports input events
 		Framebuffer framebuffer = this.framebuffer;
-		if ((__caps & Display.SUPPORTS_INPUT_EVENTS) != 0)
+		if (__caps == Display.SUPPORTS_INPUT_EVENTS)
 			return framebuffer.supportsInputEvents();
 		
-		// Otherwise everything else works
-		return true;
+		// Otherwise not supported (canvas only)
+		return false;
 	}
 }
 

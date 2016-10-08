@@ -12,6 +12,8 @@
  * This provides an implementation of the LCDUI interface on top of a generic
  * framebuffer.
  *
+ * Only canvases are supported.
+ *
  * @since 2016/10/08
  */
 
