@@ -425,6 +425,9 @@ public class Bootstrap
 			if (did.contains(p) || __ignoreProject(p))
 				continue;
 			
+			// Did it
+			did.add(p);
+			
 			// The source directory is included in compilation
 			Path srcdir = SOURCE_ROOT.resolve(p);
 			rv.add(srcdir);
