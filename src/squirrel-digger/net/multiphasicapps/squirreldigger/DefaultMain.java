@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import net.multiphasicapps.squirreldigger.game.FrameTimer;
 import net.multiphasicapps.squirreldigger.game.Game;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
+import net.multiphasicapps.squirreldigger.gui.GUI;
+import net.multiphasicapps.squirreldigger.gui.lcdui.LCDUIGUI;
 import net.multiphasicapps.squirreldigger.gui.lui.LUIGUI;
 
 /**
@@ -35,10 +37,17 @@ public class DefaultMain
 		if (__args == null)
 			__args = new String[0];
 		
-		// Just use the console based interface for now
-		Game g;
-		LUIGUI lg = new LUIGUI(
-			(g = new Game(0L, Paths.get(System.getProperty("user.dir")))));
+		// Initialize the game
+		Game g = g = new Game(0L, Paths.get(System.getProperty("user.dir")));
+		
+		// Use console based interface or the GUI one?
+		GUI lg;
+		if (__args.length > 1 && __args[0].equals("-c"))
+			lg = new LUIGUI(g);
+		
+		// Default to the LCD UI or otherwise on unknown arguments
+		else
+			lg = new LCDUIGUI(g);
 		
 		// Setup controllers
 		for (int i = 0; i < Integer.MAX_VALUE; i++)
