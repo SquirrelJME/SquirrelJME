@@ -8,25 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.meep.lui;
-
-import javax.microedition.lui.Display;
-import net.multiphasicapps.squirreljme.lcduilui.CommonDisplay;
+package net.multiphasicapps.squirreljme.lcduilui;
 
 /**
- * This is the base class for classes which implement drivers to line based
- * interfaces.
+ * This is an instance of a common display driver.
  *
  * @since 2016/10/08
  */
-public abstract class LUIDisplay
-	extends CommonDisplay<Display>
+public interface CommonDisplayInstance
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/08
-	 */
-	@Override
-	public abstract LUIDisplayInstance createInstance();
 }
 

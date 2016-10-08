@@ -22,5 +22,21 @@ import net.multiphasicapps.squirreljme.lcduilui.CommonDisplay;
 public abstract class LCDUIDisplay
 	extends CommonDisplay<Display>
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public abstract LCDUIDisplayInstance createInstance();
+	
+	/**
+	 * This checks if the given display supports all of the given
+	 * capabilities.
+	 *
+	 * @param __caps The capabilities to check.
+	 * @return {@code true} if all capabilities are valid.
+	 * @since 2016/10/08
+	 */
+	public abstract boolean hasCapabilities(int __caps);
 }
 

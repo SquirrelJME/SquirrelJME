@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
+import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayInstance;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayProvider;
 
 public class Display
@@ -180,10 +181,25 @@ public class Display
 		new CommonDisplayManager<>(Display.class, LCDUIDisplay.class,
 		LCDUIDisplayProvider.class);
 	
-	Display()
+	/** The display instance. */
+	private final LCDUIDisplayInstance _instance;
+	
+	/**
+	 * Initializes the display instance.
+	 *
+	 * @param __i The instance of the display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/08
+	 */
+	Display(LCDUIDisplayInstance __i)
+		throws NullPointerException
 	{
-		super();
-		throw new Error("TODO");
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._instance = __i;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -414,9 +430,21 @@ public class Display
 		// Go through internal display providers
 		List<Display> rv = new ArrayList<>();
 		for (LCDUIDisplay lcd : Display._DISPLAY_MANAGER)
-			throw new Error("TODO");
+			if (lcd.hasCapabilities(__caps))
+			{
+				// If a display has not been initialized, create an instance
+				// of it
+				Display d = lcd.getRawDisplay();
+				if (d == null)
+					lcd.bindRawDisplay((d = new Display(
+						(LCDUIDisplayInstance)lcd.getInstance())));
+				
+				// Add it
+				rv.add(d);
+			}
 		
-		throw new Error("TODO");
+		// Return the list
+		return rv.<Display>toArray(new Display[rv.size()]);
 	}
 	
 	public static void removeDisplayListener(DisplayListener __dl)
