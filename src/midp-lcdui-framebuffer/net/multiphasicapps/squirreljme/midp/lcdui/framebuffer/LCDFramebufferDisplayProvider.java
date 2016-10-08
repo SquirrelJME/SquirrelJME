@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
+import net.multiphasicapps.squirreljme.bui.framebuffer.FramebufferManager;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayProvider;
 
@@ -28,7 +34,15 @@ public class LCDFramebufferDisplayProvider
 	@Override
 	public LCDUIDisplay[] displays()
 	{
-		throw new Error("TODO");
+		// Setup return value
+		List<LCDUIDisplay> rv = new ArrayList<>();
+		
+		// Go through available framebuffers
+		for (Framebuffer f : FramebufferManager.instance().uis())
+			throw new Error("TODO");
+		
+		// Return it
+		return rv.<LCDUIDisplay>toArray(new LCDUIDisplay[rv.size()]);
 	}
 }
 
