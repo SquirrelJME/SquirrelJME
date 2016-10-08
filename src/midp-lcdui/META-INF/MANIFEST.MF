@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: midp-lcdui
 X-SquirrelJME-UUID: bdd52a0a-1d53-4d80-b54d-6ab5316603f9
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: cldc-compact meep-midlet
 X-SquirrelJME-Error: EB
 LIBlet-Title: LCDUI
 LIBlet-Vendor: Steven Gawroriski

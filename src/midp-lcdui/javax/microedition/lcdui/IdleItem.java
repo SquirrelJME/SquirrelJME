@@ -15,6 +15,7 @@ public abstract class IdleItem
 {
 	protected IdleItem(String __label)
 	{
+		super(__label);
 		throw new Error("TODO");
 	}
 	

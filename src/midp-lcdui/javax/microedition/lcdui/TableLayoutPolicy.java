@@ -15,10 +15,32 @@ public final class TableLayoutPolicy
 {
 	public TableLayoutPolicy(Form __f, int __cols)
 	{
+		super(__f);
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/07
+	 */
+	@Override
+	protected void doLayout(int __vpx, int __vpy, int __vpw,
+		int __vph, int[] __ts)
+	{
 		throw new Error("TODO");
 	}
 	
 	public int getColumns()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/07
+	 */
+	@Override
+	protected Item getTraverse(Item __i, int __dir)
 	{
 		throw new Error("TODO");
 	}

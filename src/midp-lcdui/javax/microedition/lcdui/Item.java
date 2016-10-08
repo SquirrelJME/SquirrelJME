@@ -75,7 +75,7 @@ public abstract class Item
 		throw new Error("TODO");
 	}
 	
-	public Comand[] getCommands()
+	public Command[] getCommands()
 	{
 		throw new Error("TODO");
 	}

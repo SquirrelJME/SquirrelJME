@@ -43,7 +43,6 @@ public abstract class CustomItem
 	
 	protected CustomItem(String __a)
 	{
-		super();
 		throw new Error("TODO");
 	}
 	

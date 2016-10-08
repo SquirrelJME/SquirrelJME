@@ -15,7 +15,7 @@ public class Alert
 	extends Screen
 {
 	public static final Command DISMISS_COMMAND =
-		Optional.<Command>ofNullable(null).get();
+		new Command(null, null, null, -1, -1);
 	
 	public static final int FOREVER =
 		-2;

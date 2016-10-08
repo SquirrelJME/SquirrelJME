@@ -16,7 +16,7 @@ public class List
 	implements Choice
 {
 	public static final Command SELECT_COMMAND =
-		Optional.<Command>ofNullable(null).get();
+		new Command(null, null, null, -1, -1);
 	
 	public List(String __a, int __b)
 	{

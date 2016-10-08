@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 public class Image
 {
-	private Image()
+	Image()
 	{
 		super();
 		throw new Error("TODO");

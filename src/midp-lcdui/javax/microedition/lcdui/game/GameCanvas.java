@@ -49,6 +49,12 @@ public abstract class GameCanvas
 		throw new Error("TODO");
 	}
 	
+	protected GameCanvas(boolean __supke, boolean __preservebuf)
+	{
+		super();
+		throw new Error("TODO");
+	}
+	
 	public void flushGraphics()
 	{
 		throw new Error("TODO");

@@ -60,7 +60,7 @@ public class Gauge
 		throw new Error("TODO");
 	}
 	
-	public void setIncrementValueint __v)
+	public void setIncrementValue(int __v)
 	{
 		throw new Error("TODO");
 	}

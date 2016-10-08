@@ -48,7 +48,7 @@ public class TabbedPane
 		throw new Error("TODO");
 	}
 	
-	public void insertTab(int __i, Screen __t, Image __i)
+	public void insertTab(int __i, Screen __t, Image __img)
 	{
 		throw new Error("TODO");
 	}

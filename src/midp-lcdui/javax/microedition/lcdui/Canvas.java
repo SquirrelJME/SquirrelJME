@@ -196,11 +196,6 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
-	protected abstract void paint(Graphics __g)
-	{
-		throw new Error("TODO");
-	}
-	
 	protected void pointerDragged(int __a, int __b)
 	{
 		throw new Error("TODO");
