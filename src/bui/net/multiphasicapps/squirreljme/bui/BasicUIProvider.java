@@ -17,5 +17,12 @@ package net.multiphasicapps.squirreljme.bui;
  */
 public interface BasicUIProvider<U extends BasicUI>
 {
+	/**
+	 * Returns the UIs that are available.
+	 *
+	 * @return The UIs that are available.
+	 * @since 2016/10/08
+	 */
+	public abstract U[] uis();
 }
 

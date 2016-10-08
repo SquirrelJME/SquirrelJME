@@ -20,5 +20,39 @@ import net.multiphasicapps.squirreljme.bui.BasicUIManager;
 public class FramebufferManager
 	extends BasicUIManager<Framebuffer, FramebufferProvider>
 {
+	/** The instance of this manager. */
+	private static FramebufferManager _INSTANCE =
+		new FramebufferManager();
+	
+	/**
+	 * Initializes the manager.
+	 *
+	 * @since 2016/10/08
+	 */
+	public FramebufferManager()
+	{
+		super(FramebufferProvider.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	protected Framebuffer[] newArray(int __len)
+	{
+		return new Framebuffer[__len];
+	}
+	
+	/**
+	 * Returns the single instance of the framebuffer manager.
+	 *
+	 * @return The global instance.
+	 * @since 2016/10/08
+	 */
+	public static FramebufferManager instance()
+	{
+		return _INSTANCE;
+	}
 }
 
