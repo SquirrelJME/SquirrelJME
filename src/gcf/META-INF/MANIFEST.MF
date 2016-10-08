@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: midp-io
+X-SquirrelJME-Name: gcf
 X-SquirrelJME-UUID: 1358142d-037f-4421-9a52-0534764a45d3
 X-SquirrelJME-Depends: cldc-compact meep-midlet
 X-SquirrelJME-Error: EC
-LIBlet-Title: MIDP I/O
+LIBlet-Title: Generic Connection Framework
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This projects contains the MIDlet I/O 
- based classes.
+LIBlet-Description: This projects contains the Generic
+ connection framework which is used to create connections 
+ to other resources.
 

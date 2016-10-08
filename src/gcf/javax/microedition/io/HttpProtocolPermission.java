@@ -10,52 +10,37 @@
 
 package javax.microedition.io;
 
-import java.io.IOException;
+import java.security.Permission;
 
-public class PushRegistry
+public final class HttpProtocolPermission
+	extends GCFPermission
 {
-	private PushRegistry()
+	public HttpProtocolPermission(String __a)
 	{
-		super();
+		super((String)null);
 		throw new Error("TODO");
 	}
 	
-	public static String getFilter(String __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String getMIDlet(String __a)
+	@Override
+	public boolean equals(Object __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String[] listConnections(boolean __a)
+	@Override
+	public String getActions()
 	{
 		throw new Error("TODO");
 	}
 	
-	public static long registerAlarm(String __a, long __b)
-		throws ClassNotFoundException, ConnectionNotFoundException
+	@Override
+	public int hashCode()
 	{
-		if (false)
-			throw new ClassNotFoundException();
-		if (false)
-			throw new ConnectionNotFoundException();
 		throw new Error("TODO");
 	}
 	
-	public static void registerConnection(String __a, String __b, String __c)
-		throws IOException, ClassNotFoundException
-	{
-		if (false)
-			throw new IOException();
-		if (false)
-			throw new ClassNotFoundException();
-		throw new Error("TODO");
-	}
-	
-	public static boolean unregisterConnection(String __a)
+	@Override
+	public boolean implies(Permission __a)
 	{
 		throw new Error("TODO");
 	}

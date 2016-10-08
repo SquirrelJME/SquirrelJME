@@ -8,13 +8,22 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.io;
+package java.net;
 
-public interface IMCServerConnection
-	extends StreamConnectionNotifier
+import java.io.IOException;
+
+public class UnknownHostException
+	extends IOException
 {
-	public abstract String getName();
+	public UnknownHostException(String __a)
+	{
+		super();
+		throw new Error("TODO");
+	}
 	
-	public abstract String getVersion();
+	public UnknownHostException()
+	{
+		super();
+		throw new Error("TODO");
+	}
 }
-

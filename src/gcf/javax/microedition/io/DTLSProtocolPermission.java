@@ -10,17 +10,40 @@
 
 package javax.microedition.io;
 
-import javax.microedition.pki.Certificate;
+import java.security.Permission;
 
-public interface SecurityInfo
+public final class DTLSProtocolPermission
+	extends GCFPermission
 {
-	public abstract String getCipherSuite();
+	public DTLSProtocolPermission(String __a)
+	{
+		super((String)null);
+		throw new Error("TODO");
+	}
 	
-	public abstract String getProtocolName();
+	@Override
+	public boolean equals(Object __a)
+	{
+		throw new Error("TODO");
+	}
 	
-	public abstract String getProtocolVersion();
+	@Override
+	public String getActions()
+	{
+		throw new Error("TODO");
+	}
 	
-	public abstract Certificate getServerCertificate();
+	@Override
+	public int hashCode()
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public boolean implies(Permission __a)
+	{
+		throw new Error("TODO");
+	}
 }
 
 

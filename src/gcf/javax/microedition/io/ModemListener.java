@@ -10,12 +10,13 @@
 
 package javax.microedition.io;
 
-import java.io.IOException;
+import java.util.EventListener;
 
-public interface Connection
+public interface ModemListener
+	extends EventListener
 {
-	public abstract void close()
-		throws IOException;
+	public abstract void signalChanged(ModemConnection __a, int __b, boolean 
+		__c);
 }
 
 

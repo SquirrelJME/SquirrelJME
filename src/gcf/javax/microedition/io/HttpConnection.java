@@ -15,6 +15,9 @@ import java.io.IOException;
 public interface HttpConnection
 	extends ContentConnection
 {
+	public static final String CONNECT =
+		"CONNECT";
+	
 	public static final String DELETE =
 		"DELETE";
 	
@@ -138,11 +141,20 @@ public interface HttpConnection
 	public static final int HTTP_VERSION =
 		505;
 	
+	public static final String OPTIONS =
+		"OPTIONS";
+	
 	public static final String POST =
 		"POST";
 	
 	public static final String PUT =
 		"PUT";
+	
+	public static final String TRACE =
+		"TRACE";
+	
+	public abstract AccessPoint getAccessPoint()
+		throws IOException;
 	
 	public abstract long getDate()
 		throws IOException;
@@ -152,10 +164,10 @@ public interface HttpConnection
 	
 	public abstract String getFile();
 	
-	public abstract String getHeaderField(int __a)
+	public abstract String getHeaderField(String __a)
 		throws IOException;
 	
-	public abstract String getHeaderField(String __a)
+	public abstract String getHeaderField(int __a)
 		throws IOException;
 	
 	public abstract long getHeaderFieldDate(String __a, long __b)

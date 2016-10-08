@@ -27,9 +27,30 @@ public class Connector
 	public static final int WRITE =
 		2;
 	
-	private Connector()
+	public Connector()
 	{
 		super();
+		throw new Error("TODO");
+	}
+	
+	public static long getBytesRead(Connection __a)
+		throws IOException
+	{
+		if (false)
+			throw new IOException();
+		throw new Error("TODO");
+	}
+	
+	public static long getBytesWritten(Connection __a)
+		throws IOException
+	{
+		if (false)
+			throw new IOException();
+		throw new Error("TODO");
+	}
+	
+	public static boolean isProtocolSupported(String __a, boolean __b)
+	{
 		throw new Error("TODO");
 	}
 	
@@ -41,7 +62,33 @@ public class Connector
 		throw new Error("TODO");
 	}
 	
+	public static Connection open(String __a, ConnectionOption<?>... __b)
+		throws IOException
+	{
+		if (false)
+			throw new IOException();
+		throw new Error("TODO");
+	}
+	
 	public static Connection open(String __a, int __b)
+		throws IOException
+	{
+		if (false)
+			throw new IOException();
+		throw new Error("TODO");
+	}
+	
+	public static Connection open(String __a, int __b, ConnectionOption<?>...
+		__c)
+		throws IOException
+	{
+		if (false)
+			throw new IOException();
+		throw new Error("TODO");
+	}
+	
+	public static Connection open(String __a, int __b, boolean __c, 
+		ConnectionOption<?>... __d)
 		throws IOException
 	{
 		if (false)

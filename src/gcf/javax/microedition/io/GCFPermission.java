@@ -11,54 +11,32 @@
 package javax.microedition.io;
 
 import java.security.Permission;
+import java.security.PermissionCollection;
 
-public class PushRegistryPermission
+public abstract class GCFPermission
 	extends Permission
 {
-	public PushRegistryPermission(String __uri, String __act)
+	public GCFPermission(String __a)
 	{
-		super(__uri, __act);
+		super((String)null);
 		throw new Error("TODO");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/07
-	 */
-	@Override
-	public boolean equals(Object __a)
+	public String getProtocol()
 	{
 		throw new Error("TODO");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/07
-	 */
-	@Override
-	public String getActions()
+	public String getURI()
 	{
 		throw new Error("TODO");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/07
-	 */
 	@Override
-	public int hashCode()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/07
-	 */
-	@Override
-	public boolean implies(Permission __a)
+	public PermissionCollection newPermissionCollection()
 	{
 		throw new Error("TODO");
 	}
 }
+
 

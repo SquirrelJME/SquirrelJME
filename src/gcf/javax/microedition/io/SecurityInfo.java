@@ -10,16 +10,19 @@
 
 package javax.microedition.io;
 
-import java.io.IOException;
+import javax.microedition.pki.Certificate;
 
-public interface ServerSocketConnection
-	extends StreamConnectionNotifier
+public interface SecurityInfo
 {
-	public abstract String getLocalAddress()
-		throws IOException;
+	public abstract String getCipherSuite();
 	
-	public abstract int getLocalPort()
-		throws IOException;
+	public abstract Certificate getClientCertificate();
+	
+	public abstract String getProtocolName();
+	
+	public abstract String getProtocolVersion();
+	
+	public abstract Certificate getServerCertificate();
 }
 
 

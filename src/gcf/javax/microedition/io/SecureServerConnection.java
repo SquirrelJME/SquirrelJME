@@ -10,13 +10,10 @@
 
 package javax.microedition.io;
 
-public interface IMCConnection
-	extends StreamConnection
+
+public interface SecureServerConnection
+	extends ServerSocketConnection
 {
-	public abstract MIDletIdentity getRemoteIdentity();
-	
-	public abstract String getRequestedServerVersion();
-	
-	public abstract String getServerName();
 }
+
 
