@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.terminal;
+package net.multiphasicapps.squirreljme.displays.terminal;
 
 /**
  * This represents a single terminal screen which is used to store information

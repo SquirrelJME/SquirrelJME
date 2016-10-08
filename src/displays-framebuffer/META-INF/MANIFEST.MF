@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: framebuffer
+X-SquirrelJME-Name: displays-framebuffer
 X-SquirrelJME-UUID: 92dccef9-0aa3-4594-a624-af4766eb39b3
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: EE

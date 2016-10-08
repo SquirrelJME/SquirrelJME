@@ -8,20 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.terminal;
-
 /**
- * This interface is called when the screen has been .
+ * This package contains the support for framebuffers.
  *
- * @since 2016/09/11
+ * @since 2016/10/08
  */
-public interface TerminalUpdateNotifier
-{
-	/**
-	 * This is called when the screen has been updated.
-	 *
-	 * @since 2016/09/11
-	 */
-	public abstract void screenUpdated();
-}
+
+package net.multiphasicapps.squirreljme.displays.framebuffer;
 

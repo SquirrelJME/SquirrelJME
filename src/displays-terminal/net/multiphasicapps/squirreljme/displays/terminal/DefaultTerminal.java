@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.terminal;
+package net.multiphasicapps.squirreljme.displays.terminal;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

@@ -8,31 +8,25 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.terminal;
+package net.multiphasicapps.squirreljme.displays.terminal;
 
 /**
- * This interface is used to create instances of terminals using the standard
- * service loader lookup.
+ * This is the terminal interface which is implemented given by
+ * {@link TerminalProvider}s to allow native terminal access.
  *
  * @since 2016/09/11
  */
-public interface TerminalProvider
+public interface Terminal
 {
 	/**
-	 * Returns the instance of the terminal.
+	 * Returns the current terminal screen that is used by the terminal.
 	 *
-	 * @return The terminal instance.
+	 * If the terminal driver supports resizing the terminal then it will
+	 * return a new screen if the display is resized.
+	 *
+	 * @return The terminal screen.
 	 * @since 2016/09/11
 	 */
-	public abstract Terminal terminal();
-	
-	/**
-	 * Returns the priority of this provider.
-	 *
-	 * @return The provider priority, negative values are not considered for
-	 * usage
-	 * @since 2016/09/11
-	 */
-	public abstract int priority();
+	public abstract TerminalScreen screen();
 }
 

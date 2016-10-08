@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the base for the terminal support libraries.
+ * This package contains the base support for displays.
  *
- * @since 2016/09/08
+ * @since 2016/10/08
  */
 
-package net.multiphasicapps.squirreljme.terminal;
+package net.multiphasicapps.squirreljme.displays;
 
