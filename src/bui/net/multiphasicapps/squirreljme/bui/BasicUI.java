@@ -17,5 +17,12 @@ package net.multiphasicapps.squirreljme.bui;
  */
 public interface BasicUI
 {
+	/**
+	 * Are input events supported by this basic UI?
+	 *
+	 * @return {@code true} if input events are supported.
+	 * @since 2016/10/08
+	 */
+	public abstract boolean supportsInputEvents();
 }
 

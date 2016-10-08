@@ -21,5 +21,15 @@ import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 public class JavaSEFramebuffer
 	implements Framebuffer
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public boolean supportsInputEvents()
+	{
+		// Always supports input
+		return true;
+	}
 }
 

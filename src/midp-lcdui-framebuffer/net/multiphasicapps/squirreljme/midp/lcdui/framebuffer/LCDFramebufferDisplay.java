@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
 
+import javax.microedition.lcdui.Display;
 import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayInstance;
@@ -60,7 +61,14 @@ public class LCDFramebufferDisplay
 	@Override
 	public boolean hasCapabilities(int __caps)
 	{
-		throw new Error("TODO");
+		// If input events were requested then make sure the framebuffer
+		// also supports input events
+		Framebuffer framebuffer = this.framebuffer;
+		if ((__caps & Display.SUPPORTS_INPUT_EVENTS) != 0)
+			return framebuffer.supportsInputEvents();
+		
+		// Otherwise everything else works
+		return true;
 	}
 }
 

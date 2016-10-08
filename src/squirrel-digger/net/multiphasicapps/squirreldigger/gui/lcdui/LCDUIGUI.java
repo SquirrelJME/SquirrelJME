@@ -87,8 +87,9 @@ public class LCDUIGUI
 	private static final Display __getDefaultDisplay()
 		throws RuntimeException
 	{
-		// Just use any display with any capability
-		for (Display d : Display.getDisplays(0))
+		// Just use any display with one that supports input since only a
+		// canvas will be used as a screen for the most part
+		for (Display d : Display.getDisplays(Display.SUPPORTS_INPUT_EVENTS))
 			return d;
 		
 		// {@squirreljme.error BA04 Could not find a LCDUI display.}
