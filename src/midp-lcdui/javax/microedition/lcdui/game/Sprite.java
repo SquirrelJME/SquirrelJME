@@ -125,6 +125,11 @@ public class Sprite
 		throw new Error("TODO");
 	}
 	
+	public void setCollisionAlpha(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
 	public void setFrame(int __a)
 	{
 		throw new Error("TODO");
