@@ -23,6 +23,9 @@ public abstract class Displayable
 	final Object _lock =
 		new Object();
 	
+	/** The display that this is currently associated with. */
+	volatile Display _display;
+	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -52,9 +55,15 @@ public abstract class Displayable
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the display that is associated with this displayable.
+	 *
+	 * @return The owning display.
+	 * @since 2016/10/08
+	 */
 	public Display getCurrentDisplay()
 	{
-		throw new Error("TODO");
+		return this._display;
 	}
 	
 	public int getHeight()

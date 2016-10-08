@@ -183,8 +183,18 @@ public class Display
 		new CommonDisplayManager<>(Display.class, LCDUIDisplay.class,
 		LCDUIDisplayProvider.class);
 	
+	/** The lock for this display. */
+	private final Object _lock =
+		new Object();
+	
 	/** The display instance. */
 	private final LCDUIDisplayInstance _instance;
+	
+	/** The current displayable being shown. */
+	private volatile Displayable _show;
+	
+	/** The displayable to show when the old one is dismissed. */
+	private volatile Displayable _dismissed;
 	
 	/**
 	 * Initializes the display instance.
@@ -272,9 +282,19 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the current displayable.
+	 *
+	 * @return The current displayable or {@code null} if it is not set.
+	 * @since 2016/10/08
+	 */
 	public Displayable getCurrent()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this._lock)
+		{
+			return this._show;
+		}
 	}
 	
 	public int getDisplayState()
@@ -393,14 +413,40 @@ public class Display
 		throw new Error("TODO");
 	}
 	
-	public void setCurrent(Alert __a, Displayable __b)
+	/**
+	 * Shows the given alert on this display.
+	 *
+	 * @param __show The alert to show.
+	 * @param __exit The displayable to show when the alert that is
+	 * set is dismissed.
+	 * @throws DisplayCapabilityException If the display cannot show the given
+	 * displayable.
+	 * @throws IllegalStateException If the display hardware is missing; If
+	 * the displayables are associated with another display or tab pane. 
+	 * @since 2016/10/08
+	 */
+	public void setCurrent(Alert __show, Displayable __exit)
+		throws DisplayCapabilityException, IllegalStateException
 	{
-		throw new Error("TODO");
+		__setCurrent(__show, __exit);
 	}
 	
-	public void setCurrent(Displayable __a)
+	/**
+	 * Sets the current displayable to be displayed.
+	 *
+	 * @param __show The displayable to show.
+	 * @throws DisplayCapabilityException If the display cannot show the given
+	 * displayable.
+	 * @throws IllegalStateException If the display hardware is missing; If
+	 * the displayable is associated with another display or tab pane.
+	 * @since 2016/10/08
+	 */
+	public void setCurrent(Displayable __show)
+		throws DisplayCapabilityException, IllegalStateException
 	{
-		throw new Error("TODO");
+		// Only use the old display if not an alert
+		__setCurrent(__show,
+			((__show instanceof Alert) ? getCurrent() : null));
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -421,6 +467,59 @@ public class Display
 	public boolean vibrate(int __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the current item to be displayed.
+	 *
+	 * @param __show The displayable to show.
+	 * @param __exit The displayable to show when the displayable that is
+	 * set is dismissed.
+	 * @throws DisplayCapabilityException If the display cannot show the given
+	 * displayable.
+	 * @throws IllegalStateException If the display hardware is missing; If
+	 * the displayables are associated with another display or tab pane. 
+	 * @since 2016/10/08
+	 */
+	private void __setCurrent(Displayable __show, Displayable __exit)
+		throws DisplayCapabilityException, IllegalStateException
+	{
+		// If there is nothing to show then the dismissed one is also never
+		// shown
+		if (__show == null)
+			__exit = null;
+		
+		// Need to lock on both displayables, however they are optional so if
+		// they are missing then lock on a dummy object
+		Object dummy = ((__show == null || __exit == null) ? new Object() :
+			null);
+		synchronized (this._lock)
+		{
+			// Get the old displayable
+			Displayable oldshow = this._show;
+			Displayable oldexit = this._dismissed;
+			
+			// Lock on them
+			synchronized ((__show != null ? __show._lock : dummy))
+			{
+				synchronized ((__exit != null ? __exit._lock : dummy))
+				{
+					// {@squirreljme.error EB03 The displayable is already
+					// associated with a display.}
+					if (__show != oldshow && __show != null &&
+						__show._display != null)
+						throw new IllegalStateException("EB03");
+				
+					// {@squirreljme.error EB04 The displayable to show on
+					// dismiss is already associated with a display.}
+					if (__exit != oldexit &&
+						__exit != null && __exit._display != null)
+						throw new IllegalStateException("EB04");
+				
+					throw new Error("TODO");
+				}
+			}
+		}
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)
