@@ -43,16 +43,43 @@ public abstract class GameCanvas
 	public static final int UP_PRESSED =
 		2;
 	
-	protected GameCanvas(boolean __a)
+	/** Are game keys being suppressed?. */
+	private volatile boolean _suppressgamekeys;
+	
+	/** Is the buffer preserved after a flush? */
+	private volatile boolean _preservebuffer;
+	
+	/**
+	 * Initializes the game canvas.
+	 *
+	 * The buffer is preserved by default.
+	 *
+	 * @param __supke If {@code true} then game key events are suppressed.
+	 * @since 2016/10/08
+	 */
+	protected GameCanvas(boolean __supke)
 	{
-		super();
-		throw new Error("TODO");
+		this(__supke, true);
 	}
 	
+	/**
+	 * Initializes the game canvas.
+	 *
+	 * It may be an optimization if key events are suppressed if a canvas is
+	 * only needed to draw and not receive user input. The only key events
+	 * that are suppressed are game keys.
+	 *
+	 * @param __supke If {@code true} then game key events are suppressed.
+	 * @param __preservebuf If {@code true} then the buffer is preserved after
+	 * a flush, otherwise if {@code false} the buffer data will be undefined.
+	 * @see Canvas
+	 * @since 2016/10/08
+	 */
 	protected GameCanvas(boolean __supke, boolean __preservebuf)
 	{
-		super();
-		throw new Error("TODO");
+		// Set
+		this._suppressgamekeys = __supke;
+		this._preservebuffer = __preservebuf;
 	}
 	
 	public void flushGraphics()

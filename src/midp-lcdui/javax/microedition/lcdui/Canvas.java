@@ -10,7 +10,12 @@
 
 package javax.microedition.lcdui;
 
-
+/**
+ * The canvas acts as the base class for primary display interfaces that
+ * require more customized draw handling.
+ *
+ * @since 2016/10/08
+ */
 public abstract class Canvas
 	extends Displayable
 {
@@ -23,21 +28,27 @@ public abstract class Canvas
 	public static final int ACTIONS_NONE =
 		0;
 	
+	/** This is a game key for the down direction. */
 	public static final int DOWN =
 		6;
 	
+	/** This is a game key for the fire button. */
 	public static final int FIRE =
 		8;
 	
+	/** This is a game key for the A button. */
 	public static final int GAME_A =
 		9;
 	
+	/** This is a game key for the B button. */
 	public static final int GAME_B =
 		10;
 	
+	/** This is a game key for the C button. */
 	public static final int GAME_C =
 		11;
 	
+	/** This is a game key for the D button. */
 	public static final int GAME_D =
 		12;
 	
@@ -107,19 +118,25 @@ public abstract class Canvas
 	public static final int KEY_TAB =
 		9;
 	
+	/** This is a game key for the left direction. */
 	public static final int LEFT =
 		2;
 	
+	/** This is a game key for the right direction. */
 	public static final int RIGHT =
 		5;
 	
+	/** This is a game key for the up direction. */
 	public static final int UP =
 		1;
 	
+	/**
+	 * Initializes the base canvas.
+	 *
+	 * @since 2016/10/08
+	 */
 	protected Canvas()
 	{
-		super();
-		throw new Error("TODO");
 	}
 	
 	protected abstract void paint(Graphics __a);

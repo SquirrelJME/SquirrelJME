@@ -10,13 +10,26 @@
 
 package javax.microedition.lcdui;
 
-
+/**
+ * A displayable is a primary container such as a form or a canvas that can be
+ * set on a display. A display may only have a single displayable associated
+ * with it and a displayable may only be associated with a single display.
+ *
+ * @since 2016/10/08
+ */
 public abstract class Displayable
 {
+	/** The lock on this displayable. */
+	final Object _lock =
+		new Object();
+	
+	/**
+	 * Initializes the base displayable object.
+	 *
+	 * @since 2016/10/08
+	 */
 	Displayable()
 	{
-		super();
-		throw new Error("TODO");
 	}
 	
 	public void addCommand(Command __a)
