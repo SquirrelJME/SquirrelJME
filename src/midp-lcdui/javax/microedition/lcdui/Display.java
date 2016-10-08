@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
 
 public class Display
 {

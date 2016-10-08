@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayProvider;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayScreen;
