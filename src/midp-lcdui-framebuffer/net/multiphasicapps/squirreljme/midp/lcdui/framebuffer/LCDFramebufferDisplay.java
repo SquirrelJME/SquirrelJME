@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui.framebuffer;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
@@ -25,6 +27,9 @@ public class LCDFramebufferDisplay
 {
 	/** The framebuffer this wraps. */
 	protected final Framebuffer framebuffer;
+	
+	/** Cached instance. */
+	private volatile Reference<LCDUIDisplayInstance> _instance;
 	
 	/**
 	 * Initializes the framebuffer wrapper.
@@ -51,7 +56,16 @@ public class LCDFramebufferDisplay
 	@Override
 	public LCDUIDisplayInstance createInstance()
 	{
-		throw new Error("TODO");
+		Reference<LCDUIDisplayInstance> ref = this._instance;
+		LCDUIDisplayInstance rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._instance = new WeakReference<>(
+				(rv = new LCDFramebufferDisplayInstance(this.framebuffer)));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
