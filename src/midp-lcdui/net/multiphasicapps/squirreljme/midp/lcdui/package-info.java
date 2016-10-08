@@ -8,14 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.meep.lui.terminal;
-
 /**
- * This implements a terminal support driver which outputs to a LUI display.
+ * This package contains base support for LCDUI display provider.
  *
- * @since 2016/09/08
+ * @since 2016/10/08
  */
-public class TerminalOnLUI
-{
-}
+
+package net.multiphasicapps.squirreljme.midp.lcdui;
 

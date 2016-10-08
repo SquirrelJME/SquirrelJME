@@ -8,16 +8,19 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.meep.lui;
+package net.multiphasicapps.squirreljme.midp.lcdui;
+
+import javax.microedition.lcdui.Display;
+import net.multiphasicapps.squirreljme.lcduilui.CommonDisplay;
 
 /**
- * This interface is used to provide access to displays which provide the LUI
- * displays with optional input.
+ * This class acts as the base for display drivers which are able to duplicate
+ * the LCDUI functionality.
  *
- * @since 2016/09/08
+ * @since 2016/10/08
  */
-public interface DisplayProvider
-	extends Iterable<DisplayDriver>
+public abstract class LCDUIDisplay
+	implements CommonDisplay<Display>
 {
 }
 

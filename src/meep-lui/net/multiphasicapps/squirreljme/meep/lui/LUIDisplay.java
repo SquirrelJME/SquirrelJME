@@ -10,19 +10,17 @@
 
 package net.multiphasicapps.squirreljme.meep.lui;
 
+import javax.microedition.lui.Display;
+import net.multiphasicapps.squirreljme.lcduilui.CommonDisplay;
+
 /**
- * When the text in the display has been changed, this is called to notify
- * the driver manually that the screen has been updated.
+ * This is the base class for classes which implement drivers to line based
+ * interfaces.
  *
- * @since 2016/09/11
+ * @since 2016/10/08
  */
-public interface DisplayUpdateNotifier
+public abstract class LUIDisplay
+	implements CommonDisplay<Display>
 {
-	/**
-	 * This is called when the screen has been updated.
-	 *
-	 * @since 2016/09/11
-	 */
-	public abstract void screenUpdated();
 }
 

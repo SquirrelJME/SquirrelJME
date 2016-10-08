@@ -18,7 +18,6 @@ package javax.microedition.lui;
  * @since 2016/08/30
  */
 public interface DisplayListener
-	implements CommonDisplayListener
 {
 	/**
 	 * This is called when a new display has been added to the device.

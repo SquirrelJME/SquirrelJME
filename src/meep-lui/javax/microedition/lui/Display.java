@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
-import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
-import net.multiphasicapps.squirreljme.meep.lui.DisplayProvider;
-import net.multiphasicapps.squirreljme.meep.lui.DisplayScreen;
+import net.multiphasicapps.squirreljme.meep.lui.LUIDisplay;
+import net.multiphasicapps.squirreljme.meep.lui.LUIDisplayProvider;
 import net.multiphasicapps.util.empty.EmptyIterator;
 
 /**
@@ -60,18 +59,11 @@ import net.multiphasicapps.util.empty.EmptyIterator;
  */
 public class Display
 {
-	/**
-	 * {@squirreljme.property
-	 * net.multiphasicapps.squirreljme.meep.lui.service=class
-	 * This selects the class to use as the display service instead of using
-	 * the default display service. This may be used for specific systems to
-	 * use a given driver if it has a negative or low priority.}
-	 */
-	private static final String _SERVICE_CLASS =
-		"net.multiphasicapps.squirreljme.meep.lui.service";
-	
-	/** This contains the array of display providers. */
-	private static final DisplayProvider[] _DISPLAY_PROVIDERS;
+	/** The display manager used to find displays. */
+	private static final CommonDisplayManager<Display, LUIDisplay,
+		LUIDisplayProvider> _DISPLAY_MANAGER =
+		new CommonDisplayManager<>(Display.class, LUIDisplay.class,
+		LUIDisplayProvider.class);
 	
 	/**
 	 * This is used as the event name to indicate the lighting level.
@@ -116,85 +108,15 @@ public class Display
 	private final Object _lock =
 		new Object();
 	
-	/** The bound display driver. */
-	private final DisplayDriver _driver;
-	
-	/** The screen used to display text. */
-	private final DisplayScreen _screen;
-	
-	/**
-	 * This initializes the array of display providers which are used to give
-	 * displays to the current application.
-	 *
-	 * @since 2016/09/07
-	 */
-	static
-	{
-		// Build mapping of all display providers
-		Map<Class<?>, DisplayProvider> providers =
-			new LinkedHashMap<>();
-		
-		// If the system property was specified then place it first so that
-		// it gets its displayed queried first
-		String prop = System.getProperty(_SERVICE_CLASS);
-		if (prop != null)
-			try
-			{
-				// Find class
-				Class<?> cl = Class.forName(prop);
-				
-				// Create it
-				DisplayProvider dp = (DisplayProvider)cl.newInstance();
-				
-				// Store it
-				providers.put(cl, dp);
-			}
-			
-			// Ignore
-			catch (ClassCastException|ClassNotFoundException|
-				InstantiationException|IllegalAccessException e)
-			{
-			}
-		
-		// Add standard services via the service loader
-		for (DisplayProvider dp : ServiceLoader.<DisplayProvider>load(
-			DisplayProvider.class))
-		{
-			// Each class is only placed in once
-			Class<?> cl = dp.getClass();
-			if (!providers.containsKey(cl))
-				providers.put(dp.getClass(), dp);
-		}
-		
-		// Set all providers for potential lookup
-		_DISPLAY_PROVIDERS = providers.values().<DisplayProvider>toArray(
-			new DisplayProvider[providers.size()]);
-	}
-	
 	/**
 	 * Displays are internally managed by this class and as such cannot be
 	 * constructed publically or by drivers.
 	 *
-	 * @param __drv The owning driver.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/30
+	 * @since 2016/10/08
 	 */
-	Display(DisplayDriver __drv)
-		throws NullPointerException
+	Display()
 	{
-		// Check
-		if (__drv == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._driver = __drv;
-		
-		// {@squirreljme.error DA06 The display driver did not provide a
-		// screen for displaying test.}
-		DisplayScreen screen = __drv.screen();
-		this._screen = screen;
-		if (screen == null)
-			throw new IllegalStateException("DA06");
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -449,8 +371,7 @@ public class Display
 	 */
 	public boolean isHardwareAssigned()
 	{
-		// Forward
-		return this._driver.isHardwareAssigned();
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -651,8 +572,7 @@ public class Display
 	 */
 	public void setHardwareAssigned(boolean __h)
 	{
-		// Forward call
-		this._driver.setHardwareAssigned(__h);
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -860,9 +780,7 @@ public class Display
 	 */
 	public static Iterator<Display> getDisplays(boolean __ks)
 	{
-		// Build an iterator which goes through display provides to find
-		// actual displays
-		return new __DisplayIterator__(_DISPLAY_PROVIDERS, __ks);
+		throw new Error("TODO");
 	}
 	
 	/**

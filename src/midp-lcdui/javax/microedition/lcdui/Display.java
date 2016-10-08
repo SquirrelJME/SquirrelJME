@@ -12,6 +12,8 @@ package javax.microedition.lcdui;
 
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
+import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
+import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayProvider;
 
 public class Display
 {
@@ -167,6 +169,12 @@ public class Display
 
 	public static final int TAB =
 		 4;
+	
+	/** The display manager used to find displays. */
+	private static final CommonDisplayManager<Display, LCDUIDisplay,
+		LCDUIDisplayProvider> _DISPLAY_MANAGER =
+		new CommonDisplayManager<>(Display.class, LCDUIDisplay.class,
+		LCDUIDisplayProvider.class);
 	
 	private Display()
 	{
