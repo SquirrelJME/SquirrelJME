@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreldigger.gui.lcdui;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreldigger.game.Game;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
@@ -30,6 +31,9 @@ public class LCDUIGUI
 	
 	/** The controller for controlling the game. */
 	protected final Controller controller;
+	
+	/** The canvas used to show the game. */
+	protected final LCDCanvas canvas;
 	
 	/**
 	 * Initializes the LCD UI interface.
@@ -59,8 +63,20 @@ public class LCDUIGUI
 		if ((d.getCapabilities() & Display.SUPPORTS_INPUT_EVENTS) != 0)
 			this.controller = new LCDUIController(d);
 		
+		// Just stand still for a long time
 		else
 			this.controller = new NullController();
+		
+		// While playing the game, entering sleep mode would be very annoying
+		d.setActivityMode(Display.MODE_ACTIVE);
+		
+		// Setup the initial display with just a Canvas to display an Image
+		LCDCanvas canvas;
+		this.canvas = (canvas = new LCDCanvas());
+		d.setCurrent(canvas);
+		
+		// Set title bar
+		canvas.setTitle("Squirrel Digger");
 	}
 	
 	/**
