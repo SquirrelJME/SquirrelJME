@@ -14,6 +14,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreldigger.game.Game;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
+import net.multiphasicapps.squirreldigger.game.player.NullController;
 import net.multiphasicapps.squirreldigger.gui.GUI;
 
 /**
@@ -26,6 +27,9 @@ public class LCDUIGUI
 {
 	/** The LCD display being used. */
 	protected final Display display;
+	
+	/** The controller for controlling the game. */
+	protected final Controller controller;
 	
 	/**
 	 * Initializes the LCD UI interface.
@@ -50,6 +54,13 @@ public class LCDUIGUI
 		
 		// Set
 		this.display = d;
+		
+		// Setup controller
+		if ((d.getCapabilities() & Display.SUPPORTS_INPUT_EVENTS) != 0)
+			this.controller = new LCDUIController(d);
+		
+		else
+			this.controller = new NullController();
 	}
 	
 	/**
@@ -64,7 +75,12 @@ public class LCDUIGUI
 		if (__id < 0)
 			throw new IndexOutOfBoundsException("BA03");
 		
-		throw new Error("TODO");
+		// All other controllers are null
+		if (__id != 0)
+			return null;
+		
+		// Otherwise use the single controller
+		return this.controller;
 	}
 	
 	/**
