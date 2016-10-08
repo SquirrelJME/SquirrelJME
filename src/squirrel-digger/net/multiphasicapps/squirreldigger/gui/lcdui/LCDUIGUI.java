@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreldigger.gui.lcdui;
 
+import javax.microedition.lcdui.Display;
+import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreldigger.game.Game;
 import net.multiphasicapps.squirreldigger.game.player.Controller;
 import net.multiphasicapps.squirreldigger.gui.GUI;
@@ -22,15 +24,32 @@ import net.multiphasicapps.squirreldigger.gui.GUI;
 public class LCDUIGUI
 	extends GUI
 {
+	/** The LCD display being used. */
+	protected final Display display;
+	
 	/**
 	 * Initializes the LCD UI interface.
 	 *
 	 * @param __g The game to draw over.
+	 * @param __mid The optional midlet that is used to obtain a display,
+	 * may be {@code null}.
 	 * @since 2016/10/08
 	 */
-	public LCDUIGUI(Game __g)
+	public LCDUIGUI(Game __g, MIDlet __mid)
 	{
 		super(__g);
+		
+		// If a midlet was specified use that to get the display
+		Display d = null;
+		if (__mid != null)
+			d = Display.getDisplay(__mid);
+		
+		// Otherwise search for one
+		if (d == null)
+			d = __getDefaultDisplay();
+		
+		// Set
+		this.display = d;
 	}
 	
 	/**
@@ -56,6 +75,24 @@ public class LCDUIGUI
 	public void run()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Find a default LCDUI based display to use.
+	 *
+	 * @return The display to use.
+	 * @throws RuntimeException If one was not found.
+	 * @since 2016/10/08
+	 */
+	private static final Display __getDefaultDisplay()
+		throws RuntimeException
+	{
+		// Just use any display with any capability
+		for (Display d : Display.getDisplays(0))
+			return d;
+		
+		// {@squirreljme.error BA04 Could not find a LCDUI display.}
+		throw new RuntimeException("BA04");
 	}
 }
 

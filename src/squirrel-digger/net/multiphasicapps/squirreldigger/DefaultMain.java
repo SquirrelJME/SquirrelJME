@@ -47,7 +47,7 @@ public class DefaultMain
 		
 		// Default to the LCD UI or otherwise on unknown arguments
 		else
-			lg = new LCDUIGUI(g);
+			lg = new LCDUIGUI(g, null);
 		
 		// Setup controllers
 		for (int i = 0; i < Integer.MAX_VALUE; i++)
