@@ -214,6 +214,8 @@ public class ChunkManager
 	{
 		if (__z < 0)
 			return 0;
+		else if (__z > CHUNK_MASK)
+			return CHUNK_MASK;
 		return __z & CHUNK_MASK;
 	}
 	
