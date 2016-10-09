@@ -58,11 +58,14 @@ public class Chunk
 		
 		// Calculate base block position
 		int ri = __dx.index();
-		this.baseblockx = (ri >>> PositionFunctions.WORLD_CHUNK_X_SHIFT) &
-			PositionFunctions.WORLD_CHUNK_BREADTH_MASK;
-		this.baseblocky = (ri >>> PositionFunctions.WORLD_CHUNK_Y_SHIFT) &
-			PositionFunctions.WORLD_CHUNK_BREADTH_MASK;
-		this.baseblockz = ri & PositionFunctions.WORLD_CHUNK_HEIGHT_MASK;
+		this.baseblockx = ((ri >>> PositionFunctions.WORLD_CHUNK_X_SHIFT) &
+			PositionFunctions.WORLD_CHUNK_BREADTH_MASK) *
+			PositionFunctions.BLOCK_SCALE;
+		this.baseblocky = ((ri >>> PositionFunctions.WORLD_CHUNK_Y_SHIFT) &
+			PositionFunctions.WORLD_CHUNK_BREADTH_MASK) *
+			PositionFunctions.BLOCK_SCALE;
+		this.baseblockz = (ri & PositionFunctions.WORLD_CHUNK_HEIGHT_MASK) *
+			PositionFunctions.BLOCK_SCALE;
 	}
 	
 	/**

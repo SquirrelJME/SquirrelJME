@@ -116,11 +116,11 @@ public class Entity
 		boolean hit = false;
 		Chunk last = null;
 		int lastz = PositionFunctions.WORLD_BLOCK_HEIGHT - 1,
-			lastez = lastz * PositionFunctions.BLOCK_SCALE;
+			lastez = lastz * PositionFunctions.SUB_SCALE;
 		for (int z = lastz; z >= 0; z--)
 		{
 			// Need entity position
-			int ez = z * PositionFunctions.BLOCK_SCALE;
+			int ez = z * PositionFunctions.SUB_SCALE;
 			
 			// Get the chunk at the given Z position
 			Chunk top = cm.chunkByEntityPosition(__x, __y, ez);
