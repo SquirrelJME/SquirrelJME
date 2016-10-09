@@ -49,6 +49,10 @@ public class PositionFunctions
 	public static final int BLOCK_SCALE =
 		1 << BLOCK_BITS;
 	
+	/** The mask used for blocks. */
+	public static final int BLOCK_VALUE_MASK =
+		BLOCK_SCALE - 1;
+	
 	/** The number of bits to use for the sub-position. */
 	public static final int SUB_BITS =
 		31 - WORLD_CHUNK_BREADTH_BITS - BLOCK_BITS;
@@ -72,6 +76,34 @@ public class PositionFunctions
 	/** The shift for the entity to get the chunk. */
 	public static final int ENTITY_CHUNK_SHIFT =
 		SUB_BITS + BLOCK_BITS;
+	
+	/** The shift for the entity to get the block. */
+	public static final int ENTITY_BLOCK_SHIFT =
+		SUB_BITS;
+	
+	/** The block index shift for X positions. */
+	public static final int BLOCK_INDEX_X_SHIFT =
+		BLOCK_BITS + BLOCK_BITS;
+	
+	/** The block index shift for Y positions. */
+	public static final int BLOCK_INDEX_Y_SHIFT =
+		BLOCK_BITS;
+	
+	/**
+	 * Returns the block index for the given block position.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __z The Z position.
+	 * @return The block index for the given position.
+	 * @since 2016/10/09
+	 */
+	public static int blockPositionToBlockIndex(int __x, int __y, int __z)
+	{
+		return ((__x & BLOCK_VALUE_MASK) << BLOCK_INDEX_X_SHIFT) |
+			((__y & BLOCK_VALUE_MASK) << BLOCK_INDEX_Y_SHIFT) |
+			(__z & BLOCK_VALUE_MASK);
+	}
 	
 	/**
 	 * This caps the Z position of a chunk.
@@ -119,6 +151,21 @@ public class PositionFunctions
 		return chunkPositionToChunkIndex(__x >>> ENTITY_CHUNK_SHIFT,
 			__y >>> ENTITY_CHUNK_SHIFT,
 			__z >> ENTITY_CHUNK_SHIFT);
+	}
+	
+	/**
+	 * Returns the block index for the given entity position.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __z The Z position.
+	 * @return The block index for the given position.
+	 * @since 2016/10/09
+	 */
+	public static int entityPositionToBlockIndex(int __x, int __y, int __z)
+	{
+		return blockPositionToBlockIndex(__x >>> ENTITY_BLOCK_SHIFT,
+			__y >>> ENTITY_BLOCK_SHIFT, __z >>> ENTITY_BLOCK_SHIFT);
 	}
 }
 

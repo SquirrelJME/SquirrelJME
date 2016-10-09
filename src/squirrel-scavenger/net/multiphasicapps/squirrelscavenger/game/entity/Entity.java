@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelscavenger.game.entity;
 
 import net.multiphasicapps.squirrelscavenger.game.chunk.Chunk;
 import net.multiphasicapps.squirrelscavenger.game.chunk.ChunkManager;
+import net.multiphasicapps.squirrelscavenger.game.chunk.PositionFunctions;
 import net.multiphasicapps.squirrelscavenger.game.Game;
 
 /**
@@ -83,8 +84,8 @@ public class Entity
 	 * given situation (not placed on top of lava, water if it cannot breathe
 	 * water, or air if it cannot breathe air).
 	 *
-	 * @param __x The X coordinate to spawn at.
-	 * @param __y The Y coordinate to spawn at.
+	 * @param __x The X coordinate to spawn at (entity position).
+	 * @param __y The Y coordinate to spawn at (entity position).
 	 * @return {@code true} if the entity was spawned at the specified
 	 * location, otherwise false.
 	 * @throws IllegalStateException If the entity type was not set.
@@ -104,6 +105,11 @@ public class Entity
 		
 		// Get the chunk at the very top
 		Chunk top = cm.chunkByEntityPosition(__x, __y, Integer.MAX_VALUE);
+		
+		// Get the block index in the chunk which is used to check for air
+		int bdx = PositionFunctions.entityPositionToBlockIndex(__x, __y,
+			Integer.MAX_VALUE);
+		
 		
 		throw new Error("TODO");
 	}
