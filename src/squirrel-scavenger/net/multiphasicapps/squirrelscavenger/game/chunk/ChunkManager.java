@@ -45,9 +45,6 @@ public class ChunkManager
 	/** The seed used to generate map data. */
 	protected final long seed;
 	
-	/** The directory containing the chunk cache. */
-	protected final Path root;
-	
 	/** The biome generator. */
 	protected final BiomeGenerator biome;
 	
@@ -68,11 +65,10 @@ public class ChunkManager
 	 *
 	 * @param __g The game that owns this.
 	 * @param __seed The seed used for map generation.
-	 * @param __root The root directory where chunk data is stored.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/06
 	 */
-	public ChunkManager(Game __g, long __seed, Path __root)
+	public ChunkManager(Game __g, long __seed)
 		throws NullPointerException
 	{
 		// Check
@@ -82,7 +78,6 @@ public class ChunkManager
 		// Set
 		this.game = __g;
 		this.seed = __seed;
-		this.root = __root;
 		
 		// Setup generator helpers
 		this.biome = new BiomeGenerator(__seed);
