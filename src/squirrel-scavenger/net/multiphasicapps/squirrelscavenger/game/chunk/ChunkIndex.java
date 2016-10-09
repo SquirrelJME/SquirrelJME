@@ -10,71 +10,27 @@
 
 package net.multiphasicapps.squirrelscavenger.game.chunk;
 
-import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
-
 /**
- * This represents a chunk index which is used to identify the ID for a chunk
- * along with having a pointer to its data (if it is loaded).
+ * This represents a chunk index which is used to identify the ID for a chunk.
  *
  * @since 2016/10/09
  */
 public final class ChunkIndex
 	implements Comparable<ChunkIndex>
 {
-	/** The owning chunk manager. */
-	protected final ChunkManager manager;
-	
 	/** The chunk index ID. */
 	protected final int index;
-	
-	/** The chunk pointer reference (and its data). */
-	private volatile Reference<Chunk> _ref;
 	
 	/**
 	 * Initializes the chunk index.
 	 *
-	 * @param __cm The chunk manager owning this.
 	 * @param __dx The chunk index value.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/09
 	 */
-	public ChunkIndex(ChunkManager __cm, int __dx)
-		throws NullPointerException
+	public ChunkIndex(int __dx)
 	{
-		// Check
-		if (__cm == null)
-			throw new NullPointerException("NARG");
-		
 		// Set
-		this.manager = __cm;
 		this.index = __dx;
-	}
-	
-	/**
-	 * Returns the referenced chunk for this index.
-	 *
-	 * @return The chunk for this index.
-	 * @since 2016/10/09
-	 */
-	public Chunk chunk()
-	{
-		// If a chunk reference does not exist create it
-		ChunkManager manager = this.manager;
-		Reference<Chunk> ref = this._ref;
-		Chunk rv;
-		if (ref == null || null == (rv = ref.get()))
-		{
-			// Need the queue because of cache purposes
-			ReferenceQueue<Chunk> queue = manager._queue;
-			
-			
-			throw new Error("TODO");
-		}
-		
-		// Return it
-		return rv;
 	}
 	
 	/**
@@ -90,6 +46,30 @@ public final class ChunkIndex
 		else if (a > b)
 			return 1;
 		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/09
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof ChunkIndex))
+			return false;
+		
+		return this.index == ((ChunkIndex)__o).index;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/09
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.index;
 	}
 }
 

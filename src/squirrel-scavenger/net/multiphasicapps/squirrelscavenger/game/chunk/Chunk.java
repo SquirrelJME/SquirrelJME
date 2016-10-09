@@ -20,5 +20,40 @@ package net.multiphasicapps.squirrelscavenger.game.chunk;
  */
 public class Chunk
 {
+	/** The chunk manager. */
+	protected final ChunkManager manager;
+	
+	/** The index of this chunk. */
+	protected final ChunkIndex index;
+	
+	/**
+	 * Initializes the chunk.
+	 *
+	 * @param __cm The owning chunk manager.
+	 * @param __dx The index of this chunk.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/09
+	 */
+	public Chunk(ChunkManager __cm, ChunkIndex __dx)
+		throws NullPointerException
+	{
+		// Check
+		if (__cm == null || __dx == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.manager = __cm;
+		this.index = __dx;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/09
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.index.hashCode();
+	}
 }
 

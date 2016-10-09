@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import net.multiphasicapps.squirrelscavenger.game.Game;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
@@ -47,17 +48,9 @@ public class ChunkManager
 	/** The biome generator. */
 	protected final BiomeGenerator biome;
 	
-	/** This is a queue to detect which chunks were collected. */
-	final ReferenceQueue<Chunk> _queue =
-		new ReferenceQueue<>();
-	
-	/** This is the chunk index mapping. */
-	final Map<Integer, ChunkIndex> _chunks =
-		new SortedTreeMap<>();
-	
-	/** Mapping of references to chunk indexes. */
-	final Map<Reference<Chunk>, Integer> _reftoindex =
-		new HashMap<>();
+	/** Chunks loaded in memory. */
+	final Map<ChunkIndex, Reference<Chunk>> _chunks =
+		new WeakHashMap<>();
 	
 	/**
 	 * Initializes the chunk manager.
@@ -91,17 +84,20 @@ public class ChunkManager
 	 */
 	public Chunk chunkByChunkIndex(int __i)
 	{
-		// Get the chunk index mappings
-		Integer i = Integer.valueOf(__i);
-		Map<Integer, ChunkIndex> chunks = this._chunks;
+		// Make chunk index
+		ChunkIndex key = new ChunkIndex(__i);
 		
-		// See if a chunk index needs to be created
-		ChunkIndex dx = chunks.get(i);
-		if (dx == null)
-			chunks.put(i, (dx = new ChunkIndex(this, __i)));
+		// See if a reference to a chunk stil exists
+		Map<ChunkIndex, Reference<Chunk>> chunks = this._chunks;
+		Reference<Chunk> ref = chunks.get(key);
+		Chunk rv;
 		
-		// Get the chunk reference as needed
-		return dx.chunk();
+		// Does not exist, must cache it
+		if (ref == null || null == (rv = ref.get()))
+			chunks.put(key, new WeakReference<>((rv = new Chunk(this, key))));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
