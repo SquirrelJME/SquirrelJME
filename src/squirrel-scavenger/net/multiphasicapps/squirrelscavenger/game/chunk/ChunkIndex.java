@@ -71,5 +71,16 @@ public final class ChunkIndex
 	{
 		return this.index;
 	}
+	
+	/**
+	 * Returns the chunk index.
+	 *
+	 * @return The chunk index.
+	 * @since 2016/10/09
+	 */
+	public int index()
+	{
+		return this.index;
+	}
 }
 

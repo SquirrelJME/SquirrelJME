@@ -57,6 +57,10 @@ public class PositionFunctions
 	public static final int SUB_BITS =
 		31 - WORLD_CHUNK_BREADTH_BITS - BLOCK_BITS;
 	
+	/** The scale for sub-values. */
+	public static final int SUB_SCALE =
+		1 << SUB_BITS;
+	
 	/** The breadth of the world in blocks. */
 	public static final int WORLD_BLOCK_BREADTH =
 		WORLD_CHUNK_BREADTH * BLOCK_SCALE;

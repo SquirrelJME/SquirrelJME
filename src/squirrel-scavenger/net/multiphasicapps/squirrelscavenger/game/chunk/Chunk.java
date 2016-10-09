@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelscavenger.game.chunk;
 
+import net.multiphasicapps.squirrelscavenger.game.block.BlockType;
+
 /**
  * This represents a single chunk which points to the data for a given chunk.
  *
@@ -25,6 +27,15 @@ public class Chunk
 	
 	/** The index of this chunk. */
 	protected final ChunkIndex index;
+	
+	/** Block X position. */
+	protected final int baseblockx;
+	
+	/** Block Y position. */
+	protected final int baseblocky;
+	
+	/** Block Z position. */
+	protected final int baseblockz;
 	
 	/**
 	 * Initializes the chunk.
@@ -44,6 +55,28 @@ public class Chunk
 		// Set
 		this.manager = __cm;
 		this.index = __dx;
+		
+		// Calculate base block position
+		int ri = __dx.index();
+		this.baseblockx = (ri >>> PositionFunctions.WORLD_CHUNK_X_SHIFT) &
+			PositionFunctions.WORLD_CHUNK_BREADTH_MASK;
+		this.baseblocky = (ri >>> PositionFunctions.WORLD_CHUNK_Y_SHIFT) &
+			PositionFunctions.WORLD_CHUNK_BREADTH_MASK;
+		this.baseblockz = ri & PositionFunctions.WORLD_CHUNK_HEIGHT_MASK;
+	}
+	
+	/**
+	 * Returns the block type at the given index.
+	 *
+	 * @param __dx The index of the block.
+	 * @return The block type for this block.
+	 * @since 2016/10/19
+	 */
+	public BlockType blockType(int __dx)
+	{
+		if (this.baseblockz > 128)
+			return BlockType.AIR;
+		return BlockType.DIRT;
 	}
 	
 	/**

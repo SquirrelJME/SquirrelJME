@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirrelscavenger.game.entity;
 
+import net.multiphasicapps.squirrelscavenger.game.block.BlockType;
 import net.multiphasicapps.squirrelscavenger.game.chunk.Chunk;
 import net.multiphasicapps.squirrelscavenger.game.chunk.ChunkManager;
 import net.multiphasicapps.squirrelscavenger.game.chunk.PositionFunctions;
@@ -25,8 +26,15 @@ public class Entity
 	/** The game this entity is within. */
 	protected final Game game;
 	
+	/** Entity coordinates. */
+	private final int[] _pos =
+		new int[3];
+	
 	/** The type of entity that this is. */
 	private volatile EntityType _type;
+	
+	/** The chunk the entity is inside. */
+	private volatile Chunk _inchunk;
 	
 	/**
 	 * Initializes the entity.
@@ -73,7 +81,8 @@ public class Entity
 	 */
 	public boolean isSpawned()
 	{
-		throw new Error("TODO");
+		// Only if the entity is in a chunk it is spawned
+		return this._inchunk != null;
 	}
 	
 	/**
@@ -103,15 +112,66 @@ public class Entity
 		// Get the chunk managed since chunks need to be known
 		ChunkManager cm = this.game.chunkManager();
 		
-		// Get the chunk at the very top
-		Chunk top = cm.chunkByEntityPosition(__x, __y, Integer.MAX_VALUE);
+		// Start from the top of the sky and go down until ground is reached
+		boolean hit = false;
+		Chunk last = null;
+		int lastz = PositionFunctions.WORLD_BLOCK_HEIGHT - 1,
+			lastez = lastz * PositionFunctions.BLOCK_SCALE;
+		for (int z = lastz; z >= 0; z--)
+		{
+			// Need entity position
+			int ez = z * PositionFunctions.BLOCK_SCALE;
+			
+			// Get the chunk at the given Z position
+			Chunk top = cm.chunkByEntityPosition(__x, __y, ez);
 		
-		// Get the block index in the chunk which is used to check for air
-		int bdx = PositionFunctions.entityPositionToBlockIndex(__x, __y,
-			Integer.MAX_VALUE);
+			// Get the block index in the chunk which is used to check for air
+			int bx = PositionFunctions.entityPositionToBlockIndex(__x, __y,
+				ez);
+			
+			// Need the block type here
+			BlockType bt = top.blockType(bx);
+			
+			// Can we spawn in this block?
+			if (bt.canPlayerSpawnInBlock())
+				hit = true;
+			
+			// Cannot spawn in the block, but check if we can spawn on top
+			else if (hit)
+				if (bt.canPlayerSpawnOnTop())
+				{
+					// Spawn in the block at the last chunk
+					this._inchunk = last;
+					
+					// Set position
+					int[] pos = this._pos;
+					pos[0] = __x;
+					pos[1] = __y;
+					pos[2] = ez;
+					
+					// Debug
+					System.err.printf("DEBUG -- Spawn at: (%d, %d, %d)" +
+						"[%d, %d, %d]%n", __x, __y, ez,
+						__x / PositionFunctions.SUB_SCALE,
+						__y / PositionFunctions.SUB_SCALE,
+						ez / PositionFunctions.SUB_SCALE);
+					
+					// Spawned here
+					return true;
+				}
+				
+				// Cannot spawn on top of this block, fail
+				else
+					return false;
+			
+			// Last chunk spawned in, since spawn in/ontop can traverse chunks
+			last = top;
+			lastz = z;
+			lastez = ez;
+		}
 		
-		
-		throw new Error("TODO");
+		// Not found
+		return false;
 	}
 }
 
