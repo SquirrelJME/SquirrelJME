@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: opengles
+X-SquirrelJME-UUID: d46fcedc-9cdd-4315-87a5-6ecb1dafc2a7
+X-SquirrelJME-Depends: cldc-full
+X-SquirrelJME-Error: EJ
+LIBlet-Title: OpenGL ES
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the base support needed 
+ for OpenGL ES 1.1 functionality defined by JSR 239.
+
