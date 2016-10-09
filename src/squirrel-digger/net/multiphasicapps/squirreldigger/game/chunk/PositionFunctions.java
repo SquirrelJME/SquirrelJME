@@ -33,6 +33,14 @@ public class PositionFunctions
 	public static final int WORLD_CHUNK_HEIGHT =
 		1 << WORLD_CHUNK_HEIGHT_BITS;
 	
+	/** The mask used for the chunk breadth. */
+	public static final int WORLD_CHUNK_BREADTH_MASK =
+		WORLD_CHUNK_BREADTH - 1;
+	
+	/** The mask used for the chunk height. */
+	public static final int WORLD_CHUNK_HEIGHT_MASK =
+		WORLD_CHUNK_HEIGHT - 1;
+	
 	/** The number of bits to use for blocks. */
 	public static final int BLOCK_BITS =
 		3;
@@ -52,5 +60,45 @@ public class PositionFunctions
 	/** The height of the world in blocks. */
 	public static final int WORLD_BLOCK_HEIGHT =
 		WORLD_CHUNK_HEIGHT * BLOCK_SCALE;
+	
+	/** The shift for Z values. */
+	public static final int WORLD_CHUNK_X_SHIFT =
+		WORLD_CHUNK_BREADTH_BITS + WORLD_CHUNK_HEIGHT_BITS;
+	
+	/** The shift for Y values. */
+	public static final int WORLD_CHUNK_Y_SHIFT =
+		WORLD_CHUNK_HEIGHT_BITS;
+	
+	/**
+	 * This caps the Z position of a chunk.
+	 *
+	 * @param __z The Z position to cap.
+	 * @return The capped value.
+	 * @since 2016/10/09
+	 */
+	public static int capChunkPositionZ(int __z)
+	{
+		if (__z < 0)
+			return 0;
+		else if (__z > WORLD_CHUNK_HEIGHT_MASK)
+			return WORLD_CHUNK_HEIGHT_MASK;
+		return __z;
+	}
+	
+	/**
+	 * This converts a chunk position to an index position.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __z The Z position.
+	 * @return The chunk index for the given position.
+	 * @since 2016/10/09
+	 */
+	public static int chunkPositionToChunkIndex(int __x, int __y, int __z)
+	{
+		return ((__x & WORLD_CHUNK_BREADTH_MASK) << WORLD_CHUNK_X_SHIFT) |
+			((y & WORLD_CHUNK_BREADTH_MASK) << WORLD_CHUNK_Y_SHIFT) |
+			capChunkPositionZ(__z);
+	}
 }
 
