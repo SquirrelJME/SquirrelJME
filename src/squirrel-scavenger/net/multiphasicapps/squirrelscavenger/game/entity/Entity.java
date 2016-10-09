@@ -150,11 +150,7 @@ public class Entity
 					pos[2] = ez;
 					
 					// Debug
-					System.err.printf("DEBUG -- Spawn at: (%d, %d, %d)" +
-						"[%d, %d, %d]%n", __x, __y, ez,
-						__x / PositionFunctions.SUB_SCALE,
-						__y / PositionFunctions.SUB_SCALE,
-						ez / PositionFunctions.SUB_SCALE);
+					System.err.printf("DEBUG -- Spawned %s%n", this);
 					
 					// Spawned here
 					return true;
@@ -172,6 +168,57 @@ public class Entity
 		
 		// Not found
 		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/09
+	 */
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder("{");
+		boolean comma = false;
+		
+		// Has a type?
+		EntityType t = this._type;
+		if (t != null)
+		{
+			sb.append("type=");
+			sb.append(t);
+			comma = true;
+		}
+		
+		// Position
+		if (comma)
+			sb.append(", ");
+		int[] pos = this._pos;
+		int x = pos[0], y = pos[1], z = pos[2];
+		
+		// X
+		sb.append("x=");
+		sb.append(x);
+		sb.append(" [");
+		sb.append(x >>> PositionFunctions.SUB_BITS);
+		sb.append(']');
+		
+		// Y
+		sb.append(", y=");
+		sb.append(y);
+		sb.append(" [");
+		sb.append(y >>> PositionFunctions.SUB_BITS);
+		sb.append(']');
+		
+		// Z
+		sb.append(", z=");
+		sb.append(z);
+		sb.append(" [");
+		sb.append(z >>> PositionFunctions.SUB_BITS);
+		sb.append(']');
+		
+		// Return it
+		sb.append('}');
+		return sb.toString();
 	}
 }
 

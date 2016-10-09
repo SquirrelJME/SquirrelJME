@@ -55,7 +55,7 @@ public class PositionFunctions
 	
 	/** The number of bits to use for the sub-position. */
 	public static final int SUB_BITS =
-		31 - WORLD_CHUNK_BREADTH_BITS - BLOCK_BITS;
+		32 - WORLD_CHUNK_BREADTH_BITS - BLOCK_BITS;
 	
 	/** The scale for sub-values. */
 	public static final int SUB_SCALE =
