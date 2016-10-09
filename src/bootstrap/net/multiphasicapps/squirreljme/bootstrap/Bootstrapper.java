@@ -201,12 +201,29 @@ public class Bootstrapper
 			ce, mainclass, __args);
 		
 		// Run the thread
-		t.run();
+		Throwable x;
+		try
+		{
+			t.run();
+			
+			// Set exception, if any
+			x = ce.throwable;
+		}
+		
+		// Caught one
+		catch (Throwable q)
+		{
+			x = q;
+		}
 		
 		// If one was caught then fail
-		Throwable x = ce.throwable;
 		if (x != null)
+		{
 			x.printStackTrace();
+			
+			// Exit with failure
+			System.exit(1);
+		}
 	}
 }
 
