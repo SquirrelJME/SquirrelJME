@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreldigger.game.entity;
 
+import net.multiphasicapps.squirreldigger.game.chunk.Chunk;
+import net.multiphasicapps.squirreldigger.game.chunk.ChunkManager;
 import net.multiphasicapps.squirreldigger.game.Game;
 
 /**
@@ -96,6 +98,12 @@ public class Entity
 		EntityType type = this._type;
 		if (type == null)
 			throw new IllegalStateException("BA05");
+		
+		// Get the chunk managed since chunks need to be known
+		ChunkManager cm = this.game.chunkManager();
+		
+		// Get the chunk at the very top
+		Chunk top = cm.chunkByEntityPosition(__x, __y, Integer.MAX_VALUE);
 		
 		throw new Error("TODO");
 	}

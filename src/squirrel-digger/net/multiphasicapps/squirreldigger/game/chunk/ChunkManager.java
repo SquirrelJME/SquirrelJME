@@ -62,6 +62,34 @@ public class ChunkManager
 	public static final int Z_SHIFT =
 		CHUNK_BITS * 2;
 	
+	/** The value mask for the entity sub-block position. */
+	public static final int ENTITY_POS_SUB_VALUE_MASK =
+		0b1111_1111;
+	
+	/** The shift to get the block ID for the entity position. */
+	public static final int ENTITY_POS_BLOCK_SHIFT =
+		8;
+		
+	/** The value mask for the entity block position. */
+	public static final int ENTITY_POS_BLOCK_VALUE_MASK =
+		0b111;
+	
+	/** The shifted mask for the block position. */
+	public static final int ENTITY_POS_BLOCK_SHIFT_MASK =
+		ENTITY_POS_BLOCK_VALUE_MASK << ENTITY_POS_BLOCK_SHIFT;
+	
+	/** The shift to get the chunk ID for the entity position. */
+	public static final int ENTITY_POS_CHUNK_SHIFT =
+		11;
+	
+	/** This is the value mask for the chunk position. */
+	public static final int ENTITY_POS_CHUNK_VALUE_MASK =
+		CHUNK_MASK;
+	
+	/** This is the masked chunk coordinate position. */
+	public static final int ENTITY_POS_CHUNK_SHIFT_MASK =
+		ENTITY_POS_CHUNK_VALUE_MASK << ENTITY_POS_CHUNK_SHIFT;
+	
 	/** The game that owns this chunk manager. */
 	protected final Game game;
 	
@@ -146,6 +174,50 @@ public class ChunkManager
 	}
 	
 	/**
+	 * Returns the chunk for the specified entity position.
+	 *
+	 * @param __x The x position.
+	 * @param __y The y position.
+	 * @param __z The z position.
+	 * @return The chunk for this given position.
+	 * @since 2016/10/09
+	 */
+	public Chunk chunkByEntityPosition(int __x, int __y, int __z)
+	{
+		return chunkByChunkIndex(entityPositionToIndex(__x, __y, __z));
+	}
+	
+	/**
+	 * Returns the chunk index for the block at the specified position.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __z The Z coordinate.
+	 * @return The index for the given block position.
+	 * @since 2016/10/09
+	 */
+	public static int blockPositionToIndex(int __x, int __y, int __z)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Caps the Z coordinate so that it does not overflow, that is getting
+	 * the chunk just above the highest point will not return the lowest
+	 * chunk.
+	 *
+	 * @param __z The Z coordinate to cap.
+	 * @return The capped Z coordinate.
+	 * @since 2016/10/09
+	 */
+	public static int capChunkZ(int __z)
+	{
+		if (__z < 0)
+			return 0;
+		return __z & CHUNK_MASK;
+	}
+	
+	/**
 	 * Translates a chunk position to a chunk index.
 	 *
 	 * @param __x The x position.
@@ -158,7 +230,24 @@ public class ChunkManager
 	{
 		return ((__x & CHUNK_MASK) << X_SHIFT) |
 			((__y & CHUNK_MASK) << Y_SHIFT) |
-			((__z & CHUNK_MASK) << Z_SHIFT);
+			(capChunkZ(__z) << Z_SHIFT);
+	}
+	
+	/**
+	 * Returns the chunk index to use for the specified entity position.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __z The Z coordinate.
+	 * @return The chunk index for the given entity position.
+	 * @since 2016/10/09
+	 */
+	public static int entityPositionToIndex(int __x, int __y, int __z)
+	{
+		return chunkPositionToIndex(
+			(__x >>> ENTITY_POS_CHUNK_SHIFT) & ENTITY_POS_CHUNK_VALUE_MASK,
+			(__y >>> ENTITY_POS_CHUNK_SHIFT) & ENTITY_POS_CHUNK_VALUE_MASK,
+			(__z >>> ENTITY_POS_CHUNK_SHIFT) & ENTITY_POS_CHUNK_VALUE_MASK);
 	}
 }
 

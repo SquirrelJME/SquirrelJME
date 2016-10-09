@@ -108,6 +108,17 @@ public class Game
 	}
 	
 	/**
+	 * Returns the chunk manager.
+	 *
+	 * @return The chunk manager.
+	 * @since 2016/10/09
+	 */
+	public ChunkManager chunkManager()
+	{
+		return this.chunkmanager;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/06
 	 */
