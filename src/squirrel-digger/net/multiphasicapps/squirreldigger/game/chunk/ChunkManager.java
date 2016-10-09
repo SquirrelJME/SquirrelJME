@@ -247,7 +247,7 @@ public class ChunkManager
 		return chunkPositionToIndex(
 			(__x >>> ENTITY_POS_CHUNK_SHIFT) & ENTITY_POS_CHUNK_VALUE_MASK,
 			(__y >>> ENTITY_POS_CHUNK_SHIFT) & ENTITY_POS_CHUNK_VALUE_MASK,
-			(__z >>> ENTITY_POS_CHUNK_SHIFT) & ENTITY_POS_CHUNK_VALUE_MASK);
+			(__z >> ENTITY_POS_CHUNK_SHIFT));
 	}
 }
 
