@@ -99,6 +99,9 @@ public class ChunkManager
 	/** The directory containing the chunk cache. */
 	protected final Path root;
 	
+	/** The biome generator. */
+	protected final BiomeGenerator biome;
+	
 	/** This is a queue to detect which chunks were collected. */
 	private final ReferenceQueue<Chunk> _queue =
 		new ReferenceQueue<>();
@@ -109,6 +112,10 @@ public class ChunkManager
 	
 	/** This is the mapping of chunk indices to chunk references. */
 	private final Map<Integer, Reference<Chunk>> _indextochunk =
+		new HashMap<>();
+	
+	/** Index to chunk data. */
+	private final Map<Integer, ChunkData> _indextodata =
 		new HashMap<>();
 	
 	/**
@@ -131,6 +138,9 @@ public class ChunkManager
 		this.game = __g;
 		this.seed = __seed;
 		this.root = __root;
+		
+		// Setup generator helpers
+		this.biome = new BiomeGenerator(__seed);
 	}
 	
 	/**
@@ -148,15 +158,33 @@ public class ChunkManager
 		// Get mappings
 		Map<Reference<Chunk>, ChunkData> chunktodata = this._chunktodata;
 		Map<Integer, Reference<Chunk>> indextochunk = this._indextochunk;
+		Map<Integer, ChunkData> indextodata = this._indextodata;
 		
 		// If the chunk is loaded in memory, use it
 		Integer i = Integer.valueOf(__i);
 		Reference<Chunk> ref = indextochunk.get(i);
-		Chunk rv;
-		if (ref != null && null != (rv = ref.get()))
-			return rv;
+		Chunk rv = (ref != null ? ref.get() : null);
+		ChunkData data = null;
 		
-		throw new Error("TODO");
+		// If the reference exists then there may be chunk data
+		if (ref != null)
+		{
+			data = chunktodata.get(ref);
+			
+			// Get reference chunk
+			rv = ref.get();
+		}
+		
+		// If data is missing, it must be created
+		if (data == null)
+			throw new Error("TODO");
+		
+		// If the chunk pointer is missing, create it
+		if (rv == null)
+			throw new Error("TODO");
+		
+		// Return the chunk pointer
+		return rv;
 	}
 	
 	/**
