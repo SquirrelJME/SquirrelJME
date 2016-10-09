@@ -61,5 +61,43 @@ public class Entity
 		// Set the type
 		this._type = __t;
 	}
+	
+	/**
+	 * Returns {@code true} if the entity is spawned.
+	 *
+	 * @return The spawn state of the entity.
+	 * @since 2016/10/09
+	 */
+	public boolean isSpawned()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This attempts to spawn the given entity at the given coordinates on
+	 * the surface of the world.
+	 *
+	 * A check will be made to make sure that the entity would survive in the
+	 * given situation (not placed on top of lava, water if it cannot breathe
+	 * water, or air if it cannot breathe air).
+	 *
+	 * @param __x The X coordinate to spawn at.
+	 * @param __y The Y coordinate to spawn at.
+	 * @return {@code true} if the entity was spawned at the specified
+	 * location, otherwise false.
+	 * @throws IllegalStateException If the entity type was not set.
+	 * @since 2016/10/09
+	 */
+	public boolean spawnOnSurface(int __x, int __y)
+		throws IllegalStateException
+	{
+		// {@squirreljme.error BA05 Cannot spawn on surface because the
+		// entity type was not set.}
+		EntityType type = this._type;
+		if (type == null)
+			throw new IllegalStateException("BA05");
+		
+		throw new Error("TODO");
+	}
 }
 

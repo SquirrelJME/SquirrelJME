@@ -17,6 +17,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import net.multiphasicapps.squirreldigger.game.chunk.ChunkManager;
 import net.multiphasicapps.squirreldigger.game.entity.Entity;
 import net.multiphasicapps.squirreldigger.game.entity.EntityType;
@@ -35,6 +36,10 @@ public class Game
 	public static final int FRAME_RATE =
 		20;
 	
+	/** The number of tries to spend spawning the entity before giving up. */
+	private static final int _SURFACE_SPAWN_TRIES =
+		8;
+	
 	/** The seed used to generate the map structure. */
 	protected final long seed;
 	
@@ -52,6 +57,9 @@ public class Game
 	/** The player to entity mapping. */
 	private final Map<Player, Entity> _playermap =
 		new HashMap<>();
+	
+	/** Random number generator, */
+	private final Random _random;
 	
 	/** The current game frame. */
 	private volatile long _currentframe;
@@ -72,6 +80,9 @@ public class Game
 		// Setup chunk manager
 		this.seed = __seed;
 		this.chunkmanager = new ChunkManager(this, __seed, __root);
+		
+		// Setup PRNG
+		this._random = new Random(__seed);
 	}
 	
 	/**
@@ -105,6 +116,7 @@ public class Game
 	{
 		// Need frame
 		long currentframe = this._currentframe;
+		Random random = this._random;
 		synchronized (this)
 		{
 			// Are there any players to be added to the game?
@@ -129,7 +141,7 @@ public class Game
 				// If the player has no entity then they either just joined or
 				// got killed and are trying to respawn
 				Entity e = playermap.get(p);
-				if (e == null)
+				if (e == null || !e.isSpawned())
 				{
 					// Create new entity and map it to the player
 					e = new Entity(this);
@@ -138,8 +150,17 @@ public class Game
 					// Make them a squirrel
 					e.initializeTo(EntityType.SQUIRREL);
 					
-					throw new Error("TODO");
+					// Attempt to spawn them on the surface of the world
+					int tries = _SURFACE_SPAWN_TRIES;
+					for (int j = 0; j < tries; j++)
+						if (e.spawnOnSurface(random.nextInt(),
+							random.nextInt()))
+							break;
 				}
+				
+				// If not spawned, calculate for other players instead
+				if (!e.isSpawned())
+					continue;
 				
 				throw new Error("TODO");
 			}
