@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: m3g
+X-SquirrelJME-UUID: f9f9a2bc-de6e-4225-82c1-47b5b0523e77
+X-SquirrelJME-Depends: opengles
+X-SquirrelJME-Error: EK
+LIBlet-Title: Mobile 3D Graphics API
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains an implementation of the J2ME 
+ Mobile 3D Graphics API. In SquirrelJME it utilizes OpenGL ES to 
+ perform the rendering as required.
+
