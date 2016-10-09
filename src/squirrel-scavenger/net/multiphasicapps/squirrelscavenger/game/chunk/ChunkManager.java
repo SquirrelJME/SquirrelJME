@@ -24,8 +24,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * by the game.
  *
  * Chunk IDs are stored as a single integer value with their position encoded
- * in the integer data. This means that there is a limit of 1024x1024x1024
- * chunks.
+ * in the integer data.
  *
  * Players and entities use the {@link Chunk} class to access chunk data and to
  * potentially modify those chunks.
@@ -72,7 +71,7 @@ public class ChunkManager
 		throws NullPointerException
 	{
 		// Check
-		if (__g == null || __root == null)
+		if (__g == null)
 			throw new NullPointerException("NARG");
 		
 		// Set

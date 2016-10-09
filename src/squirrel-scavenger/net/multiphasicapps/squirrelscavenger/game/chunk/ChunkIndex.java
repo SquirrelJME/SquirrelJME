@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirrelscavenger.game.chunk;
 
 import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
 /**
@@ -28,10 +29,7 @@ public final class ChunkIndex
 	/** The chunk index ID. */
 	protected final int index;
 	
-	/** Data for the chunk, if it exists. */
-	private volatile ChunkData _data;
-	
-	/** The chunk pointer reference. */
+	/** The chunk pointer reference (and its data). */
 	private volatile Reference<Chunk> _ref;
 	
 	/**
@@ -62,17 +60,18 @@ public final class ChunkIndex
 	 */
 	public Chunk chunk()
 	{
-		// If the chunk data does not exist it must be auto-generated for
-		// terrain information
-		ChunkData data = this._data;
-		if (data == null)
-			throw new Error("TODO");
-		
 		// If a chunk reference does not exist create it
+		ChunkManager manager = this.manager;
 		Reference<Chunk> ref = this._ref;
 		Chunk rv;
 		if (ref == null || null == (rv = ref.get()))
+		{
+			// Need the queue because of cache purposes
+			ReferenceQueue<Chunk> queue = manager._queue;
+			
+			
 			throw new Error("TODO");
+		}
 		
 		// Return it
 		return rv;

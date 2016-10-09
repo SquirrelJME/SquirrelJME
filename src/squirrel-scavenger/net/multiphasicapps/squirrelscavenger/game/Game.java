@@ -68,7 +68,9 @@ public class Game
 	 * Initializes the game with the given seed and path to the game chunks.
 	 *
 	 * @param __seed The map generator seed.
-	 * @param __root The directory where chunks 
+	 * @param __root The directory where resources are stored.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/06 
 	 */
 	public Game(long __seed, Path __root)
 		throws NullPointerException
@@ -79,7 +81,7 @@ public class Game
 		
 		// Setup chunk manager
 		this.seed = __seed;
-		this.chunkmanager = new ChunkManager(this, __seed, __root);
+		this.chunkmanager = new ChunkManager(this, __seed);
 		
 		// Setup PRNG
 		this._random = new Random(__seed);

@@ -12,6 +12,8 @@
  * This package contains the game chunk generators, managers, and other such
  * things.
  *
+ * Resources that are within chunks are not managed by this package.
+ *
  * @since 2016/10/06
  */
 
