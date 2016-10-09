@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirrelscavenger.game.Game;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This class is used to manage chunks which may be cached, loaded, and stored
@@ -51,19 +52,15 @@ public class ChunkManager
 	protected final BiomeGenerator biome;
 	
 	/** This is a queue to detect which chunks were collected. */
-	private final ReferenceQueue<Chunk> _queue =
+	final ReferenceQueue<Chunk> _queue =
 		new ReferenceQueue<>();
 	
-	/** This is the mapping of chunks to chunk data. */
-	private final Map<Reference<Chunk>, ChunkData> _chunktodata =
-		new HashMap<>();
+	/** This is the chunk index mapping. */
+	final Map<Integer, ChunkIndex> _chunks =
+		new SortedTreeMap<>();
 	
-	/** This is the mapping of chunk indices to chunk references. */
-	private final Map<Integer, Reference<Chunk>> _indextochunk =
-		new HashMap<>();
-	
-	/** Index to chunk data. */
-	private final Map<Integer, ChunkData> _indextodata =
+	/** Mapping of references to chunk indexes. */
+	final Map<Reference<Chunk>, Integer> _reftoindex =
 		new HashMap<>();
 	
 	/**
@@ -100,36 +97,17 @@ public class ChunkManager
 	 */
 	public Chunk chunkByChunkIndex(int __i)
 	{
-		// Get mappings
-		Map<Reference<Chunk>, ChunkData> chunktodata = this._chunktodata;
-		Map<Integer, Reference<Chunk>> indextochunk = this._indextochunk;
-		Map<Integer, ChunkData> indextodata = this._indextodata;
-		
-		// If the chunk is loaded in memory, use it
+		// Get the chunk index mappings
 		Integer i = Integer.valueOf(__i);
-		Reference<Chunk> ref = indextochunk.get(i);
-		Chunk rv = (ref != null ? ref.get() : null);
-		ChunkData data = null;
+		Map<Integer, ChunkIndex> chunks = this._chunks;
 		
-		// If the reference exists then there may be chunk data
-		if (ref != null)
-		{
-			data = chunktodata.get(ref);
-			
-			// Get reference chunk
-			rv = ref.get();
-		}
+		// See if a chunk index needs to be created
+		ChunkIndex dx = chunks.get(i);
+		if (dx == null)
+			chunks.put(i, (dx = new ChunkIndex(this, __i)));
 		
-		// If data is missing, it must be created
-		if (data == null)
-			throw new Error("TODO");
-		
-		// If the chunk pointer is missing, create it
-		if (rv == null)
-			throw new Error("TODO");
-		
-		// Return the chunk pointer
-		return rv;
+		// Get the chunk reference as needed
+		return dx.chunk();
 	}
 	
 	/**
