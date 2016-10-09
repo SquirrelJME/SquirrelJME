@@ -69,6 +69,10 @@ public class PositionFunctions
 	public static final int WORLD_CHUNK_Y_SHIFT =
 		WORLD_CHUNK_HEIGHT_BITS;
 	
+	/** The shift for the entity to get the chunk. */
+	public static final int ENTITY_CHUNK_SHIFT =
+		SUB_BITS + BLOCK_BITS;
+	
 	/**
 	 * This caps the Z position of a chunk.
 	 *
@@ -86,7 +90,7 @@ public class PositionFunctions
 	}
 	
 	/**
-	 * This converts a chunk position to an index position.
+	 * This converts a chunk position to a chunk index position.
 	 *
 	 * @param __x The X position.
 	 * @param __y The Y position.
@@ -99,6 +103,22 @@ public class PositionFunctions
 		return ((__x & WORLD_CHUNK_BREADTH_MASK) << WORLD_CHUNK_X_SHIFT) |
 			((__y & WORLD_CHUNK_BREADTH_MASK) << WORLD_CHUNK_Y_SHIFT) |
 			capChunkPositionZ(__z);
+	}
+	
+	/**
+	 * This converts an entity position to a chunk index position.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __z The Z position.
+	 * @return The chunk index for the given position.
+	 * @since 2016/10/09
+	 */
+	public static int entityPositionToChunkIndex(int __x, int __y, int __z)
+	{
+		return chunkPositionToChunkIndex(__x >>> ENTITY_CHUNK_SHIFT,
+			__y >>> ENTITY_CHUNK_SHIFT,
+			__z >> ENTITY_CHUNK_SHIFT);
 	}
 }
 
