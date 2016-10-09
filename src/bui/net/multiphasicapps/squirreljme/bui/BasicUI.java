@@ -37,11 +37,26 @@ public interface BasicUI
 	public abstract void setActiveMode(boolean __active);
 	
 	/**
+	 * Sets the title to use for the current display.
+	 *
+	 * @param __v The title to use, {@code null} clears it.
+	 * @since 2016/10/08
+	 */
+	public abstract void setTitle(String __s);
+	
+	/**
 	 * Are input events supported by this basic UI?
 	 *
 	 * @return {@code true} if input events are supported.
 	 * @since 2016/10/08
 	 */
 	public abstract boolean supportsInputEvents();
+	
+	/**
+	 * Indicates that the display should use the default display mode.
+	 *
+	 * @since 2016/10/08
+	 */
+	public abstract void useDefaultMode();
 }
 

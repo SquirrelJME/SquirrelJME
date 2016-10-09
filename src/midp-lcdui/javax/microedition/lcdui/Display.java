@@ -533,9 +533,29 @@ public class Display
 					if (__exit != null)
 						__exit._display = this;
 					this._dismissed = __exit;
+					
+					// Use the title of the given displayable
+					if (__show != null)
+						__updateTitle(__show.getTitle());
+					
+					// Change the visibility state depending on whether show
+					// exists or not
+					LCDUIDisplayInstance instance = this._instance;
+					instance.setVisible(__show != null);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Sets the title to be used by the display.
+	 *
+	 * @param __s The title to use.
+	 * @since 2016/10/08
+	 */
+	void __updateTitle(String __s)
+	{
+		this._instance.setTitle(__s);
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)

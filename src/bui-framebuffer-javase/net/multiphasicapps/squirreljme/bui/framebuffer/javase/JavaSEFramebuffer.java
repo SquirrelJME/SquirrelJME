@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.bui.framebuffer.javase;
 
+import java.awt.Dimension;
 import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
+import javax.swing.JFrame;
 
 /**
  * This class implements the framebuffer interface and provides the view and
@@ -21,6 +23,9 @@ import net.multiphasicapps.squirreljme.bui.framebuffer.Framebuffer;
 public class JavaSEFramebuffer
 	implements Framebuffer
 {
+	/** The frame used for the framebuffer. */
+	private volatile JFrame _frame;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/08
@@ -51,6 +56,60 @@ public class JavaSEFramebuffer
 	{
 		// Always supports input
 		return true;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public void setTitle(String __s)
+	{
+		// Pass it to the frame
+		__frame().setTitle(__s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public void useDefaultMode()
+	{
+		// Just make it visible
+		JFrame frame = __frame();
+		boolean wasvis = frame.isVisible();
+		frame.setVisible(true);
+		
+		// Center if it was not visible
+		if (!wasvis)
+			frame.setLocationRelativeTo(null);
+	}
+	
+	/**
+	 * Returns and potentially creates the JFrame used for the framebuffer.
+	 *
+	 * @return The frame to use.
+	 * @since 2016/10/08
+	 */
+	private JFrame __frame()
+	{
+		JFrame rv = this._frame;
+		if (rv != null)
+			return rv;
+		
+		// Create it
+		this._frame = (rv = new JFrame());
+		
+		// Force minimum size
+		rv.setMinimumSize(new Dimension(320, 320));
+		
+		// Do nothing on close
+		rv.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
+		// Return it
+		return rv;
 	}
 }
 

@@ -81,5 +81,27 @@ public class LCDFramebufferDisplayInstance
 		// Forward to the framebuffer, which might not have any effect
 		this.framebuffer.setActiveMode(__active);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public void setTitle(String __s)
+	{
+		this.framebuffer.setTitle(__s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/08
+	 */
+	@Override
+	public void setVisible(boolean __v)
+	{
+		// Use the default mode for the given display
+		if (__v)
+			this.framebuffer.useDefaultMode();
+	}
 }
 

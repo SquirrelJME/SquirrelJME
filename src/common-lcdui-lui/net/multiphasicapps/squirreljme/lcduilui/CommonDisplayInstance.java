@@ -44,5 +44,25 @@ public interface CommonDisplayInstance
 	 * @since 2016/10/08
 	 */
 	public abstract void setActiveMode(boolean __active);
+	
+	/**
+	 * Sets the title to use for the current display.
+	 *
+	 * @param __v The title to use, {@code null} clears it.
+	 * @since 2016/10/08
+	 */
+	public abstract void setTitle(String __s);
+	
+	/**
+	 * Should this display be made visible?
+	 *
+	 * Note that if only one display may exist at a time, it may override
+	 * other displays. Also, the focus state is allowed to be modified by a
+	 * call to this method.
+	 *
+	 * @param __v If {@code true} then this display is made active.
+	 * @since 2016/10/08
+	 */
+	public abstract void setVisible(boolean __v);
 }
 

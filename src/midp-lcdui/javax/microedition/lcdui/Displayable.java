@@ -26,6 +26,9 @@ public abstract class Displayable
 	/** The display that this is currently associated with. */
 	volatile Display _display;
 	
+	/** The title of this displayable. */
+	volatile String _title;
+	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -81,9 +84,15 @@ public abstract class Displayable
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the title of this displayable.
+	 *
+	 * @return The title of this displayable.
+	 * @since 2016/10/08
+	 */
 	public String getTitle()
 	{
-		throw new Error("TODO");
+		return this._title;
 	}
 	
 	public int getWidth()
@@ -136,9 +145,24 @@ public abstract class Displayable
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Sets the title of this displayable.
+	 *
+	 * @param __a The title to use.
+	 * @since 2016/10/08
+	 */
 	public void setTitle(String __a)
 	{
-		throw new Error("TODO");
+		this._title = __a;
+		
+		// Lock
+		synchronized (this._lock)
+		{
+			// Update the title used by the display as needed
+			Display display = this._display;
+			if (display != null)
+				display.__updateTitle(getTitle());
+		}
 	}
 	
 	protected void sizeChanged(int __a, int __b)
