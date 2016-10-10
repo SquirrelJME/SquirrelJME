@@ -74,7 +74,7 @@ public class LCDCanvas
 		// 8-bit red, green, and blue pixels.
 		int[] xnumconf = new int[1];
 		EGLConfig[] matchconfs = new EGLConfig[1];
-		if (!egl.eglChooseConfig(egldisp, wantconf, matchconfs, xnumconf))
+		if (!egl.eglChooseConfig(egldisp, wantconf, matchconfs, 1, xnumconf))
 			throw new RuntimeException("BA08");
 		
 		// Buffer to draw on
