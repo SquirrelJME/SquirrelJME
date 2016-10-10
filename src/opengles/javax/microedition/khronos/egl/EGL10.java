@@ -12,6 +12,19 @@ package javax.microedition.khronos.egl;
 
 import javax.microedition.khronos.opengles.GL;
 
+/**
+ * This interface defines the standard OpenGL ES definitions and methods.
+ *
+ * To initialize a display, {@link #eglGetDisplay(Object)} must be called
+ * where the {@link Object} is an instance of
+ * {@link javax.microedition.lcdui.Display}.
+ *
+ * OpenGL ES is utilized by calling
+ * {@link #eglCreateWindowSurface(EGLDisplay, EGLConfig, Object, int[]). The
+ * {@link Object} parameter in this call represents a native surface to draw
+ * onto. In this case, it is an instance of
+ * {@link javax.microedition.lcdui.Graphics}.
+ */
 public interface EGL10
 	extends EGL
 {

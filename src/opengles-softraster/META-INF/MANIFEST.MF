@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: opengles-softraster
+X-SquirrelJME-UUID: c7109a90-fc06-4a6b-8054-0e5d5647c4a8
+X-SquirrelJME-Depends: opengles midp-lcdui
+X-SquirrelJME-Error: EL
+LIBlet-Title: OpenGL ES Software Rasterizer
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains an implementation of OpenGL ES 
+ which is completely backed by a software rasterizer. The purpose 
+ of the software rasterizer is to have a fallback in the event that 
+ hardware acceleration is not available. Because it is a software 
+ rasterizer, it utilizes the CPU and as such it may cause overhead 
+ when drawing.
+
