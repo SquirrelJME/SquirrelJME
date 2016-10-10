@@ -12,6 +12,7 @@ package javax.microedition.lcdui.game;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 public abstract class GameCanvas
 	extends Canvas
@@ -43,11 +44,17 @@ public abstract class GameCanvas
 	public static final int UP_PRESSED =
 		2;
 	
+	/** The graphics to draw onto. */
+	private final Graphics _graphics;
+	
 	/** Are game keys being suppressed?. */
 	private volatile boolean _suppressgamekeys;
 	
 	/** Is the buffer preserved after a flush? */
 	private volatile boolean _preservebuffer;
+	
+	/** The image to draw onto as a double buffer. */
+	private volatile Image _image;
 	
 	/**
 	 * Initializes the game canvas.
@@ -80,6 +87,9 @@ public abstract class GameCanvas
 		// Set
 		this._suppressgamekeys = __supke;
 		this._preservebuffer = __preservebuf;
+		
+		// Setup forwarding graphics
+		this._graphics = new __ForwardingGraphics__();
 	}
 	
 	public void flushGraphics()
@@ -92,9 +102,16 @@ public abstract class GameCanvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * This returns the off-screen buffer that is used by the game canvas to
+	 * draw.
+	 *
+	 * @return The graphics object for the off-screen buffer.
+	 * @since 2016/10/10
+	 */
 	protected Graphics getGraphics()
 	{
-		throw new Error("TODO");
+		return this._graphics;
 	}
 	
 	public int getKeyStates()
@@ -102,9 +119,19 @@ public abstract class GameCanvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/10
+	 */
 	@Override
 	public void paint(Graphics __a)
 	{
+		// The default implementation of this method just takes the offscreen
+		// buffer and renders it to the canvas
+		Image image = this._image;
+		if (image == null)
+			return;
+		
 		throw new Error("TODO");
 	}
 }
