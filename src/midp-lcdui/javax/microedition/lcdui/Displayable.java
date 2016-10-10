@@ -29,6 +29,9 @@ public abstract class Displayable
 	/** The title of this displayable. */
 	volatile String _title;
 	
+	/** The image that backs this displayable. */
+	volatile Image _image;
+	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -165,7 +168,14 @@ public abstract class Displayable
 		}
 	}
 	
-	protected void sizeChanged(int __a, int __b)
+	/**
+	 * This is called when the size of the displayable has changed.
+	 *
+	 * @param __w The new width of the displayable.
+	 * @param __h The new heigh of the displayable.
+	 * @since 2016/10/10
+	 */
+	protected void sizeChanged(int __w, int __h)
 	{
 		throw new Error("TODO");
 	}

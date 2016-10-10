@@ -44,9 +44,6 @@ public abstract class GameCanvas
 	public static final int UP_PRESSED =
 		2;
 	
-	/** The graphics to draw onto. */
-	private final Graphics _graphics;
-	
 	/** Are game keys being suppressed?. */
 	private volatile boolean _suppressgamekeys;
 	
@@ -87,9 +84,6 @@ public abstract class GameCanvas
 		// Set
 		this._suppressgamekeys = __supke;
 		this._preservebuffer = __preservebuf;
-		
-		// Setup forwarding graphics
-		this._graphics = new __ForwardingGraphics__();
 	}
 	
 	public void flushGraphics()
@@ -111,7 +105,7 @@ public abstract class GameCanvas
 	 */
 	protected Graphics getGraphics()
 	{
-		return this._graphics;
+		throw new Error("TODO");
 	}
 	
 	public int getKeyStates()

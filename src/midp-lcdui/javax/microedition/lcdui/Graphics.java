@@ -46,7 +46,7 @@ public class Graphics
 	public static final int VCENTER =
 		2;
 	
-	private Graphics()
+	Graphics()
 	{
 		super();
 		throw new Error("TODO");
@@ -57,8 +57,8 @@ public class Graphics
 		throw new Error("TODO");
 	}
 	
-	public void copyArea(int __a, int __b, int __c, int __d, int __e, int __f
-		, int __g)
+	public void copyArea(int __a, int __b, int __c, int __d, int __e, int __f,
+		int __g)
 	{
 		throw new Error("TODO");
 	}

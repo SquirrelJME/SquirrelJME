@@ -37,8 +37,8 @@ public class Image
 		throw new Error("TODO");
 	}
 	
-	public void getRGB(int[] __a, int __b, int __c, int __d, int __e, int __f
-		, int __g)
+	public void getRGB(int[] __a, int __b, int __c, int __d, int __e, int __f,
+		int __g)
 	{
 		throw new Error("TODO");
 	}
