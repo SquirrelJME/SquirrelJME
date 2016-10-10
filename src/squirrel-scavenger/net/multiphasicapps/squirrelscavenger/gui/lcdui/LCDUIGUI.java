@@ -72,7 +72,7 @@ public class LCDUIGUI
 		
 		// Setup the initial display with just a Canvas to display an Image
 		LCDCanvas canvas;
-		this.canvas = (canvas = new LCDCanvas());
+		this.canvas = (canvas = new LCDCanvas(d));
 		d.setCurrent(canvas);
 		
 		// Set title bar
