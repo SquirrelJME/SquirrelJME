@@ -19,12 +19,22 @@ package javax.microedition.khronos.egl;
 class __EGL__
 	implements EGL11
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/10
+	 */
+	@Override
 	public boolean eglBindTexImage(EGLDisplay __a, EGLSurface __b, 
 		int __c)
 	{
 		throw new Error("TODO");
 	}
 		
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/10
+	 */
+	@Override
 	public boolean eglChooseConfig(EGLDisplay __a, int[] __b, 
 		EGLConfig[] __c, int __d, int[] __e)
 	{
