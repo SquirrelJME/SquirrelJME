@@ -118,10 +118,12 @@ public class LCDUIGUI
 			throw new NullPointerException("NARG");
 		
 		// Render the game into the canvas
-		this.renderer.renderGame(__g);
+		LCDCanvas canvas = this.canvas;
+		int w = canvas.getWidth(), h = canvas.getHeight();
+		this.renderer.renderGame(__g, w, h);
 		
 		// Flush drawn graphics
-		this.canvas.flushGraphics();
+		canvas.flushGraphics();
 	}
 	
 	/**

@@ -44,6 +44,12 @@ public class LUIGUI
 	/** The image being drawn on. */
 	protected final Image image;
 	
+	/** The display width. */
+	protected final int width;
+	
+	/** The display height. */
+	protected final int height;
+	
 	/**
 	 * Initializes the line based GUI using the default display.
 	 *
@@ -84,6 +90,8 @@ public class LUIGUI
 		Image image = Image.createImage((w = __d.getCharacterNumberPerLine()),
 			(h = __d.getNumberOfLines()));
 		this.image = image;
+		this.width = w;
+		this.height = h;
 		
 		// Setup renderer
 		this.renderer = new EGLRenderer(null, image.getGraphics());
@@ -122,7 +130,8 @@ public class LUIGUI
 			throw new NullPointerException("NARG");
 		
 		// Render the game into the image
-		this.renderer.renderGame(__g);
+		int w = this.width, h = this.height;
+		this.renderer.renderGame(__g, w, h);
 		
 		// Go through the image data and draw the image contents as ASCII
 		// characters, where the color average is translated to an intensity

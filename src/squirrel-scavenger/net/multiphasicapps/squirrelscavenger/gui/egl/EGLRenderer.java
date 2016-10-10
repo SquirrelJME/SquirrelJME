@@ -114,10 +114,12 @@ public class EGLRenderer
 	 * Renders the game.
 	 *
 	 * @param __g The game to render.
+	 * @param __w The game width.
+	 * @param __h The game height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/10
 	 */
-	public void renderGame(Game __g)
+	public void renderGame(Game __g, int __w, int __h)
 		throws NullPointerException
 	{
 		// Check
