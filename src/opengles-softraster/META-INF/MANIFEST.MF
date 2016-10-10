@@ -11,5 +11,7 @@ LIBlet-Description: This contains an implementation of OpenGL ES
  of the software rasterizer is to have a fallback in the event that 
  hardware acceleration is not available. Because it is a software 
  rasterizer, it utilizes the CPU and as such it may cause overhead 
- when drawing.
+ when drawing. The software rasterizer does not care about the type 
+ of display that is used, since it relies only on the Graphics 
+ instance.
 

@@ -63,6 +63,10 @@ public class LCDCanvas
 		if (egldisp == null || egldisp == EGL10.EGL_NO_DISPLAY)
 			throw new RuntimeException("BA06");
 		
+		// Initialize the display
+		int[] version = new int[2];
+		egl.eglInitialize(egldisp, version);
+		
 		// Try to get a R8G8B8 visual
 		int[] wantconf = new int[]
 			{
