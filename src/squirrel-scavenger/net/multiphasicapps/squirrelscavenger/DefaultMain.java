@@ -43,11 +43,11 @@ public class DefaultMain
 		// Use console based interface or the GUI one?
 		GUI lg;
 		if (__args.length > 0 && "-c".equals(__args[0]))
-			lg = new LUIGUI(g);
+			lg = new LUIGUI();
 		
 		// Default to the LCD UI or otherwise on unknown arguments
 		else
-			lg = new LCDUIGUI(g, null);
+			lg = new LCDUIGUI(null);
 		
 		// Setup controllers
 		for (int i = 0; i < Integer.MAX_VALUE; i++)

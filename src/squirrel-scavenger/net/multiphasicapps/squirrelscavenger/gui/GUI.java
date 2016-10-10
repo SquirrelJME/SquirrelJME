@@ -18,30 +18,8 @@ import net.multiphasicapps.squirrelscavenger.game.player.Controller;
  *
  * @since 2016/10/06
  */
-public abstract class GUI
-	implements Runnable
+public interface GUI
 {
-	/** The game to render for. */
-	protected final Game game;
-	
-	/**
-	 * Initializes the base game.
-	 *
-	 * @param __g The game to render for.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/10/06
-	 */
-	public GUI(Game __g)
-		throws NullPointerException
-	{
-		// Check
-		if (__g == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.game = __g;
-	}
-	
 	/**
 	 * Returns the controller for the local game.
 	 *
@@ -53,5 +31,15 @@ public abstract class GUI
 	 */
 	public abstract Controller localController(int __id)
 		throws IndexOutOfBoundsException;
+	
+	/**
+	 * Renders the specified game.
+	 *
+	 * @param __g The game to render.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/10
+	 */
+	public abstract void renderGame(Game __g)
+		throws NullPointerException;
 }
 

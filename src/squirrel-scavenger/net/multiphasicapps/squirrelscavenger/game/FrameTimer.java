@@ -75,7 +75,7 @@ public class FrameTimer
 			
 			// Run the render loop if there is enough time
 			if (gd > 0)
-				draw.run();
+				draw.renderGame(game);
 			
 			// If not all of the time was spent rendering then sleep for the
 			// rest of it

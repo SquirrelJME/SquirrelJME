@@ -28,7 +28,7 @@ import net.multiphasicapps.squirrelscavenger.gui.GUI;
  * @since 2016/10/06
  */
 public class LUIGUI
-	extends GUI
+	implements GUI
 {
 	/** The display to draw into. */
 	protected final Display display;
@@ -39,27 +39,23 @@ public class LUIGUI
 	/**
 	 * Initializes the line based GUI using the default display.
 	 *
-	 * @param __g The game to render for.
 	 * @since 2016/10/06
 	 */
-	public LUIGUI(Game __g)
+	public LUIGUI()
 	{
-		this(__g, __getDefaultDisplay());
+		this(__getDefaultDisplay());
 	}
 	
 	/**
 	 * Initializes the line based GUI using the given display.
 	 *
-	 * @param __g The game to render for.
 	 * @param __d The display to draw into.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/06
 	 */
-	public LUIGUI(Game __g, Display __d)
+	public LUIGUI(Display __d)
 		throws NullPointerException
 	{
-		super(__g);
-		
 		// Check
 		if (__d == null)
 			throw new NullPointerException("NARG");
@@ -101,7 +97,8 @@ public class LUIGUI
 	 * @since 2016/10/06
 	 */
 	@Override
-	public void run()
+	public void renderGame(Game __g)
+		throws NullPointerException
 	{
 		throw new Error("TODO");
 	}

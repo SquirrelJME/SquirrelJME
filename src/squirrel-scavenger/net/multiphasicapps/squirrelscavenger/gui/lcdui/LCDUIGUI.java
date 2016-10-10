@@ -26,7 +26,7 @@ import net.multiphasicapps.squirrelscavenger.gui.GUI;
  * @since 2016/10/08
  */
 public class LCDUIGUI
-	extends GUI
+	implements GUI
 {
 	/** The LCD display being used. */
 	protected final Display display;
@@ -40,15 +40,12 @@ public class LCDUIGUI
 	/**
 	 * Initializes the LCD UI interface.
 	 *
-	 * @param __g The game to draw over.
 	 * @param __mid The optional midlet that is used to obtain a display,
 	 * may be {@code null}.
 	 * @since 2016/10/08
 	 */
-	public LCDUIGUI(Game __g, MIDlet __mid)
+	public LCDUIGUI(MIDlet __mid)
 	{
-		super(__g);
-		
 		// If a midlet was specified use that to get the display
 		Display d = null;
 		if (__mid != null)
@@ -106,7 +103,8 @@ public class LCDUIGUI
 	 * @since 2016/10/08
 	 */
 	@Override
-	public void run()
+	public void renderGame(Game __g)
+		throws NullPointerException
 	{
 		// Get canvas and graphics for it
 		LCDCanvas canvas = this.canvas;
