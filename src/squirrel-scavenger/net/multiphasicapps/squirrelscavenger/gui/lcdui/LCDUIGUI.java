@@ -18,6 +18,7 @@ import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirrelscavenger.game.Game;
 import net.multiphasicapps.squirrelscavenger.game.player.Controller;
 import net.multiphasicapps.squirrelscavenger.game.player.NullController;
+import net.multiphasicapps.squirrelscavenger.gui.egl.EGLRenderer;
 import net.multiphasicapps.squirrelscavenger.gui.GUI;
 
 /**
@@ -36,6 +37,9 @@ public class LCDUIGUI
 	
 	/** The canvas used to show the game. */
 	protected final LCDCanvas canvas;
+	
+	/** The renderer. */
+	protected final EGLRenderer renderer;
 	
 	/**
 	 * Initializes the LCD UI interface.
@@ -71,8 +75,11 @@ public class LCDUIGUI
 		
 		// Setup the initial display with just a Canvas to display an Image
 		LCDCanvas canvas;
-		this.canvas = (canvas = new LCDCanvas(d));
+		this.canvas = (canvas = new LCDCanvas());
 		d.setCurrent(canvas);
+		
+		// Setup renderer
+		this.renderer = new EGLRenderer(d, canvas.getGraphics());
 		
 		// Set title bar
 		canvas.setTitle("Squirrel Scavenger");
@@ -106,21 +113,15 @@ public class LCDUIGUI
 	public void renderGame(Game __g)
 		throws NullPointerException
 	{
-		// Get canvas and graphics for it
-		LCDCanvas canvas = this.canvas;
-		Graphics g = canvas.getGraphics();
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
 		
-		// Wait until native drawing operations are completed
-		EGL10 egl = canvas.getEGL();
-		egl.eglWaitNative(EGL10.EGL_CORE_NATIVE_ENGINE, g);
-		
-		// Draw OpenGL stuff
-		
-		// Wait for OpenGL operations to complete
-		egl.eglWaitGL();
+		// Render the game into the canvas
+		this.renderer.renderGame(__g);
 		
 		// Flush drawn graphics
-		canvas.flushGraphics();
+		this.canvas.flushGraphics();
 	}
 	
 	/**

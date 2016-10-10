@@ -12,10 +12,12 @@ package net.multiphasicapps.squirrelscavenger.gui.lui;
 
 import java.util.Iterator;
 import javax.microedition.key.InputDevice;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lui.Display;
 import net.multiphasicapps.squirrelscavenger.game.Game;
 import net.multiphasicapps.squirrelscavenger.game.player.Controller;
 import net.multiphasicapps.squirrelscavenger.game.player.NullController;
+import net.multiphasicapps.squirrelscavenger.gui.egl.EGLRenderer;
 import net.multiphasicapps.squirrelscavenger.gui.GUI;
 
 /**
@@ -35,6 +37,12 @@ public class LUIGUI
 	
 	/** The controller used. */
 	protected final Controller controller;
+	
+	/** The renderer. */
+	protected final EGLRenderer renderer;
+	
+	/** The image being drawn on. */
+	protected final Image image;
 	
 	/**
 	 * Initializes the line based GUI using the default display.
@@ -70,6 +78,15 @@ public class LUIGUI
 		// Use null controller (idle)
 		else
 			this.controller = new NullController();
+		
+		// Setup image to be drawn on
+		int w, h;
+		Image image = Image.createImage((w = __d.getCharacterNumberPerLine()),
+			(h = __d.getNumberOfLines()));
+		this.image = image;
+		
+		// Setup renderer
+		this.renderer = new EGLRenderer(null, image.getGraphics());
 	}
 	
 	/**
@@ -100,6 +117,16 @@ public class LUIGUI
 	public void renderGame(Game __g)
 		throws NullPointerException
 	{
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Render the game into the image
+		this.renderer.renderGame(__g);
+		
+		// Go through the image data and draw the image contents as ASCII
+		// characters, where the color average is translated to an intensity
+		// based mapping of ASCII characters
 		throw new Error("TODO");
 	}
 	
