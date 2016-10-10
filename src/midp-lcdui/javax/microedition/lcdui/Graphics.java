@@ -10,8 +10,7 @@
 
 package javax.microedition.lcdui;
 
-
-public class Graphics
+public abstract class Graphics
 {
 	public static final int BASELINE =
 		64;
@@ -46,263 +45,124 @@ public class Graphics
 	public static final int VCENTER =
 		2;
 	
-	Graphics()
+	/**
+	 * Base initialization of graphics sub-class.
+	 *
+	 * @since 2016/10/10
+	 */
+	protected Graphics()
 	{
-		super();
-		throw new Error("TODO");
 	}
 	
-	public void clipRect(int __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void clipRect(int __a, int __b, int __c, int __d);
 	
-	public void copyArea(int __a, int __b, int __c, int __d, int __e, int __f,
-		int __g)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void copyArea(int __a, int __b, int __c, int __d, int __e,
+		int __f, int __g);
 	
-	public void drawArc(int __a, int __b, int __c, int __d, int __e, int __f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawArc(int __a, int __b, int __c, int __d, int __e,
+		int __f);
 	
-	public void drawARGB16(short[] __data, int __off, int __scanlen, int __x,
-		int __y, int __w, int __h)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawARGB16(short[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h);
 	
-	public void drawChar(char __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawChar(char __a, int __b, int __c, int __d);
 	
-	public void drawChars(char[] __a, int __b, int __c, int __d, int __e, int
-		__f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawChars(char[] __a, int __b, int __c, int __d,
+		int __e, int __f);
 	
-	public void drawImage(Image __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawImage(Image __a, int __b, int __c, int __d);
 	
-	public void drawLine(int __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawLine(int __a, int __b, int __c, int __d);
 	
-	public void drawRGB(int[] __a, int __b, int __c, int __d, int __e, int 
-		__f, int __g, boolean __h)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawRGB(int[] __a, int __b, int __c, int __d, int __e,
+		int __f, int __g, boolean __h);
 	
-	public void drawRGB16(short[] __data, int __off, int __scanlen, int __x,
-		int __y, int __w, int __h)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawRGB16(short[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h);
 	
-	public void drawRect(int __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawRect(int __a, int __b, int __c, int __d);
 	
-	public void drawRegion(Image __a, int __b, int __c, int __d, int __e, int
-		__f, int __g, int __h, int __i)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawRegion(Image __a, int __b, int __c, int __d,
+		int __e, int __f, int __g, int __h, int __i);
 	
-	public void drawRegion(Image __src, int __xsrc, int __ysrc, int __w,
-		int __h, int __trans, int __xdest, int __ydest, int __anch,
-		int __wdest, int __hdest)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
+		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch,
+		int __wdest, int __hdest);
 	
-	public void drawRoundRect(int __a, int __b, int __c, int __d, int __e, 
-		int __f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawRoundRect(int __a, int __b, int __c, int __d,
+		int __e,  int __f);
 	
-	public void drawString(String __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawString(String __a, int __b, int __c, int __d);
 	
-	public void drawSubstring(String __a, int __b, int __c, int __d, int __e,
-		int __f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawSubstring(String __a, int __b, int __c, int __d,
+		int __e, int __f);
 	
-	public void drawText(Text __t, int __x, int __y)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void drawText(Text __t, int __x, int __y);
 	
-	public void fillArc(int __a, int __b, int __c, int __d, int __e, int __f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void fillArc(int __a, int __b, int __c, int __d, int __e,
+		int __f);
 	
-	public void fillRect(int __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void fillRect(int __a, int __b, int __c, int __d);
 	
-	public void fillRoundRect(int __a, int __b, int __c, int __d, int __e, 
-		int __f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void fillRoundRect(int __a, int __b, int __c, int __d,
+		int __e, int __f);
 	
-	public void fillTriangle(int __a, int __b, int __c, int __d, int __e, int
-		__f)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void fillTriangle(int __a, int __b, int __c, int __d,
+		int __e, int __f);
 	
-	public int getAlpha()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getAlpha();
 	
-	public int getBlendingMode()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getBlendingMode();
 	
-	public int getBlueComponent()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getBlueComponent();
 	
-	public int getClipHeight()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getClipHeight();
 	
-	public int getClipWidth()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getClipWidth();
 	
-	public int getClipX()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getClipX();
 	
-	public int getClipY()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getClipY();
 	
-	public int getColor()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getColor();
 	
-	public int getDisplayColor(int __a)
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getDisplayColor(int __a);
 	
-	public Font getFont()
-	{
-		throw new Error("TODO");
-	}
+	public abstract Font getFont();
 	
-	public int getGrayScale()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getGrayScale();
 	
-	public int getGreenComponent()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getGreenComponent();
 	
-	public int getRedComponent()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getRedComponent();
 	
-	public int getStrokeStyle()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getStrokeStyle();
 	
-	public int getTranslateX()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getTranslateX();
 	
-	public int getTranslateY()
-	{
-		throw new Error("TODO");
-	}
+	public abstract int getTranslateY();
 	
-	public void setAlpha(int __a)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setAlpha(int __a);
 	
-	public void setAlphaColor(int __argb)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setAlphaColor(int __argb);
 	
-	public void setAlphaColor(int __a, int __r, int __g, int __b)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setAlphaColor(int __a, int __r, int __g, int __b);
 	
-	public void setBlendingMode(int __m)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setBlendingMode(int __m);
 	
-	public void setClip(int __a, int __b, int __c, int __d)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setClip(int __a, int __b, int __c, int __d);
 	
-	public void setColor(int __a)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setColor(int __a);
 	
-	public void setColor(int __a, int __b, int __c)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setColor(int __a, int __b, int __c);
 	
-	public void setFont(Font __a)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setFont(Font __a);
 	
-	public void setGrayScale(int __a)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setGrayScale(int __a);
 	
-	public void setStrokeStyle(int __a)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void setStrokeStyle(int __a);
 	
-	public void translate(int __a, int __b)
-	{
-		throw new Error("TODO");
-	}
+	public abstract void translate(int __a, int __b);
 }
 
 

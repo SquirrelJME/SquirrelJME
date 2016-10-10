@@ -3,3 +3,25 @@
 This document lists all of the places where compatibility is purposefully
 broken, mostly for sanity purposes.
 
+# `javax.microedition.lcdui.Graphics`
+
+What changed:
+
+ * Make class `abstract`.
+   * So methods inside of it may be `abstract`.
+ * Make constructor `protected` instead of `package private`.
+   * Allows for public creation of instances of this class to ease
+     implementation use across the two LCDUI packages.
+ * Make all methods abstract.
+   * This forces implementation to implement all of the graphical routines.
+
+Rational:
+
+ * Should have been an interface.
+
+Impact:
+
+ * Existing code should work as is.
+ * This class was never meant to be initialized outside of the LCDUI package
+   and its single sub-package.
+

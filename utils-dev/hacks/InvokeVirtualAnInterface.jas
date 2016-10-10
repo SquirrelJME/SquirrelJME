@@ -1,0 +1,35 @@
+; -*- Mode: Jasmin; indent-tabs-mode: t; tab-width: 4 -*-
+; ---------------------------------------------------------------------------
+; Multi-Phasic Applications: SquirrelJME
+;     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
+;     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+; ---------------------------------------------------------------------------
+; SquirrelJME is under the GNU General Public License v3+, or later.
+; For more information see license.mkd.
+; ---------------------------------------------------------------------------
+
+.class InvokeVirtualAnInterface
+.super java/lang/Object
+
+.method public static main([Ljava/lang/String;)V
+	.limit stack 42
+	
+	; Needed for later printing
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	
+	; Create instance of interface thing
+	new ImplementsAnInterface
+	dup
+	invokespecial ImplementsAnInterface/<init>()V
+	
+	; Get int value
+	invokevirtual AnInterface/foo()I
+	;invokeinterface AnInterface/foo()I 1
+	
+	; Print it
+	invokevirtual java/io/PrintStream/println(I)V
+	
+	; Stop
+	return
+.end method
+	
