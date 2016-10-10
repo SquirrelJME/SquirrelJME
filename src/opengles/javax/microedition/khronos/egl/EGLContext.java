@@ -10,6 +10,8 @@
 
 package javax.microedition.khronos.egl;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import javax.microedition.khronos.opengles.GL;
 
 /**
@@ -26,6 +28,9 @@ import javax.microedition.khronos.opengles.GL;
  */
 public abstract class EGLContext
 {
+	/** The single instance of EGL, shared by everything. */
+	private static volatile Reference<EGL> _EGL;
+	
 	EGLContext()
 	{
 		super();
@@ -43,7 +48,16 @@ public abstract class EGLContext
 	 */
 	public static EGL getEGL()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<EGL> ref = EGLContext._EGL;
+		EGL rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+			EGLContext._EGL = new WeakReference<>((rv = new __EGL__()));
+		
+		// Return it
+		return rv;
 	}
 }
 
