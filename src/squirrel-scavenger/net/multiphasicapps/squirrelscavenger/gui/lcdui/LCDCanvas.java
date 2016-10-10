@@ -59,7 +59,7 @@ public class LCDCanvas
 		this.egl = egl;
 		
 		// {@squirreljme.error BA06 Could not get the OpenGL ES display.}
-		EGLDisplay egldisp = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+		EGLDisplay egldisp = egl.eglGetDisplay(__d);
 		if (egldisp == null || egldisp == EGL10.EGL_NO_DISPLAY)
 			throw new RuntimeException("BA06");
 		
