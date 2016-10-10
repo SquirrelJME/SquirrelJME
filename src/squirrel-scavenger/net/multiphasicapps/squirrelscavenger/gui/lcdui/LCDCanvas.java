@@ -15,6 +15,8 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.EGLSurface;
+import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.Graphics;
@@ -30,8 +32,11 @@ public class LCDCanvas
 	/** Graphics used to draw on the canvas, required by OpenGL. */
 	protected final Graphics graphics;
 	
-	/** The rasterizer being used. */
+	/** OpenGL ES instance. */
 	protected final EGL10 egl;
+	
+	/** The rasterizer. */
+	protected final GL10 gl;
 	
 	/**
 	 * Initializes the canvas.
@@ -76,12 +81,48 @@ public class LCDCanvas
 		EGLConfig[] matchconfs = new EGLConfig[1];
 		if (!egl.eglChooseConfig(egldisp, wantconf, matchconfs, 1, xnumconf))
 			throw new RuntimeException("BA08");
+		EGLConfig config = matchconfs[0];
+		
+		// {@squirreljme.error BA07 Failed to create an OpenGL ES context.}
+		EGLContext context = egl.eglCreateContext(egldisp, config,
+			EGL10.EGL_NO_CONTEXT, null);
+		if (context == EGL10.EGL_NO_CONTEXT)
+			throw new RuntimeException("BA07");
+		
+		// Get GL rasterizer
+		GL10 gl = (GL10)context.getGL();
+		this.gl = gl;
 		
 		// Buffer to draw on
 		Graphics graphics = this.getGraphics();
 		this.graphics = graphics;
 		
-		throw new Error("TODO");
+		// Create surface
+		EGLSurface surface = egl.eglCreateWindowSurface(egldisp, config,
+			graphics, null);
+		
+		// Make it current
+		egl.eglMakeCurrent(egldisp, surface, surface, context);
+	}
+	
+	/**
+	 * Returns the EGL instance.
+	 *
+	 * @return The EGL instance.
+	 * @since 2016/10/10
+	 */
+	public EGL10 getEGL()
+	{
+		return this.egl;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/10
+	 */
+	public Graphics getGraphics()
+	{
+		return super.getGraphics();
 	}
 }
 

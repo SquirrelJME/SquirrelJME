@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirrelscavenger.gui.lcdui;
 
+import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.game.GameCanvas;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirrelscavenger.game.Game;
 import net.multiphasicapps.squirrelscavenger.game.player.Controller;
@@ -106,7 +108,21 @@ public class LCDUIGUI
 	@Override
 	public void run()
 	{
-		throw new Error("TODO");
+		// Get canvas and graphics for it
+		LCDCanvas canvas = this.canvas;
+		Graphics g = canvas.getGraphics();
+		
+		// Wait until native drawing operations are completed
+		EGL10 egl = canvas.getEGL();
+		egl.eglWaitNative(EGL10.EGL_CORE_NATIVE_ENGINE, g);
+		
+		// Draw OpenGL stuff
+		
+		// Wait for OpenGL operations to complete
+		egl.eglWaitGL();
+		
+		// Flush drawn graphics
+		canvas.flushGraphics();
 	}
 	
 	/**
