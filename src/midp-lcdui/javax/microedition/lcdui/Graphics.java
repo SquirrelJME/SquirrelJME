@@ -48,6 +48,9 @@ public abstract class Graphics
 	/**
 	 * Base initialization of graphics sub-class.
 	 *
+	 * Note that extending this class is specific to SquirrelJME and that
+	 * doing so will cause programs to only run on SquirrelJME.
+	 *
 	 * @since 2016/10/10
 	 */
 	protected Graphics()
