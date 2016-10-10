@@ -1,0 +1,5 @@
+# Purposeful Compatiblity Breakages
+
+This document lists all of the places where compatibility is purposefully
+broken, mostly for sanity purposes.
+

@@ -71,7 +71,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
    have a port of an existing virtual machine will usually only have an
    interpreter.
  * _To be compatible_ - So that existing Java ME 8 applications can run on this
-   virtual machine.
+   virtual machine, along with J2ME applications when required.
  * _To compile once and run anywhere_ - Current and up to date Java
    implementations are limited only to a few select systems (_Solaris_,
    _Linux_, _BSD_, _Mac OS X_, and _Windows_). Java ME 8 as of this writing
@@ -93,6 +93,14 @@ purchasing of food items for consumption.
  * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
    dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
  * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
+
+## Compatiblity
+
+SquirrelJME intends to be 99.9% compatible with Java ME 8 and older J2ME
+standards. In the case where compatibility is _purposefully_ broken, it will
+be documented in the following document:
+
+ * [Purposeful Compatiblity Breakages](compatibility.mkd).
 
 ## Important Statements
 
