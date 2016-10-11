@@ -28,6 +28,14 @@ import javax.microedition.khronos.opengles.GL;
 public interface EGL10
 	extends EGL
 {
+	/**
+	 * The minimum size in bits that the alpha buffer/channel must be.
+	 *
+	 * A value of zero means to prefer the smallest buffer, while a positive
+	 * value selects the highest available buffer size.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_ALPHA_SIZE =
 		12321;
 	
@@ -67,15 +75,45 @@ public interface EGL10
 	public static final int EGL_BAD_SURFACE =
 		12301;
 	
+	/**
+	 * The minimum size in bits that the blue buffer/channel must be.
+	 *
+	 * A value of zero means to prefer the smallest buffer, while a positive
+	 * value selects the highest available buffer size.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_BLUE_SIZE =
 		12322;
 	
+	/**
+	 * Attribute for the minimum desired size of the color buffer.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_BUFFER_SIZE =
 		12320;
 	
+	/**
+	 * Configurations may have caveats, as such this allows conifgurations
+	 * with caveats to be selected.
+	 *
+	 * May be either {@link #EGL_SLOW_CONFIG}, {@link #EGL_NONE} to use one
+	 * with no caveats, {@link #EGL_NON_CONFORMANT_CONFIG}, or
+	 * {@link #EGL_DONT_CARE} if it does not matter.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_CONFIG_CAVEAT =
 		12327;
 	
+	/**
+	 * A precomposed OpenGL ES configuration to choose, if this is specified
+	 * then all other attributes are ignored. The value is implementation
+	 * dependent.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_CONFIG_ID =
 		12328;
 	
@@ -86,6 +124,13 @@ public interface EGL10
 	public static final Object EGL_DEFAULT_DISPLAY =
 		new Object();
 	
+	/**
+	 * The minimum size in bits that the depth buffer must be.
+	 *
+	 * A value of zero means to not use this buffer.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_DEPTH_SIZE =
 		12325;
 	
@@ -101,6 +146,14 @@ public interface EGL10
 	public static final int EGL_FALSE =
 		0;
 	
+	/**
+	 * The minimum size in bits that the green buffer/channel must be.
+	 *
+	 * A value of zero means to prefer the smallest buffer, while a positive
+	 * value selects the highest available buffer size.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_GREEN_SIZE =
 		12323;
 	
@@ -110,6 +163,13 @@ public interface EGL10
 	public static final int EGL_LARGEST_PBUFFER =
 		12376;
 	
+	/**
+	 * The exact number of buffer-levels to use, positive values mean the given
+	 * number of overlay buffers and negative values are mapped to underlay
+	 * buffers. Level zero is the default framebuffer of the display.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_LEVEL =
 		12329;
 	
@@ -122,12 +182,26 @@ public interface EGL10
 	public static final int EGL_MAX_PBUFFER_WIDTH =
 		12332;
 	
+	/**
+	 * Specifies configurations that allow native rendering onto the surface
+	 * or not. {@link #EGL_DONT_CARE} can choose any, {@link #EGL_TRUE}
+	 * chooses configurations that allow native rendering, and
+	 * {@link #EGL_FALSE} choose configurations that disallow native
+	 * rendering.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_NATIVE_RENDERABLE =
 		12333;
 	
 	public static final int EGL_NATIVE_VISUAL_ID =
 		12334;
 	
+	/**
+	 * A platform specified value or {@link #EGL_DONT_CARE}.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_NATIVE_VISUAL_TYPE =
 		12335;
 	
@@ -169,9 +243,14 @@ public interface EGL10
 		{
 		};
 	
+	/**
+	 * Specifies that the surface is capable of creating pixel buffer
+	 * surfaces.
+	 */
 	public static final int EGL_PBUFFER_BIT =
 		1;
 	
+	/** Specifies that the surface is capable of creating pixmap surfaces. */
 	public static final int EGL_PIXMAP_BIT =
 		2;
 	
@@ -181,39 +260,107 @@ public interface EGL10
 	public static final int EGL_READ =
 		12378;
 	
+	/**
+	 * The minimum size in bits that the red buffer/channel must be.
+	 *
+	 * A value of zero means to prefer the smallest buffer, while a positive
+	 * value selects the highest available buffer size.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_RED_SIZE =
 		12324;
 	
+	/**
+	 * The minimum number of samples needed in the sample buffers.
+	 *
+	 * Default unspecified.
+	 */
 	public static final int EGL_SAMPLES =
 		12337;
 	
+	/**
+	 * The minimum number of acceptable multi-sample buffers. Configurations
+	 * that are closer to this value are preferred.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_SAMPLE_BUFFERS =
 		12338;
 	
 	public static final int EGL_SLOW_CONFIG =
 		12368;
 	
+	/**
+	 * The minimum size in bits that the stencil buffer must be.
+	 *
+	 * A value of zero means to not use this buffer.
+	 *
+	 * Default 0.
+	 */
 	public static final int EGL_STENCIL_SIZE =
 		12326;
 	
 	public static final int EGL_SUCCESS =
 		12288;
 	
+	/**
+	 * Represents the type of surface to use, this is a bitmask. The valid
+	 * bits are {@link #EGL_WINDOW_BIT}, {@link #EGL_PBUFFER_BIT}, and
+	 * {@link #EGL_PIXMAP_BIT}.
+	 *
+	 * Default {@link #EGL_WINDOW_BIT}.
+	 */
 	public static final int EGL_SURFACE_TYPE =
 		12339;
 	
+	/**
+	 * The transparent blue channel value to use. The value must be between
+	 * {@code 0} and the maximum range for the given channel. Only
+	 * configurations that use this specific color for transparent values will
+	 * be considered.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_TRANSPARENT_BLUE_VALUE =
 		12341;
 	
+	/**
+	 * The transparent green channel value to use. The value must be between
+	 * {@code 0} and the maximum range for the given channel. Only
+	 * configurations that use this specific color for transparent values will
+	 * be considered.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_TRANSPARENT_GREEN_VALUE =
 		12342;
 	
+	/**
+	 * The transparent red channel value to use. The value must be between
+	 * {@code 0} and the maximum range for the given channel. Only
+	 * configurations that use this specific color for transparent values will
+	 * be considered.
+	 *
+	 * Default {@link #EGL_DONT_CARE}.
+	 */
 	public static final int EGL_TRANSPARENT_RED_VALUE =
 		12343;
 	
 	public static final int EGL_TRANSPARENT_RGB =
 		12370;
 	
+	/**
+	 * The type of transparent framebuffer to use.
+	 *
+	 * May be {@link #EGL_NONE} then opaque framebuffers are used, otherwise
+	 * {@link #EGL_TRANSPARENT_RGB} specifies that transparent framebuffers
+	 * are used.
+	 *
+	 * Transparent framebuffers might not be supported.
+	 *
+	 * Default {@link #EGL_NONE}.
+	 */
 	public static final int EGL_TRANSPARENT_TYPE =
 		12340;
 	
@@ -229,6 +376,7 @@ public interface EGL10
 	public static final int EGL_WIDTH =
 		12375;
 	
+	/** Supports creation of window surfaces. */
 	public static final int EGL_WINDOW_BIT =
 		4;
 	
@@ -246,52 +394,43 @@ public interface EGL10
 	 * Some values must match exactly while others may be bound to be at least
 	 * or at most the given value.
 	 *
-	 * {@link #EGL_BUFFER_SIZE}: default 0, specifies the the minimum size
-	 * that the color buffer may be.
+	 * The possible values are:
+	 * {@link #EGL_BUFFER_SIZE},
+	 * {@link #EGL_RED_SIZE},
+	 * {@link #EGL_GREEN_SIZE},
+	 * {@link #EGL_BLUE_SIZE},
+	 * {@link #EGL_CONFIG_CAVEAT},
+	 * {@link #EGL_CONFIG_ID},
+	 * {@link #EGL_DEPTH_SIZE},
+	 * {@link #EGL_LEVEL},
+	 * {@link #EGL_NATIVE_RENDERABLE},
+	 * {@link #EGL_NATIVE_VISUAL_TYPE},
+	 * {@link #EGL_SAMPLE_BUFFERS},
+	 * {@link #EGL_STENCIL_SIZE},
+	 * {@link #EGL_SURFACE_TYPE},
+	 * {@link #EGL_TRANSPARENT_TYPE},
+	 * {@link #EGL_TRANSPARENT_RED_VALUE},
+	 * {@link #EGL_TRANSPARENT_GREEN_VALUE},
+	 * {@link #EGL_TRANSPARENT_BLUE_VALUE},
+	 * {@link EGL11#EGL_BIND_TO_TEXTURE_RGB},
+	 * {@link EGL11#EGL_BING_TO_TEXTURE_RGBA},
+	 * {@link EGL11#EGL_MAX_SWAP_INTERVAL},
+	 * {@link EGL11#EGL_MIN_SWAP_INTERVAL}
 	 *
-	 * {@link #EGL_RED_SIZE}, {@link #EGL_GREEN_SIZE}, {@link #EGL_BLUE_SIZE},
-	 * and {@link #EGL_ALPHA_SIZE}: default 0, the number of bits that are
-	 * used to represent a given channel, if the value is zero then the
-	 * smallest available buffer is chosen for the given number, otherwise a
-	 * conifguration that at least has the given value is chosen.
+	 * Conifgurations are sorted in the following order:
 	 *
-	 * {@link #EGL_CONFIG_CAVEAT}: default {@link #EGL_DONT_CARE}, may be
-	 * {@link #EGL_NONE} if no caveats are required, {@link #EGL_SLOW_CONFIG}
-	 * if slow configurations are to be used, if
-	 * {@link #EGL_NON_CONFORMANT_CONFIG} then only non-conforming
-	 * configurations are used, {@link #EGL_DONT_CARE} if any configuration may
-	 * be used.
-	 *
-	 * {@link #EGL_CONFIG_ID}: default {@link #EGL_DONT_CARE}, specifies the
-	 * configuration ID to preselect, if specified then all other attributes
-	 * are ignored.
-	 *
-	 * {@link #EGL_DEPTH_SIZE}, {@link #EGL_STENCIL_SIZE}: default 0, the
-	 * minimum number of bits used to
-	 * store the buffer, if {@code 0} then no buffer is preferred.
-	 *
-	 * {@link #EGL_LEVEL}: default 0, used exactly, positive values request
-	 * the number of overlay buffers that are to be used while negetive values
-	 * represent the number of underlay buffers that are to be used.
-	 *
-	 * {@link #EGL_NATIVE_RENDERABLE}: default {@link #EGL_DONT_CARE}, if
-	 * {@link #EGL_DONT_CARE} then no preference is made, if {@link #EGL_TRUE}
-	 * then only configurations that allow native rendering will be selected,
-	 * otherwise {@link #EGL_FALSE} specifies that no native rendering is to
-	 * be used.
-	 *
-	 * {@link #EGL_NATIVE_VISUAL_TYPE}: 1.0 only,
-	 * default {@link #EGL_DONT_CARE}, contains a platform specific value.
-	 *
-	 * {@link #EGL_SAMPLE_BUFFERS}, default 0, The minimum number of
-	 * multi-sample buffers to use. Currently this value must be zero or one.
-	 *
-	 * {@link #EGL_SAMPLES}, default 0, the minimum number of samples required
-	 * in multi-sample buffers.
-	 *
-	 * {@link #EGL_SURFACE_TYPE}, default {@link #EGL_WINDOW_BIT}, this is a
-	 * bit field of {@link #EGL_WINDOW_BIT}, {@link #EGL_PBUFFER_BIT}, and
-	 * {@link #EGL_PIXMAP_BIT}.
+	 * 1. {@link #EGL_CONFIG_CAVEAT} with the order: {@link #EGL_NONE},
+	 *    {@link #EGL_SLOW_CONFIG}, then {@link #EGL_NON_CONFORMANT_CONFIG}.
+	 * 2. The number of bits for the red, green, blue, and alpha channels,
+	 *    higher is better. If the value is zero or {@link #EGL_DONT_CARE} then
+	 *    it is not considered.
+	 * 3. Smaller {@link #EGL_BUFFER_SIZE}.
+	 * 4. Smaller {@link #EGL_SAMPLE_BUFFERS}.
+	 * 5. Smaller {@link #EGL_DEPTH_SIZE}.
+	 * 6. Smaller {@link #EGL_STENCIL_SIZE}.
+	 * 7. Platform dependent {@link #EGL_NATIVE_VISUAL_TYPE}.
+	 * 8. Smaller {@link EGL_CONFIG_ID}.
+	 * 9. Other attributes are not considered.
 	 *
 	 * The following errors are set:
 	 *

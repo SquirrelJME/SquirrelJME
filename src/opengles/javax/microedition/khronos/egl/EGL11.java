@@ -17,18 +17,44 @@ public interface EGL11
 	public static final int EGL_BACK_BUFFER =
 		12420;
 	
+	/**
+	 * Specifies whether or not binding color buffers to RGB textures is
+	 * supported. The value may be {@link EGL10#EGL_DONT_CARE},
+	 * {@link EGL10#EGL_FALSE}, or {@link EGL10#EGL_TRUE}.
+	 *
+	 * Default {@link EGL10#EGL_DONT_CARE}.
+	 */
 	public static final int EGL_BIND_TO_TEXTURE_RGB =
 		12345;
 	
+	/**
+	 * Specifies whether or not binding color buffers to RGBA textures is
+	 * supported. The value may be {@link EGL10#EGL_DONT_CARE},
+	 * {@link EGL10#EGL_FALSE}, or {@link EGL10#EGL_TRUE}.
+	 *
+	 * Default {@link EGL10#EGL_DONT_CARE}.
+	 */
 	public static final int EGL_BIND_TO_TEXTURE_RGBA =
 		12346;
 	
 	public static final int EGL_CONTEXT_LOST =
 		12302;
 	
+	/**
+	 * The maximum value that may be passed to
+	 * {@link #eglSwapInterval(EGLDisplay, int)}.
+	 *
+	 * Default {@link EGL10#EGL_DONT_CARE}.
+	 */
 	public static final int EGL_MAX_SWAP_INTERVAL =
 		12348;
 	
+	/**
+	 * The minimum value that may be passed to
+	 * {@link #eglSwapInterval(EGLDisplay, int)}.
+	 *
+	 * Default {@link EGL10#EGL_DONT_CARE}.
+	 */
 	public static final int EGL_MIN_SWAP_INTERVAL =
 		12347;
 	
