@@ -57,6 +57,7 @@ public interface EGL10
 	public static final int EGL_BAD_CURRENT_SURFACE =
 		12295;
 	
+	/** This is an error specifying that the given display is not valid. */
 	public static final int EGL_BAD_DISPLAY =
 		12296;
 	
@@ -140,6 +141,10 @@ public interface EGL10
 	public static final int EGL_DRAW =
 		12377;
 	
+	/**
+	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
+	 * extensions that are available to this OpenGL ES implementation.
+	 */
 	public static final int EGL_EXTENSIONS =
 		12373;
 	
@@ -211,6 +216,7 @@ public interface EGL10
 	public static final int EGL_NON_CONFORMANT_CONFIG =
 		12369;
 	
+	/** An error specifying that the display has not been initialized. */
 	public static final int EGL_NOT_INITIALIZED =
 		12289;
 	
@@ -367,9 +373,17 @@ public interface EGL10
 	public static final int EGL_TRUE =
 		1;
 	
+	/**
+	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
+	 * OpenGL ES vendor.
+	 */
 	public static final int EGL_VENDOR =
 		12371;
 	
+	/**
+	 * A value for {@link #eglQueryString(EGLDisplay, int)} that requests the
+	 * OpenGL ES version in the form of {@code major.minor vendor-specific}.
+	 */
 	public static final int EGL_VERSION =
 		12372;
 	
@@ -559,7 +573,27 @@ public interface EGL10
 	public abstract boolean eglQueryContext(EGLDisplay __a, EGLContext __b, 
 		int __c, int[] __d);
 	
-	public abstract String eglQueryString(EGLDisplay __a, int __b);
+	/**
+	 * Queries an implementation specific string from the specified display.
+	 *
+	 * Valid keys are: {@link #EGL_VENDOR}, {@link #EGL_VERSION}, and
+	 * {@link #EGL_EXTENSIONS}.
+	 *
+	 * The following errors may be set:
+	 *
+	 * {@link #EGL_BAD_DISPLAY} if the display is not valid.
+	 * {@link #EGL_NOT_INITIALIZED} if the display is not initialized.
+	 * {@link #EGL_BAD_PARAMETER} if the name is not a valid value.
+	 *
+	 * @param __disp The display to query.
+	 * @param __key The key value to obtain.
+	 * @return The string value for the given display and variable or 
+	 * {@code null} on failure.
+	 * @throws IllegalArgumentException If {@code __disp} is {@code null}.
+	 * @since 2016/10/11
+	 */
+	public abstract String eglQueryString(EGLDisplay __disp, int __key)
+		throws IllegalArgumentException;
 	
 	public abstract boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, 
 		int __c, int[] __d);

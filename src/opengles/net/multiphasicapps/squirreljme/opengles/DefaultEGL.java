@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.opengles;
 
+import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGL11;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -25,6 +26,22 @@ import javax.microedition.khronos.egl.EGLSurface;
 public class DefaultEGL
 	implements EGL11
 {
+	/** The start of temporary enumerants. */
+	public static final int TEMPORARY_ENUMERANT_START =
+		24576;
+	
+	/** The end of temporary enumerants. */
+	public static final int TEMPORARY_ENUMERANT_END =
+		32767;
+	
+	/** The start of the SquirrelJME enumerant. */
+	public static final int SQUIRRELJME_ENUMERANT_START =
+		TEMPORARY_ENUMERANT_START;
+	
+	/** The end of the SquirrelJME enumerant. */
+	public static final int SQUIRRELJME_ENUMERANT_END =
+		SQUIRRELJME_ENUMERANT_START + 16;
+	
 	/** The OpenGL ES error code. */
 	private volatile int _error =
 		EGL11.EGL_SUCCESS;
@@ -275,12 +292,54 @@ public class DefaultEGL
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/10/10
+	 * @since 2016/10/11
 	 */
 	@Override
-	public String eglQueryString(EGLDisplay __a, int __b)
+	public String eglQueryString(EGLDisplay __disp, int __key)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EJ05 Cannot query string a null display.}
+		if (__disp == null)
+		{
+			this._error = EGL10.EGL_BAD_DISPLAY;
+			throw new IllegalArgumentException("EJ05");
+		}
+		
+		// Must be our own display
+		if (!(__disp instanceof DefaultDisplay))
+		{
+			this._error = EGL10.EGL_BAD_DISPLAY;
+			return null;
+		}
+		
+		// Must be initialized
+		DefaultDisplay dd = (DefaultDisplay)__disp;
+		if (!dd._initialized)
+		{
+			this._error = EGL10.EGL_NOT_INITIALIZED;
+			return null;
+		}
+		
+		// Depends on the key
+		switch (__key)
+		{
+				// Vendor
+			case EGL10.EGL_VENDOR:
+				return "Steven Gawroriski (Multi-Phasic Applications)";
+			
+				// Version
+			case EGL10.EGL_VERSION:
+				return "1.1 SquirrelJME";
+			
+				// No extensions are defined
+			case EGL10.EGL_EXTENSIONS:
+				return "";
+				
+				// Unknown
+			default:
+				this._error = EGL10.EGL_BAD_PARAMETER;
+				return null;
+		}
 	}
 	
 	/**
