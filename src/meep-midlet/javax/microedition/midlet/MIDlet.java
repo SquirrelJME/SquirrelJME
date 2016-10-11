@@ -29,18 +29,18 @@ public abstract class MIDlet
 		throw new Error("TODO");
 	}
 	
+	protected abstract void destroyApp(boolean __uc)
+		throws MIDletStateChangeException;
+	
+	protected abstract void startApp()
+		throws MIDletStateChangeException;
+	
 	@Deprecated
 	public final int checkPermission(String __p)
 		throws IllegalStateException
 	{
 		throw new Error("TODO");
 	}
-	
-	protected abstract void destroyApp(boolean __uc)
-		throws MIDletStateChangeException;
-	
-	protected abstract void startApp()
-		throws MIDletStateChangeException;
 	
 	/**
 	 * Obtains the value of a property for the current application. Properties

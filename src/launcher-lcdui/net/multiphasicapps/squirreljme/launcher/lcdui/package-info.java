@@ -8,27 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.launcher.lui;
-
 /**
- * Ths is the main entry class for the line user interface based launcher, this
- * should be used as a fallback in the event that the LCDUI based launcher
- * cannot be used or was not compiled in.
+ * This package contains the LCDUI based launcher interface.
  *
- * @since 2016/06/20
+ * @since 2016/10/11
  */
-public class Main
-{
-	/**
-	 * Main entry point for setting up the line based launcher.
-	 *
-	 * @param __args The program arguments (can set the program to initially
-	 * be launched).
-	 * @since 2016/06/20
-	 */
-	public static void main(String... __args)
-	{
-		throw new Error("TODO");
-	}
-}
+
+package net.multiphasicapps.squirreljme.launcher.lcdui;
 

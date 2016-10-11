@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: launcher-lcdui
+X-SquirrelJME-UUID: 2ec9b1c4-3adb-4dd0-acfa-48f878dd6cdd
+X-SquirrelJME-Depends: launch midp-lcdui meep-midlet
+X-SquirrelJME-Error: EP
+MIDlet-1: SquirrelJME Launcher (Graphical), , 
+ net.multiphasicapps.launcher.lcdui.MidletMain
+LIBlet-Title: SquirrelJME Launcher (Graphical)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the graphical launcher that 
+ SquirrelJME uses to act as a front end interface to running user 
+ programs.
+
