@@ -147,7 +147,7 @@ __primary()
 		# month and day names and removes any hidden escape sequences that may
 		# be used to highlight the current day
 		__firstweek="1"
-		cal "$__y_mont" "$__y_year" | sed 's/[^0-9\ ]/ /g' |
+		cal "$__y_mont" "$__y_year" | sed 's/_.//g' | sed 's/[^0-9\ ]/ /g' |
 			while read __week
 		do
 			# Remove the line that contains the year along with lines that
