@@ -86,15 +86,15 @@ class __PackageSelection__
 			
 			// If this is a test package then include it
 			if (tests && pigs.contains("tests"))
-				all.addAll(plist.recursiveDependencies(ProjectType.BINARY,
+				all.addAll(plist.recursiveDependencies(ProjectType.COMPILED,
 					pi.name(), false));
 			
 			// Add to JVM classpath?
 			for (int i = 0; i < n; i++)
 				if (pigs.contains(groups[i]))
 				{
-					jvm.addAll(plist.recursiveDependencies(ProjectType.BINARY,
-						pi.name(), false));
+					jvm.addAll(plist.recursiveDependencies(
+						ProjectType.COMPILED, pi.name(), false));
 					break;
 				}
 		}

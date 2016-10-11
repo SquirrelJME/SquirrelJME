@@ -356,6 +356,19 @@ public final class ProjectGroup
 			case SOURCE:
 				return source();
 				
+				// Compiled?
+			case COMPILED:
+				try
+				{
+					return compileSource(null, false);
+				}
+				
+				// Failed to compile, fallback to the binary
+				catch (IOException e)
+				{
+					return binary();
+				}
+				
 				// Unknown
 			default:
 				throw new RuntimeException("OOPS");

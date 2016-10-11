@@ -23,6 +23,9 @@ public enum ProjectType
 	/** Source project. */
 	SOURCE,
 	
+	/** Compiled project. */
+	COMPILED,
+	
 	/** End. */
 	;
 }
