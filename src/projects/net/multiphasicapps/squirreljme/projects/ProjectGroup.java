@@ -691,71 +691,8 @@ public final class ProjectGroup
 		// Get main attributes
 		MutableJavaManifestAttributes attr = __man.getMainAttributes();
 		
-		throw new Error("TODO");
-		/*
-		// Try to get the version number of the project manager
-		ProjectList list = this.list;
-		ProjectGroup pmgrp = list.get("projects");
-		ProjectInfo pminf = (pmgrp == null ? null : pmgrp.any());
-		attr.put(new JavaManifestKey("Created-By"),
-			(pminf != null ? pminf.version() : "0.0.0") + " (SquirrelJME)");
-		
-		// Is this a MIDlet?
-		boolean ismidlet = __src.isMIDlet();
-		
-		// Class path (includes optionals)
-		StringBuilder cp = new StringBuilder();
-		
-		// Add required and optional dependencies
-		int depid = 0;
-		for (int z = 0; z < 2; z++)
-		{
-			// Required?
-			boolean req = (z == 0);
-			
-			// Go through dependencies
-			for (ProjectName dn : __src.dependencies(!req))
-			{
-				// Add it regardless
-				cp.append(dn);
-				cp.append(".jar ");
-				
-				// {@squirreljme.error CI0b The project has a required
-				// dependency on the specified project, however it does not
-				// exist. (This project; The dependency)}
-				ProjectGroup dg = list.get(dn);
-				if (req && dg == null)
-					throw new MissingDependencyException(String.format(
-						"CI0b %s %s", __src.name(), dn));
-				
-				// Get any information about it
-				ProjectInfo di = (dg != null ? dg.any() : null);
-				
-				// Determine string form
-				// If there is an optional dependency on a project which is
-				// missing then use a special SquirrelJME specfic optional
-				String format = (di != null ?
-					String.format("liblet;%s;%s;%s;%s+",
-						(!req ? "optional" : "required"), di.title(),
-						di.vendor(), di.version()) :
-					String.format("x-squirreljme-namespace;optional;%s;;",
-						dn));
-				
-				// Add liblet dependency
-				attr.put(new JavaManifestKey(String.format(
-					"LIBlet-Dependency-%d", depid)), format);
-				
-				// If this is a MIDlet then add the library as a dependency
-				if (ismidlet)
-					attr.put(new JavaManifestKey(String.format(
-						"MIDlet-Dependency-%d", depid)), format);
-				
-				// Increase dependency ID
-				depid++;
-			}
-		}
-		
 		// If it is a midlet then it must have these attributes also
+		boolean ismidlet = __src.isMIDlet();
 		if (ismidlet)
 		{
 			attr.put(new JavaManifestKey("MIDlet-Name"), __src.title());
@@ -763,9 +700,71 @@ public final class ProjectGroup
 			attr.put(new JavaManifestKey("MIDlet-Version"), __src.version());
 		}
 		
+		// Try to get the version number of the project manager
+		ProjectList list = this.list;
+		ProjectGroup pmgrp = list.get("projects");
+		ProjectInfo pminf = (pmgrp == null ? null : pmgrp.any());
+		attr.put(new JavaManifestKey("Created-By"),
+			(pminf != null ? pminf.version() : "0.0.0") + " (SquirrelJME)");
+		
+		// Class path (includes optionals)
+		StringBuilder cp = new StringBuilder();
+		
+		// MIDlet/LIBlet dependency ID
+		int depid = 1;
+		
+		// Go through all dependency types
+		for (DependencyType dt : DependencyType.values())
+			for (ProjectName dn : __src.dependencies(dt))
+			{
+				// If it outputs to the class path, just add .jar
+				if (dt.outputsToClassPath())
+				{
+					cp.append(' ');
+					cp.append(dn.toString());
+					cp.append(".jar");
+				}
+				
+				// If it outputs to midlet and/or liblet
+				if (dt.outputsToMidlet())
+				{
+					// {@squirreljme.error CI0b The project has a required
+					// dependency on the specified project, however it does not
+					// exist. (This project; The dependency)}
+					ProjectGroup dg = list.get(dn);
+					if (!dt.isOptional() && dg == null)
+						throw new MissingDependencyException(String.format(
+							"CI0b %s %s", __src.name(), dn));
+				
+					// Get any information about it
+					ProjectInfo di = (dg != null ? dg.any() : null);
+				
+					// Determine string form
+					// If there is an optional dependency on a project which is
+					// missing then use a special SquirrelJME specfic optional
+					String format = (di != null ?
+						String.format("liblet;%s;%s;%s;%s+",
+							(dt.isOptional() ? "optional" : "required"),
+							di.title(), di.vendor(), di.version()) :
+						String.format("x-squirreljme-namespace;optional;%s;;",
+							dn));
+					
+					// Add liblet dependency
+					attr.put(new JavaManifestKey(String.format(
+						"LIBlet-Dependency-%d", depid)), format);
+				
+					// If this is a MIDlet then add the library as a dependency
+					if (ismidlet)
+						attr.put(new JavaManifestKey(String.format(
+							"MIDlet-Dependency-%d", depid)), format);
+					
+					// Increase dependency ID
+					depid++;
+				}
+			}
+		
 		// Classpath
 		attr.put(new JavaManifestKey("Class-Path"), cp.toString());
-		*/
 	}
 	
 	/**
