@@ -17,6 +17,7 @@ import java.util.Deque;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.CaughtException;
+import net.multiphasicapps.squirreljme.projects.DependencyLookupType;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -157,7 +158,8 @@ public class Bootstrapper
 		{
 			// Also include optional projects since the build system for
 			// the most part depends on that
-			return group.compileSource(this.compiler, true);
+			return group.compileSource(this.compiler,
+				DependencyLookupType.EXTERNAL, true);
 		}
 		
 		// {@squirreljme.error CL05 Failed to build the specified project.

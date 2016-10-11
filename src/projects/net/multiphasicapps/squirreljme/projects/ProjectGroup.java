@@ -224,7 +224,7 @@ public final class ProjectGroup
 			}
 		
 			// Go through all dependencies and compile those also
-			for (ProjectName dn : src.dependencies(false))
+			for (ProjectName dn : src.dependencies(__lu, false))
 			{
 				// {@squirreljme.error CI0l Cannot compile the specified
 				// project because the dependency does not exist. (The project
@@ -235,7 +235,7 @@ public final class ProjectGroup
 						"CI0l %s %s", name, dn));
 			
 				// Perform compilation on it
-				dg.compileSource(__bc, __opt);
+				dg.compileSource(__bc, __lu, __opt);
 			}
 		
 			// If compiling a project and it has a binary, it might not really
@@ -251,18 +251,18 @@ public final class ProjectGroup
 				// Also recompile if any dependency has source code newer than
 				// the binary
 				if (this._justcompiled ||
-					__dependencySourceDate(name).compareTo(pbin) <= 0)
+					__dependencySourceDate(__lu, name).compareTo(pbin) <= 0)
 					bin = maybe;
 			} 
 		
 			// Perform compilation
 			if (bin == null)
-				bin = __compile(__bc);
+				bin = __compile(__bc, __lu);
 		
 			// Compile any optional dependencies if requested following the
 			// compilation of this one
 			if (__opt)
-				for (ProjectName dn : src.dependencies(true))
+				for (ProjectName dn : src.dependencies(__lu, true))
 				{
 					// Ignore dependencies which do not exist
 					ProjectGroup dg = list.get(dn);
@@ -272,7 +272,7 @@ public final class ProjectGroup
 					// Compile it
 					try
 					{
-						dg.compileSource(__bc, __opt);
+						dg.compileSource(__bc, __lu, __opt);
 					}
 				
 					// Failed to build it, ignore
@@ -368,7 +368,8 @@ public final class ProjectGroup
 			case COMPILED:
 				try
 				{
-					return compileSource(null, false);
+					return compileSource(null, DependencyLookupType.INTERNAL,
+						false);
 				}
 				
 				// Failed to compile, fallback to the binary
@@ -414,17 +415,18 @@ public final class ProjectGroup
 	 * Compiles the specified project and caches the output binary.
 	 *
 	 * @param __bc The compiler interface to use.
+	 * @param __lu The dependency lookup type to use.
 	 * @return The resulting binary.
 	 * @throws CompilationFailedException If compilation failed.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/20
 	 */
-	final ProjectInfo __compile(Compiler __bc)
+	final ProjectInfo __compile(Compiler __bc, DependencyLookupType __lu)
 		throws CompilationFailedException, IOException, NullPointerException
 	{
 		// Check
-		if (__bc == null)
+		if (__lu == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error CI0i This project is currently being
@@ -453,7 +455,7 @@ public final class ProjectGroup
 			{
 				// Setup compiler output and input
 				__CompilerOutput__ co = new __CompilerOutput__(zip);
-				__CompilerInput__ ci = new __CompilerInput__(list, src);
+				__CompilerInput__ ci = new __CompilerInput__(list, src, __lu);
 				
 				// Setup target manifest
 				MutableJavaManifest man = new MutableJavaManifest(
@@ -568,15 +570,17 @@ public final class ProjectGroup
 	 * Returns the highest file time that is associated with source code in
 	 * a dependency.
 	 *
+	 * @param __lu The lookup type for dependencies.
 	 * @param __at The current project name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/20
 	 */
-	private FileTime __dependencySourceDate(ProjectName __at)
+	private FileTime __dependencySourceDate(DependencyLookupType __lu,
+		ProjectName __at)
 		throws NullPointerException
 	{
 		// Check
-		if (__at == null)
+		if (__lu == null || __at == null)
 			throw new NullPointerException("NARG");
 		
 		// Get the group
@@ -592,7 +596,7 @@ public final class ProjectGroup
 		FileTime rv = src.date();
 		
 		// Go through all dependencies to see if they have newer sources
-		for (ProjectName dn : src.dependencies())
+		for (ProjectName dn : src.dependencies(__lu))
 		{
 			// Do not consider any projects that do not exist
 			ProjectGroup dg = list.get(dn);
@@ -601,7 +605,7 @@ public final class ProjectGroup
 				continue;
 			
 			// Get their date
-			FileTime dd = dg.__dependencySourceDate(dn);
+			FileTime dd = dg.__dependencySourceDate(__lu, dn);
 			
 			// If the date is newer, use it
 			if (dd.compareTo(rv) > 0)
@@ -677,8 +681,7 @@ public final class ProjectGroup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
-	final void __setupManifest(MutableJavaManifest __man,
-		ProjectInfo __src)
+	final void __setupManifest(MutableJavaManifest __man, ProjectInfo __src)
 		throws NullPointerException
 	{
 		// Check
@@ -688,6 +691,8 @@ public final class ProjectGroup
 		// Get main attributes
 		MutableJavaManifestAttributes attr = __man.getMainAttributes();
 		
+		throw new Error("TODO");
+		/*
 		// Try to get the version number of the project manager
 		ProjectList list = this.list;
 		ProjectGroup pmgrp = list.get("projects");
@@ -760,6 +765,7 @@ public final class ProjectGroup
 		
 		// Classpath
 		attr.put(new JavaManifestKey("Class-Path"), cp.toString());
+		*/
 	}
 	
 	/**

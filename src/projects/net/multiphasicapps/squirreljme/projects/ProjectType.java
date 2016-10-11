@@ -23,7 +23,7 @@ public enum ProjectType
 	/** Source project. */
 	SOURCE,
 	
-	/** Compiled project. */
+	/** Compiled internal projects, ones that run on SquirrelJME. */
 	COMPILED,
 	
 	/** End. */

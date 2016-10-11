@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 	ResourceAccessor;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 	ResourceReference;
+import net.multiphasicapps.squirreljme.projects.DependencyLookupType;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -53,7 +54,8 @@ class __Resources__
 		
 		// Set
 		this._from = __bin.projectList().recursiveDependencies(
-			ProjectType.BINARY, __bin.name(), true).<ProjectInfo>toArray(
+			DependencyLookupType.EXTERNAL, ProjectType.BINARY, __bin.name(),
+			true).<ProjectInfo>toArray(
 			new ProjectInfo[0]);
 	}
 	

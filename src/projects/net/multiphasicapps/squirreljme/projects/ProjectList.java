@@ -239,8 +239,8 @@ public class ProjectList
 		boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
-		return recursiveDependencies(new SortedTreeSet<ProjectInfo>(), __t,
-			__n, __opt);
+		return recursiveDependencies(new SortedTreeSet<ProjectInfo>(), __lu,
+			__t, __n, __opt);
 	}
 	
 	/**
@@ -310,13 +310,13 @@ public class ProjectList
 			__rv.add(info);
 			
 			// Go through required depends and add them
-			for (ProjectName rn : info.dependencies())
+			for (ProjectName rn : info.dependencies(__lu))
 				q.push(rn);
 			
 			// Go through optional ones if requested, these are not
 			// required to exist under a given type
 			if (__opt)
-				for (ProjectName on : info.dependencies(true))
+				for (ProjectName on : info.dependencies(__lu, true))
 				{
 					// Group must exist
 					ProjectGroup og = get(on);

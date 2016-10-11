@@ -48,14 +48,16 @@ class __CompilerInput__
 	 *
 	 * @param __pl The project list.
 	 * @param __src The source project being compiled.
+	 * @param __lu The depenendency lookup type used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
-	__CompilerInput__(ProjectList __pl, ProjectInfo __src)
+	__CompilerInput__(ProjectList __pl, ProjectInfo __src,
+		DependencyLookupType __lu)
 		throws NullPointerException
 	{
 		// Check
-		if (__pl == null || __src == null)
+		if (__pl == null || __src == null || __lu == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -65,8 +67,9 @@ class __CompilerInput__
 		// Go through all dependencies of the source package and add every
 		// binary dependency of it
 		Collection<ProjectInfo> bins = new LinkedHashSet<>();
-		for (ProjectName dn : __src.dependencies())
-			__pl.recursiveDependencies(bins, ProjectType.BINARY, dn, false);
+		for (ProjectName dn : __src.dependencies(__lu))
+			__pl.recursiveDependencies(bins, __lu, ProjectType.BINARY, dn,
+				false);
 		
 		// Never include the binary for our own project (since it is being
 		// built, the classes might be out of date)
