@@ -23,6 +23,9 @@ public class DefaultDisplay
 	/** The native display object. */
 	protected final Object nativedisplay;
 	
+	/** Was this display initialized? */
+	volatile boolean _initialized;
+	
 	/**
 	 * Initializes the OpenGL ES display.
 	 *

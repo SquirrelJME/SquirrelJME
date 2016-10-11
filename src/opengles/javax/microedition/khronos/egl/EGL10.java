@@ -288,9 +288,45 @@ public interface EGL10
 	public abstract EGLDisplay eglGetDisplay(Object __nd)
 		throws IllegalArgumentException;
 	
+	/**
+	 * Returns the last error code that was emitted from the last operation
+	 * that was called.
+	 *
+	 * After the call, it is reset to {@link #EGL_SUCCESS}.
+	 *
+	 * @return The error code.
+	 * @since 2016/10/11
+	 */
 	public abstract int eglGetError();
 	
-	public abstract boolean eglInitialize(EGLDisplay __a, int[] __b);
+	/**
+	 * Initializes the OpenGL ES display and optionally returns the version
+	 * number of OpenGL ES.
+	 *
+	 * If a display is already initialized then the version numbers are
+	 * returned.
+	 *
+	 * If initialization fails, {@code false} is returned and the following
+	 * errors may be set.
+	 *
+	 * {@link #EGL_BAD_DISPLAY} if the display is not an EGL display
+	 * connection.
+	 * {@link #EGL_NOT_INITIALIZED} if initialization could not occur.
+	 *
+	 * {@link #eglTerminate(EGLDisplay)} is used to deinitialize a display
+	 * and terminate the connection.
+	 *
+	 * @param __disp The display to initialize.
+	 * @param __ver An optional array of at least length 2 where the first
+	 * element is set to the major version number and the second element is set
+	 * to the minor version number.
+	 * @return {@code true} on success.
+	 * @throws IllegalArgumentException If {@code __disp} is {@code null} or
+	 * {@code __ver} is non-null and has a length lower than two.
+	 * @since 2016/10/11
+	 */
+	public abstract boolean eglInitialize(EGLDisplay __disp, int[] __ver)
+		throws IllegalArgumentException;
 	
 	public abstract boolean eglMakeCurrent(EGLDisplay __a, EGLSurface __b, 
 		EGLSurface __c, EGLContext __d);

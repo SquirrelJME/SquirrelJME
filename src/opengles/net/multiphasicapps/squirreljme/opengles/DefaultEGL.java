@@ -25,6 +25,10 @@ import javax.microedition.khronos.egl.EGLSurface;
 public class DefaultEGL
 	implements EGL11
 {
+	/** The OpenGL ES error code. */
+	private volatile int _error =
+		EGL11.EGL_SUCCESS;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/10
@@ -201,7 +205,9 @@ public class DefaultEGL
 	@Override
 	public int eglGetError()
 	{
-		throw new Error("TODO");
+		int rv = this._error;
+		this._error = EGL11.EGL_SUCCESS;
+		return rv;
 	}
 	
 	/**
@@ -209,9 +215,41 @@ public class DefaultEGL
 	 * @since 2016/10/10
 	 */
 	@Override
-	public boolean eglInitialize(EGLDisplay __a, int[] __b)
+	public boolean eglInitialize(EGLDisplay __disp, int[] __ver)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EJ03 No display was specified.}
+		if (__disp == null)
+		{
+			this._error = EGL11.EGL_BAD_DISPLAY;
+			throw new IllegalArgumentException("EJ03");
+		}
+		
+		// {@squirreljme.error EJ04 An output version was specified, however
+		// it has a length lower than two.}
+		if (__ver != null && __ver.length < 2)
+			throw new IllegalArgumentException("EJ04");
+		
+		// Not our kind of display?
+		if (!(__disp instanceof DefaultDisplay))
+		{
+			this._error = EGL11.EGL_BAD_DISPLAY;
+			return false;
+		}
+		
+		// Mark it as initialized
+		DefaultDisplay dd = (DefaultDisplay)__disp;
+		dd._initialized = true;
+		
+		// Return version number?
+		if (__ver != null)
+		{
+			__ver[0] = 1;
+			__ver[1] = 1;
+		}
+		
+		// Ok
+		return true;
 	}
 	
 	/**
