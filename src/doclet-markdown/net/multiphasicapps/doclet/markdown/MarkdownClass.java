@@ -569,7 +569,7 @@ public class MarkdownClass
 			throw new NullPointerException("NARG");
 		
 		// Write nothing if there is nothing.
-		if (__text == null)
+		if (__text == null || __text.length() <= 0)
 		{
 			__md.print("No description.");
 			return;
