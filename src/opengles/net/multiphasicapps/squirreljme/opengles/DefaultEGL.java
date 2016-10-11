@@ -112,8 +112,7 @@ public class DefaultEGL
 	 * @since 2016/10/10
 	 */
 	@Override
-	public boolean eglDestroyContext(EGLDisplay __a, EGLContext __b
-		)
+	public boolean eglDestroyContext(EGLDisplay __a, EGLContext __b)
 	{
 		throw new Error("TODO");
 	}
@@ -123,8 +122,7 @@ public class DefaultEGL
 	 * @since 2016/10/10
 	 */
 	@Override
-	public boolean eglDestroySurface(EGLDisplay __a, EGLSurface __b
-		)
+	public boolean eglDestroySurface(EGLDisplay __a, EGLSurface __b)
 	{
 		throw new Error("TODO");
 	}
