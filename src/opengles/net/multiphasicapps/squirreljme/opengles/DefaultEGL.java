@@ -8,7 +8,13 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.khronos.egl;
+package net.multiphasicapps.squirreljme.opengles;
+
+import javax.microedition.khronos.egl.EGL11;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.EGLSurface;
 
 /**
  * This is the SquirrelJME implementation of OpenGL ES which provides access
@@ -16,7 +22,7 @@ package javax.microedition.khronos.egl;
  *
  * @since 2016/10/10
  */
-class __EGL__
+public class DefaultEGL
 	implements EGL11
 {
 	/**
@@ -175,8 +181,14 @@ class __EGL__
 	 * @since 2016/10/10
 	 */
 	@Override
-	public EGLDisplay eglGetDisplay(Object __a)
+	public EGLDisplay eglGetDisplay(Object __nd)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EJ02 No native display was specified when
+		// obtaining an OpenGL ES display.}
+		if (__nd == null)
+			throw new IllegalArgumentException("EJ02");
+		
 		throw new Error("TODO");
 	}
 	

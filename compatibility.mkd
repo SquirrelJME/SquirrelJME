@@ -3,6 +3,37 @@
 This document lists all of the places where compatibility is purposefully
 broken, mostly for sanity purposes.
 
+Relying on behavior specified in this document and not in the standard
+documentation will result in code which only runs on SquirrelJME.
+
+# `javax.microedition.khronos.egl.EGLConfig`
+
+What changed:
+
+ * Made public.
+   * Allows for package separation.
+
+# `javax.microedition.khronos.egl.EGLContext`
+
+What changed:
+
+ * Made public.
+   * Allows for package separation.
+
+# `javax.microedition.khronos.egl.EGLDisplay`
+
+What changed:
+
+ * Made public.
+   * Allows for package separation.
+
+# `javax.microedition.khronos.egl.EGLSurface`
+
+What changed:
+
+ * Made public.
+   * Allows for package separation.
+
 # `javax.microedition.lcdui.Graphics`
 
 What changed:

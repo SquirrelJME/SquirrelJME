@@ -82,8 +82,9 @@ public interface EGL10
 	public static final int EGL_CORE_NATIVE_ENGINE =
 		12379;
 	
+	/** This is used to signify that the default display should be used. */
 	public static final Object EGL_DEFAULT_DISPLAY =
-		new Object(){{if (true) throw new Error("TODO");}};
+		new Object();
 	
 	public static final int EGL_DEPTH_SIZE =
 		12325;
@@ -139,15 +140,34 @@ public interface EGL10
 	public static final int EGL_NOT_INITIALIZED =
 		12289;
 	
+	/** This represents a null context. */
 	public static final EGLContext EGL_NO_CONTEXT =
-		new EGLContext(){{if (true) throw new Error("TODO");} public GL getGL()
-		{throw new Error("TODO");}};
+		new EGLContext()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/10/10
+			 */
+			@Override
+			public GL getGL()
+			{
+				// {@squirreljme.error EJ01 Cannot get the GL instance of
+				// a null context.}
+				throw new RuntimeException("EJ01");
+			}
+		};
 	
+	/** This represents a null display. */
 	public static final EGLDisplay EGL_NO_DISPLAY =
-		new EGLDisplay(){{if (true) throw new Error("TODO");}};
+		new EGLDisplay()
+		{
+		};
 	
+	/** This represents a null surface. */
 	public static final EGLSurface EGL_NO_SURFACE =
-		new EGLSurface(){{if (true) throw new Error("TODO");}};
+		new EGLSurface()
+		{
+		};
 	
 	public static final int EGL_PBUFFER_BIT =
 		1;
@@ -248,7 +268,25 @@ public interface EGL10
 	
 	public abstract EGLSurface eglGetCurrentSurface(int __a);
 	
-	public abstract EGLDisplay eglGetDisplay(Object __a);
+	/**
+	 * This creates a connection to the given native display.
+	 *
+	 * If the return of this method succeeds, then the display must be
+	 * initialized by calling {@link #eglInitialize(EGLDisplay, int[])}.
+	 *
+	 * No error code is set.
+	 *
+	 * @param __nd The native display object to use, in SquirrelJME this will
+	 * be an instance of {@link javax.microedition.lcdui.Display}. This may
+	 * be {@link #EGL_DEFAULT_DISPLAY} to use the default display.
+	 * @return The OpenGL ES Display for the given native display, or
+	 * {@code EGL_NO_DISPLAY} is returned on error.
+	 * @throws IllegalArgumentException If {@code __nd} is {@code null} or is
+	 * not compatible with the OpenGL ES backend.
+	 * @since 2016/10/10
+	 */
+	public abstract EGLDisplay eglGetDisplay(Object __nd)
+		throws IllegalArgumentException;
 	
 	public abstract int eglGetError();
 	

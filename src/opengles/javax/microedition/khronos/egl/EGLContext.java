@@ -13,6 +13,7 @@ package javax.microedition.khronos.egl;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.khronos.opengles.GL;
+import net.multiphasicapps.squirreljme.opengles.DefaultEGL;
 
 /**
  * This class encapsulates the OpenGL context which is used to obtain instances
@@ -24,6 +25,9 @@ import javax.microedition.khronos.opengles.GL;
  * To destroy a context use {@link EGL10#eglDestroyContext(EGLDisplay,
  * EGLContext}.
  *
+ * For compatibility with the standard API this class should not be extended,
+ * unless the class extending is internal to SquirrelJME.
+ *
  * @since 2016/10/10
  */
 public abstract class EGLContext
@@ -31,12 +35,13 @@ public abstract class EGLContext
 	/** The single instance of EGL, shared by everything. */
 	private static volatile Reference<EGL> _EGL;
 	
-	EGLContext()
-	{
-		super();
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * Returns an instance of an object which is used to provide access to
+	 * the underlying OpenGL ES rasterization API.
+	 *
+	 * @return The OpenGL ES rasterization API accessor.
+	 * @since 2016/10/10
+	 */
 	public abstract GL getGL();
 	
 	/**
@@ -54,7 +59,7 @@ public abstract class EGLContext
 		
 		// Create?
 		if (ref == null || null == (rv = ref.get()))
-			EGLContext._EGL = new WeakReference<>((rv = new __EGL__()));
+			EGLContext._EGL = new WeakReference<>((rv = new DefaultEGL()));
 		
 		// Return it
 		return rv;

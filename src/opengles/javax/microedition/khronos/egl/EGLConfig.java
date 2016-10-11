@@ -10,14 +10,16 @@
 
 package javax.microedition.khronos.egl;
 
-
+/**
+ * This stores an OpenGL ES configuration.
+ *
+ * For compatibility with the standard API this class should not be extended,
+ * unless the class extending is internal to SquirrelJME.
+ *
+ * @since 2016/10/10
+ */
 public abstract class EGLConfig
 {
-	EGLConfig()
-	{
-		super();
-		throw new Error("TODO");
-	}
 }
 
 
