@@ -232,6 +232,91 @@ public interface EGL10
 	public static final int EGL_WINDOW_BIT =
 		4;
 	
+	/**
+	 * This returns an array of framebuffer configurations that match the
+	 * given input attributes.
+	 *
+	 * This method attempts to match all of the attributes that were specified.
+	 * All attributes start with a key and is followed by a value.
+	 *
+	 * If the attribute list is {@code null} or has {@link #EGL_NONE} as the
+	 * first entry then all defaults are chosen and default selection is
+	 * performed.
+	 *
+	 * Some values must match exactly while others may be bound to be at least
+	 * or at most the given value.
+	 *
+	 * {@link #EGL_BUFFER_SIZE}: default 0, specifies the the minimum size
+	 * that the color buffer may be.
+	 *
+	 * {@link #EGL_RED_SIZE}, {@link #EGL_GREEN_SIZE}, {@link #EGL_BLUE_SIZE},
+	 * and {@link #EGL_ALPHA_SIZE}: default 0, the number of bits that are
+	 * used to represent a given channel, if the value is zero then the
+	 * smallest available buffer is chosen for the given number, otherwise a
+	 * conifguration that at least has the given value is chosen.
+	 *
+	 * {@link #EGL_CONFIG_CAVEAT}: default {@link #EGL_DONT_CARE}, may be
+	 * {@link #EGL_NONE} if no caveats are required, {@link #EGL_SLOW_CONFIG}
+	 * if slow configurations are to be used, if
+	 * {@link #EGL_NON_CONFORMANT_CONFIG} then only non-conforming
+	 * configurations are used, {@link #EGL_DONT_CARE} if any configuration may
+	 * be used.
+	 *
+	 * {@link #EGL_CONFIG_ID}: default {@link #EGL_DONT_CARE}, specifies the
+	 * configuration ID to preselect, if specified then all other attributes
+	 * are ignored.
+	 *
+	 * {@link #EGL_DEPTH_SIZE}, {@link #EGL_STENCIL_SIZE}: default 0, the
+	 * minimum number of bits used to
+	 * store the buffer, if {@code 0} then no buffer is preferred.
+	 *
+	 * {@link #EGL_LEVEL}: default 0, used exactly, positive values request
+	 * the number of overlay buffers that are to be used while negetive values
+	 * represent the number of underlay buffers that are to be used.
+	 *
+	 * {@link #EGL_NATIVE_RENDERABLE}: default {@link #EGL_DONT_CARE}, if
+	 * {@link #EGL_DONT_CARE} then no preference is made, if {@link #EGL_TRUE}
+	 * then only configurations that allow native rendering will be selected,
+	 * otherwise {@link #EGL_FALSE} specifies that no native rendering is to
+	 * be used.
+	 *
+	 * {@link #EGL_NATIVE_VISUAL_TYPE}: 1.0 only,
+	 * default {@link #EGL_DONT_CARE}, contains a platform specific value.
+	 *
+	 * {@link #EGL_SAMPLE_BUFFERS}, default 0, The minimum number of
+	 * multi-sample buffers to use. Currently this value must be zero or one.
+	 *
+	 * {@link #EGL_SAMPLES}, default 0, the minimum number of samples required
+	 * in multi-sample buffers.
+	 *
+	 * {@link #EGL_SURFACE_TYPE}, default {@link #EGL_WINDOW_BIT}, this is a
+	 * bit field of {@link #EGL_WINDOW_BIT}, {@link #EGL_PBUFFER_BIT}, and
+	 * {@link #EGL_PIXMAP_BIT}.
+	 *
+	 * The following errors are set:
+	 *
+	 * {@link #EGL_BAD_DISPLAY} if the display is not valid.
+	 * {@link #EGL_BAD_ATTRIBUTE} if an attribute is not valid.
+	 * {@link #EGL_NOT_INITIALIZED} if the display is not initialized.
+	 * {@link #EGL_BAD_PARAMETER} if {@code __numconf} is {@code null}.
+	 *
+	 * @param __disp The display to get a configuration for.
+	 * @param __attrl The attributes to return a matching configuration for,
+	 * must end with {@link #EGL_NONE}.
+	 * @param __confs The output configuration array, if {@code null} then
+	 * this returns the number of matching configurations.
+	 * @param __confssize The number of configurations to write at the most.
+	 * @param __numconf The number of configurations that were placed in the
+	 * output configuration array.
+	 * @return {@code true} if a configuration was found and no errors were
+	 * generated.
+	 * @throws IllegalArgumentException If no display was specified; If the
+	 * attribute list is not terminated with {@link #EGL_NONE}; If the
+	 * configurations were not null and the array length is shorter than the
+	 * specified size; The number of configurations is not null and the length
+	 * is zero.
+	 * @since 2016/10/11
+	 */
 	public abstract boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
 		EGLConfig[] __confs, int __confssize, int[] __numconf)
 		throws IllegalArgumentException;
