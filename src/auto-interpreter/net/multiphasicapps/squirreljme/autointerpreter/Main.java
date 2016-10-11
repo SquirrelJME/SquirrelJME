@@ -130,6 +130,9 @@ public class Main
 	 */
 	private InterpreterProcess __bootLauncher()
 	{
+		// 
+		Map<String, RuntimeNamespace> jarnamespaces = this.jarnamespaces;
+		
 		throw new Error("TODO");
 	}
 	
