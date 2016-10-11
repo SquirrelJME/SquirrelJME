@@ -232,8 +232,9 @@ public interface EGL10
 	public static final int EGL_WINDOW_BIT =
 		4;
 	
-	public abstract boolean eglChooseConfig(EGLDisplay __a, int[] __b, 
-		EGLConfig[] __c, int __d, int[] __e);
+	public abstract boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
+		EGLConfig[] __confs, int __confssize, int[] __numconf)
+		throws IllegalArgumentException;
 	
 	public abstract boolean eglCopyBuffers(EGLDisplay __a, EGLSurface __b, 
 		Object __c);

@@ -45,8 +45,9 @@ public class DefaultEGL
 	 * @since 2016/10/10
 	 */
 	@Override
-	public boolean eglChooseConfig(EGLDisplay __a, int[] __b, 
-		EGLConfig[] __c, int __d, int[] __e)
+	public boolean eglChooseConfig(EGLDisplay __disp, int[] __attrl,
+		EGLConfig[] __confs, int __confssize, int[] __numconf)
+		throws IllegalArgumentException
 	{
 		throw new Error("TODO");
 	}
