@@ -24,8 +24,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -66,14 +68,22 @@ public class ProjectInfo
 	/** Is this a binary project? */
 	protected final boolean isbinary;
 	
+	/** Single set of dependencies based on the type. */
+	private final Map<DependencyType, Reference<Set<ProjectName>>> _xdepends =
+		new HashMap<>();
+	
+	/** Dependency lookup types (required). */
+	private final Map<DependencyLookupType, Reference<Set<ProjectName>>>
+		_rdepends =
+		new HashMap<>();
+	
+	/** Dependency lookup types (optional). */
+	private final Map<DependencyLookupType, Reference<Set<ProjectName>>>
+		_odepends =
+		new HashMap<>();
+	
 	/** Package groups this project is in. */
 	private volatile Reference<Set<String>> _groups;
-	
-	/** The dependencies of this project. */
-	private volatile Reference<Set<ProjectName>> _depends;
-	
-	/** Optional dependencies of this project. */
-	private volatile Reference<Set<ProjectName>> _odepends;
 	
 	/** Cached date. */
 	private volatile Reference<FileTime> _date;
@@ -245,9 +255,89 @@ public class ProjectInfo
 	}
 	
 	/**
+	 * Returns the raw set of dependencies of the given dependency type.
+	 *
+	 * @param __dt The type of dependencies to lookup
+	 * @return The set of projects that are used for the dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/11
+	 */
+	public final Set<ProjectName> dependencies(DependencyType __dt)
+		throws NullPointerException
+	{
+		// Check
+		if (__dt == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on the map
+		Map<DependencyType, Reference<Set<ProjectName>>> xdepends =
+			this._xdepends;
+		synchronized (xdepends)
+		{
+			// Get
+			Reference<Set<ProjectName>> ref = xdepends.get(__dt);
+			Set<ProjectName> rv;
+			
+			// Cache values?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Setup
+				Set<ProjectName> target = new SortedTreeSet<>();
+				
+				// Read the manifest
+				JavaManifest man = manifest();
+				JavaManifestAttributes attr = man.getMainAttributes();
+			
+				// Get the dependency field
+				String pids = attr.get(__dt.key());
+				if (pids != null)
+				{
+					int n = pids.length();
+					for (int i = 0; i < n; i++)
+					{
+						char c = pids.charAt(i);
+					
+						// Ignore whitespace
+						if (c <= ' ')
+							continue;
+					
+						// Find the next space
+						int j;
+						for (j = i + 1; j < n; j++)
+						{
+							char d = pids.charAt(j);
+						
+							if (d == ' ')
+								break;
+						}
+					
+						// Split string
+						String spl = pids.substring(i, j).trim();
+					
+						// Add it
+						target.add(new ProjectName(spl));
+					
+						// Skip
+						i = j;
+					}
+				}
+				
+				// Store it
+				rv = UnmodifiableSet.<ProjectName>of(target);
+				xdepends.put(__dt, new WeakReference<>(rv));
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns all of the projects that this project depends on, only
 	 * required dependencies are selected.
 	 *
+	 * @param __lu The type of dependencies to obtain, may be internal or
+	 * external.
 	 * @return The set of projects this project depends on.
 	 * @throws MissingDependencyException If a dependency is missing.
 	 * @throws NullPointerException On null arguments.
@@ -262,6 +352,8 @@ public class ProjectInfo
 	/**
 	 * Returns all of the projects that this project depends on.
 	 *
+	 * @param __lu The type of dependencies to obtain, may be internal or
+	 * external.
 	 * @param __opt Select optional dependencies instead.
 	 * @return The set of projects this project depends on. If optional
 	 * dependencies are specified, they are only included if they exist.
@@ -269,75 +361,46 @@ public class ProjectInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public final Set<ProjectName> dependencies(DependencyLookupType __lt,
+	public final Set<ProjectName> dependencies(DependencyLookupType __lu,
 		boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
 		// Check
-		if (__lt == null)
+		if (__lu == null)
 			throw new NullPointerException("NARG");
 		
-		// Get
-		Reference<Set<ProjectName>> ref = (__opt ? this._odepends :
-			this._depends);
-		Set<ProjectName> rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
+		// Have dependencies been calculated already?
+		Map<DependencyLookupType, Reference<Set<ProjectName>>> depends =
+			(__opt ? this._rdepends : this._odepends);
+		synchronized (depends)
 		{
-			// Target
-			Set<ProjectName> deps = new SortedTreeSet<>();
+			// Get
+			Reference<Set<ProjectName>> ref = depends.get(__lu);
+			Set<ProjectName> rv;
 			
-			// Read the manifest
-			JavaManifest man = manifest();
-			JavaManifestAttributes attr = man.getMainAttributes();
-			
-			// Get the dependency field
-			String pids = attr.get((__opt ? "X-SquirrelJME-Optional" :
-				"X-SquirrelJME-Depends"));
-			if (pids != null)
+			// Cache values?
+			if (ref == null || null == (rv = ref.get()))
 			{
-				int n = pids.length();
-				for (int i = 0; i < n; i++)
-				{
-					char c = pids.charAt(i);
-					
-					// Ignore whitespace
-					if (c <= ' ')
-						continue;
-					
-					// Find the next space
-					int j;
-					for (j = i + 1; j < n; j++)
-					{
-						char d = pids.charAt(j);
-						
-						if (d == ' ')
-							break;
-					}
-					
-					// Split string
-					String spl = pids.substring(i, j).trim();
-					
-					// Add it
-					deps.add(new ProjectName(spl));
-					
-					// Skip
-					i = j;
-				}
+				// Setup
+				Set<ProjectName> target = new SortedTreeSet<>();
+				
+				// Always add required dependencies
+				for (DependencyType t : __lu.required())
+					target.addAll(dependencies(t));
+				
+				// Only use optional ones if requested
+				if (__opt)
+					for (DependencyType t : __lu.optional())
+						target.addAll(dependencies(t));
+				
+				// Store it
+				rv = UnmodifiableSet.<ProjectName>of(target);
+				depends.put(__lu, new WeakReference<>(rv));
 			}
 			
-			// Lock
-			rv = UnmodifiableSet.<ProjectName>of(deps);
-			ref = new WeakReference<>(rv);
-			if (__opt)
-				this._odepends = ref;
-			else
-				this._depends = ref;
+			// Return it
+			return rv;
 		}
-		
-		// Return
-		return rv;
 	}
 	
 	/**

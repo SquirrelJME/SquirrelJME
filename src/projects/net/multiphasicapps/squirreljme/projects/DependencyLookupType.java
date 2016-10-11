@@ -25,5 +25,69 @@ public enum DependencyLookupType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the dependency types used for optional dependencies.
+	 *
+	 * @return The optional dependency types.
+	 * @since 2016/10/11
+	 */
+	public final DependencyType[] optional()
+	{
+		// Depends
+		switch (this)
+		{
+				// Internal?
+			case INTERNAL:
+				return new DependencyType[]
+					{
+						DependencyType.OPTIONAL
+					};
+				
+				// External?
+			case EXTERNAL:
+				return new DependencyType[]
+					{
+						DependencyType.OPTIONAL,
+						DependencyType.EXTERNAL
+					};
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Returns the dependency types used for required dependencies.
+	 *
+	 * @return The required dependency types.
+	 * @since 2016/10/11
+	 */
+	public final DependencyType[] required()
+	{
+		// Depends
+		switch (this)
+		{
+				// Internal?
+			case INTERNAL:
+				return new DependencyType[]
+					{
+						DependencyType.REQUIRED,
+						DependencyType.INTERNAL
+					};
+				
+				// External?
+			case EXTERNAL:
+				return new DependencyType[]
+					{
+						DependencyType.REQUIRED
+					};
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 
