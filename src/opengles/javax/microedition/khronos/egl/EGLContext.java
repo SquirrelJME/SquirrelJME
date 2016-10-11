@@ -13,6 +13,8 @@ package javax.microedition.khronos.egl;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.khronos.opengles.GL;
+import net.multiphasicapps.squirreljme.compat.AccessChange;
+import net.multiphasicapps.squirreljme.compat.AccessType;
 import net.multiphasicapps.squirreljme.opengles.DefaultEGL;
 
 /**
@@ -30,6 +32,8 @@ import net.multiphasicapps.squirreljme.opengles.DefaultEGL;
  *
  * @since 2016/10/10
  */
+@AccessChange(from=AccessType.PRIVATE, to=AccessType.PUBLIC,
+	reason="Package encapsulation.")
 public abstract class EGLContext
 {
 	/** The single instance of EGL, shared by everything. */

@@ -100,7 +100,7 @@ SquirrelJME intends to be 99.9% compatible with Java ME 8 and older J2ME
 standards. In the case where compatibility is _purposefully_ broken, it will
 be documented in the following document:
 
- * [Purposeful Compatiblity Breakages](compatibility.mkd).
+ * [Purposeful Compatiblity Breakages](/uv/javadoc/compatibility.mkd).
 
 ## Important Statements
 

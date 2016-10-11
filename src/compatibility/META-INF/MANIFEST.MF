@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: compatibility
+X-SquirrelJME-UUID: 179459e5-2933-4db4-b116-7b2006a163f2
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: EM
+LIBlet-Title: Compatibility Annotations
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains annotations which are used 
+ to flag and specify compatibility breakages compared to the standard 
+ that is to be copied.
+

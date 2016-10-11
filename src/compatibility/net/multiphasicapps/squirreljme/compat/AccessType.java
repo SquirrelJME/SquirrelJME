@@ -8,23 +8,25 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.khronos.egl;
-
-import net.multiphasicapps.squirreljme.compat.AccessChange;
-import net.multiphasicapps.squirreljme.compat.AccessType;
+package net.multiphasicapps.squirreljme.compat;
 
 /**
- * This represents an OpenGL ES Display.
- *
- * For compatibility with the standard API this class should not be extended,
- * unless the class extending is internal to SquirrelJME.
+ * This represents the access type used.
  *
  * @since 2016/10/10
  */
-@AccessChange(from=AccessType.PRIVATE, to=AccessType.PUBLIC,
-	reason="Package encapsulation.")
-public abstract class EGLDisplay
+public enum AccessType
 {
+	/** Private or package private. */
+	PRIVATE,
+	
+	/** Protected. */
+	PROTECTED,
+	
+	/** Publc. */
+	PUBLIC,
+	
+	/** End. */
+	;
 }
-
 
