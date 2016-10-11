@@ -22,7 +22,7 @@ import net.multiphasicapps.squirreljme.compat.AccessType;
  * @since 2016/10/10
  */
 @AccessChange(from=AccessType.PRIVATE, to=AccessType.PUBLIC,
-	reason="Package encapsulation.")
+	value="Constructor changed for package encapsulation.")
 public abstract class EGLSurface
 {
 }

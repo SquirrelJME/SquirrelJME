@@ -17,23 +17,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is used to indicate that access has changed.
+ * Indicates that the given item is now abstract.
  *
  * @since 2016/10/10
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
-	ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
-public @interface AccessChange
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface NowAbstract
 {
-	/** The original access type. */
-	AccessType from();
-	
-	/** The new access type. */
-	AccessType to();
-	
-	/** The reason for it. */
-	String value() default "No reason.";
+	String value();
 }
 

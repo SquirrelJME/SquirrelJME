@@ -33,7 +33,7 @@ import net.multiphasicapps.squirreljme.opengles.DefaultEGL;
  * @since 2016/10/10
  */
 @AccessChange(from=AccessType.PRIVATE, to=AccessType.PUBLIC,
-	reason="Package encapsulation.")
+	value="Constructor changed for package encapsulation.")
 public abstract class EGLContext
 {
 	/** The single instance of EGL, shared by everything. */
