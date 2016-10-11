@@ -141,6 +141,7 @@ public class Display
 	public static final int SUPPORTS_IDLEITEM =
 		 2048;
 
+	/** This specifies that the display supports user input. */
 	public static final int SUPPORTS_INPUT_EVENTS =
 		 1;
 
