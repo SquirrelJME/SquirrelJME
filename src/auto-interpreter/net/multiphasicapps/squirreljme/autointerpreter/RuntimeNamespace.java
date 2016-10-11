@@ -11,13 +11,12 @@
 package net.multiphasicapps.squirreljme.autointerpreter;
 
 /**
- * This is an execution engine that generally is fast because it uses native
- * threads and does not have any forced loss of speed.
+ * This interface is used to represent namespaces which may be available for
+ * usage.
  *
  * @since 2016/10/11
  */
-public class FastExecutionEngine
-	implements ExecutionEngine
+public interface RuntimeNamespace
 {
 }
 

@@ -12,8 +12,12 @@ package net.multiphasicapps.squirreljme.autointerpreter;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 import javax.microedition.lcdui.Display;
+import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
+import net.multiphasicapps.squirreljme.projects.ProjectName;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is the main entry point for the auto-interpreter.
@@ -31,6 +35,10 @@ public class Main
 	
 	/** The display used. */
 	protected final Display display;
+	
+	/** JAR to namespace mappings, which JARs are available for use. */
+	protected final Map<String, RuntimeNamespace> jarnamespaces =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes the auto interpreter.
@@ -61,6 +69,12 @@ public class Main
 				throw new RuntimeException("EO01", e);
 			}
 		this.projects = this.projects;
+		
+		// Add namespaces for every project that exists
+		Map<String, RuntimeNamespace> jarnamespaces = this.jarnamespaces;
+		for (Map.Entry<ProjectName, ProjectGroup> e : projects.entrySet())
+			jarnamespaces.put(e.getKey().toString(),
+				new GroupNamespace(e.getValue()));
 		
 		// Setup canvas for the interpretive view (to see what goes on)
 		SystemCanvas canvas = new SystemCanvas();
