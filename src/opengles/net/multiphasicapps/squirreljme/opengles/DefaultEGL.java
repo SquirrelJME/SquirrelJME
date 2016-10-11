@@ -66,6 +66,70 @@ public class DefaultEGL
 		EGLConfig[] __confs, int __confssize, int[] __numconf)
 		throws IllegalArgumentException
 	{
+		// If null, then it defaults to not caring about anything
+		if (__attrl == null)
+			__attrl = new int[]{EGL10.EGL_NONE};
+		
+		// {@squirreljme.error EJ06 No display was specified for choosing a
+		// configuration.}
+		if (__disp == null)
+		{
+			this._error = EGL10.EGL_BAD_DISPLAY;
+			throw new IllegalArgumentException("EJ06");
+		}
+		
+		// Configuration must be set
+		if (__numconf == null)
+		{
+			this._error = EGL10.EGL_BAD_PARAMETER;
+			return false;
+		}
+		
+		// {@squirreljme.error EJ07 The array containing the number of
+		// configurations written has a length of zero.}
+		if (__numconf.length < 1)
+		{
+			this._error = EGL10.EGL_BAD_PARAMETER;
+			throw new IllegalArgumentException("EJ07");
+		}
+		
+		// {@squirreljme.error EJ08 Requested more configurations than what
+		// may be output.}
+		if (__confs != null && __confs.length < __confssize)
+		{
+			this._error = EGL10.EGL_BAD_PARAMETER;
+			throw new IllegalArgumentException("EJ08");
+		}
+		
+		// Must be a SquirrelJME display
+		if (!(__disp instanceof DefaultDisplay))
+		{
+			this._error = EGL10.EGL_BAD_DISPLAY;
+			return false;
+		}
+		
+		// Must be initialized
+		DefaultDisplay dd = (DefaultDisplay)__disp;
+		if (!dd._initialized)
+		{
+			this._error = EGL10.EGL_NOT_INITIALIZED;
+			return false;
+		}
+		
+		// Find the end of the list
+		int end = 0, atn = __attrl.length;
+		for (int i = 0; i < atn; i++, end++)
+			if (__attrl[i] == EGL10.EGL_NONE)
+				break;
+		
+		// {@squirreljme.error EJ09 The attribute list does not end with
+		// EGL_NONE.}
+		if (end >= atn)
+		{
+			this._error = EGL10.EGL_BAD_PARAMETER;
+			throw new IllegalArgumentException("EJ09");
+		}
+		
 		throw new Error("TODO");
 	}
 	

@@ -462,7 +462,7 @@ public interface EGL10
 	 * @param __numconf The number of configurations that were placed in the
 	 * output configuration array.
 	 * @return {@code true} if a configuration was found and no errors were
-	 * generated.
+	 * generated. If {@code false} then the input arguments are not modified.
 	 * @throws IllegalArgumentException If no display was specified; If the
 	 * attribute list is not terminated with {@link #EGL_NONE}; If the
 	 * configurations were not null and the array length is shorter than the
