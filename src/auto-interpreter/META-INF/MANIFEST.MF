@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: auto-interpreter
+X-SquirrelJME-UUID: 0142f05c-0152-464b-aab3-d69b4a47a39c
+X-SquirrelJME-Depends: cldc-full midp-lcdui projects jit
+X-SquirrelJME-Error: EO
+Main-Class: net.multiphasicapps.squirreljme.autointerpreter.Main
+LIBlet-Title: Automatic SquirrelJME Interpreter
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is an interpreted environment which is able 
+ to automatically locate and provide interpretive access to projects 
+ in SquirrelJME.
+
