@@ -17,7 +17,18 @@ package net.multiphasicapps.squirreljme.autointerpreter;
  * @since 2016/10/11
  */
 public class FastExecutionEngine
-	implements ExecutionEngine
+	extends ExecutionEngine
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/11
+	 */
+	@Override
+	public void run()
+	{
+		// Wait until the launcher process stops executing
+		for (;;)
+			throw new Error("TODO");
+	}
 }
 

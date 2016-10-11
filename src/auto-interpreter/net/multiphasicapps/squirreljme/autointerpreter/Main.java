@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.autointerpreter;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.microedition.lcdui.Display;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
@@ -39,6 +41,9 @@ public class Main
 	/** JAR to namespace mappings, which JARs are available for use. */
 	protected final Map<String, RuntimeNamespace> jarnamespaces =
 		new SortedTreeMap<>();
+	
+	/** The excution engine used for executing project code. */
+	protected final ExecutionEngine execengine;
 	
 	/**
 	 * Initializes the auto interpreter.
@@ -97,6 +102,13 @@ public class Main
 		
 		// Make the canvas current
 		__d.setCurrent(canvas);
+		
+		// Setup execution engine
+		ExecutionEngine execengine = new FastExecutionEngine();
+		this.execengine = execengine;
+		
+		// Load launcher as the main process
+		execengine.addProcess(__bootLauncher());
 	}
 	
 	/**
@@ -107,10 +119,18 @@ public class Main
 	public void run()
 	{
 		// Run the loop forever, until the launcher signals a VM shutdown
-		for (;;)
-		{
-			throw new Error("TODO");
-		}
+		this.execengine.run();
+	}
+	
+	/**
+	 * Bootstraps the launcher.
+	 *
+	 * @return The process for the bootstrapped launcher.
+	 * @since 2016/10/11
+	 */
+	private InterpreterProcess __bootLauncher()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
