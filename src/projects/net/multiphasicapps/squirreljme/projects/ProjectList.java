@@ -224,6 +224,7 @@ public class ProjectList
 	 * Recursively obtains all of the dependencies of the given project name
 	 * and any of their dependencies.
 	 *
+	 * @param __lu The type of dependency lookup to perform.
 	 * @param __t The type of dependencies to obtain.
 	 * @param __n The name of the dependency to get for.
 	 * @param __opt If {@code true} then any optional packages are also
@@ -233,8 +234,9 @@ public class ProjectList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	public final Collection<ProjectInfo> recursiveDependencies(ProjectType __t,
-		ProjectName __n, boolean __opt)
+	public final Collection<ProjectInfo> recursiveDependencies(
+		DependencyLookupType __lu, ProjectType __t, ProjectName __n,
+		boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
 		return recursiveDependencies(new SortedTreeSet<ProjectInfo>(), __t,
@@ -246,6 +248,7 @@ public class ProjectList
 	 * and any of their dependencies.
 	 *
 	 * @param __rv The target set to be given dependencies.
+	 * @param __lu The type of dependency lookup to perform.
 	 * @param __t The type of dependencies to obtain.
 	 * @param __n The name of the dependency to get for.
 	 * @param __opt If {@code true} then any optional packages are also
@@ -256,12 +259,12 @@ public class ProjectList
 	 * @since 2016/09/18
 	 */
 	public final Collection<ProjectInfo> recursiveDependencies(
-		Collection<ProjectInfo> __rv, ProjectType __t, ProjectName __n,
-		boolean __opt)
+		Collection<ProjectInfo> __rv, DependencyLookupType __lu,
+		ProjectType __t, ProjectName __n, boolean __opt)
 		throws MissingDependencyException, NullPointerException
 	{
 		// Check
-		if (__rv == null || __t == null || __n == null)
+		if (__rv == null || __lu == null || __t == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Package name queue

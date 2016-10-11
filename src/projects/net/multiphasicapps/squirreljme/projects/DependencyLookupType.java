@@ -11,15 +11,12 @@
 package net.multiphasicapps.squirreljme.projects;
 
 /**
- * This represents the type of optional lookup to perform.
+ * This represents the dependency family to use.
  *
  * @since 2016/10/11
  */
-public enum OptionalLookupType
+public enum DependencyLookupType
 {
-	/** Use no optional dependencies. */
-	NONE,
-	
 	/** Use internal ones only (runs on SquirrelJME). */
 	INTERNAL,
 	

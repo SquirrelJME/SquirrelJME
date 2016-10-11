@@ -245,16 +245,18 @@ public class ProjectInfo
 	}
 	
 	/**
-	 * Returns all of the projects that this project depends on.
+	 * Returns all of the projects that this project depends on, only
+	 * required dependencies are selected.
 	 *
 	 * @return The set of projects this project depends on.
 	 * @throws MissingDependencyException If a dependency is missing.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	public final Set<ProjectName> dependencies()
-		throws MissingDependencyException
+	public final Set<ProjectName> dependencies(DependencyLookupType __lt)
+		throws MissingDependencyException, NullPointerException
 	{
-		return dependencies(false);
+		return dependencies(__lt, false);
 	}
 	
 	/**
@@ -264,11 +266,17 @@ public class ProjectInfo
 	 * @return The set of projects this project depends on. If optional
 	 * dependencies are specified, they are only included if they exist.
 	 * @throws MissingDependencyException If a dependency is missing.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public final Set<ProjectName> dependencies(boolean __opt)
-		throws MissingDependencyException
+	public final Set<ProjectName> dependencies(DependencyLookupType __lt,
+		boolean __opt)
+		throws MissingDependencyException, NullPointerException
 	{
+		// Check
+		if (__lt == null)
+			throw new NullPointerException("NARG");
+		
 		// Get
 		Reference<Set<ProjectName>> ref = (__opt ? this._odepends :
 			this._depends);

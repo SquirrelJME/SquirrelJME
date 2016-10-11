@@ -137,19 +137,21 @@ public final class ProjectGroup
 	 *
 	 * @param __bc The compiler to use for compilation, if {@code null} then
 	 * a fallback compiler is attempted to be used.
+	 * @param __lu The type of dependencies to lookup.
 	 * @return The binary project information.
 	 * @throws CompilationFailedException If project compilation failed.
 	 * @throws IOException On read/write errors.
 	 * @throws MissingSourceException If the project has no source code.
 	 * @throws NullPointerException If no compiler was specified and there is
-	 * no compiler available for usage.
+	 * no compiler available for usage; or {@code __lu} is {@code null}.
 	 * @since 2016/09/18
 	 */
-	public final ProjectInfo compileSource(Compiler __bc)
+	public final ProjectInfo compileSource(Compiler __bc,
+		DependencyLookupType __lu)
 		throws CompilationFailedException, IOException, MissingSourceException,
 			NullPointerException
 	{
-		return compileSource(__bc, false);
+		return compileSource(__bc, __lu, false);
 	}
 	
 	/**
@@ -157,6 +159,7 @@ public final class ProjectGroup
 	 *
 	 * @param __bc The compiler to use for compilation, if {@code null} then
 	 * a fallback compiler is attempted to be used.
+	 * @param __lu The type of dependencies to lookup.
 	 * @param __opt If {@code true} then optional dependencies are also checked
 	 * and rebuild as needed (if they exist).
 	 * @return The binary project information.
@@ -164,13 +167,18 @@ public final class ProjectGroup
 	 * @throws IOException On read/write errors.
 	 * @throws MissingSourceException If the project has no source code.
 	 * @throws NullPointerException If no compiler was specified and there is
-	 * no compiler available for usage.
+	 * no compiler available for usage; or {@code __lu} is {@code null}.
 	 * @since 2016/09/19
 	 */
-	public final ProjectInfo compileSource(Compiler __bc, boolean __opt)
+	public final ProjectInfo compileSource(Compiler __bc,
+		DependencyLookupType __lu, boolean __opt)
 		throws CompilationFailedException, IOException, MissingSourceException,
 			NullPointerException
 	{
+		// Check
+		if (__lu == null)
+			throw new NullPointerException("NARG");
+		
 		// Try the fallback if one was not specified
 		if (__bc == null)
 		{
