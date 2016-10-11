@@ -189,7 +189,9 @@ public class DefaultEGL
 		if (__nd == null)
 			throw new IllegalArgumentException("EJ02");
 		
-		throw new Error("TODO");
+		// Just create a new display regardless of the native display object
+		// used.
+		return new DefaultDisplay(__nd);
 	}
 	
 	/**
