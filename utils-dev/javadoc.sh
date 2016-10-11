@@ -64,7 +64,7 @@ do
 	javadoc \
 		-locale "en_US" \
 		-encoding "utf-8" \
-		-doclet net.multiphasicapps.doclet.markdown.DocletMain \
+		-doclet net.multiphasicapps.doclet.markdown.MarkdocMain \
 		-d "javadoc/$__base" \
 		-J-Dnet.multiphasicapps.doclet.markdown.debug=true \
 		-squirreljme-project "$__base" \

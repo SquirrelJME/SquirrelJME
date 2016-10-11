@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: doclet-common
+X-SquirrelJME-UUID: 9089b6e6-c628-4d73-ba89-661d2c8de768
+X-SquirrelJME-Depends: cldc-full sun-doclet-api util-sorted 
+ util-unmodifiable symbols
+X-SquirrelJME-Error: EN
+LIBlet-Title: Common Doclet Code
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains code that can be shared 
+ among the various doclets which may be supported.
+

@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.doclet.CommondocClass;
+import net.multiphasicapps.doclet.CommondocMain;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
@@ -37,7 +39,8 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2016/09/13
  */
-public class MarkdownClass
+public class MarkdocClass
+	extends CommondocClass
 {
 	/**
 	 * {@squirreljme.property net.multiphasicapps.doclet.markdown.debug=(bool)
@@ -47,180 +50,24 @@ public class MarkdownClass
 	private static final boolean _DEBUG_OUTPUT =
 		Boolean.getBoolean("net.multiphasicapps.doclet.markdown.debug");
 	
-	/** The main doclet. */
-	protected final DocletMain main;
-	
-	/** The wrapped class doclet. */
-	protected final ClassDoc doc;
-	
-	/** The base class name path, uses directory components. */
-	protected final Path basenamepath;
-	
 	/** The base path for the markdown file. */
 	protected final Path basemarkdownpath;
 	
-	/** The base path with Java extension. */
-	protected final Path basenamepathjava;
-	
-	/** The qualified name of this class. */
-	protected final String qualifiedname;
-	
-	/** The unqualified class name. */
-	protected final String unqualifiedname;
-	
-	/** The class name used. */
-	protected final BinaryNameSymbol namesymbol;
-	
-	/** The containing class (will be null if not an inner class). */
-	protected final MarkdownClass containedin;
-	
-	/** The super class. */
-	protected final MarkdownClass superclass;
-	
-	/** Implemented interfaces. */
-	protected final Map<String, MarkdownClass> interfaces =
-		new SortedTreeMap<>();
-	
-	/** Classes that extend this class. */
-	protected final Map<String, MarkdownClass> superclassof =
-		new SortedTreeMap<>();
-	
-	/** Classes which implement this class. */
-	protected final Map<String, MarkdownClass> interfacesof =
-		new SortedTreeMap<>();
-	
-	/** Is this class explicit? */
-	volatile boolean _implicit;
-	
 	/**
-	 * Initializes the markdown wrapped class.
+	 * Initializes the wrapped markdown class.
 	 *
 	 * @param __dm The main doclet.
-	 * @param __cd The class to reference.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/13
+	 * @param __cd The class documentation.
+	 * @since 2016/10/11
 	 */
-	public MarkdownClass(DocletMain __dm, ClassDoc __cd)
-		throws NullPointerException
+	public MarkdocClass(MarkdocMain __dm, ClassDoc __cd)
 	{
-		// Check
-		if (__dm == null || __cd == null)
-			throw new NullPointerException("NARG");
+		super(__dm, __cd);
 		
-		// Set
-		this.main = __dm;
-		this.doc = __cd;
-		
-		// Setup qualified name
-		String qualifiedname = __cd.qualifiedName();
-		this.qualifiedname = qualifiedname;
-		
-		// Determine unqualified name, which is just from the last dot
-		int ld = qualifiedname.lastIndexOf('.');
-		this.unqualifiedname = (ld < 0 ? qualifiedname :
-			qualifiedname.substring(ld + 1));
-		
-		// Register class
-		__dm.__registerClass(__cd.qualifiedName(), this);
-		
-		// Get contained class
-		ClassDoc cin = __cd.containingClass();
-		MarkdownClass incl = (cin == null ? null : __dm.markdownClass(cin));
-		this.containedin = incl;
-		
-		// The symbol for this name is just this class
-		BinaryNameSymbol bns;
-		if (incl == null)
-			this.namesymbol = (bns = BinaryNameSymbol.of(
-				qualifiedname.replace('.', '/')));
-		
-		// Otherwise, use the parent class with a $ this class
-		else
-		{
-			// The simple name contains the dot in it, which must be removed
-			String sn = __cd.name();
-			int ldx = sn.lastIndexOf('.');
-			sn = sn.substring(ldx + 1);
-			
-			// Now use it
-			this.namesymbol = (bns = BinaryNameSymbol.of(
-				incl.namesymbol + "$" + sn));
-		}
-		
-		// Determine the base name path for this class
-		{
-			// Fill with fragments
-			List<String> bnp = new ArrayList<>();
-			int n = qualifiedname.length();
-			int base = 0;
-			for (IdentifierSymbol i : bns)
-				bnp.add(i.toString());
-		
-			// Setup
-			Path p;
-			this.basenamepath = (p = Paths.get(bnp.remove(0),
-				bnp.<String>toArray(new String[bnp.size()])));
-			
-			// Setup name for markdown file location
-			this.basemarkdownpath = __lowerPath(
-				p.resolveSibling(p.getFileName() + ".mkd"));
-			
-			// The path where the file should be, hopefully
-			this.basenamepathjava = p.resolveSibling(
-				p.getFileName() + ".java");
-		}
-		
-		// Get super class
-		ClassDoc rawsc = __cd.superclass();
-		MarkdownClass superclass = (rawsc == null ? null :
-			__dm.markdownClass(rawsc));
-		this.superclass = superclass;
-		
-		// Add to superclass of list
-		if (superclass != null)
-			superclass.superclassof.put(qualifiedname, this);
-		
-		// Handle interfaces
-		Map<String, MarkdownClass> interfaces = this.interfaces;
-		for (ClassDoc in : __cd.interfaces())
-		{
-			// Locate class
-			MarkdownClass inc = __dm.markdownClass(in);
-			
-			// Implemented by this class
-			interfaces.put(inc.qualifiedname, inc);
-			
-			// That class implemented by this one
-			inc.interfacesof.put(qualifiedname, this);
-		}
-	}
-	
-	/**
-	 * Returns the class binary name.
-	 *
-	 * @return The class binary name.
-	 * @since 2016/10/01
-	 */
-	public BinaryNameSymbol binaryName()
-	{
-		return this.namesymbol;
-	}
-	
-	/**
-	 * Returns the path which should contain the file.
-	 *
-	 * @return The containing file.
-	 * @since 2016/10/01
-	 */
-	public Path containingClassFile()
-	{
-		// If in another class, use that
-		MarkdownClass containedin = this.containedin;
-		if (containedin != null)
-			return containedin.containingClassFile();
-		
-		// Otherwise use the normal Java path
-		return this.basenamepathjava;
+		// Setup name for markdown file location
+		Path p = this.basenamepath;
+		this.basemarkdownpath = __lowerPath(
+			p.resolveSibling(p.getFileName() + ".mkd"));
 	}
 	
 	/**
@@ -235,28 +82,6 @@ public class MarkdownClass
 	}
 	
 	/**
-	 * Returns the qualified name of this class.
-	 *
-	 * @return The qualified name of this class.
-	 * @since 2016/10/01
-	 */
-	public String qualifiedName()
-	{
-		return this.qualifiedname;
-	}
-	
-	/**
-	 * Returns the unqualified name of this class.
-	 *
-	 * @return The unqualified name.
-	 * @since 2016/10/01
-	 */
-	public String unqualifiedName()
-	{
-		return this.unqualifiedname;
-	}
-	
-	/**
 	 * Writes the class documentation details to the output markdown file.
 	 *
 	 * @since 2016/09/13
@@ -264,7 +89,7 @@ public class MarkdownClass
 	public void writeOutput()
 	{
 		// Get main
-		DocletMain main = this.main;
+		MarkdocMain main = (MarkdocMain)this.main;
 		
 		// Determine
 		Path makemark = main.outputPath(this.basemarkdownpath);
@@ -307,12 +132,13 @@ public class MarkdownClass
 			// Write class tree last
 			md.header(true, 2, "Inheritance");
 			
+			/*
 			// Start inheritence list tree
 			md.listStart();
 			boolean inhnext = false;
 			
 			// Print super class, if there is one
-			MarkdownClass superclass = this.superclass;
+			MarkdocClass superclass = (MarkdocClass)this.superclass;
 			if (superclass != null)
 			{
 				// Go go next item?
@@ -327,7 +153,7 @@ public class MarkdownClass
 			}
 			
 			// Print implemented interfaces
-			Collection<MarkdownClass> implints = this.interfaces.values();
+			Collection<MarkdocClass> implints = this.interfaces.values();
 			if (!implints.isEmpty())
 			{
 				// Next item?
@@ -343,7 +169,7 @@ public class MarkdownClass
 				boolean ilnext = false;
 				
 				// Print interfaces
-				for (MarkdownClass in : implints)
+				for (MarkdocClass in : implints)
 				{
 					// Next?
 					if (ilnext)
@@ -360,7 +186,7 @@ public class MarkdownClass
 			}
 			
 			// Classes which extend this class
-			Collection<MarkdownClass> scoflist = this.superclassof.values();
+			Collection<MarkdocClass> scoflist = this.superclassof.values();
 			if (!scoflist.isEmpty())
 			{
 				// Next item?
@@ -376,7 +202,7 @@ public class MarkdownClass
 				boolean sconext = false;
 				
 				// Go through all superclases (for this project only)
-				for (MarkdownClass scof : scoflist)
+				for (MarkdocClass scof : scoflist)
 				{
 					// Next item?
 					if (sconext)
@@ -393,7 +219,7 @@ public class MarkdownClass
 			}
 			
 			// Classes which implement this class
-			Collection<MarkdownClass> icoflist = this.interfacesof.values();
+			Collection<MarkdocClass> icoflist = this.interfacesof.values();
 			if (!icoflist.isEmpty())
 			{
 				// Next item?
@@ -409,7 +235,7 @@ public class MarkdownClass
 				boolean iconext = false;
 				
 				// Go through all interfaces (for this project only)
-				for (MarkdownClass icof : icoflist)
+				for (MarkdocClass icof : icoflist)
 				{
 					// Next item?
 					if (iconext)
@@ -427,6 +253,7 @@ public class MarkdownClass
 			
 			// Stop list
 			md.listEnd();
+			*/
 			
 			// Flush
 			md.flush();
