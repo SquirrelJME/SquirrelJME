@@ -92,7 +92,11 @@ public class Main
 	@Override
 	public void run()
 	{
-		throw new Error("TODO");
+		// Run the loop forever, until the launcher signals a VM shutdown
+		for (;;)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
