@@ -3,7 +3,7 @@ X-SquirrelJME-Name: builder
 X-SquirrelJME-UUID: 69441fea-3864-4fd2-8716-0b0e355a4ced
 X-SquirrelJME-Depends: cldc-full zip-reader-block jit projects 
  util-unmodifiable emulator jvm basic-assets zip-writer-stream 
- test-all exe io-hexdumpstream util-seekablearray zip-reader-stream
+ exe io-hexdumpstream util-seekablearray zip-reader-stream
 X-SquirrelJME-Error: DW
 Main-Class: net.multiphasicapps.squirreljme.builder.Main
 LIBlet-Title: SquirrelJME Builder
