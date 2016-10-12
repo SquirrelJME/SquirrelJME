@@ -34,6 +34,9 @@ public final class MidletSuiteID
 	/** The string representation. */
 	private volatile Reference<String> _string;
 	
+	/** The string representation used by the IMC Connection. */
+	private volatile Reference<String> _imc;
+	
 	/**
 	 * Initializes the suite identifier.
 	 *
@@ -115,6 +118,27 @@ public final class MidletSuiteID
 	}
 	
 	/**
+	 * This returns the suite ID as an inter-midlet communication string.
+	 *
+	 * @return A string able to be used in inter-midlet communication.
+	 * @since 2016/10/12
+	 */
+	public String toIMCString()
+	{
+		// Get
+		Reference<String> ref = this._imc;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._imc = new WeakReference<>((rv = this.vendor + ":" +
+				this.name + ":" + this.version));
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/12
 	 */
@@ -127,8 +151,8 @@ public final class MidletSuiteID
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = this.vendor + ":" +
-				this.name + ":" + this.version));
+			this._string = new WeakReference<>((rv = this.vendor + ";" +
+				this.name + ";" + this.version));
 		
 		// Return it
 		return rv;
