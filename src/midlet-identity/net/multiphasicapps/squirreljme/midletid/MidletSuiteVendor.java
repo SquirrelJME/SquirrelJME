@@ -37,7 +37,7 @@ public final class MidletSuiteVendor
 			throw new NullPointerException("NARG");
 		
 		// Go through all characters
-		int n = __v.length;
+		int n = __v.length();
 		for (int i = 0; i < n; i++)
 		{
 			char c = __v.charAt(i);
@@ -71,7 +71,7 @@ public final class MidletSuiteVendor
 	 * @since 2016/10/12
 	 */
 	@Override
-	public int compareTo(MidletSuiteName __o)
+	public int compareTo(MidletSuiteVendor __o)
 	{
 		return this.string.compareTo(__o.string);
 	}

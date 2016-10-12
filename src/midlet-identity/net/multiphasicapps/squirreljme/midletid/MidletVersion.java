@@ -46,11 +46,26 @@ public final class MidletVersion
 	public MidletVersion(String __v)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// Check
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
+		this(__decodeVersion(__v));
+	}
+	
+	/**
+	 * Initializes a Midlet version number from the specified array of
+	 * integer values.
+	 *
+	 * @param __v The version triplet, up to the first three elements are
+	 * used by the version number.
+	 * @throws IllegalArgumentException If the version number has an out of
+	 * range value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/12
+	 */
+	public MidletVersion(int[] __v)
+		throws IllegalArgumentException, NullPointerException
+	{
+		this((__v.length > 0 ? __v[0] : 0),
+			(__v.length > 1 ? __v[1] : 0),
+			(__v.length > 2 ? __v[2] : 0));
 	}
 	
 	/**
@@ -97,7 +112,10 @@ public final class MidletVersion
 			throw new IllegalArgumentException(String.format("AD03 %d %d %d",
 				__maj, __min, __rel));
 		
-		throw new Error("TODO");
+		// Set
+		this.major = __maj;
+		this.minor = __min;
+		this.release = __rel;
 	}
 	
 	/**
@@ -177,6 +195,59 @@ public final class MidletVersion
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = this.major + "." +
 				this.minor + "." + this.release));
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Decodes the string based version number
+	 *
+	 * @param __v The input string.
+	 * @return The version tuplet.
+	 * @throws IllegalArgumentException If the input is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/12
+	 */
+	private static final int[] __decodeVersion(String __v)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Output array
+		int[] rv = new int[3];
+		
+		// Parse the input value
+		int n = __v.length(), at = 0;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i <= n; i++)
+		{
+			int c = (i == n ? -1 : __v.charAt(i));
+			
+			// Decimal point? or end
+			if (c == '.' || c == -1)
+			{
+				rv[at++] = Integer.parseInt(sb.toString(), 10);
+				
+				// {@squirreljme.error AD04 Too many version fields in the
+				// specified string. (The input string)}
+				if (c != -1 && at >= 4)
+					throw new IllegalArgumentException(String.format("AD04 %s",
+						__v));
+			}
+			
+			// Add to string
+			else if (c >= '0' && c < '9')
+				sb.append((char)c);
+			
+			// {@squirreljme.error AD05 An illegal character is in the
+			// version string. (The input string)}
+			else
+				throw new IllegalArgumentException(String.format("AD05 %s",
+					__v));
+		}
 		
 		// Return it
 		return rv;

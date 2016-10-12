@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.midletid;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is the identity for a midlet suite which contains a name, vendor,
  * and version.
@@ -28,6 +31,9 @@ public final class MidletSuiteID
 	/** The suite version. */
 	protected final MidletVersion version;
 	
+	/** The string representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the suite identifier.
 	 *
@@ -37,7 +43,7 @@ public final class MidletSuiteID
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletUID(MidletSuiteName __name, MidletSuiteVendor __ven,
+	public MidletSuiteID(MidletSuiteName __name, MidletSuiteVendor __ven,
 		MidletVersion __ver)
 		throws NullPointerException
 	{
@@ -50,6 +56,7 @@ public final class MidletSuiteID
 		this.vendor = __ven;
 		this.version = __ver;
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/12
@@ -57,7 +64,18 @@ public final class MidletSuiteID
 	@Override
 	public int compareTo(MidletSuiteID __o)
 	{
-		throw new Error("TODO");
+		// Compare name
+		int rv = this.name.compareTo(__o.name);
+		if (rv != 0)
+			return rv;
+		
+		// Then vendor
+		rv = this.vendor.compareTo(__o.vendor);
+		if (rv != 0)
+			return rv;
+		
+		// Then the version last
+		return this.version.compareTo(__o.version);
 	}
 	
 	/**
@@ -67,6 +85,10 @@ public final class MidletSuiteID
 	@Override
 	public boolean equals(Object __o)
 	{
+		// Check
+		if (!(__o instanceof MidletSuiteID))
+			return false;
+		
 		throw new Error("TODO");
 	}
 	
@@ -77,7 +99,8 @@ public final class MidletSuiteID
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		return this.name.hashCode() ^ this.vendor.hashCode() ^
+			this.version.hashCode();
 	}
 	
 	/**
@@ -87,7 +110,17 @@ public final class MidletSuiteID
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.name + ":" +
+				this.vendor + ":" + this.version));
+		
+		// Return it
+		return rv;
 	}
 }
 
