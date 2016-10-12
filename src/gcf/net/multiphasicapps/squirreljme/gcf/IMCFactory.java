@@ -42,7 +42,17 @@ public class IMCFactory
 		// forward slashes. (The scheme specific part)}
 		if (!__par.startsWith("//"))
 			throw new IllegalArgumentException(String.format("EC05", __par));
-		String rest = __par.substring(2);
+		
+		// {@squirreljme.error EC06 IMC connections must have a semi-colon
+		// before the flags, even if the flags are not specified. (The scheme
+		// specific part)}
+		int semi = __par.indexOf(';');
+		if (semi < 0)
+			throw new IllegalArgumentException(String.format("EC06", __par));
+		
+		// Split host and options
+		String rest = __par.substring(2, semi);
+		String flags = __par.substring(semi + 1);
 		
 		// Host server?
 		boolean isclient;
