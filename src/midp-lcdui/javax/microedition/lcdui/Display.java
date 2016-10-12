@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
-import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplay;
-import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayInstance;
-import net.multiphasicapps.squirreljme.midp.lcdui.LCDUIDisplayProvider;
 
 public class Display
 {
@@ -178,18 +174,9 @@ public class Display
 	public static final int TAB =
 		 4;
 	
-	/** The display manager used to find displays. */
-	private static final CommonDisplayManager<Display, LCDUIDisplay,
-		LCDUIDisplayProvider> _DISPLAY_MANAGER =
-		new CommonDisplayManager<>(Display.class, LCDUIDisplay.class,
-		LCDUIDisplayProvider.class);
-	
 	/** The lock for this display. */
 	private final Object _lock =
 		new Object();
-	
-	/** The display instance. */
-	private final LCDUIDisplayInstance _instance;
 	
 	/** The current displayable being shown. */
 	private volatile Displayable _show;
@@ -200,19 +187,12 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __i The instance of the display.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display(LCDUIDisplayInstance __i)
+	Display()
 		throws NullPointerException
 	{
-		// Check
-		if (__i == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._instance = __i;
+		throw new Error("TODO");
 	}
 	
 	public void callSerially(Runnable __a)
@@ -234,7 +214,7 @@ public class Display
 	 */
 	public int getActivityMode()
 	{
-		return (this._instance.isInActiveMode() ? MODE_ACTIVE : MODE_NORMAL);
+		throw new Error("TODO");
 	}
 	
 	public int getBestImageHeight(int __a)
@@ -265,7 +245,7 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		return this._instance.getCapabilities();
+		throw new Error("TODO");
 	}
 	
 	public int getColor(int __a)
@@ -396,13 +376,12 @@ public class Display
 		throws IllegalArgumentException
 	{
 		// Active?
-		LCDUIDisplayInstance instance = this._instance;
 		if (__m == MODE_ACTIVE)
-			instance.setActiveMode(true);
+			throw new Error("TODO");
 		
 		// Normal
 		else if (__m == MODE_NORMAL)
-			instance.setActiveMode(false);
+			throw new Error("TODO");
 		
 		// {@squirreljme.error EB02 Unknown activity mode specified.}
 		else
@@ -541,8 +520,9 @@ public class Display
 					
 					// Change the visibility state depending on whether show
 					// exists or not
-					LCDUIDisplayInstance instance = this._instance;
-					instance.setVisible(__show != null);
+					throw new Error("TODO");
+					/*LCDUIDisplayInstance instance = this._instance;
+					instance.setVisible(__show != null);*/
 				}
 			}
 		}
@@ -556,7 +536,7 @@ public class Display
 	 */
 	void __updateTitle(String __s)
 	{
-		this._instance.setTitle(__s);
+		throw new Error("TODO");
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)
@@ -604,24 +584,7 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// Go through internal display providers
-		List<Display> rv = new ArrayList<>();
-		for (LCDUIDisplay lcd : Display._DISPLAY_MANAGER)
-			if (lcd.hasCapabilities(__caps))
-			{
-				// If a display has not been initialized, create an instance
-				// of it
-				Display d = lcd.getRawDisplay();
-				if (d == null)
-					lcd.bindRawDisplay((d = new Display(
-						(LCDUIDisplayInstance)lcd.getInstance())));
-				
-				// Add it
-				rv.add(d);
-			}
-		
-		// Return the list
-		return rv.<Display>toArray(new Display[rv.size()]);
+		throw new Error("TODO");
 	}
 	
 	public static void removeDisplayListener(DisplayListener __dl)
