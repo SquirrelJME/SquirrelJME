@@ -251,10 +251,10 @@ public abstract class CommondocMain
 			}
 		}
 		
-		// {@squirreljme.error CF04 Could not list directory contents.}
+		// {@squirreljme.error EN04 Could not list directory contents.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("CF04", e);
+			throw new RuntimeException("EN04", e);
 		}
 		
 		// Unknown
@@ -323,11 +323,11 @@ public abstract class CommondocMain
 		if (rv != null)
 			return rv;
 		
-		// {@squirreljme.error CF02 No class using the specified name has been
+		// {@squirreljme.error EN02 No class using the specified name has been
 		// documented. (The class name)}
 		ClassDoc cd = this.root.classNamed(__n);
 		if (cd == null)
-			throw new RuntimeException(String.format("CF02 %s", __n));
+			throw new RuntimeException(String.format("EN02 %s", __n));
 		
 		// Load documentation for it and return it
 		// it will be placed in the class map when the constructor is called.
@@ -352,11 +352,11 @@ public abstract class CommondocMain
 		if (__n == null || __mc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CF01 A class has been duplicated multiple
+		// {@squirreljme.error EN01 A class has been duplicated multiple
 		// times.}
 		Map<String, CommondocClass> classes = this.classes;
 		if (null != classes.put(__n, __mc))
-			throw new RuntimeException("CF01");
+			throw new RuntimeException("EN01");
 	}
 	
 	/**
