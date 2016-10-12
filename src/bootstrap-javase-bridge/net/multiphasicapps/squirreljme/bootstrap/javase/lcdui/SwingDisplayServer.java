@@ -28,9 +28,19 @@ public class SwingDisplayServer
 	 */
 	public SwingDisplayServer()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/11
+	 */
+	@Override
+	protected void modifyThread(Thread __t)
+	{
 		// Make the display server thread a daemon so it is not considered
 		// as a user thread
-		this.thread.setDaemon(true);
+		if (__t != null)
+			__t.setDaemon(true);
 	}
 }
 

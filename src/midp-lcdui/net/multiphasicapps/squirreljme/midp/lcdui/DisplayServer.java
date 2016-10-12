@@ -30,7 +30,27 @@ public abstract class DisplayServer
 	public DisplayServer()
 	{
 		// Setup display server thread
-		this.thread = new Thread(this);
+		Thread thread;
+		this.thread = (thread = new Thread(this, "SquirrelJMEDisplayServer"));
+		
+		// Server specific thread modification?
+		modifyThread(thread);
+		
+		// Start it
+		thread.start();
+	}
+	
+	/**
+	 * This may be used by an implementation of the display server to modify
+	 * the thread behavior.
+	 *
+	 * The default implementation does nothing.
+	 *
+	 * @param __t The thread to modify.
+	 * @since 2016/10/11
+	 */
+	protected void modifyThread(Thread __t)
+	{
 	}
 	
 	/**
