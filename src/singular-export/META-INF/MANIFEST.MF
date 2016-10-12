@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-full projects util-sorted
  zip-writer-stream class-format
 X-SquirrelJME-Error: DV
 Main-Class: net.multiphasicapps.squirreljme.singularexport.Main
-LIBlet-Title: Singular Project Export
+LIBlet-Name: Singular Project Export
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project allows for the export of a single 

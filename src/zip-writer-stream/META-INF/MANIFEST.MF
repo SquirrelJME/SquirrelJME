@@ -3,7 +3,7 @@ X-SquirrelJME-Name: zip-writer-stream
 X-SquirrelJME-UUID: 30adac32-ff30-41c7-8406-3e0230a22ed0
 X-SquirrelJME-Depends: cldc-compact io-data zip io-crc32
 X-SquirrelJME-Error: BC
-LIBlet-Title: Stream ZIP Writer
+LIBlet-Name: Stream ZIP Writer
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This allows writing of ZIP files using a stream 

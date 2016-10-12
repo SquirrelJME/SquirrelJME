@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
 X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DC
 X-SquirrelJME-StandardLib: microedition.rms;0.0.0
-LIBlet-Title: MEEP Record Management System
+LIBlet-Name: MEEP Record Management System
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This contains the implementation of the record 

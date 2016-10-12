@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 73dc1d84-de7d-4548-8e66-9e83af4b9a4b
 X-SquirrelJME-Depends: cldc-compact util-unmodifiable jit-base 
  class-format util-sorted util-bitset
 X-SquirrelJME-Error: ED
-LIBlet-Title: Just-In-Time Compiler
+LIBlet-Name: Just-In-Time Compiler
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This implements the just in time compiler which 

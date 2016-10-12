@@ -8,7 +8,7 @@ MicroEdition-Configuration: CLDC-1.8
 MicroEdition-Profile: MEEP-8.0
 MIDlet-1: Squirrel Quarrel (Console), , 
  net.multiphasicapps.squirrelquarrel.ConsoleMain
-LIBlet-Title: Squirrel Quarrel
+LIBlet-Name: Squirrel Quarrel
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 

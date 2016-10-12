@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: mascot-ico
 X-SquirrelJME-UUID: 17d41b4c-7469-4417-a702-30ab72dcd889
 X-SquirrelJME-Depends: mascot
-LIBlet-Title: SquirrelJME Mascot (Windows Icon)
+LIBlet-Name: SquirrelJME Mascot (Windows Icon)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This package contains an encoded Windows or 

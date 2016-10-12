@@ -3,7 +3,7 @@ X-SquirrelJME-Name: io-data
 X-SquirrelJME-UUID: 6897c4e3-8267-4438-949c-b6242cd1b3a8
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: BD
-LIBlet-Title: Generic Data Output
+LIBlet-Name: Generic Data Output
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides slightly more powerful data input 

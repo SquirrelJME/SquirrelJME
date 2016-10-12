@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-full midp-lcdui projects jit
  launcher-lui launcher-lcdui util-sorted manifest kernel
 X-SquirrelJME-Error: EO
 Main-Class: net.multiphasicapps.squirreljme.autointerpreter.Main
-LIBlet-Title: Automatic SquirrelJME Interpreter
+LIBlet-Name: Automatic SquirrelJME Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This is an interpreted environment which is able 

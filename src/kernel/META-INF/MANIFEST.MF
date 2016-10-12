@@ -3,7 +3,7 @@ X-SquirrelJME-Name: kernel
 X-SquirrelJME-UUID: bc592ac7-e453-49ea-9423-5efa3aa8f103
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AO
-LIBlet-Title: Kernel
+LIBlet-Name: Kernel
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This contains the base kernel which is used 

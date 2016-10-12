@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: ee88b4c5-ed8c-4465-805b-84b0ac6984f0
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CV
 X-SquirrelJME-StandardLib: dio.adc;1.0.1
-LIBlet-Title: JavaME 8 Device I/O (ADC)
+LIBlet-Name: JavaME 8 Device I/O (ADC)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides access to analog to digital 

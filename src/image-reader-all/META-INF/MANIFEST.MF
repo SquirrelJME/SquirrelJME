@@ -3,7 +3,7 @@ X-SquirrelJME-Name: image-reader-all
 X-SquirrelJME-UUID: e7a143c2-f04b-4b58-95e2-b8d3799a9438
 X-SquirrelJME-Depends: image-reader
 X-SquirrelJME-Optional: image-reader-xpm
-LIBlet-Title: All Image Readers
+LIBlet-Name: All Image Readers
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This is a meta package which has optional 

@@ -3,7 +3,7 @@ X-SquirrelJME-Name: launcher
 X-SquirrelJME-UUID: 6ace2255-222e-43d6-9330-cb6918c00f8f
 X-SquirrelJME-Depends: cldc-compact meep-lui midlet-identity
 X-SquirrelJME-Error: CM
-LIBlet-Title: Base Launcher
+LIBlet-Name: Base Launcher
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: The project implements the base launcher which 

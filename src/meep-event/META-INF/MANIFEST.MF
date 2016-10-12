@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: a4f80eca-c186-420b-b160-e47e612695a1
 X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DI
 X-SquirrelJME-StandardLib: microedition.event;0.0.0
-LIBlet-Title: MEEP Event Management
+LIBlet-Name: MEEP Event Management
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides an interface which allows an 

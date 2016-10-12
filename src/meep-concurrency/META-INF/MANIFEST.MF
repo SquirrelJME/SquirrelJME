@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 70d937c9-e6d1-4618-a299-8182ea5e612e
 X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DK
 X-SquirrelJME-StandardLib: microedition.concurrency;0.0.0
-LIBlet-Title: MEEP Concurrency
+LIBlet-Name: MEEP Concurrency
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: The concurrency APIs allows multiple applications 

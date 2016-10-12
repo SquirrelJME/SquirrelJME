@@ -3,7 +3,7 @@ X-SquirrelJME-Name: test-util-sorted
 X-SquirrelJME-UUID: 9f7f47c0-976f-41e3-a02e-418f0c500bcc
 X-SquirrelJME-Depends: test-base util-sorted
 X-SquirrelJME-Group: tests
-LIBlet-Title: Sorted Map and Set Tests
+LIBlet-Name: Sorted Map and Set Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: manual
 X-SquirrelJME-UUID: 35a12598-0ff9-407a-91e0-ec9c52cb99d1
-LIBlet-Title: SquirrelJME Manual
+LIBlet-Name: SquirrelJME Manual
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This package contains the manual which contains 

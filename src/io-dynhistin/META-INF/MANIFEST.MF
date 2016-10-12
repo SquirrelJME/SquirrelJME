@@ -3,7 +3,7 @@ X-SquirrelJME-Name: io-dynhistin
 X-SquirrelJME-UUID: ca3eab81-73a3-4fdf-a23d-c0af445dc664
 X-SquirrelJME-Depends: cldc-compact util-datadeque
 X-SquirrelJME-Error: BI
-LIBlet-Title: Dynamic History InputStream
+LIBlet-Name: Dynamic History InputStream
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project provides an InputStream which is 

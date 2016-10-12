@@ -3,7 +3,7 @@ X-SquirrelJME-Name: image-reader-xpm
 X-SquirrelJME-UUID: 814470f6-eeab-41bc-9966-a82706c6ca0d
 X-SquirrelJME-Depends: image-reader
 X-SquirrelJME-Error: AT
-LIBlet-Title: XPM Image Reader
+LIBlet-Name: XPM Image Reader
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides read support for XPM based images.

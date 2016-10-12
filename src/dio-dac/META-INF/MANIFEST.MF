@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: d5bbdfa5-192a-4921-b48a-08ecc15e8499
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CW
 X-SquirrelJME-StandardLib: dio.dac;1.0.1
-LIBlet-Title: JavaME 8 Device I/O (DAC)
+LIBlet-Name: JavaME 8 Device I/O (DAC)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides access to digital to analog 

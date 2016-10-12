@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact projects java-compiler-base
  bootstrap-base-launcher
 X-SquirrelJME-Error: CL
 Main-Class: net.multiphasicapps.squirreljme.bootstrap.Main
-LIBlet-Title: Bootstrap Build System
+LIBlet-Name: Bootstrap Build System
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project is used to bootstrap the SquirrelJME 

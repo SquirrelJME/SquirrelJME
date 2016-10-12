@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: launcher midp-lcdui meep-midlet
 X-SquirrelJME-Error: EP
 MIDlet-1: SquirrelJME Launcher (Graphical), , 
  net.multiphasicapps.launcher.lcdui.MidletMain
-LIBlet-Title: SquirrelJME Launcher (Graphical)
+LIBlet-Name: SquirrelJME Launcher (Graphical)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains the graphical launcher that 

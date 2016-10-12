@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 64c3121d-adec-4235-a611-8a801f266ffe
 X-SquirrelJME-Depends: cldc-compact util-msd util-unmodifiable 
  native-code-base
 X-SquirrelJME-Error: AR
-LIBlet-Title: Native Code
+LIBlet-Name: Native Code
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains the base support for native 

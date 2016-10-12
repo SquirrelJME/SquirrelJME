@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 1cee4bf5-d474-4ceb-8092-810ea640806e
 X-SquirrelJME-Depends: zip-reader-stream test-zip-writer-stream
 X-SquirrelJME-Error: BH
 X-SquirrelJME-Group: tests
-LIBlet-Title: ZIP Stream Reader Tests
+LIBlet-Name: ZIP Stream Reader Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains tests which makes sure 

@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-full jit-base util-unmodifiable
  zip-reader-block paths fs exe-elf paths-posix native-code-mips 
  native-code-powerpc fs-virtual
 X-SquirrelJME-Error: CB
-LIBlet-Title: Emulator
+LIBlet-Name: Emulator
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides the base support for emulating 

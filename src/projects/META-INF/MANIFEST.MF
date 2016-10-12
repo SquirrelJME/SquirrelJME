@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-full manifest zip-reader-block
  util-unmodifiable util-sorted java-compiler-base 
  zip-writer-stream midlet-identity
 X-SquirrelJME-Error: CI
-LIBlet-Title: SquirrelJME Project Interface
+LIBlet-Name: SquirrelJME Project Interface
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides a standard interface to the project 

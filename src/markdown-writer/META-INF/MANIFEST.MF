@@ -3,7 +3,7 @@ X-SquirrelJME-Name: markdown-writer
 X-SquirrelJME-UUID: df4c851d-8e50-4efb-bd60-e4e8e5a2f7a3
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: CG
-LIBlet-Title: Markdown Writer
+LIBlet-Name: Markdown Writer
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains a formatted markdown writer 

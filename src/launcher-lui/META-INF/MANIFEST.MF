@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: launcher meep-lui meep-midlet
 X-SquirrelJME-Error: CN
 MIDlet-1: SquirrelJME Launcher (Console), , 
  net.multiphasicapps.launcher.lui.MidletMain
-LIBlet-Title: Launcher (Line User Interface)
+LIBlet-Name: Launcher (Line User Interface)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This implements the launcher which uses the MEEP 

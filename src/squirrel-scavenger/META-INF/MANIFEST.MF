@@ -9,7 +9,7 @@ MicroEdition-Profile: MEEP-8.0
 MIDlet-1: Squirrel Scavenger (Console), , 
  net.multiphasicapps.squirrelscavenger.ConsoleMain
 Main-Class: net.multiphasicapps.squirrelscavenger.DefaultMain
-LIBlet-Title: Squirrel Scavenger
+LIBlet-Name: Squirrel Scavenger
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: Do you have the skills required to survive 

@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: a1890b74-ba77-4661-8e2a-020d36bfba34
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CU
 X-SquirrelJME-StandardLib: dio.spibus;1.0.1
-LIBlet-Title: JavaME 8 Device I/O (SPI)
+LIBlet-Name: JavaME 8 Device I/O (SPI)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This provides access to the SPI bus.

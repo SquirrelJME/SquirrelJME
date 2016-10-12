@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: jit-base io-data symbols
 X-SquirrelJME-Error: AQ
 X-SquirrelJME-Group: os-generic
 Main-Class: net.multiphasicapps.squirreljme.os.generic.Main
-LIBlet-Title: Operating System (Generic)
+LIBlet-Name: Operating System (Generic)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This contains the base support for operating 
