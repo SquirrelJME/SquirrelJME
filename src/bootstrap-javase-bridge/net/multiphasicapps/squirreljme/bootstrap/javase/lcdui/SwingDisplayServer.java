@@ -8,33 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bootstrap.javase;
+package net.multiphasicapps.squirreljme.bootstrap.javase.lcdui;
 
-import net.multiphasicapps.squirreljme.bootstrap.javase.lcdui.
-	SwingDisplayServer;
+import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
 
 /**
- * This is the main entry point for the bootstrap bridge from Java SE to
- * SquirrelJME's bootstrap.
+ * This implements the display server which uses Swing as its backing
+ * widget system.
  *
- * @since 2016/09/18
+ * @since 2016/10/11
  */
-public class Main
+public class SwingDisplayServer
+	extends DisplayServer
 {
 	/**
-	 * Main entry point.
+	 * Initializes the swing display server.
 	 *
-	 * @param __args Program arguments.
-	 * @since 2016/09/18
+	 * @since 2016/10/11
 	 */
-	public static void main(String... __args)
+	public SwingDisplayServer()
 	{
-		// Initialize
-		SwingDisplayServer sds = new SwingDisplayServer();
-		
-		// Forward call
-		net.multiphasicapps.squirreljme.bootstrap.Main.main(
-			new BridgedJavaCompiler(), new BridgedLauncher(), __args);
+		// Make the display server thread a daemon so it is not considered
+		// as a user thread
+		this.thread.setDaemon(true);
 	}
 }
 
