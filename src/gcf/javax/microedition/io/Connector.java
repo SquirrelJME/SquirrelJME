@@ -62,9 +62,52 @@ public class Connector
 		throw new Error("TODO");
 	}
 	
-	public static boolean isProtocolSupported(String __a, boolean __b)
+	/**
+	 * This checks whether the specified protocol is supported.
+	 *
+	 * @param __uri The scheme to check if it is supported, if there is a colon
+	 * then only the characters up to the first colon are used.
+	 * @param __server If {@code true} then check for support for being a
+	 * server.
+	 * @return {@code true} if the protocol is supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/12
+	 */
+	public static boolean isProtocolSupported(String __uri, boolean __server)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__uri == null)
+			throw new NullPointerException("NARG");
+		
+		// Only use up to the colon, if one exists
+		int fc = __uri.indexOf(':');
+		if (fc > 0)
+			__uri = __uri.substring(0, fc);
+		
+		// Only these protocols are handled
+		switch (__uri)
+		{
+				// Does not matter
+			case "comm":
+			case "datagram":
+			case "dtls":
+			case "file":
+			case "imc":
+			case "multicast":
+			case "socket":
+			case "ssl":
+				return true;
+			
+				// Client only
+			case "http":
+			case "https":
+				return !__server;
+			
+				// Unknown
+			default:
+				return false;
+		}
 	}
 	
 	/**
@@ -174,9 +217,61 @@ public class Connector
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
-		if (false)
-			throw new IOException();
-		throw new Error("TODO");
+		// {@squirreljme.error EC03 The URI does not have a scheme. (The URI)}
+		int fc = __uri.indexOf(':');
+		if (fc < 0)
+			throw new IllegalArgumentException(String.format("EC03 %s",
+				__uri));
+		String scheme = __uri.substring(0, fc), part = __uri.substring(fc + 1);
+		
+		// Sockets of a given protocol must be of a given class type
+		switch (scheme)
+		{
+				// Communication port, which may be a modem
+			case "comm":
+				throw new Error("TODO");
+				
+				// UDP datagrams
+			case "datagram":
+				throw new Error("TODO");
+				
+				// SSL UDP datagrams
+			case "dtls":
+				throw new Error("TODO");
+				
+				// Local Files
+			case "file":
+				throw new Error("TODO");
+				
+				// HTTP
+			case "http":
+				throw new Error("TODO");
+				
+				// HTTPS
+			case "https":
+				throw new Error("TODO");
+				
+				// Intermidlet communication
+			case "imc":
+				throw new Error("TODO");
+				
+				// UDP Multicast
+			case "multicast":
+				throw new Error("TODO");
+				
+				// TCP Socket
+			case "socket":
+				throw new Error("TODO");
+				
+				// SSL/TLS TCP Socket
+			case "ssl":
+				throw new Error("TODO");
+				
+				// {@squirreljme.error EC04 Unhandled URI protocol. (The URI)}.
+			default:
+				throw new ConnectionNotFoundException(String.format("EC04 %s",
+					__uri));
+		}
 	}
 	
 	/**
