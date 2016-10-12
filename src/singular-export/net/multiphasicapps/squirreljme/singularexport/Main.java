@@ -84,9 +84,6 @@ public class Main
 		// Output file
 		Path outfile = null;
 		
-		// The project to be used as the backing virtual engine
-		String virtenginename = null;
-		
 		// Handle all arguments
 		while (!args.isEmpty())
 		{
@@ -112,11 +109,6 @@ public class Main
 					outfile = Paths.get(args.removeFirst());
 					break;
 					
-					// Include a virtual environment
-				case "-v":
-					virtenginename = args.removeFirst();
-					break;
-				
 					// {@squirreljme.error DV01 Unknown command line
 					// argument. (The switch)}
 				default:
@@ -135,42 +127,9 @@ public class Main
 		// {@squirreljme.error DV03 No projects were specified on the command
 		// line. Usage: [-a] [-o file] [-v project] (projects).
 		// -a: Include optional dependencies.
-		// -o: Output to this given file.
-		// -v: The project to use as a wrapper (main entry point) for the
-		// virtualized project set.}
+		// -o: Output to this given file.}
 		if (args.isEmpty())
 			throw new IllegalArgumentException("DV03");
-		
-		// Locate the virtual engine to use as a abse
-		ProjectInfo virtengine = null;
-		if (virtenginename != null)
-		{
-			// {@squirreljme.error DV08 Could not find the project for the
-			// given virtual project. (The virtual engine name)}
-			ProjectGroup veg = pl.get(virtenginename);
-			if (veg == null)
-				throw new IllegalStateException(String.format("DV08 %s",
-					virtenginename));
-			
-			// Need to compile the virtual engine
-			try
-			{
-				virtengine = veg.compileSource(null, optionals);
-			
-				// {@squirreljme.error DV07 Could not obtain the binary for the
-				// virtual engine. (The virtual engine name)}
-				if (virtengine == null)
-					throw new IllegalStateException(String.format("DV07 %s",
-						virtenginename));
-			}
-			
-			// {@squirreljme.error DV09 Read/write error handling the virtual
-			// engine project.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("DV09");
-			}
-		}
 		
 		// Build and obtain binary projects to be included in the build
 		Set<ProjectInfo> projects = new SortedTreeSet<>();
@@ -181,7 +140,7 @@ public class Main
 			outfile = Paths.get("x-squirreljme-" + mainproj.name() + ".jar");
 		
 		// Merge them together into one
-		__merge(mainproj, projects, outfile, virtengine, optionals);
+		__merge(mainproj, projects, outfile, optionals);
 	}
 	
 	/**
@@ -252,13 +211,11 @@ public class Main
 	 *
 	 * @param __main The main project.
 	 * @param __mjm The output manifest.
-	 * @param __virt The virtual engine to use.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __virt}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/29
 	 */
 	private static void __manifest(ProjectInfo __main,
-		MutableJavaManifest __mjm, ProjectInfo __virt)
+		MutableJavaManifest __mjm)
 		throws NullPointerException
 	{
 		// Check
@@ -304,45 +261,21 @@ public class Main
 	 * @param __main The main class to get the manifest from.
 	 * @param __p The projects to merge together.
 	 * @param __of The output file.
-	 * @param __virt The virtual engine to use.
 	 * @param __opt Include optional projects?
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __virt}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/29
 	 */
 	private static void __merge(ProjectInfo __main,
-		Collection<ProjectInfo> __p, Path __of, ProjectInfo __virt,
-		boolean __opt)
+		Collection<ProjectInfo> __p, Path __of, boolean __opt)
 		throws NullPointerException
 	{
 		// Check
 		if (__main == null || __p == null || __of == null)
 			throw new NullPointerException("NARG");
 		
-		// Use the original base for non-virtual projects and virtual ones
-		Collection<ProjectInfo> nonvirtual, virtual;
-		if (__virt == null)
-		{
-			nonvirtual = __p;
-			virtual = Arrays.<ProjectInfo>asList();
-		}
-		
-		// Perform the load project stage for projects starting from the
-		// specified virtual project
-		else
-		{
-			Set<ProjectInfo> workvirt = new HashSet<>();
-			
-			// Load virtual projects
-			ProjectInfo mainproj = __loadProjects(__main.projectList(),
-				workvirt, Arrays.<String>asList(__virt.name().toString()),
-				__opt);
-			
-			// Do not virtualize the virtual engine, but do virtualize the
-			// original input projects
-			nonvirtual = workvirt;
-			virtual = __p;
-		}
+		// Use the original base for  projects
+		Collection<ProjectInfo> useprojects;
+		useprojects = __p;
 		
 		// Perform the merge
 		Path tempjar = null;
@@ -363,15 +296,15 @@ public class Main
 				// Output a manifest
 				MutableJavaManifest mjm = new MutableJavaManifest(
 					__main.manifest());
-				__manifest(__main, mjm, __virt);
+				__manifest(__main, mjm);
 				try (OutputStream os = zsw.nextEntry("META-INF/MANIFEST.MF",
 					ZipCompressionType.DEFAULT_COMPRESSION))
 				{
 					mjm.write(os);
 				}
 				
-				// Handle non-virtual projects
-				for (ProjectInfo pi : nonvirtual)
+				// Handle projects
+				for (ProjectInfo pi : useprojects)
 				{
 					// Ignore the CLDC libraries because these would be handled
 					// by the host system (hopefully anyway) and due to the
@@ -384,36 +317,6 @@ public class Main
 					
 					// Process
 					__process(zsw, pi, data, null);
-				}
-				
-				// Handle virtual projects
-				for (ProjectInfo pi : virtual)
-					__process(zsw, pi, data, __virt);
-				
-				// Write virtualized project names
-				try (PrintStream ps = new PrintStream(zsw.nextEntry(
-					"$squirreljme$virtual-projects",
-					ZipCompressionType.DEFAULT_COMPRESSION), true, "utf-8"))
-				{
-					// Print project name
-					for (ProjectInfo pi : virtual)
-						ps.println(pi.name());
-					
-					// Flush
-					ps.flush();
-				}
-				
-				// Write virtualized resource map
-				try (PrintStream ps = new PrintStream(zsw.nextEntry(
-					"$squirreljme$virtual-resources",
-					ZipCompressionType.DEFAULT_COMPRESSION), true, "utf-8"))
-				{
-					// Print resource that exist
-					for (String k : data._resources.keySet())
-						ps.println(k);
-					
-					// Flush
-					ps.flush();
 				}
 				
 				// Write services
@@ -465,40 +368,17 @@ public class Main
 	 * @param __zsw The output ZIP.
 	 * @param __pi The project information.
 	 * @param __data The output data as needed.
-	 * @param __virt The virtualization engine used.
 	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __virt}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/30
 	 */
 	private static void __process(ZipStreamWriter __zsw, ProjectInfo __pi,
-		__Data__ __data, ProjectInfo __virt)
+		__Data__ __data)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__zsw == null || __pi == null || __data == null)
 			throw new NullPointerException("NARG");
-		
-		// The virtual package handler, Needs VirtualSquirrelJME and
-		// VirtualObject instances.
-		ClassNameSymbol vpack;
-		if (__virt == null)
-			vpack = null;
-		
-		// Depends on the manifest detail
-		else
-		{
-			// {@squirreljme.error DV0a The virtual engine lacks the
-			// X-SquirrelJME-VirtualEngine attribute which is used to define
-			// which package contains the virtual handlers.}
-			String vpn = __virt.manifest().getMainAttributes().get(
-				new JavaManifestKey("X-SquirrelJME-VirtualEngine"));
-			if (vpn == null)
-				throw new IllegalStateException("DV0a");
-			
-			// Set
-			vpack = ClassLoaderNameSymbol.of(vpn).asClassName();
-		}
 		
 		// Handle contents
 		byte[] buf = new byte[512];
@@ -507,76 +387,36 @@ public class Main
 			// If set then the data is copied directly using the given name
 			String copyname = null;
 			
-			// Non-virtual handling, pretty much straight through transfer of
-			// classes and such
-			if (__virt == null)
+			// Ignore manifests
+			if (c.equals("META-INF/MANIFEST.MF"))
+				continue;
+	
+			// Handle services using other means
+			if (c.startsWith("META-INF/services/"))
 			{
-				// Ignore manifests
-				if (c.equals("META-INF/MANIFEST.MF"))
-					continue;
-			
-				// Handle services using other means
-				if (c.startsWith("META-INF/services/"))
-				{
-					__data.__servicesFile(c, new BufferedReader(
-						new InputStreamReader(__pi.open(c), "utf-8")));
-					continue;
-				}
-				
-				// Copy the data
-				copyname = c;
+				__data.__servicesFile(c, new BufferedReader(
+					new InputStreamReader(__pi.open(c), "utf-8")));
+				continue;
 			}
-			
-			// Virtualizing class
-			else if (c.endsWith(".class"))
+		
+			// Copy the data
+			try (OutputStream os = __zsw.nextEntry(c,
+				ZipCompressionType.DEFAULT_COMPRESSION);
+				InputStream is = __pi.open(c))
 			{
-				// {@squirreljme.error DV0b Virtualizing the specified class.
-				// (The class being virtualized)}
-				System.err.printf("DV0b %s%n", c);
-				
-				// Open the input class
-				try (DataInputStream dis = new DataInputStream(__pi.open(c)))
+				for (;;)
 				{
-					// Virtualize
-					__VirtualClass__ vc = new __VirtualClass__(vpack);
-					new ClassDecoder(dis, vc).decode();
-					
-					// Write the output class
-					try (DataOutputStream dos = new DataOutputStream(
-						__zsw.nextEntry(vc.__name(),
-						ZipCompressionType.DEFAULT_COMPRESSION)))
-					{
-						vc.__output(dos);
-					}
+					// Read
+					int rc = is.read(buf);
+			
+					// EOF?
+					if (rc < 0)
+						break;
+			
+					// Write
+					os.write(buf, 0, rc);
 				}
 			}
-			
-			// Virtualizing resource
-			else
-			{
-				// Add virtual resource to the resource list
-				copyname = __data.__addResource(__pi, c);
-			}
-			
-			// If copying the data with no processing, copy it
-			if (copyname != null)
-				try (OutputStream os = __zsw.nextEntry(copyname,
-					ZipCompressionType.DEFAULT_COMPRESSION);
-					InputStream is = __pi.open(c))
-				{
-					for (;;)
-					{
-						// Read
-						int rc = is.read(buf);
-				
-						// EOF?
-						if (rc < 0)
-							break;
-				
-						// Write
-						os.write(buf, 0, rc);
-					}
-				}
 		}
 	}
 }

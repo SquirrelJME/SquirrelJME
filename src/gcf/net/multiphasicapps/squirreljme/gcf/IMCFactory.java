@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.gcf;
 
+import java.io.IOException;
+import javax.microedition.io.Connection;
+
 /**
  * This class is used to create instances of inter-midlet connections.
  *
@@ -30,7 +33,7 @@ public class IMCFactory
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__par == null || __timeouts == null)
+		if (__par == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
