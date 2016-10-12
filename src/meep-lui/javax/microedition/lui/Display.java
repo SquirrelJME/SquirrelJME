@@ -17,9 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import net.multiphasicapps.squirreljme.lcduilui.CommonDisplayManager;
-import net.multiphasicapps.squirreljme.meep.lui.LUIDisplay;
-import net.multiphasicapps.squirreljme.meep.lui.LUIDisplayProvider;
 import net.multiphasicapps.util.empty.EmptyIterator;
 
 /**
@@ -59,12 +56,6 @@ import net.multiphasicapps.util.empty.EmptyIterator;
  */
 public class Display
 {
-	/** The display manager used to find displays. */
-	private static final CommonDisplayManager<Display, LUIDisplay,
-		LUIDisplayProvider> _DISPLAY_MANAGER =
-		new CommonDisplayManager<>(Display.class, LUIDisplay.class,
-		LUIDisplayProvider.class);
-	
 	/**
 	 * This is used as the event name to indicate the lighting level.
 	 *
