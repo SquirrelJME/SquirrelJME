@@ -19,6 +19,15 @@ package net.multiphasicapps.squirreljme.midletid;
 public final class MidletSuiteID
 	implements Comparable<MidletSuiteID>
 {
+	/** The suite name. */
+	protected final MidletSuiteName name;
+	
+	/** The suite vendor. */
+	protected final MidletSuiteVendor vendor;
+	
+	/** The suite version. */
+	protected final MidletVersion version;
+	
 	/**
 	 * Initializes the suite identifier.
 	 *
@@ -36,7 +45,10 @@ public final class MidletSuiteID
 		if (__name == null || __ven == null || __ver == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.name = __name;
+		this.vendor = __ven;
+		this.version = __ver;
 	}
 	/**
 	 * {@inheritDoc}

@@ -18,6 +18,9 @@ package net.multiphasicapps.squirreljme.midletid;
 public final class MidletSuiteName
 	implements MidletSuiteName
 {
+	/** String value. */
+	protected final String string;
+	
 	/**
 	 * Initializes the suite name.
 	 *
@@ -33,7 +36,34 @@ public final class MidletSuiteName
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through all characters
+		int n = __v.length;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __v.charAt(i);
+			
+			// Invalid character?
+			switch (c)
+			{
+					// {@squirreljme.error AD01 An illegal character was
+					// specified in the midlet suite name. (The midlet suite
+					// name)}
+				case '\0':
+				case '\r':
+				case '\n':
+				case ':':
+				case ';':
+					throw new IllegalArgumentException(String.format("AD01 %s",
+						__v));
+				
+					// Valid
+				default:
+					continue;
+			}
+		}
+		
+		// Set
+		this.string = __v;
 	}
 	
 	/**
@@ -43,7 +73,7 @@ public final class MidletSuiteName
 	@Override
 	public int compareTo(MidletSuiteName __o)
 	{
-		throw new Error("TODO");
+		return this.string.compareTo(__o.string);
 	}
 	
 	/**
@@ -53,7 +83,11 @@ public final class MidletSuiteName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new Error("TODO");
+		// Check
+		if (!(__o instanceof MidletSuiteName))
+			return false;
+		
+		return this.string.equals(((MidletSuiteName)__o).string);
 	}
 	
 	/**
@@ -63,7 +97,7 @@ public final class MidletSuiteName
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -73,7 +107,7 @@ public final class MidletSuiteName
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		return this.string;
 	}
 }
 
