@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: a788b5a5-3e1a-4aca-bbd3-aac405e6cb80
 X-SquirrelJME-Depends: test-base
 X-SquirrelJME-Optional: test-contrib-all test-cldc-compact 
  test-io-inflate test-io-slidingwindow test-paths-posix 
- test-util-huffmantree test-util-sorted test-util-uri 
+ test-util-huffmantree test-util-sorted  
  test-zip-reader-stream test-zip-writer-stream
 X-SquirrelJME-Group: tests
 Main-Class: net.multiphasicapps.tests.DefaultTestCaller
