@@ -127,8 +127,8 @@ public final class MidletSuiteID
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = this.name + ":" +
-				this.vendor + ":" + this.version));
+			this._string = new WeakReference<>((rv = this.vendor + ":" +
+				this.name + ":" + this.version));
 		
 		// Return it
 		return rv;
