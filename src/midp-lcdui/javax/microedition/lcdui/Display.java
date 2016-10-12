@@ -10,11 +10,15 @@
 
 package javax.microedition.lcdui;
 
-import javax.microedition.midlet.MIDlet;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.microedition.io.Connector;
+import javax.microedition.io.IMCConnection;
+import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
@@ -585,7 +589,18 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		throw new Error("TODO");
+		// Open connection to the display server
+		try (IMCConnection sock = (IMCConnection)Connector.open(
+			DisplayServer.CLIENT_URI))
+		{
+			throw new Error("TODO");
+		}
+		
+		// If the data cannot be read then
+		catch (IOException e)
+		{
+			return new Display[0];
+		}
 	}
 	
 	public static void removeDisplayListener(DisplayListener __dl)

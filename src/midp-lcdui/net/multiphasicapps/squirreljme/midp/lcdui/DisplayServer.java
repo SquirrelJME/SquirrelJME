@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui;
 
+import java.io.IOException;
+import javax.microedition.io.Connector;
+import javax.microedition.io.IMCConnection;
+import javax.microedition.io.IMCServerConnection;
+
 /**
  * This is a class which implements the display server used by the LCDUI
  * interface. The client implementation communicates with this server.
@@ -19,8 +24,21 @@ package net.multiphasicapps.squirreljme.midp.lcdui;
 public abstract class DisplayServer
 	implements Runnable
 {
+	/** The URI the client uses to connect. */
+	public static final String CLIENT_URI =
+		"imc://*:net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer:" +
+		"1.0;authmode=false";
+	
+	/** The URI the server uses to host. */
+	private static final String _SERVER_URI =
+		"imc://:net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer:" +
+		"1.0;authmode=false";
+	
 	/** The display server thread. */
 	protected final Thread thread;
+	
+	/** The master IMC socket. */
+	private final IMCServerConnection _serversock;
 	
 	/**
 	 * Initializes the base display server.
@@ -35,6 +53,20 @@ public abstract class DisplayServer
 		
 		// Server specific thread modification?
 		modifyThread(thread);
+		
+		// Create server socket
+		try
+		{
+			this._serversock = (IMCServerConnection)Connector.open(
+				_SERVER_URI);
+		}
+		
+		// {@squirreljme.error EB05 Could not create the display server
+		// socket.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("EB05", e);
+		}
 		
 		// Start it
 		thread.start();
@@ -61,10 +93,17 @@ public abstract class DisplayServer
 	public final void run()
 	{
 		// Infinite loop
+		IMCServerConnection svsock = this._serversock;
 		for (;;)
-		{
-			throw new Error("TODO");
-		}
+			try (IMCConnection sock = (IMCConnection)svsock.acceptAndOpen())
+			{
+				throw new Error("TODO");
+			}
+			
+			// Failed read, ignore
+			catch (IOException e)
+			{
+			}
 	}
 }
 
