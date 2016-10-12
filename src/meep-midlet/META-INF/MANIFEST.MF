@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: meep-midlet
 X-SquirrelJME-UUID: 1d9e3c4f-b0ec-4e83-b656-0454dd661868
-X-SquirrelJME-Depends: meep manifest
+X-SquirrelJME-Depends: meep manifest midlet-identity
 X-SquirrelJME-Error: CC
 X-SquirrelJME-StandardLib: microedition.midlet;0.0.0
 LIBlet-Title: MEEP MIDlet Interface

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: midlet-identity
+X-SquirrelJME-UUID: dcc1bcfd-e80d-427e-8e07-3374d43f7513
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: AD
+LIBlet-Title: Midlet Identification
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains which are used to name 
+ and identify fields that are unique to MIDlets and LIBlets. The 
+ purpose is to have a sharable and verified handling of suites 
+ and midlets that may be launched.
+

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: gcf
 X-SquirrelJME-UUID: 1358142d-037f-4421-9a52-0534764a45d3
-X-SquirrelJME-Depends: cldc-compact meep-midlet
+X-SquirrelJME-Depends: cldc-compact meep-midlet midlet-identity
 X-SquirrelJME-Error: EC
 LIBlet-Title: Generic Connection Framework
 LIBlet-Vendor: Steven Gawroriski
