@@ -698,9 +698,12 @@ public final class ProjectGroup
 		boolean ismidlet = __src.isMIDlet();
 		if (ismidlet)
 		{
-			attr.put(new JavaManifestKey("MIDlet-Name"), __src.title());
-			attr.put(new JavaManifestKey("MIDlet-Vendor"), __src.vendor());
-			attr.put(new JavaManifestKey("MIDlet-Version"), __src.version());
+			attr.put(new JavaManifestKey("MIDlet-Name"),
+				__src.title().toString());
+			attr.put(new JavaManifestKey("MIDlet-Vendor"),
+				__src.vendor().toString());
+			attr.put(new JavaManifestKey("MIDlet-Version"),
+				__src.version().toString());
 		}
 		
 		// Try to get the version number of the project manager

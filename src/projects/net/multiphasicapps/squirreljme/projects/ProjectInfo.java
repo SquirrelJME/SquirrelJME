@@ -543,7 +543,7 @@ public class ProjectInfo
 			JavaManifestAttributes attr = manifest().getMainAttributes();
 			
 			// Setup
-			this._suiteid = new WeakReference<>((rv = new MidletSuitID(
+			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
 				new MidletSuiteName(
 					attr.get(new JavaManifestKey("LIBlet-Name"))),
 				new MidletSuiteVendor(
