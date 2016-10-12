@@ -101,6 +101,30 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Is this the SquirrelJME kernel?
+	 *
+	 * @return {@code true} if this is the kernel process, otherwise
+	 * {@code false} indicates a user-mode process.
+	 * @since 2016/10/11
+	 */
+	public static boolean isKernel()
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * This is used to detect whether the environment truly is running on
+	 * SquirrelJME.
+	 *
+	 * @return {@code true} if running on SquirrelJME, otherwise {@code false}.
+	 * @since 2016/10/11
+	 */
+	public static boolean isSquirrelJME()
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Returns the amount of time which has passed on an unspecified
 	 * monotonic clock.
 	 *
