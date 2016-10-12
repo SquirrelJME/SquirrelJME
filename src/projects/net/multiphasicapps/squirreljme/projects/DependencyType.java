@@ -31,6 +31,9 @@ public enum DependencyType
 	/** External dependency. */
 	EXTERNAL("X-SquirrelJME-External", true, true, false, true),
 	
+	/** Co-dependencies. */
+	CODEPEND("X-SquirrelJME-CoDepends", false, false, false, false),
+	
 	/** End. */
 	;
 	

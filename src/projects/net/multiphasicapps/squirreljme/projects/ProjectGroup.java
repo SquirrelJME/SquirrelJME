@@ -596,21 +596,24 @@ public final class ProjectGroup
 		FileTime rv = src.date();
 		
 		// Go through all dependencies to see if they have newer sources
-		for (ProjectName dn : src.dependencies(__lu))
-		{
-			// Do not consider any projects that do not exist
-			ProjectGroup dg = list.get(dn);
-			ProjectInfo ds;
-			if (dg == null || null == (ds = dg.source()))
-				continue;
+		// and for co-dependencies also
+		for (int i = 0; i < 2; i++)
+			for (ProjectName dn : (i == 0 ? src.dependencies(__lu) :
+				src.dependencies(DependencyType.CODEPEND)))
+			{
+				// Do not consider any projects that do not exist
+				ProjectGroup dg = list.get(dn);
+				ProjectInfo ds;
+				if (dg == null || null == (ds = dg.source()))
+					continue;
 			
-			// Get their date
-			FileTime dd = dg.__dependencySourceDate(__lu, dn);
+				// Get their date
+				FileTime dd = dg.__dependencySourceDate(__lu, dn);
 			
-			// If the date is newer, use it
-			if (dd.compareTo(rv) > 0)
-				rv = dd;
-		}
+				// If the date is newer, use it
+				if (dd.compareTo(rv) > 0)
+					rv = dd;
+			}
 		
 		// Return it
 		return rv;

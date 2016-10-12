@@ -34,14 +34,17 @@ class __CompilerInput__
 	/** The project list. */
 	protected final ProjectList list;
 	
-	/** The project information. */
-	protected final ProjectInfo info;
+	/** Sources to use. */
+	private final ProjectInfo[] _sources;
 	
 	/** Projects which are considered part of the binary class path. */
 	private final ProjectInfo[] _bin;
 	
+	/** Source file contents. */
+	private volatile Reference<Iterable<String>> _scontents;
+	
 	/** Binary file contents. */
-	private volatile Reference<Iterable<String>> _contents;
+	private volatile Reference<Iterable<String>> _bcontents;
 	
 	/**
 	 * Initializes the input for the compiler.
@@ -62,7 +65,6 @@ class __CompilerInput__
 		
 		// Set
 		this.list = __pl;
-		this.info = __src;
 		
 		// Go through all dependencies of the source package and add every
 		// binary dependency of it
@@ -81,6 +83,33 @@ class __CompilerInput__
 		
 		// Set it
 		this._bin = bins.<ProjectInfo>toArray(new ProjectInfo[bins.size()]);
+		
+		// Add sources and co-dependencies
+		Set<ProjectInfo> src = new LinkedHashSet<>();
+		src.add(__src);
+		for (ProjectName pn : __src.dependencies(DependencyType.CODEPEND))
+		{
+			// {@squirreljme.error CI0n The specified project is missing the
+			// co-dependency. (The source project; The co-dependency)}
+			ProjectGroup pg = __pl.get(pn);
+			if (pg == null)
+				throw new MissingDependencyException(String.format(
+					"CI0n %s %s", __src, pn));
+			
+			// {@squirreljme.error CI0o The specified project has a
+			// co-dependency with no source code. (The source project;
+			// The co-dependency)}
+			ProjectInfo ps = pg.source();
+			if (ps == null)
+				throw new MissingDependencyException(String.format(
+					"CI0o %s %s", __src, pn));
+			
+			// Add it
+			src.add(ps);
+		}
+		
+		// Lock in
+		this._sources = src.<ProjectInfo>toArray(new ProjectInfo[src.size()]);
 	}
 	
 	/**
@@ -91,13 +120,8 @@ class __CompilerInput__
 	public InputStream input(boolean __src, String __name)
 		throws IOException, NoSuchFileException
 	{
-		// If source code, read from the project being compiled
-		ProjectInfo info = this.info;
-		if (__src)
-			return info.open(__name);
-		
-		// Go through all binaries to find the file
-		for (ProjectInfo bin : this._bin)
+		// Go through all sources/binaries to find the file
+		for (ProjectInfo bin : (__src ? this._sources : this._bin))
 			try
 			{
 				return bin.open(__name);
@@ -108,9 +132,9 @@ class __CompilerInput__
 			{
 			}
 		
-		// {@squirreljme.error CI0d The specified non-source file does not
-		// exist in any project. (The requested file)}
-		throw new NoSuchFileException(String.format("CI0d %s", __name));
+		// {@squirreljme.error CI0d The specified file does not
+		// exist in any project. (The requested file; source code?)}
+		throw new NoSuchFileException(String.format("CI0d %s", __name, __src));
 	}
 
 	/**
@@ -121,13 +145,9 @@ class __CompilerInput__
 	public Iterable<String> list(boolean __src)
 		throws IOException
 	{
-		// If source code, use only a single project
-		ProjectInfo info = this.info;
-		if (__src)
-			return info.contents();
-		
 		// Get
-		Reference<Iterable<String>> ref = this._contents;
+		Reference<Iterable<String>> ref =
+			(__src ? this._scontents : this._bcontents);
 		Iterable<String> rv;
 		
 		// Cache?
@@ -136,13 +156,17 @@ class __CompilerInput__
 			Set<String> target = new LinkedHashSet<>();
 			
 			// Go through all binary projects and all of their contents
-			for (ProjectInfo i : this._bin)
+			for (ProjectInfo i : (__src ? this._sources : this._bin))
 				for (String c : i.contents())
 					target.add(c);
 			
 			// Cache
 			rv = UnmodifiableSet.<String>of(target);
-			this._contents = new WeakReference<>(rv);
+			ref = new WeakReference<>(rv);
+			if (__src)
+				this._scontents = ref;
+			else
+				this._bcontents = ref;
 		}
 		
 		// Return it
