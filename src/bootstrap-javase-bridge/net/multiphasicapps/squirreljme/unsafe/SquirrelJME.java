@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.IOException;
+
 /**
  * This class contains implementations of unsafe SquirrelJME operations which
  * are not part of the bootstrap's external build dependencies. This in the

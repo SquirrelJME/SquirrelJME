@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.IOException;
+
 /**
  * This class contains static methods which are used by the standard class
  * library code to perform special system and virtual machine related
