@@ -527,6 +527,8 @@ public class Bootstrap
 		{
 				// Uses the host Java SE library, so these do not need to
 				// be compiled at all
+				// However, SquirrelJME specific classes such as the kernel
+				// sockets has to be made available for some interfaces.
 			case "cldc-compact":
 			case "cldc-full":
 				return true;
