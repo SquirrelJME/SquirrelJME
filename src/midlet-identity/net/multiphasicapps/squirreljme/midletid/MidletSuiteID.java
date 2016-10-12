@@ -104,6 +104,17 @@ public final class MidletSuiteID
 	}
 	
 	/**
+	 * Returns the suite name.
+	 *
+	 * @return The suite name.
+	 * @since 2016/10/12
+	 */
+	public MidletSuiteName name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/12
 	 */
@@ -121,6 +132,28 @@ public final class MidletSuiteID
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Returns the suite vendor.
+	 *
+	 * @return The suite vendor.
+	 * @since 2016/10/12
+	 */
+	public MidletSuiteVendor vendor()
+	{
+		return this.vendor;
+	}
+	
+	/**
+	 * Returns the suite version.
+	 *
+	 * @return The suite version.
+	 * @since 2016/10/12
+	 */
+	public MidletVersion version()
+	{
+		return this.version;
 	}
 }
 

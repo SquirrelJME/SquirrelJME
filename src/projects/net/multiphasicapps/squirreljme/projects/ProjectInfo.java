@@ -33,6 +33,10 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.midletid.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midletid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midletid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midletid.MidletVersion;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
@@ -81,6 +85,9 @@ public class ProjectInfo
 	private final Map<DependencyLookupType, Reference<Set<ProjectName>>>
 		_odepends =
 		new HashMap<>();
+	
+	/** The midlet suite information. */
+	private volatile Reference<MidletSuiteID> _suiteid;
 	
 	/** Package groups this project is in. */
 	private volatile Reference<Set<String>> _groups;
@@ -519,6 +526,37 @@ public class ProjectInfo
 	}
 	
 	/**
+	 * Returns the MIDlet suite identifier.
+	 *
+	 * @return The suite identifier.
+	 * @since 2016/10/12
+	 */
+	public final MidletSuiteID midletSuite()
+	{
+		Reference<MidletSuiteID> ref = this._suiteid;
+		MidletSuiteID rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Need attributes
+			JavaManifestAttributes attr = manifest().getMainAttributes();
+			
+			// Setup
+			this._suiteid = new WeakReference<>((rv = new MidletSuitID(
+				new MidletSuiteName(
+					attr.get(new JavaManifestKey("LIBlet-Name"))),
+				new MidletSuiteVendor(
+					attr.get(new JavaManifestKey("LIBlet-Vendor"))),
+				new MidletVersion(
+					attr.get(new JavaManifestKey("LIBlet-Version"))))));
+		}
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
 	 * Returns the name of this project.
 	 *
 	 * @return The project name.
@@ -614,10 +652,9 @@ public class ProjectInfo
 	 * specified.
 	 * @since 2016/09/19
 	 */
-	public final String title()
+	public final MidletSuiteName title()
 	{
-		return manifest().getMainAttributes().get(
-			new JavaManifestKey("LIBlet-Title"));
+		return midletSuite().name();
 	}
 	
 	/**
@@ -650,10 +687,9 @@ public class ProjectInfo
 	 * specified.
 	 * @since 2016/09/19
 	 */
-	public final String vendor()
+	public final MidletSuiteVendor vendor()
 	{
-		return manifest().getMainAttributes().get(
-			new JavaManifestKey("LIBlet-Vendor"));
+		return midletSuite().vendor();
 	}
 	
 	/**
@@ -663,10 +699,9 @@ public class ProjectInfo
 	 * specified.
 	 * @since 2016/09/19
 	 */
-	public final String version()
+	public final MidletVersion version()
 	{
-		return manifest().getMainAttributes().get(
-			new JavaManifestKey("LIBlet-Version"));
+		return midletSuite().version();
 	}
 	
 	/**
