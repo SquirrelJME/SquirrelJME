@@ -15,6 +15,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import net.multiphasicapps.squirreljme.gcf.IMCFactory;
 
 /**
  * This class is used to create new connections via the generic connection
@@ -217,6 +218,10 @@ public class Connector
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
+		// If missing, create
+		if (__opts == null)
+			__opts = new ConnectionOption<?>[0];
+		
 		// {@squirreljme.error EC03 The URI does not have a scheme. (The URI)}
 		int fc = __uri.indexOf(':');
 		if (fc < 0)
@@ -253,7 +258,7 @@ public class Connector
 				
 				// Intermidlet communication
 			case "imc":
-				throw new Error("TODO");
+				return IMCFactory.open(part, __timeouts);
 				
 				// UDP Multicast
 			case "multicast":
