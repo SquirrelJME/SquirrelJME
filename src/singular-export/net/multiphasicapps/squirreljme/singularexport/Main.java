@@ -46,6 +46,7 @@ import net.multiphasicapps.squirreljme.java.manifest.
 	MutableJavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.projects.DependencyLookupType;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -181,7 +182,8 @@ public class Main
 			ProjectInfo bin;
 			try
 			{
-				bin = pg.compileSource(null, __opt);
+				bin = pg.compileSource(null, DependencyLookupType.EXTERNAL,
+					__opt);
 			}
 			
 			// {@squirreljme.error DV05 Read/write error reading the project
@@ -198,8 +200,8 @@ public class Main
 			
 			// Add dependencies
 			__into.add(bin);
-			__pl.recursiveDependencies(__into, ProjectType.BINARY, pg.name(),
-				__opt);
+			__pl.recursiveDependencies(__into, DependencyLookupType.EXTERNAL,
+				ProjectType.BINARY, pg.name(), __opt);
 		}
 		
 		// Return the main project
@@ -316,7 +318,7 @@ public class Main
 						continue;
 					
 					// Process
-					__process(zsw, pi, data, null);
+					__process(zsw, pi, data);
 				}
 				
 				// Write services
