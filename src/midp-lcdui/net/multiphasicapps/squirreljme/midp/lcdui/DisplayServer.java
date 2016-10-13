@@ -42,6 +42,9 @@ public abstract class DisplayServer
 	/** The master IMC socket. */
 	private final IMCServerConnection _serversock;
 	
+	/** A connection count, just for threading. */
+	private volatile int _conncount;
+	
 	/**
 	 * Initializes the base display server.
 	 *
@@ -99,8 +102,12 @@ public abstract class DisplayServer
 		for (;;)
 			try (IMCConnection sock = (IMCConnection)svsock.acceptAndOpen())
 			{
-				// Create socket
-				new __Socket__(sock);
+				// Create thread for the given socket
+				Thread t = new Thread(new __Socket__(sock),
+					"SquirrelJMEDisplayServerConnection-" + (++_conncount));
+				
+				// Start it
+				t.start();
 			}
 			
 			// Failed read, ignore
@@ -115,6 +122,7 @@ public abstract class DisplayServer
 	 * @since 2016/10/13
 	 */
 	private final class __Socket__
+		implements Runnable
 	{
 		/** The input for the socket. */
 		protected final DataInputStream in;
@@ -140,6 +148,16 @@ public abstract class DisplayServer
 			// Open input and output
 			this.in = __sock.openDataInputStream();
 			this.out = __sock.openDataOutputStream();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/10/13
+		 */
+		@Override
+		public void run()
+		{
+			throw new Error("TODO");
 		}
 	}
 }

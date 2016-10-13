@@ -48,6 +48,9 @@ public class IMCClient
 	/** The client mailbox descriptor. */
 	private final int _clientfd;
 	
+	/** Has a stream been opened? */
+	private volatile boolean _opened;
+	
 	/** Has this been closed. */
 	private volatile boolean _closed;
 	
@@ -169,9 +172,14 @@ public class IMCClient
 		if (this._closed)
 			return;
 		
-		// Mark closed
+		// Only mark closed, because if any data streams are open they could
+		// be closed later on.
 		this._closed = true;
-		throw new Error("TODO");
+		
+		// If no streams were opened then the client descriptor must be closed
+		// so that the descriptors do not leak
+		if (!this._opened)
+			throw new Error("TODO");
 	}
 		
 	/**
@@ -239,7 +247,10 @@ public class IMCClient
 		if (this._closed)
 			throw new IOException("EC0e");
 		
-		return new __IMCInputStream__(this._clientfd);
+		// Open stream
+		InputStream rv = new __IMCInputStream__(this._clientfd);
+		this._opened = true;
+		return rv;
 	}
 	
 	/**
@@ -255,7 +266,10 @@ public class IMCClient
 		if (this._closed)
 			throw new IOException("EC0f");
 		
-		return new __IMCOutputStream__(this._clientfd);
+		// Open stream
+		OutputStream rv = new __IMCOutputStream__(this._clientfd);
+		this._opened = true;
+		return rv;
 	}
 }
 
