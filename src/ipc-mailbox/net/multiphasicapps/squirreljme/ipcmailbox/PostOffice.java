@@ -20,10 +20,10 @@ public final class PostOffice
 	extends PostBase
 {
 	/** Server mailbox. */
-	protected final Mailbox serverbox;
+	protected final PostBox serverbox;
 	
 	/** Client mailbox. */
-	protected final Mailbox clientbox;
+	protected final PostBox clientbox;
 	
 	/**
 	 * Initializes the post office.
@@ -33,8 +33,30 @@ public final class PostOffice
 	public PostOffice()
 	{
 		// Setup mailboxes
-		this.serverbox = new Mailbox(this);
-		this.clientbox = new Mailbox(this);
+		this.serverbox = new PostBox(this);
+		this.clientbox = new PostBox(this);
+	}
+	
+	/**
+	 * Returns the client mailbox.
+	 *
+	 * @return The cient mailbox.
+	 * @since 2016/10/13
+	 */
+	public PostBox client()
+	{
+		return this.clientbox;
+	}
+	
+	/**
+	 * Returns the server mailbox.
+	 *
+	 * @return The server mailbox.
+	 * @since 2016/10/13
+	 */
+	public PostBox server()
+	{
+		return this.serverbox;
 	}
 }
 

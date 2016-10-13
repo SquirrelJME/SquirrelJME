@@ -16,8 +16,11 @@ package net.multiphasicapps.squirreljme.ipcmailbox;
  *
  * @since 2016/10/13
  */
-public final class Mailbox
+public final class PostBox
 {
+	/** The owning post office. */
+	protected final PostOffice postoffice;
+	
 	/**
 	 * Initializes the mailbox.
 	 *
@@ -25,14 +28,15 @@ public final class Mailbox
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	Mailbox(PostOffice __po)
+	PostBox(PostOffice __po)
 		throws NullPointerException
 	{
 		// Check
 		if (__po == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.postoffice = __po;
 	}
 }
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.ipcmailbox.Mailbox;
+import net.multiphasicapps.squirreljme.ipcmailbox.PostBox;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostBase;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostDestination;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostOffice;
@@ -39,7 +39,7 @@ public final class SquirrelJME
 		new SortedTreeMap<>();
 	
 	/** Post mailboxes. */
-	private static final Map<Integer, Mailbox> _POST_BOXES =
+	private static final Map<Integer, PostBox> _POST_BOXES =
 		new SortedTreeMap<>();
 	
 	/** Post destination next id. */
@@ -112,7 +112,8 @@ public final class SquirrelJME
 		// Accept post office connect
 		PostOffice po = dest.accept();
 		
-		throw new Error("TODO");
+		// Add mailbox to the list of post boxes 
+		return __addPostBox(po.server());
 	}
 	
 	/**
@@ -169,7 +170,8 @@ public final class SquirrelJME
 							// Connect and obtain a post office
 							PostOffice po = d.connect();
 					
-							throw new Error("TODO");
+							// Add mailbox to the list of post boxes 
+							return __addPostBox(po.client());
 						}
 						catch (InterruptedException e)
 						{
@@ -293,6 +295,55 @@ public final class SquirrelJME
 	{
 		// Always zero, for the kernel
 		return 0;
+	}
+	
+	/**
+	 * Adds the specified post box to the set of post office boxes.
+	 *
+	 * @param __box The box to add.
+	 * @return The descriptor for the given box.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	private static int __addPostBox(PostBox __box)
+		throws NullPointerException
+	{
+		// Check
+		if (__box == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on boxes
+		Map<Integer, PostBox> boxes = SquirrelJME._POST_BOXES;
+		synchronized (boxes)
+		{
+			// Try to find a free box ID
+			int origboxid = SquirrelJME._nextboxid;
+			for (int nextboxid = (origboxid + 1) & 0x7FFF_FFFF;;
+				nextboxid++)
+			{
+				Integer b = Integer.valueOf(nextboxid);
+				if (!boxes.containsKey(b))
+				{
+					// Store
+					boxes.put(b, __box);
+					
+					// Next destination
+					SquirrelJME._nextboxid =
+						((nextboxid + 7) | 0x7FFF_FFFF);
+					return nextboxid;
+				}
+				
+				// If there are no more box descriptors, wait for some
+				if (origboxid == nextboxid)
+					try
+					{
+						boxes.wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
+			}
+		}
 	}
 }
 
