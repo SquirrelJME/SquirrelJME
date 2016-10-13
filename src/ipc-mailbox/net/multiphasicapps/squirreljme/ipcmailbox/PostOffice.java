@@ -58,5 +58,32 @@ public final class PostOffice
 	{
 		return this.serverbox;
 	}
+	
+	/**
+	 * Returns the post box on the other side of the post office.
+	 *
+	 * @param __o The box to get the opposite side of.
+	 * @return The box on the other side of the post office.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	final PostBox __otherBox(PostBox __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Return which one?
+		PostBox serverbox = this.serverbox, clientbox = this.clientbox;
+		if (__o == serverbox)
+			return clientbox;
+		else if (__o == clientbox)
+			return serverbox;
+		
+		// Should not occur, but it could
+		else
+			throw new RuntimeException("OOPS");
+	}
 }
 

@@ -91,7 +91,7 @@ public class IMCServer
 				
 				// Create client socket
 				return new IMCClient(clfd, this.name, this.version,
-					this.authmode);
+					this.authmode, interrupt);
 			}
 			
 			// Request interrupted

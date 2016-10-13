@@ -210,6 +210,8 @@ public final class SquirrelJME
 	 * @param __b The output array where data is to be written.
 	 * @param __o The starting offset to the output.
 	 * @param __l The maximum number of bytes to read.
+	 * @param __wait If {@code true} then the operation will block until a
+	 * datagram is read or the thread is interrupted.
 	 * @return The number of bytes read, or a negative value if the end of
 	 * the stream was reached. A value of zero means that a datagram with no
 	 * actual data was sent by the remote side.
@@ -218,6 +220,7 @@ public final class SquirrelJME
 	 * a zero length.
 	 * @throws IllegalArgumentException If the mailbox descriptor is not
 	 * valid.
+	 * @throws InterruptedException If an interrupt occured waiting for data.
 	 * @throws NoSuchElementException If there is not enough data in the output
 	 * array to store the datagram data, {@code __chan} will contain the
 	 * required storage length.
@@ -225,9 +228,9 @@ public final class SquirrelJME
 	 * @since 2016/10/13
 	 */
 	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
-		int __o, int __l)
+		int __o, int __l, boolean __wait)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			NoSuchElementException, NullPointerException
+			InterruptedException, NoSuchElementException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}

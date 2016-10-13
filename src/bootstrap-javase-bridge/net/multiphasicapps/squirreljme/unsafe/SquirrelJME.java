@@ -270,17 +270,19 @@ public final class SquirrelJME
 	 * @param __b As duplicated.
 	 * @param __o As duplicated.
 	 * @param __l As duplicated.
+	 * @param __wait As duplicated.
 	 * @return As duplicated.
 	 * @throws ArrayIndexOutOfBoundsException As duplicated.
 	 * @throws IllegalArgumentException As duplicated.
+	 * @throws InterruptedException As duplicated.
 	 * @throws NoSuchElementException As duplicated.
 	 * @throws NullPointerException As duplicated.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
-		int __o, int __l)
+		int __o, int __l, boolean __wait)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			NoSuchElementException, NullPointerException
+			InterruptedException, NoSuchElementException, NullPointerException
 	{
 		throw new Error("TODO");
 	}
@@ -327,7 +329,21 @@ public final class SquirrelJME
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		throw new Error("TODO");
+		// Lock on boxes
+		PostBox box;
+		Map<Integer, PostBox> boxes = SquirrelJME._POST_BOXES;
+		synchronized (boxes)
+		{
+			// {@squirreljme.error DE0g The specified descriptor is not a valid
+			// post box. (The descriptor)}
+			box = boxes.get(__fd);
+			if (box == null)
+				throw new IllegalArgumentException(String.format("DE0g %d",
+					__fd));
+		}
+		
+		// Send message from this box
+		box.send(__chan, __b, __o, __l);
 	}
 	
 	/**

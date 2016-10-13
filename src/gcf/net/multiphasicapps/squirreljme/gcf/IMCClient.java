@@ -45,6 +45,9 @@ public class IMCClient
 	/** Use authorization? */
 	protected final boolean authmode;
 	
+	/** Should interrupts be generated? */
+	protected final boolean interrupt;
+	
 	/** The client mailbox descriptor. */
 	private final int _clientfd;
 	
@@ -62,6 +65,7 @@ public class IMCClient
 	 * @param __sv The server to connect to.
 	 * @param __ver The server version.
 	 * @param __authmode Is the connection authorized?
+	 * @param __interrupt Are interrupts permitted?
 	 * @throws ConnectionNotFoundException If the server does not exist.
 	 * @throws IOException On other connection errors.
 	 * @throws NullPointerException If no server name or version were
@@ -69,7 +73,7 @@ public class IMCClient
 	 * @since 2016/10/13
 	 */
 	public IMCClient(MidletSuiteID __id, String __sv, MidletVersion __ver,
-		boolean __authmode)
+		boolean __authmode, boolean __interrupt)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		// Check
@@ -80,6 +84,7 @@ public class IMCClient
 		this.servername = __sv;
 		this.serverversion = __ver;
 		this.authmode = __authmode;
+		this.interrupt = __interrupt;
 		
 		// Encode target midlet
 		byte[] midb = (__id == null ? null :
@@ -130,10 +135,12 @@ public class IMCClient
 	 * @param __name The name of the server.
 	 * @param __ver The version of the server.
 	 * @param __auth Use authentication?
+	 * @param __interrupt Are interrupts permitted?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	IMCClient(int __clfd, String __name, MidletVersion __ver, boolean __auth)
+	IMCClient(int __clfd, String __name, MidletVersion __ver, boolean __auth,
+		boolean __interrupt)
 		throws NullPointerException
 	{
 		// Check
@@ -145,6 +152,7 @@ public class IMCClient
 		this.servername = __name;
 		this.serverversion = __ver;
 		this.authmode = __auth;
+		this.interrupt = __interrupt;
 		
 		// Determine remote end
 		try
