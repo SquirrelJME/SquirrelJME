@@ -61,10 +61,10 @@ class __IMCOutputStream__
 		// Only close once
 		if (this._closed)
 			return;
-		this._closed = true;
 		
 		// Flush before close
 		flush();
+		this._closed = true;
 		
 		throw new Error("TODO");
 	}
@@ -77,6 +77,10 @@ class __IMCOutputStream__
 	public void flush()
 		throws IOException
 	{
+		// If closed, do nothing
+		if (this._closed)
+			return;
+		
 		// Are there bytes to be flushed
 		int at = this._at;
 		if (at > 0)
@@ -98,6 +102,10 @@ class __IMCOutputStream__
 	public void write(int __b)
 		throws IOException
 	{
+		// {@squirreljme.error EC0g Cannot write single byte after close.}
+		if (this._closed)
+			throw new IOException("EC0g");
+		
 		// May need to flush depending on the new position
 		int at = this._at;
 		
@@ -120,6 +128,10 @@ class __IMCOutputStream__
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
+		// {@squirreljme.error EC0h Cannot write multiple bytes after close.}
+		if (this._closed)
+			throw new IOException("EC0h");
+		
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");

@@ -28,6 +28,10 @@ class __IMCInputStream__
 	/** The mailbox descriptor. */
 	private final int _fd;
 	
+	/** Single byte read. */
+	private final byte[] _solo =
+		new byte[1];
+	
 	/** Closed? */
 	private volatile boolean _closed;
 	
@@ -43,6 +47,7 @@ class __IMCInputStream__
 		this._fd = __fd;
 		this.interrupt = __int;
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/13
@@ -67,7 +72,21 @@ class __IMCInputStream__
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Need to read a single byte always
+		for (;;)
+		{
+			// Read single byte
+			byte[] solo = this._solo;
+			int rc = read(solo, 0, 1);
+		
+			// EOF?
+			if (rc < 0)
+				return -1;
+			
+			// If a single byte was read, then use it
+			if (rc == 1)
+				return solo[0] & 0xFF;
+		}
 	}
 	
 	/**
@@ -79,6 +98,13 @@ class __IMCInputStream__
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		
 		throw new Error("TODO");
 	}
 }
