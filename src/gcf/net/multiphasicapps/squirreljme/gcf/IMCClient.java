@@ -15,6 +15,7 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.util.Objects;
 import javax.microedition.io.ConnectionNotFoundException;
@@ -113,6 +114,44 @@ public class IMCClient
 		else
 			this.connectid = new MidletSuiteID(new String(
 				SquirrelJME.mailboxRemoteID(fd), "utf-8"));
+	}
+	
+	/**
+	 * Initializes a client connection which is obtained its descriptor
+	 * from the server.
+	 *
+	 * @param __clfd The descriptor to bind to.
+	 * @param __name The name of the server.
+	 * @param __ver The version of the server.
+	 * @param __auth Use authentication?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	IMCClient(int __clfd, String __name, MidletVersion __ver, boolean __auth)
+		throws NullPointerException
+	{
+		// Check
+		if (__name == null || __ver == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._clientfd = __clfd;
+		this.servername = __name;
+		this.serverversion = __ver;
+		this.authmode = __auth;
+		
+		// Determine remote end
+		try
+		{
+			this.connectid = new MidletSuiteID(new String(
+				SquirrelJME.mailboxRemoteID(__clfd), "utf-8"));
+		}
+		
+		// Should never occur
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("OOPS", e);
+		}
 	}
 	
 	/**

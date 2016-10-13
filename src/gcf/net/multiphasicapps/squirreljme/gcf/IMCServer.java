@@ -86,10 +86,12 @@ public class IMCServer
 		for (;;)
 			try
 			{
-				// Accept connection
+				// Accept socket
 				int clfd = SquirrelJME.mailboxAccept(mailfd);
 				
-				throw new Error("TODO");
+				// Create client socket
+				return new IMCClient(clfd, this.name, this.version,
+					this.authmode);
 			}
 			
 			// Request interrupted
