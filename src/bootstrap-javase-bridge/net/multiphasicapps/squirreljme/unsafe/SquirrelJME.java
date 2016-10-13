@@ -36,6 +36,18 @@ public final class SquirrelJME
 	private static final Map<Integer, PostDestination> _POST_DESTS =
 		new SortedTreeMap<>();
 	
+	/** Post mailboxes. */
+	private static final Map<Integer, Mailbox> _POST_BOXES =
+		new SortedTreeMap<>();
+	
+	/** Post destination next id. */
+	private static volatile int _nextpostdest =
+		-1;
+	
+	/** Next mailbox id. */
+	private static volatile int _nextboxid =
+		1;
+	
 	/**
 	 * Not used.
 	 *
@@ -84,17 +96,21 @@ public final class SquirrelJME
 	{
 		// Look in the destination map
 		Map<Integer, PostDestination> postdests = SquirrelJME._POST_DESTS;
+		PostDestination dest;
 		synchronized (postdests)
 		{
 			// {@squirreljme.error DE0d The post destination is not valid.
 			// (The identifier)}
-			PostDestination dest = postdests.get(__ld);
+			dest = postdests.get(__ld);
 			if (dest == null)
 				throw new IllegalArgumentException(String.format(
 					"DE0d %s", __ld));
-			
-			throw new Error("TODO");
 		}
+		
+		// Accept post office connect
+		PostOffice po = dest.accept();
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -142,14 +158,19 @@ public final class SquirrelJME
 		Map<Integer, PostDestination> postdests = SquirrelJME._POST_DESTS;
 		synchronized (postdests)
 		{
-			for (int i = System.identityHashCode(dest) | 0x8000_0000;;
-				i = (i - 1) | 0x8000_0000)
+			// Use linear ID progression
+			for (int nextpostdest = SquirrelJME._nextpostdest;; nextpostdest--)
 			{
-				Integer b = Integer.valueOf(i);
+				Integer b = Integer.valueOf(nextpostdest);
 				if (!postdests.containsKey(b))
 				{
+					// Store
 					postdests.put(b, dest);
-					return i;
+					
+					// Next destination
+					SquirrelJME._nextpostdest =
+						((nextpostdest - 1) | 0x8000_0000);
+					return nextpostdest;
 				}
 			}
 		}

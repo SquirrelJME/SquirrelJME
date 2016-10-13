@@ -19,11 +19,11 @@ package net.multiphasicapps.squirreljme.ipcmailbox;
 public final class PostOffice
 	extends PostBase
 {
-	/** Mailbox A. */
-	protected final Mailbox boxa;
+	/** Server mailbox. */
+	protected final Mailbox serverbox;
 	
-	/** Mailbox B. */
-	protected final Mailbox boxb;
+	/** Client mailbox. */
+	protected final Mailbox clientbox;
 	
 	/**
 	 * Initializes the post office.
@@ -33,8 +33,8 @@ public final class PostOffice
 	public PostOffice()
 	{
 		// Setup mailboxes
-		this.boxa = new Mailbox(this);
-		this.boxb = new Mailbox(this);
+		this.serverbox = new Mailbox(this);
+		this.clientbox = new Mailbox(this);
 	}
 }
 

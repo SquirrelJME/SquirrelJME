@@ -21,6 +21,10 @@ import net.multiphasicapps.squirreljme.midletid.MidletVersion;
 public final class PostDestination
 	extends PostBase
 {
+	/** The post office lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The name of the server. */
 	protected final String name;
 	
@@ -29,6 +33,12 @@ public final class PostDestination
 	
 	/** Authorized mode? */
 	protected final boolean authmode;
+	
+	/** The number of clients wanting post offices. */
+	private volatile int _wantoffices;
+	
+	/** The post office that just opened. */
+	private volatile PostOffice _openoffice;
 	
 	/**
 	 * Initializes the post destination.
@@ -46,6 +56,86 @@ public final class PostDestination
 		this.name = __name;
 		this.version = __ver;
 		this.authmode = __am;
+	}
+	
+	/**
+	 * Accepts a connection to this post office.
+	 *
+	 * Return The post office connection.
+	 * @since 2016/10/13
+	 */
+	public PostOffice accept()
+		throws InterruptedException
+	{
+		// Lock
+		Object lock = this.lock;
+		synchronized (lock)
+		{
+			// Loop until a client accepts a mailbox
+			for (;;)
+			{
+				// A thread wants a post office?
+				int wants = this._wantoffices;
+				if (wants > 0)
+				{
+					// Create it
+					PostOffice rv = new PostOffice();
+					this._openoffice = rv;
+				
+					// Notify all threads that are waiting
+					lock.notifyAll();
+				
+					// Return it
+					return rv;
+				}
+			
+				// Wait for a post office request
+				lock.wait();
+			}
+		}
+	}
+	
+	/**
+	 * Connects to the given post office.
+	 *
+	 * Return The post office connection.
+	 * @since 2016/10/13
+	 */
+	public PostOffice connect()
+		throws InterruptedException
+	{
+		// Lock
+		Object lock = this.lock;
+		synchronized (lock)
+		{
+			// Try to get a new office
+			try
+			{
+				// Mark that a client wants a new post office
+				this._wantoffices++;
+				
+				// Notify the destination that an office is requested
+				lock.notifyAll();
+				
+				// We got the lock back, check if there is an office waiting
+				for (;;)
+				{
+					// See if an office was created
+					PostOffice rv = this._openoffice;
+					if (rv != null)
+						return rv;
+				
+					// If it was not, then wait for one to appear
+					lock.wait();
+				}
+			}
+			
+			// Lower the number of clients that want offices
+			finally
+			{
+				this._wantoffices--;
+			}
+		}
 	}
 }
 
