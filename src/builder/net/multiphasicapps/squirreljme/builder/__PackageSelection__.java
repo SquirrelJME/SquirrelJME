@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.projects.DependencyLookupType;
 import net.multiphasicapps.squirreljme.projects.ProjectGroup;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectList;
@@ -65,8 +66,8 @@ class __PackageSelection__
 		ProjectInfo jvmproj;
 		if (vmgrp == null || (jvmproj = vmgrp.binary()) == null)
 			throw new IllegalStateException("DW0k");
-		jvm.addAll(plist.recursiveDependencies(ProjectType.BINARY,
-			jvmproj.name(), false));
+		jvm.addAll(plist.recursiveDependencies(DependencyLookupType.INTERNAL,
+			ProjectType.COMPILED, jvmproj.name(), false));
 		
 		// Tests?
 		boolean tests = __conf.includeTests();
@@ -86,7 +87,8 @@ class __PackageSelection__
 			
 			// If this is a test package then include it
 			if (tests && pigs.contains("tests"))
-				all.addAll(plist.recursiveDependencies(ProjectType.COMPILED,
+				all.addAll(plist.recursiveDependencies(
+					DependencyLookupType.INTERNAL, ProjectType.COMPILED,
 					pi.name(), false));
 			
 			// Add to JVM classpath?
@@ -94,14 +96,16 @@ class __PackageSelection__
 				if (pigs.contains(groups[i]))
 				{
 					jvm.addAll(plist.recursiveDependencies(
-						ProjectType.COMPILED, pi.name(), false));
+						DependencyLookupType.INTERNAL, ProjectType.COMPILED,
+						pi.name(), false));
 					break;
 				}
 		}
 		
 		// Add any extra projects to be included in the all set
 		for (ProjectInfo p : __conf.extraProjects())
-			all.addAll(plist.recursiveDependencies(ProjectType.BINARY,
+			all.addAll(plist.recursiveDependencies(
+				DependencyLookupType.INTERNAL, ProjectType.BINARY,
 				p.name(), false));
 		
 		// Add JVM packages to the all list
