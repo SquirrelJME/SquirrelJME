@@ -284,6 +284,19 @@ public final class SquirrelJME
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			InterruptedException, NoSuchElementException, NullPointerException
 	{
+		// Lock on boxes
+		PostBox box;
+		Map<Integer, PostBox> boxes = SquirrelJME._POST_BOXES;
+		synchronized (boxes)
+		{
+			// {@squirreljme.error DE0h The specified descriptor is not a valid
+			// post box. (The descriptor)}
+			box = boxes.get(__fd);
+			if (box == null)
+				throw new IllegalArgumentException(String.format("DE0h %d",
+					__fd));
+		}
+		
 		throw new Error("TODO");
 	}
 	
