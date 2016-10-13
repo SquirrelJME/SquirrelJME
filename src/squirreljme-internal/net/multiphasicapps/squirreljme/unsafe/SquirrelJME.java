@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 import java.io.IOException;
+import java.net.BindException;
 
 /**
  * This class contains static methods which are used by the standard class
@@ -143,6 +144,39 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Connects to a mailbox that is listening. 
+	 *
+	 * @param __mb The UTF-8 bytes for the midlet to connect to, if
+	 * {@code null} then any midlet is connected to.
+	 * @param __mo The offset in the midlet name, ignored if {@code __mb} is
+	 * {@code null}.
+	 * @param __ml The length of the midlet UTF-8 bytes, ignored if
+	 * {@code __mb} is {@code null}.
+	 * @param __sb The UTF-8 bytes of the server to connect to.
+	 * @param __so The offset in the server name.
+	 * @param __sl The number of UTF-8 bytes used in the server name.
+	 * @param __v The encoded version of the server to connect to, the server
+	 * must have a version that is at least this value.
+	 * @param __am If {@code true} then authorized mode to use.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws BindException If the server does not exist.
+	 * @throws IllegalArgumentException If the remote midlet is malformed or
+	 * the server name and/or version are malformed.
+	 * @throws NullPointerException If no server was specified or the offset
+	 * and length are not of the specified values and the midlet is not
+	 * specified.
+	 * @since 2016/10/13
+	 */
+	public static int mailboxConnect(byte[] __mb, int __mo, int __ml,
+		byte[] __sb, int __so, int __sl, int __v, boolean __am)
+		throws ArrayIndexOutOfBoundsException, BindException,
+			IllegalArgumentException, NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Sets up a listening mailbox that waits for incoming mailbox connections.
 	 *
 	 * @param __b The name of the server, UTF-8 encoded.
@@ -153,15 +187,29 @@ public final class SquirrelJME
 	 * @return The descriptor of the mailbox destination.
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
+	 * @throws BindException If the mailbox could not be bound.
 	 * @throws IllegalArgumentException If the version number is not correct.
 	 * @throws NullPointerException On null arguments.
-	 * @throws RuntimeException If the mailbox could not be created.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxListen(byte[] __b, int __o, int __l, int __v,
 		boolean __am)
-		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			NullPointerException, RuntimeException
+		throws ArrayIndexOutOfBoundsException, BindException,
+			IllegalArgumentException, NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Returns the remote ID of the connected mailbox.
+	 *
+	 * @param __fd The remote file descriptor.
+	 * @return The byte array representing the remote ID.
+	 * @throws IllegalArgumentException If the mailbox descriptor is not valid.
+	 * @since 2016/10/13
+	 */
+	public static byte[] mailboxRemoteID(int __fd)
+		throws IllegalArgumentException
 	{
 		throw new RuntimeException("OOPS");
 	}

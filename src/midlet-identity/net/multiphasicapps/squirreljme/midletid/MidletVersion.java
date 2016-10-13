@@ -139,6 +139,24 @@ public final class MidletVersion
 	}
 	
 	/**
+	 * Checks if this version at least the specified verison.
+	 *
+	 * @param __v The version to check against.
+	 * @return {@code true} if this version is at least the other.
+	 * @throws NullPointerException On nul arguments.
+	 */
+	public boolean atLeast(MidletVersion __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Can compare the hashcodes
+		return hashCode() >= __v.hashCode();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/12
 	 */

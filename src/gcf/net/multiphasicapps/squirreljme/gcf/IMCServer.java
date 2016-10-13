@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.gcf;
 import java.io.InterruptedIOException;
 import java.io.IOException;
 import javax.microedition.io.Connection;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
 import net.multiphasicapps.squirreljme.midletid.MidletVersion;

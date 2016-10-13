@@ -15,10 +15,14 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.BindException;
+import java.util.Objects;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
 import net.multiphasicapps.squirreljme.midletid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.midletid.MidletVersion;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**
  * This implements the client side of the IMC connection.
@@ -40,6 +44,9 @@ public class IMCClient
 	/** Use authorization? */
 	protected final boolean authmode;
 	
+	/** The client mailbox descriptor. */
+	private final int _clientfd;
+	
 	/**
 	 * Initializes the inter-midlet communication client.
 	 *
@@ -48,13 +55,15 @@ public class IMCClient
 	 * @param __sv The server to connect to.
 	 * @param __ver The server version.
 	 * @param __authmode Is the connection authorized?
+	 * @throws ConnectionNotFoundException If the server does not exist.
+	 * @throws IOException On other connection errors.
 	 * @throws NullPointerException If no server name or version were
 	 * specified.
 	 * @since 2016/10/13
 	 */
 	public IMCClient(MidletSuiteID __id, String __sv, MidletVersion __ver,
 		boolean __authmode)
-		throws NullPointerException
+		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		// Check
 		if (__sv == null || __ver == null)
@@ -65,7 +74,45 @@ public class IMCClient
 		this.serverversion = __ver;
 		this.authmode = __authmode;
 		
-		throw new Error("TODO");
+		// Encode target midlet
+		byte[] midb = (__id == null ? null :
+			__id.toString().getBytes("utf-8"));
+		int mido, midl;
+		if (midb == null)
+			mido = midl = -1;
+		else
+		{
+			mido = 0;
+			midl = midb.length;
+		}
+		
+		// Encode server name
+		byte[] svnb = __sv.getBytes("utf-8");
+		
+		// Connect to server
+		int fd;
+		try
+		{
+			// Connect to the remote server
+			this._clientfd = (fd = SquirrelJME.mailboxConnect(midb, mido, midl,
+				svnb, 0, svnb.length, __ver.hashCode(), __authmode));
+		}
+		
+		// {@squirreljme.error EC0d Could not connect to the remote server.}
+		catch (BindException e)
+		{
+			throw new ConnectionNotFoundException(Objects.toString(
+				e.getMessage(), "EC0d"));
+		}
+		
+		// If specified, use the given MIDlet
+		if (__id != null)
+			this.connectid = __id;
+		
+		// Otherwise obtain it from the socket
+		else
+			this.connectid = new MidletSuiteID(new String(
+				SquirrelJME.mailboxRemoteID(fd), "utf-8"));
 	}
 	
 	/**

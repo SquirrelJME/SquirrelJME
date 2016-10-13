@@ -137,5 +137,27 @@ public final class PostDestination
 			}
 		}
 	}
+	
+	/**
+	 * Returns the name of the server.
+	 *
+	 * @return The server name.
+	 * @since 2016/10/13
+	 */
+	public final String serverName()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * Returns the version of the server.
+	 *
+	 * @return The server version.
+	 * @since 2016/10/13
+	 */
+	public final MidletVersion serverVersion()
+	{
+		return this.version;
+	}
 }
 
