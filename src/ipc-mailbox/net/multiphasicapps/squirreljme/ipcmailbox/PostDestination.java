@@ -62,6 +62,7 @@ public final class PostDestination
 	 * Accepts a connection to this post office.
 	 *
 	 * Return The post office connection.
+	 * @throws InterruptedException If the accept request was interrupted.
 	 * @since 2016/10/13
 	 */
 	public PostOffice accept()
@@ -98,7 +99,8 @@ public final class PostDestination
 	/**
 	 * Connects to the given post office.
 	 *
-	 * Return The post office connection.
+	 * @return The post office connection.
+	 * @throws InterruptedException If the connect attempt was interrupted.
 	 * @since 2016/10/13
 	 */
 	public PostOffice connect()

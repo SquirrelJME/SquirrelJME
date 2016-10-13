@@ -163,9 +163,18 @@ public final class SquirrelJME
 			for (PostDestination d : postdests.values())
 				if (d.serverName().equals(name) &&
 					ver.atLeast(d.serverVersion()))
-				{
-					throw new Error("TODO");
-				}
+					for (;;)
+						try
+						{
+							// Connect and obtain a post office
+							PostOffice po = d.connect();
+					
+							throw new Error("TODO");
+						}
+						catch (InterruptedException e)
+						{
+							// Ignore interruptions and retry
+						}
 			
 			// {@squirreljme.error DE0f Could not find a connected to the
 			// specified server. (The server name; The server version)}
