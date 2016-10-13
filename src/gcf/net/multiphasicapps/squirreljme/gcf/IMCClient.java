@@ -48,6 +48,9 @@ public class IMCClient
 	/** The client mailbox descriptor. */
 	private final int _clientfd;
 	
+	/** Has this been closed. */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the inter-midlet communication client.
 	 *
@@ -162,6 +165,12 @@ public class IMCClient
 	public void close()
 		throws IOException
 	{
+		// Ignore
+		if (this._closed)
+			return;
+		
+		// Mark closed
+		this._closed = true;
 		throw new Error("TODO");
 	}
 		
@@ -225,7 +234,12 @@ public class IMCClient
 	public InputStream openInputStream()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EC0e Cannot open input stream for a closed
+		// connection.}
+		if (this._closed)
+			throw new IOException("EC0e");
+		
+		return new __IMCInputStream__(this._clientfd);
 	}
 	
 	/**
@@ -236,7 +250,12 @@ public class IMCClient
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EC0f Cannot open input stream for a closed
+		// connection.}
+		if (this._closed)
+			throw new IOException("EC0f");
+		
+		return new __IMCOutputStream__(this._clientfd);
 	}
 }
 
