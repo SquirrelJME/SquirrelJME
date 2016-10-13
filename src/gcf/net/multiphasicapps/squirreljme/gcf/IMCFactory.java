@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.gcf;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import net.multiphasicapps.squirreljme.midletid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midletid.MidletVersion;
 
 /**
  * This class is used to create instances of inter-midlet connections.
@@ -84,6 +85,22 @@ public class IMCFactory
 			else
 				throw new Error("TODO");
 		}
+		
+		// {@squirreljme.error EC07 IMC connection does not have a colon
+		// to separate the server name and the version. (The scheme specific
+		// part)}
+		int col = rest.indexOf(':');
+		if (col < 0)
+			throw new IllegalArgumentException(
+				String.format("EC07 %s", __par));
+		
+		// Decode server name and version
+		String name = rest.substring(0, col);
+		MidletVersion version = new MidletVersion(rest.substring(col + 1));
+		
+		// Debug
+		System.err.printf("DEBUG issv=%b host=%s svn=%s ver=%s%n u=%s",
+			!isclient, connect, name, version, __par);
 		
 		throw new Error("TODO");
 	}
