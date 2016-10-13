@@ -84,7 +84,32 @@ public class IMCFactory
 			// Connect to a specific midlet
 			else
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error EC09 Expected to find a colon in
+				// the IMC midlet target. (The scheme specific part)}
+				int cola = rest.indexOf(':');
+				if (cola < 0)
+					throw new IllegalArgumentException(String.format(
+						"EC09 %s", __par));
+				
+				// {@squirreljme.error EC0a Expected to find a second colon
+				// in the IMC midlet target. (The scheme specific part)}
+				int colb = rest.indexOf(':', cola + 1);
+				if (colb < 0)
+					throw new IllegalArgumentException(String.format(
+						"EC0a %s", __par));
+				
+				// {@squirreljme.error EC0a Expected to find a third colon
+				// in the IMC midlet target. (The scheme specific part)}
+				int colc = rest.indexOf(':', colb + 1);
+				if (colb < 0)
+					throw new IllegalArgumentException(String.format(
+						"EC0b %s", __par));
+				
+				// Parse suite ID
+				connect = new MidletSuiteID(rest.substring(0, colc), true);
+				
+				// The rest is anything after the third
+				rest = rest.substring(colc + 1);
 			}
 		}
 		
