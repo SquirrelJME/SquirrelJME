@@ -297,7 +297,8 @@ public final class SquirrelJME
 					__fd));
 		}
 		
-		throw new Error("TODO");
+		// Receive data
+		return box.receive(__chan, __b, __o, __l, __wait);
 	}
 	
 	/**

@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.ipcmailbox;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.NoSuchElementException;
 
 /**
  * This is a mailbox which is part of a post office (think PO Box), a mailbox
@@ -44,6 +45,48 @@ public final class PostBox
 		
 		// Set
 		this.postoffice = __po;
+	}
+	
+	/**
+	 * Receives a single datagram from the queue.
+	 *
+	 * @param __chan An array with a length of least zero, used as output to
+	 * specify the channel the data was sent on.
+	 * @param __b The output array where data is to be written.
+	 * @param __o The starting offset to the output.
+	 * @param __l The maximum number of bytes to read.
+	 * @param __w If {@code true} then the operation will block until a
+	 * datagram is read or the thread is interrupted.
+	 * @return The number of bytes read, or a negative value if the end of
+	 * the stream was reached. A value of zero means that a datagram with no
+	 * actual data was sent by the remote side.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the length of the array; or the channel array has
+	 * a zero length.
+	 * @throws InterruptedException If an interrupt occured waiting for data.
+	 * @throws NoSuchElementException If there is not enough data in the output
+	 * array to store the datagram data, {@code __chan} will contain the
+	 * required storage length.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	public int receive(int[] __chan, byte[] __b, int __o, int __l, boolean __w)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			InterruptedException, NoSuchElementException, NullPointerException
+	{
+		// Check
+		if (__chan == null || __b == null)
+			throw new NullPointerException("NARG");
+		if (__chan.length < 1 || __o < 0 || __l < 0 ||
+			(__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		// Lock on the queue
+		Deque<__Datagram__> iq = this._queue;
+		synchronized (iq)
+		{
+			throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
