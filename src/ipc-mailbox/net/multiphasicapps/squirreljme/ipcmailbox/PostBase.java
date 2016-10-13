@@ -22,7 +22,7 @@ public abstract class PostBase
 	 *
 	 * @since 2016/10/13
 	 */
-	PostGear()
+	PostBase()
 	{
 	}
 }

@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.ipcmailbox.Mailbox;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostBase;
+import net.multiphasicapps.squirreljme.ipcmailbox.PostDestination;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostOffice;
 import net.multiphasicapps.squirreljme.midletid.MidletVersion;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
@@ -31,8 +32,8 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public final class SquirrelJME
 {
-	/** Listening post services and active post services. */
-	private static final Map<Integer, PostBase> _POST_GEARS =
+	/** Post destination. */
+	private static final Map<Integer, PostDestination> _POST_DESTS =
 		new SortedTreeMap<>();
 	
 	/**
@@ -107,14 +108,23 @@ public final class SquirrelJME
 			throw new RuntimeException("OOPS", e);
 		}
 		
-		if (true)
-			throw new Error("TODO");
+		// Create destination
+		PostDestination dest = new PostDestination(name, ver, __am);
 		
-		// Bind the post gear to identifiers
-		Map<Integer, PostGear> postgears = SquirrelJME._POST_GEARS;
-		synchronized (postgears)
+		// Store the destinations
+		Map<Integer, PostDestination> postdests = SquirrelJME._POST_DESTS;
+		synchronized (postdests)
 		{
-			throw new Error("TODO");
+			for (int i = System.identityHashCode(dest) | 0x8000_0000;;
+				i = (i - 1) | 0x8000_0000)
+			{
+				Integer b = Integer.valueOf(i);
+				if (!postdests.containsKey(b))
+				{
+					postdests.put(b, dest);
+					return i;
+				}
+			}
 		}
 	}
 	

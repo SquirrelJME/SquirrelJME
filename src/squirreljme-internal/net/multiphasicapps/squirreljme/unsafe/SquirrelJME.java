@@ -134,7 +134,7 @@ public final class SquirrelJME
 	 * @param __l The length of the name.
 	 * @param __v The integer encoded version number.
 	 * @param __am If {@code true} then authorization mode is used.
-	 * @return The descriptor of the mailbox.
+	 * @return The descriptor of the mailbox destination.
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws IllegalArgumentException If the version number is not correct.

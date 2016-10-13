@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: kernel
 X-SquirrelJME-UUID: bc592ac7-e453-49ea-9423-5efa3aa8f103
-X-SquirrelJME-Depends: cldc-compact mailboxes
+X-SquirrelJME-Depends: cldc-compact ipc-mailbox
 X-SquirrelJME-Error: AO
 LIBlet-Name: Kernel
 LIBlet-Vendor: Steven Gawroriski
