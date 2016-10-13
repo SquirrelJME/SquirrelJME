@@ -40,24 +40,79 @@ public final class MidletSuiteID
 	/**
 	 * Initializes the suite identifier.
 	 *
-	 * @param __name The name of the suite.
 	 * @param __vendor The vendor of the suite.
+	 * @param __name The name of the suite.
 	 * @param __ver The version of the suite.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletSuiteID(MidletSuiteName __name, MidletSuiteVendor __ven,
+	public MidletSuiteID(MidletSuiteVendor __ven, MidletSuiteName __name,
 		MidletVersion __ver)
 		throws NullPointerException
 	{
 		// Check
-		if (__name == null || __ven == null || __ver == null)
+		if (__ven == null || __name == null || __ver == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.name = __name;
 		this.vendor = __ven;
 		this.version = __ver;
+	}
+	
+	/**
+	 * Decodes a midlet suite ID, a reverse operation to the
+	 * {@link #toString()} method.
+	 * 
+	 * @param __s The string to decode.
+	 * @throws IllegalArgumentException If the string is malformed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	public MidletSuiteID(String __s)
+		throws IllegalArgumentException, NullPointerException
+	{
+		this(__s, false);
+	}
+	
+	/**
+	 * Initializes the suite identifier from the specified string.
+	 *
+	 * @param __s The string to decode.
+	 * @param __imc If {@code true} then the identifier is parsed as if it were
+	 * part of an IMC address, otherwise it is read as if it were a JAR.
+	 * @throws IllegalArgumentException If the string is malformed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	public MidletSuiteID(String __s, boolean __imc)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Separator char depends
+		char sep = (__imc ? ':' : ';');
+		
+		// {@squirreljme.error AD06 Expected a separator to appear in the
+		// specified string. (The input string; The separator)}
+		int cola = __s.indexOf(sep);
+		if (cola < 0)
+			throw new IllegalArgumentException(String.format("AD06 %s %c",
+				__s, sep));
+		
+		// {@squirreljme.error AD07 Expected a second separator to appear in
+		// the specified string. (The input string; The separator)}
+		int colb = __s.indexOf(sep, cola + 1);
+		if (colb < 0)
+			throw new IllegalArgumentException(String.format("AD07 %s %c",
+				__s, sep));
+		
+		// Split and parse
+		this.vendor = new MidletSuiteVendor(__s.substring(0, cola));
+		this.name = new MidletSuiteName(__s.substring(cola + 1, colb));
+		this.version = new MidletVersion(__s.substring(colb + 1));
 	}
 	
 	/**

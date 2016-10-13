@@ -544,10 +544,10 @@ public class ProjectInfo
 			
 			// Setup
 			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
-				new MidletSuiteName(
-					attr.get(new JavaManifestKey("LIBlet-Name"))),
 				new MidletSuiteVendor(
 					attr.get(new JavaManifestKey("LIBlet-Vendor"))),
+				new MidletSuiteName(
+					attr.get(new JavaManifestKey("LIBlet-Name"))),
 				new MidletVersion(
 					attr.get(new JavaManifestKey("LIBlet-Version"))))));
 		}

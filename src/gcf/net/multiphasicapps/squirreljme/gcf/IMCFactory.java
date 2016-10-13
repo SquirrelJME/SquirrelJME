@@ -83,7 +83,9 @@ public class IMCFactory
 			
 			// Connect to a specific midlet
 			else
+			{
 				throw new Error("TODO");
+			}
 		}
 		
 		// {@squirreljme.error EC07 IMC connection does not have a colon
