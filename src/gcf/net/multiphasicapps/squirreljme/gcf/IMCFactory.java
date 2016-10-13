@@ -98,11 +98,29 @@ public class IMCFactory
 		String name = rest.substring(0, col);
 		MidletVersion version = new MidletVersion(rest.substring(col + 1));
 		
-		// Debug
-		System.err.printf("DEBUG issv=%b host=%s svn=%s ver=%s%n u=%s",
-			!isclient, connect, name, version, __par);
+		// Parse authorization mode
+		boolean authmode;
+		if (flags.length() > 0)
+			if (flags.equals("authmode=true"))
+				authmode = true;
+			else if (flags.equals("authmode=false"))
+				authmode = false;
+			
+			// {@squirreljme.error EC08 Unknown flags specified in IMC
+			// connection. (The scheme specific part)}
+			else
+				throw new IllegalArgumentException(String.format("EC08 %s",
+					__par));
+		else
+			authmode = false;
 		
-		throw new Error("TODO");
+		// Create client socket
+		if (isclient)
+			throw new Error("TODO");
+		
+		// Create server socket
+		else
+			return new IMCServer(name, version, authmode);
 	}
 }
 
