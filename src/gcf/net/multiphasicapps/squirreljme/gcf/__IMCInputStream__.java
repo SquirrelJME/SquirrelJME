@@ -22,18 +22,26 @@ import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 class __IMCInputStream__
 	extends InputStream
 {
+	/** Interrupt read operations? */
+	protected final boolean interrupt;
+	
 	/** The mailbox descriptor. */
 	private final int _fd;
+	
+	/** Closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the input stream.
 	 *
 	 * @param __fd The descriptor to read from.
+	 * @param __int Are interrupts to be generated?
 	 * @since 2016/10/13
 	 */
-	__IMCInputStream__(int __fd)
+	__IMCInputStream__(int __fd, boolean __int)
 	{
 		this._fd = __fd;
+		this.interrupt = __int;
 	}
 	/**
 	 * {@inheritDoc}
@@ -43,6 +51,11 @@ class __IMCInputStream__
 	public void close()
 		throws IOException
 	{
+		// Only close once
+		if (this._closed)
+			return;
+		this._closed = true;
+		
 		throw new Error("TODO");
 	}
 	

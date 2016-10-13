@@ -256,7 +256,8 @@ public class IMCClient
 			throw new IOException("EC0e");
 		
 		// Open stream
-		InputStream rv = new __IMCInputStream__(this._clientfd);
+		InputStream rv = new __IMCInputStream__(this._clientfd,
+			this.interrupt);
 		this._opened = true;
 		return rv;
 	}
