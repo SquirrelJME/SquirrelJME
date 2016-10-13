@@ -73,6 +73,33 @@ public final class SquirrelJME
 	/**
 	 * As duplicated.
 	 *
+	 * @param __id As duplicated.
+	 * @return As duplicated.
+	 * @throws IllegalArgumentException As duplicated.
+	 * @throws InterruptedException As duplicated.
+	 * @since 2016/10/13
+	 */
+	public static int mailboxAccept(int __ld)
+		throws IllegalArgumentException, InterruptedException
+	{
+		// Look in the destination map
+		Map<Integer, PostDestination> postdests = SquirrelJME._POST_DESTS;
+		synchronized (postdests)
+		{
+			// {@squirreljme.error DE0d The post destination is not valid.
+			// (The identifier)}
+			PostDestination dest = postdetsts.get(__ld);
+			if (dest == null)
+				throw new IllegalArgumentException(String.format(
+					"DE0d %s", __ld));
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * As duplicated.
+	 *
 	 * @param __b As duplicated.
 	 * @param __o As duplicated.
 	 * @param __l As duplicated.

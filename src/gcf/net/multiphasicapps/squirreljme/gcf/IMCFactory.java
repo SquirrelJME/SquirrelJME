@@ -98,7 +98,7 @@ public class IMCFactory
 					throw new IllegalArgumentException(String.format(
 						"EC0a %s", __par));
 				
-				// {@squirreljme.error EC0a Expected to find a third colon
+				// {@squirreljme.error EC0b Expected to find a third colon
 				// in the IMC midlet target. (The scheme specific part)}
 				int colc = rest.indexOf(':', colb + 1);
 				if (colb < 0)
@@ -147,7 +147,7 @@ public class IMCFactory
 		
 		// Create server socket
 		else
-			return new IMCServer(name, version, authmode);
+			return new IMCServer(name, version, authmode, timeouts);
 	}
 }
 

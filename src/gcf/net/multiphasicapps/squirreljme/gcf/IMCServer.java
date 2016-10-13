@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.gcf;
 
+import java.io.InterruptedIOException;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.IMCServerConnection;
@@ -34,6 +35,9 @@ public class IMCServer
 	/** Use authentication mode? */
 	protected final boolean authmode;
 	
+	/** Create interrupts? */
+	protected final boolean interrupt;
+	
 	/** The file descriptor for the mailbox. */
 	private final int _mailfd;
 	
@@ -43,11 +47,13 @@ public class IMCServer
 	 * @param __name The name of the server.
 	 * @param __ver The version of the server.
 	 * @param __auth Is authorization mode used?
+	 * @param __int Should interrupts be generated?
 	 * @throws IOException On socket initialization error.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public IMCServer(String __name, MidletVersion __ver, boolean __auth)
+	public IMCServer(String __name, MidletVersion __ver, boolean __auth,
+		boolean __int)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -58,6 +64,7 @@ public class IMCServer
 		this.name = __name;
 		this.version = __ver;
 		this.authmode = __auth;
+		this.interrupt = __int;
 		
 		// Listen on the mailbox
 		byte[] encname = __name.getBytes("utf-8");
@@ -73,7 +80,27 @@ public class IMCServer
 	public StreamConnection acceptAndOpen()
 		throws IOException
 	{
-		throw new Error("TODO");
+		int mailfd = this._mailfd;
+		boolean interrupt = this.interrupt;
+		for (;;)
+			try
+			{
+				// Accept connection
+				int clfd = SquirrelJME.mailboxAccept(mailfd);
+				
+				throw new Error("TODO");
+			}
+			
+			// Request interrupted
+			catch (InterruptedException e)
+			{
+				// {@squirreljme.error EC0c Accept of connection interrupted.}
+				if (interrupt)
+					throw new InterruptedIOException("EC0c");
+				
+				// Ignore otherwise
+				continue;
+			}
 	}
 	
 	/**
