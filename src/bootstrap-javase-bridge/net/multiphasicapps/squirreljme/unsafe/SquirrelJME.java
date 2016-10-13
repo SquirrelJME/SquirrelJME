@@ -88,7 +88,7 @@ public final class SquirrelJME
 		{
 			// {@squirreljme.error DE0d The post destination is not valid.
 			// (The identifier)}
-			PostDestination dest = postdetsts.get(__ld);
+			PostDestination dest = postdests.get(__ld);
 			if (dest == null)
 				throw new IllegalArgumentException(String.format(
 					"DE0d %s", __ld));

@@ -147,7 +147,7 @@ public class IMCFactory
 		
 		// Create server socket
 		else
-			return new IMCServer(name, version, authmode, timeouts);
+			return new IMCServer(name, version, authmode, __timeouts);
 	}
 }
 
