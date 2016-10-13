@@ -236,6 +236,9 @@ public final class MidletVersion
 				if (c != -1 && at >= 4)
 					throw new IllegalArgumentException(String.format("AD04 %s",
 						__v));
+				
+				// Clear
+				sb.setLength(0);
 			}
 			
 			// Add to string
