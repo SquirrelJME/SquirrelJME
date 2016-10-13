@@ -69,6 +69,26 @@ public final class MidletVersion
 	}
 	
 	/**
+	 * Decodes the midlet version, optionally allowing it to a reverse
+	 * operation of the {@link #hashCode()} method.
+	 *
+	 * @param __hash If {@code true} then the value to decode is treated as
+	 * the hash code returned by this class.
+	 * @param __maj If {@code __hash} is {@code true} then this is the hash
+	 * code of a MidletVersion, otherwise it is the major version number.
+	 * @throws IllegalArgumentException If the version number has an out of
+	 * range value.
+	 * @since 2016/10/13
+	 */
+	public MidletVersion(boolean __hash, int __maj)
+		throws IllegalArgumentException
+	{
+		this((__hash ? __maj / 10000 : __maj),
+			(__hash ? (__maj / 100) % 100 : 0),
+			(__hash ? __maj % 100 : 0));
+	}
+	
+	/**
 	 * Initializes the version.
 	 *
 	 * @param __maj The major version.

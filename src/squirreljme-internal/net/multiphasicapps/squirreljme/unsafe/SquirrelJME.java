@@ -127,6 +127,42 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Sets up a listening mailbox that waits for incoming mailbox connections.
+	 *
+	 * @param __b The name of the server, UTF-8 encoded.
+	 * @param __o The offset.
+	 * @param __l The length of the name.
+	 * @param __v The integer encoded version number.
+	 * @param __am If {@code true} then authorization mode is used.
+	 * @return The descriptor of the mailbox.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IllegalArgumentException If the version number is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RuntimeException If the mailbox could not be created.
+	 * @since 2016/10/13
+	 */
+	public static int mailboxListen(byte[] __b, int __o, int __l, int __v,
+		boolean __am)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException, RuntimeException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Returns the identification number of the current midlet.
+	 *
+	 * @return The unique midlet number, a value of zero represents the
+	 * kernel.
+	 * @since 2016/10/13
+	 */
+	public static int midletID()
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Returns the amount of time which has passed on an unspecified
 	 * monotonic clock.
 	 *
@@ -155,9 +191,12 @@ public final class SquirrelJME
 	 * @param __b The bytes to write.
 	 * @param __o The starting offset.
 	 * @param __l The number of bytes to write.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
 	 * @since 2016/08/07
 	 */
 	public static void stdErr(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException
 	{
 		throw new RuntimeException("OOPS");
 	}
@@ -179,9 +218,12 @@ public final class SquirrelJME
 	 * @param __b The bytes to write.
 	 * @param __o The starting offset.
 	 * @param __l The number of bytes to write.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
 	 * @since 2016/08/07
 	 */
 	public static void stdOut(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException
 	{
 		throw new RuntimeException("OOPS");
 	}

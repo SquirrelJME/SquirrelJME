@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import net.multiphasicapps.squirreljme.midletid.MidletVersion;
 
 /**
  * This class contains implementations of unsafe SquirrelJME operations which
@@ -56,6 +58,59 @@ public final class SquirrelJME
 	{
 		// Never is SquirrelJME
 		return false;
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __b As duplicated.
+	 * @param __o As duplicated.
+	 * @param __l As duplicated.
+	 * @param __v As duplicated.
+	 * @param __am As duplicated.
+	 * @return As duplicated.
+	 * @throws ArrayIndexOutOfBoundsException As duplicated.
+	 * @throws IllegalArgumentException As duplicated.
+	 * @throws NullPointerException As duplicated.
+	 * @throws RuntimeException As duplicated.
+	 * @since 2016/10/13
+	 */
+	public static int mailboxListen(byte[] __b, int __o, int __l, int __v,
+		boolean __am)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException, RuntimeException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Decode name and version
+		MidletVersion ver = new MidletVersion(true, __v);
+		String name;
+		try
+		{
+			name = new String(__b, __o, __l, "utf-8");
+		}
+		
+		// Should never happen
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("OOPS", e);
+		}
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @return As duplicated.
+	 * @since 2016/10/13
+	 */
+	public static int midletID()
+	{
+		// Always zero, for the kernel
+		return 0;
 	}
 }
 

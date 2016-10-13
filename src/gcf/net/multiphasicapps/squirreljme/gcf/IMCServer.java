@@ -15,6 +15,7 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
 import net.multiphasicapps.squirreljme.midletid.MidletVersion;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**
  * This implements the server side of an IMC connection.
@@ -32,6 +33,9 @@ public class IMCServer
 	
 	/** Use authentication mode? */
 	protected final boolean authmode;
+	
+	/** The file descriptor for the mailbox. */
+	private final int _mailfd;
 	
 	/**
 	 * Initializes the server IMC connection.
@@ -54,6 +58,11 @@ public class IMCServer
 		this.name = __name;
 		this.version = __ver;
 		this.authmode = __auth;
+		
+		// Listen on the mailbox
+		byte[] encname = __name.getBytes("utf-8");
+		this._mailfd = SquirrelJME.mailboxListen(encname, 0, encname.length,
+			__ver.hashCode(), __auth);
 	}
 	
 	/**
