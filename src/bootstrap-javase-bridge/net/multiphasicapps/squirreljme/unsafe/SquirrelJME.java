@@ -17,6 +17,9 @@ import java.io.IOException;
  * are not part of the bootstrap's external build dependencies. This in the
  * general case will only have socket related code.
  *
+ * For documenatation for these methods, see the class using this name in
+ * the {@code squirreljme-internal} project.
+ *
  * @since 2016/10/11
  */
 public final class SquirrelJME
@@ -32,10 +35,9 @@ public final class SquirrelJME
 	}
 	
 	/**
-	 * Is this the SquirrelJME kernel?
+	 * As duplicated.
 	 *
-	 * @return {@code true} if this is the kernel process, otherwise
-	 * {@code false} indicates a user-mode process.
+	 * @return As duplicated.
 	 * @since 2016/10/11
 	 */
 	public static boolean isKernel()
@@ -45,10 +47,9 @@ public final class SquirrelJME
 	}
 	
 	/**
-	 * This is used to detect whether the environment truly is running on
-	 * SquirrelJME.
+	 * As duplicated.
 	 *
-	 * @return {@code true} if running on SquirrelJME, otherwise {@code false}.
+	 * @return As duplicated.
 	 * @since 2016/10/11
 	 */
 	public static boolean isSquirrelJME()
