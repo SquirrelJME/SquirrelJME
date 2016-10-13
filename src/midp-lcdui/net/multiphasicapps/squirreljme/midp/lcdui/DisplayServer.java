@@ -157,7 +157,41 @@ public abstract class DisplayServer
 		@Override
 		public void run()
 		{
-			throw new Error("TODO");
+			// Handle input
+			try (DataInputStream in = this.in;
+				DataOutputStream out = this.out)
+			{
+				for (;;)
+				{
+					// Read a command and handle it
+					int command = in.readUnsignedByte();
+					switch (command)
+					{
+							// Request the displays that are available and
+							// are attached
+						case DisplayProtocol.COMMAND_REQUEST_NUMDISPLAYS:
+							throw new Error("TODO");
+						
+							// {@squirreljme.error EB07 Unknown display server
+							// command. (The command ID)}
+						default:
+							throw new RuntimeException(String.format("EB07 %s",
+								command));
+					}
+				}
+			}
+			
+			// {@squirreljme.error EB06 Read/write error handling display
+			// command.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("EB06", e);
+			}
+			
+			// Make sure cleanup happens
+			finally
+			{
+			}
 		}
 	}
 }
