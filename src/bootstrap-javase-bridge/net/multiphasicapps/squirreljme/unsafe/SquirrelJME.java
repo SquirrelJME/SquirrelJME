@@ -12,7 +12,12 @@ package net.multiphasicapps.squirreljme.unsafe;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.ipcmailbox.Mailbox;
+import net.multiphasicapps.squirreljme.ipcmailbox.PostBase;
+import net.multiphasicapps.squirreljme.ipcmailbox.PostOffice;
 import net.multiphasicapps.squirreljme.midletid.MidletVersion;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This class contains implementations of unsafe SquirrelJME operations which
@@ -26,6 +31,10 @@ import net.multiphasicapps.squirreljme.midletid.MidletVersion;
  */
 public final class SquirrelJME
 {
+	/** Listening post services and active post services. */
+	private static final Map<Integer, PostBase> _POST_GEARS =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Not used.
 	 *
@@ -98,7 +107,15 @@ public final class SquirrelJME
 			throw new RuntimeException("OOPS", e);
 		}
 		
-		throw new Error("TODO");
+		if (true)
+			throw new Error("TODO");
+		
+		// Bind the post gear to identifiers
+		Map<Integer, PostGear> postgears = SquirrelJME._POST_GEARS;
+		synchronized (postgears)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

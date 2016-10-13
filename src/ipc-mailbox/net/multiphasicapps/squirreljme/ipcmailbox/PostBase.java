@@ -11,30 +11,19 @@
 package net.multiphasicapps.squirreljme.ipcmailbox;
 
 /**
- * The post office contains two mailboxes which allows letters to be pushed
- * to each other's box.
+ * This represents the base for classes which manage mail boxes.
  *
  * @since 2016/10/13
  */
-public final class PostOffice
-	extends PostBase
+public abstract class PostBase
 {
-	/** Mailbox A. */
-	protected final Mailbox boxa;
-	
-	/** Mailbox B. */
-	protected final Mailbox boxb;
-	
 	/**
-	 * Initializes the post office.
+	 * Does nothing.
 	 *
 	 * @since 2016/10/13
 	 */
-	public PostOffice()
+	PostGear()
 	{
-		// Setup mailboxes
-		this.boxa = new Mailbox(this);
-		this.boxb = new Mailbox(this);
 	}
 }
 

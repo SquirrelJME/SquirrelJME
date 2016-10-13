@@ -29,7 +29,7 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// Initialize
+		// Initialize LCDUI display server
 		SwingDisplayServer sds = new SwingDisplayServer();
 		
 		// Forward call
