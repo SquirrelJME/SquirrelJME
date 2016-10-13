@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostBox;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostBase;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostDestination;
@@ -265,6 +266,29 @@ public final class SquirrelJME
 	 * As duplicated.
 	 *
 	 * @param __fd As duplicated.
+	 * @param __chan As duplicated.
+	 * @param __b As duplicated.
+	 * @param __o As duplicated.
+	 * @param __l As duplicated.
+	 * @return As duplicated.
+	 * @throws ArrayIndexOutOfBoundsException As duplicated.
+	 * @throws IllegalArgumentException As duplicated.
+	 * @throws NoSuchElementException As duplicated.
+	 * @throws NullPointerException As duplicated.
+	 * @since 2016/10/13
+	 */
+	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
+		int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NoSuchElementException, NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __fd As duplicated.
 	 * @return As duplicated.
 	 * @throws IllegalArgumentException As duplicated.
 	 * @since 2016/10/13
@@ -283,6 +307,27 @@ public final class SquirrelJME
 		{
 			throw new RuntimeException("OOPS", e);
 		}
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __fd As duplicated.
+	 * @param __chan As duplicated.
+	 * @param __b As duplicated.
+	 * @param __o As duplicated.
+	 * @param __l As duplicated.
+	 * @throws ArrayIndexOutOfBoundsException As duplicated.
+	 * @throws IllegalArgumentException As duplicated.
+	 * @throws NullPointerException As duplicated.
+	 * @since 2016/10/13
+	 */
+	public static void mailboxSend(int __fd, int __chan, byte[] __b, int __o,
+		int __l)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

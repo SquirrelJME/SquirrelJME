@@ -22,8 +22,22 @@ import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 class __IMCOutputStream__
 	extends OutputStream
 {
+	/** The buffer size for IMC connections. */
+	static final int _BUFFER_SIZE =
+		256;
+	
 	/** The mailbox descriptor. */
 	private final int _fd;
+	
+	/** IMC buffer size. */
+	private final byte[] _buffer =
+		new byte[_BUFFER_SIZE];
+	
+	/** Current buffer position. */
+	private volatile int _at;
+	
+	/** Closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the output stream.
@@ -44,6 +58,14 @@ class __IMCOutputStream__
 	public void close()
 		throws IOException
 	{
+		// Only close once
+		if (this._closed)
+			return;
+		this._closed = true;
+		
+		// Flush before close
+		flush();
+		
 		throw new Error("TODO");
 	}
 	
@@ -55,7 +77,17 @@ class __IMCOutputStream__
 	public void flush()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Are there bytes to be flushed
+		int at = this._at;
+		if (at > 0)
+		{
+			// Send buffer to mailbox
+			byte[] buffer = this._buffer;
+			SquirrelJME.mailboxSend(this._fd, 0, buffer, 0, at);
+			
+			// Clear
+			this._at = 0;
+		}
 	}
 	
 	/**
@@ -66,7 +98,17 @@ class __IMCOutputStream__
 	public void write(int __b)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// May need to flush depending on the new position
+		int at = this._at;
+		
+		// Write single byte
+		this._buffer[at++] = (byte)__b;
+		
+		// Flush?
+		if (at >= _BUFFER_SIZE)
+			flush();
+		else
+			this._at = at;
 	}
 	
 	/**
@@ -78,7 +120,30 @@ class __IMCOutputStream__
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		// Write all bytes into the buffer
+		int at = this._at, end = __o + __l;
+		byte[] buffer = this._buffer;
+		for (int i = __o; i < end; i++)
+		{
+			// Write byte to position
+			buffer[at++] = __b[i];
+			
+			// Buffer size reached?
+			if (at >= _BUFFER_SIZE)
+			{
+				flush();
+				at = 0;
+			}
+		}
+		
+		// Set new location
+		this._at = at;
 	}
 }
 

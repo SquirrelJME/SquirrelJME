@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.unsafe;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.util.NoSuchElementException;
 
 /**
  * This class contains static methods which are used by the standard class
@@ -201,6 +202,37 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Receives a single datagram from the input mailbox.
+	 *
+	 * @param __fd The mailbox to receive data from.
+	 * @param __chan An array with a length of least zero, used as output to
+	 * specify the channel the data was sent on.
+	 * @param __b The output array where data is to be written.
+	 * @param __o The starting offset to the output.
+	 * @param __l The maximum number of bytes to read.
+	 * @return The number of bytes read, or a negative value if the end of
+	 * the stream was reached. A value of zero means that a datagram with no
+	 * actual data was sent by the remote side.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the length of the array; or the channel array has
+	 * a zero length.
+	 * @throws IllegalArgumentException If the mailbox descriptor is not
+	 * valid.
+	 * @throws NoSuchElementException If there is not enough data in the output
+	 * array to store the datagram data, {@code __chan} will contain the
+	 * required storage length.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
+		int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NoSuchElementException, NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Returns the remote ID of the connected mailbox.
 	 *
 	 * @param __fd The remote file descriptor.
@@ -210,6 +242,28 @@ public final class SquirrelJME
 	 */
 	public static byte[] mailboxRemoteID(int __fd)
 		throws IllegalArgumentException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Sends a single datagram to the destination mailbox.
+	 *
+	 * @param __fd The mailbox descriptor to send data over.
+	 * @param __chan The channel to send over.
+	 * @param __b The data to send.
+	 * @param __o The offset to the start of the data.
+	 * @param __l The number of bytes to send.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the length of the array.
+	 * @throws IllegalArgumentException If the descriptor is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/13
+	 */
+	public static void mailboxSend(int __fd, int __chan, byte[] __b, int __o,
+		int __l)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
