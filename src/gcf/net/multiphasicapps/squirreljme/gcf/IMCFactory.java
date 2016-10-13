@@ -143,7 +143,7 @@ public class IMCFactory
 		
 		// Create client socket
 		if (isclient)
-			throw new Error("TODO");
+			return new IMCClient(connect, name, version, authmode);
 		
 		// Create server socket
 		else
