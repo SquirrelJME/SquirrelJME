@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.IMCConnection;
@@ -97,13 +99,48 @@ public abstract class DisplayServer
 		for (;;)
 			try (IMCConnection sock = (IMCConnection)svsock.acceptAndOpen())
 			{
-				throw new Error("TODO");
+				// Create socket
+				new __Socket__(sock);
 			}
 			
 			// Failed read, ignore
 			catch (IOException e)
 			{
 			}
+	}
+	
+	/**
+	 * A display socket that has been initialized.
+	 *
+	 * @since 2016/10/13
+	 */
+	private final class __Socket__
+	{
+		/** The input for the socket. */
+		protected final DataInputStream in;
+		
+		/** The output to the remote end. */
+		protected final DataOutputStream out;
+		
+		/**
+		 * Initializes the socket connection to a display.
+		 *
+		 * @param __sock The socket connection.
+		 * @throws IOException On read/write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/10/13
+		 */
+		private __Socket__(IMCConnection __sock)
+			throws IOException, NullPointerException
+		{
+			// Check
+			if (__sock == null)
+				throw new NullPointerException("NARG");
+			
+			// Open input and output
+			this.in = __sock.openDataInputStream();
+			this.out = __sock.openDataOutputStream();
+		}
 	}
 }
 

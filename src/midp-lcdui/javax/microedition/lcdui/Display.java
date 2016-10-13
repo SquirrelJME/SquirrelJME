@@ -10,178 +10,192 @@
 
 package javax.microedition.lcdui;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.microedition.io.Connector;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
+import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProtocol;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
 {
 	public static final int ALERT =
-		 3;
+		3;
 
 	public static final int CHOICE_GROUP_ELEMENT =
-		 2;
+		2;
 
 	public static final int COLOR_BACKGROUND =
-		 0;
+		0;
 
 	public static final int COLOR_BORDER =
-		 4;
+		4;
 
 	public static final int COLOR_FOREGROUND =
-		 1;
+		1;
 
 	public static final int COLOR_HIGHLIGHTED_BACKGROUND =
-		 2;
+		2;
 
 	public static final int COLOR_HIGHLIGHTED_BORDER =
-		 5;
+		5;
 
 	public static final int COLOR_HIGHLIGHTED_FOREGROUND =
-		 3;
+		3;
 
 	public static final int COLOR_IDLE_BACKGROUND =
-		 6;
+		6;
 
 	public static final int COLOR_IDLE_FOREGROUND =
-		 7;
+		7;
 
 	public static final int COLOR_IDLE_HIGHLIGHTED_BACKGROUND =
-		 8;
+		8;
 
 	public static final int COLOR_IDLE_HIGHLIGHTED_FOREGROUND =
-		 9;
+		9;
 
 	public static final int COMMAND =
-		 5;
+		5;
 
 	public static final int DISPLAY_HARDWARE_ABSENT =
-		 2;
+		2;
 
 	public static final int DISPLAY_HARDWARE_DISABLED =
-		 1;
+		1;
 
 	public static final int DISPLAY_HARDWARE_ENABLED =
-		 0;
+		0;
 
 	public static final int LIST_ELEMENT =
-		 1;
+		1;
 
 	public static final int MENU =
-		 7;
+		7;
 
 	/** This is the activity mode that enables power saving inhibition. */
 	public static final int MODE_ACTIVE =
-		 1;
+		1;
 	
 	/** This is the activity mode that is the default behavior. */
 	public static final int MODE_NORMAL =
-		 0;
+		0;
 
 	public static final int NOTIFICATION =
-		 6;
+		6;
 
 	public static final int ORIENTATION_LANDSCAPE =
-		 2;
+		2;
 
 	public static final int ORIENTATION_LANDSCAPE_180 =
-		 8;
+		8;
 
 	public static final int ORIENTATION_PORTRAIT =
-		 1;
+		1;
 
 	public static final int ORIENTATION_PORTRAIT_180 =
-		 4;
+		4;
 
 	public static final int SOFTKEY_BOTTOM =
-		 800;
+		800;
 
 	public static final int SOFTKEY_INDEX_MASK =
-		 15;
+		15;
 
 	public static final int SOFTKEY_LEFT =
-		 820;
+		820;
 
 	public static final int SOFTKEY_OFFSCREEN =
-		 880;
+		880;
 
 	public static final int SOFTKEY_RIGHT =
-		 860;
+		860;
 
 	public static final int SOFTKEY_TOP =
-		 840;
+		840;
 
 	public static final int STATE_BACKGROUND =
-		 0;
+		0;
 
 	public static final int STATE_FOREGROUND =
-		 2;
+		2;
 
 	public static final int STATE_VISIBLE =
-		 1;
+		1;
 
 	public static final int SUPPORTS_ALERTS =
-		 32;
+		32;
 
 	public static final int SUPPORTS_COMMANDS =
-		 2;
+		2;
 
 	public static final int SUPPORTS_FILESELECTORS =
-		 512;
+		512;
 
 	public static final int SUPPORTS_FORMS =
-		 4;
+		4;
 
 	public static final int SUPPORTS_IDLEITEM =
-		 2048;
+		2048;
 
 	/** This specifies that the display supports user input. */
 	public static final int SUPPORTS_INPUT_EVENTS =
-		 1;
+		1;
 
 	public static final int SUPPORTS_LISTS =
-		 64;
+		64;
 
 	public static final int SUPPORTS_MENUS =
-		 1024;
+		1024;
 
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE =
-		 8192;
+		8192;
 
 	public static final int SUPPORTS_ORIENTATION_LANDSCAPE180 =
-		 32768;
+		32768;
 
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT =
-		 4096;
+		4096;
 
 	public static final int SUPPORTS_ORIENTATION_PORTRAIT180 =
-		 16384;
+		16384;
 
 	public static final int SUPPORTS_TABBEDPANES =
-		 256;
+		256;
 
 	public static final int SUPPORTS_TEXTBOXES =
-		 128;
+		128;
 
 	public static final int SUPPORTS_TICKER =
-		 8;
+		8;
 
 	public static final int SUPPORTS_TITLE =
-		 16;
+		16;
 
 	public static final int TAB =
-		 4;
+		4;
+	
+	/** The display descriptor cache. */
+	private static final Map<Byte, Reference<Display>> _DISPLAY_CACHE =
+		new HashMap<>();
 	
 	/** The lock for this display. */
 	private final Object _lock =
 		new Object();
+	
+	/** The display descriptor. */
+	private volatile byte _descriptor;
 	
 	/** The current displayable being shown. */
 	private volatile Displayable _show;
@@ -192,12 +206,14 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __d The display descriptor.
 	 * @since 2016/10/08
 	 */
-	Display()
+	Display(byte __d)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Set
+		this._descriptor = __d;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -591,12 +607,36 @@ public class Display
 	{
 		// Open connection to the display server
 		try (IMCConnection sock = (IMCConnection)Connector.open(
-			DisplayServer.CLIENT_URI))
+			DisplayServer.CLIENT_URI);
+			DataInputStream in = sock.openDataInputStream();
+			DataOutputStream out = sock.openDataOutputStream())
 		{
-			throw new Error("TODO");
+			// Request number of displays
+			out.writeByte(DisplayProtocol.COMMAND_REQUEST_NUMDISPLAYS);
+			out.flush();
+			
+			// Display count can be variable, especially with caps
+			List<Display> rv = new ArrayList<>();
+			
+			// Read the number of displays
+			int n = in.readUnsignedByte();
+			for (int i = 0; i < n; i++)
+			{
+				// Cache descriptor
+				Display d = __cacheDisplay((byte)in.readUnsignedByte());	
+				
+				// Do not care about capabilities, always use it
+				// Otherwise, the requested ones must be set
+				if (__caps == 0 ||
+					(d.getCapabilities() & __caps) == __caps)
+					rv.add(d);
+			}
+			
+			// Return display mappings
+			return rv.<Display>toArray(new Display[rv.size()]);
 		}
 		
-		// If the data cannot be read then
+		// If the data cannot be read then use an empty set of displays
 		catch (IOException e)
 		{
 			return new Display[0];
@@ -607,6 +647,32 @@ public class Display
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Caches a display descriptor.
+	 *
+	 * @param __d The descriptor to cache.
+	 * @return The cached display.
+	 * @since 2016/10/13
+	 */
+	private static Display __cacheDisplay(byte __d)
+	{
+		// Lock on the cache
+		Map<Byte, Reference<Display>> cache = Display._DISPLAY_CACHE;
+		synchronized (cache)
+		{
+			// See if the display has been cached
+			Byte b = Byte.valueOf(__d);
+			Reference<Display> ref = cache.get(b);
+			Display rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+				cache.put(b, new WeakReference<>((rv = new Display(__d))));
+			
+			// Used cached value
+			return rv;
+		}
+	}
 }
-
 
