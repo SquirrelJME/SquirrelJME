@@ -80,15 +80,55 @@ public final class PostBox
 		// Check
 		if (__chan == null || __b == null)
 			throw new NullPointerException("NARG");
-		if (__chan.length < 1 || __o < 0 || __l < 0 ||
-			(__o + __l) > __b.length)
+		int end = __o + __l;
+		if (__chan.length < 1 || __o < 0 || __l < 0 || end > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
 		// Lock on the queue
 		Deque<__Datagram__> iq = this._queue;
 		synchronized (iq)
 		{
-			throw new Error("TODO");
+			// Loop for awhile
+			for (;;)
+			{
+				// See if there is data waiting
+				__Datagram__ d = iq.peekFirst();
+				if (d == null)
+					if (__w)
+					{
+						// Wait until something was stored in the queue
+						iq.wait();
+						
+						// Try again
+						continue;
+					}
+					
+					// {@squirreljme.error BW01 No datagram is available.}
+					else
+						throw new NoSuchElementException("BW01");
+				
+				// Get details
+				byte[] data = d._data;
+				
+				// {@squirreljme.error BW02 Cannot read the datagram
+				// because the input buffer is too small.}
+				int len = data.length;
+				if (len > __l)
+				{
+					__chan[0] = len;
+					throw new ArrayStoreException("BW02");
+				}
+				
+				// Copy data
+				for (int i = __o, b = 0; b < len; i++, b++)
+					__b[i] = data[b];
+				
+				// Set channel
+				__chan[0] = d._channel;
+				
+				// Return length
+				return len;
+			}
 		}
 	}
 	

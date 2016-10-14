@@ -165,6 +165,7 @@ public abstract class DisplayServer
 				{
 					// Read a command and handle it
 					int command = in.readUnsignedByte();
+					System.err.printf("DEBUG -- DS %d%n", command);
 					switch (command)
 					{
 							// Request the displays that are available and
