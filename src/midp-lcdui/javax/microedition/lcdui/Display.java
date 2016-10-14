@@ -25,6 +25,7 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
+import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProperty;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProtocol;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
@@ -197,11 +198,8 @@ public class Display
 	/** The display descriptor. */
 	private final byte _descriptor;
 	
-	/** The capabilities of the display. */
-	private final int _capabilities;
-	
-	/** Extended display capabilities. */
-	private final int _xcapabilities;
+	/** Properties of the display. */
+	private final int[] _properties;
 	
 	/** The current displayable being shown. */
 	private volatile Displayable _show;
@@ -213,16 +211,16 @@ public class Display
 	 * Initializes the display instance.
 	 *
 	 * @param __d The display descriptor.
-	 * @param __caps The display capabilities.
+	 * @param __props The display properties.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display(byte __d, int __caps, int __xcaps)
+	Display(byte __d, int[] __props)
 		throws NullPointerException
 	{
 		// Set
 		this._descriptor = __d;
-		this._capabilities = __caps;
-		this._xcapabilities = __xcaps;
+		this._properties = __props.clone();
 	}
 	
 	public void callSerially(Runnable __a)
@@ -275,7 +273,7 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		return this._capabilities;
+		return this._properties[DisplayProperty.CAPABILITIES.ordinal()];
 	}
 	
 	public int getColor(int __a)
@@ -366,8 +364,8 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return (0 != (this._xcapabilities &
-			DisplayProtocol.EXTENDED_CAPABILITY_POINTER_EVENTS));
+		return 0 != this._properties[
+			DisplayProperty.POINTER_PRESS_RELEASE.ordinal()];
 	}
 	
 	/**
@@ -378,13 +376,20 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return (0 != (this._xcapabilities &
-			DisplayProtocol.EXTENDED_CAPABILITY_POINTER_MOTION_EVENTS));
+		return 0 != this._properties[
+			DisplayProperty.POINTER_DRAG_MOVE.ordinal()];
 	}
 	
+	/**
+	 * Is this display built into the device or is it an auxiliary display?
+	 *
+	 * @return {@code true} if it is built-in.
+	 * @since 2016/10/14
+	 */
 	public boolean isBuiltIn()
 	{
-		throw new Error("TODO");
+		return 0 != this._properties[
+			DisplayProperty.BUILT_IN.ordinal()];
 	}
 	
 	/**
@@ -395,8 +400,8 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return (0 != (this._xcapabilities &
-			DisplayProtocol.EXTENDED_CAPABILITY_COLOR));
+		return 0 != this._properties[
+			DisplayProperty.IS_COLOR.ordinal()];
 	}
 	
 	public int numAlphaLevels()
@@ -654,11 +659,27 @@ public class Display
 			{
 				// Read variables
 				byte desc = (byte)in.readUnsignedByte();
-				int caps = in.readInt();
-				int xcaps = in.readInt();
+				
+				// Decode properties
+				int pcount = DisplayProperty.values().length;
+				int[] props = new int[pcount];
+				for (;;)
+				{
+					// Skip stop ID
+					int id = in.readUnsignedByte();
+					if (id == 0)
+						break;
+					
+					// Read value
+					int val = in.readInt();
+					
+					// Only store if it is in range
+					if (id >= 0 && id < pcount)
+						props[id] = val;
+				}
 				
 				// Cache descriptor
-				Display d = __cacheDisplay(desc, caps, xcaps);
+				Display d = __cacheDisplay(desc, props);
 				
 				// Do not care about capabilities, always use it
 				// Otherwise, the requested ones must be set
@@ -691,13 +712,18 @@ public class Display
 	 * Caches a display descriptor.
 	 *
 	 * @param __d The descriptor to cache.
-	 * @param __caps The display capabilities.
-	 * @param __xcaps The extended capabilities.
+	 * @param __props The display properties.
 	 * @return The cached display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	private static Display __cacheDisplay(byte __d, int __caps, int __xcaps)
+	private static Display __cacheDisplay(byte __d, int[] __props)
+		throws NullPointerException
 	{
+		// Check
+		if (__props == null)
+			throw new NullPointerException("NARG");
+		
 		// Lock on the cache
 		Map<Byte, Reference<Display>> cache = Display._DISPLAY_CACHE;
 		synchronized (cache)
@@ -709,8 +735,8 @@ public class Display
 			
 			// Needs to be cached?
 			if (ref == null || null == (rv = ref.get()))
-				cache.put(b, new WeakReference<>((rv = new Display(__d, __caps,
-					__xcaps))));
+				cache.put(b, new WeakReference<>((rv = new Display(__d,
+					__props))));
 			
 			// Used cached value
 			return rv;

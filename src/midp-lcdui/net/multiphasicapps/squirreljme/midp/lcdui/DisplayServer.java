@@ -182,9 +182,21 @@ public abstract class DisplayServer
 				// Write it to the output stream
 				__out.write(id);
 				
-				// And its capabiities also
-				__out.writeInt(vd.capabilities());
-				__out.writeInt(vd.capabilitiesExtended());
+				// Write properties
+				for (DisplayProperty p : DisplayProperty.values())
+				{
+					// Ignore the stop property
+					byte ord = (byte)p.ordinal();
+					if (ord == 0)
+						continue;
+					
+					// Write ordinal and its data
+					__out.write(ord);
+					__out.writeInt(vd.property(p));
+				}
+				
+				// End properties
+				__out.write(0);
 			}
 		}
 	}

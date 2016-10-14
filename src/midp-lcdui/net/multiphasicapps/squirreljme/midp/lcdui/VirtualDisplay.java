@@ -44,20 +44,15 @@ public abstract class VirtualDisplay
 	}
 	
 	/**
-	 * Returns the display capabilities.
+	 * Returns the value of the given display property.
 	 *
-	 * @return The capabilities of the display.
+	 * @param __dp The display property to get.
+	 * @return The value of the property.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/14
 	 */
-	protected abstract int capabilities();
-	
-	/**
-	 * Returns the extended display capabilities.
-	 *
-	 * @return The extended capabilities.
-	 * @since 2016/10/14
-	 */
-	protected abstract int capabilitiesExtended();
+	public abstract int property(DisplayProperty __dp)
+		throws NullPointerException;
 	
 	/**
 	 * Returns the display ID.

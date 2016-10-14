@@ -27,23 +27,12 @@ public interface DisplayProtocol
 	 *   ubyte       (n) The number of displays available.
 	 *   struct[n]
 	 *   .ubyte          The display descriptor IDs.
-	 *   .int            LCDUI Display capabilities
-	 *   .int            "Extended" SquirrelJME specific capabilities.
+	 *   .struct[?]
+	 *   ..ubyte         DisplayProperty enum ordinal, 0 = stop.
+	 *   ..int           The value of the property.
 	 * }
 	 */
 	public static final byte COMMAND_REQUEST_NUMDISPLAYS =
 		1;
-	
-	/** Are there pointer events? */
-	public static final int EXTENDED_CAPABILITY_POINTER_EVENTS =
-		0x0000_0001;
-	
-	/** Are there pointer motion events? */
-	public static final int EXTENDED_CAPABILITY_POINTER_MOTION_EVENTS =
-		0x0000_0002;
-	
-	/** Is color supported? */
-	public static final int EXTENDED_CAPABILITY_COLOR =
-		0x0000_0004;
 }
 

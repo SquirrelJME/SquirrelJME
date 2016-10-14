@@ -21,7 +21,7 @@ public enum DisplayProperty
 	NONE,
 	
 	/** Display capabilities returned by LCDUI. */
-	LCDUI_CAPABILITIES,
+	CAPABILITIES,
 	
 	/** The dor pitch in micrometers. */
 	DOT_PITCH,
