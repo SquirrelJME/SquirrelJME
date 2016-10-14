@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.gcf;
 
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**
@@ -31,6 +33,16 @@ class __IMCInputStream__
 	/** Single byte read. */
 	private final byte[] _solo =
 		new byte[1];
+	
+	/** The working buffer. */
+	private volatile byte[] _work =
+		new byte[__IMCOutputStream__._BUFFER_SIZE];
+	
+	/** The current read position. */
+	private volatile int _at;
+	
+	/** The length of the current read. */
+	private volatile int _end;
 	
 	/** Closed? */
 	private volatile boolean _closed;
@@ -101,11 +113,84 @@ class __IMCInputStream__
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		int n = (__o + __l);
+		if (__o < 0 || __l < 0 || n > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
+		// Initial arguments
+		byte[] work = this._work;
+		int at = this._at, end = this._end;
+		int fd = this._fd;
+		boolean interrupt = this.interrupt;
+		int[] chan = null;
 		
-		throw new Error("TODO");
+		// Try constantly filling the buffer
+		try
+		{
+			// Try filling the buffer
+			int count = 0;
+			for (int i = 0; i < n; i++)
+			{
+				// Need to read in a new datagram?
+				if (at >= end)
+				{
+					// Allocate channel if it is missing
+					if (chan == null)
+						chan = new int[]{0};
+					
+					// Keep trying
+					for (;;)
+						try
+						{
+							// Read in datagram
+							int rc = SquirrelJME.mailboxReceive(fd, chan,
+								work, 0, work.length, true);
+							
+							// EOF? Return read bytes or EOF
+							if (rc < 0)
+								return (count == 0 ? -1 : count);
+							
+							// Read success, use the buffer data
+							end = rc;
+							this._end = end;
+							
+							// Reset read position
+							at = 0;
+							
+							// Stop trying
+							break;
+						}
+						
+						// The work buffer is too small
+						catch (ArrayStoreException e)
+						{
+							work = new byte[Math.max(work.length, chan[0])];
+							this._work = work;
+						}
+						
+						// No datagrams available for read
+						// If interrupted, just stop reading and return the
+						// number of read bytes
+						catch (InterruptedException|NoSuchElementException e)
+						{
+							return count;
+						}
+				}
+				
+				// Copy single byte
+				__b[i] = work[at++];
+				count++;
+			}
+			
+			// Return the number of requested bytes
+			return n;
+		}
+		
+		// At position may have changed, update it always
+		finally
+		{
+			this._at = at;
+		}
 	}
 }
 

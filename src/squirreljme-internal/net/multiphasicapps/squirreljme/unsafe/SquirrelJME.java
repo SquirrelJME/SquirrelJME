@@ -218,19 +218,22 @@ public final class SquirrelJME
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
 	 * are negative or exceed the length of the array; or the channel array has
 	 * a zero length.
+	 * @throws ArrayStoreException If there is not enough data in the output
+	 * array to store the datagram data, {@code __chan} will contain the
+	 * required storage length.
 	 * @throws IllegalArgumentException If the mailbox descriptor is not
 	 * valid.
 	 * @throws InterruptedException If an interrupt occured waiting for data.
-	 * @throws NoSuchElementException If there is not enough data in the output
-	 * array to store the datagram data, {@code __chan} will contain the
-	 * required storage length.
+	 * @throws NoSuchElementException If not waiting and there are no datagrams
+	 * available.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
 		int __o, int __l, boolean __wait)
-		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			InterruptedException, NoSuchElementException, NullPointerException
+		throws ArrayIndexOutOfBoundsException, ArrayStoreException,
+			IllegalArgumentException, InterruptedException,
+			NoSuchElementException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}

@@ -273,6 +273,7 @@ public final class SquirrelJME
 	 * @param __wait As duplicated.
 	 * @return As duplicated.
 	 * @throws ArrayIndexOutOfBoundsException As duplicated.
+	 * @throws ArrayStoreException As duplicated.
 	 * @throws IllegalArgumentException As duplicated.
 	 * @throws InterruptedException As duplicated.
 	 * @throws NoSuchElementException As duplicated.
@@ -281,8 +282,9 @@ public final class SquirrelJME
 	 */
 	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
 		int __o, int __l, boolean __wait)
-		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			InterruptedException, NoSuchElementException, NullPointerException
+		throws ArrayIndexOutOfBoundsException, ArrayStoreException,
+			IllegalArgumentException, InterruptedException,
+			NoSuchElementException, NullPointerException
 	{
 		// Lock on boxes
 		PostBox box;

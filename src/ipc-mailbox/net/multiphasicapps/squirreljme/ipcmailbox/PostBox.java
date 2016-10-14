@@ -63,16 +63,19 @@ public final class PostBox
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
 	 * are negative or exceed the length of the array; or the channel array has
 	 * a zero length.
-	 * @throws InterruptedException If an interrupt occured waiting for data.
-	 * @throws NoSuchElementException If there is not enough data in the output
+	 * @throws ArrayStoreException If there is not enough data in the output
 	 * array to store the datagram data, {@code __chan} will contain the
 	 * required storage length.
+	 * @throws InterruptedException If an interrupt occured waiting for data.
+	 * @throws NoSuchElementException If not waiting and there are no datagrams
+	 * available.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	public int receive(int[] __chan, byte[] __b, int __o, int __l, boolean __w)
-		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			InterruptedException, NoSuchElementException, NullPointerException
+		throws ArrayIndexOutOfBoundsException, ArrayStoreException,
+			IllegalArgumentException, InterruptedException,
+			NoSuchElementException, NullPointerException
 	{
 		// Check
 		if (__chan == null || __b == null)
