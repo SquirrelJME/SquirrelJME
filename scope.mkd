@@ -58,6 +58,11 @@ of scope for the project.
    * Included by Java ME 8.
  * **JSR256** -- Mobile Sensor API 1.2
    * Sensors are useful.
+ * **JSR360** -- Connected Limited Device Configuration 8
+   * This is SquirrelJME's target.
+ * **JSR361** -- Java ME Embedded Profile
+   * MEEP 8.
+   * This is SquirrelJME's target.
 
 # Considering
 
@@ -72,6 +77,8 @@ Specifications that may be considered for inclusion.
    * Locating of users via GPS and other such things.
  * **JSR230** -- Data Sync API 0.9
    * Similar to Palm OS's HotSync.
+ * **JSR257** -- Contactless Communication API
+   * Can be used for RFID and such.
 
 # Out of Scope
 
@@ -131,6 +138,18 @@ third parties libraries.
  * **JSR242** -- Digital Set Top Box Profile - "On Ramp to OCAP"
    * Effectively java SE.
    * Has TV stuff.
+ * **JSR272** -- Mobile Broadcast Service API for Handheld Terminals 1.0
+   * This is for broadcast services, which is completley out of scope.
+ * **JSR302** -- Safety Critical Java Technology
+   * Essentially JSR001 for J2ME.
+   * Real time does not always mean safe.
+ * **JSR324** -- On Screen MIDlet API for Java ME
+   * Rejected.
+   * Essentially stuff related to the idle screen, likely similar to MIDP 3.
+ * **JSR325** -- IMS Communication Enablers
+   * Essentially VoIP.
+ * **JSR332** -- Email Client API for Java ME
+   * E-mail.
 
 # Unknown
 
