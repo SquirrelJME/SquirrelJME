@@ -49,6 +49,15 @@ of scope for the project.
    * Included by MIDP 3.
  * **JSR238** -- Mobile Internationalization API
    * Internationalization of text.
+ * **JSR239** -- Java Binding for the OpenGL ES API
+   * Required for some games.
+   * Can be more easily bridged to native OpenGL implementations compared to
+     M3G.
+ * **JSR246** -- Device Management API
+   * _Implemented by newer JSR_.
+   * Included by Java ME 8.
+ * **JSR256** -- Mobile Sensor API 1.2
+   * Sensors are useful.
 
 # Considering
 
@@ -119,6 +128,9 @@ third parties libraries.
    * Used for monetary transactions.
  * **JSR232** -- Mobile Operational Management
    * CDC.
+ * **JSR242** -- Digital Set Top Box Profile - "On Ramp to OCAP"
+   * Effectively java SE.
+   * Has TV stuff.
 
 # Unknown
 
