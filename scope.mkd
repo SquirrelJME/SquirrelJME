@@ -9,11 +9,60 @@ of scope for the project.
 
 ## Specifications
 
+ * **JSR030** -- J2ME Connected, Limited Device Configuration.
+   * _Implemented by newer JSR_.
+   * CLDC 1.0.
+ * **JSR037** -- Mobile Information Device Profile for the J2ME Platform.
+   * _Implemented by newer JSR_.
+   * MIDP 1.0.
+ * **JSR075** -- PDA Optional Packages for the J2ME Platform
+   * _Implemented by newer JSR_.
+   * Contains file related `javax.microedition.io` classes.
+ * **JSR118** -- Mobile Information Device Profile 2.0
+   * _Implemented by newer JSR_.
+   * MIDP 2.0.
+ * **JSR135** -- Mobile Media API
+   * _Implemented by newer JSR_.
+   * Multimedia.
+   * Implemented by MIDP 3.
+ * **JSR139** -- Connected Limited Device Configuration 1.1
+   * _Implemented by newer JSR_.
+   * CLDC 1.1.
+ * **JSR184** -- Mobile 3D Graphics API for J2ME
+   * Needed by a number of games.
+ * **JSR195** -- Information Module Profile Documentation
+   * _Implemented by newer JSR_.
+   * Essentially `HTTPConnection` and MEEP-8's _rms_.
+ * **JSR211** -- Content Handler API
+   * Content handling, essentially say you install a JAR that is a media
+     player for MIDI files. Effectively if you "launch" a MIDI, that given JAR
+     will open to view the given content.
+ * **JSR226** -- Scalable 2D Vector Graphics API for J2ME 1.1
+   * SVG Tiny Support.
+   * Relies on LCDUI.
+   * Some classes can just forward calls to MIDP 3.
+ * **JSR228** -- Information Module Profile - Next Generation (IMP-NG)
+   * _Implemented by newer JSR_.
+   * An early ancestor to MIDP 3 and MEEP.
+ * **JSR234** -- Advanced Multimedia Supplements.
+   * _Implemented by newer JSR_.
+   * Included by MIDP 3.
+ * **JSR238** -- Mobile Internationalization API
+   * Internationalization of text.
+
 # Considering
 
 Specifications that may be considered for inclusion.
 
 ## Specifications
+
+ * **JSR120** -- Java(TM) Wireless Messaging API Specification 1.1
+   * Supports SMS, USSD, and CBS.
+   * Uses GCF.
+ * **JSR179** -- Location API for J2ME.
+   * Locating of users via GPS and other such things.
+ * **JSR230** -- Data Sync API 0.9
+   * Similar to Palm OS's HotSync.
 
 # Out of Scope
 
@@ -23,12 +72,63 @@ third parties libraries.
 
 ## Specifications
 
- * **JSR209** - Advanced Graphics and User Interface.
+ * **JSR062** -- Personal Profile Specification.
    * Effectively Java SE Embedded.
-   * Intended for CDC.
-   * Has AWT.
-   * Has Swing.
- * **JSR216** - Personal Profile.
+ * **JSR066** -- RMI Optional Package Specification Version 1.0.
+   * Requires CDC.
+ * **JSR068** -- J2ME Platform Specification
+   * Withdrawn.
+   * Based on the description it uses "building blocks" which could also be
+     known as profiles. SquirrelJME already has such things in the project
+     system.
+ * **JSR129** -- Personal Basis Profile Specification
    * Effectively Java SE Embedded.
-   * Has AWT.
+ * **JSR169** -- JDBC Optional Package for CDC/Foundation Profile
+   * Requires CDC.
+ * **JSR172** -- J2ME Web Services 1.1
+   * XML is nasty.
+   * Designed for both CLDC and CDC.
+ * **JSR177** -- Security and Trust Services API for J2ME
+   * Some classes are partially handled by other implemented JSRs.
+ * **JSR178** -- Mobile Game API
+   * Withdrawn.
+   * Based on the description it would essentially be a game library with
+     multiplayer APIs, collisions, vector graphics, and a physics engine.
+ * **JSR180** -- SIP API for J2ME.
+   * Voice calls.
+   * Uses GCF.
+   * This is really handled best by third party providers.
+ * **JSR197** -- Generic Connection Framework Optional Package for J2SE.
+   * Not J2ME related, however it is included to reduce confusion.
+   * Makes it so Java SE can use GCF.
+ * **JSR209** -- Advanced Graphics and User Interface.
+   * Effectively Java SE Embedded.
+ * **JSR213** -- Micro WSCI Framework for J2ME.
+   * Rejected.
+   * More nasty XML.
+   * Requires CDC.
+ * **JSR214** -- Micro BPSS for J2ME Devices.
+   * Rejected.
+ * **JSR216** -- Personal Profile.
+   * Effectively Java SE Embedded.
+ * **JSR218** -- Connected Device Configuration (CDC) 1.1
+   * CDC.
+ * **JSR219** -- Foundation Profile 1.1.2
+   * Effectively Java SE with Java ME bits.
+ * **JSR229** -- Payment API
+   * Used for monetary transactions.
+ * **JSR232** -- Mobile Operational Management
+   * CDC.
+
+# Unknown
+
+These are specifications which the understanding of them is not enough to
+evaluate them completely for inclusion or exclusion.
+
+## Specifications
+
+ * **JSR190** -- Event Tracking API for J2ME
+   * IPDR/SP? Internet Protocol Detail Record.
+   * Not sure if this is for events that happen (say temperature changes) or
+     if something bad happens to hardware.
 
