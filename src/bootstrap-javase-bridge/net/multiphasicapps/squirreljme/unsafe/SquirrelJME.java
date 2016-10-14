@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.unsafe;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.BindException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostBox;
@@ -37,11 +38,11 @@ public final class SquirrelJME
 {
 	/** Post destination. */
 	private static final Map<Integer, PostDestination> _POST_DESTS =
-		new SortedTreeMap<>();
+		new HashMap<>();
 	
 	/** Post mailboxes. */
 	private static final Map<Integer, PostBox> _POST_BOXES =
-		new SortedTreeMap<>();
+		new HashMap<>();
 	
 	/** Post destination next id. */
 	private static volatile int _nextpostdest =

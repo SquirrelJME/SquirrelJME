@@ -639,6 +639,10 @@ public class Display
 		// If the data cannot be read then use an empty set of displays
 		catch (IOException e)
 		{
+			// Just log it
+			e.printStackTrace();
+			
+			// And use no displays
 			return new Display[0];
 		}
 	}
