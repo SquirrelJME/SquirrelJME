@@ -75,6 +75,9 @@ public final class PostBox
 			// Notify all of closed
 			q.notifyAll();
 		}
+		
+		// Closing this end also closes the other end
+		this.postoffice.__otherBox(this).close();
 	}
 	
 	/**
