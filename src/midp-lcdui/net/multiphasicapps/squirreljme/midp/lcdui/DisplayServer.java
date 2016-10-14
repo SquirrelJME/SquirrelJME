@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.midp.lcdui;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
@@ -41,6 +43,10 @@ public abstract class DisplayServer
 	
 	/** The server socket. */
 	private final StreamConnectionNotifier _serversock;
+	
+	/** All the displays that are available. */
+	private final Map<Byte, VirtualDisplay> _displays =
+		new HashMap<>();
 	
 	/** A connection count, just for threading. */
 	private volatile int _conncount;
@@ -83,6 +89,14 @@ public abstract class DisplayServer
 		// Start it
 		thread.start();
 	}
+	
+	/**
+	 * Queries all of the displays that are currently available.
+	 *
+	 * @return An array of the available virtual displays.
+	 * @since 2016/10/14
+	 */
+	protected abstract VirtualDisplay[] queryDisplays();
 	
 	/**
 	 * This may be used by an implementation of the display server to modify
@@ -140,14 +154,35 @@ public abstract class DisplayServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/14
 	 */
-	private void __commandNumDisplays(DataOutputStream __out)
+	void __commandNumDisplays(DataOutputStream __out)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock displays available
+		Map<Byte, VirtualDisplay> displays = this._displays;
+		synchronized (displays)
+		{
+			// Get displays
+			VirtualDisplay[] qds = queryDisplays();
+			
+			// Write the display count
+			__out.write(qds.length);
+			
+			// Go through all the displays
+			for (VirtualDisplay vd : qds)
+			{
+				// Make sure it is in the map
+				Byte id = Byte.valueOf(vd.id());
+				if (!displays.containsKey(id))
+					displays.put(id, vd);
+				
+				// Write it to the output stream
+				__out.write(id);
+			}
+		}
 	}
 	
 	/**
