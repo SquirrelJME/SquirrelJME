@@ -44,6 +44,22 @@ public abstract class VirtualDisplay
 	}
 	
 	/**
+	 * Returns the display capabilities.
+	 *
+	 * @return The capabilities of the display.
+	 * @since 2016/10/14
+	 */
+	protected abstract int capabilities();
+	
+	/**
+	 * Returns the extended display capabilities.
+	 *
+	 * @return The extended capabilities.
+	 * @since 2016/10/14
+	 */
+	protected abstract int capabilitiesExtended();
+	
+	/**
 	 * Returns the display ID.
 	 *
 	 * @return The display ID.

@@ -195,7 +195,13 @@ public class Display
 		new Object();
 	
 	/** The display descriptor. */
-	private volatile byte _descriptor;
+	private final byte _descriptor;
+	
+	/** The capabilities of the display. */
+	private final int _capabilities;
+	
+	/** Extended display capabilities. */
+	private final int _xcapabilities;
 	
 	/** The current displayable being shown. */
 	private volatile Displayable _show;
@@ -207,13 +213,16 @@ public class Display
 	 * Initializes the display instance.
 	 *
 	 * @param __d The display descriptor.
+	 * @param __caps The display capabilities.
 	 * @since 2016/10/08
 	 */
-	Display(byte __d)
+	Display(byte __d, int __caps, int __xcaps)
 		throws NullPointerException
 	{
 		// Set
 		this._descriptor = __d;
+		this._capabilities = __caps;
+		this._xcapabilities = __xcaps;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -266,7 +275,7 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		throw new Error("TODO");
+		return this._capabilities;
 	}
 	
 	public int getColor(int __a)
@@ -349,14 +358,28 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Are mouse/stylus press and release events supported?
+	 *
+	 * @return {@code true} if they are supported.
+	 * @since 2016/10/14
+	 */
 	public boolean hasPointerEvents()
 	{
-		throw new Error("TODO");
+		return (0 != (this._xcapabilities &
+			DisplayProtocol.EXTENDED_CAPABILITY_POINTER_EVENTS));
 	}
 	
+	/**
+	 * Are mouse/stylus move/drag events supported?
+	 *
+	 * @return {@code true} if they are supported.
+	 * @since 2016/10/14
+	 */
 	public boolean hasPointerMotionEvents()
 	{
-		throw new Error("TODO");
+		return (0 != (this._xcapabilities &
+			DisplayProtocol.EXTENDED_CAPABILITY_POINTER_MOTION_EVENTS));
 	}
 	
 	public boolean isBuiltIn()
@@ -364,9 +387,16 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Is color supported by this display?
+	 *
+	 * @return {@code true} if color is supported.
+	 * @since 2016/10/14
+	 */
 	public boolean isColor()
 	{
-		throw new Error("TODO");
+		return (0 != (this._xcapabilities &
+			DisplayProtocol.EXTENDED_CAPABILITY_COLOR));
 	}
 	
 	public int numAlphaLevels()
@@ -622,8 +652,13 @@ public class Display
 			int n = in.readUnsignedByte();
 			for (int i = 0; i < n; i++)
 			{
+				// Read variables
+				byte desc = (byte)in.readUnsignedByte();
+				int caps = in.readInt();
+				int xcaps = in.readInt();
+				
 				// Cache descriptor
-				Display d = __cacheDisplay((byte)in.readUnsignedByte());	
+				Display d = __cacheDisplay(desc, caps, xcaps);
 				
 				// Do not care about capabilities, always use it
 				// Otherwise, the requested ones must be set
@@ -656,10 +691,12 @@ public class Display
 	 * Caches a display descriptor.
 	 *
 	 * @param __d The descriptor to cache.
+	 * @param __caps The display capabilities.
+	 * @param __xcaps The extended capabilities.
 	 * @return The cached display.
 	 * @since 2016/10/13
 	 */
-	private static Display __cacheDisplay(byte __d)
+	private static Display __cacheDisplay(byte __d, int __caps, int __xcaps)
 	{
 		// Lock on the cache
 		Map<Byte, Reference<Display>> cache = Display._DISPLAY_CACHE;
@@ -672,7 +709,8 @@ public class Display
 			
 			// Needs to be cached?
 			if (ref == null || null == (rv = ref.get()))
-				cache.put(b, new WeakReference<>((rv = new Display(__d))));
+				cache.put(b, new WeakReference<>((rv = new Display(__d, __caps,
+					__xcaps))));
 			
 			// Used cached value
 			return rv;

@@ -181,6 +181,10 @@ public abstract class DisplayServer
 				
 				// Write it to the output stream
 				__out.write(id);
+				
+				// And its capabiities also
+				__out.writeInt(vd.capabilities());
+				__out.writeInt(vd.capabilitiesExtended());
 			}
 		}
 	}

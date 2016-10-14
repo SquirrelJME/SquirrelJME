@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.bootstrap.javase.lcdui;
 
+import javax.microedition.lcdui.Display;
+import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProtocol;
 import net.multiphasicapps.squirreljme.midp.lcdui.VirtualDisplay;
 
 /**
@@ -31,6 +33,29 @@ public class SwingVirtualDisplay
 	public SwingVirtualDisplay(SwingDisplayServer __ds, byte __id)
 	{
 		super(__ds, __id);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/14
+	 */
+	@Override
+	protected int capabilities()
+	{
+		// For now, just supports input events
+		return Display.SUPPORTS_INPUT_EVENTS;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/14
+	 */
+	@Override
+	protected int capabilitiesExtended()
+	{
+		return DisplayProtocol.EXTENDED_CAPABILITY_POINTER_EVENTS |
+			DisplayProtocol.EXTENDED_CAPABILITY_POINTER_MOTION_EVENTS |
+			DisplayProtocol.EXTENDED_CAPABILITY_COLOR;
 	}
 }
 
