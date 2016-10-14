@@ -136,10 +136,25 @@ public final class SquirrelJME
 	 * @throws IllegalArgumentException If the mailbox is not valid.
 	 * @throws InterruptedException If the thread was interrupted accepting
 	 * a connection.
+	 * @throws IOException If the mailbox is closed.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxAccept(int __ld)
-		throws IllegalArgumentException, InterruptedException
+		throws IllegalArgumentException, IOException, InterruptedException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Closes the given mailbox client.
+	 *
+	 * If the mailbox is already closed or is going to be closed this has
+	 * no effect.
+	 *
+	 * @param __fd The descriptor to close.
+	 * @since 2016/10/13
+	 */
+	public static void mailboxClose(int __fd)
 	{
 		throw new RuntimeException("OOPS");
 	}
@@ -164,6 +179,7 @@ public final class SquirrelJME
 	 * @throws BindException If the server does not exist.
 	 * @throws IllegalArgumentException If the remote midlet is malformed or
 	 * the server name and/or version are malformed.
+	 * @throws IOException If the remote destination is closed.
 	 * @throws NullPointerException If no server was specified or the offset
 	 * and length are not of the specified values and the midlet is not
 	 * specified.
@@ -172,7 +188,7 @@ public final class SquirrelJME
 	public static int mailboxConnect(byte[] __mb, int __mo, int __ml,
 		byte[] __sb, int __so, int __sl, int __v, boolean __am)
 		throws ArrayIndexOutOfBoundsException, BindException,
-			IllegalArgumentException, NullPointerException
+			IllegalArgumentException, IOException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
@@ -188,15 +204,15 @@ public final class SquirrelJME
 	 * @return The descriptor of the mailbox destination.
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
-	 * @throws BindException If the mailbox could not be bound.
 	 * @throws IllegalArgumentException If the version number is not correct.
+	 * @throws IOException If the mailbox was closed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxListen(byte[] __b, int __o, int __l, int __v,
 		boolean __am)
-		throws ArrayIndexOutOfBoundsException, BindException,
-			IllegalArgumentException, NullPointerException
+		throws ArrayIndexOutOfBoundsException,
+			IllegalArgumentException, IOException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
@@ -263,13 +279,14 @@ public final class SquirrelJME
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
 	 * are negative or exceed the length of the array.
 	 * @throws IllegalArgumentException If the descriptor is not valid.
+	 * @throws IOException If the remote end was closed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	public static void mailboxSend(int __fd, int __chan, byte[] __b, int __o,
 		int __l)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			NullPointerException
+			IOException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}

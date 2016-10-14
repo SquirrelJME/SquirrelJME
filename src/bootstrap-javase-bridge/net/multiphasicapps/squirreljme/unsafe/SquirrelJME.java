@@ -92,10 +92,11 @@ public final class SquirrelJME
 	 * @return As duplicated.
 	 * @throws IllegalArgumentException As duplicated.
 	 * @throws InterruptedException As duplicated.
+	 * @throws IOException As duplicated.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxAccept(int __ld)
-		throws IllegalArgumentException, InterruptedException
+		throws IllegalArgumentException, InterruptedException, IOException
 	{
 		// Look in the destination map
 		Map<Integer, PostDestination> postdests = SquirrelJME._POST_DESTS;
@@ -120,6 +121,52 @@ public final class SquirrelJME
 	/**
 	 * As duplicated.
 	 *
+	 * @param __fd As duplicated.
+	 * @since 2016/10/13
+	 */
+	public static void mailboxClose(int __fd)
+	{
+		// Translate
+		Integer fd = Integer.valueOf(__fd);
+		
+		// Close destination?
+		if (__fd < 0)
+		{
+			Map<Integer, PostDestination> dests = SquirrelJME._POST_DESTS;
+			synchronized (dests)
+			{
+				// Destinations are removed as soon as they are closed
+				PostDestination dest = dests.get(fd);
+				if (dest != null)
+				{
+					dest.close();
+					dests.remove(fd);
+				}
+			}
+		}
+		
+		// Close box
+		else
+		{
+			Map<Integer, PostBox> boxes = SquirrelJME._POST_BOXES;
+			synchronized (boxes)
+			{
+				// Boxes are removed fast if they are empty, otherwise they'
+				// are removed when EOF is detected
+				PostBox box = boxes.get(fd);
+				if (box != null)
+				{
+					box.close();
+					if (!box.hasRemaining())
+						boxes.remove(fd);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * As duplicated.
+	 *
 	 * @param __mb As duplicated.
 	 * @param __mo As duplicated.
 	 * @param __ml As duplicated.
@@ -130,13 +177,14 @@ public final class SquirrelJME
 	 * @param __am As duplicated.
 	 * @throws BindException As duplicated.
 	 * @throws IllegalArgumentException As duplicated.
+	 * @throws IOException As duplicated.
 	 * @throws NullPointerException As duplicated.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxConnect(byte[] __mb, int __mo, int __ml,
 		byte[] __sb, int __so, int __sl, int __v, boolean __am)
 		throws ArrayIndexOutOfBoundsException, BindException,
-			IllegalArgumentException, NullPointerException
+			IllegalArgumentException, IOException, NullPointerException
 	{
 		// {@squirreljme.error DE0e Cannot connect to named MIDlets via
 		// mailboxes in the bridged Java SE connection.}
@@ -198,13 +246,14 @@ public final class SquirrelJME
 	 * @throws ArrayIndexOutOfBoundsException As duplicated.
 	 * @throws BindException As described.
 	 * @throws IllegalArgumentException As duplicated.
+	 * @throws IOException As duplicated.
 	 * @throws NullPointerException As duplicated.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxListen(byte[] __b, int __o, int __l, int __v,
 		boolean __am)
 		throws ArrayIndexOutOfBoundsException, BindException,
-			IllegalArgumentException, NullPointerException
+			IllegalArgumentException, IOException, NullPointerException
 	{
 		// Check
 		if (__b == null)
@@ -289,18 +338,29 @@ public final class SquirrelJME
 		// Lock on boxes
 		PostBox box;
 		Map<Integer, PostBox> boxes = SquirrelJME._POST_BOXES;
+		Integer fd = Integer.valueOf(__fd);
 		synchronized (boxes)
 		{
 			// {@squirreljme.error DE0h The specified descriptor is not a valid
 			// post box. (The descriptor)}
-			box = boxes.get(__fd);
+			box = boxes.get(fd);
 			if (box == null)
 				throw new IllegalArgumentException(String.format("DE0h %d",
 					__fd));
 		}
 		
 		// Receive data
-		return box.receive(__chan, __b, __o, __l, __wait);
+		int rv = box.receive(__chan, __b, __o, __l, __wait);
+		
+		// If the remote end was closed, remove the connection
+		if (rv < 0)
+			synchronized (boxes)
+			{
+				boxes.remove(fd);
+			}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -337,13 +397,14 @@ public final class SquirrelJME
 	 * @param __l As duplicated.
 	 * @throws ArrayIndexOutOfBoundsException As duplicated.
 	 * @throws IllegalArgumentException As duplicated.
+	 * @throws IOException As duplicated.
 	 * @throws NullPointerException As duplicated.
 	 * @since 2016/10/13
 	 */
 	public static void mailboxSend(int __fd, int __chan, byte[] __b, int __o,
 		int __l)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			NullPointerException
+			IOException, NullPointerException
 	{
 		// Lock on boxes
 		PostBox box;

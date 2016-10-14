@@ -42,6 +42,9 @@ public class IMCServer
 	/** The file descriptor for the mailbox. */
 	private final int _mailfd;
 	
+	/** Has this been closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the server IMC connection.
 	 *
@@ -81,6 +84,11 @@ public class IMCServer
 	public StreamConnection acceptAndOpen()
 		throws IOException
 	{
+		// {@squirreljme.error EC0i
+		if (this._closed)
+			throw new IOException("EC0i");
+		
+		// Listen on socket
 		int mailfd = this._mailfd;
 		boolean interrupt = this.interrupt;
 		for (;;)
@@ -88,6 +96,10 @@ public class IMCServer
 			{
 				// Accept socket
 				int clfd = SquirrelJME.mailboxAccept(mailfd);
+				
+				// {@squirreljme.error EC0j Connection closed during accept.}
+				if (clfd < 0)
+					throw new IOException("EC0j");
 				
 				// Create client socket
 				return new IMCClient(clfd, this.name, this.version,
@@ -114,6 +126,11 @@ public class IMCServer
 	public void close()
 		throws IOException
 	{
+		// Ignore if already closed
+		if (this._closed)
+			return;
+		this._closed = true;
+		
 		throw new Error("TODO");
 	}
 	

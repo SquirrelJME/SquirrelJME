@@ -47,6 +47,9 @@ class __IMCInputStream__
 	/** Closed? */
 	private volatile boolean _closed;
 	
+	/** Was the EOF reached? */
+	private volatile boolean _eof;
+	
 	/**
 	 * Initializes the input stream.
 	 *
@@ -73,7 +76,8 @@ class __IMCInputStream__
 			return;
 		this._closed = true;
 		
-		throw new Error("TODO");
+		// Close it
+		SquirrelJME.mailboxClose(this._fd);
 	}
 	
 	/**
@@ -117,6 +121,10 @@ class __IMCInputStream__
 		if (__o < 0 || __l < 0 || n > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
+		// EOF reached, stop
+		if (this._eof)
+			return -1;
+		
 		// Initial arguments
 		byte[] work = this._work;
 		int at = this._at, end = this._end;
@@ -148,7 +156,10 @@ class __IMCInputStream__
 							
 							// EOF? Return read bytes or EOF
 							if (rc < 0)
+							{
+								this._eof = true;
 								return (count == 0 ? -1 : count);
+							}
 							
 							// Read success, use the buffer data
 							end = rc;

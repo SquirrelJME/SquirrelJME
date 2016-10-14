@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ipcmailbox;
 
+import java.io.Closeable;
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.midletid.MidletVersion;
 
 /**
@@ -20,6 +22,7 @@ import net.multiphasicapps.squirreljme.midletid.MidletVersion;
  */
 public final class PostDestination
 	extends PostBase
+	implements Closeable
 {
 	/** The post office lock. */
 	protected final Object lock =
@@ -39,6 +42,9 @@ public final class PostDestination
 	
 	/** The post office that just opened. */
 	private volatile PostOffice _openoffice;
+	
+	/** Was this closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the post destination.
@@ -63,10 +69,11 @@ public final class PostDestination
 	 *
 	 * Return The post office connection.
 	 * @throws InterruptedException If the accept request was interrupted.
+	 * @throws IOException If the destination was closed during acceptance.
 	 * @since 2016/10/13
 	 */
 	public PostOffice accept()
-		throws InterruptedException
+		throws InterruptedException, IOException
 	{
 		// Lock
 		Object lock = this.lock;
@@ -75,6 +82,11 @@ public final class PostDestination
 			// Loop until a client accepts a mailbox
 			for (;;)
 			{
+				// {@squirreljme.error BW05 Cannot accept more post boxes
+				// because the destination has closed.}
+				if (this._closed)
+					throw new IOException("BW05");
+				
 				// A thread wants a post office?
 				int wants = this._wantoffices;
 				if (wants > 0)
@@ -97,14 +109,36 @@ public final class PostDestination
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/13
+	 */
+	@Override
+	public void close()
+	{
+		// Only close once
+		if (this._closed)
+			return;
+		this._closed = true;
+		
+		// Lock
+		Object lock = this.lock;
+		synchronized (lock)
+		{
+			// Tell all threads that this is now closed
+			lock.notifyAll();
+		}
+	}
+	
+	/**
 	 * Connects to the given post office.
 	 *
 	 * @return The post office connection.
 	 * @throws InterruptedException If the connect attempt was interrupted.
+	 * @throws IOException If the destination was closed.
 	 * @since 2016/10/13
 	 */
 	public PostOffice connect()
-		throws InterruptedException
+		throws InterruptedException, IOException
 	{
 		// Lock
 		Object lock = this.lock;
@@ -122,6 +156,10 @@ public final class PostDestination
 				// We got the lock back, check if there is an office waiting
 				for (;;)
 				{
+					// {@squirreljme.error BW04 The destination was closed.}
+					if (this._closed)
+						throw new IOException("BW04");
+					
 					// See if an office was created
 					PostOffice rv = this._openoffice;
 					if (rv != null)

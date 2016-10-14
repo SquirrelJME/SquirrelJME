@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ipcmailbox;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.NoSuchElementException;
@@ -21,6 +23,7 @@ import java.util.NoSuchElementException;
  * @since 2016/10/13
  */
 public final class PostBox
+	implements Closeable
 {
 	/** The owning post office. */
 	protected final PostOffice postoffice;
@@ -28,6 +31,12 @@ public final class PostBox
 	/** The incoming queue. */
 	private final Deque<__Datagram__> _queue =
 		new ArrayDeque<>();
+	
+	/** Was this closed? */
+	private volatile boolean _closed;
+	
+	/** Was the end reached? */
+	private volatile boolean _eof;
 	
 	/**
 	 * Initializes the mailbox.
@@ -45,6 +54,43 @@ public final class PostBox
 		
 		// Set
 		this.postoffice = __po;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/13
+	 */
+	@Override
+	public void close()
+	{
+		// Close only once
+		if (this._closed)
+			return;
+		this._closed = true;
+		
+		// Lock on the queue
+		Deque<__Datagram__> q = this._queue;
+		synchronized (q)
+		{
+			// Notify all of closed
+			q.notifyAll();
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if there are messages in the queue.
+	 *
+	 * @return {@code true} if there are datagrams waiting.
+	 * @since 2016/10/13
+	 */
+	public boolean hasRemaining()
+	{
+		// Lock on the queue
+		Deque<__Datagram__> q = this._queue;
+		synchronized (q)
+		{
+			return !q.isEmpty();
+		}
 	}
 	
 	/**
@@ -91,10 +137,23 @@ public final class PostBox
 			// Loop for awhile
 			for (;;)
 			{
+				// If the end was reached, stop
+				if (this._eof)
+					return -1;	
+				
 				// See if there is data waiting
 				__Datagram__ d = iq.peekFirst();
 				if (d == null)
-					if (__w)
+				{
+					// Closed, no more datagrams will be received
+					if (this._closed)
+					{
+						this._eof = true;
+						return -1;
+					}
+					
+					// Not closed, wait for more
+					else if (__w)
 					{
 						// Wait until something was stored in the queue
 						iq.wait();
@@ -106,6 +165,7 @@ public final class PostBox
 					// {@squirreljme.error BW01 No datagram is available.}
 					else
 						throw new NoSuchElementException("BW01");
+				}
 				
 				// Get details
 				byte[] data = d._data;
@@ -141,11 +201,13 @@ public final class PostBox
 	 * @param __l The number of bytes to send.
 	 * @throws ArrayIndexOutOfBoundsException If the array is not within
 	 * bounds.
+	 * @throws IOException If the remote end is closed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	public void send(int __chan, byte[] __b, int __o, int __l)
-		throws ArrayIndexOutOfBoundsException, NullPointerException
+		throws ArrayIndexOutOfBoundsException, IOException,
+			NullPointerException
 	{
 		// Create datagram
 		__Datagram__ d = new __Datagram__(__chan, __b, __o, __l);
@@ -155,6 +217,10 @@ public final class PostBox
 		Deque<__Datagram__> oq = other._queue;
 		synchronized (oq)
 		{
+			// {@squirreljme.error BW03 The remote post box has closed.}
+			if (other._closed)
+				throw new IOException("BW03");
+			
 			// Add to the end of the queue
 			oq.offerLast(d);
 			

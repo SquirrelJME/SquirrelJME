@@ -66,7 +66,8 @@ class __IMCOutputStream__
 		flush();
 		this._closed = true;
 		
-		throw new Error("TODO");
+		// Close it
+		SquirrelJME.mailboxClose(this._fd);
 	}
 	
 	/**
