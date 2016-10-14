@@ -88,7 +88,7 @@ public final class PostBox
 		Deque<__Datagram__> iq = this._queue;
 		synchronized (iq)
 		{
-			throw new RuntimeException("OOPS");
+			throw new Error("TODO");
 		}
 	}
 	
