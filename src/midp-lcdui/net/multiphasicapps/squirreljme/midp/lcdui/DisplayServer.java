@@ -14,8 +14,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.microedition.io.Connector;
-import javax.microedition.io.IMCConnection;
-import javax.microedition.io.IMCServerConnection;
+import javax.microedition.io.StreamConnection;
+import javax.microedition.io.StreamConnectionNotifier;
 
 /**
  * This is a class which implements the display server used by the LCDUI
@@ -39,19 +39,37 @@ public abstract class DisplayServer
 	/** The display server thread. */
 	protected final Thread thread;
 	
-	/** The master IMC socket. */
-	private final IMCServerConnection _serversock;
+	/** The server socket. */
+	private final StreamConnectionNotifier _serversock;
 	
 	/** A connection count, just for threading. */
 	private volatile int _conncount;
 	
 	/**
-	 * Initializes the base display server.
+	 * Initializes the base display server using the default server.
 	 *
 	 * @since 2016/10/11
 	 */
 	public DisplayServer()
+		throws IOException
 	{
+		this((StreamConnectionNotifier)Connector.open(_SERVER_URI));
+	}
+	
+	/**
+	 * Initializes the base display server using the given connection.
+	 *
+	 * @param __sc The connection to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/14
+	 */
+	public DisplayServer(StreamConnectionNotifier __sc)
+		throws NullPointerException
+	{
+		// Check
+		if (__sc == null)
+			throw new NullPointerException("NARG");
+		
 		// Setup display server thread
 		Thread thread;
 		this.thread = (thread = new Thread(this, "SquirrelJMEDisplayServer"));
@@ -59,19 +77,8 @@ public abstract class DisplayServer
 		// Server specific thread modification?
 		modifyThread(thread);
 		
-		// Create server socket
-		try
-		{
-			this._serversock = (IMCServerConnection)Connector.open(
-				_SERVER_URI);
-		}
-		
-		// {@squirreljme.error EB05 Could not create the display server
-		// socket.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("EB05", e);
-		}
+		// Set server socket
+		this._serversock = __sc;
 		
 		// Start it
 		thread.start();
@@ -98,22 +105,30 @@ public abstract class DisplayServer
 	public final void run()
 	{
 		// Infinite loop
-		IMCServerConnection svsock = this._serversock;
-		for (;;)
-			try (IMCConnection sock = (IMCConnection)svsock.acceptAndOpen())
-			{
-				// Create thread for the given socket
-				Thread t = new Thread(new __Socket__(sock),
-					"SquirrelJMEDisplayServerConnection-" + (++_conncount));
+		try (StreamConnectionNotifier svsock = this._serversock)
+		{
+			for (;;)
+				try (StreamConnection sock = svsock.acceptAndOpen())
+				{
+					// Create thread for the given socket
+					Thread t = new Thread(new __Socket__(sock),
+						"SquirrelJMEDisplayConnection-" + (++_conncount));
 				
-				// Start it
-				t.start();
-			}
+					// Start it
+					t.start();
+				}
 			
-			// Failed read, ignore
-			catch (IOException e)
-			{
-			}
+				// Failed read, ignore
+				catch (IOException e)
+				{
+				}
+		}
+		
+		// {@squirreljme.error EB05 Fail to close the display server socket.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("EB05", e);
+		}
 	}
 	
 	/**
@@ -157,7 +172,7 @@ public abstract class DisplayServer
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/10/13
 		 */
-		private __Socket__(IMCConnection __sock)
+		private __Socket__(StreamConnection __sock)
 			throws IOException, NullPointerException
 		{
 			// Check

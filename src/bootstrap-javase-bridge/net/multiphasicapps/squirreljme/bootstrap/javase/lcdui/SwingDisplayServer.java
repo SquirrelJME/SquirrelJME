@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.bootstrap.javase.lcdui;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
 
 /**
@@ -24,9 +25,11 @@ public class SwingDisplayServer
 	/**
 	 * Initializes the swing display server.
 	 *
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/11
 	 */
 	public SwingDisplayServer()
+		throws IOException
 	{
 	}
 	

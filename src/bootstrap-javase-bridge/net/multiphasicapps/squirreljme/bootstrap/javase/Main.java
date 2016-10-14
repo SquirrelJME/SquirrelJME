@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.bootstrap.javase;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.bootstrap.javase.lcdui.
 	SwingDisplayServer;
 
@@ -25,9 +26,11 @@ public class Main
 	 * Main entry point.
 	 *
 	 * @param __args Program arguments.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/09/18
 	 */
 	public static void main(String... __args)
+		throws IOException
 	{
 		// Initialize LCDUI display server
 		SwingDisplayServer sds = new SwingDisplayServer();
