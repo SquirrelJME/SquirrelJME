@@ -7,6 +7,9 @@ of scope for the project.
 
 # To Implement
 
+These are specifications which are to be implemented to provide the base
+functionality for SquirrelJME.
+
 ## Specifications
 
  * **JSR030** -- J2ME Connected, Limited Device Configuration.
