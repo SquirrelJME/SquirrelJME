@@ -29,12 +29,12 @@ public abstract class DisplayServer
 	/** The URI the client uses to connect. */
 	public static final String CLIENT_URI =
 		"imc://*:net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer:" +
-		"1.0;authmode=false";
+		"0.0.2;authmode=false";
 	
 	/** The URI the server uses to host. */
 	private static final String _SERVER_URI =
 		"imc://:net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer:" +
-		"1.0;authmode=false";
+		"0.0.2;authmode=false";
 	
 	/** The display server thread. */
 	protected final Thread thread;
@@ -117,6 +117,25 @@ public abstract class DisplayServer
 	}
 	
 	/**
+	 * Outputs the number of displays which are currently available to this
+	 * display server.
+	 *
+	 * @param __out The output stream.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/14
+	 */
+	private void __commandNumDisplays(DataOutputStream __out)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * A display socket that has been initialized.
 	 *
 	 * @since 2016/10/13
@@ -161,17 +180,18 @@ public abstract class DisplayServer
 			try (DataInputStream in = this.in;
 				DataOutputStream out = this.out)
 			{
+				// Handle every command possible
 				for (;;)
 				{
 					// Read a command and handle it
 					int command = in.readUnsignedByte();
-					System.err.printf("DEBUG -- DS %d%n", command);
 					switch (command)
 					{
 							// Request the displays that are available and
 							// are attached
 						case DisplayProtocol.COMMAND_REQUEST_NUMDISPLAYS:
-							throw new Error("TODO");
+							__commandNumDisplays(out);
+							break;
 						
 							// {@squirreljme.error EB07 Unknown display server
 							// command. (The command ID)}
@@ -179,6 +199,9 @@ public abstract class DisplayServer
 							throw new RuntimeException(String.format("EB07 %s",
 								command));
 					}
+				
+					// Flush the output so the commands are written
+					out.flush();
 				}
 			}
 			
