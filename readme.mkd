@@ -49,6 +49,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
    * [Alternative URL](http://multiphasicapps.net/uv/developer-notes/index.mkd)
      (Links to the main repository)
  * [Manual](src/manual/index.mkd)
+ * [Project Scope](scope.mkd)
  * [Why?](src/manual/user/why.mkd)
 
 ## Links

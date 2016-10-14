@@ -1,0 +1,34 @@
+# The Scope of SquirrelJME
+
+This document defines the scope of SquirrelJME, classes which are to be
+supported and ones which are not to be supported. All of the listed
+specifications are either planned to be implemented, considering, or out
+of scope for the project.
+
+# To Implement
+
+## Specifications
+
+# Considering
+
+Specifications that may be considered for inclusion.
+
+## Specifications
+
+# Out of Scope
+
+These specifications will be not be implement at all. Note however, that
+although these specifications are out of scope may potentially be provided by
+third parties libraries.
+
+## Specifications
+
+ * **JSR209** - Advanced Graphics and User Interface.
+   * Effectively Java SE Embedded.
+   * Intended for CDC.
+   * Has AWT.
+   * Has Swing.
+ * **JSR216** - Personal Profile.
+   * Effectively Java SE Embedded.
+   * Has AWT.
+
