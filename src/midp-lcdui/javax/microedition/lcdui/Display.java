@@ -245,17 +245,52 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the height of the image that should be used for the given
+	 * display element.
+	 *
+	 * Valid elements are:
+	 * {@link #LIST_ELEMENT},
+	 * {@link #CHOICE_GROUP_ELEMENT},
+	 * {@link #ALERT},
+	 * {@link #TAB},
+	 * {@link #COMMAND},
+	 * {@link #NOTIFICATION}, and
+	 * {@link #MENU}.
+	 *
+	 * @param __a If display element.
+	 * @return The height of the image for that element.
+	 * @throws IllegalArgumentException On null arguments.
+	 * @since 2016/10/14
+	 */
 	public int getBestImageHeight(int __a)
 		throws IllegalArgumentException
 	{
-		return __b
-		throw new Error("TODO");
+		return __bestImageSize(__a) & 0xFFFF;
 	}
 	
+	/**
+	 * Returns the width of the image that should be used for the given
+	 * display element.
+	 *
+	 * Valid elements are:
+	 * {@link #LIST_ELEMENT},
+	 * {@link #CHOICE_GROUP_ELEMENT},
+	 * {@link #ALERT},
+	 * {@link #TAB},
+	 * {@link #COMMAND},
+	 * {@link #NOTIFICATION}, and
+	 * {@link #MENU}.
+	 *
+	 * @param __a If display element.
+	 * @return The width of the image for that element.
+	 * @throws IllegalArgumentException On null arguments.
+	 * @since 2016/10/14
+	 */
 	public int getBestImageWidth(int __a)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		return __bestImageSize(__a) >>> 16;
 	}
 	
 	public int getBorderStyle(boolean __a)
@@ -625,6 +660,60 @@ public class Display
 	public boolean vibrate(int __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This wraps getting the best image size.
+	 *
+	 * @param __e The element to get it for.
+	 * @return The best image size.
+	 * @throws IllegalArgumentException If the element type is not valid.
+	 * @since 2016/10/14
+	 */
+	private int __bestImageSize(int __e)
+		throws IllegalArgumentException
+	{
+		// Depends
+		DisplayProperty p;
+		switch (__e)
+		{
+			case LIST_ELEMENT:
+				p = DisplayProperty.BEST_IMAGE_SIZE_LIST_ELEMENT;
+				break;
+				
+			case CHOICE_GROUP_ELEMENT:
+				p = DisplayProperty.BEST_IMAGE_SIZE_CHOICE_GROUP_ELEMENT;
+				break;
+				
+			case ALERT:
+				p = DisplayProperty.BEST_IMAGE_SIZE_ALERT;
+				break;
+				
+			case TAB:
+				p = DisplayProperty.BEST_IMAGE_SIZE_TAB;
+				break;
+				
+			case COMMAND:
+				p = DisplayProperty.BEST_IMAGE_SIZE_COMMAND;
+				break;
+				
+			case NOTIFICATION:
+				p = DisplayProperty.BEST_IMAGE_SIZE_NOTIFICATION;
+				break;
+				
+			case MENU:
+				p = DisplayProperty.BEST_IMAGE_SIZE_MENU;
+				break;
+				
+				// {@squirreljme.error EB09 Cannot get the best image size of
+				// the specified element. (The element specifier)}
+			default:
+				throw new IllegalArgumentException(String.format("EB09 %d",
+					__e));
+		}
+		
+		// Get
+		return this._properties[p.ordinal()];
 	}
 	
 	/**
