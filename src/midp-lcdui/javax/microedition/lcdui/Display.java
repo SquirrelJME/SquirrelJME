@@ -186,17 +186,12 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** The display descriptor cache. */
-	private static final Map<Byte, Reference<Display>> _DISPLAY_CACHE =
-		new HashMap<>();
+	/** Displays that may be used. */
+	private static volatile Display[] _DISPLAYS;
 	
 	/** The lock for this display. */
 	private final Object _lock =
 		new Object();
-	
-	/** The display client. */
-	final __DisplayClient__ _client =
-		new __DisplayClient__(this);
 	
 	/** The display descriptor. */
 	final byte _descriptor;
@@ -213,17 +208,19 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __d The display descriptor.
-	 * @param __props The display properties.
+	 * @param __in The input stream that contains the display properties.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display(byte __d, int[] __props)
-		throws NullPointerException
+	Display(DataInputStream __in)
+		throws IOException, NullPointerException
 	{
-		// Set
-		this._descriptor = __d;
-		this._properties = __props.clone();
+		// Check
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	public void callSerially(Runnable __a)
@@ -591,21 +588,17 @@ public class Display
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
-		// Open client
-		try (__DisplayClient__ dc = this._client.open(false))
-		{
-			// Active?
-			if (__m == MODE_ACTIVE)
-				throw new Error("TODO");
-		
-			// Normal
-			else if (__m == MODE_NORMAL)
-				throw new Error("TODO");
-		
-			// {@squirreljme.error EB02 Unknown activity mode specified.}
-			else
-				throw new IllegalArgumentException("EB02");
-		}
+		// Active?
+		if (__m == MODE_ACTIVE)
+			throw new Error("TODO");
+	
+		// Normal
+		else if (__m == MODE_NORMAL)
+			throw new Error("TODO");
+	
+		// {@squirreljme.error EB02 Unknown activity mode specified.}
+		else
+			throw new IllegalArgumentException("EB02");
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
@@ -858,107 +851,37 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// Open connection to the display server
-		try (StreamConnection sock = (StreamConnection)Connector.open(
-			DisplayServer.CLIENT_URI);
-			DataInputStream in = sock.openDataInputStream();
-			DataOutputStream out = sock.openDataOutputStream())
-		{
-			// Request number of displays
-			out.writeByte(DisplayProtocol.COMMAND_REQUEST_NUMDISPLAYS);
-			out.flush();
-			
-			// Display count can be variable, especially with caps
-			List<Display> rv = new ArrayList<>();
-			
-			// Read the number of displays
-			int n = in.readUnsignedByte();
-			for (int i = 0; i < n; i++)
+		// Need to connect to the server and parse displays?
+		Display[] alldisplays = Display._DISPLAYS;
+		if (alldisplays == null)
+			try (StreamConnection client = (StreamConnection)Connector.open(
+				Objects.toString(DISPLAY_CLIENT_PROPERTY,
+				DisplayProtocol.DEFAULT_CLIENT_URI));
+				DataInputStream in = sock.openDataInputStream();
+				DataOutputStream out = sock.openDataOutputStream()))
 			{
-				// Read variables
-				byte desc = (byte)in.readUnsignedByte();
-				
-				// Decode properties
-				int pcount = DisplayProperty.values().length;
-				int[] props = new int[pcount];
-				for (;;)
-				{
-					// Skip stop ID
-					int id = in.readUnsignedByte();
-					if (id == 0)
-						break;
-					
-					// Read value
-					int val = in.readInt();
-					
-					// Only store if it is in range
-					if (id >= 0 && id < pcount)
-						props[id] = val;
-				}
-				
-				// Cache descriptor
-				Display d = __cacheDisplay(desc, props);
-				
-				// Do not care about capabilities, always use it
-				// Otherwise, the requested ones must be set
-				if (__caps == 0 ||
-					(d.getCapabilities() & __caps) == __caps)
-					rv.add(d);
+				throw new Error("TODO");
 			}
 			
-			// Return display mappings
-			return rv.<Display>toArray(new Display[rv.size()]);
-		}
+			// {@squirreljme.error EB05 Could not get the display list.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("EB05");
+			}
 		
-		// If the data cannot be read then use an empty set of displays
-		catch (IOException e)
-		{
-			// Just log it
-			e.printStackTrace();
-			
-			// And use no displays
-			return new Display[0];
-		}
+		// Add any displays that meet the capabilities
+		List<Display> rv = new ArrayList<>();
+		for (Display d : alldisplays)
+			if (__caps == 0 || (d.getCapabilities() & __caps) == __caps)
+				rv.add(d);
+		
+		// As an array
+		return rv.<Display>toArray(new Display[rv.size()]);
 	}
 	
 	public static void removeDisplayListener(DisplayListener __dl)
 	{
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Caches a display descriptor.
-	 *
-	 * @param __d The descriptor to cache.
-	 * @param __props The display properties.
-	 * @return The cached display.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/10/13
-	 */
-	private static Display __cacheDisplay(byte __d, int[] __props)
-		throws NullPointerException
-	{
-		// Check
-		if (__props == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock on the cache
-		Map<Byte, Reference<Display>> cache = Display._DISPLAY_CACHE;
-		synchronized (cache)
-		{
-			// See if the display has been cached
-			Byte b = Byte.valueOf(__d);
-			Reference<Display> ref = cache.get(b);
-			Display rv;
-			
-			// Needs to be cached?
-			if (ref == null || null == (rv = ref.get()))
-				cache.put(b, new WeakReference<>((rv = new Display(__d,
-					__props))));
-			
-			// Used cached value
-			return rv;
-		}
 	}
 }
 
