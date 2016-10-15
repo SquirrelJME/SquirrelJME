@@ -187,7 +187,7 @@ public class IMCClient
 		// If no streams were opened then the client descriptor must be closed
 		// so that the descriptors do not leak
 		if (!this._opened)
-			throw new Error("TODO");
+			SquirrelJME.mailboxClose(this._clientfd);
 	}
 		
 	/**

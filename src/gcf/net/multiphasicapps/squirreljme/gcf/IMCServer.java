@@ -131,7 +131,8 @@ public class IMCServer
 			return;
 		this._closed = true;
 		
-		throw new Error("TODO");
+		// Close it
+		SquirrelJME.mailboxClose(this._mailfd);
 	}
 	
 	/**
