@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.io.Connector;
-import javax.microedition.io.IMCConnection;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
-import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProperty;
-import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProtocol;
+import net.multiphasicapps.squirreljme.lcdui.common.DisplayProperty;
+import net.multiphasicapps.squirreljme.lcdui.common.DisplayProtocol;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display

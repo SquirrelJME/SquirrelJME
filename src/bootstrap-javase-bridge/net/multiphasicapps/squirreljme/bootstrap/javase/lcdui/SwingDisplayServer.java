@@ -11,8 +11,7 @@
 package net.multiphasicapps.squirreljme.bootstrap.javase.lcdui;
 
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
-import net.multiphasicapps.squirreljme.midp.lcdui.VirtualDisplay;
+import net.multiphasicapps.squirreljme.lcdui.server.DisplayServer;
 
 /**
  * This implements the display server which uses Swing as its backing
@@ -23,10 +22,6 @@ import net.multiphasicapps.squirreljme.midp.lcdui.VirtualDisplay;
 public class SwingDisplayServer
 	extends DisplayServer
 {
-	/** There is only a single display used by the Swing code. */
-	protected final SwingVirtualDisplay display =
-		new SwingVirtualDisplay(this, (byte)0);
-	
 	/**
 	 * Initializes the swing display server.
 	 *
@@ -49,16 +44,6 @@ public class SwingDisplayServer
 		// as a user thread
 		if (__t != null)
 			__t.setDaemon(true);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/14
-	 */
-	@Override
-	protected VirtualDisplay[] queryDisplays()
-	{
-		return new VirtualDisplay[]{this.display};
 	}
 }
 

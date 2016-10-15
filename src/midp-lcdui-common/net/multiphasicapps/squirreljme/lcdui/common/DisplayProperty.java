@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midp.lcdui;
+package net.multiphasicapps.squirreljme.lcdui.common;
 
 /**
  * This is used to access properties of a given display.

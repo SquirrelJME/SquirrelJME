@@ -13,7 +13,7 @@ package javax.microedition.lcdui.game;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirreljme.midp.lcdui.ForwardingGraphics;
+import net.multiphasicapps.squirreljme.lcdui.client.ForwardingGraphics;
 
 public abstract class GameCanvas
 	extends Canvas
