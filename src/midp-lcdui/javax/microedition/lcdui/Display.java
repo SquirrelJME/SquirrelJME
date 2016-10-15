@@ -311,9 +311,19 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the dot pitch of the display in microns (also known as
+	 * micrometers or um).
+	 *
+	 * If pixels are not square then the pitch should be the average of the
+	 * two.
+	 *
+	 * @return The dot pitch in microns.
+	 * @since 2016/10/14
+	 */
 	public int getDotPitch()
 	{
-		throw new Error("TODO");
+		return this._properties[DisplayProperty.DOT_PITCH.ordinal()];
 	}
 	
 	public int[] getExactPlacementPositions(int __b)

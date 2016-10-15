@@ -10,7 +10,14 @@
 
 package net.multiphasicapps.squirreljme.bootstrap.javase.lcdui;
 
+import java.awt.Color;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProperty;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProtocol;
 import net.multiphasicapps.squirreljme.midp.lcdui.VirtualDisplay;
@@ -23,6 +30,10 @@ import net.multiphasicapps.squirreljme.midp.lcdui.VirtualDisplay;
 public class SwingVirtualDisplay
 	extends VirtualDisplay
 {
+	/** The size to use for icon images. */
+	public static final int IMAGE_SIZE =
+		(16 << 16) | 16;
+	
 	/**
 	 * Initilaizes the virtual display.
 	 *
@@ -48,6 +59,13 @@ public class SwingVirtualDisplay
 		if (__dp == null)
 			throw new NullPointerException("NARG");
 		
+		// May need the graphics environment
+		GraphicsEnvironment ge = GraphicsEnvironment.
+			getLocalGraphicsEnvironment();
+		GraphicsDevice gd = ge.getDefaultScreenDevice();
+		DisplayMode dm = gd.getDisplayMode();
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		
 		// Depends
 		switch (__dp)
 		{
@@ -57,7 +75,8 @@ public class SwingVirtualDisplay
 	
 			// The dor pitch in micrometers.
 			case DOT_PITCH:
-				throw new Error("TODO");
+				return (int)((1.0D / (double)tk.getScreenResolution()) *
+					25_400.0D);
 
 			// Has pointer/stylus press/release events?
 			case POINTER_PRESS_RELEASE:
@@ -69,83 +88,84 @@ public class SwingVirtualDisplay
 
 			// The size of the display (w16h16).
 			case DISPLAY_SIZE:
-				throw new Error("TODO");
+				return ((dm.getWidth() & 0xFFFF) << 16) |
+					(dm.getHeight() & 0xFFFF);
 
 			// Best image size for list elements (w16h16).
 			case BEST_IMAGE_SIZE_LIST_ELEMENT:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// Best image size for choice group elements (w16h16).
 			case BEST_IMAGE_SIZE_CHOICE_GROUP_ELEMENT:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// Best image size for alerts (w16h16).
 			case BEST_IMAGE_SIZE_ALERT:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// Best image size for tabs (w16h16).
 			case BEST_IMAGE_SIZE_TAB:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// Best image size for commands (w16h16).
 			case BEST_IMAGE_SIZE_COMMAND:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// Best image size for notifications (w16h16).
 			case BEST_IMAGE_SIZE_NOTIFICATION:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// Best image size for menus (w16h16).
 			case BEST_IMAGE_SIZE_MENU:
-				throw new Error("TODO");
+				return IMAGE_SIZE;
 
 			// The background color.
 			case COLOR_BACKGROUND:
-				throw new Error("TODO");
+				return SystemColor.control.getRGB();
 
 			// The foreground color.
 			case COLOR_FOREGROUND:
-				throw new Error("TODO");
+				return SystemColor.controlText.getRGB();
 
 			// The highlighted background color.
 			case COLOR_HIGHLIGHTED_BACKGROUND:
-				throw new Error("TODO");
+				return SystemColor.controlHighlight.getRGB();
 
 			// The highlighted foreground color.
 			case COLOR_HIGHLIGHTED_FOREGROUND:
-				throw new Error("TODO");
+				return SystemColor.controlText.getRGB();
 
 			// The border color.
 			case COLOR_BORDER:
-				throw new Error("TODO");
+				return SystemColor.windowBorder.getRGB();
 
 			// The highlighted border color.
 			case COLOR_HIGHLIGHTED_BORDER:
-				throw new Error("TODO");
+				return SystemColor.windowBorder.getRGB();
 
 			// The idle background color.
 			case COLOR_IDLE_BACKGROUND:
-				throw new Error("TODO");
+				return SystemColor.control.getRGB();
 
 			// The idle foreground color.
 			case COLOR_IDLE_FOREGROUND:
-				throw new Error("TODO");
+				return SystemColor.controlText.getRGB();
 
 			// The highlighted idle background color.
 			case COLOR_HIGHLIGHTED_IDLE_BACKGROUND:
-				throw new Error("TODO");
+				return SystemColor.controlHighlight.getRGB();
 
 			// The highlighted idle foreground color.
 			case COLOR_HIGHLIGHTED_IDLE_FOREGROUND:
-				throw new Error("TODO");
+				return SystemColor.controlText.getRGB();
 
 			// The border style for non-highlights.
 			case BORDER_STYLE_NORMAL:
-				throw new Error("TODO");
+				return Graphics.SOLID;
 
 			// The border style for highlights.
 			case BORDER_STYLE_HIGHLIGHT:
-				throw new Error("TODO");
+				return Graphics.SOLID;
 
 			// Is the display color?
 			case IS_COLOR:
@@ -153,7 +173,7 @@ public class SwingVirtualDisplay
 
 			// The number of supported colors.
 			case NUM_COLORS:
-				return 256 * 256 * 256;
+				return (int)Math.max(16777216L, 1L << dm.getBitDepth());
 
 			// The number of alpha levels.
 			case NUM_ALPHA_LEVELS:
