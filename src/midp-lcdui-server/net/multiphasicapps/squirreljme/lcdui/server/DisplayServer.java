@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.lcdui.server;
 
 import java.io.IOException;
+import java.util.Objects;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
@@ -87,8 +88,9 @@ public abstract class DisplayServer
 		{
 			// Loop for a very long time
 			for (;;)
-				try (StreamConnection sock = svsock.acceptAndOpen())
+				try (StreamConnection client = server.acceptAndOpen())
 				{
+					throw new Error("TODO");
 				}
 				
 				// Ignore these
@@ -118,7 +120,7 @@ public abstract class DisplayServer
 			return (StreamConnectionNotifier)Connector.open(
 				Objects.toString(System.getProperty(
 				DisplayProtocol.DISPLAY_SERVER_PROPERTY),
-				DisplayProtocol.DISPLAY_SERVER_URI));
+				DisplayProtocol.DEFAULT_SERVER_URI));
 		}
 		
 		// {@squirreljme.error DX02 Failed to open the default server
