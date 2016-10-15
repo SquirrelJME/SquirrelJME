@@ -81,10 +81,10 @@ public enum DisplayProperty
 	COLOR_IDLE_FOREGROUND,
 	
 	/** The highlighted idle background color. */
-	COLOR_HIGHLIGHTED_IDLE_BACKGROUND,
+	COLOR_IDLE_HIGHLIGHTED_BACKGROUND,
 	
 	/** The highlighted idle foreground color. */
-	COLOR_HIGHLIGHTED_IDLE_FOREGROUND,
+	COLOR_IDLE_HIGHLIGHTED_FOREGROUND,
 	
 	/** The border style for non-highlights. */
 	BORDER_STYLE_NORMAL,

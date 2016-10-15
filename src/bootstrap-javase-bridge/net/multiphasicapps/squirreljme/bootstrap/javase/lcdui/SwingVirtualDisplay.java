@@ -121,43 +121,43 @@ public class SwingVirtualDisplay
 
 			// The background color.
 			case COLOR_BACKGROUND:
-				return SystemColor.control.getRGB();
+				return SystemColor.control.getRGB() & 0xFFFFFF;
 
 			// The foreground color.
 			case COLOR_FOREGROUND:
-				return SystemColor.controlText.getRGB();
+				return SystemColor.controlText.getRGB() & 0xFFFFFF;
 
 			// The highlighted background color.
 			case COLOR_HIGHLIGHTED_BACKGROUND:
-				return SystemColor.controlHighlight.getRGB();
+				return SystemColor.controlHighlight.getRGB() & 0xFFFFFF;
 
 			// The highlighted foreground color.
 			case COLOR_HIGHLIGHTED_FOREGROUND:
-				return SystemColor.controlText.getRGB();
+				return SystemColor.controlText.getRGB() & 0xFFFFFF;
 
 			// The border color.
 			case COLOR_BORDER:
-				return SystemColor.windowBorder.getRGB();
+				return SystemColor.windowBorder.getRGB() & 0xFFFFFF;
 
 			// The highlighted border color.
 			case COLOR_HIGHLIGHTED_BORDER:
-				return SystemColor.windowBorder.getRGB();
+				return SystemColor.windowBorder.getRGB() & 0xFFFFFF;
 
 			// The idle background color.
 			case COLOR_IDLE_BACKGROUND:
-				return SystemColor.control.getRGB();
+				return SystemColor.control.getRGB() & 0xFFFFFF;
 
 			// The idle foreground color.
 			case COLOR_IDLE_FOREGROUND:
-				return SystemColor.controlText.getRGB();
+				return SystemColor.controlText.getRGB() & 0xFFFFFF;
 
 			// The highlighted idle background color.
-			case COLOR_HIGHLIGHTED_IDLE_BACKGROUND:
-				return SystemColor.controlHighlight.getRGB();
+			case COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
+				return SystemColor.controlHighlight.getRGB() & 0xFFFFFF;
 
 			// The highlighted idle foreground color.
-			case COLOR_HIGHLIGHTED_IDLE_FOREGROUND:
-				return SystemColor.controlText.getRGB();
+			case COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
+				return SystemColor.controlText.getRGB() & 0xFFFFFF;
 
 			// The border style for non-highlights.
 			case BORDER_STYLE_NORMAL:

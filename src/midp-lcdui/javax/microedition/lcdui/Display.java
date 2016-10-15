@@ -246,11 +246,14 @@ public class Display
 	}
 	
 	public int getBestImageHeight(int __a)
+		throws IllegalArgumentException
 	{
+		return __b
 		throw new Error("TODO");
 	}
 	
 	public int getBestImageWidth(int __a)
+		throws IllegalArgumentException
 	{
 		throw new Error("TODO");
 	}
@@ -276,9 +279,82 @@ public class Display
 		return this._properties[DisplayProperty.CAPABILITIES.ordinal()];
 	}
 	
-	public int getColor(int __a)
+	/**
+	 * Returns the color used for the specified interface item.
+	 *
+	 * The value values are:
+	 * {@link #COLOR_BACKGROUND},
+	 * {@link #COLOR_BORDER},
+	 * {@link #COLOR_FOREGROUND},
+	 * {@link #COLOR_HIGHLIGHTED_BACKGROUND},
+	 * {@link #COLOR_HIGHLIGHTED_BORDER},
+	 * {@link #COLOR_HIGHLIGHTED_FOREGROUND},
+	 * {@link #COLOR_IDLE_BACKGROUND},
+	 * {@link #COLOR_IDLE_FOREGROUND},
+	 * {@link #COLOR_IDLE_HIGHLIGHTED_BACKGROUND}, and
+	 * {@link #COLOR_IDLE_HIGHLIGHTED_FOREGROUND}
+	 *
+	 * @param __c The color to get.
+	 * @return The RGB color for the specified user interface item.
+	 * @throws IllegalArgumentException If the specified color is not valid.
+	 * @since 2016/10/14
+	 */
+	public int getColor(int __c)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// Depends
+		DisplayProperty p;
+		switch (__c)
+		{
+			case COLOR_BACKGROUND:
+				p = DisplayProperty.COLOR_BACKGROUND;
+				break;
+				
+			case COLOR_BORDER:
+				p = DisplayProperty.COLOR_BORDER;
+				break;
+				
+			case COLOR_FOREGROUND:
+				p = DisplayProperty.COLOR_FOREGROUND;
+				break;
+				
+			case COLOR_HIGHLIGHTED_BACKGROUND:
+				p = DisplayProperty.COLOR_HIGHLIGHTED_BACKGROUND;
+				break;
+				
+			case COLOR_HIGHLIGHTED_BORDER:
+				p = DisplayProperty.COLOR_HIGHLIGHTED_BORDER;
+				break;
+				
+			case COLOR_HIGHLIGHTED_FOREGROUND:
+				p = DisplayProperty.COLOR_HIGHLIGHTED_FOREGROUND;
+				break;
+				
+			case COLOR_IDLE_BACKGROUND:
+				p = DisplayProperty.COLOR_IDLE_BACKGROUND;
+				break;
+				
+			case COLOR_IDLE_FOREGROUND:
+				p = DisplayProperty.COLOR_IDLE_FOREGROUND;
+				break;
+				
+			case COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
+				p = DisplayProperty.COLOR_IDLE_HIGHLIGHTED_BACKGROUND;
+				break;
+				
+			case COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
+				p = DisplayProperty.COLOR_IDLE_HIGHLIGHTED_FOREGROUND;
+				break;
+				
+				// {@squirreljme.error EB08 The specified color is not valid.
+				// (The color ID)}
+			default:
+				throw new IllegalArgumentException(String.format("EB08 %d",
+					__c));
+		}
+		
+		// Get color
+		return this._properties[p.ordinal()];
 	}
 	
 	public CommandLayoutPolicy getCommandLayoutPolicy()
@@ -336,9 +412,16 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the height of the display.
+	 *
+	 * @return The display height.
+	 * @since 2016/10/14
+	 */
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		return this._properties[
+			DisplayProperty.DISPLAY_SIZE.ordinal()] & 0xFFFF;
 	}
 	
 	public IdleItem getIdleItem()
@@ -361,9 +444,16 @@ public class Display
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the width of the display.
+	 *
+	 * @retrn The display width.
+	 * @since 2016/10/14
+	 */
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		return this._properties[
+			DisplayProperty.DISPLAY_SIZE.ordinal()] >>> 16;
 	}
 	
 	/**
@@ -414,14 +504,36 @@ public class Display
 			DisplayProperty.IS_COLOR.ordinal()];
 	}
 	
+	/**
+	 * Returns the number of alpha-transparency levels.
+	 *
+	 * Alpha levels range from fully transparent to fully opaue.
+	 *
+	 * There will always be at least two levels.
+	 *
+	 * @return The alpha transparency levels.
+	 * @since 2016/10/14
+	 */
 	public int numAlphaLevels()
 	{
-		throw new Error("TODO");
+		return Math.max(2,
+			this._properties[DisplayProperty.NUM_ALPHA_LEVELS.ordinal()]);
 	}
 	
+	/**
+	 * Returns the number of colors available to the display.
+	 *
+	 * Monochrome (black and white) displays only have two colors.
+	 *
+	 * There will always be at least two colors.
+	 *
+	 * @return The number of available colors.
+	 * @since 2016/10/14
+	 */
 	public int numColors()
 	{
-		throw new Error("TODO");
+		return Math.max(2,
+			this._properties[DisplayProperty.NUM_COLORS.ordinal()]);
 	}
 	
 	public void removeCurrent()
