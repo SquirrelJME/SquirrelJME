@@ -34,5 +34,18 @@ public interface DisplayProtocol
 	 */
 	public static final byte COMMAND_REQUEST_NUMDISPLAYS =
 		1;
+	
+	/**
+	 * Binds to the given display.
+	 *
+	 * {@code
+	 * In:
+	 *   --Nothing--
+	 * Out:
+	 *   ubyte           The display to bind to.
+	 * }
+	 */
+	public static final byte COMMAND_BIND_DISPLAY =
+		2;
 }
 

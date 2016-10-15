@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.microedition.io.Connector;
 import javax.microedition.io.IMCConnection;
+import javax.microedition.io.StreamConnection;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProperty;
@@ -195,8 +196,12 @@ public class Display
 	private final Object _lock =
 		new Object();
 	
+	/** The display client. */
+	final __DisplayClient__ _client =
+		new __DisplayClient__(this);
+	
 	/** The display descriptor. */
-	private final byte _descriptor;
+	final byte _descriptor;
 	
 	/** Properties of the display. */
 	private final int[] _properties;
@@ -588,17 +593,21 @@ public class Display
 	public void setActivityMode(int __m)
 		throws IllegalArgumentException
 	{
-		// Active?
-		if (__m == MODE_ACTIVE)
-			throw new Error("TODO");
+		// Open client
+		try (__DisplayClient__ dc = this._client.open(false))
+		{
+			// Active?
+			if (__m == MODE_ACTIVE)
+				throw new Error("TODO");
 		
-		// Normal
-		else if (__m == MODE_NORMAL)
-			throw new Error("TODO");
+			// Normal
+			else if (__m == MODE_NORMAL)
+				throw new Error("TODO");
 		
-		// {@squirreljme.error EB02 Unknown activity mode specified.}
-		else
-			throw new IllegalArgumentException("EB02");
+			// {@squirreljme.error EB02 Unknown activity mode specified.}
+			else
+				throw new IllegalArgumentException("EB02");
+		}
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
@@ -852,7 +861,7 @@ public class Display
 	public static Display[] getDisplays(int __caps)
 	{
 		// Open connection to the display server
-		try (IMCConnection sock = (IMCConnection)Connector.open(
+		try (StreamConnection sock = (StreamConnection)Connector.open(
 			DisplayServer.CLIENT_URI);
 			DataInputStream in = sock.openDataInputStream();
 			DataOutputStream out = sock.openDataOutputStream())

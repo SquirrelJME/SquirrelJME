@@ -184,6 +184,10 @@ class __IMCInputStream__
 						// number of read bytes
 						catch (InterruptedException|NoSuchElementException e)
 						{
+							// {@squirreljme.error EC0j Read interrupt and no
+							// data was read.}
+							if (interrupt && count == 0)
+								throw new InterruptedIOException("EC0j");
 							return count;
 						}
 				}
