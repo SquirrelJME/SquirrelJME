@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.midp.lcdui;
 
+import java.io.DataOutputStream;
+
 /**
  * This is the base class for displays.
  *
@@ -42,6 +44,17 @@ public abstract class VirtualDisplay
 		this.id = __id;
 		this.server = __ds;
 	}
+	
+	/**
+	 * This is the output loop where display events may be written to.
+	 *
+	 * @param __out The output data stream.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/15
+	 */
+	public abstract void outputLoop(DataOutputStream __out)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Returns the value of the given display property.

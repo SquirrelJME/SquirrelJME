@@ -146,6 +146,43 @@ public abstract class DisplayServer
 	}
 	
 	/**
+	 * Binds the stream to the given display and performs looping on it
+	 *
+	 * @param __in The input data source.
+	 * @param __out The data output.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/15
+	 */
+	void __commandBindDisplay(DataInputStream __in, DataInputStream __out)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		// Read ID
+		byte id = __in.readByte();
+		
+		// Lock
+		Map<Byte, VirtualDisplay> displays = this._displays;
+		VirtualDisplay bind;
+		synchronized (displays)
+		{
+			// Get binding
+			bind = displays.get(id);
+			
+			// {@squirreljme.error EB0c The specified display does not
+			// exist. (The display ID)}
+			if (bind == null)
+				throw new RuntimeException(String.format("EB0c %d", id));
+		}
+		
+		// Loop it
+		bind.outputLoop(__out);
+	}
+	
+	/**
 	 * Outputs the number of displays which are currently available to this
 	 * display server.
 	 *
@@ -247,6 +284,7 @@ public abstract class DisplayServer
 				DataOutputStream out = this.out)
 			{
 				// Handle every command possible
+__outer:
 				for (;;)
 				{
 					// Read a command and handle it
@@ -258,6 +296,13 @@ public abstract class DisplayServer
 						case DisplayProtocol.COMMAND_REQUEST_NUMDISPLAYS:
 							__commandNumDisplays(out);
 							break;
+						
+							// Bind to a given display
+							// Execution does not continue if this method
+							// exits or closes otherwise
+						case DisplayProtocol.COMMAND_BIND_DISPLAY:
+							__commandBindDisplay(in, out);
+							break __outer;
 						
 							// {@squirreljme.error EB07 Unknown display server
 							// command. (The command ID)}

@@ -16,6 +16,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
+import java.io.IOException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirreljme.midp.lcdui.DisplayProperty;
@@ -45,6 +46,31 @@ public class SwingVirtualDisplay
 	public SwingVirtualDisplay(SwingDisplayServer __ds, byte __id)
 	{
 		super(__ds, __id);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/15
+	 */
+	@Override
+	public void outputLoop(DataOutputStream __out)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup 
+		try
+		{
+			for (;;)
+				Thread.yield();
+		}
+		
+		// Cleanup
+		finally
+		{
+		}
 	}
 	
 	/**
