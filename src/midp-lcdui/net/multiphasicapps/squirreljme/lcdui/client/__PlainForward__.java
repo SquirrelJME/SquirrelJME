@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midp.lcdui;
+package net.multiphasicapps.squirreljme.lcdui.client;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
