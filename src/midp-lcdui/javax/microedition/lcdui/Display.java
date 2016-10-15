@@ -186,8 +186,8 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** Displays that may be used. */
-	private static volatile Display[] _DISPLAYS;
+	/** The static connection to the server. */
+	private static volatile __ServerConnection__ _SERVER;
 	
 	/** The lock for this display. */
 	private final Object _lock =
@@ -851,23 +851,13 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// Need to connect to the server and parse displays?
-		Display[] alldisplays = Display._DISPLAYS;
-		if (alldisplays == null)
-			try (StreamConnection client = (StreamConnection)Connector.open(
-				Objects.toString(DISPLAY_CLIENT_PROPERTY,
-				DisplayProtocol.DEFAULT_CLIENT_URI));
-				DataInputStream in = sock.openDataInputStream();
-				DataOutputStream out = sock.openDataOutputStream()))
-			{
-				throw new Error("TODO");
-			}
-			
-			// {@squirreljme.error EB05 Could not get the display list.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("EB05");
-			}
+		// If the server is not set, then open the connection to it
+		__ServerConnection__ server = Display._SERVER;
+		if (server == null)
+			Display._SERVER = (server = new __ServerConnection__());
+		
+		// Get displays
+		Display[] alldisplays = server.getDisplays();
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
