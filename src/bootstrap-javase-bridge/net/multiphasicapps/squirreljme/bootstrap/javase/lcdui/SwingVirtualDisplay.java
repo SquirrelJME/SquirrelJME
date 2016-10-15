@@ -16,6 +16,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;

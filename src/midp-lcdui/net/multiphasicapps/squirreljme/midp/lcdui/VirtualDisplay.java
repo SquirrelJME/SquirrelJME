@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.midp.lcdui;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * This is the base class for displays.

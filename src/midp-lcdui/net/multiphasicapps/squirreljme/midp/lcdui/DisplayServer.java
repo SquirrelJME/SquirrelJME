@@ -154,7 +154,7 @@ public abstract class DisplayServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/15
 	 */
-	void __commandBindDisplay(DataInputStream __in, DataInputStream __out)
+	void __commandBindDisplay(DataInputStream __in, DataOutputStream __out)
 		throws IOException, NullPointerException
 	{
 		// Check
