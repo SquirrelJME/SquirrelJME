@@ -58,9 +58,13 @@ public class Bootstrap
 	public static final String BOOTSTRAP_PROJECT =
 		"bootstrap";
 	
+	/** The bootstrap project dependency. */
+	public static final String BOOTSTRAP_DEPENDENCY =
+		"external@bootstrap";
+	
 	/** Special project to bridge Java SE to SquirrelJME's bootstrap. */
-	public static final String SPECIAL_PROJECT =
-		"bootstrap-javase-bridge";
+	public static final String SPECIAL_DEPENDENCY =
+		"external@bootstrap-javase-bridge";
 	
 	/** The bootstrap JAR file, which is not a project. */
 	public static final Path BOOTSTRAP_JAR_PATH =
@@ -77,12 +81,6 @@ public class Bootstrap
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
 	
-	/** Source root. */
-	public static final Path SOURCE_ROOT;
-	
-	/** Contrib root. */
-	public static final Path CONTRIB_ROOT;
-	
 	/** Input program arguments. */
 	private final String[] _args;
 	
@@ -98,12 +96,9 @@ public class Bootstrap
 			System.getProperty("project.root"),
 			"The system property `project.root` was not specified."));
 		
-		// Resolve other paths
-		SOURCE_ROOT = PROJECT_ROOT.resolve("src");
-		CONTRIB_ROOT = PROJECT_ROOT.resolve("contrib");
-		
 		// Set manifest
-		BOOTSTRAP_MANIFEST = SOURCE_ROOT.resolve(BOOTSTRAP_PROJECT).
+		BOOTSTRAP_MANIFEST = PROJECT_ROOT.resolve("external").
+			resolve(BOOTSTRAP_PROJECT).
 			resolve("net").resolve("multiphasicapps").resolve("squirreljme").
 			resolve("bootstrap").resolve("BOOT.MF");
 	}
@@ -414,8 +409,8 @@ public class Bootstrap
 		// Queue dependencies and parse them
 		Set<String> did = new HashSet<>();
 		Deque<String> q = new ArrayDeque<>();
-		q.push(BOOTSTRAP_PROJECT);
-		q.push(SPECIAL_PROJECT);
+		q.push(BOOTSTRAP_DEPENDENCY);
+		q.push(SPECIAL_DEPENDENCY);
 		while (!q.isEmpty())
 		{
 			// Grab
@@ -428,8 +423,16 @@ public class Bootstrap
 			// Did it
 			did.add(p);
 			
+			// Need to find the namespace and the project name
+			int atp = p.indexOf('@');
+			if (atp < 0)
+				throw new RuntimeException(String.format(
+					"Project `%s` missing @ for namespace.", p));
+			String namespace = p.substring(0, atp),
+				name = p.substring(atp + 1);
+			
 			// The source directory is included in compilation
-			Path srcdir = SOURCE_ROOT.resolve(p);
+			Path srcdir = PROJECT_ROOT.resolve(namespace).resolve(name);
 			rv.add(srcdir);
 			
 			// Obtain the path to the manifest
@@ -444,8 +447,9 @@ public class Bootstrap
 				
 				// Get the dependencies for this, if they exist, if they do
 				// then add them to the queue for handling
+				// However, only consider bootstrap dependencies
 				String deps = man.getMainAttributes().
-					getValue("x-squirreljme-depends");
+					getValue("x-squirreljme-bootstrap-depends");
 				if (deps != null)
 					for (String d : deps.split(Pattern.quote(" ")))
 						q.push(d);
