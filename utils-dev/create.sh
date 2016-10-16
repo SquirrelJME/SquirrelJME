@@ -138,6 +138,16 @@ __findpkname()
 					sed 's/^\([a-zA-Z0-9-]\{1,\}\)[^a-zA-Z0-9-]*.*/\1/'
 				return
 			fi
+		
+		# Want the namespace
+		elif [ "$__want" -eq "2" ]
+		then
+			if [ -f "$__indir/../steven-gawroriski.gpg" ]
+			then
+				echo "$__indir" | \
+					sed 's/^.*\/\([a-zA-Z0-9_]*\)$/\1/'
+				return
+			fi
 		fi
 		
 		# Get base name and chop down
@@ -244,6 +254,9 @@ do
 			
 				# Name of the project
 				__tproj="$(__findpkname "$__tabsf" 1)"
+				
+				# Namespace of project
+				__tnamespace="$(__findpkname "$__tabsf" 2)"
 			
 				# Name of class
 				__tclas="$__tbase"
@@ -292,6 +305,12 @@ do
 					# Cat
 					cat "$__exedir/crtmpl/manifest"
 				
+				# Namespace
+				elif [ "$__tfile" = "NAMESPACE.MF" ]
+				then
+					# Cat
+					cat "$__exedir/crtmpl/namespace"
+				
 				# Other template
 				elif [ -f "$__exedir/crtmpl/$__tfext" ]
 				then
@@ -304,6 +323,7 @@ do
 					| sed 's/ZZZPACKAGEZZZ/'"$__tpack"'/g' \
 					| sed 's/ZZZSINCEZZZ/'"$__htmtime"'/g' \
 					| sed 's/ZZZPROJECTZZZ/'"$__tproj"'/g' \
+					| sed 's/ZZZNAMESPACEZZZ/'"$__tnamespace"'/g' \
 					| sed 's/ZZZSDATEZZZ/'"$__nowtime"'/g' \
 					| sed 's/ZZZCHEADERNAMEZZZ/'"$__cheadname"'/g' \
 					| sed 's/ZZZCHEADERCLIPZZZ/'"$__cheadclip"'/g' \
