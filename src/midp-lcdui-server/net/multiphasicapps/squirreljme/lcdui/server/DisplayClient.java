@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.microedition.io.StreamConnection;
+import net.multiphasicapps.squirreljme.lcdui.common.DisplayProtocol;
 
 /**
  * This represents a connected client to a display.
@@ -28,6 +29,10 @@ public abstract class DisplayClient
 {
 	/** The owning server. */
 	protected final DisplayServer server;
+	
+	/** The lock for output. */
+	protected final Object outlock =
+		new Object();
 	
 	/** The output stream. */
 	protected final DataOutputStream out;
@@ -58,6 +63,27 @@ public abstract class DisplayClient
 	}
 	
 	/**
+	 * Refreshes the set of displays.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/10/16
+	 */
+	public final void refreshDisplays()
+		throws IOException
+	{
+		// 
+		if (true)
+			throw new Error("TODO");
+		
+		// Send to other side
+		synchronized (this.outlock)
+		{
+			DataOutputStream out = this.out;
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/15
 	 */
@@ -73,7 +99,8 @@ public abstract class DisplayClient
 				{
 						// Update displays
 					case DisplayProtocol.CLIENT_COMMAND_GET_DISPLAYS:
-						throw new Error("TODO");
+						refreshDisplays();
+						break;
 					
 						// {@squirreljme.error DX04 Unknown display command
 						// sent by the client. (The command code)}
