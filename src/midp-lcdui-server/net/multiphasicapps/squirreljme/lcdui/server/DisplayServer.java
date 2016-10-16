@@ -20,6 +20,10 @@ import net.multiphasicapps.squirreljme.lcdui.common.DisplayProtocol;
 /**
  * This class contains the implementation of the display server.
  *
+ * The display server is multi-headed in that new connections to the server
+ * create new "heads" where they represent virtual displays as used by a
+ * client.
+ *
  * @since 2016/10/15
  */
 public abstract class DisplayServer

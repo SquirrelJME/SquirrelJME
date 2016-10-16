@@ -18,6 +18,9 @@ import javax.microedition.io.StreamConnection;
 /**
  * This represents a connected client to a display.
  *
+ * The display client may provide access to multiple virtualized displays or
+ * just have a single display be made available.
+ *
  * @since 2016/10/15
  */
 public abstract class DisplayClient

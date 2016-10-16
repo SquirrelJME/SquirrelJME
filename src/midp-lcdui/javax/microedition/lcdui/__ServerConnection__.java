@@ -100,10 +100,15 @@ class __ServerConnection__
 		try (DataInputStream in = this.in)
 		{
 			// Read for a very long time
-			for (;;)
-			{
-				throw new Error("TODO");
-			}
+			for (int cmd;;)
+				switch ((cmd = in.readUnsignedByte()))
+				{
+						// {@squirreljme.error EB0b Unknown display command
+						// passed by the server. (The command used)}
+					default:
+						throw new RuntimeException(String.format("EB0b %d",
+							cmd));
+				}
 		}
 		
 		// {@squirreljme.error EB0a If there was a read error.}
