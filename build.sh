@@ -44,7 +44,7 @@ fi
 if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dproject.root=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=true" \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir/src" \
+	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
 	"$BOOTSTRAP_CLASS" $*
 then
@@ -55,7 +55,7 @@ fi
 if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dproject.root=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=false" \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir/src" \
+	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
 	-classpath ".:sjmeboot.jar" "$BOOTSTRAP_CLASS" $*
 then

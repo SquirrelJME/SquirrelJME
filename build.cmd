@@ -59,7 +59,7 @@ if not exist %__HB_VCLS% (
 REM Execute Java
 %JAVA% -Dproject.root=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=true
-	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR%\src ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
 	%BOOTSTRAP_CLASS% %*
 
@@ -73,7 +73,7 @@ REM Execute Java, since Proxy interfaces are a mess, a double invocation of
 REM the JVM is performed.
 %JAVA% -Dproject.root=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=false
-	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR%\src ^
+	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
 	-classpath .;sjmeboot.jar %BOOTSTRAP_CLASS% %*
 

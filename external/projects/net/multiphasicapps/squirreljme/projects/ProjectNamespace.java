@@ -67,7 +67,7 @@ public final class ProjectNamespace
 	 * @since 2016/10/16
 	 */
 	@Override
-	public String compareTo(ProjectNamespace __o)
+	public int compareTo(ProjectNamespace __o)
 		throws NullPointerException
 	{
 		// Check
