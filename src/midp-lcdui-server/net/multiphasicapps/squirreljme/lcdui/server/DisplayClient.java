@@ -71,6 +71,10 @@ public abstract class DisplayClient
 			for (int cmd;;)
 				switch ((cmd = in.readUnsignedByte()))
 				{
+						// Update displays
+					case DisplayProtocol.CLIENT_COMMAND_GET_DISPLAYS:
+						throw new Error("TODO");
+					
 						// {@squirreljme.error DX04 Unknown display command
 						// sent by the client. (The command code)}
 					default:

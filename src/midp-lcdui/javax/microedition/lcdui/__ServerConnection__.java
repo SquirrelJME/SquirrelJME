@@ -156,10 +156,6 @@ class __ServerConnection__
 			for (int cmd;;)
 				switch ((cmd = in.readUnsignedByte()))
 				{
-						// Update displays
-					case DisplayProtocol.CLIENT_COMMAND_GET_DISPLAYS:
-						throw new Error("TODO");
-					
 						// {@squirreljme.error EB0b Unknown display command
 						// passed by the server. (The command used)}
 					default:
