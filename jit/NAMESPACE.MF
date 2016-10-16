@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Name: jit
+X-SquirrelJME-Namespace-Depends: src
+X-SquirrelJME-Namespace-Title: JIT
+X-SquirrelJME-Namespace-Description: This namespace contains the JIT 
+ which is used to compile Java byte code into native code.
+
