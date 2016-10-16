@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the midlet identification classes.
+ * This package contains SquirrelJME specific midlet code.
  *
- * @since 2016/10/12
+ * @since 2016/10/16
  */
 
-package net.multiphasicapps.squirreljme.midletid;
+package net.multiphasicapps.squirreljme.midlet;
 

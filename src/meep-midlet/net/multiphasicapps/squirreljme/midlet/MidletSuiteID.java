@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midletid;
+package net.multiphasicapps.squirreljme.midlet;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

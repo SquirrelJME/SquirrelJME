@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midletid;
+package net.multiphasicapps.squirreljme.midlet;
 
 /**
  * This represents the name of a midlet suite.
