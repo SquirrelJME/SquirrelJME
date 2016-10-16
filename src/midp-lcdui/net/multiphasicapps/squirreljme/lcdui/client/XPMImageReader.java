@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.imagereader.xpm;
+package net.multiphasicapps.squirreljme.lcdui.client;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
