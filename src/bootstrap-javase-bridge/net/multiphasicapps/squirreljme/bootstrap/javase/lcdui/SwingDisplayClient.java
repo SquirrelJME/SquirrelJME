@@ -16,47 +16,26 @@ import net.multiphasicapps.squirreljme.lcdui.server.DisplayClient;
 import net.multiphasicapps.squirreljme.lcdui.server.DisplayServer;
 
 /**
- * This implements the display server which uses Swing as its backing
- * widget system.
+ * This is the display client which creates a JFrame to show the client
+ * display.
  *
- * @since 2016/10/11
+ * @since 2016/10/15
  */
-public class SwingDisplayServer
-	extends DisplayServer
+public class SwingDisplayClient
+	extends DisplayClient
 {
 	/**
-	 * Initializes the swing display server.
+	 * Initializes the swing display client.
 	 *
+	 * @param __ds The display server.
+	 * @param __co The stream connection.
 	 * @throws IOException On read/write errors.
-	 * @since 2016/10/11
-	 */
-	public SwingDisplayServer()
-		throws IOException
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2016/10/15
 	 */
-	@Override
-	protected DisplayClient createClient(StreamConnection __sc)
-		throws IOException, NullPointerException
+	public SwingDisplayClient(SwingDisplayServer __ds, StreamConnection __co)
+		throws IOException
 	{
-		return new SwingDisplayClient(this, __sc);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/10/11
-	 */
-	@Override
-	protected void modifyThread(Thread __t)
-	{
-		// Make the display server thread a daemon so it is not considered
-		// as a user thread
-		if (__t != null)
-			__t.setDaemon(true);
+		super(__ds, __co);
 	}
 }
 

@@ -28,6 +28,9 @@ public abstract class DisplayServer
 	/** The connection the server listens on. */
 	private final StreamConnectionNotifier _server;
 	
+	/** The connection count. */
+	private volatile int _concount;
+	
 	/**
 	 * Initializes the display server and uses the default server.
 	 *
@@ -64,6 +67,18 @@ public abstract class DisplayServer
 	}
 	
 	/**
+	 * Creates a client connection.
+	 *
+	 * @param __sc The stream for the client.
+	 * @return The display server client.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/15
+	 */
+	protected abstract DisplayClient createClient(StreamConnection __sc)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * This may be used by an implementation of the display server to modify
 	 * the thread behavior.
 	 *
@@ -90,12 +105,22 @@ public abstract class DisplayServer
 			for (;;)
 				try (StreamConnection client = server.acceptAndOpen())
 				{
-					throw new Error("TODO");
+					// Setup thread
+					Thread t = new Thread(createClient(client),
+						"SquirrelJMEDisplayClient-" + (++this._concount));
+					
+					// Modify it
+					modifyThread(t);
+					
+					// Start it
+					t.start();
 				}
 				
 				// Ignore these
 				catch (IOException e)
 				{
+					// Print it though
+					e.printStackTrace();
 				}
 		}
 		
