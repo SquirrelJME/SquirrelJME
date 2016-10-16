@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: profile-meep-8-0
+X-SquirrelJME-UUID: 0eff9005-0ae1-43dd-997d-b8284e871a01
+X-SquirrelJME-Depends: meep-cellular meep-concurrency meep-event 
+ meep-io meep-key meep-liblets meep-llui meep-midlet meep-power 
+ meep-provisioning meep-rms meep-securityframework meep-swm
+X-SquirrelJME-ProvidesProfile: MEEP-8.0
+X-SquirrelJME-Error: EH
+LIBlet-Name: MEEP-8.0 Profile
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual project which depends on 
+ anything required to run MEEP 8.0 applications.
+

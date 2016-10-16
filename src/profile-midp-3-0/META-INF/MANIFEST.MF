@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: profile-midp-3-0
+X-SquirrelJME-UUID: 8d17f792-aa93-4ebb-9f52-c7e1767daa7d
+X-SquirrelJME-Depends: midp-lcdui media-api gcf meep-rms meep-event
+X-SquirrelJME-ProvidesProfile: MIDP-3.0
+X-SquirrelJME-Error: EG
+LIBlet-Name: MIDP-3.0 Profile
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual project which depends on 
+ anything required to run MIDP 3.0 applications.
+

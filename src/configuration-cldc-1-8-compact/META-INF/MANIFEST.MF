@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: configuration-cldc-1-8-compact
+X-SquirrelJME-UUID: 35974878-d75f-4b61-82b3-cb8132ffdcfa
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-ProvidesConfiguration: CLDC-1.8-Compact
+X-SquirrelJME-Error: ET
+LIBlet-Name: CLDC-1.8-Compact Configuration
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual project which depends on 
+ anything required to run CLDC 1.8 compact applications.
+

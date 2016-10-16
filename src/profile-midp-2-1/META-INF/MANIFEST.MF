@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: profile-midp-2-1
+X-SquirrelJME-UUID: ad29e551-9222-4ffc-92c4-56cf2c066917
+X-SquirrelJME-Depends: profile-midp-3-0
+X-SquirrelJME-ProvidesProfile: MIDP-2.1
+X-SquirrelJME-Error: EF
+LIBlet-Name: MIDP-2.1 Profile
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual project which depends on 
+ anything required to run MIDP 2.1 applications.
+

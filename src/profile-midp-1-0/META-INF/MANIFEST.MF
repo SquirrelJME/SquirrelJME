@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: profile-midp-1-0
+X-SquirrelJME-UUID: 82a8cc3f-4e2a-4617-b964-de105b8bc381
+X-SquirrelJME-Depends: profile-midp-3-0
+X-SquirrelJME-ProvidesProfile: MIDP-1.0
+X-SquirrelJME-Error: AU
+LIBlet-Name: MIDP-1.0 Profile
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual project which depends on 
+ anything required to run MIDP 1.0 applications.
+
