@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Name: docs
+X-SquirrelJME-Namespace-Depends: src
+X-SquirrelJME-Namespace-Title: Documentation
+X-SquirrelJME-Namespace-Description: This namespace contains 
+ documentation related projects.
+
