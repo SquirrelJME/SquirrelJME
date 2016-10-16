@@ -64,7 +64,7 @@ public class Bootstrap
 	
 	/** Special project to bridge Java SE to SquirrelJME's bootstrap. */
 	public static final String SPECIAL_DEPENDENCY =
-		"external@bootstrap-javase-bridge";
+		"javase@bootstrap-javase-bridge";
 	
 	/** The bootstrap JAR file, which is not a project. */
 	public static final Path BOOTSTRAP_JAR_PATH =
