@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Name: javase
+X-SquirrelJME-Namespace-Depends: src
+X-SquirrelJME-Namespace-Title: JavaSE Projects
+X-SquirrelJME-Namespace-Description: This namespace contains projects 
+ which are only to be used on Java SE systems used to bootstrap and
+ build SquirrelJME or run the auto-interpreter.
+
