@@ -15,10 +15,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
-import net.multiphasicapps.imagereader.ImageData;
-import net.multiphasicapps.imagereader.ImageDataInt;
-import net.multiphasicapps.imagereader.ImageReader;
-import net.multiphasicapps.imagereader.ImageType;
 
 /**
  * This class is able to read XPM images.
@@ -33,7 +29,6 @@ import net.multiphasicapps.imagereader.ImageType;
  * @since 2016/05/08
  */
 public class XPMImageReader
-	implements ImageReader
 {
 	/**
 	 * Initializes the XPM image reader.
@@ -48,7 +43,7 @@ public class XPMImageReader
 	 * {@inheritDoc}
 	 * @since 2016/05/10
 	 */
-	@Override
+	/*@Override*/
 	public boolean canRead(String __m)
 	{
 		// Check
@@ -77,7 +72,7 @@ public class XPMImageReader
 	 * {@inheritDoc}
 	 * @since 2016/05/08
 	 */
-	@Override
+	/*@Override
 	public ImageData readImage(InputStream __is)
 		throws IOException, NullPointerException
 	{
@@ -115,7 +110,7 @@ public class XPMImageReader
 		// Create image
 		return new ImageDataInt(data, ImageType.INT_ARGB, width, height,
 			hotx, hoty);
-	}
+	}*/
 	
 	/**
 	 * Decodes a color key value.
