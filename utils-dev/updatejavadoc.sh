@@ -41,7 +41,7 @@ echo "Generating error list..."
 echo "# List of Errors" > /tmp/$$
 echo "" >> /tmp/$$
 __old="00"
-("$__exedir/listerror.sh" "$__srcdir" 2> /dev/null | while read __line
+("$__exedir/listerror.sh" "$__srcdir/.." 2> /dev/null | while read __line
 do
 	# Code prefix
 	__pref="$(echo "$__line" | cut -c 1-2)"
@@ -121,7 +121,7 @@ fi
 rm -f /tmp/$$
 
 # Count the number of documents that should exist
-__ad="$(find "$__srcdir" | grep '\.java$' | wc -l)"
+__ad="$("$__exedir/lsall.sh" | grep '\.java$' | wc -l)"
 __hd="$(expr "$(expr "$__ad" "/" "2")" "+" "$(expr "$__ad" "/" "4")")"
 
 # If half of the documents fail to generate, then do not generate at all

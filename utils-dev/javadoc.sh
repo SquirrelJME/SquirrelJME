@@ -28,55 +28,59 @@ __pdir="$__exedir/../src"
 # Clear javadoc dir
 rm -rf -- "javadoc"
 
-# Generate documentation for all projects
-for __dir in "$__exedir/../src/"*
+# Go through all namespaces
+for __ns in $("$__exedir/lsnamespaces.sh")
 do
-	# If not a directory and does not contain a manifest, ignore
-	if [ ! -d "$__dir" ] || [ ! -f "$__dir/META-INF/MANIFEST.MF" ]
-	then
-		continue
-	fi
+	# Generate documentation for all projects
+	for __dir in $("$__exedir/../$__ns/"* )
+	do
+		# If not a directory and does not contain a manifest, ignore
+		if [ ! -d "$__dir" ] || [ ! -f "$__dir/META-INF/MANIFEST.MF" ]
+		then
+			continue
+		fi
 	
-	# Note
-	__base="$(basename "$__dir")"
-	echo "Running for $__base..." 1>&2
+		# Note
+		__base="$(basename "$__dir")"
+		echo "Running for $__base..." 1>&2
 	
-	# Build binaries for project
-	if ! "$__exedir/../build.sh" build "$__base"
-	then
-		echo "Failed to build project, ignoring." 1>&2
-	fi
+		# Build binaries for project
+		if ! "$__exedir/../build.sh" build "$__base"
+		then
+			echo "Failed to build project, ignoring." 1>&2
+		fi
 	
-	# No source code will cause it to fail
-	__sf="$(find "$__dir" -type f | grep '\.java$')"
-	if [ -z "$__sf" ]
-	then
-		echo "No sources." 1>&2
-		continue
-	fi
+		# No source code will cause it to fail
+		__sf="$(find "$__dir" -type f | grep '\.java$')"
+		if [ -z "$__sf" ]
+		then
+			echo "No sources." 1>&2
+			continue
+		fi
 	
-	# Get dependencies
-	__deps="$("$__exedir/depends.sh" "$__base")"
-	__depscom="$(echo "$__deps" | tr '\n' ':')"
-	__dpath="$("$__exedir/dependspath.sh" "$__base")"
+		# Get dependencies
+		__deps="$("$__exedir/depends.sh" "$__base")"
+		__depscom="$(echo "$__deps" | tr '\n' ':')"
+		__dpath="$("$__exedir/dependspath.sh" "$__base")"
 	
-	# Run JavaDoc
-	javadoc \
-		-locale "en_US" \
-		-encoding "utf-8" \
-		-doclet net.multiphasicapps.doclet.markdown.MarkdocMain \
-		-d "javadoc/$__base" \
-		-J-Dnet.multiphasicapps.doclet.markdown.debug=true \
-		-squirreljme-project "$__base" \
-		-squirreljme-projectsdir "$__pdir" \
-		-squirreljme-depends "$__depscom" \
-		-private \
-		-source 1.7 \
-		-docletpath "doclet-markdown.jar:." \
-		-classpath "$__dpath" \
-		-bootclasspath "$__dpath" \
-		-sourcepath "$__dir" \
-		$__sf
+		# Run JavaDoc
+		javadoc \
+			-locale "en_US" \
+			-encoding "utf-8" \
+			-doclet net.multiphasicapps.doclet.markdown.MarkdocMain \
+			-d "javadoc/$__base" \
+			-J-Dnet.multiphasicapps.doclet.markdown.debug=true \
+			-squirreljme-project "$__base" \
+			-squirreljme-projectsdir "$__pdir" \
+			-squirreljme-depends "$__depscom" \
+			-private \
+			-source 1.7 \
+			-docletpath "doclet-markdown.jar:." \
+			-classpath "$__dpath" \
+			-bootclasspath "$__dpath" \
+			-sourcepath "$__dir" \
+			$__sf
+	done
 done
 
 # Generate Project Table of Contents
