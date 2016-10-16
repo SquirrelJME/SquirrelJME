@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Namespace-Name: ZZZNAMESPACEZZZ
-X-SquirrelJME-Namespace-Depends: cldc-compact
-X-SquirrelJME-Namespace-Description: ZZZNAMESPACEZZZ
+X-SquirrelJME-Namespace-Depends: src
+X-SquirrelJME-Namespace-Title: ZZZNAMESPACEZZZ
 
