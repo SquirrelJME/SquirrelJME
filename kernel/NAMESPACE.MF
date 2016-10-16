@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Name: kernel
+X-SquirrelJME-Namespace-Depends: src
+X-SquirrelJME-Namespace-Title: Kernel
+X-SquirrelJME-Namespace-Description: This namespace contains classes 
+ which are initialized or used by the SquirrelJME kernel.
+
