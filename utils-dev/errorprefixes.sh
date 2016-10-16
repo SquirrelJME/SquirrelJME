@@ -16,19 +16,22 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Go through all projects
-(for __dir in "$__exedir/../src/"*
+(for __ns in $("$__exedir/lsnamespaces.sh")
 do
-	__man="$__dir/META-INF/MANIFEST.MF"
-	if [ -f "$__man" ]
-	then
-		__err="$(sed \
-			'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
-			< "$__man" | grep 'X-SQUIRRELJME-ERROR' |
-			sed 's/X-SQUIRRELJME-ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
-		if [ -n "$__err" ]
+	for __dir in "$__exedir/../$__ns/"*
+	do
+		__man="$__dir/META-INF/MANIFEST.MF"
+		if [ -f "$__man" ]
 		then
-			echo "$__err $(basename $__dir)"
+			__err="$(sed \
+				'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+				< "$__man" | grep 'X-SQUIRRELJME-ERROR' |
+				sed 's/X-SQUIRRELJME-ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
+			if [ -n "$__err" ]
+			then
+				echo "$__err $(basename $__dir)"
+			fi
 		fi
-	fi
+	done
 done) | sort
 
