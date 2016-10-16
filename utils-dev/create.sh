@@ -145,7 +145,8 @@ __findpkname()
 			if [ -f "$__indir/../steven-gawroriski.gpg" ]
 			then
 				echo "$__indir" | \
-					sed 's/^.*\/\([a-zA-Z0-9_]*\)$/\1/'
+					sed 's/^.*\/\([a-zA-Z0-9_]*\)$/\1/' | \
+					sed 's/[^a-zA-Z0-9_]/_/g'
 				return
 			fi
 		fi
