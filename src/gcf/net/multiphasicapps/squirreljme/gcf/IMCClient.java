@@ -21,8 +21,8 @@ import java.util.Objects;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
-import net.multiphasicapps.squirreljme.midletid.MidletSuiteID;
-import net.multiphasicapps.squirreljme.midletid.MidletVersion;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midlet.MidletVersion;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**

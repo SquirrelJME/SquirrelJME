@@ -20,8 +20,8 @@ import net.multiphasicapps.squirreljme.ipcmailbox.PostBox;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostBase;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostDestination;
 import net.multiphasicapps.squirreljme.ipcmailbox.PostOffice;
-import net.multiphasicapps.squirreljme.midletid.MidletSuiteID;
-import net.multiphasicapps.squirreljme.midletid.MidletVersion;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midlet.MidletVersion;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**

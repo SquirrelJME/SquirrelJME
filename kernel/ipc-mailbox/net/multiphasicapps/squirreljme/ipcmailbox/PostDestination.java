@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.ipcmailbox;
 
 import java.io.Closeable;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.midletid.MidletVersion;
+import net.multiphasicapps.squirreljme.midlet.MidletVersion;
 
 /**
  * This is used as a class which identifies destinations where post offices
