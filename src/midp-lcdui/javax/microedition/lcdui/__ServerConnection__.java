@@ -13,6 +13,8 @@ package javax.microedition.lcdui;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
@@ -30,8 +32,19 @@ class __ServerConnection__
 	/** Input data. */
 	protected final DataInputStream in;
 	
+	/** Output data lock. */
+	protected final Object outlock =
+		new Object();
+	
 	/** Output data. */
 	protected final DataOutputStream out;
+	
+	/** Display signal lock. */
+	private final Object _displayslock =
+		new Object();
+	
+	/** Displays available. */
+	private volatile Display[] _displays;
 	
 	/**
 	 * Opens the default server connection.
@@ -85,7 +98,47 @@ class __ServerConnection__
 	 */
 	public Display[] getDisplays()
 	{
-		throw new Error("TODO");
+		// Lock on displays since the client must wait for an update
+		// signal to occur
+		Object displayslock = this._displayslock;
+		synchronized (displayslock)
+		{
+			// Send request
+			try
+			{
+				synchronized (this.outlock)
+				{
+					DataOutputStream out = this.out;
+					out.write(DisplayProtocol.CLIENT_COMMAND_GET_DISPLAYS);
+					out.flush();
+				}
+			}
+			
+			// {@squirreljme.error EB0c Could not request that the server
+			// update the attached displays.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("EB0c", e);
+			}
+			
+			// Wait on the lock
+			for (;;)
+				try
+				{
+					// Wait for signal
+					displayslock.wait();
+					
+					// Wait completed, break out
+					break;
+				}
+				catch (InterruptedException e)
+				{
+					// Ignore
+				}
+			
+			// Return all the displays
+			return this._displays;
+		}
 	}
 	
 	/**

@@ -45,5 +45,15 @@ public interface DisplayProtocol
 	public static final String DEFAULT_SERVER_URI =
 		"imc://:net.multiphasicapps.squirreljme.midp.lcdui.DisplayServer:" +
 		"0.0.2;authmode=false";
+	
+	/**
+	 * Requests that the server send the list of attached displays.
+	 *
+	 * {@code
+	 * --Nothing--
+	 * }
+	 */
+	public static final int CLIENT_COMMAND_GET_DISPLAYS =
+		1;
 }
 
