@@ -11,6 +11,7 @@
 // -------------------------------------------------------------------------*/
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "jni.h"
 #include "jvm.h"
@@ -94,6 +95,10 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	void* pargs)
 {
 	JavaVMInitArgs* initargs;
+	jint i, n;
+	JavaVMOption* op;
+	char* opstr;
+	int len;
 	
 	// {@squirreljme.error WC02 No output JavaVM pointer specified.}
 	WC_ASSERT("WC02", pvm == NULL);
@@ -106,6 +111,64 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	
 	// Cast
 	initargs = (JavaVMInitArgs*)pargs;
+	
+	// Too new a version?
+	if (initargs->version > JNI_VERSION_1_8)
+		return JNI_EVERSION;
+	
+	// Handle all options
+	n = initargs->nOptions;
+	for (i = 0; i < n; i++)
+	{
+		// Get option
+		op = &initargs->options[i];
+		opstr = op->optionString;
+		
+		// {@squirreljme.error WC06 A passed option string was NULL.}
+		WC_ASSERT("WC06", opstr == NULL);
+		
+		// Get length
+		len = strlen(opstr);
+		
+		// Replace print to file?
+		if (0 == strcmp(opstr, "vfprintf"))
+			WC_TODO();
+		
+		// Replace exit?
+		else if (0 == strcmp(opstr, "exit"))
+			WC_TODO();
+		
+		// Replace abort?
+		else if (0 == strcmp(opstr, "abort"))
+			WC_TODO();
+		
+		// Define system property?
+		else if (len >= 2 && 0 == strncmp(opstr, "-D", 2))
+			WC_TODO();
+		
+		// verbose all?
+		else if (0 == strcmp(opstr, "-verbose"))
+			WC_TODO();
+		
+		// verbose class loader?
+		else if (0 == strcmp(opstr, "-verbose:class"))
+			WC_TODO();
+		
+		// verbose garbage collection?
+		else if (0 == strcmp(opstr, "-verbose:gc"))
+			WC_TODO();
+		
+		// verbose JNI?
+		else if (0 == strcmp(opstr, "-verbose:jni"))
+			WC_TODO();
+		
+		// {@squirreljme.error WC05 Invaid JVM argument. (The argument)}
+		else
+		{
+			fprintf(stderr, "WinterCoat: WC05 %s\n", opstr);
+			return JNI_EINVAL;
+		}
+	}
 	
 	WC_TODO();
 	
