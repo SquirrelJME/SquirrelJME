@@ -79,7 +79,12 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		
 		// Define system property?
 		else if (len >= 2 && 0 == strncmp(opstr, "-D", 2))
+		{
+			// Debug
+			WC_VERBOSE(WC_VERBOSE_MODE_DEBUG, "Define property: %s\n", opstr);	
+			
 			WC_TODO();
+		}
 		
 		// verbose all?
 		else if (0 == strcmp(opstr, "-verbose"))
@@ -179,5 +184,16 @@ void WC_TODO_real(const char* const pin, int pline, const char* const pfunc)
 	
 	// Never go back.
 	abort();
+}
+
+/**
+ * {@inheritDoc}
+ * @since 2016/10/19
+ */
+void WC_VERBOSE_real(const char* const pin, int pline,
+	const char* const pfunc, int pmode,
+	const char* const pmesg, ...)
+{
+	WC_TODO();
 }
 

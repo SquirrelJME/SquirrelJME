@@ -33,6 +33,11 @@ extern "C"
 #include "jni.h"
 #include "jvm.h"
 
+#define WC_VERBOSE_MODE_DEBUG 1
+#define WC_VERBOSE_MODE_CLASS 2
+#define WC_VERBOSE_MODE_GC 3
+#define WC_VERBOSE_MODE_JNI 4
+
 /**
  * Checks for the specified condition and if it fails, an abort occurs.
  *
@@ -51,13 +56,29 @@ void WC_ASSERT_real(const char* const pin, int pline, const char* const pfunc,
 /**
  * Prints the specified location and aborts.
  *
- * @param pfile The location of the TODO.
- * @param pline The line of the TODO.
- * @param pfunc The function of the TODO.
+ * @param pfile The location of the abort.
+ * @param pline The line of the abort.
+ * @param pfunc The function of the abort.
  * @since 2016/10/19
  */
 #define WC_TODO() WC_TODO_real(__FILE__, __LINE__, __func__)
 void WC_TODO_real(const char* const pin, int pline, const char* const pfunc);
+
+/**
+ * Spits out a verbose message.
+ *
+ * @param pfile The location of the verbose message.
+ * @param pline The line of the verbose message.
+ * @param pfunc The function of the verbose message.
+ * @param pmode The verbose message mode.
+ * @param pmesg The message to print.
+ * @since 2016/10/19
+ */
+#define WC_VERBOSE(mode, msg, ...) WC_VERBOSE_real(__FILE__, __LINE__, \
+	__func__, (mode), (msg), __VA_ARGS__)
+void WC_VERBOSE_real(const char* const pin, int pline,
+	const char* const pfunc, int pmode,
+	const char* const pmesg, ...);
 
 /****************************************************************************/
 
