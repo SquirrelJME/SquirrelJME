@@ -61,7 +61,7 @@ void WC_ASSERT_real(const char* const pin, int pline, const char* const pfunc,
  */
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
 {
-	// {@squirreljme.error AO01 }
+	// {@squirreljme.error AO01 VM initialization arguments is NULL.}
 	WC_ASSERT("AO01", pargs == NULL);
 	
 	WC_TODO();
