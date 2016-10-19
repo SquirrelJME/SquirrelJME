@@ -53,18 +53,33 @@ void WC_ASSERT_real(const char* const pin, int pline, const char* const pfunc,
 }
 
 /**
+ * Checks if the requested virtual machine version is supported by this JVM.
  *
- *
- * @param pargs VM arguments, output.
- * @return JNI_OK on success.
+ * @param pargs Contains the VM arguments used to check the version. The
+ * version field is checked and on success is changed to the actual supported
+ * version.
+ * @return JNI_OK on success, JNI_EVERSION if the version is invalid.
  * @since 2016/10/19
  */
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
 {
+	JavaVMInitArgs* initargs;
+	
 	// {@squirreljme.error AO01 VM initialization arguments is NULL.}
 	WC_ASSERT("AO01", pargs == NULL);
 	
-	WC_TODO();
+	// Cast
+	initargs = (JavaVMInitArgs*)pargs;
+	
+	// Has to at most be Java 8
+	if (initargs->version <= JNI_VERSION_1_8)
+	{
+		initargs->version = JNI_VERSION_1_8;
+		return JNI_OK;
+	}
+	
+	// Otherwise fail
+	return JNI_EVERSION;
 }
 
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
