@@ -25,13 +25,14 @@ __grep()
 	# Single expression, used directly
 	if [ "$#" -eq "1" ]
 	then
-		grep "$1"
+		grep -i "$1"
 		return $?
 	
 	# Group all of the expressions together then grep
 	else
 		grep $(while [ "$#" -ge "1" ]
 			do
+				echo "-i"
 				echo "-e"
 				echo "$1"
 				shift
