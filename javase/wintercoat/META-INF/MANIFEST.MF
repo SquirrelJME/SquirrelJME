@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: wintercoat
+X-SquirrelJME-UUID: 0f5c46b2-ead7-433b-80f8-c749a7c0aac6
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: AO
+LIBlet-Name: WinterCoat JavaSE 8 VM
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is a virtual machine which uses LLVM and 
+ runs on existing Java SE 8 virtual machines. Since I personally 
+ lack a native compiled VM, this provides that speed.
+
