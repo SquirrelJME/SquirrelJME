@@ -19,8 +19,6 @@
 *.tmp
 *.toc
 *.whl
-*._h
-*._c
 *.EXE
 *.OBJ
 *~

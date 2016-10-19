@@ -8,7 +8,26 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 // This is a miniature Java VM virtual machine for simplistic sanity purposes.
-// Download: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/archive/tip.tar.gz>
-// In
 // -------------------------------------------------------------------------*/
+
+#define _JNI_IMPLEMENTATION_
+
+#include "jni.h"
+#include "jvm.h"
+
+_JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
+{
+	abort();
+}
+
+_JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
+	void* args)
+{
+	abort();
+}
+
+_JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm, jsize psz, jsize* pcount)
+{
+	abort();
+}
 
