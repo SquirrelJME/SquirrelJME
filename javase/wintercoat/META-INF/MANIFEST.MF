@@ -6,7 +6,8 @@ X-SquirrelJME-Error: AO
 LIBlet-Name: WinterCoat JavaSE 8 VM
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is a virtual machine which uses LLVM and 
- runs on existing Java SE 8 virtual machines. Since I personally 
- lack a native compiled VM, this provides that speed.
+LIBlet-Description: This is a virtual machine which implements a 
+ Java 8 virtual machine intended to run on OpenJDK. It is intended 
+ to be simple, but fast enough in short runs so that the compilation 
+ of SquirrelJME is faster on my machine.
 

@@ -9,20 +9,20 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * Java Native Machine definitions.
+ * WinterCoat includes.
  *
  * @since 2016/10/19
  */
 
 /** Header guard. */
-#ifndef SJME_hGJNI_MDH
-#define SJME_hGJNI_MDH
+#ifndef SJME_hGWINTERCOATH
+#define SJME_hGWINTERCOATH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXJNI_MDH
+#define SJME_cXWINTERCOATH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
@@ -30,45 +30,28 @@ extern "C"
 
 /****************************************************************************/
 
-#include <stdint.h>
-
-/** Byte. */
-typedef int8_t jbyte;
-
-/** Short. */
-typedef int16_t jshort;
-
-/** Integer. */
-typedef int32_t jint;
-
-/** Long. */
-typedef int64_t jlong;
-
-/** Float. */
-typedef float jfloat;
-
-/** Double. */
-typedef double jdouble;
-
-/** Character. */
-typedef uint16_t jchar;
-
-/** Not used on POSIX. */
-#define JNICALL
-#define JNIEXPORT
-#define JNIIMPORT
+/**
+ * Prints the specified location and aborts.
+ *
+ * @param pfile The location of the TODO.
+ * @param pline The line of the TODO.
+ * @param pfunc The function of the TODO.
+ * @since 2016/10/19
+ */
+#define WC_TODO() WC_TODO_real(__FILE__, __LINE__, __func__)
+void WC_TODO_real(const char* const pin, int pline, const char* const pfunc);
 
 /****************************************************************************/
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXJNI_MDH
+#ifdef SJME_cXWINTERCOATH
 }
-#undef SJME_cXJNI_MDH
+#undef SJME_cXWINTERCOATH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXJNI_MDH */
+#endif /** #ifdef SJME_cXWINTERCOATH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef SJME_hGJNI_MDH */
+#endif /* #ifndef SJME_hGWINTERCOATH */
 

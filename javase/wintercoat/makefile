@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Multi-Phasic Applications: SquirrelJME
+# Multi-Phasic Applications: WinterCoat
 #     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
 #     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
@@ -11,12 +11,17 @@
 # Set JVM_INCLUDE to the directory of: `src/share/javavm/export`.
 # ---------------------------------------------------------------------------
 
-libjvm.so:		jvmsquirrel.o
+CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) -I. --std=c99
+
+libjvm.so:		wintercoat.o
 				$(CC) -o $@ -shared $(LDFLAGS) $<
 
-jvmsquirrel.o:	jvmsquirrel.c jni_md.h
-				$(CC) -o $@ -c $< $(CFLAGS) -I$(JVM_INCLUDE)
+wintercoat.o:	wintercoat.c jni_md.h jvm_md.h
+				$(CC) -o $@ -c $< $(CFLAGS)
 
 jni_md.h:		
-				
+				:
+		
+jvm_md.h:
+				:
 
