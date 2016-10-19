@@ -65,8 +65,8 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
 {
 	JavaVMInitArgs* initargs;
 	
-	// {@squirreljme.error AO01 VM initialization arguments is NULL.}
-	WC_ASSERT("AO01", pargs == NULL);
+	// {@squirreljme.error WC01 VM initialization arguments is NULL.}
+	WC_ASSERT("WC01", pargs == NULL);
 	
 	// Cast
 	initargs = (JavaVMInitArgs*)pargs;
@@ -82,10 +82,35 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
 	return JNI_EVERSION;
 }
 
+/**
+ *
+ *
+ * @param pvm The output virtual machine
+ * @param penv The output environment.
+ * @param pargs The input arguments.
+ * @return JNI_OK on success, otherwise other errors.
+ */
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
-	void* args)
+	void* pargs)
 {
+	JavaVMInitArgs* initargs;
+	
+	// {@squirreljme.error WC02 No output JavaVM pointer specified.}
+	WC_ASSERT("WC02", pvm == NULL);
+	
+	// {@squirreljme.error WC03 No output environment pointer specified.}
+	WC_ASSERT("WC03", penv == NULL);
+	
+	// {@squirreljme.error WC04 No input argument pointer specified.}
+	WC_ASSERT("WC04", pargs == NULL);
+	
+	// Cast
+	initargs = (JavaVMInitArgs*)pargs;
+	
 	WC_TODO();
+	
+	// Ok
+	return JNI_OK;
 }
 
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm, jsize psz, jsize* pcount)

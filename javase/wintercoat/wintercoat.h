@@ -30,6 +30,9 @@ extern "C"
 
 /****************************************************************************/
 
+#include "jni.h"
+#include "jvm.h"
+
 /**
  * Prints the specified location and aborts.
  *
