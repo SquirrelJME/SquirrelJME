@@ -41,6 +41,21 @@ extern "C"
 #define WC_TODO() WC_TODO_real(__FILE__, __LINE__, __func__)
 void WC_TODO_real(const char* const pin, int pline, const char* const pfunc);
 
+/**
+ * Checks for the specified condition and if it fails, an abort occurs.
+ *
+ * @param pfile The location of the TODO.
+ * @param pline The line of the TODO.
+ * @param pfunc The function of the TODO.
+ * @param pcode The error code.
+ * @param pcond The condition.
+ * @since 2016/10/19
+ */
+#define WC_ASSERT(code, i) \
+	WC_ASSERT_real(__FILE__, __LINE__, __func__, (code), (i))
+void WC_ASSERT_real(const char* const pin, int pline, const char* const pfunc,
+	const char* const pcode, int pcond);
+
 /****************************************************************************/
 
 /** Anti-C++. */

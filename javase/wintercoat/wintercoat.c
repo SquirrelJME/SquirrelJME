@@ -31,8 +31,39 @@ void WC_TODO_real(const char* const pin, int pline, const char* const pfunc)
 	abort();
 }
 
+/**
+ * {@inheritDoc}
+ * @since 2016/10/19
+ */
+void WC_ASSERT_real(const char* const pin, int pline, const char* const pfunc,
+	const char* const pcode, int pcond)
+{
+	// Check condition
+	if (pcond != 0)
+	{
+		// Print failue state
+		fprintf(stderr, "WinterCoat: ASSERT %s:%d: %s, %s\n",
+			(pin == NULL ? "NULL" : pin), pline,
+			(pfunc == NULL ? "NULL" : pfunc),
+			(pcode == NULL ? "NULL" : pcode));
+		
+		// Failed
+		abort();
+	}
+}
+
+/**
+ *
+ *
+ * @param pargs VM arguments, output.
+ * @return JNI_OK on success.
+ * @since 2016/10/19
+ */
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
 {
+	// {@squirreljme.error AO01 }
+	WC_ASSERT("AO01", pargs == NULL);
+	
 	WC_TODO();
 }
 
