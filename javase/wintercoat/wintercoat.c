@@ -194,6 +194,34 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 	const char* const pfunc, int pmode,
 	const char* const pmesg, ...)
 {
-	WC_TODO();
+#define BUFFER_SIZE 256
+	va_list ap;
+	char* buf;
+	
+	// Printing for this mode?
+	if (1)
+	{
+		// Need arguments
+		va_start(ap, pmesg);
+		
+		// Allocate buffer for string
+		buf = malloc(sizeof(*buf) * BUFFER_SIZE);
+		if (buf != NULL)
+		{
+			// Print to the buffer
+			vsnprintf(buf, BUFFER_SIZE, (pmesg == NULL ? "NULL" : pmesg), ap); 
+			buf[BUFFER_SIZE - 1] = '\0';
+		
+			// Print to output stream
+			fputs(buf, stderr);
+			
+			// Free the buffer
+			free(buf);
+		}
+		
+		// Stop
+		va_end(ap);
+	}
+#undef BUFFER_SIZE
 }
 
