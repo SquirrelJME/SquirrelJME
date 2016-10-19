@@ -197,6 +197,7 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 #define BUFFER_SIZE 256
 	va_list ap;
 	char* buf;
+	char* buf2;
 	
 	// Printing for this mode?
 	if (1)
@@ -213,6 +214,9 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 			buf[BUFFER_SIZE - 1] = '\0';
 		
 			// Print to output stream
+			fprintf(stderr, "WinterCoat: VERBOSE %s:%d: %s [%d]: ",
+				(pin == NULL ? "NULL" : pin), pline,
+				(pfunc == NULL ? "NULL" : pfunc), pmode);
 			fputs(buf, stderr);
 			
 			// Free the buffer
