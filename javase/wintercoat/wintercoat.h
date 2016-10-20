@@ -84,6 +84,9 @@ typedef struct WC_JavaVM WC_JavaVM;
 typedef struct WC_JNIEnv WC_JNIEnv;
 struct WC_JavaVM
 {
+	/** Back VM link. */
+	JavaVM* backlink;
+	
 	/** Linked list of system properties. */
 	WC_SystemPropertyLink* syspropchain;
 };
@@ -95,6 +98,7 @@ struct WC_JavaVM
  */
 struct WC_JNIEnv
 {
+	
 };
 
 /**

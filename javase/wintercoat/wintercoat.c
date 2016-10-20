@@ -155,7 +155,8 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	WC_TODO();
 	
 	// Set the target VM
-	((struct JNIInvokeInterface_*)rv)->reserved0 = rv;
+	((struct JNIInvokeInterface_*)rv)->reserved0 = jvm;
+	jvm->backlink = rv;
 	(*pvm) = rv;
 	
 	// Return environment
