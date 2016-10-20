@@ -30,6 +30,8 @@ extern "C"
 
 /****************************************************************************/
 
+#include <pthread.h>
+
 #include "jni.h"
 #include "jvm.h"
 
@@ -90,14 +92,14 @@ union WC_JavaVM
 	/** WinterCoat interface. */
 	struct
 	{
+		/** Lock on this virtual machine. */
+		pthread_mutex_t* mutex;
+		
 		/** Linked list of system properties. */
 		WC_SystemPropertyLink* syspropchain;
 		
-		/** Reserved. */
-		void* reserved1;
-		
-		/** Reserved. */
-		void* reserved2;
+		/** The environment thread chain. */
+		WC_JNIEnv* envchain;
 	} furry;
 };
 
@@ -114,17 +116,17 @@ union WC_JNIEnv
 	/** WinterCoat interface */
 	struct
 	{
-		/** Reserved. */
-		void* reserved0;
+		/** Lock on this environment. */
+		pthread_mutex_t* mutex;
 		
-		/** Reserved. */
-		void* reserved1;
+		/** The owning virtual machine. */
+		WC_JavaVM* vm;
 		
-		/** Reserved. */
-		void* reserved2;
+		/** The thread for this environment. */
+		pthread_t* thread;
 		
-		/** Reserved. */
-		void* reserved3;
+		/** The next environment. */
+		WC_JNIEnv* next;
 	} furry;
 };
 

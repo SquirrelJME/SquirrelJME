@@ -43,6 +43,7 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	WC_StaticString* sv;
 	WC_SystemPropertyLink* splink;
 	JavaVMAttachArgs attach;
+	pthread_mutex_t* mutex;
 	
 	// {@squirreljme.error WC02 No output JavaVM pointer specified.}
 	WC_ASSERT("WC02", pvm == NULL);
@@ -152,6 +153,18 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	
 	// Set target VM
 	(*pvm) = (JavaVM*)jvm;
+	
+	// Create mutex to lock operations on
+	mutex = WC_ForcedMalloc(sizeof(*mutex));
+	if (pthread_mutex_init(mutex, NULL) != 0)
+	{
+		// {@squirreljme.error WC0f Failed to initialize the VM mutex.}
+		WC_VERBOSE(WC_VERBOSE_MODE_ERROR, "WC0f", "");
+		return JNI_ENOMEM;
+	}
+	
+	// Set
+	jvm->furry.mutex = mutex;
 	
 	// Setup function pointer tables
 	jvm->native.AttachCurrentThreadAsDaemon =

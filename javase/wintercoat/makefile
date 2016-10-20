@@ -16,7 +16,7 @@ CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) -I. --std=c99 \
 ALL_HEADERS := jni_md.h jvm_md.h mempool.h jii.h wintercoat.h
 
 libjvm.so:		wintercoat.o mempool.o jii.o
-				$(CC) -o $@ -shared $(LDFLAGS) $^
+				$(CC) -o $@ -shared -lpthread $(LDFLAGS) $^
 
 %.o:			%.c
 				$(CC) -o $@ -c $< $(CFLAGS)
