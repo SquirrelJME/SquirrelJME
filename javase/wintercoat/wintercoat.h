@@ -92,6 +92,12 @@ union WC_JavaVM
 	{
 		/** Linked list of system properties. */
 		WC_SystemPropertyLink* syspropchain;
+		
+		/** Reserved. */
+		void* reserved1;
+		
+		/** Reserved. */
+		void* reserved2;
 	} furry;
 };
 
@@ -108,6 +114,17 @@ union WC_JNIEnv
 	/** WinterCoat interface */
 	struct
 	{
+		/** Reserved. */
+		void* reserved0;
+		
+		/** Reserved. */
+		void* reserved1;
+		
+		/** Reserved. */
+		void* reserved2;
+		
+		/** Reserved. */
+		void* reserved3;
 	} furry;
 };
 
