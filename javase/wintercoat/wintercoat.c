@@ -42,6 +42,7 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	WC_StaticString* sk;
 	WC_StaticString* sv;
 	WC_SystemPropertyLink* splink;
+	JavaVMAttachArgs attach;
 	
 	// {@squirreljme.error WC02 No output JavaVM pointer specified.}
 	WC_ASSERT("WC02", pvm == NULL);
@@ -160,14 +161,22 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	jvm->native.DetachCurrentThread = WC_JII_DetachCurrentThread;
 	jvm->native.GetEnv = WC_JII_GetEnv;
 	
-	// Return environment
-	WC_TODO();
+	// Setup arguments
+	memset(&attach, 0, sizeof(attach));
+	attach.version = JNI_VERSION_1_8;
+	attach.name = "wintercoat-main";
 	
-	// Ok
-	return JNI_OK;
+	// The environment is created by just attaching to the current thread, so
+	// do not duplicate work
+	return WC_JII_AttachCurrentThread((JavaVM*)jvm, penv, &attach);
 }
 
-_JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm, jsize psz, jsize* pcount)
+/**
+ * {@inheritDoc}
+ * @since 2016/10/19
+ */
+_JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm,
+	jsize psz, jsize* pcount)
 {
 	WC_TODO();
 }

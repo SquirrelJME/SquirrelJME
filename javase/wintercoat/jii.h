@@ -32,6 +32,15 @@ extern "C"
 
 #include "wintercoat.h"
 
+/**
+ * Attaches the current thread to the virtual machine.
+ *
+ * @param pvm The owning virtual machine.
+ * @param penv The output environment.
+ * @param pargs Thread start arguments.
+ * @return JNI_OK on success, otherwise an error.
+ * @since 2016/10/19
+ */
 jint JNICALL WC_JII_AttachCurrentThread(JavaVM* pvm, void** penv, void* pargs);
 
 jint JNICALL WC_JII_AttachCurrentThreadAsDaemon(JavaVM* pvm, void** penv,

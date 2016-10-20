@@ -16,8 +16,18 @@
 
 #include "jii.h"
 
+/**
+ * {@inheritDoc}
+ * @since 2016/10/19
+ */
 jint JNICALL WC_JII_AttachCurrentThread(JavaVM* pvm, void** penv, void* pargs)
 {
+	// {@squirreljme.error WC0d The owning virtual machine is NULL.}
+	WC_ASSERT("WC0d", pvm == NULL);
+	
+	// {@squirreljme.error WC0e No output environment was specified.}
+	WC_ASSERT("WC0e", penv == NULL);
+	
 	WC_TODO();
 	return 1;
 }
