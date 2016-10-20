@@ -51,7 +51,7 @@ public final class ProjectDirectory
 		
 		// Parse directories
 		this.binaries = new BinaryDirectory(this, __b);
-		this.source = new SourceDirectory(this, __s);
+		this.sources = new SourceDirectory(this, __s);
 	}
 	
 	/**

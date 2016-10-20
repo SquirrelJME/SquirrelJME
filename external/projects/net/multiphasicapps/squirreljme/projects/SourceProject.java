@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * This is a project which provides source code that may be compiled by a
  * compiler into a binary project.
@@ -31,6 +34,41 @@ public final class SourceProject
 	public BinaryProjectManifest generateBinaryManifest()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Calculates the name that a file would appear as inside of a ZIP file.
+	 *
+	 * @param __root The root path.
+	 * @param __p The file to add.
+	 * @return The ZIP compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	static String __zipName(Path __root, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __p == null)
+			throw new NullPointerException();
+		
+		// Calculate relative name
+		Path rel = __root.toAbsolutePath().relativize(__p.toAbsolutePath());
+		
+		// Build name
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : rel)
+		{
+			// Prefix slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp);
+		}
+		
+		// Return it
+		return sb.toString();
 	}
 }
 
