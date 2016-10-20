@@ -12,10 +12,10 @@
 # ---------------------------------------------------------------------------
 
 CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) -I. --std=c99 \
-	-Werror=implicit
+	-Werror=implicit -DWINTERCOAT_OPENJDK
 ALL_HEADERS := jni_md.h jvm_md.h mempool.h jii.h wintercoat.h
 
-libjvm.so:		wintercoat.o mempool.o jii.o jin.o jcl.o
+libjvm.so:		wintercoat.o mempool.o jii.o jin.o jcl.o openjdk.o
 				$(CC) -o $@ -shared -lpthread $(LDFLAGS) $^
 
 %.o:			%.c
