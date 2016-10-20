@@ -19,12 +19,13 @@
 #include "wintercoat.h"
 
 /**
- *
+ * This creates a new instance of the Java virtual machine.
  *
  * @param pvm The output virtual machine
  * @param penv The output environment.
  * @param pargs The input arguments.
  * @return JNI_OK on success, otherwise other errors.
+ * @since 2016/10/19
  */
 _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	void* pargs)
@@ -35,9 +36,11 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	char* opstr;
 	char* eq;
 	int len, klen;
-	JavaVM* jvm;
+	JavaVM* rv;
+	WC_JavaVM* jvm;
 	WC_StaticString* sk;
 	WC_StaticString* sv;
+	WC_SystemPropertyLink* splink;
 	
 	// {@squirreljme.error WC02 No output JavaVM pointer specified.}
 	WC_ASSERT("WC02", pvm == NULL);
@@ -56,7 +59,7 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		return JNI_EVERSION;
 	
 	// Allocate virtual machine
-	jvm = (JavaVM*)WC_ForcedMalloc(sizeof(*jvm));
+	jvm = (WC_JavaVM*)WC_ForcedMalloc(sizeof(*jvm));
 	
 	// Handle all options
 	n = initargs->nOptions;
@@ -109,7 +112,16 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 			sk = WC_GetStaticString(opstr + 2, klen);
 			sv = WC_GetStaticString(eq, (opstr + len) - eq);
 			
-			WC_TODO();
+			// Allocate new link
+			splink = WC_ForcedMalloc(sizeof(*splink));
+			
+			// Set key and value
+			splink->key = sk;
+			splink->value = sv;
+			
+			// Link to the chain
+			splink->next = jvm->syspropchain;
+			jvm->syspropchain = splink;
 		}
 		
 		// verbose all?
@@ -136,9 +148,17 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		}
 	}
 	
-	// Set the target VM
-	(*pvm) = jvm;
+	// Allocate
+	rv = (JavaVM*)WC_ForcedMalloc(sizeof(*rv));
 	
+	// Setup function pointer tables
+	WC_TODO();
+	
+	// Set the target VM
+	((struct JNIInvokeInterface_*)rv)->reserved0 = rv;
+	(*pvm) = rv;
+	
+	// Return environment
 	WC_TODO();
 	
 	// Ok

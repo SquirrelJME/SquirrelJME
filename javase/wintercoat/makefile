@@ -11,7 +11,8 @@
 # Set JVM_INCLUDE to the directory of: `src/share/javavm/export`.
 # ---------------------------------------------------------------------------
 
-CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) -I. --std=c99
+CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) -I. --std=c99 \
+	-Werror=implicit
 
 libjvm.so:		wintercoat.o
 				$(CC) -o $@ -shared $(LDFLAGS) $<

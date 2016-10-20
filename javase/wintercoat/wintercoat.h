@@ -58,17 +58,34 @@ typedef struct WC_StaticString
 } WC_StaticString;
 
 /**
+ * This acts as a single link in the system property table.
+ *
+ * @since 2016/10/19
+ */
+typedef struct WC_SystemPropertyLink WC_SystemPropertyLink;
+struct WC_SystemPropertyLink
+{
+	/** The system property key. */
+	WC_StaticString* key;
+	
+	/** The system property value. */
+	WC_StaticString* value;
+	
+	/** The next link. */
+	WC_SystemPropertyLink* next;
+};
+
+/**
  * The WinterCoat VM structure.
  *
  * @since 2016/10/19
  */
-struct JavaVM
+typedef struct WC_JavaVM WC_JavaVM;
+typedef struct WC_JNIEnv WC_JNIEnv;
+struct WC_JavaVM
 {
-	/** The number of system properties that are used. */
-	int numsysprops;
-	
-	/** The system properties that are available. */
-	WC_StaticString** sysprops;
+	/** Linked list of system properties. */
+	WC_SystemPropertyLink* syspropchain;
 };
 
 /**
@@ -76,7 +93,7 @@ struct JavaVM
  *
  * @since 2016/10/19
  */
-struct JNIEnv
+struct WC_JNIEnv
 {
 };
 
