@@ -10,21 +10,33 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 /**
  * This class represents the name of a package, which is case insensitive.
+ *
+ * The name is in the form of "namespace@project".
  *
  * @since 2016/06/15
  */
 public final class ProjectName
 	implements Comparable<ProjectName>
 {
-	/** The name of the package. */
+	/** The namespace the project is in. */
+	protected final String namespace;
+	
+	/** The name of the project. */
 	protected final String name;
 	
+	/** The full string representation. */
+	private volatile Reference<String> _full;
+	
 	/**
-	 * Initializes the package name.
+	 * Initializes the project name from the full project form.
 	 *
-	 * @param __s The name of the package.
+	 * @param __s The name of the project.
 	 * @throws InvalidProjectException If the specified name is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
@@ -36,35 +48,22 @@ public final class ProjectName
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Make more correct name
-		StringBuilder sb = new StringBuilder();
-		
-		// Must consist of valid characters
-		int n = __s.length();
-		for (int i = 0; i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			// {@squirreljme.error CI05 The specified string is not a valid
-			// name for a package because it contains illegal characters.
-			// (The illegal package name)}
-			boolean upper = (c >= 'A' && c <= 'Z');
-			if (!((c >= 'a' && c <= 'z') || upper ||
-				(c >= '0' && c <= '9') || c == '-'))
-				throw new InvalidProjectException(String.format("CI05 %s",
-					__s));
-			
-			// Lower?
-			if (upper)
-				sb.append(((char)(c - 'A') + 'a'));
-			
-			// Keep
-			else
-				sb.append(c);
-		}
-		
-		// Set
-		this.name = sb.toString();
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Initializes the project name from the namespace and name individually.
+	 *
+	 * @param __namespace The project namespace.
+	 * @param __name The project name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/20
+	 */
+	public ProjectName(String __namespace, String __name)
+		throws NullPointerException
+	{
+		this(Objects.<String>requireNonNull(__namespace, "NARG") + "@" +
+			Objects.<String>requireNonNull(__name, "NARG"));
 	}
 	
 	/**
@@ -88,10 +87,6 @@ public final class ProjectName
 		if (__o instanceof ProjectName)
 			return 0 == __compareTo((ProjectName)__o);
 		
-		// If a string, compare as if it were a package name
-		else if (__o instanceof String)
-			return 0 == __compareTo((String)__o);
-		
 		// Will never match
 		return false;
 	}
@@ -103,7 +98,29 @@ public final class ProjectName
 	@Override
 	public int hashCode()
 	{
-		return this.name.hashCode();
+		return toString().hashCode();
+	}
+	
+	/**
+	 * Returns the name of the project.
+	 *
+	 * @return The project name.
+	 * @since 2016/10/20
+	 */
+	public String name()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * Returns the namespace that this project is within.
+	 *
+	 * @return The namespace this exists in.
+	 * @since 2016/10/20
+	 */
+	public String namespace()
+	{
+		return this.namespace;
 	}
 	
 	/**
@@ -113,7 +130,15 @@ public final class ProjectName
 	@Override
 	public String toString()
 	{
-		return this.name;
+		Reference<String> ref = this._full;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._full = new WeakReference<>((rv = this.namespace + "@" +
+				this.name));
+		
+		return rv;
 	}
 	
 	/**
@@ -151,8 +176,8 @@ public final class ProjectName
 			throw new NullPointerException("NARG");
 		
 		// Get both
-		String a = this.name,
-			b = __pn;
+		String a = toString(),
+			b = __pn.toString();
 		
 		// Get lengths
 		int na = a.length(),
@@ -169,8 +194,6 @@ public final class ProjectName
 			// Can lowercase?
 			if (ca >= 'A' && ca <= 'Z')
 				ca = (char)((ca - 'A') + 'a');
-			if (cb >= 'A' && cb <= 'Z')
-				cb = (char)((cb - 'A') + 'a');
 			
 			// Lower
 			if (ca < cb)
