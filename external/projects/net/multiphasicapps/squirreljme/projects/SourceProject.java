@@ -70,7 +70,7 @@ public final class SourceProject
 			throw new NullPointerException("NARG");
 		
 		// Set
-		SourceDirectory._SPECIFIED_FALLBACK_COMPILER = __cc;
+		SourceProject._SPECIFIED_FALLBACK_COMPILER = __cc;
 	}
 	
 	/**
