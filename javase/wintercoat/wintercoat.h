@@ -80,15 +80,19 @@ struct WC_SystemPropertyLink
  *
  * @since 2016/10/19
  */
-typedef struct WC_JavaVM WC_JavaVM;
-typedef struct WC_JNIEnv WC_JNIEnv;
-struct WC_JavaVM
+typedef union WC_JavaVM WC_JavaVM;
+typedef union WC_JNIEnv WC_JNIEnv;
+union WC_JavaVM
 {
-	/** Back VM link. */
-	JavaVM* backlink;
+	/** Native Java interface. */
+	struct JNINativeInterface_ native;
 	
-	/** Linked list of system properties. */
-	WC_SystemPropertyLink* syspropchain;
+	/** WinterCoat interface. */
+	struct
+	{
+		/** Linked list of system properties. */
+		WC_SystemPropertyLink* syspropchain;
+	} furry;
 };
 
 /**
@@ -96,9 +100,15 @@ struct WC_JavaVM
  *
  * @since 2016/10/19
  */
-struct WC_JNIEnv
+union WC_JNIEnv
 {
+	/** Native interface. */
+	struct JNIInvokeInterface_ native;
 	
+	/** WinterCoat interface */
+	struct
+	{
+	} furry;
 };
 
 /**

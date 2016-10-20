@@ -36,8 +36,8 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	char* opstr;
 	char* eq;
 	int len, klen;
-	JavaVM* rv;
 	WC_JavaVM* jvm;
+	WC_JNIEnv* env;
 	WC_StaticString* sk;
 	WC_StaticString* sv;
 	WC_SystemPropertyLink* splink;
@@ -120,8 +120,8 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 			splink->value = sv;
 			
 			// Link to the chain
-			splink->next = jvm->syspropchain;
-			jvm->syspropchain = splink;
+			splink->next = jvm->furry.syspropchain;
+			jvm->furry.syspropchain = splink;
 		}
 		
 		// verbose all?
@@ -148,16 +148,11 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		}
 	}
 	
-	// Allocate
-	rv = (JavaVM*)WC_ForcedMalloc(sizeof(*rv));
+	// Set target VM
+	(*pvm) = (JavaVM*)jvm;
 	
 	// Setup function pointer tables
 	WC_TODO();
-	
-	// Set the target VM
-	((struct JNIInvokeInterface_*)rv)->reserved0 = jvm;
-	jvm->backlink = rv;
-	(*pvm) = rv;
 	
 	// Return environment
 	WC_TODO();
