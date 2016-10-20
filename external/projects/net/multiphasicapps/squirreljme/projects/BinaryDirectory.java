@@ -11,10 +11,16 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
  * This is the directory of binary projects which may be executed or natively
@@ -41,7 +47,30 @@ public final class BinaryDirectory
 		if (__d == null || __p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through all files in the directory
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
+		{
+			for (Path f : ds)
+			{
+				// Ignore directories
+				if (Files.isDirectory(f))
+					continue;
+				
+				// Try adding the project
+				try
+				{
+					__addProject(f);
+				}
+				
+				// Ignore
+				catch (__CannotBeProjectException__ e)
+				{
+					// Only print the trace if it ends in JAR
+					if (f.getFileName().toString().endsWith(".jar"))
+						e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	/**
@@ -53,5 +82,24 @@ public final class BinaryDirectory
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Adds the given project at the given path to the binary directory.
+	 *
+	 * @param __p The path of the project to add.
+	 * @retrun The added project.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/20
+	 */
+	BinaryProject __addProject(Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	} 
 }
 
