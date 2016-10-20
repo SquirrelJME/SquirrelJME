@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
+	ResourceAccessor;
+
 /**
  * This represents a binary project which may be launched.
  *
@@ -25,6 +28,17 @@ public final class BinaryProject
 	 * @since 2016/10/20
 	 */
 	public BinaryProjectManifest binaryManifest()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns a resource accessor which may be used by the launcher.
+	 *
+	 * @return The launcher resource accessor.
+	 * @since 2016/10/20
+	 */
+	public ResourceAccessor launcherResourceAccessor()
 	{
 		throw new Error("TODO");
 	}
