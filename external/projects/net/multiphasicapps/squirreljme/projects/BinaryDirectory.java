@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This is the directory of binary projects which may be executed or natively
@@ -20,6 +23,7 @@ import java.nio.file.Path;
  * @since 2016/10/20
  */
 public final class BinaryDirectory
+	extends AbstractMap<ProjectName, BinaryProject>
 {
 	/**
 	 * Initializes the binary directory.
@@ -37,6 +41,16 @@ public final class BinaryDirectory
 		if (__d == null || __p == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/20
+	 */
+	@Override
+	public Set<Map.Entry<ProjectName, BinaryProject>> entrySet()
+	{
 		throw new Error("TODO");
 	}
 }

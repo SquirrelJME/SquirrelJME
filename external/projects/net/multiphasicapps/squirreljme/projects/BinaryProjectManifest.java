@@ -19,5 +19,15 @@ package net.multiphasicapps.squirreljme.projects;
  */
 public final class BinaryProjectManifest
 {
+	/**
+	 * Returns the classical main entry point of the project.
+	 *
+	 * @return The classic main entry point, or {@code null} if there is none.
+	 * @since 2016/10/20
+	 */
+	public String mainClass()
+	{
+		throw new Error("TODO");
+	}
 }
 

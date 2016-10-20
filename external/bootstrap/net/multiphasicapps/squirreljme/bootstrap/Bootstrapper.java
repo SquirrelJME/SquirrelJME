@@ -17,11 +17,13 @@ import java.util.Deque;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.CaughtException;
-import net.multiphasicapps.squirreljme.projects.DependencyLookupType;
-import net.multiphasicapps.squirreljme.projects.ProjectGroup;
+import net.multiphasicapps.squirreljme.projects.BinaryDirectory;
+import net.multiphasicapps.squirreljme.projects.BinaryProject;
+import net.multiphasicapps.squirreljme.projects.ProjectDirectory;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
-import net.multiphasicapps.squirreljme.projects.ProjectList;
 import net.multiphasicapps.squirreljme.projects.ProjectName;
+import net.multiphasicapps.squirreljme.projects.SourceDirectory;
+import net.multiphasicapps.squirreljme.projects.SourceProject;
 
 /**
  * This is the bootstrapper which is used to build and potentially launch
@@ -32,7 +34,7 @@ import net.multiphasicapps.squirreljme.projects.ProjectName;
 public class Bootstrapper
 {
 	/** The project list to use. */
-	protected final ProjectList projects;
+	protected final ProjectDirectory projects;
 	
 	/** The bootstrap compiler. */
 	protected final Compiler compiler;
@@ -49,7 +51,8 @@ public class Bootstrapper
 	 * @throws NullPointerException If no project list was specified.
 	 * @since 2016/09/18
 	 */
-	public Bootstrapper(ProjectList __pl, Compiler __bc, BootLauncher __bl)
+	public Bootstrapper(ProjectDirectory __pl, Compiler __bc,
+		BootLauncher __bl)
 		throws NullPointerException
 	{
 		// Check
@@ -59,7 +62,7 @@ public class Bootstrapper
 		// Set the project list compiler which could potentially be used
 		// in the future
 		if (__bc != null)
-			ProjectList.setFallbackCompiler(__bc);
+			SourceProject.setFallbackCompiler(__bc);
 		
 		// Set
 		this.projects = __pl;
@@ -101,7 +104,7 @@ public class Bootstrapper
 				// Run tests on the host
 			case "tests":
 				args.removeFirst();
-				args.offerFirst("test-all");
+				args.offerFirst("tests@test-all");
 				
 				// Launch the given project
 			case "launch":
@@ -121,7 +124,7 @@ public class Bootstrapper
 			case "target":
 				args.removeFirst();
 			default:
-				__launch(__getBinary(new ProjectName("builder-all")),
+				__launch(__getBinary(new ProjectName("external@builder-all")),
 					args.<String>toArray(new String[args.size()]));
 				return;
 		}
@@ -138,35 +141,45 @@ public class Bootstrapper
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
-	ProjectInfo __getBinary(ProjectName __n)
+	BinaryProject __getBinary(ProjectName __n)
 		throws RuntimeException, NullPointerException
 	{
 		// Check
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CL04 The specified project does not exist.
-		// (The name of the project)}
-		ProjectList projects = this.projects;
-		ProjectGroup group = projects.get(__n);
-		if (group == null)
-			throw new RuntimeException(String.format("CL04 %s", __n));
+		ProjectDirectory projects = this.projects;
+		SourceDirectory sdir = projects.sources();
 		
-		// Try to compile the source for it if it is out of date, if it is
-		// up to date then it will not be built
-		try
-		{
-			// Also include optional projects since the build system for
-			// the most part depends on that
-			return group.compileSource(this.compiler,
-				DependencyLookupType.EXTERNAL, true);
-		}
+		// If a source project exists, compile it so it is always up to
+		// date
+		SourceProject sp = sdir.get(__n);
+		if (sp != null)
+			try
+			{
+				return sp.compile(this.compiler);
+			}
+			
+			// {@squirreljme.error CL05 Failed to build the specified project.
+			// (The project name)}
+			catch (IOException e)
+			{
+				throw new RuntimeException(String.format("CL05 %s", __n), e);
+			}
 		
-		// {@squirreljme.error CL05 Failed to build the specified project.
-		// (The project name)}
-		catch (IOException e)
+		// Try binary instead (since it might not have any source)
+		else
 		{
-			throw new RuntimeException(String.format("CL05 %s", __n), e);
+			BinaryDirectory bdir = projects.binaries();
+			BinaryProject rv = bdir.get(__n);
+			
+			// {@squirreljme.error CL04 The specified project does not exist.
+			// (The name of the project)}
+			if (rv == null)
+				throw new RuntimeException(String.format("CL04 %s", __n));
+			
+			// Use it
+			return rv;
 		}
 	}
 	
@@ -180,7 +193,7 @@ public class Bootstrapper
 	 * @throws NullPointerException If no binary was specified.
 	 * @since 2016/09/18
 	 */
-	void __launch(ProjectInfo __bin, String... __args)
+	void __launch(BinaryProject __bin, String... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -193,13 +206,13 @@ public class Bootstrapper
 		
 		// {@squirreljme.error CL07 No main class was specified for this
 		// project.}
-		String mainclass = __bin.mainClass();
+		String mainclass = __bin.binaryManifest().mainClass();
 		if (mainclass == null)
 			throw new RuntimeException("CL08");
 		
 		// Launch program
 		CaughtException ce = new CaughtException();
-		Thread t = this.launcher.launch(new __Resources__(__bin),
+		Thread t = this.launcher.launch(__bin.launcherResourceAccessor(),
 			ce, mainclass, __args);
 		
 		// Run the thread

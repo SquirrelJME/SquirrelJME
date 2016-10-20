@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.multiphasicapps.javac.base.Compiler;
@@ -29,6 +30,22 @@ public final class SourceProject
 	 * This sets an explicit compiler to use.
 	 */
 	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
+	
+	/**
+	 * Compiles the project if it is out of date and returns the binary
+	 * project.
+	 *
+	 * @param __c The compiler to use, if {@code null} then the fallback
+	 * compiler is used.
+	 * @throws CompilationFailedException If compilation failed.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/10/20
+	 */
+	public BinaryProject compile(Compiler __c)
+		throws CompilationFailedException, IOException
+	{
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * Returns the input that is used for the compiler.

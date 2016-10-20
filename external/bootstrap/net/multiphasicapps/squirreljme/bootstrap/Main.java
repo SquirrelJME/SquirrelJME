@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.ServiceLoader;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
-import net.multiphasicapps.squirreljme.projects.ProjectList;
+import net.multiphasicapps.squirreljme.projects.ProjectDirectory;
 
 /**
  * This is the main entry class for the bootstrap builder.
@@ -75,10 +75,10 @@ public class Main
 		Path src = Paths.get(System.getProperty(BINARY_SOURCE_PROPERTY, pwd));
 		
 		// Setup project list
-		ProjectList pl;
+		ProjectDirectory pl;
 		try
 		{
-			pl = new ProjectList(bin, src);
+			pl = new ProjectDirectory(bin, src);
 		}
 		
 		// {@squirreljme.error CL03 Could not load the package list.}

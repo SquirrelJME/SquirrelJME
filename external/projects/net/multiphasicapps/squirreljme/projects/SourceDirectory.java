@@ -12,6 +12,10 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * This contains the directory of source projects which may be compiled into
@@ -20,6 +24,7 @@ import java.nio.file.Path;
  * @since 2016/10/20
  */
 public final class SourceDirectory
+	extends AbstractMap<ProjectName, SourceProject>
 {
 	/**
 	 * Initializes the source directory.
@@ -38,6 +43,16 @@ public final class SourceDirectory
 		if (__d == null || __p == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/20
+	 */
+	@Override
+	public Set<Map.Entry<ProjectName, SourceProject>> entrySet()
+	{
 		throw new Error("TODO");
 	}
 }
