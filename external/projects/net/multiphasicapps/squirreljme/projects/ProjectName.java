@@ -48,7 +48,16 @@ public final class ProjectName
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error CI0q The project name and namespace pair must
+		// contain the at sign to be in the form of {@code namespace@name}.
+		// (The input string to be parsed as a pair)}
+		int at = __s.indexOf('@');
+		if (at < 0)
+			throw new InvalidProjectException(String.format("CI0q %s", __s));
+		
+		// Set
+		this.namespace = __correctName(__s.substring(0, at));
+		this.name = __correctName(__s.substring(at + 1));
 	}
 	
 	/**
@@ -56,14 +65,21 @@ public final class ProjectName
 	 *
 	 * @param __namespace The project namespace.
 	 * @param __name The project name.
+	 * @throws InvalidProjectException If the namespace or project name
+	 * contains an invalid character.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/20
 	 */
 	public ProjectName(String __namespace, String __name)
-		throws NullPointerException
+		throws InvalidProjectException, NullPointerException
 	{
-		this(Objects.<String>requireNonNull(__namespace, "NARG") + "@" +
-			Objects.<String>requireNonNull(__name, "NARG"));
+		// Check
+		if (__namespace == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.namespace = __correctName(__namespace);
+		this.name = __correctName(__name);
 	}
 	
 	/**
@@ -214,6 +230,74 @@ public final class ProjectName
 		
 		// Strings are equal
 		return 0;
+	}
+	
+	/**
+	 * Checks and returns the correct name.
+	 *
+	 * @param __n The name to check.
+	 * @return The corrected name, if no uppercase characters are in the
+	 * string then {@code __n} is returned.
+	 * @throws InvalidProjectException If there is an invalid character in
+	 * the name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/20
+	 */
+	private static String __correctName(String __n)
+		throws InvalidProjectException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CI0p The namespace or project name cannot be
+		// an empty string.}
+		int n = __n.length();
+		if (n <= 0)
+			throw new InvalidProjectException("CI0p");
+		
+		// Go through all characters
+		boolean dolower = false;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __n.charAt(i);
+			
+			// Is fine
+			if ((c >= 'a' && c <= 'z') || c == '-')
+				continue;
+			
+			// Lowercase?
+			else if (c >= 'A' && c <= 'Z')
+				dolower = true;
+			
+			// {@squirreljme.error CI05 An invalid character is in the
+			// project namespace or name. (The input name)}
+			else
+				throw new InvalidProjectException(String.format("CI05 %s",
+					__n));
+		}
+		
+		// No lowercasing, return the same string
+		if (!dolower)
+			return __n;
+		
+		// Lowercase all characters
+		StringBuilder sb = new StringBuilder(n);
+		for (int i = 0; i < n; i++)
+		{
+			char c = __n.charAt(i);
+			
+			// Lowercase
+			if (c >= 'A' && c <= 'Z')
+				sb.append((char)((c - 'A') + 'a'));
+			
+			// Keep
+			else
+				sb.append(c);
+		}
+		
+		// Build it
+		return sb.toString();
 	}
 }
 
