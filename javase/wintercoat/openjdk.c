@@ -37,6 +37,10 @@ JNIEXPORT jclass JNICALL JVM_FindClassFromBootLoader(JNIEnv* penv,
 	// {@squirreljme.error WC0j No class name specified.}
 	WC_ASSERT("WC0j", pname == NULL);
 	
+	// Debug
+	WC_VERBOSE(WC_VERBOSE_MODE_CLASS, "JVM_FindClassFromBootLoader(%s)",
+		pname);
+	
 	WC_TODO();
 }
 
