@@ -33,10 +33,72 @@ extern "C"
 #include "jni.h"
 #include "jvm.h"
 
+/** Verbosity Modes. */
 #define WC_VERBOSE_MODE_DEBUG 1
 #define WC_VERBOSE_MODE_CLASS 2
 #define WC_VERBOSE_MODE_GC 3
 #define WC_VERBOSE_MODE_JNI 4
+#define WC_VERBOSE_MODE_ERROR 5
+
+/**
+ * This is used to store static string information.
+ *
+ * @since 2016/10/19
+ */
+typedef struct WC_StaticString
+{
+	/** The length of the string in UTF-8 characters. */
+	jint utflen;
+	
+	/** Characters of the string in modified UTF-8. */
+	char* utfchars;
+	
+	/** The string as an object. */
+	jstring object;
+} WC_StaticString;
+
+/**
+ * The WinterCoat VM structure.
+ *
+ * @since 2016/10/19
+ */
+struct JavaVM
+{
+	/** The number of system properties that are used. */
+	int numsysprops;
+	
+	/** The system properties that are available. */
+	WC_StaticString** sysprops;
+};
+
+/**
+ * The WinterCoat Environment structure, used per thread.
+ *
+ * @since 2016/10/19
+ */
+struct JNIEnv
+{
+};
+
+/**
+ * Allocates data which is cleared to zero of the given size, if allocation
+ * fails then the VM fatally exits.
+ *
+ * @param plen The bytes to allocate.
+ * @return The allocated data.
+ * @since 2016/10/19
+ */
+void* WC_ForcedMalloc(jint plen);
+
+/**
+ * Returns a static string from the given input string.
+ *
+ * @param pstr The string to make static.
+ * @param plen The characters in the string.
+ * @return The string made static.
+ * @since 2016/10/19
+ */
+WC_StaticString* WC_GetStaticString(const char* const pstr, jint plen);
 
 /**
  * Checks for the specified condition and if it fails, an abort occurs.

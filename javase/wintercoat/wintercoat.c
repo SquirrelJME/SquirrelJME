@@ -33,7 +33,11 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	jint i, n;
 	JavaVMOption* op;
 	char* opstr;
-	int len;
+	char* eq;
+	int len, klen;
+	JavaVM* jvm;
+	WC_StaticString* sk;
+	WC_StaticString* sv;
 	
 	// {@squirreljme.error WC02 No output JavaVM pointer specified.}
 	WC_ASSERT("WC02", pvm == NULL);
@@ -50,6 +54,9 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	// Too new a version?
 	if (initargs->version > JNI_VERSION_1_8)
 		return JNI_EVERSION;
+	
+	// Allocate virtual machine
+	jvm = (JavaVM*)WC_ForcedMalloc(sizeof(*jvm));
 	
 	// Handle all options
 	n = initargs->nOptions;
@@ -81,7 +88,26 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		else if (len >= 2 && 0 == strncmp(opstr, "-D", 2))
 		{
 			// Debug
-			WC_VERBOSE(WC_VERBOSE_MODE_DEBUG, "Define property: %s\n", opstr);	
+			WC_VERBOSE(WC_VERBOSE_MODE_DEBUG, "Define property: %s", opstr);	
+			
+			// {@squirreljme.error WC07 System property definition requires an
+			// equal sign. (The property definition)}
+			eq = strchr(opstr, '=');
+			if (eq == NULL)
+			{
+				WC_VERBOSE(WC_VERBOSE_MODE_ERROR, "WC07 %s", opstr);
+				return JNI_EINVAL;
+			}
+			
+			// Length of property name
+			klen = eq - (opstr + 2);
+			
+			// Move past equal sign
+			eq++;
+			
+			// Allocate static strings
+			sk = WC_GetStaticString(opstr + 2, klen);
+			sv = WC_GetStaticString(eq, (opstr + len) - eq);
 			
 			WC_TODO();
 		}
@@ -105,10 +131,13 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		// {@squirreljme.error WC05 Invaid JVM argument. (The argument)}
 		else
 		{
-			fprintf(stderr, "WinterCoat: WC05 %s\n", opstr);
+			WC_VERBOSE(WC_VERBOSE_MODE_ERROR, "WC05 %s", opstr);
 			return JNI_EINVAL;
 		}
 	}
+	
+	// Set the target VM
+	(*pvm) = jvm;
 	
 	WC_TODO();
 	
@@ -149,6 +178,71 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_GetDefaultJavaVMInitArgs(void* pargs)
 	
 	// Otherwise fail
 	return JNI_EVERSION;
+}
+
+/**
+ * {@inheritDoc}
+ * @since 2016/10/19
+ */
+void* WC_ForcedMalloc(jint plen)
+{
+	void* rv;
+	
+	// {@squirreljme.error WC08 Forced allocation length is zero or
+	// negative.}
+	WC_ASSERT("WC08", plen <= 0);
+	
+	// Allocate
+	rv = malloc(plen);
+	
+	// {@squirreljme.error WC09 Forced allocation failed.}
+	WC_ASSERT("WC09", rv == NULL);
+	
+	// Clear it
+	memset(rv, 0, plen);
+	
+	// Return it
+	return rv;
+}
+
+/**
+ * {@inheritDoc}
+ * @since 2016/10/19
+ */
+WC_StaticString* WC_GetStaticString(const char* const pstr, jint plen)
+{
+	WC_StaticString* rv;
+	char* buf;
+	int i;
+	
+	// {@squirreljme.error WC0a Cannot allocate NULL static string.}
+	WC_ASSERT("WC0a", pstr == NULL);
+	
+	// {@squirreljme.error WC0b Cannot allocate static string with negative
+	// length.}
+	WC_ASSERT("WC0b", plen < 0);
+	
+	// {@squirreljme.error WC0c Null byte in string would overflow size of
+	// integer.}
+	WC_ASSERT("WC0c", (plen + 1) < 0);
+	
+	// Allocate
+	rv = (WC_StaticString*)WC_ForcedMalloc(sizeof(*rv));
+	
+	// Copy string to buffer
+	buf = (char*)WC_ForcedMalloc(plen + 1);
+	for (i = 0; i < plen; i++)
+		buf[i] = pstr[i];
+	
+	// Store into the structure and set the lengt
+	rv->utflen = plen;
+	rv->utfchars = buf;
+	
+	// Debug
+	WC_VERBOSE(WC_VERBOSE_MODE_DEBUG, "Static: %s %d", buf, plen);
+	
+	// Return it
+	return rv;
 }
 
 /**
@@ -197,7 +291,6 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 #define BUFFER_SIZE 256
 	va_list ap;
 	char* buf;
-	char* buf2;
 	
 	// Printing for this mode?
 	if (1)
@@ -218,6 +311,7 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 				(pin == NULL ? "NULL" : pin), pline,
 				(pfunc == NULL ? "NULL" : pfunc), pmode);
 			fputs(buf, stderr);
+			fputs("\n", stderr);
 			
 			// Free the buffer
 			free(buf);
