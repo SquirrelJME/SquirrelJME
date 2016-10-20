@@ -47,7 +47,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/06/15
  */
-public class ProjectInfo
+public abstract class ProjectInfo
 	implements Comparable<ProjectInfo>
 {
 	/** The earliest date. */
