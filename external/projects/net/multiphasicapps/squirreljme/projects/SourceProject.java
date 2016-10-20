@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import net.multiphasicapps.javac.base.Compiler;
+import net.multiphasicapps.javac.base.CompilerInput;
 
 /**
  * This is a project which provides source code that may be compiled by a
@@ -22,6 +24,23 @@ import java.nio.file.Paths;
 public final class SourceProject
 	extends ProjectInfo
 {
+	/**
+	 * This is a fallback compiler which may be specified when it is not known.
+	 * This sets an explicit compiler to use.
+	 */
+	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
+	
+	/**
+	 * Returns the input that is used for the compiler.
+	 *
+	 * @return The input for the compiler.
+	 * @since 2016/10/20
+	 */
+	public CompilerInput compilerInput()
+	{
+		throw new Error("TODO");
+	}
+	
 	/**
 	 * Generates a binary manifest from this source project.
 	 *
@@ -34,6 +53,24 @@ public final class SourceProject
 	public BinaryProjectManifest generateBinaryManifest()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the fallback compiler to use if no default could be used.
+	 *
+	 * @param __cc The compiler to use as a fallback.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/29
+	 */
+	public static void setFallbackCompiler(Compiler __cc)
+		throws NullPointerException
+	{
+		// Check
+		if (__cc == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		SourceDirectory._SPECIFIED_FALLBACK_COMPILER = __cc;
 	}
 	
 	/**

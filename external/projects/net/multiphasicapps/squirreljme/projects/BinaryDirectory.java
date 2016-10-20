@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * This is the directory of binary projects which may be executed or natively

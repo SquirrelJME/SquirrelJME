@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
-import net.multiphasicapps.javac.base.Compiler;
+import java.nio.file.Path;
 
 /**
  * This contains the directory of source projects which may be compiled into
@@ -21,12 +21,6 @@ import net.multiphasicapps.javac.base.Compiler;
  */
 public final class SourceDirectory
 {
-	/**
-	 * This is a fallback compiler which may be specified when it is not known.
-	 * This sets an explicit compiler to use.
-	 */
-	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
-	
 	/**
 	 * Initializes the source directory.
 	 *
@@ -45,24 +39,6 @@ public final class SourceDirectory
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Sets the fallback compiler to use if no default could be used.
-	 *
-	 * @param __cc The compiler to use as a fallback.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/29
-	 */
-	public static void setFallbackCompiler(Compiler __cc)
-		throws NullPointerException
-	{
-		// Check
-		if (__cc == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		SourceDirectory._SPECIFIED_FALLBACK_COMPILER = __cc;
 	}
 }
 
