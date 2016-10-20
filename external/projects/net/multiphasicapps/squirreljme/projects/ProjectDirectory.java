@@ -21,6 +21,12 @@ import java.nio.file.Path;
  */
 public final class ProjectDirectory
 {
+	/**
+	 * This is the global project list which may be used to use a pre-existing
+	 * list so that there is no cost for reloading the same list.
+	 */
+	private static volatile ProjectDirectory _GLOBAL_LIST;
+	
 	/** The binary directory. */
 	protected final BinaryDirectory binaries;
 	
@@ -68,6 +74,18 @@ public final class ProjectDirectory
 	public SourceDirectory sources()
 	{
 		return this.sources;
+	}
+	
+	/**
+	 * This returns the first {@link ProjectDirectory} which has been instantiated.
+	 *
+	 * @return The first initialized project directory, or {@code null} if one
+	 * was never initialized.
+	 * @since 2016/09/29
+	 */
+	public static ProjectDirectory getGlobalProjectList()
+	{
+		return ProjectDirectory._GLOBAL_LIST;
 	}
 }
 
