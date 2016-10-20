@@ -40,6 +40,7 @@ import net.multiphasicapps.zip.ZipCompressionType;
  *
  * @since 2016/09/18
  */
+@Deprecated
 public final class ProjectGroup
 	implements Comparable<ProjectGroup>
 {

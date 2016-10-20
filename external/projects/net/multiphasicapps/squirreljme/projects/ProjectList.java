@@ -39,6 +39,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/06/15
  */
+@Deprecated
 public class ProjectList
 	extends AbstractMap<ProjectName, ProjectGroup>
 {
