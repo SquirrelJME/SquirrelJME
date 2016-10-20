@@ -85,7 +85,7 @@ typedef union WC_JNIEnv WC_JNIEnv;
 union WC_JavaVM
 {
 	/** Native Java interface. */
-	struct JNINativeInterface_ native;
+	struct JNIInvokeInterface_ native;
 	
 	/** WinterCoat interface. */
 	struct
@@ -109,7 +109,7 @@ union WC_JavaVM
 union WC_JNIEnv
 {
 	/** Native interface. */
-	struct JNIInvokeInterface_ native;
+	struct JNINativeInterface_ native;
 	
 	/** WinterCoat interface */
 	struct

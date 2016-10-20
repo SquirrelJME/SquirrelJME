@@ -17,6 +17,7 @@
 #include "jvm.h"
 
 #include "wintercoat.h"
+#include "jii.h"
 
 /**
  * This creates a new instance of the Java virtual machine.
@@ -152,7 +153,12 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	(*pvm) = (JavaVM*)jvm;
 	
 	// Setup function pointer tables
-	WC_TODO();
+	jvm->native.AttachCurrentThreadAsDaemon =
+		WC_JII_AttachCurrentThreadAsDaemon;
+	jvm->native.AttachCurrentThread = WC_JII_AttachCurrentThread;
+	jvm->native.DestroyJavaVM = WC_JII_DestroyJavaVM;
+	jvm->native.DetachCurrentThread = WC_JII_DetachCurrentThread;
+	jvm->native.GetEnv = WC_JII_GetEnv;
 	
 	// Return environment
 	WC_TODO();
