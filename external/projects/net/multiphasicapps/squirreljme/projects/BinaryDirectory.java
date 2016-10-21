@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.projects;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -21,7 +22,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is the directory of binary projects which may be executed or natively
@@ -32,6 +35,10 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
 public final class BinaryDirectory
 	extends AbstractMap<ProjectName, BinaryProject>
 {
+	/** Binary projects that are available. */
+	protected final Map<ProjectName, BinaryProject> projects =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the binary directory.
 	 *
@@ -63,7 +70,16 @@ public final class BinaryDirectory
 					continue;
 				
 				// Add the project
-				__addProject(f);
+				try
+				{
+					__addProject(f);
+				}
+				
+				// Ignore, but print the warning
+				catch (NotAProjectException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -98,7 +114,36 @@ public final class BinaryDirectory
 		try (FileChannel fc = FileChannel.open(__p, StandardOpenOption.READ);
 			ZipFile zf = ZipFile.open(fc))
 		{
-			throw new Error("TODO");
+			// {@squirreljme.error CI01 The specified binary project cannot be
+			// a project becauase it has no manifest. (The pathname)}
+			ZipEntry ze = zf.get("META-INF/MANIFEST.MF");
+			if (ze == null)
+				throw new NotAProjectException(String.format("CI01 %s", __p));
+			
+			// Read in the manifest data
+			BinaryProject rv;
+			try (InputStream is = ze.open())
+			{
+				// And create the project
+				rv = new BinaryProject(new BinaryProjectManifest(is), __p);
+			}
+			
+			// Get the name of the project
+			ProjectName name = rv.projectName();
+			
+			// Place into the project map
+			Map<ProjectName, BinaryProject> projects = this.projects;
+			synchronized (projects)
+			{
+				BinaryProject old = projects.put(name, rv);
+				
+				// Perform API cleanup for old project
+				if (old != null)
+					throw new Error("TODO");
+			}
+			
+			// Return it
+			return rv;
 		}
 	} 
 }

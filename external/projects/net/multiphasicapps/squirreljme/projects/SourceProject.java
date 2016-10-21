@@ -73,6 +73,16 @@ public final class SourceProject
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/21
+	 */
+	@Override
+	public ProjectName projectName()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Sets the fallback compiler to use if no default could be used.
 	 *
 	 * @param __cc The compiler to use as a fallback.

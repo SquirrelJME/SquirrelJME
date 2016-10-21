@@ -25,5 +25,13 @@ public abstract class ProjectInfo
 	ProjectInfo()
 	{
 	}
+	
+	/**
+	 * Returns the name of the project.
+	 *
+	 * @return The project name.
+	 * @since 2016/10/21
+	 */
+	public abstract ProjectName projectName();
 }
 
