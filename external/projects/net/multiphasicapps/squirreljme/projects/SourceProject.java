@@ -31,6 +31,32 @@ public final class SourceProject
 	 */
 	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
 	
+	/** The manifet used for the source project. */
+	protected final SourceProjectManifest manifest;
+	
+	/** The root directory for the project. */
+	protected final Path root;
+	
+	/**
+	 * Initializes the source project.
+	 *
+	 * @param __man The manifest contianing source project information.
+	 * @param __r The root directory where sources are located.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/21
+	 */
+	SourceProject(SourceProjectManifest __man, Path __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__man == null || __r == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.manifest = __man;
+		this.root = __r;
+	}
+	
 	/**
 	 * Compiles the project if it is out of date and returns the binary
 	 * project.

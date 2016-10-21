@@ -128,14 +128,11 @@ public final class BinaryDirectory
 				rv = new BinaryProject(new BinaryProjectManifest(is), __p);
 			}
 			
-			// Get the name of the project
-			ProjectName name = rv.projectName();
-			
 			// Place into the project map
 			Map<ProjectName, BinaryProject> projects = this.projects;
 			synchronized (projects)
 			{
-				BinaryProject old = projects.put(name, rv);
+				BinaryProject old = projects.put(rv.projectName(), rv);
 				
 				// Perform API cleanup for old project
 				if (old != null)

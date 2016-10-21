@@ -18,13 +18,11 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 
 /**
- * This provides a wrapper around the binary project manifest and is used to
- * help determine what a binary project actually is (so it may be correctly
- * used).
+ * This is a manifest that is used for source projects.
  *
- * @since 2016/10/20
+ * @since 2016/10/21
  */
-public final class BinaryProjectManifest
+public final class SourceProjectManifest
 {
 	/** The manifest used. */
 	protected final JavaManifest manifest;
@@ -35,13 +33,13 @@ public final class BinaryProjectManifest
 	 * @param __is The stream containing the manifest data.
 	 * @throws IOException On read errors.
 	 * @throws InvalidProjectException If the manifest does not refer to a
-	 * valid binary project.
+	 * valid source project.
 	 * @throws NotAProjectException If the manifest does not refer to a
 	 * project.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
-	public BinaryProjectManifest(InputStream __is)
+	public SourceProjectManifest(InputStream __is)
 		throws IOException, InvalidProjectException, NotAProjectException,
 			NullPointerException
 	{
@@ -51,15 +49,15 @@ public final class BinaryProjectManifest
 	/**
 	 * Parses the specified manifest.
 	 *
-	 * @param __man The binary manifest to parse.
+	 * @param __man The source manifest to parse.
 	 * @throws InvalidProjectException If the manifest does not refer to a
-	 * valid binary project.
+	 * valid source project.
 	 * @throws NotAProjectException If the manifest does not refer to a
 	 * project.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
-	public BinaryProjectManifest(JavaManifest __man)
+	public SourceProjectManifest(JavaManifest __man)
 		throws InvalidProjectException, NotAProjectException,
 			NullPointerException
 	{
@@ -73,30 +71,13 @@ public final class BinaryProjectManifest
 		// Depends on the attributes
 		JavaManifestAttributes attr = __man.getMainAttributes();
 		
-		// {@squirreljme.error CI03 The project is being ignored because it has
-		// be flagged as such.}
-		if (Boolean.valueOf(attr.get(
-			new JavaManifestKey("X-SquirrelJME-IgnoreBinaryProject"))))
-			throw new NotAProjectException("CI03");
-		
-		// {@squirreljme.error CI02 Old-style SquirrelJME binary projects
+		// {@squirreljme.error CI04 Old-style SquirrelJME source projects
 		// (before September 2016) are not supported. (The old-style project
 		// name)}
 		String depname;
 		if (null != (depname =
 			attr.get(new JavaManifestKey("X-SquirrelJME-Name"))))
-			throw new NotAProjectException(String.format("CI02 %s", depname));
-	}
-	
-	/**
-	 * Returns the classical main entry point of the project.
-	 *
-	 * @return The classic main entry point, or {@code null} if there is none.
-	 * @since 2016/10/20
-	 */
-	public String mainClass()
-	{
-		throw new Error("TODO");
+			throw new NotAProjectException(String.format("CI04 %s", depname));
 	}
 }
 
