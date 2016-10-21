@@ -17,6 +17,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
@@ -56,19 +57,13 @@ public final class BinaryDirectory
 				if (Files.isDirectory(f))
 					continue;
 				
-				// Try adding the project
-				try
-				{
-					__addProject(f);
-				}
+				// Must end in JAR
+				String fn = f.getFileName().toString();
+				if (!fn.endsWith(".jar") && !fn.endsWith(".JAR"))
+					continue;
 				
-				// Ignore
-				catch (__CannotBeProjectException__ e)
-				{
-					// Only print the trace if it ends in JAR
-					if (f.getFileName().toString().endsWith(".jar"))
-						e.printStackTrace();
-				}
+				// Add the project
+				__addProject(f);
 			}
 		}
 	}
@@ -99,7 +94,12 @@ public final class BinaryDirectory
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Open as a ZIP to read the manifest
+		try (FileChannel fc = FileChannel.open(__p, StandardOpenOption.READ);
+			ZipFile zf = ZipFile.open(fc))
+		{
+			throw new Error("TODO");
+		}
 	} 
 }
 
