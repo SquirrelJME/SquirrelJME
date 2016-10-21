@@ -21,6 +21,9 @@ import java.util.Set;
  * This contains the directory of source projects which may be compiled into
  * binary projects.
  *
+ * The source directory is namespaced which permits multiple namespaces to
+ * exist and for the categorization of source projects.
+ *
  * @since 2016/10/20
  */
 public final class SourceDirectory
