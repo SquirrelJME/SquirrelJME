@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 
 /**
  * This provides a wrapper around the binary project manifest and is used to
@@ -32,11 +34,16 @@ public final class BinaryProjectManifest
 	 *
 	 * @param __is The stream containing the manifest data.
 	 * @throws IOException On read errors.
+	 * @throws InvalidProjectException If the manifest does not refer to a
+	 * valid binary project.
+	 * @throws NotAProjectException If the manifest does not refer to a
+	 * project.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
 	public BinaryProjectManifest(InputStream __is)
-		throws IOException, NullPointerException
+		throws IOException, InvalidProjectException, NotAProjectException,
+			NullPointerException
 	{
 		this(new JavaManifest(Objects.<InputStream>requireNonNull(__is)));
 	}
@@ -45,11 +52,16 @@ public final class BinaryProjectManifest
 	 * Parses the specified manifest.
 	 *
 	 * @param __is The binary manifest to parse.
+	 * @throws InvalidProjectException If the manifest does not refer to a
+	 * valid binary project.
+	 * @throws NotAProjectException If the manifest does not refer to a
+	 * project.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
 	public BinaryProjectManifest(JavaManifest __man)
-		throws NullPointerException
+		throws InvalidProjectException, NotAProjectException,
+			NullPointerException
 	{
 		// Check
 		if (__man == null)
@@ -57,6 +69,20 @@ public final class BinaryProjectManifest
 		
 		// Set
 		this.manifest = __man;
+		
+		// Depends on the attributes
+		JavaManifestAttributes attr = __man.getMainAttributes();
+		
+		// {@squirreljme.error CI03 The project is being ignored because it has
+		// be flagged as such.}
+		if (Boolean.valueOf(attr.get(
+			new JavaManifestKey("X-SquirrelJME-IgnoreBinaryProject"))))
+			throw new NotAProjectException("CI03");
+		
+		// {@squirreljme.error CI02 Old-style SquirrelJME projects (before
+		// October 2016) are not supported.}
+		if (null != attr.get(new JavaManifestKey("X-SquirrelJME-Name")))
+			throw new NotAProjectException("CI02");
 	}
 	
 	/**

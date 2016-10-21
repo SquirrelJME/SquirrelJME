@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: net.multiphasicapps.squirreljme.bootstrap.Main
+X-SquirrelJME-IgnoreBinaryProject: true
 
