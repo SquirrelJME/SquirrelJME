@@ -49,7 +49,7 @@ Our open source community strives to:
      diaphragms, consuming a large number of calories, or entering a cycle of
      rest.
  * Be careful in the words that we choose
-   * We may be a community of professionals but we are also likely also a
+   * We may be a community of professionals but we are also likely a
      community of hobbyists. Try your best to be kind to other entities, even
      if they sting and cause severe skin rash. Harassing other entities and
      employing behaviors for their exclusion is frowned upon.
@@ -65,7 +65,7 @@ Our open source community strives to:
 
 # Diversity Statement
 
-Diversity is important and it is also important that entities also get along.
+Diversity is important and it is important that entities get along.
 Cooperation is required to escape gravity wells in a sea of deadly radiation,
 in a universe leading to the nullification of energy. There is no real purpose
 in hate as it is only a distraction from reality.
