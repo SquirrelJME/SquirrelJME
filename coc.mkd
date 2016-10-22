@@ -11,19 +11,23 @@ Our open source community strives to:
 
  * Be friendly and patient.
    * By using your imagination, imagine that other entities being communicated
-     with have a round trip response time of up to 8 hours.
+     with have a round trip response time of up to 8 hours. When one entity
+     does not respond immediately they currently may be busy performing another
+     task.
  * Be welcoming.
    * We strive to be a community that welcomes and supports entities of all
-     backgrounds and identities for this software only. This includes, but is
-     not limited to members of any species (except mosquitoes and wasps),
-     genetic makeup, culture or lack of culture, universal origin,
+     backgrounds and identities for the use of this software. This includes,
+     and is not limited to members of any species (except mosquitoes and
+     wasps), genetic makeup, culture or lack of culture, universal origin,
      fur/epidermal/scale/feather layer spectral absorption and scattering,
      citizenship status, current placement on the socio-economical ladder,
      standard or non-standard test proficiency, physical abilities, physical
      disabilities, mental abilities, mental disabilities, ratio of one chemical
      to another chemical, mass, ideological beliefs, tail length, editor
      preference, operating system preference, file-system preference, CPU
-     architecture placement, and preferred energy and nutrient choices.
+     architecture placement, preferred energy and nutrient choices,
+     transistor size, clock frequency, garbage collection algorithm, and legal
+     entity status.
  * Be considerate.
    * Your work may or may not be used by others and you may or may not depend
      on the work of others. Any decision you make may or may not affect others,
@@ -58,5 +62,10 @@ Our open source community strives to:
      correct and a solution forged from both of them. Also, always learn from
      your mistakes and others mistakes.
 
-# Definitions
+# Diversity Statement
+
+Diversity is important and it is also important that entities also get along.
+Cooperation is required to escape gravity wells in a sea of deadly radiation,
+in a universe leading to the nullification of energy. There is no real purpose
+in hate as it is only a distraction from reality.
 
