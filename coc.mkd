@@ -13,7 +13,8 @@ Our open source community strives to:
    * By using your imagination, imagine that other entities being communicated
      with have a round trip response time of up to 8 hours. When one entity
      does not respond immediately they currently may be busy performing another
-     task.
+     task or are oblivious to your communications because they have not yet
+     arrived.
  * Be welcoming.
    * We strive to be a community that welcomes and supports entities of all
      backgrounds and identities for the use of this software. This includes,
@@ -79,4 +80,6 @@ alternative may be chosen.
 Note that many social communication systems support blocking and ignoring,
 consider using these as it can nullify the hostile noise.
 
+What is not acceptable is attacking those whose behavior is not acceptable. If
+this is done then those entities merge as one.
 
