@@ -16,9 +16,29 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Need to compile the program
+__cls="NewManifest"
+__src="$__exedir/$__cls.java"
+__odr="/tmp"
+__out="$__odr/$__cls.class"
+
+# Need to compile?
+if [ ! -f "$__out" ] || [ "$__src" -nt "$__out" ]
+then
+	if ! javac -d "$__odr" "$__src"
+	then
+		echo "Failed to compile"
+		exit 1
+	fi
+fi
+
 # Go through all manifests
 for __file in */*/META-INF/MANIFEST.MF
 do
-	echo "$__file"
+	echo "> $__file"
+	if java -classpath "$__odr" "$__cls" < "$__file"
+	then
+		echo "TODO: Write target file"
+	fi
 done
 
