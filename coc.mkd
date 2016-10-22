@@ -69,3 +69,14 @@ Cooperation is required to escape gravity wells in a sea of deadly radiation,
 in a universe leading to the nullification of energy. There is no real purpose
 in hate as it is only a distraction from reality.
 
+# Reporting Unacceptable Behaviors
+
+If an entity requires that a behavior is to be reported, such behavior should
+be reported in the same area where it has occurred. For example something that
+happens on IRC should be reported on IRC. If this is not possible then another
+alternative may be chosen.
+
+Note that many social communication systems support blocking and ignoring,
+consider using these as it can nullify the hostile noise.
+
+
