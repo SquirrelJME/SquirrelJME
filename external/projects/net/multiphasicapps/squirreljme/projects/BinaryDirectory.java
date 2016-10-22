@@ -128,6 +128,19 @@ public final class BinaryDirectory
 				rv = new BinaryProject(new BinaryProjectManifest(is), __p);
 			}
 			
+			// {@squirreljme.error CI09 The binary project at the specified
+			// path is not valid. (The binary project)}
+			catch (InvalidProjectException e)
+			{
+				// Ignore these instances
+				if (e instanceof NotAProjectException)
+					throw e;
+				
+				// Fail
+				throw new InvalidProjectException(String.format("CI09 %s",
+					__p), e);
+			}
+			
 			// Place into the project map
 			Map<ProjectName, BinaryProject> projects = this.projects;
 			synchronized (projects)

@@ -77,9 +77,26 @@ public final class JavaManifestAttributes
 	@Override
 	public String get(Object __o)
 	{
-		if (__o instanceof String)
-			return this.pairs.get(new JavaManifestKey((String)__o));
 		return this.pairs.get(__o);
+	}
+	
+	/**
+	 * Returns the value used by the given key.
+	 *
+	 * @param __s The key to get the value for.
+	 * @return The value for the given key or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/21
+	 */
+	public String getValue(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Find it
+		return get(new JavaManifestKey(__s));
 	}
 	
 	/**

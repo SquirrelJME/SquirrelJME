@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.projects;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.multiphasicapps.javac.base.Compiler;
@@ -37,6 +39,12 @@ public final class SourceProject
 	/** The root directory for the project. */
 	protected final Path root;
 	
+	/** The project namespace. */
+	protected final String namespace;
+	
+	/** The name of this project. */
+	private volatile Reference<ProjectName> _name;
+	
 	/**
 	 * Initializes the source project.
 	 *
@@ -55,6 +63,16 @@ public final class SourceProject
 		// Set
 		this.manifest = __man;
 		this.root = __r;
+		
+		// {@squirreljme.error CI07 Could not determine the parent directory
+		// of the given path. (The path to the project)}
+		Path par = __r.normalize().getParent();
+		if (par == null)
+			throw new InvalidProjectException(String.format("CI07 %s", __r));
+		this.namespace = par.getFileName().toString();
+		
+		// Check validity of the project name
+		projectName();
 	}
 	
 	/**
@@ -100,12 +118,24 @@ public final class SourceProject
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws InvalidProjectException If the project name is not valid.
 	 * @since 2016/10/21
 	 */
 	@Override
 	public ProjectName projectName()
+		throws InvalidProjectException
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<ProjectName> ref = this._name;
+		ProjectName rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._name = new WeakReference<>((rv =
+				new ProjectName(this.namespace, this.manifest.projectName())));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

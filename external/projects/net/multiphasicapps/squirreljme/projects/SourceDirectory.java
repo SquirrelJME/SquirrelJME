@@ -139,7 +139,24 @@ public final class SourceDirectory
 			SourceProjectManifest man = new SourceProjectManifest(is);
 			
 			// Create project
-			SourceProject rv = new SourceProject(man, __p);
+			SourceProject rv;
+			try
+			{
+				rv = new SourceProject(man, __p);
+			}
+			
+			// {@squirreljme.error CI08 The source project at the specified
+			// path is not valid. (The source directory)}
+			catch (InvalidProjectException e)
+			{
+				// Ignore these instances
+				if (e instanceof NotAProjectException)
+					throw e;
+				
+				// Fail
+				throw new InvalidProjectException(String.format("CI08 %s",
+					__p), e);
+			}
 			
 			// Add to the map
 			Map<ProjectName, SourceProject> projects = this.projects;

@@ -75,16 +75,15 @@ public final class BinaryProjectManifest
 		
 		// {@squirreljme.error CI03 The project is being ignored because it has
 		// be flagged as such.}
-		if (Boolean.valueOf(attr.get(
-			new JavaManifestKey("X-SquirrelJME-IgnoreBinaryProject"))))
+		if (Boolean.valueOf(
+			attr.getValue("X-SquirrelJME-IgnoreBinaryProject")))
 			throw new NotAProjectException("CI03");
 		
 		// {@squirreljme.error CI02 Old-style SquirrelJME binary projects
 		// (before September 2016) are not supported. (The old-style project
 		// name)}
 		String depname;
-		if (null != (depname =
-			attr.get(new JavaManifestKey("X-SquirrelJME-Name"))))
+		if (null != (depname = attr.getValue("X-SquirrelJME-Name")))
 			throw new NotAProjectException(String.format("CI02 %s", depname));
 	}
 	

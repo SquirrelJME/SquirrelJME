@@ -27,6 +27,9 @@ public final class SourceProjectManifest
 	/** The manifest used. */
 	protected final JavaManifest manifest;
 	
+	/** The project name. */
+	protected final String name;
+	
 	/**
 	 * Reads a manifest from the given input stream.
 	 *
@@ -75,9 +78,25 @@ public final class SourceProjectManifest
 		// (before September 2016) are not supported. (The old-style project
 		// name)}
 		String depname;
-		if (null != (depname =
-			attr.get(new JavaManifestKey("X-SquirrelJME-Name"))))
+		if (null != (depname = attr.getValue("X-SquirrelJME-Name")))
 			throw new NotAProjectException(String.format("CI04 %s", depname));
+		
+		// {@squirreljme.error CI06 No project name was specified.}
+		String name = attr.getValue("X-SquirrelJME-SourceName");
+		if (name == null)
+			throw new InvalidProjectException("CI06");
+		this.name = name;
+	}
+	
+	/**
+	 * Returns the name of the project.
+	 *
+	 * @return The project name.
+	 * @since 2016/10/21
+	 */
+	public String projectName()
+	{
+		return this.name;
 	}
 }
 
