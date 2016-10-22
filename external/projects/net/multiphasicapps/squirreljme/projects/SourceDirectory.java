@@ -135,14 +135,11 @@ public final class SourceDirectory
 		try (InputStream is = Channels.newInputStream(FileChannel.open(
 			manp, StandardOpenOption.READ)))
 		{
-			// Read the manifest
-			SourceProjectManifest man = new SourceProjectManifest(is);
-			
 			// Create project
 			SourceProject rv;
 			try
 			{
-				rv = new SourceProject(man, __p);
+				rv = new SourceProject(new SourceProjectManifest(is), __p);
 			}
 			
 			// {@squirreljme.error CI08 The source project at the specified
