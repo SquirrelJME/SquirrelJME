@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: cldc-full
+X-SquirrelJME-SourceName: cldc-full
 X-SquirrelJME-UUID: cb4e0a64-b9d8-4899-995c-fcdce1749288
 X-SquirrelJME-Error: AD
 API: CLDC
