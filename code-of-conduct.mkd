@@ -9,13 +9,13 @@ be employed depending on the severity of the issues.
 
 Our open source community strives to:
 
- * Be friendly and patient.
+ * **Be friendly and patient.**
    * By using your imagination, imagine that other entities being communicated
      with have a round trip response time of up to 8 hours. When one entity
      does not respond immediately they currently may be busy performing another
      task or are oblivious to your communications because they have not yet
      arrived.
- * Be welcoming.
+ * **Be welcoming.**
    * We strive to be a community that welcomes and supports entities of all
      backgrounds and identities for the use of this software. This includes,
      and is not limited to members of any species (except mosquitoes and
@@ -29,14 +29,14 @@ Our open source community strives to:
      architecture placement, preferred energy and nutrient choices,
      transistor size, clock frequency, garbage collection algorithm, and legal
      entity status.
- * Be considerate.
+ * **Be considerate.**
    * Your work may or may not be used by others and you may or may not depend
      on the work of others. Any decision you make may or may not affect others,
      however you should consider the consequences of action or inaction.
      Remember that we are a universal community, so you might not be
      communicating in the preferred method that the other entity uses for
      communication.
- * Be respectful.
+ * **Be respectful.**
    * Not all of use agree or disagree all of the time, however disagreement is
      no reason to be hostile against other entities. Entities from time to time
      may become frustrated for various purposes and reasons. However, please
@@ -45,15 +45,15 @@ Our open source community strives to:
      local fauna and carbon-based life, playing a game of falling four piece
      blocks while avoiding legal action, digging around in a world made up of
      cubes, absorbing light rays produced by a flat or slightly curved surface,
-     being exposed to high frequency vibrations caused by vibrating metal
-     diaphragms, consuming a large number of calories, or entering a cycle of
-     rest.
- * Be careful in the words that we choose
+     being exposed to high frequency vibrations caused by vibrating
+     metal/plastic diaphragms, consuming a large number of calories, or
+     entering a cycle of rest.
+ * **Be careful in the words that we choose.**
    * We may be a community of professionals but we are also likely a
      community of hobbyists. Try your best to be kind to other entities, even
      if they sting and cause severe skin rash. Harassing other entities and
      employing behaviors for their exclusion is frowned upon.
- * Try to understand why we disagree
+ * **Try to understand why we disagree.**
    * Disagreements happen, whether it be social, technical, economical,
      political, virtual, physical, and mental. Try to construct an argument
      that is in favor of the other side and weigh them against your own
