@@ -110,7 +110,7 @@ public class BasicAsset
 		{
 			// Load assets
 			List<BasicAsset> wrap = new LinkedList<>();
-			wrap.add(new BasicAsset("coc.mkd"));
+			wrap.add(new BasicAsset("code-of-conduct.mkd"));
 			wrap.add(new BasicAsset("readme.mkd"));
 			wrap.add(new BasicAsset("license.mkd"));
 			wrap.add(new BasicAsset("scope.mkd"));
