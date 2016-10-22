@@ -16,3 +16,9 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Go through all manifests
+for __file in */*/META-INF/MANIFEST.MF
+do
+	echo "$__file"
+done
+
