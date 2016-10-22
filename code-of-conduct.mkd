@@ -62,6 +62,11 @@ Our open source community strives to:
      reason for hostility. Sometimes the very differences of both sides may be
      correct and a solution forged from both of them. Also, always learn from
      your mistakes and others mistakes.
+ * **Privacy is important.**
+   * Because one entity uses a given open source software does not mean that
+     non-public information must be known. One does not need to know everything
+     about another entity to understand it and to interact with that given
+     entity.
 
 # Diversity Statement
 
