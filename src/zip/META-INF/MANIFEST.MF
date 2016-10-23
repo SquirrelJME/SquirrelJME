@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: zip
-X-SquirrelJME-UUID: 34332adb-2c68-4805-8adf-873e3ed6e136
-X-SquirrelJME-Depends: cldc-compact io-inflate
+X-SquirrelJME-SourceName: zip
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Basic ZIP Classes
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains base ZIP classes.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@io-inflate
 X-SquirrelJME-Error: BF
-LIBlet-Name: Basic ZIP Classes
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains base ZIP classes.
-
-
+X-SquirrelJME-UUID: 34332adb-2c68-4805-8adf-873e3ed6e136

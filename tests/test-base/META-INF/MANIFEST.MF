@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: test-base
-X-SquirrelJME-UUID: a37f7c7f-1b0e-4312-8be3-913f3c3e4b6c
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: test-base
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Test Base
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This is the base interface for a test 
+ frameworkwhich is to make sure that things operate correctly.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: AG
 X-SquirrelJME-Group: tests
-LIBlet-Name: Test Base
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This is the base interface for a test 
- frameworkwhich is to make sure that things operate correctly.
-
-
+X-SquirrelJME-UUID: a37f7c7f-1b0e-4312-8be3-913f3c3e4b6c

@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: util-sorted
-X-SquirrelJME-UUID: 304d83c9-fb28-4533-a713-ca2afc5faea1
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: util-sorted
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Sorted Set and Map
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains a sorted implementation
+  of a Map and a Set.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: CE
-LIBlet-Name: Sorted Set and Map
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains a sorted implementation of 
- a Map and a Set.
-
-
+X-SquirrelJME-UUID: 304d83c9-fb28-4533-a713-ca2afc5faea1
