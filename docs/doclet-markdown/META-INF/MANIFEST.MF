@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: doclet-markdown
-X-SquirrelJME-UUID: 8969189b-0210-4eeb-accf-60c3682bf3c7
-X-SquirrelJME-Depends: doclet-common markdown-writer
-X-SquirrelJME-Error: CF
-LIBlet-Name: Markdown Document Generator
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This implements the Doclet API and generates a 
- human readable set of Markdown documents which should neatly contain 
+X-SquirrelJME-SourceName: doclet-markdown
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Markdown Document Generator
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This implements the Doclet API and generates 
+ a human readable set of Markdown documents which should neatly contain 
  all of the SquirrelJME API documentation.
-
-
+X-SquirrelJME-Dependency-1: liblet:unknown@doclet-common
+X-SquirrelJME-Dependency-2: liblet:unknown@markdown-writer
+X-SquirrelJME-Error: CF
+X-SquirrelJME-UUID: 8969189b-0210-4eeb-accf-60c3682bf3c7

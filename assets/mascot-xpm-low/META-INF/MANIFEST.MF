@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: mascot-xpm-low
+X-SquirrelJME-SourceName: mascot-xpm-low
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: SquirrelJME Mascot (Low Res XPM)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This package contains the low resolution 
+ versions of the mascot as encoded XPM images. NOTE THAT THE LOW 
+ RESOLUTION XPM IMAGES ARE THE ACTUAL SOURCE IMAGES.
+X-SquirrelJME-Dependency-1: liblet:unknown@mascot
 X-SquirrelJME-UUID: 8974ee9f-1f68-4079-834c-eecd61e0625f
-X-SquirrelJME-Depends: mascot
-LIBlet-Name: SquirrelJME Mascot (Low Res XPM)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This package contains the low resolution versions 
- of the mascot as encoded XPM images. NOTE THAT THE LOW RESOLUTION XPM 
- IMAGES ARE THE ACTUAL SOURCE IMAGES.
-
-
