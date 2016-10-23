@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: midp-lcdui-common
-X-SquirrelJME-UUID: fc5cb1b5-aae9-4a65-947b-d0a28223867c
-X-SquirrelJME-Depends: cldc-compact
-X-SquirrelJME-Error: DU
-LIBlet-Name: Common MIDP LCDUI
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the common code that is 
- shared by both the client and the server. Since the server is not 
+X-SquirrelJME-SourceName: midp-lcdui-common
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Common MIDP LCDUI
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the common code that is
+  shared by both the client and the server. Since the server is not 
  needed by clients, it is kept separated.
-
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Error: DU
+X-SquirrelJME-UUID: fc5cb1b5-aae9-4a65-947b-d0a28223867c

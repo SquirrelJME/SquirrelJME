@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-rms
-X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
-X-SquirrelJME-Depends: meep
+X-SquirrelJME-SourceName: meep-rms
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP Record Management System
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains the implementation of the 
+ record management system which is used to manage records whichmay be 
+ used instead of the filesystem (if a filesystem is notsupported).
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
 X-SquirrelJME-Error: DC
 X-SquirrelJME-StandardLib: microedition.rms;0.0.0
-LIBlet-Name: MEEP Record Management System
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the implementation of the record 
- management system which is used to manage records whichmay be used 
- instead of the filesystem (if a filesystem is notsupported).
-
-
+X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d

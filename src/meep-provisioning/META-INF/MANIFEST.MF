@@ -1,16 +1,15 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-provisioning
-X-SquirrelJME-UUID: 98ab129b-9ad6-4546-9782-9ef69c8f237a
-X-SquirrelJME-Depends: meep
+X-SquirrelJME-SourceName: meep-provisioning
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP Provisioning
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides support for provisioning new 
+ MIDlets and LIBlets which may exist on the network and can beseen in a 
+ way as a remote application downloader and installerexcept by a more 
+ concrete means. It is possible for applicationsto automatically be upda
+ ted.
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
 X-SquirrelJME-Error: DM
 X-SquirrelJME-StandardLib: microedition.provisioning;0.0.0
-LIBlet-Name: MEEP Provisioning
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides support for provisioning new 
- MIDlets and LIBlets which may exist on the network and can beseen in 
- a way as a remote application downloader and installerexcept by a 
- more concrete means. It is possible for applicationsto automatically 
- be updated.
-
-
+X-SquirrelJME-UUID: 98ab129b-9ad6-4546-9782-9ef69c8f237a

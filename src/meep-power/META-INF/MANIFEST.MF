@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-power
-X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6
-X-SquirrelJME-Depends: meep
+X-SquirrelJME-SourceName: meep-power
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP Power Management
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides support for quering the current
+  electrical state of the device along with the setting of potential new
+  power modes.
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
 X-SquirrelJME-Error: DJ
 X-SquirrelJME-StandardLib: microedition.power;0.0.0
-LIBlet-Name: MEEP Power Management
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides support for quering the current 
- electrical state of the device along with the setting of potential 
- new power modes.
-
-
+X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6

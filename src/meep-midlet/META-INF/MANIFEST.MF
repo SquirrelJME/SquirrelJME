@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-midlet
-X-SquirrelJME-UUID: 1d9e3c4f-b0ec-4e83-b656-0454dd661868
-X-SquirrelJME-Depends: meep manifest midlet-identity
+X-SquirrelJME-SourceName: meep-midlet
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP MIDlet Interface
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains the MIDlet interface which acts
+  as the main entry point for all MIDlets.
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
+X-SquirrelJME-Dependency-2: liblet:unknown@manifest
+X-SquirrelJME-Dependency-3: liblet:unknown@midlet-identity
 X-SquirrelJME-Error: CC
 X-SquirrelJME-StandardLib: microedition.midlet;0.0.0
-LIBlet-Name: MEEP MIDlet Interface
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the MIDlet interface which acts as 
- the main entry point for all MIDlets.
-
-
+X-SquirrelJME-UUID: 1d9e3c4f-b0ec-4e83-b656-0454dd661868
