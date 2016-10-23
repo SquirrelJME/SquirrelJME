@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-SourceName: cldc-compact
+X-SquirrelJME-UUID: a41e003e-598d-4ba0-a935-33b2cf30d9cb
+X-SquirrelJME-Error: ZZ
+API: CLDC
+API-Name: Connection Limited Device Configuration
+API-Type: Configuration
+API-Vendor: Steven Gawroriski
+API-Specification-Version: 1.8-Compact
+X-SquirrelJME-Description: This is the standard JavaME 8 Connection 
+ Limited  Device Configuration which contains the core classes used 
+ by Java ME.
+
+

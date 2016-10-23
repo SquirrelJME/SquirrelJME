@@ -206,7 +206,7 @@ public class NewManifest
 			
 			// Already translated? ignore
 			if (input.containsKey("X-SquirrelJME-SourceName"))
-				return;
+				throw new RuntimeException("AlreadyTranslated");
 			
 			// Force everything to be a liblet initially
 			output.put("X-SquirrelJME-Type", "liblet");
