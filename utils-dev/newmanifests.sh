@@ -43,7 +43,7 @@ do
 		
 		__i=$(expr "$__i" + 1)
 		
-		if [ "$__i" -ge "25" ]
+		if [ "$__i" -ge "12" ]
 		then
 			__i=0
 			fossil commit -m "Translate manifests."
