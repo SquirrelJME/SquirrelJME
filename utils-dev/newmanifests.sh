@@ -33,12 +33,21 @@ then
 fi
 
 # Go through all manifests
+__i=0
 for __file in */*/META-INF/MANIFEST.MF
 do
 	echo ">>> $__file"
-	if java -classpath "$__odr" "$__cls" < "$__file"
+	if java -classpath "$__odr" "$__cls" < "$__file" > /tmp/$$
 	then
-		echo "TODO: Write target file"
+		mv /tmp/$$ "$__file"
+		
+		__i=$(expr "$__i" + 1)
+		
+		if [ "$__i" -ge "25" ]
+		then
+			__i=0
+			fossil commit -m "Translate manifests."
+		fi
 	fi
 done
 
