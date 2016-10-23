@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: ipc-mailbox
-X-SquirrelJME-UUID: e21f83e9-0974-4e1d-8171-4bd9733f7350
-X-SquirrelJME-Depends: cldc-compact midlet-identity
+X-SquirrelJME-SourceName: ipc-mailbox
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Interprocess Communication Mailboxes
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains an implementation of a 
+ mailbox (message queue) based inter-process communication system. This 
+ is used by the kernel to manage communication between the kernel and 
+ processes or processes to other processes.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@midlet-identity
 X-SquirrelJME-Error: BW
-LIBlet-Name: Interprocess Communication Mailboxes
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains an implementation of 
- a mailbox (message queue) based inter-process communication 
- system. This is used by the kernel to manage communication 
- between the kernel and processes or processes to other 
- processes.
-
+X-SquirrelJME-UUID: e21f83e9-0974-4e1d-8171-4bd9733f7350

@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: native-code
-X-SquirrelJME-UUID: 64c3121d-adec-4235-a611-8a801f266ffe
-X-SquirrelJME-Depends: cldc-compact util-msd util-unmodifiable 
- native-code-base
+X-SquirrelJME-SourceName: native-code
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Native Code
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the base support for 
+ native code generators.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@util-msd
+X-SquirrelJME-Dependency-3: liblet:unknown@util-unmodifiable
+X-SquirrelJME-Dependency-4: liblet:unknown@native-code-base
 X-SquirrelJME-Error: AR
-LIBlet-Name: Native Code
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the base support for native 
- code generators.
-
-
+X-SquirrelJME-UUID: 64c3121d-adec-4235-a611-8a801f266ffe

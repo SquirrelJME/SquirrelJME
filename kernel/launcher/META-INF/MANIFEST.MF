@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: launcher
-X-SquirrelJME-UUID: 6ace2255-222e-43d6-9330-cb6918c00f8f
-X-SquirrelJME-Depends: cldc-compact meep-lui midlet-identity
-X-SquirrelJME-Error: CM
-LIBlet-Name: Base Launcher
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: The project implements the base launcher which 
- the LUI and LCDUI based launchers extend to provide a graphical 
+X-SquirrelJME-SourceName: launcher
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Base Launcher
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: The project implements the base launcher 
+ which the LUI and LCDUI based launchers extend to provide a graphical 
  interface above a standard implementation.
-
-
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@meep-lui
+X-SquirrelJME-Dependency-3: liblet:unknown@midlet-identity
+X-SquirrelJME-Error: CM
+X-SquirrelJME-UUID: 6ace2255-222e-43d6-9330-cb6918c00f8f

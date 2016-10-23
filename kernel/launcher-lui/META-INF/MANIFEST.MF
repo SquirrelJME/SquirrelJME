@@ -1,14 +1,15 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: launcher-lui
-X-SquirrelJME-UUID: 5ee74e69-0c4d-465e-acea-dc50507a1b19
-X-SquirrelJME-Depends: launcher meep-lui meep-midlet
+X-SquirrelJME-SourceName: launcher-lui
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Launcher (Line User Interface)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This implements the launcher which uses the 
+ MEEP Line User Interface to interact with the user.
+X-SquirrelJME-Dependency-1: liblet:unknown@launcher
+X-SquirrelJME-Dependency-2: liblet:unknown@meep-lui
+X-SquirrelJME-Dependency-3: liblet:unknown@meep-midlet
 X-SquirrelJME-Error: CN
-MIDlet-1: SquirrelJME Launcher (Console), , 
- net.multiphasicapps.launcher.lui.MidletMain
-LIBlet-Name: Launcher (Line User Interface)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This implements the launcher which uses the MEEP 
- Line User Interface to interact with the user.
-
-
+X-SquirrelJME-UUID: 5ee74e69-0c4d-465e-acea-dc50507a1b19
+MIDlet-1: SquirrelJME Launcher (Console), , net.multiphasicapps.launcher
+ .lui.MidletMain

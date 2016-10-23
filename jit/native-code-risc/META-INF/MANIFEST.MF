@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: native-code-risc
-X-SquirrelJME-UUID: 223c23e9-5b00-41db-9d55-76bc91d1db9b
-X-SquirrelJME-Depends: native-code
-X-SquirrelJME-Error: DN
-LIBlet-Name: Native Code (RISC)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This implements the base for native code writers 
- which target RISC-based CPUs such as MIPS and PowerPC. Since many 
- RISCs operate on the same principals, this is used to reduce code 
+X-SquirrelJME-SourceName: native-code-risc
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Native Code (RISC)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This implements the base for native code 
+ writers which target RISC-based CPUs such as MIPS and PowerPC. Since 
+ many RISCs operate on the same principals, this is used to reduce code 
  that would be written multiple times.
-
+X-SquirrelJME-Dependency-1: liblet:unknown@native-code
+X-SquirrelJME-Error: DN
+X-SquirrelJME-UUID: 223c23e9-5b00-41db-9d55-76bc91d1db9b
