@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: util-empty
-X-SquirrelJME-UUID: ab7fb631-53cb-46b1-9066-b05a634009e5
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: util-empty
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Empty Collections
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains empty collections.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: AJ
-LIBlet-Name: Empty Collections
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains empty collections.
-
-
+X-SquirrelJME-UUID: ab7fb631-53cb-46b1-9066-b05a634009e5

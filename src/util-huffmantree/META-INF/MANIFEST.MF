@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: util-huffmantree
-X-SquirrelJME-UUID: 569b0a72-0aa7-4bda-8273-4ad58779701f
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: util-huffmantree
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra Util Huffman Tree
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains an implementation of the 
+ Huffman data tree.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: AK
-LIBlet-Name: Extra Util Huffman Tree
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains an implementation of the Huffman 
- data tree.
-
-
+X-SquirrelJME-UUID: 569b0a72-0aa7-4bda-8273-4ad58779701f

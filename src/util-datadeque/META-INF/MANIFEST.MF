@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: util-datadeque
-X-SquirrelJME-UUID: 82c221db-c5d8-4aad-a8e4-ac1a2a91d17c
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: util-datadeque
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Byte Deque Utility
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides access to a dynamically sized 
+ byte buffer with a Deque-like interface.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: AE
-LIBlet-Name: Byte Deque Utility
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to a dynamically sized byte 
- buffer with a Deque-like interface.
-
-
+X-SquirrelJME-UUID: 82c221db-c5d8-4aad-a8e4-ac1a2a91d17c
