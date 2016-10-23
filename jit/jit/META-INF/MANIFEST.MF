@@ -1,14 +1,18 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: jit
-X-SquirrelJME-UUID: 73dc1d84-de7d-4548-8e66-9e83af4b9a4b
-X-SquirrelJME-Depends: cldc-compact util-unmodifiable jit-base 
- class-format util-sorted util-bitset
+X-SquirrelJME-SourceName: jit
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Just-In-Time Compiler
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This implements the just in time compiler 
+ which is used to generate native code. This JIT is designed in a way 
+ where it performs all of the compilation work as required in a single p
+ ass.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@util-unmodifiable
+X-SquirrelJME-Dependency-3: liblet:unknown@jit-base
+X-SquirrelJME-Dependency-4: liblet:unknown@class-format
+X-SquirrelJME-Dependency-5: liblet:unknown@util-sorted
+X-SquirrelJME-Dependency-6: liblet:unknown@util-bitset
 X-SquirrelJME-Error: ED
-LIBlet-Name: Just-In-Time Compiler
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This implements the just in time compiler which 
- is used to generate native code. This JIT is designed in a way where 
- it performs all of the compilation work as required in a single pass.
-
-
+X-SquirrelJME-UUID: 73dc1d84-de7d-4548-8e66-9e83af4b9a4b

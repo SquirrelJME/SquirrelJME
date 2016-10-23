@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: exe
-X-SquirrelJME-UUID: bfe4a098-c227-4037-8826-aa628aa3e4c9
-X-SquirrelJME-Depends: jit-base util-futurebuffer
+X-SquirrelJME-SourceName: exe
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Executable Linker
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the base support for 
+ executable linkers that the JIT uses to generate target SquirrelJME bin
+ aries.
+X-SquirrelJME-Dependency-1: liblet:unknown@jit-base
+X-SquirrelJME-Dependency-2: liblet:unknown@util-futurebuffer
 X-SquirrelJME-Error: BR
-LIBlet-Name: Executable Linker
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the base support for 
- executable linkers that the JIT uses to generate target SquirrelJME 
- binaries.
-
-
+X-SquirrelJME-UUID: bfe4a098-c227-4037-8826-aa628aa3e4c9

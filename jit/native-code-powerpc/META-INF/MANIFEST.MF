@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: native-code-powerpc
-X-SquirrelJME-UUID: 4d11bcec-a977-4bed-b3bf-ac3926af1aa4
-X-SquirrelJME-Depends: native-code-risc io-data
+X-SquirrelJME-SourceName: native-code-powerpc
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Native Code (PowerPC)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains code generators for 
+ PowerPC machine code.
+X-SquirrelJME-Dependency-1: liblet:unknown@native-code-risc
+X-SquirrelJME-Dependency-2: liblet:unknown@io-data
 X-SquirrelJME-Error: BT
-LIBlet-Name: Native Code (PowerPC)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains code generators for PowerPC 
- machine code.
-
-
+X-SquirrelJME-UUID: 4d11bcec-a977-4bed-b3bf-ac3926af1aa4

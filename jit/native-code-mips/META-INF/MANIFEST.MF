@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: native-code-mips
-X-SquirrelJME-UUID: 42644523-adb1-445a-90a1-17bf37ab267b
-X-SquirrelJME-Depends: native-code-risc io-data
+X-SquirrelJME-SourceName: native-code-mips
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Native Code (MIPS)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains generators for native 
+ MIPS machine code.
+X-SquirrelJME-Dependency-1: liblet:unknown@native-code-risc
+X-SquirrelJME-Dependency-2: liblet:unknown@io-data
 X-SquirrelJME-Error: AW
-LIBlet-Name: Native Code (MIPS)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains generators for native MIPS 
- machine code.
-
-
+X-SquirrelJME-UUID: 42644523-adb1-445a-90a1-17bf37ab267b
