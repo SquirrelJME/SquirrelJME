@@ -249,9 +249,9 @@ public class NewManifest
 						// Dependenceis
 					case "x-squirreljme-depends":
 						for (String dep : val.split("[ \t]"))
-							output.put(String.format("X-SquirrelJME-Depend-%d",
-								depnum++),
-								String.format("project:unknown@%s", dep));
+							output.put(String.format(
+								"X-SquirrelJME-Dependency-%d", depnum++),
+								String.format("liblet:unknown@%s", dep));
 						break;
 					
 						// Default is to copy
