@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: test-util-huffmantree
-X-SquirrelJME-UUID: 8ac53406-fbdb-459b-bf83-b5948143455f
-X-SquirrelJME-Depends: test-base util-huffmantree io-bits
+X-SquirrelJME-SourceName: test-util-huffmantree
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Huffman Tree Tests
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Dependency-1: liblet:unknown@test-base
+X-SquirrelJME-Dependency-2: liblet:unknown@util-huffmantree
+X-SquirrelJME-Dependency-3: liblet:unknown@io-bits
 X-SquirrelJME-Group: tests
-LIBlet-Name: Huffman Tree Tests
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-
-
+X-SquirrelJME-UUID: 8ac53406-fbdb-459b-bf83-b5948143455f

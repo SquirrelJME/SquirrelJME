@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: test-util-sorted
-X-SquirrelJME-UUID: 9f7f47c0-976f-41e3-a02e-418f0c500bcc
-X-SquirrelJME-Depends: test-base util-sorted
+X-SquirrelJME-SourceName: test-util-sorted
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Sorted Map and Set Tests
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Dependency-1: liblet:unknown@test-base
+X-SquirrelJME-Dependency-2: liblet:unknown@util-sorted
 X-SquirrelJME-Group: tests
-LIBlet-Name: Sorted Map and Set Tests
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-
-
+X-SquirrelJME-UUID: 9f7f47c0-976f-41e3-a02e-418f0c500bcc
