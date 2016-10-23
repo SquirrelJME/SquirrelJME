@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-concurrency
-X-SquirrelJME-UUID: 70d937c9-e6d1-4618-a299-8182ea5e612e
-X-SquirrelJME-Depends: meep
+X-SquirrelJME-SourceName: meep-concurrency
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP Concurrency
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: The concurrency APIs allows multiple 
+ applications to run at the same time.
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
 X-SquirrelJME-Error: DK
 X-SquirrelJME-StandardLib: microedition.concurrency;0.0.0
-LIBlet-Name: MEEP Concurrency
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: The concurrency APIs allows multiple applications 
- to run at the same time.
-
-
+X-SquirrelJME-UUID: 70d937c9-e6d1-4618-a299-8182ea5e612e

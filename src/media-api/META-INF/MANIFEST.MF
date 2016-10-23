@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: media-api
-X-SquirrelJME-UUID: 1be6eb96-52e4-4762-a1d0-5dd95e0c9f39
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: media-api
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Media API
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the implementation of 
+ the MIDP 3.0 Media API which is also specified in JSR 135.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: EA
-LIBlet-Name: Media API
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the implementation of the 
- MIDP 3.0 Media API which is also specified in JSR 135.
-
+X-SquirrelJME-UUID: 1be6eb96-52e4-4762-a1d0-5dd95e0c9f39

@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-io
-X-SquirrelJME-UUID: 454f7bbc-942c-44c8-9316-2f341052b350
-X-SquirrelJME-Depends: meep
+X-SquirrelJME-SourceName: meep-io
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP Input/Output
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains the interfaces for application 
+ push registries and communication between midlets.
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
 X-SquirrelJME-Error: DF
 X-SquirrelJME-StandardLib: microedition.io;0.0.0
-LIBlet-Name: MEEP Input/Output
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the interfaces for application push 
- registries and communication between midlets.
-
-
+X-SquirrelJME-UUID: 454f7bbc-942c-44c8-9316-2f341052b350

@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: meep-cellular
-X-SquirrelJME-UUID: eac4a39d-b264-44ca-9e77-38a96a6e30cc
-X-SquirrelJME-Depends: meep
+X-SquirrelJME-SourceName: meep-cellular
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: MEEP Cellular Networking
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides an implementation which is used
+  to access cellular networks.
+X-SquirrelJME-Dependency-1: liblet:unknown@meep
 X-SquirrelJME-Error: DH
 X-SquirrelJME-StandardLib: microedition.cellular;0.0.0
-LIBlet-Name: MEEP Cellular Networking
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides an implementation which is used to 
- access cellular networks.
-
-
+X-SquirrelJME-UUID: eac4a39d-b264-44ca-9e77-38a96a6e30cc

@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: io-region
-X-SquirrelJME-UUID: e6cc1f54-fd8e-4fb2-bbc4-c7f41499181b
-X-SquirrelJME-Depends: cldc-compact
-X-SquirrelJME-Error: AP
-LIBlet-Name: Extra IO Regions
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains input stream region limits and 
+X-SquirrelJME-SourceName: io-region
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra IO Regions
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains input stream region limits and 
  control.
-
-
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Error: AP
+X-SquirrelJME-UUID: e6cc1f54-fd8e-4fb2-bbc4-c7f41499181b

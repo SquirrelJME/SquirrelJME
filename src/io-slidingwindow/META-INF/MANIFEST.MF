@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: io-slidingwindow
-X-SquirrelJME-UUID: 4a4eac91-13ec-4385-980f-3ed23c1346bb
-X-SquirrelJME-Depends: cldc-compact util-datadeque
+X-SquirrelJME-SourceName: io-slidingwindow
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra IO Sliding Window
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides sliding windows which get data 
+ at the end and remove data at the very start.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@util-datadeque
 X-SquirrelJME-Error: AI
-LIBlet-Name: Extra IO Sliding Window
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides sliding windows which get data at 
- the end and remove data at the very start.
-
-
+X-SquirrelJME-UUID: 4a4eac91-13ec-4385-980f-3ed23c1346bb
