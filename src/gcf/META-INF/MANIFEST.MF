@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: gcf
-X-SquirrelJME-UUID: 1358142d-037f-4421-9a52-0534764a45d3
-X-SquirrelJME-Depends: cldc-compact meep-midlet midlet-identity
+X-SquirrelJME-SourceName: gcf
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Generic Connection Framework
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This projects contains the Genericconnection 
+ framework which is used to create connections to other resources.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@meep-midlet
+X-SquirrelJME-Dependency-3: liblet:unknown@midlet-identity
 X-SquirrelJME-Error: EC
-LIBlet-Name: Generic Connection Framework
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This projects contains the Generic
- connection framework which is used to create connections 
- to other resources.
-
+X-SquirrelJME-UUID: 1358142d-037f-4421-9a52-0534764a45d3

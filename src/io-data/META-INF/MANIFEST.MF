@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: io-data
-X-SquirrelJME-UUID: 6897c4e3-8267-4438-949c-b6242cd1b3a8
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-SourceName: io-data
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Generic Data Output
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides slightly more powerful data 
+ input and output streams which can be used to read binary data.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: BD
-LIBlet-Name: Generic Data Output
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides slightly more powerful data input 
- and output streams which can be used to read binary data.
-
-
+X-SquirrelJME-UUID: 6897c4e3-8267-4438-949c-b6242cd1b3a8

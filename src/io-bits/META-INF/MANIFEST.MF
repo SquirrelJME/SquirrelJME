@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: io-bits
-X-SquirrelJME-UUID: c45a0724-653e-4a54-b43f-35d00ac1cb32
-X-SquirrelJME-Depends: cldc-compact
-X-SquirrelJME-Error: AH
-LIBlet-Name: Extra IO Bits
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides bit based interfaces for the 
+X-SquirrelJME-SourceName: io-bits
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra IO Bits
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides bit based interfaces for the 
  transferal of bits rather than bytes.
-
-
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Error: AH
+X-SquirrelJME-UUID: c45a0724-653e-4a54-b43f-35d00ac1cb32

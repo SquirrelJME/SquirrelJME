@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: io-crc32
+X-SquirrelJME-SourceName: io-crc32
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra IO CRC32
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This calculates the CRC32 of a data stream.
+X-SquirrelJME-Dependency-1: liblet:unknown@io-datasink
 X-SquirrelJME-UUID: 5a97bc11-a924-4494-b971-9537f8202431
-X-SquirrelJME-Depends: io-datasink
-LIBlet-Name: Extra IO CRC32
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This calculates the CRC32 of a data stream.
-
-

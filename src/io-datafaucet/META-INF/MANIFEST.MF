@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: io-datafaucet
-X-SquirrelJME-UUID: 32a36ca2-ddc1-4b7e-8e0b-b7984aa68e3b
-X-SquirrelJME-Depends: cldc-compact util-datadeque
+X-SquirrelJME-SourceName: io-datafaucet
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra IO Data Faucet
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains classes which generate data and
+  do not consume data.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@util-datadeque
 X-SquirrelJME-Error: AB
-LIBlet-Name: Extra IO Data Faucet
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This contains classes which generate data and do 
- not consume data.
-
-
+X-SquirrelJME-UUID: 32a36ca2-ddc1-4b7e-8e0b-b7984aa68e3b
