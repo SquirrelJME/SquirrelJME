@@ -35,7 +35,7 @@ fi
 # Go through all manifests
 for __file in */*/META-INF/MANIFEST.MF
 do
-	echo "> $__file"
+	echo ">>> $__file"
 	if java -classpath "$__odr" "$__cls" < "$__file"
 	then
 		echo "TODO: Write target file"

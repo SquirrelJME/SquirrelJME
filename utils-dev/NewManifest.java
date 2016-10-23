@@ -10,8 +10,11 @@
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.jar.Manifest;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -24,6 +27,16 @@ import java.util.TreeMap;
  */
 public class NewManifest
 {
+	/** Fixed sorting order. */
+	public static final List<String> FIXED_SORT_ORDER =
+		Arrays.<String>asList("X-SquirrelJME-SourceName", "X-SquirrelJME-Type",
+			"X-SquirrelJME-Title", "X-SquirrelJME-Vendor",
+			"X-SquirrelJME-Version", "X-SquirrelJME-Description");
+	
+	/** The column limit. */
+	public static final int COLUMN_LIMIT =
+		72;
+	
 	/** Compares two strings case insensitively and by numerical value. */
 	public static Comparator<String> KEY_COMPARE =
 		new Comparator<String>()
@@ -35,16 +48,44 @@ public class NewManifest
 			@Override
 			public int compare(String __a, String __b)
 			{
+				// Sort SquirrelJME specific before non-specific
+				boolean xsqa = __a.startsWith("X-SquirrelJME-"),
+					xsqb = __b.startsWith("X-SquirrelJME-");
+				if (xsqa && !xsqb)
+					return -1;
+				else if (!xsqa && xsqb)
+					return 1;
+				
+				// In fixed order?
+				int fixa = FIXED_SORT_ORDER.indexOf(__a),
+					fixb = FIXED_SORT_ORDER.indexOf(__b);
+				if (fixa >= 0 && fixb >= 0)
+				{
+					if (fixa < fixb)
+						return -1;
+					else if (fixa > fixb)
+						return 1;
+				}
+				
+				// Specific ones before non-specific
+				else if (fixa >= 0 && fixb < 0)
+					return -1;
+				
+				// non-specific after specific ones
+				else if (fixa < 0 && fixb >= 0)
+					return 1;
+				
 				// Get length of both
 				int la = __a.length(), lb = __b.length();
 				int mm = Math.min(la, lb);
 				
 				// Compare each character
-				for (int ia = 0, ib = 0; ia < mm && ib < mm;)
+				int ia = 0, ib = 0;
+				for (; ia < la && ib < lb;)
 				{
 					// Read both characters
 					char ca = __a.charAt(ia++),
-						cb = __a.charAt(ib++);
+						cb = __b.charAt(ib++);
 					
 					// Are these digits?
 					boolean diga = Character.isDigit(ca),
@@ -64,22 +105,62 @@ public class NewManifest
 						int rv = Character.compare(Character.toLowerCase(ca),
 							Character.toLowerCase(cb));
 						if (rv != 0)
-							return 0;
+							return rv;
 					}
 					
 					// Both digits
 					else
 					{
-						throw new Error("TODO");
+						// Get digit to use
+						int numa = Character.digit(ca, 10),
+							numb = Character.digit(cb, 10);
+						
+						// Read number of the first string
+						while (ia < la)
+						{
+							char peek = __a.charAt(ia);
+							
+							// Stop if not a digit
+							if (!Character.isDigit(peek))
+								break;
+							
+							// Add into it
+							numa = (numa * 10) + Character.digit(peek, 10);
+							ia++;
+						}
+						
+						// Read number of the second string
+						while (ib < lb)
+						{
+							char peek = __b.charAt(ib);
+							
+							// Stop if not a digit
+							if (!Character.isDigit(peek))
+								break;
+							
+							// Add into it
+							numb = (numb * 10) + Character.digit(peek, 10);
+							ib++;
+						}
+						
+						// Compare
+						if (numa < numb)
+							return -1;
+						else if (numa > numb)
+							return 1;
 					}
 				}
 				
+				// Characters left?
+				boolean lefta = ia < la,
+					leftb = ib < lb;
+				
 				// Shorter is lower
-				if (la < lb)
+				if (!lefta && leftb)
 					return -1;
 				
 				// Longer is higher
-				else if (la > lb)
+				else if (lefta && !leftb)
 					return 1;
 				
 				// Otherwise the same
@@ -127,6 +208,9 @@ public class NewManifest
 			if (input.containsKey("X-SquirrelJME-SourceName"))
 				return;
 			
+			// Force everything to be a liblet initially
+			output.put("X-SquirrelJME-Type", "liblet");
+			
 			// Go through all input entries
 			int depnum = 1;
 			for (Map.Entry<String, String> e : input.entrySet())
@@ -137,6 +221,11 @@ public class NewManifest
 				// Depends on the key
 				switch (key.toLowerCase())
 				{
+						// Project name
+					case "x-squirreljme-name":
+						output.put("X-SquirrelJME-SourceName", val);
+						break;
+					
 						// Library name
 					case "liblet-name":
 						output.put("X-SquirrelJME-Title", val);
@@ -160,9 +249,9 @@ public class NewManifest
 						// Dependenceis
 					case "x-squirreljme-depends":
 						for (String dep : val.split("[ \t]"))
-							output.put(String.format("LIBlet-Dependency-%d:",
-								depnum++), String.format(
-								"x-squirreljme;required;unknown@%s;;", dep));
+							output.put(String.format("X-SquirrelJME-Depend-%d",
+								depnum++),
+								String.format("project:unknown@%s", dep));
 						break;
 					
 						// Default is to copy
@@ -183,11 +272,34 @@ public class NewManifest
 				sb.append(": ");
 				sb.append(e.getValue());
 				
-				// Print it
-				System.out.println(sb);
+				// Print out character by character, going to the next line
+				// when applicable
+				String ss = sb.toString();
+				int n = ss.length();
+				int col = 0;
+				for (int i = 0; i < n; i++)
+				{
+					// Get the next space
+					int ns = ss.indexOf(' ', i);
+					
+					// If this word exceeds the column bounds then go to the
+					// next line
+					// Or if the column limit is reached
+					if (col + (ns - i) > COLUMN_LIMIT || col >= COLUMN_LIMIT)
+					{
+						System.out.println();
+						System.out.print(" ");
+						col = 1;
+					}
+					
+					// Print it
+					System.out.print(ss.charAt(i));
+					col++;
+				}
+				
+				// Go to next line always
+				System.out.println();
 			}
-			
-			throw new Error("TODO");
 		}
 	}
 }
