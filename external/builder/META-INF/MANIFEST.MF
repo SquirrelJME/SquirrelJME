@@ -1,15 +1,24 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: builder
-X-SquirrelJME-UUID: 69441fea-3864-4fd2-8716-0b0e355a4ced
-X-SquirrelJME-Depends: cldc-full zip-reader-block jit projects 
- util-unmodifiable emulator jvm basic-assets zip-writer-stream 
- exe io-hexdumpstream util-seekablearray zip-reader-stream
+X-SquirrelJME-SourceName: builder
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: SquirrelJME Builder
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project is used to build SquirrelJME 
+ native binaries for execution on a given system.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-full
+X-SquirrelJME-Dependency-2: liblet:unknown@zip-reader-block
+X-SquirrelJME-Dependency-3: liblet:unknown@jit
+X-SquirrelJME-Dependency-4: liblet:unknown@projects
+X-SquirrelJME-Dependency-5: liblet:unknown@util-unmodifiable
+X-SquirrelJME-Dependency-6: liblet:unknown@emulator
+X-SquirrelJME-Dependency-7: liblet:unknown@jvm
+X-SquirrelJME-Dependency-8: liblet:unknown@basic-assets
+X-SquirrelJME-Dependency-9: liblet:unknown@zip-writer-stream
+X-SquirrelJME-Dependency-10: liblet:unknown@exe
+X-SquirrelJME-Dependency-11: liblet:unknown@io-hexdumpstream
+X-SquirrelJME-Dependency-12: liblet:unknown@util-seekablearray
+X-SquirrelJME-Dependency-13: liblet:unknown@zip-reader-stream
 X-SquirrelJME-Error: DW
+X-SquirrelJME-UUID: 69441fea-3864-4fd2-8716-0b0e355a4ced
 Main-Class: net.multiphasicapps.squirreljme.builder.Main
-LIBlet-Name: SquirrelJME Builder
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project is used to build SquirrelJME native 
- binaries for execution on a given system.
-
-

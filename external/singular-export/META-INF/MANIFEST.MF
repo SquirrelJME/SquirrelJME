@@ -1,16 +1,19 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: singular-export
-X-SquirrelJME-UUID: fd4af38a-bd5b-4b96-ae2f-d0e6e21e4d28
-X-SquirrelJME-Depends: cldc-full projects util-sorted 
- zip-writer-stream class-format
+X-SquirrelJME-SourceName: singular-export
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Singular Project Export
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project allows for the export of a 
+ single project and all of its dependencies with an output as a single 
+ JAR file. The purpose of this project is to allow for JARs to be 
+ exported to the reference implementation since it does not support LIBl
+ ets.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-full
+X-SquirrelJME-Dependency-2: liblet:unknown@projects
+X-SquirrelJME-Dependency-3: liblet:unknown@util-sorted
+X-SquirrelJME-Dependency-4: liblet:unknown@zip-writer-stream
+X-SquirrelJME-Dependency-5: liblet:unknown@class-format
 X-SquirrelJME-Error: DV
+X-SquirrelJME-UUID: fd4af38a-bd5b-4b96-ae2f-d0e6e21e4d28
 Main-Class: net.multiphasicapps.squirreljme.singularexport.Main
-LIBlet-Name: Singular Project Export
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project allows for the export of a single 
- project and all of its dependencies with an output as a single JAR 
- file. The purpose of this project is to allow for JARs to be 
- exported to the reference implementation since it does not support 
- LIBlets.
-

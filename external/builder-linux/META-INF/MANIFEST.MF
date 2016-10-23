@@ -1,13 +1,15 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: builder-linux
-X-SquirrelJME-UUID: 4e776f1c-d9f5-4ce7-a49f-4bab782982f8
-X-SquirrelJME-Depends: builder exe-elf jit-basic native-code-mips 
- native-code-powerpc
+X-SquirrelJME-SourceName: builder-linux
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Builder (Linux)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the target builder 
+ which targets systems which use the Linux kernel.
+X-SquirrelJME-Dependency-1: liblet:unknown@builder
+X-SquirrelJME-Dependency-2: liblet:unknown@exe-elf
+X-SquirrelJME-Dependency-3: liblet:unknown@jit-basic
+X-SquirrelJME-Dependency-4: liblet:unknown@native-code-mips
+X-SquirrelJME-Dependency-5: liblet:unknown@native-code-powerpc
 X-SquirrelJME-Error: BU
-LIBlet-Name: Builder (Linux)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project contains the target builder which 
- targets systems which use the Linux kernel.
-
-
+X-SquirrelJME-UUID: 4e776f1c-d9f5-4ce7-a49f-4bab782982f8

@@ -1,46 +1,25 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: bootstrap
-X-SquirrelJME-UUID: cc62c968-ffa9-402d-9641-2174cc154dc3
-X-SquirrelJME-Depends: cldc-compact projects java-compiler-base 
- bootstrap-base-launcher
-X-SquirrelJME-Bootstrap-Depends: 
- external@bootstrap-base-launcher 
- external@projects 
- javac@java-compiler-base 
- kernel@ipc-mailbox 
- kernel@manifest 
- src@compatibility 
- src@gcf 
- src@io-bits 
- src@io-crc32 
- src@io-data 
- src@io-datadequestream 
- src@io-datafaucet 
- src@io-datapipe 
- src@io-datasink 
- src@io-dynhistin 
- src@io-inflate 
- src@io-region 
- src@io-slidingwindow 
- src@meep-midlet 
- src@midp-lcdui 
- src@midp-lcdui-common 
- src@midp-lcdui-server 
- src@util-datadeque 
- src@util-huffmantree 
- src@util-sorted 
- src@util-unmodifiable 
- src@zip 
- src@zip-reader-block 
- src@zip-reader-stream 
- src@zip-writer-stream 
+X-SquirrelJME-SourceName: bootstrap
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Bootstrap Build System
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project is used to bootstrap the 
+ SquirrelJME build environment and then perform compilation of projects.
+  Projects are able to be compiled, launched, and other such things.
+X-SquirrelJME-Bootstrap-Depends: external@bootstrap-base-launcher 
+ external@projects javac@java-compiler-base kernel@ipc-mailbox 
+ kernel@manifest src@compatibility src@gcf src@io-bits src@io-crc32 
+ src@io-data src@io-datadequestream src@io-datafaucet src@io-datapipe 
+ src@io-datasink src@io-dynhistin src@io-inflate src@io-region 
+ src@io-slidingwindow src@meep-midlet src@midp-lcdui 
+ src@midp-lcdui-common src@midp-lcdui-server src@util-datadeque 
+ src@util-huffmantree src@util-sorted src@util-unmodifiable src@zip 
+ src@zip-reader-block src@zip-reader-stream src@zip-writer-stream 
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
+X-SquirrelJME-Dependency-2: liblet:unknown@projects
+X-SquirrelJME-Dependency-3: liblet:unknown@java-compiler-base
+X-SquirrelJME-Dependency-4: liblet:unknown@bootstrap-base-launcher
 X-SquirrelJME-Error: CL
+X-SquirrelJME-UUID: cc62c968-ffa9-402d-9641-2174cc154dc3
 Main-Class: net.multiphasicapps.squirreljme.bootstrap.Main
-LIBlet-Name: Bootstrap Build System
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This project is used to bootstrap the SquirrelJME 
- build environment and then perform compilation of projects. Projects 
- are able to be compiled, launched, and other such things.
-
-

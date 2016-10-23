@@ -1,14 +1,20 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: projects
-X-SquirrelJME-UUID: ae182ee0-9e2d-49cf-b15a-015fb18bdd7d
-X-SquirrelJME-Depends: cldc-full manifest zip-reader-block 
- util-unmodifiable util-sorted java-compiler-base 
- zip-writer-stream midlet-identity launcher
+X-SquirrelJME-SourceName: projects
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: SquirrelJME Project Interface
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides a standard interface to the 
+ project system that SquirrelJME uses for representing individual librar
+ ies.
+X-SquirrelJME-Dependency-1: liblet:unknown@cldc-full
+X-SquirrelJME-Dependency-2: liblet:unknown@manifest
+X-SquirrelJME-Dependency-3: liblet:unknown@zip-reader-block
+X-SquirrelJME-Dependency-4: liblet:unknown@util-unmodifiable
+X-SquirrelJME-Dependency-5: liblet:unknown@util-sorted
+X-SquirrelJME-Dependency-6: liblet:unknown@java-compiler-base
+X-SquirrelJME-Dependency-7: liblet:unknown@zip-writer-stream
+X-SquirrelJME-Dependency-8: liblet:unknown@midlet-identity
+X-SquirrelJME-Dependency-9: liblet:unknown@launcher
 X-SquirrelJME-Error: CI
-LIBlet-Name: SquirrelJME Project Interface
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides a standard interface to the project 
- system that SquirrelJME uses for representing individual libraries.
-
-
+X-SquirrelJME-UUID: ae182ee0-9e2d-49cf-b15a-015fb18bdd7d
