@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: dio-modem
-X-SquirrelJME-UUID: 7dd14ab6-78db-43ae-8d62-78f6b94103e2
-X-SquirrelJME-Depends: dio
+X-SquirrelJME-SourceName: dio-modem
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: JavaME 8 Device I/O (Modems)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides access to dial-up modems.
+X-SquirrelJME-Dependency-1: liblet:unknown@dio
 X-SquirrelJME-Error: CY
 X-SquirrelJME-StandardLib: dio.modem;1.0.1
-LIBlet-Name: JavaME 8 Device I/O (Modems)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to dial-up modems.
-
-
+X-SquirrelJME-UUID: 7dd14ab6-78db-43ae-8d62-78f6b94103e2

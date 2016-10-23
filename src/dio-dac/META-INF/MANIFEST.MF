@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: dio-dac
-X-SquirrelJME-UUID: d5bbdfa5-192a-4921-b48a-08ecc15e8499
-X-SquirrelJME-Depends: dio
+X-SquirrelJME-SourceName: dio-dac
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: JavaME 8 Device I/O (DAC)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides access to digital to analog con
+ verters.
+X-SquirrelJME-Dependency-1: liblet:unknown@dio
 X-SquirrelJME-Error: CW
 X-SquirrelJME-StandardLib: dio.dac;1.0.1
-LIBlet-Name: JavaME 8 Device I/O (DAC)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to digital to analog 
- converters.
-
-
+X-SquirrelJME-UUID: d5bbdfa5-192a-4921-b48a-08ecc15e8499

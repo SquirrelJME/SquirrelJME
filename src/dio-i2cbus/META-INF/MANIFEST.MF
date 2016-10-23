@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: dio-i2cbus
-X-SquirrelJME-UUID: 0d788331-6b08-45b6-a506-bb61efe926a9
-X-SquirrelJME-Depends: dio
+X-SquirrelJME-SourceName: dio-i2cbus
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: JavaME 8 Device I/O (I2C)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides access to the I2C bus.
+X-SquirrelJME-Dependency-1: liblet:unknown@dio
 X-SquirrelJME-Error: CT
 X-SquirrelJME-StandardLib: dio.i2cbus;1.0.1
-LIBlet-Name: JavaME 8 Device I/O (I2C)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to the I2C bus.
-
-
+X-SquirrelJME-UUID: 0d788331-6b08-45b6-a506-bb61efe926a9

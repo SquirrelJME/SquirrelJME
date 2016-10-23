@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: dio-pwm
-X-SquirrelJME-UUID: 8e9685ee-2479-4d22-b5f7-12358d385225
-X-SquirrelJME-Depends: dio dio-gpio
+X-SquirrelJME-SourceName: dio-pwm
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: JavaME 8 Device I/O (PWM)
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This provides access to PWM devices.
+X-SquirrelJME-Dependency-1: liblet:unknown@dio
+X-SquirrelJME-Dependency-2: liblet:unknown@dio-gpio
 X-SquirrelJME-Error: DR
 X-SquirrelJME-StandardLib: dio.pwm;1.0.1
-LIBlet-Name: JavaME 8 Device I/O (PWM)
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This provides access to PWM devices.
-
-
+X-SquirrelJME-UUID: 8e9685ee-2479-4d22-b5f7-12358d385225
