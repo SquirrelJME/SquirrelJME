@@ -263,7 +263,7 @@ public final class ProjectName
 			char c = __n.charAt(i);
 			
 			// Is fine
-			if ((c >= 'a' && c <= 'z') || c == '-')
+			if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-')
 				continue;
 			
 			// Lowercase?

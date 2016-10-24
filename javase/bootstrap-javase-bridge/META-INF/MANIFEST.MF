@@ -1,10 +1,8 @@
 Manifest-Version: 1.0
+X-SquirrelJME-SourceName: bootstrap-javase-bridge
+X-SquirrelJME-Description: This acts as a bridge from Java SE to 
+ the build system that SquirrelJME uses. It is intended to allow 
+ SquirrelJME to run on Java SE systems.
 X-SquirrelJME-Type: liblet
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@midp-lcdui
-X-SquirrelJME-Dependency-3: liblet:unknown@meep-lui
-X-SquirrelJME-Dependency-4: liblet:unknown@util-sorted
-X-SquirrelJME-Dependency-5: liblet:unknown@kernel
-X-SquirrelJME-Dependency-6: liblet:unknown@midp-lcdui-server
 X-SquirrelJME-Error: DE
 X-SquirrelJME-UUID: 15ffb6ef-b6ef-4557-9bdf-41afbe7b9169
