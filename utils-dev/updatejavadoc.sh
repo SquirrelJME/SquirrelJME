@@ -17,13 +17,14 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Generate JavaDoc
+__javadocfailed=0
 if true
 then
 	rm -rf "javadoc"
 	if ! "$__exedir/javadoc.sh"
 	then
-		echo "Failed to generate JavaDoc"
-		exit 1
+		echo "Failed to generate JavaDoc, will only update errors"
+		__javadocfailed=1
 	fi
 fi
 
@@ -119,6 +120,13 @@ else
 	echo "Errors untouched"
 fi
 rm -f /tmp/$$
+
+# Do not bother updating the docs
+if [ "$__javadocfailed" -ne "0" ]
+then
+	echo "Failed to build the doc generator, cannot update."
+	exit 1
+fi
 
 # Count the number of documents that should exist
 __ad="$("$__exedir/lsall.sh" | grep '\.java$' | wc -l)"
