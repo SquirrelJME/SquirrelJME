@@ -16,7 +16,7 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Build the markdown doclet
-if ! "$__exedir/../build.sh" build doclet-markdown
+if ! "$__exedir/../build.sh" build docs@doclet-markdown
 then
 	echo "Failed to build doclet-markdown." 1>&2
 	exit 1
@@ -75,7 +75,7 @@ do
 			-squirreljme-depends "$__depscom" \
 			-private \
 			-source 1.7 \
-			-docletpath "doclet-markdown.jar:." \
+			-docletpath "docs@doclet-markdown.jar:." \
 			-classpath "$__dpath" \
 			-bootclasspath "$__dpath" \
 			-sourcepath "$__dir" \
