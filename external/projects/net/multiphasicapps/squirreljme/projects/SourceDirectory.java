@@ -40,6 +40,10 @@ public final class SourceDirectory
 	protected final Map<ProjectName, SourceProject> projects =
 		new SortedTreeMap<>();
 	
+	/** Read only set. */
+	private final __ReadOnlySet__<SourceProject> _readonly =
+		new __ReadOnlySet__<>(this.projects);
+	
 	/**
 	 * Initializes the source directory.
 	 *
@@ -126,7 +130,7 @@ public final class SourceDirectory
 	@Override
 	public Set<Map.Entry<ProjectName, SourceProject>> entrySet()
 	{
-		throw new Error("TODO");
+		return this._readonly;
 	}
 	
 	/**

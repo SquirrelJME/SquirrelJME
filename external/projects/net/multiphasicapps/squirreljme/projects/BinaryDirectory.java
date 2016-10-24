@@ -39,6 +39,10 @@ public final class BinaryDirectory
 	protected final Map<ProjectName, BinaryProject> projects =
 		new SortedTreeMap<>();
 	
+	/** Read only set. */
+	private final __ReadOnlySet__<BinaryProject> _readonly =
+		new __ReadOnlySet__<>(this.projects);
+	
 	/**
 	 * Initializes the binary directory.
 	 *
@@ -110,7 +114,7 @@ public final class BinaryDirectory
 	@Override
 	public Set<Map.Entry<ProjectName, BinaryProject>> entrySet()
 	{
-		throw new Error("TODO");
+		return this._readonly;
 	}
 	
 	/**
