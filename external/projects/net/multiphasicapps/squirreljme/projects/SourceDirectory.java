@@ -105,9 +105,47 @@ public final class SourceDirectory
 	 * @since 2016/10/20
 	 */
 	@Override
+	public boolean containsKey(Object __p)
+	{
+		// Will never be a valid project
+		if (!(__p instanceof ProjectName))
+			return false;
+		
+		// Lock
+		Map<ProjectName, SourceProject> projects = this.projects;
+		synchronized (projects)
+		{
+			return projects.containsKey(__p);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/20
+	 */
+	@Override
 	public Set<Map.Entry<ProjectName, SourceProject>> entrySet()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/20
+	 */
+	@Override
+	public SourceProject get(Object __p)
+	{
+		// Will never be a valid project
+		if (!(__p instanceof ProjectName))
+			return null;
+		
+		// Lock
+		Map<ProjectName, SourceProject> projects = this.projects;
+		synchronized (projects)
+		{
+			return projects.get(__p);
+		}
 	}
 	
 	/**

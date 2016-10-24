@@ -89,9 +89,47 @@ public final class BinaryDirectory
 	 * @since 2016/10/20
 	 */
 	@Override
+	public boolean containsKey(Object __p)
+	{
+		// Will never be a valid project
+		if (!(__p instanceof ProjectName))
+			return false;
+		
+		// Lock
+		Map<ProjectName, BinaryProject> projects = this.projects;
+		synchronized (projects)
+		{
+			return projects.containsKey(__p);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/20
+	 */
+	@Override
 	public Set<Map.Entry<ProjectName, BinaryProject>> entrySet()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/20
+	 */
+	@Override
+	public BinaryProject get(Object __p)
+	{
+		// Will never be a valid project
+		if (!(__p instanceof ProjectName))
+			return null;
+		
+		// Lock
+		Map<ProjectName, BinaryProject> projects = this.projects;
+		synchronized (projects)
+		{
+			return projects.get(__p);
+		}
 	}
 	
 	/**
