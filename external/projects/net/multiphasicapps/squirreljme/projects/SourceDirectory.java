@@ -16,6 +16,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.AbstractMap;
@@ -168,6 +169,14 @@ public final class SourceDirectory
 			
 			// Return it
 			return rv;
+		}
+		
+		// {@squirreljme.error CI0a Cannot be a project because there is no
+		// manifest located at {@code META-INF/MANIFEST.MF}. (The project
+		// path)}
+		catch (NoSuchFileException e)
+		{
+			throw new NotAProjectException(String.format("CI0a %s", __p), e);
 		}
 	}
 }
