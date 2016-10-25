@@ -15,10 +15,16 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.javac.base.CompilerInput;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This is a project which provides source code that may be compiled by a
@@ -119,6 +125,9 @@ public final class SourceProject
 				// Set as compiling
 				this._incompile = true;
 				
+				// Get source depends needed for compilation
+				BinaryProject[] builddeps = compileDependencies();
+				
 				throw new Error("TODO");
 			}
 		
@@ -141,13 +150,36 @@ public final class SourceProject
 	public BinaryProject[] compileDependencies()
 	{
 		// Output dependencies
-		Map<ProjectName, BinaryProject> rv = new SortedTreeMap<>();
+		Set<BinaryProject> rv = new SortedTreeSet<>();
 		
-		if (true)
+		// Binary dependencies for the second run through
+		Deque<BinaryProject> bdeps = new ArrayDeque<>();
+		Set<BinaryProject> bdid = new HashSet<>();
+		
+		// Take direct dependencies and locate binary dependencies
+		Deque<SourceDependency> sdeps = new ArrayDeque<>(
+			Arrays.<SourceDependency>asList(this.manifest.dependencies()));
+		while (!sdeps.isEmpty())
+		{
+			SourceDependency sdep = sdeps.remove();
+			
 			throw new Error("TODO");
+		}
+		
+		// Get the dependencies of binary projects
+		while (!bdeps.isEmpty())
+		{
+			// Only operate on projects once
+			BinaryProject bp = bdeps.remove();
+			if (bdid.contains(bp))
+				continue;
+			bdid.add(bp);
+			
+			throw new Error("TODO");
+		}
 		
 		// Return dependencies
-		return rv.values().toArray(new BinaryProject[rv.size()]);
+		return rv.toArray(new BinaryProject[rv.size()]);
 	}
 	
 	/**
