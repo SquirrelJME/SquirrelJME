@@ -27,6 +27,10 @@ import net.multiphasicapps.javac.base.CompilerInput;
 public final class SourceProject
 	extends ProjectInfo
 {
+	/** The global compilation lock, permit only a single thread to compile. */
+	private static final Object _COMPILE_LOCK =
+		new Object();
+	
 	/**
 	 * This is a fallback compiler which may be specified when it is not known.
 	 * This sets an explicit compiler to use.
@@ -41,10 +45,6 @@ public final class SourceProject
 	
 	/** The project namespace. */
 	protected final String namespace;
-	
-	/** Compilation lock, to prevent another thread from compiling. */
-	protected final Object compilelock =
-		new Object();
 	
 	/** The name of this project. */
 	private volatile Reference<ProjectName> _name;
@@ -96,31 +96,15 @@ public final class SourceProject
 		throws CompilationFailedException, IOException
 	{
 		// Only allow a single thread to compile a project at a time
-		Object compilelock = this.compilelock;
+		Object compilelock = SourceProject._COMPILE_LOCK;
 		synchronized (compilelock)
 		{
-			// When the project is in 
-			while (this._incompile)
-			{
-				// {@squirreljme.error CI0b Source code to be compiled
-				// eventually dependend on itself for compilation. (The name
-				// of this project)}
-				if (Thread.holdsLock(compilelock))
-					throw new CompilationFailedException(
-						String.format("CI0b %s", projectName()));
-				
-				// Wait for another thread to clear the flag.
-				for (;;)
-					try
-					{
-						compilelock.wait();
-						break;
-					}
-					catch (InterruptedException e)
-					{
-						// Ignore
-					}
-			}
+			// {@squirreljme.error CI0b Source code to be compiled
+			// eventually dependend on itself for compilation. (The name
+			// of this project)}
+			if (this._incompile)
+				throw new CompilationFailedException(
+					String.format("CI0b %s", projectName()));
 		
 			// Perform compilation
 			try
@@ -136,9 +120,6 @@ public final class SourceProject
 			{
 				// Clear
 				this._incompile = false;
-				
-				// Notify that compilation state changed
-				compilelock.notifyAll();
 			}
 		}
 	}
