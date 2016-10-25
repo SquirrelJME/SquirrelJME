@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 /**
  * This represents a dependency that source code may rely on.
@@ -72,10 +73,10 @@ public final class SourceDependency
 			throw new InvalidProjectException(String.format("CI0c %s", __s));
 		
 		// Create
-		this.name = new ProjectName(__s.substring(co + 1));
+		ProjectType type;
 		try
 		{
-			this.type = ProjectType.of(__s.substring(0, co));
+			this.type = (type = ProjectType.of(__s.substring(0, co)));
 		}
 		
 		// {@squirreljme.error CI0d Unknown project dependency type.}
@@ -83,6 +84,14 @@ public final class SourceDependency
 		{
 			throw new InvalidProjectException("CI0d");
 		}
+		
+		// Refers to an API
+		if (type == ProjectType.API)
+			throw new Error("TODO");
+		
+		// Refers to a project
+		else
+			this.name = new ProjectName(__s.substring(co + 1));
 	}
 	
 	/**
@@ -133,9 +142,20 @@ public final class SourceDependency
 	 * @return The project name.
 	 * @since 2016/10/25
 	 */
-	public ProjectName name()
+	public ProjectName projectName()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Returns the project type.
+	 *
+	 * @return The project type.
+	 * @since 2016/10/25
+	 */
+	public ProjectType projectType()
+	{
+		return this.type;
 	}
 	
 	/**
@@ -151,20 +171,9 @@ public final class SourceDependency
 		// Cache
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = this.type + ":" +
-				this.name));
+				Objects.toString(this.name, "<FIXME>")));
 		
 		return rv;
-	}
-	
-	/**
-	 * Returns the project type.
-	 *
-	 * @return The project type.
-	 * @since 2016/10/25
-	 */
-	public ProjectType type()
-	{
-		return this.type;
 	}
 }
 

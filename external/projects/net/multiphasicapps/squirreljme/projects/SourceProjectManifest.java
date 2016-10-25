@@ -12,10 +12,14 @@ package net.multiphasicapps.squirreljme.projects;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Set;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This is a manifest that is used for source projects.
@@ -29,6 +33,9 @@ public final class SourceProjectManifest
 	
 	/** The project name. */
 	protected final String name;
+	
+	/** Dependencies of this project. */
+	private volatile Reference<SourceDependency[]> _depends;
 	
 	/**
 	 * Reads a manifest from the given input stream.
@@ -86,6 +93,48 @@ public final class SourceProjectManifest
 		if (name == null)
 			throw new InvalidProjectException("CI06");
 		this.name = name;
+	}
+	
+	/**
+	 * Returns the dependencies of the given project.
+	 *
+	 * @return The dependencies of the project.
+	 * @since 2016/10/25
+	 */
+	public SourceDependency[] dependencies()
+	{
+		Reference<SourceDependency[]> ref = this._depends;
+		SourceDependency[] rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Need attributes
+			JavaManifestAttributes attr = this.manifest.getMainAttributes();
+			
+			// Load dependencies
+			Set<SourceDependency> b = new SortedTreeSet<>();
+			for (int i = 0; i < Integer.MAX_VALUE; i++)
+			{
+				// Get key
+				String k = String.format("X-SquirrelJME-Dependency-%d", i);
+				String v = attr.get(new JavaManifestKey(k));
+				
+				// Stop
+				if (v == null)
+					break;
+				
+				// Decode
+				b.add(new SourceDependency(v));
+			}
+			
+			// Store
+			rv = b.<SourceDependency>toArray(new SourceDependency[b.size()]);
+			this._depends = new WeakReference<>(rv);
+		}
+		
+		// Defensive copy
+		return rv.clone();
 	}
 	
 	/**
