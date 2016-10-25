@@ -42,8 +42,15 @@ public final class SourceProject
 	/** The project namespace. */
 	protected final String namespace;
 	
+	/** Compilation lock, to prevent another thread from compiling. */
+	protected final Object compilelock =
+		new Object();
+	
 	/** The name of this project. */
 	private volatile Reference<ProjectName> _name;
+	
+	/** Currently being compiled? */
+	private volatile boolean _incompile;
 	
 	/**
 	 * Initializes the source project.
@@ -88,7 +95,52 @@ public final class SourceProject
 	public BinaryProject compile(Compiler __c)
 		throws CompilationFailedException, IOException
 	{
-		throw new Error("TODO");
+		// Only allow a single thread to compile a project at a time
+		Object compilelock = this.compilelock;
+		synchronized (compilelock)
+		{
+			// When the project is in 
+			while (this._incompile)
+			{
+				// {@squirreljme.error CI0b Source code to be compiled
+				// eventually dependend on itself for compilation. (The name
+				// of this project)}
+				if (Thread.holdsLock(compilelock))
+					throw new CompilationFailedException(
+						String.format("CI0b %s", projectName()));
+				
+				// Wait for another thread to clear the flag.
+				for (;;)
+					try
+					{
+						compilelock.wait();
+						break;
+					}
+					catch (InterruptedException e)
+					{
+						// Ignore
+					}
+			}
+		
+			// Perform compilation
+			try
+			{
+				// Set as compiling
+				this._incompile = true;
+			
+				throw new Error("TODO");
+			}
+		
+			// Clear the in compile flag and notify any waiting threads
+			finally
+			{
+				// Clear
+				this._incompile = false;
+				
+				// Notify that compilation state changed
+				compilelock.notifyAll();
+			}
+		}
 	}
 	
 	/**
