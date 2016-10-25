@@ -34,14 +34,14 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * @since 2016/10/20
  */
 public final class SourceDirectory
-	extends AbstractMap<ProjectName, SourceProject>
+	extends ProjectDirectory<SourceProject>
 {
 	/** The source project directory. */
 	protected final Map<ProjectName, SourceProject> projects =
 		new SortedTreeMap<>();
 	
 	/** The owning directory. */
-	protected final ProjectDirectory directory;
+	protected final MasterDirectory directory;
 	
 	/** Read only set. */
 	private final __ReadOnlySet__<SourceProject> _readonly =
@@ -57,7 +57,7 @@ public final class SourceDirectory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/20
 	 */
-	SourceDirectory(ProjectDirectory __d, Path __p)
+	SourceDirectory(MasterDirectory __d, Path __p)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -135,7 +135,7 @@ public final class SourceDirectory
 	 * @return The master project directory.
 	 * @since 2016/10/25
 	 */
-	public ProjectDirectory directory()
+	public MasterDirectory directory()
 	{
 		return this.directory;
 	}

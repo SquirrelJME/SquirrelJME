@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.bootstrap.base.launcher.BootLauncher;
 import net.multiphasicapps.squirreljme.bootstrap.base.launcher.CaughtException;
 import net.multiphasicapps.squirreljme.projects.BinaryDirectory;
 import net.multiphasicapps.squirreljme.projects.BinaryProject;
-import net.multiphasicapps.squirreljme.projects.ProjectDirectory;
+import net.multiphasicapps.squirreljme.projects.MasterDirectory;
 import net.multiphasicapps.squirreljme.projects.ProjectInfo;
 import net.multiphasicapps.squirreljme.projects.ProjectName;
 import net.multiphasicapps.squirreljme.projects.SourceDirectory;
@@ -34,7 +34,7 @@ import net.multiphasicapps.squirreljme.projects.SourceProject;
 public class Bootstrapper
 {
 	/** The project list to use. */
-	protected final ProjectDirectory projects;
+	protected final MasterDirectory projects;
 	
 	/** The bootstrap compiler. */
 	protected final Compiler compiler;
@@ -51,7 +51,7 @@ public class Bootstrapper
 	 * @throws NullPointerException If no project list was specified.
 	 * @since 2016/09/18
 	 */
-	public Bootstrapper(ProjectDirectory __pl, Compiler __bc,
+	public Bootstrapper(MasterDirectory __pl, Compiler __bc,
 		BootLauncher __bl)
 		throws NullPointerException
 	{
@@ -148,7 +148,7 @@ public class Bootstrapper
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		ProjectDirectory projects = this.projects;
+		MasterDirectory projects = this.projects;
 		SourceDirectory sdir = projects.sources();
 		
 		// If a source project exists, compile it so it is always up to

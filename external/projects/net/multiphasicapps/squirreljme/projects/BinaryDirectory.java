@@ -40,7 +40,7 @@ public final class BinaryDirectory
 		new SortedTreeMap<>();
 	
 	/** The owning directory. */
-	protected final ProjectDirectory directory;
+	protected final MasterDirectory directory;
 	
 	/** Read only set. */
 	private final __ReadOnlySet__<BinaryProject> _readonly =
@@ -55,7 +55,7 @@ public final class BinaryDirectory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/20
 	 */
-	BinaryDirectory(ProjectDirectory __d, Path __p)
+	BinaryDirectory(MasterDirectory __d, Path __p)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -119,7 +119,7 @@ public final class BinaryDirectory
 	 * @return The master project directory.
 	 * @since 2016/10/25
 	 */
-	public ProjectDirectory directory()
+	public MasterDirectory directory()
 	{
 		return this.directory;
 	}

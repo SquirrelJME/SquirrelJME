@@ -158,8 +158,8 @@ public final class SourceProject
 		
 		// Directories used to locate projects
 		SourceDirectory sdir = this.directory;
-		ProjectDirectory pdir = sdir.directory();
-		BianryDirectory bdir = pdir.binaries();
+		MasterDirectory mdir = sdir.directory();
+		BinaryDirectory bdir = mdir.binaries();
 		
 		// Take direct dependencies and locate binary dependencies
 		Deque<SourceDependency> sdeps = new ArrayDeque<>(
