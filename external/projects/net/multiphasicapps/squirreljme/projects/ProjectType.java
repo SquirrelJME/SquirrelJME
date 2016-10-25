@@ -17,14 +17,17 @@ package net.multiphasicapps.squirreljme.projects;
  */
 public enum ProjectType
 {
-	/** Binary project. */
-	BINARY,
+	/** Defines an API. */
+	DEFINES_API,
 	
-	/** Source project. */
-	SOURCE,
+	/** Implements an API. */
+	IMPLEMENTS_API,
 	
-	/** Compiled internal projects, ones that run on SquirrelJME. */
-	COMPILED,
+	/** Inlcuded by midlets or liblets as dependencies. */
+	LIBLET,
+	
+	/** Is executable by the user. */
+	MIDLET,
 	
 	/** End. */
 	;
