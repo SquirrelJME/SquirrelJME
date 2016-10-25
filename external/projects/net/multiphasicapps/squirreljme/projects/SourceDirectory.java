@@ -182,7 +182,8 @@ public final class SourceDirectory
 			SourceProject rv;
 			try
 			{
-				rv = new SourceProject(new SourceProjectManifest(is), __p);
+				rv = new SourceProject(this, new SourceProjectManifest(is),
+					__p);
 			}
 			
 			// {@squirreljme.error CI08 The source project at the specified

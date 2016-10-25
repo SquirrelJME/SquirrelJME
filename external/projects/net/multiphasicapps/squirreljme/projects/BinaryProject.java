@@ -23,6 +23,9 @@ import net.multiphasicapps.squirreljme.bootstrap.base.launcher.
 public final class BinaryProject
 	extends ProjectInfo
 {
+	/** The owning directory. */
+	protected final BinaryDirectory directory;
+	
 	/** The manifest used for the binary. */
 	protected final BinaryProjectManifest manifest;
 	
@@ -32,19 +35,21 @@ public final class BinaryProject
 	/**
 	 * Initializes the binary project using the given manifest and path.
 	 *
+	 * @param __bd The owning binary directory.
 	 * @param __man The manifest used.
 	 * @param __p The path to the binary.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
-	BinaryProject(BinaryProjectManifest __man, Path __p)
+	BinaryProject(BinaryDirectory __bd, BinaryProjectManifest __man, Path __p)
 		throws NullPointerException
 	{
 		// Check
-		if (__man == null || __p == null)
+		if (__bd == null || __man == null || __p == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.directory = __bd;
 		this.manifest = __man;
 		this.path = __p;
 	}

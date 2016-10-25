@@ -15,8 +15,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import net.multiphasicapps.javac.base.Compiler;
 import net.multiphasicapps.javac.base.CompilerInput;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is a project which provides source code that may be compiled by a
@@ -37,6 +39,9 @@ public final class SourceProject
 	 */
 	static volatile Compiler _SPECIFIED_FALLBACK_COMPILER;
 	
+	/** The owning directory. */
+	protected final SourceDirectory directory;
+	
 	/** The manifet used for the source project. */
 	protected final SourceProjectManifest manifest;
 	
@@ -55,19 +60,21 @@ public final class SourceProject
 	/**
 	 * Initializes the source project.
 	 *
+	 * @param __sd The owning directory.
 	 * @param __man The manifest contianing source project information.
 	 * @param __r The root directory where sources are located.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
-	SourceProject(SourceProjectManifest __man, Path __r)
+	SourceProject(SourceDirectory __sd, SourceProjectManifest __man, Path __r)
 		throws NullPointerException
 	{
 		// Check
-		if (__man == null || __r == null)
+		if (__sd == null || __man == null || __r == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.directory = __sd;
 		this.manifest = __man;
 		this.root = __r;
 		
@@ -111,7 +118,7 @@ public final class SourceProject
 			{
 				// Set as compiling
 				this._incompile = true;
-			
+				
 				throw new Error("TODO");
 			}
 		
@@ -122,6 +129,25 @@ public final class SourceProject
 				this._incompile = false;
 			}
 		}
+	}
+	
+	/**
+	 * Returns the dependencies which are required for compilation, all of
+	 * them.
+	 *
+	 * @return The compilation dependencies.
+	 * @since 2016/10/25
+	 */
+	public BinaryProject[] compileDependencies()
+	{
+		// Output dependencies
+		Map<ProjectName, BinaryProject> rv = new SortedTreeMap<>();
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Return dependencies
+		return rv.values().toArray(new BinaryProject[rv.size()]);
 	}
 	
 	/**
@@ -169,6 +195,17 @@ public final class SourceProject
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Returns the manifest that is used for source projects.
+	 *
+	 * @return The source project manifest.
+	 * @since 2016/10/25
+	 */
+	public SourceProjectManifest sourceManifest()
+	{
+		return this.manifest;
 	}
 	
 	/**

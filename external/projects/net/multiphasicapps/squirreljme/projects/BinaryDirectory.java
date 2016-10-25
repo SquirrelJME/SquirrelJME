@@ -167,7 +167,8 @@ public final class BinaryDirectory
 			try (InputStream is = ze.open())
 			{
 				// And create the project
-				rv = new BinaryProject(new BinaryProjectManifest(is), __p);
+				rv = new BinaryProject(this, new BinaryProjectManifest(is),
+					__p);
 			}
 			
 			// {@squirreljme.error CI09 The binary project at the specified
