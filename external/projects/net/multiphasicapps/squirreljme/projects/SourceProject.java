@@ -198,6 +198,16 @@ public final class SourceProject
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/25
+	 */
+	@Override
+	public ProjectType projectType()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the manifest that is used for source projects.
 	 *
 	 * @return The source project manifest.

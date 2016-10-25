@@ -33,5 +33,13 @@ public abstract class ProjectInfo
 	 * @since 2016/10/21
 	 */
 	public abstract ProjectName projectName();
+	
+	/**
+	 * Returns the type of project that this is.
+	 *
+	 * @return The project type.
+	 * @since 2016/10/25
+	 */
+	public abstract ProjectType projectType();
 }
 

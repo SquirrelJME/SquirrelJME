@@ -85,5 +85,15 @@ public final class BinaryProject
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/25
+	 */
+	@Override
+	public ProjectType projectType()
+	{
+		throw new Error("TODO");
+	}
 }
 
