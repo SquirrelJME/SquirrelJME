@@ -40,6 +40,9 @@ public final class SourceDirectory
 	protected final Map<ProjectName, SourceProject> projects =
 		new SortedTreeMap<>();
 	
+	/** The owning directory. */
+	protected final ProjectDirectory directory;
+	
 	/** Read only set. */
 	private final __ReadOnlySet__<SourceProject> _readonly =
 		new __ReadOnlySet__<>(this.projects);
@@ -60,6 +63,9 @@ public final class SourceDirectory
 		// Check
 		if (__d == null || __p == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.directory = __d;
 		
 		// Look for resources
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
@@ -121,6 +127,17 @@ public final class SourceDirectory
 		{
 			return projects.containsKey(__p);
 		}
+	}
+	
+	/**
+	 * Returns the master project directory.
+	 *
+	 * @return The master project directory.
+	 * @since 2016/10/25
+	 */
+	public ProjectDirectory directory()
+	{
+		return this.directory;
 	}
 	
 	/**

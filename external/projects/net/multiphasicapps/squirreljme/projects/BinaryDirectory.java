@@ -39,6 +39,9 @@ public final class BinaryDirectory
 	protected final Map<ProjectName, BinaryProject> projects =
 		new SortedTreeMap<>();
 	
+	/** The owning directory. */
+	protected final ProjectDirectory directory;
+	
 	/** Read only set. */
 	private final __ReadOnlySet__<BinaryProject> _readonly =
 		new __ReadOnlySet__<>(this.projects);
@@ -58,6 +61,9 @@ public final class BinaryDirectory
 		// Check
 		if (__d == null || __p == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.directory = __d;
 		
 		// Go through all files in the directory
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
@@ -105,6 +111,17 @@ public final class BinaryDirectory
 		{
 			return projects.containsKey(__p);
 		}
+	}
+	
+	/**
+	 * Returns the master project directory.
+	 *
+	 * @return The master project directory.
+	 * @since 2016/10/25
+	 */
+	public ProjectDirectory directory()
+	{
+		return this.directory;
 	}
 	
 	/**

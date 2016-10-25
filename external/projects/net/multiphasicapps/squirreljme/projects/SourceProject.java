@@ -159,11 +159,26 @@ public final class SourceProject
 		// Take direct dependencies and locate binary dependencies
 		Deque<SourceDependency> sdeps = new ArrayDeque<>(
 			Arrays.<SourceDependency>asList(this.manifest.dependencies()));
+		ProjectDirectory pdir = this.directory.directory();
 		while (!sdeps.isEmpty())
 		{
 			SourceDependency sdep = sdeps.remove();
 			
-			throw new Error("TODO");
+			// Depends on the dependency type
+			switch (sdep.projectType())
+			{
+					// An API (just needs the definition)
+				case API:
+					throw new Error("TODO");
+					
+					// A library
+				case LIBLET:
+					throw new Error("TODO");
+				
+					// Should not occur
+				default:
+					throw new RuntimeException("OOPS");
+			}
 		}
 		
 		// Get the dependencies of binary projects

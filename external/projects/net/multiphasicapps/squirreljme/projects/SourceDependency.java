@@ -36,15 +36,20 @@ public final class SourceDependency
 	 *
 	 * @param __t The project type.
 	 * @param __n The project name.
+	 * @throws InvalidProjectException If the type is a midlet.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/25
 	 */
 	public SourceDependency(ProjectType __t, ProjectName __n)
-		throws NullPointerException
+		throws InvalidProjectException, NullPointerException
 	{
 		// Check
 		if (__t == null || __n == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CI0i Cannot depend on a MIDlet.}
+		if (__t == ProjectType.MIDLET)
+			throw new InvalidProjectException("CI0i");
 		
 		// Set
 		this.type = __t;
@@ -55,7 +60,8 @@ public final class SourceDependency
 	 * Initializes the dependency from the string representation of it.
 	 *
 	 * @param __s The input string.
-	 * @throws InvalidProjectException If the representation is not valid.
+	 * @throws InvalidProjectException If the representation is not valid or
+	 * the type is a midlet.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/25
 	 */
@@ -77,6 +83,10 @@ public final class SourceDependency
 		try
 		{
 			this.type = (type = ProjectType.of(__s.substring(0, co)));
+			
+			// {@squirreljme.error CI0j Cannot depend on a MIDlet.}
+			if (type == ProjectType.MIDLET)
+				throw new InvalidProjectException("CI0j");
 		}
 		
 		// {@squirreljme.error CI0d Unknown project dependency type.}
