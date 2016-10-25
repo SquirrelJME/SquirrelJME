@@ -156,10 +156,14 @@ public final class SourceProject
 		Deque<BinaryProject> bdeps = new ArrayDeque<>();
 		Set<BinaryProject> bdid = new HashSet<>();
 		
+		// Directories used to locate projects
+		SourceDirectory sdir = this.directory;
+		ProjectDirectory pdir = sdir.directory();
+		BianryDirectory bdir = pdir.binaries();
+		
 		// Take direct dependencies and locate binary dependencies
 		Deque<SourceDependency> sdeps = new ArrayDeque<>(
 			Arrays.<SourceDependency>asList(this.manifest.dependencies()));
-		ProjectDirectory pdir = this.directory.directory();
 		while (!sdeps.isEmpty())
 		{
 			SourceDependency sdep = sdeps.remove();
