@@ -99,12 +99,12 @@ public final class ProjectName
 	@Override
 	public boolean equals(Object __o)
 	{
-		// If another package, use normal comparison
-		if (__o instanceof ProjectName)
-			return 0 == __compareTo((ProjectName)__o);
+		// Never a match
+		if (!(__o instanceof ProjectName))
+			return false;
 		
-		// Will never match
-		return false;
+		// Must compare the same
+		return 0 == __compareTo((ProjectName)__o);
 	}
 	
 	/**
@@ -173,7 +173,7 @@ public final class ProjectName
 			throw new NullPointerException("NARG");
 		
 		// Compare it
-		return __compareTo(__pn.name);
+		return __compareTo(__pn.toString());
 	}
 	
 	/**
