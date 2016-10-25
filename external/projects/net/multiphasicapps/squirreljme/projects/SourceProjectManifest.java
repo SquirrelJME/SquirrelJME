@@ -114,11 +114,12 @@ public final class SourceProjectManifest
 			
 			// Load dependencies
 			Set<SourceDependency> b = new SortedTreeSet<>();
-			for (int i = 0; i < Integer.MAX_VALUE; i++)
+			for (int i = 1; i < Integer.MAX_VALUE; i++)
 			{
 				// Get key
-				String k = String.format("X-SquirrelJME-Dependency-%d", i);
-				String v = attr.get(new JavaManifestKey(k));
+				JavaManifestKey k = new JavaManifestKey(
+					String.format("X-SquirrelJME-Dependency-%d", i));
+				String v = attr.get(k);
 				
 				// Stop
 				if (v == null)
