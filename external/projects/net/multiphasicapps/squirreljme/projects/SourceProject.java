@@ -148,11 +148,13 @@ public final class SourceProject
 	 * @param __c The compiler to use for compilation if dependencies have to
 	 * be compiled.
 	 * @return The compilation dependencies.
+	 * @throws CompilationFailedException If a dependency failed to compile.
 	 * @throws InvalidProjectException If a required dependency is missing.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/25
 	 */
 	public BinaryProject[] compileDependencies(Compiler __c)
-		throws InvalidProjectException
+		throws CompilationFailedException, InvalidProjectException, IOException
 	{
 		// Output dependencies
 		Set<BinaryProject> rv = new SortedTreeSet<>();
