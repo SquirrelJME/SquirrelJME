@@ -5,8 +5,9 @@ X-SquirrelJME-Title: Bootstrap Build System
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project is used to bootstrap the 
- SquirrelJME build environment and then perform compilation of projects.
-  Projects are able to be compiled, launched, and other such things.
+ SquirrelJME build environment and then perform compilation of 
+ projects. Projects are able to be compiled, launched, and other 
+ such things.
 X-SquirrelJME-Bootstrap-Depends: external@bootstrap-base-launcher 
  external@projects javac@java-compiler-base kernel@ipc-mailbox 
  kernel@manifest src@compatibility src@gcf lib@io-bits lib@io-crc32 
