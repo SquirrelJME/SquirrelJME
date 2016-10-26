@@ -8,13 +8,11 @@ X-SquirrelJME-Description: Do you have the skills required to survive in
   the lands nature provides? This is a Minecraft-inspired game which has
   no actual mining, but utilization of resources. The only way to win is
   to use your resources in the correct manner.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-full
-X-SquirrelJME-Dependency-2: liblet:unknown@meep-lui
-X-SquirrelJME-Dependency-3: liblet:unknown@meep-midlet
-X-SquirrelJME-Dependency-4: liblet:unknown@media-api
-X-SquirrelJME-Dependency-5: liblet:unknown@midp-lcdui
-X-SquirrelJME-Dependency-6: liblet:unknown@util-sorted
-X-SquirrelJME-Dependency-7: liblet:unknown@opengles
+X-SquirrelJME-Dependency-1: api:cldc-1.8
+X-SquirrelJME-Dependency-2: profile:meep-8.0
+X-SquirrelJME-Dependency-3: profile:midp-3.0
+X-SquirrelJME-Dependency-4: api:opengles
+X-SquirrelJME-Dependency-5: liblet:lib@util-sorted
 X-SquirrelJME-Error: BA
 X-SquirrelJME-UUID: 04aaa69c-cb63-4444-8c38-667040650214
 Main-Class: net.multiphasicapps.squirrelscavenger.DefaultMain

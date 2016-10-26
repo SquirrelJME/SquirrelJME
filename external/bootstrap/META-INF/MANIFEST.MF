@@ -9,12 +9,12 @@ X-SquirrelJME-Description: This project is used to bootstrap the
   Projects are able to be compiled, launched, and other such things.
 X-SquirrelJME-Bootstrap-Depends: external@bootstrap-base-launcher 
  external@projects javac@java-compiler-base kernel@ipc-mailbox 
- kernel@manifest src@compatibility src@gcf src@io-bits src@io-crc32 
- src@io-data src@io-datadequestream src@io-datafaucet src@io-datapipe 
- src@io-datasink src@io-dynhistin src@io-inflate src@io-region 
- src@io-slidingwindow src@meep-midlet src@midp-lcdui 
- src@midp-lcdui-common src@midp-lcdui-server src@util-datadeque 
- src@util-huffmantree src@util-sorted src@util-unmodifiable src@zip 
+ kernel@manifest src@compatibility src@gcf lib@io-bits lib@io-crc32 
+ lib@io-data lib@io-datadequestream lib@io-datafaucet lib@io-datapipe 
+ lib@io-datasink lib@io-dynhistin lib@io-inflate lib@io-region 
+ lib@io-slidingwindow src@meep-midlet src@midp-lcdui 
+ src@midp-lcdui-common src@midp-lcdui-server lib@util-datadeque 
+ lib@util-huffmantree lib@util-sorted lib@util-unmodifiable src@zip 
  src@zip-reader-block src@zip-reader-stream src@zip-writer-stream 
 X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Dependency-2: liblet:unknown@projects
