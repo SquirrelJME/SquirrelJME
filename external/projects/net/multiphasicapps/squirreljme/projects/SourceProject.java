@@ -69,11 +69,12 @@ public final class SourceProject
 	 * @param __sd The owning directory.
 	 * @param __man The manifest contianing source project information.
 	 * @param __r The root directory where sources are located.
+	 * @throws InvalidProjectException If the project is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
 	SourceProject(SourceDirectory __sd, SourceProjectManifest __man, Path __r)
-		throws NullPointerException
+		throws InvalidProjectException, NullPointerException
 	{
 		// Check
 		if (__sd == null || __man == null || __r == null)
@@ -126,7 +127,7 @@ public final class SourceProject
 				this._incompile = true;
 				
 				// Get source depends needed for compilation
-				BinaryProject[] builddeps = compileDependencies();
+				BinaryProject[] builddeps = compileDependencies(__c);
 				
 				throw new Error("TODO");
 			}
@@ -144,10 +145,14 @@ public final class SourceProject
 	 * Returns the dependencies which are required for compilation, all of
 	 * them.
 	 *
+	 * @param __c The compiler to use for compilation if dependencies have to
+	 * be compiled.
 	 * @return The compilation dependencies.
+	 * @throws InvalidProjectException If a required dependency is missing.
 	 * @since 2016/10/25
 	 */
-	public BinaryProject[] compileDependencies()
+	public BinaryProject[] compileDependencies(Compiler __c)
+		throws InvalidProjectException
 	{
 		// Output dependencies
 		Set<BinaryProject> rv = new SortedTreeSet<>();
@@ -169,6 +174,7 @@ public final class SourceProject
 			SourceDependency sdep = sdeps.remove();
 			
 			// Depends on the dependency type
+			SourceProject sp;
 			switch (sdep.projectType())
 			{
 					// An API (just needs the definition)
@@ -177,7 +183,26 @@ public final class SourceProject
 					
 					// A library
 				case LIBLET:
-					throw new Error("TODO");
+					sp = sdir.get(sdep.projectName());
+					
+					// {@squirreljme.error CI0k A required dependency is
+					// missing. (This project; The missing dependency)}
+					if (sp == null)
+						throw new InvalidProjectException(String.format(
+							"CI0k %s %s", projectName(), sdep));
+					
+					// {@squirreljme.error CI0l A dependency specifies that
+					// a liblet is to be included, however it is not a liblet.
+					// (This project; The invalid dependency; The type of
+					// project the dependency is)}
+					ProjectType x;
+					if ((x = sp.projectType()) != ProjectType.LIBLET)
+						throw new InvalidProjectException(String.format(
+							"CI0l %s %s %s", projectName(), sdep, x));
+					
+					// Compile this project
+					bdeps.add(sp.compile(__c));
+					break;
 				
 					// Should not occur
 				default:

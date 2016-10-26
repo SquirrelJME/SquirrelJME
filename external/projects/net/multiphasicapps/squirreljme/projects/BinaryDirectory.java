@@ -33,7 +33,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * @since 2016/10/20
  */
 public final class BinaryDirectory
-	extends AbstractMap<ProjectName, BinaryProject>
+	extends ProjectDirectory<BinaryProject>
 {
 	/** Binary projects that are available. */
 	protected final Map<ProjectName, BinaryProject> projects =
