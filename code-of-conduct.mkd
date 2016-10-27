@@ -80,7 +80,9 @@ in hate as it is only a distraction from reality.
 If an entity requires that a behavior is to be reported, such behavior should
 be reported in the same area where it has occurred. For example something that
 happens on IRC should be reported on IRC. If this is not possible then another
-alternative may be chosen.
+alternative may be chosen. Reports must be explained in full detail, otherwise
+a solution cannot be crafted due to a lack of information. The report should
+make sense and not be a hostile attack on another entity.
 
 Note that many social communication systems support blocking and ignoring,
 consider using these as it can nullify the hostile noise.
