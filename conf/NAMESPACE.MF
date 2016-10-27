@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Configurations
+X-SquirrelJME-Namespace-Description: This namespace contains standard 
+ configurations of the main class library.
+
