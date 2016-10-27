@@ -81,7 +81,7 @@ REM the JVM is performed.
 	-Dnet.multiphasicapps.squirreljme.build.onlybuild=false
 	-Dnet.multiphasicapps.squirreljme.build.source=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.build.binary=. ^
-	-classpath .;sjmeboot.jar %BOOTSTRAP_CLASS% %*
+	-jar sjmeboot.jar %*
 
 REM Failed?
 exit /b %ERRORLEVEL%

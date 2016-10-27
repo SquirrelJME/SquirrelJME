@@ -121,6 +121,7 @@ __prefixes()
 	echo "FC banned"
 	echo "FK banned"
 	echo "FU banned"
+	echo "NB banned"
 	
 	# Print normals
 	"$__exedir/errorprefixes.sh"

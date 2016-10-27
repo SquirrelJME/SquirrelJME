@@ -63,7 +63,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=false" \
 	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)" \
-	-classpath ".:sjmeboot.jar" "$BOOTSTRAP_CLASS" $*
+	-jar "sjmeboot.jar" $*
 then
 	exit 1
 fi

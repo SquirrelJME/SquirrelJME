@@ -9,8 +9,12 @@
 // ---------------------------------------------------------------------------
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -18,7 +22,7 @@ import java.util.Objects;
  *
  * @since 2016/10/26
  */
-public abstract class NewBootstrap
+public class NewBootstrap
 	implements Runnable
 {
 	/** The binary path. */
@@ -29,6 +33,9 @@ public abstract class NewBootstrap
 	
 	/** The input launch arguments. */
 	protected final String[] launchargs;
+	
+	/** Projects available for usage. */
+	protected final Map<String, BuildProject> projects;
 	
 	/**
 	 * Initializes the bootstrap base.
@@ -52,6 +59,38 @@ public abstract class NewBootstrap
 		this.sourcepath = __src;
 		this.launchargs = __args.clone();
 		
+		// Load all projects in the build directory
+		Map<String, BuildProject> projects = new LinkedHashMap<>();
+		try (DirectoryStream<Path> ds =
+			Files.newDirectoryStream(__src.resolve("build")))
+		{
+			// Go through all directories
+			for (Path p : ds)
+			{
+				// Must be a directory
+				if (!Files.isDirectory(p))
+					continue;
+			
+				// See if the manifest exists
+				Path man = p.resolve("META-INF").resolve("MANIFEST.MF");
+				if (!Files.exists(man))
+					continue;
+			
+				// Load project
+				BuildProject bp = new BuildProject(p);
+				projects.put(bp.projectName(), bp);
+			}
+		}
+		this.projects = projects;
+	}
+		
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/26
+	 */
+	@Override
+	public void run()
+	{
 		throw new Error("TODO");
 	}
 	
@@ -72,83 +111,44 @@ public abstract class NewBootstrap
 			"net.multiphasicapps.squirreljme.bootstrap.source"));
 		
 		// Only build?
-		NewBootstrap nb;
-		if (Boolean.getBoolean(
-			"net.multiphasicapps.squirreljme.build.onlybuild"))
-			nb = new DoBuild(bin, src, __args);
-		
-		// Launch
-		else
-			nb = new DoLaunch(bin, src, __args);
+		NewBootstrap nb = new NewBootstrap(bin, src, __args);
 		
 		// Run it
 		nb.run();
 	}
 	
 	/**
-	 * This performs the build of the bootstrap system.
+	 * This represents a single project which may be built.
 	 *
-	 * @since 2016/10/26
+	 * @since 2016/10/27
 	 */
-	public static class DoBuild
-		extends NewBootstrap
+	public static class BuildProject
 	{
 		/**
-		 * Initializes the build.
+		 * Initializes the build project.
 		 *
-		 * @param __bin The binary output directory.
-		 * @param __src The source input namespace directories.
-		 * @param __args Arguments to the bootstrap.
+		 * @param __b The project base path.
 		 * @throws IOException On read/write errors.
-		 * @since 2016/10/26
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/10/27
 		 */
-		public DoBuild(Path __bin, Path __src, String[] __args)
-			throws IOException
+		BuildProject(Path __b)
+			throws IOException, NullPointerException
 		{
-			super(__bin, __src, __args);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/10/26
-		 */
-		@Override
-		public void run()
-		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			
 			throw new Error("TODO");
 		}
-	}
-	
-	/**
-	 * This launches the bootstrap system so that SquirrelJME may be
-	 * built accordingly.
-	 *
-	 * @since 2016/10/26
-	 */
-	public static class DoLaunch
-		extends NewBootstrap
-	{
-		/**
-		 * Initializes the launcher.
-		 *
-		 * @param __bin The binary output directory.
-		 * @param __src The source input namespace directories.
-		 * @param __args Arguments to the bootstrap.
-		 * @throws IOException On read/write errors.
-		 * @since 2016/10/26
-		 */
-		public DoLaunch(Path __bin, Path __src, String[] __args)
-			throws IOException
-		{
-			super(__bin, __src, __args);
-		}
 		
 		/**
-		 * {@inheritDoc}
-		 * @since 2016/10/26
+		 * Returns the name of this project.
+		 *
+		 * @return The project name.
+		 * @since 2016/10/27
 		 */
-		@Override
-		public void run()
+		public String projectName()
 		{
 			throw new Error("TODO");
 		}
