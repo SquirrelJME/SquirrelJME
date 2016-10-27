@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Build System
+X-SquirrelJME-Namespace-Description: This namespace contains anything 
+ that is needed to build SquirrelJME target binaries.
+
