@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Name: tests
-X-SquirrelJME-Namespace-Depends: src
-X-SquirrelJME-Namespace-Title: Tests
-X-SquirrelJME-Namespace-Description: This namespace contains tests 
- that may be used to check the compatibilty of SquirrelJME.
-
