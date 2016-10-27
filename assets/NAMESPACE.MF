@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Assets
+X-SquirrelJME-Namespace-Description: This namespace contains assets 
+ which may be used during the target build process.
+
