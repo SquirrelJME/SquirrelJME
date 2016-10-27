@@ -24,6 +24,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 
 /**
  * New bootstrap build system.
@@ -44,6 +46,9 @@ public class NewBootstrap
 	
 	/** Projects available for usage. */
 	protected final Map<String, BuildProject> projects;
+	
+	/** The output bootstrap binary. */
+	protected final Path bootstrapout;
 	
 	/**
 	 * Initializes the bootstrap base.
@@ -66,6 +71,7 @@ public class NewBootstrap
 		this.binarypath = __bin;
 		this.sourcepath = __src;
 		this.launchargs = __args.clone();
+		this.bootstrapout = __bin.resolve("sjmeboot.jar");
 		
 		// Load all projects in the build directory
 		Map<String, BuildProject> projects = new LinkedHashMap<>();
@@ -99,7 +105,27 @@ public class NewBootstrap
 	@Override
 	public void run()
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error NB03 The entry point project does not exist.}
+		Map<String, BuildProject> projects = this.projects;
+		BuildProject bp = projects.get("host-javase");
+		if (bp == null)
+			throw new IllegalStateException("NB03");
+		
+		// Could fail
+		try
+		{
+			// Compile JARs to be merged together as one
+			Set<BuildProject> mergethese = bp.compile();
+			
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error NB04 Failed to compile the bootstrap due to
+		// a read/write error.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("NB04", e);
+		}
 	}
 	
 	/**
@@ -192,13 +218,22 @@ public class NewBootstrap
 	 *
 	 * @since 2016/10/27
 	 */
-	public static class BuildProject
+	public class BuildProject
 	{
 		/** The project base path. */
 		protected final Path basepath;
 		
 		/** The project name. */
 		protected final String name;
+		
+		/** The output path for this JAR. */
+		protected final Path jarout;
+		
+		/** Dependencies of this build project. */
+		protected final Set<String> depends;
+		
+		/** In compilation? */
+		private volatile boolean _incompile;
 		
 		/**
 		 * Initializes the build project.
@@ -236,7 +271,74 @@ public class NewBootstrap
 			if (rn == null)
 				throw new IllegalArgumentException(String.format("NB02 %s",
 					__mp));
-			this.name = __correctProjectName(rn.trim());
+			String name;
+			this.name = (name = __correctProjectName(rn.trim()));
+			
+			// Where is this output?
+			this.jarout = NewBootstrap.this.binarypath.resolve("bootsjme").
+				resolve(name);
+			
+			// Determine dependencies
+			Set<String> depends = new LinkedHashSet<>();
+			String rd = attr.getValue("X-SquirrelJME-Depends");
+			if (rd != null)
+				for (String s : rd.split("[ \t]"))
+					depends.add(__correctProjectName(s.trim()));
+			this.depends = depends;
+		}
+		
+		/**
+		 * Compiles this project and any dependencies it may have.
+		 *
+		 * @return The set of projects which were compiled.
+		 * @throws IOException On read/write errors.
+		 * @since 2016/10/27
+		 */
+		public Set<BuildProject> compile()
+			throws IOException
+		{
+			Set<BuildProject> rv = new LinkedHashSet<>();
+			
+			// Build loop
+			try
+			{
+				// {@squirreljme.error NB05 The specified project eventually
+				// depends on itself. (The name of this project)}
+				if (this._incompile)
+					throw new IllegalStateException(String.format("NB05 %s",
+						this.name));
+				this._incompile = true;
+				
+				// Compile dependencies first
+				Map<String, BuildProject> projects =
+					NewBootstrap.this.projects;
+				for (String dep : this.depends)
+				{
+					// {@squirreljme.error NB06 The dependency of a given
+					// project does not exist. (This project; The project it
+					// depends on)}
+					BuildProject dp = projects.get(dep);
+					if (dp == null)
+						throw new IllegalStateException(String.format(
+							"NB06 %s %s", this.name, dep));
+					
+					// Compile the dependency and add it to the merge group
+					for (BuildProject bp : dp.compile())
+						rv.add(bp);
+				}
+				
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Clear compile state
+			finally
+			{
+				this._incompile = false;
+			}
+			
+			// Return it
+			return rv;
 		}
 		
 		/**
