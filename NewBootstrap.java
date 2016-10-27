@@ -8,11 +8,16 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.jar.Manifest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -77,7 +82,7 @@ public class NewBootstrap
 					continue;
 			
 				// Load project
-				BuildProject bp = new BuildProject(p);
+				BuildProject bp = new BuildProject(p, man);
 				projects.put(bp.projectName(), bp);
 			}
 		}
@@ -128,16 +133,25 @@ public class NewBootstrap
 		 * Initializes the build project.
 		 *
 		 * @param __b The project base path.
+		 * @param __mp The manifest path.
 		 * @throws IOException On read/write errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/10/27
 		 */
-		BuildProject(Path __b)
+		BuildProject(Path __b, Path __mp)
 			throws IOException, NullPointerException
 		{
 			// Check
-			if (__b == null)
+			if (__b == null || __mp == null)
 				throw new NullPointerException("NARG");
+			
+			// Load the manifest
+			Manifest man;
+			try (InputStream in = Channels.newInputStream(
+				FileChannel.open(__mp, StandardOpenOption.READ)))
+			{
+				man = new Manifest(in);
+			}
 			
 			throw new Error("TODO");
 		}
