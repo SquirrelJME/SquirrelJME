@@ -15,5 +15,15 @@
  */
 public class NewBootstrap
 {
+	/**
+	 * Main entry point for the new bootstrap system.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2016/10/26
+	 */
+	public static void main(String... __args)
+	{
+		throw new Error("TODO");
+	}
 }
 
