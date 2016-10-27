@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Name: assets
-X-SquirrelJME-Namespace-Depends: src
-X-SquirrelJME-Namespace-Title: SquirrelJME Assets
-X-SquirrelJME-Namespace-Description: This namespace contains assets 
- which generally are just image files and other such things that 
- may be used for inclusion.
-
