@@ -17,10 +17,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * New bootstrap build system.
@@ -123,12 +126,80 @@ public class NewBootstrap
 	}
 	
 	/**
+	 * Lowercases the specified string.
+	 *
+	 * @param __s The string to check.
+	 * @return The string in correct form.
+	 * @throws IllegalArgumentException If it is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/27
+	 */
+	private static String __correctProjectName(String __s)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Check if any characters need lowering first
+		int n = __s.length();
+		boolean dolower = false;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Lowercase?
+			if (c >= 'A' && c <= 'Z')
+				dolower = true;
+			
+			// Legal character?
+			else if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
+				c == '-')
+				continue;
+			
+			// {@squirreljme.error NB01 Illegal character used in project
+			// name. (The input project name)}
+			else
+				throw new IllegalArgumentException(String.format("NB01 %s",
+					__s));
+		}
+		
+		// Use original string
+		if (!dolower)
+			return __s;
+		
+		// Lowercase everything
+		StringBuilder sb = new StringBuilder(n);
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Lowercase?
+			if (c >= 'A' && c <= 'Z')
+				sb.append((char)((c - 'A') + 'a'));
+			
+			// Keep
+			else
+				sb.append(c);
+		}
+		
+		// Use that
+		return sb.toString();
+	}
+	
+	/**
 	 * This represents a single project which may be built.
 	 *
 	 * @since 2016/10/27
 	 */
 	public static class BuildProject
 	{
+		/** The project base path. */
+		protected final Path basepath;
+		
+		/** The project name. */
+		protected final String name;
+		
 		/**
 		 * Initializes the build project.
 		 *
@@ -145,6 +216,9 @@ public class NewBootstrap
 			if (__b == null || __mp == null)
 				throw new NullPointerException("NARG");
 			
+			// Set
+			this.basepath = __b;
+			
 			// Load the manifest
 			Manifest man;
 			try (InputStream in = Channels.newInputStream(
@@ -153,7 +227,16 @@ public class NewBootstrap
 				man = new Manifest(in);
 			}
 			
-			throw new Error("TODO");
+			// Handle main attributes
+			Attributes attr = man.getMainAttributes();
+			
+			// {@squirreljme.error NB02 No project name was specified for
+			// the given manifest. (The manifest path)}
+			String rn = attr.getValue("X-SquirrelJME-BuildHostName");
+			if (rn == null)
+				throw new IllegalArgumentException(String.format("NB02 %s",
+					__mp));
+			this.name = __correctProjectName(rn.trim());
 		}
 		
 		/**
@@ -164,7 +247,7 @@ public class NewBootstrap
 		 */
 		public String projectName()
 		{
-			throw new Error("TODO");
+			return this.name;
 		}
 	}
 }
