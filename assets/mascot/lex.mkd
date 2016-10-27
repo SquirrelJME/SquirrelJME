@@ -1,5 +1,8 @@
 # Lex The SquirrelJME Mascot
 
+  * The SquirrelJME Mascot was drawn by...
+    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+
 An anthropromprohic albino (white) male squirrel (a small woodland rodent-like
 creature with sharp claws and a long fuzzy tail, preferred diet is acorns)
 with red irises and dark pupils, medium length white hair from the top of the
@@ -16,4 +19,16 @@ off away from the body. The hands are relaxed with dark claws visible, the feet
 also have claws. No pants or shoes are worn. The coloring of the mascot
 consists of no gradients and only contains two levels of shading (a light and a
 dark color). 
+
+For licensing information, see the license used for SquirrelJME.
+
+# High Resolution Usage
+
+For display purposes and on high resolution systems, the mascot as it currently
+is can be used.
+
+# Low Resolution Usage
+
+For extremely low resolutions below 128x128, the mascot is manually drawn using
+the high resolution version as a base.
 
