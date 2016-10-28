@@ -372,6 +372,37 @@ public class NewBootstrap
 		}
 		
 		/**
+		 * Returns the date of the binary.
+		 *
+		 * The value here is not cached.
+		 *
+		 * @return The date of the binary.
+		 * @since 2016/10/27
+		 */
+		public long binaryDate()
+		{
+			// If it does not exist, the date is not valid
+			Path jarout = this.jarout;
+			if (!Files.exists(jarout))
+				return Long.MIN_VALUE;
+			
+			// Calculate
+			try
+			{
+				Long[] out = new Long[1];
+				out[0] = Long.MIN_VALUE;
+				NewBootstrap.<Long>__walk(jarout, out, DATE);
+				return out[0];
+			}
+			
+			// Ignore
+			catch (IOException e)
+			{
+				return Long.MIN_VALUE;
+			}
+		}
+		
+		/**
 		 * Compiles this project and any dependencies it may have.
 		 *
 		 * @return The set of projects which were compiled.
@@ -411,42 +442,8 @@ public class NewBootstrap
 						rv.add(bp);
 				}
 				
-				// {@squirreljme.error NB07 No system Java compiler is
-				// available.}
-				JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
-				if (javac == null)
-					throw new IllegalStateException("NB07");
-				
-				// Need to access the disk
-				StandardJavaFileManager jfm = javac.getStandardFileManager(
-					null, null, null);
-				
-				// Need to clear files
-				Path tempdir = null;
-				try
-				{
-					// Create temporary directory
-					tempdir = Files.createTempDirectory(
-						"squirreljme-build-" + this.name);
-					
-					// Create task
-					if (true)
-						throw new Error("TODO");
-				}
-				
-				// Always clear at the end
-				finally
-				{
-					if (tempdir != null)
-						try
-						{
-							NewBootstrap.<Object>__walk(tempdir, null, DELETE);
-						}
-						catch (IOException e)
-						{
-							// Ignore
-						}
-				}
+				// Other complation state
+				__compileStep(rv);
 			}
 			
 			// Clear compile state
@@ -502,6 +499,72 @@ public class NewBootstrap
 			
 			// Return it
 			return rv;
+		}
+		
+		/**
+		 * Secondary compilation step.
+		 *
+		 * @param __deps Dependencies used.
+		 * @throws IOException On read/write errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/10/27
+		 */
+		private void __compileStep(Set<BuildProject> __deps)
+			throws IOException, NullPointerException
+		{
+			// Check
+			if (__deps == null)
+				throw new NullPointerException("NARG");
+			
+			// Best dependency date
+			long depdate = Long.MIN_VALUE;
+			for (BuildProject bp : __deps)
+				depdate = Math.max(depdate, bp.binaryDate());
+			
+			// Do not recompile if it is up to date
+			long srcdate = sourcesDate(),
+				bindate =  binaryDate();
+			Path jarout = this.jarout;
+			if (Files.exists(jarout) && srcdate <= bindate &&
+				bindate > depdate)
+				return;
+			
+			// {@squirreljme.error NB07 No system Java compiler is
+			// available.}
+			JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+			if (javac == null)
+				throw new IllegalStateException("NB07");
+			
+			// Need to access the disk
+			StandardJavaFileManager jfm = javac.getStandardFileManager(
+				null, null, null);
+			
+			// Need to clear files
+			Path tempdir = null;
+			try
+			{
+				// Create temporary directory
+				tempdir = Files.createTempDirectory(
+					"squirreljme-build-" + this.name);
+				
+				// Create task
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Always clear at the end
+			finally
+			{
+				if (tempdir != null)
+					try
+					{
+						NewBootstrap.<Object>__walk(tempdir, null, DELETE);
+					}
+					catch (IOException e)
+					{
+						// Ignore
+					}
+			}
 		}
 	}
 	
