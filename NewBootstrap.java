@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,6 +52,28 @@ public class NewBootstrap
 				System.err.printf("DEBUG -- DELETE %s%n", __v);
 				
 				Files.delete(__v);
+			}
+		};
+	
+	/** Returns the latest date. */
+	public static final Consumer<Path, Long, IOException> DATE =
+		new Consumer<Path, Long, IOException>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/10/27
+			 */
+			@Override
+			public void accept(Path __v, Long[] __s)
+				throws IOException
+			{
+				// Get date
+				FileTime ft = Files.getLastModifiedTime(__v);
+				long millis = ft.toMillis();
+				
+				// If it is newer, use that
+				if (millis > __s[0])
+					__s[0] = millis;
 			}
 		};
 	
@@ -288,6 +311,10 @@ public class NewBootstrap
 		/** In compilation? */
 		private volatile boolean _incompile;
 		
+		/** Was the source date calculated? */
+		private volatile long _sourcedate =
+			Long.MIN_VALUE;
+		
 		/**
 		 * Initializes the build project.
 		 *
@@ -440,6 +467,37 @@ public class NewBootstrap
 		public String projectName()
 		{
 			return this.name;
+		}
+		
+		/**
+		 * Returns the date when the project sources were last touched.
+		 *
+		 * @return The project sources date.
+		 * @since 2016/10/27
+		 */
+		public long sourcesDate()
+		{
+			// Use cached value
+			long rv = this._sourcedate;
+			if (rv != Long.MIN_VALUE)
+				return rv;
+			
+			// Calculate otherwise
+			try
+			{
+				Long[] out = new Long[1];
+				out[0] = Long.MIN_VALUE;
+				NewBootstrap.<Long>__walk(this.basepath, out, DATE);
+				this._sourcedate = (rv = out[0]);
+			}
+			
+			// Ignore
+			catch (IOException e)
+			{
+			}
+			
+			// Return it
+			return rv;
 		}
 	}
 	
