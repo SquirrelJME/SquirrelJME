@@ -57,8 +57,6 @@ public class NewBootstrap
 			public void accept(Path __v, Object __s)
 				throws IOException
 			{
-				System.err.printf("DEBUG -- DELETE %s%n", __v);
-				
 				Files.delete(__v);
 			}
 		};
