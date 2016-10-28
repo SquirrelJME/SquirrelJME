@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-BuildHostName: deterministic
-X-SquirrelJME-UUID: d0ac35a6-4945-442c-87be-ace7acc56b07
-X-SquirrelJME-Error: AV
-X-SquirrelJME-Vendor: Steven Gawroriski
-X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: This contains a simple Comparable sorted 
- Map and Set using a simple array-backed implementation.
-
