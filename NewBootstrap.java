@@ -104,6 +104,9 @@ public class NewBootstrap
 	/** The output bootstrap binary. */
 	protected final Path bootstrapout;
 	
+	/** The directory where JARs are placed. */
+	protected final Path buildjarout;
+	
 	/**
 	 * Initializes the bootstrap base.
 	 *
@@ -125,6 +128,7 @@ public class NewBootstrap
 		this.binarypath = __bin;
 		this.sourcepath = __src;
 		this.launchargs = __args.clone();
+		this.buildjarout = __bin.resolve("bootsjme");
 		this.bootstrapout = __bin.resolve("sjmeboot.jar");
 		
 		// Load all projects in the build directory
@@ -176,13 +180,14 @@ public class NewBootstrap
 			Path bootjar = this.bootstrapout;
 			Long[] out = new Long[1];
 			out[0] = Long.MIN_VALUE;
-			NewBootstrap.<Long[]>__walk(this.binarypath, out, DATE);
+			NewBootstrap.<Long[]>__walk(this.buildjarout, out, DATE);
 			long depjartime = out[0];
 			
 			// Get the time of the output JAR
 			long bootjartime;
 			if (Files.exists(bootjar))
 			{
+				out[0] = Long.MIN_VALUE;
 				NewBootstrap.<Long[]>__walk(bootjar, out, DATE);
 				bootjartime = out[0];
 			}
@@ -192,6 +197,9 @@ public class NewBootstrap
 			// Repackage
 			if (bootjartime == Long.MIN_VALUE || depjartime > bootjartime)
 			{
+				// {@squirreljme.error NB0a Merging output JAR file.}
+				System.err.println("NB0a");
+				
 				// Create temporary JAR
 				tempjar = Files.createTempFile("squirreljme-boot-out", ".jar");
 				
@@ -515,8 +523,7 @@ public class NewBootstrap
 			this.name = (name = __correctProjectName(rn.trim()));
 			
 			// Where is this output?
-			this.jarout = NewBootstrap.this.binarypath.resolve("bootsjme").
-				resolve(name + ".jar");
+			this.jarout = NewBootstrap.this.buildjarout.resolve(name + ".jar");
 			
 			// Determine dependencies
 			Set<String> depends = new LinkedHashSet<>();
