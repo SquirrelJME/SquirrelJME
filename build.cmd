@@ -24,7 +24,7 @@ cmd /c "exit /b 0"
 REM Set some variables
 if not defined JAVA set JAVA=java
 if not defined JAVAC set JAVAC=javac
-if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=Bootstrap
+if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=NewBootstrap
 
 REM Make sure commands exist (try to call them(
 %JAVA% -version 2> NUL > NUL
