@@ -67,6 +67,10 @@ public class NewBootstrap
 			public void accept(Path __v, Long[] __s)
 				throws IOException
 			{
+				// Dates on directories might not truly be valid
+				if (Files.isDirectory(__v))
+					return;
+				
 				// Get date
 				FileTime ft = Files.getLastModifiedTime(__v);
 				long millis = ft.toMillis();
