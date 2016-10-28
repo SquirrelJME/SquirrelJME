@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
@@ -300,6 +301,41 @@ public class NewBootstrap
 	}
 	
 	/**
+	 * Calculates the name that a file would appear as inside of a ZIP file.
+	 *
+	 * @param __root The root path.
+	 * @param __p The file to add.
+	 * @return The ZIP compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private static String __zipName(Path __root, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __p == null)
+			throw new NullPointerException();
+		
+		// Calculate relative name
+		Path rel = __root.toAbsolutePath().relativize(__p.toAbsolutePath());
+		
+		// Build name
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : rel)
+		{
+			// Prefix slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp);
+		}
+		
+		// Return it
+		return sb.toString();
+	}
+	
+	/**
 	 * This represents a single project which may be built.
 	 *
 	 * @since 2016/10/27
@@ -538,7 +574,7 @@ public class NewBootstrap
 			// {@squirreljme.error NB09 Now compiling the specified project.
 			// (The name of the project being compiled)}
 			String name = this.name;
-			System.err.printf("NB09 %s", name);
+			System.err.printf("NB09 %s%n", name);
 			
 			// {@squirreljme.error NB07 No system Java compiler is
 			// available.}
@@ -555,7 +591,7 @@ public class NewBootstrap
 					"squirreljme-build-" + name);
 				
 				// Source code is just this project
-				Path basepath = this.basepath;
+				final Path basepath = this.basepath;
 				
 				// Get all source code to be compiled
 				final Set<File> fsources = new LinkedHashSet<>();
@@ -622,13 +658,67 @@ public class NewBootstrap
 				
 				// Generate JAR output
 				Path tempjar = Files.createTempFile("buildjar", "jar");
-				try (ZipOutputStream zos = new ZipOutputStream(Channels.
+				try (final ZipOutputStream zos = new ZipOutputStream(Channels.
 					newOutputStream(FileChannel.open(tempjar,
 					StandardOpenOption.WRITE))))
 				{
-					// Write files
-					if (true)
-						throw new Error("TODO");
+					// Write files in the output and input
+					final byte[] buf = new byte[4096];
+					Consumer<Path, Path, IOException> func =
+						new Consumer<Path, Path, IOException>()
+						{
+							/**
+							 * {@inheritDoc}
+							 * @since 2016/10/28
+							 */
+							@Override
+							public void accept(Path __p, Path __s)
+								throws IOException
+							{
+								ZipOutputStream out = zos;
+								
+								// Ignore directories
+								if (Files.isDirectory(__p) || __p.
+									getFileName().toString().endsWith("java"))
+									return;
+								
+								// Ignore files ending in .java and manifests
+								Path fn = __p.getFileName();
+								String fns = __p.getFileName().toString();
+								if (fns.endsWith(".java") ||
+									fn.equals(Paths.get("MANIFEST.MF")))
+									return;
+								
+								// Create new entry
+								out.putNextEntry(
+									new ZipEntry(__zipName(__s, __p)));
+								
+								// Copy data
+								try (InputStream is = Channels.newInputStream(
+									FileChannel.open(__p,
+									StandardOpenOption.READ)))
+								{
+									for (;;)
+									{
+										int rc = is.read(buf);
+										
+										// EOF?
+										if (rc < 0)
+											break;
+										
+										// Copy
+										out.write(buf, 0, rc);
+									}
+								}
+								
+								// Close
+								out.closeEntry();
+							}
+						};
+					
+					// Add sources and classes
+					NewBootstrap.<Path>__walk(basepath, basepath, func);
+					NewBootstrap.<Path>__walk(tempdir, tempdir, func);
 					
 					// Finish it
 					zos.flush();
