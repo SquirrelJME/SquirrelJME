@@ -52,6 +52,26 @@ public class DeterministicSet<V extends Comparable<V>>
 	 * @since 2016/10/28
 	 */
 	@Override
+	public void clear()
+	{
+		this._backing.clear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
+	public boolean contains(Object __o)
+	{
+		return this._backing.containsKey(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
 	public Iterator<V> iterator()
 	{
 		return this._backing.keySet().iterator();
