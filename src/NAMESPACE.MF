@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Namespace-Name: src
+X-SquirrelJME-Namespace-Deprecated: DEPRECATED
 X-SquirrelJME-Namespace-Depends: 
 X-SquirrelJME-Namespace-Title: SquirrelJME Core
 X-SquirrelJME-Namespace-Description: This namespace contains 
