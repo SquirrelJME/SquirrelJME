@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.build.deterministic;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +32,45 @@ import java.util.Set;
 public class DeterministicMap<K extends Comparable<K>, V>
 	extends AbstractMap<K, V>
 {
+	/** Keys in the map. */
+	private final List<K> _keys =
+		new ArrayList<>();
+	
+	/** Values in the map. */
+	private final List<V> _values =
+		new ArrayList<>();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
+	public void clear()
+	{
+		this._keys.clear();
+		this._values.clear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
+	public boolean containsKey(Object __k)
+	{
+		return this._keys.contains(__k);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
+	public boolean containsValue(Object __v)
+	{
+		return this._values.contains(__v);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/28
@@ -37,6 +79,26 @@ public class DeterministicMap<K extends Comparable<K>, V>
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
+	public V put(K __k, V __v)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/28
+	 */
+	@Override
+	public int size()
+	{
+		return this._keys.size();
 	}
 }
 
