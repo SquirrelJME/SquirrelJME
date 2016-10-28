@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-BuildHostName: build-base
+X-SquirrelJME-UUID: fda7df14-a58f-4781-8f8f-336111c7aec2
+X-SquirrelJME-Error: AU
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains basic support for the build 
+ system and project manager. The interfaces declared by this class 
+ must be implemented in order for the build system to be functional.
+
