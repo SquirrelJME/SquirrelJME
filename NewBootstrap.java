@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.tools.JavaCompiler;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 /**
@@ -35,6 +36,24 @@ import javax.tools.ToolProvider;
 public class NewBootstrap
 	implements Runnable
 {
+	/** Deletes files. */
+	public static final Consumer<Path, Object, IOException> DELETE =
+		new Consumer<Path, Object, IOException>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/10/27
+			 */
+			@Override
+			public void accept(Path __v, Object[] __s)
+				throws IOException
+			{
+				System.err.printf("DEBUG -- DELETE %s%n", __v);
+				
+				Files.delete(__v);
+			}
+		};
+	
 	/** The binary path. */
 	protected final Path binarypath;
 	
@@ -214,6 +233,40 @@ public class NewBootstrap
 	}
 	
 	/**
+	 * Walks the given path and calls the given consumer for every file and
+	 * directory.
+	 *
+	 * @param <S> The secondary value to pass.
+	 * @param __p The path to walk.
+	 * @param __s The secondary value.
+	 * @param __c The function to call for paths.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments, except for the secondary
+	 * value.
+	 * @since 2016/09/18
+	 */
+	private static <S> void __walk(Path __p, S[] __s,
+		Consumer<Path, S, IOException> __c)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		// If a directory, walk through all the files
+		if (Files.isDirectory(__p))
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
+			{
+				for (Path s : ds)
+					__walk(s, __s, __c);
+			}
+		
+		// Always accept, directories are accepted last since directories
+		// cannot be deleted if they are not empty
+		__c.accept(__p, __s);
+	}
+	
+	/**
 	 * This represents a single project which may be built.
 	 *
 	 * @since 2016/10/27
@@ -327,8 +380,42 @@ public class NewBootstrap
 						rv.add(bp);
 				}
 				
-				if (true)
-					throw new Error("TODO");
+				// {@squirreljme.error NB07 No system Java compiler is
+				// available.}
+				JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+				if (javac == null)
+					throw new IllegalStateException("NB07");
+				
+				// Need to access the disk
+				StandardJavaFileManager jfm = javac.getStandardFileManager(
+					null, null, null);
+				
+				// Need to clear files
+				Path tempdir = null;
+				try
+				{
+					// Create temporary directory
+					tempdir = Files.createTempDirectory(
+						"squirreljme-build-" + this.name);
+					
+					// Create task
+					if (true)
+						throw new Error("TODO");
+				}
+				
+				// Always clear at the end
+				finally
+				{
+					if (tempdir != null)
+						try
+						{
+							NewBootstrap.<Object>__walk(tempdir, null, DELETE);
+						}
+						catch (IOException e)
+						{
+							// Ignore
+						}
+				}
 			}
 			
 			// Clear compile state
@@ -336,6 +423,9 @@ public class NewBootstrap
 			{
 				this._incompile = false;
 			}
+			
+			// Add self to dependency chain
+			rv.add(this);
 			
 			// Return it
 			return rv;
@@ -351,6 +441,28 @@ public class NewBootstrap
 		{
 			return this.name;
 		}
+	}
+	
+	/**
+	 * Consumes a value which may throw an exception.
+	 *
+	 * @param <V> The value to consume.
+	 * @param <S> A secondary value that may be passed.
+	 * @param <E> The exception to potentially throw.
+	 * @since 2016/10/27
+	 */
+	public static interface Consumer<V, S, E extends Exception>
+	{
+		/**
+		 * Accepts a value.
+		 *
+		 * @param __v The value to access.
+		 * @param __s An optional secondary value.
+		 * @throws E If this given exception type is thrown.
+		 * @since 2016/10/27
+		 */
+		public abstract void accept(V __v, S[] __s)
+			throws E;
 	}
 }
 
