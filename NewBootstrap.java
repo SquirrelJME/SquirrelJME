@@ -8,6 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.LinkedHashMap;
@@ -26,7 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager;
 import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
 /**
@@ -535,19 +539,77 @@ public class NewBootstrap
 			if (javac == null)
 				throw new IllegalStateException("NB07");
 			
-			// Need to access the disk
-			StandardJavaFileManager jfm = javac.getStandardFileManager(
-				null, null, null);
-			
 			// Need to clear files
 			Path tempdir = null;
 			try
 			{
 				// Create temporary directory
+				String name = this.name;
 				tempdir = Files.createTempDirectory(
-					"squirreljme-build-" + this.name);
+					"squirreljme-build-" + name);
 				
-				// Create task
+				// Source code is just this project
+				Path basepath = this.basepath;
+				
+				// Get all source code to be compiled
+				final Set<File> fsources = new LinkedHashSet<>();
+				NewBootstrap.<Object>__walk(basepath, null,
+					new Consumer<Path, Object, IOException>()
+					{
+						/**
+						 * {@inheritDoc}
+						 * @since 2016/10/27
+						 */
+						@Override
+						public void accept(Path __p, Object __s)
+							throws IOException
+						{
+							// Ignore directories
+							if (Files.isDirectory(__p))
+								return;
+							
+							// Add to sources if it is a source file
+							if (__p.getFileName().toString().endsWith(".java"))
+								fsources.add(__p.toFile());
+						}
+					});
+				
+				// If there are no sources to compile, do not bother
+				if (!fsources.isEmpty())
+				{
+					// Need to access the disk
+					StandardJavaFileManager jfm = javac.getStandardFileManager(
+						null, null, null);
+					
+					// Source code is just this project
+					jfm.setLocation(StandardLocation.SOURCE_PATH,
+						Arrays.<File>asList(basepath.toFile()));
+				
+					// Outputs to the temporary directory
+					jfm.setLocation(StandardLocation.CLASS_OUTPUT,
+						Arrays.<File>asList(tempdir.toFile()));
+				
+					// The class path is just the dependencies
+					Set<File> fdeps = new LinkedHashSet<>();
+					for (BuildProject bp : __deps)
+						fdeps.add(bp.jarout.toFile());
+					jfm.setLocation(StandardLocation.CLASS_PATH, fdeps);
+					
+					// Create task
+					JavaCompiler.CompilationTask task = javac.getTask(null,
+						jfm, null, Arrays.<String>asList("-source", "1.7",
+						"-target", "1.7", "-g", "-Xlint:deprecation",
+						"-Xlint:unchecked"), null, jfm.getJavaFileObjects(
+						fsources.<File>toArray(new File[fsources.size()])));
+				
+					// {@squirreljme.error NB08 Compilation of this project
+					// failed. (The name of this project)}
+					if (!task.call())
+						throw new RuntimeException(String.format("NB08 %s",
+							name));
+				}
+				
+				// Generate JAR output
 				if (true)
 					throw new Error("TODO");
 			}
