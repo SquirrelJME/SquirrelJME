@@ -84,7 +84,8 @@ public class IMCServer
 	public StreamConnection acceptAndOpen()
 		throws IOException
 	{
-		// {@squirreljme.error EC0i
+		// {@squirreljme.error EC0i Cannot accept new connections after the
+		// server has been closed.}
 		if (this._closed)
 			throw new IOException("EC0i");
 		
