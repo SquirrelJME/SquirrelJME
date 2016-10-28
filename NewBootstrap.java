@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
@@ -165,6 +166,7 @@ public class NewBootstrap
 			throw new IllegalStateException("NB03");
 		
 		// Could fail
+		Path tempjar = null;
 		try
 		{
 			// Compile JARs to be merged together as one
@@ -190,7 +192,26 @@ public class NewBootstrap
 			// Repackage
 			if (bootjartime == Long.MIN_VALUE || depjartime > bootjartime)
 			{
-				throw new Error("TODO");
+				// Create temporary JAR
+				tempjar = Files.createTempFile("squirreljme-boot-out", ".jar");
+				
+				// Open output
+				try (ZipOutputStream zos = new ZipOutputStream(Channels.
+					newOutputStream(FileChannel.open(tempjar,
+					StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
+				{
+					// Copy contents from other JARs
+					for (BuildProject dp : mergethese)
+						__mergeInto(dp, zos);
+					
+					// Finish it
+					zos.finish();
+					zos.flush();
+				}
+				
+				// Move it
+				Files.move(tempjar, bootjar,
+					StandardCopyOption.REPLACE_EXISTING);
 			}
 		}
 		
@@ -199,6 +220,19 @@ public class NewBootstrap
 		catch (IOException e)
 		{
 			throw new RuntimeException("NB04", e);
+		}
+		
+		// Cleanup temporary JAR if it was created
+		finally
+		{
+			if (tempjar != null)
+				try
+				{
+					Files.delete(tempjar);
+				}
+				catch (IOException e)
+				{
+				}
 		}
 	}
 	
@@ -285,6 +319,54 @@ public class NewBootstrap
 		
 		// Use that
 		return sb.toString();
+	}
+	
+	/**
+	 * Merges the input JAR into the output JAR.
+	 *
+	 * @param __bp The source.
+	 * @param __zos The destination.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/28
+	 */
+	private static void __mergeInto(BuildProject __bp, ZipOutputStream __zos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__bp == null || __zos == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through the input
+		try (ZipInputStream zis = new ZipInputStream(Channels.newInputStream(
+			FileChannel.open(__bp.jarout, StandardOpenOption.READ))))
+		{
+			// Copy all entries
+			ZipEntry e;
+			byte[] buf = new byte[4096];
+			while (null != (e = zis.getNextEntry()))
+			{
+				// Write to target
+				__zos.putNextEntry(e);
+				
+				// Copy loop
+				for (;;)
+				{
+					int rc = zis.read(buf);
+					
+					// EOF?
+					if (rc < 0)
+						break;
+					
+					// Write
+					__zos.write(buf, 0, rc);
+				}
+				
+				// Close
+				__zos.closeEntry();
+				zis.closeEntry();
+			}
+		}
 	}
 	
 	/**
@@ -681,7 +763,7 @@ public class NewBootstrap
 				Path tempjar = Files.createTempFile("buildjar", "jar");
 				try (final ZipOutputStream zos = new ZipOutputStream(Channels.
 					newOutputStream(FileChannel.open(tempjar,
-					StandardOpenOption.WRITE))))
+					StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
 				{
 					// Write files in the output and input
 					final byte[] buf = new byte[4096];
@@ -742,8 +824,8 @@ public class NewBootstrap
 					NewBootstrap.<Path>__walk(tempdir, tempdir, func);
 					
 					// Finish it
-					zos.flush();
 					zos.finish();
+					zos.flush();
 					
 					// Move JAR
 					Files.move(tempjar, jarout,
