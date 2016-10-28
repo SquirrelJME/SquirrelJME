@@ -6,4 +6,5 @@ X-SquirrelJME-Error: AD
 X-SquirrelJME-Description: This contains the entry system which runs 
  on desktop Java SE virtual machines. Generally this will be the 
  most commonly used entry point.
+Main-Class: net.multiphasicapps.squirreljme.build.host.javase.Main
 

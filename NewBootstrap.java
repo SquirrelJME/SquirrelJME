@@ -202,7 +202,7 @@ public class NewBootstrap
 				{
 					// Copy contents from other JARs
 					for (BuildProject dp : mergethese)
-						__mergeInto(dp, zos);
+						__mergeInto(dp, zos, dp == bp);
 					
 					// Finish it
 					zos.finish();
@@ -326,11 +326,13 @@ public class NewBootstrap
 	 *
 	 * @param __bp The source.
 	 * @param __zos The destination.
+	 * @param __useman Use the manifest?
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/28
 	 */
-	private static void __mergeInto(BuildProject __bp, ZipOutputStream __zos)
+	private static void __mergeInto(BuildProject __bp, ZipOutputStream __zos,
+		boolean __useman)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -346,6 +348,15 @@ public class NewBootstrap
 			byte[] buf = new byte[4096];
 			while (null != (e = zis.getNextEntry()))
 			{
+				// If the entry is the manifest, only use it if it was
+				// requested
+				if (e.getName().equals("META-INF/MANIFEST.MF"))
+					if (!__useman)
+					{
+						zis.closeEntry();
+						continue;
+					}
+				
 				// Write to target
 				__zos.putNextEntry(e);
 				
@@ -785,11 +796,10 @@ public class NewBootstrap
 									getFileName().toString().endsWith("java"))
 									return;
 								
-								// Ignore files ending in .java and manifests
+								// Ignore files ending in .java
 								Path fn = __p.getFileName();
 								String fns = __p.getFileName().toString();
-								if (fns.endsWith(".java") ||
-									fn.equals(Paths.get("MANIFEST.MF")))
+								if (fns.endsWith(".java"))
 									return;
 								
 								// Create new entry
