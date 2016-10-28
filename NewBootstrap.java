@@ -46,7 +46,7 @@ public class NewBootstrap
 			 * @since 2016/10/27
 			 */
 			@Override
-			public void accept(Path __v, Object[] __s)
+			public void accept(Path __v, Object __s)
 				throws IOException
 			{
 				System.err.printf("DEBUG -- DELETE %s%n", __v);
@@ -56,8 +56,8 @@ public class NewBootstrap
 		};
 	
 	/** Returns the latest date. */
-	public static final Consumer<Path, Long, IOException> DATE =
-		new Consumer<Path, Long, IOException>()
+	public static final Consumer<Path, Long[], IOException> DATE =
+		new Consumer<Path, Long[], IOException>()
 		{
 			/**
 			 * {@inheritDoc}
@@ -272,7 +272,7 @@ public class NewBootstrap
 	 * value.
 	 * @since 2016/09/18
 	 */
-	private static <S> void __walk(Path __p, S[] __s,
+	private static <S> void __walk(Path __p, S __s,
 		Consumer<Path, S, IOException> __c)
 		throws IOException, NullPointerException
 	{
@@ -391,7 +391,7 @@ public class NewBootstrap
 			{
 				Long[] out = new Long[1];
 				out[0] = Long.MIN_VALUE;
-				NewBootstrap.<Long>__walk(jarout, out, DATE);
+				NewBootstrap.<Long[]>__walk(jarout, out, DATE);
 				return out[0];
 			}
 			
@@ -488,7 +488,7 @@ public class NewBootstrap
 			{
 				Long[] out = new Long[1];
 				out[0] = Long.MIN_VALUE;
-				NewBootstrap.<Long>__walk(this.basepath, out, DATE);
+				NewBootstrap.<Long[]>__walk(this.basepath, out, DATE);
 				this._sourcedate = (rv = out[0]);
 			}
 			
@@ -586,7 +586,7 @@ public class NewBootstrap
 		 * @throws E If this given exception type is thrown.
 		 * @since 2016/10/27
 		 */
-		public abstract void accept(V __v, S[] __s)
+		public abstract void accept(V __v, S __s)
 			throws E;
 	}
 }
