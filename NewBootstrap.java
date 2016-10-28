@@ -525,7 +525,7 @@ public class NewBootstrap
 			
 			// Determine dependencies
 			Set<String> depends = new LinkedHashSet<>();
-			String rd = attr.getValue("X-SquirrelJME-Depends");
+			String rd = attr.getValue("X-SquirrelJME-BuildHostDepends");
 			if (rd != null)
 				for (String s : rd.split("[ \t]"))
 					depends.add(__correctProjectName(s.trim()));

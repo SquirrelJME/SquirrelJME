@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,6 +42,14 @@ public class ProjectManager
 		// Check
 		if (__bin == null || __src == null)
 			throw new NullPointerException("NARG");
+		
+		// Go through all source directories and determine which paths are
+		// associated with namespaces.
+		try (DirectoryStream ds = Files.newDirectoryStream(__src))
+		{
+			if (true)
+				throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 	}
