@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class is used to manage projects which represent modules that
