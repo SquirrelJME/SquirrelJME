@@ -18,6 +18,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.jar.Attributes;
@@ -27,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.zip.ZipOutputStream;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
 import javax.tools.StandardJavaFileManager;
@@ -533,6 +535,11 @@ public class NewBootstrap
 				bindate > depdate)
 				return;
 			
+			// {@squirreljme.error NB09 Now compiling the specified project.
+			// (The name of the project being compiled)}
+			String name = this.name;
+			System.err.printf("NB09 %s", name);
+			
 			// {@squirreljme.error NB07 No system Java compiler is
 			// available.}
 			JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
@@ -544,7 +551,6 @@ public class NewBootstrap
 			try
 			{
 				// Create temporary directory
-				String name = this.name;
 				tempdir = Files.createTempDirectory(
 					"squirreljme-build-" + name);
 				
@@ -609,9 +615,46 @@ public class NewBootstrap
 							name));
 				}
 				
+				// Create directory used for output
+				Path jpar = jarout.getParent();
+				if (jpar != null)
+					Files.createDirectories(jpar);
+				
 				// Generate JAR output
-				if (true)
-					throw new Error("TODO");
+				Path tempjar = Files.createTempFile("buildjar", "jar");
+				try (ZipOutputStream zos = new ZipOutputStream(Channels.
+					newOutputStream(FileChannel.open(tempjar,
+					StandardOpenOption.WRITE))))
+				{
+					// Write files
+					if (true)
+						throw new Error("TODO");
+					
+					// Finish it
+					zos.flush();
+					zos.finish();
+					
+					// Move JAR
+					Files.move(tempjar, jarout,
+						StandardCopyOption.REPLACE_EXISTING);
+				}
+				
+				// Failed, delete output JAR
+				catch (IOException|RuntimeException|Error e)
+				{
+					// Delete file
+					try
+					{
+						Files.delete(tempjar);
+					}
+					catch (IOException f)
+					{
+						// Ignore
+					}
+					
+					// Rethrow
+					throw e;
+				}
 			}
 			
 			// Always clear at the end
