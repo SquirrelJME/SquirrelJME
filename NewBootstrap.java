@@ -402,7 +402,7 @@ public class NewBootstrap
 			
 			// Where is this output?
 			this.jarout = NewBootstrap.this.binarypath.resolve("bootsjme").
-				resolve(name);
+				resolve(name + ".jar");
 			
 			// Determine dependencies
 			Set<String> depends = new LinkedHashSet<>();
