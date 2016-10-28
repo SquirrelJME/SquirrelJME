@@ -170,7 +170,28 @@ public class NewBootstrap
 			// Compile JARs to be merged together as one
 			Set<BuildProject> mergethese = bp.compile();
 			
-			throw new Error("TODO");
+			// Get the time and date for the JARs to merge
+			Path bootjar = this.bootstrapout;
+			Long[] out = new Long[1];
+			out[0] = Long.MIN_VALUE;
+			NewBootstrap.<Long[]>__walk(this.binarypath, out, DATE);
+			long depjartime = out[0];
+			
+			// Get the time of the output JAR
+			long bootjartime;
+			if (Files.exists(bootjar))
+			{
+				NewBootstrap.<Long[]>__walk(bootjar, out, DATE);
+				bootjartime = out[0];
+			}
+			else
+				bootjartime = Long.MIN_VALUE;
+			
+			// Repackage
+			if (bootjartime == Long.MIN_VALUE || depjartime > bootjartime)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		// {@squirreljme.error NB04 Failed to compile the bootstrap due to
