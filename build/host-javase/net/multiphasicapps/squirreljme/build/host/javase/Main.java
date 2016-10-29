@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.build.system.BuildSystem;
 
 /**
  * This is the main entry point for the system which provides host support for
@@ -50,19 +50,19 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		// Setup project manager
+		// Setup build system
 		// {@squirreljme.error AD01 The system property used for the binary
 		// path was not specified.}
 		// {@squirreljme.error AD02 The system property used for the root of
 		// the SquirrelJME source tree was not specified.}
-		ProjectManager pm = new ProjectManager(
+		BuildSystem bs = new BuildSystem(
 			Paths.get(Objects.requireNonNull(
 				System.getProperty(BINARY_PROPERTY), "AD01")),
 			Paths.get(Objects.requireNonNull(
 				System.getProperty(SOURCE_PROPERTY), "AD02")));
 		
-		
-		throw new Error("TODO");
+		// Call into it
+		bs.main(__args);
 	}
 }
 
