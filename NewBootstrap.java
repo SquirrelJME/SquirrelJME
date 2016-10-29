@@ -38,7 +38,18 @@ import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
 /**
- * New bootstrap build system.
+ * This class implements a bootstrap which is capable to build an environment
+ * which is capable of building SquirrelJME target binaries.
+ *
+ * You should only compile and run this class manually if your system is not
+ * able to use the pre-existing build scripts. If this is the case then you
+ * must set the following system properties:
+ *
+ * {@code net.multiphasicapps.squirreljme.bootstrap.binary} is the location
+ * where output binaries are to be placed when they are compiled, along with
+ * the bootstrap.
+ * {@code net.multiphasicapps.squirreljme.bootstrap.source} is the location
+ * of the SquirrelJME source tree.
  *
  * @since 2016/10/26
  */
@@ -255,7 +266,8 @@ public class NewBootstrap
 		// Get directories for input and output
 		Path bin = Paths.get(System.getProperty(
 			"net.multiphasicapps.squirreljme.bootstrap.binary")),
-			src = Paths.get(System.getProperty(
+			src = Paths
+			.get(System.getProperty(
 			"net.multiphasicapps.squirreljme.bootstrap.source"));
 		
 		// Only build?
