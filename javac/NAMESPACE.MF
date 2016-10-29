@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Name: javac
-X-SquirrelJME-Namespace-Deprecated: DEPRECATED
-X-SquirrelJME-Namespace-Depends: src
-X-SquirrelJME-Namespace-Title: Java Compiler
-X-SquirrelJME-Namespace-Description: This namespace contains the 
- Java Compiler.
-
