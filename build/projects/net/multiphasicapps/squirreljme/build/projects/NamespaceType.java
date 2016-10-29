@@ -32,6 +32,9 @@ public enum NamespaceType
 	/** Midlets which are actual applications. */
 	MIDLETS,
 	
+	/** APIs which implement configurations, profiles, and standards. */
+	APIS,
+	
 	/** End. */
 	;
 	
