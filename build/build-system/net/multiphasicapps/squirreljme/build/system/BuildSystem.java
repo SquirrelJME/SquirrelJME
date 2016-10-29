@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.system;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 
 /**
@@ -47,6 +48,23 @@ public class BuildSystem
 	}
 	
 	/**
+	 * Creates and return an auto interpreter instance.
+	 *
+	 * @param __args Arguments to the interpreter.
+	 * @return The interpreter.
+	 * @since 2016/10/29
+	 */
+	public AutoInterpreter autoInterpreter(String... __args)
+	{
+		// Force to exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Create
+		return new AutoInterpreter(this.projects, __args);
+	}
+	
+	/**
 	 * This wraps the main entry point from a single specified string which
 	 * may be used by host environments.
 	 *
@@ -62,8 +80,12 @@ public class BuildSystem
 		if (__args == null)
 			__args = new String[0];
 		
-		// {@squirreljme.error AO01 No arguments specified.
-		// }
+		// {@squirreljme.error AO01 No arguments specified. The following are
+		// commands which are valid.
+		// {@code interpret (interpreter arguments...)}: Runs the auto
+		// interpreter which is used to create simulated SquirrelJME
+		// environments.
+		//}
 		int na = __args.length;
 		if (na <= 0)
 			throw new IllegalArgumentException("AO01");
@@ -74,7 +96,16 @@ public class BuildSystem
 		{
 				// Run the auto-interpreter
 			case "interpret":
-				throw new Error("TODO");
+				{
+					// Create subset of arguments
+					String[] pargs = new String[na - 1];
+					for (int i = 0, j = 1; j < na; i++, j++)
+						pargs[i] = __args[j];
+					
+					// Create interpreter and run it
+					autoInterpreter(pargs).run();
+				}
+				break;
 			
 				// {@squirreljme.error AO02 An unknown command was specified.
 				// (The command)}
