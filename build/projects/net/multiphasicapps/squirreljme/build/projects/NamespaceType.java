@@ -26,6 +26,12 @@ public enum NamespaceType
 	/** Projects which are part of the build system. */
 	BUILD,
 	
+	/** Liblets which are only included by midlets and APIs. */
+	LIBLETS,
+	
+	/** Midlets which are actual applications. */
+	MIDLETS,
+	
 	/** End. */
 	;
 	
@@ -41,6 +47,34 @@ public enum NamespaceType
 	public String toString()
 	{
 		return this.string;
+	}
+	
+	/**
+	 * Determines the namespace type which is associated with the given
+	 * string.
+	 *
+	 * @param __s The string to convert to a namespace type.
+	 * @return The namespace type associated with the given string.
+	 * @throws IllegalArgumentException If a type was not found for the
+	 * given string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/10/28
+	 */
+	public static NamespaceType of(String __s)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Find matching name
+		for (NamespaceType t : values())
+			if (__s.equals(t.name()) || __s.equals(t.toString()))
+				return t;
+		
+		// {@squirreljme.error AT01 Unknown namespace type. (The input
+		// namespace type)}
+		throw new IllegalArgumentException(String.format("AT01 %s", __s));
 	}
 	
 	/**
