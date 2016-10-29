@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Name: games
-X-SquirrelJME-Namespace-Deprecated: DEPRECATED
-X-SquirrelJME-Namespace-Depends: src
-X-SquirrelJME-Namespace-Title: Sample Games
-X-SquirrelJME-Namespace-Description: This namespace contains 
- sample SquirrelJME games that may be played.
-
