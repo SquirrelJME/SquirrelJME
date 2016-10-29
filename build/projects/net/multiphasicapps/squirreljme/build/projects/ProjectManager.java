@@ -101,8 +101,6 @@ public class ProjectManager
 				}
 			}
 		}
-		
-		throw new Error("TODO");
 	}
 }
 
