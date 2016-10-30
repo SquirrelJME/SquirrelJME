@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: launcher-lui
+X-SquirrelJME-SourceName: squirreljme-launcher-lui
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Launcher (Line User Interface)
 X-SquirrelJME-Vendor: Steven Gawroriski
