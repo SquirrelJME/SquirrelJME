@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: launcher
+X-SquirrelJME-SourceName: squirreljme-launcher-base
+X-SquirrelJME-BuildHostName: squirreljme-launcher-base
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Base Launcher
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: The project implements the base launcher 
- which the LUI and LCDUI based launchers extend to provide a graphical 
- interface above a standard implementation.
+X-SquirrelJME-Description: This project implements the base support 
+ needed for launchers to operate correctly within SquirrelJME.
 X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Dependency-2: liblet:unknown@meep-lui
 X-SquirrelJME-Dependency-3: liblet:unknown@midlet-identity
