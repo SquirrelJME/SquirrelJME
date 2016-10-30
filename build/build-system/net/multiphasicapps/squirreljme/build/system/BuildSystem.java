@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.system;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 
@@ -92,7 +93,8 @@ public class BuildSystem
 		
 		// Depends on the input command
 		String command;
-		switch ((command = __args[0].trim().toLowerCase()))
+		switch ((command = Objects.toString(__args[0], "").trim().
+			toLowerCase()))
 		{
 				// Run the auto-interpreter
 			case "interpret":
@@ -100,7 +102,7 @@ public class BuildSystem
 					// Create subset of arguments
 					String[] pargs = new String[na - 1];
 					for (int i = 0, j = 1; j < na; i++, j++)
-						pargs[i] = __args[j];
+						pargs[i] = Objects.toString(__args[j], "");
 					
 					// Create interpreter and run it
 					autoInterpreter(pargs).run();

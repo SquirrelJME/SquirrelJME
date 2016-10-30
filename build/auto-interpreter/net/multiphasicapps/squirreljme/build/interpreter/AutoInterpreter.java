@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 
 /**
@@ -41,6 +44,26 @@ public class AutoInterpreter
 		
 		// Set
 		this.projects = __pm;
+		
+		// Queue arguments
+		Deque<String> aq = new ArrayDeque<>();
+		for (String s : __args)
+			aq.offerLast(Objects.toString(s, ""));
+		
+		// Parse them
+		while (!aq.isEmpty())
+		{
+			String arg = aq.peekFirst();
+			
+			// End of commands?
+			if (arg.equals("--"))
+			{
+				aq.removeFirst();
+				break;
+			}
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
