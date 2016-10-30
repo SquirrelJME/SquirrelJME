@@ -83,9 +83,9 @@ public class BuildSystem
 		
 		// {@squirreljme.error AO01 No arguments specified. The following are
 		// commands which are valid.
-		// {@code interpret (interpreter arguments...)}: Runs the auto
+		// ({@code interpret (interpreter arguments...)}: Runs the auto
 		// interpreter which is used to create simulated SquirrelJME
-		// environments.
+		// environments.)
 		//}
 		int na = __args.length;
 		if (na <= 0)
@@ -110,7 +110,8 @@ public class BuildSystem
 				break;
 			
 				// {@squirreljme.error AO02 An unknown command was specified.
-				// (The command)}
+				// Check the description for error code AO01 to see which
+				// commands are valid. (The command)}
 			default:
 				throw new IllegalArgumentException(String.format("AO02 %s",
 					command));
