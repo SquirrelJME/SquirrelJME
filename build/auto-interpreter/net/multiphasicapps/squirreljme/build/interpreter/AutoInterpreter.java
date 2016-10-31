@@ -73,7 +73,15 @@ public class AutoInterpreter
 	@Override
 	public void run()
 	{
-		throw new Error("TODO");
+		// Create JVM
+		if (true)
+			throw new Error("TODO");
+		
+		// Run all cycles in the JVM until it terminates
+		for (;;)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
