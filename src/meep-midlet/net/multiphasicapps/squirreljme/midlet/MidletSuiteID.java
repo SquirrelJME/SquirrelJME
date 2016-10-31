@@ -95,18 +95,18 @@ public final class MidletSuiteID
 		// Separator char depends
 		char sep = (__imc ? ':' : ';');
 		
-		// {@squirreljme.error AD06 Expected a separator to appear in the
+		// {@squirreljme.error CC06 Expected a separator to appear in the
 		// specified string. (The input string; The separator)}
 		int cola = __s.indexOf(sep);
 		if (cola < 0)
-			throw new IllegalArgumentException(String.format("AD06 %s %c",
+			throw new IllegalArgumentException(String.format("CC06 %s %c",
 				__s, sep));
 		
-		// {@squirreljme.error AD07 Expected a second separator to appear in
+		// {@squirreljme.error CC07 Expected a second separator to appear in
 		// the specified string. (The input string; The separator)}
 		int colb = __s.indexOf(sep, cola + 1);
 		if (colb < 0)
-			throw new IllegalArgumentException(String.format("AD07 %s %c",
+			throw new IllegalArgumentException(String.format("CC07 %s %c",
 				__s, sep));
 		
 		// Split and parse

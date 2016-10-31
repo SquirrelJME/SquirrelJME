@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-BuildHostName: host-javase
 X-SquirrelJME-UUID: fea37c1c-007d-462b-a417-e77f326cdf73
 X-SquirrelJME-BuildHostDepends: build-system
-X-SquirrelJME-Error: AD
+X-SquirrelJME-Error: BM
 X-SquirrelJME-Description: This contains the entry system which runs 
  on desktop Java SE virtual machines. Generally this will be the 
  most commonly used entry point.

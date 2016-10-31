@@ -51,15 +51,15 @@ public class Main
 		throws IOException
 	{
 		// Setup build system
-		// {@squirreljme.error AD01 The system property used for the binary
+		// {@squirreljme.error BM01 The system property used for the binary
 		// path was not specified.}
-		// {@squirreljme.error AD02 The system property used for the root of
+		// {@squirreljme.error BM02 The system property used for the root of
 		// the SquirrelJME source tree was not specified.}
 		BuildSystem bs = new BuildSystem(
 			Paths.get(Objects.requireNonNull(
-				System.getProperty(BINARY_PROPERTY), "AD01")),
+				System.getProperty(BINARY_PROPERTY), "BM01")),
 			Paths.get(Objects.requireNonNull(
-				System.getProperty(SOURCE_PROPERTY), "AD02")));
+				System.getProperty(SOURCE_PROPERTY), "BM02")));
 		
 		// Call into it
 		bs.main(__args);
