@@ -48,6 +48,6 @@ do
 		sed 's/##FI/<'"$(basename $__file)"'>/g' |
 		sed 's/\f[ \t]*\*[ \t]*/ /g' |
 		tr '\f' ' '| sed 's/[ \t\f]\{2,\}/ /g'
-done) | sort
+done) | sort | uniq
 echo "*********************************" 1>&2
 
