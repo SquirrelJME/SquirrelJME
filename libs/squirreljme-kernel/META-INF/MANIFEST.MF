@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-BuildHostName: squirreljme-kernel
+X-SquirrelJME-SourceName: squirreljme-kernel
+X-SquirrelJME-UUID: 557bff19-c91d-4344-a05f-16e87a837dd6
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BH
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the SquirrelJME 
+ kernel which is used to forward IPC communications, manage processes, 
+ manage threads, and provide access to devices.
+
