@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -30,6 +32,10 @@ public class Kernel
 	
 	/** The thread execution model used. */
 	protected final ThreadingExecutionModel threadexecmodel;
+	
+	/** Threads. */
+	final List<KernelThread> _threads =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the kernel using the given interface.
@@ -116,8 +122,15 @@ public class Kernel
 	private int __threadExternal()
 		throws InterruptedException
 	{
+		// Just wait on threads until something happens
+		List<KernelThread> threads = this._threads;
+		synchronized (threads)
+		{
+			threads.wait();
+		}
 		
-		throw new Error("TODO");
+		// No extra cycles
+		return 0;
 	}
 	
 	/**
