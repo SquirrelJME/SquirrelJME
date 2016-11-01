@@ -68,16 +68,17 @@ public class Kernel
 		for (int i = 0, cycles = Math.max(MIN_CYCLES, ki.runCycleCount());;)
 		{
 			// Which threading model is used?
+			int push = 0;
 			switch (this.threadexecmodel)
 			{
 					// SquirrelJME does not manage threading
 				case EXTERNAL_THREADING:
-					__threadExternal();
+					push = __threadExternal();
 					break;
 			
 					// SquirrelJME slices threads itself
 				case SLICE_THREADING:
-					__threadInternal();
+					push = __threadInternal();
 					break;
 			
 					// Unknown
@@ -85,8 +86,12 @@ public class Kernel
 					throw new RuntimeException("OOPS");
 			}
 			
-			// Yield to let other host processes run (if required)
-			if ((++i) >= cycles)
+			// Add cycles
+			i += Math.max(1, push);
+			
+			// If the cycle limit was reached (or overflowed) then reset it
+			// and check for interruption/yielding
+			if (i >= cycles || i < 0)
 			{
 				i = 0;
 				cycles = Math.max(MIN_CYCLES, ki.runCycleCount());
@@ -104,10 +109,11 @@ public class Kernel
 	/**
 	 * Threads not sliced by SquirrelJME.
 	 *
+	 * @return The number of extra cycles to push.
 	 * @throws InterruptedException If execution is interrupted.
 	 * @since 2016/10/31
 	 */
-	private void __threadExternal()
+	private int __threadExternal()
 		throws InterruptedException
 	{
 		throw new Error("TODO");
@@ -116,10 +122,11 @@ public class Kernel
 	/**
 	 * Threads are sliced by SquirrelJME.
 	 *
+	 * @return The number of extra cycles to push.
 	 * @throws InterruptedException If execution is interrupted.
 	 * @since 2016/10/31
 	 */
-	private void __threadInternal()
+	private int __threadInternal()
 		throws InterruptedException
 	{
 		throw new Error("TODO");
