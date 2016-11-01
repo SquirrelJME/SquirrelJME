@@ -80,9 +80,19 @@ public class AutoInterpreter
 		
 		// Run all cycles in the JVM until it terminates
 		for (;;)
-		{
-			throw new Error("TODO");
-		}
+			try
+			{
+				// Run kernel loop
+				if (!k.run())
+					break;
+			}
+			
+			// Ignore
+			catch (InterruptedException e)
+			{
+				// But yield for cooperatively tasked systems
+				Thread.yield();
+			}
 	}
 }
 

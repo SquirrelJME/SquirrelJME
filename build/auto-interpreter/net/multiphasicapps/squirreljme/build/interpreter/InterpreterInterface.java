@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.interpreter;
 
 import net.multiphasicapps.squirreljme.kernel.KernelInterface;
+import net.multiphasicapps.squirreljme.kernel.ThreadingExecutionModel;
 
 /**
  * This bridges the kernel interface to the one used by the interpreter.
@@ -39,6 +40,17 @@ public class InterpreterInterface
 		
 		// Set
 		this.interpreter = __ai;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/31
+	 */
+	@Override
+	public ThreadingExecutionModel threadingExecutionModel()
+	{
+		// The JVM running the interpreter handles the threading
+		return ThreadingExecutionModel.EXTERNAL_THREADING;
 	}
 }
 

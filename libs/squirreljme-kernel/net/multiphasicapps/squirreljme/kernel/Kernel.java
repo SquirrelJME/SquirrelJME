@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.Objects;
+
 /**
  * This is the SquirrelJME kernel which uses a kernel interface to interface
  * with the native system, this class manages processes and threads within
@@ -17,10 +19,13 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/10/31
  */
-public final class Kernel
+public class Kernel
 {
 	/** The interface used by the kernel to do native things. */
 	protected final KernelInterface ki;
+	
+	/** The thread execution model used. */
+	protected final ThreadingExecutionModel threadexecmodel;
 	
 	/**
 	 * Initializes the kernel using the given interface.
@@ -38,6 +43,24 @@ public final class Kernel
 		
 		// Set
 		this.ki = __ki;
+		
+		// {@squirreljme.error BH01 No threading execution model was
+		// specified.}
+		this.threadexecmodel = Objects.requireNonNull(
+			__ki.threadingExecutionModel(), "BH01");
+	}
+	
+	/**
+	 * Runs the kernel loop.
+	 *
+	 * @return {@code true} if the kernel has not yet exited.
+	 * @throws InterruptedException If the loop operation was interrupted.
+	 * @since 2016/10/31
+	 */
+	public final boolean run()
+		throws InterruptedException
+	{
+		throw new Error("TODO");
 	}
 }
 

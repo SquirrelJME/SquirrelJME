@@ -18,5 +18,13 @@ package net.multiphasicapps.squirreljme.kernel;
  */
 public interface KernelInterface
 {
+	/**
+	 * Returns the threading execution model which determines how threads are
+	 * managed by SquirrelJME.
+	 *
+	 * @return The threading execution model.
+	 * @since 2016/10/31
+	 */
+	public abstract ThreadingExecutionModel threadingExecutionModel();
 }
 
