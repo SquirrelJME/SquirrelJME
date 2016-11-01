@@ -116,6 +116,7 @@ public class Kernel
 	private int __threadExternal()
 		throws InterruptedException
 	{
+		
 		throw new Error("TODO");
 	}
 	
