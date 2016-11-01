@@ -14,6 +14,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
  * This class implements the auto interpreter which uses the internal JIT to
@@ -74,8 +75,8 @@ public class AutoInterpreter
 	public void run()
 	{
 		// Create JVM
-		if (true)
-			throw new Error("TODO");
+		InterpreterInterface ii = new InterpreterInterface(this);
+		Kernel k = new Kernel(ii);
 		
 		// Run all cycles in the JVM until it terminates
 		for (;;)
