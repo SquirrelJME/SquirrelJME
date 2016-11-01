@@ -78,6 +78,14 @@ public class AutoInterpreter
 		InterpreterInterface ii = new InterpreterInterface(this);
 		Kernel k = new Kernel(ii);
 		
+		// Locate the launcher to use
+		if (true)
+			throw new Error("TODO");
+			
+		// Create process which will run the launcher
+		if (true)
+			throw new Error("TODO");
+		
 		// Run all cycles in the JVM until it terminates
 		for (;;)
 			try
