@@ -21,6 +21,10 @@ import java.util.Objects;
  */
 public class Kernel
 {
+	/** The minimum number of permissible cycles. */
+	public static final int MIN_CYCLES =
+		16;
+	
 	/** The interface used by the kernel to do native things. */
 	protected final KernelInterface ki;
 	
@@ -58,6 +62,64 @@ public class Kernel
 	 * @since 2016/10/31
 	 */
 	public final boolean run()
+		throws InterruptedException
+	{
+		KernelInterface ki = this.ki;
+		for (int i = 0, cycles = Math.max(MIN_CYCLES, ki.runCycleCount());;)
+		{
+			// Which threading model is used?
+			switch (this.threadexecmodel)
+			{
+					// SquirrelJME does not manage threading
+				case EXTERNAL_THREADING:
+					__threadExternal();
+					break;
+			
+					// SquirrelJME slices threads itself
+				case SLICE_THREADING:
+					__threadInternal();
+					break;
+			
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// Yield to let other host processes run (if required)
+			if ((++i) >= cycles)
+			{
+				i = 0;
+				cycles = Math.max(MIN_CYCLES, ki.runCycleCount());
+				
+				// {@squirreljme.error BH02 The kernel was interrupted.}
+				if (ki.isKernelInterrupted())
+					throw new InterruptedException("BH02");
+				
+				// Execute yield
+				ki.cooperativeHostYield();
+			}
+		}
+	}
+	
+	/**
+	 * Threads not sliced by SquirrelJME.
+	 *
+	 * @throws InterruptedException If execution is interrupted.
+	 * @since 2016/10/31
+	 */
+	private void __threadExternal()
+		throws InterruptedException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Threads are sliced by SquirrelJME.
+	 *
+	 * @throws InterruptedException If execution is interrupted.
+	 * @since 2016/10/31
+	 */
+	private void __threadInternal()
 		throws InterruptedException
 	{
 		throw new Error("TODO");

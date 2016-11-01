@@ -19,6 +19,37 @@ package net.multiphasicapps.squirreljme.kernel;
 public interface KernelInterface
 {
 	/**
+	 * If SquirrelJME is running in a host environment which is cooperatively
+	 * tasked then this will yield SquirrelJME to let other processes run.
+	 *
+	 * Otherwise this method does nothing and returns.
+	 *
+	 * @since 2016/10/31
+	 */
+	public abstract void cooperativeHostYield();
+	
+	/**
+	 * This returns whether or not the interrupted flag for the kernel was
+	 * set.
+	 *
+	 * The interrupted state must be cleared.
+	 *
+	 * @return {@code true} if the kernel was interrupted.
+	 * @since 2016/10/31
+	 */
+	public abstract boolean isKernelInterrupted();
+	
+	/**
+	 * Returns the number of loops that must run before a check is made to
+	 * see if the kernel is interrupted or if the kernel should yield on the
+	 * host.
+	 *
+	 * @return The number of loop cycles to yield or check for interruption.
+	 * @since 2016/10/21
+	 */
+	public abstract int runCycleCount();
+	
+	/**
 	 * Returns the threading execution model which determines how threads are
 	 * managed by SquirrelJME.
 	 *

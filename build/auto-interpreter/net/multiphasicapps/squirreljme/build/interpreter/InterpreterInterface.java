@@ -47,6 +47,38 @@ public class InterpreterInterface
 	 * @since 2016/10/31
 	 */
 	@Override
+	public void cooperativeHostYield()
+	{
+		// It is really unknown if the host system is cooperatively tasked or
+		// not, so always yield
+		Thread.yield();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/31
+	 */
+	@Override
+	public boolean isKernelInterrupted()
+	{
+		return Thread.interrupted();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/31
+	 */
+	@Override
+	public int runCycleCount()
+	{
+		return 1024;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/31
+	 */
+	@Override
 	public ThreadingExecutionModel threadingExecutionModel()
 	{
 		// The JVM running the interpreter handles the threading
