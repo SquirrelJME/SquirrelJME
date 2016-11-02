@@ -68,12 +68,16 @@ public class AutoInterpreter
 		{
 			String arg = aq.peekFirst();
 			
-			// End of commands?
-			if (arg.equals("--") || !arg.startsWith("-"))
-			{
-				aq.removeFirst();
+			// No more commands?
+			if (!arg.startsWith("-"))
 				break;
-			}
+			
+			// Remove it
+			aq.removeFirst();
+			
+			// End of commands?
+			if (arg.equals("--"))
+				break;
 			
 			// X command which modifies the interpreter potentially
 			if (arg.startsWith("-X"))
