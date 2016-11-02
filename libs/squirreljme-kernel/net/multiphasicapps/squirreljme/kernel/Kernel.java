@@ -58,6 +58,14 @@ public class Kernel
 		// specified.}
 		this.threadexecmodel = Objects.requireNonNull(
 			__ki.threadingExecutionModel(), "BH01");
+		
+		// Determine which launcher to use, if any
+		if (true)
+			throw new Error("TODO");
+		
+		// Locate the launcher project
+		if (true)
+			throw new Error("TODO");
 	}
 	
 	/**
