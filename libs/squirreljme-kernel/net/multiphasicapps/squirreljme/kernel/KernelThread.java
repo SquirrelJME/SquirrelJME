@@ -11,31 +11,11 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This represents a single kernel thread.
+ * This interface represents threads which may be managed by a kernel.
  *
  * @since 2016/11/01
  */
-public class KernelThread
+public interface KernelThread
 {
-	/** The kernel which owns this thread. */
-	protected final Kernel kernel;
-	
-	/**
-	 * Initializes the kernel thread.
-	 *
-	 * @param __k The owning kernel.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/11/01
-	 */
-	KernelThread(Kernel __k)
-		throws NullPointerException
-	{
-		// Check
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.kernel = __k;
-	}
 }
 

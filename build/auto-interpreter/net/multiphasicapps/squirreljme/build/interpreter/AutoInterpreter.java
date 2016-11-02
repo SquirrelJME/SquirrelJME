@@ -15,6 +15,7 @@ import java.util.Deque;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelBuilder;
 
 /**
  * This class implements the auto interpreter which uses the internal JIT to
@@ -74,9 +75,11 @@ public class AutoInterpreter
 	@Override
 	public void run()
 	{
-		// Create JVM
-		InterpreterInterface ii = new InterpreterInterface(this);
-		Kernel k = new Kernel(ii);
+		// Setup kernel parameters
+		KernelBuilder kb = new KernelBuilder();
+		
+		// Build kernel
+		Kernel k = kb.build();
 		
 		// Run all cycles in the JVM until it terminates
 		for (;;)

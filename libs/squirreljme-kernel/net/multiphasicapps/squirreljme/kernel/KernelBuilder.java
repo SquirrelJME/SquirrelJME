@@ -11,12 +11,32 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * DESCRIBE THIS.
+ * This is used to create instances of the kernel.
  *
- * @since 2016/11/01
+ * @since 2016/11/02
  */
-@Deprecated
-public interface KernelSuiteInterface
+public final class KernelBuilder
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/**
+	 * Builds the target kernel.
+	 *
+	 * @return The resulting kernel.
+	 * @throws IllegalArgumentException If the kernel was not correctly
+	 * initialized.
+	 * @since 2016/11/02
+	 */
+	public Kernel build()
+		throws IllegalArgumentException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return new Kernel(this);
+		}
+	}
 }
 
