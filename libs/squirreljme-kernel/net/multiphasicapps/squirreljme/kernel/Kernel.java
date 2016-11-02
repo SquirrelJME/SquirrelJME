@@ -30,6 +30,9 @@ public class Kernel
 	/** The interface used by the kernel to do native things. */
 	protected final KernelInterface ki;
 	
+	/** The suite interface. */
+	protected final KernelSuiteInterface si;
+	
 	/** The thread execution model used. */
 	protected final ThreadingExecutionModel threadexecmodel;
 	
@@ -58,6 +61,10 @@ public class Kernel
 		// specified.}
 		this.threadexecmodel = Objects.requireNonNull(
 			__ki.threadingExecutionModel(), "BH01");
+		
+		// {@squirreljme.error BH03 No suite interface exists within the
+		// kernel.}
+		this.si = Objects.requireNonNull(__ki.suiteInterface(), "BH03");
 		
 		// Determine which launcher to use, if any
 		if (true)

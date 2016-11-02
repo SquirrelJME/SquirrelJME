@@ -50,6 +50,15 @@ public interface KernelInterface
 	public abstract int runCycleCount();
 	
 	/**
+	 * This returns the interface which is used to manage suites which are
+	 * installed in SquirrelJME.
+	 *
+	 * @return The suite interface.
+	 * @since 2016/11/01
+	 */
+	public abstract KernelSuiteInterface suiteInterface();
+	
+	/**
 	 * Returns the threading execution model which determines how threads are
 	 * managed by SquirrelJME.
 	 *

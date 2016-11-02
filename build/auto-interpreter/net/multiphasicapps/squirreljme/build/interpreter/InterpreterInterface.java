@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.interpreter;
 
 import net.multiphasicapps.squirreljme.kernel.KernelInterface;
+import net.multiphasicapps.squirreljme.kernel.KernelSuiteInterface;
 import net.multiphasicapps.squirreljme.kernel.ThreadingExecutionModel;
 
 /**
@@ -72,6 +73,16 @@ public class InterpreterInterface
 	public int runCycleCount()
 	{
 		return 1024;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/01
+	 */
+	@Override
+	public KernelSuiteInterface suiteInterface()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
