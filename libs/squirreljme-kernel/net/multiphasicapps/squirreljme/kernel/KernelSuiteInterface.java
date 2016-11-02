@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/11/01
  */
+@Deprecated
 public interface KernelSuiteInterface
 {
 }
