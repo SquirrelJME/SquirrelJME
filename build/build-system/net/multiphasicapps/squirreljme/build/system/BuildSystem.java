@@ -53,9 +53,11 @@ public class BuildSystem
 	 *
 	 * @param __args Arguments to the interpreter.
 	 * @return The interpreter.
+	 * @throws IOException If it could not be created.
 	 * @since 2016/10/29
 	 */
 	public AutoInterpreter autoInterpreter(String... __args)
+		throws IOException
 	{
 		// Force to exist
 		if (__args == null)
@@ -105,7 +107,17 @@ public class BuildSystem
 						pargs[i] = Objects.toString(__args[j], "");
 					
 					// Create interpreter and run it
-					autoInterpreter(pargs).run();
+					try (AutoInterpreter ai = autoInterpreter(pargs))
+					{
+						ai.run();
+					}
+					
+					// {@squirreljme.error AO03 Read/write error while
+					// interpreting.}
+					catch (IOException e)
+					{
+						throw new RuntimeException("AO03");
+					}
 				}
 				break;
 			
