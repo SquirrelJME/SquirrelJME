@@ -24,6 +24,9 @@ import java.util.Objects;
 public final class Kernel
 	implements KernelThreadListener
 {
+	/** The suite manager. */
+	protected final KernelSuiteManager suitemanager;
+	
 	/** The manager for threads. */
 	protected final KernelThreadManager threadmanager;
 	
@@ -45,6 +48,11 @@ public final class Kernel
 		KernelThreadManager threadmanager;
 		this.threadmanager = (threadmanager = Objects.<KernelThreadManager>
 			requireNonNull(__kb._threadmanager, "BH01"));
+		
+		// {@squirreljme.error BH02 No kernel suite manager was specified.}
+		KernelSuiteManager suitemanager;
+		this.suitemanager = (suitemanager = Objects.<KernelSuiteManager>
+			requireNonNull(__kb._suitemanager, "BH02"));
 		
 		// When the state of threads changes, tell the kernel
 		threadmanager.setThreadListener(this);

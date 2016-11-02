@@ -166,6 +166,7 @@ public class AutoInterpreter
 		// Setup kernel parameters
 		KernelBuilder kb = new KernelBuilder();
 		kb.threadManager(akm);
+		kb.suiteManager(akm);
 		
 		// Build kernel
 		Kernel k = kb.build();

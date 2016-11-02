@@ -21,6 +21,9 @@ public final class KernelBuilder
 	protected final Object lock =
 		new Object();
 	
+	/** The suite manager. */
+	volatile KernelSuiteManager _suitemanager;
+	
 	/** The thread manager. */
 	volatile KernelThreadManager _threadmanager;
 	
@@ -39,6 +42,27 @@ public final class KernelBuilder
 		synchronized (this.lock)
 		{
 			return new Kernel(this);
+		}
+	}
+	
+	/**
+	 * Sets the suite manager to use.
+	 *
+	 * @param __sm The suite manager to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/02
+	 */
+	public void suiteManager(KernelSuiteManager __sm)
+		throws NullPointerException
+	{
+		// Check
+		if (__sm == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._suitemanager = __sm;
 		}
 	}
 	

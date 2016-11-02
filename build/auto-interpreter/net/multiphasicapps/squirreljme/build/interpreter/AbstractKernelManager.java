@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadListener;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
 
@@ -21,7 +22,7 @@ import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
  * @since 2016/11/02
  */
 public abstract class AbstractKernelManager
-	implements KernelThreadManager
+	implements KernelSuiteManager, KernelThreadManager
 {
 	/** The owning auto interpreter. */
 	protected final AutoInterpreter autointerpreter;
