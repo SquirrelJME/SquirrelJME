@@ -26,6 +26,9 @@ public abstract class AbstractKernelManager
 	/** The owning auto interpreter. */
 	protected final AutoInterpreter autointerpreter;
 	
+	/** The thread listener to use. */
+	private volatile KernelThreadListener _threadlistener;
+	
 	/**
 	 * Initializes the base abstract kernel manager.
 	 *
@@ -56,7 +59,8 @@ public abstract class AbstractKernelManager
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this._threadlistener = __t;
 	}
 }
 
