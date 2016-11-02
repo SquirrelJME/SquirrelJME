@@ -22,17 +22,10 @@ import java.util.Objects;
  * @since 2016/10/31
  */
 public final class Kernel
+	implements KernelThreadListener
 {
-	/** The minimum number of permissible cycles. */
-	public static final int MIN_CYCLES =
-		16;
-	
-	/** The thread execution model used. */
-	protected final ThreadingExecutionModel threadexecmodel;
-	
-	/** Threads. */
-	final List<KernelThread> _threads =
-		new LinkedList<>();
+	/** The manager for threads. */
+	protected final KernelThreadManager threadmanager;
 	
 	/**
 	 * Initializes the kernel using the given set of parameters.
@@ -48,7 +41,13 @@ public final class Kernel
 		if (__kb == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BH01 No kernel thread manager was specified.}
+		KernelThreadManager threadmanager;
+		this.threadmanager = (threadmanager = Objects.<KernelThreadManager>
+			requireNonNull(__kb._threadmanager, "BH01"));
+		
+		// When the state of threads changes, tell the kernel
+		threadmanager.setThreadListener(this);
 	}
 	
 	/**

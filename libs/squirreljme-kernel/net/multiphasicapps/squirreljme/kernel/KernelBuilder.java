@@ -21,6 +21,9 @@ public final class KernelBuilder
 	protected final Object lock =
 		new Object();
 	
+	/** The thread manager. */
+	volatile KernelThreadManager _threadmanager;
+	
 	/**
 	 * Builds the target kernel.
 	 *
@@ -36,6 +39,27 @@ public final class KernelBuilder
 		synchronized (this.lock)
 		{
 			return new Kernel(this);
+		}
+	}
+	
+	/**
+	 * Sets the interface which manages threads which are ran by the kernel.
+	 *
+	 * @param __tm The thread manager used by the kernel.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/02
+	 */
+	public void threadManager(KernelThreadManager __tm)
+		throws NullPointerException
+	{
+		// Check
+		if (__tm == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._threadmanager = __tm;
 		}
 	}
 }
