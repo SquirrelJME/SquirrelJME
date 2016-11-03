@@ -28,5 +28,16 @@ public class NormalKernelManager
 	{
 		super(__ai);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/03
+	 */
+	@Override
+	public void runThreads()
+		throws InterruptedException
+	{
+		throw new Error("TODO");
+	}
 }
 

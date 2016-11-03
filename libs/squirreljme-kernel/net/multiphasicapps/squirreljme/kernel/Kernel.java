@@ -59,6 +59,17 @@ public final class Kernel
 	}
 	
 	/**
+	 * Is the kernel exiting?
+	 *
+	 * @return {@code true} if the kernel is exiting.
+	 * @since 2016/11/03
+	 */
+	public final boolean isExiting()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Runs the kernel loop.
 	 *
 	 * @return {@code true} if the kernel has not yet exited.
@@ -68,7 +79,33 @@ public final class Kernel
 	public final boolean run()
 		throws InterruptedException
 	{
-		throw new Error("TODO");
+		// Run until the kernel exits
+		KernelThreadManager threadmanager = this.threadmanager;
+		for (boolean exitkernel = false; !exitkernel; exitkernel = isExiting())
+		{
+			// Run all threads
+			try
+			{
+				threadmanager.runThreads();
+			}
+		
+			// This may be thrown if an interrupt was generated for the kernel
+			// to handle. It will handle it and then go back to running the
+			// kernel loop.
+			catch (InterruptedException e)
+			{
+				// Check if there are any interrupts to be handled at this
+				// stage, if any are handled then the exception is consumed
+				if (true)
+					throw new Error("TODO");
+				
+				// Otherwise throw above
+				throw e;
+			}
+		}
+		
+		// If this point reached, the kernel exits
+		return false;
 	}
 }
 

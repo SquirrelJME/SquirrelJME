@@ -54,5 +54,16 @@ public class DeterministicKernelManager
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/03
+	 */
+	@Override
+	public void runThreads()
+		throws InterruptedException
+	{
+		throw new Error("TODO");
+	}
 }
 

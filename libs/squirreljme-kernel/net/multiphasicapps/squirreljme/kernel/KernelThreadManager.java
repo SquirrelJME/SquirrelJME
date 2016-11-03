@@ -19,6 +19,16 @@ package net.multiphasicapps.squirreljme.kernel;
 public interface KernelThreadManager
 {
 	/**
+	 * Runs the kernel loop which runs is capable of running the threads that
+	 * are being used on the system.
+	 *
+	 * @throws InterruptedException If the kernel run loop was interrupted.
+	 * @since 2016/11/03
+	 */
+	public abstract void runThreads()
+		throws InterruptedException;
+	
+	/**
 	 * Sets the listener for when the state of threads change.
 	 *
 	 * @param __t The listener to use when thread state changes.
