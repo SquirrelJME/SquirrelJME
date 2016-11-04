@@ -17,9 +17,11 @@ import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Objects;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelBuilder;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This class implements the auto interpreter which uses the internal JIT to
@@ -64,6 +66,7 @@ public class AutoInterpreter
 		
 		// Parse them
 		Path detrecord = null, detreplay = null;
+		Set<String> selects = new SortedTreeSet<>();
 		while (!aq.isEmpty())
 		{
 			String arg = aq.peekFirst();
@@ -83,11 +86,12 @@ public class AutoInterpreter
 			if (arg.startsWith("-X"))
 			{
 				// {@squirreljme.error AV02 Empty X option specified.
-				// (
-				// -Xrecord=path: Use the determinisitic interpreter and record
-				// run-time actions to the given path.;
+				// (-Xrecord=path: Use the determinisitic interpreter and
+				// record run-time actions to the given path.;
 				// -Xreplay=path: Use the determinisitic interpreter and replay
-				// a pre-existing recording.
+				// a pre-existing recording.;
+				// -Xselect=items(,items...): Selects the API, MIDlet, and
+				// LIBlet categories to use during the run-time process.
 				// )}
 				if (arg.equals("-X"))
 					throw new IllegalArgumentException("AV02");
@@ -109,6 +113,28 @@ public class AutoInterpreter
 						// Determinstic playback
 					case "replay":
 						detreplay = Paths.get(val);
+						break;
+						
+						// Select APIs, MIDlets, and LIBlets to use
+					case "select":
+						{
+							// Go through fields
+							int n = val.length();
+							for (int i = 0; i < n;)
+							{
+								// Find next comma, if not found then use the
+								// length to use all of it
+								int nc = val.indexOf(',', i);
+								if (nc < 0)
+									nc = n;
+								
+								// Use it
+								selects.add(val.substring(i, nc));
+								
+								// Go to index following the comma
+								i = nc + 1;
+							}
+						}
 						break;
 					
 						// {@squirreljme.error AV03 Unknown -X option
