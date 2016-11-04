@@ -18,8 +18,11 @@ package net.multiphasicapps.squirreljme.kernel;
 public final class KernelBuilder
 {
 	/** Lock. */
-	protected final Object lock =
+	final Object _lock =
 		new Object();
+	
+	/** Launch parameters. */
+	volatile KernelLaunchParameters _launchparms;
 	
 	/** The suite manager. */
 	volatile KernelSuiteManager _suitemanager;
@@ -38,10 +41,28 @@ public final class KernelBuilder
 	public Kernel build()
 		throws IllegalArgumentException
 	{
+		// The data is locked by the constructor
+		return new Kernel(this);
+	}
+	
+	/**
+	 * Sets the launch parameters which are used to initialize the kernel.
+	 *
+	 * @param __lp The launch parameters used for the kernel.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/04
+	 */
+	public void launchParameters(KernelLaunchParameters __lp)
+		throws NullPointerException
+	{
+		// Check
+		if (__lp == null)
+			throw new NullPointerException("NARG");
+		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this._lock)
 		{
-			return new Kernel(this);
+			this._launchparms = __lp;
 		}
 	}
 	
@@ -60,7 +81,7 @@ public final class KernelBuilder
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this._lock)
 		{
 			this._suitemanager = __sm;
 		}
@@ -81,7 +102,7 @@ public final class KernelBuilder
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this._lock)
 		{
 			this._threadmanager = __tm;
 		}

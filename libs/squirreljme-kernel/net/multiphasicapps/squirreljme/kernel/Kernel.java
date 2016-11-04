@@ -44,15 +44,29 @@ public final class Kernel
 		if (__kb == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BH01 No kernel thread manager was specified.}
+		// Used later
 		KernelThreadManager threadmanager;
-		this.threadmanager = (threadmanager = Objects.<KernelThreadManager>
-			requireNonNull(__kb._threadmanager, "BH01"));
-		
-		// {@squirreljme.error BH02 No kernel suite manager was specified.}
 		KernelSuiteManager suitemanager;
-		this.suitemanager = (suitemanager = Objects.<KernelSuiteManager>
-			requireNonNull(__kb._suitemanager, "BH02"));
+		KernelLaunchParameters launchparms;
+		
+		// Lock here so that the builder can be reused after a build is
+		// complete, perhaps by another thread
+		synchronized (__kb._lock)
+		{
+			// {@squirreljme.error BH01 No kernel thread manager was
+			// specified.}
+			this.threadmanager = (threadmanager = Objects.<KernelThreadManager>
+				requireNonNull(__kb._threadmanager, "BH01"));
+		
+			// {@squirreljme.error BH02 No kernel suite manager was specified.}
+			this.suitemanager = (suitemanager = Objects.<KernelSuiteManager>
+				requireNonNull(__kb._suitemanager, "BH02"));
+				
+			// {@squirreljme.error BH03 The kernel was not initialized with any
+			// launch parameters.}
+			launchparms = Objects.<KernelLaunchParameters>requireNonNull(
+				__kb._launchparms, "BH03");
+		}
 		
 		// When the state of threads changes, tell the kernel
 		threadmanager.setThreadListener(this);

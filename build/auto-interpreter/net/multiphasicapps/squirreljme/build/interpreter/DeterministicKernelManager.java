@@ -26,6 +26,12 @@ public class DeterministicKernelManager
 	extends AbstractKernelManager
 	implements Closeable
 {
+	/** Is a replay being recorded? */
+	protected final boolean isrecording;
+	
+	/** Is a replay being played back? */
+	protected final boolean isreplaying;
+	
 	/**
 	 * Initializes the deterministic kernel manager.
 	 *
