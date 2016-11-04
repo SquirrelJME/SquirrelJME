@@ -18,6 +18,10 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 public class NormalKernelManager
 	extends AbstractKernelManager
 {
+	/** Interrupt trigger. */
+	protected final Object interrupt =
+		new Object();
+	
 	/**
 	 * Initializes the normal kernel manager.
 	 *
@@ -37,7 +41,12 @@ public class NormalKernelManager
 	public void runThreads()
 		throws InterruptedException
 	{
-		throw new Error("TODO");
+		// Wait for interrupt requests
+		Object interrupt = this.interrupt;
+		synchronized (interrupt)
+		{
+			interrupt.wait();
+		}
 	}
 }
 
