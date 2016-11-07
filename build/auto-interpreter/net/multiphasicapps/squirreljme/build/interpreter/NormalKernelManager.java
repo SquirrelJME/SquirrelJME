@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
+
 /**
  * This is the normal kernel manager which runs code as fast as possible.
  *
@@ -22,15 +24,39 @@ public class NormalKernelManager
 	protected final Object interrupt =
 		new Object();
 	
+	/** The real launch parameters to use. */
+	protected final KernelLaunchParameters launchparms;
+	
 	/**
 	 * Initializes the normal kernel manager.
 	 *
 	 * @param __ai The interpreter owning this.
+	 * @param __lp Kernel launch parameters.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/02
 	 */
-	public NormalKernelManager(AutoInterpreter __ai)
+	public NormalKernelManager(AutoInterpreter __ai,
+		KernelLaunchParameters __lp)
+		throws NullPointerException
 	{
 		super(__ai);
+		
+		// Check
+		if (__lp == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.launchparms = __lp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/10/07
+	 */
+	@Override
+	protected KernelLaunchParameters internalLaunchParameters()
+	{
+		return this.launchparms;
 	}
 	
 	/**

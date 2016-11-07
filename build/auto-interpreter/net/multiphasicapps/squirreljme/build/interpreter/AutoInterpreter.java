@@ -21,6 +21,8 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelBuilder;
+import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
+import net.multiphasicapps.squirreljme.kernel.KernelLaunchParametersBuilder;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
@@ -63,6 +65,11 @@ public class AutoInterpreter
 		Deque<String> aq = new ArrayDeque<>();
 		for (String s : __args)
 			aq.offerLast(Objects.toString(s, ""));
+		
+		// Launch parameters builder which is used to initialize the kernel
+		// with a pre-determined set of parameters
+		KernelLaunchParametersBuilder klpb =
+			new KernelLaunchParametersBuilder();
 		
 		// Parse them
 		Path detrecord = null, detreplay = null;
@@ -152,14 +159,18 @@ public class AutoInterpreter
 					arg));
 		}
 		
+		// Finish building the parameters
+		KernelLaunchParameters klp = klpb.build();
+		
 		// Determinisitic kernel manager
 		AbstractKernelManager akm;
 		if (detrecord != null || detreplay != null)
-			akm = new DeterministicKernelManager(this, detreplay, detrecord);
+			akm = new DeterministicKernelManager(this, klp, detreplay,
+				detrecord);
 		
 		// Normal kernel manager
 		else
-			akm = new NormalKernelManager(this);
+			akm = new NormalKernelManager(this, klp);
 		
 		// Set manager
 		this._akm = akm;

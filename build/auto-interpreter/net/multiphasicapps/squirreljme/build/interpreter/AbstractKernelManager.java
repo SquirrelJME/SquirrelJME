@@ -50,6 +50,14 @@ public abstract class AbstractKernelManager
 	}
 	
 	/**
+	 * Returns the launch parameters to actually use.
+	 *
+	 * @return The launch parameters to use.
+	 * @since 2016/10/07
+	 */
+	protected abstract KernelLaunchParameters internalLaunchParameters();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/11/02
 	 */
