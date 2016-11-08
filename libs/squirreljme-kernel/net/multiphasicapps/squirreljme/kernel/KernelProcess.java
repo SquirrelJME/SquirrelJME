@@ -38,5 +38,15 @@ public final class KernelProcess
 		// Set
 		this.kernel = __k;
 	}
+	
+	/**
+	 * This destroys the specified process so that it no longer exists.
+	 *
+	 * @since 2016/11/08
+	 */
+	public final void destroyProcess()
+	{
+		throw new Error("TODO");
+	}
 }
 

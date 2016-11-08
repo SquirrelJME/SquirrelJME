@@ -70,6 +70,41 @@ public final class Kernel
 		
 		// When the state of threads changes, tell the kernel
 		threadmanager.setThreadListener(this);
+		
+		// Setup the launcher process
+		KernelProcess lp = null;
+		try
+		{
+			// Determine the classpath to use for the process
+			if (true)
+				throw new Error("TODO");
+			
+			// Create process
+			lp = __newProcess();
+			
+			// Create thread for the launcher
+			throw new Error("TODO");
+		}
+		
+		// Failed to create it, destroy it
+		catch (RuntimeException|Error e)
+		{
+			// Destroy the process but do not override failure state
+			if (lp != null)
+				try
+				{
+					lp.destroyProcess();
+				}
+			
+				// Suppress it
+				catch (Throwable t)
+				{
+					e.addSuppressed(t);
+				}
+			
+			// Re-throw
+			throw e;
+		}
 	}
 	
 	/**
@@ -120,6 +155,17 @@ public final class Kernel
 		
 		// If this point reached, the kernel exits
 		return false;
+	}
+	
+	/**
+	 * Creates a new process owned by this kernel and returns it.
+	 *
+	 * @return The process.
+	 * @since 2016/11/08
+	 */
+	private KernelProcess __newProcess()
+	{
+		throw new Error("TODO");
 	}
 }
 
