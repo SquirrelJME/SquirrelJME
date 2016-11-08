@@ -11,30 +11,27 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This is used to build immutable instances of kernel parameters without
- * requiring that a class be implemented to provide parameters.
+ * This class contains immutable launch parameters which were constructed by
+ * the builder.
  *
- * @since 2016/11/07
+ * @since 2016/11/08
  */
-public class KernelLaunchParametersBuilder
+class __ImmutableLaunchParameters__
+	implements KernelLaunchParameters
 {
-	/** Change lock. */
-	protected final Object lock =
-		new Object();
-	
 	/**
-	 * Constructs the final immutabel kernel launch parameters.
+	 * Constructs the launch parameters.
 	 *
-	 * @return The launch parameters for the kernel.
-	 * @since 2016/11/07
+	 * @param __b The source builder.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/08
 	 */
-	public final KernelLaunchParameters build()
+	__ImmutableLaunchParameters__(KernelLaunchParametersBuilder __b)
+		throws NullPointerException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			return new __ImmutableLaunchParameters__(this);
-		}
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
 	}
 }
 
