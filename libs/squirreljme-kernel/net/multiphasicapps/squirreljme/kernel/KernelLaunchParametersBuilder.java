@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This is used to build immutable instances of kernel parameters without
  * requiring that a class be implemented to provide parameters.
@@ -21,6 +24,34 @@ public class KernelLaunchParametersBuilder
 	/** Change lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** System properties to define. */
+	final Map<String, String> _properties =
+		new HashMap<>();
+	
+	/**
+	 * Adds a system property to be used on launch.
+	 *
+	 * @param __k The property key.
+	 * @param __v The property value.
+	 * @return The old value, may be {@code null} if none was previously
+	 * set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/08
+	 */
+	public final String addSystemProperty(String __k, String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._properties.put(__k, __v);
+		}
+	}
 	
 	/**
 	 * Constructs the final immutabel kernel launch parameters.

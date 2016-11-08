@@ -18,5 +18,14 @@ package net.multiphasicapps.squirreljme.kernel;
  */
 public interface KernelLaunchParameters
 {
+	/**
+	 * Obtains the value for the system property with the specified key.
+	 *
+	 * @param __k The key to get the value for.
+	 * @return The value associated with the given key or {@code null} if
+	 * no value was assigned.
+	 * @since 2016/11/08
+	 */
+	public abstract String getSystemProperty(String __k);
 }
 

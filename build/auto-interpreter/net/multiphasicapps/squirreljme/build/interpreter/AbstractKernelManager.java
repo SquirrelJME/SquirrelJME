@@ -64,6 +64,16 @@ public abstract class AbstractKernelManager
 	 * @since 2016/11/08
 	 */
 	@Override
+	public final String getSystemProperty(String __k)
+	{
+		return internalLaunchParameters().getSystemProperty(__k);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/08
+	 */
+	@Override
 	public final int[] installedSuitesIDs()
 	{
 		throw new Error("TODO");
