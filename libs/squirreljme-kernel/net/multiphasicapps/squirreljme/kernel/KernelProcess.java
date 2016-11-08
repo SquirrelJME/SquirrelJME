@@ -11,24 +11,24 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This class represents threads which may be managed by a kernel.
+ * This represents a single process within the kernel and is used to manage
+ * groups of threads within the kernel.
  *
- * @see KernelNativeThread
- * @since 2016/11/01
+ * @since 2016/11/08
  */
-public final class KernelThread
+public final class KernelProcess
 {
 	/** The owning kernel. */
 	protected final Kernel kernel;
 	
 	/**
-	 * Initializes the kernel thread.
+	 * Initializes the process.
 	 *
-	 * @param __k The kernel owning this thread.
+	 * @param __k The kernel owning the process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/08
 	 */
-	KernelThread(Kernel __k)
+	KernelProcess(Kernel __k)
 		throws NullPointerException
 	{
 		// Check

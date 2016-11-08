@@ -11,32 +11,12 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This class represents threads which may be managed by a kernel.
+ * This represents a native thread that is managed by the implementation for
+ * the specified operating system.
  *
- * @see KernelNativeThread
- * @since 2016/11/01
+ * @since 2016/11/08
  */
-public final class KernelThread
+public interface KernelNativeThread
 {
-	/** The owning kernel. */
-	protected final Kernel kernel;
-	
-	/**
-	 * Initializes the kernel thread.
-	 *
-	 * @param __k The kernel owning this thread.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/11/08
-	 */
-	KernelThread(Kernel __k)
-		throws NullPointerException
-	{
-		// Check
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.kernel = __k;
-	}
 }
 
