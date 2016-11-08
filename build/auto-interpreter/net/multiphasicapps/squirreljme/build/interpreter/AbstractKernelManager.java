@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import java.io.InputStream;
+import net.multiphasicapps.squirreljme.kernel.InvalidSuiteException;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadListener;
@@ -56,6 +58,31 @@ public abstract class AbstractKernelManager
 	 * @since 2016/10/07
 	 */
 	protected abstract KernelLaunchParameters internalLaunchParameters();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/08
+	 */
+	@Override
+	public final int[] installedSuitesIDs()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/08
+	 */
+	@Override
+	public InputStream loadSuiteResource(int __id, String __name)
+		throws InvalidSuiteException, NullPointerException
+	{
+		// Check
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * {@inheritDoc}

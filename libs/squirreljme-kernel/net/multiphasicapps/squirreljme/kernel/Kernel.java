@@ -76,6 +76,8 @@ public final class Kernel
 		try
 		{
 			// Determine the classpath to use for the process
+			int[] suites = suitemanager.installedSuitesIDs();
+			
 			if (true)
 				throw new Error("TODO");
 			
