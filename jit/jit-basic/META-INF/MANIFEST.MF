@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: jit-basic
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: JIT (Basic)
 X-SquirrelJME-Vendor: Steven Gawroriski

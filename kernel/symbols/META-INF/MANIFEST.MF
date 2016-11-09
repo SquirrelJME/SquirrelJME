@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: symbols
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Java Descriptors
 X-SquirrelJME-Vendor: Steven Gawroriski

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: opengles
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: OpenGL ES
 X-SquirrelJME-Vendor: Steven Gawroriski

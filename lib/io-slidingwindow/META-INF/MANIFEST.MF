@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: io-slidingwindow
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Extra IO Sliding Window
 X-SquirrelJME-Vendor: Steven Gawroriski

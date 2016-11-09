@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: exe
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Executable Linker
 X-SquirrelJME-Vendor: Steven Gawroriski

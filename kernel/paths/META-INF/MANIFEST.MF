@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: paths
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Native Path Manager
 X-SquirrelJME-Vendor: Steven Gawroriski

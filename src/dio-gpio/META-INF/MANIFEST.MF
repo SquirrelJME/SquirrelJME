@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: dio-gpio
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: JavaME 8 Device I/O (GPIO)
 X-SquirrelJME-Vendor: Steven Gawroriski

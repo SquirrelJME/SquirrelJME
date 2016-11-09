@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-midlet
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP MIDlet Interface
 X-SquirrelJME-Vendor: Steven Gawroriski

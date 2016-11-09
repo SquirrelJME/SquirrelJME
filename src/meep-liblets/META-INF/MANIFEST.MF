@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-liblets
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP Application Suites and LIBlets
 X-SquirrelJME-Vendor: Steven Gawroriski

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: paths-posix
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Native Path Manager (POSIX)
 X-SquirrelJME-Vendor: Steven Gawroriski

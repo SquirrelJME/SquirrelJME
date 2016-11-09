@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: io-inflate
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Extra IO Inflate Algorithm
 X-SquirrelJME-Vendor: Steven Gawroriski

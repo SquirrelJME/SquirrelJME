@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: util-msd
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Multiple Set-Based Deque
 X-SquirrelJME-Vendor: Steven Gawroriski

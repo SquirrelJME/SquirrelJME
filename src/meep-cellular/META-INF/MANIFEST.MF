@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-cellular
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP Cellular Networking
 X-SquirrelJME-Vendor: Steven Gawroriski

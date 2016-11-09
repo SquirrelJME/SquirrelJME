@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: ipc-mailbox
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Interprocess Communication Mailboxes
 X-SquirrelJME-Vendor: Steven Gawroriski

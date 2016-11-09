@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: native-code-base
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Base Native Code Support
 X-SquirrelJME-Vendor: Steven Gawroriski

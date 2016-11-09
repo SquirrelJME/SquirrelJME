@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: native-code-mips
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Native Code (MIPS)
 X-SquirrelJME-Vendor: Steven Gawroriski

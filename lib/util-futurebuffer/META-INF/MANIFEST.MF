@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: util-futurebuffer
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Future Buffer
 X-SquirrelJME-Vendor: Steven Gawroriski

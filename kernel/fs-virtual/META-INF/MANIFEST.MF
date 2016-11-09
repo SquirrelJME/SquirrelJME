@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: fs-virtual
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Virtual Filesystem
 X-SquirrelJME-Vendor: Steven Gawroriski

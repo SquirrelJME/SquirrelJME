@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: builder-linux
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Builder (Linux)
 X-SquirrelJME-Vendor: Steven Gawroriski

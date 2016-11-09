@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: projects
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: SquirrelJME Project Interface
 X-SquirrelJME-Vendor: Steven Gawroriski

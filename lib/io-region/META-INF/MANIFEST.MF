@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: io-region
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Extra IO Regions
 X-SquirrelJME-Vendor: Steven Gawroriski

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-provisioning
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP Provisioning
 X-SquirrelJME-Vendor: Steven Gawroriski

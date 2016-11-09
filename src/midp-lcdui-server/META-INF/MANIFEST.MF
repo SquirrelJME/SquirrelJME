@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: midp-lcdui-server
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MIDP LCDUI Server
 X-SquirrelJME-Vendor: Steven Gawroriski

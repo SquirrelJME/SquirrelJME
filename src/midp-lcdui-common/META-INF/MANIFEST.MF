@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: midp-lcdui-common
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Common MIDP LCDUI
 X-SquirrelJME-Vendor: Steven Gawroriski

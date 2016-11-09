@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: squirrel-scavenger
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Squirrel Scavenger
 X-SquirrelJME-Vendor: Steven Gawroriski

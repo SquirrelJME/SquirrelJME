@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: util-huffmantree
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Extra Util Huffman Tree
 X-SquirrelJME-Vendor: Steven Gawroriski

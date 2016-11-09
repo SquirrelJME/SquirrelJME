@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: fs
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Native File System
 X-SquirrelJME-Vendor: Steven Gawroriski

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: jit-base
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Just-In-Time Compiler (Base Support)
 X-SquirrelJME-Vendor: Steven Gawroriski

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: doclet-common
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Common Doclet Code
 X-SquirrelJME-Vendor: Steven Gawroriski

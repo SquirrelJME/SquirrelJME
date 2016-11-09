@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-key
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP Key Events
 X-SquirrelJME-Vendor: Steven Gawroriski

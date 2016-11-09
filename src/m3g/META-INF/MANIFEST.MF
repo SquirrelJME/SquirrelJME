@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: m3g
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Mobile 3D Graphics API
 X-SquirrelJME-Vendor: Steven Gawroriski

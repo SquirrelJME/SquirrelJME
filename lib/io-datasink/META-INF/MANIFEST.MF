@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: io-datasink
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Extra IO Data Sink
 X-SquirrelJME-Vendor: Steven Gawroriski

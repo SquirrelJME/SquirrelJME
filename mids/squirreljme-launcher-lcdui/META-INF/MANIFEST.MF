@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: squirreljme-launcher-lcdui
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: SquirrelJME Launcher (Graphical)
 X-SquirrelJME-Vendor: Steven Gawroriski

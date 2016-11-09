@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-power
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP Power Management
 X-SquirrelJME-Vendor: Steven Gawroriski

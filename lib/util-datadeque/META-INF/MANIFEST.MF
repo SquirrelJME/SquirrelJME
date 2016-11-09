@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: util-datadeque
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Byte Deque Utility
 X-SquirrelJME-Vendor: Steven Gawroriski

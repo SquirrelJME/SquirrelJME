@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: singular-export
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Singular Project Export
 X-SquirrelJME-Vendor: Steven Gawroriski

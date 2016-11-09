@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: meep-securityframework
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: MEEP Security Framework
 X-SquirrelJME-Vendor: Steven Gawroriski

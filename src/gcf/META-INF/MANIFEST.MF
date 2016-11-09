@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: gcf
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Generic Connection Framework
 X-SquirrelJME-Vendor: Steven Gawroriski
