@@ -523,14 +523,10 @@ public class NewBootstrap
 			// Handle main attributes
 			Attributes attr = man.getMainAttributes();
 			
-			// {@squirreljme.error NB02 No project name was specified for
-			// the given manifest. (The manifest path)}
-			String rn = attr.getValue("X-SquirrelJME-BuildHostName");
-			if (rn == null)
-				throw new IllegalArgumentException(String.format("NB02 %s",
-					__mp));
+			// The project name depends on the uppermost name of the directory
 			String name;
-			this.name = (name = __correctProjectName(rn.trim()));
+			this.name = (name = __correctProjectName(
+				__b.getFileName().toString()));
 			
 			// Where is this output?
 			this.jarout = NewBootstrap.this.buildjarout.resolve(name + ".jar");
