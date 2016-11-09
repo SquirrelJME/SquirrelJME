@@ -1,6 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-BuildHostName: unmodifiable-collections
-X-SquirrelJME-SourceName: unmodifiable-collections
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Unmodifiable Collections
 X-SquirrelJME-Vendor: Steven Gawroriski

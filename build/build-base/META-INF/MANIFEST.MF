@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-BuildHostName: build-base
 X-SquirrelJME-UUID: fda7df14-a58f-4781-8f8f-336111c7aec2
 X-SquirrelJME-Error: AU
 X-SquirrelJME-Vendor: Steven Gawroriski

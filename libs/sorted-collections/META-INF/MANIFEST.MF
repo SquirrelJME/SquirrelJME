@@ -1,6 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: sorted-collections
-X-SquirrelJME-BuildHostName: sorted-collections
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Sorted Set and Map
 X-SquirrelJME-Vendor: Steven Gawroriski

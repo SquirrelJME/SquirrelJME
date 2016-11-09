@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-BuildHostName: build-system
 X-SquirrelJME-UUID: a67921b8-7a05-40c2-adc8-c8d09ed4515e
 X-SquirrelJME-BuildHostDepends: projects build-base auto-interpreter
 X-SquirrelJME-Error: AO

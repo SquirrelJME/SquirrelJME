@@ -1,6 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-SourceName: squirreljme-launcher-base
-X-SquirrelJME-BuildHostName: squirreljme-launcher-base
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Base Launcher
 X-SquirrelJME-Vendor: Steven Gawroriski
