@@ -191,6 +191,17 @@ public class AutoInterpreter
 	}
 	
 	/**
+	 * Returns the project manager which is used to access suites and such.
+	 *
+	 * @return The used project manager.
+	 * @since 2016/11/20
+	 */
+	public final ProjectManager projectManager()
+	{
+		return this.projects;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/29
 	 */
