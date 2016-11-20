@@ -102,5 +102,17 @@ public class ProjectManager
 			}
 		}
 	}
+	
+	/**
+	 * Returns the list of suite hashes currently available.
+	 *
+	 * @return An array of suite hashes.
+	 * @since 2016/11/20
+	 */
+	public int[] suiteHashes()
+	{
+		System.err.println("TODO -- Implement suite hashes.");
+		return new int[0];
+	}
 }
 

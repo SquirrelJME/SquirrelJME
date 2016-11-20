@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.build.interpreter;
 
 import java.io.InputStream;
+import java.util.List;
+import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.InvalidSuiteException;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
@@ -76,7 +78,7 @@ public abstract class AbstractKernelManager
 	@Override
 	public final int[] installedSuitesIDs()
 	{
-		throw new Error("TODO");
+		return this.autointerpreter.projectManager().suiteHashes();
 	}
 	
 	/**
