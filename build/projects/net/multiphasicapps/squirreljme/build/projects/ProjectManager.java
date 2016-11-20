@@ -111,8 +111,7 @@ public class ProjectManager
 	 */
 	public int[] suiteHashes()
 	{
-		System.err.println("TODO -- Implement suite hashes.");
-		return new int[0];
+		throw new Error("TODO");
 	}
 }
 
