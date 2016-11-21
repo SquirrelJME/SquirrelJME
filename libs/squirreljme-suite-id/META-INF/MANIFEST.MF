@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-UUID: 2e66378f-c16a-4da0-ad51-a0b39fb71bbb
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: AD
+LIBlet-Name: squirreljme-suite-id
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: squirreljme-suite-id
+
