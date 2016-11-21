@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.nio.file.Path;
+
 /**
  * This represents the base for all projects which are associated with the
  * project manager.
@@ -18,13 +20,36 @@ package net.multiphasicapps.squirreljme.build.projects;
  */
 public abstract class BaseProject
 {
+	/** The location representing the project. */
+	protected final Path path;
+	
 	/**
 	 * Initializes the base project.
 	 *
+	 * @param __p The path to the project.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
-	BaseProject()
+	BaseProject(Path __p)
+		throws NullPointerException
 	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.path = __p;
+	}
+	
+	/**
+	 * Returns the path to this project.
+	 *
+	 * @return The project path.
+	 * @since 2016/11/20
+	 */
+	public Path path()
+	{
+		return this.path;
 	}
 }
 

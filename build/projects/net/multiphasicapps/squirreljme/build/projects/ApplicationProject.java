@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.nio.file.Path;
+
 /**
  * This represents the base class for MIDlets and LIBlets.
  *
@@ -18,5 +20,17 @@ package net.multiphasicapps.squirreljme.build.projects;
 public abstract class ApplicationProject
 	extends BaseProject
 {
+	/**
+	 * Initializes the project information.
+	 *
+	 * @param __p The path to the project.
+	 * @since 2016/11/20
+	 */
+	ApplicationProject(Path __p)
+	{
+		super(__p);
+		
+		throw new Error("TODO");
+	}
 }
 

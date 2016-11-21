@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.nio.file.Path;
+
 /**
  * This is a project which represents a MIDlet.
  *
@@ -18,5 +20,17 @@ package net.multiphasicapps.squirreljme.build.projects;
 public class MidletProject
 	extends ApplicationProject
 {
+	/**
+	 * Initializes the application information.
+	 *
+	 * @param __p The path to the project.
+	 * @since 2016/11/20
+	 */
+	MidletProject(Path __p)
+	{
+		super(__p);
+		
+		throw new Error("TODO");
+	}
 }
 
