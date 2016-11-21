@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This class is used to manage projects which represent modules that
@@ -36,6 +37,9 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
  */
 public class ProjectManager
 {
+	/** The application manager. */
+	protected final ApplicationManager appman;
+	
 	/**
 	 * Initializes the project manager.
 	 *
@@ -101,6 +105,22 @@ public class ProjectManager
 				}
 			}
 		}
+		
+		// Setup application manager using the midlet and liblet namespaces
+		this.appman = new ApplicationManager(this,
+			namespacetree.get(NamespaceType.LIBLETS),
+			namespacetree.get(NamespaceType.MIDLETS));
+	}
+	
+	/**
+	 * Returns the application manager.
+	 *
+	 * @return The application manager.
+	 * @since 2016/11/20
+	 */
+	public final ApplicationManager applications()
+	{
+		return this.appman;
 	}
 	
 	/**
@@ -109,9 +129,9 @@ public class ProjectManager
 	 * @return An array of suite hashes.
 	 * @since 2016/11/20
 	 */
-	public int[] suiteHashes()
+	public final int[] suiteHashes()
 	{
-		throw new Error("TODO");
+		return this.appman.suiteHashes();
 	}
 }
 
