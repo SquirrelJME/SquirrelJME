@@ -29,8 +29,8 @@ public class ApplicationManager
 	 * Initializes the application manager.
 	 *
 	 * @param __pm The owning project manager.
-	 * @param __libs Liblets available to the application manager. 
-	 * @param __mids MIDlets available to the application manager.
+	 * @param __libs Source Liblets available to the application manager. 
+	 * @param __mids Source MIDlets available to the application manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
