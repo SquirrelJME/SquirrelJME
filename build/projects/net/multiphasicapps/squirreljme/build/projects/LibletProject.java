@@ -23,12 +23,13 @@ public class LibletProject
 	/**
 	 * Initializes the library information.
 	 *
+	 * @param __am The owning application manager.
 	 * @param __p The path to the project.
 	 * @since 2016/11/20
 	 */
-	LibletProject(Path __p)
+	LibletProject(ApplicationManager __am, Path __p)
 	{
-		super(__p);
+		super(__am, __p);
 		
 		throw new Error("TODO");
 	}

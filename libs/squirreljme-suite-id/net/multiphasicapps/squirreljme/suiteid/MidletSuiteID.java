@@ -147,7 +147,7 @@ public final class MidletSuiteID
 		if (!(__o instanceof MidletSuiteID))
 			return false;
 		
-		throw new Error("TODO");
+		return 0 == (compareTo((MidletSuiteID)__o));
 	}
 	
 	/**

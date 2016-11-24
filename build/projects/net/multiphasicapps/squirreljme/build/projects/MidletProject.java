@@ -23,12 +23,13 @@ public class MidletProject
 	/**
 	 * Initializes the application information.
 	 *
+	 * @param __am The owning application manager.
 	 * @param __p The path to the project.
 	 * @since 2016/11/20
 	 */
-	MidletProject(Path __p)
+	MidletProject(ApplicationManager __am, Path __p)
 	{
-		super(__p);
+		super(__am, __p);
 		
 		throw new Error("TODO");
 	}
