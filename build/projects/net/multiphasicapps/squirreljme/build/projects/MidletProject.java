@@ -32,8 +32,6 @@ public class MidletProject
 	MidletProject(ApplicationManager __am, Path __p, JavaManifest __man)
 	{
 		super(__am, __p, __man);
-		
-		throw new Error("TODO");
 	}
 }
 

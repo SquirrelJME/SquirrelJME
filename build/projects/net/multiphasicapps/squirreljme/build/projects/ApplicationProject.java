@@ -11,8 +11,13 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.nio.file.Path;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 
 /**
  * This represents the base class for MIDlets and LIBlets.
@@ -28,17 +33,21 @@ public abstract class ApplicationProject
 	/** The project manifest (in its source form). */
 	protected final JavaManifest sourcemanifest;
 	
+	/** The suite ID of the midlet. */
+	protected final MidletSuiteID suiteid;
+	
 	/**
 	 * Initializes the project information.
 	 *
 	 * @param __am The owning application manager.
 	 * @param __p The path to the project.
 	 * @param __man The manifest that is used for the source.
+	 * @throws InvalidProjectException If the project is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
 	ApplicationProject(ApplicationManager __am, Path __p, JavaManifest __man)
-		throws NullPointerException
+		throws InvalidProjectException, NullPointerException
 	{
 		super(__p);
 		
@@ -48,8 +57,39 @@ public abstract class ApplicationProject
 		
 		// Set
 		this.appman = __am;
+		this.sourcemanifest = __man;
 		
-		throw new Error("TODO");
+		// Decode suite identifiers
+		JavaManifestAttributes attr = __man.getMainAttributes();
+		try
+		{
+			// {@squirreljme.error AT05 No application vendor was specified.}
+			MidletSuiteVendor vend = new MidletSuiteVendor(
+				Objects.<String>requireNonNull(
+				attr.getValue("X-SquirrelJME-AppVendor"), "AT05"));
+			
+			// {@squirreljme.error AT06 No application name was specified.}
+			MidletSuiteName name = new MidletSuiteName(
+				Objects.<String>requireNonNull(
+				attr.getValue("X-SquirrelJME-AppName"), "AT06"));
+			
+			// {@squirreljme.error AT07 No application version was specified.}
+			MidletVersion vers = new MidletVersion(
+				Objects.<String>requireNonNull(
+				attr.getValue("X-SquirrelJME-AppVersion"), "AT07"));
+			
+			// Finish it
+			this.suiteid = new MidletSuiteID(vend, name, vers);
+		}
+		
+		// {@squirreljme.error AT04 The given project at the specified path
+		// does not have a correct suite name, vendor, or version. (The path to
+		// the project)}
+		catch (IllegalArgumentException|NullPointerException e)
+		{
+			throw new InvalidProjectException(String.format("AT04 %s", __p),
+				e);
+		}
 	}
 	
 	/**
@@ -81,7 +121,17 @@ public abstract class ApplicationProject
 	 */
 	public final MidletSuiteID midletSuiteId()
 	{
-		throw new Error("TODO");
+		return this.suiteid;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/24
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.suiteid.toString();
 	}
 }
 
