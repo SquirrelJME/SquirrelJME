@@ -10,10 +10,19 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.Channels;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -38,11 +47,12 @@ public class ApplicationManager
 	 * @param __mids Source MIDlets available to the application manager.
 	 * @throws IllegalStateException If there is a hash collision between
 	 * multiple midlets and liblets.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
 	ApplicationManager(ProjectManager __pm, Set<Path> __libs, Set<Path> __mids)
-		throws IllegalStateException, NullPointerException
+		throws IllegalStateException, IOException, NullPointerException
 	{
 		// Check
 		if (__pm == null || __libs == null || __mids == null)
@@ -66,18 +76,45 @@ public class ApplicationManager
 			else
 				break;
 			
-			// Initialize
-			ApplicationProject proj = (ismidlet ? new MidletProject(this, rp) :
-				new LibletProject(this, rp));
+			// Go through the namespace and load projects in it
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(rp))
+			{
+				for (Path pp : ds)
+				{
+					// Ignore non-directories
+					if (!Files.isDirectory(pp))
+						continue;
+					
+					// Read the manifest
+					JavaManifest man;
+					try
+					{
+						man = ProjectManager.__readManifest(
+							pp.resolve("META-INF").resolve("MANIFEST.MF"));
+					}
+					
+					// Ignore
+					catch (NoSuchFileException e)
+					{
+						continue;
+					}
+					
+					// Initialize project
+					ApplicationProject proj = (ismidlet ?
+						new MidletProject(this, pp, man) :
+						new LibletProject(this, pp, man));
 			
-			// {@squirreljme.error AT03 Hash collision between multiple
-			// projects that share the same suite identification value.
-			// (The old project; The new project)}
-			int hash = proj.hashCode();
-			ApplicationProject old;
-			if (null != (old = projects.put(hash, proj)))
-				throw new IllegalStateException(String.format("AT03 %s %s",
-					old.midletSuiteId(), proj.midletSuiteId()));
+					// {@squirreljme.error AT03 Hash collision between multiple
+					// projects that share the same suite identification value.
+					// (The old project; The new project)}
+					int hash = proj.hashCode();
+					ApplicationProject old;
+					if (null != (old = projects.put(hash, proj)))
+						throw new IllegalStateException(String.format(
+							"AT03 %s %s",
+							old.midletSuiteId(), proj.midletSuiteId()));
+				}
+			}
 		}
 		
 		// Set

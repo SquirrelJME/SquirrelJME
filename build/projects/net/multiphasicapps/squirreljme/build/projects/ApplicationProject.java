@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 
 /**
@@ -24,21 +25,25 @@ public abstract class ApplicationProject
 	/** The owning application manager. */
 	protected final ApplicationManager appman;
 	
+	/** The project manifest (in its source form). */
+	protected final JavaManifest sourcemanifest;
+	
 	/**
 	 * Initializes the project information.
 	 *
 	 * @param __am The owning application manager.
 	 * @param __p The path to the project.
+	 * @param __man The manifest that is used for the source.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
-	ApplicationProject(ApplicationManager __am, Path __p)
+	ApplicationProject(ApplicationManager __am, Path __p, JavaManifest __man)
 		throws NullPointerException
 	{
 		super(__p);
 		
 		// Check
-		if (__am == null)
+		if (__am == null || __man == null)
 			throw new NullPointerException("NARG");
 		
 		// Set

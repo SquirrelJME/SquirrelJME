@@ -71,10 +71,10 @@ public class ProjectManager
 					continue;
 				
 				// Load in manifest
-				try (InputStream in = Channels.newInputStream(FileChannel.open(
-					p.resolve("NAMESPACE.MF"), StandardOpenOption.READ)))
+				try
 				{
-					JavaManifest man = new JavaManifest(in);
+					JavaManifest man = ProjectManager.__readManifest(
+						p.resolve("NAMESPACE.MF"));
 					
 					// Get the type of namespace this is
 					JavaManifestAttributes attr = man.getMainAttributes();
@@ -132,6 +132,30 @@ public class ProjectManager
 	public final int[] suiteHashes()
 	{
 		return this.appman.suiteHashes();
+	}
+	
+	/**
+	 * Reads a manifest from the given path.
+	 *
+	 * @param __p The path to read from.
+	 * @return The manifest that was read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/24
+	 */
+	static final JavaManifest __readManifest(Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Open the file and read it
+		try (InputStream in = Channels.newInputStream(FileChannel.open(
+			__p, StandardOpenOption.READ)))
+		{
+			return new JavaManifest(in);
+		}
 	}
 }
 

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 
 /**
  * This is a project which represents a MIDlet.
@@ -25,11 +26,12 @@ public class MidletProject
 	 *
 	 * @param __am The owning application manager.
 	 * @param __p The path to the project.
+	 * @param __man The manifest that is used for the source.
 	 * @since 2016/11/20
 	 */
-	MidletProject(ApplicationManager __am, Path __p)
+	MidletProject(ApplicationManager __am, Path __p, JavaManifest __man)
 	{
-		super(__am, __p);
+		super(__am, __p, __man);
 		
 		throw new Error("TODO");
 	}
