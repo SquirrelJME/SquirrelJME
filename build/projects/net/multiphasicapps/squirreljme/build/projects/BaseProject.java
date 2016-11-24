@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * This represents the base for all projects which are associated with the
@@ -22,6 +23,9 @@ public abstract class BaseProject
 {
 	/** The location representing the project. */
 	protected final Path path;
+	
+	/** The basic project name. */
+	protected final String basicname;
 	
 	/**
 	 * Initializes the base project.
@@ -39,6 +43,40 @@ public abstract class BaseProject
 		
 		// Set
 		this.path = __p;
+		
+		// The basic name is just the file name of the project directory or
+		// similar
+		this.basicname = __basify(Objects.toString(__p.getFileName(),
+			__p.toString()));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/24
+	 */
+	@Override
+	public abstract int hashCode();
+	
+	/**
+	 * Returns the basic name of the project, which is derived from the base
+	 * path.
+	 *
+	 * @return The basic project name.
+	 * @since 2016/11/24
+	 */
+	public final String basicName()
+	{
+		return this.basicname;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/24
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		return this == __o;
 	}
 	
 	/**
@@ -47,9 +85,45 @@ public abstract class BaseProject
 	 * @return The project path.
 	 * @since 2016/11/20
 	 */
-	public Path path()
+	public final Path path()
 	{
 		return this.path;
+	}
+	
+	/**
+	 * Turns a path file name to a basic project name.
+	 *
+	 * @param __s The string to make basic.
+	 * @return The basic form of the given string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/24
+	 */
+	private static String __basify(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Lowercase letters
+		int n = __s.length();
+		StringBuilder sb = new StringBuilder(n);
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Lowercase
+			if (c >= 'A' && c <= 'Z')
+				c = (char)('a' + (c - 'A'));
+			
+			sb.append(c);
+		}
+		
+		// Make sure JAR is not at the end
+		String rv = sb.toString();
+		if (rv.endsWith(".jar"))
+			return rv.substring(0, rv.length() - 4);
+		return rv;
 	}
 }
 
