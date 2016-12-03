@@ -66,17 +66,17 @@ public abstract class ApplicationProject
 			// {@squirreljme.error AT05 No application vendor was specified.}
 			MidletSuiteVendor vend = new MidletSuiteVendor(
 				Objects.<String>requireNonNull(
-				attr.getValue("X-SquirrelJME-AppVendor"), "AT05"));
+				attr.getValue("X-SquirrelJME-Vendor"), "AT05"));
 			
 			// {@squirreljme.error AT06 No application name was specified.}
 			MidletSuiteName name = new MidletSuiteName(
 				Objects.<String>requireNonNull(
-				attr.getValue("X-SquirrelJME-AppName"), "AT06"));
+				attr.getValue("X-SquirrelJME-Title"), "AT06"));
 			
 			// {@squirreljme.error AT07 No application version was specified.}
 			MidletVersion vers = new MidletVersion(
 				Objects.<String>requireNonNull(
-				attr.getValue("X-SquirrelJME-AppVersion"), "AT07"));
+				attr.getValue("X-SquirrelJME-Version"), "AT07"));
 			
 			// Finish it
 			this.suiteid = new MidletSuiteID(vend, name, vers);
