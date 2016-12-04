@@ -47,7 +47,7 @@ public enum NamespaceType
 	 * @since 201610/28
 	 */
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		return this.string;
 	}

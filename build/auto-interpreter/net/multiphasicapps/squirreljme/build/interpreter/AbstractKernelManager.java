@@ -78,7 +78,8 @@ public abstract class AbstractKernelManager
 	@Override
 	public final int[] installedSuitesIDs()
 	{
-		return this.autointerpreter.projectManager().suiteHashes();
+		return this.autointerpreter.projectManager().applications().
+			suiteHashes();
 	}
 	
 	/**

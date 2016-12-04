@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -75,8 +76,20 @@ public final class Kernel
 		KernelProcess lp = null;
 		try
 		{
+			// Parse the set of loaded APIs to see which ones are available
+			// for processes to use
+			if (true)
+				throw new Error("TODO");
+			
 			// Determine the classpath to use for the process
 			int[] suites = suitemanager.installedSuitesIDs();
+			
+			// Find a launcher which is compatible with this configuration
+			int n = suites.length;
+			for (int i = 0; i < n; i++)			
+			{
+				throw new Error("TODO");
+			}
 			
 			if (true)
 				throw new Error("TODO");

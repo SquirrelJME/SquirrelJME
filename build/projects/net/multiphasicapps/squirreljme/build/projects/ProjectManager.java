@@ -37,6 +37,9 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  */
 public class ProjectManager
 {
+	/** The API manager. */
+	protected final APIManager apiman;
+	
 	/** The application manager. */
 	protected final ApplicationManager appman;
 	
@@ -106,10 +109,26 @@ public class ProjectManager
 			}
 		}
 		
+		// Initialize the API manager for provided interfaces
+		this.apiman = new APIManager(this, 
+			namespacetree.get(NamespaceType.APIS));
+		
 		// Setup application manager using the midlet and liblet namespaces
 		this.appman = new ApplicationManager(this,
 			namespacetree.get(NamespaceType.LIBLETS),
 			namespacetree.get(NamespaceType.MIDLETS));
+	}
+	
+	/**
+	 * This is used to provide access to all of the APIs which are
+	 * available.
+	 *
+	 * @return The API manager.
+	 * @since 2016/12/04
+	 */
+	public final APIManager apis()
+	{
+		return this.apiman;
 	}
 	
 	/**
@@ -121,17 +140,6 @@ public class ProjectManager
 	public final ApplicationManager applications()
 	{
 		return this.appman;
-	}
-	
-	/**
-	 * Returns the list of suite hashes currently available.
-	 *
-	 * @return An array of suite hashes.
-	 * @since 2016/11/20
-	 */
-	public final int[] suiteHashes()
-	{
-		return this.appman.suiteHashes();
 	}
 	
 	/**

@@ -110,7 +110,7 @@ public abstract class ApplicationProject
 	@Override
 	public final int hashCode()
 	{
-		return midletSuiteId().hashCode();
+		return this.suiteid.hashCode();
 	}
 	
 	/**

@@ -51,7 +51,8 @@ public class ApplicationManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
-	ApplicationManager(ProjectManager __pm, Set<Path> __libs, Set<Path> __mids)
+	ApplicationManager(ProjectManager __pm, Iterable<Path> __libs,
+		Iterable<Path> __mids)
 		throws IllegalStateException, IOException, NullPointerException
 	{
 		// Check
