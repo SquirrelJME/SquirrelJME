@@ -25,8 +25,8 @@ do
 		then
 			__err="$(sed \
 				'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
-				< "$__man" | grep '^ERROR[ \t]*:' |
-				sed 's/^ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
+				< "$__man" | grep '^ERROR-PREFIX[ \t]*:' |
+				sed 's/^ERROR-PREFIX[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
 			if [ -n "$__err" ]
 			then
 				echo "$__err $(basename $__dir)"
