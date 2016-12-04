@@ -41,6 +41,8 @@ do
 		# Only if there is an error code and it is missing from the other
 		if [ -n "$__err" ] && [ -z "$__too" ]
 		then
+			echo "$__dir"
+			
 			# If the target manifest does not exist then initialize a blank
 			# one
 			if [ ! -f "$__new" ]
@@ -53,13 +55,13 @@ do
 			# Append the error prefix
 			echo "Error-Prefix: $__err" >> /tmp/$$
 			
-			# Debug
-			cat /tmp/$$
+			# Use it
+			mv /tmp/$$ "$__new"
+			fossil add "$__new"
 			
 			# Remove the prefix from the old one
-			grep -vi "^x-squirreljme-error[ \t]*:" < "$__man"
-			
-			echo "$__dir $__err $__too"
+			grep -vi "^x-squirreljme-error[ \t]*:" < "$__man" > /tmp/$$
+			mv /tmp/$$ "$__man"
 		fi
 	fi
 done
