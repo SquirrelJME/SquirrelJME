@@ -20,13 +20,13 @@ __exedir="$(dirname -- "$0")"
 do
 	for __dir in "$__exedir/../$__ns/"*
 	do
-		__man="$__dir/META-INF/SQUIRRELJME-COMMON.MF"
+		__man="$__dir/META-INF/MANIFEST.MF"
 		if [ -f "$__man" ]
 		then
 			__err="$(sed \
 				'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
-				< "$__man" | grep '^ERROR-PREFIX[ \t]*:' |
-				sed 's/^ERROR-PREFIX[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
+				< "$__man" | grep '^X-SQUIRRELJME-ERROR[ \t]*:' |
+				sed 's/^X-SQUIRRELJME-ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
 			if [ -n "$__err" ]
 			then
 				echo "$__err $(basename $__dir)"
