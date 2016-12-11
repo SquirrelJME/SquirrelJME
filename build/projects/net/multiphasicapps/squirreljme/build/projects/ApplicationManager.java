@@ -62,6 +62,9 @@ public class ApplicationManager
 		// Set
 		this.projectman = __pm;
 		
+		if (true)
+			throw new Error("TODO");
+		
 		// Initialize projects depending on whether they are libraries or
 		// midlets
 		Map<Integer, ApplicationProject> projects = new SortedTreeMap<>();

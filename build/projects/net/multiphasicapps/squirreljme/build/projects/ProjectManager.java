@@ -58,7 +58,7 @@ public class ProjectManager
 		if (__bin == null || __src == null)
 			throw new NullPointerException("NARG");
 		
-		// Seed tree with initial set
+		// Seed tree with initial sets
 		Map<NamespaceType, Set<Path>> namespacetree = new LinkedHashMap<>();
 		for (NamespaceType v : NamespaceType.values())
 			namespacetree.put(v, new LinkedHashSet<Path>());
@@ -97,8 +97,23 @@ public class ProjectManager
 					// Look it up
 					NamespaceType type = NamespaceType.of(rtype.trim());
 					
-					// Store it
-					namespacetree.get(type).add(p);
+					// Go through this namespace and load sub-projects
+					Set<Path> sub = namespacetree.get(type);
+					try (DirectoryStream<Path> ss =
+						Files.newDirectoryStream(p))
+					{
+						for (Path s : ss)
+						{
+							// Only access directories
+							if (!Files.isDirectory(s) ||
+								!Files.exists(s.resolve("META-INF").
+									resolve("MANIFEST.MF")))
+								continue;
+							
+							// Add project
+							sub.add(s);
+						}
+					}
 				}
 				
 				// Ignore
