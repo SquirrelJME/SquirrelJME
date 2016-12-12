@@ -82,7 +82,7 @@ public class ProjectManager
 					// Get the type of namespace this is
 					JavaManifestAttributes attr = man.getMainAttributes();
 					String rtype = attr.getValue(
-						"X-SquirrelJME-Namespace-Type");
+						"Namespace-Type");
 					if (rtype == null)
 					{
 						// {@squirreljme.error AT02 There is a namespace

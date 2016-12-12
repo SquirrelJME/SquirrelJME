@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: MIDlets
-X-SquirrelJME-Namespace-Type: midlets
-X-SquirrelJME-Namespace-Description: This namespace contains LIBlets 
+Namespace-Title: MIDlets
+Namespace-Type: midlets
+Namespace-Description: This namespace contains LIBlets 
  which are applications to be launched by the user. MIDlets can only 
  depend on configurations, profiles, standards, or liblets.
 

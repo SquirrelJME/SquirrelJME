@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: APIs
-X-SquirrelJME-Namespace-Type: apis
-X-SquirrelJME-Namespace-Description: This namespace contains 
+Namespace-Title: APIs
+Namespace-Type: apis
+Namespace-Description: This namespace contains 
  definitions and/or implementations of standard APIs.
 

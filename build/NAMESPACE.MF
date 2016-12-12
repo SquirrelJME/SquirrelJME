@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: Build System
-X-SquirrelJME-Namespace-Type: build
-X-SquirrelJME-Namespace-Description: This namespace contains anything 
+Namespace-Title: Build System
+Namespace-Type: build
+Namespace-Description: This namespace contains anything 
  that is needed to build SquirrelJME target binaries.
 

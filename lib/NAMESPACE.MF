@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: Extra Libraries
-X-SquirrelJME-Namespace-Deprecated: DEPRECATED
-X-SquirrelJME-Namespace-Description: This namespace contains extra 
+Namespace-Title: Extra Libraries
+Namespace-Deprecated: DEPRECATED
+Namespace-Description: This namespace contains extra 
  libraries which may be used by other pieces of code.
  
 
