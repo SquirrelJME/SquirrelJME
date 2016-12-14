@@ -21,19 +21,19 @@ package net.multiphasicapps.squirreljme.build.projects;
 public enum NamespaceType
 {
 	/** Static assets such images and other non-compiling files. */
-	ASSETS,
+	ASSET,
 	
 	/** Projects which are part of the build system. */
 	BUILD,
 	
 	/** Liblets which are only included by midlets and APIs. */
-	LIBLETS,
+	LIBLET,
 	
 	/** Midlets which are actual applications. */
-	MIDLETS,
+	MIDLET,
 	
 	/** APIs which implement configurations, profiles, and standards. */
-	APIS,
+	API,
 	
 	/** End. */
 	;

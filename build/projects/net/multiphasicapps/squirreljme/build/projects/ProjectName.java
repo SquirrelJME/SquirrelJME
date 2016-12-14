@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.nio.file.Path;
+
 /**
  * This class represents the name of a package, which is case insensitive.
  *
@@ -45,13 +47,13 @@ public final class ProjectName
 		{
 			char c = __s.charAt(i);
 			
-			// {@squirreljme.error CI05 The specified string is not a valid
+			// {@squirreljme.error AT03 The specified string is not a valid
 			// name for a package because it contains illegal characters.
 			// (The illegal package name)}
 			boolean upper = (c >= 'A' && c <= 'Z');
 			if (!((c >= 'a' && c <= 'z') || upper ||
 				(c >= '0' && c <= '9') || c == '-'))
-				throw new InvalidProjectException(String.format("CI05 %s",
+				throw new InvalidProjectException(String.format("AT03 %s",
 					__s));
 			
 			// Lower?

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
@@ -56,10 +57,53 @@ public class ProjectManager
 			throw new NullPointerException("NARG");
 		
 		// Scan source directory for project paths
-		Map<NamespaceType, Set<Path>> namespacetree = __scanSources(null,
+		Map<NamespaceType, Set<Path>> sourcetree = __scanSources(null,
 			__src);
 		
-		throw new Error("TODO");
+		// Create projects associated with the namespaces
+		Map<ProjectName, Project> projects = new SortedTreeMap<>();
+		for (Map.Entry<NamespaceType, Set<Path>> ste : sourcetree.entrySet())
+		{
+			// Go through all project paths
+			NamespaceType type = ste.getKey();
+			for (Path sp : ste.getValue())
+				try
+				{
+					// Determine name
+					ProjectName pn = new ProjectName(
+						sp.getFileName().toString());
+				
+					// See if an existing project exists
+					Project p = projects.get(pn);
+					if (p != null)
+					{
+						// {@sqiuirreljme.error AT04 A project with the same
+						// name as another project with a different type
+						// already exists. (The project name; The current
+						// project type; The previous project type)}
+						NamespaceType was;
+						if (type != (was = p.type()))
+							throw new InvalidProjectException(
+								String.format("AT04 %s %s %s", pn, type, was));
+					}
+				
+					// Create if missing
+					else
+						projects.put(pn, (p = new Project(this, type, pn)));
+				
+					// Initialize source
+					p.__initializeSource(sp);
+				}
+			
+				// Invalid project, warn on it
+				catch (InvalidProjectException e)
+				{
+					e.printStackTrace();
+				}
+		}
+		
+		// Store
+		this.projects = UnmodifiableMap.<ProjectName, Project>of(projects);
 	}
 	
 	/**
