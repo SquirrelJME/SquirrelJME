@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Namespace-Title: MIDlets
-Namespace-Type: midlets
+Namespace-Type: midlet
 Namespace-Description: This namespace contains LIBlets 
  which are applications to be launched by the user. MIDlets can only 
  depend on configurations, profiles, standards, or liblets.

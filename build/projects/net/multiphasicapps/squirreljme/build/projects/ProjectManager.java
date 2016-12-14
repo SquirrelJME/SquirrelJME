@@ -221,7 +221,18 @@ public class ProjectManager
 					}
 					
 					// Look it up
-					NamespaceType type = NamespaceType.of(rtype.trim());
+					NamespaceType type;
+					try
+					{
+						type = NamespaceType.of(rtype.trim());
+					}
+					
+					// Illegal namespace type
+					catch (IllegalArgumentException e)
+					{
+						e.printStackTrace();
+						continue;
+					}
 					
 					// Go through this namespace and load sub-projects
 					Set<Path> sub = __dest.get(type);

@@ -52,8 +52,6 @@ public final class Project
 		this.projectman = __pm;
 		this.type = __t;
 		this.name = __n;
-		
-		throw new Error("TODO");
 	}
 	
 	/**
