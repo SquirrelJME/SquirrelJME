@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.InvalidSuiteException;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
+import net.multiphasicapps.squirreljme.kernel.KernelSystemClassPath;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadListener;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
 
@@ -27,7 +28,8 @@ import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
  * @since 2016/11/02
  */
 public abstract class AbstractKernelManager
-	implements KernelLaunchParameters, KernelSuiteManager, KernelThreadManager
+	implements KernelLaunchParameters, KernelSuiteManager, KernelThreadManager,
+		KernelSystemClassPath
 {
 	/** The owning auto interpreter. */
 	protected final AutoInterpreter autointerpreter;
