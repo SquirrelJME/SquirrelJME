@@ -19,6 +19,9 @@ import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
 import net.multiphasicapps.squirreljme.kernel.KernelSystemClassPath;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadListener;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
+import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
+import net.multiphasicapps.squirreljme.suiteid.APIProfile;
+import net.multiphasicapps.squirreljme.suiteid.APIStandard;
 
 /**
  * This is the base class for the interpreter kernel managers, since the two
@@ -114,6 +117,36 @@ public abstract class AbstractKernelManager
 		
 		// Set
 		this._threadlistener = __t;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/14
+	 */
+	@Override
+	public APIConfiguration[] supportedConfigurations()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/14
+	 */
+	@Override
+	public APIProfile[] supportedProfiles()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/14
+	 */
+	@Override
+	public APIStandard[] supportedStandards()
+	{
+		throw new Error("TODO");
 	}
 }
 
