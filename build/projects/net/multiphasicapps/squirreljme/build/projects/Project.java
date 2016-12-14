@@ -110,39 +110,44 @@ public final class Project
 	 * Initializes the project source from the given path.
 	 *
 	 * @param __p The path to the source code root.
+	 * @throws InvalidProjectException If the source code is not valid.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/14
 	 */
 	final void __initializeSource(Path __p)
-		throws IOException, NullPointerException
+		throws InvalidProjectException, IOException, NullPointerException
 	{
 		// Check
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * This represents a binary compilation of source code.
-	 *
-	 * Note that the compiled binary might not be derived from the source code.
-	 *
-	 * @since 2016/12/14
-	 */
-	public abstract class Binary
-	{
-	}
-	
-	/**
-	 * This represents source code within a project which may be used to
-	 * construct a binary from.
-	 *
-	 * @since 2016/12/14
-	 */
-	public abstract class Source
-	{
+		// Depends on the type
+		switch (this.type)
+		{
+				// {@squirreljme.error AT04 The specified project type cannot
+				// have source code. (The project type)}
+			case ASSET:
+			case BUILD:
+				throw new InvalidProjectException(String.format("AT04 %s",
+					this.type));
+				
+				// An API
+			case API:
+				throw new Error("TODO");
+			
+				// MIDlet
+			case MIDLET:
+				throw new Error("TODO");
+			
+				// LIBlet
+			case LIBLET:
+				throw new Error("TODO");
+				
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 
