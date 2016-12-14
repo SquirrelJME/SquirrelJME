@@ -14,28 +14,25 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * This represents the base for the class which represents the source code
- * of a given project.
+ * This represents the source of a MIDlet.
  *
  * @since 2016/12/14
  */
-public abstract class ProjectSource
+public class MidletSource
+	extends ApplicationSource
 {
 	/**
-	 * Initializes the source representation.
+	 * Initializes the source representation for MIDlets.
 	 *
 	 * @param __pr The project owning this.
 	 * @param __fp The path to the source code.
 	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/14
 	 */
-	ProjectSource(Project __pr, Path __fp)
-		throws IOException, NullPointerException
+	MidletSource(Project __pr, Path __fp)
+		throws IOException
 	{
-		// Check
-		if (__pr == null || __fp == null)
-			throw new NullPointerException("NARG");
+		super(__pr, __fp);
 		
 		throw new Error("TODO");
 	}

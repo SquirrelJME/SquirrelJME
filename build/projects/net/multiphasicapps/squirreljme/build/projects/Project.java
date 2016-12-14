@@ -32,6 +32,13 @@ public final class Project
 	/** The name of this project. */
 	protected final ProjectName name;
 	
+	/** Lock for source code. */
+	protected final Object sourcelock =
+		new Object();
+	
+	/** The source representation of this project. */
+	private volatile ProjectSource _source;
+	
 	/**
 	 * Initializes the project.
 	 *
@@ -86,6 +93,22 @@ public final class Project
 	}
 	
 	/**
+	 * Returns the source project for this project.
+	 *
+	 * @return The source for this project or {@code null} if it does not
+	 * exist.
+	 * @since 2016/12/14
+	 */
+	public final ProjectSource source()
+	{
+		// Lock
+		synchronized (this.sourcelock)
+		{
+			return this._source;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/12/14
 	 */
@@ -122,31 +145,40 @@ public final class Project
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// Depends on the type
-		switch (this.type)
+		// Lock to prevent source from changing between calls
+		synchronized (this.sourcelock)
 		{
-				// {@squirreljme.error AT04 The specified project type cannot
-				// have source code. (The project type)}
-			case ASSET:
-			case BUILD:
-				throw new InvalidProjectException(String.format("AT04 %s",
-					this.type));
+			// Depends on the type
+			ProjectSource src;
+			switch (this.type)
+			{
+					// {@squirreljme.error AT04 The specified project type
+					// cannot have source code. (The project type)}
+				case ASSET:
+				case BUILD:
+					throw new InvalidProjectException(String.format("AT04 %s",
+						this.type));
 				
-				// An API
-			case API:
-				throw new Error("TODO");
+					// An API
+				case API:
+					throw new Error("TODO");
 			
-				// MIDlet
-			case MIDLET:
-				throw new Error("TODO");
+					// MIDlet
+				case MIDLET:
+					src = new MidletSource(this, __p);
+					break;
 			
-				// LIBlet
-			case LIBLET:
-				throw new Error("TODO");
+					// LIBlet
+				case LIBLET:
+					throw new Error("TODO");
 				
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// Set source
+			this._source = src;
 		}
 	}
 }
