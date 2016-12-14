@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 
 /**
  * This represents the base for the class which represents the source code
@@ -21,6 +23,15 @@ import java.nio.file.Path;
  */
 public abstract class ProjectSource
 {
+	/** The owning project. */
+	protected final Project project;
+	
+	/** The manifest for the source code. */
+	protected final JavaManifest manifest;
+	
+	/** The root directory of the source. */
+	protected final Path root;
+	
 	/**
 	 * Initializes the source representation.
 	 *
@@ -37,7 +48,14 @@ public abstract class ProjectSource
 		if (__pr == null || __fp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Load the manifest
+		JavaManifest manifest = ProjectManager.__readManifest(
+			__fp.resolve("META-INF").resolve("MANIFEST.MF"));
+		this.manifest = manifest;
+		
+		// Set
+		this.project = __pr;
+		this.root = __fp;
 	}
 }
 
