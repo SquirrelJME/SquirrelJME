@@ -170,7 +170,8 @@ public final class Project
 			
 					// LIBlet
 				case LIBLET:
-					throw new Error("TODO");
+					src = new LibletSource(this, __p);
+					break;
 				
 					// Unknown
 				default:

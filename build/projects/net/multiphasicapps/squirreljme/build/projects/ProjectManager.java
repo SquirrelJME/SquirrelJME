@@ -64,8 +64,13 @@ public class ProjectManager
 		Map<ProjectName, Project> projects = new SortedTreeMap<>();
 		for (Map.Entry<NamespaceType, Set<Path>> ste : sourcetree.entrySet())
 		{
-			// Go through all project paths
+			// Ignore the build namespace because it is only used by the
+			// build system
 			NamespaceType type = ste.getKey();
+			if (type == NamespaceType.BUILD)
+				continue;
+			
+			// Go through all project paths
 			for (Path sp : ste.getValue())
 				try
 				{

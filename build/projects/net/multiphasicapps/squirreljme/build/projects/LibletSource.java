@@ -14,22 +14,22 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * This represents the base source for MIDlets and LIBlets.
+ * This represents the source code for a LIBlet.
  *
  * @since 2016/12/14
  */
-public abstract class ApplicationSource
-	extends ProjectSource
+public class LibletSource
+	extends ApplicationSource
 {
 	/**
-	 * Initializes the source representation for applications.
+	 * Initializes the source representation for LIBlets.
 	 *
 	 * @param __pr The project owning this.
 	 * @param __fp The path to the source code.
 	 * @throws IOException On read errors.
 	 * @since 2016/12/14
 	 */
-	ApplicationSource(Project __pr, Path __fp)
+	LibletSource(Project __pr, Path __fp)
 		throws IOException
 	{
 		super(__pr, __fp);

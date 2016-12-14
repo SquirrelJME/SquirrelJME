@@ -33,8 +33,6 @@ public class MidletSource
 		throws IOException
 	{
 		super(__pr, __fp);
-		
-		throw new Error("TODO");
 	}
 }
 
