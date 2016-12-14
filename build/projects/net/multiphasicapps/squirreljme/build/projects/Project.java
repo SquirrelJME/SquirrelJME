@@ -161,7 +161,8 @@ public final class Project
 				
 					// An API
 				case API:
-					throw new Error("TODO");
+					src = new APISource(this, __p);
+					break;
 			
 					// MIDlet
 				case MIDLET:
