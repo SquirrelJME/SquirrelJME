@@ -31,14 +31,9 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2016/11/20
  */
-public class ApplicationManager
+public abstract class ApplicationManager
+	extends __Namespace__
 {
-	/** The owning project manager. */
-	protected final ProjectManager projectman;
-	
-	/** Projects which are available for usage mapped by their suite ID. */
-	private final Map<Integer, ApplicationProject> _projects;
-	
 	/**
 	 * Initializes the application manager.
 	 *
@@ -48,81 +43,15 @@ public class ApplicationManager
 	 * @throws IllegalStateException If there is a hash collision between
 	 * multiple midlets and liblets.
 	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/20
 	 */
 	ApplicationManager(ProjectManager __pm, Iterable<Path> __libs,
 		Iterable<Path> __mids)
 		throws IllegalStateException, IOException, NullPointerException
 	{
-		// Check
-		if (__pm == null || __libs == null || __mids == null)
-			throw new NullPointerException("NARG");
+		super(__pm, __libs, __mids);
 		
-		// Set
-		this.projectman = __pm;
-		
-		if (true)
-			throw new Error("TODO");
-		
-		// Initialize projects depending on whether they are libraries or
-		// midlets
-		Map<Integer, ApplicationProject> projects = new SortedTreeMap<>();
-		for (Iterator<Path> ll = __libs.iterator(), mm = __mids.iterator();;)
-		{
-			// Get the next path element to initialize
-			Path rp;
-			boolean ismidlet = false;
-			if (ll.hasNext())
-				rp = ll.next();
-			else if ((ismidlet = mm.hasNext()))
-				rp = mm.next();
-			else
-				break;
-			
-			// Go through the namespace and load projects in it
-			try (DirectoryStream<Path> ds = Files.newDirectoryStream(rp))
-			{
-				for (Path pp : ds)
-				{
-					// Ignore non-directories
-					if (!Files.isDirectory(pp))
-						continue;
-					
-					// Read the manifest
-					JavaManifest man;
-					try
-					{
-						man = ProjectManager.__readManifest(
-							pp.resolve("META-INF").resolve("MANIFEST.MF"));
-					}
-					
-					// Ignore
-					catch (NoSuchFileException e)
-					{
-						continue;
-					}
-					
-					// Initialize project
-					ApplicationProject proj = (ismidlet ?
-						new MidletProject(this, pp, man) :
-						new LibletProject(this, pp, man));
-			
-					// {@squirreljme.error AT03 Hash collision between multiple
-					// projects that share the same suite identification value.
-					// (The old project; The new project)}
-					int hash = proj.hashCode();
-					ApplicationProject old;
-					if (null != (old = projects.put(hash, proj)))
-						throw new IllegalStateException(String.format(
-							"AT03 %s %s",
-							old.midletSuiteId(), proj.midletSuiteId()));
-				}
-			}
-		}
-		
-		// Set
-		this._projects = projects;
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -136,11 +65,13 @@ public class ApplicationManager
 		Map<Integer, ApplicationProject> projects = this._projects;
 		synchronized (projects)
 		{
+			throw new Error("TODO");
+			/*
 			int n = projects.size(), i = 0;
 			int[] rv = new int[n];
 			for (Integer h : projects.keySet())
 				rv[i++] = h;
-			return rv;
+			return rv;*/
 		}
 	}
 }

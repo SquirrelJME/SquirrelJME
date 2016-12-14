@@ -12,31 +12,40 @@ package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Iterator;
 
 /**
- * This class is used to provide access to all of the APIs which are available
- * for usage in SquirrelJME. An API defines and/or implements an interface
- * that provides a standard interface.
+ * This implements the base for namespaces for APIs and Liblets and is used
+ * to handle and decode project formats.
  *
- * @since 2016/12/04
+ * @since 2016/12/13
  */
-public final class APIManager
-	extends __Namespace__
+abstract class __Namespace__
 {
+	/** The owning project manager. */
+	protected final ProjectManager projectman;
+	
 	/**
-	 * Initializes the API manager.
+	 * Initializes the base namespace manager.
 	 *
 	 * @param __pm The owning project manager.
-	 * @param __p The path containing APIs.
+	 * @param __p The paths containing APIs.
+	 * @throws IllegalStateException If a project is malformed.
 	 * @throws IOException On read errors.
-	 * @since 2016/12/04
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/13
 	 */
-	APIManager(ProjectManager __pm, Iterable<Path> __p)
-		throws IOException
+	@SuppressWarnings({"unchecked"})
+	__Namespace__(ProjectManager __pm, Iterable<Path> __p)
+		throws IllegalStateException, IOException, NullPointerException
 	{
-		super(__pm, Arrays.<Path>asList(__p));
+		// Check
+		if (__pm == null || __p == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.projectman = __pm;
+		
+		throw new Error("TODO");
 	}
 }
 
