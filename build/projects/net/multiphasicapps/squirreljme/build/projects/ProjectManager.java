@@ -37,6 +37,9 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  */
 public class ProjectManager
 {
+	/** The mapping of project names to projects. */
+	protected final Map<ProjectName, Object> projects;
+	
 	/**
 	 * Initializes the project manager.
 	 *
