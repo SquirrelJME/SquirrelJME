@@ -38,7 +38,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 public class ProjectManager
 {
 	/** The mapping of project names to projects. */
-	protected final Map<ProjectName, Object> projects;
+	protected final Map<ProjectName, Project> projects;
 	
 	/**
 	 * Initializes the project manager.
@@ -60,6 +60,41 @@ public class ProjectManager
 			__src);
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Obtains the project which is represented by the given name.
+	 *
+	 * @param __s The name of the project to locate.
+	 * @return The project representation or {@code null} if it does not
+	 * exist.
+	 * @since 2016/12/14
+	 */
+	public final Project get(String __s)
+	{
+		// If null, will not be found
+		if (__s == null)
+			return null;
+		
+		// Wrap
+		return get(new ProjectName(__s));
+	}
+	
+	/**
+	 * Obtains the project which is represented by the given name.
+	 *
+	 * @param __s The name of the project to locate.
+	 * @return The project representation or {@code null} if it does not
+	 * exist.
+	 * @since 2016/12/14
+	 */
+	public final Project get(ProjectName __s)
+	{
+		// Not found it null
+		if (__s == null)
+			return null;
+		
+		return this.projects.get(__s);
 	}
 	
 	/**
