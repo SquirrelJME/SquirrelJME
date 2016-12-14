@@ -78,8 +78,9 @@ public abstract class AbstractKernelManager
 	@Override
 	public final int[] installedSuitesIDs()
 	{
-		return this.autointerpreter.projectManager().applications().
-			suiteHashes();
+		throw new Error("TODO");
+		/*return this.autointerpreter.projectManager().applications().
+			suiteHashes();*/
 	}
 	
 	/**

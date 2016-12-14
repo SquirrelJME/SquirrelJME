@@ -37,12 +37,6 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  */
 public class ProjectManager
 {
-	/** The API manager. */
-	protected final APIManager apiman;
-	
-	/** The application manager. */
-	protected final ApplicationManager appman;
-	
 	/**
 	 * Initializes the project manager.
 	 *
@@ -58,14 +52,64 @@ public class ProjectManager
 		if (__bin == null || __src == null)
 			throw new NullPointerException("NARG");
 		
-		// Seed tree with initial sets
-		Map<NamespaceType, Set<Path>> namespacetree = new LinkedHashMap<>();
-		for (NamespaceType v : NamespaceType.values())
-			namespacetree.put(v, new LinkedHashSet<Path>());
+		// Scan source directory for project paths
+		Map<NamespaceType, Set<Path>> namespacetree = __scanSources(null,
+			__src);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads a manifest from the given path.
+	 *
+	 * @param __p The path to read from.
+	 * @return The manifest that was read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/24
+	 */
+	static final JavaManifest __readManifest(Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Open the file and read it
+		try (InputStream in = Channels.newInputStream(FileChannel.open(
+			__p, StandardOpenOption.READ)))
+		{
+			return new JavaManifest(in);
+		}
+	}
+	
+	/**
+	 * Scans the specified directory for source namespace layouts and returns
+	 * the mapping of source projects.
+	 *
+	 * @param __dest The destination map to place values in, if the value is
+	 * {@code null} then it is initialized.
+	 * @param __root The root directory of the source tree to scan for
+	 * namespaces and projects.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException If no root was specified.
+	 * @since 2016/12/14
+	 */
+	static final Map<NamespaceType, Set<Path>> __scanSources(
+		Map<NamespaceType, Set<Path>> __dest, Path __root)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__root == null)
+			throw new NullPointerException("NARG");
+		
+		// Create map as needed
+		if (__dest == null)
+			__dest = new LinkedHashMap<>();
 		
 		// Go through all source directories and determine which paths are
 		// associated with namespaces.
-		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__src))
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__root))
 		{
 			for (Path p : ds)
 			{
@@ -98,7 +142,7 @@ public class ProjectManager
 					NamespaceType type = NamespaceType.of(rtype.trim());
 					
 					// Go through this namespace and load sub-projects
-					Set<Path> sub = namespacetree.get(type);
+					Set<Path> sub = __dest.get(type);
 					try (DirectoryStream<Path> ss =
 						Files.newDirectoryStream(p))
 					{
@@ -109,6 +153,11 @@ public class ProjectManager
 								!Files.exists(s.resolve("META-INF").
 									resolve("MANIFEST.MF")))
 								continue;
+							
+							// Create entry?
+							if (sub == null)
+								__dest.put(type,
+									(sub = new LinkedHashSet<Path>()));
 							
 							// Add project
 							sub.add(s);
@@ -124,61 +173,7 @@ public class ProjectManager
 			}
 		}
 		
-		// Initialize the API manager for provided interfaces
-		this.apiman = new APIManager(this, 
-			namespacetree.get(NamespaceType.APIS));
-		
-		// Setup application manager using the midlet and liblet namespaces
-		this.appman = new ApplicationManager(this,
-			namespacetree.get(NamespaceType.LIBLETS),
-			namespacetree.get(NamespaceType.MIDLETS));
-	}
-	
-	/**
-	 * This is used to provide access to all of the APIs which are
-	 * available.
-	 *
-	 * @return The API manager.
-	 * @since 2016/12/04
-	 */
-	public final APIManager apis()
-	{
-		return this.apiman;
-	}
-	
-	/**
-	 * Returns the application manager.
-	 *
-	 * @return The application manager.
-	 * @since 2016/11/20
-	 */
-	public final ApplicationManager applications()
-	{
-		return this.appman;
-	}
-	
-	/**
-	 * Reads a manifest from the given path.
-	 *
-	 * @param __p The path to read from.
-	 * @return The manifest that was read.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/11/24
-	 */
-	static final JavaManifest __readManifest(Path __p)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		// Open the file and read it
-		try (InputStream in = Channels.newInputStream(FileChannel.open(
-			__p, StandardOpenOption.READ)))
-		{
-			return new JavaManifest(in);
-		}
+		return __dest;
 	}
 }
 
