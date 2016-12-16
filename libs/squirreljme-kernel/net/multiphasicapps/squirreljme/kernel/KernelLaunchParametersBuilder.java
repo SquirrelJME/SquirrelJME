@@ -87,7 +87,15 @@ public class KernelLaunchParametersBuilder
 		if (__args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Set the command line
+			setCommandLine(__args);
+			String[] cline = this._cmdline;
+			
+			System.err.println("TODO -- Parse command line.");
+		}
 	}
 	
 	/**
@@ -107,7 +115,13 @@ public class KernelLaunchParametersBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			this._cmdline = __args.clone();
+			// Do not allow null strings
+			String[] c = __args.clone();
+			int n = c.length;
+			for (int i = 0; i < n; i++)
+				if (c[i] == null)
+					c[i] = "";
+			this._cmdline = c;
 		}
 	}
 }
