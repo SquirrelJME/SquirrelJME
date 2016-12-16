@@ -19,6 +19,14 @@ package net.multiphasicapps.squirreljme.kernel;
 public interface KernelLaunchParameters
 {
 	/**
+	 * Returns the command line which was used when the kernel was initialized.
+	 *
+	 * @return A copy of the kernel's command line.
+	 * @since 2016/12/16
+	 */
+	public abstract String[] getCommandLine();
+	
+	/**
 	 * Obtains the value for the system property with the specified key.
 	 *
 	 * @param __k The key to get the value for.

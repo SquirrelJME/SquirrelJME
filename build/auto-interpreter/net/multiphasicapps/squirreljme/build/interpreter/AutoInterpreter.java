@@ -57,6 +57,8 @@ public class AutoInterpreter
 		// Check
 		if (__pm == null)
 			throw new NullPointerException("NARG");
+		if (__args == null)
+			__args = new String[0];
 		
 		// Set
 		this.projects = __pm;
@@ -70,6 +72,9 @@ public class AutoInterpreter
 		// with a pre-determined set of parameters
 		KernelLaunchParametersBuilder klpb =
 			new KernelLaunchParametersBuilder();
+		
+		// Add initial arguments
+		klpb.parseCommandLine(__args);
 		
 		// Parse them
 		Path detrecord = null, detreplay = null;

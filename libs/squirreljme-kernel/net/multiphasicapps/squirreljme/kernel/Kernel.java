@@ -79,18 +79,16 @@ public final class Kernel
 			// Parse the set of loaded APIs to see which ones are available
 			// for processes to use (and the launcher that is to be used, if
 			// any)
-			if (true)
-				throw new Error("TODO");
+			SystemInstalledSuites sis = suitemanager.systemSuites();
+			String main = sis.launcherMainClass();
 			
-			// Find a launcher which is compatible with this configuration
-			if (true)
-				throw new Error("TODO");
+			// {@squirreljme.error BH04 The main class for the launcher could
+			// not be found.}
+			if (main == null)
+				throw new RuntimeException("BH04");
 			
-			// Create process
-			lp = __newProcess();
-			
-			// Create thread for the launcher
-			throw new Error("TODO");
+			// Create process, which gets its main
+			lp = __newProcess(main, new SuiteDataAccessor[0], new String[0]);
 		}
 		
 		// Failed to create it, destroy it
@@ -167,10 +165,15 @@ public final class Kernel
 	/**
 	 * Creates a new process owned by this kernel and returns it.
 	 *
+	 * @param __main The main entry class for the process.
+	 * @param __cp Suites that make up the class path, note that system
+	 * @param __args Main program arguments.
+	 * suites are not included.
 	 * @return The process.
 	 * @since 2016/11/08
 	 */
-	private KernelProcess __newProcess()
+	private KernelProcess __newProcess(String __main,
+		SuiteDataAccessor[] __cp, String[] __args)
 	{
 		throw new Error("TODO");
 	}

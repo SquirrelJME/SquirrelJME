@@ -17,9 +17,24 @@ package net.multiphasicapps.squirreljme.kernel;
  * suites have priority. Each class still however only sees its own
  * resources.
  *
+ * The system suites can be accessed individually, however they are all
+ * considered as a whole when classes are looked up.
+ *
  * @since 2016/12/16
  */
 public abstract class SystemInstalledSuites
 {
+	/**
+	 * This goes through the system installed suites and returns the main class
+	 * of the launcher to use if it is supported on the system.
+	 *
+	 * @return The main class of the launcher, if no launcher was found then
+	 * {@code null} is returned.
+	 * @since 2016/12/16
+	 */
+	public final String launcherMainClass()
+	{
+		throw new Error("TODO");
+	}
 }
 

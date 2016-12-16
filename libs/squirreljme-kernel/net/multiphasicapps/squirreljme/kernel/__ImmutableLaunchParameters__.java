@@ -28,6 +28,9 @@ final class __ImmutableLaunchParameters__
 	/** System property values. */
 	private final String[] _spvals;
 	
+	/** Command line values. */
+	private final String[] _cmdline;
+	
 	/**
 	 * Constructs the launch parameters.
 	 *
@@ -53,6 +56,19 @@ final class __ImmutableLaunchParameters__
 			pv[i] = properties.get(pk[i]);
 		this._spkeys = pk;
 		this._spvals = pv;
+		
+		// Setup command line
+		this._cmdline = __b._cmdline.clone();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/16
+	 */
+	@Override
+	public String[] getCommandLine()
+	{
+		return this._cmdline.clone();
 	}
 	
 	/**

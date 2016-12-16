@@ -71,6 +71,16 @@ public abstract class AbstractKernelManager
 	 * @since 2016/11/08
 	 */
 	@Override
+	public final String[] getCommandLine()
+	{
+		return internalLaunchParameters().getCommandLine();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/11/08
+	 */
+	@Override
 	public final String getSystemProperty(String __k)
 	{
 		return internalLaunchParameters().getSystemProperty(__k);

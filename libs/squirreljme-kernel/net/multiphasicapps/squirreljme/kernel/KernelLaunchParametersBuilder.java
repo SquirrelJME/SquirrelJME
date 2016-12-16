@@ -29,6 +29,10 @@ public class KernelLaunchParametersBuilder
 	final Map<String, String> _properties =
 		new HashMap<>();
 	
+	/** The kernel command line. */
+	volatile String[] _cmdline =
+		new String[0];
+	
 	/**
 	 * Adds a system property to be used on launch.
 	 *
@@ -65,6 +69,45 @@ public class KernelLaunchParametersBuilder
 		synchronized (this.lock)
 		{
 			return new __ImmutableLaunchParameters__(this);
+		}
+	}
+	
+	/**
+	 * Sets and additionally parses the command line arguments specified to
+	 * the kernel.
+	 *
+	 * @param __args The kernel arguments
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/16
+	 */
+	public final void parseCommandLine(String... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the command line arguments for the kernel.
+	 *
+	 * @param __args The arguments to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/16
+	 */
+	public final void setCommandLine(String... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._cmdline = __args.clone();
 		}
 	}
 }
