@@ -27,6 +27,7 @@ import net.multiphasicapps.squirreljme.suiteid.APIStandard;
  *
  * @since 2016/12/14
  */
+@Deprecated
 public interface KernelSystemClassPath
 {
 	/**
