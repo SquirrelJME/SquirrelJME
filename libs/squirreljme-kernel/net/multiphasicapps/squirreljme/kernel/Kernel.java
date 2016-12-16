@@ -31,9 +31,6 @@ public final class Kernel
 	/** The manager for threads. */
 	protected final KernelThreadManager threadmanager;
 	
-	/** The class path of the system. */
-	protected final KernelSystemClassPath sysclasspath;
-	
 	/**
 	 * Initializes the kernel using the given set of parameters.
 	 *
@@ -52,16 +49,11 @@ public final class Kernel
 		KernelThreadManager threadmanager;
 		KernelSuiteManager suitemanager;
 		KernelLaunchParameters launchparms;
-		KernelSystemClassPath sysclasspath;
 		
 		// Lock here so that the builder can be reused after a build is
 		// complete, perhaps by another thread
 		synchronized (__kb._lock)
 		{
-			// {@squirreljme.error BH04 No system class path was specified.}
-			this.sysclasspath = (sysclasspath = Objects.<KernelSystemClassPath>
-				requireNonNull(__kb._sysclasspath, "BH04"));
-			
 			// {@squirreljme.error BH01 No kernel thread manager was
 			// specified.}
 			this.threadmanager = (threadmanager = Objects.<KernelThreadManager>
@@ -85,20 +77,12 @@ public final class Kernel
 		try
 		{
 			// Parse the set of loaded APIs to see which ones are available
-			// for processes to use
+			// for processes to use (and the launcher that is to be used, if
+			// any)
 			if (true)
 				throw new Error("TODO");
 			
-			// Determine the classpath to use for the process
-			int[] suites = suitemanager.installedSuitesIDs();
-			
 			// Find a launcher which is compatible with this configuration
-			int n = suites.length;
-			for (int i = 0; i < n; i++)			
-			{
-				throw new Error("TODO");
-			}
-			
 			if (true)
 				throw new Error("TODO");
 			

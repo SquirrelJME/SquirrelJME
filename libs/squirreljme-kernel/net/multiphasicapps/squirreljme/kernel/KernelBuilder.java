@@ -30,9 +30,6 @@ public final class KernelBuilder
 	/** The thread manager. */
 	volatile KernelThreadManager _threadmanager;
 	
-	/** System class path manager. */
-	volatile KernelSystemClassPath _sysclasspath;
-	
 	/**
 	 * Builds the target kernel.
 	 *
@@ -87,27 +84,6 @@ public final class KernelBuilder
 		synchronized (this._lock)
 		{
 			this._suitemanager = __sm;
-		}
-	}
-	
-	/**
-	 * Sets the system class path.
-	 *
-	 * @param __cp The class path that the system uses.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/12/14
-	 */
-	public void systemClassPath(KernelSystemClassPath __cp)
-		throws NullPointerException
-	{
-		// Check
-		if (__cp == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this._lock)
-		{
-			this._sysclasspath = __cp;
 		}
 	}
 	

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.io.InputStream;
+
 /**
  * This is an accessor for accessing a suite that exists within the kernel or
  * another class location. This is used to cache a pre-existing suite so that
@@ -20,5 +22,18 @@ package net.multiphasicapps.squirreljme.kernel;
  */
 public abstract class SuiteDataAccessor
 {
+	/**
+	 * Loads the given resource from this suite.
+	 *
+	 * @param __name The resource to load, if the resource name is the name of
+	 * a class file then {@code null} may be returned depending on the
+	 * implementation.
+	 * @return The input stream for the given resource or {@code null} if it
+	 * is unknown.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/11/08
+	 */
+	public abstract InputStream loadSuiteResource(String __name)
+		throws InvalidSuiteException, NullPointerException;
 }
 

@@ -216,7 +216,6 @@ public class AutoInterpreter
 		kb.launchParameters(akm);
 		kb.threadManager(akm);
 		kb.suiteManager(akm);
-		kb.systemClassPath(akm);
 		
 		// Build kernel
 		Kernel k = kb.build();

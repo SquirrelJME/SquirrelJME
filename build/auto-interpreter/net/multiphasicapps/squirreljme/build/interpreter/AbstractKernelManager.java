@@ -16,7 +16,6 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.InvalidSuiteException;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
-import net.multiphasicapps.squirreljme.kernel.KernelSystemClassPath;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadListener;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
 import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
@@ -31,8 +30,7 @@ import net.multiphasicapps.squirreljme.suiteid.APIStandard;
  * @since 2016/11/02
  */
 public abstract class AbstractKernelManager
-	implements KernelLaunchParameters, KernelSuiteManager, KernelThreadManager,
-		KernelSystemClassPath
+	implements KernelLaunchParameters, KernelSuiteManager, KernelThreadManager
 {
 	/** The owning auto interpreter. */
 	protected final AutoInterpreter autointerpreter;
@@ -78,33 +76,6 @@ public abstract class AbstractKernelManager
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/11/08
-	 */
-	@Override
-	public final int[] installedSuitesIDs()
-	{
-		throw new Error("TODO");
-		/*return this.autointerpreter.projectManager().applications().
-			suiteHashes();*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/11/08
-	 */
-	@Override
-	public InputStream loadSuiteResource(int __id, String __name)
-		throws InvalidSuiteException, NullPointerException
-	{
-		// Check
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2016/11/02
 	 */
 	@Override
@@ -117,36 +88,6 @@ public abstract class AbstractKernelManager
 		
 		// Set
 		this._threadlistener = __t;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/12/14
-	 */
-	@Override
-	public APIConfiguration[] supportedConfigurations()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/12/14
-	 */
-	@Override
-	public APIProfile[] supportedProfiles()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/12/14
-	 */
-	@Override
-	public APIStandard[] supportedStandards()
-	{
-		throw new Error("TODO");
 	}
 }
 
