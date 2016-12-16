@@ -19,7 +19,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/12/16
  */
-public interface UserInstalledSuites
+public abstract class UserInstalledSuites
 {
 }
 
