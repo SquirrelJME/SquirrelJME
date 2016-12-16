@@ -32,7 +32,7 @@ public abstract class SuiteDataAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/16
 	 */
-	public abstract KernelLoadedClass loadClass(String __name)
+	public abstract ExecutableClass loadClass(String __name)
 		throws ClassFormatError, ClassNotFoundException, NullPointerException;
 	
 	/**

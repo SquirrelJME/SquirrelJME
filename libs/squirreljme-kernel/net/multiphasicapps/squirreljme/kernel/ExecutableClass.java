@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/12/14
  */
-public interface KernelLoadedClass
+public interface ExecutableClass
 {
 }
 
