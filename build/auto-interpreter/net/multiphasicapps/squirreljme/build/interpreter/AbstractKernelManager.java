@@ -18,6 +18,8 @@ import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelSuiteManager;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadListener;
 import net.multiphasicapps.squirreljme.kernel.KernelThreadManager;
+import net.multiphasicapps.squirreljme.kernel.SystemInstalledSuites;
+import net.multiphasicapps.squirreljme.kernel.UserInstalledSuites;
 import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
 import net.multiphasicapps.squirreljme.suiteid.APIProfile;
 import net.multiphasicapps.squirreljme.suiteid.APIStandard;
@@ -88,6 +90,26 @@ public abstract class AbstractKernelManager
 		
 		// Set
 		this._threadlistener = __t;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/16
+	 */
+	@Override
+	public final SystemInstalledSuites systemSuites()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/16
+	 */
+	@Override
+	public final UserInstalledSuites userSuites()
+	{
+		throw new Error("TODO");
 	}
 }
 

@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This interface manages which suites are available to the kernel. A suite
@@ -20,5 +22,23 @@ import java.io.InputStream;
  */
 public interface KernelSuiteManager
 {
+	/**
+	 * Returns the read-only list of system suites that are currently
+	 * installed in the kernel.
+	 *
+	 * @return The list of installed system suites.
+	 * @since 2016/12/16
+	 */
+	public abstract SystemInstalledSuites systemSuites();
+	
+	/**
+	 * Returns the synchronized and thread safe mapping of user installed
+	 * suites where each suite is associated with its suite identifier.
+	 *
+	 * @return The synchronized and thread safe mapping of suites which are
+	 * installed the user.
+	 * @since 2016/12/16
+	 */
+	public abstract UserInstalledSuites userSuites();
 }
 
