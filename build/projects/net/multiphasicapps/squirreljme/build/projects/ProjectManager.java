@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -37,6 +38,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  * @since 2016/10/28
  */
 public class ProjectManager
+	implements Iterable<Project>
 {
 	/** The mapping of project names to projects. */
 	protected final Map<ProjectName, Project> projects;
@@ -144,6 +146,16 @@ public class ProjectManager
 			return null;
 		
 		return this.projects.get(__s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/17
+	 */
+	@Override
+	public final Iterator<Project> iterator()
+	{
+		return this.projects.values().iterator();
 	}
 	
 	/**

@@ -164,6 +164,19 @@ public class AutoInterpreter
 					arg));
 		}
 		
+		// Store selected software for usage
+		{
+			StringBuilder sb = new StringBuilder();
+			for (String s : selects)
+			{
+				if (sb.length() > 0)
+					sb.append(',');
+				sb.append(s);
+			}
+			klpb.addSystemProperty(InterpreterSystemSuites.SELECT_PROPERTY,
+				sb.toString());
+		}
+		
 		// Finish building the parameters
 		KernelLaunchParameters klp = klpb.build();
 		

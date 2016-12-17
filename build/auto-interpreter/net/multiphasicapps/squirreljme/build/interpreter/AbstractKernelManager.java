@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.InvalidSuiteException;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
