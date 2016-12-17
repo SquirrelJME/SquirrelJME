@@ -17,6 +17,17 @@ package net.multiphasicapps.squirreljme.build.projects;
  * @since 2016/12/14
  */
 public abstract class ProjectBinary
+	extends ProjectBase
 {
+	/**
+	 * Initializes the project binary.
+	 *
+	 * @param __p The project
+	 * @since 2016/12/17
+	 */
+	ProjectBinary(Project __p)
+	{
+		super(__p);
+	}
 }
 

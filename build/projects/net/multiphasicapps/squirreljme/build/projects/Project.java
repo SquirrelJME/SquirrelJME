@@ -62,6 +62,18 @@ public final class Project
 	}
 	
 	/**
+	 * Returns the binary representation of the given project, if it does not
+	 * exist (since it has not been compiled) then it will be compiled.
+	 *
+	 * @return The binary project file.
+	 * @since 2016/12/17
+	 */
+	public final ProjectBinary binary()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/12/14
 	 */

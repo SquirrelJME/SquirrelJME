@@ -16,6 +16,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.InvalidProjectException;
 import net.multiphasicapps.squirreljme.build.projects.NamespaceType;
 import net.multiphasicapps.squirreljme.build.projects.Project;
+import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
@@ -60,10 +61,10 @@ public class InterpreterSystemSuites
 			throw new NullPointerException("NARG");
 		
 		// Parse properites 
-		Set<ProjectName> load = new LinkedHashSet<>();
+		Set<ProjectName> toload = new LinkedHashSet<>();
 		{
 			// Always force cldc-compact to be specified
-			load.add(new ProjectName("cldc-compact"));
+			toload.add(new ProjectName("cldc-compact"));
 			
 			// Parse projects to add
 			String prop = Objects.toString(
@@ -79,7 +80,7 @@ public class InterpreterSystemSuites
 				// Split off and add
 				try
 				{
-					load.add(new ProjectName(prop.substring(i, nc).trim()));
+					toload.add(new ProjectName(prop.substring(i, nc).trim()));
 				}
 				
 				// Ignore
@@ -92,19 +93,26 @@ public class InterpreterSystemSuites
 			}
 		}
 		
-		// Debug
-		System.err.printf("DEBUG -- %s%n", load);
-		
-		// Go through system projects 
+		// Go through system projects
+		Set<ProjectBinary> projects = new LinkedHashSet<>();
 		for (Project p : __ai.projectManager())
 		{
 			// Only accept APIs
 			if (p.type() != NamespaceType.API)
 				continue;
 			
-			throw new Error("TODO");
+			// Not a project to load?
+			if (!toload.contains(p.name()))
+				continue;
+			
+			// Add it for loading
+			ProjectBinary bin = p.binary();
+			projects.add(bin);
+			
+			// Add dependencies
+			for (ProjectBinary bd : bin.binaryDependencies(true))
+				projects.add(bd);
 		}
-		
 		
 		throw new Error("TODO");
 	}

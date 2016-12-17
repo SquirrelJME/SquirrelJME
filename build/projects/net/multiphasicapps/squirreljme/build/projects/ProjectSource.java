@@ -22,10 +22,8 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
  * @since 2016/12/14
  */
 public abstract class ProjectSource
+	extends ProjectBase
 {
-	/** The owning project. */
-	protected final Project project;
-	
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
 	
@@ -44,8 +42,10 @@ public abstract class ProjectSource
 	ProjectSource(Project __pr, Path __fp)
 		throws IOException, NullPointerException
 	{
+		super(__pr);
+		
 		// Check
-		if (__pr == null || __fp == null)
+		if (__fp == null)
 			throw new NullPointerException("NARG");
 		
 		// Load the manifest
@@ -54,7 +54,6 @@ public abstract class ProjectSource
 		this.manifest = manifest;
 		
 		// Set
-		this.project = __pr;
 		this.root = __fp;
 	}
 }
