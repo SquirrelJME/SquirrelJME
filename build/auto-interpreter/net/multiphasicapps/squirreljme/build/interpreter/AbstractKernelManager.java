@@ -121,7 +121,8 @@ public abstract class AbstractKernelManager
 		{
 			SystemInstalledSuites rv = this._syssuites;
 			if (rv == null)
-				this._syssuites = (rv = new InterpreterSystemSuites(this));
+				this._syssuites = (rv = new InterpreterSystemSuites(
+					this.autointerpreter, internalLaunchParameters()));
 			return rv;
 		}
 	}
