@@ -34,11 +34,18 @@ import net.multiphasicapps.squirreljme.suiteid.APIStandard;
 public abstract class AbstractKernelManager
 	implements KernelLaunchParameters, KernelSuiteManager, KernelThreadManager
 {
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The owning auto interpreter. */
 	protected final AutoInterpreter autointerpreter;
 	
 	/** The thread listener to use. */
 	private volatile KernelThreadListener _threadlistener;
+	
+	/** System suites. */
+	private volatile SystemInstalledSuites _syssuites;
 	
 	/**
 	 * Initializes the base abstract kernel manager.
@@ -109,7 +116,14 @@ public abstract class AbstractKernelManager
 	@Override
 	public final SystemInstalledSuites systemSuites()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			SystemInstalledSuites rv = this._syssuites;
+			if (rv == null)
+				this._syssuites = (rv = new InterpreterSystemSuites(this));
+			return rv;
+		}
 	}
 	
 	/**
