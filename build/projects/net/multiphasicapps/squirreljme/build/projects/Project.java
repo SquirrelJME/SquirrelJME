@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -32,12 +35,15 @@ public final class Project
 	/** The name of this project. */
 	protected final ProjectName name;
 	
-	/** Lock for source code. */
-	protected final Object sourcelock =
+	/** Lock for source code and binaries. */
+	protected final Object lock =
 		new Object();
 	
 	/** The source representation of this project. */
 	private volatile ProjectSource _source;
+	
+	/** The binary the project is associated with. */
+	private volatile Reference<ProjectBinary> _binary;
 	
 	/**
 	 * Initializes the project.
@@ -63,14 +69,67 @@ public final class Project
 	
 	/**
 	 * Returns the binary representation of the given project, if it does not
-	 * exist (since it has not been compiled) then it will be compiled.
+	 * exist (since it has not been compiled) or is out of date then it will be
+	 * compiled.
 	 *
 	 * @return The binary project file.
+	 * @throws InvalidProjectException If the project could not be compiled or
+	 * a binary does not exist and there is no source code.
 	 * @since 2016/12/17
 	 */
 	public final ProjectBinary binary()
+		throws InvalidProjectException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			Reference<ProjectBinary> ref = this._binary;
+			ProjectBinary rv = (ref != null ? ref.get() : null);
+			
+			// The base date and path of the binary
+			ProjectName name = this.name;
+			Path binpath = this.projectman.binaryPath().resolve(
+				name + ".jar");
+			
+			// Try opening it as a binary
+			if (rv == null)
+				try
+				{
+					// Wrap binary representation
+					rv = __createBinary(binpath);
+					this._binary = new WeakReference<>(rv);
+				}
+				catch (InvalidProjectException|IOException e)
+				{
+					// Ignore
+				}
+			
+			// If there is no source code then just use the binary
+			ProjectSource src = source();
+			if (src == null)
+			{
+				// {@squirreljme.error AT05 Could not obtain the binary for
+				// the given project because it has no associated source
+				// code. (The project name)}
+				if (rv == null)
+					throw new InvalidProjectException(String.format(
+						"AT05 %s", name));
+				
+				return rv;
+			}
+			
+			// Get the modification date of the file and the source time
+			// to determine if it needs to be update
+			long bindate = (rv == null ? Long.MIN_VALUE : rv.time());
+			long srcdate = src.time();
+			
+			// Binary project needs to be created?
+			if (true)
+				throw new Error("TODO");
+			
+			// Return the binary
+			return rv;
+		}
 	}
 	
 	/**
@@ -114,7 +173,7 @@ public final class Project
 	public final ProjectSource source()
 	{
 		// Lock
-		synchronized (this.sourcelock)
+		synchronized (this.lock)
 		{
 			return this._source;
 		}
@@ -142,6 +201,51 @@ public final class Project
 	}
 	
 	/**
+	 * Attempts to load and initialize a binary using the given path.
+	 *
+	 * @param __p The path to the file.
+	 * @return The representation of the given binary.
+	 * @throws InvalidProjectException If the project is no valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/17
+	 */
+	final ProjectBinary __createBinary(Path __p)
+		throws InvalidProjectException, IOException, NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the type
+		switch (this.type)
+		{
+				// {@squirreljme.error AT06 The specified project type
+				// cannot have a binary. (The project type)}
+			case ASSET:
+			case BUILD:
+				throw new InvalidProjectException(String.format("AT06 %s",
+					this.type));
+			
+				// An API
+			case API:
+				return new APIBinary(this, __p);
+		
+				// MIDlet
+			case MIDLET:
+				return new MidletBinary(this, __p);
+		
+				// LIBlet
+			case LIBLET:
+				return new LibletBinary(this, __p);
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Initializes the project source from the given path.
 	 *
 	 * @param __p The path to the source code root.
@@ -158,7 +262,7 @@ public final class Project
 			throw new NullPointerException("NARG");
 		
 		// Lock to prevent source from changing between calls
-		synchronized (this.sourcelock)
+		synchronized (this.lock)
 		{
 			// Depends on the type
 			ProjectSource src;

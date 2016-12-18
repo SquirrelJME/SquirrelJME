@@ -14,23 +14,23 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * This represents the base for a binary project which is a compiled form
- * of an existing project.
+ * This acts as the base class for application binaries which are used by
+ * the user space runtime.
  *
- * @since 2016/12/14
+ * @since 2016/12/17
  */
-public abstract class ProjectBinary
-	extends ProjectBase
+public abstract class ApplicationBinary
+	extends ProjectBinary
 {
 	/**
-	 * Initializes the project binary.
+	 * Initializes the application binary.
 	 *
 	 * @param __p The project owning this.
 	 * @param __fp The path to the project's binary.
 	 * @throws IOException If the specified path is not valid for a binary.
 	 * @since 2016/12/17
 	 */
-	ProjectBinary(Project __p, Path __fp)
+	ApplicationBinary(Project __p, Path __fp)
 		throws IOException
 	{
 		super(__p, __fp);

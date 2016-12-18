@@ -27,34 +27,23 @@ public abstract class ProjectSource
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
 	
-	/** The root directory of the source. */
-	protected final Path root;
-	
 	/**
 	 * Initializes the source representation.
 	 *
 	 * @param __pr The project owning this.
 	 * @param __fp The path to the source code.
 	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/14
 	 */
 	ProjectSource(Project __pr, Path __fp)
-		throws IOException, NullPointerException
+		throws IOException
 	{
-		super(__pr);
-		
-		// Check
-		if (__fp == null)
-			throw new NullPointerException("NARG");
+		super(__pr, __fp);
 		
 		// Load the manifest
 		JavaManifest manifest = ProjectManager.__readManifest(
-			__fp.resolve("META-INF").resolve("MANIFEST.MF"));
+			this.path.resolve("META-INF").resolve("MANIFEST.MF"));
 		this.manifest = manifest;
-		
-		// Set
-		this.root = __fp;
 	}
 }
 

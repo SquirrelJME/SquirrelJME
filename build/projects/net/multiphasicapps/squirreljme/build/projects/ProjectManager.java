@@ -43,6 +43,9 @@ public class ProjectManager
 	/** The mapping of project names to projects. */
 	protected final Map<ProjectName, Project> projects;
 	
+	/** The binary path. */
+	protected final Path binarypath;
+	
 	/**
 	 * Initializes the project manager.
 	 *
@@ -57,6 +60,9 @@ public class ProjectManager
 		// Check
 		if (__bin == null || __src == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.binarypath = __bin;
 		
 		// Scan source directory for project paths
 		Map<NamespaceType, Set<Path>> sourcetree = __scanSources(null,
@@ -111,6 +117,17 @@ public class ProjectManager
 		
 		// Store
 		this.projects = UnmodifiableMap.<ProjectName, Project>of(projects);
+	}
+	
+	/**
+	 * Returns the path to the binary directory.
+	 *
+	 * @return The binary directory path.
+	 * @since 2016/12/17
+	 */
+	public final Path binaryPath()
+	{
+		return this.binarypath;
 	}
 	
 	/**

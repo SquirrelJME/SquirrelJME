@@ -14,23 +14,22 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * This represents the base for a binary project which is a compiled form
- * of an existing project.
+ * This is the binary representation of a midlet.
  *
- * @since 2016/12/14
+ * @since 2016/12/17
  */
-public abstract class ProjectBinary
-	extends ProjectBase
+public class MidletBinary
+	extends ApplicationBinary
 {
 	/**
-	 * Initializes the project binary.
+	 * Initializes the midlet binary.
 	 *
 	 * @param __p The project owning this.
 	 * @param __fp The path to the project's binary.
 	 * @throws IOException If the specified path is not valid for a binary.
 	 * @since 2016/12/17
 	 */
-	ProjectBinary(Project __p, Path __fp)
+	MidletBinary(Project __p, Path __fp)
 		throws IOException
 	{
 		super(__p, __fp);
