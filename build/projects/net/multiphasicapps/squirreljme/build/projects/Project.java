@@ -15,6 +15,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * This class represents the base for projects. A project may be an API, a
@@ -36,14 +37,16 @@ public final class Project
 	protected final ProjectName name;
 	
 	/** Lock for source code and binaries. */
-	protected final Object lock =
-		new Object();
+	protected final Object lock;
 	
 	/** The source representation of this project. */
 	private volatile ProjectSource _source;
 	
 	/** The binary the project is associated with. */
 	private volatile Reference<ProjectBinary> _binary;
+	
+	/** Is this in a build or dependency checking? */
+	private volatile boolean _inbuild;
 	
 	/**
 	 * Initializes the project.
@@ -65,6 +68,10 @@ public final class Project
 		this.projectman = __pm;
 		this.type = __t;
 		this.name = __n;
+		
+		// Use shared lock to prevent major deadlocks when accessing sources
+		// and binaries, especially across multiple threads
+		this.lock = __pm._lock;
 	}
 	
 	/**
@@ -104,7 +111,8 @@ public final class Project
 					// Ignore
 				}
 			
-			// If there is no source code then just use the binary
+			// If there is no source code then just use the binary assuming
+			// one exists
 			ProjectSource src = source();
 			if (src == null)
 			{
@@ -118,14 +126,42 @@ public final class Project
 				return rv;
 			}
 			
-			// Get the modification date of the file and the source time
-			// to determine if it needs to be update
-			long bindate = (rv == null ? Long.MIN_VALUE : rv.time());
-			long srcdate = src.time();
+			// If in a build then it is possible a recursive loop could be
+			// entered cuasing multiple threads accessing projects to deadlock
+			if (this._inbuild)
+				return rv;
 			
-			// Binary project needs to be created?
-			if (true)
-				throw new Error("TODO");
+			// Mark as being in a build so this does not cause potential
+			// infinite recursion
+			try
+			{
+				this._inbuild = true;
+				
+				// Get project dependencies which is used to check if they are
+				// out of date and for building if so
+				Set<ProjectBinary> deps = src.binaryDependencies(true);
+				
+				// Trivial rebuild check if the source is newer
+				long srcdate = src.time();
+				long bindate = (rv == null ? Long.MIN_VALUE : rv.time());
+				boolean rebuild = (rv == null || srcdate > bindate);
+				
+				// Check to see if any dependencies are newer
+				if (!rebuild)
+					for (ProjectBinary dep : deps)
+						if (rebuild |= (dep.time() > bindate))
+							break;
+				
+				// Binary project needs to be created?
+				if (rebuild)
+					throw new Error("TODO");
+			}
+			
+			// No longer in a build so can recurse safely
+			finally
+			{
+				this._inbuild = false;
+			}
 			
 			// Return the binary
 			return rv;

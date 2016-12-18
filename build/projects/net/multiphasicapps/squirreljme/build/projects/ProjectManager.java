@@ -46,6 +46,10 @@ public class ProjectManager
 	/** The binary path. */
 	protected final Path binarypath;
 	
+	/** The manager lock. */
+	final Object _lock =
+		new Object();
+	
 	/**
 	 * Initializes the project manager.
 	 *
