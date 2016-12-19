@@ -7,6 +7,7 @@ X-SquirrelJME-Description: This allows writing of ZIP files using a
  stream based interface. The entries are written in the order that they 
  are opened and streamed to the output one at a time. This is used to 
  write ZIP files where the size of the contents is not known.
+X-SquirrelJME-BuildHostDepends: zip
 X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Dependency-2: liblet:unknown@io-data
 X-SquirrelJME-Dependency-3: liblet:unknown@zip
