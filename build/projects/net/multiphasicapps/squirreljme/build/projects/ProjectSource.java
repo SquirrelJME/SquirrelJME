@@ -80,6 +80,13 @@ public abstract class ProjectSource
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
+			// Target
+			rv = new LinkedHashSet<>();
+			
+			// Parse configuration/profile to auto-depend on CLDC and/or
+			// MIDP required APIs
+			System.err.println("TODO -- Parse configuration/profile.");
+			
 			// Parse dependency property
 			String attr = this.manifest.getMainAttributes().
 				get(_DEPENDS_PROPERTY);
@@ -87,10 +94,6 @@ public abstract class ProjectSource
 			{
 				throw new Error("TODO");
 			}
-			
-			// Use empty one
-			else
-				rv = EmptySet.<Project>empty();
 			
 			// Cache it
 			this._depends = new WeakReference<>(rv);
