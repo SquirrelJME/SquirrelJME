@@ -18,7 +18,7 @@ import java.nio.file.Path;
  *
  * @since 2016/12/14
  */
-public class LibletSource
+public final class LibletSource
 	extends ApplicationSource
 {
 	/**

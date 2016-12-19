@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * This acts as the base class for application binaries which are used by
@@ -34,6 +35,21 @@ public abstract class ApplicationBinary
 		throws IOException
 	{
 		super(__p, __fp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/18
+	 */
+	@Override
+	public final void dependencies(Set<Project> __out)
+		throws InvalidProjectException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

@@ -18,7 +18,7 @@ import java.nio.file.Path;
  *
  * @since 2016/12/17
  */
-public class MidletBinary
+public final class MidletBinary
 	extends ApplicationBinary
 {
 	/**

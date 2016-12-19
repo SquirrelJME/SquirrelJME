@@ -15,6 +15,8 @@ import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -57,17 +59,65 @@ public abstract class ProjectBase
 		this.project = __p;
 		this.path = __fp;
 	}
+	
+	/**
+	 * Returns the dependencies that this project relies on for running and
+	 * compilation.
+	 *
+	 * @param __out The output set where dependencies are placed.
+	 * @throws InvalidProjectException If a dependency is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/18
+	 */
+	public abstract void dependencies(Set<Project> __out)
+		throws InvalidProjectException, NullPointerException;
+	
+	/**
+	 * Obtains the binary projects which this binary project depends on and
+	 * places them into the specified set.
+	 *
+	 * @param __out The output set where dependencies are placed.
+	 * @param __rec If {@code true} then binaries are recursively obtained.
+	 * @throws InvalidProjectException If a dependency is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/18
+	 */
+	public final void binaryDependencies(Set<ProjectBinary> __out,
+		boolean __rec)
+		throws InvalidProjectException, NullPointerException
+	{
+		__internalBinaryDependencies(null, __out, __rec);
+	}
 		
 	/**
 	 * Obtains the binary projects which this binary project depends on.
 	 *
 	 * @param __rec If {@code true} then binaries are recursively obtained.
 	 * @return The binary dependencies.
+	 * @throws InvalidProjectException If a dependency is not valid.
 	 * @since 2016/12/17
 	 */
 	public final Set<ProjectBinary> binaryDependencies(boolean __rec)
+		throws InvalidProjectException
 	{
-		throw new Error("TODO");
+		Set<ProjectBinary> rv = new LinkedHashSet<>();
+		binaryDependencies(rv, __rec);
+		return rv;
+	}
+	
+	/**
+	 * Returns the dependencies of this project.
+	 *
+	 * @return The project dependencies.
+	 * @throws InvalidProjectException If a dependency is not valid.
+	 * @since 2016/12/18
+	 */
+	public final Set<Project> dependencies()
+		throws InvalidProjectException
+	{
+		Set<Project> rv = new LinkedHashSet<>();
+		dependencies(rv);
+		return rv;
 	}
 	
 	/**
@@ -106,6 +156,49 @@ public abstract class ProjectBase
 		catch (IOException e)
 		{
 			return Long.MIN_VALUE;
+		}
+	}
+	
+	/**
+	 * Obtains the binary projects which this binary project depends on and
+	 * places them into the specified set.
+	 *
+	 * @param __did The projects which were processed so that they are not
+	 * handled multiple times.
+	 * @param __out The output set where dependencies are placed.
+	 * @param __rec If {@code true} then binaries are recursively obtained.
+	 * @throws InvalidProjectException If a dependency is not valid.
+	 * @throws NullPointerException If no output was specified
+	 * @since 2016/12/18
+	 */
+	private final void __internalBinaryDependencies(Set<Project> __did,
+		Set<ProjectBinary> __out, boolean __rec)
+		throws InvalidProjectException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Must always exist
+		if (__did == null)
+			__did = new HashSet<>();
+		
+		// Go through dependencies
+		for (Project p : dependencies())
+		{
+			// Ignore if already handled
+			if (__did.contains(p))
+				continue;
+			__did.add(p);
+			
+			// Add binary to output
+			ProjectBinary bin = p.binary();
+			__out.add(bin);
+			
+			// Get dependencies of those depends
+			if (__rec)
+				((ProjectBase)bin).
+					__internalBinaryDependencies(__did, __out, true);
 		}
 	}
 	

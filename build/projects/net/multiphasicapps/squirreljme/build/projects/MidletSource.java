@@ -18,7 +18,7 @@ import java.nio.file.Path;
  *
  * @since 2016/12/14
  */
-public class MidletSource
+public final class MidletSource
 	extends ApplicationSource
 {
 	/**

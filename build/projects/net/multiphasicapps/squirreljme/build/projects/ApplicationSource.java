@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * This represents the base source for MIDlets and LIBlets.
@@ -33,6 +34,21 @@ public abstract class ApplicationSource
 		throws IOException
 	{
 		super(__pr, __fp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/18
+	 */
+	@Override
+	public final void dependencies(Set<Project> __out)
+		throws InvalidProjectException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
