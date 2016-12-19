@@ -152,9 +152,22 @@ public final class Project
 						if (rebuild |= (dep.time() > bindate))
 							break;
 				
-				// Binary project needs to be created?
+				// Compile the project?
 				if (rebuild)
-					throw new Error("TODO");
+					try
+					{
+						src.__compile(binpath, deps);
+						this._binary = new WeakReference<>(
+							(rv = __createBinary(binpath)));
+					}
+					catch (IOException e)
+					{
+						// {@squirreljme.error AT07 There was a read/write
+						// error while compiling the project. (The project
+						// name)}
+						throw new InvalidProjectException(
+							String.format("AT07 %s", name), e);
+					}
 			}
 			
 			// No longer in a build so can recurse safely
