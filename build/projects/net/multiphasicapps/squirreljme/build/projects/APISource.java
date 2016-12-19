@@ -35,20 +35,5 @@ public final class APISource
 	{
 		super(__pr, __fp);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/12/18
-	 */
-	@Override
-	public final void dependencies(Set<Project> __out)
-		throws InvalidProjectException, NullPointerException
-	{
-		// Check
-		if (__out == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
 }
 
