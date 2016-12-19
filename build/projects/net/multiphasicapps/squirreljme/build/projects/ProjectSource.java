@@ -109,12 +109,11 @@ public abstract class ProjectSource
 	 *
 	 * @param __dest The destination path where the binary should be placed.
 	 * @param __deps The binary dependencies needed for it to compile.
-	 * @return The resulting binary from the compilation.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/19
 	 */
-	final Path __compile(Path __dest, Set<ProjectBinary> __deps)
+	final void __compile(Path __dest, Set<ProjectBinary> __deps)
 		throws IOException, NullPointerException
 	{
 		// Check
