@@ -18,6 +18,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
@@ -29,6 +31,10 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 public abstract class ProjectSource
 	extends ProjectBase
 {
+	/** The property used for dependencies. */
+	private static final JavaManifestKey _DEPENDS_PROPERTY =
+		new JavaManifestKey("X-SquirrelJME-Depends");
+	
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
 	
@@ -74,7 +80,20 @@ public abstract class ProjectSource
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
-			throw new Error("TODO");
+			// Parse dependency property
+			String attr = this.manifest.getMainAttributes().
+				get(_DEPENDS_PROPERTY);
+			if (attr != null)
+			{
+				throw new Error("TODO");
+			}
+			
+			// Use empty one
+			else
+				rv = EmptySet.<Project>empty();
+			
+			// Cache it
+			this._depends = new WeakReference<>(rv);
 		}
 		
 		// Fill projects
