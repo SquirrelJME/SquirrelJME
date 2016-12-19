@@ -160,6 +160,17 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Returns the type of project that this is.
+	 *
+	 * @return The project type.
+	 * @since 2016/12/19
+	 */
+	public final NamespaceType type()
+	{
+		return this.project.type();
+	}
+	
+	/**
 	 * Obtains the binary projects which this binary project depends on and
 	 * places them into the specified set.
 	 *
