@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: b6f127ce-3bb7-420e-99b3-5a636ff2dbc5
 X-SquirrelJME-BuildHostDepends: build-base sorted-collections manifest 
- squirreljme-suite-id empty-collections
+ squirreljme-suite-id empty-collections zip-reader-block 
+ zip-writer-stream
 X-SquirrelJME-Error: AT
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
