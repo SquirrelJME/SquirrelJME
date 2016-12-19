@@ -4,6 +4,7 @@ X-SquirrelJME-Title: Basic ZIP Classes
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains base ZIP classes.
+X-SquirrelJME-BuildHostDepends: inflate-compression
 X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Dependency-2: liblet:unknown@io-inflate
 X-SquirrelJME-Error: BF
