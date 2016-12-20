@@ -19,7 +19,6 @@ import java.util.List;
 import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
 
@@ -585,10 +584,6 @@ public class ZipStreamWriter
 				ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
 				ZipCRCConstants.CRC_FINALXOR);
 		
-		/** CRC calculator stream. */
-		protected final DataSinkOutputStream crcout =
-			new DataSinkOutputStream(crccalc);
-		
 		/**
 		 * Initializes a new output stream for writing an entry.
 		 *
@@ -617,7 +612,6 @@ public class ZipStreamWriter
 				
 				// Close the wrapped stream
 				this.finished = true;
-				this.crcout.flush();
 				this.wrapped.close();
 			}
 		}
@@ -631,9 +625,6 @@ public class ZipStreamWriter
 			throws IOException
 		{
 			super.flush();
-			
-			// Flush CRC also
-			this.crcout.flush();
 		}
 		
 		/**
@@ -648,7 +639,7 @@ public class ZipStreamWriter
 			super.write(__b);
 			
 			// Calculate CRC
-			this.crcout.write(__b);
+			this.crccalc.offer((byte)__b);
 		}
 		
 		/**
@@ -663,7 +654,7 @@ public class ZipStreamWriter
 			super.write(__b, __o, __l);
 			
 			// Calculate CRC
-			this.crcout.write(__b, __o, __l);
+			this.crccalc.offer(__b, __o, __l);
 		}
 	}
 }
