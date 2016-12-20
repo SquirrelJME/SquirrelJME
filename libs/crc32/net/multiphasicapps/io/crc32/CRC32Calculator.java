@@ -10,9 +10,6 @@
 
 package net.multiphasicapps.io.crc32;
 
-import net.multiphasicapps.io.datasink.DataSink;
-import net.multiphasicapps.io.datasink.SinkProcessException;
-
 /**
  * This is a data sink which supports the CRC 32 algorithm.
  *
@@ -20,8 +17,7 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
  *
  * @since 2016/07/16
  */
-public class CRC32DataSink
-	extends DataSink
+public class CRC32Calculator
 {
 	/** Working buffer size. */
 	private static final int _WORK_BUFFER =
@@ -59,7 +55,7 @@ public class CRC32DataSink
 	 * @param __fxor The value to XOR the remainder with on return.
 	 * @since 2016/07/16
 	 */
-	public CRC32DataSink(boolean __rdata, boolean __rrem, int __poly,
+	public CRC32Calculator(boolean __rdata, boolean __rrem, int __poly,
 		int __initrem, int __fxor)
 	{
 		// Set
@@ -77,16 +73,10 @@ public class CRC32DataSink
 	 * Returns the currently calculated CRC value.
 	 *
 	 * @return The current CRC value.
-	 * @throws SinkProcessException If the stream encountered an error during
-	 * processing.
 	 * @since 2016/07/16
 	 */
 	public int crc()
-		throws SinkProcessException
 	{
-		// Flush to get the latest value
-		super.flush();
-		
 		// Return the current CRC
 		int rem = this._remainder;
 		return (this.reflectremainder ? Integer.reverse(rem) : rem) ^
@@ -94,39 +84,64 @@ public class CRC32DataSink
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/16
+	 * Offers a single byte for CRC calcualtion.
+	 *
+	 * @param __b The byte to offer.
+	 * @since 2016/
 	 */
-	@Override
-	protected void process(int __n)
-		throws SinkProcessException
+	public final void offer(byte __b)
 	{
+		offer(new byte[]{__b}, 0, 1);
+	}
+	
+	/**
+	 * Offers multiple byte for CRC calculation.
+	 *
+	 * @param __b The bytes to offer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/20
+	 */
+	public final void offer(byte[] __b)
+		throws NullPointerException
+	{
+		offer(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Offers multiple byte for CRC calculation.
+	 *
+	 * @param __b The bytes to offer.
+	 * @param __o The starting offset to read bytes from.
+	 * @param __l The number of bytes to buffer.
+	 * @throws ArrayIndexOutOfBoundsException If the offset or length are
+	 * negative or they exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/20
+	 */
+	public final void offer(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("BAOB");
+		
 		// Read data into the work buffer
-		byte[] work = this._work;
 		boolean reflectdata = this.reflectdata;
 		int remainder = this._remainder;
 		int[] table = this._table._table;
-		for (;;)
+		for (int i = __o, end = __o + __l; i < end; i++)
 		{
-			int rc = accept(work);
+			// Read in data value
+			int val = __b[i] & 0xFF;
 		
-			// Nothing to process?
-			if (rc <= 0)
-				break;
+			// Reflect the data?
+			if (reflectdata)
+				val = Integer.reverse(val) >>> 24;
 		
-			// Handle crc
-			for (int i = 0; i < rc; i++)
-			{
-				// Read in data value
-				int val = work[i] & 0xFF;
-			
-				// Reflect the data?
-				if (reflectdata)
-					val = Integer.reverse(val) >>> 24;
-			
-				int d = (val ^ (remainder >>> 24));
-				remainder = table[d] ^ (remainder << 8);
-			}
+			int d = (val ^ (remainder >>> 24));
+			remainder = table[d] ^ (remainder << 8);
 		}
 		
 		// Set new remainder

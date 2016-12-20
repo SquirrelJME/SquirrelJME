@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
-import net.multiphasicapps.io.crc32.CRC32DataSink;
+import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.io.datasink.DataSinkOutputStream;
@@ -579,8 +579,8 @@ public class ZipStreamWriter
 		extends __BaseOutputStream__
 	{
 		/** CRC calculation. */
-		protected final CRC32DataSink crccalc =
-			new CRC32DataSink(ZipCRCConstants.CRC_REFLECT_DATA,
+		protected final CRC32Calculator crccalc =
+			new CRC32Calculator(ZipCRCConstants.CRC_REFLECT_DATA,
 				ZipCRCConstants.CRC_REFLECT_REMAINDER,
 				ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
 				ZipCRCConstants.CRC_FINALXOR);

@@ -14,7 +14,7 @@ import java.io.Closeable;
 import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.crc32.CRC32DataSink;
+import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
