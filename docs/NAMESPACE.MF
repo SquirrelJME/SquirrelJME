@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Namespace-Name: docs
-Namespace-Deprecated: DEPRECATED
-Namespace-Depends: src
-Namespace-Title: Documentation
-Namespace-Description: This namespace contains 
- documentation related projects.
-
