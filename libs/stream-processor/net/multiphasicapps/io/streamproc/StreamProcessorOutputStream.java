@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.io.streamproc;
 
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -21,12 +22,13 @@ import java.io.OutputStream;
  */
 public final class StreamProcessorOutputStream
 	extends OutputStream
+	implements Flushable
 {
 	/** Output stream to write to. */
 	protected final OutputStream out;
 	
 	/** The stream processor used. */
-	protected final SteamProcessor processor;
+	protected final StreamProcessor processor;
 	
 	/**
 	 * Initializes the output stream processor.
@@ -45,6 +47,56 @@ public final class StreamProcessorOutputStream
 		// Set
 		this.out = __os;
 		this.processor = __sp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/20
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/20
+	 */
+	@Override
+	public void flush()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/20
+	 */
+	@Override
+	public void write(int __b)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/20
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int bl = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > bl)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		throw new Error("TODO");
 	}
 }
 

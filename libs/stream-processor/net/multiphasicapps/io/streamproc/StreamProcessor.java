@@ -10,12 +10,19 @@
 
 package net.multiphasicapps.io.streamproc;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
- * DESCRIBE THIS.
+ * This is the base class for all stream processor which are used to input
+ * and output data.
+ *
+ * This class is not thread safe.
  *
  * @since 2016/12/20
  */
-public class StreamProcessor
+public abstract class StreamProcessor
+	implements Closeable
 {
 }
 

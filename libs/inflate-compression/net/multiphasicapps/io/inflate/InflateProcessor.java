@@ -10,19 +10,26 @@
 
 package net.multiphasicapps.io.inflate;
 
-import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.streamproc.StreamProcessor;
 
 /**
- * This reads data from an input stream and decompresses the data contained
- * within it and provides it as data to the buffer.
+ * This is used to inflate deflate compressed streams.
  *
  * @since 2016/12/20
  */
-public class InflateInputStream
-	extends InputStream
+public class InflateProcessor
+	extends StreamProcessor
 {
-	/** Input stream to decompress data from. */
-	protected final 
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/20
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		// Does nothing
+	}
 }
 
