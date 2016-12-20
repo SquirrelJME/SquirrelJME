@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Namespace-Name: tcks
-Namespace-Depends: src
-Namespace-Title: Technology Compatibility Kits
-Namespace-Description: This namespace contains 
- SquirrelJME vendored TCKs which are used to test compatibility on 
- SquirrelJME and other implementations of Java ME.
-
