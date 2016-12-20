@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: ef5aca6f-87f9-4f13-95ed-6e78ddfa0efd
+X-SquirrelJME-Error: CK
+LIBlet-Name: Stream Processor
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This is used to process data from one source and 
+ pass it to another source.
+
