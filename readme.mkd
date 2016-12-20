@@ -89,8 +89,10 @@ You may donate to SquirrelJME to which would be used by the author to keep the
 web server online, the purchasing of new hardware/software, and for the
 purchasing of food items for consumption.
 
- * BitCoin (**BTC/XBT**): [`1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M`](
-   bitcoin:1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M)
+ * BitCoin (**BTC/XBT**): [`13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4`](
+   bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
+ * Ethereum (**ETH**): [`0x9738136f7EcB11d554Ef767704F62216a646e0AB`](
+   ethereum:0x9738136f7EcB11d554Ef767704F62216a646e0AB)
  * LiteCoin (**LTC**): [`LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi`](
    litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
  * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
