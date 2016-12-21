@@ -16,6 +16,8 @@ import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
+import net.multiphasicapps.squirreljme.build.base.SourceCompilerProvider;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
@@ -109,16 +111,31 @@ public abstract class ProjectSource
 	 *
 	 * @param __dest The destination path where the binary should be placed.
 	 * @param __deps The binary dependencies needed for it to compile.
+	 * @throws InvalidProjectException If the project could not be compiled.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/19
 	 */
 	final void __compile(Path __dest, Set<ProjectBinary> __deps)
-		throws IOException, NullPointerException
+		throws InvalidProjectException, IOException, NullPointerException
 	{
 		// Check
 		if (__dest == null || __deps == null)
 			throw new NullPointerException("NARG");
+		
+		// Locate compiler
+		SourceCompiler sc;
+		try
+		{
+			sc = SourceCompilerProvider.newInstance();
+		}
+		
+		// {@squirreljme.error AT08 Could not compile the project because
+		// no compiler is available.}
+		catch (RuntimeException e)
+		{
+			throw new InvalidProjectException("AT08", e);
+		}
 		
 		throw new Error("TODO");
 	}
