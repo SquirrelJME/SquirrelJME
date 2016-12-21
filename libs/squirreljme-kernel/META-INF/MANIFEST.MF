@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: 557bff19-c91d-4344-a05f-16e87a837dd6
 X-SquirrelJME-Depends: cldc-compact
-X-SquirrelJME-BuildHostDepends: manifest squirreljme-suite-id
+X-SquirrelJME-BuildHostDepends: java-manifest squirreljme-suite-id
 X-SquirrelJME-Error: BH
 X-SquirrelJME-Title: SquirrelJME Kernel
 X-SquirrelJME-Vendor: Steven Gawroriski
