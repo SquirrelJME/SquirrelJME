@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 import net.multiphasicapps.squirreljme.build.base.SourceCompilerProvider;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -137,7 +138,16 @@ public abstract class ProjectSource
 			throw new InvalidProjectException("AT08", e);
 		}
 		
-		throw new Error("TODO");
+		// Need to access directories during compilation
+		try (FileDirectory fd = openFileDirectory();
+			__CloseableList__<FileDirectory> bds = new __CloseableList__<>())
+		{
+			// Load dependency into directories
+			for (ProjectBinary db : __deps)
+				bds.add(db.openFileDirectory());
+			
+			throw new Error("TODO");
+		}
 	}
 }
 
