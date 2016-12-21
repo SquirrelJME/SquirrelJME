@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 
 /**
  * This acts as the common base for binary and source projects.
@@ -118,6 +119,27 @@ public abstract class ProjectBase
 		Set<Project> rv = new LinkedHashSet<>();
 		dependencies(rv);
 		return rv;
+	}
+	
+	/**
+	 * Opens the specified project data as a directory tree so that the
+	 * compiler and other portions of the code may access files that exist
+	 * within projects.
+	 *
+	 * If the file is a regular file it will be opened as a ZIP file, otherwise
+	 * directories will be scanned.
+	 *
+	 * This method may be overridden if functionality needs to be modified
+	 * to provide an alternative directory scheme.
+	 *
+	 * @return The file directory.
+	 * @throws IOException If it could not be opened.
+	 * @since 2016/12/21
+	 */
+	public FileDirectory openFileDirectory()
+		throws IOException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
