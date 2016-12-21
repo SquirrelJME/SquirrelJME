@@ -139,6 +139,11 @@ public abstract class ProjectBase
 	public FileDirectory openFileDirectory()
 		throws IOException
 	{
+		// If a directory open it as one
+		Path p = this.path;
+		if (Files.isDirectory(p))
+			return new __DirectoryFileDirectory__(p);
+		
 		throw new Error("TODO");
 	}
 	
