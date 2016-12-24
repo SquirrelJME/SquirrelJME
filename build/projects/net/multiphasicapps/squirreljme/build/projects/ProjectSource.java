@@ -194,43 +194,17 @@ public abstract class ProjectSource
 				Channels.newOutputStream(FileChannel.open(tempjar,
 				StandardOpenOption.WRITE))))
 			{
-				// Place files
-				final Path basedir = tempdir;
-				final byte[] xbuf = new byte[512];
-				__walk(basedir, new __Consumer__()
-					{
-						/**
-						 * {@inheritDoc}
-						 * @since 2016/12/24
-						 */
-						@Override
-						public void accept(Path __v)
-							throws IOException
-						{
-							// Write to the output
-							byte[] buf = xbuf;
-							try (OutputStream os = zsw.nextEntry(
-									__zipName(basedir, __v),
-									ZipCompressionType.DEFAULT_COMPRESSION);
-								InputStream is = Channels.newInputStream(
-									FileChannel.open(__v,
-									StandardOpenOption.READ)))
-							{
-								// Copy all of the data
-								for (;;)
-								{
-									int rc = is.read(buf);
-									
-									// EOF?
-									if (rc < 0)
-										continue;
-									
-									// Write
-									os.write(buf, 0, rc);
-								}
-							}
-						}
-					});
+				// Write the manifest to the output
+				if (true)
+					throw new Error("TODO");
+				
+				// Add non-valid source files from the input source dir
+				if (true)
+					throw new Error("TODO");
+					
+				// Add all files from the output directory
+				if (true)
+					throw new Error("TODO");
 				
 				// Finish off
 				zsw.flush();
