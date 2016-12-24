@@ -95,8 +95,7 @@ public final class Project
 			
 			// The base date and path of the binary
 			ProjectName name = this.name;
-			Path binpath = this.projectman.binaryPath().resolve(
-				name + ".jar");
+			Path binpath = binaryPath();
 			
 			// Try opening it as a binary
 			if (rv == null)
@@ -179,6 +178,28 @@ public final class Project
 			// Return the binary
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the path to the output binary.
+	 *
+	 * @return The path to the output binary.
+	 * @since 2016/12/24
+	 */
+	public final Path binaryPath()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// If the binary is already set then use that path
+			Reference<ProjectBinary> ref = this._binary;
+			ProjectBinary bin = (ref != null ? ref.get() : null);
+			if (bin != null)
+				return bin.path();
+		}
+		
+		// Use default
+		return this.projectman.binaryPath().resolve(name + ".jar");
 	}
 	
 	/**

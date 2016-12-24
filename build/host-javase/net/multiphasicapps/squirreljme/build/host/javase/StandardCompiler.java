@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 
 /**
@@ -21,5 +25,103 @@ import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 public class StandardCompiler
 	implements SourceCompiler
 {
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void addClassDirectory(FileDirectory __fd)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__fd == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void addSource(String __fn)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__fn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void addSourceDirectory(FileDirectory __fd)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__fd == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public boolean compile()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void setCompileOptions(String... __args)
+	{
+		// Force to exist
+		if (__args == null)
+			__args = new String[0];
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void setOutputDirectory(Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void setOutputLog(Writer __w)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__w == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

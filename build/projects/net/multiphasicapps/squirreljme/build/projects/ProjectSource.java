@@ -13,7 +13,13 @@ package net.multiphasicapps.squirreljme.build.projects;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
@@ -24,6 +30,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This represents the base for the class which represents the source code
@@ -139,15 +146,92 @@ public abstract class ProjectSource
 		}
 		
 		// Need to access directories during compilation
+		Path tempdir = null, tempjar = null;
 		try (FileDirectory fd = openFileDirectory();
 			__CloseableList__<FileDirectory> bds = new __CloseableList__<>())
 		{
+			// Need a place to store files and where to write the output JAR
+			String sname = name().toString();
+			tempjar = Files.createTempFile(sname, "-build.jar");
+			tempdir = Files.createTempDirectory(sname);
+			
+			// Add source
+			sc.addSourceDirectory(fd);
+			
 			// Load dependency into directories
 			for (ProjectBinary db : __deps)
-				bds.add(db.openFileDirectory());
+			{
+				// Load
+				FileDirectory bfd = db.openFileDirectory();
+				bds.add(bfd);
+				
+				// Set where classes exist
+				sc.addClassDirectory(bfd);
+			}
+			
+			// Add files to be compiled
+			for (String s : fd)
+				if (__isValidSource(s))
+					sc.addSource(s);
+			
+			// Target Java 7 as usual, with debugging as needed and
+			// add some other options
+			sc.setCompileOptions("-source", "1.7", "-target", "1.7", "-g",
+				"-Xlint:deprecation", "-Xlint:unchecked");
+			
+			// {@squirreljme.error AT0a Failed to compile the given source
+			// project. (The name of this project)}
+			if (!sc.compile())
+				throw new InvalidProjectException(String.format("AT0a %s",
+					sname));
+			
+			// Need to package the binary
+			try (ZipStreamWriter zsw = new ZipStreamWriter(
+				Channels.newOutputStream(FileChannel.open(tempjar,
+				StandardOpenOption.WRITE))))
+			{
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Replace the JAR
+			Files.move(tempjar, __dest, StandardCopyOption.REPLACE_EXISTING);
+		}
+		
+		// Always clear temporary files
+		finally
+		{
+			// Delete temporary JAR if it exists
+			if (tempjar != null)
+				try
+				{
+					Files.delete(tempjar);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Checks whether this file is a valid source code name.
+	 *
+	 * @param __s The source file name to check.
+	 * @return {@code true} if the source code is valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/24
+	 */
+	private static boolean __isValidSource(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

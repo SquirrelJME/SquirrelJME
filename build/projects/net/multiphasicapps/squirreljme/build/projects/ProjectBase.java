@@ -122,6 +122,17 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Returns the name of this project.
+	 *
+	 * @return The project name.
+	 * @since 2016/12/24
+	 */
+	public final ProjectName name()
+	{
+		return this.project.name();
+	}
+	
+	/**
 	 * Opens the specified project data as a directory tree so that the
 	 * compiler and other portions of the code may access files that exist
 	 * within projects.

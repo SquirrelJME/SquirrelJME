@@ -10,13 +10,93 @@
 
 package net.multiphasicapps.squirreljme.build.base;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Path;
+
 /**
  * This interfaced is used to describe a compiler which is used to compile
  * Java source code into Java class files.
+ *
+ * Where the compilation log is initially output is undefined and unspecified
+ * and it may be to standard error, a file on the disk, or not output at all.
  *
  * @since 2016/12/19
  */
 public interface SourceCompiler
 {
+	/**
+	 * Adds a directory where class files may be looked up which are needed
+	 * for compilation.
+	 *
+	 * @param __fd The directory where classes may be found.
+	 * @throws IOException If it could not be added.
+	 * @throws NullPointerException On null arguments.
+	 * @throws 2016/12/24
+	 */
+	public abstract void addClassDirectory(FileDirectory __fd)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Adds source code which is to be compiled by the compiler.
+	 *
+	 * @param __fn The file name to compile.
+	 * @throws IOException If it could not be added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/24
+	 */
+	public abstract void addSource(String __fn)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Adds a directory where source code is to be looked up.
+	 *
+	 * @param __fd The directory where sources are to be looked up.
+	 * @throws IOException If it could not be added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/24
+	 */
+	public abstract void addSourceDirectory(FileDirectory __fd)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Performs compilation.
+	 *
+	 * @return {@code true} if compilation has succeeded.
+	 * @since 2016/12/24
+	 */
+	public abstract boolean compile();
+	
+	/**
+	 * Sets the options which are used during compilation, the options
+	 * follow the standard Java compiler options.
+	 *
+	 * @param __args Compilation options, if this is {@code null} then it
+	 * should have the same effect as passing an empty array.
+	 * @since 2016/12/24
+	 */
+	public abstract void setCompileOptions(String... __args);
+	
+	/**
+	 * Sets the directory where compiled class files are to be placed.
+	 *
+	 * @param __p The path where files are output.
+	 * @throws IOException If it could not be set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/24
+	 */
+	public abstract void setOutputDirectory(Path __p)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Sets the writer which is used to output the compilation log.
+	 *
+	 * @param __w The output writer to print text to.
+	 * @throws IOException If it could not be set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/24
+	 */
+	public abstract void setOutputLog(Writer __w)
+		throws IOException, NullPointerException;
 }
 
