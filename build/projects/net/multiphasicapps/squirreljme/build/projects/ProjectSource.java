@@ -10,11 +10,14 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +34,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This represents the base for the class which represents the source code
@@ -186,12 +190,50 @@ public abstract class ProjectSource
 					sname));
 			
 			// Need to package the binary
-			try (ZipStreamWriter zsw = new ZipStreamWriter(
+			try (final ZipStreamWriter zsw = new ZipStreamWriter(
 				Channels.newOutputStream(FileChannel.open(tempjar,
 				StandardOpenOption.WRITE))))
 			{
-				if (true)
-					throw new Error("TODO");
+				// Place files
+				final Path basedir = tempdir;
+				final byte[] xbuf = new byte[512];
+				__walk(basedir, new __Consumer__()
+					{
+						/**
+						 * {@inheritDoc}
+						 * @since 2016/12/24
+						 */
+						@Override
+						public void accept(Path __v)
+							throws IOException
+						{
+							// Write to the output
+							byte[] buf = xbuf;
+							try (OutputStream os = zsw.nextEntry(
+									__zipName(basedir, __v),
+									ZipCompressionType.DEFAULT_COMPRESSION);
+								InputStream is = Channels.newInputStream(
+									FileChannel.open(__v,
+									StandardOpenOption.READ)))
+							{
+								// Copy all of the data
+								for (;;)
+								{
+									int rc = is.read(buf);
+									
+									// EOF?
+									if (rc < 0)
+										continue;
+									
+									// Write
+									os.write(buf, 0, rc);
+								}
+							}
+						}
+					});
+				
+				// Finish off
+				zsw.flush();
 			}
 			
 			// Replace the JAR
@@ -212,7 +254,28 @@ public abstract class ProjectSource
 					e.printStackTrace();
 				}
 			
-			throw new Error("TODO");
+			// Delete temporary output classes
+			if (tempdir != null)
+				try
+				{
+					__walk(tempdir, new __Consumer__()
+						{
+							/**
+							 * {@inheritDoc}
+							 * @since 2016/12/24
+							 */
+							@Override
+							public void accept(Path __v)
+								throws IOException
+							{
+								Files.delete(__v);
+							}
+						});
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 		}
 	}
 	
@@ -232,6 +295,89 @@ public abstract class ProjectSource
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Walks the given path and calls the given consumer for every file and
+	 * directory.
+	 *
+	 * @param __p The path to walk.
+	 * @param __c The function to call for paths.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/18
+	 */
+	private static void __walk(Path __p, __Consumer__ __c)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__p == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		// If a directory, walk through all the files
+		if (Files.isDirectory(__p))
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
+			{
+				for (Path s : ds)
+					__walk(s, __c);
+			}
+		
+		// Always accept, directories are accepted last since directories
+		// cannot be deleted if they are not empty
+		__c.accept(__p);
+	}
+	
+	/**
+	 * Calculates the name that a file would appear as inside of a ZIP file.
+	 *
+	 * @param __root The root path.
+	 * @param __p The file to add.
+	 * @return The ZIP compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private static String __zipName(Path __root, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __p == null)
+			throw new NullPointerException();
+		
+		// Calculate relative name
+		Path rel = __root.toAbsolutePath().relativize(__p.toAbsolutePath());
+		
+		// Build name
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : rel)
+		{
+			// Prefix slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp);
+		}
+		
+		// Return it
+		return sb.toString();
+	}
+	
+	/**
+	 * Consumes a value which may throw an exception.
+	 *
+	 * @since 2016/10/27
+	 */
+	private static interface __Consumer__
+	{
+		/**
+		 * Accepts a value.
+		 *
+		 * @param __v The given path.
+		 * @throws IOException On read/write errors.
+		 * @since 2016/10/27
+		 */
+		public abstract void accept(Path __v)
+			throws IOException;
 	}
 }
 
