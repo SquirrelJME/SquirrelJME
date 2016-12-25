@@ -10,10 +10,13 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.io.Flushable;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager;
 import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
@@ -30,6 +33,17 @@ public class StandardCompiler
 	/** The internal Java compiler. */
 	protected final JavaCompiler javac;
 	
+	/** The file manager used. */
+	protected final JavaFileManager fileman;
+	
+	/** Write output. */
+	protected final Writer output =
+		new __Out__();
+	
+	/** The current write target, where logs go. */
+	private volatile Writer _console =
+		new OutputStreamWriter(System.err);
+	
 	/**
 	 * Initializes the standard compiler.
 	 *
@@ -42,6 +56,9 @@ public class StandardCompiler
 		if (javac == null)
 			throw new RuntimeException("BM03");
 		this.javac = javac;
+		
+		// Setup file manager
+		this.fileman = javac.getStandardFileManager(null, null, null);
 	}
 	
 	/**
@@ -141,6 +158,48 @@ public class StandardCompiler
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Wraps the output.
+	 *
+	 * @since 2016/12/25
+	 */
+	private class __Out__
+		extends Writer
+		implements Flushable
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/25
+		 */
+		@Override
+		public void close()
+		{
+			// Does nothing
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/25
+		 */
+		@Override
+		public void flush()
+			throws IOException
+		{
+			StandardCompiler.this._console.flush();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/25
+		 */
+		@Override
+		public void write(char[] __c, int __o, int __l)
+			throws IOException
+		{
+			StandardCompiler.this._console.write(__c, __o, __l);
+		}
 	}
 }
 
