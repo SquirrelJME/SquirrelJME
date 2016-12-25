@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 
@@ -25,6 +27,23 @@ import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 public class StandardCompiler
 	implements SourceCompiler
 {
+	/** The internal Java compiler. */
+	protected final JavaCompiler javac;
+	
+	/**
+	 * Initializes the standard compiler.
+	 *
+	 * @since 2016/12/25
+	 */
+	public StandardCompiler()
+	{
+		// {@squirreljme.error BM03 No system Java compiler exists.}
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		if (javac == null)
+			throw new RuntimeException("BM03");
+		this.javac = javac;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @throws 2016/12/24
