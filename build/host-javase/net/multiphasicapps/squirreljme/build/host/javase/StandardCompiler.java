@@ -15,8 +15,13 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
@@ -30,19 +35,32 @@ import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 public class StandardCompiler
 	implements SourceCompiler
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The internal Java compiler. */
 	protected final JavaCompiler javac;
-	
-	/** The file manager used. */
-	protected final JavaFileManager fileman;
 	
 	/** Write output. */
 	protected final Writer output =
 		new __Out__();
 	
+	/** Source directories. */
+	private final List<FileDirectory> _sources =
+		new ArrayList<>();
+	
+	/** Class directories. */
+	private final List<FileDirectory> _classes =
+		new ArrayList<>();
+	
 	/** The current write target, where logs go. */
 	private volatile Writer _console =
 		new OutputStreamWriter(System.err);
+	
+	/** The current output directory. */
+	private volatile Path _outdir =
+		Paths.get(Objects.toString(System.getProperty("user.dir"), ""));
 	
 	/**
 	 * Initializes the standard compiler.
@@ -56,9 +74,6 @@ public class StandardCompiler
 		if (javac == null)
 			throw new RuntimeException("BM03");
 		this.javac = javac;
-		
-		// Setup file manager
-		this.fileman = javac.getStandardFileManager(null, null, null);
 	}
 	
 	/**
@@ -73,7 +88,11 @@ public class StandardCompiler
 		if (__fd == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._classes.add(__fd);
+		}
 	}
 	
 	/**
@@ -103,7 +122,11 @@ public class StandardCompiler
 		if (__fd == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._sources.add(__fd);
+		}
 	}
 	
 	/**
@@ -142,7 +165,11 @@ public class StandardCompiler
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._outdir = __p;
+		}
 	}
 	
 	/**
@@ -157,7 +184,20 @@ public class StandardCompiler
 		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Flush the old writer before it is set again
+		Writer w = this._console;
+		if (w instanceof Flushable)
+			try
+			{
+				w.flush();
+			}
+			catch (IOException e)
+			{
+				// Ignore
+			}
+		
+		// Set new one
+		this._console = __w;
 	}
 	
 	/**
