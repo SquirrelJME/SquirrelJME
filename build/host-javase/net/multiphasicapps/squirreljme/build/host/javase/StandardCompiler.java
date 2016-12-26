@@ -19,12 +19,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This provides access to a single instance of the standard Java compiler
@@ -53,6 +55,10 @@ public class StandardCompiler
 	/** Class directories. */
 	private final List<FileDirectory> _classes =
 		new ArrayList<>();
+	
+	/** Source files to compile. */
+	private final Set<String> _compile =
+		new SortedTreeSet<>();
 	
 	/** The current write target, where logs go. */
 	private volatile Writer _console =
@@ -107,7 +113,11 @@ public class StandardCompiler
 		if (__fn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._compile.add(__fn);
+		}
 	}
 	
 	/**
