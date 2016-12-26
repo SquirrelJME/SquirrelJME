@@ -21,6 +21,8 @@ import java.nio.file.Path;
  * Where the compilation log is initially output is undefined and unspecified
  * and it may be to standard error, a file on the disk, or not output at all.
  *
+ * The default output for compilation is to ignore all files.
+ *
  * @since 2016/12/19
  */
 public interface SourceCompiler
@@ -78,14 +80,14 @@ public interface SourceCompiler
 	public abstract void setCompileOptions(String... __args);
 	
 	/**
-	 * Sets the directory where compiled class files are to be placed.
+	 * Sets the output where the result of compilation is to be placed.
 	 *
-	 * @param __p The path where files are output.
+	 * @param __o The output where compiled classes will be placed.
 	 * @throws IOException If it could not be set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/24
 	 */
-	public abstract void setOutputDirectory(Path __p)
+	public abstract void setOutput(CompilerOutput __p)
 		throws IOException, NullPointerException;
 	
 	/**

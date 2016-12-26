@@ -22,9 +22,12 @@ import java.util.Objects;
 import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
+import net.multiphasicapps.squirreljme.build.base.CompilerOutput;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.build.base.NullCompilerOutput;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
 
@@ -60,13 +63,17 @@ public class StandardCompiler
 	private final Set<String> _compile =
 		new SortedTreeSet<>();
 	
+	/** Compilation options. */
+	private volatile String[] _options =
+		new String[0];
+	
 	/** The current write target, where logs go. */
 	private volatile Writer _console =
 		new OutputStreamWriter(System.err);
 	
-	/** The current output directory. */
-	private volatile Path _outdir =
-		Paths.get(Objects.toString(System.getProperty("user.dir"), ""));
+	/** The current output. */
+	private volatile CompilerOutput _output =
+		new NullCompilerOutput();
 	
 	/**
 	 * Initializes the standard compiler.
@@ -146,7 +153,13 @@ public class StandardCompiler
 	@Override
 	public boolean compile()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Setup file manager
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -159,8 +172,22 @@ public class StandardCompiler
 		// Force to exist
 		if (__args == null)
 			__args = new String[0];
+		else
+		{
+			__args = __args.clone();
 		
-		throw new Error("TODO");
+			// Never have null
+			for (int i = 0, n = __args.length; i < n; i++)
+				if (__args[i] == null)
+					__args[i] = "";
+		}
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Set
+			this._options = __args;
+		}
 	}
 	
 	/**
@@ -168,17 +195,17 @@ public class StandardCompiler
 	 * @throws 2016/12/24
 	 */
 	@Override
-	public void setOutputDirectory(Path __p)
+	public void setOutput(CompilerOutput __o)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__p == null)
+		if (__o == null)
 			throw new NullPointerException("NARG");
 		
 		// Lock
 		synchronized (this.lock)
 		{
-			this._outdir = __p;
+			this._output = __o;
 		}
 	}
 	

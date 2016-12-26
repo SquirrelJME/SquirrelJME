@@ -150,14 +150,13 @@ public abstract class ProjectSource
 		}
 		
 		// Need to access directories during compilation
-		Path tempdir = null, tempjar = null;
+		Path tempjar = null;
 		try (FileDirectory fd = openFileDirectory();
 			__CloseableList__<FileDirectory> bds = new __CloseableList__<>())
 		{
 			// Need a place to store files and where to write the output JAR
 			String sname = name().toString();
 			tempjar = Files.createTempFile(sname, "-build.jar");
-			tempdir = Files.createTempDirectory(sname);
 			
 			// Add source
 			sc.addSourceDirectory(fd);
@@ -183,12 +182,6 @@ public abstract class ProjectSource
 			sc.setCompileOptions("-source", "1.7", "-target", "1.7", "-g",
 				"-Xlint:deprecation", "-Xlint:unchecked");
 			
-			// {@squirreljme.error AT0a Failed to compile the given source
-			// project. (The name of this project)}
-			if (!sc.compile())
-				throw new InvalidProjectException(String.format("AT0a %s",
-					sname));
-			
 			// Need to package the binary
 			try (final ZipStreamWriter zsw = new ZipStreamWriter(
 				Channels.newOutputStream(FileChannel.open(tempjar,
@@ -198,11 +191,17 @@ public abstract class ProjectSource
 				if (true)
 					throw new Error("TODO");
 				
-				// Add non-valid source files from the input source dir
+				// Set output to write to this ZIP
 				if (true)
 					throw new Error("TODO");
-					
-				// Add all files from the output directory
+				
+				// {@squirreljme.error AT0a Failed to compile the given source
+				// project. (The name of this project)}
+				if (!sc.compile())
+					throw new InvalidProjectException(String.format("AT0a %s",
+						sname));
+				
+				// Add non-valid source files from the input source dir
 				if (true)
 					throw new Error("TODO");
 				
@@ -222,29 +221,6 @@ public abstract class ProjectSource
 				try
 				{
 					Files.delete(tempjar);
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			
-			// Delete temporary output classes
-			if (tempdir != null)
-				try
-				{
-					__walk(tempdir, new __Consumer__()
-						{
-							/**
-							 * {@inheritDoc}
-							 * @since 2016/12/24
-							 */
-							@Override
-							public void accept(Path __v)
-								throws IOException
-							{
-								Files.delete(__v);
-							}
-						});
 				}
 				catch (IOException e)
 				{
@@ -309,36 +285,6 @@ public abstract class ProjectSource
 		
 		// Is valid
 		return true;
-	}
-	
-	/**
-	 * Walks the given path and calls the given consumer for every file and
-	 * directory.
-	 *
-	 * @param __p The path to walk.
-	 * @param __c The function to call for paths.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/18
-	 */
-	private static void __walk(Path __p, __Consumer__ __c)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__p == null || __c == null)
-			throw new NullPointerException("NARG");
-		
-		// If a directory, walk through all the files
-		if (Files.isDirectory(__p))
-			try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
-			{
-				for (Path s : ds)
-					__walk(s, __c);
-			}
-		
-		// Always accept, directories are accepted last since directories
-		// cannot be deleted if they are not empty
-		__c.accept(__p);
 	}
 	
 	/**
