@@ -254,6 +254,19 @@ public abstract class ProjectSource
 	}
 	
 	/**
+	 * Is this character valid in a Java identifier?
+	 *
+	 * @param __c The character to check.
+	 * @return {@code true} if it is valid.
+	 * @since 2016/12/26
+	 */
+	private static boolean __isValidChar(char __c)
+	{
+		return (__c >= 'A' && __c <= 'Z') || (__c >= 'a' && __c <= 'z') ||
+			(__c >= '0' && __c <= '9') || __c == '_' || __c == '$';
+	}
+	
+	/**
 	 * Checks whether this file is a valid source code name.
 	 *
 	 * @param __s The source file name to check.
@@ -268,7 +281,34 @@ public abstract class ProjectSource
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Must be source code
+		if (!__s.endsWith(".java"))
+			return false;
+		
+		// Determine base and directory name
+		int ls = __s.lastIndexOf('/');
+		String dir = (ls < 0 ? "" : __s.substring(0, ls));
+		String fn = (ls < 0 ? __s : __s.substring(ls + 1));
+		
+		// All directory characters must be valid.
+		for (int i = 0, n = dir.length(); i < n; i++)
+		{
+			char c = dir.charAt(i);
+			if (c != '/' && !__isValidChar(c))
+				return false;
+		}
+		
+		// Force package info to be valid
+		if (fn.equals("package-info.java"))
+			return true;
+		
+		// Check everything except the extension
+		for (int i = 0, n = fn.length() - 5; i < n; i++)
+			if (!__isValidChar(fn.charAt(i)))
+				return false;
+		
+		// Is valid
+		return true;
 	}
 	
 	/**
