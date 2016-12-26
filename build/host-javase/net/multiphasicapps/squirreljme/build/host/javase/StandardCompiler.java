@@ -17,11 +17,14 @@ import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
@@ -31,6 +34,8 @@ import net.multiphasicapps.squirreljme.build.base.NullCompilerOutput;
 import net.multiphasicapps.squirreljme.build.base.NullFileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This provides access to a single instance of the standard Java compiler
@@ -142,7 +147,20 @@ public class StandardCompiler
 			__FileManager__ fm = new __FileManager__(this._output,
 				this._classes, this._sources);
 			
-			throw new Error("TODO");
+			// Determine compilation units
+			Set<JavaFileObject> units = new LinkedHashSet<>();
+			for (JavaFileObject f : fm.getJavaFileObjectsFromStrings(
+				UnmodifiableSet.<String>of(this._compile)))
+				units.add(f);
+			
+			// Setup target task
+			JavaCompiler javac = this.javac;
+			JavaCompiler.CompilationTask task = javac.getTask(
+				this.output, fm, null, UnmodifiableList.<String>of(
+				Arrays.<String>asList(this._options)), null, units);
+			
+			// Run it
+			return task.call();
 		}
 	}
 	
