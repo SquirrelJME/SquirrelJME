@@ -30,6 +30,16 @@ public interface FileDirectory
 	extends Closeable, Iterable<String>
 {
 	/**
+	 * Checks whether the given directory contains the given file.
+	 *
+	 * @param __fn The file to check for containing.
+	 * @return {@code true} if the directory contains this file.
+	 * @since 2016/12/26
+	 */
+	public abstract boolean contains(String __fn)
+		throws IOException;
+	
+	/**
 	 * Opens the specified file and returns the stream to the file data.
 	 *
 	 * @param __fn The file name to open.
