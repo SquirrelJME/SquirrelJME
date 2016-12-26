@@ -8,12 +8,13 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.manifest;
+package net.multiphasicapps.squirreljme.java.manifest.mutable;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 
 /**
  * This is a mutable set of attributes which exist within a manifest.

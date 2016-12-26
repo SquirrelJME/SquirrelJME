@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.manifest;
+package net.multiphasicapps.squirreljme.java.manifest.mutable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,6 +18,9 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 
 /**
  * This is a mutable version of {@link JavaManifest}.
@@ -49,11 +52,12 @@ public class MutableJavaManifest
 	}
 	
 	/**
-	 * Initializes a mutable manifest which is a copy of an existing manifest.
+	 * Initializes the mutable manifest using a copy of the data from an
+	 * immutable manifest.
 	 *
-	 * @param __man The manifest to copy attributes from.
+	 * @param __man The immutable manifest.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/19
+	 * @since 2016/12/26
 	 */
 	public MutableJavaManifest(JavaManifest __man)
 		throws NullPointerException
@@ -63,7 +67,8 @@ public class MutableJavaManifest
 			throw new NullPointerException("NARG");
 		
 		// Go through and add
-		for (Map.Entry<String, JavaManifestAttributes> e : __man.entrySet())
+		for (Map.Entry<String, JavaManifestAttributes> e :
+			__man.entrySet())
 		{
 			// Create new attribute set
 			MutableJavaManifestAttributes attr;
@@ -74,6 +79,44 @@ public class MutableJavaManifest
 				e.getValue().entrySet())
 				attr.put(f.getKey(), f.getValue());
 		}
+		
+		// If no main attributes were set then make sure they exist
+		if (!containsKey(""))
+			put("", new MutableJavaManifestAttributes());
+	}
+	
+	/**
+	 * Initializes the mutable manifest using a copy of the data from the
+	 * given mutable manifest.
+	 *
+	 * @param __man The mutable manifest to copy from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/26
+	 */
+	public MutableJavaManifest(MutableJavaManifest __man)
+		throws NullPointerException
+	{
+		// Check
+		if (__man == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through and add
+		for (Map.Entry<String, MutableJavaManifestAttributes> e :
+			__man.entrySet())
+		{
+			// Create new attribute set
+			MutableJavaManifestAttributes attr;
+			put(e.getKey(), (attr = new MutableJavaManifestAttributes()));
+			
+			// Copy values
+			for (Map.Entry<JavaManifestKey, String> f :
+				e.getValue().entrySet())
+				attr.put(f.getKey(), f.getValue());
+		}
+		
+		// If no main attributes were set then make sure they exist
+		if (!containsKey(""))
+			put("", new MutableJavaManifestAttributes());
 	}
 	
 	/**
@@ -110,6 +153,11 @@ public class MutableJavaManifest
 		// Check
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AB01 The specified value is of the wrong
+		// class type.}
+		if (!(__v instanceof MutableJavaManifestAttributes))
+			throw new ClassCastException("AB01");
 		
 		// Put
 		return this.attributes.put(__k, __v);
