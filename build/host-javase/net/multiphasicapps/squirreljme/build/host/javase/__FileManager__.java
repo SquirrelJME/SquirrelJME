@@ -225,10 +225,10 @@ class __FileManager__
 		getJavaFileObjectsFromStrings(Iterable<String> __a)
 	{
 		Set<JavaFileObject> rv = new LinkedHashSet<>();
-		FileDirectory input = this.input;
+		FileDirectory sourcepath = this.sourcepath;
 		for (String s : __a)
 			if (s.endsWith(".java"))
-				rv.add(new __FileObject__(this, input, s));
+				rv.add(new __FileObject__(this, sourcepath, s));
 			
 			// {@squirreljme.error BM07 Do not know how to handle getting a
 			// file object from the given file name. (The name of the file)}
@@ -343,9 +343,6 @@ class __FileManager__
 		// Setup target
 		Set<JavaFileObject> rv = new LinkedHashSet<>();
 		
-		// Go through input files
-		FileDirectory input = this.input;
-		
 		// Determine which input file source to use
 		Iterable<String> files;
 		if (!(__l instanceof StandardLocation))
@@ -374,6 +371,7 @@ class __FileManager__
 		int prefixn = prefix.length();
 		
 		// Go through all files
+		boolean issource = (__l == StandardLocation.SOURCE_PATH);
 		for (String f : files)
 		{
 			// Prefix does not match?
@@ -403,7 +401,7 @@ class __FileManager__
 				continue;
 			
 			// Add file
-			rv.add(new __FileObject__(this, input, f));
+			rv.add(new __FileObject__(this, __findDirectory(issource, f), f));
 		};
 		
 		// Return
@@ -445,6 +443,42 @@ class __FileManager__
 		
 		// Lock it
 		return UnmodifiableList.<String>of(rv);
+	}
+	
+	/**
+	 * Returns the directory for the given file.
+	 *
+	 * @param __src Lookup source code?
+	 * @param __s The file to get the directory of.
+	 * @return The directory for the given file.
+	 * @throws IOException If it could not be determined.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/26
+	 */
+	private FileDirectory __findDirectory(boolean __src, String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Check sources
+		if (__src)
+		{
+			FileDirectory sourcepath = this.sourcepath;
+			if (sourcepath.contains(__s))
+				return sourcepath;
+		}
+		
+		// Check class path
+		else
+			for (FileDirectory fd : this.classpath)
+				if (fd.contains(__s))
+					return fd;
+		
+		// {@squirreljme.error BM09 Could not find the directory for the
+		// requested file. (The requested file)}
+		throw new IOException(String.format("BM09 %s", __s));
 	}
 	
 	/**
