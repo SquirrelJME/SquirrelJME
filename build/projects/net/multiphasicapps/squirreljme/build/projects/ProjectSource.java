@@ -188,8 +188,12 @@ public abstract class ProjectSource
 				StandardOpenOption.WRITE))))
 			{
 				// Write the manifest to the output
-				if (true)
-					throw new Error("TODO");
+				try (OutputStream os = zsw.nextEntry("META-INF/MANIFEST.MF",
+					ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					if (true)
+						throw new Error("TODO");
+				}
 				
 				// Set output to write to this ZIP
 				if (true)
