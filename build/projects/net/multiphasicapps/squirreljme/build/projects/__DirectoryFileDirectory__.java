@@ -95,6 +95,22 @@ class __DirectoryFileDirectory__
 	 * @since 2016/12/21
 	 */
 	@Override
+	public boolean contains(String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Check if it is in the file mapping
+		return files.containsKey(__s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/21
+	 */
+	@Override
 	public Iterator<String> iterator()
 	{
 		return this.files.keySet().iterator();

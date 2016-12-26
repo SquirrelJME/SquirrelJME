@@ -51,17 +51,6 @@ public interface SourceCompiler
 		throws IOException, NullPointerException;
 	
 	/**
-	 * Adds a directory where source code is to be looked up.
-	 *
-	 * @param __fd The directory where sources are to be looked up.
-	 * @throws IOException If it could not be added.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/12/24
-	 */
-	public abstract void addSourceDirectory(FileDirectory __fd)
-		throws IOException, NullPointerException;
-	
-	/**
 	 * Performs compilation.
 	 *
 	 * @return {@code true} if compilation has succeeded.
@@ -99,6 +88,17 @@ public interface SourceCompiler
 	 * @since 2016/12/24
 	 */
 	public abstract void setOutputLog(Writer __w)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Sets the directory where source code is to be looked up.
+	 *
+	 * @param __fd The directory where sources are to be looked up.
+	 * @throws IOException If it could not be added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/24
+	 */
+	public abstract void setSourceDirectory(FileDirectory __fd)
 		throws IOException, NullPointerException;
 }
 

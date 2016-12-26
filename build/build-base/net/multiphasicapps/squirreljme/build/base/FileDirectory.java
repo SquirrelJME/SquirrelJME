@@ -34,10 +34,12 @@ public interface FileDirectory
 	 *
 	 * @param __fn The file to check for containing.
 	 * @return {@code true} if the directory contains this file.
+	 * @throws If whether the file exists could not be determined.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/26
 	 */
 	public abstract boolean contains(String __fn)
-		throws IOException;
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Opens the specified file and returns the stream to the file data.

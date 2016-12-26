@@ -120,10 +120,10 @@ class __FileObject__
 	public CharSequence getCharContent(boolean __a)
 		throws IOException
 	{
-		// {@squirreljme.error DE03 This file was opened for output.}
+		// {@squirreljme.error BM08 This file was opened for output.}
 		FileDirectory input = this.input;
 		if (input == null)
-			throw new IllegalStateException("DE03");
+			throw new IllegalStateException("BM08");
 		
 		// Read in all the characters
 		StringBuilder sb = new StringBuilder();
@@ -253,10 +253,10 @@ class __FileObject__
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		// {@squirreljme.error DE05 Attempted to open input file as output.}
+		// {@squirreljme.error BM05 Attempted to open input file as output.}
 		CompilerOutput output = this.output;
 		if (output == null)
-			throw new IllegalStateException("DE05");
+			throw new IllegalStateException("BM05");
 		
 		// Forward
 		return output.output(this.name);
@@ -297,10 +297,10 @@ class __FileObject__
 			return new URI("squirreljme", this.name, null);
 		}
 		
-		// {@squirreljme.error DE06 Could not create a URI for the file.}
+		// {@squirreljme.error BM06 Could not create a URI for the file.}
 		catch (URISyntaxException e)
 		{
-			throw new RuntimeException("DE06", e);
+			throw new RuntimeException("BM06", e);
 		}
 	}
 	

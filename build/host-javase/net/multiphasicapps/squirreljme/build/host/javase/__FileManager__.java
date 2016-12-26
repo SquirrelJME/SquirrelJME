@@ -47,7 +47,7 @@ class __FileManager__
 	protected final List<FileDirectory> classpath;
 	
 	/** The source code input. */
-	protected final List<FileDirectory> sourcepath;
+	protected final FileDirectory sourcepath;
 	
 	/** List of files in the class path. */
 	private volatile Reference<Iterable<String>> _classpathlist;
@@ -65,7 +65,7 @@ class __FileManager__
 	 * @since 2016/09/19
 	 */
 	__FileManager__(CompilerOutput __co, Iterable<FileDirectory> __bin,
-		Iterable<FileDirectory> __src)
+		FileDirectory __src)
 		throws NullPointerException
 	{
 		// Check
@@ -83,11 +83,7 @@ class __FileManager__
 		this.classpath = UnmodifiableList.<FileDirectory>of(classpath);
 		
 		// Set source file path
-		List<FileDirectory> sourcepath = new ArrayList<>();
-		for (FileDirectory fd : __bin)
-			if (fd != null)
-				sourcepath.add(fd);
-		this.sourcepath = UnmodifiableList.<FileDirectory>of(sourcepath);
+		this.sourcepath = __src;
 	}
 	
 	/**
@@ -172,9 +168,9 @@ class __FileManager__
 		FileObject __sib)
 		throws IOException
 	{
-		// {@squirreljme.error DE04 Only class file output is supported.}
+		// {@squirreljme.error BM04 Only class file output is supported.}
 		if (!JavaFileObject.Kind.CLASS.equals(__k))
-			throw new IllegalArgumentException("DE04");
+			throw new IllegalArgumentException("BM04");
 		
 		// Convert class to "class" name
 		String name = __cn.replace('.', '/') + __k.extension;
@@ -234,10 +230,10 @@ class __FileManager__
 			if (s.endsWith(".java"))
 				rv.add(new __FileObject__(this, input, s));
 			
-			// {@squirreljme.error DE02 Do not know how to handle getting a
+			// {@squirreljme.error BM07 Do not know how to handle getting a
 			// file object from the given file name. (The name of the file)}
 			else
-				throw new IllegalArgumentException(String.format("DE02 %s",
+				throw new IllegalArgumentException(String.format("BM07 %s",
 					s));
 		
 		// Return
@@ -484,7 +480,7 @@ class __FileManager__
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._sourcepathlist = new WeakReference<>(
-				(rv = __list(this.sourcepath)));
+				(rv = __list(Arrays.<FileDirectory>asList(this.sourcepath))));
 		
 		return rv;
 	}

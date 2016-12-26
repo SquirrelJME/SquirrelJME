@@ -158,8 +158,8 @@ public abstract class ProjectSource
 			String sname = name().toString();
 			tempjar = Files.createTempFile(sname, "-build.jar");
 			
-			// Add source
-			sc.addSourceDirectory(fd);
+			// Source code is here
+			sc.setSourceDirectory(fd);
 			
 			// Load dependency into directories
 			for (ProjectBinary db : __deps)

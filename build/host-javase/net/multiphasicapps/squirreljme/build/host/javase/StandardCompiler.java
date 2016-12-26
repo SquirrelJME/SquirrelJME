@@ -28,6 +28,7 @@ import javax.tools.ToolProvider;
 import net.multiphasicapps.squirreljme.build.base.CompilerOutput;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.NullCompilerOutput;
+import net.multiphasicapps.squirreljme.build.base.NullFileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
 
@@ -52,8 +53,8 @@ public class StandardCompiler
 		new __Out__();
 	
 	/** Source directories. */
-	private final List<FileDirectory> _sources =
-		new ArrayList<>();
+	private volatile FileDirectory _sources =
+		new NullFileDirectory();
 	
 	/** Class directories. */
 	private final List<FileDirectory> _classes =
@@ -132,31 +133,14 @@ public class StandardCompiler
 	 * @throws 2016/12/24
 	 */
 	@Override
-	public void addSourceDirectory(FileDirectory __fd)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__fd == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			this._sources.add(__fd);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws 2016/12/24
-	 */
-	@Override
 	public boolean compile()
 	{
 		// Lock
 		synchronized (this.lock)
 		{
 			// Setup file manager
+			__FileManager__ fm = new __FileManager__(this._output,
+				this._classes, this._sources);
 			
 			throw new Error("TODO");
 		}
@@ -235,6 +219,25 @@ public class StandardCompiler
 		
 		// Set new one
 		this._console = __w;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws 2016/12/24
+	 */
+	@Override
+	public void setSourceDirectory(FileDirectory __fd)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__fd == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._sources = __fd;
+		}
 	}
 	
 	/**
