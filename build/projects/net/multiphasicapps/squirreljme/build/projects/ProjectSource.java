@@ -208,8 +208,7 @@ public abstract class ProjectSource
 						sname));
 				
 				// Add non-valid source files from the input source dir
-				if (true)
-					throw new Error("TODO");
+				__copyNonValid(fd, zsw);
 				
 				// Finish off
 				zsw.flush();
@@ -230,7 +229,7 @@ public abstract class ProjectSource
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					// Ignore
 				}
 		}
 	}
@@ -259,6 +258,45 @@ public abstract class ProjectSource
 		
 		// Write it
 		man.write(__os);
+	}
+	
+	/**
+	 * Copies non-valid files from the input directory to the output ZIP.
+	 *
+	 * @param __in The input file source.
+	 * @param __zsw The output where files are to be copied.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/27
+	 */
+	private static void __copyNonValid(FileDirectory __in,
+		ZipStreamWriter __zsw)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null || __zsw == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy all files
+		byte[] buf = new byte[512];
+		for (String s : __in)
+			if (!__isValidSource(s))
+				try (InputStream is = __in.open(s);
+					OutputStream os = __zsw.nextEntry(s,
+						ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					for (;;)
+					{
+						int rc = is.read(buf);
+						
+						// EOF?
+						if (rc < 0)
+							break;
+						
+						// Write
+						os.write(buf, 0, rc);
+					}
+				}
 	}
 	
 	/**
