@@ -199,8 +199,7 @@ public abstract class ProjectSource
 				}
 				
 				// Set output to write to this ZIP
-				if (true)
-					throw new Error("TODO");
+				sc.setOutput(new __CompilerOutput__(zsw));
 				
 				// {@squirreljme.error AT0a Failed to compile the given source
 				// project. (The name of this project)}
