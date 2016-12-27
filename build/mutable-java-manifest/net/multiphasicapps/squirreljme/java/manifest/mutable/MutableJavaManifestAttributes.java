@@ -74,6 +74,24 @@ public class MutableJavaManifestAttributes
 	}
 	
 	/**
+	 * Places the specified key with the given value into the manifest.
+	 *
+	 * @param __k The key to use.
+	 * @param __v The value for that key.
+	 * @return The old value.
+	 * @since 2016/12/27
+	 */
+	public String putValue(String __k, String __v)
+	{
+		// Check
+		if (__k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return put(new JavaManifestKey(__k), __v);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/29
 	 */

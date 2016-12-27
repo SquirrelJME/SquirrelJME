@@ -194,7 +194,7 @@ public abstract class ProjectSource
 				// Write the manifest to the output
 				try (OutputStream os = zsw.nextEntry("META-INF/MANIFEST.MF"))
 				{
-					__generateManifest(os);
+					__generateManifest(__deps, os);
 				}
 				
 				// Set output to write to this ZIP
@@ -236,16 +236,18 @@ public abstract class ProjectSource
 	/**
 	 * Generates the manifest used in the output file.
 	 *
+	 * @param __deps The dependencies for this project.
 	 * @param __os Where the manifest is to be written.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/26
 	 */
-	private final void __generateManifest(OutputStream __os)
+	private final void __generateManifest(Set<ProjectBinary> __deps,
+		OutputStream __os)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__os == null)
+		if (__deps == null || __os == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup main

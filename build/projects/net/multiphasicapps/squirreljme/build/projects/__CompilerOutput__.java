@@ -222,10 +222,10 @@ class __CompilerOutput__
 		public void write(int __b)
 			throws IOException
 		{
-			// {@squirreljme.error CI0f Cannot write a single byte after the
+			// {@squirreljme.error AT0b Cannot write a single byte after the
 			// output has been closed.}
 			if (this._closed)
-				throw new IOException("CI0f");
+				throw new IOException("AT0b");
 			
 			// Forward
 			this.wrapped.write(__b);
@@ -239,10 +239,10 @@ class __CompilerOutput__
 		public void write(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			// {@squirreljme.error CI0g Cannot write multiple bytes after the
+			// {@squirreljme.error AT0c Cannot write multiple bytes after the
 			// output has been closed.}
 			if (this._closed)
-				throw new IOException("CI0g");
+				throw new IOException("AT0c");
 			
 			// Forward
 			this.wrapped.write(__b, __o, __l);
