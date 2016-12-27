@@ -192,8 +192,7 @@ public abstract class ProjectSource
 				StandardOpenOption.WRITE))))
 			{
 				// Write the manifest to the output
-				try (OutputStream os = zsw.nextEntry("META-INF/MANIFEST.MF",
-					ZipCompressionType.DEFAULT_COMPRESSION))
+				try (OutputStream os = zsw.nextEntry("META-INF/MANIFEST.MF"))
 				{
 					__generateManifest(os);
 				}
@@ -282,8 +281,7 @@ public abstract class ProjectSource
 		for (String s : __in)
 			if (!__isValidSource(s))
 				try (InputStream is = __in.open(s);
-					OutputStream os = __zsw.nextEntry(s,
-						ZipCompressionType.DEFAULT_COMPRESSION))
+					OutputStream os = __zsw.nextEntry(s))
 				{
 					for (;;)
 					{

@@ -94,8 +94,7 @@ class __CompilerOutput__
 				it.remove();
 				
 				// Write to the output
-				try (OutputStream os = zip.nextEntry(k,
-					ZipCompressionType.DEFAULT_COMPRESSION))
+				try (OutputStream os = zip.nextEntry(k))
 				{
 					v.wrapped.writeTo(os);
 				}
