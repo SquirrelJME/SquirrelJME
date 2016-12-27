@@ -252,8 +252,12 @@ public abstract class ProjectSource
 		MutableJavaManifest man = new MutableJavaManifest();
 		MutableJavaManifestAttributes attr = man.getMainAttributes();
 		
-		// TODO
-		System.err.println("DEBUG -- Write output manifest.");
+		// Store profiles and the configuration used
+		System.err.println("DEBUG -- Write used configurations.");
+		
+		// Write the API implementation details
+		if (type() == NamespaceType.API)
+			System.err.println("DEBUG -- Write API details.");
 		
 		// Write it
 		man.write(__os);
