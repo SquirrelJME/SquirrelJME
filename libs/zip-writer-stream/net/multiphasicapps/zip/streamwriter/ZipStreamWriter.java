@@ -236,6 +236,23 @@ public class ZipStreamWriter
 	}
 	
 	/**
+	 * Starts writing a new entry in the output ZIP using the default
+	 * compression.
+	 *
+	 * @param __name The name of the entry.
+	 * @return An {@link OutputStream} which is used to write the ZIP file
+	 * data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/27
+	 */
+	public OutputStream nextEntry(String __name)
+		throws IOException, NullPointerException
+	{
+		return nextEntry(__name, ZipCompressionType.DEFAULT_COMPRESSION);
+	}
+	
+	/**
 	 * Starts writing a new entry in the output ZIP.
 	 *
 	 * @param __name The name of the entry.
