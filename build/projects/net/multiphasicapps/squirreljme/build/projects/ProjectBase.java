@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 
 /**
  * This acts as the common base for binary and source projects.
@@ -72,6 +73,17 @@ public abstract class ProjectBase
 	 */
 	public abstract void dependencies(Set<Project> __out)
 		throws InvalidProjectException, NullPointerException;
+	
+	/**
+	 * Returns the manifest that is used for this project.
+	 *
+	 * @return The manifest for this project.
+	 * @throws InvalidProjectException If the manifest could not be read or
+	 * is not valid.
+	 * @since 2016/12/27
+	 */
+	public abstract JavaManifest manifest()
+		throws InvalidProjectException;
 	
 	/**
 	 * Obtains the binary projects which this binary project depends on and

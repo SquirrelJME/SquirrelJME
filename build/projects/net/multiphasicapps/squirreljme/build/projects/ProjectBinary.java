@@ -67,13 +67,10 @@ public abstract class ProjectBinary
 	}
 	
 	/**
-	 * Returns the manifest that is used for this binary.
-	 *
-	 * @return The manifest for this binary.
-	 * @throws InvalidProjectException If the manifest could not be read or
-	 * is not valid.
+	 * {@inheritDoc}
 	 * @since 2016/12/27
 	 */
+	@Override
 	public final JavaManifest manifest()
 		throws InvalidProjectException
 	{

@@ -123,6 +123,17 @@ public abstract class ProjectSource
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/27
+	 */
+	@Override
+	public final JavaManifest manifest()
+		throws InvalidProjectException
+	{
+		return this.manifest;
+	}
+	
+	/**
 	 * Compiles the source code for this project.
 	 *
 	 * @param __dest The destination path where the binary should be placed.
