@@ -11,15 +11,18 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
  * This acts as the common base for binary and source projects.
@@ -167,7 +170,35 @@ public abstract class ProjectBase
 		if (Files.isDirectory(p))
 			return new __DirectoryFileDirectory__(p);
 		
-		throw new Error("TODO");
+		// Otherwise treat as a ZIP
+		FileChannel fc = null;
+		try
+		{
+			// Open the file
+			fc = FileChannel.open(p, StandardOpenOption.READ);
+			
+			// Open as a ZIP
+			return new __ZipFileDirectory__(new ZipBlockReader(
+				new __FileChannelBlockAccessor__(fc)));
+		}
+		
+		// Failed to open, make sure the channel gets closed
+		catch (RuntimeException|IOException|Error e)
+		{
+			// Close the file channel
+			if (fc != null)
+				try
+				{
+					fc.close();
+				}
+				catch (Exception f)
+				{
+					e.addSuppressed(f);
+				}
+			
+			// Rethrow
+			throw e;
+		}
 	}
 	
 	/**
