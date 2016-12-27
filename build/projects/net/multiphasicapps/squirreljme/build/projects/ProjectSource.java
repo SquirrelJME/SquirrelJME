@@ -279,7 +279,7 @@ public abstract class ProjectSource
 		// Copy all files
 		byte[] buf = new byte[512];
 		for (String s : __in)
-			if (!__isValidSource(s))
+			if (!__isValidSource(s) && !s.equals("META-INF/MANIFEST.MF"))
 				try (InputStream is = __in.open(s);
 					OutputStream os = __zsw.nextEntry(s))
 				{
