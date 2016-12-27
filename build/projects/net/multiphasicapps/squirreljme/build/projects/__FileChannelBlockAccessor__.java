@@ -22,6 +22,9 @@ import net.multiphasicapps.zip.blockreader.BlockAccessor;
 class __FileChannelBlockAccessor__
 	implements BlockAccessor
 {
+	/** The file channel to wrap. */
+	protected final FileChannel channel;
+	
 	/**
 	 * Initializes the block accessor for the file channel.
 	 *
@@ -37,7 +40,8 @@ class __FileChannelBlockAccessor__
 		if (__fc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.channel = __fc;
 	}
 	
 	/**
@@ -48,7 +52,7 @@ class __FileChannelBlockAccessor__
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		this.channel.close();
 	}
 }
 

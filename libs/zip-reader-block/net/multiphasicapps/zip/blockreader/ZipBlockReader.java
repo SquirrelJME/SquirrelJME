@@ -21,6 +21,9 @@ import java.io.IOException;
 public class ZipBlockReader
 	implements Closeable
 {
+	/** The accessor to use for ZIP files. */
+	protected final BlockAccessor accessor;
+	
 	/**
 	 * Accesses the given array as a ZIP file.
 	 *
@@ -69,6 +72,9 @@ public class ZipBlockReader
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
+		this.accessor = __b;
+		
 		throw new Error("TODO");
 	}
 	
@@ -80,7 +86,7 @@ public class ZipBlockReader
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		this.accessor.close();
 	}
 }
 
