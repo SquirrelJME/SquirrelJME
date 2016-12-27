@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.zip.blockreader;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @since 2016/12/27
  */
 public class ZipBlockReader
+	implements Closeable
 {
 	/**
 	 * Accesses the given array as a ZIP file.
@@ -67,6 +69,17 @@ public class ZipBlockReader
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/27
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
 		throw new Error("TODO");
 	}
 }

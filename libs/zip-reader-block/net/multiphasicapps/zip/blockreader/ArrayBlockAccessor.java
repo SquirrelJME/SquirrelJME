@@ -54,5 +54,14 @@ public class ArrayBlockAccessor
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/27
+	 */
+	@Override
+	public void close()
+	{
+	}
 }
 

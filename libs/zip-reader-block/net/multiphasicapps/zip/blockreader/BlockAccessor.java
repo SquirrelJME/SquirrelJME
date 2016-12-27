@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.zip.blockreader;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @since 2016/12/27
  */
 public interface BlockAccessor
+	extends Closeable
 {
 }
 
