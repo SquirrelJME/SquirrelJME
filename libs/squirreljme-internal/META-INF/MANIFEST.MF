@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Title: SquirrelJME Internal Classes
-X-SquirrelJME-Vendor: Steven Gawroriski
-X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: This project contains internal classes which 
- are specific only to SquirrelJME's run-time environment.
-X-SquirrelJME-Error: DD
-X-SquirrelJME-UUID: adeedf66-0ddc-4d6a-9291-6d5c1163ff4a
