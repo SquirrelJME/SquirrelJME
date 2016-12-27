@@ -31,6 +31,10 @@ import net.multiphasicapps.squirreljme.build.base.SourceCompilerProvider;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.java.manifest.mutable.
+	MutableJavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.mutable.
+	MutableJavaManifestAttributes;
 import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -191,8 +195,7 @@ public abstract class ProjectSource
 				try (OutputStream os = zsw.nextEntry("META-INF/MANIFEST.MF",
 					ZipCompressionType.DEFAULT_COMPRESSION))
 				{
-					if (true)
-						throw new Error("TODO");
+					__generateManifest(os);
 				}
 				
 				// Set output to write to this ZIP
@@ -231,6 +234,32 @@ public abstract class ProjectSource
 					e.printStackTrace();
 				}
 		}
+	}
+	
+	/**
+	 * Generates the manifest used in the output file.
+	 *
+	 * @param __os Where the manifest is to be written.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/26
+	 */
+	private final void __generateManifest(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup main
+		MutableJavaManifest man = new MutableJavaManifest();
+		MutableJavaManifestAttributes attr = man.getMainAttributes();
+		
+		// TODO
+		System.err.println("DEBUG -- Write output manifest.");
+		
+		// Write it
+		man.write(__os);
 	}
 	
 	/**
