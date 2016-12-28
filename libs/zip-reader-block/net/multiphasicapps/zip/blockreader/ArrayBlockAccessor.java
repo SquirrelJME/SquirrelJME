@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.zip.blockreader;
 
+import java.io.IOException;
+
 /**
  * This wraps an array and provides it to the block accessor interface so that
  * ZIP files may be read from arrays.
@@ -19,6 +21,15 @@ package net.multiphasicapps.zip.blockreader;
 public class ArrayBlockAccessor
 	implements BlockAccessor
 {
+	/** The internal buffer. */
+	protected final byte[] buffer;
+	
+	/** The offset into the buffer. */
+	protected final int offset;
+	
+	/** The number of bytes available. */
+	protected final int length;
+	
 	/**
 	 * Initializes the block accessor which uses the entire array.
 	 *
@@ -52,7 +63,10 @@ public class ArrayBlockAccessor
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		throw new Error("TODO");
+		// Set
+		this.buffer = __b;
+		this.offset = __o;
+		this.length = __l;
 	}
 	
 	/**
@@ -62,6 +76,54 @@ public class ArrayBlockAccessor
 	@Override
 	public void close()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/27
+	 */
+	@Override
+	public int read(long __addr, byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IOException,
+			NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		// {@squirreljme.error CJ01 Cannot read from a negative offset.}
+		if (__addr < 0)
+			throw new IOException("CJ01");
+		
+		// After the end?
+		int length = this.length;
+		if (__addr >= length)
+			return -1;
+		
+		// Number of bytes to actually read
+		int addr = (int)__addr;
+		int actual = Math.min(__l, length - addr);
+		
+		// Read bytes
+		byte[] buffer = this.buffer;
+		int offset = this.offset;
+		for (int i = 0, s = offset + addr, d = __o; i < actual; i++, s++, d++)
+			__b[d] = buffer[s];
+		
+		// Return the actual number of bytes read
+		return actual;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/27
+	 */
+	@Override
+	public long size()
+	{
+		return this.length;
 	}
 }
 
