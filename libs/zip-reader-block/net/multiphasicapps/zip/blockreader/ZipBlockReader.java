@@ -21,6 +21,10 @@ import java.io.IOException;
 public class ZipBlockReader
 	implements Closeable
 {
+	/** The magic number for the end directory. */
+	private static final int END_DIRECTORY_MAGIC_NUMBER =
+		0x06054B50;
+	
 	/** The minimum length of the end central directory record. */
 	private static final int END_DIRECTORY_MIN_LENGTH =
 		22;
@@ -126,15 +130,25 @@ public class ZipBlockReader
 		if (size < END_DIRECTORY_MIN_LENGTH)
 			throw new IOException(String.format("CJ02 %d", size));
 		
-		// The maximum possible position where the directory starts at
-		long end = Math.max(0, size - END_DIRECTORY_MAX_LENGTH);
-		
 		// Constantly search for the end of the central directory
-		for (long at = size - END_DIRECTORY_MIN_LENGTH; at >= end; at--)
+		for (long at = size - END_DIRECTORY_MIN_LENGTH, end =
+			Math.max(0, size - END_DIRECTORY_MAX_LENGTH); at >= end; at--)
 		{
 			// Read single byte to determine if it might start a header
 			byte b = __b.read(at);
 			if (b != 0x50)
+				continue;
+			
+			// Read entire buffer (but not the comment in)
+			__b.read(at, __db, 0, END_DIRECTORY_MIN_LENGTH);
+			
+			// Need to check the magic number
+			if (__ArrayData__.readSignedInt(0, __db) !=
+				END_DIRECTORY_MAGIC_NUMBER)
+				continue;
+			
+			if (__ArrayData__.readUnsignedShort(END_DIRECTORY_MIN_LENGTH - 2,
+				__db) != (size - (at + END_DIRECTORY_MIN_LENGTH)))
 				continue;
 			
 			throw new Error("TODO");
