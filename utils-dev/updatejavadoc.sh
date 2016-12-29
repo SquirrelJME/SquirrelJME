@@ -33,7 +33,7 @@ __docroot="$(pwd)/javadoc"
 
 # Go to the project home directory so fossil works
 cd "$__exedir/.."
-__srcdir="$__exedir/../src"
+__srcdir="$__exedir/.."
 
 # Note 
 echo "Generating error list..."
@@ -42,7 +42,7 @@ echo "Generating error list..."
 echo "# List of Errors" > /tmp/$$
 echo "" >> /tmp/$$
 __old="00"
-("$__exedir/listerror.sh" "$__srcdir/.." 2> /dev/null | while read __line
+("$__exedir/listerror.sh" "$__srcdir" 2> /dev/null | while read __line
 do
 	# Code prefix
 	__pref="$(echo "$__line" | cut -c 1-2)"
