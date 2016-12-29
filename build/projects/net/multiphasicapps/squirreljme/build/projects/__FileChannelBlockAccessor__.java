@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -58,6 +59,29 @@ class __FileChannelBlockAccessor__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/12/29
+	 */
+	@Override
+	public byte read(long __addr)
+		throws EOFException, IOException
+	{
+		// {@squirreljme.error AT0f Cannot read from a negative offset.}
+		if (__addr < 0)
+			throw new IOException("AT0f");
+		
+		// Just forward to the array variant
+		byte[] val = new byte[1];
+		int rv = read(__addr, val, 0, 1);
+		
+		// {@squirreljme.error AT0g Read past end of file.}
+		if (rv < 0)
+			throw new EOFException("AT0g");
+		
+		return val[0];
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/12/27
 	 */
 	@Override
@@ -71,9 +95,9 @@ class __FileChannelBlockAccessor__
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		// {@squirreljme.error CJ01 Cannot read from a negative offset.}
+		// {@squirreljme.error AT0e Cannot read from a negative offset.}
 		if (__addr < 0)
-			throw new IOException("CJ01");
+			throw new IOException("AT0e");
 		
 		// Read until every byte has been read so that partial reads are not
 		// returned

@@ -21,6 +21,14 @@ import java.io.IOException;
 public class ZipBlockReader
 	implements Closeable
 {
+	/** The minimum length of the end central directory record. */
+	private static final int END_DIRECTORY_MIN_LENGTH =
+		22;
+	
+	/** The maximum length of the end central directory record. */
+	private static final int END_DIRECTORY_MAX_LENGTH =
+		END_DIRECTORY_MIN_LENGTH + 65535;
+	
 	/** The accessor to use for ZIP files. */
 	protected final BlockAccessor accessor;
 	
@@ -75,6 +83,10 @@ public class ZipBlockReader
 		// Set
 		this.accessor = __b;
 		
+		// Locate the end of the central directory
+		byte[] dirbytes = new byte[END_DIRECTORY_MIN_LENGTH];
+		long endat = __locateCentralDirEnd(__b, dirbytes);
+		
 		throw new Error("TODO");
 	}
 	
@@ -87,6 +99,43 @@ public class ZipBlockReader
 		throws IOException
 	{
 		this.accessor.close();
+	}
+	
+	/**
+	 * Locates the end of the central directory.
+	 *
+	 * @param __b The block accessor to search.
+	 * @param __db The bytes that make up the end of the central directory.
+	 * @return The position of the central directory end.
+	 * @throws IOException On read errors or if the central directory could
+	 * not be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/29
+	 */
+	private static final long __locateCentralDirEnd(BlockAccessor __b,
+		byte[] __db)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__b == null || __db == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CJ02 The file is too small to be a ZIP file.
+		// (The size of file)}
+		long size = __b.size();
+		if (size < END_DIRECTORY_MIN_LENGTH)
+			throw new IOException(String.format("CJ02 %d", size));
+		
+		// The maximum possible position where the directory starts at
+		long end = Math.max(0, size - END_DIRECTORY_MAX_LENGTH);
+		
+		// Constantly search for the end of the central directory
+		for (long at = size - END_DIRECTORY_MIN_LENGTH; at >= end; at--)
+		{
+			throw new Error("TODO");
+		}
+		
+		throw new Error("TODO");
 	}
 }
 

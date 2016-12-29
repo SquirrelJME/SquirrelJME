@@ -11,6 +11,7 @@
 package net.multiphasicapps.zip.blockreader;
 
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.IOException;
 
 /**
@@ -21,6 +22,18 @@ import java.io.IOException;
 public interface BlockAccessor
 	extends Closeable
 {
+	/**
+	 * Reads a single byte.
+	 *
+	 * @param __addr The address to read from.
+	 * @return The read byte.
+	 * @throws EOFException If the read is past the end of file.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/12/29
+	 */
+	public abstract byte read(long __addr)
+		throws EOFException, IOException;
+	
 	/**
 	 * Reads data from the block and writes to the destination array.
 	 *

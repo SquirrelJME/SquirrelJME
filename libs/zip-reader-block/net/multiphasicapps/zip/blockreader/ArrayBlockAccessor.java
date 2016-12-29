@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.zip.blockreader;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 /**
@@ -76,6 +77,26 @@ public class ArrayBlockAccessor
 	@Override
 	public void close()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/29
+	 */
+	@Override
+	public byte read(long __addr)
+		throws EOFException, IOException
+	{
+		// {@squirreljme.error CJ03 Cannot read from a negative offset.}
+		if (__addr < 0)
+			throw new IOException("CJ03");
+		
+		// {@squirreljme.error CJ04 Read past end of the block.}
+		if (__addr > this.length)
+			throw new EOFException("CJ04");
+		
+		// Get
+		return this.buffer[this.offset + (int)__addr];
 	}
 	
 	/**
