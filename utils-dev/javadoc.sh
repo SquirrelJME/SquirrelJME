@@ -16,9 +16,9 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Build the markdown doclet
-if ! "$__exedir/../build.sh" build docs@doclet-markdown
+if ! "$__exedir/../build.sh" build-doclet
 then
-	echo "Failed to build doclet-markdown." 1>&2
+	echo "Failed to build the doclet." 1>&2
 	exit 1
 fi
 
