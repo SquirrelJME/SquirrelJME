@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Namespace-Name: kernel
-Namespace-Deprecated: DEPRECATED
-Namespace-Depends: src
-Namespace-Title: Kernel
-Namespace-Description: This namespace contains classes 
- which are initialized or used by the SquirrelJME kernel.
-
