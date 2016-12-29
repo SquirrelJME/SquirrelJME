@@ -132,6 +132,11 @@ public class ZipBlockReader
 		// Constantly search for the end of the central directory
 		for (long at = size - END_DIRECTORY_MIN_LENGTH; at >= end; at--)
 		{
+			// Read single byte to determine if it might start a header
+			byte b = __b.read(at);
+			if (b != 0x50)
+				continue;
+			
 			throw new Error("TODO");
 		}
 		
