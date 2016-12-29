@@ -147,14 +147,18 @@ public class ZipBlockReader
 				END_DIRECTORY_MAGIC_NUMBER)
 				continue;
 			
+			// Length must match the end also
 			if (__ArrayData__.readUnsignedShort(END_DIRECTORY_MIN_LENGTH - 2,
 				__db) != (size - (at + END_DIRECTORY_MIN_LENGTH)))
 				continue;
 			
-			throw new Error("TODO");
+			// Central directory is here
+			return at;
 		}
 		
-		throw new Error("TODO");
+		// {@squirreljme.error CJ05 Could not find the end of the central
+		// directory in the ZIP file.}
+		throw new IOException("CJ05");
 	}
 }
 
