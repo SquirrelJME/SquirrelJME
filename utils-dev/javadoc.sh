@@ -75,7 +75,7 @@ do
 			-squirreljme-depends "$__depscom" \
 			-private \
 			-source 1.7 \
-			-docletpath "docs@doclet-markdown.jar:." \
+			-docletpath "doclet.jar:." \
 			-classpath "$__dpath" \
 			-bootclasspath "$__dpath" \
 			-sourcepath "$__dir" \
