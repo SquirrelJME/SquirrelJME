@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Namespace-Title: Extra Libraries
-Namespace-Deprecated: DEPRECATED
-Namespace-Description: This namespace contains extra 
- libraries which may be used by other pieces of code.
- 
-
