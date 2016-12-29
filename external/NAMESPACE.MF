@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Namespace-Name: external
-Namespace-Deprecated: DEPRECATED
-Namespace-Depends: src
-Namespace-Title: SquirrelJME External
-Namespace-Description: This namespace contains 
- projects external to SquirrelJME which are used to provide 
- external environments or to build SquirrelJME.
-
