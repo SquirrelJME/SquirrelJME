@@ -26,13 +26,21 @@ fi
 # Keep adding .. until the version identifier is found
 # Include two sets of .. in the event that we are in a given project
 # Also try others since we may be in the project root.
-while [ ! -f "$__base/squirreljme-version" ] &&
-	[ ! -f "$__base/../squirreljme-version" ] &&
-	[ ! -f "$__base/../../squirreljme-version" ]
+while true
 do
+	__base="$("$__exedir/absolute.sh" "$__base")"
+	
+	# If version here
+	if [ -f "$__base/squirreljme-version" ] ||
+		[ -f "$__base/../squirreljme-version" ] ||
+		[ -f "$__base/../../squirreljme-version" ] ||
+		[ "$__base" = "/" ]
+	then
+		echo "$__base"
+		break
+	fi
+	
+	# Otherwise go up
 	__base="$__base/.."
 done
-
-# Turn it into an absolute path
-"$__exedir/absolute.sh" "$__base"
 
