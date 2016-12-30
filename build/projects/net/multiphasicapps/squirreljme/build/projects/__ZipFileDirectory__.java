@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.build.projects;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -65,7 +67,7 @@ class __ZipFileDirectory__
 	public boolean contains(String __fn)
 		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		return this.zip.contains(__fn);
 	}
 	
 	/**
@@ -75,7 +77,7 @@ class __ZipFileDirectory__
 	@Override
 	public Iterator<String> iterator()
 	{
-		throw new Error("TODO");
+		return new __Iterator__();
 	}
 	
 	/**
@@ -86,7 +88,51 @@ class __ZipFileDirectory__
 	public InputStream open(String __fn)
 		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		return this.zip.open(__fn);
+	}
+	
+	/**
+	 * Iterator for entry names.
+	 *
+	 * @since 2016/12/30
+	 */
+	private class __Iterator__
+		implements Iterator<String>
+	{
+		/** The base iterator. */
+		protected final Iterator<ZipBlockEntry> iterator =
+			__ZipFileDirectory__.this.zip.iterator();
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/30
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this.iterator.hasNext();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/30
+		 */
+		@Override
+		public String next()
+			throws NoSuchElementException
+		{
+			return this.iterator.next().toString();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/30
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 

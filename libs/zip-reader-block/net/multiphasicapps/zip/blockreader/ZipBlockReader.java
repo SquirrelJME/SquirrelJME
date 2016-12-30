@@ -11,7 +11,9 @@
 package net.multiphasicapps.zip.blockreader;
 
 import java.io.Closeable;
+import java.io.InputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * This class is used to read ZIP files in a random access fashion.
@@ -19,7 +21,7 @@ import java.io.IOException;
  * @since 2016/12/27
  */
 public class ZipBlockReader
-	implements Closeable
+	implements Iterable<ZipBlockEntry>, Closeable
 {
 	/** The magic number for the end directory. */
 	private static final int _END_DIRECTORY_MAGIC_NUMBER =
@@ -144,6 +146,74 @@ public class ZipBlockReader
 		throws IOException
 	{
 		this.accessor.close();
+	}
+	
+	/**
+	 * Checks whether the ZIP file contains an entry with the given entry name.
+	 *
+	 * @param __s The name to check if it is contained within the ZIP.
+	 * @return {@code true} If the ZIP contains an entry with this name.
+	 * @throws IOException If the ZIP could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/30
+	 */
+	public boolean contains(String __s)
+		throws IOException, NullPointerException
+	{
+		return get(__s) != null;
+	}
+	
+	/**
+	 * Returns the entry which is associated with the given name.
+	 *
+	 * @return The entry for the given name or {@code null} if it does not
+	 * exist.
+	 * @throws IOException If there was an error reading the ZIP.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/30
+	 */
+	public ZipBlockEntry get(String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/30
+	 */
+	@Override
+	public Iterator<ZipBlockEntry> iterator()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Opens the file with the given name from this ZIP file and returns the
+	 * input stream for its data.
+	 *
+	 * @param __s The file to open.
+	 * @return The input stream to the file.
+	 * @throws IOException If the file could not be opened due to either a
+	 * damaged ZIP file, failed read, or if it does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/12/30
+	 */
+	public InputStream open(String __s)
+		throws IOException, NullPointerException
+	{
+		// {@squirreljme.error CJ06 The specified entry does not exist
+		// within the ZIP file. (The entry name)
+		ZipBlockEntry ent = get(__s);
+		if (ent == null)
+			throw new IOException(String.format("CJ06 %s", __s));
+		
+		// Open it
+		return ent.open();
 	}
 	
 	/**
