@@ -179,7 +179,14 @@ public class ZipBlockReader
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Use linear search since entries might be in any order
+		for (ZipBlockEntry e : this)
+			if (e.toString().equals(__s))
+				return e;
+		
+		// {@squirreljme.error CJ07 Could not find the entry with the
+		// specified name. (The name of the entry)}
+		throw new IOException(String.format("CJ07 %s", __s));
 	}
 	
 	/**
