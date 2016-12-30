@@ -22,19 +22,40 @@ public class ZipBlockReader
 	implements Closeable
 {
 	/** The magic number for the end directory. */
-	private static final int END_DIRECTORY_MAGIC_NUMBER =
+	private static final int _END_DIRECTORY_MAGIC_NUMBER =
 		0x06054B50;
 	
+	/** The offset to the field for the number of entries in this disk. */
+	private static final int _END_DIRECTORY_DISK_ENTRIES_OFFSET =
+		8;
+	
+	/** The offset to the size of the central directory. */
+	private static final int _END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET =
+		_END_DIRECTORY_DISK_ENTRIES_OFFSET + 4;
+	
+	/** The offset to the offset of the central directory. */
+	private static final int _END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET =
+		_END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET + 4;
+	
 	/** The minimum length of the end central directory record. */
-	private static final int END_DIRECTORY_MIN_LENGTH =
+	private static final int _END_DIRECTORY_MIN_LENGTH =
 		22;
 	
 	/** The maximum length of the end central directory record. */
-	private static final int END_DIRECTORY_MAX_LENGTH =
-		END_DIRECTORY_MIN_LENGTH + 65535;
+	private static final int _END_DIRECTORY_MAX_LENGTH =
+		_END_DIRECTORY_MIN_LENGTH + 65535;
 	
 	/** The accessor to use for ZIP files. */
 	protected final BlockAccessor accessor;
+	
+	/** The number of entries in this ZIP. */
+	protected final int numentries;
+	
+	/** The base address for the central directory. */
+	protected final long cdirbase;
+	
+	/** The actual start position for the ZIP file. */
+	protected final long zipbaseaddr;
 	
 	/**
 	 * Accesses the given array as a ZIP file.
@@ -88,10 +109,30 @@ public class ZipBlockReader
 		this.accessor = __b;
 		
 		// Locate the end of the central directory
-		byte[] dirbytes = new byte[END_DIRECTORY_MIN_LENGTH];
+		byte[] dirbytes = new byte[_END_DIRECTORY_MIN_LENGTH];
 		long endat = __locateCentralDirEnd(__b, dirbytes);
 		
-		throw new Error("TODO");
+		// Get the number of entries which are in this disk and not in the
+		// archive as a whole, since multi-archive ZIP files are not supported
+		int numentries = __ArrayData__.readUnsignedShort(
+			_END_DIRECTORY_DISK_ENTRIES_OFFSET, dirbytes);
+		this.numentries = numentries;
+		
+		// Need the size of the central directory to determine where it
+		// actually starts
+		long cdirsize = __ArrayData__.readUnsignedInt(
+			_END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET, dirbytes);
+		
+		// This is the position of the start of the central directory
+		long cdirbase = endat - cdirsize;
+		this.cdirbase = cdirbase;
+		
+		// Determine the base address of the ZIP file since all entries
+		// are relative from the start point
+		long csz = __b.size();
+		this.zipbaseaddr = csz - (__ArrayData__.readUnsignedInt(
+			_END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET, dirbytes) + cdirsize +
+			(csz - endat));
 	}
 	
 	/**
@@ -103,6 +144,17 @@ public class ZipBlockReader
 		throws IOException
 	{
 		this.accessor.close();
+	}
+	
+	/**
+	 * Returns the number of entries in this ZIP file.
+	 *
+	 * @return The number of entries in the ZIP.
+	 * @since 2016/12/30
+	 */
+	public int size()
+	{
+		return this.numentries;
 	}
 	
 	/**
@@ -127,12 +179,12 @@ public class ZipBlockReader
 		// {@squirreljme.error CJ02 The file is too small to be a ZIP file.
 		// (The size of file)}
 		long size = __b.size();
-		if (size < END_DIRECTORY_MIN_LENGTH)
+		if (size < _END_DIRECTORY_MIN_LENGTH)
 			throw new IOException(String.format("CJ02 %d", size));
 		
 		// Constantly search for the end of the central directory
-		for (long at = size - END_DIRECTORY_MIN_LENGTH, end =
-			Math.max(0, size - END_DIRECTORY_MAX_LENGTH); at >= end; at--)
+		for (long at = size - _END_DIRECTORY_MIN_LENGTH, end =
+			Math.max(0, size - _END_DIRECTORY_MAX_LENGTH); at >= end; at--)
 		{
 			// Read single byte to determine if it might start a header
 			byte b = __b.read(at);
@@ -140,16 +192,16 @@ public class ZipBlockReader
 				continue;
 			
 			// Read entire buffer (but not the comment in)
-			__b.read(at, __db, 0, END_DIRECTORY_MIN_LENGTH);
+			__b.read(at, __db, 0, _END_DIRECTORY_MIN_LENGTH);
 			
 			// Need to check the magic number
 			if (__ArrayData__.readSignedInt(0, __db) !=
-				END_DIRECTORY_MAGIC_NUMBER)
+				_END_DIRECTORY_MAGIC_NUMBER)
 				continue;
 			
 			// Length must match the end also
-			if (__ArrayData__.readUnsignedShort(END_DIRECTORY_MIN_LENGTH - 2,
-				__db) != (size - (at + END_DIRECTORY_MIN_LENGTH)))
+			if (__ArrayData__.readUnsignedShort(_END_DIRECTORY_MIN_LENGTH - 2,
+				__db) != (size - (at + _END_DIRECTORY_MIN_LENGTH)))
 				continue;
 			
 			// Central directory is here

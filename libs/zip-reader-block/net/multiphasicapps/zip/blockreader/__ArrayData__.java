@@ -49,6 +49,22 @@ final class __ArrayData__
 	}
 	
 	/**
+	 * Reads an unsigned integer from the array.
+	 *
+	 * @param __off The offset to read from.
+	 * @param __b The array to read from.
+	 * @return The read value.
+	 * @since 2016/12/28
+	 */
+	static long readUnsignedInt(int __off, byte[] __b)
+	{
+		return ((__b[__off + 3] & 0xFF) << 24) |
+			((__b[__off + 2] & 0xFF) << 16) |
+			((__b[__off + 1] & 0xFF) << 8) |
+			(__b[__off] & 0xFF);
+	}
+	
+	/**
 	 * Reads an unsigned short from the array.
 	 *
 	 * @param __off The offset to read from.
