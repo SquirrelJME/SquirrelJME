@@ -13,7 +13,11 @@ package net.multiphasicapps.zip.blockreader;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class is used to read ZIP files in a random access fashion.
@@ -58,6 +62,9 @@ public class ZipBlockReader
 	
 	/** The actual start position for the ZIP file. */
 	protected final long zipbaseaddr;
+	
+	/** Entries within this ZIP file. */
+	private final List<Reference<ZipBlockEntry>> _entries;
 	
 	/**
 	 * Accesses the given array as a ZIP file.
@@ -122,6 +129,7 @@ public class ZipBlockReader
 		
 		// Need the size of the central directory to determine where it
 		// actually starts
+		long csz = __b.size();
 		long cdirsize = __ArrayData__.readUnsignedInt(
 			_END_DIRECTORY_CENTRAL_DIR_SIZE_OFFSET, dirbytes);
 		
@@ -129,12 +137,28 @@ public class ZipBlockReader
 		long cdirbase = endat - cdirsize;
 		this.cdirbase = cdirbase;
 		
+		// {@squirreljme.error CJ08 The central directory is larger than the
+		// ZIP file, the ZIP is truncated. (The central directory size; The
+		// size of the ZIP file)}
+		if (cdirsize > csz)
+			throw new IOException(String.format("CJ08 %d %d", cdirsize, csz));
+		
 		// Determine the base address of the ZIP file since all entries
 		// are relative from the start point
-		long csz = __b.size();
-		this.zipbaseaddr = csz - (__ArrayData__.readUnsignedInt(
+		long zipbaseaddr = csz - (__ArrayData__.readUnsignedInt(
 			_END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET, dirbytes) + cdirsize +
 			(csz - endat));
+		this.zipbaseaddr = zipbaseaddr;
+		
+		// {@squirreljme.error CJ09 The base address of the ZIP file exceeds
+		// the bound of the ZIP file. (The central directory size; The size of
+		// the ZIP file)}
+		if (zipbaseaddr < 0 || zipbaseaddr > csz)
+			throw new IOException(String.format("CJ09 %d %d", zipbaseaddr,
+				csz));
+		
+		// Setup entry list
+		this._entries = __newEntryReferenceList(numentries);
 	}
 	
 	/**
@@ -214,7 +238,7 @@ public class ZipBlockReader
 		throws IOException, NullPointerException
 	{
 		// {@squirreljme.error CJ06 The specified entry does not exist
-		// within the ZIP file. (The entry name)
+		// within the ZIP file. (The entry name)}
 		ZipBlockEntry ent = get(__s);
 		if (ent == null)
 			throw new IOException(String.format("CJ06 %s", __s));
@@ -288,6 +312,21 @@ public class ZipBlockReader
 		// {@squirreljme.error CJ05 Could not find the end of the central
 		// directory in the ZIP file.}
 		throw new IOException("CJ05");
+	}
+	
+	/**
+	 * Creates a list of references.
+	 *
+	 * @param __n The number of elements in the list.
+	 * @return The list.
+	 * @since 2016/12/31
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static List<Reference<ZipBlockEntry>> __newEntryReferenceList(
+		int __n)
+	{
+		return Arrays.<Reference<ZipBlockEntry>>asList(
+			(Reference<ZipBlockEntry>[])((Object)new Reference[__n]));
 	}
 }
 
