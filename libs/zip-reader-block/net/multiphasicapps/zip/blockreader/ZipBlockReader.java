@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * This class is used to read ZIP files in a random access fashion.
@@ -63,8 +64,11 @@ public class ZipBlockReader
 	/** The actual start position for the ZIP file. */
 	protected final long zipbaseaddr;
 	
+	/** Central directory entry offsets. */
+	private final long[] _offsets;
+	
 	/** Entries within this ZIP file. */
-	private final List<Reference<ZipBlockEntry>> _entries;
+	private final Reference<ZipBlockEntry>[] _entries;
 	
 	/**
 	 * Accesses the given array as a ZIP file.
@@ -159,6 +163,9 @@ public class ZipBlockReader
 		
 		// Setup entry list
 		this._entries = __newEntryReferenceList(numentries);
+		
+		// Initialize entry offsets
+		this._offsets = __readOffsets();
 	}
 	
 	/**
@@ -220,7 +227,7 @@ public class ZipBlockReader
 	@Override
 	public Iterator<ZipBlockEntry> iterator()
 	{
-		throw new Error("TODO");
+		return new __Iterator__();
 	}
 	
 	/**
@@ -256,6 +263,19 @@ public class ZipBlockReader
 	public int size()
 	{
 		return this.numentries;
+	}
+	
+	/**
+	 * Reads the offsets within the ZIP file for central directory items.
+	 *
+	 * @return The array of offsets.
+	 * @throws IOException On read errors or the ZIP is not valid.
+	 * @since 2016/12/31
+	 */
+	private long[] __readOffsets()
+		throws IOException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -322,11 +342,54 @@ public class ZipBlockReader
 	 * @since 2016/12/31
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static List<Reference<ZipBlockEntry>> __newEntryReferenceList(
+	private static Reference<ZipBlockEntry>[] __newEntryReferenceList(
 		int __n)
 	{
-		return Arrays.<Reference<ZipBlockEntry>>asList(
-			(Reference<ZipBlockEntry>[])((Object)new Reference[__n]));
+		return (Reference<ZipBlockEntry>[])((Object)new Reference[__n]);
+	}
+	
+	/**
+	 * Iterates over entries within the ZIP.
+	 *
+	 * @since 2016/12/31
+	 */
+	private class __Iterator__
+		implements Iterator<ZipBlockEntry>
+	{
+		/** Entry count. */
+		protected final int numentries =
+			ZipBlockReader.this.numentries;
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/31
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/31
+		 */
+		@Override
+		public ZipBlockEntry next()
+			throws NoSuchElementException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/12/31
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 
