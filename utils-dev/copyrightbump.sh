@@ -32,8 +32,10 @@ do
 	
 	if [ "$__count" -ge "100" ]
 	then
-		fossil commit -m "Update copyright statement."
+		fossil commit -m "Update copyright statements."
 		__count=0
 	fi
 done
+
+fossil commit -m "Update copyright statements."
 
