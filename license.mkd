@@ -1,5 +1,10 @@
 # Licenses
 
+SquirrelJME is copyright:
+
+ * Copyright (C) 2013-2017 Steven Gawroriski <steven@multiphasicapps.net>
+ * Copyright (C) 2013-2017 Multi-Phasic Applications <multiphasicapps.net>
+
 SquirrelJME has two primary types of files, source code and non-source code.
 
 All source-code is under the **GNU General Public License Version 3 or Later**.
