@@ -30,7 +30,7 @@ public class ZipBlockReader
 {
 	/** The offset to the file name length. */
 	private static final int _CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET =
-		32;
+		28;
 	
 	/** The offset to the extra data length. */
 	private static final int _CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET =
@@ -301,13 +301,16 @@ public class ZipBlockReader
 		byte[] cdirent = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
 		for (int i = 0; i < numentries; i++)
 		{
-			System.err.printf("DEBUG -- Read entry %d%n", i);
-			
 			// Entry is placed at this position
 			rv[i] = at;
 			
-			// Read directory entry
-			accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH);
+			// {@squirreljme.error CJ0a Central directory extends past the end
+			// of the file. (The current entry; The current read position; The
+			// size of the file)}
+			if (accessor.read(at, cdirent, 0,
+				_CENTRAL_DIRECTORY_MIN_LENGTH) < 0)
+				throw new IOException(String.format("CJ0a %d %d %d", i, at,
+					accessor.size()));
 			
 			// Read lengths for file name, comment, and extra data
 			int fnl = __ArrayData__.readUnsignedShort(
