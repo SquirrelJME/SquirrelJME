@@ -1,11 +1,11 @@
 @ECHO OFF
 REM ---------------------------------------------------------------------------
 REM Multi-Phasic Applications: SquirrelJME
-REM     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
-REM     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+REM     Copyright (C) Steven Gawroriski <steven@multiphasicapps.net>
+REM     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 REM ---------------------------------------------------------------------------
 REM SquirrelJME is under the GNU General Public License v3, or later.
-REM For more information see license.mkd.
+REM See license.mkd for licensing and copyright information.
 REM ---------------------------------------------------------------------------
 REM DESCRIPTION: Builds whatever is needed to support hairball and then invokes
 REM it using the host virtual machine.
