@@ -17,7 +17,7 @@ __exedir="$(dirname -- "$0")"
 
 # Just update anything with an older copyright
 __count=0
-grep -rl 'Copyright (C) 20[0-9]\{2\}-2016' "$__exedir/.." | \
+grep -rl 'Copyright (C) 20[0-9]\{2\}-20[0-9]\{2\}' "$__exedir/.." | \
 	grep -e '\.java$' -e '\.sh$' -e '\.cmd$' |
 	while read __file
 do
