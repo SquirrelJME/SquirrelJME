@@ -28,6 +28,22 @@ import java.util.NoSuchElementException;
 public class ZipBlockReader
 	implements Iterable<ZipBlockEntry>, Closeable
 {
+	/** The offset to the file name length. */
+	private static final int _CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET =
+		32;
+	
+	/** The offset to the extra data length. */
+	private static final int _CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET =
+		_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET + 2;
+	
+	/** The offset to the comment length. */
+	private static final int _CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET =
+		_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
+	
+	/** The minimum length of the central directory entry. */
+	private static final int _CENTRAL_DIRECTORY_MIN_LENGTH =
+		46;
+	
 	/** The magic number for the end directory. */
 	private static final int _END_DIRECTORY_MAGIC_NUMBER =
 		0x06054B50;
@@ -275,7 +291,38 @@ public class ZipBlockReader
 	private long[] __readOffsets()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Setup return value
+		int numentries = this.numentries;
+		long[] rv = new long[numentries];
+		
+		// Read in every entry within the ZIP
+		BlockAccessor accessor = this.accessor;
+		long at = this.cdirbase;
+		byte[] cdirent = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
+		for (int i = 0; i < numentries; i++)
+		{
+			System.err.printf("DEBUG -- Read entry %d%n", i);
+			
+			// Entry is placed at this position
+			rv[i] = at;
+			
+			// Read directory entry
+			accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH);
+			
+			// Read lengths for file name, comment, and extra data
+			int fnl = __ArrayData__.readUnsignedShort(
+					_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, cdirent),
+				cml = __ArrayData__.readUnsignedShort(
+					_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET, cdirent),
+				edl = __ArrayData__.readUnsignedShort(
+					_CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET, cdirent);
+			
+			// Next entry is just after this point
+			at += fnl + cml + edl + _CENTRAL_DIRECTORY_MIN_LENGTH;
+		}
+		
+		// Done
+		return rv;
 	}
 	
 	/**

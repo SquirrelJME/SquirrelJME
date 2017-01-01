@@ -104,9 +104,8 @@ class __FileChannelBlockAccessor__
 		ByteBuffer buf = ByteBuffer.wrap(__b, __o, __l);
 		FileChannel channel = this.channel;
 		while (buf.hasRemaining())
-		{
-			channel.read(buf, __addr + buf.position());
-		}
+			if (channel.read(buf, __addr + buf.position()) < 0)
+				break;
 		
 		// Use the read position
 		return buf.position();
