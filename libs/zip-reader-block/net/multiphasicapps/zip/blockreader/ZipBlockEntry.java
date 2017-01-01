@@ -12,32 +12,74 @@ package net.multiphasicapps.zip.blockreader;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.zip.IBM437CodePage;
 
 /**
  * This represents a single entry within a ZIP file which may be opened.
  *
  * @since 2016/12/30
  */
-public class ZipBlockEntry
+public final class ZipBlockEntry
 {
+	/** The offset of the general purpose flags. */
+	private static final int _CENTRAL_DIRECTORY_FLAG_OFFSET =
+		8;
+	
+	/** The offset to the file name length. */
+	private static final int _CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET =
+		28;
+	
+	/** The offset to the extra data length. */
+	private static final int _CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET =
+		_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET + 2;
+	
+	/** The offset to the comment length. */
+	private static final int _CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET =
+		_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
+	
+	/** The minimum length of the central directory entry. */
+	private static final int _CENTRAL_DIRECTORY_MIN_LENGTH =
+		46;
+	
+	/** General purpose flag: Is UTF-8 encoded filename/comment? */
+	protected static final int GPF_ENCODING_UTF8 =
+		(1 << 11);
+	
+	/** The owning reader. */
+	protected final ZipBlockReader owner;
+	
+	/** The data accessor. */
+	protected final BlockAccessor accessor;
+	
+	/** The position of this entry. */
+	protected final long position;
+	
+	/** The name of this file. */
+	private volatile Reference<String> _name;
+	
 	/**
 	 * Initializes the block entry.
 	 *
+	 * @param __br The owning block reader.
+	 * @param __id The entry ID.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/30
 	 */
-	ZipBlockEntry()
+	ZipBlockEntry(ZipBlockReader __br, int __id)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/12/30
-	 */
-	@Override
-	public String toString()
-	{
-		throw new Error("TODO");
+		// Check
+		if (__br == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.owner = __br;
+		this.accessor = __br._accessor;
+		
+		// Get position
+		this.position = __br._offsets[__id];
 	}
 	
 	/**
@@ -51,6 +93,64 @@ public class ZipBlockEntry
 		throws IOException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/12/30
+	 */
+	@Override
+	public String toString()
+	{
+		Reference<String> ref = this._name;
+		String rv;
+		
+		// Need to load it?
+		if (ref == null || null == (rv = ref.get()))
+			try
+			{
+				BlockAccessor accessor = this.accessor;
+				long position = this.position;
+				
+				// {@squirreljme.error CJ0d Could not read the central
+				// directory data.}
+				byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
+				if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
+					data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
+					throw new IOException("CJ0d");
+				
+				// Read file name length
+				int fnl = __ArrayData__.readUnsignedShort(
+					_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, data);
+				
+				// {@squirreljme.error CJ0f Could not read the file name.}
+				byte[] rawname = new byte[fnl];
+				if (fnl != accessor.read(
+					position + _CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))
+					throw new IOException("CJ0f");
+				
+				// UTF-8 Encoded?
+				if ((__ArrayData__.readUnsignedShort(
+					_CENTRAL_DIRECTORY_FLAG_OFFSET, data) &
+					GPF_ENCODING_UTF8) != 0)
+					rv = new String(rawname, 0, fnl, "utf-8");
+				
+				// DOS codepage
+				else
+					rv = IBM437CodePage.toString(rawname, 0, fnl);
+				
+				// Store for later
+				this._name = new WeakReference<>(rv);
+			}
+			
+			// {@squirreljme.error CJ0b Could not read the name of the
+			// entry.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("CJ0b", e);
+			}
+		
+		return rv;
 	}
 }
 

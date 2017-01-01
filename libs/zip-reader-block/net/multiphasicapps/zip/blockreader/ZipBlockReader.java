@@ -28,6 +28,10 @@ import java.util.NoSuchElementException;
 public class ZipBlockReader
 	implements Iterable<ZipBlockEntry>, Closeable
 {
+	/** The magic number for central directory items. */
+	private static final int _CENTRAL_DIRECTORY_MAGIC_NUMBER =
+		0x02014B50;
+	
 	/** The offset to the file name length. */
 	private static final int _CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET =
 		28;
@@ -80,8 +84,11 @@ public class ZipBlockReader
 	/** The actual start position for the ZIP file. */
 	protected final long zipbaseaddr;
 	
+	/** The accessor to use for ZIP files. */
+	final BlockAccessor _accessor;
+	
 	/** Central directory entry offsets. */
-	private final long[] _offsets;
+	final long[] _offsets;
 	
 	/** Entries within this ZIP file. */
 	private final Reference<ZipBlockEntry>[] _entries;
@@ -136,6 +143,7 @@ public class ZipBlockReader
 		
 		// Set
 		this.accessor = __b;
+		this._accessor = __b;
 		
 		// Locate the end of the central directory
 		byte[] dirbytes = new byte[_END_DIRECTORY_MIN_LENGTH];
@@ -307,10 +315,16 @@ public class ZipBlockReader
 			// {@squirreljme.error CJ0a Central directory extends past the end
 			// of the file. (The current entry; The current read position; The
 			// size of the file)}
-			if (accessor.read(at, cdirent, 0,
-				_CENTRAL_DIRECTORY_MIN_LENGTH) < 0)
+			if (accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH) !=
+				_CENTRAL_DIRECTORY_MIN_LENGTH)
 				throw new IOException(String.format("CJ0a %d %d %d", i, at,
 					accessor.size()));
+			
+			// {@squirreljme.error CJ0c The entry does not have a valid
+			// magic number. (The entry index)}
+			if (__ArrayData__.readSignedInt(0, cdirent) !=
+				_CENTRAL_DIRECTORY_MAGIC_NUMBER)
+				throw new IOException(String.format("CJ0c %d", i));
 			
 			// Read lengths for file name, comment, and extra data
 			int fnl = __ArrayData__.readUnsignedShort(
@@ -410,6 +424,10 @@ public class ZipBlockReader
 		protected final int numentries =
 			ZipBlockReader.this.numentries;
 		
+		/** The next entry. */
+		private volatile int _next =
+			0;
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2016/12/31
@@ -417,7 +435,7 @@ public class ZipBlockReader
 		@Override
 		public boolean hasNext()
 		{
-			throw new Error("TODO");
+			return (this._next < this.numentries);
 		}
 		
 		/**
@@ -428,7 +446,25 @@ public class ZipBlockReader
 		public ZipBlockEntry next()
 			throws NoSuchElementException
 		{
-			throw new Error("TODO");
+			// No more entries?
+			int next = this._next;
+			if (next >= this.numentries)
+				throw new NoSuchElementException("NSEE");
+			
+			// Next entry to read
+			this._next = next + 1;
+			
+			// Parse and return entry
+			Reference<ZipBlockEntry>[] entries = ZipBlockReader.this._entries;
+			Reference<ZipBlockEntry> ref = entries[next];
+			ZipBlockEntry rv;
+			
+			// Need to load the entry?
+			if (ref == null || null == (rv = ref.get()))
+				entries[next] = new WeakReference<>(
+					(rv = new ZipBlockEntry(ZipBlockReader.this, next)));
+			
+			return rv;
 		}
 		
 		/**
