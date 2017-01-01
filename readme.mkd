@@ -1,8 +1,8 @@
 # SquirrelJME
 
- * Copyright (C) 2013-2016 Steven Gawroriski
+ * Copyright (C) 2013-2017 Steven Gawroriski
    <steven@multiphasicapps.net>
- * Copyright (C) 2013-2016 Multi-Phasic Applications
+ * Copyright (C) 2013-2017 Multi-Phasic Applications
    <http://multiphasicapps.net/>
  * _Lex_ (The SquirrelJME Mascot) was drawn by...
    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
