@@ -88,7 +88,8 @@ public final class Kernel
 				throw new RuntimeException("BH04");
 			
 			// Create process, which gets its main
-			lp = __newProcess(main, new SuiteDataAccessor[0], new String[0]);
+			lp = __newProcess(main, new SuiteDataAccessor[0],
+				launchparms.getCommandLine());
 		}
 		
 		// Failed to create it, destroy it
