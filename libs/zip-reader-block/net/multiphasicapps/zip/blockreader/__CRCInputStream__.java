@@ -12,6 +12,8 @@ package net.multiphasicapps.zip.blockreader;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.crc32.CRC32Calculator;
+import net.multiphasicapps.zip.ZipCRCConstants;
 
 /**
  * This is used to check that the CRC is valid.
@@ -26,6 +28,13 @@ class __CRCInputStream__
 	
 	/** The final resulting CRC to use. */
 	protected final int crc;
+	
+	/** CRC calculation. */
+	protected final CRC32Calculator crccalc =
+		new CRC32Calculator(ZipCRCConstants.CRC_REFLECT_DATA,
+			ZipCRCConstants.CRC_REFLECT_REMAINDER,
+			ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
+			ZipCRCConstants.CRC_FINALXOR);
 	
 	/**
 	 * Calcualtes the CRC of another given input stream.
@@ -52,6 +61,18 @@ class __CRCInputStream__
 	 * @since 2017/01/03
 	 */
 	@Override
+	public int available()
+		throws IOException
+	{
+		// Forward as it may be calculable
+		return this.in.available();
+	}
+	
+	/**
+	 * {@inheritDoc]
+	 * @since 2017/01/03
+	 */
+	@Override
 	public void close()
 		throws IOException
 	{
@@ -67,7 +88,29 @@ class __CRCInputStream__
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Read in
+		int rv = this.in.read();
+		
+		// EOF? Check CRC value
+		CRC32Calculator crccalc = this.crccalc;
+		if (rv < 0)
+		{
+			// {@squirreljme.error CJ0n CRC mismatch. (The expected CRC; The
+			// calculated CRC})
+			int thiscrc = crccalc.crc(), wantcrc = this.crc;
+			if (thiscrc != wantcrc)
+				throw new IOException(String.format("CJ0n %08x %08x", wantcrc,
+					thiscrc));
+			
+			// EOF
+			return -1;
+		}
+		
+		// Calculate
+		crccalc.offer((byte)rv);
+		
+		// Return
+		return rv;
 	}
 	
 	/**
@@ -85,7 +128,29 @@ class __CRCInputStream__
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		throw new Error("TODO");
+		// Read in
+		int rv = this.in.read(__b, __o, __l);
+		
+		// EOF? Check CRC value
+		CRC32Calculator crccalc = this.crccalc;
+		if (rv < 0)
+		{
+			// {@squirreljme.error CJ0o CRC mismatch. (The expected CRC; The
+			// calculated CRC})
+			int thiscrc = crccalc.crc(), wantcrc = this.crc;
+			if (thiscrc != wantcrc)
+				throw new IOException(String.format("CJ0o %08x %08x", wantcrc,
+					thiscrc));
+			
+			// EOF
+			return -1;
+		}
+		
+		// Calculate
+		crccalc.offer(__b, __o, __l);
+		
+		// Return
+		return rv;
 	}
 }
 

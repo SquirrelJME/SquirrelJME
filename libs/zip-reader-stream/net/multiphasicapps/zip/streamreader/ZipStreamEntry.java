@@ -13,8 +13,7 @@ package net.multiphasicapps.zip.streamreader;
 import java.io.Flushable;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.crc32.CRC32DataSink;
-import net.multiphasicapps.io.datasink.DataSinkOutputStream;
+import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
@@ -217,15 +216,11 @@ public final class ZipStreamEntry
 			ZipStreamEntry.this.lock;
 		
 		/** CRC calculation. */
-		protected final CRC32DataSink crccalc =
-			new CRC32DataSink(ZipCRCConstants.CRC_REFLECT_DATA,
+		protected final CRC32Calculator crccalc =
+			new CRC32Calculator(ZipCRCConstants.CRC_REFLECT_DATA,
 				ZipCRCConstants.CRC_REFLECT_REMAINDER,
 				ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
 				ZipCRCConstants.CRC_FINALXOR);
-		
-		/** CRC calculator stream. */
-		protected final DataSinkOutputStream crcout =
-			new DataSinkOutputStream(crccalc);
 		
 		/** The source stream. */
 		protected final InputStream input;
@@ -313,7 +308,6 @@ public final class ZipStreamEntry
 		public void flush()
 			throws IOException
 		{
-			this.crcout.flush();
 			this.crccalc.flush();
 		}
 		
@@ -351,7 +345,7 @@ public final class ZipStreamEntry
 				}
 				
 				// Calculate CRC
-				crcout.write(rv);
+				crccalc.offer((byte)rv);
 				this._size += 1;
 				return rv;
 			}
@@ -387,7 +381,7 @@ public final class ZipStreamEntry
 				}
 				
 				// Calculate CRC
-				crcout.write(__b, __o, rc);
+				crccalc.offer(__b, __o, rc);
 				this._size += rc;
 				return rc;
 			}
