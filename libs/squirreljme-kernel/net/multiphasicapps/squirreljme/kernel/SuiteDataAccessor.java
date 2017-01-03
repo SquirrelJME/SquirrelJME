@@ -47,6 +47,6 @@ public abstract class SuiteDataAccessor
 	 * @since 2016/11/08
 	 */
 	public abstract InputStream loadResource(String __name)
-		throws InvalidSuiteException, NullPointerException;
+		throws NullPointerException;
 }
 

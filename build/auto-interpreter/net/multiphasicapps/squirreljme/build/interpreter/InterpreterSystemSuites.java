@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +44,9 @@ public class InterpreterSystemSuites
 	 */
 	public static final String SELECT_PROPERTY =
 		"net.multiphasicapps.squirreljme.interpreter.select";
+	
+	/** APIs to keep loaded at any one time. */
+	private final __ProjectAccessor__[] _accessors;
 	
 	/**
 	 * Initializes the system suite manager.
@@ -114,7 +118,13 @@ public class InterpreterSystemSuites
 				projects.add(bd);
 		}
 		
-		throw new Error("TODO");
+		// Load all binaries and create accessors for them
+		int n = projects.size();
+		__ProjectAccessor__[] accessors = new __ProjectAccessor__[n];
+		Iterator<ProjectBinary> it = projects.iterator();
+		for (int i = 0; i < n; i++)
+			accessors[i] = new __ProjectAccessor__(it.next());
+		this._accessors = accessors;
 	}
 }
 
