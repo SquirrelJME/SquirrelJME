@@ -83,6 +83,19 @@ public final class ZipBlockEntry
 	}
 	
 	/**
+	 * Returns {@code true} if the entry pertains to a directory.
+	 *
+	 * @return If it is a directory or not.
+	 * @throws IOException On read errors.
+	 * @since 2017/01/03
+	 */
+	public boolean isDirectory()
+		throws IOException
+	{
+		return __internalToString().endsWith("/");
+	}
+	
+	/**
 	 * Opens the input stream for this entry's data.
 	 *
 	 * @return The entry data.
@@ -92,6 +105,12 @@ public final class ZipBlockEntry
 	public InputStream open()
 		throws IOException
 	{
+		// {@squirreljme.error CJ0g Cannot open the entry because it is a
+		// directory. (The name of the entry)}
+		String s;
+		if (isDirectory())
+			throw new IOException(String.format("CJ0g %s", toString()));
+		
 		throw new Error("TODO");
 	}
 	
@@ -102,53 +121,68 @@ public final class ZipBlockEntry
 	@Override
 	public String toString()
 	{
+		try
+		{
+			return __internalToString();
+		}
+			
+		// {@squirreljme.error CJ0b Could not read the name of the
+		// entry.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("CJ0b", e);
+		}
+	}
+	
+	/**
+	 * Returns the internal representation of the string entry.
+	 *
+	 * @return The name of this entry.
+	 * @throws IOException On read errors.
+	 * @since 2017/01/03
+	 */
+	private final String __internalToString()
+		throws IOException
+	{
 		Reference<String> ref = this._name;
 		String rv;
 		
 		// Need to load it?
 		if (ref == null || null == (rv = ref.get()))
-			try
-			{
-				BlockAccessor accessor = this.accessor;
-				long position = this.position;
-				
-				// {@squirreljme.error CJ0d Could not read the central
-				// directory data.}
-				byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
-				if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
-					data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
-					throw new IOException("CJ0d");
-				
-				// Read file name length
-				int fnl = __ArrayData__.readUnsignedShort(
-					_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, data);
-				
-				// {@squirreljme.error CJ0f Could not read the file name.}
-				byte[] rawname = new byte[fnl];
-				if (fnl != accessor.read(
-					position + _CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))
-					throw new IOException("CJ0f");
-				
-				// UTF-8 Encoded?
-				if ((__ArrayData__.readUnsignedShort(
-					_CENTRAL_DIRECTORY_FLAG_OFFSET, data) &
-					GPF_ENCODING_UTF8) != 0)
-					rv = new String(rawname, 0, fnl, "utf-8");
-				
-				// DOS codepage
-				else
-					rv = IBM437CodePage.toString(rawname, 0, fnl);
-				
-				// Store for later
-				this._name = new WeakReference<>(rv);
-			}
+		{
+			BlockAccessor accessor = this.accessor;
+			long position = this.position;
 			
-			// {@squirreljme.error CJ0b Could not read the name of the
-			// entry.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("CJ0b", e);
-			}
+			// {@squirreljme.error CJ0d Could not read the central
+			// directory data.}
+			byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
+			if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
+				data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
+				throw new IOException("CJ0d");
+			
+			// Read file name length
+			int fnl = __ArrayData__.readUnsignedShort(
+				_CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET, data);
+			
+			// {@squirreljme.error CJ0f Could not read the file name.}
+			byte[] rawname = new byte[fnl];
+			if (fnl != accessor.read(
+				position + _CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))
+				throw new IOException("CJ0f");
+			
+			// UTF-8 Encoded?
+			if ((__ArrayData__.readUnsignedShort(
+				_CENTRAL_DIRECTORY_FLAG_OFFSET, data) &
+				GPF_ENCODING_UTF8) != 0)
+				rv = new String(rawname, 0, fnl, "utf-8");
+			
+			// DOS codepage
+			else
+				rv = IBM437CodePage.toString(rawname, 0, fnl);
+			
+			// Store for later
+			this._name = new WeakReference<>(rv);
+		}
 		
 		return rv;
 	}
