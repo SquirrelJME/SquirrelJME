@@ -13,8 +13,11 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.kernel.ProcessCreationException;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParametersBuilder;
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
  * This is a deterministic kernel manager which is capable of recording and
@@ -72,6 +75,21 @@ public class DeterministicKernelManager
 	public void close()
 		throws IOException
 	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/03
+	 */
+	@Override
+	public KernelProcess createProcess(Kernel __k)
+		throws NullPointerException, ProcessCreationException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	

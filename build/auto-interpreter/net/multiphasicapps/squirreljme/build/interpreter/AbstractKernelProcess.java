@@ -8,35 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package net.multiphasicapps.squirreljme.build.interpreter;
+
+import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
- * This class represents threads which may be managed by a kernel.
+ * This provides the base process representation for the interpreter.
  *
- * @see KernelNativeThread
- * @since 2016/11/01
+ * @since 2017/01/03
  */
-public abstract class KernelThread
+public abstract class AbstractKernelProcess
+	extends KernelProcess
 {
-	/** The owning kernel. */
-	protected final Kernel kernel;
-	
 	/**
-	 * Initializes the kernel thread.
+	 * Initializes the abstract process.
 	 *
-	 * @param __k The kernel owning this thread.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/11/08
+	 * @param __k The owning kernel.
+	 * @since 2017/01/03
 	 */
-	protected KernelThread(Kernel __k)
-		throws NullPointerException
+	public AbstractKernelProcess(Kernel __k)
 	{
-		// Check
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.kernel = __k;
+		super(__k);
 	}
 }
 

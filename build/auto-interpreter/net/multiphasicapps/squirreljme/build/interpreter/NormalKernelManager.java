@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import net.multiphasicapps.squirreljme.kernel.ProcessCreationException;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
  * This is the normal kernel manager which runs code as fast as possible.
@@ -47,6 +50,22 @@ public class NormalKernelManager
 		
 		// Set
 		this.launchparms = __lp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/03
+	 */
+	@Override
+	public KernelProcess createProcess(Kernel __k)
+		throws NullPointerException, ProcessCreationException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Create it
+		return new NormalKernelProcess(__k);
 	}
 	
 	/**

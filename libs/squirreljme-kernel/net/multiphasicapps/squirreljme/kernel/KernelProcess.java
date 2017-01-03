@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/11/08
  */
-public final class KernelProcess
+public abstract class KernelProcess
 {
 	/** The owning kernel. */
 	protected final Kernel kernel;
@@ -28,7 +28,7 @@ public final class KernelProcess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/08
 	 */
-	KernelProcess(Kernel __k)
+	protected KernelProcess(Kernel __k)
 		throws NullPointerException
 	{
 		// Check

@@ -19,6 +19,18 @@ package net.multiphasicapps.squirreljme.kernel;
 public interface KernelThreadManager
 {
 	/**
+	 * Creates a process which is owned by the given kernel.
+	 *
+	 * @param __k The kernel owning the process.
+	 * @return The newly created process.
+	 * @throws NullPointerException On null arguments.
+	 * @throws ProcessCreationException If the process could not be created.
+	 * @since 2017/01/03
+	 */
+	public abstract KernelProcess createProcess(Kernel __k)
+		throws NullPointerException, ProcessCreationException;
+	
+	/**
 	 * Runs the kernel loop which runs is capable of running the threads that
 	 * are being used on the system.
 	 *
