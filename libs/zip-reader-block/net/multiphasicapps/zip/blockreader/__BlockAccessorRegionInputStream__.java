@@ -80,7 +80,19 @@ class __BlockAccessorRegionInputStream__
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Forward to multi-byte version
+		byte[] b = new byte[1];
+		for (;;)
+		{
+			int rv = read(b, 0, 1);
+			
+			// EOF?
+			if (rv < 0)
+				return -1;
+			
+			// Return value otherwise
+			return b[0] & 0xFF;
+		}
 	}
 	
 	/**
@@ -98,7 +110,24 @@ class __BlockAccessorRegionInputStream__
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		throw new Error("TODO");
+		// EOF?
+		long rest = this._rest;
+		if (rest < 0)
+			return -1;
+		
+		// Determine number of bytes to read
+		long next = this._next;
+		int desired = (int)Math.min(__l, rest);
+		
+		// Read in the data
+		int actual = this.accessor.read(next, __b, __o, desired);
+		
+		// Set next position
+		this._next = next + actual;
+		this._rest = rest - actual;
+		
+		// Return the actual read count
+		return actual;
 	}
 }
 
