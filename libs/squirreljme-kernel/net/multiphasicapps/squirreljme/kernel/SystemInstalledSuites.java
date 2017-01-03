@@ -34,7 +34,8 @@ public abstract class SystemInstalledSuites
 	 */
 	public final String launcherMainClass()
 	{
-		throw new Error("TODO");
+		System.err.println("TODO -- Determine main launcher.");
+		return "java.lang.Object";
 	}
 }
 
