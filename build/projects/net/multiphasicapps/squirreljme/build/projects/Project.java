@@ -108,6 +108,7 @@ public final class Project
 				catch (InvalidProjectException|IOException e)
 				{
 					// Ignore
+					e.printStackTrace();
 				}
 			
 			// If there is no source code then just use the binary assuming

@@ -236,6 +236,7 @@ public abstract class ProjectBase
 		// Just do not update the time
 		catch (IOException e)
 		{
+			e.printStackTrace();
 			return Long.MIN_VALUE;
 		}
 	}
@@ -312,6 +313,10 @@ public abstract class ProjectBase
 		
 		// Start at the earliest date
 		FileTime rv = _EARLIEST_DATE;
+		
+		// If just a normal file get the time for it
+		if (!Files.isDirectory(__p))
+			return Files.getLastModifiedTime(__p);
 		
 		// Look at all entries
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
