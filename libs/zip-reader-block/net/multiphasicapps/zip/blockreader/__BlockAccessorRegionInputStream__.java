@@ -1,0 +1,104 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package net.multiphasicapps.zip.blockreader;
+
+import java.io.InputStream;
+import java.io.IOException;
+
+/**
+ * This is used to read directly from the block accessor.
+ *
+ * @since 2017/01/03
+ */
+class __BlockAccessorRegionInputStream__
+	extends InputStream
+{
+	/** The accessor to read from. */
+	protected final BlockAccessor accessor;
+	
+	/** The next position to read from. */
+	private volatile long _next;
+	
+	/** The current number of bytes remaining. */
+	private volatile long _rest;
+	
+	/**
+	 * Initializes the block region input.
+	 *
+	 * @param __ba The block accessor to read data from.
+	 * @param __start The start address of the read.
+	 * @param __len The number of bytes to read.
+	 * @throws IllegalArgumentException If the start and/or length are
+	 * negative.
+	 * @thorws NullPointerException On null arguments.
+	 * @since 2017/01/03
+	 */
+	__BlockAccessorRegionInputStream__(BlockAccessor __ba, long __start,
+		long __len)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__ba == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CJ0l The start position and length cannot be
+		// negative.}
+		if (__start < 0 || __len < 0)
+			throw new IllegalArgumentException("CJ0l");
+		
+		// Set
+		this.accessor = __ba;
+		this._next = __start;
+		this._rest = __len;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/03
+	 */
+	@Override
+	public int available()
+		throws IOException
+	{
+		// Never exceed 2GiB
+		return (int)Math.min(Math.max(0, this._rest), Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/03
+	 */
+	@Override
+	public int read()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc]
+	 * @since 2017/01/03
+	 */
+	@Override
+	public int read(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IOException,
+			NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		throw new Error("TODO");
+	}
+}
+

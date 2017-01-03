@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.zip.IBM437CodePage;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This represents a single entry within a ZIP file which may be opened.
@@ -210,11 +211,23 @@ public final class ZipBlockEntry
 				_LOCAL_HEADER_COMMENT_LENGTH_OFFSET, header);
 		
 		// The base address of the data is after the local header position
-		// And the end point is the compressed size (what is actually stored)
-		long database = lhoffset + lhfnl + lhcml,
-			dataend = database + compressed;
+		long database = lhoffset + lhfnl + lhcml;
 		
-		throw new Error("TODO");
+		// Get base stream before compression
+		InputStream base = new __BlockAccessorRegionInputStream__(accessor,
+			database, compressed);
+		
+		// {@squirreljme.error CJ0m Unknown compression method for entry. (The
+		// method identifier)}
+		ZipCompressionType ztype = ZipCompressionType.forMethod(method);
+		if (ztype == null)
+			throw new IOException(String.format("CJ0m %d", method));
+		
+		// Wrap input so it may be read
+		InputStream algo = ztype.inputStream(base);
+		
+		// Need to calculate the CRC for the stream of data
+		return new __CRCInputStream__(algo, crc);
 	}
 	
 	/**

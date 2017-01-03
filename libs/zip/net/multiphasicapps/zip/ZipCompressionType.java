@@ -89,9 +89,9 @@ public enum ZipCompressionType
 		// Depends on the compression
 		switch (this)
 		{
-				// Just use a data stream
+				// Just use the same stream
 			case NO_COMPRESSION:
-				return new DataInputStream(__is);
+				return __is;
 			
 				// Inflate
 			case DEFLATE:
@@ -137,9 +137,9 @@ public enum ZipCompressionType
 		// Depends on the compression
 		switch (this)
 		{
-				// No compression, just use a normally forwarding stream
+				// No compression, use the same stream
 			case NO_COMPRESSION:
-				return new DataOutputStream(__os);
+				return __os;
 			
 				// {@squirreljme.error BF01 Compressing using the given
 				// compression algorithm is not supported. (The compression
