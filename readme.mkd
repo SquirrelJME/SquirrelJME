@@ -11,6 +11,7 @@
 strange and many other devices. That is, you would be able to have a Java
 environment on a wide range of _Internet of Things_ devices, older computers
 (such as the _Amiga_), embedded devices, and mobile devices from old to new.
+It intends to be 99.9% compatible with Java ME 8 and older J2ME standards.
 
 The source is written in pure Java and is designed to use small amounts of
 memory, where simplicity increases operation speed without sacrificing
@@ -98,14 +99,6 @@ purchasing of food items for consumption.
  * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
    dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
  * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
-
-## Compatiblity
-
-SquirrelJME intends to be 99.9% compatible with Java ME 8 and older J2ME
-standards. In the case where compatibility is _purposefully_ broken, it will
-be documented in the following document:
-
- * [Purposeful Compatiblity Breakages](/uv/javadoc/compatibility.mkd).
 
 ## Important Statements
 
