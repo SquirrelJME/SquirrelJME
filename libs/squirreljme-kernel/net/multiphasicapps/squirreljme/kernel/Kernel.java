@@ -168,14 +168,26 @@ public final class Kernel
 	 *
 	 * @param __main The main entry class for the process.
 	 * @param __cp Suites that make up the class path, note that system
-	 * @param __args Main program arguments.
 	 * suites are not included.
+	 * @param __args Main program arguments.
 	 * @return The process.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/08
 	 */
 	private KernelProcess __newProcess(String __main,
 		SuiteDataAccessor[] __cp, String[] __args)
+		throws NullPointerException
 	{
+		// Check
+		if (__main == null)
+			throw new NullPointerException("NARG");
+		
+		// Use nothing by default if not specified
+		if (__cp == null)
+			__cp = new SuiteDataAccessor[0];
+		if (__args == null)
+			__args = new String[0];
+		
 		throw new Error("TODO");
 	}
 }
