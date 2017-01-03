@@ -147,7 +147,7 @@ class __CRCInputStream__
 		}
 		
 		// Calculate
-		crccalc.offer(__b, __o, __l);
+		crccalc.offer(__b, __o, rv);
 		
 		// Return
 		return rv;
