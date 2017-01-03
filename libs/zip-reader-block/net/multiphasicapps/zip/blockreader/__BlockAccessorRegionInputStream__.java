@@ -112,7 +112,7 @@ class __BlockAccessorRegionInputStream__
 		
 		// EOF?
 		long rest = this._rest;
-		if (rest < 0)
+		if (rest <= 0)
 			return -1;
 		
 		// Determine number of bytes to read
