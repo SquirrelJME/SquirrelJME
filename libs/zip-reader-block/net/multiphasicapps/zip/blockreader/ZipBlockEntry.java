@@ -23,9 +23,33 @@ import net.multiphasicapps.zip.IBM437CodePage;
  */
 public final class ZipBlockEntry
 {
+	/** Maximum version. */
+	private static final int _MAX_CENTRAL_DIR_VERSION =
+		20;
+	
+	/** The offset to the version needed to extract. */
+	private static final int _CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET =
+		6;
+	
 	/** The offset of the general purpose flags. */
 	private static final int _CENTRAL_DIRECTORY_FLAG_OFFSET =
 		8;
+	
+	/** The offset to the method of compression. */
+	private static final int _CENTRAL_DIRECTORY_METHOD_OFFSET =
+		10;
+	
+	/** The offset to the CRC for data integrity. */
+	private static final int _CENTRAL_DIRECTORY_CRC_OFFSET =
+		16;
+	
+	/** The offset to the compressed size. */
+	private static final int _CENTRAL_DIRECTORY_COMPRESSED_OFFSET =
+		20;
+	
+	/** The offset to the uncompressed size. */
+	private static final int _CENTRAL_DIRECTORY_UNCOMPRESSED_OFFSET =
+		24;
 	
 	/** The offset to the file name length. */
 	private static final int _CENTRAL_DIRECTORY_NAME_LENGTH_OFFSET =
@@ -39,9 +63,29 @@ public final class ZipBlockEntry
 	private static final int _CENTRAL_DIRECTORY_COMMENT_LENGTH_OFFSET =
 		_CENTRAL_DIRECTORY_EXTRA_LENGTH_OFFSET + 2;
 	
+	/** The relative offset to the local header. */
+	private static final int _CENTRAL_DIRECTORY_LOCAL_HEADER_OFFSET =
+		42;
+	
 	/** The minimum length of the central directory entry. */
 	private static final int _CENTRAL_DIRECTORY_MIN_LENGTH =
 		46;
+	
+	/** The local file header magic number. */
+	private static final int _LOCAL_HEADER_MAGIC_NUMBER =
+		0x04034B50;
+	
+	/** The offset to the file name length in the local header. */
+	private static final int _LOCAL_HEADER_NAME_LENGTH_OFFSET =
+		26;
+	
+	/** The offset to the comment length in the local header. */
+	private static final int _LOCAL_HEADER_COMMENT_LENGTH_OFFSET =
+		28;
+	
+	/** The local header minimum size. */
+	private static final int _LOCAL_HEADER_MIN_LENGTH =
+		30;
 	
 	/** General purpose flag: Is UTF-8 encoded filename/comment? */
 	protected static final int GPF_ENCODING_UTF8 =
@@ -110,6 +154,65 @@ public final class ZipBlockEntry
 		String s;
 		if (isDirectory())
 			throw new IOException(String.format("CJ0g %s", toString()));
+		
+		ZipBlockReader owner = this.owner;
+		BlockAccessor accessor = this.accessor;
+		long position = this.position;
+		
+		// {@squirreljme.error CJ0h Could not read the central
+		// directory data.}
+		byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
+		if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
+			data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
+			throw new IOException("CJ0h");
+		
+		// {@squirreljme.error CJ0i Cannot open the entry because it uses
+		// too new of a version. (The version number)}
+		int ver;
+		if (_MAX_CENTRAL_DIR_VERSION < (ver = __ArrayData__.readUnsignedShort(
+			_CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET, data)))
+			throw new IOException(String.format("CJ0i %d", ver));
+		
+		// Need these later to determine how much data is available and how it
+		// is stored.
+		int method = __ArrayData__.readUnsignedShort(
+				_CENTRAL_DIRECTORY_METHOD_OFFSET, data);
+		int crc = __ArrayData__.readSignedInt(_CENTRAL_DIRECTORY_CRC_OFFSET,
+			data);
+		long uncompressed = __ArrayData__.readUnsignedInt(
+				_CENTRAL_DIRECTORY_UNCOMPRESSED_OFFSET, data),
+			compressed = __ArrayData__.readUnsignedInt(
+				_CENTRAL_DIRECTORY_COMPRESSED_OFFSET, data);
+			
+		// Determine the offset to the local header which precedes the data
+		// of the entry
+		long lhoffset = owner._zipbaseaddr + __ArrayData__.readUnsignedInt(
+			_CENTRAL_DIRECTORY_LOCAL_HEADER_OFFSET, data);
+		
+		// {@squirreljme.error CJ0j Could not read the local file header from
+		// the ZIP file.}
+		byte[] header = new byte[_LOCAL_HEADER_MIN_LENGTH];
+		if (_LOCAL_HEADER_MIN_LENGTH != accessor.read(lhoffset, header, 0,
+			_LOCAL_HEADER_MIN_LENGTH))
+			throw new IOException("CJ0j");
+		
+		// {@squirreljme.error CJ0k The magic number for the local file header
+		// is not valid.}
+		if (__ArrayData__.readSignedInt(0, header) !=
+			_LOCAL_HEADER_MAGIC_NUMBER)
+			throw new IOException("CJ0k");
+		
+		// Need to know the file name and comment lengths, since they may
+		// differ in the local header for some reason
+		int lhfnl = __ArrayData__.readUnsignedShort(
+				_LOCAL_HEADER_NAME_LENGTH_OFFSET, header), 
+			lhcml = __ArrayData__.readUnsignedShort(
+				_LOCAL_HEADER_COMMENT_LENGTH_OFFSET, header);
+		
+		// The base address of the data is after the local header position
+		// And the end point is the compressed size (what is actually stored)
+		long database = lhoffset + lhfnl + lhcml,
+			dataend = database + compressed;
 		
 		throw new Error("TODO");
 	}

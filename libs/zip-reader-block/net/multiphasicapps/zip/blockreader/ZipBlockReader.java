@@ -82,7 +82,7 @@ public class ZipBlockReader
 	protected final long cdirbase;
 	
 	/** The actual start position for the ZIP file. */
-	protected final long zipbaseaddr;
+	final long _zipbaseaddr;
 	
 	/** The accessor to use for ZIP files. */
 	final BlockAccessor _accessor;
@@ -176,7 +176,7 @@ public class ZipBlockReader
 		long zipbaseaddr = csz - (__ArrayData__.readUnsignedInt(
 			_END_DIRECTORY_CENTRAL_DIR_OFFSET_OFFSET, dirbytes) + cdirsize +
 			(csz - endat));
-		this.zipbaseaddr = zipbaseaddr;
+		this._zipbaseaddr = zipbaseaddr;
 		
 		// {@squirreljme.error CJ09 The base address of the ZIP file exceeds
 		// the bound of the ZIP file. (The central directory size; The size of
