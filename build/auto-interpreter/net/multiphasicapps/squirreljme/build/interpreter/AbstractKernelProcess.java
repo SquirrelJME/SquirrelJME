@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
  * This provides the base process representation for the interpreter.
@@ -25,11 +26,12 @@ public abstract class AbstractKernelProcess
 	 * Initializes the abstract process.
 	 *
 	 * @param __k The owning kernel.
+	 * @param __cp The class path.
 	 * @since 2017/01/03
 	 */
-	public AbstractKernelProcess(Kernel __k)
+	public AbstractKernelProcess(Kernel __k, SuiteDataAccessor[] __cp)
 	{
-		super(__k);
+		super(__k, __cp);
 	}
 }
 

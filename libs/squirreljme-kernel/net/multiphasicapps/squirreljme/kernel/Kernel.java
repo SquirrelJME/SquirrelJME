@@ -173,6 +173,17 @@ public final class Kernel
 	}
 	
 	/**
+	 * Returns the suite manager.
+	 *
+	 * @return The suite manager.
+	 * @since 2017/01/05
+	 */
+	public final KernelSuiteManager suiteManager()
+	{
+		return this.suitemanager;
+	}
+	
+	/**
 	 * Creates a new process owned by this kernel and returns it.
 	 *
 	 * @param __main The main entry class for the process.
@@ -203,7 +214,7 @@ public final class Kernel
 		try
 		{
 			// Create it
-			rv = threadmanager.createProcess(this);
+			rv = threadmanager.createProcess(this, __cp);
 			
 			if (true)
 				throw new Error("TODO");

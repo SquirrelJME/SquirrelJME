@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.interpreter;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
  * This represents a normal kernel process which has no deterministic factors.
@@ -24,11 +25,12 @@ public class NormalKernelProcess
 	 * Initializes the normal process.
 	 *
 	 * @param __k The owning kernel.
-	 * @since 2016/01/03
+	 * @param __cp Class path.
+	 * @since 2017/01/03
 	 */
-	public NormalKernelProcess(Kernel __k)
+	public NormalKernelProcess(Kernel __k, SuiteDataAccessor[] __cp)
 	{
-		super(__k);
+		super(__k, __cp);
 	}
 }
 

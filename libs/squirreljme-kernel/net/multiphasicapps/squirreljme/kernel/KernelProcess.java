@@ -21,22 +21,33 @@ public abstract class KernelProcess
 	/** The owning kernel. */
 	protected final Kernel kernel;
 	
+	/** The class path for this process. */
+	private final SuiteDataAccessor[] _classpath;
+	
 	/**
 	 * Initializes the process.
 	 *
 	 * @param __k The kernel owning the process.
+	 * @param __cp The class path used for user space processes.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/08
 	 */
-	protected KernelProcess(Kernel __k)
+	protected KernelProcess(Kernel __k, SuiteDataAccessor[] __cp)
 		throws NullPointerException
 	{
 		// Check
-		if (__k == null)
+		if (__k == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.kernel = __k;
+		
+		// Copy the class path
+		__cp = __cp.clone();
+		for (SuiteDataAccessor sda : __cp)
+			if (sda == null)
+				throw new NullPointerException("NARG");
+		this._classpath = __cp;
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.kernel.ProcessCreationException;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
  * This is the normal kernel manager which runs code as fast as possible.
@@ -57,15 +58,15 @@ public class NormalKernelManager
 	 * @since 2017/01/03
 	 */
 	@Override
-	public KernelProcess createProcess(Kernel __k)
+	public KernelProcess createProcess(Kernel __k, SuiteDataAccessor[] __cp)
 		throws NullPointerException, ProcessCreationException
 	{
 		// Check
-		if (__k == null)
+		if (__k == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
 		// Create it
-		return new NormalKernelProcess(__k);
+		return new NormalKernelProcess(__k, __cp);
 	}
 	
 	/**

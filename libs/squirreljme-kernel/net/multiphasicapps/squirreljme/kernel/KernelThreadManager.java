@@ -22,12 +22,14 @@ public interface KernelThreadManager
 	 * Creates a process which is owned by the given kernel.
 	 *
 	 * @param __k The kernel owning the process.
+	 * @param __cp The class path used.
 	 * @return The newly created process.
 	 * @throws NullPointerException On null arguments.
 	 * @throws ProcessCreationException If the process could not be created.
 	 * @since 2017/01/03
 	 */
-	public abstract KernelProcess createProcess(Kernel __k)
+	public abstract KernelProcess createProcess(Kernel __k,
+		SuiteDataAccessor[] __cp)
 		throws NullPointerException, ProcessCreationException;
 	
 	/**

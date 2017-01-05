@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParametersBuilder;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
  * This is a deterministic kernel manager which is capable of recording and
@@ -83,11 +84,11 @@ public class DeterministicKernelManager
 	 * @since 2017/01/03
 	 */
 	@Override
-	public KernelProcess createProcess(Kernel __k)
+	public KernelProcess createProcess(Kernel __k, SuiteDataAccessor[] __cp)
 		throws NullPointerException, ProcessCreationException
 	{
 		// Check
-		if (__k == null)
+		if (__k == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
