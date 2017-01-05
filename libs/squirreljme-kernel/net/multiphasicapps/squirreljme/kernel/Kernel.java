@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +31,14 @@ public final class Kernel
 	
 	/** The manager for threads. */
 	protected final KernelThreadManager threadmanager;
+	
+	/**
+	 * Processes running in the kernel, a list is used because generally there
+	 * will not be that many processes running at any one time due to the
+	 * limited nature of systems SquirrelJME runs on.
+	 */
+	private final List<KernelProcess> _processes =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the kernel using the given set of parameters.
@@ -188,7 +197,43 @@ public final class Kernel
 		if (__args == null)
 			__args = new String[0];
 		
-		throw new Error("TODO");
+		// Setup new process
+		KernelThreadManager threadmanager = this.threadmanager;
+		KernelProcess rv = null;
+		try
+		{
+			// Create it
+			rv = threadmanager.createProcess(this);
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Register process
+			List<KernelProcess> processes = this._processes;
+			synchronized (processes)
+			{
+				processes.add(rv);
+			}
+		}
+		
+		// Destroy the process
+		catch (RuntimeException|Error e)
+		{
+			if (rv != null)
+				try
+				{
+					rv.destroyProcess();
+				}
+				catch (Exception f)
+				{
+					e.addSuppressed(f);
+				}
+			
+			throw e;
+		}
+		
+		// Done
+		return rv;
 	}
 }
 
