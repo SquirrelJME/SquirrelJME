@@ -235,9 +235,9 @@ public final class Kernel
 				{
 					rv.destroyProcess();
 				}
-				catch (Exception f)
+				catch (Throwable t)
 				{
-					e.addSuppressed(f);
+					e.addSuppressed(t);
 				}
 			
 			throw e;
