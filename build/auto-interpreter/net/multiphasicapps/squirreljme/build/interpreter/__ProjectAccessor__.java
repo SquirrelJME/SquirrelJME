@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 import java.io.InputStream;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.kernel.ExecutableClass;
+import net.multiphasicapps.squirreljme.kernel.ExecutableLoadException;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
@@ -51,7 +52,7 @@ class __ProjectAccessor__
 	 */
 	@Override
 	public ExecutableClass loadClass(String __name)
-		throws ClassFormatError, ClassNotFoundException, NullPointerException
+		throws ExecutableLoadException, NullPointerException
 	{
 		// Check
 		if (__name == null)

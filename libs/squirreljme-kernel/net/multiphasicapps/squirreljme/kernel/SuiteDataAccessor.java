@@ -27,13 +27,13 @@ public abstract class SuiteDataAccessor
 	 *
 	 * @param __name The binary name of the class to load.
 	 * @return The loaded class.
-	 * @throws ClassFormatError If the class is badly formatted.
-	 * @throws ClassNotFoundException If the class does not exist.
+	 * @throws ExecutableLoadException If the class does not exist or failed
+	 * to load properly.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/16
 	 */
 	public abstract ExecutableClass loadClass(String __name)
-		throws ClassFormatError, ClassNotFoundException, NullPointerException;
+		throws ExecutableLoadException, NullPointerException;
 	
 	/**
 	 * Loads the given resource from this suite.

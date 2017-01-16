@@ -159,13 +159,12 @@ public abstract class KernelProcess
 	 *
 	 * @param __name The name of the class to load.
 	 * @return The loaded class
-	 * @throws ClassFormatError If the class is badly formatted.
-	 * @throws ClassNotFoundException If the class does not exist.
+	 * @throws ContextLoadException If the class could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/16
 	 */
 	public final ContextClass loadClass(String __name)
-		throws ClassFormatError, ClassNotFoundException, NullPointerException
+		throws ContextLoadException, NullPointerException
 	{
 		// Check
 		if (__name == null)
@@ -178,9 +177,26 @@ public abstract class KernelProcess
 			// If the class has already been loaded use it
 			ContextClass rv = classes.get(__name);
 			if (rv != null)
-				return rv;	
+				return rv;
 			
-			throw new Error("TODO");
+			// It can fail
+			try
+			{
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error BH09 Could not load a context of the
+			// specified class. (The class to load)}
+			catch (ExecutableLoadException e)
+			{
+				throw new ContextLoadException(String.format("BH09 %s",
+					__name), e);
+			}
+			
+			// Store it and return it
+			classes.put(__name, rv);
+			return rv;
 		}
 	}
 	

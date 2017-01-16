@@ -44,6 +44,22 @@ public abstract class KernelThread
 		// Set
 		this.kernel = __kp.kernel();
 		this.process = __kp;
+		
+		// Load class to initialize the main method
+		ContextClass cc;
+		try
+		{
+			cc = __kp.loadClass(__mc);
+		}
+		
+		// {@squirreljme.error BH08 Could not initializet the main class.}
+		catch (ContextLoadException e)
+		{
+			throw new ThreadCreationException(String.format("BH08 %s", __mc),
+				e);
+		}
+		
+		throw new Error("TODO");
 	}
 	
 	/**
