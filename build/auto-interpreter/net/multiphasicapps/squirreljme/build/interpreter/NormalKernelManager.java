@@ -77,15 +77,15 @@ public class NormalKernelManager
 	 */
 	@Override
 	public KernelThread createThread(KernelProcess __kp, String __mc,
-		String __m, Object... __args)
+		String __m)
 		throws NullPointerException, ThreadCreationException
 	{
 		// Check
-		if (__kp == null || __mc == null || __m == null || __args == null)
+		if (__kp == null || __mc == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Create thread
-		return new NormalKernelThread(__kp, __mc, __m, __args);
+		return new NormalKernelThread(__kp, __mc, __m);
 	}
 	
 	/**

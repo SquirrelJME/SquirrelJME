@@ -27,13 +27,11 @@ public class NormalKernelThread
 	 * @param __kp The kernel process.
 	 * @param __mc The main class.
 	 * @param __m The main method.
-	 * @param __args Method arguments.
 	 * @since 2017/01/16
 	 */
-	public NormalKernelThread(KernelProcess __kp, String __mc,
-		String __m, Object... __args)
+	public NormalKernelThread(KernelProcess __kp, String __mc, String __m)
 	{
-		super(__kp, __mc, __m, __args);
+		super(__kp, __mc, __m);
 	}
 }
 

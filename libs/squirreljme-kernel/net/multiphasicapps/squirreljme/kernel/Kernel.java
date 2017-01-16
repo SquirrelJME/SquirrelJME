@@ -98,8 +98,7 @@ public final class Kernel
 				throw new RuntimeException("BH04");
 			
 			// Create process, which gets its main
-			lp = __newProcess(main, new SuiteDataAccessor[0],
-				launchparms.getCommandLine());
+			lp = __newProcess(main, new SuiteDataAccessor[0]);
 		}
 		
 		// Failed to create it, destroy it
@@ -190,13 +189,12 @@ public final class Kernel
 	 * @param __main The main entry class for the process.
 	 * @param __cp Suites that make up the class path, note that system
 	 * suites are not included.
-	 * @param __args Main program arguments.
 	 * @return The process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/08
 	 */
 	private KernelProcess __newProcess(String __main,
-		SuiteDataAccessor[] __cp, String[] __args)
+		SuiteDataAccessor[] __cp)
 		throws NullPointerException
 	{
 		// Check
@@ -206,8 +204,6 @@ public final class Kernel
 		// Use nothing by default if not specified
 		if (__cp == null)
 			__cp = new SuiteDataAccessor[0];
-		if (__args == null)
-			__args = new String[0];
 		
 		// Setup new process
 		KernelThreadManager threadmanager = this.threadmanager;
@@ -263,22 +259,20 @@ public final class Kernel
 	 * @param __kp The process owning the new thread.
 	 * @param __mc The main class
 	 * @param __mm The main method.
-	 * @param __args Arguments to the thread, only boxed types and {@code null}
-	 * are permitted.
 	 * @return The newly created thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/16
 	 */
 	final KernelThread __createThread(KernelProcess __kp, String __mc,
-		String __mm, Object... __args)
+		String __mm)
 		throws NullPointerException
 	{
 		// Check
-		if (__kp == null || __mc == null || __mm == null || __args == null)
+		if (__kp == null || __mc == null || __mm == null)
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		return this.threadmanager.createThread(__kp, __mc, __mm, __args);
+		return this.threadmanager.createThread(__kp, __mc, __mm);
 	}
 }
 

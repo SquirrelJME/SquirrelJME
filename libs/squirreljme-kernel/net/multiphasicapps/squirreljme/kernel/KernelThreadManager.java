@@ -38,13 +38,11 @@ public interface KernelThreadManager
 	 * @param __kp The process that owns the created thread.
 	 * @param __mc The main class
 	 * @param __mm The main method.
-	 * @param __args Arguments to the thread, only boxed types and {@code null}
-	 * are permitted.
 	 * @return The newly created thread.
 	 * @since 2017/01/16
 	 */
 	public abstract KernelThread createThread(KernelProcess __kp, String __mc,
-		String __m, Object... __args)
+		String __m)
 		throws NullPointerException, ThreadCreationException;
 	
 	/**

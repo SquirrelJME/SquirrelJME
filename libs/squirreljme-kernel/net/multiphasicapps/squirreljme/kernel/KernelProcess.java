@@ -73,34 +73,17 @@ public abstract class KernelProcess
 	 *
 	 * @param __mc The main class
 	 * @param __mm The main method.
-	 * @param __args Arguments to the thread, only boxed types and {@code null}
-	 * are permitted.
 	 * @return The new thread owned by this process.
 	 * @throws NullPointerException On null arguments.
 	 * @throws ThreadCreationException If the thread could not be created.
 	 * @since 2017/01/16
 	 */
-	public final KernelThread createThread(String __mc, String __mm,
-		Object... __args)
+	public final KernelThread createThread(String __mc, String __mm)
 		throws NullPointerException, ThreadCreationException
 	{
 		// Check
 		if (__mc == null || __mm == null)
 			throw new NullPointerException("NARG");
-		
-		// Defensive copy
-		__args = (__args == null ? new Object[0] : __args.clone());
-		
-		// {@squirreljme.error BH08 Cannot pass an initial argument to a thread
-		// that is not a boxed type. (The name of the class)}
-		for (Object	a : __args)
-			if (a != null && !(a instanceof Boolean) &&
-				!(a instanceof Byte) && !(a instanceof Short) &&
-				!(a instanceof Character) && !(a instanceof Integer) &&
-				!(a instanceof Long) && !(a instanceof Float) &&
-				!(a instanceof Double))
-				throw new ThreadCreationException(
-					String.format("BH08 %s", a.getClass()));
 		
 		// Create it
 		KernelThread rv = null;
@@ -108,7 +91,7 @@ public abstract class KernelProcess
 		{
 			// Create thread
 			Kernel kernel = this.kernel;
-			rv = kernel.__createThread(this, __mc, __mm, __args);
+			rv = kernel.__createThread(this, __mc, __mm);
 			
 			// {@squirreljme.error BH05 A null thread was returned, treating
 			// as failure.}
