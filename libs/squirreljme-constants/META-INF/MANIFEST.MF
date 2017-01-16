@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: a85e86c2-c2f0-4287-b136-37603db55626
+X-SquirrelJME-Error: AC
+X-SquirrelJME-Name: SquirrelJME System Constants
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains constants which are 
+ shared in SquirrelJME.
+

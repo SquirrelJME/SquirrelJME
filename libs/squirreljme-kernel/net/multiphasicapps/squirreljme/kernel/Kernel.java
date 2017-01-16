@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.constants.PropertyConstants;
 
 /**
  * This is the SquirrelJME kernel which uses a kernel interface to interface
@@ -220,6 +221,9 @@ public final class Kernel
 			// kernel during construction.}
 			if (rv.kernel() != this)
 				throw new ProcessCreationException("BH07");
+			
+			// Set main class property for the process
+			rv.setProperty(PropertyConstants.MAIN_MIDLET, __main);
 			
 			// Create main thread for the process, or at least try to
 			KernelThread mainthread = rv.createThread(

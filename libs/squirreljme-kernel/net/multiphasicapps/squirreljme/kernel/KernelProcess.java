@@ -160,5 +160,23 @@ public abstract class KernelProcess
 	{
 		return this.kernel;
 	}
+	
+	/**
+	 * Sets the value of the given system property.
+	 *
+	 * @param __k The key to set.
+	 * @param __v The value to use for it, {@code null} clears the value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/16
+	 */
+	public final void setProperty(String __k, String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 
