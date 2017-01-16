@@ -108,7 +108,7 @@ public final class Kernel
 			if (lp != null)
 				try
 				{
-					lp.destroyProcess();
+					lp.close();
 				}
 			
 				// Suppress it
@@ -216,6 +216,11 @@ public final class Kernel
 			// Create it
 			rv = threadmanager.createProcess(this, __cp);
 			
+			// {@squirreljme.error BH07 Process was assigned to a different
+			// kernel during construction.}
+			if (rv.kernel() != this)
+				throw new ProcessCreationException("BH07");
+			
 			if (true)
 				throw new Error("TODO");
 			
@@ -233,7 +238,7 @@ public final class Kernel
 			if (rv != null)
 				try
 				{
-					rv.destroyProcess();
+					rv.close();
 				}
 				catch (Throwable t)
 				{
@@ -245,6 +250,30 @@ public final class Kernel
 		
 		// Done
 		return rv;
+	}
+	
+	/**
+	 * Creates a new thread which is owned by the given process.
+	 *
+	 * @param __kp The process owning the new thread.
+	 * @param __mc The main class
+	 * @param __mm The main method.
+	 * @param __args Arguments to the thread, only boxed types and {@code null}
+	 * are permitted.
+	 * @return The newly created thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/16
+	 */
+	final KernelThread __createThread(KernelProcess __kp, String __mc,
+		String __mm, Object... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__kp == null || __mc == null || __mm == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return this.threadmanager.createThread(__kp, __mc, __mm, __args);
 	}
 }
 

@@ -11,20 +11,20 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This is thrown when a process cannot be created for any reason such as no
- * more processes can fit within memory.
+ * This is thrown when the thread cannot be created by the kernel or other
+ * native component of the kernel.
  *
- * @since 2017/01/03
+ * @since 2017/01/16
  */
-public class ProcessCreationException
+public class ThreadCreationException
 	extends KernelException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/01/03
+	 * @since 2017/01/16
 	 */
-	public ProcessCreationException()
+	public ThreadCreationException()
 	{
 	}
 	
@@ -32,9 +32,9 @@ public class ProcessCreationException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/01/03
+	 * @since 2017/01/16
 	 */
-	public ProcessCreationException(String __m)
+	public ThreadCreationException(String __m)
 	{
 		super(__m);
 	}
@@ -44,9 +44,9 @@ public class ProcessCreationException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/01/03
+	 * @since 2017/01/16
 	 */
-	public ProcessCreationException(String __m, Throwable __c)
+	public ThreadCreationException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -55,9 +55,9 @@ public class ProcessCreationException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/01/03
+	 * @since 2017/01/16
 	 */
-	public ProcessCreationException(Throwable __c)
+	public ThreadCreationException(Throwable __c)
 	{
 		super(__c);
 	}

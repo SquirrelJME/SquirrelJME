@@ -33,6 +33,21 @@ public interface KernelThreadManager
 		throws NullPointerException, ProcessCreationException;
 	
 	/**
+	 * Creates a thread which is owned by the given process.
+	 *
+	 * @param __kp The process that owns the created thread.
+	 * @param __mc The main class
+	 * @param __mm The main method.
+	 * @param __args Arguments to the thread, only boxed types and {@code null}
+	 * are permitted.
+	 * @return The newly created thread.
+	 * @since 2017/01/16
+	 */
+	public abstract KernelThread createThread(KernelProcess __kp, String __mc,
+		String __m, Object... __args)
+		throws NullPointerException, ThreadCreationException;
+	
+	/**
 	 * Runs the kernel loop which runs is capable of running the threads that
 	 * are being used on the system.
 	 *
