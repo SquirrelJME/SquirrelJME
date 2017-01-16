@@ -146,5 +146,15 @@ public abstract class MIDlet
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Creates an instance of the application MIDlet and then launches it.
+	 *
+	 * @since 2017/01/16
+	 */
+	private static void __launchMidlet()
+	{
+		throw new Error("TODO");
+	}
 }
 

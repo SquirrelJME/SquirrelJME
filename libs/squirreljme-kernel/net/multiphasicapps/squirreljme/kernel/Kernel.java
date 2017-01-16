@@ -221,8 +221,9 @@ public final class Kernel
 			if (rv.kernel() != this)
 				throw new ProcessCreationException("BH07");
 			
-			if (true)
-				throw new Error("TODO");
+			// Create main thread for the process, or at least try to
+			KernelThread mainthread = rv.createThread(
+				"javax/microedition/midlet/MIDlet", "__launchMidlet");
 			
 			// Register process
 			List<KernelProcess> processes = this._processes;
