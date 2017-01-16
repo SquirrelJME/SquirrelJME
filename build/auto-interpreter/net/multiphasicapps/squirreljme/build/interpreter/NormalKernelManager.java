@@ -14,7 +14,9 @@ import net.multiphasicapps.squirreljme.kernel.ProcessCreationException;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
+import net.multiphasicapps.squirreljme.kernel.ThreadCreationException;
 
 /**
  * This is the normal kernel manager which runs code as fast as possible.
@@ -67,6 +69,22 @@ public class NormalKernelManager
 		
 		// Create it
 		return new NormalKernelProcess(__k, __cp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/16
+	 */
+	@Override
+	public KernelThread createThread(KernelProcess __kp, String __mc,
+		String __m, Object... __args)
+		throws NullPointerException, ThreadCreationException
+	{
+		// Check
+		if (__kp == null || __mc == null || __m == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

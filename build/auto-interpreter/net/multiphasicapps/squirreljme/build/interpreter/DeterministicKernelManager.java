@@ -18,7 +18,9 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParametersBuilder;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
+import net.multiphasicapps.squirreljme.kernel.ThreadCreationException;
 
 /**
  * This is a deterministic kernel manager which is capable of recording and
@@ -89,6 +91,22 @@ public class DeterministicKernelManager
 	{
 		// Check
 		if (__k == null || __cp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/16
+	 */
+	@Override
+	public KernelThread createThread(KernelProcess __kp, String __mc,
+		String __m, Object... __args)
+		throws NullPointerException, ThreadCreationException
+	{
+		// Check
+		if (__kp == null || __mc == null || __m == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
