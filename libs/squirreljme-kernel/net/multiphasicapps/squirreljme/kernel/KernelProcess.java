@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This represents a single process within the kernel and is used to manage
@@ -31,6 +33,10 @@ public abstract class KernelProcess
 	/** Threads owned by this process. */
 	private final List<KernelThread> _threads =
 		new ArrayList<>();
+	
+	/** System properties which have been set for the process. */
+	private final Map<String, String> _properties =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the process.
@@ -176,7 +182,12 @@ public abstract class KernelProcess
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock on properties
+		Map<String, String> properties = this._properties;
+		synchronized (properties)
+		{
+			properties.put(__k, __v);
+		}
 	}
 }
 
