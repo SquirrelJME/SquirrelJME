@@ -69,6 +69,19 @@ public abstract class KernelProcess
 	}
 	
 	/**
+	 * Loads the given class into an executable context which is dependent on
+	 * the system.
+	 *
+	 * @param __e The class to load.
+	 * @return The context for the given class.
+	 * @throws ContextLoadException If the class could not be loaded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/16
+	 */
+	protected abstract ContextClass initializeClassContext(ExecutableClass __e)
+		throws ContextLoadException, NullPointerException;
+	
+	/**
 	 * Creates a new thread which is owned by this process.
 	 *
 	 * @param __mc The main class
@@ -185,8 +198,8 @@ public abstract class KernelProcess
 				// Locate class
 				ExecutableClass ec = loadExecutableClass(__name);
 				
-				if (true)
-					throw new Error("TODO");
+				// Load into context, which is platform dependent
+				rv = initializeClassContext(ec);
 			}
 			
 			// {@squirreljme.error BH09 Could not load a context of the

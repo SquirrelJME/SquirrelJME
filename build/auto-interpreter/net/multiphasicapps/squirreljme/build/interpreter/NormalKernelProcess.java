@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import net.multiphasicapps.squirreljme.kernel.ContextClass;
+import net.multiphasicapps.squirreljme.kernel.ContextLoadException;
+import net.multiphasicapps.squirreljme.kernel.ExecutableClass;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
@@ -31,6 +34,21 @@ public class NormalKernelProcess
 	public NormalKernelProcess(Kernel __k, SuiteDataAccessor[] __cp)
 	{
 		super(__k, __cp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/16
+	 */
+	@Override
+	protected ContextClass initializeClassContext(ExecutableClass __e)
+		throws ContextLoadException, NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
