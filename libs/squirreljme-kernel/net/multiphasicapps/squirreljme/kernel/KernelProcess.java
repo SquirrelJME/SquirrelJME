@@ -38,6 +38,10 @@ public abstract class KernelProcess
 	private final Map<String, String> _properties =
 		new HashMap<>();
 	
+	/** Loaded context classes. */
+	private final Map<String, ContextClass> _classes =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the process.
 	 *
@@ -165,6 +169,36 @@ public abstract class KernelProcess
 	public final Kernel kernel()
 	{
 		return this.kernel;
+	}
+	
+	/** 
+	 * Loads a class in the context of this process.
+	 *
+	 * @param __name The name of the class to load.
+	 * @return The loaded class
+	 * @throws ClassFormatError If the class is badly formatted.
+	 * @throws ClassNotFoundException If the class does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/16
+	 */
+	public final ContextClass loadClass(String __name)
+		throws ClassFormatError, ClassNotFoundException, NullPointerException
+	{
+		// Check
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on classes
+		Map<String, ContextClass> classes = this._classes;
+		synchronized (classes)
+		{
+			// If the class has already been loaded use it
+			ContextClass rv = classes.get(__name);
+			if (rv != null)
+				return rv;	
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
