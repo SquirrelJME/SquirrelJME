@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.InvalidProjectException;
@@ -21,6 +22,7 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
+import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 import net.multiphasicapps.squirreljme.kernel.SystemInstalledSuites;
 
 /**
@@ -125,6 +127,69 @@ public class InterpreterSystemSuites
 		for (int i = 0; i < n; i++)
 			accessors[i] = new __ProjectAccessor__(it.next());
 		this._accessors = accessors;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/16
+	 */
+	public Iterator<SuiteDataAccessor> iterator()
+	{
+		return new __AccessorIterator__();
+	}
+	
+	/**
+	 * This is used to iterate over the system class path suites.
+	 *
+	 * @since 2017/01/16
+	 */
+	private final class __AccessorIterator__
+		implements Iterator<SuiteDataAccessor>
+	{
+		/** Accessor for the suites. */
+		private final __ProjectAccessor__[] _accessors =
+			InterpreterSystemSuites.this._accessors;
+		
+		/** The next suite to return. */
+		private volatile int _next =
+			this._accessors.length - 1;
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/01/16
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this._next >= 0;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/01/16
+		 */
+		@Override
+		public SuiteDataAccessor next()
+		{
+			// Get next index
+			int next = this._next;
+			if (next <= -1)
+				throw new NoSuchElementException("NSEE");
+			
+			// Set and return it
+			this._next = next - 1;
+			return this._accessors[next];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/01/16
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 

@@ -23,6 +23,7 @@ package net.multiphasicapps.squirreljme.kernel;
  * @since 2016/12/16
  */
 public abstract class SystemInstalledSuites
+	implements Iterable<SuiteDataAccessor>
 {
 	/**
 	 * This goes through the system installed suites and returns the main class

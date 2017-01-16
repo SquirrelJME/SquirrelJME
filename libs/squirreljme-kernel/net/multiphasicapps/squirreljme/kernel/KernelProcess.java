@@ -182,6 +182,9 @@ public abstract class KernelProcess
 			// It can fail
 			try
 			{
+				// Locate class
+				ExecutableClass ec = loadExecutableClass(__name);
+				
 				if (true)
 					throw new Error("TODO");
 			}
@@ -198,6 +201,59 @@ public abstract class KernelProcess
 			classes.put(__name, rv);
 			return rv;
 		}
+	}
+	
+	/**
+	 * Locates and loads the specified executable class with the given name.
+	 *
+	 * @param __name The name of the class to find.
+	 * @return The class to be read.
+	 * @throws ExecutableLoadException If the class does not exist or is
+	 * not correctly formatted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/16
+	 */
+	public final ExecutableClass loadExecutableClass(String __name)
+		throws ExecutableLoadException, NullPointerException
+	{
+		// Check
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// May occur
+		ExecutableLoadException fail = null;
+		
+		// Check the system class path, it has higher priority and its classes
+		// cannot be replaced
+		for (SuiteDataAccessor sda : this.kernel.suiteManager().systemSuites())
+			try
+			{
+				return sda.loadClass(__name);
+			}
+		
+			// Failed
+			catch (ExecutableLoadException e)
+			{
+				fail = e;
+			}
+		
+		// Go through the class path to find the class
+		for (SuiteDataAccessor sda : this._classpath)
+			try
+			{
+				return sda.loadClass(__name);
+			}
+			
+			// Could not load, set last load failure
+			catch (ExecutableLoadException e)
+			{
+				fail = e;
+			}
+		
+		// {@squirreljme.error BH0a Failed to load the executable for the
+		// specified class. (The name of the class)}
+		throw new ExecutableLoadException(String.format("BH0a %s", __name),
+			fail);
 	}
 	
 	/**
