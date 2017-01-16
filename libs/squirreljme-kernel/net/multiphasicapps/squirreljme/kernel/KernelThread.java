@@ -29,14 +29,18 @@ public abstract class KernelThread
 	 * Initializes the kernel thread.
 	 *
 	 * @param __kp The process which owns the thread.
+	 * @param __mc The main class.
+	 * @param __m The main method.
+	 * @param __args Method arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/11/08
 	 */
-	protected KernelThread(KernelProcess __kp)
+	protected KernelThread(KernelProcess __kp, String __mc,
+		String __m, Object... __args)
 		throws NullPointerException
 	{
 		// Check
-		if (__kp == null)
+		if (__kp == null || __mc == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set

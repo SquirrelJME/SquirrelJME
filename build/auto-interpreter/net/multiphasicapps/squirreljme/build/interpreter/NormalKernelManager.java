@@ -84,7 +84,8 @@ public class NormalKernelManager
 		if (__kp == null || __mc == null || __m == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create thread
+		return new NormalKernelThread(__kp, __mc, __m, __args);
 	}
 	
 	/**
