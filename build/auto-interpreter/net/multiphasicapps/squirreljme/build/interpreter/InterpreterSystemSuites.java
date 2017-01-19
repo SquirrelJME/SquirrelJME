@@ -70,7 +70,9 @@ public class InterpreterSystemSuites
 		Set<ProjectName> toload = new LinkedHashSet<>();
 		{
 			// Always force cldc-compact to be specified
+			// Also include the midlet system
 			toload.add(new ProjectName("cldc-compact"));
+			toload.add(new ProjectName("meep-midlet"));
 			
 			// Parse projects to add
 			String prop = Objects.toString(
