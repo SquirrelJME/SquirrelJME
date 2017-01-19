@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.build.interpreter;
 
 import java.io.InputStream;
+import java.io.IOException;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.kernel.ExecutableClass;
 import net.multiphasicapps.squirreljme.kernel.ExecutableLoadException;
@@ -58,7 +60,20 @@ class __ProjectAccessor__
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Try loading the input class
+		try (FileDirectory fd = this.project.openFileDirectory();
+			InputStream is = fd.open(__name + ".class"))
+		{
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error AV04 Failed to read the given input class.
+		// (The name of the class)}
+		catch (IOException e)
+		{
+			throw new ExecutableLoadException(String.format("AV04 %s", __name),
+				e);
+		}
 	}
 	
 	/**

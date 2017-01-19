@@ -219,6 +219,9 @@ public abstract class KernelProcess
 	/**
 	 * Locates and loads the specified executable class with the given name.
 	 *
+	 * {@squirreljme.error BH0b Could not locate or load the specified class.
+	 * (The name of the class)}
+	 *
 	 * @param __name The name of the class to find.
 	 * @return The class to be read.
 	 * @throws ExecutableLoadException If the class does not exist or is
@@ -247,7 +250,11 @@ public abstract class KernelProcess
 			// Failed
 			catch (ExecutableLoadException e)
 			{
-				fail = e;
+				// Generate
+				if (fail == null)
+					fail = new ExecutableLoadException(String.format("BH0b %s",
+						__name));
+				fail.addSuppressed(e);
 			}
 		
 		// Go through the class path to find the class
@@ -260,13 +267,15 @@ public abstract class KernelProcess
 			// Could not load, set last load failure
 			catch (ExecutableLoadException e)
 			{
-				fail = e;
+				// Generate
+				if (fail == null)
+					fail = new ExecutableLoadException(String.format("BH0b %s",
+						__name));
+				fail.addSuppressed(e);
 			}
 		
-		// {@squirreljme.error BH0a Failed to load the executable for the
-		// specified class. (The name of the class)}
-		throw new ExecutableLoadException(String.format("BH0a %s", __name),
-			fail);
+		// An exception would have been generated.
+		throw fail;
 	}
 	
 	/**
