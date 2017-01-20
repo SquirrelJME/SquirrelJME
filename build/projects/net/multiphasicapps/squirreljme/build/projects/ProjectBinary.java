@@ -62,6 +62,9 @@ public abstract class ProjectBinary
 		// Need these for parsing
 		JavaManifestAttributes attr = manifest().getMainAttributes();
 		
+		// Add common dependencies
+		__commonDependencies(__out);
+		
 		// TODO
 		System.err.println("TODO -- Determine binary depends.");
 	}

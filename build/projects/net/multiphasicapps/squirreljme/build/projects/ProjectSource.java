@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.projects;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,6 +81,41 @@ public abstract class ProjectSource
 	}
 	
 	/**
+	 * Returns the binary manifest for this project based on the source
+	 * manifest.
+	 *
+	 * @return The binary manifest for this project.
+	 * @throws InvalidProjectException If the manifest could not be generated.
+	 * @since 2017/01/20
+	 */
+	public final JavaManifest binaryManifest()
+		throws InvalidProjectException
+	{
+		// Need temporary output, does not matter where
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Generate manifest
+			__generateManifest(binaryDependencies(true), baos);
+			
+			// Flush to make sure it gets written
+			baos.flush();
+			
+			// Parse the generated manifest
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(
+				baos.toByteArray()))
+			{
+				return new JavaManifest(bais);
+			}
+		}
+		
+		// {@squirreljme.error AT0h Could not create the binary manifest.}
+		catch (IOException e)
+		{
+			throw new InvalidProjectException("AT0h", e);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/12/18
 	 */
@@ -103,7 +140,7 @@ public abstract class ProjectSource
 			
 			// Parse configuration/profile to auto-depend on CLDC and/or
 			// MIDP required APIs
-			System.err.println("TODO -- Parse configuration/profile.");
+			__commonDependencies(__out);
 			
 			// Parse dependency property
 			String attr = this.manifest.getMainAttributes().

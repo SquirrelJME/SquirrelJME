@@ -253,6 +253,25 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Decodes the configuration and profile settings to determine which
+	 * projects should be used for inclusion.
+	 *
+	 * @param __to The target set.
+	 * @throws InvalidProjectException If the project is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/20
+	 */
+	final void __commonDependencies(Set<Project> __to)
+		throws InvalidProjectException, NullPointerException
+	{
+		// Check
+		if (__to == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Obtains the binary projects which this binary project depends on and
 	 * places them into the specified set.
 	 *
