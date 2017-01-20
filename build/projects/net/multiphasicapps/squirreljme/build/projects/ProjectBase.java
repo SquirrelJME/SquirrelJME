@@ -278,6 +278,11 @@ public abstract class ProjectBase
 		if (__to == null)
 			throw new NullPointerException("NARG");
 		
+		// Obtain the manifest, this is needed to get the configuration and
+		// profile settings
+		JavaManifest man = __to.manifest();
+		
+		
 		throw new Error("TODO");
 	}
 	
