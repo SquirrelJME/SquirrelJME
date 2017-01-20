@@ -66,6 +66,16 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Returns the binary manifest for this project based.
+	 *
+	 * @return The binary manifest for this project.
+	 * @throws InvalidProjectException If the manifest could not be generated.
+	 * @since 2017/01/20
+	 */
+	public abstract JavaManifest binaryManifest()
+		throws InvalidProjectException;
+	
+	/**
 	 * Returns the dependencies that this project relies on for running and
 	 * compilation.
 	 *

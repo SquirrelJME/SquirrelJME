@@ -81,13 +81,10 @@ public abstract class ProjectSource
 	}
 	
 	/**
-	 * Returns the binary manifest for this project based on the source
-	 * manifest.
-	 *
-	 * @return The binary manifest for this project.
-	 * @throws InvalidProjectException If the manifest could not be generated.
+	 * {@inheritDoc}
 	 * @since 2017/01/20
 	 */
+	@Override
 	public final JavaManifest binaryManifest()
 		throws InvalidProjectException
 	{

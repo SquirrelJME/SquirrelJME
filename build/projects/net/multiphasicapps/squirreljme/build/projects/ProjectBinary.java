@@ -49,6 +49,18 @@ public abstract class ProjectBinary
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/01/20
+	 */
+	@Override
+	public JavaManifest binaryManifest()
+		throws InvalidProjectException
+	{
+		// The binary manifest is the manifest
+		return manifest();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/12/18
 	 */
 	@Override
