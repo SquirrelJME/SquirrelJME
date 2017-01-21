@@ -107,6 +107,17 @@ public abstract class API
 	}
 	
 	/**
+	 * Returns the name of the API.
+	 *
+	 * @return The API name.
+	 * @since 2017/01/21
+	 */
+	public final String name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/01/21
 	 */
@@ -122,6 +133,17 @@ public abstract class API
 				this.name + "-" + this.version));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the version of the API.
+	 *
+	 * @return The API version.
+	 * @since 2017/01/21
+	 */
+	public final MidletVersion version()
+	{
+		return this.version;
 	}
 	
 	/**
