@@ -233,6 +233,17 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Returns the owning project manager.
+	 *
+	 * @return The project manager.
+	 * @since 2017/01/21
+	 */
+	public final ProjectManager projectManager()
+	{
+		return this.project.projectManager();
+	}
+	
+	/**
 	 * Recursively determines the time and date of the project base.
 	 *
 	 * @return The time that the binary or source code last changed in
@@ -301,7 +312,12 @@ public abstract class ProjectBase
 			throw new InvalidProjectException(String.format("AT0i %s",
 				name()));
 		
-		if (true)
+		// Remove junk spaces
+		conf = conf.trim();
+		
+		// Go through projects and find a project which implements the
+		// given configuration
+		for (Project p : projectManager())
 			throw new Error("TODO");
 		
 		// Decode profile

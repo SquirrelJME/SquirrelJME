@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 
 /**
  * This class represents the base for projects. A project may be an API, a
@@ -182,6 +183,19 @@ public final class Project
 	}
 	
 	/**
+	 * Returns the binary manifest that is used for the binary.
+	 *
+	 * @return The manifest that is used for the binary.
+	 * @throws InvalidProjectException If the binary manifest is not valid.
+	 * @since 2017/01/21
+	 */
+	public final JavaManifest binaryManifest()
+		throws InvalidProjectException
+	{
+		return __mostUpToDate().binaryManifest();
+	}
+	
+	/**
 	 * Returns the path to the output binary.
 	 *
 	 * @return The path to the output binary.
@@ -235,6 +249,17 @@ public final class Project
 	}
 	
 	/**
+	 * Returns the owning project manager.
+	 *
+	 * @return The project manager.
+	 * @since 2017/01/21
+	 */
+	public final ProjectManager projectManager()
+	{
+		return this.projectman;
+	}
+	
+	/**
 	 * Returns the source project for this project.
 	 *
 	 * @return The source for this project or {@code null} if it does not
@@ -276,7 +301,7 @@ public final class Project
 	 *
 	 * @param __p The path to the file.
 	 * @return The representation of the given binary.
-	 * @throws InvalidProjectException If the project is no valid.
+	 * @throws InvalidProjectException If the project is not valid.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/17
@@ -368,6 +393,55 @@ public final class Project
 			
 			// Set source
 			this._source = src;
+		}
+	}
+	
+	/**
+	 * Returns the most up to date project, whether it be the source or
+	 * the binary.
+	 *
+	 * @return The most up to date project, either source or binary.
+	 * @throws InvalidProjectException If a fallback binary could not be
+	 * returned.
+	 * @since 2017/01/21
+	 */
+	final ProjectBase __mostUpToDate()
+		throws InvalidProjectException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Need both
+			ProjectSource src = this._source;
+			Reference<ProjectBinary> binref = this._binary;
+			ProjectBinary bin = (binref != null ? binref.get() : null);
+			
+			// Determine dates of both
+			long srcdate = (src != null ? src.time() : Long.MIN_VALUE),
+				bindate = (bin != null ? bin.time() : Long.MIN_VALUE);
+			
+			// Return the newer one
+			if (src != null && srcdate > bindate)
+				return src;
+			
+			// Binary must exist
+			else if (bin != null)
+				return bin;
+			
+			// Otherwise as a final step, see if the binary could be created
+			else
+				try
+				{
+					return __createBinary(binaryPath());
+				}
+				
+				// {@squirreljme.error Could not load the binary representation
+				// of this project. (The name of this project)}
+				catch (IOException e)
+				{
+					throw new InvalidProjectException(String.format("AT0j %s",
+						name()), e);
+				}
 		}
 	}
 }
