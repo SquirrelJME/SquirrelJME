@@ -22,6 +22,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -31,6 +33,14 @@ import net.multiphasicapps.zip.blockreader.ZipBlockReader;
  */
 public abstract class ProjectBase
 {
+	/** The key used for the configuration. */
+	static final JavaManifestKey _CONFIGURATION_KEY =
+		new JavaManifestKey("MicroEdition-Configuration");
+	
+	/** The profile the midlet/liblet requires. */
+	static final JavaManifestKey _PROFILE_KEY =
+		new JavaManifestKey("MicroEdition-Profile");
+	
 	/** The earliest date. */
 	private static final FileTime _EARLIEST_DATE =
 		FileTime.fromMillis(Long.MIN_VALUE);
@@ -280,10 +290,24 @@ public abstract class ProjectBase
 		
 		// Obtain the manifest, this is needed to get the configuration and
 		// profile settings
-		JavaManifest man = __to.manifest();
+		JavaManifest man = manifest();
+		JavaManifestAttributes attr = man.getMainAttributes();
 		
+		// {@squirreljme.error AT0i The project is missing the required
+		// {@code MicroEdition-Configuration} key in its manifest. (The name of
+		// the project)}
+		String conf = attr.get(_CONFIGURATION_KEY);
+		if (conf == null)
+			throw new InvalidProjectException(String.format("AT0i %s",
+				name()));
 		
-		throw new Error("TODO");
+		if (true)
+			throw new Error("TODO");
+		
+		// Decode profile
+		String prof = attr.get(_PROFILE_KEY);
+		if (prof != null)
+			throw new Error("TODO");
 	}
 	
 	/**
