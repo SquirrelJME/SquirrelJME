@@ -144,7 +144,20 @@ public final class Project
 				
 				// Trivial rebuild check if the source is newer
 				long srcdate = src.time();
-				long bindate = (rv == null ? Long.MIN_VALUE : rv.time());
+				
+				// Getting the time from the binary could fail if it does not
+				// exist
+				long bindate = Long.MIN_VALUE;
+				try
+				{
+					if (rv != null)
+						bindate = rv.time();
+				}
+				catch (InvalidProjectException e)
+				{
+				}
+				
+				// Rebuild if the source is newer
 				boolean rebuild = (rv == null || srcdate > bindate);
 				
 				// Check to see if any dependencies are newer
