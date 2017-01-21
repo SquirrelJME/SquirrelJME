@@ -295,12 +295,9 @@ public abstract class ProjectSource
 		if (__deps == null || __os == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup main
-		MutableJavaManifest man = new MutableJavaManifest();
+		// Setup output with copies of all the inputs
+		MutableJavaManifest man = new MutableJavaManifest(manifest());
 		MutableJavaManifestAttributes attr = man.getMainAttributes();
-		
-		// Store profiles and the configuration used
-		System.err.println("DEBUG -- Write used configurations.");
 		
 		// Write the API implementation details
 		if (type() == NamespaceType.API)
