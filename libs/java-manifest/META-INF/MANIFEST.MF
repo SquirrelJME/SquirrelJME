@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides a decoder for standardJava 
  manifest files.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@util-unmodifiable
 X-SquirrelJME-Error: BB
 X-SquirrelJME-UUID: fb9af740-e959-43c5-b405-fb001edd09c5
+MicroEdition-Configuration: CLDC-1.8-Compact
+X-SquirrelJME-Depends: unmodifiable-collections

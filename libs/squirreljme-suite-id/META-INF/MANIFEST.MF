@@ -5,5 +5,8 @@ X-SquirrelJME-Error: CC
 X-SquirrelJME-Title: MIDlet Suite Identification
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: squirreljme-suite-id
+X-SquirrelJME-Description: This contains classes which are used to 
+ easily manage midlet names and identities which exist within 
+ manifests.
+MicroEdition-Configuration: CLDC-1.8-Compact
 
