@@ -293,7 +293,7 @@ public abstract class ProjectBase
 					
 					// Add API
 					rv.add(new APIConfiguration(val.substring(i, ns)));
-					i = ns + 1;
+					i = ns;
 				}
 			
 			// Cache

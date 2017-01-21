@@ -31,7 +31,7 @@ public final class APIConfiguration
 	public APIConfiguration(String __n)
 		throws IllegalArgumentException
 	{
-		super(__n);
+		super(__normalizeVariant(__n));
 	}
 	
 	/**
@@ -71,6 +71,45 @@ public final class APIConfiguration
 		
 		// Forward
 		return super.equals(__o);
+	}
+	
+	/**
+	 * Normalizes the variant so that {@code CLDC-1.8-Compact} becomes
+	 * {@code CLDC-Compact-1.8}.
+	 *
+	 * @param __n The string to potentially normalize.
+	 * @return The normalized name and variant.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/21
+	 */
+	private static String __normalizeVariant(String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CC0a Expected a dash before the end of the
+		// string which is also not the last character. (The input string)}
+		int ld = __n.lastIndexOf('-'), n = __n.length();
+		if (ld < 0 || (ld + 1) >= n)
+			throw new IllegalArgumentException(String.format("CC0a %s", __n));
+		
+		// If the character after the dash is a number then the version
+		// will directly follow it
+		char cad = __n.charAt(ld + 1);
+		if (cad >= '0' && cad <= '9')
+			return __n;
+		
+		// {@squirreljme.error CC0b Invalid configuration name, expected
+		// another dash. (The input string)}
+		int nld = __n.lastIndexOf('-', ld - 1);
+		if (nld < 0)
+			throw new IllegalArgumentException(String.format("CC0b %s", __n));
+		
+		// Swap around
+		return __n.substring(0, nld) + __n.substring(ld) +
+			__n.substring(nld, ld);
 	}
 }
 
