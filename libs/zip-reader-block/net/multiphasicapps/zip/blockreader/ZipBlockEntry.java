@@ -211,7 +211,7 @@ public final class ZipBlockEntry
 				_LOCAL_HEADER_COMMENT_LENGTH_OFFSET, header);
 		
 		// The base address of the data is after the local header position
-		long database = lhoffset + lhfnl + lhcml;
+		long database = lhoffset + _LOCAL_HEADER_MIN_LENGTH + lhfnl + lhcml;
 		
 		// Get base stream before compression
 		InputStream base = new __BlockAccessorRegionInputStream__(accessor,
