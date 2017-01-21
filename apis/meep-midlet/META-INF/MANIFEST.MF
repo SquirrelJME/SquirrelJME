@@ -8,3 +8,4 @@ X-SquirrelJME-Description: This contains the MIDlet interface which acts
 X-SquirrelJME-Error: AD
 X-SquirrelJME-StandardLib: microedition.midlet;0.0.0
 X-SquirrelJME-UUID: 1d9e3c4f-b0ec-4e83-b656-0454dd661868
+MicroEdition-Configuration: CLDC-1.8-Compact
