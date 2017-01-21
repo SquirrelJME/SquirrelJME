@@ -32,6 +32,7 @@ import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 import net.multiphasicapps.squirreljme.build.base.SourceCompilerProvider;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifest;
@@ -106,7 +107,7 @@ public abstract class ProjectSource
 		}
 		
 		// {@squirreljme.error AT0h Could not create the binary manifest.}
-		catch (IOException e)
+		catch (JavaManifestException|IOException e)
 		{
 			throw new InvalidProjectException("AT0h", e);
 		}

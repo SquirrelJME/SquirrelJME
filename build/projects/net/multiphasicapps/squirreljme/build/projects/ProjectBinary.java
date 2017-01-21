@@ -19,6 +19,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 
 /**
@@ -103,7 +104,7 @@ public abstract class ProjectBinary
 		
 			// {@squirreljme.error AT0d Could not parse the manifest for
 			// the given project. (The project name)}
-			catch (IOException e)
+			catch (JavaManifestException|IOException e)
 			{
 				throw new InvalidProjectException(String.format("AT0d %s",
 					name()), e);
