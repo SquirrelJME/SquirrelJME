@@ -49,6 +49,10 @@ public abstract class ProjectBase
 	static final JavaManifestKey _SUPPORT_CONFIGURATIONS_KEY =
 		new JavaManifestKey("X-SquirrelJME-DefinesConfigurations");
 	
+	/** Does not depend on a configuration? */
+	static final JavaManifestKey _NO_DEPENDS_CONFIGURATION_KEY =
+		new JavaManifestKey("X-SquirrelJME-NoDependsConfiguration");
+	
 	/** The earliest date. */
 	private static final FileTime _EARLIEST_DATE =
 		FileTime.fromMillis(Long.MIN_VALUE);
@@ -391,29 +395,38 @@ public abstract class ProjectBase
 		JavaManifest man = manifest();
 		JavaManifestAttributes attr = man.getMainAttributes();
 		
-		// {@squirreljme.error AT0i The project is missing the required
-		// {@code MicroEdition-Configuration} key in its manifest. (The name of
-		// the project)}
+		// Get configuration required to run
+		// However, CLDC-Compact needs a special configuration which allows it
+		// to not have to depend on itself
 		String conf = attr.get(_CONFIGURATION_KEY);
-		if (conf == null)
+		if (conf == null &&
+			!Boolean.valueOf(attr.get(_NO_DEPENDS_CONFIGURATION_KEY)))
+		{
+			// {@squirreljme.error AT0i The project is missing the required
+			// {@code MicroEdition-Configuration} key in its manifest. (The
+			// name of the project)}
 			throw new InvalidProjectException(String.format("AT0i %s",
 				name()));
+		}
 		
 		// Special class is used
-		APIConfiguration aconf = new APIConfiguration(conf.trim());
-		
-		// Go through projects and find a project which implements the
-		// given configuration
-		for (Project p : projectManager())
+		if (conf != null)
 		{
-			// Only consider APIs
-			ProjectBase pb = p.__mostUpToDate();
-			if (pb.type() != NamespaceType.API)
-				continue;
+			APIConfiguration aconf = new APIConfiguration(conf.trim());
+		
+			// Go through projects and find a project which implements the
+			// given configuration
+			for (Project p : projectManager())
+			{
+				// Only consider APIs
+				ProjectBase pb = p.__mostUpToDate();
+				if (pb.type() != NamespaceType.API)
+					continue;
 			
-			// If the configuration is supported, use it
-			if (pb.supportsConfiguration(aconf))
-				__to.add(p);
+				// If the configuration is supported, use it
+				if (pb.supportsConfiguration(aconf))
+					__to.add(p);
+			}
 		}
 		
 		// Decode profile
