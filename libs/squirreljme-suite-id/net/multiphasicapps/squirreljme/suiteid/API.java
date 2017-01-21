@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.suiteid;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is the base class for API name and version representations.
  *
@@ -19,10 +22,19 @@ package net.multiphasicapps.squirreljme.suiteid;
  */
 public abstract class API
 {
+	/** The name. */
+	protected final String name;
+	
+	/** The version. */
+	protected final MidletVersion version;
+	
+	/** String reference. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the constant in name and version form.
 	 *
-	 * @param __n
+	 * @param __n The input string.
 	 * @throws IllegalArgumentException If the name and version form is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
@@ -31,11 +43,7 @@ public abstract class API
 	API(String __n)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// Check
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
+		this(__extractName(__n), __extractVersion(__n));
 	}
 	
 	/**
@@ -54,7 +62,23 @@ public abstract class API
 		if (__n == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.version = __v;
+		
+		// Convert name
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __n.length(); i < n; i++)
+		{
+			// Lowercase
+			char c = __n.charAt(i);
+			if (c >= 'A' && c <= 'Z')
+				c = (char)('a' + (c - 'A'));
+			
+			sb.append(c);
+		}
+		
+		// Set
+		this.name = sb.toString();
 	}
 	
 	/**
@@ -79,7 +103,7 @@ public abstract class API
 	@Override
 	public final int hashCode()
 	{
-		throw new Error("TODO");
+		return this.name.hashCode() ^ this.version.hashCode();
 	}
 	
 	/**
@@ -89,7 +113,15 @@ public abstract class API
 	@Override
 	public final String toString()
 	{
-		throw new Error("TODO");
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				this.name + "-" + this.version));
+		
+		return rv;
 	}
 	
 	/**
@@ -107,7 +139,65 @@ public abstract class API
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Compare name first
+		int n = this.name.compareTo(__o.name);
+		if (n != 0)
+			return n;
+		
+		// Then the version
+		return this.version.compareTo(__o.version);
+	}
+	
+	/**
+	 * Extracts the name from the API String.
+	 *
+	 * @param __n The string to extract from.
+	 * @return The name.
+	 * @throws IllegalArgumentException If the input form is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/21
+	 */
+	private static String __extractName(String __n)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CC08 Could not extract the name from the
+		// API because it is not in the correct form. (The input string)}
+		int ld = __n.lastIndexOf('-');
+		if (ld < 0)
+			throw new IllegalArgumentException(String.format("CC08 %s", __n));
+		
+		// Simple split
+		return __n.substring(0, ld);
+	}
+	
+	/**
+	 * Extracts the version from the API String.
+	 *
+	 * @param __n The string to extract from.
+	 * @return The version.
+	 * @throws IllegalArgumentException If the input form is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/21
+	 */
+	private static MidletVersion __extractVersion(String __n)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+			
+		// {@squirreljme.error CC09 Could not extract the version from the
+		// API because it is not in the correct form. (The input string)}
+		int ld = __n.lastIndexOf('-');
+		if (ld < 0)
+			throw new IllegalArgumentException(String.format("CC09 %s", __n));
+		
+		// Split and decode version
+		return new MidletVersion(__n.substring(ld + 1));
 	}
 }
 
