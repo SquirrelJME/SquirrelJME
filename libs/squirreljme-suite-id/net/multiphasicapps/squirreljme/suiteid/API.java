@@ -56,5 +56,58 @@ public abstract class API
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/21
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Must also be an API
+		if (!(__o instanceof API))
+			return false;
+		
+		// Just use the comparison method
+		return __compareTo((API)__o) == 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/21
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/21
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Compares this API against another so that they are ordered correctly.
+	 *
+	 * @param __o The other API to compare against.
+	 * @return The comparison order.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/21
+	 */
+	final int __compareTo(API __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

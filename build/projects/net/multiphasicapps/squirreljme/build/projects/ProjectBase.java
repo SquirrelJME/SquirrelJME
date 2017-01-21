@@ -11,12 +11,15 @@
 package net.multiphasicapps.squirreljme.build.projects;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,6 +27,7 @@ import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -41,6 +45,10 @@ public abstract class ProjectBase
 	static final JavaManifestKey _PROFILE_KEY =
 		new JavaManifestKey("MicroEdition-Profile");
 	
+	/** Configuration support key. */
+	static final JavaManifestKey _SUPPORT_CONFIGURATIONS_KEY =
+		new JavaManifestKey("X-SquirrelJME-DefinesConfigurations");
+	
 	/** The earliest date. */
 	private static final FileTime _EARLIEST_DATE =
 		FileTime.fromMillis(Long.MIN_VALUE);
@@ -54,6 +62,9 @@ public abstract class ProjectBase
 	/** The current project time. */
 	private volatile long _time =
 		Long.MIN_VALUE;
+	
+	/** Supported configurations. */
+	private volatile Reference<Collection<APIConfiguration>> _configs;
 	
 	/**
 	 * Initializes the source representation.
@@ -244,6 +255,83 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Returns the configurations which are supported by this project.
+	 *
+	 * @return The array of supported configurations.
+	 * @since 2017/01/21
+	 */
+	public final APIConfiguration[] supportedConfigurations()
+	{
+		// Only APIs may support configurations
+		if (type() != NamespaceType.API)
+			return new APIConfiguration[0];
+		
+		// Need to parse supported configuration
+		Reference<Collection<APIConfiguration>> configs = this._configs;
+		Collection<APIConfiguration> rv;
+		
+		// Cache?
+		if (configs == null || null == (rv = configs.get()))
+		{
+			// Setup
+			rv = new LinkedHashSet<>();
+			
+			// Get vlaue
+			String val = manifest().getMainAttributes().
+				get(_SUPPORT_CONFIGURATIONS_KEY);
+			if (val != null)
+				for (int i = 0, n = val.length(); i < n; i++)
+				{
+					// Ignore spaces
+					if (val.charAt(i) == ' ')
+						continue;
+					
+					// Get next space position
+					int ns = val.indexOf(' ', i);
+					if (ns < 0)
+						ns = n;
+					
+					// Add API
+					rv.add(new APIConfiguration(val.substring(i, ns)));
+					i = ns + 1;
+				}
+			
+			// Cache
+			this._configs = new WeakReference<>(rv);
+		}
+		
+		// Return copy
+		return rv.<APIConfiguration>toArray(new APIConfiguration[
+			rv.size()]);
+	}
+	
+	/**
+	 * Checks whether this project supports the given configuration.
+	 *
+	 * @param __c The configuration to check.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/21
+	 */
+	public final boolean supportsConfiguration(APIConfiguration __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Only APIs may support configurations
+		if (type() != NamespaceType.API)
+			return false;
+		
+		// Only if it supports it
+		for (APIConfiguration a : supportedConfigurations())
+			return a.equals(__c);
+		
+		// Not supported
+		return false;
+	}
+	
+	/**
 	 * Recursively determines the time and date of the project base.
 	 *
 	 * @return The time that the binary or source code last changed in
@@ -312,13 +400,22 @@ public abstract class ProjectBase
 			throw new InvalidProjectException(String.format("AT0i %s",
 				name()));
 		
-		// Remove junk spaces
-		conf = conf.trim();
+		// Special class is used
+		APIConfiguration aconf = new APIConfiguration(conf.trim());
 		
 		// Go through projects and find a project which implements the
 		// given configuration
 		for (Project p : projectManager())
-			throw new Error("TODO");
+		{
+			// Only consider APIs
+			ProjectBase pb = p.__mostUpToDate();
+			if (pb.type() != NamespaceType.API)
+				continue;
+			
+			// If the configuration is supported, use it
+			if (pb.supportsConfiguration(aconf))
+				__to.add(p);
+		}
 		
 		// Decode profile
 		String prof = attr.get(_PROFILE_KEY);

@@ -18,16 +18,17 @@ package net.multiphasicapps.squirreljme.suiteid;
  */
 public final class APIProfile
 	extends API
+	implements Comparable<APIProfile>
 {
 	/**
 	 * Initializes the constant in name and version form.
 	 *
-	 * @param __n
+	 * @param __n The input string.
 	 * @throws IllegalArgumentException If the name and version form is not
 	 * valid.
 	 * @since 2016/12/14
 	 */
-	APIProfile(String __n)
+	public APIProfile(String __n)
 		throws IllegalArgumentException
 	{
 		super(__n);
@@ -41,10 +42,35 @@ public final class APIProfile
 	 * @throws IllegalArgumentException If the arguments are not valid.
 	 * @since 2016/12/14
 	 */
-	APIProfile(String __n, MidletVersion __v)
+	public APIProfile(String __n, MidletVersion __v)
 		throws IllegalArgumentException
 	{
 		super(__n, __v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/21
+	 */
+	@Override
+	public int compareTo(APIProfile __o)
+	{
+		return super.__compareTo(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/21
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Must be the same class
+		if (!(__o instanceof APIProfile))
+			return false;
+		
+		// Forward
+		return super.equals(__o);
 	}
 }
 
