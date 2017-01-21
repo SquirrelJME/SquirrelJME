@@ -145,7 +145,43 @@ public abstract class ProjectSource
 				get(_DEPENDS_PROPERTY);
 			if (attr != null)
 			{
-				throw new Error("TODO");
+				// Decode using spaces
+				ProjectManager pm = projectManager();
+				NamespaceType nt = type();
+				for (int i = 0, n = attr.length(); i < n; i++)
+				{
+					// Get the net space to find the current name
+					int ls = attr.indexOf(' ', i);
+					if (ls < 0)
+						ls = n;
+					
+					// Split project name
+					ProjectName name = new ProjectName(attr.substring(i, ls));
+					
+					// {@squirreljme.error AT0l The project depends on another
+					// project which does not exist. (The name of this project;
+					// The missing project it depends on)}
+					Project p = pm.get(name);
+					if (p == null)
+						throw new InvalidProjectException(String.format(
+							"AT0l %s %s", name(), name));
+					
+					// {@squirreljme.error AT0m This project cannot depend on
+					// the other project which is of the specified type. (The
+					// name of this project; The type of this project; The
+					// name of the project this depends on; The type of the
+					// dependended of project)}
+					NamespaceType ot = p.type();
+					if (!nt.canDependOn(ot))
+						throw new InvalidProjectException(String.format(
+							"AT0m %s %s %s %s", name(), nt, name, ot));
+					
+					// Depends on it
+					rv.add(p);
+					
+					// Skip to next dependency
+					i = ls;
+				}
 			}
 			
 			// Cache it

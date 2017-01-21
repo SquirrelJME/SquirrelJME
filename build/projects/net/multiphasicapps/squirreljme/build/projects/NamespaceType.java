@@ -43,6 +43,53 @@ public enum NamespaceType
 		__lowerCase(name());
 	
 	/**
+	 * Checks whether this namespace type can depend on a project that has
+	 * the given namespace type.
+	 *
+	 * @param __o The other type to check.
+	 * @return {@code true} if the type can be dependend upon.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/21
+	 */
+	public boolean canDependOn(NamespaceType __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on this type
+		switch (this)
+		{
+				// These can never depend on anything else
+			case ASSET:
+			case BUILD:
+				return false;
+				
+				// Standard stuff
+			case MIDLET:
+			case LIBLET:
+			case API:
+				switch (__o)
+				{
+						// Only liblets and APIs can be depended upon, which
+						// means midlets cannot bring in other midlets
+					case LIBLET:
+					case API:
+						return true;
+					
+						// No
+					default:
+						return false;
+				}
+			
+				// Oops
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 201610/28
 	 */
