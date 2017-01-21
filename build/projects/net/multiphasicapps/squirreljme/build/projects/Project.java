@@ -418,10 +418,24 @@ public final class Project
 			
 			// Determine dates of both
 			long srcdate = (src != null ? src.time() : Long.MIN_VALUE),
+				bindate;
+			
+			// It might not be possible to determine the binary date even if
+			// the binary has been set (such as during a build)
+			try
+			{
 				bindate = (bin != null ? bin.time() : Long.MIN_VALUE);
+			}
+			
+			// Unknown, ignore
+			catch (InvalidProjectException e)
+			{
+				bin = null;
+				bindate = Long.MIN_VALUE;
+			}
 			
 			// Return the newer one
-			if (src != null && srcdate > bindate)
+			if (src != null && srcdate >= bindate)
 				return src;
 			
 			// Binary must exist
@@ -435,8 +449,8 @@ public final class Project
 					return __createBinary(binaryPath());
 				}
 				
-				// {@squirreljme.error Could not load the binary representation
-				// of this project. (The name of this project)}
+				// {@squirreljme.error AT0j Could not load the binary
+				// representation of this project. (The name of this project)}
 				catch (IOException e)
 				{
 					throw new InvalidProjectException(String.format("AT0j %s",

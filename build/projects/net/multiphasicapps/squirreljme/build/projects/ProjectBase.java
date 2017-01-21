@@ -352,11 +352,10 @@ public abstract class ProjectBase
 			return rv;
 		}
 		
-		// Just do not update the time
+		// {@squirreljme.error AT0k Could not determine the project time.}
 		catch (IOException e)
 		{
-			e.printStackTrace();
-			return Long.MIN_VALUE;
+			throw new InvalidProjectException("AT0k", e);
 		}
 	}
 	
