@@ -286,6 +286,16 @@ class __FileObject__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/01/22
+	 */
+	@Override
+	public String toString()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/19
 	 */
 	@Override

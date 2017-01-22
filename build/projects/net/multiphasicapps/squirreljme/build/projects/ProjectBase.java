@@ -364,6 +364,16 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/22
+	 */
+	@Override
+	public String toString()
+	{
+		return type() + ":" + name();
+	}
+	
+	/**
 	 * Returns the type of project that this is.
 	 *
 	 * @return The project type.
