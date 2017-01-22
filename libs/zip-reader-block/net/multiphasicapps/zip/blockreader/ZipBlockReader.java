@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import net.multiphasicapps.zip.ZipException;
 
 /**
  * This class is used to read ZIP files in a random access fashion.
@@ -132,10 +133,11 @@ public class ZipBlockReader
 	 * @param __b The accessor to the ZIP data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
+	 * @throws ZipException If the ZIP is malformed.
 	 * @since 2016/12/27
 	 */
 	public ZipBlockReader(BlockAccessor __b)
-		throws IOException, NullPointerException
+		throws IOException, NullPointerException, ZipException
 	{
 		// Check
 		if (__b == null)
@@ -169,7 +171,7 @@ public class ZipBlockReader
 		// ZIP file, the ZIP is truncated. (The central directory size; The
 		// size of the ZIP file)}
 		if (cdirsize > csz)
-			throw new IOException(String.format("CJ08 %d %d", cdirsize, csz));
+			throw new ZipException(String.format("CJ08 %d %d", cdirsize, csz));
 		
 		// Determine the base address of the ZIP file since all entries
 		// are relative from the start point
@@ -182,7 +184,7 @@ public class ZipBlockReader
 		// the bound of the ZIP file. (The central directory size; The size of
 		// the ZIP file)}
 		if (zipbaseaddr < 0 || zipbaseaddr > csz)
-			throw new IOException(String.format("CJ09 %d %d", zipbaseaddr,
+			throw new ZipException(String.format("CJ09 %d %d", zipbaseaddr,
 				csz));
 		
 		// Setup entry list
@@ -215,20 +217,29 @@ public class ZipBlockReader
 	public boolean contains(String __s)
 		throws IOException, NullPointerException
 	{
-		return get(__s) != null;
+		try
+		{
+			return get(__s) != null;
+		}
+		
+		// Does not exist
+		catch (ZipEntryNotFoundException e)
+		{
+			return false;
+		}
 	}
 	
 	/**
 	 * Returns the entry which is associated with the given name.
 	 *
-	 * @return The entry for the given name or {@code null} if it does not
-	 * exist.
+	 * @return The entry for the given name.
 	 * @throws IOException If there was an error reading the ZIP.
 	 * @throws NullPointerException On null arguments.
+	 * @throws ZipEntryNotFoundException If the entry does not exist.
 	 * @since 2016/12/30
 	 */
 	public ZipBlockEntry get(String __s)
-		throws IOException, NullPointerException
+		throws IOException, NullPointerException, ZipEntryNotFoundException
 	{
 		// Check
 		if (__s == null)
@@ -241,7 +252,7 @@ public class ZipBlockReader
 		
 		// {@squirreljme.error CJ07 Could not find the entry with the
 		// specified name. (The name of the entry)}
-		throw new IOException(String.format("CJ07 %s", __s));
+		throw new ZipEntryNotFoundException(String.format("CJ07 %s", __s));
 	}
 	
 	/**
@@ -263,16 +274,17 @@ public class ZipBlockReader
 	 * @throws IOException If the file could not be opened due to either a
 	 * damaged ZIP file, failed read, or if it does not exist.
 	 * @throws NullPointerException On null arguments.
+	 * @throws ZipEntryNotFoundException If the entry could not be found.
 	 * @since 2016/12/30
 	 */
 	public InputStream open(String __s)
-		throws IOException, NullPointerException
+		throws IOException, NullPointerException, ZipEntryNotFoundException
 	{
 		// {@squirreljme.error CJ06 The specified entry does not exist
 		// within the ZIP file. (The entry name)}
 		ZipBlockEntry ent = get(__s);
 		if (ent == null)
-			throw new IOException(String.format("CJ06 %s", __s));
+			throw new ZipEntryNotFoundException(String.format("CJ06 %s", __s));
 		
 		// Open it
 		return ent.open();
@@ -317,14 +329,14 @@ public class ZipBlockReader
 			// size of the file)}
 			if (accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH) !=
 				_CENTRAL_DIRECTORY_MIN_LENGTH)
-				throw new IOException(String.format("CJ0a %d %d %d", i, at,
+				throw new ZipException(String.format("CJ0a %d %d %d", i, at,
 					accessor.size()));
 			
 			// {@squirreljme.error CJ0c The entry does not have a valid
 			// magic number. (The entry index)}
 			if (__ArrayData__.readSignedInt(0, cdirent) !=
 				_CENTRAL_DIRECTORY_MAGIC_NUMBER)
-				throw new IOException(String.format("CJ0c %d", i));
+				throw new ZipException(String.format("CJ0c %d", i));
 			
 			// Read lengths for file name, comment, and extra data
 			int fnl = __ArrayData__.readUnsignedShort(
@@ -365,7 +377,7 @@ public class ZipBlockReader
 		// (The size of file)}
 		long size = __b.size();
 		if (size < _END_DIRECTORY_MIN_LENGTH)
-			throw new IOException(String.format("CJ02 %d", size));
+			throw new ZipException(String.format("CJ02 %d", size));
 		
 		// Constantly search for the end of the central directory
 		for (long at = size - _END_DIRECTORY_MIN_LENGTH, end =
@@ -395,7 +407,7 @@ public class ZipBlockReader
 		
 		// {@squirreljme.error CJ05 Could not find the end of the central
 		// directory in the ZIP file.}
-		throw new IOException("CJ05");
+		throw new ZipException("CJ05");
 	}
 	
 	/**

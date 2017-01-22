@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.zip.IBM437CodePage;
 import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.ZipException;
 
 /**
  * This represents a single entry within a ZIP file which may be opened.
@@ -132,10 +133,11 @@ public final class ZipBlockEntry
 	 *
 	 * @return If it is a directory or not.
 	 * @throws IOException On read errors.
+	 * @throws ZipException If the ZIP is malformed.
 	 * @since 2017/01/03
 	 */
 	public boolean isDirectory()
-		throws IOException
+		throws IOException, ZipException
 	{
 		return __internalToString().endsWith("/");
 	}
@@ -144,17 +146,18 @@ public final class ZipBlockEntry
 	 * Opens the input stream for this entry's data.
 	 *
 	 * @return The entry data.
-	 * @throws IOException If it could not be opened.
+	 * @throws IOException On read errors.
+	 * @throws ZipException If it could not be opened.
 	 * @since 2016/12/30
 	 */
 	public InputStream open()
-		throws IOException
+		throws IOException, ZipException
 	{
 		// {@squirreljme.error CJ0g Cannot open the entry because it is a
 		// directory. (The name of the entry)}
 		String s;
 		if (isDirectory())
-			throw new IOException(String.format("CJ0g %s", toString()));
+			throw new ZipException(String.format("CJ0g %s", toString()));
 		
 		ZipBlockReader owner = this.owner;
 		BlockAccessor accessor = this.accessor;
@@ -165,14 +168,14 @@ public final class ZipBlockEntry
 		byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
 		if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
 			data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
-			throw new IOException("CJ0h");
+			throw new ZipException("CJ0h");
 		
 		// {@squirreljme.error CJ0i Cannot open the entry because it uses
 		// too new of a version. (The version number)}
 		int ver;
 		if (_MAX_CENTRAL_DIR_VERSION < (ver = __ArrayData__.readUnsignedShort(
 			_CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET, data)))
-			throw new IOException(String.format("CJ0i %d", ver));
+			throw new ZipException(String.format("CJ0i %d", ver));
 		
 		// Need these later to determine how much data is available and how it
 		// is stored.
@@ -195,13 +198,13 @@ public final class ZipBlockEntry
 		byte[] header = new byte[_LOCAL_HEADER_MIN_LENGTH];
 		if (_LOCAL_HEADER_MIN_LENGTH != accessor.read(lhoffset, header, 0,
 			_LOCAL_HEADER_MIN_LENGTH))
-			throw new IOException("CJ0j");
+			throw new ZipException("CJ0j");
 		
 		// {@squirreljme.error CJ0k The magic number for the local file header
 		// is not valid.}
 		if (__ArrayData__.readSignedInt(0, header) !=
 			_LOCAL_HEADER_MAGIC_NUMBER)
-			throw new IOException("CJ0k");
+			throw new ZipException("CJ0k");
 		
 		// Need to know the file name and comment lengths, since they may
 		// differ in the local header for some reason
@@ -221,7 +224,7 @@ public final class ZipBlockEntry
 		// method identifier)}
 		ZipCompressionType ztype = ZipCompressionType.forMethod(method);
 		if (ztype == null)
-			throw new IOException(String.format("CJ0m %d", method));
+			throw new ZipException(String.format("CJ0m %d", method));
 		
 		// Wrap input so it may be read
 		InputStream algo = ztype.inputStream(base);
@@ -255,10 +258,11 @@ public final class ZipBlockEntry
 	 *
 	 * @return The name of this entry.
 	 * @throws IOException On read errors.
+	 * @throws ZipException If the ZIP is malformed.
 	 * @since 2017/01/03
 	 */
 	private final String __internalToString()
-		throws IOException
+		throws IOException, ZipException
 	{
 		Reference<String> ref = this._name;
 		String rv;
@@ -274,7 +278,7 @@ public final class ZipBlockEntry
 			byte[] data = new byte[_CENTRAL_DIRECTORY_MIN_LENGTH];
 			if (_CENTRAL_DIRECTORY_MIN_LENGTH != accessor.read(position,
 				data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
-				throw new IOException("CJ0d");
+				throw new ZipException("CJ0d");
 			
 			// Read file name length
 			int fnl = __ArrayData__.readUnsignedShort(
@@ -284,7 +288,7 @@ public final class ZipBlockEntry
 			byte[] rawname = new byte[fnl];
 			if (fnl != accessor.read(
 				position + _CENTRAL_DIRECTORY_MIN_LENGTH, rawname, 0, fnl))
-				throw new IOException("CJ0f");
+				throw new ZipException("CJ0f");
 			
 			// UTF-8 Encoded?
 			if ((__ArrayData__.readUnsignedShort(

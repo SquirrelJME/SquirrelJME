@@ -296,6 +296,9 @@ class __FileManager__
 	public String inferBinaryName(JavaFileManager.Location __a,
 		JavaFileObject __b)
 	{
+		// Debug
+		System.err.printf("DEBUG -- inferBinaryName(%s, %s)%n", __a, __b);
+		
 		// Get name
 		String name = __b.getName();
 		
@@ -340,6 +343,10 @@ class __FileManager__
 		__l, String __pk, Set<JavaFileObject.Kind> __kinds, boolean __rec)
 		throws IOException
 	{
+		// Debug
+		System.err.printf("DEBUG -- list(%s, %s, %s, %s)%n", __l, __pk,
+			__kinds, __rec);
+		
 		// Setup target
 		Set<JavaFileObject> rv = new LinkedHashSet<>();
 		
@@ -366,6 +373,8 @@ class __FileManager__
 					return rv;
 			}
 		
+		try
+		{
 		// Prefix to consider?
 		String prefix = (__pk == null ? "" : __pk.replace('.', '/') + "/");
 		int prefixn = prefix.length();
@@ -403,6 +412,17 @@ class __FileManager__
 			// Add file
 			rv.add(new __FileObject__(this, __findDirectory(issource, f), f));
 		};
+		}
+		catch (IOException|Error|RuntimeException e)
+		{
+			e.printStackTrace();
+			System.err.printf("DEBUG -- FAIL list(%s, %s, %s, %s) = %s%n", __l,
+				__pk, __kinds, __rec, rv);
+		}
+		
+		// Debug
+		System.err.printf("DEBUG -- list(%s, %s, %s, %s) = %s%n", __l, __pk,
+			__kinds, __rec, rv);
 		
 		// Return
 		return rv;

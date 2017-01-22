@@ -16,6 +16,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
@@ -23,6 +24,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.build.base.FileEntryNotFoundException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
@@ -136,8 +138,19 @@ class __DirectoryFileDirectory__
 			throw new IOException(String.format("AT09 %s", __fn));
 		
 		// Open it
-		return Channels.newInputStream(FileChannel.open(p,
-			StandardOpenOption.READ));
+		try
+		{
+			return Channels.newInputStream(FileChannel.open(p,
+				StandardOpenOption.READ));
+		}
+		
+		// {@squirreljme.error AT0o Could not find the specified file entry.
+		// (The entry name)}
+		catch (NoSuchFileException e)
+		{
+			throw new FileEntryNotFoundException(
+				String.format("AT0o %s", __fn), e);
+		}
 	}
 	
 	/**

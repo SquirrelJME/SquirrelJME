@@ -8,49 +8,48 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip;
+package net.multiphasicapps.zip.blockreader;
 
-import java.io.IOException;
+import net.multiphasicapps.zip.ZipException;
 
 /**
- * This is thrown when there is a problem with a ZIP file.
+ * This is thrown when an entry within a ZIP file is not found.
  *
- * @since 2016/08/02
+ * @since 2017/01/22
  */
-public class ZipException
-	extends IOException
+public class ZipEntryNotFoundException
+	extends ZipException
 {
 	/**
-	 * Initializes exception with no message.
+	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2016/08/02
+	 * @since 2017/01/22
 	 */
-	public ZipException()
+	public ZipEntryNotFoundException()
 	{
-		super();
 	}
 	
 	/**
-	 * Initializes exception with the given message.
+	 * Initialize the exception with a message and no cause.
 	 *
-	 * @param __msg The exception message.
-	 * @since 2016/08/02
+	 * @param __m The message.
+	 * @since 2017/01/22
 	 */
-	public ZipException(String __msg)
+	public ZipEntryNotFoundException(String __m)
 	{
-		super(__msg);
+		super(__m);
 	}
 	
 	/**
-	 * Initializes exception with the given message and cause.
+	 * Initialize the exception with a message and cause.
 	 *
-	 * @param __msg The exception message.
+	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2016/08/02
+	 * @since 2017/01/22
 	 */
-	public ZipException(String __msg, Throwable __c)
+	public ZipEntryNotFoundException(String __m, Throwable __c)
 	{
-		super(__msg, __c);
+		super(__m, __c);
 	}
 	
 	/**
@@ -59,7 +58,7 @@ public class ZipException
 	 * @param __c The cause.
 	 * @since 2017/01/22
 	 */
-	public ZipException(Throwable __c)
+	public ZipEntryNotFoundException(Throwable __c)
 	{
 		super(__c);
 	}

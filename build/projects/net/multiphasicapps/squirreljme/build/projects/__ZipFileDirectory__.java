@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.build.base.FileEntryNotFoundException;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This is a file directory which wraps a ZIP file.
@@ -86,9 +88,20 @@ class __ZipFileDirectory__
 	 */
 	@Override
 	public InputStream open(String __fn)
-		throws IOException, NullPointerException
+		throws FileEntryNotFoundException, IOException, NullPointerException
 	{
-		return this.zip.open(__fn);
+		try
+		{
+			return this.zip.open(__fn);
+		}
+		
+		// {@squirreljme.error AT0n Could not find the specified file entry.
+		// (The entry name)}
+		catch (ZipEntryNotFoundException e)
+		{
+			throw new FileEntryNotFoundException(
+				String.format("AT0n %s", __fn), e);
+		}
 	}
 	
 	/**
