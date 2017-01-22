@@ -248,7 +248,6 @@ public abstract class ProjectSource
 			sc.setSourceDirectory(fd);
 			
 			// Load dependency into directories
-			System.err.println("DEBUG -- ----------------------");
 			for (ProjectBinary db : __deps)
 			{
 				// Load
@@ -257,7 +256,6 @@ public abstract class ProjectSource
 				
 				// Set where classes exist
 				sc.addClassDirectory(bfd);
-				System.err.printf("DEBUG -- Added FD: %s%n", db);
 			}
 			
 			// Add files to be compiled
