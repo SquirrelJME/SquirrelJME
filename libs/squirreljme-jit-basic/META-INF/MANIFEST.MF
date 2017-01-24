@@ -5,11 +5,6 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains a basic JIT which uses the 
  standard native code generators to output native machine code.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@jit
-X-SquirrelJME-Dependency-3: liblet:unknown@native-code
-X-SquirrelJME-Dependency-4: liblet:unknown@util-sorted
-X-SquirrelJME-Dependency-5: liblet:unknown@util-bitset
-X-SquirrelJME-Dependency-6: liblet:unknown@exe
+X-SquirrelJME-BuildHostDepends: squirreljme-jit
 X-SquirrelJME-Error: BV
 X-SquirrelJME-UUID: d1f5f841-7887-4183-85ab-75c2e428ebaf
