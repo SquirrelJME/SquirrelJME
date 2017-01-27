@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.InputStream;
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
 
 /**
  * This is an accessor for accessing a suite that exists within the kernel or

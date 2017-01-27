@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package net.multiphasicapps.squirreljme.executable;
 
 /**
  * This is thrown when the definition of a class could not be read either
@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.kernel;
  * @since 2017/01/16
  */
 public class ExecutableLoadException
-	extends KernelException
+	extends RuntimeException
 {
 	/**
 	 * Initialize the exception with no message or cause.

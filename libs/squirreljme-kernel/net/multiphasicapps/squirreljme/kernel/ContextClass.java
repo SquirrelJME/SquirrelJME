@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
+
 /**
  * This is a class which has been loaded by a process which means it will have
  * statics allocated and be available for usage by executing code.
