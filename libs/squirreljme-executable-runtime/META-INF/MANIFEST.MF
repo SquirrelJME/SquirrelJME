@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 8e5b071b-7fe7-4c2f-a3e3-8b0a1a82efdf
+X-SquirrelJME-Error: AH
+X-SquirrelJME-Name: Executable Runtime
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-BuildHostDepends: squirreljme-executable
+X-SquirrelJME-Depends: squirreljme-executable
+X-SquirrelJME-Description: This project contains the interfaces which 
+ are used by the run-time of the system.
+
