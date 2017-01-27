@@ -8,4 +8,5 @@ X-SquirrelJME-Description: This project contains decoders for the
  ons.
 X-SquirrelJME-Error: AY
 X-SquirrelJME-UUID: 70d90401-f165-46ce-aaf2-5e254cfa9061
-X-SquirrelJME-BuildHostDepends: squirreljme-java-symbols
+X-SquirrelJME-BuildHostDepends: squirreljme-java-symbols io-data 
+ unmodifiable-collections io-region

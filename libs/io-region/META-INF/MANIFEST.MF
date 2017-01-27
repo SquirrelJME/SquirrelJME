@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Type: liblet
+X-SquirrelJME-Title: Extra IO Regions
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains input stream region limits and 
+ control.
+X-SquirrelJME-Error: AP
+X-SquirrelJME-UUID: e6cc1f54-fd8e-4fb2-bbc4-c7f41499181b
