@@ -21,6 +21,8 @@ import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
 /**
  * This class is used to decode the actual code attribute in the method
@@ -169,17 +171,6 @@ final class __CodeDecoder__
 			// store state for any position that is not a jump target
 			dis.mark(codelen);
 			writer.jumpTargets(new __JumpTargetCalc__(dis, codelen).targets());
-			
-			// Calculate all of the variable type for all operation positions
-			// if requested
-			if (this._classdecoder.options().contains(
-				ClassDecoderOption.CALCULATE_ALL_VARIABLE_TYPES))
-			{
-				dis.reset();
-				throw new Error("TODO");
-				/*writer.variableTypes(new __VarTypeCalc__(dis, codelen, smt).
-					types());*/
-			}
 			
 			// Reset and decode operations
 			dis.reset();

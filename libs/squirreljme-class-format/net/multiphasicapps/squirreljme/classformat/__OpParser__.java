@@ -15,6 +15,14 @@ import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+import net.multiphasicapps.squirreljme.linkage.FieldLinkage;
+import net.multiphasicapps.squirreljme.linkage.FieldReference;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodInvokeType;
+import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
+import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
 /**
  * This performs the actual parsing of the opcodes and generates operations

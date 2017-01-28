@@ -14,6 +14,9 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
  * This interface is implemented by anything that wishes to be told what a

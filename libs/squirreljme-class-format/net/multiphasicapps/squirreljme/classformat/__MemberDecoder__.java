@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
 
 /**
  * This is the base class for members to decode.

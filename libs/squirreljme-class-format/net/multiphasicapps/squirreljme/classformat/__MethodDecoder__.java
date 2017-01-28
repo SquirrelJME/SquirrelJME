@@ -14,6 +14,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
 /**
  * This decodes methods.
@@ -154,17 +157,8 @@ class __MethodDecoder__
 				// Mark as hit, there may only be one
 				this._hitmcode = true;
 				
-				// If it was requested that no byte code is to be parsed then
-				// just report that no code was used
+				// Parse the byte code
 				MethodDescriptionStream desc = this._desc;
-				if (this._classdecoder.options.contains(
-					ClassDecoderOption.NO_CODE))
-				{
-					desc.noCode();
-					return;
-				}
-				
-				// Need to read and completley skip code when done
 				CodeDescriptionStream mlw = desc.code();
 				
 				// Setup decoder and give the writer the

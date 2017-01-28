@@ -12,6 +12,13 @@ package net.multiphasicapps.squirreljme.classformat;
 
 import java.util.HashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.linkage.ClassFlag;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.FieldFlag;
+import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+import net.multiphasicapps.squirreljme.linkage.InvalidFlagsException;
+import net.multiphasicapps.squirreljme.linkage.MethodFlag;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
  * This decodes class flags.
@@ -73,7 +80,16 @@ final class __FlagDecoder__
 			fl.add(ClassFlag.ENUM);
 		
 		// Build it
-		return new ClassFlags(fl);
+		try
+		{
+			return new ClassFlags(fl);
+		}
+		
+		// {@squirreljme.error AY01 Invalid class flags.}
+		catch (InvalidFlagsException e)
+		{
+			throw new ClassFormatException("AY01", e);
+		}
 	}
 	
 	/**
@@ -126,7 +142,16 @@ final class __FlagDecoder__
 			ff.add(FieldFlag.VOLATILE);
 		
 		// Build flags
-		return new FieldFlags(__oc, ff);
+		try
+		{
+			return new FieldFlags(__oc, ff);
+		}
+		
+		// {@squirreljme.error AY02 Invalid field flags.}
+		catch (InvalidFlagsException e)
+		{
+			throw new ClassFormatException("AY02", e);
+		}
 	}
 	/**
 	 * Parses the flags for a method.
@@ -190,7 +215,16 @@ final class __FlagDecoder__
 			ff.add(MethodFlag.SYNTHETIC);
 	
 		// Build flags
-		return new MethodFlags(__oc, ff);
+		try
+		{
+			return new MethodFlags(__oc, ff);
+		}
+		
+		// {@squirreljme.error AY03 Invalid method flags.}
+		catch (InvalidFlagsException e)
+		{
+			throw new ClassFormatException("AY03", e);
+		}
 	}
 }
 

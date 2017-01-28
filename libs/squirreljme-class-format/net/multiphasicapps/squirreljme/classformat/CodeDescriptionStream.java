@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.classformat;
 
+import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
+
 /**
  * This interface is called during the parsing of the code attribute within
  * a method.

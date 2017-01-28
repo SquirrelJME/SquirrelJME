@@ -14,6 +14,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.FieldFlags;
 
 /**
  * This decodes ields.

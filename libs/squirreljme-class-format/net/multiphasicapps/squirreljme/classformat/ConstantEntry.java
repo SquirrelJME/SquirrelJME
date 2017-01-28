@@ -15,6 +15,8 @@ import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.FieldReference;
+import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
 /**
  * This represents a single constant pool entry that may exist within a class.
