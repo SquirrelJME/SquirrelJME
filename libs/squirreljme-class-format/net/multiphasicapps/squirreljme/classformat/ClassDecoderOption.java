@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/27
  */
+@Deprecated
 public enum ClassDecoderOption
 {
 	/** No method code will be processed. */

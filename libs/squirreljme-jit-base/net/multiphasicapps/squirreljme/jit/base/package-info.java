@@ -14,5 +14,6 @@
  * @since 2016/07/22
  */
 
+@Deprecated
 package net.multiphasicapps.squirreljme.jit.base;
 

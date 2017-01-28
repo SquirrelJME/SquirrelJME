@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.jit.base;
  *
  * @since 2016/09/28
  */
+@Deprecated
 public interface JITNamespaceOutput
 {
 }

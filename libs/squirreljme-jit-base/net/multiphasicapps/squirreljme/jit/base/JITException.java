@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.base;
  *
  * @since 2016/07/02
  */
+@Deprecated
 public class JITException
 	extends RuntimeException
 {

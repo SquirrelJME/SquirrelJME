@@ -19,6 +19,7 @@ import java.util.Map;
  *
  * @since 2016/09/10
  */
+@Deprecated
 public class JITConfigBuilder
 {
 	/** Internal lock. */

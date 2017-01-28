@@ -32,6 +32,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  *
  * @since 2016/09/10
  */
+@Deprecated
 public final class JITConfig
 {
 	/** The property which defines the target triplet. */

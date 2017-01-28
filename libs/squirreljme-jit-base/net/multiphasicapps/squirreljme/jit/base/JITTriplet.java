@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.nativecode.base.NativeTarget;
  *
  * @since 2016/07/05
  */
+@Deprecated
 public final class JITTriplet
 	implements Comparable<JITTriplet>
 {

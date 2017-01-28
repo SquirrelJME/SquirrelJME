@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  *
  * @since 2016/07/07
  */
+@Deprecated
 public interface JITNamespaceBrowser
 {
 	/**
