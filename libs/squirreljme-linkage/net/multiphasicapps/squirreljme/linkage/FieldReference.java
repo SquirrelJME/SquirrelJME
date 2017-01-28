@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;

@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This is the base class for all flag collections.
@@ -33,7 +32,7 @@ public abstract class Flags<F extends Flag>
 	protected final int setbits;
 	
 	/** The slower access set. */
-	protected final Set<F> flags;
+	private final Set<F> _flags;
 	
 	/**
 	 * Initializes the flag set.
@@ -82,8 +81,8 @@ public abstract class Flags<F extends Flag>
 		}
 		
 		// Lock in
-		setbits = bits;
-		flags = UnmodifiableSet.<F>of(to);
+		this.setbits = bits;
+		this._flags = to;
 	}
 	
 	/**
@@ -95,10 +94,10 @@ public abstract class Flags<F extends Flag>
 	{
 		// Quick bit check?
 		if (cast.isInstance(__o))
-			return 0 != (setbits & (1 << (((Flag)__o).ordinal())));
+			return 0 != (this.setbits & (1 << (((Flag)__o).ordinal())));
 		
 		// Fallback
-		return flags.contains(__o);
+		return this._flags.contains(__o);
 	}
 	
 	/**
@@ -108,7 +107,7 @@ public abstract class Flags<F extends Flag>
 	@Override
 	public final Iterator<F> iterator()
 	{
-		return flags.iterator();
+		return new __Iterator__<F>(this._flags.iterator());
 	}
 	
 	/**
@@ -118,7 +117,60 @@ public abstract class Flags<F extends Flag>
 	@Override
 	public final int size()
 	{
-		return flags.size();
+		return this._flags.size();
+	}
+	
+	/**
+	 * Iterates over flags.
+	 *
+	 * @since 2017/01/28
+	 */
+	private static final class __Iterator__<F>
+		implements Iterator<F>
+	{
+		/** The iterator used. */
+		protected final Iterator<F> iterator;
+		
+		/**
+		 * Wraps the iterator.
+		 *
+		 * @param __it The iterator to wrap.
+		 * @since 2017/01/28
+		 */
+		private __Iterator__(Iterator<F> __it)
+		{
+			this.iterator = __it;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/01/28
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this.iterator.hasNext();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/01/28
+		 */
+		@Override
+		public F next()
+		{
+			return this.iterator.next();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/01/28
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 

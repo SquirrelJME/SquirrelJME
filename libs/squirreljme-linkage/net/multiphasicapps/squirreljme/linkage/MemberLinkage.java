@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 /**
  * This is the base class for linkage from one method to another member. This

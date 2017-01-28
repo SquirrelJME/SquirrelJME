@@ -8,36 +8,36 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This is a link from a method which invokes another method.
+ * This is a link from a method which access a field.
  *
  * @since 2016/09/06
  */
-public final class MethodLinkage
-	extends MemberLinkage<MethodReference>
+public final class FieldLinkage
+	extends MemberLinkage<FieldReference>
 {
 	/** The type of link this is. */
-	protected final MethodInvokeType type;
+	protected final FieldAccessType type;
 	
 	/** String reference. */
 	private volatile Reference<String> _string;
 	
 	/**
-	 * Initializes the link of one method to another.
+	 * Initializes the link of one method to a field.
 	 *
 	 * @param __from The source method.
-	 * @param __to The target method.
-	 * @param __t The type of call performed.
+	 * @param __to The target field.
+	 * @param __t How the field was accessed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public MethodLinkage(MethodReference __from,
-		MethodReference __to, MethodInvokeType __t)
+	public FieldLinkage(MethodReference __from,
+		FieldReference __to, FieldAccessType __t)
 		throws NullPointerException
 	{
 		super(__from, __to);
@@ -58,14 +58,14 @@ public final class MethodLinkage
 	public boolean equals(Object __o)
 	{
 		// Must match
-		if (!(__o instanceof MethodLinkage))
+		if (!(__o instanceof FieldLinkage))
 			return false;
 		
 		// Check super first
 		if (!super.equals(__o))
 			return false;
 		
-		return this.type.equals(((MethodLinkage)__o).type);
+		return this.type.equals(((FieldLinkage)__o).type);
 	}
 	
 	/**
@@ -98,12 +98,12 @@ public final class MethodLinkage
 	}
 	
 	/**
-	 * Returns the type of call which was performed.
+	 * Returns the type of access which was performed.
 	 *
-	 * @return The method call type.
+	 * @return The field access type.
 	 * @since 2016/09/06
 	 */
-	public MethodInvokeType type()
+	public FieldAccessType type()
 	{
 		return this.type;
 	}

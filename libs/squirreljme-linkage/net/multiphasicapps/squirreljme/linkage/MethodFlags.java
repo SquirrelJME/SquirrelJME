@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 /**
  * This represents the set of flags for methods.
@@ -175,30 +175,30 @@ public final class MethodFlags
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
-	 * @throws ClassFormatException If they are not valid.
+	 * @throws InvalidFlagsException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags(ClassFlags __oc)
-		throws ClassFormatException
+		throws InvalidFlagsException
 	{
 		// Check
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AY07 Native methods are not supported in Java ME
+		// {@squirreljme.error AH07 Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new ClassFormatException("AY07");
+			throw new InvalidFlagsException("AH07");
 		
-		// {@squirreljme.error AY08 An {@code abstract} method cannot be
+		// {@squirreljme.error AH08 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new ClassFormatException(String.format("AY08 %s", this));
+				throw new InvalidFlagsException(String.format("AH08 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
@@ -215,10 +215,10 @@ public final class MethodFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error AY09 Flags for interface method has an
+				// {@squirreljme.error AH09 Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
-					throw new ClassFormatException(String.format("AY09 %s", this));
+					throw new InvalidFlagsException(String.format("AH09 %s", this));
 			}
 	}
 }

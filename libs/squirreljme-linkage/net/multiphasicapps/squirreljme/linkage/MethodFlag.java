@@ -8,39 +8,51 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 /**
- * These are flags which modify how a class is accessed and is behaved.
+ * These are flags which are used by methods.
  *
  * @since 2016/04/23
  */
-public enum ClassFlag
-	implements Flag
+public enum MethodFlag
+	implements MemberFlag
 {
-	/** Public access. */
+	/** Public method. */
 	PUBLIC,
 	
-	/** Final. */
+	/** Private method. */
+	PRIVATE,
+	
+	/** Protected method. */
+	PROTECTED,
+	
+	/** Static method. */
+	STATIC,
+	
+	/** Final method. */
 	FINAL,
 	
-	/** Super. */
-	SUPER,
+	/** Synchronized method. */
+	SYNCHRONIZED,
 	
-	/** Interface. */
-	INTERFACE,
+	/** Bridge method. */
+	BRIDGE,
 	
-	/** Abstract. */
+	/** Variable argument method. */
+	VARARGS,
+	
+	/** Native method. */
+	NATIVE,
+	
+	/** Abstract method. */
 	ABSTRACT,
 	
-	/** Synthetic. */
+	/** Strict floating point method. */
+	STRICT,
+	
+	/** Synthetic method. */
 	SYNTHETIC,
-	
-	/** Annotation. */
-	ANNOTATION,
-	
-	/** Enumeration. */
-	ENUM,
 	
 	/** End. */
 	;

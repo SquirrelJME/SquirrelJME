@@ -8,21 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
-
 /**
- * This interface is used to flag the types used for flags.
+ * This project contains classes which are associated with classes and linkage.
  *
- * @since 2016/04/23
+ * @since 2017/01/28
  */
-public interface Flag
-{
-	/**
-	 * Returns the flag ordinal.
-	 *
-	 * @return The ordinal of the flag.
-	 * @since 2016/04/23
-	 */
-	public abstract int ordinal();
-}
+
+package net.multiphasicapps.squirreljme.linkage;
 

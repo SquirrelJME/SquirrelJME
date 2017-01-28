@@ -8,44 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 /**
- * These are flags which are associated with class fields.
+ * This is a flagging interface for flags which are associated with members.
  *
  * @since 2016/04/23
  */
-public enum FieldFlag
-	implements MemberFlag
+public interface MemberFlag
+	extends Flag
 {
-	/** Public field. */
-	PUBLIC,
-	
-	/** Private field. */
-	PRIVATE,
-	
-	/** Protected field. */
-	PROTECTED,
-	
-	/** Static field. */
-	STATIC,
-	
-	/** Final field. */
-	FINAL,
-	
-	/** Volatile field. */
-	VOLATILE,
-	
-	/** Transient field. */
-	TRANSIENT,
-	
-	/** Synthetic field. */
-	SYNTHETIC,
-	
-	/** Enumeration. */
-	ENUM,
-	
-	/** End. */
-	;
 }
 

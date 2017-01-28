@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 /**
  * This represent the set of flags for fields.
@@ -144,21 +144,21 @@ public final class FieldFlags
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
-	 * @throws ClassFormatException If they are not valid.
+	 * @throws InvalidFlagsException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags(ClassFlags __oc)
-		throws ClassFormatException, NullPointerException
+		throws InvalidFlagsException, NullPointerException
 	{
 		// Check
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AY05 A field cannot be both {@code final} and
+		// {@squirreljme.error AH05 A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
-			throw new ClassFormatException(String.format("AY05 %s", this));
+			throw new InvalidFlagsException(String.format("AH05 %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
@@ -174,10 +174,10 @@ public final class FieldFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error AY06 Flags for interface field has an
+				// {@squirreljme.error AH06 Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
-					throw new ClassFormatException(String.format("AY06 %s", this));
+					throw new InvalidFlagsException(String.format("AH06 %s", this));
 			}
 	}
 }

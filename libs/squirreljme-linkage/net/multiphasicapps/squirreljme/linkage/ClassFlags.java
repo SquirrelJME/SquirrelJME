@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.linkage;
 
 /**
  * This represents the flags which a class may be.
@@ -156,39 +156,39 @@ public class ClassFlags
 	/**
 	 * Checks that the given flags are valid.
 	 *
-	 * @throws ClassFormatException If they are not valid.
+	 * @throws InvalidFlagsException If they are not valid.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags()
-		throws ClassFormatException
+		throws InvalidFlagsException
 	{
 		// Interface?
 		if (isInterface())
 		{
-			// {@squirreljme.error AY01 An interface must also be abstract.
+			// {@squirreljme.error AH01 An interface must also be abstract.
 			// (The class flags)}
 			if (!isAbstract())
-				throw new ClassFormatException(String.format("AY01 %s", this));
+				throw new InvalidFlagsException(String.format("AH01 %s", this));
 			
-			// {@squirreljme.error AY02 An interface cannot be {@code final} or
+			// {@squirreljme.error AH02 An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new ClassFormatException(String.format("AY02 %s", this));
+				throw new InvalidFlagsException(String.format("AH02 %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// {@squirreljme.error AY03 Annotations must be interfaces. (The
+			// {@squirreljme.error AH03 Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
-				throw new ClassFormatException(String.format("AY03 %s", this));
+				throw new InvalidFlagsException(String.format("AH03 %s", this));
 				
-			// {@squirreljme.error AY04 A class cannot be both {@code abstract}
+			// {@squirreljme.error AH04 A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
-				throw new ClassFormatException(String.format("AY04 %s", this));
+				throw new InvalidFlagsException(String.format("AH04 %s", this));
 		}
 	}
 }
