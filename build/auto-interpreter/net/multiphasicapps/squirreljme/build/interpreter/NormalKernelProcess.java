@@ -10,9 +10,9 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.kernel.ContextClass;
 import net.multiphasicapps.squirreljme.kernel.ContextLoadException;
-import net.multiphasicapps.squirreljme.kernel.ExecutableClass;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 

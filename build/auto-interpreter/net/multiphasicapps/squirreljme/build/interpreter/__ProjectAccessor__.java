@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
-import net.multiphasicapps.squirreljme.kernel.ExecutableClass;
-import net.multiphasicapps.squirreljme.kernel.ExecutableLoadException;
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
