@@ -8,23 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.mips;
+
+import net.multiphasicapps.squirreljme.jit.TranslationEngine;
+import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 
 /**
- * This provides a single instance creation of a translation engine which is
- * used by the JIT to translate byte code into an {@link ExecutableClass}.
+ * This provides the engine for the JIT to generate MIPS machine code.
  *
- * @since 2017/01/30
+ * @since 2017/01/31
  */
-public interface TranslationEngineProvider
+public class MIPSEngineProvider
+	implements TranslationEngineProvider
 {
 	/**
-	 * Creates a new instance of the translation engine for use during JIT
-	 * compilation.
-	 *
-	 * @return The translation engine.
-	 * @since 2017/01/30
+	 * {@inheritDoc}
+	 * @since 2017/01/31
 	 */
-	public abstract TranslationEngine createEngine();
+	@Override
+	public TranslationEngine createEngine()
+	{
+		throw new Error("TODO");
+	}
 }
 

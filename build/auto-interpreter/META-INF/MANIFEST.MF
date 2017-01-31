@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: c22f7d7f-b384-4526-8530-2e72728dbac7
 X-SquirrelJME-BuildHostDepends: projects build-base squirreljme-kernel 
- squirreljme-jit squirreljme-executable
+ squirreljme-jit squirreljme-executable squirreljme-jit-mips
 X-SquirrelJME-Error: AV
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2

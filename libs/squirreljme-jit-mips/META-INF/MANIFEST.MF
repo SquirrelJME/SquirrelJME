@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: a857218a-c458-4a8e-afae-2551dea82181
+X-SquirrelJME-Error: AM
+X-SquirrelJME-Name: MIPS JIT
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains support in the JIT to 
+ generate MIPS machine code.
+X-SquirrelJME-BuildHostDepends: squirreljme-jit
+
