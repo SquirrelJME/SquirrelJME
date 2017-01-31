@@ -19,6 +19,7 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelBuilder;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
@@ -251,6 +252,18 @@ public class AutoInterpreter
 			catch (InterruptedException e)
 			{
 			}
+	}
+	
+	/**
+	 * Returns the translation engine provider which the interpreter
+	 * understands when executing target code.
+	 *
+	 * @return The translation engine provider.
+	 * @since 2017/01/30
+	 */
+	public TranslationEngineProvider translationEngineProvider()
+	{
+		throw new Error("TODO");
 	}
 }
 

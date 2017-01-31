@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
+import net.multiphasicapps.squirreljme.jit.JIT;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
@@ -27,24 +28,29 @@ import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 class __ProjectAccessor__
 	extends SuiteDataAccessor
 {
+	/** The owning interpreter. */
+	protected final AutoInterpreter interpreter;
+	
 	/** The project to wrap. */
 	protected final ProjectBinary project;
 	
 	/**
 	 * Initializes the project accessor.
 	 *
+	 * @param __ai The owning interpreter.
 	 * @param __p The project to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/03
 	 */
-	__ProjectAccessor__(ProjectBinary __p)
+	__ProjectAccessor__(AutoInterpreter __ai, ProjectBinary __p)
 		throws NullPointerException
 	{
 		// Check
-		if (__p == null)
+		if (__ai == null || __p == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.interpreter = __ai;
 		this.project = __p;
 	}
 	
@@ -64,7 +70,8 @@ class __ProjectAccessor__
 		try (FileDirectory fd = this.project.openFileDirectory();
 			InputStream is = fd.open(__name + ".class"))
 		{
-			throw new Error("TODO");
+			return new JIT(is, interpreter.translationEngineProvider()).
+				compile();
 		}
 		
 		// {@squirreljme.error AV04 Failed to read the given input class.

@@ -11,8 +11,10 @@
 package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.DataInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
@@ -58,6 +60,21 @@ public final class ClassDecoder
 	
 	/** The name of this class. */
 	volatile ClassNameSymbol _classname;
+	
+	/**
+	 * Initializes the class decoder.
+	 *
+	 * @param __is The input stream.
+	 * @param __out The interface that is told class details.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/30
+	 */
+	public ClassDecoder(InputStream __is, ClassDescriptionStream __out)
+		throws NullPointerException
+	{
+		this(new DataInputStream(Objects.<InputStream>requireNonNull(__is,
+			"NARG")), __out);
+	}
 	
 	/**
 	 * This initializes the decoder for classes.

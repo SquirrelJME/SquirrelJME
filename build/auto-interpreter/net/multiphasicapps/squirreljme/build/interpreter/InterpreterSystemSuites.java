@@ -127,7 +127,7 @@ public class InterpreterSystemSuites
 		__ProjectAccessor__[] accessors = new __ProjectAccessor__[n];
 		Iterator<ProjectBinary> it = projects.iterator();
 		for (int i = 0; i < n; i++)
-			accessors[i] = new __ProjectAccessor__(it.next());
+			accessors[i] = new __ProjectAccessor__(__ai, it.next());
 		this._accessors = accessors;
 	}
 	
