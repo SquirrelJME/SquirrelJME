@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,6 +22,9 @@ import java.util.Map;
  */
 public abstract class JITConfig<C extends JITConfig<C>>
 {
+	/** Mapping of configuration values. */
+	private final Map<String, String> _values;
+	
 	/**
 	 * Initializes the JIT configuration.
 	 *
@@ -48,8 +52,8 @@ public abstract class JITConfig<C extends JITConfig<C>>
 		if (__kvp == null)
 			throw new NullPointerException("NARG");
 		
-		//
-		throw new Error("TODO");
+		// Copy
+		this._values = new HashMap<>(__kvp);
 	}
 	
 	/**
