@@ -20,5 +20,45 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public abstract class TranslationEngine
 {
+	/** The configuration used. */
+	protected final JITConfig<?> config;
+	
+	/**
+	 * Initializes the base translation engine.
+	 *
+	 * @param __c The configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/02
+	 */
+	public TranslationEngine(JITConfig<?> __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __c;
+	}
+	
+	/**
+	 * This returns the configuration that the translation engine was
+	 * initialized with.
+	 *
+	 * @param <C> The class to cast to.
+	 * @param __cl The class to cast to.
+	 * @return The configuration to use for the JIT.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/02
+	 */
+	public final <C extends JITConfig<C>> JITConfig<C> config(Class<C> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this.config);
+	}
 }
 
