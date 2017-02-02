@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.Map;
+
 /**
  * This is used to access the configuration which is needed by the JIT during
  * the JIT compilation set.
@@ -17,8 +19,39 @@ package net.multiphasicapps.squirreljme.jit;
  * @param <C> The configuration class.
  * @since 2017/02/02
  */
-public interface JITConfig<C extends JITConfig<C>>
+public abstract class JITConfig<C extends JITConfig<C>>
 {
+	/**
+	 * Initializes the JIT configuration.
+	 *
+	 * @param __kvp Key/value pairs to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/02
+	 */
+	public JITConfig(String... __kvp)
+		throws NullPointerException
+	{
+		this(new __KVPMap__(__kvp));
+	}
+	
+	/**
+	 * Initializes the JIT configuration.
+	 *
+	 * @param __kvp Key/value pairs to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/02
+	 */
+	public JITConfig(Map<String, String> __kvp)
+		throws NullPointerException
+	{
+		// Check
+		if (__kvp == null)
+			throw new NullPointerException("NARG");
+		
+		//
+		throw new Error("TODO");
+	}
+	
 	/**
 	 * Returns the class which is used to serialize and de-serialize the
 	 * JIT.
