@@ -53,7 +53,10 @@ public abstract class JITConfig<C extends JITConfig<C>>
 			throw new NullPointerException("NARG");
 		
 		// Copy
-		this._values = new HashMap<>(__kvp);
+		Map<String, String> to = new HashMap<>();
+		for (Map.Entry<String, String> e : __kvp.entrySet())
+			to.put(__lower(e.getKey()), __lower(e.getValue()));
+		this._values = to;
 	}
 	
 	/**
@@ -64,5 +67,49 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	 * @since 2017/02/01
 	 */
 	public abstract JITConfigSerializer<C> serializer();
+	
+	/**
+	 * Lowercases the given string.
+	 *
+	 * @param __s The string to lowercase, may be {@code null}.
+	 * @return The lowercased string or {@code null} if it was {@code null}.
+	 * @since 2017/02/02
+	 */
+	private static final String __lower(String __s)
+	{
+		// Do nothing with null
+		if (__s == null)
+			return null;
+		
+		// Check for capitals
+		int i, n;
+		for (i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			if (c >= 'A' && c <= 'Z')
+				break;
+		}
+		
+		// None
+		if (i >= n)
+			return __s;
+		
+		// Lowercase
+		StringBuilder sb = new StringBuilder(n);
+		if (i > 0)
+			sb.append(__s.substring(0, i));
+		
+		// Lowercase characters
+		for (; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			if (c >= 'A' && c <= 'Z')
+				c = (char)('a' + (c - 'A'));
+			sb.append(c);
+		}
+		
+		// Use it
+		return sb.toString();
+	}
 }
 
