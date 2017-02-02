@@ -21,6 +21,27 @@ import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 public class MIPSEngineProvider
 	implements TranslationEngineProvider
 {
+	/** The configuration for MIPS. */
+	protected final MIPSConfig config;
+	
+	/**
+	 * Initializes the MIPS engine provider.
+	 *
+	 * @param __c The configuration to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/02
+	 */
+	public MIPSEngineProvider(MIPSConfig __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup config
+		this.config = __c;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/01/31

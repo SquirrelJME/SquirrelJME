@@ -31,7 +31,7 @@ public abstract class JITConfigSerializer<C extends JITConfig<C>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public final JITConfig<C> deserialize(String __v)
+	public final C deserialize(String __v)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -49,7 +49,7 @@ public abstract class JITConfigSerializer<C extends JITConfig<C>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public final String serialize(JITConfig<C> __c)
+	public final String serialize(C __c)
 		throws NullPointerException
 	{
 		// Check

@@ -19,6 +19,9 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.jit.mips.MIPSConfig;
+import net.multiphasicapps.squirreljme.jit.mips.MIPSEngineProvider;
+import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelBuilder;
@@ -37,6 +40,9 @@ public class AutoInterpreter
 {
 	/** The project manager which is used to get APIs, midlets, and liblets. */
 	protected final ProjectManager projects;
+	
+	/** The translation engine used for the JIT. */
+	protected final TranslationEngineProvider engineprovider;
 	
 	/** The kernel manager. */
 	private final AbstractKernelManager _akm;
@@ -193,6 +199,11 @@ public class AutoInterpreter
 		
 		// Set manager
 		this._akm = akm;
+		
+		// Setup translation engine the JIT uses
+		this.engineprovider = new MIPSEngineProvider(new MIPSConfig(
+			"cpu", "mips1",
+			"endian", "big"));
 	}
 	
 	/**
@@ -263,7 +274,7 @@ public class AutoInterpreter
 	 */
 	public TranslationEngineProvider translationEngineProvider()
 	{
-		throw new Error("TODO");
+		return this.engineprovider;
 	}
 }
 
