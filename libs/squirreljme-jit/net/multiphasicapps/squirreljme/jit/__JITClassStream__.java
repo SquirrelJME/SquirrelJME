@@ -174,7 +174,8 @@ class __JITClassStream__
 	public void version(ClassVersion __cv)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// The class stream handles this so handling the version serves
+		// no real purpose
 	}
 }
 
