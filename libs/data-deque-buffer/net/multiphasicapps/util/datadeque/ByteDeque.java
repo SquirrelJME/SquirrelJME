@@ -483,7 +483,7 @@ public class ByteDeque
 		
 		// If the address is within the starting half then seek from the
 		// start, otherwise start from the trailing end
-		return __getVia((__a < (total >> 1)), __a, __b, __o, __l);
+		return __getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, false);
 	}
 	
 	/**
@@ -957,19 +957,21 @@ public class ByteDeque
 	}
 	
 	/**
-	 * Obtains bytes starting from the head or tail side.
+	 * Obtains or reads bytes starting from the head or tail side.
 	 *
 	 * @param __last If {@code true} then initial block traversal is done
 	 * from the tail end rather than the head end.
 	 * @param __a The address to read.
-	 * @param __b The destination array.
+	 * @param __b The destination or source array.
 	 * @param __o The output offset into the array.
-	 * @param __l The number of bytes to read.
+	 * @param __l The number of bytes to read or write.
+	 * @param __set If {@code true} then bytes will be read from the input
+	 * array for writing.
 	 * @return The number of bytes read.
 	 * @since 2016/08/04
 	 */
-	private final int __getVia(boolean __last, int __a, byte[] __b,
-		int __o, int __l)
+	private final int __getOrSetVia(boolean __last, int __a, byte[] __b,
+		int __o, int __l, boolean __set)
 	{
 		// Get some things
 		int total = this._total;
@@ -1025,9 +1027,14 @@ public class ByteDeque
 			int rc = Math.min(left,
 				(lastbl && tail != 0 ? tail : bs) - rhead);
 			
-			// Read in the data
-			for (int i = 0; i < rc; i++)
-				__b[at++] = bl[rhead++];
+			// Write the data
+			if (__set)
+				throw new Error("TODO");
+		
+			// Read the data
+			else
+				for (int i = 0; i < rc; i++)
+					__b[at++] = bl[rhead++];
 			
 			// Reset head to zero for the next block read
 			rhead = 0;
