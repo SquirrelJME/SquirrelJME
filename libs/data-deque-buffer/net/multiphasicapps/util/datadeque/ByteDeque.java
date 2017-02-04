@@ -925,6 +925,20 @@ public class ByteDeque
 	}
 	
 	/**
+	 * Returns all of the data in this deque as a single byte array.
+	 *
+	 * @return The data contained within this deque.
+	 * @since 2017/02/04
+	 */
+	public final byte[] toByteArray()
+	{
+		int sz = available();
+		byte[] rv = new byte[sz];
+		get(0, rv, 0, sz);
+		return rv;
+	}
+	
+	/**
 	 * Writes the entire deque into the specified output stream.
 	 *
 	 * @param __os The stream to write to.
