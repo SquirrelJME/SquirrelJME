@@ -925,6 +925,95 @@ public class ByteDeque
 	}
 	
 	/**
+	 * Sets a single byte offset to the start of the deque as if it were an
+	 * array.
+	 *
+	 * @param __a The index to set the byte value of.
+	 * @return The byte at the given position.
+	 * @throws IndexOutOfBoundsException If the address is not within bounds.
+	 * @since 2017/02/04
+	 */
+	public final byte set(int __a)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AE0e Request set at a negative index.}
+		if (__a < 0)
+			throw new IndexOutOfBoundsException("AE0e");
+		
+		byte[] solo = this._solo;
+		int rv = set(__a, solo, 0, 1);
+		if (rv == 1)
+			return solo[0];
+		
+		// {@squirreljme.error AE0f Could not set the byte at the
+		// given position because it exceeds the deque bounds. (The index)}
+		throw new IndexOutOfBoundsException(String.format("AE0f %d", __a));
+	}
+	
+	/**
+	 * Sets multiple bytes offset to the start of the deque as if it were
+	 * and array.
+	 *
+	 * @param __a The index to start writing values to.
+	 * @param __b The source array for values.
+	 * @return The number of bytes write.
+	 * @throws IndexOutOfBoundsException If the address is not within the
+	 * bounds of the deque.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/04
+	 */
+	public final int set(int __a, byte[] __b)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		return this.set(__a, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Sets multiple bytes offset to the start of the deque as if it were
+	 * and array.
+	 *
+	 * @param __a The index to start writing values to.
+	 * @param __b The source array for values.
+	 * @param __o Where to start writing source values.
+	 * @param __l The number of bytes to write.
+	 * @return The number of bytes write.
+	 * @throws IndexOutOfBoundsException If the address is not within the
+	 * bounds of the deque, the offset and/or length are negative, or the
+	 * offset and length exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/04
+	 */
+	public final int set(int __a, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// {@squirreljme.error AE0g Request set at a negative index.}
+		if (__a < 0)
+			throw new IndexOutOfBoundsException("AE0g");
+		
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// {@squirreljme.error AE0h The requested address is outside of
+		// the bounds of the queue. (The requested address; The number of
+		// bytes in the queue)}
+		int total = this._total;
+		if (__a < 0 || __a >= total)
+			throw new IndexOutOfBoundsException(String.format("AE0h %d %d",
+				__a, total));
+		
+		// If there are no bytes, all writes do nothing
+		if (total <= 0)
+			return 0;
+		
+		// If the address is within the starting half then seek to the
+		// start, otherwise start to the trailing end
+		return __getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, true);
+	}
+	
+	/**
 	 * Returns all of the data in this deque as a single byte array.
 	 *
 	 * @return The data contained within this deque.
@@ -1029,7 +1118,8 @@ public class ByteDeque
 			
 			// Write the data
 			if (__set)
-				throw new Error("TODO");
+				for (int i = 0; i < rc; i++)
+					bl[rhead++] = __b[at++];
 		
 			// Read the data
 			else
