@@ -35,22 +35,27 @@ class __JITClassStream__
 	/** The owning JIT. */
 	protected final JIT jit;
 	
+	/** The output executrable. */
+	protected final JITExecutableBuilder output;
+	
 	/**
 	 * Initializes the class description stream.
 	 *
 	 * @param __jit The owning jit.
+	 * @param __out The output executable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/30
 	 */
-	__JITClassStream__(JIT __jit)
+	__JITClassStream__(JIT __jit, JITExecutableBuilder __out)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null)
+		if (__jit == null || __out == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.jit = __jit;
+		this.output = __out;
 	}
 	
 	/**
