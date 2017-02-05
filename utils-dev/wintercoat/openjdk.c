@@ -39,6 +39,8 @@ static void WC_OpenJDK_InitBootClasses(void)
 	openjdkrootdir = "/usr/lib/jvm/java-8-openjdk-powerpc";
 	
 	WC_TODO();
+	
+	//void WC_InitializeBootClassPath(const char** paths);
 }
 
 /**
