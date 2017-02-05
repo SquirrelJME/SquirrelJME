@@ -143,7 +143,7 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 		else if (0 == strcmp(opstr, "-verbose:jni"))
 			WC_TODO();
 		
-		// {@squirreljme.error WC05 Invaid JVM argument. (The argument)}
+		// {@squirreljme.error WC05 Invalid JVM argument. (The argument)}
 		else
 		{
 			WC_VERBOSE(WC_VERBOSE_MODE_ERROR, "WC05 %s", opstr);

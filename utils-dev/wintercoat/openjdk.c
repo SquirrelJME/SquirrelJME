@@ -15,10 +15,14 @@
  */
 
 #include "wintercoat.h"
+#include "bootpath.h"
 
 #if defined(WINTERCOAT_OPENJDK)
 
 /****************************************************************************/
+
+/** Has the boot classpath been initialized? */
+static jboolean didinitializebcp = JNI_FALSE;
 
 /**
  * Finds and loads a class from the bootstrap class loader.
@@ -40,6 +44,10 @@ JNIEXPORT jclass JNICALL JVM_FindClassFromBootLoader(JNIEnv* penv,
 	// Debug
 	WC_VERBOSE(WC_VERBOSE_MODE_CLASS, "JVM_FindClassFromBootLoader(%s)",
 		pname);
+	
+	// Need to initialize the classpath?
+	if (didinitializebcp == JNI_FALSE)
+		WC_TODO();
 	
 	WC_TODO();
 }

@@ -16,9 +16,10 @@ CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) \
 	-Werror=implicit -DWINTERCOAT_OPENJDK -g3 -O0 \
 	$(shell llvm-config-4.0 --cflags)
 LDFLAGS := $(LDFLAGS) $(shell llvm-config-4.0 --ldflags)
-ALL_HEADERS := jni_md.h jvm_md.h mempool.h jii.h wintercoat.h
+ALL_HEADERS := jni_md.h jvm_md.h mempool.h jii.h wintercoat.h zip.h bootpath.h
 
-libjvm.so:		wintercoat.o mempool.o jii.o jin.o jcl.o openjdk.o
+libjvm.so:		wintercoat.o mempool.o jii.o jin.o jcl.o openjdk.o \
+				zip.o bootpath.o
 				$(CC) -o $@ -shared -lpthread $(LDFLAGS) $^
 
 %.o:			%.c
