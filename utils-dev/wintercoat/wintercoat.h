@@ -31,6 +31,7 @@ extern "C"
 /****************************************************************************/
 
 #include <pthread.h>
+#include <stdnoreturn.h>
 
 #include "jni.h"
 #include "jvm.h"
@@ -175,7 +176,7 @@ void WC_ASSERT_real(const char* const pin, int pline, const char* const pfunc,
  * @since 2016/10/19
  */
 #define WC_TODO() WC_TODO_real(__FILE__, __LINE__, __func__)
-void WC_TODO_real(const char* const pin, int pline, const char* const pfunc);
+_Noreturn void WC_TODO_real(const char* const pin, int pline, const char* const pfunc);
 
 /**
  * Spits out a verbose message.

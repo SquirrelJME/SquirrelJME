@@ -12,7 +12,7 @@
 # ---------------------------------------------------------------------------
 
 CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) \
-	-I$(JVM_INCLUDE)/linux -I. --std=c99 \
+	-I$(JVM_INCLUDE)/linux -I. --std=c11 \
 	-Werror=implicit -DWINTERCOAT_OPENJDK -g3 -O0 \
 	$(shell llvm-config-4.0 --cflags)
 LDFLAGS := $(LDFLAGS) $(shell llvm-config-4.0 --ldflags)
