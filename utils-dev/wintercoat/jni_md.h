@@ -32,6 +32,9 @@ extern "C"
 
 #include <stdint.h>
 
+#if !defined(JNI_TYPES_ALREADY_DEFINED_IN_JNI_MD_H)
+#define JNI_TYPES_ALREADY_DEFINED_IN_JNI_MD_H
+
 /** Byte. */
 typedef int8_t jbyte;
 
@@ -52,6 +55,60 @@ typedef double jdouble;
 
 /** Character. */
 typedef uint16_t jchar;
+
+/** Boolean. */
+typedef uint8_t jboolean;
+
+/** Size. */
+typedef jint jsize;
+
+struct _jobject;
+
+typedef struct _jobject *jobject;
+typedef jobject jclass;
+typedef jobject jthrowable;
+typedef jobject jstring;
+typedef jobject jarray;
+typedef jarray jbooleanArray;
+typedef jarray jbyteArray;
+typedef jarray jcharArray;
+typedef jarray jshortArray;
+typedef jarray jintArray;
+typedef jarray jlongArray;
+typedef jarray jfloatArray;
+typedef jarray jdoubleArray;
+typedef jarray jobjectArray;
+
+typedef jobject jweak;
+
+typedef union jvalue
+{
+	jboolean z;
+	jbyte b;
+	jchar c;
+	jshort s;
+	jint i;
+	jlong j;
+	jfloat f;
+	jdouble d;
+	jobject l;
+} jvalue;
+
+struct _jfieldID;
+typedef struct _jfieldID *jfieldID;
+
+struct _jmethodID;
+typedef struct _jmethodID *jmethodID;
+
+typedef enum _jobjectType
+{
+	JNIInvalidRefType,
+	JNILocalRefType,
+	JNIGlobalRefType,
+	JNIWeakGlobalRefType
+} jobjectRefType;
+
+#endif
 
 /** Not used on POSIX. */
 #define JNICALL

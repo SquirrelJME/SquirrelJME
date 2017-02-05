@@ -50,11 +50,11 @@ extern "C"
  */
 typedef struct WC_StaticString
 {
+	/** Characters of the string in modified UTF-8. */
+	const char* utfchars;
+	
 	/** The length of the string in UTF-8 characters. */
 	jint utflen;
-	
-	/** Characters of the string in modified UTF-8. */
-	char* utfchars;
 	
 	/** The string as an object. */
 	jstring object;
