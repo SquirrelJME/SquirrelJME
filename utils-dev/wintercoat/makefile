@@ -11,8 +11,11 @@
 # Set JVM_INCLUDE to the directory of: `src/share/javavm/export`.
 # ---------------------------------------------------------------------------
 
-CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) -I. --std=c99 \
-	-Werror=implicit -DWINTERCOAT_OPENJDK -g3 -O0
+CFLAGS := $(CFLAGS) -D_JNI_IMPLEMENTATION_ -I$(JVM_INCLUDE) \
+	-I$(JVM_INCLUDE)/linux -I. --std=c99 \
+	-Werror=implicit -DWINTERCOAT_OPENJDK -g3 -O0 \
+	$(shell llvm-config-4.0 --cflags)
+LDFLAGS := $(LDFLAGS) $(shell llvm-config-4.0 --ldflags)
 ALL_HEADERS := jni_md.h jvm_md.h mempool.h jii.h wintercoat.h
 
 libjvm.so:		wintercoat.o mempool.o jii.o jin.o jcl.o openjdk.o
