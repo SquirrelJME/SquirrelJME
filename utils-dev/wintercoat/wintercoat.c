@@ -38,7 +38,6 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	char* eq;
 	int len, klen;
 	WC_JavaVM* jvm;
-	WC_JNIEnv* env;
 	WC_StaticString* sk;
 	WC_StaticString* sv;
 	WC_SystemPropertyLink* splink;
@@ -177,7 +176,7 @@ _JNI_IMPORT_OR_EXPORT_ jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv,
 	// Setup arguments
 	memset(&attach, 0, sizeof(attach));
 	attach.version = JNI_VERSION_1_8;
-	attach.name = "wintercoat-main";
+	attach.name = strdup("wintercoat-main");
 	
 	// The environment is created by just attaching to the current thread, so
 	// do not duplicate work
