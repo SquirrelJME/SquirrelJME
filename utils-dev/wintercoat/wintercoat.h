@@ -41,6 +41,7 @@ extern "C"
 #define WC_VERBOSE_MODE_GC 3
 #define WC_VERBOSE_MODE_JNI 4
 #define WC_VERBOSE_MODE_ERROR 5
+#define WC_VERBOSE_MODE_TODO 6
 
 /**
  * This is used to store static string information.

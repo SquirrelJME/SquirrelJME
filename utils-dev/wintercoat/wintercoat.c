@@ -335,10 +335,23 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 #define BUFFER_SIZE 256
 	va_list ap;
 	char* buf;
+	const char* type;
 	
 	// Printing for this mode?
 	if (1)
 	{
+		// Which type of message to print?
+		switch (pmode)
+		{
+			case WC_VERBOSE_MODE_DEBUG: type = "DEBUG"; break;
+			case WC_VERBOSE_MODE_CLASS: type = "CLASS"; break;
+			case WC_VERBOSE_MODE_GC: type = "GC"; break;
+			case WC_VERBOSE_MODE_JNI: type = "JNI"; break;
+			case WC_VERBOSE_MODE_ERROR: type = "ERROR"; break;
+			case WC_VERBOSE_MODE_TODO: type = "TODO"; break;
+			default: type = "UNKNOWN"; break;
+		}
+		
 		// Need arguments
 		va_start(ap, pmesg);
 		
@@ -351,7 +364,7 @@ void WC_VERBOSE_real(const char* const pin, int pline,
 			buf[BUFFER_SIZE - 1] = '\0';
 		
 			// Print to output stream
-			fprintf(stderr, "WinterCoat: VERBOSE %s:%d: %s [%d]: ",
+			fprintf(stderr, "WinterCoat: VERBOSE %s %s:%d: %s [%d]: ", type,
 				(pin == NULL ? "NULL" : pin), pline,
 				(pfunc == NULL ? "NULL" : pfunc), pmode);
 			fputs(buf, stderr);
