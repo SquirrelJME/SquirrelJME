@@ -59,11 +59,10 @@ class __JITClassStream__
 	}
 	
 	/**
-	 * This reports the number of fields that are within a class.
-	 *
-	 * @param __n The number of fields in a class.
-	 * @since 2016/09/09
+	 * {@inheritDoc}
+	 * @since 2017/01/30
 	 */
+	@Override
 	public void classFlags(ClassFlags __f)
 		throws NullPointerException
 	{
@@ -71,11 +70,10 @@ class __JITClassStream__
 	}
 	
 	/**
-	 * This reports the number of fields that are within a class.
-	 *
-	 * @param __n The number of fields in a class.
-	 * @since 2016/09/09
+	 * {@inheritDoc}
+	 * @since 2017/01/30
 	 */
+	@Override
 	public void className(ClassNameSymbol __n)
 		throws NullPointerException
 	{
@@ -83,11 +81,10 @@ class __JITClassStream__
 	}
 	
 	/**
-	 * This reports the number of fields that are within a class.
-	 *
-	 * @param __n The number of fields in a class.
-	 * @since 2016/09/09
+	 * {@inheritDoc}
+	 * @since 2017/01/30
 	 */
+	@Override
 	public void constantPool(ConstantPool __pool)
 		throws NullPointerException
 	{
@@ -95,21 +92,19 @@ class __JITClassStream__
 	}
 	
 	/**
-	 * This reports the number of fields that are within a class.
-	 *
-	 * @param __n The number of fields in a class.
-	 * @since 2016/09/09
+	 * {@inheritDoc}
+	 * @since 2017/01/30
 	 */
+	@Override
 	public void endClass()
 	{
 	}
 	
 	/**
-	 * This reports the number of fields that are within a class.
-	 *
-	 * @param __n The number of fields in a class.
-	 * @since 2016/09/09
+	 * {@inheritDoc}
+	 * @since 2017/01/30
 	 */
+	@Override
 	public FieldDescriptionStream field(FieldFlags __f,
 		IdentifierSymbol __name, FieldSymbol __type)
 		throws NullPointerException
