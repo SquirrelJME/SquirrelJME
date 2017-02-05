@@ -67,7 +67,7 @@ class __JITClassStream__
 	public void classFlags(ClassFlags __f)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this.output.setClassFlags(__f);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ class __JITClassStream__
 	public void className(ClassNameSymbol __n)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this.output.setClassName(__n);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class __JITClassStream__
 	public void constantPool(ConstantPool __pool)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// The constant pool is not used at all
 	}
 	
 	/**
@@ -102,7 +102,6 @@ class __JITClassStream__
 	 */
 	public void endClass()
 	{
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -125,7 +124,7 @@ class __JITClassStream__
 	@Override
 	public void fieldCount(int __n)
 	{
-		throw new Error("TODO");
+		// Dynamically used
 	}
 	
 	/**
@@ -136,7 +135,7 @@ class __JITClassStream__
 	public void interfaceClasses(ClassNameSymbol[] __i)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this.output.setInterfaceClassNames(__i);
 	}
 	
 	/**
@@ -158,7 +157,7 @@ class __JITClassStream__
 	@Override
 	public void methodCount(int __n)
 	{
-		throw new Error("TODO");
+		// Dynamically used
 	}
 	
 	/**
@@ -168,7 +167,7 @@ class __JITClassStream__
 	@Override
 	public void superClass(ClassNameSymbol __n)
 	{
-		throw new Error("TODO");
+		this.output.setSuperClassName(__n);
 	}
 	
 	/**
