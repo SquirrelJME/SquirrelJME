@@ -26,6 +26,9 @@ abstract class __JITMemberStream__<F extends MemberFlags,
 	S extends MemberTypeSymbol>
 	implements MemberDescriptionStream
 {
+	/** The owning class stream. */
+	final __JITClassStream__ _classstream;
+	
 	/** Member flags. */
 	final F _flags;
 	
@@ -38,20 +41,23 @@ abstract class __JITMemberStream__<F extends MemberFlags,
 	/**
 	 * Initializes the base memeber information.
 	 *
+	 * @param __c The owning class stream.
 	 * @param __f The member flags.
 	 * @param __name The member name.
 	 * @param __type The member type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/07
 	 */
-	__JITMemberStream__(F __f, IdentifierSymbol __name, S __type)
+	__JITMemberStream__(__JITClassStream__ __c, F __f, IdentifierSymbol __name,
+		S __type)
 		throws NullPointerException
 	{
 		// Check
-		if (__f == null || __name == null || __type == null)
+		if (__c == null || __f == null || __name == null || __type == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this._classstream = __c;
 		this._flags = __f;
 		this._name = __name;
 		this._type = __type;

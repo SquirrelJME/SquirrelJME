@@ -142,7 +142,8 @@ class __JITClassStream__
 			throw new NullPointerException("NARG");
 		
 		// Create new field
-		__JITFieldStream__ rv = new __JITFieldStream__(__f, __name, __type);
+		__JITFieldStream__ rv = new __JITFieldStream__(this, __f, __name,
+			__type);
 		this._fields.add(rv);
 		return rv;
 	}
@@ -187,7 +188,8 @@ class __JITClassStream__
 			throw new NullPointerException("NARG");
 		
 		// Create new method
-		__JITMethodStream__ rv = new __JITMethodStream__(__f, __name, __type);
+		__JITMethodStream__ rv = new __JITMethodStream__(this, __f, __name,
+			__type);
 		this._methods.add(rv);
 		return rv;
 	}

@@ -26,18 +26,22 @@ class __JITMethodStream__
 	extends __JITMemberStream__<MethodFlags, MethodSymbol>
 	implements MethodDescriptionStream
 {
+	/** The generated stream code. */
+	volatile __JITCodeStream__ _code;
+	
 	/**
 	 * Initializes the method information.
 	 *
+	 * @param __c The owning class stream.
 	 * @param __f The method flags.
 	 * @param __name The method name.
 	 * @param __type The method type.
 	 * @since 2017/02/07
 	 */
-	__JITMethodStream__(MethodFlags __f, IdentifierSymbol __name,
-		MethodSymbol __type)
+	__JITMethodStream__(__JITClassStream__ __c, MethodFlags __f,
+		IdentifierSymbol __name, MethodSymbol __type)
 	{
-		super(__f, __name, __type);
+		super(__c, __f, __name, __type);
 	}
 	
 	/**
@@ -47,7 +51,9 @@ class __JITMethodStream__
 	@Override
 	public CodeDescriptionStream code()
 	{
-		throw new Error("TODO");
+		__JITCodeStream__ rv = new __JITCodeStream__(this._classstream);
+		this._code = rv;
+		return rv;
 	}
 	
 	/**
@@ -57,7 +63,6 @@ class __JITMethodStream__
 	@Override
 	public void noCode()
 	{
-		throw new Error("TODO");
 	}
 }
 

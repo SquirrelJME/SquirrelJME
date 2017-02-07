@@ -30,15 +30,16 @@ class __JITFieldStream__
 	/**
 	 * Initializes the field information.
 	 *
+	 * @param __c The owning class stream.
 	 * @param __f The field flags.
 	 * @param __name The field name.
 	 * @param __type The field type.
 	 * @since 2017/02/07
 	 */
-	__JITFieldStream__(FieldFlags __f, IdentifierSymbol __name,
-		FieldSymbol __type)
+	__JITFieldStream__(__JITClassStream__ __c, FieldFlags __f,
+		IdentifierSymbol __name, FieldSymbol __type)
 	{
-		super(__f, __name, __type);
+		super(__c, __f, __name, __type);
 	}
 	
 	/**
