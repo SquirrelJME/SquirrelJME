@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;

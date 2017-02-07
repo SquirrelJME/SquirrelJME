@@ -109,6 +109,10 @@ class __JITClassStream__
 		IdentifierSymbol __name, FieldSymbol __type)
 		throws NullPointerException
 	{
+		// Check
+		if (__f == null || __name == null || __type == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
