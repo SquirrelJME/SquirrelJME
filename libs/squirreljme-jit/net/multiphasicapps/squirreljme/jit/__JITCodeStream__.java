@@ -79,6 +79,10 @@ class __JITCodeStream__
 		CodeVariable __to)
 		throws NullPointerException
 	{
+		// Check
+		if (__type == null || __from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
@@ -89,9 +93,14 @@ class __JITCodeStream__
 	@Override
 	public void invokeMethod(MethodLinkage __link, int __d,
 		CodeVariable __rv, StackMapType __rvt, CodeVariable[] __cargs,
-		StackMapType[] __targ)
+		StackMapType[] __targs)
 		throws NullPointerException
 	{
+		// Check
+		if (__link == null || __cargs == null || __targs == null ||
+			((__rv == null) != (__rvt == null)))
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
@@ -113,7 +122,7 @@ class __JITCodeStream__
 	@Override
 	public void variableCounts(int __ms, int __ml)
 	{
-		throw new Error("TODO");
+		// Not used at all
 	}
 	
 	/**
