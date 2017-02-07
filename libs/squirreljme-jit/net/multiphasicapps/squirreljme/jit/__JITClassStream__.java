@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.classformat.ClassVersion;
 import net.multiphasicapps.squirreljme.classformat.ConstantPool;
 import net.multiphasicapps.squirreljme.classformat.FieldDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.MethodDescriptionStream;
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
@@ -35,27 +36,34 @@ class __JITClassStream__
 	/** The owning JIT. */
 	protected final JIT jit;
 	
-	/** The output executrable. */
-	protected final JITExecutableBuilder output;
+	/** The name of this class. */
+	volatile ClassNameSymbol _classname;
+	
+	/** The name of the super class. */
+	volatile ClassNameSymbol _supername;
+	
+	/** Implemented interfaces. */
+	volatile ClassNameSymbol[] _interfaces;
+	
+	/** The class flags. */
+	volatile ClassFlags _flags;
 	
 	/**
 	 * Initializes the class description stream.
 	 *
 	 * @param __jit The owning jit.
-	 * @param __out The output executable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/30
 	 */
-	__JITClassStream__(JIT __jit, JITExecutableBuilder __out)
+	__JITClassStream__(JIT __jit)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null || __out == null)
+		if (__jit == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.jit = __jit;
-		this.output = __out;
 	}
 	
 	/**
@@ -66,7 +74,12 @@ class __JITClassStream__
 	public void classFlags(ClassFlags __f)
 		throws NullPointerException
 	{
-		this.output.setClassFlags(__f);
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+			
+		// Set
+		this._flags = __f;
 	}
 	
 	/**
@@ -77,7 +90,12 @@ class __JITClassStream__
 	public void className(ClassNameSymbol __n)
 		throws NullPointerException
 	{
-		this.output.setClassName(__n);
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._classname = __n;
 	}
 	
 	/**
@@ -134,7 +152,12 @@ class __JITClassStream__
 	public void interfaceClasses(ClassNameSymbol[] __i)
 		throws NullPointerException
 	{
-		this.output.setInterfaceClassNames(__i);
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._interfaces = __i.clone();
 	}
 	
 	/**
@@ -166,7 +189,7 @@ class __JITClassStream__
 	@Override
 	public void superClass(ClassNameSymbol __n)
 	{
-		this.output.setSuperClassName(__n);
+		this._supername = __n;
 	}
 	
 	/**
@@ -179,6 +202,17 @@ class __JITClassStream__
 	{
 		// The class stream handles this so handling the version serves
 		// no real purpose
+	}
+	
+	/**
+	 * Builds the executable.
+	 *
+	 * @return The executable that may be ran.
+	 * @since 2017/02/07
+	 */
+	final ExecutableClass __build()
+	{
+		throw new Error("TODO");
 	}
 }
 

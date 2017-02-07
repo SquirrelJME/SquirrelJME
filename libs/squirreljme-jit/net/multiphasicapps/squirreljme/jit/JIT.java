@@ -30,9 +30,8 @@ public class JIT
 	/** The class decoder. */
 	protected final ClassDecoder decoder;
 	
-	/** The output executrable. */
-	protected final JITExecutableBuilder output =
-		new JITExecutableBuilder();
+	/** The output class stream. */
+	final __JITClassStream__ stream;
 	
 	/**
 	 * Initialzes the JIT to decode the given class.
@@ -53,8 +52,9 @@ public class JIT
 		this.engineprovider = __tep;
 		
 		// Initialize the decoder
-		this.decoder = new ClassDecoder(__is, new __JITClassStream__(this,
-			this.output));
+		__JITClassStream__ stream = new __JITClassStream__(this);
+		this.decoder = new ClassDecoder(__is, stream);
+		this.stream = stream;
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class JIT
 			this.decoder.decode();
 			
 			// Setup output executable class
-			return this.output.build();
+			return this.stream.__build();
 		}
 		
 		// {@squirreljme.error ED01 Failed to perform JIT compilation.}
