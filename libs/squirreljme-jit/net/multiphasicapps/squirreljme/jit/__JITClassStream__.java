@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.classformat.ClassDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.ClassVersion;
 import net.multiphasicapps.squirreljme.classformat.ConstantPool;
@@ -35,6 +37,14 @@ class __JITClassStream__
 {
 	/** The owning JIT. */
 	protected final JIT jit;
+	
+	/** Fields in the class. */
+	final List<__JITFieldStream__> _fields =
+		new ArrayList<>();
+	
+	/** Methods in the class. */
+	final List<__JITMethodStream__> _methods =
+		new ArrayList<>();
 	
 	/** The name of this class. */
 	volatile ClassNameSymbol _classname;
@@ -131,7 +141,10 @@ class __JITClassStream__
 		if (__f == null || __name == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create new field
+		__JITFieldStream__ rv = new __JITFieldStream__(__f, __name, __type);
+		this._fields.add(rv);
+		return rv;
 	}
 	
 	/**
@@ -169,7 +182,14 @@ class __JITClassStream__
 		IdentifierSymbol __name, MethodSymbol __type)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__f == null || __name == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Create new method
+		__JITMethodStream__ rv = new __JITMethodStream__(__f, __name, __type);
+		this._methods.add(rv);
+		return rv;
 	}
 	
 	/**
