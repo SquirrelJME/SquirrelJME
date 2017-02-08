@@ -43,19 +43,25 @@ public final class System
 	}
 	
 	/**
-	 * Indicates that the application should exit with the given code.
+	 * Indicates that the application exits with the given code.
 	 *
 	 * @param __e The exit code.
 	 * @since 2017/02/08
 	 */
 	public static void exit(int __e)
 	{
-		SquirrelJME.exit(__e);
+		Runtime.getRuntime().exit(__e);
 	}
 	
+	/**
+	 * Indicates that the application should have garbage collection be
+	 * performed. It is unspecified when garbage collection occurs.
+	 *
+	 * @since 2017/02/08
+	 */
 	public static void gc()
 	{
-		SquirrelJME.gc();
+		Runtime.getRuntime().gc();
 	}
 	
 	/**
