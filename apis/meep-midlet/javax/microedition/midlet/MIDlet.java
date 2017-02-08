@@ -47,7 +47,12 @@ public abstract class MIDlet
 			if (active != null)
 				throw new IllegalStateException("AD01");
 			
-			throw new Error("TODO");
+			// Set active midlet
+			_ACTIVE_MIDLET = this;
+			
+			// Create a thread which just calls startApp
+			Thread t = new Thread(new __RunMidlet__(), "squirreljme-midlet");
+			t.start();
 		}
 	}
 	
@@ -136,25 +141,27 @@ public abstract class MIDlet
 	}
 	
 	/**
+	 * Notifies that the application should be paused now.
 	 *
+	 * This does nothing on SquirrelJME.
 	 *
 	 * @since 2017/02/08
 	 */
 	@Deprecated
 	public final void notifyPaused()
 	{
-		throw new Error("TODO");
 	}
 	
 	/**
-	 * Pauise
+	 * This is code which should be called before the application is paused.
+	 * 
+	 * This does nothing on SquirrelJME.
 	 *
 	 * @since 2017/02/08
 	 */
 	@Deprecated
 	public void pauseApp()
 	{
-		throw new Error("TODO");
 	}
 	
 	public final boolean platformRequest(String __url)
@@ -187,6 +194,48 @@ public abstract class MIDlet
 	private static void __launchMidlet()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This runs the actual MIDlet in its own thread.
+	 *
+	 * @since 2017/02/08
+	 */
+	private final class __RunMidlet__
+		implements Runnable
+	{
+		/** Has this been started? */
+		protected volatile boolean _started;
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/08
+		 */
+		@Override
+		public void run()
+		{
+			// {@squirreljme.error AD02 Run operation has already been
+			// performed.}
+			synchronized (this)
+			{
+				if (this._started)
+					throw new IllegalStateException("AD02");
+				this._started = true;
+			}
+			
+			// Start it
+			MIDlet midlet = MIDlet.this;
+			try
+			{
+				midlet.startApp();
+			}
+			
+			// {@squirreljme.error AD03 Failed to change the MIDlet state.}
+			catch (MIDletStateChangeException e)
+			{
+				throw new RuntimeException("AD03", e);
+			}
+		}
 	}
 }
 
