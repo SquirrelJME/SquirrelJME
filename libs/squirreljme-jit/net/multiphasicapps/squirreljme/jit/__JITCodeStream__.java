@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
@@ -31,6 +36,13 @@ class __JITCodeStream__
 	/** The buffer which contains the native machine code. */
 	final ByteDeque _codebuffer =
 		new ByteDeque();
+	
+	/** The state of the stack for each instruction. */
+	private final Map<Integer, Object> _state =
+		new HashMap<>();
+	
+	/** Jump targets in the code, where state transfers occur. */
+	private volatile int[] _jumptargets;
 	
 	/**
 	 * Initializes the code stream.
@@ -57,6 +69,9 @@ class __JITCodeStream__
 	@Override
 	public void atInstruction(int __code, int __pos)
 	{
+		// Debug
+		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
+		
 		throw new Error("TODO");
 	}
 	
@@ -67,7 +82,7 @@ class __JITCodeStream__
 	@Override
 	public void codeLength(int __n)
 	{
-		throw new Error("TODO");
+		// Not used
 	}
 	
 	/**
@@ -82,6 +97,9 @@ class __JITCodeStream__
 		// Check
 		if (__type == null || __from == null || __to == null)
 			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Move %s %s -> %s%n", __type, __from, __to);
 		
 		throw new Error("TODO");
 	}
@@ -112,7 +130,7 @@ class __JITCodeStream__
 	public void jumpTargets(int[] __t)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this._jumptargets = __t.clone();
 	}
 	
 	/**
@@ -123,16 +141,6 @@ class __JITCodeStream__
 	public void variableCounts(int __ms, int __ml)
 	{
 		// Not used at all
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/07
-	 */
-	@Override
-	public void variableTypes(byte[] __l, byte[] __s)
-	{
-		throw new Error("TODO");
 	}
 }
 
