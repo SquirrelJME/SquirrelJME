@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
-import net.multiphasicapps.squirrelquarrel.MainMidlet;
+import net.multiphasicapps.squirrelquarrel.lcdui.MainMidlet;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
