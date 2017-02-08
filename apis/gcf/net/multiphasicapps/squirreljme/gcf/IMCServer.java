@@ -16,7 +16,7 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
-import net.multiphasicapps.squirreljme.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**

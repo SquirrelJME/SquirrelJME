@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains an implementation of IPC which uses mailboxes.
+ * This contains unsafe methods.
  *
- * @since 2016/10/12
+ * @since 2017/02/08
  */
 
-package net.multiphasicapps.squirreljme.ipcmailbox;
+package net.multiphasicapps.squirreljme.unsafe;
 

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 8959fb03-7f8e-46da-bb88-353acb772d14
+X-SquirrelJME-Error: BO
+X-SquirrelJME-Name: Virtual Unsafe Operation Support
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains virtual support for unsafe 
+ operations within SquirrelJME.
+X-SquirrelJME-BuildHostDepends: sorted-collections squirreljme-ipc
+

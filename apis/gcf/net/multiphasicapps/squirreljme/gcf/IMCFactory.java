@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.gcf;
 
 import java.io.IOException;
 import javax.microedition.io.Connection;
-import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
-import net.multiphasicapps.squirreljme.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 
 /**
  * This class is used to create instances of inter-midlet connections.

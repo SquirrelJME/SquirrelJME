@@ -7,6 +7,7 @@ X-SquirrelJME-Description: This project contains an implementation of a
  mailbox (message queue) based inter-process communication system. This 
  is used by the kernel to manage communication between the kernel and 
  processes or processes to other processes.
+X-SquirrelJME-BuildHostDepends: squirreljme-suite-id
 X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Dependency-2: liblet:unknown@midlet-identity
 X-SquirrelJME-Error: BW

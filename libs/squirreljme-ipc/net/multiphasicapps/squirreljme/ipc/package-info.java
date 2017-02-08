@@ -8,22 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ipcmailbox;
-
 /**
- * This represents the base for classes which manage mail boxes.
+ * This package contains an implementation of IPC which uses mailboxes.
  *
- * @since 2016/10/13
+ * @since 2016/10/12
  */
-public abstract class PostBase
-{
-	/**
-	 * Does nothing.
-	 *
-	 * @since 2016/10/13
-	 */
-	PostBase()
-	{
-	}
-}
+
+package net.multiphasicapps.squirreljme.ipc;
 

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ipcmailbox;
+package net.multiphasicapps.squirreljme.ipc;
 
 /**
  * The post office contains two mailboxes which allows letters to be pushed
