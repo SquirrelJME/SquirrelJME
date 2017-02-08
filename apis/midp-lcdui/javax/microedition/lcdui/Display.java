@@ -863,7 +863,7 @@ public class Display
 				for (DisplayEngineProvider dep :
 					ServiceLoader.<DisplayEngineProvider>load(
 						DisplayEngineProvider.class))
-					for (DisplayEngine de : dep.engine())
+					for (DisplayEngine de : dep.engines())
 						to.add(new Display(de));
 				
 				// Set

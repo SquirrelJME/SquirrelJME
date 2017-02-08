@@ -8,23 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcdui;
+package net.multiphasicapps.squirreljme.build.host.javase;
+
+import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
 
 /**
- * This is accessed via the {@link ServiceLoader} to provide the ability to
- * use displays to interact with the user.
+ * This is the display engine for Swing based systems.
  *
  * @since 2017/02/08
  */
-public interface DisplayEngineProvider
+public class SwingEngine
+	implements DisplayEngine
 {
-	/**
-	 * Returns the display engines which are available.
-	 *
-	 * @return The display engines that are available, the first engine must
-	 * be a primary display for this provider.
-	 * @since 2017/02/08
-	 */
-	public abstract DisplayEngine[] engines();
 }
 
