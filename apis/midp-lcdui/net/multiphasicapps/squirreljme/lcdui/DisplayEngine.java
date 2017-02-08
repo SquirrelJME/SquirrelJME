@@ -19,5 +19,13 @@ import javax.microedition.lcdui.Display;
  */
 public interface DisplayEngine
 {
+	/**
+	 * Sets the title of the display.
+	 *
+	 * @param __s The title to use, if {@code null} then a default should be
+	 * used instead.
+	 * @since 2017/02/08
+	 */
+	public abstract void setTitle(String __s);
 }
 

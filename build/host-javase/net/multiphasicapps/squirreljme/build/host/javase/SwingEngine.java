@@ -20,5 +20,17 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
 public class SwingEngine
 	implements DisplayEngine
 {
+	/** The title to use. */
+	private volatile String _title;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public void setTitle(String __s)
+	{
+		this._title = (__s != null ? __s : "SquirrelJME");
+	}
 }
 

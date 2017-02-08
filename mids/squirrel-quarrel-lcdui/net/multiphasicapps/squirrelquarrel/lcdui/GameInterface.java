@@ -40,6 +40,9 @@ public class GameInterface
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup details
+		setTitle("Squirrel Quarrel");
+		
 		// Set
 		this.game = __g;
 	}

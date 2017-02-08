@@ -779,15 +779,9 @@ public class Display
 						__exit._display = this;
 					this._dismissed = __exit;
 					
-					// Use the title of the given displayable
+					// Use the title of the shown displayable
 					if (__show != null)
 						__updateTitle(__show.getTitle());
-					
-					// Change the visibility state depending on whether show
-					// exists or not
-					throw new Error("TODO");
-					/*LCDUIDisplayInstance instance = this._instance;
-					instance.setVisible(__show != null);*/
 				}
 			}
 		}
@@ -801,7 +795,7 @@ public class Display
 	 */
 	void __updateTitle(String __s)
 	{
-		throw new Error("TODO");
+		this._engine.setTitle(__s);
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)
