@@ -19,24 +19,44 @@ package net.multiphasicapps.squirreljme.jit;
 public enum DataType
 {
 	/** Byte. */
-	BYTE,
+	BYTE(false, 1),
 	
 	/** Short. */
-	SHORT,
+	SHORT(false, 2),
 	
 	/** Integer. */
-	INTEGER,
+	INTEGER(false, 4),
 	
 	/** Long. */
-	LONG,
+	LONG(false, 8),
 	
 	/** Float. */
-	FLOAT,
+	FLOAT(true, 4),
 	
 	/** Double. */
-	DOUBLE,
+	DOUBLE(true 8),
 	
 	/** End. */
 	;
+	
+	/** Is this a floating point type? */
+	protected final boolean isfloat;
+	
+	/** The number of bytes stored in the data type. */
+	protected final int bytes;
+	
+	/**
+	 * Initializes the data type.
+	 *
+	 * @param __float {@code true} if a floating point type.
+	 * @param __nb The number of bytes that fit in the data type.
+	 * @since 2017/02/08
+	 */
+	private DataTyppe(boolean __float, int __nb)
+	{
+		// Set
+		this.isfloat = __float;
+		this.bytes = __nb;
+	}
 }
 
