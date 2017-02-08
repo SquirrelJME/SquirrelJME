@@ -13,7 +13,6 @@ package javax.microedition.lcdui.game;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirreljme.lcdui.client.ForwardingGraphics;
 
 public abstract class GameCanvas
 	extends Canvas
@@ -44,14 +43,6 @@ public abstract class GameCanvas
 	
 	public static final int UP_PRESSED =
 		2;
-	
-	/** Forwards graphic drawing operations that may be performed. */
-	private final ForwardingGraphics _graphics =
-		new ForwardingGraphics();
-	
-	/** Plain instance of forwarding graphics to prevent casting. */
-	private final Graphics _plaingraphics =
-		this._graphics.forwardPlainGraphics();
 	
 	/** Are game keys being suppressed?. */
 	private volatile boolean _suppressgamekeys;
@@ -114,7 +105,7 @@ public abstract class GameCanvas
 	 */
 	protected Graphics getGraphics()
 	{
-		return this._plaingraphics;
+		throw new Error("TODO");
 	}
 	
 	public int getKeyStates()

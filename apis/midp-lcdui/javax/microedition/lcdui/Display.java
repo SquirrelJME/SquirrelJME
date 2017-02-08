@@ -21,12 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.microedition.io.Connector;
-import javax.microedition.io.StreamConnection;
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.squirreljme.lcdui.common.DisplayProperty;
-import net.multiphasicapps.squirreljme.lcdui.common.DisplayProtocol;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
 {
@@ -186,18 +181,9 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** The static connection to the server. */
-	private static volatile __ServerConnection__ _SERVER;
-	
 	/** The lock for this display. */
 	private final Object _lock =
 		new Object();
-	
-	/** The display descriptor. */
-	final byte _descriptor;
-	
-	/** Properties of the display. */
-	private final int[] _properties;
 	
 	/** The current displayable being shown. */
 	private volatile Displayable _show;
@@ -208,18 +194,10 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __in The input stream that contains the display properties.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display(DataInputStream __in)
-		throws IOException, NullPointerException
+	Display()
 	{
-		// Check
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
 		throw new Error("TODO");
 	}
 	
@@ -311,7 +289,7 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		return this._properties[DisplayProperty.CAPABILITIES.ordinal()];
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -337,6 +315,8 @@ public class Display
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
+		throw new Error("TODO");
+		/*
 		// Depends
 		DisplayProperty p;
 		switch (__c)
@@ -390,6 +370,7 @@ public class Display
 		
 		// Get color
 		return this._properties[p.ordinal()];
+		*/
 	}
 	
 	public CommandLayoutPolicy getCommandLayoutPolicy()
@@ -434,7 +415,7 @@ public class Display
 	 */
 	public int getDotPitch()
 	{
-		return this._properties[DisplayProperty.DOT_PITCH.ordinal()];
+		throw new Error("TODO");
 	}
 	
 	public int[] getExactPlacementPositions(int __b)
@@ -455,8 +436,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._properties[
-			DisplayProperty.DISPLAY_SIZE.ordinal()] & 0xFFFF;
+		throw new Error("TODO");
 	}
 	
 	public IdleItem getIdleItem()
@@ -487,8 +467,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._properties[
-			DisplayProperty.DISPLAY_SIZE.ordinal()] >>> 16;
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -499,8 +478,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return 0 != this._properties[
-			DisplayProperty.POINTER_PRESS_RELEASE.ordinal()];
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -511,8 +489,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return 0 != this._properties[
-			DisplayProperty.POINTER_DRAG_MOVE.ordinal()];
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -523,8 +500,7 @@ public class Display
 	 */
 	public boolean isBuiltIn()
 	{
-		return 0 != this._properties[
-			DisplayProperty.BUILT_IN.ordinal()];
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -535,8 +511,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return 0 != this._properties[
-			DisplayProperty.IS_COLOR.ordinal()];
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -551,8 +526,7 @@ public class Display
 	 */
 	public int numAlphaLevels()
 	{
-		return Math.max(2,
-			this._properties[DisplayProperty.NUM_ALPHA_LEVELS.ordinal()]);
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -567,8 +541,7 @@ public class Display
 	 */
 	public int numColors()
 	{
-		return Math.max(2,
-			this._properties[DisplayProperty.NUM_COLORS.ordinal()]);
+		throw new Error("TODO");
 	}
 	
 	public void removeCurrent()
@@ -673,6 +646,8 @@ public class Display
 	private int __bestImageSize(int __e)
 		throws IllegalArgumentException
 	{
+		throw new Error("TODO");
+		/*
 		// Depends
 		DisplayProperty p;
 		switch (__e)
@@ -714,6 +689,7 @@ public class Display
 		
 		// Get
 		return this._properties[p.ordinal()];
+		*/
 	}
 	
 	/**
@@ -852,12 +828,13 @@ public class Display
 	public static Display[] getDisplays(int __caps)
 	{
 		// If the server is not set, then open the connection to it
-		__ServerConnection__ server = Display._SERVER;
-		if (server == null)
-			Display._SERVER = (server = new __ServerConnection__());
+		if (true)
+			throw new Error("TODO");
 		
 		// Get displays
-		Display[] alldisplays = server.getDisplays();
+		Display[] alldisplays = null;
+		if (true)
+			throw new Error("TODO");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
