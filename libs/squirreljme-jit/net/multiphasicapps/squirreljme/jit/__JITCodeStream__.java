@@ -106,6 +106,26 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public void initialArguments(CodeVariable[] __cv,
+		StackMapType[] __st, int __sh)
+		throws NullPointerException
+	{
+		// Check
+		if (__cv == null || __st == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- initArgs: %s %s %d%n", Arrays.asList(__cv),
+			Arrays.asList(__st), __sh);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/07
 	 */
 	@Override
@@ -130,6 +150,7 @@ class __JITCodeStream__
 	public void jumpTargets(int[] __t)
 		throws NullPointerException
 	{
+		// Set
 		this._jumptargets = __t.clone();
 	}
 	

@@ -52,6 +52,21 @@ public interface CodeDescriptionStream
 		throws NullPointerException;
 	
 	/**
+	 * Specifies the initial argument types which are used on entry to the
+	 * method.
+	 *
+	 * @param __cv The positions of the variables.
+	 * @param __st Identity mapped to the {@__cv} argument, specifies the type
+	 * of value that is stored at the given position.
+	 * @param __sh The height of the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/08
+	 */
+	public abstract void initialArguments(CodeVariable[] __cv,
+		StackMapType[] __st, int __sh)
+		throws NullPointerException;
+	
+	/**
 	 * Invokes the given method using the specified linkage and invocation
 	 * type.
 	 *

@@ -59,6 +59,18 @@ public enum StackMapType
 	}
 	
 	/**
+	 * This returns {@code true} if the entry has a value. The tops of long
+	 * or double values do not have values.
+	 *
+	 * @return {@code true} if not {@link #TOP} and not {@link #NOTHING}.
+	 * @since 2017/02/08
+	 */
+	public final boolean hasValue()
+	{
+		return this != TOP && this != NOTHING;
+	}
+	
+	/**
 	 * Returns {@code true} if this is a wide type.
 	 *
 	 * @return {@code true} if a wide type.

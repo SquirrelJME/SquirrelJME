@@ -162,6 +162,9 @@ final class __CodeDecoder__
 			this._smt = (smt = __SMTParser__.__initialState(this._flags,
 				ref.memberType(), maxstack, maxlocals));
 		
+		// Report on the initial stack state
+		__reportInitialState(smt);
+		
 		// Parse the byte code now
 		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
 			new ByteArrayInputStream(code)))
@@ -218,6 +221,67 @@ final class __CodeDecoder__
 			default:
 				break;
 		}
+	}
+	
+	/**
+	 * Determines the initial state of the stack and locals and then sends it
+	 * to the code decoder.
+	 *
+	 * @param __sm The mapping of stack states.
+	 * @throws IllegalStateException If there is no initial state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/08
+	 */
+	private void __reportInitialState(Map<Integer, __SMTState__> __sm)
+		throws NullPointerException
+	{
+		// Check
+		if (__sm == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY04 No initial method state exists.}
+		__SMTState__ state = __sm.get(0);
+		if (state == null)
+			throw new IllegalStateException("AY04");
+		
+		// Where states go
+		int maxuse = this._maxlocals + this._maxstack;
+		List<CodeVariable> cvs = new ArrayList<>(maxuse);
+		List<StackMapType> sts = new ArrayList<>(maxuse);
+		
+		// Determine stack first
+		__SMTStack__ stack = state._stack;
+		int sh = stack.top();
+		for (int i = 0; i < sh; i++)
+		{
+			StackMapType q = stack.get(i);
+			
+			// Add if it has a value
+			if (q.hasValue())
+			{
+				cvs.add(CodeVariable.of(true, i));
+				sts.add(q);
+			}
+		}
+		
+		// Then locals
+		__SMTLocals__ locals = state._locals;
+		for (int i = 0, n = locals.size(); i < n; i++)
+		{
+			StackMapType q = locals.get(i);
+			
+			// Add if it has a value
+			if (q.hasValue())
+			{
+				cvs.add(CodeVariable.of(false, i));
+				sts.add(q);
+			}
+		}
+		
+		// Send off
+		this._writer.initialArguments(
+			cvs.<CodeVariable>toArray(new CodeVariable[cvs.size()]),
+			sts.<StackMapType>toArray(new StackMapType[sts.size()]), sh);
 	}
 }
 
