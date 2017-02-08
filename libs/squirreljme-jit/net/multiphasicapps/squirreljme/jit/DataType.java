@@ -52,7 +52,7 @@ public enum DataType
 	 * @param __nb The number of bytes that fit in the data type.
 	 * @since 2017/02/08
 	 */
-	private DataTyppe(boolean __float, int __nb)
+	private DataType(boolean __float, int __nb)
 	{
 		// Set
 		this.isfloat = __float;
