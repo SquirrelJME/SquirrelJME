@@ -34,7 +34,7 @@ public enum DataType
 	FLOAT(true, 4),
 	
 	/** Double. */
-	DOUBLE(true 8),
+	DOUBLE(true, 8),
 	
 	/** End. */
 	;
