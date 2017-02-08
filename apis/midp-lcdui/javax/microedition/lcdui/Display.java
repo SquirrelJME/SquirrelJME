@@ -20,8 +20,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
+import net.multiphasicapps.squirreljme.lcdui.DisplayEngineProvider;
 
 public class Display
 {
@@ -181,8 +184,19 @@ public class Display
 	public static final int TAB =
 		4;
 	
+	/** Lock on the displays. */
+	private static final Object _DISPLAY_LOCK =
+		new Object();
+	
+	/** The displays that are available for usage. */
+	private static volatile Display[] _DISPLAYS =
+		null;
+	
+	/** The owning display engine. */
+	final DisplayEngine _engine;
+	
 	/** The lock for this display. */
-	private final Object _lock =
+	final Object _lock =
 		new Object();
 	
 	/** The current displayable being shown. */
@@ -194,11 +208,19 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __e The engine used for this display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display()
+	Display(DisplayEngine __e)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._engine = __e;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -827,18 +849,36 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// If the server is not set, then open the connection to it
-		if (true)
-			throw new Error("TODO");
+		// Lock to prevent race conditions
+		Display[] displays = null;
+		synchronized (_DISPLAY_LOCK)
+		{
+			displays = _DISPLAYS;
+			
+			// Need to initialize the displays?
+			if (displays == null)
+			{
+				// Load displays from engines
+				List<Display> to = new ArrayList<>();
+				for (DisplayEngineProvider dep :
+					ServiceLoader.<DisplayEngineProvider>load(
+						DisplayEngineProvider.class))
+					for (DisplayEngine de : dep.engine())
+						to.add(new Display(de));
+				
+				// Set
+				_DISPLAYS =
+					(displays = to.<Display>toArray(new Display[to.size()]));
+			}
+		}
 		
-		// Get displays
-		Display[] alldisplays = null;
-		if (true)
-			throw new Error("TODO");
+		// {@squirreljme.error EB05 No displays are available.}
+		if (displays.length <= 0)
+			throw new IllegalStateException("EB05");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
-		for (Display d : alldisplays)
+		for (Display d : displays)
 			if (__caps == 0 || (d.getCapabilities() & __caps) == __caps)
 				rv.add(d);
 		
