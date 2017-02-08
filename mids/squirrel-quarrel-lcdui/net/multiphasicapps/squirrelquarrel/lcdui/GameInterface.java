@@ -10,43 +10,38 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.midlet.MIDlet;
-import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.lcdui.game.GameCanvas;
 import net.multiphasicapps.squirrelquarrel.Game;
 
 /**
- * This is the main midlet entry point for Squirrel Quarrel.
+ * This class provides an interface to the game, allowing for input to be
+ * handled along with the game itself.
  *
  * @since 2017/02/08
  */
-public class MainMidlet
-	extends MIDlet
+public class GameInterface
+	extends GameCanvas
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	protected void destroyApp(boolean __uc)
-		throws MIDletStateChangeException
-	{
-	}
+	/** The game to draw and interact with. */
+	protected final Game game;
 	
 	/**
-	 * {@inheritDoc}
+	 * Initializes the game.
+	 *
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/08
 	 */
-	@Override
-	protected void startApp()
-		throws MIDletStateChangeException
+	public GameInterface(Game __g)
+		throws NullPointerException
 	{
-		// Get the display for this MIDlet
-		Display disp = Display.getDisplay(this);
+		super(false, true);
 		
-		// Setup game canvas with an initial game
-		GameInterface gi = new GameInterface(new Game());
-		disp.setCurrent(gi);
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.game = __g;
 	}
 }
 
