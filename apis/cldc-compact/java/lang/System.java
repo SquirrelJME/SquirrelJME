@@ -42,6 +42,12 @@ public final class System
 		return SquirrelJME.currentTimeMillis();
 	}
 	
+	/**
+	 * Indicates that the application should exit with the given code.
+	 *
+	 * @param __e The exit code.
+	 * @since 2017/02/08
+	 */
 	public static void exit(int __e)
 	{
 		SquirrelJME.exit(__e);

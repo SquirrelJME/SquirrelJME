@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirrelquarrel.MainMidlet;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -85,9 +86,11 @@ public class BuildSystem
 		
 		// {@squirreljme.error AO01 No arguments specified. The following are
 		// commands which are valid.
-		// ({@code interpret (interpreter arguments...)}: Runs the auto
+		// ({@code interpret [interpreter arguments...]}: Runs the auto
 		// interpreter which is used to create simulated SquirrelJME
-		// environments.)
+		// environments.;
+		// {@code squirrel-quarrel}: Runs a sample real-time strategy game
+		// in the build environment.)
 		//}
 		int na = __args.length;
 		if (na <= 0)
@@ -119,6 +122,11 @@ public class BuildSystem
 						throw new RuntimeException("AO03");
 					}
 				}
+				break;
+				
+				// Run Squirrel Quarrel
+			case "squirrel-quarrel":
+				new MainMidlet();
 				break;
 			
 				// {@squirreljme.error AO02 An unknown command was specified.

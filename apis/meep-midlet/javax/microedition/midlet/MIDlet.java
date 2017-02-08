@@ -18,15 +18,37 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 
 public abstract class MIDlet
 {
+	/** Lock to prevent multiple midlets from running. */
+	private static final Object _ACTIVE_LOCK =
+		new Object();
+	
+	/** Only a single midlet may run at a time. */
+	private static volatile MIDlet _ACTIVE_MIDLET;
+	
 	/** The cached manifest for obtaining properties. */
 	private volatile Reference<JavaManifest> _manifest;
 	
 	/** Is there no manifest? */
 	private volatile boolean _nomanifest;
 	
+	/**
+	 * Initialize the MIDlet.
+	 *
+	 * @since 2017/02/08
+	 */
 	protected MIDlet()
 	{
-		throw new Error("TODO");
+		// Prevent multiple MIDlet launches
+		synchronized (_ACTIVE_LOCK)
+		{
+			// {@squirreljme.error AD01 Only a single MIDlet may be active at
+			// a time.}
+			MIDlet active = _ACTIVE_MIDLET;
+			if (active != null)
+				throw new IllegalStateException("AD01");
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	protected abstract void destroyApp(boolean __uc)
@@ -113,12 +135,22 @@ public abstract class MIDlet
 		throw new Error("TODO");
 	}
 	
+	/**
+	 *
+	 *
+	 * @since 2017/02/08
+	 */
 	@Deprecated
 	public final void notifyPaused()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Pauise
+	 *
+	 * @since 2017/02/08
+	 */
 	@Deprecated
 	public void pauseApp()
 	{
