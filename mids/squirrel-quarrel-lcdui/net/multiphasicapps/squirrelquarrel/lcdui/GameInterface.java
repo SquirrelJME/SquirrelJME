@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.game.GameCanvas;
+import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirrelquarrel.Game;
 
 /**
@@ -20,7 +22,7 @@ import net.multiphasicapps.squirrelquarrel.Game;
  * @since 2017/02/08
  */
 public class GameInterface
-	extends GameCanvas
+	extends Canvas
 {
 	/** The game to draw and interact with. */
 	protected final Game game;
@@ -34,7 +36,7 @@ public class GameInterface
 	public GameInterface(Game __g)
 		throws NullPointerException
 	{
-		super(false, true);
+		//super(false, true);
 		
 		// Check
 		if (__g == null)
@@ -45,6 +47,26 @@ public class GameInterface
 		
 		// Set
 		this.game = __g;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public void paint(Graphics __g)
+	{
+		// Needed to draw X
+		int w = getWidth(),
+			h = getHeight();
+		
+		// Draw one line
+		__g.setColor(0x00FF00);
+		__g.drawLine(0, 0, w, h);
+		
+		// Draw another
+		__g.setColor(0x0000FF);
+		__g.drawLine(0, h, w, 0);
 	}
 }
 
