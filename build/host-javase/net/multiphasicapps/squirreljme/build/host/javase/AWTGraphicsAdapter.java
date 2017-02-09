@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.Color;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -25,7 +26,7 @@ public class AWTGraphicsAdapter
 	extends Graphics
 {
 	/** Wrapped AWT graphics (where things go to). */
-	volatile java.awt.Graphics2D _awtgfx;
+	volatile java.awt.Graphics2D _awt;
 	
 	/**
 	 * {@inheritDoc}
@@ -106,9 +107,9 @@ public class AWTGraphicsAdapter
 	 * @since 2017/02/08
 	 */
 	@Override
-	public void drawLine(int __a, int __b, int __c, int __d)
+	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw new Error("TODO");
+		this._awt.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
 	/**
@@ -468,7 +469,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public void setColor(int __a)
 	{
-		throw new Error("TODO");
+		this._awt.setColor(new Color(__a & 0xFFFFFF));
 	}
 	
 	/**
@@ -476,9 +477,9 @@ public class AWTGraphicsAdapter
 	 * @since 2017/02/08
 	 */
 	@Override
-	public void setColor(int __a, int __b, int __c)
+	public void setColor(int __r, int __g, int __b)
 	{
-		throw new Error("TODO");
+		this._awt.setColor(new Color(__r, __g, __b));
 	}
 	
 	/**

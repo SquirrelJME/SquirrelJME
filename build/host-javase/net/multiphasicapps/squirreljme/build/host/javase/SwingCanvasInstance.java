@@ -102,7 +102,7 @@ public class SwingCanvasInstance
 			// Cast and adapt
 			Graphics2D gfx = (Graphics2D)__g;
 			AWTGraphicsAdapter adapter = SwingCanvasInstance.this.adapter;
-			adapter._awtgfx = gfx;
+			adapter._awt = gfx;
 			
 			// Make it draw into it
 			SwingCanvasInstance.this.canvasconnector.paint(adapter);
