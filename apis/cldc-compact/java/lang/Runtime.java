@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+
 public class Runtime
 {
 	private Runtime()
