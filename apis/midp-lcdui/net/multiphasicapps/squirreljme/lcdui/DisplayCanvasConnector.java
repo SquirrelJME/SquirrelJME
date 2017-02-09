@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import javax.microedition.lcdui.Graphics;
+
 /**
  * This is a connector which is used to provide access to the canvas.
  *
@@ -18,5 +20,12 @@ package net.multiphasicapps.squirreljme.lcdui;
 public interface DisplayCanvasConnector
 	extends DisplayConnector
 {
+	/**
+	 * Tells the canvas to perform its paint events.
+	 *
+	 * @param __g The graphics to paint to.
+	 * @since 2017/02/08
+	 */
+	public abstract void paint(Graphics __g);
 }
 

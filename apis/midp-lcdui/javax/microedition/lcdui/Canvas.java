@@ -302,6 +302,15 @@ public abstract class Canvas
 	final class __Connector__
 		implements DisplayCanvasConnector
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/08
+		 */
+		@Override
+		public void paint(Graphics __g)
+		{
+			Canvas.this.paint(__g);
+		}
 	}
 }
 

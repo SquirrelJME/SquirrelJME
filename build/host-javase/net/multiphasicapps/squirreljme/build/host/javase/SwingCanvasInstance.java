@@ -19,6 +19,9 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 /**
  * This provides an interface for the standard canvas.
  *
+ * The drawing operations are adapted directly onto the Swing drawing
+ * operations.
+ *
  * @since 2017/02/08
  */
 public class SwingCanvasInstance
@@ -29,6 +32,10 @@ public class SwingCanvasInstance
 	
 	/** The connector to the canvas. */
 	protected final DisplayCanvasConnector canvasconnector;
+	
+	/** The adapter for drawing. */
+	protected final AWTGraphicsAdapter adapter =
+		new AWTGraphicsAdapter();
 	
 	/** The drawing panel. */
 	private final __DrawPane__ _panel;
@@ -48,8 +55,7 @@ public class SwingCanvasInstance
 		this.canvas = __d;
 		this.canvasconnector = __c;
 		
-		// It is more efficient to draw to an image, so setup a panel which
-		// handles this
+		// It is easier to draw directly on a panel
 		__DrawPane__ panel = new __DrawPane__();
 		this.frame.add(panel);
 		this._panel = panel;
@@ -73,8 +79,13 @@ public class SwingCanvasInstance
 			// Must draw the panel itself
 			super.paintComponent(__g);
 			
-			// Cast
+			// Cast and adapt
 			Graphics2D gfx = (Graphics2D)__g;
+			AWTGraphicsAdapter adapter = SwingCanvasInstance.this.adapter;
+			adapter._awtgfx = gfx;
+			
+			// Make it draw into it
+			SwingCanvasInstance.this.canvasconnector.paint(adapter);
 		}
 	}
 }
