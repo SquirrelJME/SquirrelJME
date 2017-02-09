@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 
 /**
@@ -131,6 +132,9 @@ public abstract class Canvas
 	/** This is a game key for the up direction. */
 	public static final int UP =
 		1;
+	
+	/** The connector to this canvas. */
+	private volatile DisplayCanvasConnector _connector;
 	
 	/**
 	 * Initializes the base canvas.
@@ -283,7 +287,21 @@ public abstract class Canvas
 	@Override
 	DisplayConnector __connector()
 	{
-		throw new Error("TODO");
+		// Use the same connector, create if missing
+		DisplayCanvasConnector rv = this._connector;
+		if (rv == null)
+			this._connector = (rv = new __Connector__());
+		return rv;
+	}
+	
+	/**
+	 * This allows the display engine to communicate with this canvas class.
+	 *
+	 * @since 2017/02/08
+	 */
+	final class __Connector__
+		implements DisplayCanvasConnector
+	{
 	}
 }
 

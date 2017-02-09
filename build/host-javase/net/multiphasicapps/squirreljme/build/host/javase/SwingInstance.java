@@ -71,6 +71,7 @@ public abstract class SwingInstance
 		
 		// Pack it down
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 	}
 	
 	/**

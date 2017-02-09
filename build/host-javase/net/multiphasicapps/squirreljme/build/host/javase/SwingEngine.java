@@ -11,9 +11,11 @@
 package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.awt.Dimension;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.DisplayCapabilityException;
 import javax.swing.JFrame;
+import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
@@ -51,6 +53,11 @@ public class SwingEngine
 		// Check
 		if (__d == null || __c == null)
 			throw new NullPointerException("NARG");
+		
+		// Canvas
+		if (__d instanceof Canvas)
+			return new SwingCanvasInstance((Canvas)__d,
+				(DisplayCanvasConnector)__c);
 		
 		// {@squirreljme.error BM0a The specified class cannot be shown by
 		// this engine because it is not supported. (The class used for the
