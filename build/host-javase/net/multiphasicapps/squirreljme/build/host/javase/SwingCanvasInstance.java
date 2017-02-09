@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.microedition.lcdui.Canvas;
+import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 
 /**
@@ -27,6 +30,9 @@ public class SwingCanvasInstance
 	/** The connector to the canvas. */
 	protected final DisplayCanvasConnector canvasconnector;
 	
+	/** The drawing panel. */
+	private final __DrawPane__ _panel;
+	
 	/**
 	 * Initializes the swing canvas instance.
 	 *
@@ -38,8 +44,38 @@ public class SwingCanvasInstance
 	{
 		super(__d, __c);
 		
+		// Set
 		this.canvas = __d;
 		this.canvasconnector = __c;
+		
+		// It is more efficient to draw to an image, so setup a panel which
+		// handles this
+		__DrawPane__ panel = new __DrawPane__();
+		this.frame.add(panel);
+		this._panel = panel;
+	}
+	
+	/**
+	 * This is the drawing panel.
+	 *
+	 * @since 2017/02/08
+	 */
+	private final class __DrawPane__
+		extends JPanel
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/08
+		 */
+		@Override
+		protected void paintComponent(Graphics __g)
+		{
+			// Must draw the panel itself
+			super.paintComponent(__g);
+			
+			// Cast
+			Graphics2D gfx = (Graphics2D)__g;
+		}
 	}
 }
 
