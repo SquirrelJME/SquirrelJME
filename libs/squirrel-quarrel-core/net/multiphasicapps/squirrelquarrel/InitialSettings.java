@@ -11,34 +11,25 @@
 package net.multiphasicapps.squirrelquarrel;
 
 /**
- * This class contains the state for a single game.
+ * This contains the initial settings which is used to determine how to
+ * generate and initialize the initial game.
  *
- * @since 2017/02/08
+ * @since 2017/02/09
  */
-public class Game
+public final class InitialSettings
 {
 	/**
-	 * Initializes a game with the default initialization rules.
+	 * Initializes the initial settings.
 	 *
-	 * @since 2017/02/08
-	 */
-	public Game()
-	{
-		this(new InitialSettingsBuilder().build());
-	}
-	
-	/**
-	 * Initializes the game with the given initial settings.
-	 *
-	 * @param __is The settings to use.
+	 * @param __b The initial settings to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/09
 	 */
-	public Game(InitialSettings __is)
+	InitialSettings(InitialSettingsBuilder __b)
 		throws NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 	}
 }
