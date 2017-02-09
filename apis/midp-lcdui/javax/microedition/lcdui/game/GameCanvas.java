@@ -152,7 +152,7 @@ public abstract class GameCanvas
 	 * @since 2016/10/10
 	 */
 	@Override
-	public void paint(Graphics __a)
+	public void paint(Graphics __g)
 	{
 		// The default implementation of this method just takes the offscreen
 		// buffer and renders it to the canvas
@@ -160,7 +160,9 @@ public abstract class GameCanvas
 		if (image == null)
 			return;
 		
-		throw new Error("TODO");
+		// Paint the image to the display
+		// Do not worry about using transformations to display it
+		__g.drawImage(image, 0, 0, 0);
 	}
 }
 
