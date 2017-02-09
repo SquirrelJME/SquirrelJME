@@ -35,6 +35,12 @@ public class TabbedPane
 		throw new Error("TODO");
 	}
 	
+	@Override
+	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
 	public Screen getScreen(int __i)
 	{
 		throw new Error("TODO");
@@ -46,6 +52,12 @@ public class TabbedPane
 	}
 	
 	public Image getTabIcon(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public int getWidth()
 	{
 		throw new Error("TODO");
 	}

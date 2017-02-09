@@ -46,12 +46,24 @@ public class FileSelector
 		throw new Error("TODO");
 	}
 	
+	@Override
+	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getMode()
 	{
 		throw new Error("TODO");
 	}
 	
 	public String getURL()
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public int getWidth()
 	{
 		throw new Error("TODO");
 	}

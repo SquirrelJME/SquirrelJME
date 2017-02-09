@@ -44,6 +44,12 @@ public class Alert
 		throw new Error("TODO");
 	}
 	
+	@Override
+	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
 	public Image getImage()
 	{
 		throw new Error("TODO");
@@ -65,6 +71,12 @@ public class Alert
 	}
 	
 	public AlertType getType()
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public int getWidth()
 	{
 		throw new Error("TODO");
 	}

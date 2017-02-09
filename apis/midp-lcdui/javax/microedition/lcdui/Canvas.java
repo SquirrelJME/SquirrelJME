@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
+import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -152,10 +153,17 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
 	@Override
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		DisplayInstance instance = this._instance;
+		if (instance != null)
+			return instance.getHeight();
+		return 1;
 	}
 	
 	public int getKeyCode(int __a)
@@ -173,10 +181,17 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
 	@Override
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		DisplayInstance instance = this._instance;
+		if (instance != null)
+			return instance.getWidth();
+		return 1;
 	}
 	
 	public boolean hasPointerEvents()

@@ -62,6 +62,26 @@ public class SwingCanvasInstance
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public int getHeight()
+	{
+		return this._panel.getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public int getWidth()
+	{
+		return this._panel.getWidth();
+	}
+	
+	/**
 	 * This is the drawing panel.
 	 *
 	 * @since 2017/02/08

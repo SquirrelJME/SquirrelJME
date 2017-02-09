@@ -41,12 +41,24 @@ public class TextBox
 		throw new Error("TODO");
 	}
 	
+	@Override
+	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
 	public int getMaxSize()
 	{
 		throw new Error("TODO");
 	}
 	
 	public String getString()
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public int getWidth()
 	{
 		throw new Error("TODO");
 	}

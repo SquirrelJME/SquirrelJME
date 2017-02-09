@@ -47,8 +47,24 @@ public abstract class Displayable
 	{
 	}
 	
+	/**
+	 * Returns the height of this displayable's content area in pixels (the
+	 * area the developer can use).
+	 *
+	 * @return The current height of this displayable in pixels, if it is not
+	 * visible then the default height is returned.
+	 * @since 2017/02/08
+	 */
 	public abstract int getHeight();
 	
+	/**
+	 * Returns the width of this displayable's content area in pixels (the
+	 * area the developer can use).
+	 *
+	 * @return The current width of this displayable in pixels, if it is not
+	 * visible then the default width is returned.
+	 * @since 2017/02/08
+	 */
 	public abstract int getWidth();
 	
 	/**

@@ -56,6 +56,12 @@ public class List
 		throw new Error("TODO");
 	}
 	
+	@Override
+	public int getHeight()
+	{
+		throw new Error("TODO");
+	}
+	
 	public Image getImage(int __a)
 	{
 		throw new Error("TODO");
@@ -72,6 +78,12 @@ public class List
 	}
 	
 	public String getString(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	@Override
+	public int getWidth()
 	{
 		throw new Error("TODO");
 	}

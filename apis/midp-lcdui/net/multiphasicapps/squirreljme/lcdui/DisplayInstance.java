@@ -28,6 +28,24 @@ public interface DisplayInstance
 	public abstract void destroy();
 	
 	/**
+	 * Returns the height of the displayable in pixels.
+	 *
+	 * @return The height in pixels or if the displayable is not shown, a
+	 * default height.
+	 * @since 2017/02/08
+	 */
+	public abstract int getHeight();
+	
+	/**
+	 * Returns the width of the displayable in pixels.
+	 *
+	 * @return The width in pixels or if the displayable is not shown, a
+	 * default width.
+	 * @since 2017/02/08
+	 */
+	public abstract int getWidth();
+	
+	/**
 	 * Sets the state of the instance engine.
 	 *
 	 * @param __s The state to use.
