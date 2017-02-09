@@ -17,36 +17,50 @@ package javax.microedition.lcdui;
  */
 public abstract class Graphics
 {
+	/** This is the anchorpoint for the baseline of text. */
 	public static final int BASELINE =
 		64;
 	
+	/** The anchor point to position below the specified point. */
 	public static final int BOTTOM =
 		32;
 	
+	/** Dotted stroke line style. */
 	public static final int DOTTED =
 		1;
 	
+	/** The anchor point to position in the center horizontally. */
 	public static final int HCENTER =
 		1;
 	
+	/** The anchor point to position the item to the left. */
 	public static final int LEFT =
 		4;
 	
+	/** The anchor point to position the item on the right. */
 	public static final int RIGHT =
 		8;
 	
+	/** Solid stroke line style. */
 	public static final int SOLID =
 		0;
 	
+	/** The blending mode, the destination alpha is the source. */
 	public static final int SRC =
 		1;
 	
+	/**
+	 * The blending mode, the source alpha is a composited over the
+	 * destination.
+	 */
 	public static final int SRC_OVER =
 		0;
 	
+	/** The anchor point to position the item on the top. */
 	public static final int TOP =
 		16;
 	
+	/** The anchor point to position in the center vertically. */
 	public static final int VCENTER =
 		2;
 	
