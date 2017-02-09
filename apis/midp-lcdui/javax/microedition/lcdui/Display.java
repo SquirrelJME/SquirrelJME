@@ -862,6 +862,7 @@ public class Display
 			DisplayInstance instance = this._engine.setDisplayable(__show,
 				__show.__connector());
 			this._instance = instance;
+			__show._instance = instance;
 			
 			// Make sure some things are set
 			instance.setTitle(__show.getTitle());
