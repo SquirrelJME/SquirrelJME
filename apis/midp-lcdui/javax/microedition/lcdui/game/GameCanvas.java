@@ -13,6 +13,7 @@ package javax.microedition.lcdui.game;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.squirreljme.lcdui.ForwardingGraphics;
 
 public abstract class GameCanvas
 	extends Canvas
@@ -43,6 +44,10 @@ public abstract class GameCanvas
 	
 	public static final int UP_PRESSED =
 		2;
+	
+	/** Forwarding graphics target, since they draw to the same buffer. */
+	private final ForwardingGraphics _forwardgfx =
+		new ForwardingGraphics();
 	
 	/** Are game keys being suppressed?. */
 	private volatile boolean _suppressgamekeys;
@@ -86,13 +91,28 @@ public abstract class GameCanvas
 		this._preservebuffer = __preservebuf;
 	}
 	
+	/**
+	 * Flushes the full off-screen buffer to the display.
+	 *
+	 * @since 2017/02/08
+	 */
 	public void flushGraphics()
 	{
-		throw new Error("TODO");
+		flushGraphics(0, 0, getWidth(), getHeight());
 	}
 	
-	public void flushGraphics(int __a, int __b, int __c, int __d)
+	public void flushGraphics(int __x, int __y, int __w, int __h)
+		throws IllegalStateException
 	{
+		// Nothing to flush
+		if (__w <= 0 || __h <= 0)
+			return;
+		
+		// {@squirreljme.error EB07 Cannot flush the graphics if the buffer
+		// is not preserved.}
+		if (!this._preservebuffer)
+			throw new IllegalStateException("EB07");
+		
 		throw new Error("TODO");
 	}
 	
@@ -105,7 +125,21 @@ public abstract class GameCanvas
 	 */
 	protected Graphics getGraphics()
 	{
-		throw new Error("TODO");
+		ForwardingGraphics forwardgfx = this._forwardgfx;
+		
+		// It is possible for the canvas to change size, as such the image in
+		// the background must be recreated for the correct size
+		int dw = Math.max(1, getWidth()),
+			dh = Math.max(1, getHeight());
+		Image image = this._image;
+		if (image == null || dw != image.getWidth() || dh != image.getHeight())
+		{
+			this._image = (image = Image.createImage(dw, dh));
+			forwardgfx.forwardGraphics(image.getGraphics());
+		}
+		
+		// Always return the forwarded graphics
+		return forwardgfx.forwardPlainGraphics();
 	}
 	
 	public int getKeyStates()
