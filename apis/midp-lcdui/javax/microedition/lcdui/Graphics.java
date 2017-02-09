@@ -10,6 +10,11 @@
 
 package javax.microedition.lcdui;
 
+/**
+ * The class describes the interface that is used for drawing operations.
+ *
+ * @since 2017/02/09
+ */
 public abstract class Graphics
 {
 	public static final int BASELINE =
