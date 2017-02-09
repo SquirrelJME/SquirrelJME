@@ -47,6 +47,10 @@ public abstract class Displayable
 	{
 	}
 	
+	public abstract int getHeight();
+	
+	public abstract int getWidth();
+	
 	/**
 	 * Creates a connector which can better interact with this displayable.
 	 *
@@ -87,11 +91,6 @@ public abstract class Displayable
 		return this._display;
 	}
 	
-	public int getHeight()
-	{
-		throw new Error("TODO");
-	}
-	
 	public Menu getMenu(int __p)
 	{
 		throw new Error("TODO");
@@ -111,11 +110,6 @@ public abstract class Displayable
 	public String getTitle()
 	{
 		return this._title;
-	}
-	
-	public int getWidth()
-	{
-		throw new Error("TODO");
 	}
 	
 	public void invalidateCommandLayout()
