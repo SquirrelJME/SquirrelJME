@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
 
 /**
@@ -28,9 +29,39 @@ public class SwingEngine
 	 * @since 2017/02/08
 	 */
 	@Override
+	public void setDisplayable(Displayable __d)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public void setState(int __s)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
 	public void setTitle(String __s)
 	{
 		this._title = (__s != null ? __s : "SquirrelJME");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	public void update()
+	{
+		throw new Error("TODO");
 	}
 }
 

@@ -203,7 +203,7 @@ public class Display
 	private volatile Displayable _show;
 	
 	/** The displayable to show when the old one is dismissed. */
-	private volatile Displayable _dismissed;
+	private volatile Displayable _ondismissed;
 	
 	/**
 	 * Initializes the display instance.
@@ -602,27 +602,44 @@ public class Display
 	}
 	
 	/**
-	 * Shows the given alert on this display.
+	 * Shows the given alert on this display, when the alert is .
 	 *
 	 * @param __show The alert to show.
 	 * @param __exit The displayable to show when the alert that is
-	 * set is dismissed.
+	 * set is dismissed. This cannot be an {@link Alert}.
 	 * @throws DisplayCapabilityException If the display cannot show the given
 	 * displayable.
 	 * @throws IllegalStateException If the display hardware is missing; If
-	 * the displayables are associated with another display or tab pane. 
+	 * the displayables are associated with another display or tab pane; or
+	 * the next displayable item is an alter.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
 	public void setCurrent(Alert __show, Displayable __exit)
-		throws DisplayCapabilityException, IllegalStateException
+		throws DisplayCapabilityException, IllegalStateException,
+			NullPointerException
 	{
+		// {@squirreljme.error EB06 Cannot show another alert when the alert
+		// to show is cleared.}
+		if (__exit instanceof Alert)
+			throw new IllegalStateException("EB06");
+		
+		// Check
+		if (__show == null || __exit == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
 		__setCurrent(__show, __exit);
 	}
 	
 	/**
 	 * Sets the current displayable to be displayed.
 	 *
-	 * @param __show The displayable to show.
+	 * If the value to be passed is an {@link Alert} then this acts as if
+	 * {@code setCurrent(__show, getCurrent())} was called.
+	 *
+	 * @param __show The displayable to show, if {@code null} this tells the
+	 * {@link Display} to enter the background state.
 	 * @throws DisplayCapabilityException If the display cannot show the given
 	 * displayable.
 	 * @throws IllegalStateException If the display hardware is missing; If
@@ -632,9 +649,20 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
+		// Enter the background state?
+		DisplayEngine engine = this._engine;
+		if (__show == null)
+		{
+			engine.setState(STATE_BACKGROUND);
+			return;
+		}
+		
 		// Only use the old display if not an alert
 		__setCurrent(__show,
 			((__show instanceof Alert) ? getCurrent() : null));
+		
+		// Enter foreground state
+		engine.setState(STATE_FOREGROUND);
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -734,56 +762,96 @@ public class Display
 		if (__show == null)
 			__exit = null;
 		
-		// Need to lock on both displayables, however they are optional so if
-		// they are missing then lock on a dummy object
-		Object dummy = ((__show == null || __exit == null) ? new Object() :
-			null);
+		// Lock on self
 		synchronized (this._lock)
 		{
-			// Get the old displayable
+			// Need the current displays
 			Displayable oldshow = this._show;
-			Displayable oldexit = this._dismissed;
+			Displayable oldexit = this._ondismissed;
 			
-			// Lock on them
-			synchronized ((__show != null ? __show._lock : dummy))
+			// Perform a massive four way synchronization
+			Object dummy = new Object();
+			__setCurrentB(dummy, oldshow, oldexit, __show, __exit);
+		}
+	}
+	
+	/**
+	 * Secondary call to lock all the displays being associated.
+	 *
+	 * @param __dummy Dummy locking object.
+	 * @param __oldshow The old showing display.
+	 * @param __oldexit The old exist display.
+	 * @param __show The next to show display.
+	 * @param __exit Shown when the current shown is cleared.
+	 * @since 2017/02/08
+	 */
+	private void __setCurrentB(Object __dummy, Displayable __oldshow,
+		Displayable __oldexit, Displayable __show, Displayable __exit)
+	{
+		// Lock
+		synchronized ((__oldshow != null ? __oldshow : __dummy))
+		{
+			synchronized ((__oldexit != null ? __oldshow : __dummy))
 			{
-				synchronized ((__exit != null ? __exit._lock : dummy))
+				synchronized ((__show != null ? __show : __dummy))
 				{
-					// {@squirreljme.error EB03 The displayable is already
-					// associated with a display.}
-					if (__show != oldshow && __show != null &&
-						__show._display != null)
-						throw new IllegalStateException("EB03");
-				
-					// {@squirreljme.error EB04 The displayable to show on
-					// dismiss is already associated with a display.}
-					if (__exit != oldexit &&
-						__exit != null && __exit._display != null)
-						throw new IllegalStateException("EB04");
-					
-					// Unown the old shown displayable
-					if (oldshow != null)
-						oldshow._display = null;
-					
-					// Set the new display
-					if (__show != null)
-						__show._display = this;
-					this._show = __show;
-					
-					// Remove old association
-					if (oldexit != null)
-						oldexit._display = null;
-					
-					// Own this one
-					if (__exit != null)
-						__exit._display = this;
-					this._dismissed = __exit;
-					
-					// Use the title of the shown displayable
-					if (__show != null)
-						__updateTitle(__show.getTitle());
+					synchronized ((__exit != null ? __exit : __dummy))
+					{
+						__setCurrentC(__oldshow, __oldexit, __show, __exit);
+					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Thirs call which performs the actual display switching work.
+	 *
+	 * @param __dummy Dummy locking object.
+	 * @param __oldshow The old showing display.
+	 * @param __oldexit The old exist display.
+	 * @param __show The next to show display.
+	 * @param __exit Shown when the current shown is cleared.
+	 * @since 2017/02/08
+	 */
+	private void __setCurrentC(Displayable __oldshow,
+		Displayable __oldexit, Displayable __show, Displayable __exit)
+	{
+		// Keeping the same display?
+		if (__oldshow == __show)
+		{
+			// Do nothing
+			if (__oldexit == __exit)
+				return;
+			
+			// {@squirreljme.error EB04 The displayable to show on
+			// dismiss is already associated with a display.}
+			if (__exit._display != null)
+				throw new IllegalStateException("EB04");
+			
+			// Set the new exit display
+			this._ondismissed = __exit;
+		}
+		
+		// Changing the display
+		else
+		{
+			// {@squirreljme.error EB03 The displayable is already
+			// associated with a display.}
+			if (__show._display != null)
+				throw new IllegalStateException("EB03");
+			
+			// Re-associate ownership
+			if (__oldshow != null)
+				__oldshow._display = null;
+			__show._display = this;
+			
+			// Set new displays
+			this._show = __show;
+			this._ondismissed = __exit;
+			
+			// Tell the engine of the change
+			this._engine.setDisplayable(__show);
 		}
 	}
 	
