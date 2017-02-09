@@ -23,8 +23,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngineProvider;
+import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
 
 public class Display
 {
@@ -204,6 +206,9 @@ public class Display
 	
 	/** The displayable to show when the old one is dismissed. */
 	private volatile Displayable _ondismissed;
+	
+	/** The current instance. */
+	private volatile DisplayInstance _instance;
 	
 	/**
 	 * Initializes the display instance.
@@ -650,10 +655,11 @@ public class Display
 		throws DisplayCapabilityException, IllegalStateException
 	{
 		// Enter the background state?
-		DisplayEngine engine = this._engine;
+		DisplayInstance instance = this._instance;
 		if (__show == null)
 		{
-			engine.setState(STATE_BACKGROUND);
+			if (instance != null)
+				instance.setState(STATE_BACKGROUND);
 			return;
 		}
 		
@@ -662,7 +668,9 @@ public class Display
 			((__show instanceof Alert) ? getCurrent() : null));
 		
 		// Enter foreground state
-		engine.setState(STATE_FOREGROUND);
+		instance = this._instance;
+		if (instance != null)
+			instance.setState(STATE_FOREGROUND);
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -850,20 +858,14 @@ public class Display
 			this._show = __show;
 			this._ondismissed = __exit;
 			
-			// Tell the engine of the change
-			this._engine.setDisplayable(__show);
+			// Set the displayable to this one and also connect
+			DisplayInstance instance = this._engine.setDisplayable(__show,
+				__show.__connector());
+			this._instance = instance;
+			
+			// Make sure some things are set
+			instance.setTitle(__show.getTitle());
 		}
-	}
-	
-	/**
-	 * Sets the title to be used by the display.
-	 *
-	 * @param __s The title to use.
-	 * @since 2016/10/08
-	 */
-	void __updateTitle(String __s)
-	{
-		this._engine.setTitle(__s);
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)

@@ -12,7 +12,10 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.awt.Dimension;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.DisplayCapabilityException;
 import javax.swing.JFrame;
+import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
+import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
 
 /**
@@ -26,15 +29,6 @@ public class SwingEngine
 	/** The display frame used. */
 	protected final JFrame frame =
 		new JFrame();
-	
-	/** The current thing to display. */
-	private volatile Displayable _show;
-	
-	/** The title to use. */
-	private volatile String _title;
-	
-	/** Needs repacking? */
-	private volatile boolean _dopack;
 
 	/**
 	 * Initializes the base engine.
@@ -43,11 +37,6 @@ public class SwingEngine
 	 */
 	public SwingEngine()
 	{
-		// Exit on close
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		// Force a minimum size
-		frame.setMinimumSize(new Dimension(160, 160));
 	}
 	
 	/**
@@ -55,65 +44,19 @@ public class SwingEngine
 	 * @since 2017/02/08
 	 */
 	@Override
-	public void setDisplayable(Displayable __d)
+	public DisplayInstance setDisplayable(Displayable __d,
+		DisplayConnector __c)
+		throws DisplayCapabilityException, NullPointerException
 	{
-		// Set and update
-		this._show = __d;
-		this._dopack = true;
-		update();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	public void setState(int __s)
-	{
-		// States have no effect on Swing
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	public void setTitle(String __s)
-	{
-		String use;
-		this._title = (use = (__s != null ? __s : "SquirrelJME"));
-		this.frame.setTitle(use);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	public void update()
-	{
-		// Showing something?
-		Displayable show = this._show;
-		if (show == null)
-			return;
+		// Check
+		if (__d == null || __c == null)
+			throw new NullPointerException("NARG");
 		
-		// Make sure the frame is visible
-		JFrame frame = this.frame;
-		frame.setVisible(true);
-		
-		// Update the title to match what is displayed
-		setTitle(show.getTitle());
-		
-		// Repack?
-		if (this._dopack)
-		{
-			// Pack it
-			frame.pack();
-			this._dopack = false;
-			
-			// Center on screen
-			frame.setLocationRelativeTo(null);
-		}
+		// {@squirreljme.error BM0a The specified class cannot be shown by
+		// this engine because it is not supported. (The class used for the
+		// displayable))
+		throw new DisplayCapabilityException(String.format("BM0a %s",
+			__d.getClass()));
 	}
 }
 

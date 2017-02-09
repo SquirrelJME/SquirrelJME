@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.lcdui;
 
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.DisplayCapabilityException;
 
 /**
  * This is a display engine that is used to determine .
@@ -27,32 +28,16 @@ public interface DisplayEngine
 	 * applicable.
 	 *
 	 * @param __d The display to show.
+	 * @param __c The connector which allows the engine to interact with the
+	 * {@link Displayable} as needed.
+	 * @return The display instance for the given displayable.
+	 * @throws DisplayCapabilityException If the engine is not capable of
+	 * using the given displayable.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/08
 	 */
-	public abstract void setDisplayable(Displayable __d);
-	
-	/**
-	 * Sets the state of the display engine.
-	 *
-	 * @param __s The state to use.
-	 * @since 2017/02/08
-	 */
-	public abstract void setState(int __s);
-	
-	/**
-	 * Sets the title of the display.
-	 *
-	 * @param __s The title to use, if {@code null} then a default should be
-	 * used instead.
-	 * @since 2017/02/08
-	 */
-	public abstract void setTitle(String __s);
-	
-	/**
-	 * Performs an update of the display and renders it.
-	 *
-	 * @since 2017/02/08
-	 */
-	public abstract void update();
+	public abstract DisplayInstance setDisplayable(Displayable __d,
+		DisplayConnector __c)
+		throws DisplayCapabilityException, NullPointerException;
 }
 

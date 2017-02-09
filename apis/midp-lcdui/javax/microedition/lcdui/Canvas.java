@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
+
 /**
  * The canvas acts as the base class for primary display interfaces that
  * require more customized draw handling.
@@ -273,6 +275,15 @@ public abstract class Canvas
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	DisplayConnector __connector()
+	{
+		throw new Error("TODO");
+	}
 }
-
 

@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 
 public class Alert
 	extends Screen
@@ -101,6 +102,16 @@ public class Alert
 	}
 	
 	public void setType(AlertType __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	DisplayConnector __connector()
 	{
 		throw new Error("TODO");
 	}

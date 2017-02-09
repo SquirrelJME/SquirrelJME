@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
+
 public class TabbedPane
 	extends Screen
 {
@@ -64,6 +66,16 @@ public class TabbedPane
 	}
 	
 	public void setTabIcon(int __i, Image __icon)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	DisplayConnector __connector()
 	{
 		throw new Error("TODO");
 	}

@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 
 public class Form
 	extends Screen
@@ -99,6 +100,16 @@ public class Form
 	}
 	
 	public int size()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/08
+	 */
+	@Override
+	DisplayConnector __connector()
 	{
 		throw new Error("TODO");
 	}
