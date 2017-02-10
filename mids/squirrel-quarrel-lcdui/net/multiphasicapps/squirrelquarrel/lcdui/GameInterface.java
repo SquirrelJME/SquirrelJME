@@ -75,6 +75,7 @@ public class GameInterface
 		__g.setColor(0x00FF00);
 		__g.setStrokeStyle(Graphics.SOLID);
 		__g.drawLine(0, 0, w, h);
+		__g.drawRect((w / 5) * 1, (h / 5) * 1, (w / 5), (h / 5));
 		
 		// Clip the second line
 		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
@@ -85,6 +86,7 @@ public class GameInterface
 		__g.setColor(0x0000FF);
 		__g.setStrokeStyle(Graphics.DOTTED);
 		__g.drawLine(0, h, w, 0);
+		__g.drawRect((w / 5) * 3, (h / 5) * 3, (w / 5), (h / 5));
 	}
 }
 
