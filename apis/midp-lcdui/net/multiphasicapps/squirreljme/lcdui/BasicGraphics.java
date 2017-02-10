@@ -350,12 +350,16 @@ public abstract class BasicGraphics
 		boolean blend = (this._blendmode == SRC_OVER);
 		
 		// Draw the horizontal
-		primitiveHorizontalLine(__x, __y, __w, color, dotted, blend);
-		primitiveHorizontalLine(__x, ey, __w, color, dotted, blend);
+		if (__y >= clipsy)
+			primitiveHorizontalLine(__x, __y, __w, color, dotted, blend);
+		if (ey < clipey)
+			primitiveHorizontalLine(__x, ey, __w, color, dotted, blend);
 		
 		// And the vertical
-		primitiveVerticalLine(__x, __y, __h, color, dotted, blend);
-		primitiveVerticalLine(ex, __y, __h, color, dotted, blend);
+		if (__x >= clipsx)
+			primitiveVerticalLine(__x, __y, __h, color, dotted, blend);
+		if (ex < clipex)
+			primitiveVerticalLine(ex, __y, __h, color, dotted, blend);
 	}
 	
 	/**
