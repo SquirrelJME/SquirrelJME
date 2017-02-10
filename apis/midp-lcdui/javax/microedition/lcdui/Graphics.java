@@ -168,33 +168,40 @@ public abstract class Graphics
 		int __aa);
 	
 	public abstract void drawARGB16(short[] __data, int __off, int __scanlen,
-		int __x, int __y, int __w, int __h);
+		int __x, int __y, int __w, int __h)
+		throws NullPointerException;
 	
 	public abstract void drawChar(char __s, int __x, int __y, int __anchor);
 	
 	public abstract void drawChars(char[] __s, int __o, int __l, int __x,
-		int __y, int __anchor);
+		int __y, int __anchor)
+		throws NullPointerException;
 	
-	public abstract void drawImage(Image __i, int __x, int __y, int __anchor);
+	public abstract void drawImage(Image __i, int __x, int __y, int __anchor)
+		throws NullPointerException;
 	
 	public abstract void drawLine(int __x1, int __y1, int __x2, int __y2);
 	
 	public abstract void drawRGB(int[] __data, int __off, int __scanlen,
-		int __x, int __y, int __w, int __h, boolean __alpha);
+		int __x, int __y, int __w, int __h, boolean __alpha)
+		throws NullPointerException;
 	
 	public abstract void drawRGB16(short[] __data, int __off, int __scanlen,
-		int __x, int __y, int __w, int __h);
+		int __x, int __y, int __w, int __h)
+		throws NullPointerException;
 	
 	public abstract void drawRect(int __x, int __y, int __w, int __h);
 	
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch);
+		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch)
+		throws NullPointerException;
 	
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch,
-		int __wdest, int __hdest);
+		int __wdest, int __hdest)
+		throws NullPointerException;
 	
-	public abstract void drawRoundRect(int __x, int __w, int __w, int __h,
+	public abstract void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah);
 	
 	/**
@@ -204,13 +211,16 @@ public abstract class Graphics
 	 * @param __x The X position, will be translated.
 	 * @param __y The Y position, will be translated.
 	 * @param __anchor The anchor point.
+	 * @throws NullPointerException If no string was specified.
 	 * @since 2017/02/10
 	 */
 	public abstract void drawString(String __s, int __x, int __y,
-		int __anchor);
+		int __anchor)
+		throws NullPointerException;
 	
 	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
-		int __y, int __anchor);
+		int __y, int __anchor)
+		throws NullPointerException;
 	
 	public abstract void drawText(Text __t, int __x, int __y);
 	
@@ -239,7 +249,7 @@ public abstract class Graphics
 	
 	public abstract void fillRect(int __x, int __y, int __w, int __h);
 	
-	public abstract void fillRoundRect(int __x, int __w, int __w, int __h,
+	public abstract void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah);
 	
 	public abstract void fillTriangle(int __x1, int __y1, int __x2, int __y2,

@@ -393,6 +393,21 @@ public class ForwardingGraphics
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public int getAlphaColor()
+	{
+		Graphics graphics = this._graphics;
+		if (graphics != null)
+			return graphics.getAlpha();
+		
+		// Stored?
+		return this._color;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/10/10
 	 */
 	@Override

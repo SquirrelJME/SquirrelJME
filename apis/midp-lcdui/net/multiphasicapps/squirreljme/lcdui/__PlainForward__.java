@@ -285,6 +285,16 @@ class __PlainForward__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public int getAlphaColor()
+	{
+		return this.graphics.getAlphaColor();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/10/10
 	 */
 	@Override
