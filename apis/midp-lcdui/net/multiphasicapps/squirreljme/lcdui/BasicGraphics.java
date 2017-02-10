@@ -344,21 +344,49 @@ public abstract class BasicGraphics
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
 			return;
 		
+		// Left vertical shortening
+		boolean lvs = (__x < clipsx);
+		if (lvs)
+			__x = clipsx;
+		
+		// Right vertical shortening
+		boolean rvs = (ex >= clipex);
+		if (rvs)
+			ex = clipex - 1;
+		
+		// Calculate new width
+		if (lvs || rvs)
+			__w = ex - __x;
+		
+		// Bottom horizontal shortening
+		boolean bhs = (__y < clipsy);
+		if (bhs)
+			__y = clipsy;
+		
+		// Top horizontal shortening
+		boolean ths = (ey >= clipey);
+		if (ths)
+			ey = clipey - 1;
+		
+		// Calculate new height
+		if (bhs || ths)
+			__h = ey - __y;
+		
 		// Calculate line properties
 		int color = this._color;
 		boolean dotted = (this._strokestyle == DOTTED);
 		boolean blend = (this._blendmode == SRC_OVER);
 		
 		// Draw the horizontal
-		if (__y >= clipsy)
+		if (!bhs)
 			primitiveHorizontalLine(__x, __y, __w, color, dotted, blend);
-		if (ey < clipey)
+		if (!ths)
 			primitiveHorizontalLine(__x, ey, __w, color, dotted, blend);
 		
 		// And the vertical
-		if (__x >= clipsx)
+		if (!lvs)
 			primitiveVerticalLine(__x, __y, __h, color, dotted, blend);
-		if (ex < clipex)
+		if (!rvs)
 			primitiveVerticalLine(ex, __y, __h, color, dotted, blend);
 	}
 	
