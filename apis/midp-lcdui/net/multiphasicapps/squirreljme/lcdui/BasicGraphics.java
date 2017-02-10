@@ -42,6 +42,20 @@ public abstract class BasicGraphics
 	/** Translated Y coordinate. */
 	private volatile int _transy;
 	
+	/** The starting X clip. */
+	private volatile int _clipsx;
+	
+	/** The starting Y clip. */
+	private volatile int _clipsy;
+	
+	/** The ending X clip. */
+	private volatile int _clipex =
+		Integer.MAX_VALUE;
+	
+	/** The ending Y clip. */
+	private volatile int _clipey =
+		Integer.MAX_VALUE;
+	
 	/**
 	 * Draws a primitive horizontal line that exists only witin.
 	 *
@@ -364,7 +378,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipHeight()
 	{
-		throw new Error("TODO");
+		return this._clipey - this._clipsy;
 	}
 	
 	/**
@@ -374,7 +388,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipWidth()
 	{
-		throw new Error("TODO");
+		return this._clipex - this._clipsx;
 	}
 	
 	/**
@@ -384,7 +398,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipX()
 	{
-		throw new Error("TODO");
+		return this._clipsx - this._transx;
 	}
 	
 	/**
@@ -394,7 +408,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipY()
 	{
-		throw new Error("TODO");
+		return this._clipsy - this._transy;
 	}
 	
 	/**
@@ -555,7 +569,41 @@ public abstract class BasicGraphics
 	@Override
 	public final void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		// Translate
+		__x += this._transx;
+		__y += this._transy;
+		
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+		
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+		
+		// Never exceed the lower range
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
+		// Set
+		this._clipsx = __x;
+		this._clipsy = __y;
+		this._clipex = ex;
+		this._clipey = ey;
 	}
 	
 	/**
