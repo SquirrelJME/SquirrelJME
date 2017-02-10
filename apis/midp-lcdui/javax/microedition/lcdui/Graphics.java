@@ -170,37 +170,47 @@ public abstract class Graphics
 	public abstract void drawARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h);
 	
-	public abstract void drawChar(char __a, int __b, int __c, int __d);
+	public abstract void drawChar(char __s, int __x, int __y, int __anchor);
 	
-	public abstract void drawChars(char[] __a, int __b, int __c, int __d,
-		int __e, int __f);
+	public abstract void drawChars(char[] __s, int __o, int __l, int __x,
+		int __y, int __anchor);
 	
-	public abstract void drawImage(Image __a, int __b, int __c, int __d);
+	public abstract void drawImage(Image __i, int __x, int __y, int __anchor);
 	
-	public abstract void drawLine(int __a, int __b, int __c, int __d);
+	public abstract void drawLine(int __x1, int __y1, int __x2, int __y2);
 	
-	public abstract void drawRGB(int[] __a, int __b, int __c, int __d, int __e,
-		int __f, int __g, boolean __h);
+	public abstract void drawRGB(int[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h, boolean __alpha);
 	
 	public abstract void drawRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h);
 	
-	public abstract void drawRect(int __a, int __b, int __c, int __d);
+	public abstract void drawRect(int __x, int __y, int __w, int __h);
 	
-	public abstract void drawRegion(Image __a, int __b, int __c, int __d,
-		int __e, int __f, int __g, int __h, int __i);
+	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
+		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch);
 	
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch,
 		int __wdest, int __hdest);
 	
-	public abstract void drawRoundRect(int __a, int __b, int __c, int __d,
-		int __e,  int __f);
+	public abstract void drawRoundRect(int __x, int __w, int __w, int __h,
+		int __aw, int __ah);
 	
-	public abstract void drawString(String __a, int __b, int __c, int __d);
+	/**
+	 * Same as {@code drawSubstring(__s, 0, __s.length(), __x, __y, __anchor)}.
+	 *
+	 * @param __s The string to draw.
+	 * @param __x The X position, will be translated.
+	 * @param __y The Y position, will be translated.
+	 * @param __anchor The anchor point.
+	 * @since 2017/02/10
+	 */
+	public abstract void drawString(String __s, int __x, int __y,
+		int __anchor);
 	
-	public abstract void drawSubstring(String __a, int __b, int __c, int __d,
-		int __e, int __f);
+	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
+		int __y, int __anchor);
 	
 	public abstract void drawText(Text __t, int __x, int __y);
 	
@@ -227,13 +237,13 @@ public abstract class Graphics
 	public abstract void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa);
 	
-	public abstract void fillRect(int __a, int __b, int __c, int __d);
+	public abstract void fillRect(int __x, int __y, int __w, int __h);
 	
-	public abstract void fillRoundRect(int __a, int __b, int __c, int __d,
-		int __e, int __f);
+	public abstract void fillRoundRect(int __x, int __w, int __w, int __h,
+		int __aw, int __ah);
 	
-	public abstract void fillTriangle(int __a, int __b, int __c, int __d,
-		int __e, int __f);
+	public abstract void fillTriangle(int __x1, int __y1, int __x2, int __y2,
+		int __x3, int __y3);
 	
 	/**
 	 * Returns the alpha component.
