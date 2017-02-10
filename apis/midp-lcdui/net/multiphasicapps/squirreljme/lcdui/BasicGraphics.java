@@ -406,9 +406,9 @@ public abstract class BasicGraphics
 	 * @since 2017/02/10
 	 */
 	@Override
-	public final int getDisplayColor(int __rgb)
+	public int getDisplayColor(int __rgb)
 	{
-		throw new Error("TODO");
+		return __rgb;
 	}
 	
 	/**
