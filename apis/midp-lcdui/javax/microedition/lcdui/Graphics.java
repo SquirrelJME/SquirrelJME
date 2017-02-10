@@ -148,7 +148,15 @@ public abstract class Graphics
 	
 	public abstract int getColor();
 	
-	public abstract int getDisplayColor(int __a);
+	/**
+	 * This returns the actual color that would be drawn onto the given
+	 * display if it were set.
+	 *
+	 * @param __rgb The color to use, the format is {@code 0xRRGGBB}.
+	 * @return The color that will actually be drawn on the display.
+	 * @since 2017/02/09
+	 */
+	public abstract int getDisplayColor(int __rgb);
 	
 	public abstract Font getFont();
 	
@@ -174,17 +182,58 @@ public abstract class Graphics
 	
 	public abstract void setClip(int __a, int __b, int __c, int __d);
 	
-	public abstract void setColor(int __a);
+	/**
+	 * Sets the combined RGB value to use for drawing.
+	 *
+	 * @param __rgb The color to use, the format is {@code 0xRRGGBB}.
+	 * @since 2017/02/09
+	 */
+	public abstract void setColor(int __rgb);
 	
-	public abstract void setColor(int __a, int __b, int __c);
+	/**
+	 * Sets the color to use for drawing.
+	 *
+	 * @param __r The red value.
+	 * @param __g The green value.
+	 * @param __b The blue value.
+	 * @since 2017/02/09
+	 */
+	public abstract void setColor(int __r, int __g, int __b);
 	
+	/**
+	 * Sets the font to use for drawing operations.
+	 *
+	 * @param __a The font to use for drawing.
+	 * @since 2017/02/09
+	 */
 	public abstract void setFont(Font __a);
 	
-	public abstract void setGrayScale(int __a);
+	/**
+	 * Sets a grayscale color which has all the red, green, and blue
+	 * components set as the same value.
+	 *
+	 * @param __v The value to use for the color.
+	 * @since 2017/02/09
+	 */
+	public abstract void setGrayScale(int __v);
 	
+	/**
+	 * Sets the stroke style to use for lines.
+	 *
+	 * @param __a The stroke style, either {@link #SOLID} or {@link #DOTTED}.
+	 * @since 2017/02/09
+	 */
 	public abstract void setStrokeStyle(int __a);
 	
-	public abstract void translate(int __a, int __b);
+	/**
+	 * Translates all coordinates so that they are offset by the given
+	 * values, the values which are set act as the new origin.
+	 *
+	 * @param __x The X value to use for the new origin.
+	 * @param __y The Y value to use for the new origin.
+	 * @since 2017/02/09
+	 */
+	public abstract void translate(int __x, int __y);
 }
 
 
