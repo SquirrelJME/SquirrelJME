@@ -214,7 +214,14 @@ public abstract class BasicGraphics
 	@Override
 	public final void drawRect(int __x, int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Just draw 4 lines
+		drawLine(__x, __y, ex, __y);
+		drawLine(ex, __y, ex, ey);
+		drawLine(ex, ey, __x, ey);
+		drawLine(__x, ey, __x, __y);
 	}
 	
 	/**
