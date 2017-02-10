@@ -68,17 +68,7 @@ public class GameInterface
 		int renderframe = this._renderframe;
 		this._renderframe = renderframe + 1;
 		
-		// Translate the first line
-		__g.setClip(0, 0, w, h);
-		__g.translate(renderframe % w, (renderframe / 2) % h);
-		
-		// Draw one line
-		__g.setColor(0x00FF00);
-		__g.setStrokeStyle(Graphics.SOLID);
-		__g.drawLine(0, 0, w, h);
-		__g.drawRect((w / 5) * 1, (h / 5) * 1, (w / 5), (h / 5));
-		
-		// Clip the second line
+		// Clip everything
 		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
 		__g.setClip(renderframe % (w / 2), renderframe % (h / 2),
 			(w / 2), (h / 2));
@@ -87,6 +77,18 @@ public class GameInterface
 		__g.setColor(0xFF0000);
 		__g.drawRect(renderframe % (w / 2), renderframe % (h / 2),
 			(w / 2) - 1, (h / 2) - 1);
+		
+		// Translate the first line
+		__g.translate(renderframe % w, (renderframe / 2) % h);
+		
+		// Draw one line
+		__g.setColor(0x00FF00);
+		__g.setStrokeStyle(Graphics.SOLID);
+		__g.drawLine(0, 0, w, h);
+		__g.drawRect((w / 5) * 1, (h / 5) * 1, (w / 5), (h / 5));
+		
+		// Do not translate the second
+		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
 		
 		// Draw another
 		__g.setColor(0x0000FF);

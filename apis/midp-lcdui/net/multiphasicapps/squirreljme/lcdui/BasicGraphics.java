@@ -24,6 +24,22 @@ import javax.microedition.lcdui.Text;
 public abstract class BasicGraphics
 	extends Graphics
 {
+	/** Clipping above. */
+	private static final int _CLIP_ABOVE =
+		1;
+	
+	/** Clipping below. */
+	private static final int _CLIP_BELOW =
+		2;
+	
+	/** Clip right. */
+	private static final int _CLIP_RIGHT =
+		4;
+	
+	/** Clip left. */
+	private static final int _CLIP_LEFT =
+		8;
+	
 	/** The current blending mode. */
 	private volatile int _blendmode =
 		SRC_OVER;
@@ -169,6 +185,82 @@ public abstract class BasicGraphics
 		__x2 += transx;
 		__y2 += transy;
 		
+		// Get clipping region
+		int clipsx = this._clipsx, clipsy = this._clipsy,
+			clipex = this._clipex, clipey = this._clipey;
+		
+		// Perform Cohen-Sutherland line clipping
+		for (;;)
+		{
+			// Determine points that lie outside the box
+			int outa = __csOut(__x1, __y1, clipsx, clipsy, clipex, clipey),
+				outb = __csOut(__x2, __y2, clipsx, clipsy, clipex, clipey);
+			
+			// Both points are outside the box, do nothing
+			if ((outa & outb) != 0)
+				return;
+			
+			// Both points are inside the box, use this line
+			if (outa == 0 && outb == 0)
+				break;
+			
+			// Only the second point is outside, swap the points so that the
+			// first point is outside and the first is not
+			if (outa == 0)
+			{
+				// Swap X
+				int boop = __x1;
+				__x1 = __x2;
+				__x2 = boop;
+				
+				// Swap Y
+				boop = __y1;
+				__y1 = __y2;
+				__y2 = boop;
+				
+				// Swap clip flags
+				boop = outb;
+				outb = outa;
+				outa = boop;
+			}
+			
+			// The point is clipped
+			if (outa != 0)
+			{
+				// Convert to 24.8 fixed point
+				int dx = __x2 - __x1,
+					dy = __y2 - __y1;
+				
+				// Clips above the box
+				if ((outa & _CLIP_ABOVE) != 0)
+				{
+					__x1 += dx * (clipey - __y1) / dy;
+					__y1 = clipey;
+				}
+			
+				// Clips below
+				else if ((outa & _CLIP_BELOW) != 0)
+				{
+					__x1 += dx * (clipsy - __y1) / dy;
+					__y1 = clipsy;
+				}
+			
+				// Clips the right side
+				else if ((outa & _CLIP_RIGHT) != 0)
+				{
+					__y1 += dy * (clipex - __x1) / dx;
+					__x1 = clipex;
+				}
+			
+				// Clips the left side
+				else if ((outa & _CLIP_LEFT) != 0)
+				{
+					__y1 += dy * (clipsx - __x1) / dx;
+					__x1 = clipsx;
+				}
+			}
+		}
+		
 		// Have lines which always go to the right
 		if (__x2 < __x1)
 		{
@@ -179,29 +271,6 @@ public abstract class BasicGraphics
 			__x2 = boopx;
 			__y2 = boopy;
 		}
-		
-		// Outside of the drawing region?
-		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = this._clipex, clipey = this._clipey;
-		if (__x2 < clipsx || __x1 >= clipex)
-			return;
-		
-		// Correct Y for clip check
-		int loy, hiy;
-		if (__y1 < __y2)
-		{
-			loy = __y1;
-			hiy = __y2;
-		}
-		else
-		{
-			loy = __y2;
-			hiy = __y1;
-		}
-		
-		// Outside of drawing region?
-		if (hiy < clipsy || loy >= clipey)
-			return;
 		
 		// Draw it
 		primitiveLine(__x1, __y1, __x2, __y2, this._color,
@@ -751,6 +820,38 @@ public abstract class BasicGraphics
 	{
 		this._transx += __x;
 		this._transy += __y;
+	}
+	
+	/**
+	 * Determines the Cohen-Sutherland clipping flags.
+	 *
+	 * @param __x Input X coordinate.
+	 * @param __y Input Y coordinate.
+	 * @param __csx Clipping box starting X.
+	 * @param __csy Clipping box starting Y.
+	 * @param __cex Clipping box ending X.
+	 * @param __cey Clipping box ending Y.
+	 * @return The clipping bit flags.
+	 * @since 2017/09/10
+	 */
+	private static final int __csOut(int __x, int __y, int __csx, int __csy,
+		int __cex, int __cey)
+	{
+		int rv = 0;
+		
+		// Clips above or below?
+		if (__y > __cey)
+			rv |= _CLIP_ABOVE;
+		else if (__y < __csy)
+			rv |= _CLIP_BELOW;
+		
+		// Clips right or left?
+		if (__x > __cex)
+			rv |= _CLIP_RIGHT;
+		else if (__x < __csx)
+			rv |= _CLIP_LEFT;
+		
+		return rv;
 	}
 }
 
