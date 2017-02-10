@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirrelquarrel;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This class contains the state for a single game.
  *
@@ -40,6 +44,29 @@ public class Game
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * Initializes a game from a previous game serialization such as a saved
+	 * game or replay.
+	 *
+	 * @param __is The input stream to read the game from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/10
+	 */
+	public Game(InputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrap in a data input stream
+		DataInputStream input = ((__is instanceof DataInputStream) ?
+			(DataInputStream)__is : new DataInputStream(__is));
+		
+		throw new Error("TODO");
 	}
 }
 

@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirrelquarrel;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This stores the mega tiles within the level along with storing level related
  * data structures.
@@ -18,5 +22,36 @@ package net.multiphasicapps.squirrelquarrel;
  */
 public class Level
 {
+	/**
+	 * Initializes the level with the given initial settings.
+	 *
+	 * @param __is The initial settings to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/10
+	 */
+	public Level(InitialSettings __is)
+		throws NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * Initializes the level from a previously serialized stream such as one
+	 * that was made for a replay or saved game.
+	 *
+	 * @param __is The stream to deserialize from.
+	 * @since 2017/02/10
+	 */
+	public Level(DataInputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 
