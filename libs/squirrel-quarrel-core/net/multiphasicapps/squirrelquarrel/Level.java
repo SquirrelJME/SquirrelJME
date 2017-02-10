@@ -25,6 +25,9 @@ public class Level
 	/** The owning game. */
 	protected final Game game;
 	
+	/** The mega tile array. */
+	protected final MegaTile[] tiles;
+	
 	/**
 	 * Initializes the level with the given initial settings.
 	 *
@@ -42,6 +45,14 @@ public class Level
 		
 		// Set
 		this.game = __g;
+		
+		// Get the map size
+		int mw = __is.mapWidth(),
+			mh = __is.mapHeight(),
+			mtw = mw / MegaTile.TILES_PER_MEGA_TILE,
+			mth = mh / MegaTile.TILES_PER_MEGA_TILE;
+		MegaTile[] tiles = new MegaTile[mtw * mth];
+		this.tiles = tiles;
 	}
 	
 	/**

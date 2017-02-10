@@ -34,29 +34,54 @@ public class MegaTile
 	public static final int TILE_PIXEL_SIZE =
 		32;
 	
+	/** The owning level */
+	protected final Level level;
+	
 	/** Terrain information. */
-	protected byte[] terrain =
+	protected final byte[] terrain =
 		new byte[TILES_IN_MEGA_TILE];
 	
 	/** Fog of war revealed information. */
-	protected byte[] revealedfog =
+	protected final byte[] revealedfog =
 		new byte[TILES_IN_MEGA_TILE];
+	
+	/**
+	 * Initializes a basic megatile.
+	 *
+	 * @param __l The owning level.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/10
+	 */
+	public MegaTile(Level __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.level = __l;
+	}
 	
 	/**
 	 * Initializes the megatile from a previously serialized replay or save
 	 * game.
 	 *
+	 * @param __l The owning level.
 	 * @param __is The stream to read from.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public MegaTile(DataInputStream __is)
+	public MegaTile(Level __l, DataInputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__l == null || __is == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.level = __l;
 		
 		throw new Error("TODO");
 	}
