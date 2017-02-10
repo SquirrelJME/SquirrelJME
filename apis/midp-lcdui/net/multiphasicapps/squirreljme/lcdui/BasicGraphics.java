@@ -344,11 +344,18 @@ public abstract class BasicGraphics
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
 			return;
 		
-		// Just draw 4 lines
-		drawLine(__x, __y, ex, __y);
-		drawLine(ex, __y, ex, ey);
-		drawLine(ex, ey, __x, ey);
-		drawLine(__x, ey, __x, __y);
+		// Calculate line properties
+		int color = this._color;
+		boolean dotted = (this._strokestyle == DOTTED);
+		boolean blend = (this._blendmode == SRC_OVER);
+		
+		// Draw the horizontal
+		primitiveHorizontalLine(__x, __y, __w, color, dotted, blend);
+		primitiveHorizontalLine(__x, ey, __w, color, dotted, blend);
+		
+		// And the vertical
+		primitiveVerticalLine(__x, __y, __h, color, dotted, blend);
+		primitiveVerticalLine(ex, __y, __h, color, dotted, blend);
 	}
 	
 	/**
