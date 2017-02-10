@@ -46,6 +46,18 @@ public interface DisplayInstance
 	public abstract int getWidth();
 	
 	/**
+	 * Tells the display instance to be repainted if this operation is
+	 * supported.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2017/02/10
+	 */
+	public abstract void repaint(int __x, int __y, int __w, int __h);
+	
+	/**
 	 * Sets the state of the instance engine.
 	 *
 	 * @param __s The state to use.

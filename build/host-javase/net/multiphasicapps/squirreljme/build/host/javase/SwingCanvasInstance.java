@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import javax.microedition.lcdui.Canvas;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
@@ -82,6 +83,16 @@ public class SwingCanvasInstance
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void repaint(int __x, int __y, int __w, int __h)
+	{
+		this._panel.repaint(__x, __y, __w, __h);
+	}
+	
+	/**
 	 * This is the drawing panel.
 	 *
 	 * @since 2017/02/08
@@ -103,6 +114,17 @@ public class SwingCanvasInstance
 			Graphics2D gfx = (Graphics2D)__g;
 			AWTGraphicsAdapter adapter = SwingCanvasInstance.this.adapter;
 			adapter._awt = gfx;
+			
+			// Reset translation
+			adapter.translate(-adapter.getTranslateX(),
+				-adapter.getTranslateY());
+			
+			// Translate clipping bounds so the destination shares the clip
+			Rectangle rect = __g.getClipBounds();
+			if (rect == null)
+				adapter.setClip(0, 0, getWidth(), getHeight());
+			else
+				adapter.setClip(rect.x, rect.y, rect.width, rect.height);
 			
 			// Make it draw into it
 			SwingCanvasInstance.this.canvasconnector.paint(adapter);

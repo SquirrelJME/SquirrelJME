@@ -249,14 +249,44 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Equivalent to {@code repaint(0, 0, getWidth(), getHeight())}.
+	 *
+	 * @since 2017/02/10
+	 */
 	public final void repaint()
 	{
-		throw new Error("TODO");
+		repaint(0, 0, getWidth(), getHeight());
 	}
 	
-	public final void repaint(int __a, int __b, int __c, int __d)
+	/**
+	 * Requests that the specified region of the canvas be repainted.
+	 *
+	 * The clipping region when {@link #paint()} is called will have its clip
+	 * set to the region to be redrawn.
+	 *
+	 * It is unspecified whether the drawing operation will happen immedietely,
+	 * be enqueued, or not happen at all (for example if the canvas is
+	 * currently being painted).
+	 *
+	 * A width or height with a negative value or zero does nothing.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2017/02/10
+	 */
+	public final void repaint(int __x, int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		// Do nothing
+		if (__w <= 0 || __h <= 0)
+			return;
+		
+		// Send repaint
+		DisplayInstance instance = this._instance;
+		if (instance != null)
+			instance.repaint(__x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()
