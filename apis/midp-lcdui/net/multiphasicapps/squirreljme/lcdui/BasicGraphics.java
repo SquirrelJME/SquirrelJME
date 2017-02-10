@@ -169,8 +169,8 @@ public abstract class BasicGraphics
 		__x2 += transx;
 		__y2 += transy;
 		
-		// Swap the lines so the start is always closer to the origin
-		if (__y2 < __y1 || __x2 < __x1)
+		// Have lines which always go to the right
+		if (__x2 < __x1)
 		{
 			int boopx = __x1,
 				boopy = __y1;
@@ -180,11 +180,28 @@ public abstract class BasicGraphics
 			__y2 = boopy;
 		}
 		
-		// Perform clipping
-		if (true)
+		// Outside of the drawing region?
+		int clipsx = this._clipsx, clipsy = this._clipsy,
+			clipex = this._clipex, clipey = this._clipey;
+		if (__x2 < clipsx || __x1 >= clipex)
+			return;
+		
+		// Correct Y for clip check
+		int loy, hiy;
+		if (__y1 < __y2)
 		{
-			throw new Error("TODO");
+			loy = __y1;
+			hiy = __y2;
 		}
+		else
+		{
+			loy = __y2;
+			hiy = __y1;
+		}
+		
+		// Outside of drawing region?
+		if (hiy < clipsy || loy >= clipex)
+			return;
 		
 		// Draw it
 		primitiveLine(__x1, __y1, __x2, __y2, this._color,
@@ -558,7 +575,7 @@ public abstract class BasicGraphics
 	protected void primitiveVerticalLine(int __x, int __y,
 		int __h, int __color, boolean __dotted, boolean __blend)
 	{
-		primitiveLine(__x, __y, __x + __w, __y, __color, __dotted, __blend);
+		primitiveLine(__x, __y, __x, __y + __h, __color, __dotted, __blend);
 	}
 	
 	/**

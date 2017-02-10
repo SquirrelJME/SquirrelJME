@@ -60,8 +60,8 @@ public class GameInterface
 	public void paint(Graphics __g)
 	{
 		// Needed to draw X
-		int w = getWidth(),
-			h = getHeight();
+		int w = 640/*getWidth()*/,
+			h = 480/*getHeight()*/;
 		
 		// For animation
 		int renderframe = this._renderframe;
@@ -81,6 +81,11 @@ public class GameInterface
 		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
 		__g.setClip(renderframe % (w / 2), renderframe % (h / 2),
 			(w / 2), (h / 2));
+		
+		// Draw the clipping box
+		__g.setColor(0xFF0000);
+		__g.drawRect(renderframe % (w / 2), renderframe % (h / 2),
+			(w / 2) - 1, (h / 2) - 1);
 		
 		// Draw another
 		__g.setColor(0x0000FF);
