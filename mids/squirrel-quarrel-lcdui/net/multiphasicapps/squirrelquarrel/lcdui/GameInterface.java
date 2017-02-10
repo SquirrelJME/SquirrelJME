@@ -15,6 +15,7 @@ import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
+import net.multiphasicapps.squirrelquarrel.Level;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -29,12 +30,33 @@ public class GameInterface
 	/** The game to draw and interact with. */
 	protected final Game game;
 	
+	/** The level to render and interact with. */
+	protected final Level level;
+	
+	/** The width of the level in pixels. */
+	protected final int levelpxw;
+	
+	/** The height of the level in pixels. */
+	protected final int levelpxh;
+	
 	/** The current game speed. */
 	private volatile GameSpeed _speed =
 		GameSpeed.NORMAL;
 	
 	/** The number of frames which have been rendered. */
 	private volatile int _renderframe;
+	
+	/** The viewport X position. */
+	private volatile int _viewx;
+	
+	/** The viewport Y position. */
+	private volatile int _viewy;
+	
+	/** The view width. */
+	private volatile int _vieww;
+	
+	/** The view height. */
+	private volatile int _viewh;
 	
 	/**
 	 * Initializes the game.
@@ -56,6 +78,12 @@ public class GameInterface
 		
 		// Set
 		this.game = __g;
+		
+		// Quicker to store pixel sizes here
+		Level level;
+		this.level = (level = __g.level());
+		this.levelpxw = level.pixelWidth();
+		this.levelpxh = level.pixelHeight();
 	}
 	
 	/**
@@ -65,41 +93,14 @@ public class GameInterface
 	@Override
 	public void paint(Graphics __g)
 	{
-		// Needed to draw X
-		int w = 640/*getWidth()*/,
-			h = 480/*getHeight()*/;
+		// Get the current frame the game is on
+		Game game = this.game;
+		Level level = game.level();
+		int framenum = game.frameCount();
 		
-		// For animation
-		int renderframe = this._renderframe;
-		this._renderframe = renderframe + 1;
-		
-		// Clip everything
-		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
-		__g.setClip(renderframe % (w / 2), renderframe % (h / 2),
-			(w / 2), (h / 2));
-		
-		// Draw the clipping box
-		__g.setColor(0xFF0000);
-		__g.drawRect(renderframe % (w / 2), renderframe % (h / 2),
-			(w / 2) - 1, (h / 2) - 1);
-		
-		// Translate the first line
-		__g.translate(renderframe % w, (renderframe / 2) % h);
-		
-		// Draw one line
-		__g.setColor(0x00FF00);
-		__g.setStrokeStyle(Graphics.SOLID);
-		__g.drawLine(0, 0, w, h);
-		__g.drawRect((w / 5) * 1, (h / 5) * 1, (w / 5), (h / 5));
-		
-		// Do not translate the second
-		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
-		
-		// Draw another
-		__g.setColor(0x0000FF);
-		__g.setStrokeStyle(Graphics.DOTTED);
-		__g.drawLine(0, h, w, 0);
-		__g.fillRect((w / 5) * 3, (h / 5) * 3, (w / 5), (h / 5));
+		// Get the viewport
+		int viewx = this._viewx,
+			viewy = this._viewy;
 	}
 	
 	/**
@@ -136,6 +137,60 @@ public class GameInterface
 				{
 				}
 		}
+	}
+	
+	/**
+	 * Translates the viewport.
+	 *
+	 * @param __x The relative X translation.
+	 * @param __y The relative Y translation.
+	 * @since 2017/02/10
+	 */
+	public void translateViewport(int __x, int __y)
+	{
+		// Translate the viewport
+		int viewx = this._viewx + __x,
+			viewy = this._viewy + __y,
+			vieww = this._vieww,
+			viewh = this._viewh,
+			levelpxw = this.levelpxw,
+			levelpxh = this.levelpxh;
+		
+		// Cap right side
+		if (viewx + vieww >= levelpxw)
+			viewx = levelpxw - vieww;
+		
+		// Cop bottom side
+		if (viewy + viewh >= levelpxh)
+			viewy = levelpxh - viewh;
+		
+		// Cap left side
+		if (viewx < 0)
+			viewx = 0;
+		
+		// Cap top
+		if (viewy < 0)
+			viewy = 0;
+		
+		// Set new viewport
+		this._viewx = viewx;
+		this._viewy = viewy;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	protected void sizeChanged(int __w, int __h)
+	{
+		// Super-class might do some things
+		super.sizeChanged(__w, __h);
+		
+		// Correct the viewport
+		this._vieww = __w;
+		this._viewh = __h;
+		translateViewport(0, 0);
 	}
 }
 

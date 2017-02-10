@@ -319,10 +319,14 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
 	@Override
-	protected void sizeChanged(int __a, int __b)
+	protected void sizeChanged(int __w, int __h)
 	{
-		throw new Error("TODO");
+		super.sizeChanged(__w, __h);
 	}
 	
 	/**
@@ -355,6 +359,16 @@ public abstract class Canvas
 		public void paint(Graphics __g)
 		{
 			Canvas.this.paint(__g);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void sizeChanged(int __w, int __h)
+		{
+			Canvas.this.sizeChanged(__w, __h);
 		}
 	}
 }

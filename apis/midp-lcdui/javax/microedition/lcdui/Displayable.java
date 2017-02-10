@@ -199,7 +199,6 @@ public abstract class Displayable
 	 */
 	protected void sizeChanged(int __w, int __h)
 	{
-		throw new Error("TODO");
 	}
 }
 

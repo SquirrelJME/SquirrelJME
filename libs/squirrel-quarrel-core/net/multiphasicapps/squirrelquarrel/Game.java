@@ -28,6 +28,9 @@ public class Game
 	/** The level data. */
 	protected final Level level;
 	
+	/** The current game frame. */
+	private volatile int _framenum;
+	
 	/**
 	 * Initializes a game with the default initialization rules.
 	 *
@@ -93,6 +96,17 @@ public class Game
 	}
 	
 	/**
+	 * Returns the current game frame.
+	 *
+	 * @return The game frame.
+	 * @since 2017/02/10
+	 */
+	public int frameCount()
+	{
+		return this._framenum;
+	}
+	
+	/**
 	 * Returns the level.
 	 *
 	 * @since 2017/02/10
@@ -109,6 +123,11 @@ public class Game
 	@Override
 	public void run()
 	{
+		// Get current frame
+		int framenum = this._framenum;
+		
+		// Increase the game frame
+		this._framenum = framenum + 1;
 	}
 }
 

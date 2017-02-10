@@ -19,5 +19,14 @@ package net.multiphasicapps.squirreljme.lcdui;
  */
 public interface DisplayConnector
 {
+	/**
+	 * This is caled to indicate that the size of the displayable changed
+	 * size.
+	 *
+	 * @param __w The new width.
+	 * @param __h The new height.
+	 * @since 2017/02/10
+	 */
+	public abstract void sizeChanged(int __w, int __h);
 }
 

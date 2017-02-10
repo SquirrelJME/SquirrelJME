@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -27,6 +29,7 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
  */
 public class SwingCanvasInstance
 	extends SwingInstance
+	implements ComponentListener
 {
 	/** The canvas to use. */
 	protected final Canvas canvas;
@@ -60,6 +63,48 @@ public class SwingCanvasInstance
 		__DrawPane__ panel = new __DrawPane__();
 		this.frame.add(panel);
 		this._panel = panel;
+		
+		// Handle resize events
+		panel.addComponentListener(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentHidden(ComponentEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentMoved(ComponentEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentResized(ComponentEvent __e)
+	{
+		// Report new panel size
+		__DrawPane__ panel = this._panel;
+		this.canvasconnector.sizeChanged(panel.getWidth(), panel.getHeight());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentShown(ComponentEvent __e)
+	{
 	}
 	
 	/**

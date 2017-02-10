@@ -28,6 +28,12 @@ public class Level
 	/** The mega tile array. */
 	protected final MegaTile[] tiles;
 	
+	/** The width of the level in pixels. */
+	protected final int pixelw;
+	
+	/** The height of the level in pixels. */
+	protected final int pixelh;
+	
 	/**
 	 * Initializes the level with the given initial settings.
 	 *
@@ -53,6 +59,10 @@ public class Level
 			mth = mh / MegaTile.TILES_PER_MEGA_TILE;
 		MegaTile[] tiles = new MegaTile[mtw * mth];
 		this.tiles = tiles;
+		
+		// Set sizes
+		this.pixelw = mw * MegaTile.TILE_PIXEL_SIZE;
+		this.pixelh = mh * MegaTile.TILE_PIXEL_SIZE;
 	}
 	
 	/**
@@ -76,6 +86,28 @@ public class Level
 		this.game = __g;
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the height of the level in pixels.
+	 *
+	 * @return The height of the level in pixels.
+	 * @since 2017/02/10
+	 */
+	public int pixelHeight()
+	{
+		return this.pixelh;
+	}
+	
+	/**
+	 * Returns the width of the level in pixels.
+	 *
+	 * @return The width of the level in pixels.
+	 * @since 2017/02/10
+	 */
+	public int pixelWidth()
+	{
+		return this.pixelw;
 	}
 }
 
