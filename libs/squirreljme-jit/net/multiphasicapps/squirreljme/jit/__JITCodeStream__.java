@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
+import net.multiphasicapps.squirreljme.classformat.ExceptionHandlerTable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 import net.multiphasicapps.util.datadeque.ByteDeque;
@@ -43,6 +44,9 @@ class __JITCodeStream__
 	
 	/** Jump targets in the code, where state transfers occur. */
 	private volatile int[] _jumptargets;
+	
+	/** The exception handler table. */
+	private volatile ExceptionHandlerTable _exceptions;
 	
 	/**
 	 * Initializes the code stream.
@@ -102,6 +106,22 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- Move %s %s -> %s%n", __type, __from, __to);
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 201702/09
+	 */
+	@Override
+	public void exceptionTable(ExceptionHandlerTable __eht)
+		throws NullPointerException
+	{
+		// Check
+		if (__eht == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._exceptions = __eht;
 	}
 	
 	/**

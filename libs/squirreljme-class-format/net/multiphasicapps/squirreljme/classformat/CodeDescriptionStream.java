@@ -52,6 +52,17 @@ public interface CodeDescriptionStream
 		throws NullPointerException;
 	
 	/**
+	 * This is used to specify which exceptions exist within the exception
+	 * table.
+	 *
+	 * @param __eht The exception handler table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/09
+	 */
+	public abstract void exceptionTable(ExceptionHandlerTable __eht)
+		throws NullPointerException;
+	
+	/**
 	 * Specifies the initial argument types which are used on entry to the
 	 * method.
 	 *

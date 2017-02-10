@@ -19,6 +19,7 @@ import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
@@ -69,6 +70,12 @@ final class __CodeDecoder__
 	
 	/** Are there exception handlers present? */
 	volatile boolean _hasexceptions;
+	
+	/** The exception table. */
+	volatile ExceptionHandlerTable _exceptions;
+	
+	/** The length of the code. */
+	volatile int _codelen;
 	
 	/**
 	 * Add base code decoder class.
@@ -131,6 +138,7 @@ final class __CodeDecoder__
 		// code size limit, or the size is zero. (The current code length;
 		// The code size limit)}
 		int codelen = input.readInt();
+		this._codelen = codelen;
 		if (codelen <= 0 || codelen > _CODE_SIZE_LIMIT)
 			throw new ClassFormatException(String.format("AY36 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
@@ -147,8 +155,15 @@ final class __CodeDecoder__
 		int numex = input.readUnsignedShort();
 		boolean hasexceptions = (numex != 0);
 		this._hasexceptions = hasexceptions;
-		for (int i = 0; i < numex; i++)
-			throw new Error("TODO");
+		if (hasexceptions)
+		{
+			// Read
+			ExceptionHandlerTable exceptions = __readExceptions(numex);
+			this._exceptions = exceptions;
+			
+			// Report
+			writer.exceptionTable(exceptions);
+		}
 		
 		// Read attributes
 		int na = input.readUnsignedShort();
@@ -221,6 +236,49 @@ final class __CodeDecoder__
 			default:
 				break;
 		}
+	}
+	
+	/**
+	 * Reads the exception handler table.
+	 *
+	 * @param __numex The number of exceptions to read.
+	 * @return The exception handler table.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/09
+	 */
+	private ExceptionHandlerTable __readExceptions(int __numex)
+		throws IOException, NullPointerException
+	{
+		// Setup
+		DataInputStream input = this._input;
+		ExceptionHandler[] rv = new ExceptionHandler[__numex];
+		ConstantPool pool = this.pool;
+		int codelen = this._codelen;
+		
+		// Read
+		for (int i = 0; i < __numex; i++)
+		{
+			// Read values
+			int spc = input.readUnsignedShort();
+			int epc = input.readUnsignedShort();
+			int hpc = input.readUnsignedShort();
+			ClassNameSymbol type = pool.get(input.readUnsignedShort()).
+				<ClassNameSymbol>optional(true, ClassNameSymbol.class);
+			
+			// {@squirreljme.error AY05 Address is outside of the bounds of the
+			// method. (The start address; The end address; The handler
+			// address; The code length)}
+			if (spc >= codelen || epc > codelen || hpc >= codelen)
+				throw new ClassFormatException(String.format(
+					"AY05 %d %d %d %d", spc, epc, hpc, codelen));
+			
+			// Setup exception
+			rv[i] = new ExceptionHandler(spc, epc, hpc, type);
+		}
+		
+		// Build
+		return new ExceptionHandlerTable(rv);
 	}
 	
 	/**
