@@ -21,6 +21,11 @@ package javax.microedition.lcdui;
  * text and images are placed by allowing their placement positions to be
  * shifted accordingly.
  *
+ * The default blending mode must be {@link #SRC_OVER}.
+ *
+ * An alpha value of {@code 255} means fully opaque (visible) while a value of
+ * {@code 0} means transparent (invisible).
+ *
  * @since 2017/02/09
  */
 public abstract class Graphics
@@ -505,7 +510,11 @@ public abstract class Graphics
 	
 	/**
 	 * Translates all coordinates so that they are offset by the given
-	 * values, the values which are set act as the new origin.
+	 * values, a previous translation is translated by the given coordinates.
+	 *
+	 * To set the absolute position of the translation the following may be
+	 * performed:
+	 * {@code translate(ax - getTranslateX(), ay - getTranslateY())}.
 	 *
 	 * @param __x The X value to use for the new origin.
 	 * @param __y The Y value to use for the new origin.

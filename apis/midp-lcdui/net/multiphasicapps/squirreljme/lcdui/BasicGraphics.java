@@ -24,6 +24,53 @@ import javax.microedition.lcdui.Text;
 public abstract class BasicGraphics
 	extends Graphics
 {
+	/** The current blending mode. */
+	private volatile int _blendmode =
+		SRC_OVER;
+	
+	/** The current color. */
+	private volatile int _color =
+		0xFF000000;
+	
+	/**
+	 * Draws a primitive horizontal line that exists only witin.
+	 *
+	 * The coordinates will be absolute coordinates after translation and
+	 * clipping is performed. The start coordinate will always be the point
+	 * closest to the origin.
+	 *
+	 * @param __x The start X coordinate.
+	 * @param __y The start Y coordinate.
+	 * @param __w The width of the line.
+	 * @param __color The color to draw as, includes alpha.
+	 * @param __dotted If {@code true} then the line should be drawn dotted.
+	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
+	 * is to be used.
+	 * @since 2017/02/10
+	 */
+	protected abstract void primitiveHorizontalLine(int __x, int __y,
+		int __w, int __color, boolean __dotted, boolean __blend);
+		
+	/**
+	 * Draws a primitive line.
+	 *
+	 * The coordinates will be absolute coordinates after translation and
+	 * clipping is performed. The start coordinate will always be the point
+	 * closest to the origin.
+	 *
+	 * @param __x1 The start X coordinate.
+	 * @param __y1 The start Y coordinate.
+	 * @param __x2 The end X coordinate.
+	 * @param __y2 The end Y coordinate.
+	 * @param __color The color to draw as, includes alpha.
+	 * @param __dotted If {@code true} then the line should be drawn dotted.
+	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
+	 * is to be used.
+	 * @since 2017/02/10
+	 */
+	protected abstract void primitiveLine(int __x1, int __y1, int __x2,
+		int __y2, int __color, boolean __dotted, boolean __blend);
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/10
@@ -267,7 +314,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getAlpha()
 	{
-		throw new Error("TODO");
+		return (this._color >> 24) & 0xFF;
 	}
 	
 	/**
@@ -277,7 +324,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getAlphaColor()
 	{
-		throw new Error("TODO");
+		return this._color;
 	}
 	
 	/**
@@ -287,7 +334,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getBlendingMode()
 	{
-		throw new Error("TODO");
+		return this._blendmode;
 	}
 	
 	/**
@@ -297,7 +344,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getBlueComponent()
 	{
-		throw new Error("TODO");
+		return (this._color) & 0xFF;
 	}
 	
 	/**
@@ -347,7 +394,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getColor()
 	{
-		throw new Error("TODO");
+		return this._color & 0xFFFFFF;
 	}
 	
 	/**
@@ -377,7 +424,8 @@ public abstract class BasicGraphics
 	@Override
 	public final int getGrayScale()
 	{
-		throw new Error("TODO");
+		return (getRedComponent() + getGreenComponent() +
+			getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -387,7 +435,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getGreenComponent()
 	{
-		throw new Error("TODO");
+		return (this._color >> 8) & 0xFF;
 	}
 	
 	/**
@@ -397,7 +445,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getRedComponent()
 	{
-		throw new Error("TODO");
+		return (this._color >> 16) & 0xFF;
 	}
 	
 	/**
@@ -438,7 +486,8 @@ public abstract class BasicGraphics
 	public final void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		setAlphaColor(__a, getRedComponent(), getGreenComponent(),
+			getBlueComponent());
 	}
 	
 	/**
@@ -448,7 +497,10 @@ public abstract class BasicGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
-		throw new Error("TODO");
+		setAlphaColor((__argb >> 24) & 0xFF,
+			(__argb >> 16) & 0xFF,
+			(__argb >>> 8) & 0xFF,
+			__argb & 0xFF);
 	}
 	
 	/**
@@ -459,7 +511,15 @@ public abstract class BasicGraphics
 	public final void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EB0b Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+				"EB0b %d %d %d %d", __a, __r, __g, __b));
+		
+		// Set
+		this._color = (__a << 24) | (__r << 16) | (__g << 8) | __b;
 	}
 	
 	/**
@@ -470,7 +530,12 @@ public abstract class BasicGraphics
 	public final void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EB0a Unknown blending mode.}
+		if (__m != SRC_OVER && __m != SRC)
+			throw new IllegalArgumentException("EB0a");
+		
+		// Set
+		this._blendmode = __m;
 	}
 	
 	/**
@@ -490,7 +555,10 @@ public abstract class BasicGraphics
 	@Override
 	public final void setColor(int __rgb)
 	{
-		throw new Error("TODO");
+		setAlphaColor(getAlpha(),
+			(__rgb >> 16) & 0xFF,
+			(__rgb >>> 8) & 0xFF,
+			__rgb & 0xFF);
 	}
 	
 	/**
@@ -501,7 +569,7 @@ public abstract class BasicGraphics
 	public final void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		setAlphaColor(getAlpha(), __r, __g, __b);
 	}
 	
 	/**

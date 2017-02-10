@@ -38,5 +38,27 @@ public class AWTGraphicsAdapter
 	
 	/** Wrapped AWT graphics (where things go to). */
 	volatile java.awt.Graphics2D _awt;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	protected void primitiveHorizontalLine(int __x, int __y,
+		int __w, int __color, boolean __dotted, boolean __blend)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	protected void primitiveLine(int __x1, int __y1, int __x2,
+		int __y2, int __color, boolean __dotted, boolean __blend)
+	{
+		throw new Error("TODO");
+	}
 }
 
