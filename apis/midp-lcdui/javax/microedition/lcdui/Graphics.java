@@ -13,11 +13,25 @@ package javax.microedition.lcdui;
 /**
  * The class describes the interface that is used for drawing operations.
  *
+ * When the clipping area is used, no pixels outside of it are drawn. This may
+ * be used to draw special effects or have similar maskings.
+ *
+ * The anchor points {@link #BASELINE}, {@link #BOTTOM}, {@link #HCENTER},
+ * {@link #LEFT}, {@link #RIGHT}, {@link #TOP}, and {@link #VCENTER} modify how
+ * text and images are placed by allowing their placement positions to be
+ * shifted accordingly.
+ *
  * @since 2017/02/09
  */
 public abstract class Graphics
 {
-	/** This is the anchorpoint for the baseline of text. */
+	/**
+	 * This is the anchorpoint for the baseline of text. This is not valid for
+	 * anything which is not text. The baseline is considered to be point where
+	 * all letters rest on. The baseline is not the lowest point, so for
+	 * letters such as {@code j} the baseline will be higher than the lowest
+	 * point.
+	 */
 	public static final int BASELINE =
 		64;
 	
@@ -76,10 +90,47 @@ public abstract class Graphics
 	{
 	}
 	
-	public abstract void clipRect(int __a, int __b, int __c, int __d);
+	/**
+	 * This reduces the clipping area of the drawing so that 
+	 *
+	 * This is only used to reduce the clipping area, to make it larger use
+	 * {@link #setClip(int, int, int int)}.
+	 *
+	 * @param __x The X coordinate of the clipping rectangle.
+	 * @param __y The Y coordinate of the clipping rectangle.
+	 * @param __w The width of the rectangle.
+	 * @param __h The height of the rectangle.
+	 * @since 2017/02/10
+	 */
+	public abstract void clipRect(int __x, int __y, int __w, int __h);
 	
-	public abstract void copyArea(int __a, int __b, int __c, int __d, int __e,
-		int __f, int __g);
+	/**
+	 * This copies one region of the image to another region.
+	 *
+	 * Copying to a display device is not permitted because it may impact how
+	 * double buffering is implemented, as such it is not supported.
+	 *
+	 * Pixels are copied directly and no alpha compositing is performed.
+	 *
+	 * If the source and destination overlap then it must be as if they did not
+	 * overlap at all, this means that the destination will be an exact copy of
+	 * the source.
+	 *
+	 * @param __sx The source X position, will be translated.
+	 * @param __sy The source Y position, will be translated.
+	 * @param __w The width to copy.
+	 * @param __h The height to copy.
+	 * @param __dx The destination X position, will be translated.
+	 * @param __dy The destination Y position, will be translated.
+	 * @param __anchor The anchor point of the destination.
+	 * @throws IllegalArgumentException If the source region exceeds the size
+	 * of the source image.
+	 * @throws IllegalStateException If the destination is a display device.
+	 * @since 2017/02/10
+	 */
+	public abstract void copyArea(int __sx, int __sy, int __w, int __h,
+		int __dx, int __dy, int __anchor)
+		throws IllegalArgumentException, IllegalStateException;
 	
 	public abstract void drawArc(int __a, int __b, int __c, int __d, int __e,
 		int __f);
