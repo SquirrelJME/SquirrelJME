@@ -931,7 +931,7 @@ public abstract class BasicGraphics
 	@Override
 	public final void setGrayScale(int __v)
 	{
-		throw new Error("TODO");
+		setAlphaColor(getAlpha(), __v, __v, __v);
 	}
 	
 	/**
