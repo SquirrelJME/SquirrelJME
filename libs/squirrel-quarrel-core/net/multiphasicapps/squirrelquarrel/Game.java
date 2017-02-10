@@ -20,6 +20,7 @@ import java.io.IOException;
  * @since 2017/02/08
  */
 public class Game
+	implements Runnable
 {
 	/** Random number generator for games. */
 	protected final GameRandom random;
@@ -99,6 +100,15 @@ public class Game
 	public Level level()
 	{
 		return this.level;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void run()
+	{
 	}
 }
 

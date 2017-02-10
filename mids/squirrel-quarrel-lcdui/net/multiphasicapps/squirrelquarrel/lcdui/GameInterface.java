@@ -109,11 +109,15 @@ public class GameInterface
 	@Override
 	public void run()
 	{
+		Game game = this.game;
 		for (;;)
 		{
 			// Get the current game speed and entry time
 			GameSpeed speed = this._speed;
 			long enter = System.nanoTime();
+			
+			// Run a single game cycle
+			game.run();
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
