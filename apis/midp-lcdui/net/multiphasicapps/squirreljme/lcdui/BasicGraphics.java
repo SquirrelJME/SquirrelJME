@@ -32,6 +32,10 @@ public abstract class BasicGraphics
 	private volatile int _color =
 		0xFF000000;
 	
+	/** The current stroke style. */
+	private volatile int _strokestyle =
+		SOLID;
+	
 	/**
 	 * Draws a primitive horizontal line that exists only witin.
 	 *
@@ -455,7 +459,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getStrokeStyle()
 	{
-		throw new Error("TODO");
+		return this._strokestyle;
 	}
 	
 	/**
@@ -600,7 +604,12 @@ public abstract class BasicGraphics
 	public final void setStrokeStyle(int __a)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EB0c Illegal stroke style.}
+		if (__a != SOLID && __a != DOTTED)
+			throw new IllegalArgumentException("EB0c");
+		
+		// Set
+		this._strokestyle = __a;
 	}
 	
 	/**
