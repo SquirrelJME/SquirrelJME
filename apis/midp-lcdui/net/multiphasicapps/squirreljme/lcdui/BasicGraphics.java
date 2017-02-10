@@ -540,6 +540,28 @@ public abstract class BasicGraphics
 	}
 	
 	/**
+	 * Draws a primitive vertical line that exists only witin.
+	 *
+	 * The coordinates will be absolute coordinates after translation and
+	 * clipping is performed. The start coordinate will always be the point
+	 * closest to the origin.
+	 *
+	 * @param __x The start X coordinate.
+	 * @param __y The start Y coordinate.
+	 * @param __h The height of the line.
+	 * @param __color The color to draw as, includes alpha.
+	 * @param __dotted If {@code true} then the line should be drawn dotted.
+	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
+	 * is to be used.
+	 * @since 2017/02/10
+	 */
+	protected void primitiveVerticalLine(int __x, int __y,
+		int __h, int __color, boolean __dotted, boolean __blend)
+	{
+		primitiveLine(__x, __y, __x + __w, __y, __color, __dotted, __blend);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */
