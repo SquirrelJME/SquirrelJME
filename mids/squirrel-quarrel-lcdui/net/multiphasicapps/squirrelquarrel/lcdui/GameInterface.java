@@ -62,10 +62,12 @@ public class GameInterface
 		
 		// Draw one line
 		__g.setColor(0x00FF00);
+		__g.setStrokeStyle(Graphics.SOLID);
 		__g.drawLine(0, 0, w, h);
 		
 		// Draw another
 		__g.setColor(0x0000FF);
+		__g.setStrokeStyle(Graphics.DOTTED);
 		__g.drawLine(0, h, w, 0);
 	}
 }

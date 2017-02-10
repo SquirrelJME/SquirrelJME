@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -25,8 +26,29 @@ import javax.microedition.lcdui.Text;
 public class AWTGraphicsAdapter
 	extends Graphics
 {
+	/** Dotted line. */
+	private static final BasicStroke _DOTTED_STROKE =
+		new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+			0.0F, new float[]{1.0F}, 0.0F);
+	
+	/** Solid line. */
+	private static final BasicStroke _SOLID_STROKE =
+		new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+	
 	/** Wrapped AWT graphics (where things go to). */
 	volatile java.awt.Graphics2D _awt;
+	
+	/** Cached stroke style. */
+	private volatile int _stroke;
+	
+	/** Cached X translation. */
+	private volatile int _transx;
+	
+	/** Cached Y translation. */
+	private volatile int _transy;
+	
+	/** Cached color. */
+	private volatile int _color;
 	
 	/**
 	 * {@inheritDoc}
@@ -279,7 +301,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getBlueComponent()
 	{
-		throw new Error("TODO");
+		return this._color & 0xFF;
 	}
 	
 	/**
@@ -329,7 +351,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getColor()
 	{
-		throw new Error("TODO");
+		return this._color;
 	}
 	
 	/**
@@ -339,7 +361,8 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getDisplayColor(int __a)
 	{
-		throw new Error("TODO");
+		// Not supported, so use the same color
+		return __a;
 	}
 	
 	/**
@@ -359,7 +382,9 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getGrayScale()
 	{
-		throw new Error("TODO");
+		// Use average of all colors
+		return (getRedComponent() + getGreenComponent() +
+			getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -369,7 +394,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getGreenComponent()
 	{
-		throw new Error("TODO");
+		return (this._color >> 8) & 0xFF;
 	}
 	
 	/**
@@ -379,7 +404,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getRedComponent()
 	{
-		throw new Error("TODO");
+		return (this._color >> 16) & 0xFF;
 	}
 	
 	/**
@@ -389,7 +414,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getStrokeStyle()
 	{
-		throw new Error("TODO");
+		return this._stroke;
 	}
 	
 	/**
@@ -399,7 +424,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getTranslateX()
 	{
-		throw new Error("TODO");
+		return this._transx;
 	}
 	
 	/**
@@ -409,7 +434,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public int getTranslateY()
 	{
-		throw new Error("TODO");
+		return this._transy;
 	}
 	
 	/**
@@ -470,6 +495,7 @@ public class AWTGraphicsAdapter
 	public void setColor(int __a)
 	{
 		this._awt.setColor(new Color(__a & 0xFFFFFF));
+		this._color = __a;
 	}
 	
 	/**
@@ -479,7 +505,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public void setColor(int __r, int __g, int __b)
 	{
-		this._awt.setColor(new Color(__r, __g, __b));
+		setColor((__r << 16) | (__g << 8) | __b);
 	}
 	
 	/**
@@ -499,7 +525,7 @@ public class AWTGraphicsAdapter
 	@Override
 	public void setGrayScale(int __a)
 	{
-		throw new Error("TODO");
+		setColor(__a, __a, __a);
 	}
 	
 	/**
@@ -509,7 +535,8 @@ public class AWTGraphicsAdapter
 	@Override
 	public void setStrokeStyle(int __a)
 	{
-		throw new Error("TODO");
+		this._awt.setStroke((__a == DOTTED ? _DOTTED_STROKE : _SOLID_STROKE));
+		this._stroke = __a;
 	}
 	
 	/**
@@ -519,7 +546,9 @@ public class AWTGraphicsAdapter
 	@Override
 	public void translate(int __a, int __b)
 	{
-		throw new Error("TODO");
+		this._awt.translate(__a, __b);
+		this._transx = __a;
+		this._transy = __b;
 	}
 }
 
