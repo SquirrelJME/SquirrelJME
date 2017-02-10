@@ -16,6 +16,8 @@ import java.util.Random;
  * This is the random number generator, this allows the seed to be obtained
  * and set so that it is restored properly.
  *
+ * {@squirreljme.error BE01 Floating point operations not supported.}
+ *
  * @since 2017/02/10
  */
 public class GameRandom
@@ -60,6 +62,36 @@ public class GameRandom
 		
 		// Return from the old seed
 		return (int)(seed >>> (48 - __b));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public double nextDouble()
+	{
+		throw new UnsupportedOperationException("BE01");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public float nextFloat()
+	{
+		throw new UnsupportedOperationException("BE01");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public double nextGaussian()
+	{
+		throw new UnsupportedOperationException("BE01");
 	}
 	
 	/**
