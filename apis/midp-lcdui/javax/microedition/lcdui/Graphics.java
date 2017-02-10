@@ -59,7 +59,10 @@ public abstract class Graphics
 	public static final int SOLID =
 		0;
 	
-	/** The blending mode, the destination alpha is the source. */
+	/**
+	 * The blending mode, the destination alpha becomes the source and as such
+	 * the operation is a copy.
+	 */
 	public static final int SRC =
 		1;
 	
@@ -132,8 +135,37 @@ public abstract class Graphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException;
 	
-	public abstract void drawArc(int __a, int __b, int __c, int __d, int __e,
-		int __f);
+	/**
+	 * This draws the outer edge of the ellipse from the given angles using
+	 * the color, alpha, and stroke style.
+	 *
+	 * The coordinates are treated as if they were in a rectangular region. As
+	 * such the center of the ellipse to draw the outline of is in the center
+	 * of the specified rectangle.
+	 *
+	 * Note that no lines are drawn to the center point, so the shape does not
+	 * result in a pie slice.
+	 *
+	 * The angles are in degrees and visually the angles match those of the
+	 * unit circle correctly transformed to the output surface. As such, zero
+	 * degrees has the point of {@code (__w, __h / 2)}, that is it points to
+	 * the right. An angle at 45 degrees will always point to the top right
+	 * corner.
+	 *
+	 * If the width or height are zero, then nothing is drawn. The arc will
+	 * cover an area of {@code __w + 1} and {@code __h + 1}.
+	 *
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __sa The starting angle in degrees, 
+	 * @param __aa The offset from the starting angle, negative values indicate
+	 * clockwise direction while positive values are counter clockwise.
+	 * @since 2017/02/10
+	 */ 
+	public abstract void drawArc(int __x, int __y, int __w, int __h, int __sa,
+		int __aa);
 	
 	public abstract void drawARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h);
@@ -172,8 +204,28 @@ public abstract class Graphics
 	
 	public abstract void drawText(Text __t, int __x, int __y);
 	
-	public abstract void fillArc(int __a, int __b, int __c, int __d, int __e,
-		int __f);
+	/**
+	 * This draws the filled slice of an ellipse (like a pie slice) from the
+	 * given angles using the color, alpha, and stroke style.
+	 *
+	 * Unlike {@link #drawArc(int, int, int, int, int, int)}, the width and
+	 * height are not increased by a single pixel.
+	 *
+	 * Otherwise, this follows the same set of rules as
+	 * {@link #drawArc(int, int, int, int, int, int)}.
+	 *
+	 * @param __x The X position of the upper left corner, will be translated.
+	 * @param __y The Y position of the upper left corner, will be translated.
+	 * @param __w The width of the arc.
+	 * @param __h The height of the arc.
+	 * @param __sa The starting angle in degrees, 
+	 * @param __aa The offset from the starting angle, negative values indicate
+	 * clockwise direction while positive values are counter clockwise.
+	 * @see drawArc(int, int, int, int, int, int)
+	 * @since 2017/02/10
+	 */
+	public abstract void fillArc(int __x, int __y, int __w, int __h, int __sa,
+		int __aa);
 	
 	public abstract void fillRect(int __a, int __b, int __c, int __d);
 	
@@ -231,7 +283,17 @@ public abstract class Graphics
 	
 	public abstract void setBlendingMode(int __m);
 	
-	public abstract void setClip(int __a, int __b, int __c, int __d);
+	/**
+	 * Sets the new clipping area of the destination image. The previous
+	 * clipping area is replaced.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2017/02/10
+	 */
+	public abstract void setClip(int __x, int __y, int __w, int __h);
 	
 	/**
 	 * Sets the combined RGB value to use for drawing.
