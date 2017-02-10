@@ -200,7 +200,7 @@ public abstract class BasicGraphics
 		}
 		
 		// Outside of drawing region?
-		if (hiy < clipsy || loy >= clipex)
+		if (hiy < clipsy || loy >= clipey)
 			return;
 		
 		// Draw it
