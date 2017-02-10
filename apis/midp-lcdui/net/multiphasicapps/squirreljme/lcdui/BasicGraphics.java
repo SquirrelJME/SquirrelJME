@@ -181,8 +181,10 @@ public abstract class BasicGraphics
 		}
 		
 		// Perform clipping
-		//if (true)
-		//	throw new Error("TODO");
+		if (true)
+		{
+			throw new Error("TODO");
+		}
 		
 		// Draw it
 		primitiveLine(__x1, __y1, __x2, __y2, this._color,
