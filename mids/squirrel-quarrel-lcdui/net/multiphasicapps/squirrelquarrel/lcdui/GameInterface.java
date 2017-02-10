@@ -27,6 +27,9 @@ public class GameInterface
 	/** The game to draw and interact with. */
 	protected final Game game;
 	
+	/** The number of frames which have been rendered. */
+	private volatile int _renderframe;
+	
 	/**
 	 * Initializes the game.
 	 *
@@ -60,10 +63,23 @@ public class GameInterface
 		int w = getWidth(),
 			h = getHeight();
 		
+		// For animation
+		int renderframe = this._renderframe;
+		this._renderframe = renderframe + 1;
+		
+		// Translate the first line
+		__g.setClip(0, 0, w, h);
+		__g.translate(renderframe % w, (renderframe / 2) % h);
+		
 		// Draw one line
 		__g.setColor(0x00FF00);
 		__g.setStrokeStyle(Graphics.SOLID);
 		__g.drawLine(0, 0, w, h);
+		
+		// Clip the second line
+		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
+		__g.setClip(renderframe % (w / 2), renderframe % (h / 2),
+			(w / 2), (h / 2));
 		
 		// Draw another
 		__g.setColor(0x0000FF);
