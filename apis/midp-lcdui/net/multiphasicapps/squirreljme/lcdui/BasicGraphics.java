@@ -308,8 +308,41 @@ public abstract class BasicGraphics
 	@Override
 	public final void drawRect(int __x, int __y, int __w, int __h)
 	{
+		// Get actual end points
 		int ex = __x + __w,
 			ey = __y + __h;
+			
+		// Translate all coordinates
+		int transx = this._transx,
+			transy = this._transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+		
+		// Force lower X
+		if (ex < __x)
+		{
+			int boop = ex;
+			ex = __x;
+			__x = boop;
+		}
+		
+		// Force lower Y
+		if (ey < __y)
+		{
+			int boop = ey;
+			ey = __y;
+			__y = boop;
+		}
+		
+		// Get clipping region
+		int clipsx = this._clipsx, clipsy = this._clipsy,
+			clipex = this._clipex, clipey = this._clipey;
+		
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+			return;
 		
 		// Just draw 4 lines
 		drawLine(__x, __y, ex, __y);
@@ -738,7 +771,8 @@ public abstract class BasicGraphics
 			ey = boop;
 		}
 		
-		// Never exceed the lower range
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
 		if (__x < 0)
 			__x = 0;
 		if (__y < 0)
