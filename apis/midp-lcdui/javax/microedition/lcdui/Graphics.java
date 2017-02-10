@@ -235,20 +235,79 @@ public abstract class Graphics
 	public abstract void fillTriangle(int __a, int __b, int __c, int __d,
 		int __e, int __f);
 	
+	/**
+	 * Returns the alpha component.
+	 *
+	 * @return The alpha in the range of {@code [0, 255]}.
+	 * @since 2017/02/10
+	 */
 	public abstract int getAlpha();
 	
+	/**
+	 * Returns the color along with the alpha color. 
+	 *
+	 * @return The color in the form of {@link @0xAARRGGBB}.
+	 * @since 2017/02/10
+	 */
+	public abstract int getAlphaColor();
+	
+	/**
+	 * Returns the blending mode.
+	 *
+	 * @return The current blending mode.
+	 * @since 2017/02/10
+	 */
 	public abstract int getBlendingMode();
 	
+	/**
+	 * Returns the blue component.
+	 *
+	 * @return The color in the range of {@code [0, 255]}.
+	 * @since 2017/02/10
+	 */
 	public abstract int getBlueComponent();
 	
+	/**
+	 * This returns the height of the clipping area.
+	 *
+	 * @return The clipping area height.
+	 * @since 2017/02/10
+	 */
 	public abstract int getClipHeight();
 	
+	/**
+	 * This returns the width of the clipping area.
+	 *
+	 * @return The clipping area width.
+	 * @since 2017/02/10
+	 */
 	public abstract int getClipWidth();
 	
+	/**
+	 * This returns the non-transformed (based off the origin of the image and
+	 * not the translation) X position of the clipping rectangle.
+	 *
+	 * @return The clipping area X coordinate, which is not transformed.
+	 * @since 2017/02/10
+	 */
 	public abstract int getClipX();
 	
+	/**
+	 * This returns the non-transformed (based off the origin of the image and
+	 * not the translation) Y position of the clipping rectangle.
+	 *
+	 * @return The clipping area Y coordinate, which is not transformed.
+	 * @since 2017/02/10
+	 */
 	public abstract int getClipY();
 	
+	/**
+	 * Returns the current color which has been set for drawing.
+	 *
+	 * @return The color in the form of {@code 0x00RRGGBB}, the upper bits
+	 * for alpha will always be zero.
+	 * @since 2017/02/10
+	 */
 	public abstract int getColor();
 	
 	/**
@@ -261,27 +320,107 @@ public abstract class Graphics
 	 */
 	public abstract int getDisplayColor(int __rgb);
 	
+	/**
+	 * Returns the current font that is used for drawing characters.
+	 *
+	 * @return The current font that is used.
+	 * @since 2017/02/10
+	 */
 	public abstract Font getFont();
 	
+	/**
+	 * Returns the grayscale color component. If the current set color is not
+	 * grayscale then it is unspecified how the grayscale color is derived (it
+	 * may be a simple average or derived from display specific brightness
+	 * values).
+	 *
+	 * @return The color in the range of {@code [0, 255]}.
+	 * @since 2017/02/10
+	 */
 	public abstract int getGrayScale();
 	
+	/**
+	 * Returns the green component.
+	 *
+	 * @return The color in the range of {@code [0, 255]}.
+	 * @since 2017/02/10
+	 */
 	public abstract int getGreenComponent();
 	
+	/**
+	 * Returns the red component.
+	 *
+	 * @return The color in the range of {@code [0, 255]}.
+	 * @since 2017/02/10
+	 */
 	public abstract int getRedComponent();
 	
+	/**
+	 * Returns the current stroke style for lines which are drawn.
+	 *
+	 * @return The current stroke style.
+	 * @since 2017/02/10
+	 */
 	public abstract int getStrokeStyle();
 	
+	/**
+	 * Returns the X coordinate of the translated coordinate system.
+	 *
+	 * @return The X coordinate of the translated coordinate system.
+	 * @since 2017/02/10
+	 */
 	public abstract int getTranslateX();
 	
+	/**
+	 * Returns the Y coordinate of the translated coordinate system.
+	 *
+	 * @return The Y coordinate of the translated coordinate system.
+	 * @since 2017/02/10
+	 */
 	public abstract int getTranslateY();
 	
-	public abstract void setAlpha(int __a);
+	/**
+	 * Sets the alpha value to use for drawing.
+	 *
+	 * @param __a The alpha value to use.
+	 * @throws IllegalArgumentException If the value is not in the range of
+	 * {@code [0, 255]}.
+	 * @since 2017/02/10
+	 */
+	public abstract void setAlpha(int __a)
+		throws IllegalArgumentException;
 	
+	/**
+	 * Sets the alpha color to draw with along with the color to use.
+	 *
+	 * @param __argb The color in the form of {@link 0xAARRGGBB}.
+	 * @since 2017/02/10
+	 */
 	public abstract void setAlphaColor(int __argb);
 	
-	public abstract void setAlphaColor(int __a, int __r, int __g, int __b);
+	/**
+	 * Sets the color and alpha value to use for drawing.
+	 *
+	 * @param __a The alpha value.
+	 * @param __r The red value.
+	 * @param __g The green value.
+	 * @param __b The blue value.
+	 * @throws IllegalArgumentException If any component is not within the
+	 * range of {@code [0, 255]}.
+	 * @since 2017/02/09
+	 */
+	public abstract void setAlphaColor(int __a, int __r, int __g, int __b)
+		throws IllegalArgumentException;
 	
-	public abstract void setBlendingMode(int __m);
+	/**
+	 * Sets the blending mode of the drawing operations.
+	 *
+	 * @param __m The mode of drawing to use.
+	 * @throws IllegalArgumentException If the mode is not valid.
+	 * @since 2017/02/10
+	 */
+	public abstract void setBlendingMode(int __m)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Sets the new clipping area of the destination image. The previous
@@ -309,14 +448,18 @@ public abstract class Graphics
 	 * @param __r The red value.
 	 * @param __g The green value.
 	 * @param __b The blue value.
+	 * @throws IllegalArgumentException If any component is not within the
+	 * range of {@code [0, 255]}.
 	 * @since 2017/02/09
 	 */
-	public abstract void setColor(int __r, int __g, int __b);
+	public abstract void setColor(int __r, int __g, int __b)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Sets the font to use for drawing operations.
 	 *
-	 * @param __a The font to use for drawing.
+	 * @param __a The font to use for drawing, if {@code null} then the
+	 * default font is used.
 	 * @since 2017/02/09
 	 */
 	public abstract void setFont(Font __a);
@@ -334,9 +477,11 @@ public abstract class Graphics
 	 * Sets the stroke style to use for lines.
 	 *
 	 * @param __a The stroke style, either {@link #SOLID} or {@link #DOTTED}.
+	 * @throws IllegalArgumentException If the stroke is not valid.
 	 * @since 2017/02/09
 	 */
-	public abstract void setStrokeStyle(int __a);
+	public abstract void setStrokeStyle(int __a)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Translates all coordinates so that they are offset by the given
