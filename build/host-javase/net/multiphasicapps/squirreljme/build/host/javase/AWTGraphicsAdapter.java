@@ -37,8 +37,30 @@ public class AWTGraphicsAdapter
 	private static final BasicStroke _SOLID_STROKE =
 		new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 	
+	/** No blending. */
+	private static final AlphaComposite _SRC_BLEND =
+		AlphaComposite.getInstance(AlphaComposite.SRC);
+	
+	/** Alpha colors. */
+	private static final AlphaComposite[] _ALPHA_LEVELS =
+		new AlphaComposite[256];
+	
 	/** Wrapped AWT graphics (where things go to). */
 	volatile java.awt.Graphics2D _awt;
+	
+	/**
+	 * Initializes some common parts.
+	 *
+	 * @since 2017/02/10
+	 */
+	static
+	{
+		// Pre-cache all alpha levels
+		AlphaComposite v = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+		AlphaComposite[] alphas = _ALPHA_LEVELS;
+		for (int i = 0; i < 256; i++)
+			alphas[i] = v.derive(i / 255.0F);
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -52,10 +74,8 @@ public class AWTGraphicsAdapter
 		java.awt.Graphics2D awt = this._awt;
 		awt.setStroke((__dotted ? _DOTTED_STROKE : _SOLID_STROKE));
 		awt.setColor(new Color(__color));
-		awt.setComposite((__blend ?
-			AlphaComposite.getInstance(AlphaComposite.SRC_OVER).
-				derive(((__color >> 24) & 0xFF) / 255.0F) :
-			AlphaComposite.getInstance(AlphaComposite.SRC)));
+		awt.setComposite((__blend ? _ALPHA_LEVELS[(__color >> 24) & 0xFF] :
+			_SRC_BLEND));
 		
 		// Draw
 		awt.drawLine(__x1, __y1, __x2, __y2);
