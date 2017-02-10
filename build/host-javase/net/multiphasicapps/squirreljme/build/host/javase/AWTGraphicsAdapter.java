@@ -48,6 +48,13 @@ public class AWTGraphicsAdapter
 	/** Wrapped AWT graphics (where things go to). */
 	volatile java.awt.Graphics2D _awt;
 	
+	/** The last color used. */
+	private volatile int _lastcolor;
+	
+	/** The color cache. */
+	private volatile Color _cachecolor =
+		new Color(this._lastcolor);
+	
 	/**
 	 * Initializes some common parts.
 	 *
@@ -73,9 +80,24 @@ public class AWTGraphicsAdapter
 		// Set line details
 		java.awt.Graphics2D awt = this._awt;
 		awt.setStroke((__dotted ? _DOTTED_STROKE : _SOLID_STROKE));
-		awt.setColor(new Color(__color));
 		awt.setComposite((__blend ? _ALPHA_LEVELS[(__color >> 24) & 0xFF] :
 			_SRC_BLEND));
+		
+		// Cached color?
+		__color = __color & 0xFFFFFF;
+		Color usecolor;
+		if (__color != this._lastcolor)
+		{
+			this._lastcolor = __color;
+			this._cachecolor = (usecolor = new Color(__color));
+		}
+		
+		// Use-precached color
+		else
+			usecolor = this._cachecolor;
+		
+		// Set
+		awt.setColor(usecolor);
 		
 		// Draw
 		awt.drawLine(__x1, __y1, __x2, __y2);
