@@ -22,34 +22,47 @@ import java.io.IOException;
  */
 public class Level
 {
+	/** The owning game. */
+	protected final Game game;
+	
 	/**
 	 * Initializes the level with the given initial settings.
 	 *
+	 * @param __g The game which owns this.
 	 * @param __is The initial settings to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public Level(InitialSettings __is)
+	public Level(Game __g, InitialSettings __is)
 		throws NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__g == null || __is == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.game = __g;
 	}
 	
 	/**
 	 * Initializes the level from a previously serialized stream such as one
 	 * that was made for a replay or saved game.
 	 *
+	 * @param __g The game which owns this.
 	 * @param __is The stream to deserialize from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public Level(DataInputStream __is)
+	public Level(Game __g, DataInputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__g == null || __is == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.game = __g;
 		
 		throw new Error("TODO");
 	}

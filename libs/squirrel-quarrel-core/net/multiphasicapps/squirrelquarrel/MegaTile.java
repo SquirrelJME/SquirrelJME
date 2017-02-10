@@ -47,6 +47,8 @@ public class MegaTile
 	 * game.
 	 *
 	 * @param __is The stream to read from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
 	public MegaTile(DataInputStream __is)

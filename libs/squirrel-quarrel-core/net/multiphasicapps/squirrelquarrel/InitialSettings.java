@@ -18,6 +18,15 @@ package net.multiphasicapps.squirrelquarrel;
  */
 public final class InitialSettings
 {
+	/** The width of the map in tiles. */
+	protected final int mapwidth;
+	
+	/** The height of the map in tiles. */
+	protected final int mapheight;
+	
+	/** The level seed. */
+	protected final long seed;
+	
 	/**
 	 * Initializes the initial settings.
 	 *
@@ -31,6 +40,44 @@ public final class InitialSettings
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.mapwidth = __b._mapwidth;
+		this.mapheight = __b._mapheight;
+		this.seed = __b._seed;
+	}
+	
+	/**
+	 * Returns the height of the map.
+	 *
+	 * @return The height of the map.
+	 * @since 2017/02/10
+	 */
+	public int mapHeight()
+	{
+		return this.mapheight;
+	}
+	
+	/**
+	 * Returns the width of the map.
+	 *
+	 * @return The width of the map.
+	 * @since 2017/02/10
+	 */
+	public int mapWidth()
+	{
+		return this.mapwidth;
+	}
+	
+	/**
+	 * Returns the seed for the map and game events.
+	 *
+	 * @return The game seed.
+	 * @since 2017/02/10
+	 */
+	public long seed()
+	{
+		return this.seed;
 	}
 }
 

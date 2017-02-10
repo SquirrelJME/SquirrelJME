@@ -21,6 +21,12 @@ import java.io.IOException;
  */
 public class Game
 {
+	/** Random number generator for games. */
+	protected final GameRandom random;
+	
+	/** The level data. */
+	protected final Level level;
+	
 	/**
 	 * Initializes a game with the default initialization rules.
 	 *
@@ -44,6 +50,13 @@ public class Game
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup random number generator
+		this.random = new GameRandom(__is.seed());
+		
+		// Initialize the level using the initial settings
+		Level level = new Level(this, __is);
+		this.level = level;
 	}
 	
 	/**
@@ -65,6 +78,15 @@ public class Game
 		// Wrap in a data input stream
 		DataInputStream input = ((__is instanceof DataInputStream) ?
 			(DataInputStream)__is : new DataInputStream(__is));
+		
+		// Re-initialize the random number generator
+		GameRandom random = new GameRandom(0);
+		random.setRawSeed((((long)input.readInt()) << 32L) |
+			input.readInt());
+		
+		// De-serialize the level
+		Level level = new Level(this, input);
+		this.level = level;
 		
 		throw new Error("TODO");
 	}
