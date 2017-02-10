@@ -227,7 +227,7 @@ public abstract class BasicGraphics
 			// The point is clipped
 			if (outa != 0)
 			{
-				// Convert to 24.8 fixed point
+				// Differences of points
 				int dx = __x2 - __x1,
 					dy = __y2 - __y1;
 				
