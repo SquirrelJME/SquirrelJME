@@ -23,6 +23,7 @@ import net.multiphasicapps.squirrelquarrel.Game;
  */
 public class GameInterface
 	extends Canvas
+	implements Runnable
 {
 	/** The game to draw and interact with. */
 	protected final Game game;
@@ -92,6 +93,17 @@ public class GameInterface
 		__g.setStrokeStyle(Graphics.DOTTED);
 		__g.drawLine(0, h, w, 0);
 		__g.drawRect((w / 5) * 3, (h / 5) * 3, (w / 5), (h / 5));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void run()
+	{
+		for (;;)
+			repaint();
 	}
 }
 

@@ -47,6 +47,10 @@ public class MainMidlet
 		// Setup game canvas with an initial game
 		GameInterface gi = new GameInterface(new Game());
 		disp.setCurrent(gi);
+		
+		// Run the game loop
+		Thread t = new Thread(gi, "game-loop");
+		t.start();
 	}
 }
 
