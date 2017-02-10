@@ -14,6 +14,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirrelquarrel.Game;
+import net.multiphasicapps.squirrelquarrel.GameSpeed;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -27,6 +28,10 @@ public class GameInterface
 {
 	/** The game to draw and interact with. */
 	protected final Game game;
+	
+	/** The current game speed. */
+	private volatile GameSpeed _speed =
+		GameSpeed.NORMAL;
 	
 	/** The number of frames which have been rendered. */
 	private volatile int _renderframe;
@@ -105,7 +110,28 @@ public class GameInterface
 	public void run()
 	{
 		for (;;)
-			repaint();
+		{
+			// Get the current game speed and entry time
+			GameSpeed speed = this._speed;
+			long enter = System.nanoTime();
+			
+			// Request a repaint if there is enough time to draw
+			long exit = System.nanoTime();
+			if ((exit - enter) < speed.nanoFrameTime())
+				repaint();
+			
+			// Delay thread for the next frame
+			exit = System.nanoTime();
+			long durr = (speed.nanoFrameTime() - (exit - enter)) / 1_000_000L;
+			if (durr > 0)
+				try
+				{
+					Thread.sleep(durr);
+				}
+				catch (InterruptedException e)
+				{
+				}
+		}
 	}
 }
 
