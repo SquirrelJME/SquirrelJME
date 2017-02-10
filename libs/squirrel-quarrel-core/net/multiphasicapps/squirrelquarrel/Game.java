@@ -90,5 +90,15 @@ public class Game
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Returns the level.
+	 *
+	 * @since 2017/02/10
+	 */
+	public Level level()
+	{
+		return this.level;
+	}
 }
 
