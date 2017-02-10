@@ -479,7 +479,73 @@ public abstract class BasicGraphics
 	@Override
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		// Get actual end points
+		int ex = __x + __w,
+			ey = __y + __h;
+			
+		// Translate all coordinates
+		int transx = this._transx,
+			transy = this._transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+		
+		// Force lower X
+		if (ex < __x)
+		{
+			int boop = ex;
+			ex = __x;
+			__x = boop;
+		}
+		
+		// Force lower Y
+		if (ey < __y)
+		{
+			int boop = ey;
+			ey = __y;
+			__y = boop;
+		}
+		
+		// Get clipping region
+		int clipsx = this._clipsx, clipsy = this._clipsy,
+			clipex = this._clipex, clipey = this._clipey;
+		
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+			return;
+		
+		// Left vertical shortening
+		boolean lvs = (__x < clipsx);
+		if (lvs)
+			__x = clipsx;
+		
+		// Right vertical shortening
+		boolean rvs = (ex >= clipex);
+		if (rvs)
+			ex = clipex - 1;
+		
+		// Calculate new width
+		if (lvs || rvs)
+			__w = ex - __x;
+		
+		// Bottom horizontal shortening
+		boolean bhs = (__y < clipsy);
+		if (bhs)
+			__y = clipsy;
+		
+		// Top horizontal shortening
+		boolean ths = (ey >= clipey);
+		if (ths)
+			ey = clipey - 1;
+		
+		// Calculate line properties
+		int color = this._color;
+		boolean blend = (this._blendmode == SRC_OVER);
+		
+		// Draw horizontal spans
+		for (int y = __y; y < ey; y++)
+			primitiveHorizontalLine(__x, y, __w, color, false, blend);
 	}
 	
 	/**

@@ -94,7 +94,7 @@ public class GameInterface
 		__g.setColor(0x0000FF);
 		__g.setStrokeStyle(Graphics.DOTTED);
 		__g.drawLine(0, h, w, 0);
-		__g.drawRect((w / 5) * 3, (h / 5) * 3, (w / 5), (h / 5));
+		__g.fillRect((w / 5) * 3, (h / 5) * 3, (w / 5), (h / 5));
 	}
 	
 	/**
