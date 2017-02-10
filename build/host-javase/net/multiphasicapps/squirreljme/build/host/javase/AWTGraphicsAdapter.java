@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import javax.microedition.lcdui.Font;
@@ -44,21 +45,20 @@ public class AWTGraphicsAdapter
 	 * @since 2017/02/10
 	 */
 	@Override
-	protected void primitiveHorizontalLine(int __x, int __y,
-		int __w, int __color, boolean __dotted, boolean __blend)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/10
-	 */
-	@Override
 	protected void primitiveLine(int __x1, int __y1, int __x2,
 		int __y2, int __color, boolean __dotted, boolean __blend)
 	{
-		throw new Error("TODO");
+		// Set line details
+		java.awt.Graphics2D awt = this._awt;
+		awt.setStroke((__dotted ? _DOTTED_STROKE : _SOLID_STROKE));
+		awt.setColor(new Color(__color));
+		awt.setComposite((__blend ?
+			AlphaComposite.getInstance(AlphaComposite.SRC_OVER).
+				derive(((__color >> 24) & 0xFF) / 255.0F) :
+			AlphaComposite.getInstance(AlphaComposite.SRC)));
+		
+		// Draw
+		awt.drawLine(__x1, __y1, __x2, __y2);
 	}
 }
 

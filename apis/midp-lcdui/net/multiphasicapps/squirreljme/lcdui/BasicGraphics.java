@@ -55,25 +55,6 @@ public abstract class BasicGraphics
 	/** The ending Y clip. */
 	private volatile int _clipey =
 		Integer.MAX_VALUE;
-	
-	/**
-	 * Draws a primitive horizontal line that exists only witin.
-	 *
-	 * The coordinates will be absolute coordinates after translation and
-	 * clipping is performed. The start coordinate will always be the point
-	 * closest to the origin.
-	 *
-	 * @param __x The start X coordinate.
-	 * @param __y The start Y coordinate.
-	 * @param __w The width of the line.
-	 * @param __color The color to draw as, includes alpha.
-	 * @param __dotted If {@code true} then the line should be drawn dotted.
-	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
-	 * is to be used.
-	 * @since 2017/02/10
-	 */
-	protected abstract void primitiveHorizontalLine(int __x, int __y,
-		int __w, int __color, boolean __dotted, boolean __blend);
 		
 	/**
 	 * Draws a primitive line.
@@ -180,7 +161,32 @@ public abstract class BasicGraphics
 	@Override
 	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw new Error("TODO");
+		// Translate all coordinates
+		int transx = this._transx,
+			transy = this._transy;
+		__x1 += transx;
+		__y1 += transy;
+		__x2 += transx;
+		__y2 += transy;
+		
+		// Swap the lines so the start is always closer to the origin
+		if (__y2 < __y1 || __x2 < __x1)
+		{
+			int boopx = __x1,
+				boopy = __y1;
+			__x1 = __x2;
+			__y1 = __y2;
+			__x2 = boopx;
+			__y2 = boopy;
+		}
+		
+		// Perform clipping
+		//if (true)
+		//	throw new Error("TODO");
+		
+		// Draw it
+		primitiveLine(__x1, __y1, __x2, __y2, this._color,
+			(this._strokestyle == DOTTED), (this._blendmode == SRC_OVER));
 	}
 	
 	/**
@@ -507,6 +513,28 @@ public abstract class BasicGraphics
 	public final int getTranslateY()
 	{
 		return this._transy;
+	}
+	
+	/**
+	 * Draws a primitive horizontal line that exists only witin.
+	 *
+	 * The coordinates will be absolute coordinates after translation and
+	 * clipping is performed. The start coordinate will always be the point
+	 * closest to the origin.
+	 *
+	 * @param __x The start X coordinate.
+	 * @param __y The start Y coordinate.
+	 * @param __w The width of the line.
+	 * @param __color The color to draw as, includes alpha.
+	 * @param __dotted If {@code true} then the line should be drawn dotted.
+	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
+	 * is to be used.
+	 * @since 2017/02/10
+	 */
+	protected void primitiveHorizontalLine(int __x, int __y,
+		int __w, int __color, boolean __dotted, boolean __blend)
+	{
+		primitiveLine(__x, __y, __x + __w, __y, __color, __dotted, __blend);
 	}
 	
 	/**
