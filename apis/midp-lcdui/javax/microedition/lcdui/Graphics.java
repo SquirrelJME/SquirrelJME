@@ -104,8 +104,10 @@ public abstract class Graphics
 	 * This is only used to reduce the clipping area, to make it larger use
 	 * {@link #setClip(int, int, int int)}.
 	 *
-	 * @param __x The X coordinate of the clipping rectangle.
-	 * @param __y The Y coordinate of the clipping rectangle.
+	 * @param __x The X coordinate of the clipping rectangle,
+	 * will be translated.
+	 * @param __y The Y coordinate of the clipping rectangle,
+	 * will be translated.
 	 * @param __w The width of the rectangle.
 	 * @param __h The height of the rectangle.
 	 * @since 2017/02/10
@@ -309,19 +311,17 @@ public abstract class Graphics
 	public abstract int getClipWidth();
 	
 	/**
-	 * This returns the non-transformed (based off the origin of the image and
-	 * not the translation) X position of the clipping rectangle.
+	 * This returns the transformed X position of the clipping rectangle.
 	 *
-	 * @return The clipping area X coordinate, which is not transformed.
+	 * @return The clipping area X coordinate, which is transformed.
 	 * @since 2017/02/10
 	 */
 	public abstract int getClipX();
 	
 	/**
-	 * This returns the non-transformed (based off the origin of the image and
-	 * not the translation) Y position of the clipping rectangle.
+	 * This returns the transformed Y position of the clipping rectangle.
 	 *
-	 * @return The clipping area Y coordinate, which is not transformed.
+	 * @return The clipping area Y coordinate, which is transformed.
 	 * @since 2017/02/10
 	 */
 	public abstract int getClipY();
@@ -451,8 +451,8 @@ public abstract class Graphics
 	 * Sets the new clipping area of the destination image. The previous
 	 * clipping area is replaced.
 	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
+	 * @param __x The X coordinate, will be translated.
+	 * @param __y The Y coordinate, will be translated.
 	 * @param __w The width.
 	 * @param __h The height.
 	 * @since 2017/02/10
@@ -515,6 +515,8 @@ public abstract class Graphics
 	 * To set the absolute position of the translation the following may be
 	 * performed:
 	 * {@code translate(ax - getTranslateX(), ay - getTranslateY())}.
+	 *
+	 * The clipping area, if set, will not be transformed.
 	 *
 	 * @param __x The X value to use for the new origin.
 	 * @param __y The Y value to use for the new origin.

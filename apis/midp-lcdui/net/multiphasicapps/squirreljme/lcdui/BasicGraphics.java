@@ -36,6 +36,12 @@ public abstract class BasicGraphics
 	private volatile int _strokestyle =
 		SOLID;
 	
+	/** Translated X coordinate. */
+	private volatile int _transx;
+	
+	/** Translated Y coordinate. */
+	private volatile int _transy;
+	
 	/**
 	 * Draws a primitive horizontal line that exists only witin.
 	 *
@@ -469,7 +475,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getTranslateX()
 	{
-		throw new Error("TODO");
+		return this._transx;
 	}
 	
 	/**
@@ -479,7 +485,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getTranslateY()
 	{
-		throw new Error("TODO");
+		return this._transy;
 	}
 	
 	/**
@@ -619,7 +625,8 @@ public abstract class BasicGraphics
 	@Override
 	public final void translate(int __x, int __y)
 	{
-		throw new Error("TODO");
+		this._transx += __x;
+		this._transy += __y;
 	}
 }
 
