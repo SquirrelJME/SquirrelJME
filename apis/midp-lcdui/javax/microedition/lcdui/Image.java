@@ -33,8 +33,32 @@ public class Image
 	
 	Image()
 	{
-		super();
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Initializes the image with the given settings.
+	 *
+	 * @parma __data The image data, this is used directly.
+	 * @param __w The image width.
+	 * @param __h The image height.
+	 * @param __mut If this image is mutable
+	 * @param __alpha If this image has an alpha channel.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/10
+	 */
+	Image(int[] __data, int __w, int __h, boolean __mut, boolean __alpha)
+	{
+		// Check
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._data = __data;
+		this._width = __w;
+		this._height = __h;
+		this._mutable = __mut && !isAnimated() && !isScalable();
+		this._alpha = __alpha;
 	}
 	
 	public void getARGB16(short[] __data, int __off, int __scanlen, int __x,
@@ -234,12 +258,13 @@ public class Image
 			__rgb = copy;
 		}
 		
-		// If there is no alpha channel, force all of it
+		// If there is no alpha channel, force all of it opaque
 		if (!__alpha)
 			for (int i = 0; i < area; i++)
 				__rgb[i] |= 0xFF000000;
 		
-		throw new Error("TODO");
+		// Setup image
+		return new Image(__rgb, __w, __h, false, __alpha);
 	}
 	
 	public static Image createImage(int __w, int __h, boolean __alpha,
