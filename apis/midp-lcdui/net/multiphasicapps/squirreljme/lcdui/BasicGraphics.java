@@ -173,8 +173,29 @@ public abstract class BasicGraphics
 	 */
 	@Override
 	public final void drawImage(Image __i, int __x, int __y, int __anchor)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB0h Images cannot have the baseline anchor
+		// point.}
+		if (__anchor == BASELINE)
+			throw new IllegalArgumentException("EB0h");
+		
+		// Transform
+		__x += this._transx;
+		__y += this._transy;
+		
+		// Get image dimensions
+		int iw = __i.getWidth(),
+			ih = __i.getHeight();
+		
+		// Modify the coordinates for anchoring
+		__x = __anchorX(__x, iw, __anchor);
+		__y = __anchorY(__y, ih, __anchor);
+		
 		throw new Error("TODO");
 	}
 	
@@ -407,7 +428,7 @@ public abstract class BasicGraphics
 		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch)
 		throws NullPointerException
 	{
-		drawRegion(__src, __xsrc __ysrc, __w, __h, __trans, __xdest, __ydest,
+		drawRegion(__src, __xsrc, __ysrc, __w, __h, __trans, __xdest, __ydest,
 			__anch, __w, __h);
 	}
 	
@@ -973,6 +994,88 @@ public abstract class BasicGraphics
 	{
 		this._transx += __x;
 		this._transy += __y;
+	}
+	
+	/**
+	 * Calculates the X adjustment to the anchor point.
+	 *
+	 * @param __x The X position.
+	 * @param __w The width.
+	 * @param __anchor The anchor to use.
+	 * @return The adjusted position.
+	 * @throws IllegalArgumentException If the anchor is not valid.
+	 * @since 2017/02/11
+	 */
+	private final int __anchorX(int __x, int __w, int __anchor)
+	{
+		// Mask out Y anchors
+		__anchor &= ~(BASELINE | BOTTOM | TOP | VCENTER);
+		
+		// Depends on the anchor point
+		switch (__anchor)
+		{
+				// Non-transformed
+			case 0:
+			case LEFT:
+				return __x;
+				
+				// Right
+			case RIGHT:
+				return __x - __w;
+			
+				// Center
+			case HCENTER:
+				return __x - (__w >>> 1);
+				
+				// {@squirreljme.error EB0i Invalid anchor point. (The anchor
+				// point)}
+			default:
+				throw new IllegalArgumentException(String.format("EB0i %d",
+					__anchor));
+		}
+	}
+	
+	/**
+	 * Calculates the Y adjustment to the anchor point.
+	 *
+	 * @param __y The Y position.
+	 * @param __h The height.
+	 * @param __anchor The anchor to use.
+	 * @return The adjusted position.
+	 * @throws IllegalArgumentException If the anchor is not valid.
+	 * @since 2017/02/11
+	 */
+	private final int __anchorY(int __y, int __h, int __anchor)
+	{
+		// Mask out X anchors
+		__anchor &= ~(LEFT | RIGHT | HCENTER);
+		
+		// Depends on the anchor point
+		switch (__anchor)
+		{
+				// Non-transformed
+			case 0:
+			case TOP:
+				return __y;
+				
+				// Baseline
+			case BASELINE:
+				throw new Error("TODO");
+				
+				// Bottom
+			case BOTTOM:
+				return __y - __h;
+				
+				// Centered
+			case VCENTER:
+				return __y - (__h >>> 1);
+				
+				// {@squirreljme.error EB0i Invalid anchor point. (The anchor
+				// point)}
+			default:
+				throw new IllegalArgumentException(String.format("EB0i %d",
+					__anchor));
+		}
 	}
 	
 	/**
