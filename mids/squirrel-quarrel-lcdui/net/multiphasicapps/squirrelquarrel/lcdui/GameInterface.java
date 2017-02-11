@@ -23,6 +23,7 @@ import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
 import net.multiphasicapps.squirrelquarrel.Level;
+import net.multiphasicapps.squirrelquarrel.MegaTile;
 import net.multiphasicapps.squirrelquarrel.TerrainType;
 
 /**
@@ -129,7 +130,15 @@ public class GameInterface
 		MegaTileCacher mtcacher = this.mtcacher;
 		
 		// Just draw the first megatile
-		__g.drawImage(mtcacher.cacheMegaTile(0, 0), framenum & 31, 0, 0);
+		__g.drawImage(mtcacher.cacheMegaTile(0, 0),
+			(framenum & 31), 0, 0);
+		__g.drawImage(mtcacher.cacheMegaTile(1, 0),
+			(framenum & 31) + MegaTile.MEGA_TILE_PIXEL_SIZE, 0, 0);
+		__g.drawImage(mtcacher.cacheMegaTile(0, 1),
+			(framenum & 31), MegaTile.MEGA_TILE_PIXEL_SIZE, 0);
+		__g.drawImage(mtcacher.cacheMegaTile(1, 1),
+			(framenum & 31) + MegaTile.MEGA_TILE_PIXEL_SIZE,
+			MegaTile.MEGA_TILE_PIXEL_SIZE, 0);
 		
 		// No longer painting
 		this._inpaint = false;
