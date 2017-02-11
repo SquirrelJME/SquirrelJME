@@ -233,6 +233,26 @@ public abstract class BasicGraphics
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
 			return;
 		
+		// The base X source of the image
+		int bsx;
+		if (__x < clipsx)
+		{
+			bsx = (clipsx - __x);
+			__x = clipsx;
+		}
+		else
+			bsx = 0;
+		
+		// The base Y source of the image
+		int bsy;
+		if (__y < clipsy)
+		{
+			bsy = (clipsy - __y);
+			__y = clipsy;
+		}
+		else
+			bsy = 0;
+		
 		throw new Error("TODO");
 	}
 	

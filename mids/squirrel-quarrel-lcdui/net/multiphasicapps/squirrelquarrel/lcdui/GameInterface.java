@@ -121,7 +121,7 @@ public class GameInterface
 		
 		// Test draw a tile
 		Image img = __cacheTile(TerrainType.GRASS);
-		__g.drawImage(img, 24, 48, 0);
+		__g.drawImage(img, 8 - (framenum % 40), 8 - (framenum % 40), 0);
 	}
 	
 	/**
