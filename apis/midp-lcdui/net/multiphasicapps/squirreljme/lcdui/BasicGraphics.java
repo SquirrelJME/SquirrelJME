@@ -407,7 +407,8 @@ public abstract class BasicGraphics
 		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		drawRegion(__src, __xsrc __ysrc, __w, __h, __trans, __xdest, __ydest,
+			__anch, __w, __h);
 	}
 	
 	/**

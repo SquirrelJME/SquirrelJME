@@ -184,8 +184,23 @@ public abstract class Graphics
 		int __y, int __anchor)
 		throws NullPointerException;
 	
+	/**
+	 * Draws the specified image.
+	 *
+	 * If this graphics object draws onto the source image then the result is
+	 * undefined, {@link copyArea(int, int, int, int, int, int, int)} should
+	 * be used instead.
+	 *
+	 * @param __i The source image.
+	 * @param __x The X position to draw at, is translated.
+	 * @param __y The Y position to draw at, is translated.
+	 * @param __anchor The anchor point of the image.
+	 * @throws IllegalArgumentException If the anchor point is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/11
+	 */
 	public abstract void drawImage(Image __i, int __x, int __y, int __anchor)
-		throws NullPointerException;
+		throws IllegalArgumentException, NullPointerException;
 	
 	public abstract void drawLine(int __x1, int __y1, int __x2, int __y2);
 	
@@ -199,14 +214,33 @@ public abstract class Graphics
 	
 	public abstract void drawRect(int __x, int __y, int __w, int __h);
 	
+	/**
+	 * Same as {@code drawRegion(__src, __xsrc __ysrc, __w, __h, __trans,
+	 * __xdest, __ydest, __anch, __w, __h);}.
+	 *
+	 * @param __src The source image.
+	 * @param __xsrc The source X position.
+	 * @param __ysrc The source Y position.
+	 * @param __w The width of the source region.
+	 * @param __h The height of the source region.
+	 * @param __trans Sprite translation and/or rotation, see {@link Sprite}.
+	 * @param __xdest The destination X position, is translated..
+	 * @param __ydest The destination Y position, is translated..
+	 * @param __anch The anchor point.
+	 * @throws IllegalArgumentException If the source is the destination
+	 * image; the source region exceeds the image bounds; the sprite
+	 * transformation is not valid; The anchor is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/11 
+	 */
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch)
-		throws NullPointerException;
+		throws IllegalArgumentException, NullPointerException;
 	
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch,
 		int __wdest, int __hdest)
-		throws NullPointerException;
+		throws IllegalArgumentException, NullPointerException;
 	
 	public abstract void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah);
