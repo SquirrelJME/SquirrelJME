@@ -10,12 +10,21 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
 import net.multiphasicapps.squirrelquarrel.Level;
+import net.multiphasicapps.squirrelquarrel.TerrainType;
+import net.multiphasicapps.xpm.XPMImageReader;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -27,6 +36,14 @@ public class GameInterface
 	extends Canvas
 	implements Runnable
 {
+	/** The single image reader instance. */
+	private static final XPMImageReader _XPM_READER =
+		new XPMImageReader();
+	
+	/** The cache of terrain tiles. */
+	private static final Map<TerrainType, Reference<Image>> _TILE_CACHE =
+		new HashMap<>();
+	
 	/** The game to draw and interact with. */
 	protected final Game game;
 	
@@ -101,6 +118,10 @@ public class GameInterface
 		// Get the viewport
 		int viewx = this._viewx,
 			viewy = this._viewy;
+		
+		// Test draw a tile
+		Image img = __cacheTile(TerrainType.GRASS);
+		__g.drawImage(img, 24, 48, 0);
 	}
 	
 	/**
@@ -191,6 +212,43 @@ public class GameInterface
 		this._vieww = __w;
 		this._viewh = __h;
 		translateViewport(0, 0);
+	}
+	
+	/**
+	 * Caches the specified tile.
+	 *
+	 * @param __t The terrain to get the image for.
+	 * @return The image for the given terrain.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/10
+	 */
+	private static final Image __cacheTile(TerrainType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Get ref
+		Reference<Image> ref = _TILE_CACHE.get(__t);
+		Image rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			try
+			{
+				_TILE_CACHE.put(__t, new WeakReference<>(
+					(rv = _XPM_READER.readImage(__t.imageStream()))));
+			}
+			
+			// {@squirreljme.error BK01 Failed to read the image data for the
+			// specified file. (The terrain type)}
+			catch (IOException e)
+			{
+				throw new RuntimeException(String.format("BK01 %s", __t), e);
+			}
+		
+		return rv;
 	}
 }
 
