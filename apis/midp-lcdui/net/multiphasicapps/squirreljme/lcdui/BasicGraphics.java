@@ -269,12 +269,12 @@ public abstract class BasicGraphics
 			bsy = 0;
 		
 		// Clip the ending X position
-		if (ex >= clipex)
-			ex = clipex - 1;
+		if (ex > clipex)
+			ex = clipex;
 		
 		// And the Y position
-		if (ey >= clipey)
-			ey = clipey - 1;
+		if (ey > clipey)
+			ey = clipey;
 		
 		// Need slice for rendering
 		int[] slice = this._slice;

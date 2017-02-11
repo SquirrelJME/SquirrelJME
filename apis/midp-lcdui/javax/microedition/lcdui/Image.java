@@ -456,7 +456,6 @@ public class Image
 		{
 			int[] data = Image.this._data;
 			int iw = Image.this._width;
-			int ih = Image.this._height;
 			
 			// Calculate destination
 			int dest = (__y * iw) + __x;
