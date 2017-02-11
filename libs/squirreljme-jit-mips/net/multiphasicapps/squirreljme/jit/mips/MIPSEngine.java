@@ -11,46 +11,30 @@
 package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
-import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 
 /**
- * This provides the engine for the JIT to generate MIPS machine code.
+ * This is the engine which is able to generate MIPS machine code.
  *
- * @since 2017/01/31
+ * @since 2017/02/11
  */
-public class MIPSEngineProvider
-	implements TranslationEngineProvider
+public class MIPSEngine
+	extends TranslationEngine
 {
-	/** The configuration for MIPS. */
+	/** The configuration used. */
 	protected final MIPSConfig config;
 	
 	/**
-	 * Initializes the MIPS engine provider.
+	 * Initializes the MIPS engine.
 	 *
-	 * @param __c The configuration to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/02
+	 * @param __conf The MIPS configuration to use.
+	 * @since 2017/02/11
 	 */
-	public MIPSEngineProvider(MIPSConfig __c)
-		throws NullPointerException
+	public MIPSEngine(MIPSConfig __conf)
 	{
-		// Check
-		if (__c == null)
-			throw new NullPointerException("NARG");
+		super(__conf);
 		
-		// Setup config
-		this.config = __c;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/01/31
-	 */
-	@Override
-	public TranslationEngine createEngine()
-	{
-		// Create engine
-		return new MIPSEngine(this.config);
+		// Set
+		this.config = __conf;
 	}
 }
 
