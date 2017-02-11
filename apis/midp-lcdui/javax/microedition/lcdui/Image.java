@@ -327,6 +327,17 @@ public class Image
 		{
 			throw new Error("TODO");
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/11
+		 */
+		@Override
+		protected void primitiveRGBSlice(int[] __b, int __o, int __l,
+			int __x, int __y, boolean __blend)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

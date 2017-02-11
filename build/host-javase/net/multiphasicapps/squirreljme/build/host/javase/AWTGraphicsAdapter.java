@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -41,9 +42,21 @@ public class AWTGraphicsAdapter
 	private static final AlphaComposite _SRC_BLEND =
 		AlphaComposite.getInstance(AlphaComposite.SRC);
 	
+	/** Over blending. */
+	private static final AlphaComposite _SRC_OVER_BLEND =
+		AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+	
 	/** Alpha colors. */
 	private static final AlphaComposite[] _ALPHA_LEVELS =
 		new AlphaComposite[256];
+	
+	/** Slice for ARGB data. */
+	private final BufferedImage _argbslice =
+		new BufferedImage(PIXEL_SLICE, 1, BufferedImage.TYPE_INT_ARGB);
+	
+	/** Slice for RGB data. */
+	private final BufferedImage _rgbslice =
+		new BufferedImage(PIXEL_SLICE, 1, BufferedImage.TYPE_INT_RGB);
 	
 	/** Wrapped AWT graphics (where things go to). */
 	volatile java.awt.Graphics2D _awt;
@@ -69,7 +82,7 @@ public class AWTGraphicsAdapter
 	static
 	{
 		// Pre-cache all alpha levels
-		AlphaComposite v = AlphaComposite.getInstance(AlphaComposite.SRC_OVER);
+		AlphaComposite v = _SRC_OVER_BLEND;
 		AlphaComposite[] alphas = _ALPHA_LEVELS;
 		for (int i = 0; i < 256; i++)
 			alphas[i] = v.derive(i / 255.0F);
@@ -137,6 +150,27 @@ public class AWTGraphicsAdapter
 		
 		// Draw
 		awt.drawLine(__x1, __y1, __x2, __y2);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/11
+	 */
+	@Override
+	protected void primitiveRGBSlice(int[] __b, int __o, int __l,
+		int __x, int __y, boolean __blend)
+	{
+		// Set blend mode
+		java.awt.Graphics2D awt = this._awt;
+		awt.setComposite((__blend ? _SRC_OVER_BLEND : _SRC_BLEND));
+			
+		// Sadly AWT does not support drawing of raw RGB data, only images.
+		// So for efficiency copy the pixels to the image
+		BufferedImage target = (__blend ? this._argbslice : this._rgbslice);
+		target.setRGB(0, 0, __l, 1, __b, __o, __l);
+		
+		// Then draw that image
+		awt.drawImage(target, __x, __y, null);
 	}
 }
 

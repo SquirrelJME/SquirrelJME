@@ -24,6 +24,10 @@ import javax.microedition.lcdui.Text;
 public abstract class BasicGraphics
 	extends Graphics
 {
+	/** The RGB slice size. */
+	public static final int PIXEL_SLICE =
+		128;
+	
 	/** Clipping above. */
 	private static final int _CLIP_ABOVE =
 		1;
@@ -40,13 +44,9 @@ public abstract class BasicGraphics
 	private static final int _CLIP_LEFT =
 		8;
 	
-	/** The RGB slice size. */
-	private static final int _PIXEL_SLICE =
-		128;
-	
 	/** Pixel slice which is used for RGB-based drawing operations. */
 	private final int[] _slice =
-		new int[_PIXEL_SLICE];
+		new int[PIXEL_SLICE];
 	
 	/** The current blending mode. */
 	private volatile int _blendmode =
@@ -123,6 +123,21 @@ public abstract class BasicGraphics
 	 */
 	protected abstract void primitiveLine(int __x1, int __y1, int __x2,
 		int __y2, int __color, boolean __dotted, boolean __blend);
+	
+	/**
+	 * Draws a primitive RGB slice.
+	 *
+	 * @param __b The source buffer containing RGB data.
+	 * @param __o The offset into the buffer.
+	 * @param __l The number of pixels to draw.
+	 * @param __x The destination X position.
+	 * @param __y The destination Y position.
+	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
+	 * is to be used.
+	 * @since 2017/02/11
+	 */
+	protected abstract void primitiveRGBSlice(int[] __b, int __o, int __l,
+		int __x, int __y, boolean __blend);
 	
 	/**
 	 * {@inheritDoc}
@@ -253,7 +268,37 @@ public abstract class BasicGraphics
 		else
 			bsy = 0;
 		
-		throw new Error("TODO");
+		// Clip the ending X position
+		if (ex >= clipex)
+			ex = clipex - 1;
+		
+		// And the Y position
+		if (ey >= clipey)
+			ey = clipey - 1;
+		
+		// Need slice for rendering
+		int[] slice = this._slice;
+		int slicelen = slice.length;
+		
+		// If the destination image does not have alpha then pixels will just
+		// be drawn or not drawn, so in this event just ignore blend if there
+		// is not alpha.
+		boolean blend = (this._blendmode == SRC_OVER && __i.hasAlpha());
+		
+		// Render horizontal slices
+		for (;__y < ey; bsy++, __y++)
+			for (int sx = bsx, dx = __x; dx < ex;
+				sx += slicelen, dx += slicelen)
+			{
+				// Scanline limit
+				int limit = Math.min(slicelen, ex - dx);
+				
+				// Read image slice
+				__i.getRGB(slice, 0, limit, sx, bsy, limit, 1);
+				
+				// Draw slice
+				primitiveRGBSlice(slice, 0, limit, dx, __y, blend);
+			}
 	}
 	
 	/**
