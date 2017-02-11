@@ -75,7 +75,8 @@ class __JITCodeStream__
 		TranslationEngine engine = __c.__jit().engineProvider().createEngine();
 		this._engine = engine;
 		
-		throw new Error("TODO");
+		// Get a blank register allocator
+		this._allocator = engine.createCellAllocator();
 	}
 	
 	/**

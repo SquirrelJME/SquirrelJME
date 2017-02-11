@@ -42,6 +42,19 @@ public abstract class TranslationEngine
 	}
 	
 	/**
+	 * Initializes an empty cell allocator which is used to allocate stack
+	 * and registers.
+	 *
+	 * When a method or other special call must be performed, a new cell
+	 * allocator will be initialized and setup so that the state required for
+	 * the method call is known.
+	 *
+	 * @return The newly created cell allocator.
+	 * @since 2017/02/11
+	 */
+	public abstract CellAllocator createCellAllocator();
+	
+	/**
 	 * This returns the configuration that the translation engine was
 	 * initialized with.
 	 *
