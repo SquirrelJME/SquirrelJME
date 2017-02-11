@@ -405,8 +405,12 @@ public abstract class BasicGraphics
 		}
 		
 		// Draw it
-		primitiveLine(__x1, __y1, __x2, __y2, this._color,
-			(this._strokestyle == DOTTED), (this._blendmode == SRC_OVER));
+		if (__x1 == __x2)
+			primitiveHorizontalLine(__x1, __y1, __x2 - __x1, this._color,
+				(this._strokestyle == DOTTED), (this._blendmode == SRC_OVER));
+		else
+			primitiveLine(__x1, __y1, __x2, __y2, this._color,
+				(this._strokestyle == DOTTED), (this._blendmode == SRC_OVER));
 	}
 	
 	/**
