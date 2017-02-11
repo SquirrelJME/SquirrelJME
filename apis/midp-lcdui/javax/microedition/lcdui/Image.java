@@ -263,9 +263,51 @@ public class Image
 		throw new Error("TODO");
 	}
 	
-	public static Image createImage(int __a, int __b)
+	/**
+	 * Same as {@code createImage(__w, __h, false, 0xFF000000)}.
+	 *
+	 * @param __w The width of the image.
+	 * @param __h The height of the image.
+	 * @return The created image.
+	 * @throws IllegalArgumentException If the requested image size has a zero
+	 * or negative dimension.
+	 * @since 2017/02/11
+	 */
+	public static Image createImage(int __w, int __h)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		return createImage(__w, __h, false, 0xFF000000);
+	}
+	
+	/**
+	 * Creates a mutable image that may or may not have an alpha channel.
+	 *
+	 * @param __w The width of the image.
+	 * @param __h The height of the image.
+	 * @param __alpha Whether it has an alpha channel.
+	 * @param __c The initial color to fill.
+	 * @return The created image.
+	 * @throws IllegalArgumentException If the requested image size has a zero
+	 * or negative dimension.
+	 * @since 2017/02/11
+	 */
+	public static Image createImage(int __w, int __h, boolean __alpha, int __c)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error EB0n Zero or negative image size requested.}
+		if (__w <= 0 || __h <= 0)
+			throw new IllegalArgumentException("EB0n");
+		
+		// Setup buffer
+		int area = __w * __h;
+		int[] data = new int[area];
+		
+		// Fill with color
+		for (int i = 0; i < area; i++)
+			data[i] = __c;
+		
+		// Create
+		return new Image(data, __w, __h, true, __alpha);
 	}
 	
 	public static Image createImage(InputStream __a)
@@ -291,6 +333,12 @@ public class Image
 	
 	public static Image createImage(Image __a, int __b, int __c, int __d, int
 		__e, int __f)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Image createImage(Image __i, int __x, int __y, int __w,
+		int __h, int __trans, int __iw, int __ih)
 	{
 		throw new Error("TODO");
 	}
@@ -347,18 +395,6 @@ public class Image
 		
 		// Setup image
 		return new Image(__rgb, __w, __h, false, __alpha);
-	}
-	
-	public static Image createImage(int __w, int __h, boolean __alpha,
-		int __fill)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Image createImage(Image __i, int __x, int __y, int __w,
-		int __h, int __trans, int __iw, int __ih)
-	{
-		throw new Error("TODO");
 	}
 	
 	/**
