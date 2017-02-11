@@ -74,6 +74,16 @@ public class AWTGraphicsAdapter
 	 * @since 2017/02/10
 	 */
 	@Override
+	protected boolean primitiveHasAlphaChannel()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
 	protected void primitiveLine(int __x1, int __y1, int __x2,
 		int __y2, int __color, boolean __dotted, boolean __blend)
 	{

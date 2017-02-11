@@ -71,7 +71,15 @@ public abstract class BasicGraphics
 	/** The ending Y clip. */
 	private volatile int _clipey =
 		Integer.MAX_VALUE;
-		
+	
+	/**
+	 * Returns {@code true} if the image has an alpha channel.
+	 *
+	 * @returns {@code true} if the image has an alpha channel.
+	 * @since 2017/02/10
+	 */
+	protected abstract boolean primitiveHasAlphaChannel();
+	
 	/**
 	 * Draws a primitive line.
 	 *
@@ -840,6 +848,11 @@ public abstract class BasicGraphics
 		// {@squirreljme.error EB0a Unknown blending mode.}
 		if (__m != SRC_OVER && __m != SRC)
 			throw new IllegalArgumentException("EB0a");
+		
+		// {@squirreljme.error EB0g Cannot set the overlay blending mode
+		// because this graphics context does not have the alpha channel.}
+		if (__m == SRC_OVER && !primitiveHasAlphaChannel())
+			throw new IllegalArgumentException("EB0g");
 		
 		// Set
 		this._blendmode = __m;
