@@ -202,6 +202,15 @@ public abstract class Graphics
 	public abstract void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException;
 	
+	/**
+	 * Draws a line using the current color and stroke style.
+	 *
+	 * @param __x1 Starting X position.
+	 * @param __y1 Starting Y position.
+	 * @param __x2 Ending X position.
+	 * @param __y2 Ending Y position.
+	 * @since 2017/02/11
+	 */
 	public abstract void drawLine(int __x1, int __y1, int __x2, int __y2);
 	
 	public abstract void drawRGB(int[] __data, int __off, int __scanlen,
