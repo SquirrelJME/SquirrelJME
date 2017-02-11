@@ -109,9 +109,70 @@ public class Image
 		return this._height;
 	}
 	
-	public void getRGB(int[] __a, int __b, int __c, int __d, int __e, int __f,
-		int __g)
+	/**
+	 * Copies RGB image data from the source image.
+	 *
+	 * The source image data must be within the bounds of the image.
+	 *
+	 * @param __b The destination array.
+	 * @param __o The offset into the array.
+	 * @param __sl The scanline length of the destination array, this value may
+	 * be negative to indicate that pixels are placed in reverse order.
+	 * @param __x The source X position.
+	 * @param __y The source Y position.
+	 * @param __w The width to copy, if this is zero nothing is copied.
+	 * @param __h The height to copy, if this is zero nothing is copied.
+	 * @throws ArrayIndexOutOfBoundsException If writing to the destination
+	 * buffer would result in a write that exceeds the bounds of the array.
+	 * @throws IllegalArgumentException If the source X or Y position is
+	 * negative; If the source region exceeds the image bounds; If the absolute
+	 * value of the scanline length is lower than the width.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/11
+	 */
+	public void getRGB(int[] __b, int __o, int __sl, int __x, int __y, int __w,
+		int __h)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
+		// Do nothing
+		if (__w <= 0 || __h <= 0)
+			return;
+		
+		// Scalable images must be rasterized
+		if (isScalable())
+			throw new Error("TODO");
+			
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB0k The source coordinates are negative.}
+		if (__x < 0 || __y < 0)
+			throw new IllegalArgumentException("EB0k");
+	
+		// {@squirreljme.error EB0l The absolute value of the scanline length
+		// exceeds the 
+		int absl = Math.abs(__sl);
+		if (absl < __w)
+			throw new IllegalArgumentException("EB0l");
+		
+		// {@squirreljme.error EB0j Reading of RGB data would exceed the bounds
+		// out the output array.}
+		int srcarea = __w * __h;
+		int areasl = __sl * __h;
+		if (__o < 0 || (__o + areasl) > __b.length || (__o + areasl) < 0)
+			throw new ArrayIndexOutOfBoundsException("EB0j");
+		
+		// {@squirreljme.error EB0m The area to read exceeds the bounds of the
+		// image.}
+		int ex = __x + __w,
+			ey = __y + __h;
+		int iw = this._width,
+			ih = this._height;
+		if (ex > iw || ey > ih)
+			throw new IllegalArgumentException("EB0m");
+		
 		throw new Error("TODO");
 	}
 	
