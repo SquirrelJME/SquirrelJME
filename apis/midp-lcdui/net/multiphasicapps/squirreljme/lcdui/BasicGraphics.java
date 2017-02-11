@@ -196,6 +196,18 @@ public abstract class BasicGraphics
 		__x = __anchorX(__x, iw, __anchor);
 		__y = __anchorY(__y, ih, __anchor);
 		
+		// Ending X/Y positions
+		int ex = __x + iw,
+			ey = __y + ih;
+		
+		// Get clipping region
+		int clipsx = this._clipsx, clipsy = this._clipsy,
+			clipex = this._clipex, clipey = this._clipey;
+		
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
