@@ -40,6 +40,14 @@ public abstract class BasicGraphics
 	private static final int _CLIP_LEFT =
 		8;
 	
+	/** The RGB slice size. */
+	private static final int _PIXEL_SLICE =
+		128;
+	
+	/** Pixel slice which is used for RGB-based drawing operations. */
+	private final int[] _slice =
+		new int[_PIXEL_SLICE];
+	
 	/** The current blending mode. */
 	private volatile int _blendmode =
 		SRC_OVER;
