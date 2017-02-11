@@ -34,6 +34,12 @@ public class Level
 	/** The height of the level in pixels. */
 	protected final int pixelh;
 	
+	/** The width of the level in megatiles. */
+	protected final int megaw;
+	
+	/** The height of the level in megatiles. */
+	protected final int megah;
+	
 	/**
 	 * Initializes the level with the given initial settings.
 	 *
@@ -58,9 +64,13 @@ public class Level
 			mtw = mw / MegaTile.TILES_PER_MEGA_TILE,
 			mth = mh / MegaTile.TILES_PER_MEGA_TILE;
 		MegaTile[] tiles = new MegaTile[mtw * mth];
+		for (int i = 0, n = tiles.length; i < n; i++)
+			tiles[i] = new MegaTile(this);
 		this.tiles = tiles;
 		
 		// Set sizes
+		this.megaw = mtw;
+		this.megah = mth;
 		this.pixelw = mw * MegaTile.TILE_PIXEL_SIZE;
 		this.pixelh = mh * MegaTile.TILE_PIXEL_SIZE;
 	}
@@ -86,6 +96,29 @@ public class Level
 		this.game = __g;
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the megatile at the given megatile coordinates.
+	 *
+	 * @param __x The X coordinate in megatiles.
+	 * @param __y The Y coordinate in megatiles.
+	 * @return The megatile at the given coordinates.
+	 * @throws IndexOutOfBoundsException If the megatile position is not
+	 * within bounds.
+	 * @since 2017/02/11
+	 */
+	public MegaTile megaTile(int __x, int __y)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error BE04 Megatile not in level range.}
+		int megaw = this.megaw,
+			megah = this.megah;
+		if (__x < 0 || __y < 0 || __x >= megaw || __y >= megah)
+			throw new IndexOutOfBoundsException("BE04");
+		
+		// Get
+		return this.tiles[(__y * megaw) + __x];
 	}
 	
 	/**

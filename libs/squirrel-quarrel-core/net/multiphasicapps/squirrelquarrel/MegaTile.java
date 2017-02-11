@@ -34,6 +34,10 @@ public class MegaTile
 	public static final int TILE_PIXEL_SIZE =
 		32;
 	
+	/** The size of megatiles in pixels. */
+	public static final int MEGA_TILE_PIXEL_SIZE =
+		TILE_PIXEL_SIZE * TILES_PER_MEGA_TILE;
+	
 	/** The owning level */
 	protected final Level level;
 	
@@ -84,6 +88,28 @@ public class MegaTile
 		this.level = __l;
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Gets the terrain for the given sub-tile.
+	 *
+	 * @param __x The tile X position.
+	 * @param __y The tile Y position.
+	 * @return The terrain type for the given tile.
+	 * @throws IndexOutOfBoundsException If the position is not in the megatile
+	 * bounds.
+	 * @since 2017/02/11
+	 */
+	public TerrainType subTileTerrain(int __x, int __y)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error BE03 Cannot get terrain because the tile is
+		// out of range.}
+		if (__x < 0 || __y < 0 || __x >= TILES_PER_MEGA_TILE ||
+			__y >= TILES_PER_MEGA_TILE)
+			throw new IndexOutOfBoundsException("BE03");
+		
+		return TerrainType.GRASS;
 	}
 }
 

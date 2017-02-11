@@ -24,7 +24,6 @@ import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
 import net.multiphasicapps.squirrelquarrel.Level;
 import net.multiphasicapps.squirrelquarrel.TerrainType;
-import net.multiphasicapps.xpm.XPMImageReader;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -36,14 +35,6 @@ public class GameInterface
 	extends Canvas
 	implements Runnable
 {
-	/** The single image reader instance. */
-	private static final XPMImageReader _XPM_READER =
-		new XPMImageReader();
-	
-	/** The cache of terrain tiles. */
-	private static final Map<TerrainType, Reference<Image>> _TILE_CACHE =
-		new HashMap<>();
-	
 	/** The game to draw and interact with. */
 	protected final Game game;
 	
@@ -55,6 +46,9 @@ public class GameInterface
 	
 	/** The height of the level in pixels. */
 	protected final int levelpxh;
+	
+	/** The mega tile cacher, used to combine megatiles into one image. */
+	protected final MegaTileCacher mtcacher;
 	
 	/** The current game speed. */
 	private volatile GameSpeed _speed =
@@ -101,6 +95,7 @@ public class GameInterface
 		this.level = (level = __g.level());
 		this.levelpxw = level.pixelWidth();
 		this.levelpxh = level.pixelHeight();
+		this.mtcacher = new MegaTileCacher(level);
 	}
 	
 	/**
@@ -121,12 +116,11 @@ public class GameInterface
 			vieww = this._vieww,
 			viewh = this._viewh;
 		
-		// Test draw an entire map
-		Image img = __cacheTile(TerrainType.GRASS);
+		// Draw all megatiles in view
+		MegaTileCacher mtcacher = this.mtcacher;
 		
-		for (int sy = 0; sy < viewh; sy += 32)
-			for (int sx = 0; sx < vieww; sx += 32)
-				__g.drawImage(img, sx, sy, 0);
+		// Just draw the first megatile
+		__g.drawImage(mtcacher.cacheMegaTile(0, 0), 0, 0, 0);
 	}
 	
 	/**
@@ -217,43 +211,6 @@ public class GameInterface
 		this._vieww = __w;
 		this._viewh = __h;
 		translateViewport(0, 0);
-	}
-	
-	/**
-	 * Caches the specified tile.
-	 *
-	 * @param __t The terrain to get the image for.
-	 * @return The image for the given terrain.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/10
-	 */
-	private static final Image __cacheTile(TerrainType __t)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Get ref
-		Reference<Image> ref = _TILE_CACHE.get(__t);
-		Image rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			try
-			{
-				_TILE_CACHE.put(__t, new WeakReference<>(
-					(rv = _XPM_READER.readImage(__t.imageStream()))));
-			}
-			
-			// {@squirreljme.error BK01 Failed to read the image data for the
-			// specified file. (The terrain type)}
-			catch (IOException e)
-			{
-				throw new RuntimeException(String.format("BK01 %s", __t), e);
-			}
-		
-		return rv;
 	}
 }
 
