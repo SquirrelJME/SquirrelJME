@@ -159,6 +159,8 @@ public class SwingCanvasInstance
 			Graphics2D gfx = (Graphics2D)__g;
 			AWTGraphicsAdapter adapter = SwingCanvasInstance.this.adapter;
 			adapter._awt = gfx;
+			adapter._width = getWidth();
+			adapter._height = getHeight();
 			
 			// Reset translation
 			adapter.translate(-adapter.getTranslateX(),

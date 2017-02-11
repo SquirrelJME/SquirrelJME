@@ -48,6 +48,12 @@ public class AWTGraphicsAdapter
 	/** Wrapped AWT graphics (where things go to). */
 	volatile java.awt.Graphics2D _awt;
 	
+	/** The surface width. */
+	volatile int _width;
+	
+	/** The surface height. */
+	volatile int _height;
+	
 	/** The last color used. */
 	private volatile int _lastcolor;
 	
@@ -77,6 +83,26 @@ public class AWTGraphicsAdapter
 	protected boolean primitiveHasAlphaChannel()
 	{
 		return true;
+	}
+		
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/11
+	 */
+	@Override
+	protected int primitiveImageHeight()
+	{
+		return this._height;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/11
+	 */
+	@Override
+	protected int primitiveImageWidth()
+	{
+		return this._width;
 	}
 	
 	/**

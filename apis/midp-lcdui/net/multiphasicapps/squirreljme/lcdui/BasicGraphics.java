@@ -81,6 +81,22 @@ public abstract class BasicGraphics
 	protected abstract boolean primitiveHasAlphaChannel();
 	
 	/**
+	 * Returns the height of the surface.
+	 *
+	 * @return The height width.
+	 * @since 2017/02/11
+	 */
+	protected abstract int primitiveImageHeight();
+	
+	/**
+	 * Returns the width of the surface.
+	 *
+	 * @return The surface width.
+	 * @since 2017/02/11
+	 */
+	protected abstract int primitiveImageWidth();
+	
+	/**
 	 * Draws a primitive line.
 	 *
 	 * The coordinates will be absolute coordinates after translation and
@@ -202,7 +218,8 @@ public abstract class BasicGraphics
 		
 		// Get clipping region
 		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = this._clipex, clipey = this._clipey;
+			clipex = Math.min(primitiveImageWidth(), this._clipex),
+			clipey = Math.min(primitiveImageHeight(), this._clipey);
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
@@ -228,7 +245,8 @@ public abstract class BasicGraphics
 		
 		// Get clipping region
 		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = this._clipex, clipey = this._clipey;
+			clipex = Math.min(primitiveImageWidth(), this._clipex),
+			clipey = Math.min(primitiveImageHeight(), this._clipey);
 		
 		// Perform Cohen-Sutherland line clipping
 		for (;;)
@@ -379,7 +397,8 @@ public abstract class BasicGraphics
 		
 		// Get clipping region
 		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = this._clipex, clipey = this._clipey;
+			clipex = Math.min(primitiveImageWidth(), this._clipex),
+			clipey = Math.min(primitiveImageHeight(), this._clipey);
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
@@ -551,7 +570,8 @@ public abstract class BasicGraphics
 		
 		// Get clipping region
 		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = this._clipex, clipey = this._clipey;
+			clipex = Math.min(primitiveImageWidth(), this._clipex),
+			clipey = Math.min(primitiveImageHeight(), this._clipey);
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)

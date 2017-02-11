@@ -299,6 +299,26 @@ public class Image
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2017/02/11
+		 */
+		@Override
+		protected int primitiveImageHeight()
+		{
+			return Image.this._height;
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/11
+		 */
+		@Override
+		protected int primitiveImageWidth()
+		{
+			return Image.this._width;
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2017/02/10
 		 */
 		@Override
