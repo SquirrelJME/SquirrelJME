@@ -236,5 +236,16 @@ class __JITClassStream__
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Returns the owning JIT.
+	 *
+	 * @return The owning JIT.
+	 * @since 2017/02/11
+	 */
+	final JIT __jit()
+	{
+		return this.jit;
+	}
 }
 

@@ -84,5 +84,16 @@ public class JIT
 			throw new JITException("ED01", e);
 		}
 	}
+	
+	/**
+	 * Returns the translation engine provider.
+	 *
+	 * @return The translation engine provider.
+	 * @since 2017/02/11
+	 */
+	public TranslationEngineProvider engineProvider()
+	{
+		return this.engineprovider;
+	}
 }
 

@@ -38,6 +38,12 @@ class __JITCodeStream__
 	final ByteDeque _codebuffer =
 		new ByteDeque();
 	
+	/** The register allocator. */
+	final CellAllocator _allocator;
+	
+	/** The instance of the translation engine. */
+	final TranslationEngine _engine;
+	
 	/** The state of the stack for each instruction. */
 	private final Map<Integer, Object> _state =
 		new HashMap<>();
@@ -64,6 +70,12 @@ class __JITCodeStream__
 		
 		// Set
 		this._classstream = __c;
+		
+		// Setup engine
+		TranslationEngine engine = __c.__jit().engineProvider().createEngine();
+		this._engine = engine;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
