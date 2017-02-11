@@ -54,7 +54,7 @@ public class GameInterface
 	private volatile GameSpeed _speed =
 		GameSpeed.NORMAL;
 	
-	/** The number of frames which have been rendered. */
+	/** The last frame the game was rendered on. */
 	private volatile int _renderframe;
 	
 	/** The viewport X position. */
@@ -108,11 +108,14 @@ public class GameInterface
 	@Override
 	public void paint(Graphics __g)
 	{
-		// Mark as in paint
+		// If already painting, do not duplicate a paint
+		if (this._inpaint)
+			return;
 		this._inpaint = true;
 		
 		// Get the current frame the game is on
 		Game game = this.game;
+		this._renderframe = game.frameCount();
 		Level level = game.level();
 		int framenum = game.frameCount();
 		
@@ -152,7 +155,18 @@ public class GameInterface
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
 			if ((exit - enter) < speed.nanoFrameTime() && !this._inpaint)
-				repaint();
+			{
+				int gameframe = game.frameCount(),
+					paintframe = this._renderframe;
+				
+				// Renderer seems to be a bit slow, skip the request
+				if (gameframe < paintframe - 1)
+					this._renderframe = gameframe;
+				
+				// Request repaint
+				else
+					repaint();
+			}
 			
 			// Delay thread for the next frame
 			exit = System.nanoTime();
