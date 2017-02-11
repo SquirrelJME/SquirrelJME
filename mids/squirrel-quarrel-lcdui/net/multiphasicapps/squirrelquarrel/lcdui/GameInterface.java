@@ -69,6 +69,9 @@ public class GameInterface
 	/** The view height. */
 	private volatile int _viewh;
 	
+	/** Is the game in a repaint? */
+	private volatile boolean _inpaint;
+	
 	/**
 	 * Initializes the game.
 	 *
@@ -105,6 +108,9 @@ public class GameInterface
 	@Override
 	public void paint(Graphics __g)
 	{
+		// Mark as in paint
+		this._inpaint = true;
+		
 		// Get the current frame the game is on
 		Game game = this.game;
 		Level level = game.level();
@@ -121,6 +127,9 @@ public class GameInterface
 		
 		// Just draw the first megatile
 		__g.drawImage(mtcacher.cacheMegaTile(0, 0), framenum & 31, 0, 0);
+		
+		// No longer painting
+		this._inpaint = false;
 	}
 	
 	/**
@@ -142,7 +151,7 @@ public class GameInterface
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
-			if ((exit - enter) < speed.nanoFrameTime())
+			if ((exit - enter) < speed.nanoFrameTime() && !this._inpaint)
 				repaint();
 			
 			// Delay thread for the next frame
