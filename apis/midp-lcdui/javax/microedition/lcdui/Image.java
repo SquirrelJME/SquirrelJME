@@ -12,9 +12,13 @@ package javax.microedition.lcdui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
 
 public class Image
 {
+	/** The RGB image data. */
+	private final int[] _data;
+	
 	/** Image width. */
 	private final int _width;
 	
@@ -66,7 +70,8 @@ public class Image
 		if (!isMutable())
 			throw new IllegalStateException("EB0f");
 		
-		throw new Error("TODO");
+		// Create
+		return new __Graphics__();
 	}
 	
 	/**
@@ -247,6 +252,36 @@ public class Image
 		int __h, int __trans, int __iw, int __ih)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Implements the primitive operations needed to draw onto images.
+	 *
+	 * @since 2017/02/10
+	 */
+	private final class __Graphics__
+		extends BasicGraphics
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		protected boolean primitiveHasAlphaChannel()
+		{
+			return Image.this._alpha;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		protected void primitiveLine(int __x1, int __y1, int __x2,
+			int __y2, int __color, boolean __dotted, boolean __blend)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
