@@ -170,7 +170,7 @@ public class AWTGraphicsAdapter
 		target.setRGB(0, 0, __l, 1, __b, __o, __l);
 		
 		// Then draw that image
-		awt.drawImage(target, __x, __y, null);
+		awt.drawImage(target, __x, __y, __l, 1, null);
 	}
 }
 
