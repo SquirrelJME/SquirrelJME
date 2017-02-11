@@ -59,6 +59,11 @@ public class Image
 		this._height = __h;
 		this._mutable = __mut && !isAnimated() && !isScalable();
 		this._alpha = __alpha;
+		
+		// If no alpha, set upper channel to full opaqueness
+		if (!__alpha)
+			for (int i = 0, n = __data.length; i < n; i++)
+				__data[i] |= 0xFF000000;
 	}
 	
 	public void getARGB16(short[] __data, int __off, int __scanlen, int __x,
@@ -114,6 +119,11 @@ public class Image
 	 *
 	 * The source image data must be within the bounds of the image.
 	 *
+	 * All written pixels will have an alpha value regardless if the image has
+	 * an alpha channel or not. In the case the image has no alpha channel then
+	 * all read pixels will have a value of {@code 0xFF} as their alpha
+	 * channel.
+	 *
 	 * @param __b The destination array.
 	 * @param __o The offset into the array.
 	 * @param __sl The scanline length of the destination array, this value may
@@ -152,7 +162,7 @@ public class Image
 			throw new IllegalArgumentException("EB0k");
 	
 		// {@squirreljme.error EB0l The absolute value of the scanline length
-		// exceeds the 
+		// exceeds the read width.}
 		int absl = Math.abs(__sl);
 		if (absl < __w)
 			throw new IllegalArgumentException("EB0l");
@@ -173,7 +183,18 @@ public class Image
 		if (ex > iw || ey > ih)
 			throw new IllegalArgumentException("EB0m");
 		
-		throw new Error("TODO");
+		// Read image data
+		int[] data = this._data;
+		for (int sy = __y, wy = 0; sy < ey; sy++, wy++)
+		{
+			// Calculate offsets
+			int srcoff = (iw * sy) + __x;
+			int dstoff = __o + (wy * __sl);
+			
+			// Copy data
+			for (int sx = __x; sx < ex; sx++)
+				__b[dstoff++] = data[srcoff++];
+		}
 	}
 	
 	public void getRGB16(short[] __data, int __off, int __scanlen, int __x,
