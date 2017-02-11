@@ -117,11 +117,16 @@ public class GameInterface
 		
 		// Get the viewport
 		int viewx = this._viewx,
-			viewy = this._viewy;
+			viewy = this._viewy,
+			vieww = this._vieww,
+			viewh = this._viewh;
 		
-		// Test draw a tile
+		// Test draw an entire map
 		Image img = __cacheTile(TerrainType.GRASS);
-		__g.drawImage(img, 8 - (framenum % 40), 8 - (framenum % 40), 0);
+		
+		for (int sy = 0; sy < viewh; sy += 32)
+			for (int sx = 0; sx < vieww; sx += 32)
+				__g.drawImage(img, sx, sy, 0);
 	}
 	
 	/**
