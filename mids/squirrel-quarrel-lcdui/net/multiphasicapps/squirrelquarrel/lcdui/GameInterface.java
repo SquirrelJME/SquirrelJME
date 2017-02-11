@@ -120,7 +120,7 @@ public class GameInterface
 		MegaTileCacher mtcacher = this.mtcacher;
 		
 		// Just draw the first megatile
-		__g.drawImage(mtcacher.cacheMegaTile(0, 0), 0, 0, 0);
+		__g.drawImage(mtcacher.cacheMegaTile(0, 0), framenum & 31, 0, 0);
 	}
 	
 	/**
