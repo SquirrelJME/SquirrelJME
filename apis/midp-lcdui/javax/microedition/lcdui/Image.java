@@ -15,6 +15,18 @@ import java.io.InputStream;
 
 public class Image
 {
+	/** Image width. */
+	private final int _width;
+	
+	/** Image height. */
+	private final int _height;
+	
+	/** Is this image mutable? */
+	private final boolean _mutable;
+	
+	/** Does this have an alpha channel? */
+	private final boolean _alpha;
+	
 	Image()
 	{
 		super();
@@ -27,14 +39,45 @@ public class Image
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * This obtains the graphics interface which is used to draw on top of
+	 * a mutable image.
+	 *
+	 * It defaults to:
+	 * The clipping region covers the entire image.
+	 * The color is a fully opaque black.
+	 * The blending mode is {@link Graphics#SRC_OVER}.
+	 * The stroke is {@link Graphics#SOLID}.
+	 * The font is the default font.
+	 * The coordinate origin is the top-left corner.
+	 *
+	 * The blending mode may only be changed to {@link Graphics#SRC} if the
+	 * image has an alpha channel.
+	 *
+	 * @return A new graphics drawer.
+	 * @throws IllegalStateException If the image is not mutable.
+	 * @since 2017/02/10
+	 */
 	public Graphics getGraphics()
+		throws IllegalStateException
 	{
+		// {@squirreljme.error EB0f Cannot get mutable graphic operations for
+		// an immutable image.}
+		if (!isMutable())
+			throw new IllegalStateException("EB0f");
+		
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the image height.
+	 *
+	 * @return The height of the image.
+	 * @since 2017/02/10
+	 */
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		return this._height;
 	}
 	
 	public void getRGB(int[] __a, int __b, int __c, int __d, int __e, int __f,
@@ -49,29 +92,59 @@ public class Image
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the image width.
+	 *
+	 * @return The width of the image.
+	 * @since 2017/02/10
+	 */
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		return this._width;
 	}
 	
+	/**
+	 * Returns {@code true} if this image has an alpha channel.
+	 *
+	 * @return {@code true} if this image has an alpha channel.
+	 * @since 2017/02/10
+	 */
 	public boolean hasAlpha()
 	{
-		throw new Error("TODO");
+		return this._alpha;
 	}
 	
+	/**
+	 * Returns {@code true} if this image is animated.
+	 *
+	 * @return {@code true} if this image is animated.
+	 * @since 2017/02/10
+	 */
 	public boolean isAnimated()
 	{
-		throw new Error("TODO");
+		return (this instanceof AnimatedImage);
 	}
 	
+	/**
+	 * Returns {@code true} if this image is mutable.
+	 *
+	 * @return {@code true} if this image is mutable.
+	 * @since 2017/02/10
+	 */
 	public boolean isMutable()
 	{
-		throw new Error("TODO");
+		return this._mutable && !isAnimated() && !isScalable();
 	}
 	
+	/**
+	 * Returns {@code true} if this image is scalable.
+	 *
+	 * @return {@code true} if this image is scalable.
+	 * @since 2017/02/10
+	 */
 	public boolean isScalable()
 	{
-		throw new Error("TODO");
+		return (this instanceof ScalableImage);
 	}
 	
 	public static Image createImage(byte[] __a, int __b, int __c)
@@ -111,9 +184,56 @@ public class Image
 		throw new Error("TODO");
 	}
 	
-	public static Image createRGBImage(int[] __a, int __b, int __c, boolean 
-		__d)
+	/**
+	 * Creates an image from the specified ARGB pixel array.
+	 *
+	 * @param __rgb The ARGB or RGB image data to use as the image data.
+	 * @param __w The width of the image.
+	 * @param __h The height of the image.
+	 * @param __alpha If {@code true} then the alpha is processed, otherwise
+	 * all pixels are treated as fully opaque.
+	 * @since 2017/02/10
+	 */
+	public static Image createRGBImage(int[] __rgb, int __w, int __h, boolean 
+		__alpha)
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
 	{
+		// Check
+		if (__rgb == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB0d Invalid image size. (The width;
+		// The height)}
+		int area = __w * __h;
+		if (__w <= 0 || __h <= 0 || area <= 0)
+			throw new IllegalArgumentException(String.format("EB0d %d %d",
+				__w, __h));
+		
+		// {@squirreljme.error EB0e The input integer buffer is shorter than
+		// the specified area.}
+		int rgblen;
+		if ((rgblen = __rgb.length) < area)
+			throw new IndexOutOfBoundsException("EB0e");
+		
+		// Use a cloned copy of the pixel data?
+		if (rgblen == area)
+			__rgb = __rgb.clone();
+		
+		// Otherwise initialize a new one
+		else
+		{
+			int[] copy = new int[area];
+			for (int i = 0; i < area; i++)
+				copy[i] = __rgb[i];
+			__rgb = copy;
+		}
+		
+		// If there is no alpha channel, force all of it
+		if (!__alpha)
+			for (int i = 0; i < area; i++)
+				__rgb[i] |= 0xFF000000;
+		
 		throw new Error("TODO");
 	}
 	
