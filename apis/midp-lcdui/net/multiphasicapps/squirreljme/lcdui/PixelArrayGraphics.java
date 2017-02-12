@@ -151,7 +151,7 @@ public class PixelArrayGraphics
 		// Not blending
 		else
 			for (int src = __o; src < end; src++)
-				data[dest++] = __b[src] | 0xFF000000;
+				data[dest++] = __b[src];
 	}
 }
 

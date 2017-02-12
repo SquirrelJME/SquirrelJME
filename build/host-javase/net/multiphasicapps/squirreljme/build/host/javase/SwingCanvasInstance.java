@@ -45,10 +45,6 @@ public class SwingCanvasInstance
 	/** The connector to the canvas. */
 	protected final DisplayCanvasConnector canvasconnector;
 	
-	/** The adapter for drawing. */
-	protected final AWTGraphicsAdapter adapter =
-		new AWTGraphicsAdapter();
-	
 	/** Key press engine. */
 	protected final KeyPressEngine keyengine;
 	

@@ -939,6 +939,31 @@ public abstract class BasicGraphics
 	}
 	
 	/**
+	 * Resets all parameters of the graphics output.
+	 *
+	 * @param __clip If {@code true} then the clip is also reset.
+	 * @since 2017/02/12
+	 */
+	public void resetParameters(boolean __clip)
+	{
+		// Always reset these
+		this._blendmode = SRC_OVER;
+		this._color = 0xFF000000;
+		this._strokestyle = SOLID;
+		this._transx = 0;
+		this._transy = 0;
+	
+		// Reset clip also
+		if (__clip)
+		{
+			this._clipsx = 0;
+			this._clipsy = 0;
+			this._clipex = Integer.MAX_VALUE;
+			this._clipey = Integer.MAX_VALUE;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */

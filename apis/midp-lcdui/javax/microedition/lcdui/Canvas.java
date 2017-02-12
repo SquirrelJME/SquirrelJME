@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
@@ -146,6 +147,9 @@ public abstract class Canvas
 	
 	/** The key listener to use. */
 	private volatile KeyListener _keylistener;
+	
+	/** Is the rendering transparent or opaque? */
+	private volatile boolean _transparent;
 	
 	/**
 	 * Initializes the base canvas.
@@ -412,9 +416,24 @@ public abstract class Canvas
 		this._keylistener = __kl;
 	}
 	
+	/**
+	 * Sets the painting mode of the canvas.
+	 *
+	 * If transparent mode is enabled, then the implementation (not the end
+	 * developer) will fill the background with a suitable color or image
+	 * (which is unspecified).
+	 *
+	 * If opaque mode (which is the default) is enabled then it will be
+	 * assumed that {@link #repaint(Graphics)} will cover every pixel and as
+	 * such it will not be required for the background to be cleared or
+	 * initialized.
+	 *
+	 * @param __opaque If {@code true} then opaque mode is enabled.
+	 * @since 2017/02/12
+	 */
 	public void setPaintMode(boolean __opaque)
 	{
-		throw new Error("TODO");
+		this._transparent = !__opaque;
 	}
 	
 	public void setRequiredActions(int __actions)
@@ -512,6 +531,17 @@ public abstract class Canvas
 		@Override
 		public void paint(Graphics __g)
 		{
+			// If this is a basic graphics drawer, reset parameters except
+			// for the clip
+			if (__g instanceof BasicGraphics)
+				((BasicGraphics)__g).resetParameters(false);
+			
+			// If the canvas is transparent then just clear the background and
+			// set it to black
+			if (Canvas.this._transparent)
+				__g.fillRect(0, 0, __g.getClipWidth(), __g.getClipHeight());
+			
+			// Perform normal paint
 			Canvas.this.paint(__g);
 		}
 		
