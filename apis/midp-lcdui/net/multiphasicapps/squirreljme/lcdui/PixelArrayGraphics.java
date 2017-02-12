@@ -135,36 +135,50 @@ public class PixelArrayGraphics
 				
 				// Otherwise blend
 				else
-				{
-					// Get destination color
-					int dc = data[dest];
-				
-					// Split into RGB
-					int sr = (sc >> 16) & 0xFF,
-						sg = (sc >> 8) & 0xFF,
-						sb = (sc) & 0xFF,
-						da = (dc >> 24) & 0xFF,
-						dr = (dc >> 16) & 0xFF,
-						dg = (dc >> 8) & 0xFF,
-						db = (dc) & 0xFF;
-				
-					// Perform blending
-					int qq = 255 - sa;
-					int xa = sa + da - ((sa * da) / 255),
-						xr = ((sr * sa) / 255) + ((dr * qq) / 255),
-						xg = ((sg * sa) / 255) + ((dg * qq) / 255),
-						xb = ((sb * sa) / 255) + ((db * qq) / 255);
-				
-					// Recompile
-					int xc = (xa << 24) | (xr << 16) | (xg << 8) | xb;
-					data[dest] = xc;
-				}
+					data[dest] = __blend(sc, data[dest]);
 			}
 		
 		// Not blending
 		else
 			for (int src = __o; src < end; src++)
 				data[dest++] = __b[src];
+	}
+	
+	/**
+	 * Blends two colors.
+	 *
+	 * @param __src The source color.
+	 * @param __dest The destination color.
+	 * @return The resulting blended color.
+	 * @since 2017/02/12
+	 */
+	private static final int __blend(int __src, int __dest)
+	{
+		// Split into RGB
+		int sa = (__src >> 24) & 0xFF,
+			sr = (__src >> 16) & 0xFF,
+			sg = (__src >> 8) & 0xFF,
+			sb = (__src) & 0xFF,
+			da = (__dest >> 24) & 0xFF,
+			dr = (__dest >> 16) & 0xFF,
+			dg = (__dest >> 8) & 0xFF,
+			db = (__dest) & 0xFF;
+	
+		// Difference of alpha values
+		// This value was 255, however since shift right by 8 is 256, this
+		// may result in a slow and gradual loss of color
+		int qq = 256 - sa;
+		
+		// Perform blending
+		// The right shifts by 8 used to be divides by 255, however right
+		// shifting 7 times is faster than dividing 7 times
+		int xa = sa + da - ((sa * da) >>> 8),
+			xr = ((sr * sa) >>> 8) + ((dr * qq) >>> 8),
+			xg = ((sg * sa) >>> 8) + ((dg * qq) >>> 8),
+			xb = ((sb * sa) >>> 8) + ((db * qq) >>> 8);
+	
+		// Recompile
+		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
 	}
 }
 
