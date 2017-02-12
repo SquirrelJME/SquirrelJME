@@ -37,6 +37,10 @@ public class GameInterface
 	extends Canvas
 	implements KeyListener, Runnable
 {
+	/** Level panning speed. */
+	private static final int _PANNING_SPEED =
+		MegaTile.TILE_PIXEL_SIZE / 2;
+	
 	/** The game to draw and interact with. */
 	protected final Game game;
 	
@@ -73,6 +77,12 @@ public class GameInterface
 	
 	/** Is the game in a repaint? */
 	private volatile boolean _inpaint;
+	
+	/** The X view direction movement. */
+	private volatile int _xmove;
+	
+	/** The Y view direction movement. */
+	private volatile int _ymove;
 	
 	/**
 	 * Initializes the game.
@@ -135,20 +145,14 @@ public class GameInterface
 		
 		// Just draw the first megatile
 		__g.drawImage(mtcacher.cacheMegaTile(0, 0),
-			(framenum & 31), 0, 0);
+			-viewx, -viewy, 0);
 		__g.drawImage(mtcacher.cacheMegaTile(1, 0),
-			(framenum & 31) + MegaTile.MEGA_TILE_PIXEL_SIZE, 0, 0);
+			-(viewx + MegaTile.MEGA_TILE_PIXEL_SIZE), -viewy, 0);
 		__g.drawImage(mtcacher.cacheMegaTile(0, 1),
-			(framenum & 31), MegaTile.MEGA_TILE_PIXEL_SIZE, 0);
+			-viewx, -(viewy + MegaTile.MEGA_TILE_PIXEL_SIZE), 0);
 		__g.drawImage(mtcacher.cacheMegaTile(1, 1),
-			(framenum & 31) + MegaTile.MEGA_TILE_PIXEL_SIZE,
-			MegaTile.MEGA_TILE_PIXEL_SIZE, 0);
-		
-		// Draw some, for fog effects
-		__g.setColor(0x000000);
-		__g.setStrokeStyle(Graphics.DOTTED);
-		for (int y = 32, mod = 0; y < 512; y++, mod = (mod + 1) & 1)
-			__g.drawLine(32 + mod, y, 512, y);
+			-(viewx + MegaTile.MEGA_TILE_PIXEL_SIZE),
+			-(viewy + MegaTile.MEGA_TILE_PIXEL_SIZE), 0);
 		
 		// No longer painting
 		this._inpaint = false;
@@ -161,7 +165,33 @@ public class GameInterface
 	@Override
 	public void keyPressed(int __code, int __mods)
 	{
-		System.err.printf("DEBUG -- Key pressed %d %d%n", __code, __mods);
+		// Unknown
+		switch (__code)
+		{
+				// Pan view view
+			case Canvas.KEY_LEFT:
+				this._xmove = -1;
+				break;
+				
+				// Pan view right
+			case Canvas.KEY_RIGHT:
+				this._xmove = 1;
+				break;
+				
+				// Pan view up
+			case Canvas.KEY_UP:
+				this._ymove = -1;
+				break;
+				
+				// Pan view down
+			case Canvas.KEY_DOWN:
+				this._ymove = 1;
+				break;
+				
+				// Unknown
+			default:
+				break;
+		}
 	}
 	
 	/**
@@ -171,7 +201,25 @@ public class GameInterface
 	@Override
 	public void keyReleased(int __code, int __mods)
 	{
-		System.err.printf("DEBUG -- Key released %d %d%n", __code, __mods);
+		// Unknown
+		switch (__code)
+		{
+				// Stop panning X
+			case Canvas.KEY_LEFT:
+			case Canvas.KEY_RIGHT:
+				this._xmove = 0;
+				break;
+				
+				// Stop panning Y
+			case Canvas.KEY_UP:
+			case Canvas.KEY_DOWN:
+				this._ymove = 0;
+				break;
+				
+				// Unknown
+			default:
+				break;
+		}
 	}
 	
 	/**
@@ -230,6 +278,9 @@ public class GameInterface
 			
 			// Run a single game cycle
 			game.run();
+			
+			// Perform local client event handling (commands and such)
+			__localEvents();
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
@@ -313,6 +364,18 @@ public class GameInterface
 		this._vieww = __w;
 		this._viewh = __h;
 		translateViewport(0, 0);
+	}
+	
+	/**
+	 * Performs local event handling.
+	 *
+	 * @since 2017/02/12
+	 */
+	private void __localEvents()
+	{
+		// Translate viewport
+		translateViewport(this._xmove * _PANNING_SPEED,
+			this._ymove * _PANNING_SPEED);
 	}
 }
 
