@@ -216,7 +216,9 @@ public class KeyPressEngine
 			rv |= KeyListener.MODIFIER_SHIFT;
 			
 		// Meta?
-		if ((raw & KeyEvent.META_DOWN_MASK) != 0)
+		// Also consider the logo key being down as the meta key
+		if ((raw & KeyEvent.META_DOWN_MASK) != 0 ||
+			this._pressed.contains(KeyEvent.VK_WINDOWS))
 			rv |= KeyListener.MODIFIER_COMMAND;
 		
 		// AltGr?
