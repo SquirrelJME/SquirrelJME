@@ -129,15 +129,17 @@ public abstract class BasicGraphics
 	 *
 	 * @param __b The source buffer containing RGB data.
 	 * @param __o The offset into the buffer.
-	 * @param __l The number of pixels to draw.
+	 * @param __sl The scanline length in the source buffer.
 	 * @param __x The destination X position.
 	 * @param __y The destination Y position.
+	 * @param __w The width of the tile.
+	 * @param __h The height of the tile.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
 	 * @since 2017/02/11
 	 */
-	protected abstract void primitiveRGBSlice(int[] __b, int __o, int __l,
-		int __x, int __y, boolean __blend);
+	protected abstract void primitiveRGBTile(int[] __b, int __o, int __l,
+		int __x, int __y, int __w, int __h, boolean __blend);
 	
 	/**
 	 * {@inheritDoc}
@@ -297,7 +299,7 @@ public abstract class BasicGraphics
 				__i.getRGB(slice, 0, limit, sx, bsy, limit, 1);
 				
 				// Draw slice
-				primitiveRGBSlice(slice, 0, limit, dx, __y, blend);
+				primitiveRGBTile(slice, 0, limit, dx, __y, limit, 1, blend);
 			}
 	}
 	

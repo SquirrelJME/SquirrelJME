@@ -108,40 +108,43 @@ public class PixelArrayGraphics
 	 * @since 2017/02/11
 	 */
 	@Override
-	protected void primitiveRGBSlice(int[] __b, int __o, int __l,
-		int __x, int __y, boolean __blend)
+	protected void primitiveRGBTile(int[] __b, int __o, int __sl,
+		int __x, int __y, int __w, int __h, boolean __blend)
 	{
 		int[] data = this._data;
 		int iw = this._width;
 		
-		// Calculate destination
-		int dest = (__y * iw) + __x;
-		int end = __o + __l;
-		
-		// Blending?
-		if (__blend)
-			for (int src = __o; src < end; src++, dest++)
-			{
-				// Quickly check to see if no math needs to be done
-				int sc = __b[src];
-				int sa = (sc >> 24) & 0xFF;
-				if (sa == 0x00)
-					continue;
+		// Draw loop
+		for (int dest = (__y * iw) + __x, src = 0, ey = __y + __h;
+			__y < ey; __y++, dest += iw, src += __sl)
+		{
+			// Calculate the end of the scanlines
+			int sp = src,
+				spend = src + __w,
+				dp = dest;
+			
+			if (__blend)
+				for (; sp < spend; sp++, dp++)
+				{
+					// Quickly check to see if no math needs to be done
+					int sc = __b[sp];
+					int sa = (sc >> 24) & 0xFF;
+					if (sa == 0x00)
+						continue;
 				
-				// If the source is fully opaque it will always replace the
-				// destination no matter what
-				else if (sa == 0xFF)
-					data[dest] = sc;
+					// If the source is fully opaque it will always replace the
+					// destination no matter what
+					else if (sa == 0xFF)
+						data[dp] = sc;
 				
-				// Otherwise blend
-				else
-					data[dest] = __blend(sc, data[dest]);
-			}
-		
-		// Not blending
-		else
-			for (int src = __o; src < end; src++)
-				data[dest++] = __b[src];
+					// Otherwise blend
+					else
+						data[dp] = __blend(sc, data[dp]);
+				}
+			else
+				for (; sp < spend; sp++, dp++)
+					data[dp] = __b[sp];
+		}
 	}
 	
 	/**
