@@ -146,6 +146,7 @@ public class GameInterface
 		
 		// Draw some rectangle
 		__g.setColor(0xFFFF00);
+		__g.setAlpha(127);
 		__g.setStrokeStyle(Graphics.DOTTED);
 		__g.drawRect(32, 32, 128, 128);
 		

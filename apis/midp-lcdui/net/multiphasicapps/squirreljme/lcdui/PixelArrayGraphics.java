@@ -105,10 +105,11 @@ public class PixelArrayGraphics
 		
 		// Draw line
 		int skip = (__dotted ? 2 : 1);
+		int alpha = (__color >> 24) & 0xFF;
 		for (int dest = (__y * iw) + __x, ex = dest + __w; dest < ex;
 			dest += skip)
 			if (__blend)
-				data[dest] = __blend(__color, data[dest]);
+				data[dest] = __blend(__color, data[dest], alpha);
 			else
 				data[dest] = __color;
 	}
@@ -130,7 +131,7 @@ public class PixelArrayGraphics
 	 */
 	@Override
 	protected void primitiveRGBTile(int[] __b, int __o, int __sl,
-		int __x, int __y, int __w, int __h, boolean __blend)
+		int __x, int __y, int __w, int __h, boolean __blend, int __alpha)
 	{
 		int[] data = this._data;
 		int iw = this._width;
@@ -147,22 +148,7 @@ public class PixelArrayGraphics
 			// Blending pixels
 			if (__blend)
 				for (; sp < spend; sp++, dp++)
-				{
-					// Quickly check to see if no math needs to be done
-					int sc = __b[sp];
-					int sa = (sc >> 24) & 0xFF;
-					if (sa == 0x00)
-						continue;
-				
-					// If the source is fully opaque it will always replace the
-					// destination no matter what
-					else if (sa == 0xFF)
-						data[dp] = sc;
-				
-					// Otherwise blend
-					else
-						data[dp] = __blend(sc, data[dp]);
-				}
+					data[dp] = __blend(__b[sp], data[dp], __alpha);
 			
 			// Not blending
 			else
@@ -184,10 +170,11 @@ public class PixelArrayGraphics
 		
 		// Draw line
 		int skip = (__dotted ? iw << 1 : iw);
+		int alpha = (__color >> 24) & 0xFF;
 		for (int dest = (__y * iw) + __x, ey = dest + (iw * __h); dest < ey;
 			dest += skip)
 			if (__blend)
-				data[dest] = __blend(__color, data[dest]);
+				data[dest] = __blend(__color, data[dest], alpha);
 			else
 				data[dest] = __color;
 	}
@@ -197,13 +184,15 @@ public class PixelArrayGraphics
 	 *
 	 * @param __src The source color.
 	 * @param __dest The destination color.
+	 * @param __alpha Alpha value which modifies the source.
 	 * @return The resulting blended color.
 	 * @since 2017/02/12
 	 */
-	private static final int __blend(int __src, int __dest)
+	private static final int __blend(int __src, int __dest, int __alpha)
 	{
 		// Split into RGB
-		int sa = (__src >> 24) & 0xFF,
+		// Make sure the source alpha value gets multiplied
+		int sa = (((__src >> 24) & 0xFF) * __alpha) >>> 8,
 			sr = (__src >> 16) & 0xFF,
 			sg = (__src >> 8) & 0xFF,
 			sb = (__src) & 0xFF,

@@ -136,10 +136,11 @@ public abstract class BasicGraphics
 	 * @param __h The height of the tile.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
+	 * @param __alpha The alpha value, if applicable.
 	 * @since 2017/02/11
 	 */
 	protected abstract void primitiveRGBTile(int[] __b, int __o, int __l,
-		int __x, int __y, int __w, int __h, boolean __blend);
+		int __x, int __y, int __w, int __h, boolean __blend, int __alpha);
 	
 	/**
 	 * {@inheritDoc}
@@ -286,6 +287,7 @@ public abstract class BasicGraphics
 		// be drawn or not drawn, so in this event just ignore blend if there
 		// is not alpha.
 		boolean blend = (__blend() && __i.hasAlpha());
+		int alpha = getAlpha();
 		
 		// Render horizontal slices
 		for (;__y < ey; bsy++, __y++)
@@ -299,7 +301,8 @@ public abstract class BasicGraphics
 				__i.getRGB(slice, 0, limit, sx, bsy, limit, 1);
 				
 				// Draw slice
-				primitiveRGBTile(slice, 0, limit, dx, __y, limit, 1, blend);
+				primitiveRGBTile(slice, 0, limit, dx, __y, limit, 1, blend,
+					alpha);
 			}
 	}
 	
