@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
 import net.multiphasicapps.squirreljme.lcdui.KeyEventType;
+import net.multiphasicapps.squirreljme.lcdui.KeyNames;
 import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
 
 /**
@@ -180,9 +181,18 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the name for a key.
+	 *
+	 * @param __a The name to get the key for.
+	 * @return The name of the given key.
+	 * @throws IllegalArgumentException If the key is not valid.
+	 * @since 2017/02/12
+	 */
 	public String getKeyName(int __a)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		return KeyNames.getKeyName(__a);
 	}
 	
 	public int[] getSoftkeyLabelCoordinates(int __p)
