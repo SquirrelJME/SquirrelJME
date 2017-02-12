@@ -193,10 +193,18 @@ public class PixelArrayGraphics
 	private static final int __blend(int __src, int __dest, int __bor,
 		int __alpha)
 	{
-		// Split into RGB
 		// Make sure the source alpha value gets multiplied
-		int sa = (((__src >> 24) & 0xFF) * __alpha) >>> 8,
-			sr = (__src >> 16) & 0xFF,
+		// However if the source is invisible then return the destination
+		int sa = (((__src >> 24) & 0xFF) * __alpha) >>> 8;
+		if (sa == 0)
+			return __dest;
+		
+		// If the source is fully opaque then return the source
+		else if (sa == 0xFF)
+			return __src;
+		
+		// Split into RGB
+		int sr = (__src >> 16) & 0xFF,
 			sg = (__src >> 8) & 0xFF,
 			sb = (__src) & 0xFF,
 			da = ((__dest >> 24) & 0xFF) | __bor,
