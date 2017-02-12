@@ -124,6 +124,10 @@ public abstract class Canvas
 	public static final int KEY_TAB =
 		9;
 	
+	/** The up arrow key. */
+	public static final int KEY_UP =
+		-1;
+	
 	/** This is a game key for the left direction. */
 	public static final int LEFT =
 		2;
@@ -258,7 +262,7 @@ public abstract class Canvas
 	/**
 	 * This is called when a key has been pressed.
 	 *
-	 * @param __code The key code.
+	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
 	protected void keyPressed(int __code)
@@ -269,7 +273,7 @@ public abstract class Canvas
 	/**
 	 * This is called when a key has been released.
 	 *
-	 * @param __code The key code.
+	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
 	protected void keyReleased(int __code)
@@ -280,7 +284,7 @@ public abstract class Canvas
 	/**
 	 * This is called when a key has been repeated.
 	 *
-	 * @param __code The key code.
+	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
 	protected void keyRepeated(int __code)
@@ -450,10 +454,16 @@ public abstract class Canvas
 		 * @since 2017/02/12
 		 */
 		@Override
-		public void keyEvent(KeyEventType __t, int __code, int __mods)
+		public void keyEvent(KeyEventType __t, int __code, char __ch,
+			int __mods)
 		{
 			// The listener is optional
 			KeyListener kl = Canvas.this._keylistener;
+			
+			// Use the modfiied character for key listener events if possible
+			int klc = __code;
+			if (__ch != 0)
+				klc = __ch;
 			
 			// Depends
 			switch (__t)
@@ -462,21 +472,21 @@ public abstract class Canvas
 				case PRESSED:
 					Canvas.this.keyPressed(__code);
 					if (kl != null)
-						kl.keyPressed(__code, __mods);
+						kl.keyPressed(klc, __mods);
 					break;
 				
 					// Released
 				case RELEASED:
 					Canvas.this.keyReleased(__code);
 					if (kl != null)
-						kl.keyReleased(__code, __mods);
+						kl.keyReleased(klc, __mods);
 					break;
 					
 					// Repeated
 				case REPEATED:
 					Canvas.this.keyRepeated(__code);
 					if (kl != null)
-						kl.keyRepeated(__code, __mods);
+						kl.keyRepeated(klc, __mods);
 					break;
 					
 					// Unknown

@@ -22,13 +22,16 @@ public interface KeyEventCapableConnector
 	 *
 	 * @param __t The type of key event.
 	 * @param __code The keycode.
+	 * @param __ch The character code of the key, will be {@code 0} if it is
+	 * not valid.
 	 * @param __mods The modifiers to the key, these will match those
 	 * of {@link javax.microedition.lcdui.KeyListener}.
 	 * @throws NullPointerException On null arguments.
 	 * @see javax.microedition.lcdui.KeyListener
 	 * @since 2017/02/12
 	 */
-	public abstract void keyEvent(KeyEventType __t, int __code, int __mods)
+	public abstract void keyEvent(KeyEventType __t, int __code, char __ch,
+		int __mods)
 		throws NullPointerException;
 }
 

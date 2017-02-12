@@ -101,6 +101,9 @@ public class GameInterface
 		this.levelpxw = level.pixelWidth();
 		this.levelpxh = level.pixelHeight();
 		this.mtcacher = new MegaTileCacher(level);
+		
+		// Use self as the key listener
+		this.setKeyListener(this);
 	}
 	
 	/**
