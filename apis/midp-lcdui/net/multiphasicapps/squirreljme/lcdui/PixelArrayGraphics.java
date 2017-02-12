@@ -195,7 +195,7 @@ public class PixelArrayGraphics
 	{
 		// Make sure the source alpha value gets multiplied
 		// However if the source is invisible then return the destination
-		int sa = (((__src >> 24) & 0xFF) * __alpha) >>> 8;
+		int sa = (((__src >> 24) & 0xFF) * __alpha) / 255;
 		if (sa == 0)
 			return __dest;
 		
@@ -213,17 +213,15 @@ public class PixelArrayGraphics
 			db = (__dest) & 0xFF;
 	
 		// Difference of alpha values
-		// This value was 255, however since shift right by 8 is 256, this
-		// may result in a slow and gradual loss of color
-		int qq = 256 - sa;
+		int qq = 255 - sa;
 		
 		// Perform blending
 		// The right shifts by 8 used to be divides by 255, however right
 		// shifting 7 times is faster than dividing 7 times
-		int xa = (sa + da - ((sa * da) >>> 8)) | __bor,
-			xr = ((sr * sa) >>> 8) + ((dr * qq) >>> 8),
-			xg = ((sg * sa) >>> 8) + ((dg * qq) >>> 8),
-			xb = ((sb * sa) >>> 8) + ((db * qq) >>> 8);
+		int xa = (sa + da - ((sa * da) / 255)) | __bor,
+			xr = ((sr * sa) / 255) + ((dr * qq) / 255),
+			xg = ((sg * sa) / 255) + ((dg * qq) / 255),
+			xb = ((sb * sa) / 255) + ((db * qq) / 255);
 	
 		// Recompile
 		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
