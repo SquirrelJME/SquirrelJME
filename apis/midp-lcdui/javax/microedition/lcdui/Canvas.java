@@ -409,6 +409,16 @@ public abstract class Canvas
 	{
 		/**
 		 * {@inheritDoc}
+		 * @since 2017/02/12
+		 */
+		@Override
+		public void keyEvent(int __code, int __mods)
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2017/02/08
 		 */
 		@Override

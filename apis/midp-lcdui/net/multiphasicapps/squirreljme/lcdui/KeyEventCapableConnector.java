@@ -10,23 +10,22 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
-import javax.microedition.lcdui.Graphics;
-
 /**
- * This is a connector which is used to provide access to the canvas.
+ * This is used for connectors which are capable of receiving key events.
  *
- * @since 2017/02/08
+ * @since 2017/02/12
  */
-public interface DisplayCanvasConnector
-	extends DisplayConnector, KeyEventCapableConnector,
-		PointerEventCapableConnector
+public interface KeyEventCapableConnector
 {
 	/**
-	 * Tells the canvas to perform its paint events.
+	 * This is called when a key event has been generated.
 	 *
-	 * @param __g The graphics to paint to.
-	 * @since 2017/02/08
+	 * @param __code The keycode.
+	 * @param __mods The modifiers to the key, these will match those
+	 * of {@link javax.microedition.lcdui.KeyListener}.
+	 * @see javax.microedition.lcdui.KeyListener
+	 * @since 2017/02/12
 	 */
-	public abstract void paint(Graphics __g);
+	public abstract void keyEvent(int __code, int __mods);
 }
 

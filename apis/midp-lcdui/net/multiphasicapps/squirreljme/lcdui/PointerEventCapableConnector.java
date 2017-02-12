@@ -10,23 +10,23 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
-import javax.microedition.lcdui.Graphics;
-
 /**
- * This is a connector which is used to provide access to the canvas.
+ * This is used on connectors which are capable of receiving pointer events.
  *
- * @since 2017/02/08
+ * @since 2017/02/12
  */
-public interface DisplayCanvasConnector
-	extends DisplayConnector, KeyEventCapableConnector,
-		PointerEventCapableConnector
+public interface PointerEventCapableConnector
 {
 	/**
-	 * Tells the canvas to perform its paint events.
+	 * Informs the canvas that a pointer event has occurred.
 	 *
-	 * @param __g The graphics to paint to.
-	 * @since 2017/02/08
+	 * @param __t The type of event.
+	 * @param __x The X coordinate of the pointer.
+	 * @param __y The Y coordinate of the pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/12
 	 */
-	public abstract void paint(Graphics __g);
+	public abstract void pointerEvent(PointerEventType __t, int __x, int __y)
+		throws NullPointerException;
 }
 
