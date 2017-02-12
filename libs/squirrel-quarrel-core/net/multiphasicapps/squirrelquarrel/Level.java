@@ -122,6 +122,28 @@ public class Level
 	}
 	
 	/**
+	 * Returns the height of the map in megatiles.
+	 *
+	 * @return The map height in megatiles.
+	 * @since 2017/02/12
+	 */
+	public int megaTileHeight()
+	{
+		return this.megah;
+	}
+	
+	/**
+	 * Returns the width of the map in megatiles.
+	 *
+	 * @return The map width in megatiles.
+	 * @since 2017/02/12
+	 */
+	public int megaTileWidth()
+	{
+		return this.megaw;
+	}
+	
+	/**
 	 * Returns the height of the level in pixels.
 	 *
 	 * @return The height of the level in pixels.

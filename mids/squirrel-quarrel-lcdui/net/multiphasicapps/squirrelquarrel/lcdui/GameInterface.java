@@ -53,6 +53,12 @@ public class GameInterface
 	/** The height of the level in pixels. */
 	protected final int levelpxh;
 	
+	/** The width of the level in megatiles. */
+	protected final int levelmtw;
+	
+	/** The height of the level in megatiles. */
+	protected final int levelmth;
+	
 	/** The mega tile cacher, used to combine megatiles into one image. */
 	protected final MegaTileCacher mtcacher;
 	
@@ -104,10 +110,36 @@ public class GameInterface
 		this.level = (level = __g.level());
 		this.levelpxw = level.pixelWidth();
 		this.levelpxh = level.pixelHeight();
+		this.levelmtw = level.megaTileWidth();
+		this.levelmth = level.megaTileHeight();
 		this.mtcacher = new MegaTileCacher(level);
 		
 		// Use self as the key listener
 		this.setKeyListener(this.inputhandler);
+	}
+	
+	/**
+	 * Converts a map X coordinate to a screen X coordinate.
+	 *
+	 * @param __x The input X coordinate.
+	 * @return The output X coordinate.
+	 * @since 2017/02/12
+	 */
+	public int mapToScreenX(int __x)
+	{
+		return __x - this._viewx;
+	}
+	
+	/**
+	 * Converts a map Y coordinate to a screen Y coordinate.
+	 *
+	 * @param __x The input Y coordinate.
+	 * @return The output y coordinate.
+	 * @since 2017/02/12
+	 */
+	public int mapToScreenY(int __y)
+	{
+		return __y - this._viewy;
 	}
 	
 	/**
@@ -134,19 +166,36 @@ public class GameInterface
 			vieww = this._vieww,
 			viewh = this._viewh;
 		
-		// Draw all megatiles in view
+		// Limits to megatile region (prevents crash)
+		int levelmtw = this.levelmtw,
+			levelmth = this.levelmth;
+		
+		// MegaTiles do not often change
 		MegaTileCacher mtcacher = this.mtcacher;
 		
-		// Just draw the first megatile
-		__g.drawImage(mtcacher.cacheMegaTile(0, 0),
-			-viewx, -viewy, 0);
-		__g.drawImage(mtcacher.cacheMegaTile(1, 0),
-			-(viewx + MegaTile.MEGA_TILE_PIXEL_SIZE), -viewy, 0);
-		__g.drawImage(mtcacher.cacheMegaTile(0, 1),
-			-viewx, -(viewy + MegaTile.MEGA_TILE_PIXEL_SIZE), 0);
-		__g.drawImage(mtcacher.cacheMegaTile(1, 1),
-			-(viewx + MegaTile.MEGA_TILE_PIXEL_SIZE),
-			-(viewy + MegaTile.MEGA_TILE_PIXEL_SIZE), 0);
+		// Megatile draw loop
+		int msx = screenToMapX(0), mex = screenToMapX(vieww),
+			msy = screenToMapY(0), mey = screenToMapY(viewh),
+			rex = mex + MegaTile.MEGA_TILE_PIXEL_SIZE,
+			rey = mey + MegaTile.MEGA_TILE_PIXEL_SIZE;
+		for (int my = msy; my < rey; my += MegaTile.MEGA_TILE_PIXEL_SIZE)
+			for (int mx = msx; mx < rex; mx += MegaTile.MEGA_TILE_PIXEL_SIZE)
+			{
+				// Get mega tile coordinates
+				int mtx = mx / MegaTile.MEGA_TILE_PIXEL_SIZE,
+					mty = my / MegaTile.MEGA_TILE_PIXEL_SIZE,
+					mmx = mtx * MegaTile.MEGA_TILE_PIXEL_SIZE,
+					mmy = mty * MegaTile.MEGA_TILE_PIXEL_SIZE;
+				
+				// Ignore
+				if (mtx < 0 || mtx >= levelmtw ||
+					mty < 0 || mty >= levelmth)
+					continue;
+				
+				// Draw it
+				__g.drawImage(mtcacher.cacheMegaTile(mtx, mty),
+					mapToScreenX(mmx), mapToScreenY(mmy), 0);
+			}
 		
 		// No longer painting
 		this._inpaint = false;
@@ -251,12 +300,12 @@ public class GameInterface
 			levelpxh = this.levelpxh;
 		
 		// Cap right side
-		if (viewx + vieww >= levelpxw)
-			viewx = levelpxw - vieww;
+		if (viewx + vieww >= levelpxw - 1)
+			viewx = (levelpxw - vieww) - 1;
 		
 		// Cop bottom side
-		if (viewy + viewh >= levelpxh)
-			viewy = levelpxh - viewh;
+		if (viewy + viewh >= levelpxh - 1)
+			viewy = (levelpxh - viewh) - 1;
 		
 		// Cap left side
 		if (viewx < 0)
@@ -269,6 +318,30 @@ public class GameInterface
 		// Set new viewport
 		this._viewx = viewx;
 		this._viewy = viewy;
+	}
+	
+	/**
+	 * Converts a screen X coordinate to a map X coordinate.
+	 *
+	 * @param __x The input X coordinate.
+	 * @return The output X coordinate.
+	 * @since 2017/02/12
+	 */
+	public int screenToMapX(int __x)
+	{
+		return this._viewx + __x;
+	}
+	
+	/**
+	 * Converts a screen Y coordinate to a map Y coordinate.
+	 *
+	 * @param __x The input Y coordinate.
+	 * @return The output y coordinate.
+	 * @since 2017/02/12
+	 */
+	public int screenToMapY(int __y)
+	{
+		return this._viewy + __y;
 	}
 	
 	/**
