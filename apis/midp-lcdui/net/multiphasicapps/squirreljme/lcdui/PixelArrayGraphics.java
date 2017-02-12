@@ -98,7 +98,7 @@ public class PixelArrayGraphics
 	 */
 	@Override
 	protected void primitiveHorizontalLine(int __x, int __y,
-		int __w, int __color, boolean __dotted, boolean __blend)
+		int __w, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
 		int iw = this._width;
@@ -109,7 +109,7 @@ public class PixelArrayGraphics
 		for (int dest = (__y * iw) + __x, ex = dest + __w; dest < ex;
 			dest += skip)
 			if (__blend)
-				data[dest] = __blend(__color, data[dest], alpha);
+				data[dest] = __blend(__color, data[dest], __bor, alpha);
 			else
 				data[dest] = __color;
 	}
@@ -120,7 +120,7 @@ public class PixelArrayGraphics
 	 */
 	@Override
 	protected void primitiveLine(int __x1, int __y1, int __x2,
-		int __y2, int __color, boolean __dotted, boolean __blend)
+		int __y2, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		throw new Error("TODO");
 	}
@@ -131,7 +131,8 @@ public class PixelArrayGraphics
 	 */
 	@Override
 	protected void primitiveRGBTile(int[] __b, int __o, int __sl,
-		int __x, int __y, int __w, int __h, boolean __blend, int __alpha)
+		int __x, int __y, int __w, int __h, boolean __blend, int __bor,
+		int __alpha)
 	{
 		int[] data = this._data;
 		int iw = this._width;
@@ -148,7 +149,7 @@ public class PixelArrayGraphics
 			// Blending pixels
 			if (__blend)
 				for (; sp < spend; sp++, dp++)
-					data[dp] = __blend(__b[sp], data[dp], __alpha);
+					data[dp] = __blend(__b[sp], data[dp], __bor, __alpha);
 			
 			// Not blending
 			else
@@ -163,7 +164,7 @@ public class PixelArrayGraphics
 	 */
 	@Override
 	protected void primitiveVerticalLine(int __x, int __y,
-		int __h, int __color, boolean __dotted, boolean __blend)
+		int __h, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
 		int iw = this._width;
@@ -174,7 +175,7 @@ public class PixelArrayGraphics
 		for (int dest = (__y * iw) + __x, ey = dest + (iw * __h); dest < ey;
 			dest += skip)
 			if (__blend)
-				data[dest] = __blend(__color, data[dest], alpha);
+				data[dest] = __blend(__color, data[dest], __bor, alpha);
 			else
 				data[dest] = __color;
 	}
@@ -184,11 +185,13 @@ public class PixelArrayGraphics
 	 *
 	 * @param __src The source color.
 	 * @param __dest The destination color.
+	 * @param __bor The blended OR value on the destination.
 	 * @param __alpha Alpha value which modifies the source.
 	 * @return The resulting blended color.
 	 * @since 2017/02/12
 	 */
-	private static final int __blend(int __src, int __dest, int __alpha)
+	private static final int __blend(int __src, int __dest, int __bor,
+		int __alpha)
 	{
 		// Split into RGB
 		// Make sure the source alpha value gets multiplied
@@ -196,7 +199,7 @@ public class PixelArrayGraphics
 			sr = (__src >> 16) & 0xFF,
 			sg = (__src >> 8) & 0xFF,
 			sb = (__src) & 0xFF,
-			da = (__dest >> 24) & 0xFF,
+			da = ((__dest >> 24) & 0xFF) | __bor,
 			dr = (__dest >> 16) & 0xFF,
 			dg = (__dest >> 8) & 0xFF,
 			db = (__dest) & 0xFF;
@@ -209,7 +212,7 @@ public class PixelArrayGraphics
 		// Perform blending
 		// The right shifts by 8 used to be divides by 255, however right
 		// shifting 7 times is faster than dividing 7 times
-		int xa = sa + da - ((sa * da) >>> 8),
+		int xa = (sa + da - ((sa * da) >>> 8)) | __bor,
 			xr = ((sr * sa) >>> 8) + ((dr * qq) >>> 8),
 			xg = ((sg * sa) >>> 8) + ((dg * qq) >>> 8),
 			xb = ((sb * sa) >>> 8) + ((db * qq) >>> 8);

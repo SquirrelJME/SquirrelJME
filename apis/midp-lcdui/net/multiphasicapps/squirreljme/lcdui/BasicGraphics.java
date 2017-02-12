@@ -119,10 +119,11 @@ public abstract class BasicGraphics
 	 * @param __dotted If {@code true} then the line should be drawn dotted.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
+	 * @param __bor The blended OR value on the destination.
 	 * @since 2017/02/10
 	 */
 	protected abstract void primitiveLine(int __x1, int __y1, int __x2,
-		int __y2, int __color, boolean __dotted, boolean __blend);
+		int __y2, int __color, boolean __dotted, boolean __blend, int __bor);
 	
 	/**
 	 * Draws a primitive RGB slice.
@@ -136,11 +137,13 @@ public abstract class BasicGraphics
 	 * @param __h The height of the tile.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
+	 * @param __bor The blended OR value on the destination.
 	 * @param __alpha The alpha value, if applicable.
 	 * @since 2017/02/11
 	 */
 	protected abstract void primitiveRGBTile(int[] __b, int __o, int __l,
-		int __x, int __y, int __w, int __h, boolean __blend, int __alpha);
+		int __x, int __y, int __w, int __h, boolean __blend, int __bor,
+		int __alpha);
 	
 	/**
 	 * {@inheritDoc}
@@ -286,8 +289,9 @@ public abstract class BasicGraphics
 		// If the destination image does not have alpha then pixels will just
 		// be drawn or not drawn, so in this event just ignore blend if there
 		// is not alpha.
-		boolean blend = (__blend() && __i.hasAlpha());
 		int alpha = getAlpha();
+		boolean blend = (__blend() && __i.hasAlpha());
+		int bor = __blendOr();
 		
 		// Render horizontal slices
 		for (;__y < ey; bsy++, __y++)
@@ -302,7 +306,7 @@ public abstract class BasicGraphics
 				
 				// Draw slice
 				primitiveRGBTile(slice, 0, limit, dx, __y, limit, 1, blend,
-					alpha);
+					bor, alpha);
 			}
 	}
 	
@@ -411,13 +415,14 @@ public abstract class BasicGraphics
 		
 		// Draw it
 		boolean dotted = (this._strokestyle == DOTTED);
-		boolean blended = (__blend());
+		boolean blended = __blend();
+		int bor = __blendOr();
 		if (__x1 == __x2)
 			primitiveHorizontalLine(__x1, __y1, __x2 - __x1, this._color,
-				dotted, blended);
+				dotted, blended, bor);
 		else
 			primitiveLine(__x1, __y1, __x2, __y2, this._color,
-				dotted, blended);
+				dotted, blended, bor);
 	}
 	
 	/**
@@ -520,18 +525,19 @@ public abstract class BasicGraphics
 		int color = this._color;
 		boolean dotted = (this._strokestyle == DOTTED);
 		boolean blend = __blend();
+		int bor = __blendOr();
 		
 		// Draw the horizontal
 		if (!bhs)
-			primitiveHorizontalLine(__x, __y, __w, color, dotted, blend);
+			primitiveHorizontalLine(__x, __y, __w, color, dotted, blend, bor);
 		if (!ths)
-			primitiveHorizontalLine(__x, ey, __w, color, dotted, blend);
+			primitiveHorizontalLine(__x, ey, __w, color, dotted, blend, bor);
 		
 		// And the vertical
 		if (!lvs)
-			primitiveVerticalLine(__x, __y, __h, color, dotted, blend);
+			primitiveVerticalLine(__x, __y, __h, color, dotted, blend, bor);
 		if (!rvs)
-			primitiveVerticalLine(ex, __y, __h, color, dotted, blend);
+			primitiveVerticalLine(ex, __y, __h, color, dotted, blend, bor);
 	}
 	
 	/**
@@ -688,10 +694,11 @@ public abstract class BasicGraphics
 		// Calculate line properties
 		int color = this._color;
 		boolean blend = __blend();
+		int bor = __blendOr();
 		
 		// Draw horizontal spans
 		for (int y = __y; y < ey; y++)
-			primitiveHorizontalLine(__x, y, __w, color, false, blend);
+			primitiveHorizontalLine(__x, y, __w, color, false, blend, bor);
 	}
 	
 	/**
@@ -901,12 +908,14 @@ public abstract class BasicGraphics
 	 * @param __dotted If {@code true} then the line should be drawn dotted.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
+	 * @param __bor The blended OR value for the destination.
 	 * @since 2017/02/10
 	 */
 	protected void primitiveHorizontalLine(int __x, int __y,
-		int __w, int __color, boolean __dotted, boolean __blend)
+		int __w, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
-		primitiveLine(__x, __y, __x + __w, __y, __color, __dotted, __blend);
+		primitiveLine(__x, __y, __x + __w, __y, __color, __dotted, __blend,
+			__bor);
 	}
 	
 	/**
@@ -923,12 +932,14 @@ public abstract class BasicGraphics
 	 * @param __dotted If {@code true} then the line should be drawn dotted.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
+	 * @param __bor The blended OR value for the destination.
 	 * @since 2017/02/10
 	 */
 	protected void primitiveVerticalLine(int __x, int __y,
-		int __h, int __color, boolean __dotted, boolean __blend)
+		int __h, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
-		primitiveLine(__x, __y, __x, __y + __h, __color, __dotted, __blend);
+		primitiveLine(__x, __y, __x, __y + __h, __color, __dotted, __blend,
+			__bor);
 	}
 	
 	/**
@@ -1229,7 +1240,19 @@ public abstract class BasicGraphics
 	{
 		// There must be an alpha channel along with the blend mode being
 		// actual blending
-		return primitiveHasAlphaChannel() && (_blendmode == SRC_OVER);
+		return /*primitiveHasAlphaChannel() &&*/ (_blendmode == SRC_OVER);
+	}
+	
+	/**
+	 * This returns the value which is ORed to the destination to force it to
+	 * have a higher alpha value.
+	 *
+	 * @return The ORed blending value used for blended draws.
+	 * @since 2017/02/12
+	 */
+	private final int __blendOr()
+	{
+		return (primitiveHasAlphaChannel() ? 0 : 0xFF);
 	}
 	
 	/**
