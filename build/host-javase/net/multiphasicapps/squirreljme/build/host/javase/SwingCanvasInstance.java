@@ -72,6 +72,10 @@ public class SwingCanvasInstance
 		this.frame.add(panel);
 		this._panel = panel;
 		
+		// The panel needs to be made focusable in order to get key events
+		panel.setFocusable(true);
+		panel.requestFocusInWindow();
+		
 		// Handle resize events
 		panel.addComponentListener(panel);
 		panel.addMouseListener(panel);

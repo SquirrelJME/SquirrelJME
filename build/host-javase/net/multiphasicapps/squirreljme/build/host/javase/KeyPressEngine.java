@@ -53,7 +53,7 @@ public class KeyPressEngine
 	public void keyPressed(KeyEvent __e)
 	{
 		// Debug
-		System.err.printf("DEBUG -- AWT Pressed	: %s", __e);
+		System.err.printf("DEBUG -- AWT Pressed	: %s%n", __e);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class KeyPressEngine
 	public void keyReleased(KeyEvent __e)
 	{
 		// Debug
-		System.err.printf("DEBUG -- AWT Released: %s", __e);
+		System.err.printf("DEBUG -- AWT Released: %s%n", __e);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class KeyPressEngine
 	public void keyTyped(KeyEvent __e)
 	{
 		// Debug
-		System.err.printf("DEBUG -- AWT Typed: %s", __e);
+		System.err.printf("DEBUG -- AWT Typed: %s%n", __e);
 	}
 }
 
