@@ -103,6 +103,7 @@ public class BuildSystem
 		{
 				// Run the auto-interpreter
 			case "interpret":
+			case "interpreter":
 				{
 					// Create subset of arguments
 					String[] pargs = new String[na - 1];
@@ -125,6 +126,8 @@ public class BuildSystem
 				break;
 				
 				// Run Squirrel Quarrel
+			case "sq":
+			case "squirrelquarrel":
 			case "squirrel-quarrel":
 				new MainMidlet();
 				break;
