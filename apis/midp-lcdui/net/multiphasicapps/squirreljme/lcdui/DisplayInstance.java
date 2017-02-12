@@ -28,6 +28,16 @@ public interface DisplayInstance
 	public abstract void destroy();
 	
 	/**
+	 * Maps the given keycode to an action.
+	 *
+	 * @param __kc The keycode to convert to an action.
+	 * @return The action associated with the given keycode or {@code 0} if
+	 * no action is associated with the given key.
+	 * @since 2017/02/12
+	 */
+	public abstract int getActionForKey(int __kc);
+	
+	/**
 	 * Returns the height of the displayable in pixels.
 	 *
 	 * @return The height in pixels or if the displayable is not shown, a

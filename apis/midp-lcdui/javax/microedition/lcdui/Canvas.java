@@ -22,6 +22,11 @@ import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
  * The canvas acts as the base class for primary display interfaces that
  * require more customized draw handling.
  *
+ * It is not recommended to use a lookup table between keycodes and actions at
+ * initialization time. The reason for this is that it is possible for the
+ * device to enter different modes or be associated with different
+ * {@link Display}s which have different action mappings.
+ *
  * @since 2016/10/08
  */
 public abstract class Canvas
@@ -162,9 +167,24 @@ public abstract class Canvas
 	
 	protected abstract void paint(Graphics __a);
 	
-	public int getGameAction(int __a)
+	/**
+	 * Returns the action which is associated with the given key.
+	 *
+	 * @param __kc The key code to get the action for.
+	 * @return The action associated with the given key or {@code 0} if no
+	 * action is associated with the key.
+	 * @throws IllegalArgumentException If the specified keycode is not valid.
+	 * @since 2017/02/12
+	 */
+	public int getGameAction(int __kc)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		DisplayInstance instance = this._instance;
+		if (instance != null)
+			return instance.getActionForKey(__kc);
+		
+		// If no display is bound, treat as unknown
+		return 0;
 	}
 	
 	/**

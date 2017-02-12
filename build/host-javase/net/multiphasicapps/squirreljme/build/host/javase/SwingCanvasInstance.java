@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import javax.microedition.lcdui.Canvas;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
+import net.multiphasicapps.squirreljme.lcdui.NonStandardKey;
 import net.multiphasicapps.squirreljme.lcdui.PixelArrayGraphics;
 import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
 
@@ -84,6 +85,32 @@ public class SwingCanvasInstance
 		KeyPressEngine keyengine = new KeyPressEngine(__c);
 		panel.addKeyListener(keyengine);
 		this.keyengine = keyengine;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	public int getActionForKey(int __kc)
+	{
+		// Depends
+		switch (__kc)
+		{
+			case Canvas.KEY_UP:		return Canvas.UP;
+			case Canvas.KEY_DOWN:	return Canvas.DOWN;
+			case Canvas.KEY_LEFT:	return Canvas.LEFT;
+			case Canvas.KEY_RIGHT:	return Canvas.RIGHT;
+			case Canvas.KEY_SPACE:	return Canvas.FIRE;
+			case NonStandardKey.F1:	return Canvas.GAME_A;
+			case NonStandardKey.F2:	return Canvas.GAME_B;
+			case NonStandardKey.F3:	return Canvas.GAME_C;
+			case NonStandardKey.F4:	return Canvas.GAME_D;
+			
+				// Unknown
+			default:
+				return 0;
+		}
 	}
 	
 	/**
