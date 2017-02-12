@@ -144,11 +144,11 @@ public class GameInterface
 			(framenum & 31) + MegaTile.MEGA_TILE_PIXEL_SIZE,
 			MegaTile.MEGA_TILE_PIXEL_SIZE, 0);
 		
-		// Draw some rectangle
-		__g.setColor(0xFFFF00);
-		__g.setAlpha(163);
+		// Draw some, for fog effects
+		__g.setColor(0x000000);
 		__g.setStrokeStyle(Graphics.DOTTED);
-		__g.drawRect(32, 32, 128, 128);
+		for (int y = 32, mod = 0; y < 512; y++, mod = (mod + 1) & 1)
+			__g.drawLine(32 + mod, y, 512, y);
 		
 		// No longer painting
 		this._inpaint = false;

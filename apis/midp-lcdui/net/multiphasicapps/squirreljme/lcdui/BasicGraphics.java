@@ -334,8 +334,8 @@ public abstract class BasicGraphics
 		for (;;)
 		{
 			// Determine points that lie outside the box
-			int outa = __csOut(__x1, __y1, clipsx, clipsy, clipex, clipey),
-				outb = __csOut(__x2, __y2, clipsx, clipsy, clipex, clipey);
+			int outa = __csOut(__x1, __y1, clipsx, clipsy, clipex - 1, clipey - 1),
+				outb = __csOut(__x2, __y2, clipsx, clipsy, clipex - 1, clipey - 1);
 			
 			// Both points are outside the box, do nothing
 			if ((outa & outb) != 0)
@@ -376,7 +376,7 @@ public abstract class BasicGraphics
 				if ((outa & _CLIP_ABOVE) != 0)
 				{
 					__x1 += dx * (clipey - __y1) / dy;
-					__y1 = clipey;
+					__y1 = clipey - 1;
 				}
 			
 				// Clips below
@@ -390,7 +390,7 @@ public abstract class BasicGraphics
 				else if ((outa & _CLIP_RIGHT) != 0)
 				{
 					__y1 += dy * (clipex - __x1) / dx;
-					__x1 = clipex;
+					__x1 = clipex - 1;
 				}
 			
 				// Clips the left side
@@ -417,9 +417,20 @@ public abstract class BasicGraphics
 		boolean dotted = (this._strokestyle == DOTTED);
 		boolean blended = __blend();
 		int bor = __blendOr();
-		if (__x1 == __x2)
+		if (__y1 == __y2)
 			primitiveHorizontalLine(__x1, __y1, __x2 - __x1, this._color,
 				dotted, blended, bor);
+		else if (__x1 == __x2)
+		{
+			// Lines have a right facing direction, but they may also face up
+			// so handle this case
+			if (__y2 < __y1)
+				primitiveVerticalLine(__x1, __y2, __y1 - __y2, this._color,
+					dotted, blended, bor);
+			else
+				primitiveVerticalLine(__x1, __y1, __y2 - __y1, this._color,
+					dotted, blended, bor);
+		}
 		else
 			primitiveLine(__x1, __y1, __x2, __y2, this._color,
 				dotted, blended, bor);
