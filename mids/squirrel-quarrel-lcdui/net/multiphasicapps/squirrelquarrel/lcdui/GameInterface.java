@@ -35,14 +35,14 @@ import net.multiphasicapps.squirrelquarrel.TerrainType;
  */
 public class GameInterface
 	extends Canvas
-	implements KeyListener, Runnable
+	implements Runnable
 {
-	/** Level panning speed. */
-	private static final int _PANNING_SPEED =
-		MegaTile.TILE_PIXEL_SIZE / 2;
-	
 	/** The game to draw and interact with. */
 	protected final Game game;
+	
+	/** Input handler. */
+	protected final GameInputHandler inputhandler =
+		new GameInputHandler(this);
 	
 	/** The level to render and interact with. */
 	protected final Level level;
@@ -78,12 +78,6 @@ public class GameInterface
 	/** Is the game in a repaint? */
 	private volatile boolean _inpaint;
 	
-	/** The X view direction movement. */
-	private volatile int _xmove;
-	
-	/** The Y view direction movement. */
-	private volatile int _ymove;
-	
 	/**
 	 * Initializes the game.
 	 *
@@ -113,7 +107,7 @@ public class GameInterface
 		this.mtcacher = new MegaTileCacher(level);
 		
 		// Use self as the key listener
-		this.setKeyListener(this);
+		this.setKeyListener(this.inputhandler);
 	}
 	
 	/**
@@ -163,83 +157,9 @@ public class GameInterface
 	 * @since 2017/02/12
 	 */
 	@Override
-	public void keyPressed(int __code, int __mods)
-	{
-		// Unknown
-		switch (__code)
-		{
-				// Pan view view
-			case Canvas.KEY_LEFT:
-				this._xmove = -1;
-				break;
-				
-				// Pan view right
-			case Canvas.KEY_RIGHT:
-				this._xmove = 1;
-				break;
-				
-				// Pan view up
-			case Canvas.KEY_UP:
-				this._ymove = -1;
-				break;
-				
-				// Pan view down
-			case Canvas.KEY_DOWN:
-				this._ymove = 1;
-				break;
-				
-				// Unknown
-			default:
-				break;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/12
-	 */
-	@Override
-	public void keyReleased(int __code, int __mods)
-	{
-		// Unknown
-		switch (__code)
-		{
-				// Stop panning X
-			case Canvas.KEY_LEFT:
-			case Canvas.KEY_RIGHT:
-				this._xmove = 0;
-				break;
-				
-				// Stop panning Y
-			case Canvas.KEY_UP:
-			case Canvas.KEY_DOWN:
-				this._ymove = 0;
-				break;
-				
-				// Unknown
-			default:
-				break;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/12
-	 */
-	@Override
-	public void keyRepeated(int __code, int __mods)
-	{
-		System.err.printf("DEBUG -- Key repeated %d %d%n", __code, __mods);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/12
-	 */
-	@Override
 	protected void pointerDragged(int __x, int __y)
 	{
-		System.err.printf("DEBUG -- Dragged (%d, %d)%n", __x, __y);
+		this.inputhandler.pointerDragged(__x, __y);
 	}
 	
 	/**
@@ -249,7 +169,7 @@ public class GameInterface
 	@Override
 	protected void pointerPressed(int __x, int __y)
 	{
-		System.err.printf("DEBUG -- Pressed (%d, %d)%n", __x, __y);
+		this.inputhandler.pointerPressed(__x, __y);
 	}
 	
 	/**
@@ -259,7 +179,7 @@ public class GameInterface
 	@Override
 	protected void pointerReleased(int __x, int __y)
 	{
-		System.err.printf("DEBUG -- Released (%d, %d)%n", __x, __y);
+		this.inputhandler.pointerReleased(__x, __y);
 	}
 	
 	/**
@@ -270,6 +190,7 @@ public class GameInterface
 	public void run()
 	{
 		Game game = this.game;
+		GameInputHandler inputhandler = this.inputhandler;
 		for (;;)
 		{
 			// Get the current game speed and entry time
@@ -280,7 +201,7 @@ public class GameInterface
 			game.run();
 			
 			// Perform local client event handling (commands and such)
-			__localEvents();
+			inputhandler.run();
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
@@ -364,18 +285,6 @@ public class GameInterface
 		this._vieww = __w;
 		this._viewh = __h;
 		translateViewport(0, 0);
-	}
-	
-	/**
-	 * Performs local event handling.
-	 *
-	 * @since 2017/02/12
-	 */
-	private void __localEvents()
-	{
-		// Translate viewport
-		translateViewport(this._xmove * _PANNING_SPEED,
-			this._ymove * _PANNING_SPEED);
 	}
 }
 
