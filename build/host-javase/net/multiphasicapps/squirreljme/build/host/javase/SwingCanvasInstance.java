@@ -19,10 +19,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.awt.Rectangle;
 import javax.microedition.lcdui.Canvas;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
+import net.multiphasicapps.squirreljme.lcdui.PixelArrayGraphics;
 import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
 
 /**
@@ -126,8 +129,17 @@ public class SwingCanvasInstance
 		extends JPanel
 		implements ComponentListener, MouseListener, MouseMotionListener
 	{
-		/** Key handler engine. */
+		/** The backing buffer where graphics are drawn. */
+		private volatile BufferedImage _image;
 		
+		/** Pixel array graphics. */
+		private volatile PixelArrayGraphics _graphics;
+		
+		/** Old width. */
+		private volatile int _oldwidth;
+		
+		/** Old height. */
+		private volatile int _oldheight;
 		
 		/** Is the mouse down? */
 		private volatile boolean _mousedown;
@@ -268,26 +280,51 @@ public class SwingCanvasInstance
 			// Must draw the panel itself
 			super.paintComponent(__g);
 			
-			// Cast and adapt
-			Graphics2D gfx = (Graphics2D)__g;
-			AWTGraphicsAdapter adapter = SwingCanvasInstance.this.adapter;
-			adapter._awt = gfx;
-			adapter._width = getWidth();
-			adapter._height = getHeight();
+			// Get buffer details
+			BufferedImage image = this._image;
+			PixelArrayGraphics graphics = this._graphics;
+			int oldwidth = this._oldwidth,
+				oldheight = this._oldheight,
+				newwidth = getWidth(),
+				newheight = getHeight();
+			
+			// Need to recreate the buffer?
+			if (image == null || oldwidth != newwidth ||
+				oldheight != newheight)
+			{
+				// Setup image
+				image = new BufferedImage(newwidth, newheight,
+					BufferedImage.TYPE_INT_RGB);
+				
+				// Setup data buffer
+				graphics = new PixelArrayGraphics(
+					((DataBufferInt)image.getRaster().getDataBuffer()).
+					getData(), newwidth, newheight, false);
+				
+				// Set
+				this._image = image;
+				this._graphics = graphics;
+				this._oldwidth = newwidth;
+				this._oldheight = newheight;
+			}
 			
 			// Reset translation
-			adapter.translate(-adapter.getTranslateX(),
-				-adapter.getTranslateY());
+			graphics.translate(-graphics.getTranslateX(),
+				-graphics.getTranslateY());
 			
 			// Translate clipping bounds so the destination shares the clip
 			Rectangle rect = __g.getClipBounds();
 			if (rect == null)
-				adapter.setClip(0, 0, getWidth(), getHeight());
+				graphics.setClip(0, 0, getWidth(), getHeight());
 			else
-				adapter.setClip(rect.x, rect.y, rect.width, rect.height);
+				graphics.setClip(rect.x, rect.y, rect.width, rect.height);
 			
-			// Make it draw into it
-			SwingCanvasInstance.this.canvasconnector.paint(adapter);
+			// Render the contents to the pixel array
+			SwingCanvasInstance.this.canvasconnector.paint(graphics);
+			
+			// Draw the buffer to the screen
+			__g.drawImage(image, 0, 0, newwidth, newheight,
+				0, 0, newwidth, newheight, null);
 		}
 	}
 }

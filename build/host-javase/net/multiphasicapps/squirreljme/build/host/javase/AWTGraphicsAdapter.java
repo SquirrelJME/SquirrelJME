@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
  *
  * @since 2017/02/08
  */
+@Deprecated
 public class AWTGraphicsAdapter
 	extends BasicGraphics
 {
