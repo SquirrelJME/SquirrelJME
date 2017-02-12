@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -44,6 +46,9 @@ public class SwingCanvasInstance
 	protected final AWTGraphicsAdapter adapter =
 		new AWTGraphicsAdapter();
 	
+	/** Key press engine. */
+	protected final KeyPressEngine keyengine;
+	
 	/** The drawing panel. */
 	private final __DrawPane__ _panel;
 	
@@ -71,6 +76,11 @@ public class SwingCanvasInstance
 		panel.addComponentListener(panel);
 		panel.addMouseListener(panel);
 		panel.addMouseMotionListener(panel);
+		
+		// Setup key press engine
+		KeyPressEngine keyengine = new KeyPressEngine(__c);
+		panel.addKeyListener(keyengine);
+		this.keyengine = keyengine;
 	}
 	
 	/**
@@ -112,6 +122,9 @@ public class SwingCanvasInstance
 		extends JPanel
 		implements ComponentListener, MouseListener, MouseMotionListener
 	{
+		/** Key handler engine. */
+		
+		
 		/** Is the mouse down? */
 		private volatile boolean _mousedown;
 		
