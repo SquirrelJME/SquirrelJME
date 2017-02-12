@@ -153,16 +153,6 @@ public class GameInterface
 	 * @since 2017/02/12
 	 */
 	@Override
-	protected void keyPressed(int __code)
-	{
-		// Not used, KeyListener is more powerful
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/12
-	 */
-	@Override
 	public void keyPressed(int __code, int __mods)
 	{
 		System.err.printf("DEBUG -- Key pressed %d %d%n", __code, __mods);
@@ -173,29 +163,9 @@ public class GameInterface
 	 * @since 2017/02/12
 	 */
 	@Override
-	protected void keyReleased(int __code)
-	{
-		// Not used, KeyListener is more powerful
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/12
-	 */
-	@Override
 	public void keyReleased(int __code, int __mods)
 	{
 		System.err.printf("DEBUG -- Key released %d %d%n", __code, __mods);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/12
-	 */
-	@Override
-	protected void keyRepeated(int __code)
-	{
-		// Not used, KeyListener is more powerful
 	}
 	
 	/**
