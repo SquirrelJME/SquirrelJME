@@ -283,7 +283,7 @@ public abstract class BasicGraphics
 		// If the destination image does not have alpha then pixels will just
 		// be drawn or not drawn, so in this event just ignore blend if there
 		// is not alpha.
-		boolean blend = (this._blendmode == SRC_OVER && __i.hasAlpha());
+		boolean blend = (__blend() && __i.hasAlpha());
 		
 		// Render horizontal slices
 		for (;__y < ey; bsy++, __y++)
@@ -406,7 +406,7 @@ public abstract class BasicGraphics
 		
 		// Draw it
 		boolean dotted = (this._strokestyle == DOTTED);
-		boolean blended = (this._blendmode == SRC_OVER);
+		boolean blended = (__blend());
 		if (__x1 == __x2)
 			primitiveHorizontalLine(__x1, __y1, __x2 - __x1, this._color,
 				dotted, blended);
@@ -514,7 +514,7 @@ public abstract class BasicGraphics
 		// Calculate line properties
 		int color = this._color;
 		boolean dotted = (this._strokestyle == DOTTED);
-		boolean blend = (this._blendmode == SRC_OVER);
+		boolean blend = __blend();
 		
 		// Draw the horizontal
 		if (!bhs)
@@ -682,7 +682,7 @@ public abstract class BasicGraphics
 		
 		// Calculate line properties
 		int color = this._color;
-		boolean blend = (this._blendmode == SRC_OVER);
+		boolean blend = __blend();
 		
 		// Draw horizontal spans
 		for (int y = __y; y < ey; y++)
@@ -1212,6 +1212,19 @@ public abstract class BasicGraphics
 				throw new IllegalArgumentException(String.format("EB0i %d",
 					__anchor));
 		}
+	}
+	
+	/**
+	 * Checks if blending is to be done or if direct overwrite is used.
+	 *
+	 * @return {@code true} if alpha blending is to be performed.
+	 * @since 2017/02/12
+	 */
+	private final boolean __blend()
+	{
+		// There must be an alpha channel along with the blend mode being
+		// actual blending
+		return primitiveHasAlphaChannel() && (_blendmode == SRC_OVER);
 	}
 	
 	/**
