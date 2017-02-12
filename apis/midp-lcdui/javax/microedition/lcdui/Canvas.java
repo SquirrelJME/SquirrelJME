@@ -233,9 +233,16 @@ public abstract class Canvas
 		return d.hasPointerMotionEvents();
 	}
 	
+	/**
+	 * Always returns {@code true} because all implementations must support
+	 * repeat events.
+	 *
+	 * @return Always {@code true}.
+	 * @since 2017/02/12
+	 */
 	public boolean hasRepeatEvents()
 	{
-		throw new Error("TODO");
+		return true;
 	}
 	
 	protected void hideNotify()
