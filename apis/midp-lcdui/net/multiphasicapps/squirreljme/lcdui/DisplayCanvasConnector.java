@@ -27,5 +27,17 @@ public interface DisplayCanvasConnector
 	 * @since 2017/02/08
 	 */
 	public abstract void paint(Graphics __g);
+	
+	/**
+	 * Informs the canvas that a pointer event has occurred.
+	 *
+	 * @param __t The type of event.
+	 * @param __x The X coordinate of the pointer.
+	 * @param __y The Y coordinate of the pointer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/12
+	 */
+	public abstract void pointerEvent(PointerEventType __t, int __x, int __y)
+		throws NullPointerException;
 }
 

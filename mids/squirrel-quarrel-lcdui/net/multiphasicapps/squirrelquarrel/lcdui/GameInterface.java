@@ -146,6 +146,36 @@ public class GameInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void pointerDragged(int __x, int __y)
+	{
+		System.err.printf("DEBUG -- Dragged (%d, %d)%n", __x, __y);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void pointerPressed(int __x, int __y)
+	{
+		System.err.printf("DEBUG -- Pressed (%d, %d)%n", __x, __y);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void pointerReleased(int __x, int __y)
+	{
+		System.err.printf("DEBUG -- Released (%d, %d)%n", __x, __y);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */
 	@Override

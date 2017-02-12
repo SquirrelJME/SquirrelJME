@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
+import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -414,6 +415,39 @@ public abstract class Canvas
 		public void paint(Graphics __g)
 		{
 			Canvas.this.paint(__g);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/12
+		 */
+		@Override
+		public void pointerEvent(PointerEventType __t, int __x, int __y)
+			throws NullPointerException
+		{
+			// Check
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			// Depends
+			switch (__t)
+			{
+				case DRAGGED:
+					Canvas.this.pointerDragged(__x, __y);
+					return;
+				
+				case PRESSED:
+					Canvas.this.pointerPressed(__x, __y);
+					return;
+				
+				case RELEASED:
+					Canvas.this.pointerReleased(__x, __y);
+					return;
+				
+					// Should not happen
+				default:
+					throw new RuntimeException("OOPS");
+			}
 		}
 		
 		/**
