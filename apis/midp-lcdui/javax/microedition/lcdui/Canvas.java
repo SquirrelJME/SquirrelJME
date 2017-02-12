@@ -194,14 +194,38 @@ public abstract class Canvas
 		return 1;
 	}
 	
+	/**
+	 * This checks whether the display has the capability to handle pointer
+	 * events.
+	 *
+	 * @return {@code true} if pointer events are available.
+	 * @since 2017/02/12
+	 */
+	@Deprecated
 	public boolean hasPointerEvents()
 	{
-		throw new Error("TODO");
+		Display d = getCurrentDisplay();
+		if (d == null)
+			d = Display.getDisplays(0)[0];
+		
+		return d.hasPointerEvents();
 	}
 	
+	/**
+	 * This checks whether the display has the capability to handle pointer
+	 * motion events.
+	 *
+	 * @return {@code true} if pointer motion events are available.
+	 * @since 2017/02/12
+	 */
+	@Deprecated
 	public boolean hasPointerMotionEvents()
 	{
-		throw new Error("TODO");
+		Display d = getCurrentDisplay();
+		if (d == null)
+			d = Display.getDisplays(0)[0];
+		
+		return d.hasPointerMotionEvents();
 	}
 	
 	public boolean hasRepeatEvents()

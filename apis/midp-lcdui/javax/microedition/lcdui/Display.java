@@ -505,7 +505,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		throw new Error("TODO");
+		return this._engine.hasPointerEvents();
 	}
 	
 	/**
@@ -516,7 +516,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		throw new Error("TODO");
+		return this._engine.hasPointerMotionEvents();
 	}
 	
 	/**

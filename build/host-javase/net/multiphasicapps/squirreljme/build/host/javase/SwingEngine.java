@@ -43,6 +43,26 @@ public class SwingEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	public boolean hasPointerEvents()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	public boolean hasPointerMotionEvents()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/08
 	 */
 	@Override

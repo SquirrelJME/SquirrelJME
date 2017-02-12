@@ -22,6 +22,22 @@ import javax.microedition.lcdui.DisplayCapabilityException;
 public interface DisplayEngine
 {
 	/**
+	 * Are mouse/stylus press and release events supported?
+	 *
+	 * @return {@code true} if they are supported.
+	 * @since 2017/02/12
+	 */
+	public abstract boolean hasPointerEvents();
+	
+	/**
+	 * Are mouse/stylus move/drag events supported?
+	 *
+	 * @return {@code true} if they are supported.
+	 * @since 2017/02/12
+	 */
+	public abstract boolean hasPointerMotionEvents();
+	
+	/**
 	 * Sets the current displayable to show.
 	 *
 	 * A call to {@link #update()} should be performed following this if
