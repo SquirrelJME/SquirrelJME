@@ -144,6 +144,11 @@ public class GameInterface
 			(framenum & 31) + MegaTile.MEGA_TILE_PIXEL_SIZE,
 			MegaTile.MEGA_TILE_PIXEL_SIZE, 0);
 		
+		// Draw some rectangle
+		__g.setColor(0xFFFF00);
+		__g.setStrokeStyle(Graphics.DOTTED);
+		__g.drawRect(32, 32, 128, 128);
+		
 		// No longer painting
 		this._inpaint = false;
 	}

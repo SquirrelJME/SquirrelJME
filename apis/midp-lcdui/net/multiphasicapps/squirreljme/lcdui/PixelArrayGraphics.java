@@ -94,6 +94,27 @@ public class PixelArrayGraphics
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void primitiveHorizontalLine(int __x, int __y,
+		int __w, int __color, boolean __dotted, boolean __blend)
+	{
+		int[] data = this._data;
+		int iw = this._width;
+		
+		// Draw line
+		int skip = (__dotted ? 2 : 1);
+		for (int dest = (__y * iw) + __x, ex = dest + __w; dest < ex;
+			dest += skip)
+			if (__blend)
+				data[dest] = __blend(__color, data[dest]);
+			else
+				data[dest] = __color;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */
 	@Override
@@ -123,6 +144,7 @@ public class PixelArrayGraphics
 				spend = src + __w,
 				dp = dest;
 			
+			// Blending pixels
 			if (__blend)
 				for (; sp < spend; sp++, dp++)
 				{
@@ -141,10 +163,33 @@ public class PixelArrayGraphics
 					else
 						data[dp] = __blend(sc, data[dp]);
 				}
+			
+			// Not blending
 			else
 				for (; sp < spend; sp++, dp++)
 					data[dp] = __b[sp];
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void primitiveVerticalLine(int __x, int __y,
+		int __h, int __color, boolean __dotted, boolean __blend)
+	{
+		int[] data = this._data;
+		int iw = this._width;
+		
+		// Draw line
+		int skip = (__dotted ? iw << 1 : iw);
+		for (int dest = (__y * iw) + __x, ey = dest + (iw * __h); dest < ey;
+			dest += skip)
+			if (__blend)
+				data[dest] = __blend(__color, data[dest]);
+			else
+				data[dest] = __color;
 	}
 	
 	/**
