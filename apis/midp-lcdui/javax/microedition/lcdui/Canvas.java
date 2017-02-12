@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
+import net.multiphasicapps.squirreljme.lcdui.KeyEventType;
 import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
 
 /**
@@ -138,6 +139,9 @@ public abstract class Canvas
 	/** The connector to this canvas. */
 	private volatile DisplayCanvasConnector _connector;
 	
+	/** The key listener to use. */
+	private volatile KeyListener _keylistener;
+	
 	/**
 	 * Initializes the base canvas.
 	 *
@@ -244,19 +248,37 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
-	protected void keyPressed(int __a)
+	/**
+	 * This is called when a key has been pressed.
+	 *
+	 * @param __code The key code.
+	 * @since 2017/02/12
+	 */
+	protected void keyPressed(int __code)
 	{
-		throw new Error("TODO");
+		// Does nothing, implemented by sub-classes
 	}
 	
-	protected void keyReleased(int __a)
+	/**
+	 * This is called when a key has been released.
+	 *
+	 * @param __code The key code.
+	 * @since 2017/02/12
+	 */
+	protected void keyReleased(int __code)
 	{
-		throw new Error("TODO");
+		// Does nothing, implemented by sub-classes
 	}
 	
-	protected void keyRepeated(int __a)
+	/**
+	 * This is called when a key has been repeated.
+	 *
+	 * @param __code The key code.
+	 * @since 2017/02/12
+	 */
+	protected void keyRepeated(int __code)
 	{
-		throw new Error("TODO");
+		// Does nothing, implemented by sub-classes
 	}
 	
 	/**
@@ -355,9 +377,18 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Sets the key listener which is used to handle key events.
+	 *
+	 * If this is set then {@link #keyPressed(int)}, {@link #keyReleased(int)},
+	 * and {@link #keyRepeated} will still be called.
+	 *
+	 * @param __kl The key listener to use, {@code null} clears it.
+	 * @since 2017/02/12
+	 */
 	public void setKeyListener(KeyListener __kl)
 	{
-		throw new Error("TODO");
+		this._keylistener = __kl;
 	}
 	
 	public void setPaintMode(boolean __opaque)
@@ -412,9 +443,39 @@ public abstract class Canvas
 		 * @since 2017/02/12
 		 */
 		@Override
-		public void keyEvent(int __code, int __mods)
+		public void keyEvent(KeyEventType __t, int __code, int __mods)
 		{
-			throw new Error("TODO");
+			// The listener is optional
+			KeyListener kl = Canvas.this._keylistener;
+			
+			// Depends
+			switch (__t)
+			{
+					// Pressed
+				case PRESSED:
+					Canvas.this.keyPressed(__code);
+					if (kl != null)
+						kl.keyPressed(__code, __mods);
+					break;
+				
+					// Released
+				case RELEASED:
+					Canvas.this.keyReleased(__code);
+					if (kl != null)
+						kl.keyReleased(__code, __mods);
+					break;
+					
+					// Repeated
+				case REPEATED:
+					Canvas.this.keyRepeated(__code);
+					if (kl != null)
+						kl.keyRepeated(__code, __mods);
+					break;
+					
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
 		}
 		
 		/**

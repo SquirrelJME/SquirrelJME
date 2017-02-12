@@ -11,24 +11,22 @@
 package net.multiphasicapps.squirreljme.lcdui;
 
 /**
- * This is used for connectors which are capable of receiving key events.
+ * This represents the kind of key event which was generated.
  *
  * @since 2017/02/12
  */
-public interface KeyEventCapableConnector
+public enum KeyEventType
 {
-	/**
-	 * This is called when a key event has been generated.
-	 *
-	 * @param __t The type of key event.
-	 * @param __code The keycode.
-	 * @param __mods The modifiers to the key, these will match those
-	 * of {@link javax.microedition.lcdui.KeyListener}.
-	 * @throws NullPointerException On null arguments.
-	 * @see javax.microedition.lcdui.KeyListener
-	 * @since 2017/02/12
-	 */
-	public abstract void keyEvent(KeyEventType __t, int __code, int __mods)
-		throws NullPointerException;
+	/** Key was pressed. */
+	PRESSED,
+	
+	/** Key was released. */
+	RELEASED,
+	
+	/** Key was repeated. */
+	REPEATED,
+	
+	/** End. */
+	;
 }
 

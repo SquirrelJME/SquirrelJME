@@ -20,6 +20,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
 import net.multiphasicapps.squirrelquarrel.Level;
@@ -34,7 +35,7 @@ import net.multiphasicapps.squirrelquarrel.TerrainType;
  */
 public class GameInterface
 	extends Canvas
-	implements Runnable
+	implements KeyListener, Runnable
 {
 	/** The game to draw and interact with. */
 	protected final Game game;
@@ -142,6 +143,66 @@ public class GameInterface
 		
 		// No longer painting
 		this._inpaint = false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void keyPressed(int __code)
+	{
+		// Not used, KeyListener is more powerful
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	public void keyPressed(int __code, int __mods)
+	{
+		System.err.printf("DEBUG -- Key pressed %d %d%n", __code, __mods);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void keyReleased(int __code)
+	{
+		// Not used, KeyListener is more powerful
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	public void keyReleased(int __code, int __mods)
+	{
+		System.err.printf("DEBUG -- Key released %d %d%n", __code, __mods);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	protected void keyRepeated(int __code)
+	{
+		// Not used, KeyListener is more powerful
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/12
+	 */
+	@Override
+	public void keyRepeated(int __code, int __mods)
+	{
+		System.err.printf("DEBUG -- Key repeated %d %d%n", __code, __mods);
 	}
 	
 	/**
