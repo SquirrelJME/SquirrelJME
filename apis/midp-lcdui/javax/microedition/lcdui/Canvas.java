@@ -258,19 +258,50 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
-	protected void pointerDragged(int __a, int __b)
+	/**
+	 * This is called when the pointer is being dragged across the canvas, a
+	 * drag is when there is movement 
+	 *
+	 * This requires that motion events are supported which can be known by
+	 * calling {@link #hasPointerMotionEvents()}.
+	 *
+	 * @param __x The X coordinate of the pointer, on the canvas origin.
+	 * @param __y The Y coordinate of the pointer, on the canvas origin.
+	 * @since 2017/02/12
+	 */
+	protected void pointerDragged(int __x, int __y)
 	{
-		throw new Error("TODO");
+		// Does nothing by default
 	}
 	
-	protected void pointerPressed(int __a, int __b)
+	/**
+	 * This is called when the pointer has been pressed on the canvas.
+	 *
+	 * This requires that pointer events are supported which can be known by
+	 * calling {@link #hasPointerEvents()}.
+	 *
+	 * @param __x The X coordinate of the pointer, on the canvas origin.
+	 * @param __y The Y coordinate of the pointer, on the canvas origin.
+	 * @since 2017/02/12
+	 */
+	protected void pointerPressed(int __x, int __y)
 	{
-		throw new Error("TODO");
+		// Does nothing by default
 	}
 	
-	protected void pointerReleased(int __a, int __b)
+	/**
+	 * This is called when the pointer has been released on the canvas.
+	 *
+	 * This requires that pointer events are supported which can be known by
+	 * calling {@link #hasPointerEvents()}.
+	 *
+	 * @param __x The X coordinate of the pointer, on the canvas origin.
+	 * @param __y The Y coordinate of the pointer, on the canvas origin.
+	 * @since 2017/02/12
+	 */
+	protected void pointerReleased(int __x, int __y)
 	{
-		throw new Error("TODO");
+		// Does nothing by default
 	}
 	
 	/**
