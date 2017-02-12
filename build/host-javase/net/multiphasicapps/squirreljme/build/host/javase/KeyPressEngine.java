@@ -178,6 +178,9 @@ public class KeyPressEngine
 			case KeyEvent.VK_F23:   return NonStandardKey.F23;
 			case KeyEvent.VK_F24:   return NonStandardKey.F24;
 			
+				// Other keys
+			case KeyEvent.VK_WINDOWS:	return NonStandardKey.LOGO;
+			
 				// Unknown, just use the given code, but only in Unicode range
 			default:
 				if (code > 0 && code <= 65535)

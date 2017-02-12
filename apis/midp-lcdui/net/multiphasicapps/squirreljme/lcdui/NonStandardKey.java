@@ -116,6 +116,9 @@ public interface NonStandardKey
 	/** F24. */
 	public static final int F24 =
 		-(0xFF + 24);
-		
+	
+	/** Logo Key. */
+	public static final int LOGO =
+		-(0xFF + 25);
 }
 

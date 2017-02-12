@@ -80,6 +80,9 @@ public final class KeyNames
 			case NonStandardKey.F23:	return "F23";
 			case NonStandardKey.F24:	return "F24";
 			
+				// Other keys
+			case NonStandardKey.LOGO:	return "LOGO";
+			
 				// Unknown or default
 			default:
 				// Default ASCII character, use the glyph name
