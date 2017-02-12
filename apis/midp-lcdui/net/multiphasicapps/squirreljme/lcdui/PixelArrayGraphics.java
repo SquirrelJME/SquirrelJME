@@ -120,32 +120,45 @@ public class PixelArrayGraphics
 		
 		// Blending?
 		if (__blend)
-			for (int src = __o; src < end; src++)
+			for (int src = __o; src < end; src++, dest++)
 			{
-				// Get both src and dest colors
-				int sc = __b[src],
-					dc = data[dest];
+				// Quickly check to see if no math needs to be done
+				int sc = __b[src];
+				int sa = (sc >> 24) & 0xFF;
+				if (sa == 0x00)
+					continue;
 				
-				// Split into RGB
-				int sa = (sc >> 24) & 0xFF,
-					sr = (sc >> 16) & 0xFF,
-					sg = (sc >> 8) & 0xFF,
-					sb = (sc) & 0xFF,
-					da = (dc >> 24) & 0xFF,
-					dr = (dc >> 16) & 0xFF,
-					dg = (dc >> 8) & 0xFF,
-					db = (dc) & 0xFF;
+				// If the source is fully opaque it will always replace the
+				// destination no matter what
+				else if (sa == 0xFF)
+					data[dest] = sc;
 				
-				// Perform blending
-				int qq = 255 - sa;
-				int xa = sa + da - ((sa * da) / 255),
-					xr = ((sr * sa) / 255) + ((dr * qq) / 255),
-					xg = ((sg * sa) / 255) + ((dg * qq) / 255),
-					xb = ((sb * sa) / 255) + ((db * qq) / 255);
+				// Otherwise blend
+				else
+				{
+					// Get destination color
+					int dc = data[dest];
 				
-				// Recompile
-				int xc = (xa << 24) | (xr << 16) | (xg << 8) | xb;
-				data[dest++] = xc;
+					// Split into RGB
+					int sr = (sc >> 16) & 0xFF,
+						sg = (sc >> 8) & 0xFF,
+						sb = (sc) & 0xFF,
+						da = (dc >> 24) & 0xFF,
+						dr = (dc >> 16) & 0xFF,
+						dg = (dc >> 8) & 0xFF,
+						db = (dc) & 0xFF;
+				
+					// Perform blending
+					int qq = 255 - sa;
+					int xa = sa + da - ((sa * da) / 255),
+						xr = ((sr * sa) / 255) + ((dr * qq) / 255),
+						xg = ((sg * sa) / 255) + ((dg * qq) / 255),
+						xb = ((sb * sa) / 255) + ((db * qq) / 255);
+				
+					// Recompile
+					int xc = (xa << 24) | (xr << 16) | (xg << 8) | xb;
+					data[dest] = xc;
+				}
 			}
 		
 		// Not blending
