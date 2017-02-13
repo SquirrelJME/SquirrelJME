@@ -106,7 +106,7 @@ public class Automap
 		// Draw a nice border around the map
 		graphics.setAlpha(0xFF);
 		graphics.setColor(0xFFFFFF);
-		graphics.drawRect(0, 0, width - 1, height - 1);
+		graphics.drawRect(0, 0, width - 2, height - 2);
 		
 		// Return the active map
 		return this.active;

@@ -467,6 +467,10 @@ public abstract class BasicGraphics
 	@Override
 	public final void drawRect(int __x, int __y, int __w, int __h)
 	{
+		// The width and height are increased by a single pixel
+		__w += 1;
+		__h += 1;
+		
 		// Get actual end points
 		int ex = __x + __w,
 			ey = __y + __h;
@@ -512,7 +516,7 @@ public abstract class BasicGraphics
 		// Right vertical shortening
 		boolean rvs = (ex >= clipex);
 		if (rvs)
-			ex = clipex - 1;
+			ex = clipex;
 		
 		// Calculate new width
 		if (lvs || rvs)
@@ -526,7 +530,7 @@ public abstract class BasicGraphics
 		// Top horizontal shortening
 		boolean ths = (ey >= clipey);
 		if (ths)
-			ey = clipey - 1;
+			ey = clipey;
 		
 		// Calculate new height
 		if (bhs || ths)
