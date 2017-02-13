@@ -47,6 +47,9 @@ public class GameInterface
 	/** The level to render and interact with. */
 	protected final Level level;
 	
+	/** The automap. */
+	protected final Automap automap;
+	
 	/** The width of the level in pixels. */
 	protected final int levelpxw;
 	
@@ -116,6 +119,9 @@ public class GameInterface
 		
 		// Use self as the key listener
 		this.setKeyListener(this.inputhandler);
+		
+		// Setup automap
+		this.automap = new Automap(this, 128, 128);
 	}
 	
 	/**
@@ -196,6 +202,11 @@ public class GameInterface
 				__g.drawImage(mtcacher.cacheMegaTile(mtx, mty),
 					mapToScreenX(mmx), mapToScreenY(mmy), 0);
 			}
+		
+		// Draw the automap in the bottom left corner
+		Image map = this.automap.update();
+		__g.setAlpha(192);
+		__g.drawImage(map, 0, viewh, Graphics.LEFT | Graphics.BOTTOM);
 		
 		// No longer painting
 		this._inpaint = false;
