@@ -290,7 +290,7 @@ public abstract class BasicGraphics
 		// be drawn or not drawn, so in this event just ignore blend if there
 		// is not alpha.
 		int alpha = getAlpha();
-		boolean blend = (__blend() && __i.hasAlpha());
+		boolean blend = (__blend() && (alpha < 255 || __i.hasAlpha()));
 		int bor = __blendOr();
 		
 		// Render horizontal slices
