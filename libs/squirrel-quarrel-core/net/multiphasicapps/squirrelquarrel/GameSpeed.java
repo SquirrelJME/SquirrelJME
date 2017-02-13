@@ -42,6 +42,10 @@ public enum GameSpeed
 	/** End. */
 	;
 	
+	/** The speed of normal. */
+	private static final int _NORMAL_SPEED =
+		67;
+	
 	/** Milliseconds between frames. */
 	protected final int msbetweenframes;
 	
@@ -91,6 +95,17 @@ public enum GameSpeed
 	public int nanoFrameTime()
 	{
 		return this.nsbetweenframes;
+	}
+	
+	/**
+	 * Returns the ratio this game speed and the normal game speed.
+	 *
+	 * @return The ratio between speeds.
+	 * @since 2017/02/12
+	 */
+	public double ratio()
+	{
+		return (double)this.msbetweenframes / _NORMAL_SPEED;
 	}
 	
 	/**

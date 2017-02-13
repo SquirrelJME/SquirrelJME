@@ -163,11 +163,12 @@ public class GameInputHandler
 		boolean[] gamekeys = this.gamekeys;
 		
 		// Pan the viewport?
-		int xpan = _PANNING_SPEED * (gamekeys[Canvas.LEFT] ? -1 :
-			(gamekeys[Canvas.RIGHT] ? 1 : 0)),
-			ypan = _PANNING_SPEED * (gamekeys[Canvas.UP] ? -1 :
-			(gamekeys[Canvas.DOWN] ? 1 : 0));
-		gameinterface.translateViewport(xpan, ypan);
+		double gsratio = gameinterface.gameSpeed().ratio();
+		double xpan = _PANNING_SPEED * (gamekeys[Canvas.LEFT] ? -gsratio :
+			(gamekeys[Canvas.RIGHT] ? gsratio : 0)),
+			ypan = _PANNING_SPEED * (gamekeys[Canvas.UP] ? -gsratio :
+			(gamekeys[Canvas.DOWN] ? gsratio : 0));
+		gameinterface.translateViewport((int)xpan, (int)ypan);
 	}
 }
 
