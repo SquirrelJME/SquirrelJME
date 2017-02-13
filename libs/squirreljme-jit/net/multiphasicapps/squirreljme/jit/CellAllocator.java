@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/02/11
  */
-public class CellAllocator
+public abstract class CellAllocator
 {
 }
 

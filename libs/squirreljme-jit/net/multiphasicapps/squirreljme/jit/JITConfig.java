@@ -69,6 +69,24 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	public abstract JITConfigSerializer<C> serializer();
 	
 	/**
+	 * Obtains an internally set value.
+	 *
+	 * @param __s The key to get.
+	 * @return The value of the given key or {@code null} if no value was set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/13
+	 */
+	protected final String internalValue(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return this._values.get(__s);
+	}
+	
+	/**
 	 * Lowercases the given string.
 	 *
 	 * @param __s The string to lowercase, may be {@code null}.

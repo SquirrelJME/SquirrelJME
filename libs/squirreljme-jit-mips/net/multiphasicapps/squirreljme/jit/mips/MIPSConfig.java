@@ -46,6 +46,20 @@ public class MIPSConfig
 	}
 	
 	/**
+	 * Returns the revision of the MIPS CPU to target.
+	 *
+	 * @return The revision of the CPU to target.
+	 * @since 2017/02/13
+	 */
+	public MIPSRevision mipsRevision()
+	{
+		String v = internalValue("mipsrevision");
+		if (v == null)
+			return MIPSRevision.I;
+		return MIPSRevision.of(v);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/02
 	 */
