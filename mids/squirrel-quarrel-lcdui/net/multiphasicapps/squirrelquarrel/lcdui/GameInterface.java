@@ -125,6 +125,17 @@ public class GameInterface
 	}
 	
 	/**
+	 * Returns the level being played.
+	 *
+	 * @return The current level.
+	 * @since 2017/02/12
+	 */
+	public Level level()
+	{
+		return this.level;
+	}
+	
+	/**
 	 * Converts a map X coordinate to a screen X coordinate.
 	 *
 	 * @param __x The input X coordinate.
@@ -205,7 +216,7 @@ public class GameInterface
 		
 		// Draw the automap in the bottom left corner
 		Image map = this.automap.update();
-		__g.setAlpha(192);
+		__g.setAlpha(160);
 		__g.drawImage(map, 0, viewh, Graphics.LEFT | Graphics.BOTTOM);
 		
 		// No longer painting
@@ -369,6 +380,50 @@ public class GameInterface
 		this._vieww = __w;
 		this._viewh = __h;
 		translateViewport(0, 0);
+	}
+	
+	/**
+	 * Returns the height of the viewport.
+	 *
+	 * @return The viewport height.
+	 * @since 2017/02/12
+	 */
+	public int viewportHeight()
+	{
+		return this._viewh;
+	}
+	
+	/**
+	 * Returns the width of the viewport.
+	 *
+	 * @return The viewport width.
+	 * @since 2017/02/12
+	 */
+	public int viewportWidth()
+	{
+		return this._vieww;
+	}
+	
+	/**
+	 * Returns the X position of the viewport.
+	 *
+	 * @return The viewport X position.
+	 * @since 2017/02/12
+	 */
+	public int viewportX()
+	{
+		return this._viewx;
+	}
+	
+	/**
+	 * Returns the Y position of the viewport.
+	 *
+	 * @return The viewport Y position.
+	 * @since 2017/02/12
+	 */
+	public int viewportY()
+	{
+		return this._viewy;
 	}
 }
 

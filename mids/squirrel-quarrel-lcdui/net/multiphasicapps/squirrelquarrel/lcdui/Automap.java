@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.squirrelquarrel.Level;
 
 /**
  * This class is used to draw and update the automap which is used to give the
@@ -40,6 +41,12 @@ public class Automap
 	/** The automap height. */
 	protected final int height;
 	
+	/** The level width in pixels. */
+	protected final int levelpxw;
+	
+	/** The level height in pixels. */
+	protected final int levelpxh;
+	
 	/**
 	 * Initializes the automap.
 	 *
@@ -66,6 +73,13 @@ public class Automap
 		this.active = active;
 		this.graphics = active.getGraphics();
 		
+		// Get level size
+		Level level = __gi.level();
+		int levelpxw = level.pixelWidth(),
+			levelpxh = level.pixelHeight();
+		this.levelpxw = levelpxw;
+		this.levelpxh = levelpxh;
+		
 		// However, initialize the terrain layer now
 		Image terrain = Image.createImage(__w, __h);
 		this.terrain = terrain;
@@ -91,11 +105,14 @@ public class Automap
 	 */
 	public Image update()
 	{
+		GameInterface gameinterface = this.gameinterface;
 		Image terrain = this.terrain;
 		Image active = this.active;
 		Graphics graphics = this.graphics;
 		int width = this.width,
-			height = this.height;
+			height = this.height,
+			levelpxw = this.levelpxw,
+			levelpxh = this.levelpxh;
 		
 		// Full alpha
 		graphics.setAlpha(0xFF);
@@ -103,8 +120,20 @@ public class Automap
 		// Draw the terrain over the map
 		graphics.drawImage(terrain, 0, 0, 0);
 		
-		// Draw a nice border around the map
+		// Draw where the viewport is in the automap
 		graphics.setAlpha(0xFF);
+		graphics.setColor(0x00FFFF);
+		int viewx = gameinterface.viewportX(),
+			viewy = gameinterface.viewportY(),
+			vieww = gameinterface.viewportWidth(),
+			viewh = gameinterface.viewportHeight();
+		double pvx = width * ((double)viewx / (double)levelpxw),
+			pvy = height * ((double)viewy / (double)levelpxh),
+			pvw = width * ((double)vieww / (double)levelpxw),
+			pvh = height * ((double)viewh / (double)levelpxh);
+		graphics.drawRect((int)pvx, (int)pvy, (int)pvw, (int)pvh);
+		
+		// Draw a nice border around the map
 		graphics.setColor(0xFFFFFF);
 		graphics.drawRect(0, 0, width - 2, height - 2);
 		
