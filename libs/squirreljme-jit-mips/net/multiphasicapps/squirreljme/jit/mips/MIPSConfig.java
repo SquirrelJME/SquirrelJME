@@ -53,7 +53,7 @@ public class MIPSConfig
 	 */
 	public MIPSRevision mipsRevision()
 	{
-		String v = internalValue("mipsrevision");
+		String v = internalValue("mips.revision");
 		if (v == null)
 			return MIPSRevision.I;
 		return MIPSRevision.of(v);
