@@ -111,5 +111,30 @@ public class MegaTile
 		
 		return TerrainType.GRASS;
 	}
+	
+	/**
+	 * This checks whether the given sub-tile is revealed by the given player.
+	 *
+	 * @return {@code true} if it is revealed.
+	 * @throws NullPointerException On null arguments
+	 * @since 2017/02/13
+	 */
+	public boolean subTileRevealed(Player __p, int __x, int __y)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BE05 Cannot get revealed state because the tile
+		// is out of range.}
+		if (__x < 0 || __y < 0 || __x >= TILES_PER_MEGA_TILE ||
+			__y >= TILES_PER_MEGA_TILE)
+			throw new IndexOutOfBoundsException("BE05");
+		
+		// Check if it is revealed
+		return (this.revealedfog[
+			(__y * TILES_PER_MEGA_TILE) + __x] & __p.visionMask()) != 0;
+	}
 }
 
