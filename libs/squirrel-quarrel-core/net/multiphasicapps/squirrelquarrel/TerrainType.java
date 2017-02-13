@@ -20,10 +20,36 @@ import java.io.InputStream;
 public enum TerrainType
 {
 	/** Grass. */
-	GRASS,
+	GRASS(0x007F00),
 	
 	/** End. */
 	;
+	
+	/** The terrain color. */
+	protected final int color;
+	
+	/**
+	 * Initializes the terrain type.
+	 *
+	 * @param __color The color used for this terrain.
+	 * @since 2017/09/13
+	 */
+	private TerrainType(int __color)
+	{
+		// Set
+		this.color = __color;
+	}
+	
+	/**
+	 * Returns the color used for the terrain.
+	 *
+	 * @return The terrain color.
+	 * @since 2017/02/13
+	 */
+	public int color()
+	{
+		return this.color;
+	}
 	
 	/**
 	 * Returns an input stream to the image data.
