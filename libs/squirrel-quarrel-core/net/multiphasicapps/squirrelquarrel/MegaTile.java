@@ -65,6 +65,13 @@ public class MegaTile
 		
 		// Set
 		this.level = __l;
+		
+		// Initialize it with some pattern
+		byte[] terrain = this.terrain;
+		for (int y = 0; y < TILES_PER_MEGA_TILE; y++)
+			for (int x = 0; x < TILES_PER_MEGA_TILE; x++)
+				terrain[(y * TILES_PER_MEGA_TILE) + x] =
+					(byte)(((x + y) / 2) & 1);
 	}
 	
 	/**
@@ -109,7 +116,8 @@ public class MegaTile
 			__y >= TILES_PER_MEGA_TILE)
 			throw new IndexOutOfBoundsException("BE03");
 		
-		return TerrainType.GRASS;
+		// Depends
+		return TerrainType.of(this.terrain[(__y * TILES_PER_MEGA_TILE) + __x]);
 	}
 	
 	/**

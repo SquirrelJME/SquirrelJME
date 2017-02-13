@@ -22,8 +22,15 @@ public enum TerrainType
 	/** Grass. */
 	GRASS(0x007F00),
 	
+	/** Dirt. */
+	DIRT(0x6E370B),
+	
 	/** End. */
 	;
+	
+	/** Cache of terrain types. */
+	private static final TerrainType[] _VALUES =
+		values();
 	
 	/** The terrain color. */
 	protected final int color;
@@ -68,6 +75,18 @@ public enum TerrainType
 		if (rv == null)
 			throw new RuntimeException(String.format("BE02 %s", this));
 		return rv;
+	}
+	
+	/**
+	 * Returns the terrain type of the given ID.
+	 *
+	 * @param __i The ID of the terrain to return.
+	 * @return The terrain type at this position.
+	 * @since 2017/02/13
+	 */
+	public static TerrainType of(int __i)
+	{
+		return _VALUES[__i];
 	}
 	
 	/**
