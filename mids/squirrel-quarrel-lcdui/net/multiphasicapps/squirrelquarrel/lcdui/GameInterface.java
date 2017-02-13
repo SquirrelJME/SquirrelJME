@@ -67,7 +67,7 @@ public class GameInterface
 	
 	/** The current game speed. */
 	private volatile GameSpeed _speed =
-		GameSpeed.SLOWEST;
+		GameSpeed.NORMAL;
 	
 	/** The last frame the game was rendered on. */
 	private volatile int _renderframe;
