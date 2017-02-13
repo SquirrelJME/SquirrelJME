@@ -11,41 +11,31 @@
 package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.jit.CellAllocator;
-import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 
 /**
- * This is the engine which is able to generate MIPS machine code.
+ * This is the MIPS allocator which is used to manage register and stack
+ * allocations on the MIPS CPU.
  *
- * @since 2017/02/11
+ * @since 2017/02/13
  */
-public class MIPSEngine
-	extends TranslationEngine
+public class MIPSAllocator
+	extends CellAllocator
 {
-	/** The configuration used. */
-	protected final MIPSConfig config;
-	
 	/**
-	 * Initializes the MIPS engine.
+	 * Initializes the MIPS allocator.
 	 *
-	 * @param __conf The MIPS configuration to use.
-	 * @since 2017/02/11
+	 * @param __config The configuration to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/13
 	 */
-	public MIPSEngine(MIPSConfig __conf)
+	public MIPSAllocator(MIPSConfig __config)
+		throws NullPointerException
 	{
-		super(__conf);
+		// Check
+		if (__config == null)
+			throw new NullPointerException("NARG");
 		
-		// Set
-		this.config = __conf;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017//02/11
-	 */
-	@Override
-	public CellAllocator createCellAllocator()
-	{
-		return new MIPSAllocator(this.config);
+		throw new Error("TODO");
 	}
 }
 

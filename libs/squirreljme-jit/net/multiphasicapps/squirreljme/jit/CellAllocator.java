@@ -14,6 +14,9 @@ package net.multiphasicapps.squirreljme.jit;
  * This class manages register and stack allocations and is used to determine
  * where and how to store variables for computational and storage use.
  *
+ * Instances of this class would also be created when a call to a method is
+ * required to be performed.
+ *
  * @since 2017/02/11
  */
 public abstract class CellAllocator
