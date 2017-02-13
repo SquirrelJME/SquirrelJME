@@ -115,12 +115,17 @@ public class MegaTile
 	/**
 	 * This checks whether the given sub-tile is revealed by the given player.
 	 *
+	 * @param __p The player to check if they can see the given tile.
+	 * @param __x The tile X position.
+	 * @param __y The tile Y position.
 	 * @return {@code true} if it is revealed.
+	 * @throws IndexOutOfBoundsException If the position is not in the megatile
+	 * bounds.
 	 * @throws NullPointerException On null arguments
 	 * @since 2017/02/13
 	 */
 	public boolean subTileRevealed(Player __p, int __x, int __y)
-		throws NullPointerException
+		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
 		if (__p == null)

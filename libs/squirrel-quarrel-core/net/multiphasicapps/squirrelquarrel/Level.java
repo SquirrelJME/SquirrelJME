@@ -122,6 +122,42 @@ public class Level
 	}
 	
 	/**
+	 * Converts a pixel coordinate to a mega tile.
+	 *
+	 * @param __c The coordinate to convert.
+	 * @return The converted coordinate.
+	 * @since 2017/02/13
+	 */
+	public static int pixelCoordToMegaTile(int __c)
+	{
+		return __c / MegaTile.MEGA_TILE_PIXEL_SIZE;
+	}
+	
+	/**
+	 * Converts a pixel coordinate to a tile.
+	 *
+	 * @param __c The coordinate to convert.
+	 * @return The converted coordinate.
+	 * @since 2017/02/13
+	 */
+	public static int pixelCoordToTile(int __c)
+	{
+		return __c / MegaTile.TILE_PIXEL_SIZE;
+	}
+	
+	/**
+	 * Converts a pixel coordinate to a sub tile in a megatile.
+	 *
+	 * @param __c The coordinate to convert.
+	 * @return The converted coordinate.
+	 * @since 2017/02/13
+	 */
+	public static int pixelCoordToSubTile(int __c)
+	{
+		return (__c / MegaTile.TILE_PIXEL_SIZE) % MegaTile.TILES_PER_MEGA_TILE;
+	}
+	
+	/**
 	 * Returns the height of the map in megatiles.
 	 *
 	 * @return The map height in megatiles.
@@ -163,6 +199,37 @@ public class Level
 	public int pixelWidth()
 	{
 		return this.pixelw;
+	}
+	
+	/**
+	 * Returns the terrain type at the given pixel
+	 *
+	 * @param __x The pixel X position.
+	 * @param __y The pixel Y position.
+	 * @return The terrain type for the given tile.
+	 * @since 2017/02/13
+	 */
+	public TerrainType pixelTerrain(int __x, int __y)
+	{
+		return megaTile(pixelCoordToMegaTile(__x), pixelCoordToMegaTile(__y)).
+			subTileTerrain(pixelCoordToSubTile(__x), pixelCoordToSubTile(__y));
+	}
+	
+	/**
+	 * This checks whether the given tile at the specified pixel is revealed
+	 * for the given player.
+	 *
+	 * @param __p The player to check if they can see the given tile.
+	 * @param __x The tile X position.
+	 * @param __y The tile Y position.
+	 * @return {@code true} if it is revealed.
+	 * @since 2017/02/13
+	 */
+	public boolean pixelRevealed(Player __p, int __x, int __y)
+	{
+		return megaTile(pixelCoordToMegaTile(__x), pixelCoordToMegaTile(__y)).
+			subTileRevealed(__p, pixelCoordToSubTile(__x),
+			pixelCoordToSubTile(__y));
 	}
 }
 

@@ -66,7 +66,7 @@ public class Automap
 		// Set
 		this.gameinterface = __gi;
 		this.width = __w;
-		this.height = __w;
+		this.height = __h;
 		
 		// Save active image for later
 		Image active = Image.createImage(__w, __h);
@@ -84,6 +84,15 @@ public class Automap
 		Image terrain = Image.createImage(__w, __h);
 		this.terrain = terrain;
 		Graphics graphics = terrain.getGraphics();
+		for (double sy = 0, dy = 0, msx = (double)levelpxw / __w,
+			msy = (double)levelpxh / __h, enddy = __h,
+			enddx = __w; dy < enddy; sy += msy, dy += 1)
+			for (double sx = 0, dx = 0; dx < enddx; sx += msx, dx += 1)
+			{
+				graphics.setColor(
+					level.pixelTerrain((int)sx, (int)sy).color());
+				graphics.drawLine((int)dx, (int)dy, (int)dx + 1, (int)dy);
+			}
 	}
 	
 	/**
