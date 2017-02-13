@@ -69,6 +69,45 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	public abstract JITConfigSerializer<C> serializer();
 	
 	/**
+	 * Returns the number of bits which are used by the given CPU.
+	 *
+	 * @return The CPU bits.
+	 * @throws JITException If the bits are not set or they are invalid.
+	 * @since 2017/02/13
+	 */
+	public int bits()
+		throws JITException
+	{
+		String v = internalValue("bits");
+		
+		// {@squirreljme.error ED03 CPU bits not specified.}
+		if (v == null)
+			throw new IllegalStateException("ED03");
+		
+		// Convert
+		try
+		{
+			int rv = Integer.parseInt(v);
+			
+			// {@squirreljme.error ED06 CPU bits is zero or negative.}
+			if (rv <= 0)
+				throw new JITException("ED06");
+			
+			// {@squirreljme.error ED04 The CPU bits is not a multiple of 8.}
+			if ((rv % 8) != 0)
+				throw new JITException("ED04");
+			
+			return rv;
+		}
+		
+		// {@squirreljme.error ED05 Specified CPU bits not a number.}
+		catch (NumberFormatException e)
+		{
+			throw new JITException("ED05", e);
+		}
+	}
+	
+	/**
 	 * Obtains an internally set value.
 	 *
 	 * @param __s The key to get.

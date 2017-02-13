@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This is the configuration that is used to configure the JIT for the MIPS
@@ -46,9 +47,27 @@ public class MIPSConfig
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/13
+	 */
+	@Override
+	public int bits()
+	{
+		int rv = super.bits();
+		
+		// {@squirreljme.error AM02 The specified number of CPU bits is not
+		// supported by the CPU revision.}
+		if (!mipsRevision().supportsBits(rv))
+			throw new JITException("AM02");
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the revision of the MIPS CPU to target.
 	 *
-	 * @return The revision of the CPU to target.
+	 * @return The revision of the CPU to target, if not specified it defaults
+	 * to the first revision.
 	 * @since 2017/02/13
 	 */
 	public MIPSRevision mipsRevision()

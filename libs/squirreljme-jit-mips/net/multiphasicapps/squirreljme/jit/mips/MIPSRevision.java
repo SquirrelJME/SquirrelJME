@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * These are the variants supported for the MIPS CPU.
  *
@@ -69,6 +71,43 @@ public enum MIPSRevision
 	}
 	
 	/**
+	 * Checks if the CPU revision supports the given bits.
+	 *
+	 * @param __b The bits to check.
+	 * @return {@code true} if it is supported.
+	 * @since 2017/02/13
+	 */
+	public boolean supportsBits(int __b)
+	{
+		// 32-bit is supported by everything
+		if (__b == 32)
+			return true;
+		
+		// 64-bit depends on the CPU
+		else if (__b == 64)
+			switch (this)
+			{
+					// Supported
+				case III:
+				case IV:
+				case R1:
+				case R2:
+				case R3:
+				case R5:
+				case R6:
+					return true;
+				
+					// Unsupported
+				default:
+					return false;
+			}
+		
+		// Anything else is not supported
+		else
+			return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/06
 	 */
@@ -83,12 +122,12 @@ public enum MIPSRevision
 	 *
 	 * @param __s The name of the revision.
 	 * @return The CPU variant.
-	 * @throws IllegalArgumentException If a variant was not found.
+	 * @throws JITException If a revision is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
 	public static final MIPSRevision of(String __s)
-		throws IllegalArgumentException, NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -101,7 +140,7 @@ public enum MIPSRevision
 		
 		// {@squirreljme.error AM01 Unknown MIPS architecture revision. (The
 		// revision identifier)}
-		throw new IllegalArgumentException(String.format("AM01 %s", __s));
+		throw new JITException(String.format("AM01 %s", __s));
 	}
 }
 
