@@ -61,6 +61,28 @@ public enum GameSpeed
 	}
 	
 	/**
+	 * Returns the game speed which is faster than this one.
+	 *
+	 * @return The faster game speed.
+	 * @since 2017/02/12
+	 */
+	public GameSpeed faster()
+	{
+		// Depends
+		switch (this)
+		{
+			case SLOWEST:	return SLOWER;
+			case SLOWER:	return SLOW;
+			case SLOW:		return NORMAL;
+			case NORMAL:	return FAST;
+			case FAST:		return FASTER;
+			case FASTER:	return FASTEST;
+			default:
+				return this;
+		}
+	}
+	
+	/**
 	 * Returns the duration of a single frame in nanoseconds.
 	 *
 	 * @return The frame duration in nanoseconds.
@@ -69,6 +91,28 @@ public enum GameSpeed
 	public int nanoFrameTime()
 	{
 		return this.nsbetweenframes;
+	}
+	
+	/**
+	 * Returns the game speed which is slower than this one.
+	 *
+	 * @return The slower game speed.
+	 * @since 2017/02/12
+	 */
+	public GameSpeed slower()
+	{
+		// Depends
+		switch (this)
+		{
+			case SLOWER:	return SLOWEST;
+			case SLOW:		return SLOWER;
+			case NORMAL:	return SLOW;
+			case FAST:		return NORMAL;
+			case FASTER:	return FAST;
+			case FASTEST:	return FASTER;
+			default:
+				return this;
+		}
 	}
 }
 

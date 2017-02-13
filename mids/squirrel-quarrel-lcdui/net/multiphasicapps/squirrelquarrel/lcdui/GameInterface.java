@@ -67,7 +67,7 @@ public class GameInterface
 	
 	/** The current game speed. */
 	private volatile GameSpeed _speed =
-		GameSpeed.NORMAL;
+		GameSpeed.SLOWEST;
 	
 	/** The last frame the game was rendered on. */
 	private volatile int _renderframe;
@@ -122,6 +122,17 @@ public class GameInterface
 		
 		// Setup automap
 		this.automap = new Automap(this, 128, 128);
+	}
+	
+	/**
+	 * Returns the game speed.
+	 *
+	 * @return The game speed.
+	 * @since 2017/02/12
+	 */
+	public GameSpeed gameSpeed()
+	{
+		return this._speed;
 	}
 	
 	/**
@@ -302,6 +313,24 @@ public class GameInterface
 				{
 				}
 		}
+	}
+	
+	/**
+	 * Sets the game speed.
+	 *
+	 * @param __gs The game speed to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/12
+	 */
+	public void setGameSpeed(GameSpeed __gs)
+		throws NullPointerException
+	{
+		// Check
+		if (__gs == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._speed = __gs;
 	}
 	
 	/**

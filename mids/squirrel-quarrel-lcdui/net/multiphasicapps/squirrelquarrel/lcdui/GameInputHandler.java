@@ -85,9 +85,10 @@ public class GameInputHandler
 	public void keyReleased(int __code, int __mods)
 	{
 		// Parse key and set the game action as being released
+		GameInterface gameinterface = this.gameinterface;
 		try
 		{
-			int ga = this.gameinterface.getGameAction(__code);
+			int ga = gameinterface.getGameAction(__code);
 			if (ga >= 0 && ga < GAME_ACTION_COUNT)
 				this.gamekeys[ga] = false;
 		}
@@ -96,6 +97,14 @@ public class GameInputHandler
 		catch (IllegalArgumentException e)
 		{
 		}
+		
+		// Increase the game speed
+		if (__code == '=' || __code == '+')
+			gameinterface.setGameSpeed(gameinterface.gameSpeed().faster());
+		
+		// Lower the game speed
+		else if (__code == '-' || __code == '_')
+			gameinterface.setGameSpeed(gameinterface.gameSpeed().slower());
 	}
 	
 	/**
