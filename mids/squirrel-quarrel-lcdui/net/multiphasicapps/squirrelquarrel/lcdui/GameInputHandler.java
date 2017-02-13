@@ -13,6 +13,7 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.MegaTile;
+import net.multiphasicapps.squirrelquarrel.Level;
 
 /**
  * This handles the input for the game such as which keys are held down and
@@ -125,7 +126,7 @@ public class GameInputHandler
 	 */
 	protected void pointerDragged(int __x, int __y)
 	{
-		System.err.printf("DEBUG -- Dragged (%d, %d)%n", __x, __y);
+		__checkAutomapDrag(__x, __y);
 	}
 	
 	/**
@@ -137,7 +138,7 @@ public class GameInputHandler
 	 */
 	protected void pointerPressed(int __x, int __y)
 	{
-		System.err.printf("DEBUG -- Pressed (%d, %d)%n", __x, __y);
+		__checkAutomapDrag(__x, __y);
 	}
 	
 	/**
@@ -149,7 +150,6 @@ public class GameInputHandler
 	 */
 	protected void pointerReleased(int __x, int __y)
 	{
-		System.err.printf("DEBUG -- Released (%d, %d)%n", __x, __y);
 	}
 	
 	/**
@@ -169,6 +169,40 @@ public class GameInputHandler
 			ypan = _PANNING_SPEED * (gamekeys[Canvas.UP] ? -gsratio :
 			(gamekeys[Canvas.DOWN] ? gsratio : 0));
 		gameinterface.translateViewport((int)xpan, (int)ypan);
+	}
+	
+	/**
+	 * Checks for dragging on the automap.
+	 *
+	 * @param __x The cursor X position.
+	 * @param __y The cursor Y position.
+	 * @since 2017/02/13
+	 */
+	private void __checkAutomapDrag(int __x, int __y)
+	{
+		// Get the automap
+		GameInterface gameinterface = this.gameinterface;
+		Automap automap = gameinterface.automap();
+		int amw = automap.width(),
+			amh = automap.height(),
+			vw = gameinterface.viewportWidth(),
+			vh = gameinterface.viewportHeight(),
+			amby = (vh - amh);
+		
+		// If the cursor is where the automap would be
+		if (__x >= 0 && __x < amw && __y >= amby && __y < vh)
+		{
+			Level level = gameinterface.level();
+			int lpxw = level.pixelWidth(),
+				lpxh = level.pixelHeight();
+			
+			// Calculate viewport position
+			double vx = (__x) * ((double)lpxw / amw),
+				vy = (__y - amby) * ((double)lpxh / amh);
+			gameinterface.setViewport(
+				((int)vx) - (vw / 2),
+				((int)vy) - (vh / 2));
+		}
 	}
 }
 

@@ -125,6 +125,17 @@ public class GameInterface
 	}
 	
 	/**
+	 * Returns the automap.
+	 *
+	 * @return The automap.
+	 * @since 2017/02/12
+	 */
+	public Automap automap()
+	{
+		return this.automap;
+	}
+	
+	/**
 	 * Returns the game speed.
 	 *
 	 * @return The game speed.
@@ -334,17 +345,17 @@ public class GameInterface
 	}
 	
 	/**
-	 * Translates the viewport.
+	 * Sets the viewport position.
 	 *
-	 * @param __x The relative X translation.
-	 * @param __y The relative Y translation.
+	 * @param __x The absolute X position.
+	 * @param __y The absolute Y position.
 	 * @since 2017/02/10
 	 */
-	public void translateViewport(int __x, int __y)
+	public void setViewport(int __x, int __y)
 	{
 		// Translate the viewport
-		int viewx = this._viewx + __x,
-			viewy = this._viewy + __y,
+		int viewx = __x,
+			viewy = __y,
 			vieww = this._vieww,
 			viewh = this._viewh,
 			levelpxw = this.levelpxw,
@@ -369,6 +380,18 @@ public class GameInterface
 		// Set new viewport
 		this._viewx = viewx;
 		this._viewy = viewy;
+	}
+	
+	/**
+	 * Translates the viewport.
+	 *
+	 * @param __x The relative X translation.
+	 * @param __y The relative Y translation.
+	 * @since 2017/02/10
+	 */
+	public void translateViewport(int __x, int __y)
+	{
+		setViewport(this._viewx + __x, this._viewy + __y);
 	}
 	
 	/**
