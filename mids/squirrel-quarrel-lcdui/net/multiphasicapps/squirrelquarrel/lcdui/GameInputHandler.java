@@ -39,6 +39,12 @@ public class GameInputHandler
 	protected final boolean[] gamekeys =
 		new boolean[GAME_ACTION_COUNT];
 	
+	/** Is on the automap dragging? */
+	private volatile boolean _ondragmap;
+	
+	/** Disable automap drag. */
+	private volatile boolean _nomapdrag;
+	
 	/**
 	 * Initializes the input handler for the game.
 	 *
@@ -126,7 +132,7 @@ public class GameInputHandler
 	 */
 	protected void pointerDragged(int __x, int __y)
 	{
-		__checkAutomapDrag(__x, __y);
+		__checkAutomapDrag(true, __x, __y);
 	}
 	
 	/**
@@ -138,7 +144,7 @@ public class GameInputHandler
 	 */
 	protected void pointerPressed(int __x, int __y)
 	{
-		__checkAutomapDrag(__x, __y);
+		__checkAutomapDrag(false, __x, __y);
 	}
 	
 	/**
@@ -150,6 +156,9 @@ public class GameInputHandler
 	 */
 	protected void pointerReleased(int __x, int __y)
 	{
+		// Cannot be dragging on the map
+		this._ondragmap = false;
+		this._nomapdrag = false;
 	}
 	
 	/**
@@ -176,9 +185,10 @@ public class GameInputHandler
 	 *
 	 * @param __x The cursor X position.
 	 * @param __y The cursor Y position.
+	 * @param __drag Is this a drag?
 	 * @since 2017/02/13
 	 */
-	private void __checkAutomapDrag(int __x, int __y)
+	private void __checkAutomapDrag(boolean __drag, int __x, int __y)
 	{
 		// Get the automap
 		GameInterface gameinterface = this.gameinterface;
@@ -190,8 +200,15 @@ public class GameInputHandler
 			amby = (vh - amh);
 		
 		// If the cursor is where the automap would be
-		if (__x >= 0 && __x < amw && __y >= amby && __y < vh)
+		// However, if the automap was dragged on, always drag
+		if (this._ondragmap ||
+			(__x >= 0 && __x < amw && __y >= amby && __y < vh))
 		{
+			// Press was not on the map, so do not drag even if it enters
+			// range
+			if (__drag && this._nomapdrag)
+				return;
+			
 			Level level = gameinterface.level();
 			int lpxw = level.pixelWidth(),
 				lpxh = level.pixelHeight();
@@ -202,6 +219,16 @@ public class GameInputHandler
 			gameinterface.setViewport(
 				((int)vx) - (vw / 2),
 				((int)vy) - (vh / 2));
+			
+			// Keep dragging on the map
+			this._ondragmap = true;
+		}
+		
+		// Initial click outside of the map, do not drag on it
+		else
+		{
+			if (!__drag)
+				this._nomapdrag = true;
 		}
 	}
 }
