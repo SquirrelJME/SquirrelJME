@@ -245,6 +245,39 @@ public class GameInterface
 				
 				// Draw it
 				__g.drawImage(mtcacher.cacheMegaTile(mt), sx, sy, 0);
+				
+				// Setup flags for fog drawing
+				__g.setColor(0x000000);
+				__g.setStrokeStyle(Graphics.DOTTED);
+				
+				// Draw fog scanlines
+				for (int sty = 0, psy = sy, bpsx = sx;
+					sty < MegaTile.TILES_PER_MEGA_TILE;
+					sty++, psy += MegaTile.TILE_PIXEL_SIZE)
+					for (int stx = 0, psx = bpsx;
+						stx < MegaTile.TILES_PER_MEGA_TILE;
+						stx++, bpsx += MegaTile.TILE_PIXEL_SIZE)
+					{
+						// Ignore revealed tiles
+						if (mt.subTileRevealed(viewplayer, stx, sty))
+							continue;
+						
+						// Otherwise find the next revealed tile (or the end)
+						int end;
+						for (end = stx + 1; end < MegaTile.TILES_PER_MEGA_TILE;
+							end++)
+							if (mt.subTileRevealed(viewplayer, end, sty))
+								break;
+						
+						// Draw dotted lines for fog
+						int endpx = sx + (end * MegaTile.TILE_PIXEL_SIZE),
+							endpy = psy + MegaTile.TILE_PIXEL_SIZE;
+						for (int py = psy; py < endpy; py++)
+							__g.drawLine(psx + (py & 1), py, endpx, py);
+						
+						// Set current spot to the end
+						stx = end;
+					}
 			}
 		
 		// Draw the automap in the bottom left corner
