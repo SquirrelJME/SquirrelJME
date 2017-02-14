@@ -13,6 +13,8 @@ package net.multiphasicapps.squirrelquarrel;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the state for a single game.
@@ -27,6 +29,10 @@ public class Game
 	
 	/** The level data. */
 	protected final Level level;
+	
+	/** Units in the game. */
+	private final List<Unit> _units =
+		new ArrayList<>();
 	
 	/** Players in the game. */
 	private final Player[] _players =
@@ -174,13 +180,19 @@ public class Game
 		// Get current frame
 		int framenum = this._framenum;
 		
-		// Run the level logic
+		// Run the level logic (includes the megatiles)
 		this.level.__run(framenum);
 		
 		// Run the player logic for each player
 		Player[] players = this._players;
 		for (int i = 0, n = players.length; i < n; i++)
 			players[i].__run(framenum);
+		
+		// Run the
+		List<Unit> units = this._units;
+		for (int i = 0, n = units.size(); i < n; i++)
+			if (units.get(i).__run(framenum))
+				units.set(i, null);
 		
 		// Increase the game frame
 		this._framenum = framenum + 1;
