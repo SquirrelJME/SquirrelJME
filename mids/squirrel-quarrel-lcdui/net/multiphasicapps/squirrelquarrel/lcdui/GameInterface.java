@@ -256,7 +256,7 @@ public class GameInterface
 					sty++, psy += MegaTile.TILE_PIXEL_SIZE)
 					for (int stx = 0, psx = bpsx;
 						stx < MegaTile.TILES_PER_MEGA_TILE;
-						stx++, bpsx += MegaTile.TILE_PIXEL_SIZE)
+						stx++, psx += MegaTile.TILE_PIXEL_SIZE)
 					{
 						// Ignore revealed tiles
 						if (mt.subTileRevealed(viewplayer, stx, sty))
@@ -270,7 +270,8 @@ public class GameInterface
 								break;
 						
 						// Draw dotted lines for fog
-						int endpx = sx + (end * MegaTile.TILE_PIXEL_SIZE),
+						int endpx = sx + (stx * MegaTile.TILE_PIXEL_SIZE) +
+							(end * MegaTile.TILE_PIXEL_SIZE),
 							endpy = psy + MegaTile.TILE_PIXEL_SIZE;
 						for (int py = psy; py < endpy; py++)
 						{
@@ -282,6 +283,7 @@ public class GameInterface
 						
 						// Set current spot to the end
 						stx = end;
+						psx = bpsx + (end * MegaTile.TILE_PIXEL_SIZE);
 					}
 			}
 		
