@@ -69,6 +69,9 @@ public class GameInterface
 	private volatile GameSpeed _speed =
 		GameSpeed.SLOWER;
 	
+	/** The currently active view player. */
+	private volatile Player _viewplayer;
+	
 	/** The last frame the game was rendered on. */
 	private volatile int _renderframe;
 	
@@ -107,6 +110,9 @@ public class GameInterface
 		
 		// Set
 		this.game = __g;
+		
+		// Set initial view player
+		this._viewplayer = __g.player(0);
 		
 		// Quicker to store pixel sizes here
 		Level level;
@@ -221,10 +227,10 @@ public class GameInterface
 			for (int mx = msx; mx < rex; mx += MegaTile.MEGA_TILE_PIXEL_SIZE)
 			{
 				// Get mega tile coordinates
-				int mtx = mx / MegaTile.MEGA_TILE_PIXEL_SIZE,
-					mty = my / MegaTile.MEGA_TILE_PIXEL_SIZE,
-					mmx = mtx * MegaTile.MEGA_TILE_PIXEL_SIZE,
-					mmy = mty * MegaTile.MEGA_TILE_PIXEL_SIZE;
+				int mtx = mx & MegaTile.MEGA_TILE_PIXEL_MASK,
+					mty = my & MegaTile.MEGA_TILE_PIXEL_MASK,
+					mmx = mtx >> MegaTile.MEGA_TILE_PIXEL_SHIFT,
+					mmy = mty >> MegaTile.MEGA_TILE_PIXEL_SHIFT;
 				
 				// Ignore
 				if (mtx < 0 || mtx >= levelmtw ||
