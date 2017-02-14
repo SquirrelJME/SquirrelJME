@@ -91,6 +91,18 @@ public class GameInterface
 	/** Is the game in a repaint? */
 	private volatile boolean _inpaint;
 	
+	/** The starting X megatile. */
+	private volatile int _msx;
+	
+	/** The starting Y megatile. */
+	private volatile int _msy;
+	
+	/** The ending X megatile. */
+	private volatile int _mex;
+	
+	/** The ending Y megatile. */
+	private volatile int _mey;
+	
 	/**
 	 * Initializes the game.
 	 *
@@ -205,6 +217,7 @@ public class GameInterface
 		this._renderframe = game.frameCount();
 		Level level = game.level();
 		int framenum = game.frameCount();
+		Player viewplayer = this._viewplayer;
 		
 		// Get the viewport
 		int viewx = this._viewx,
@@ -212,35 +225,26 @@ public class GameInterface
 			vieww = this._vieww,
 			viewh = this._viewh;
 		
-		// Limits to megatile region (prevents crash)
-		int levelmtw = this.levelmtw,
-			levelmth = this.levelmth;
-		
 		// MegaTiles do not often change
 		MegaTileCacher mtcacher = this.mtcacher;
 		
 		// Megatile draw loop
-		int msx = screenToMapX(0), mex = screenToMapX(vieww),
-			msy = screenToMapY(0), mey = screenToMapY(viewh),
-			rex = mex + MegaTile.MEGA_TILE_PIXEL_SIZE,
-			rey = mey + MegaTile.MEGA_TILE_PIXEL_SIZE;
-		for (int my = msy; my < rey; my += MegaTile.MEGA_TILE_PIXEL_SIZE)
-			for (int mx = msx; mx < rex; mx += MegaTile.MEGA_TILE_PIXEL_SIZE)
+		int msx = this._msx,
+			msy = this._msy,
+			mex = this._mex,
+			mey = this._mey;
+		for (int my = msy,
+			sy = mapToScreenY(my * MegaTile.MEGA_TILE_PIXEL_SIZE),
+			bsx = mapToScreenX(msx * MegaTile.MEGA_TILE_PIXEL_SIZE);
+			my < mey; my++, sy += MegaTile.MEGA_TILE_PIXEL_SIZE)
+			for (int mx = msx, sx = bsx; mx < mex; mx++,
+				sx += MegaTile.MEGA_TILE_PIXEL_SIZE)
 			{
-				// Get mega tile coordinates
-				int mtx = mx / MegaTile.MEGA_TILE_PIXEL_SIZE,
-					mty = my / MegaTile.MEGA_TILE_PIXEL_SIZE,
-					mmx = mtx * MegaTile.MEGA_TILE_PIXEL_SIZE,
-					mmy = mty * MegaTile.MEGA_TILE_PIXEL_SIZE;
-				
-				// Ignore
-				if (mtx < 0 || mtx >= levelmtw ||
-					mty < 0 || mty >= levelmth)
-					continue;
+				// Get the megatile here
+				MegaTile mt = level.megaTile(mx, my);
 				
 				// Draw it
-				__g.drawImage(mtcacher.cacheMegaTile(mtx, mty),
-					mapToScreenX(mmx), mapToScreenY(mmy), 0);
+				__g.drawImage(mtcacher.cacheMegaTile(mt), sx, sy, 0);
 			}
 		
 		// Draw the automap in the bottom left corner
@@ -366,7 +370,9 @@ public class GameInterface
 			vieww = this._vieww,
 			viewh = this._viewh,
 			levelpxw = this.levelpxw,
-			levelpxh = this.levelpxh;
+			levelpxh = this.levelpxh,
+			levelmtw = this.levelmtw,
+			levelmth = this.levelmth;
 		
 		// Cap right side
 		if (viewx + vieww >= levelpxw - 1)
@@ -387,6 +393,24 @@ public class GameInterface
 		// Set new viewport
 		this._viewx = viewx;
 		this._viewy = viewy;
+		
+		// Recalculate tiles in view
+		int msx = screenToMapX(0) / MegaTile.MEGA_TILE_PIXEL_SIZE,
+			msy = screenToMapY(0) / MegaTile.MEGA_TILE_PIXEL_SIZE,
+			mex = (screenToMapX(vieww) / MegaTile.MEGA_TILE_PIXEL_SIZE) + 1,
+			mey = (screenToMapY(viewh) / MegaTile.MEGA_TILE_PIXEL_SIZE) + 1;
+		
+		// Cap
+		if (mex > levelmtw)
+			mex = levelmtw;
+		if (mey > levelmth)
+			mey = levelmth;
+		
+		// Set
+		this._msx = msx;
+		this._msy = msy;
+		this._mex = mex;
+		this._mey = mey;
 	}
 	
 	/**
