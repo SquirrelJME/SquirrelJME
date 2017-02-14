@@ -334,8 +334,10 @@ public abstract class BasicGraphics
 		for (;;)
 		{
 			// Determine points that lie outside the box
-			int outa = __csOut(__x1, __y1, clipsx, clipsy, clipex - 1, clipey - 1),
-				outb = __csOut(__x2, __y2, clipsx, clipsy, clipex - 1, clipey - 1);
+			int outa = __csOut(__x1, __y1,
+					clipsx, clipsy, clipex - 1,clipey - 1),
+				outb = __csOut(__x2, __y2, clipsx,
+					clipsy, clipex - 1, clipey - 1);
 			
 			// Both points are outside the box, do nothing
 			if ((outa & outb) != 0)

@@ -273,7 +273,12 @@ public class GameInterface
 						int endpx = sx + (end * MegaTile.TILE_PIXEL_SIZE),
 							endpy = psy + MegaTile.TILE_PIXEL_SIZE;
 						for (int py = psy; py < endpy; py++)
-							__g.drawLine(psx + (py & 1), py, endpx, py);
+						{
+							// Lines off to the side can get clipped where the
+							// dot patterns stop being correct
+							int bx = (psx < 0 ? 0 : psx);
+							__g.drawLine(bx + (py & 1), py, endpx, py);
+						}
 						
 						// Set current spot to the end
 						stx = end;
