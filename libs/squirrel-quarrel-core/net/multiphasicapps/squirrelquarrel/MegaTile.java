@@ -22,6 +22,10 @@ import java.io.IOException;
  */
 public class MegaTile
 {
+	/** The number of frames which must pass before fog of war is cycled. */
+	private static final int _FOG_OF_WAR_CYCLE_MASK =
+		63;
+	
 	/** The number of tiles per mega tile. */
 	public static final int TILES_PER_MEGA_TILE =
 		8;
@@ -51,8 +55,20 @@ public class MegaTile
 	private final byte[] _terrain =
 		new byte[TILES_IN_MEGA_TILE];
 	
-	/** Fog of war revealed information. */
-	private final byte[] _revealedfog =
+	/**
+	 * This contains the first cycle for the fog of war. The fog of war acts
+	 * in two cycles, so that previously revealed areas go away and new ones
+	 * are set. This means that the fog of war does not need to be cleared
+	 * every frame by units, only set. The fog is in two cycles because on a
+	 * new cycle this array is cleared, and it would be possible for a unit to
+	 * be blind while its logic is handled. Also fog of war updates do not need
+	 * to be that instant.
+	 */
+	private final byte[] _fogcyclea =
+		new byte[TILES_IN_MEGA_TILE];
+	
+	/** Fog of war second cycle. */
+	private final byte[] _fogcycleb =
 		new byte[TILES_IN_MEGA_TILE];
 	
 	/**
@@ -133,9 +149,30 @@ public class MegaTile
 			__y >= TILES_PER_MEGA_TILE)
 			throw new IndexOutOfBoundsException("BE05");
 		
-		// Check if it is revealed
-		return (this._revealedfog[
-			(__y * TILES_PER_MEGA_TILE) + __x] & __p.visionMask()) != 0;
+		// Fog of war revealing is done in two cycles
+		int vm = __p.visionMask(), dx = (__y * TILES_PER_MEGA_TILE) + __x;
+		return (this._fogcyclea[dx] & vm) != 0 ||
+			(this._fogcycleb[dx] & vm) != 0;
+	}
+	
+	/**
+	 * This cycles the fog of war.
+	 *
+	 * @since 2017/02/14
+	 */
+	void __cycleFog()
+	{
+		// Transfer all fog state from the first cycle to the second
+		byte[] fogcyclea = this._fogcyclea;
+		byte[] fogcycleb = this._fogcyclea;
+		for (int i = 0, n = TILES_IN_MEGA_TILE; i < n; i++)
+		{
+			// Set the second cycle to the first
+			fogcycleb[i] = fogcyclea[i];
+			
+			// Clear the first
+			fogcyclea[i] = 0;
+		}
 	}
 	
 	/**
@@ -146,6 +183,9 @@ public class MegaTile
 	 */
 	void __run(int __frame)
 	{
+		// Cycle the fog of war?
+		if ((__frame & _FOG_OF_WAR_CYCLE_MASK) == 0)
+			__cycleFog();
 	}
 }
 
