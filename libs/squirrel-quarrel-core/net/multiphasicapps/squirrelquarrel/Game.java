@@ -28,8 +28,24 @@ public class Game
 	/** The level data. */
 	protected final Level level;
 	
+	/** Players in the game. */
+	private final Player[] _players =
+		new Player[PlayerColor.NUM_PLAYERS];
+	
 	/** The current game frame. */
 	private volatile int _framenum;
+	
+	/**
+	 * Shared initialization.
+	 *
+	 * @since 2017/02/14
+	 */
+	{
+		// Initialize players
+		Player[] players = this._players;
+		for (int i = 0, n = players.length; i < n; i++)
+			players[i] = new Player(this, PlayerColor.of(i));
+	}
 	
 	/**
 	 * Initializes a game with the default initialization rules.
@@ -114,6 +130,42 @@ public class Game
 	public Level level()
 	{
 		return this.level;
+	}
+	
+	/**
+	 * Returns the player by the given index.
+	 *
+	 * @param __i The index of the player to get.
+	 * @return The player for the given index.
+	 * @throws IllegalArgumentException If the index is not within bounds.
+	 * @since 2017/02/14
+	 */
+	public Player player(int __i)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BE07 Invalid player index. (The index)}
+		if (__i < 0 || __i >= PlayerColor.NUM_PLAYERS)
+			throw new IllegalArgumentException(String.format("BE07 %d", __i));
+		
+		return this._players[__i];
+	}
+	
+	/**
+	 * Returns the player by the given color.
+	 *
+	 * @param __p The color to get the player of.
+	 * @return The player for the given color.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/14
+	 */
+	public Player player(PlayerColor __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		return this._players[__p.ordinal()];
 	}
 	
 	/**

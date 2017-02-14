@@ -17,6 +17,49 @@ package net.multiphasicapps.squirrelquarrel;
  */
 public class Player
 {
+	/** The owning game. */
+	protected final Game game;
+	
+	/** The color of this player. */
+	protected final PlayerColor color;
+	
+	/** The vision mask for this player. */
+	private volatile int _vision;
+	
+	/**
+	 * Initializes the game player.
+	 *
+	 * @param __g The owning game.
+	 * @param __c The player color.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/14
+	 */
+	public Player(Game __g, PlayerColor __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__g == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.game = __g;
+		this.color = __c;
+		
+		// The player always has vision to self
+		this._vision = __c.mask();
+	}
+	
+	/**
+	 * Returns the player color.
+	 *
+	 * @return The player color.
+	 * @since 2017/02/14
+	 */
+	public PlayerColor color()
+	{
+		return this.color;
+	}
+	
 	/**
 	 * This returns the mask that is used to check the vision bits.
 	 *
@@ -25,7 +68,7 @@ public class Player
 	 */
 	public int visionMask()
 	{
-		throw new Error("TODO");
+		return this._vision;
 	}
 }
 
