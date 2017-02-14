@@ -21,6 +21,9 @@ import java.lang.ref.WeakReference;
  */
 public enum UnitType
 {
+	/** Starting location. */
+	START_LOCATION,
+	
 	/** Squirrel Headquarters. */
 	SQUIRREL_HQ,
 	

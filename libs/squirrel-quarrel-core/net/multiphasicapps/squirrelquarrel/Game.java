@@ -188,7 +188,7 @@ public class Game
 		for (int i = 0, n = players.length; i < n; i++)
 			players[i].__run(framenum);
 		
-		// Run the
+		// Run the unit logic for every unit
 		List<Unit> units = this._units;
 		for (int i = 0, n = units.size(); i < n; i++)
 			if (units.get(i).__run(framenum))
