@@ -25,6 +25,7 @@ import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
 import net.multiphasicapps.squirrelquarrel.Level;
 import net.multiphasicapps.squirrelquarrel.MegaTile;
+import net.multiphasicapps.squirrelquarrel.Player;
 import net.multiphasicapps.squirrelquarrel.TerrainType;
 
 /**
@@ -227,10 +228,10 @@ public class GameInterface
 			for (int mx = msx; mx < rex; mx += MegaTile.MEGA_TILE_PIXEL_SIZE)
 			{
 				// Get mega tile coordinates
-				int mtx = mx & MegaTile.MEGA_TILE_PIXEL_MASK,
-					mty = my & MegaTile.MEGA_TILE_PIXEL_MASK,
-					mmx = mtx >> MegaTile.MEGA_TILE_PIXEL_SHIFT,
-					mmy = mty >> MegaTile.MEGA_TILE_PIXEL_SHIFT;
+				int mtx = mx / MegaTile.MEGA_TILE_PIXEL_SIZE,
+					mty = my / MegaTile.MEGA_TILE_PIXEL_SIZE,
+					mmx = mtx * MegaTile.MEGA_TILE_PIXEL_SIZE,
+					mmy = mty * MegaTile.MEGA_TILE_PIXEL_SIZE;
 				
 				// Ignore
 				if (mtx < 0 || mtx >= levelmtw ||
