@@ -26,7 +26,13 @@ public class Level
 	protected final Game game;
 	
 	/** The mega tile array. */
-	protected final MegaTile[] tiles;
+	protected final MegaTile[] _tiles;
+	
+	/** The width of the level in tiles. */
+	protected final int tilew;
+	
+	/** The height of the level in tiles. */
+	protected final int tileh;
 	
 	/** The width of the level in pixels. */
 	protected final int pixelw;
@@ -58,44 +64,18 @@ public class Level
 		// Set
 		this.game = __g;
 		
-		// Get the map size
+		// Initialize the tile map
 		int mw = __is.mapWidth(),
-			mh = __is.mapHeight(),
-			mtw = mw / MegaTile.TILES_PER_MEGA_TILE,
-			mth = mh / MegaTile.TILES_PER_MEGA_TILE;
-		MegaTile[] tiles = new MegaTile[mtw * mth];
-		for (int i = 0, n = tiles.length; i < n; i++)
-			tiles[i] = new MegaTile(this);
-		this.tiles = tiles;
+			mh = __is.mapHeight();
+		this._tiles = __initTiles(mw, mh);
 		
-		// Set sizes
-		this.megaw = mtw;
-		this.megah = mth;
+		// Store sizes
+		this.tilew = mw;
+		this.tileh = mh;
+		this.megaw = mw / MegaTile.TILES_PER_MEGA_TILE;
+		this.megah = mh / MegaTile.TILES_PER_MEGA_TILE;
 		this.pixelw = mw * MegaTile.TILE_PIXEL_SIZE;
 		this.pixelh = mh * MegaTile.TILE_PIXEL_SIZE;
-	}
-	
-	/**
-	 * Initializes the level from a previously serialized stream such as one
-	 * that was made for a replay or saved game.
-	 *
-	 * @param __g The game which owns this.
-	 * @param __is The stream to deserialize from.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/10
-	 */
-	public Level(Game __g, DataInputStream __is)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__g == null || __is == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.game = __g;
-		
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -118,7 +98,7 @@ public class Level
 			throw new IndexOutOfBoundsException("BE04");
 		
 		// Get
-		return this.tiles[(__y * megaw) + __x];
+		return this._tiles[(__y * megaw) + __x];
 	}
 	
 	/**
@@ -230,6 +210,41 @@ public class Level
 		return megaTile(pixelCoordToMegaTile(__x), pixelCoordToMegaTile(__y)).
 			subTileRevealed(__p, pixelCoordToSubTile(__x),
 			pixelCoordToSubTile(__y));
+	}
+	
+	/**
+	 * Initializes the map tiles.
+	 *
+	 * @param __tw The tile width of the map.
+	 * @param __th The tile height of the map.
+	 * @return The initialized mega tiles.
+	 * @since 2017/02/14
+	 */
+	private MegaTile[] __initTiles(int __tw, int __th)
+	{
+		int megaw = __tw / MegaTile.TILES_PER_MEGA_TILE;
+		int megah = __th / MegaTile.TILES_PER_MEGA_TILE;
+		
+		// Initialize
+		MegaTile[] tiles = new MegaTile[megaw * megah];
+		for (int i = 0, n = tiles.length; i < n; i++)
+			tiles[i] = new MegaTile(this, i % megaw, i / megaw);
+		
+		return tiles;
+	}
+	
+	/**
+	 * Runs the level logic.
+	 *
+	 * @param __frame The current frame.
+	 * @since 2017/02/14
+	 */
+	void __run(int __frame)
+	{
+		// Run the megatile loop
+		MegaTile[] tiles = this._tiles;
+		for (int i = 0, n = tiles.length; i < n; i++)
+			tiles[i].__run(__frame);
 	}
 }
 

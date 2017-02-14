@@ -41,22 +41,30 @@ public class MegaTile
 	/** The owning level */
 	protected final Level level;
 	
+	/** Megatile X position. */
+	protected final int megax;
+	
+	/** Megatile Y position. */
+	protected final int megay;
+	
 	/** Terrain information. */
-	protected final byte[] terrain =
+	private final byte[] _terrain =
 		new byte[TILES_IN_MEGA_TILE];
 	
 	/** Fog of war revealed information. */
-	protected final byte[] revealedfog =
+	private final byte[] _revealedfog =
 		new byte[TILES_IN_MEGA_TILE];
 	
 	/**
 	 * Initializes a basic megatile.
 	 *
 	 * @param __l The owning level.
+	 * @param __x Megatile X position.
+	 * @param __y Megatile Y position.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public MegaTile(Level __l)
+	public MegaTile(Level __l, int __mx, int __my)
 		throws NullPointerException
 	{
 		// Check
@@ -65,36 +73,15 @@ public class MegaTile
 		
 		// Set
 		this.level = __l;
+		this.megax = __mx;
+		this.megay = __my;
 		
 		// Initialize it with some pattern
-		byte[] terrain = this.terrain;
+		byte[] terrain = this._terrain;
 		for (int y = 0; y < TILES_PER_MEGA_TILE; y++)
 			for (int x = 0; x < TILES_PER_MEGA_TILE; x++)
 				terrain[(y * TILES_PER_MEGA_TILE) + x] =
 					(byte)(((x + y) / 2) & 1);
-	}
-	
-	/**
-	 * Initializes the megatile from a previously serialized replay or save
-	 * game.
-	 *
-	 * @param __l The owning level.
-	 * @param __is The stream to read from.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/10
-	 */
-	public MegaTile(Level __l, DataInputStream __is)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__l == null || __is == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.level = __l;
-		
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -117,7 +104,8 @@ public class MegaTile
 			throw new IndexOutOfBoundsException("BE03");
 		
 		// Depends
-		return TerrainType.of(this.terrain[(__y * TILES_PER_MEGA_TILE) + __x]);
+		return TerrainType.of(
+			this._terrain[(__y * TILES_PER_MEGA_TILE) + __x]);
 	}
 	
 	/**
@@ -146,8 +134,18 @@ public class MegaTile
 			throw new IndexOutOfBoundsException("BE05");
 		
 		// Check if it is revealed
-		return (this.revealedfog[
+		return (this._revealedfog[
 			(__y * TILES_PER_MEGA_TILE) + __x] & __p.visionMask()) != 0;
+	}
+	
+	/**
+	 * Runs the megatile logic.
+	 *
+	 * @param __frame The current frame.
+	 * @since 2017/02/14
+	 */
+	void __run(int __frame)
+	{
 	}
 }
 

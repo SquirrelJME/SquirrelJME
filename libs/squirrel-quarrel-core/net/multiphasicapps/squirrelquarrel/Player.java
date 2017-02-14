@@ -70,5 +70,15 @@ public class Player
 	{
 		return this._vision;
 	}
+	
+	/**
+	 * Runs the player logic.
+	 *
+	 * @param __frame The current frame.
+	 * @since 2017/02/14
+	 */
+	void __run(int __frame)
+	{
+	}
 }
 

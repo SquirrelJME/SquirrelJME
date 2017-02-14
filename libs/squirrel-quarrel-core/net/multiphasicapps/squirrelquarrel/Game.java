@@ -104,10 +104,6 @@ public class Game
 		random.setRawSeed((((long)input.readInt()) << 32L) |
 			input.readInt());
 		
-		// De-serialize the level
-		Level level = new Level(this, input);
-		this.level = level;
-		
 		throw new Error("TODO");
 	}
 	
@@ -177,6 +173,14 @@ public class Game
 	{
 		// Get current frame
 		int framenum = this._framenum;
+		
+		// Run the level logic
+		this.level.__run(framenum);
+		
+		// Run the player logic for each player
+		Player[] players = this._players;
+		for (int i = 0, n = players.length; i < n; i++)
+			players[i].__run(framenum);
 		
 		// Increase the game frame
 		this._framenum = framenum + 1;
