@@ -186,11 +186,11 @@ public class Automap
 		
 		// If drawing fog, keep it light
 		if (__fog)
-			graphics.setAlphaColor(0xAF000000);
+			__g.setAlphaColor(0xAF000000);
 		
 		// Otherwise terrain is always visible
 		else
-			graphics.setAlpha(0xFF);
+			__g.setAlpha(0xFF);
 		
 		// Drawing loop
 		for (double sy = 0, dy = 0, msx = (double)levelpxw / width,
@@ -207,11 +207,11 @@ public class Automap
 				
 				// Use terrain color
 				else
-					graphics.setColor(
+					__g.setColor(
 						level.pixelTerrain((int)sx, (int)sy).color());
 				
 				// Draw single pixel as a line
-				graphics.drawLine((int)dx, (int)dy, (int)dx + 1, (int)dy);
+				__g.drawLine((int)dx, (int)dy, (int)dx + 1, (int)dy);
 			}
 	}
 }
