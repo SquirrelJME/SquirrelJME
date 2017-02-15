@@ -38,9 +38,6 @@ class __JITCodeStream__
 	final ByteDeque _codebuffer =
 		new ByteDeque();
 	
-	/** The register allocator. */
-	final CellAllocator _allocator;
-	
 	/** The instance of the translation engine. */
 	final TranslationEngine _engine;
 	
@@ -74,9 +71,6 @@ class __JITCodeStream__
 		// Setup engine
 		TranslationEngine engine = __c.__jit().engineProvider().createEngine();
 		this._engine = engine;
-		
-		// Get a blank register allocator
-		this._allocator = engine.createCellAllocator();
 	}
 	
 	/**

@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
-import net.multiphasicapps.squirreljme.jit.CellAllocator;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 
 /**
@@ -36,16 +35,6 @@ public class MIPSEngine
 		
 		// Set
 		this.config = __conf;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017//02/11
-	 */
-	@Override
-	public CellAllocator createCellAllocator()
-	{
-		return new MIPSAllocator(this.config);
 	}
 }
 
