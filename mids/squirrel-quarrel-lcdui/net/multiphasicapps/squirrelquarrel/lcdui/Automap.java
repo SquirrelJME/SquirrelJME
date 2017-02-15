@@ -13,6 +13,7 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.Level;
+import net.multiphasicapps.squirrelquarrel.Player;
 
 /**
  * This class is used to draw and update the automap which is used to give the
@@ -25,6 +26,9 @@ public class Automap
 {
 	/** The owning game interface. */
 	protected final GameInterface gameinterface;
+	
+	/** The level to draw on. */
+	protected final Level level;
 	
 	/** The background terrain image. */
 	protected final Image terrain;
@@ -75,6 +79,7 @@ public class Automap
 		
 		// Get level size
 		Level level = __gi.level();
+		this.level = level;
 		int levelpxw = level.pixelWidth(),
 			levelpxh = level.pixelHeight();
 		this.levelpxw = levelpxw;
@@ -83,16 +88,7 @@ public class Automap
 		// However, initialize the terrain layer now
 		Image terrain = Image.createImage(__w, __h);
 		this.terrain = terrain;
-		Graphics graphics = terrain.getGraphics();
-		for (double sy = 0, dy = 0, msx = (double)levelpxw / __w,
-			msy = (double)levelpxh / __h, enddy = __h,
-			enddx = __w; dy < enddy; sy += msy, dy += 1)
-			for (double sx = 0, dx = 0; dx < enddx; sx += msx, dx += 1)
-			{
-				graphics.setColor(
-					level.pixelTerrain((int)sx, (int)sy).color());
-				graphics.drawLine((int)dx, (int)dy, (int)dx + 1, (int)dy);
-			}
+		__drawLayer(terrain.getGraphics(), false);
 	}
 	
 	/**
@@ -129,6 +125,12 @@ public class Automap
 		// Draw the terrain over the map
 		graphics.drawImage(terrain, 0, 0, 0);
 		
+		// Draw the fog
+		__drawLayer(graphics, true);
+		
+		// Draw units
+		graphics.setAlpha(0xFF);
+		
 		// Draw where the viewport is in the automap
 		graphics.setAlpha(0xFF);
 		graphics.setColor(0x00FFFF);
@@ -159,6 +161,58 @@ public class Automap
 	public int width()
 	{
 		return this.width;
+	}
+	
+	/**
+	 * Draws a layer on the specified graphics.
+	 *
+	 * @param __g The target graphics to draw on.
+	 * @param __fog If {@code true} then fog is drawn instead of tiles.
+	 * @since 2017/02/15
+	 */
+	private void __drawLayer(Graphics __g, boolean __fog)
+		throws NullPointerException
+	{
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		Player player = this.gameinterface.player();
+		Level level = this.level;
+		int width = this.width,
+			height = this.height,
+			levelpxw = this.levelpxw,
+			levelpxh = this.levelpxh;
+		
+		// If drawing fog, keep it light
+		if (__fog)
+			graphics.setAlphaColor(0xAF000000);
+		
+		// Otherwise terrain is always visible
+		else
+			graphics.setAlpha(0xFF);
+		
+		// Drawing loop
+		for (double sy = 0, dy = 0, msx = (double)levelpxw / width,
+			msy = (double)levelpxh / height, enddy = height,
+			enddx = width; dy < enddy; sy += msy, dy += 1)
+			for (double sx = 0, dx = 0; dx < enddx; sx += msx, dx += 1)
+			{
+				// Do not draw over revealed areas
+				if (__fog)
+				{
+					if (level.pixelRevealed(player, (int)sx, (int)sy))
+						continue;
+				}
+				
+				// Use terrain color
+				else
+					graphics.setColor(
+						level.pixelTerrain((int)sx, (int)sy).color());
+				
+				// Draw single pixel as a line
+				graphics.drawLine((int)dx, (int)dy, (int)dx + 1, (int)dy);
+			}
 	}
 }
 

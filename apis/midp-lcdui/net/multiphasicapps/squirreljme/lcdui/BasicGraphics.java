@@ -54,7 +54,7 @@ public abstract class BasicGraphics
 	
 	/** The current color. */
 	private volatile int _color =
-		0xFF000000;
+		0xFF_000000;
 	
 	/** The current stroke style. */
 	private volatile int _strokestyle =

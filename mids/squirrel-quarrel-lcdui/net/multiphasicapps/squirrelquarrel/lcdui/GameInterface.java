@@ -297,6 +297,17 @@ public class GameInterface
 	}
 	
 	/**
+	 * Returns the current view player.
+	 *
+	 * @return The view player.
+	 * @since 2017/02/15
+	 */
+	public Player player()
+	{
+		return this._viewplayer;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/12
 	 */
