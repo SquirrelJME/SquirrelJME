@@ -21,5 +21,20 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public abstract class CellAllocator
 {
+	/**
+	 * Returns the base register.
+	 *
+	 * @return The base register.
+	 * @since 2017/02/15
+	 */
+	public abstract Register baseRegister();
+	
+	/**
+	 * Returns the stack register.
+	 *
+	 * @return The stack register.
+	 * @since 2017/02/15
+	 */
+	public abstract Register stackRegister();
 }
 

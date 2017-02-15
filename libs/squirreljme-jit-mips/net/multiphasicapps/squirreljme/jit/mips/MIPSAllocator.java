@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.jit.CellAllocator;
+import net.multiphasicapps.squirreljme.jit.Register;
 
 /**
  * This is the MIPS allocator which is used to manage register and stack
@@ -35,6 +36,26 @@ public class MIPSAllocator
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/15
+	 */
+	@Override
+	public Register baseRegister()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/15
+	 */
+	@Override
+	public Register stackRegister()
+	{
 		throw new Error("TODO");
 	}
 }
