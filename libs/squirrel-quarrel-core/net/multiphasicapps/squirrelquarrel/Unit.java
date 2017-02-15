@@ -48,6 +48,25 @@ public class Unit
 	}
 	
 	/**
+	 * This morphs the current unit so that it is of the specified unit type.
+	 * Certain aspects are transferred and translation whiles others may be
+	 * reset.
+	 *
+	 * @param __t The unit type to morph to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/15
+	 */
+	public void morph(UnitType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * This returns a pointer to this unit which is used to refer to other
 	 * units.
 	 *

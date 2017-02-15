@@ -46,7 +46,7 @@ public enum UnitType
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			throw new Error("TODO");
+			this._info = new WeakReference<>(rv = new UnitInfo(this));
 		
 		return rv;
 	}
