@@ -88,6 +88,16 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/16
+	 */
+	@Override
+	public CacheStates cacheStates()
+	{
+		return this._states;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/07
 	 */
 	@Override

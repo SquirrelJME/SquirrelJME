@@ -18,5 +18,12 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public interface JITStateAccessor
 {
+	/**
+	 * Returns the state of cached variables across the entire program.
+	 *
+	 * @return The cache states, or {@code null} if they are not yet available.
+	 * @since 2017/02/16
+	 */
+	public abstract CacheStates cacheStates();
 }
 

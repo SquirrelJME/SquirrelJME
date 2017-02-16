@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This contains multiple cached states for specific spots within the method..
+ * This contains multiple cached states for specific spots within the method.
+ *
+ * This class is mutable and will change as the JIT progresses.
  *
  * @see CacheState
  * @since 2017/02/16
