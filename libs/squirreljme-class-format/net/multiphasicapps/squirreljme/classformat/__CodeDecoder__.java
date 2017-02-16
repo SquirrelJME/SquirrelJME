@@ -155,10 +155,11 @@ final class __CodeDecoder__
 		int numex = input.readUnsignedShort();
 		boolean hasexceptions = (numex != 0);
 		this._hasexceptions = hasexceptions;
+		ExceptionHandlerTable exceptions = null;
 		if (hasexceptions)
 		{
 			// Read
-			ExceptionHandlerTable exceptions = __readExceptions(numex);
+			exceptions = __readExceptions(numex);
 			this._exceptions = exceptions;
 			
 			// Report
@@ -188,7 +189,8 @@ final class __CodeDecoder__
 			// is passed to the method writer so that it is not forced to
 			// store state for any position that is not a jump target
 			dis.mark(codelen);
-			writer.jumpTargets(new __JumpTargetCalc__(dis, codelen).targets());
+			writer.jumpTargets(new __JumpTargetCalc__(dis, codelen,
+				exceptions).targets());
 			
 			// Reset and decode operations
 			dis.reset();

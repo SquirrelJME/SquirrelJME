@@ -18,6 +18,12 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class CacheStates
 {
+	/** Number of stack entries. */
+	protected final int maxstack;
+	
+	/** Number of locals. */
+	protected final int maxlocals;
+	
 	/**
 	 * Initializes the cache states.
 	 *
@@ -27,7 +33,9 @@ public class CacheStates
 	 */
 	CacheStates(int __ms, int __ml)
 	{
-		throw new Error("TODO");
+		// Set
+		this.maxstack = __ms;
+		this.maxlocals = __ml;
 	}
 }
 

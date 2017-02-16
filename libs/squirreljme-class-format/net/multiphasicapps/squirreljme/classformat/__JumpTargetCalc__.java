@@ -34,11 +34,13 @@ class __JumpTargetCalc__
 	 *
 	 * @param __dis The source byte codes.
 	 * @param __cl The code length.
+	 * @param __ex Optional exception handler table.
 	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __ex}.
 	 * @since 2016/09/03
 	 */
-	__JumpTargetCalc__(ExtendedDataInputStream __dis, int __cl)
+	__JumpTargetCalc__(ExtendedDataInputStream __dis, int __cl,
+		ExceptionHandlerTable __ex)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -63,6 +65,11 @@ class __JumpTargetCalc__
 			// Handle the code
 			__handle(__dis, code, nowpos, rv);
 		}
+		
+		// If there is exception handling, add handlers for the handlers
+		if (__ex != null)
+			for (ExceptionHandler eh : __ex)
+				__add(rv, eh.handlerAddress());
 		
 		// Either use the same array or allocate a new one
 		int used = this._index;
@@ -406,8 +413,8 @@ class __JumpTargetCalc__
 				// {@squirreljme.error AY1j Illegal operation in Java byte
 				// code. (The operation code; The position of it)}
 			default:
-				throw new ClassFormatException(String.format("AY1j %d %d", __code,
-					__pos));
+				throw new ClassFormatException(String.format("AY1j %d %d",
+					__code, __pos));
 		}
 	}
 }
