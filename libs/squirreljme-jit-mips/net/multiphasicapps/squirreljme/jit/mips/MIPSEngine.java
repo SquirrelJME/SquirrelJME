@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 
 /**
@@ -27,11 +28,12 @@ public class MIPSEngine
 	 * Initializes the MIPS engine.
 	 *
 	 * @param __conf The MIPS configuration to use.
+	 * @param __jsa The accessor to the JIT state.
 	 * @since 2017/02/11
 	 */
-	public MIPSEngine(MIPSConfig __conf)
+	public MIPSEngine(MIPSConfig __conf, JITStateAccessor __jsa)
 	{
-		super(__conf);
+		super(__conf, __jsa);
 		
 		// Set
 		this.config = __conf;

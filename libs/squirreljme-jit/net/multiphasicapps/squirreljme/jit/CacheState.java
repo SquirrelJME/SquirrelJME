@@ -11,21 +11,14 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This provides a single instance creation of a translation engine which is
- * used by the JIT to translate byte code into an {@link ExecutableClass}.
+ * This contains a single state which specifies local values which may be
+ * cached on the stack.
  *
- * @since 2017/01/30
+ * For maximum flexibility, this class is mutable.
+ *
+ * @since 2017/02/16
  */
-public interface TranslationEngineProvider
+public class CacheState
 {
-	/**
-	 * Creates a new instance of the translation engine for use during JIT
-	 * compilation.
-	 *
-	 * @param __jsa The accessor which is used to access the JIT state.
-	 * @return The translation engine.
-	 * @since 2017/01/30
-	 */
-	public abstract TranslationEngine createEngine(JITStateAccessor __jsa);
 }
 

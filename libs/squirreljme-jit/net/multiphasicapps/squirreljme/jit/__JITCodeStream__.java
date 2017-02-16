@@ -29,7 +29,7 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * @since 2017/02/07
  */
 class __JITCodeStream__
-	implements CodeDescriptionStream
+	implements CodeDescriptionStream, JITStateAccessor
 {
 	/** The owning class stream. */
 	final __JITClassStream__ _classstream;
@@ -41,9 +41,8 @@ class __JITCodeStream__
 	/** The instance of the translation engine. */
 	final TranslationEngine _engine;
 	
-	/** The state of the stack for each instruction. */
-	private final Map<Integer, Object> _state =
-		new HashMap<>();
+	/** The state of stack and locals for most instruction addresses. */
+	private volatile CacheStates _states;
 	
 	/** Jump targets in the code, where state transfers occur. */
 	private volatile int[] _jumptargets;
@@ -69,7 +68,8 @@ class __JITCodeStream__
 		this._classstream = __c;
 		
 		// Setup engine
-		TranslationEngine engine = __c.__jit().engineProvider().createEngine();
+		TranslationEngine engine = __c.__jit().engineProvider().
+			createEngine(this);
 		this._engine = engine;
 	}
 	
@@ -188,7 +188,10 @@ class __JITCodeStream__
 	@Override
 	public void variableCounts(int __ms, int __ml)
 	{
-		// Not used at all
+		// Initilaize cache states, this is needed for stack caching to work
+		// properly along with restoring or merging into state of another
+		// instruction
+		this._states = new CacheStates(__ms, __ml);
 	}
 }
 

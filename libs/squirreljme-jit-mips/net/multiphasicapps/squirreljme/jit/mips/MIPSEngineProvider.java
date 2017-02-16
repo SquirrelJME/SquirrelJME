@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 
@@ -47,10 +48,10 @@ public class MIPSEngineProvider
 	 * @since 2017/01/31
 	 */
 	@Override
-	public TranslationEngine createEngine()
+	public TranslationEngine createEngine(JITStateAccessor __jsa)
 	{
 		// Create engine
-		return new MIPSEngine(this.config);
+		return new MIPSEngine(this.config, __jsa);
 	}
 }
 

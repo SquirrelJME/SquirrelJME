@@ -23,22 +23,28 @@ public abstract class TranslationEngine
 	/** The configuration used. */
 	protected final JITConfig<?> config;
 	
+	/** The accessor to the JIT. */
+	protected final JITStateAccessor accessor;
+	
 	/**
 	 * Initializes the base translation engine.
 	 *
 	 * @param __c The configuration.
+	 * @param __jsa The JIT state accessor which is used to communicate and
+	 * access the JIT directly.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public TranslationEngine(JITConfig<?> __c)
+	public TranslationEngine(JITConfig<?> __c, JITStateAccessor __jsa)
 		throws NullPointerException
 	{
 		// Check
-		if (__c == null)
+		if (__c == null || __jsa == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.config = __c;
+		this.accessor = __jsa;
 	}
 	
 	/**
