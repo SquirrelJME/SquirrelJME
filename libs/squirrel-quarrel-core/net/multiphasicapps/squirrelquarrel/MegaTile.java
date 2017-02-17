@@ -14,6 +14,8 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,6 +116,40 @@ public class MegaTile
 			for (int x = 0; x < TILES_PER_MEGA_TILE; x++)
 				terrain[(y * TILES_PER_MEGA_TILE) + x] =
 					(byte)(((x + y) / 2) & 1);
+	}
+	
+	/**
+	 * Loads units to be drawn into the specified collection.
+	 *
+	 * @param __d The target collection.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/17
+	 */
+	public void loadLinkedUnits(Collection<Unit.Pointer> __d)
+		throws NullPointerException
+	{
+		// Check
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		// Could fail
+		try
+		{
+			for (Unit u : this._units)
+				try
+				{
+					__d.add(u.pointer());
+				}
+				catch (UnitDeletedException e)
+				{
+					// Ignore
+				}
+		}
+		
+		// Links were modified, stop reading
+		catch (ConcurrentModificationException e)
+		{
+		}
 	}
 	
 	/**

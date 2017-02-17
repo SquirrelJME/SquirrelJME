@@ -14,7 +14,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -27,6 +29,10 @@ import net.multiphasicapps.squirrelquarrel.Level;
 import net.multiphasicapps.squirrelquarrel.MegaTile;
 import net.multiphasicapps.squirrelquarrel.Player;
 import net.multiphasicapps.squirrelquarrel.TerrainType;
+import net.multiphasicapps.squirrelquarrel.Unit;
+import net.multiphasicapps.squirrelquarrel.UnitDeletedException;
+import net.multiphasicapps.squirrelquarrel.UnitInfo;
+import net.multiphasicapps.squirrelquarrel.UnitType;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -65,6 +71,10 @@ public class GameInterface
 	
 	/** The mega tile cacher, used to combine megatiles into one image. */
 	protected final MegaTileCacher mtcacher;
+	
+	/** Units to draw. */
+	private final List<Unit.Pointer> _drawunits =
+		new ArrayList<>();
 	
 	/** The current game speed. */
 	private volatile GameSpeed _speed =
@@ -592,11 +602,35 @@ public class GameInterface
 		__g.setClip(mdx, mdy, mdx + MegaTile.MEGA_TILE_PIXEL_SIZE,
 			mdy + MegaTile.MEGA_TILE_PIXEL_SIZE);
 		
-		__g.setColor(0xFF00FF);
-		__g.drawLine(mdx, mdy, mdx + MegaTile.MEGA_TILE_PIXEL_SIZE,
-			mdy + MegaTile.MEGA_TILE_PIXEL_SIZE);
-		__g.drawLine(mdx, mdy + MegaTile.MEGA_TILE_PIXEL_SIZE,
-			mdx + MegaTile.MEGA_TILE_PIXEL_SIZE, mdy);
+		// Load units
+		List<Unit.Pointer> drawunits = this._drawunits;
+		drawunits.clear();
+		__mt.loadLinkedUnits(drawunits);
+		
+		// Draw them
+		for (int i = 0, n = drawunits.size(); i < n; i++)
+			try
+			{
+				System.err.println("DEBUG -- Draw unit");
+				// Get unit, and its information
+				Unit unit = drawunits.get(i).get();
+				UnitType type = unit.type();
+				if (type == null)
+					continue;
+				UnitInfo info = type.info();
+				
+				// Get draw position on the screen
+				int dx = mapToScreenX(unit.centerX()),
+					dy = mapToScreenY(unit.centerY());
+				
+				// Draw sprite
+				__g.drawRect(dx - 10, dy - 10, dx + 10, dy + 10);
+			}
+			
+			// Ignore due to threading potential
+			catch (UnitDeletedException e)
+			{
+			}
 		
 		// Restore the old clip
 		__g.setClip(oldcx, oldcy, oldcw, oldch);

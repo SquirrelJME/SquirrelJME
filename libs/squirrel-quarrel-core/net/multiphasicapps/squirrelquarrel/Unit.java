@@ -75,6 +75,28 @@ public class Unit
 	}
 	
 	/**
+	 * Returns the center X position.
+	 *
+	 * @return The center X position.
+	 * @since 2017/02/17
+	 */
+	public int centerX()
+	{
+		return this._cx;
+	}
+	
+	/**
+	 * Returns the center Y position.
+	 *
+	 * @return The center Y position.
+	 * @since 2017/02/17
+	 */
+	public int centerY()
+	{
+		return this._cy;
+	}
+	
+	/**
 	 * This morphs the current unit so that it is of the specified unit type.
 	 * Certain aspects are transferred and translation whiles others may be
 	 * reset.
@@ -149,6 +171,17 @@ public class Unit
 			this._pointer = new WeakReference<>(rv = new Unit.Pointer(this));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the unit type.
+	 *
+	 * @return The unit type.
+	 * @since 2017/02/17
+	 */
+	public UnitType type()
+	{
+		return this._type;
 	}
 	
 	/**

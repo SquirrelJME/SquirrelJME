@@ -87,7 +87,7 @@ public class Game
 		// Add start location for the first player as a test, which is
 		// transformed accordingly
 		__createUnit(SpawnPlacementType.BUILDING, UnitType.START_LOCATION,
-			(Unit.Pointer)null, 256, 256);
+			(Unit.Pointer)null, 128, 128);
 	}
 	
 	/**
