@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
@@ -116,10 +117,13 @@ public final class UnitInfo
 	/** The dimension of the unit in pixels. */
 	protected final Dimension pixeldimension;
 	
-	/** The unit offset dimensions (for buildings). */
-	protected final Dimension offsetdimension;
+	/** Center point offset for the unit. */
+	protected final Point centerpointoffset;
 	
-	/** The unit size in tiles. */
+	/** The center point offset used for buildings (based on tile grid). */
+	protected final Point buildingcenterpointoffset;
+	
+	/** The unit size in tiles (for buildings). */
 	protected final Dimension tiledimension;
 	
 	/** The sight range. */
@@ -164,6 +168,61 @@ public final class UnitInfo
 			JavaManifest man = new JavaManifest(is);
 			JavaManifestAttributes attr = man.getMainAttributes();
 			
+			// Load these values directly
+			this.hp = Integer.parseInt(
+				Objects.toString(attr.get(HP_KEY), "0"));
+			this.shields = Integer.parseInt(
+				Objects.toString(attr.get(SHIELDS_KEY), "0"));
+			this.armor = Integer.parseInt(
+				Objects.toString(attr.get(ARMOR_KEY), "0"));
+			this.salt = Integer.parseInt(
+				Objects.toString(attr.get(SALT_COST_KEY), "0"));
+			this.pepper = Integer.parseInt(
+				Objects.toString(attr.get(PEPPER_COST_KEY), "0"));
+			this.buildtime = Integer.parseInt(
+				Objects.toString(attr.get(BUILD_TIME_KEY), "0"));
+			this.supplyprovided = Integer.parseInt(
+				Objects.toString(attr.get(SUPPLY_PROVIDED_KEY), "0"));
+			this.supplycost = Integer.parseInt(
+				Objects.toString(attr.get(SUPPLY_COST_KEY), "0"));
+			this.sight = Integer.parseInt(
+				Objects.toString(attr.get(SIGHT_RANGE_KEY), "0"));
+			this.scorebuild = Integer.parseInt(
+				Objects.toString(attr.get(SCORE_BUILD_KEY), "0"));
+			this.scoredestroy = Integer.parseInt(
+				Objects.toString(attr.get(SCORE_DESTROY_KEY), "0"));
+			this.speed = Integer.parseInt(
+				Objects.toString(attr.get(SPEED_KEY), "0"));
+			
+			// Parse size
+			String vsize = Objects.toString(attr.get(SIZE_KEY), "small");
+			switch (vsize)
+			{
+				case "small": this.size = UnitSize.SMALL; break;
+				case "medium": this.size = UnitSize.MEDIUM; break;
+				case "large": this.size = UnitSize.LARGE; break;
+				
+					// {@squirreljme.error BE0c Unknown unit size. (Unit size)}
+				default:
+					throw new IOException(String.format("BE0c %s", vsize));
+			}
+			
+			// Parse unit dimensions and potential offsets
+			Dimension pixeldimension = __parseDimension(
+				Objects.toString(attr.get(PIXEL_DIMENSIONS_KEY), "0 0"));
+			this.pixeldimension = pixeldimension;
+			
+			// Load offset to calculate building related details
+			Point offset = __parsePoint(
+				Objects.toString(attr.get(PIXEL_DIMENSIONS_KEY), "0 0"));
+			
+			// Center point is just half the dimension
+			this.centerpointoffset = new Point(pixeldimension.width / 2,
+				pixeldimension.height / 2);
+			
+			// Point buildingcenterpointoffset;
+			// Dimension tiledimension;
+			
 			if (false)
 				throw new IOException("OOPS");
 			throw new Error("TODO");
@@ -171,7 +230,7 @@ public final class UnitInfo
 		
 		// {@squirreljme.error BE0a Failed to load information for the
 		// specified unit type. (The unit type)}
-		catch (IOException e)
+		catch (IOException|NumberFormatException e)
 		{
 			throw new RuntimeException(String.format("BE0a %s", __t), e);
 		}
@@ -186,6 +245,68 @@ public final class UnitInfo
 	public UnitType type()
 	{
 		return this.type;
+	}
+	
+	/**
+	 * Parses a dimension.
+	 *
+	 * @param __v The dimension to parse.
+	 * @return The resulting dimension.
+	 * @throws NullPointerException On null arguments.
+	 * @throws NumberFormatException If the format of the string is not
+	 * correct.
+	 * @since 2017/02/17
+	 */
+	static Dimension __parseDimension(String __v)
+		throws NullPointerException, NumberFormatException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BE0d Missing space between dimensions.}
+		__v = __v.trim();
+		int spdx = __v.indexOf(' ');
+		if (spdx < 0)
+			throw new NumberFormatException("BE0d");
+		
+		// Get both fragments
+		String fa = __v.substring(0, spdx).trim(),
+			fb = __v.substring(spdx + 1).trim();
+		
+		// Parse
+		return new Dimension(Integer.parseInt(fa), Integer.parseInt(fb));
+	}
+	
+	/**
+	 * Parses a point.
+	 *
+	 * @param __v The point to parse.
+	 * @return The resulting point.
+	 * @throws NullPointerException On null arguments.
+	 * @throws NumberFormatException If the format of the string is not
+	 * correct.
+	 * @since 2017/02/17
+	 */
+	static Point __parsePoint(String __v)
+		throws NullPointerException, NumberFormatException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BE0e Missing space between points.}
+		__v = __v.trim();
+		int spdx = __v.indexOf(' ');
+		if (spdx < 0)
+			throw new NumberFormatException("BE0e");
+		
+		// Get both fragments
+		String fa = __v.substring(0, spdx).trim(),
+			fb = __v.substring(spdx + 1).trim();
+		
+		// Parse
+		return new Point(Integer.parseInt(fa), Integer.parseInt(fb));
 	}
 }
 
