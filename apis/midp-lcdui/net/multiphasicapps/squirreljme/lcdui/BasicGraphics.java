@@ -26,7 +26,7 @@ public abstract class BasicGraphics
 {
 	/** The RGB slice size. */
 	public static final int PIXEL_SLICE =
-		1024;
+		4096;
 	
 	/** Clipping above. */
 	private static final int _CLIP_ABOVE =
@@ -293,21 +293,43 @@ public abstract class BasicGraphics
 		boolean blend = (__blend() && (alpha < 255 || __i.hasAlpha()));
 		int bor = __blendOr();
 		
-		// Render horizontal slices
-		for (;__y < ey; bsy++, __y++)
-			for (int sx = bsx, dx = __x; dx < ex;
-				sx += slicelen, dx += slicelen)
+		// Divide the source image into tiles so that drawing is done using
+		// these tiles rather than by scanlines. This would produce faster
+		// code because there would be less loop iterations along with less
+		// method calls being performed.
+		// The tile width stretches up to the slice length as much as
+		// possible.
+		int dw = ex - __x;
+		int tilew = (dw < slicelen ? dw : slicelen);
+		
+		// The tile height is just the number of rows that are possible to
+		// be filled. Although a division is here, it will still be faster
+		// than multiple method calls.
+		int dh = ey - __y;
+		int tileh = slicelen / tilew;
+		
+		// Draw tiles
+		for (int disty = dh; __y < ey; bsy += tileh, disty -= tileh,
+			__y += tileh)
+		{
+			// Limit for the Y coordinate
+			int limity = (disty < tileh ? disty : tileh);
+			
+			// Draw horizontal tiles
+			for (int sx = bsx, dx = __x, distx = dw; dx < ex;
+				sx += tilew, dx += tilew, distx -= tilew)
 			{
-				// Scanline limit
-				int limit = Math.min(slicelen, ex - dx);
+				// Tiles may be clipped on the ride side
+				int limitx = (distx < tilew ? distx : tilew);
 				
-				// Read image slice
-				__i.getRGB(slice, 0, limit, sx, bsy, limit, 1);
+				// Read image
+				__i.getRGB(slice, 0, limitx, sx, bsy, limitx, limity);
 				
-				// Draw slice
-				primitiveRGBTile(slice, 0, limit, dx, __y, limit, 1, blend,
-					bor, alpha);
+				// Draw tile
+				primitiveRGBTile(slice, 0, limitx, dx, __y, limitx, limity,
+					blend, bor, alpha);
 			}
+		}
 	}
 	
 	/**
