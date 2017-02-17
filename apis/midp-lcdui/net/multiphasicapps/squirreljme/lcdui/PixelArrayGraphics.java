@@ -290,9 +290,9 @@ public class PixelArrayGraphics
 		// The right shifts by 8 used to be divides by 255, however right
 		// shifting 7 times is faster than dividing 7 times
 		int xa = (sa + da - ((sa * da) / 255)) | __bor,
-			xr = ((sr * sa) / 255) + ((dr * qq) / 255),
-			xg = ((sg * sa) / 255) + ((dg * qq) / 255),
-			xb = ((sb * sa) / 255) + ((db * qq) / 255);
+			xr = ((sr * sa) + (dr * qq)) / 255,
+			xg = ((sg * sa) + (dg * qq)) / 255,
+			xb = ((sb * sa) + (db * qq)) / 255;
 	
 		// Recompile
 		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
