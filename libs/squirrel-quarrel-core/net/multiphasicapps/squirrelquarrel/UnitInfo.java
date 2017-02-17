@@ -89,8 +89,8 @@ public final class UnitInfo
 	/** Unit hitpoints. */
 	protected final int hp;
 	
-	/** Unit sheilds. */
-	protected final int sheilds;
+	/** Unit shields. */
+	protected final int shields;
 	
 	/** Armor. */
 	protected final int armor;
