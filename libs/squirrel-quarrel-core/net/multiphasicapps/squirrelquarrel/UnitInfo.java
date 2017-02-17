@@ -26,6 +26,10 @@ public final class UnitInfo
 	/** Key for hitpoints. */
 	public static final JavaManifestKey HP_KEY =
 		new JavaManifestKey("hp");
+		
+	/** Key for shields. */
+	public static final JavaManifestKey SHIELDS_KEY =
+		new JavaManifestKey("shields");
 	
 	/** Key for armor. */
 	public static final JavaManifestKey ARMOR_KEY =
@@ -81,6 +85,54 @@ public final class UnitInfo
 	
 	/** The type of unit this has info for. */
 	protected final UnitType type;
+	
+	/** Unit hitpoints. */
+	protected final int hp;
+	
+	/** Unit sheilds. */
+	protected final int sheilds;
+	
+	/** Armor. */
+	protected final int armor;
+	
+	/** Unit size. */
+	protected final UnitSize size;
+	
+	/** The cost in salt. */
+	protected final int salt;
+	
+	/** The cost in pepper. */
+	protected final int pepper;
+	
+	/** The build time in frames. */
+	protected final int buildtime;
+	
+	/** The supply provided. */
+	protected final int supplyprovided;
+	
+	/** The supply cost. */
+	protected final int supplycost;
+	
+	/** The dimension of the unit in pixels. */
+	protected final Dimension pixeldimension;
+	
+	/** The unit offset dimensions (for buildings). */
+	protected final Dimension offsetdimension;
+	
+	/** The unit size in tiles. */
+	protected final Dimension tiledimension;
+	
+	/** The sight range. */
+	protected final int sight;
+	
+	/** The score for creating this unit. */
+	protected final int scorebuild;
+	
+	/** The score for destroying this unit. */
+	protected final int scoredestroy;
+	
+	/** The speed of this unit, in 16.16 fixed point. */
+	protected final int speed;
 	
 	/**
 	 * Initializes the unit information.
