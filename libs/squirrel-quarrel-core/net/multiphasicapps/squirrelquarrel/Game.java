@@ -247,47 +247,58 @@ public class Game
 		
 		// Setup unit
 		Unit rv = new Unit(this);
+		UnitInfo info = __t.info();
 		
 		// Morph to the given unti type
 		rv.morph(__t);
 		
 		// Determine the location where the unit is to be placed
+		int px, py;
 		switch (__spt)
 		{
 				// No restriction
 			case FORCED:
-				if (true)
-					throw new Error("TODO");
+				px = __x;
+				py = __y;
 				break;
 				
-				// Building
+				// Building, 
 			case BUILDING:
-				if (true)
-					throw new Error("TODO");
+				px = info.placeBuilding(false, __x);
+				py = info.placeBuilding(true, __y);
 				break;
 				
 				// Normal placement
 			case NORMAL:
-				if (true)
-					throw new Error("TODO");
-				break;
+				throw new Error("TODO");
 				
 				// Unknown
 			default:
 				throw new RuntimeException("OOPS");
 		}
 		
+		// Move unit to the specified position
+		rv.__move(px, py);
+		
 		// Try to replace an existing null with this new unit
 		List<Unit> units = this._units;
+		boolean didset = false;
 		for (int n = units.size(), i = n - 1; i >= 0; i++)
 			if (units.get(i) == null)
 			{
 				units.set(i, rv);
-				return rv;
+				didset = true;
+				break;
 			}
 		
 		// Otherwise place at end
-		units.add(rv);
+		if (!didset)
+			units.add(rv);
+		
+		// Link unit into the map
+		rv.__link(true);
+		
+		// Return it
 		return rv;
 	}
 }

@@ -126,6 +126,9 @@ public final class UnitInfo
 	/** The unit size in tiles (for buildings). */
 	public final Dimension tiledimension;
 	
+	/** The dimenion of the unit in pixels matching the tiled size. */
+	public final Dimension pixeltiledimension;
+	
 	/** The sight range. */
 	public final int sight;
 	
@@ -227,8 +230,13 @@ public final class UnitInfo
 					MegaTile.TILE_PIXEL_SIZE) & ~(MegaTile.TILE_PIXEL_MASK);
 			
 			// Determine tile dimension of unit
-			this.tiledimension = new Dimension(pxw / MegaTile.TILE_PIXEL_SIZE,
+			Dimension tiledimension = new Dimension(
+				pxw / MegaTile.TILE_PIXEL_SIZE,
 				pxh / MegaTile.TILE_PIXEL_SIZE);
+			this.tiledimension = tiledimension;
+			this.pixeltiledimension = new Dimension(
+				tiledimension.width / MegaTile.TILE_PIXEL_SIZE,
+				tiledimension.height / MegaTile.TILE_PIXEL_SIZE);
 			
 			// Offset to the center of the building is in the center of
 			// the tile dimensions
@@ -241,6 +249,20 @@ public final class UnitInfo
 		{
 			throw new RuntimeException(String.format("BE0a %s", __t), e);
 		}
+	}
+	
+	/**
+	 * This performs the calculation of determining where a building should be
+	 * placed. Building placement is aligned to the grid.
+	 *
+	 * @param __y If {@code true} then {@code __v} is a Y coordinate.
+	 * @param __v The coordinate value.
+	 * @return The center position of the building.
+	 * @since 2017/02/17
+	 */
+	public int placeBuilding(boolean __y, int __v)
+	{
+		return __v;
 	}
 	
 	/**

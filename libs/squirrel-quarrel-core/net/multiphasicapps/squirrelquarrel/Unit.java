@@ -47,6 +47,15 @@ public class Unit
 	/** Unit shields. */
 	private volatile int _shields;
 	
+	/** Is this unit linked? */
+	private volatile boolean _islinked;
+	
+	/** Actual center position. */
+	volatile int _cx, _cy;
+	
+	/** Position of the unit in the map. */
+	volatile int _x1, _y1, _x2, _y2;
+	
 	/**
 	 * Initializes the unit.
 	 *
@@ -81,6 +90,10 @@ public class Unit
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error BE0h Cannot morph a linked unit.}
+		if (this._islinked)
+			throw new IllegalStateException("BE0h");
+		
 		// If the type remains the same, do nothing
 		UnitType oldtype = this._type;
 		if (oldtype == __t)
@@ -89,6 +102,10 @@ public class Unit
 		// Get info, needed for some details
 		UnitInfo oldinfo = this._info,
 			newinfo = __t.info();
+		
+		// Set new type
+		this._type = __t;
+		this._info = newinfo;
 		
 		// No previous type, set details
 		if (oldtype == null)
@@ -100,7 +117,13 @@ public class Unit
 		// Average the stats so that the new health is a precentage of the
 		// old health
 		else
-			throw new Error("TODO");
+		{
+			if (true)
+				throw new Error("TODO");
+			
+			// Recenter
+			__move(this._cx, this._cy);
+		}
 	}
 	
 	/**
@@ -137,7 +160,45 @@ public class Unit
 	 */
 	void __link(boolean __link)
 	{
+		// Do nothing if the link state is the same
+		if (this._islinked == __link)
+			return;
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Moves the unit to the specified coordinates.
+	 *
+	 * @param __x The target X coordinate.
+	 * @param __y The target Y coordinate.
+	 * @throws IllegalStateException If the unit is linked.
+	 * @since 2017/02/17
+	 */
+	void __move(int __x, int __y)
+		throws IllegalStateException
+	{
+		// {@squirreljme.error BE0f Cannot move a linked unit.}
+		if (this._islinked)
+			throw new IllegalStateException("BE0f");
+		
+		// {@squirreljme.error BE0g Cannot move a unit of an unknown type.}
+		UnitInfo info = this._info;
+		if (info == null)
+			throw new IllegalStateException("BE0g");
+			
+		// Center unit size
+		Dimension d = info.pixeldimension;
+		int mw = d.width / 2,
+			mh = d.height / 2;
+		
+		// Set coordinates
+		this._cx = __x;
+		this._cy = __y;
+		this._x1 = __x - mw;
+		this._y1 = __y - mh;
+		this._x2 = __x + mw;
+		this._y2 = __y + mh;
 	}
 	
 	/**
@@ -152,6 +213,10 @@ public class Unit
 		// If the unit was deleted, do nothing
 		if (this._deleted)
 			return true;
+		
+		// Do not think for units which are not linked, but do not delete them
+		if (!this._islinked)
+			return false;
 		
 		// Not deleted
 		return false;
