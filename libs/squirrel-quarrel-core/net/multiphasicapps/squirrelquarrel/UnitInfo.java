@@ -220,12 +220,19 @@ public final class UnitInfo
 			this.centerpointoffset = new Point(pixeldimension.width / 2,
 				pixeldimension.height / 2);
 			
-			// Point buildingcenterpointoffset;
-			// Dimension tiledimension;
+			// Get total size of unit in tiles, rounded up to the megatile
+			int pxw = (pixeldimension.width + offset.x +
+					MegaTile.TILE_PIXEL_SIZE) & ~(MegaTile.TILE_PIXEL_MASK),
+				pxh = (pixeldimension.height + offset.y +
+					MegaTile.TILE_PIXEL_SIZE) & ~(MegaTile.TILE_PIXEL_MASK);
 			
-			if (false)
-				throw new IOException("OOPS");
-			throw new Error("TODO");
+			// Determine tile dimension of unit
+			this.tiledimension = new Dimension(pxw / MegaTile.TILE_PIXEL_SIZE,
+				pxh / MegaTile.TILE_PIXEL_SIZE);
+			
+			// Offset to the center of the building is in the center of
+			// the tile dimensions
+			this.buildingcenterpointoffset = new Point(pxw / 2, pxh / 2);
 		}
 		
 		// {@squirreljme.error BE0a Failed to load information for the
