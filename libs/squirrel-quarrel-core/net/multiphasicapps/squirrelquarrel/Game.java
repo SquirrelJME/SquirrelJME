@@ -83,6 +83,11 @@ public class Game
 		// Initialize the level using the initial settings
 		Level level = new Level(this, __is);
 		this.level = level;
+		
+		// Add start location for the first player as a test, which is
+		// transformed accordingly
+		__createUnit(SpawnPlacementType.BUILDING, UnitType.START_LOCATION,
+			(Unit.Pointer)null, 256, 256);
 	}
 	
 	/**
@@ -196,6 +201,51 @@ public class Game
 		
 		// Increase the game frame
 		this._framenum = framenum + 1;
+	}
+	
+	/**
+	 * Creates a new unit.
+	 *
+	 * @param __spt How the unit should be placed on the map.
+	 * @param __t The type of unit to spawn.
+	 * @param __creator The creating unit, may be {@code null}.
+	 * @param __x The target X position.
+	 * @param __y The target Y position.
+	 * @return The created unit or {@code null} if it could not be created.
+	 * @throws NullPointerException If no spawn type or unit type was
+	 * specified.
+	 * @since 2017/02/16
+	 */
+	final Unit __createUnit(SpawnPlacementType __spt, UnitType __t,
+		Unit __creator, int __x, int __y)
+		throws NullPointerException
+	{
+		return __createUnit(__spt, __t, (__creator != null ?
+			__creator.pointer() : null), __x, __y);
+	}
+	
+	/**
+	 * Creates a new unit.
+	 *
+	 * @param __spt How the unit should be placed on the map.
+	 * @param __t The type of unit to spawn.
+	 * @param __creator The creating unit, may be {@code null}.
+	 * @param __x The target X position.
+	 * @param __y The target Y position.
+	 * @return The created unit or {@code null} if it could not be created.
+	 * @throws NullPointerException If no spawn type or unit type was
+	 * specified.
+	 * @since 2017/02/16
+	 */
+	final Unit __createUnit(SpawnPlacementType __spt, UnitType __t,
+		Unit.Pointer __creator, int __x, int __y)
+		throws NullPointerException
+	{
+		// Check
+		if (__spt == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

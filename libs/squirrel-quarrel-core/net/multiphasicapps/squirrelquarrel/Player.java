@@ -26,6 +26,10 @@ public class Player
 	/** The vision mask for this player. */
 	private volatile int _vision;
 	
+	/** The species of the player. */
+	private volatile Species _species =
+		Species.NEUTRAL;
+	
 	/**
 	 * Initializes the game player.
 	 *
@@ -58,6 +62,17 @@ public class Player
 	public PlayerColor color()
 	{
 		return this.color;
+	}
+	
+	/**
+	 * Returns the species of the this player.
+	 *
+	 * @return The player species.
+	 * @since 2017/02/16
+	 */
+	public Species species()
+	{
+		return this._species;
 	}
 	
 	/**

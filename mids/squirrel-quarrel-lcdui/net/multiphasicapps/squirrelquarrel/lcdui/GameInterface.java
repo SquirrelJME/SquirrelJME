@@ -68,7 +68,7 @@ public class GameInterface
 	
 	/** The current game speed. */
 	private volatile GameSpeed _speed =
-		GameSpeed.SLOWER;
+		GameSpeed.SLOWEST;
 	
 	/** The currently active view player. */
 	private volatile Player _viewplayer;
