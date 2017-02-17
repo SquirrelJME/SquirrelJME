@@ -101,17 +101,39 @@ public class PixelArrayGraphics
 		int __w, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
-		int iw = this._width;
+		int iw = this._width,
+			dest = (__y * iw) + __x,
+			ex = dest + __w;
 		
-		// Draw line
-		int skip = (__dotted ? 2 : 1);
-		int alpha = (__color >> 24) & 0xFF;
-		for (int dest = (__y * iw) + __x, ex = dest + __w; dest < ex;
-			dest += skip)
-			if (__blend)
-				data[dest] = __blend(__color, data[dest], __bor, alpha);
+		// Blended
+		if (__blend)
+		{
+			int alpha = (__color >> 24) & 0xFF;
+			
+			// Dotted
+			if (__dotted)
+				for (; dest < ex; dest += 2)
+					data[dest] = __blend(__color, data[dest], __bor, alpha);
+			
+			// Not dotted
 			else
-				data[dest] = __color;
+				for (; dest < ex; dest++)
+					data[dest] = __blend(__color, data[dest], __bor, alpha);
+		}
+		
+		// Not blended
+		else
+		{
+			// Dotted
+			if (__dotted)
+				for (; dest < ex; dest += 2)
+					data[dest] = __color;
+			
+			// Not dotted
+			else
+				for (; dest < ex; dest++)
+					data[dest] = __color;
+		}
 	}
 	
 	/**
