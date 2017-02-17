@@ -225,10 +225,6 @@ public class GameInterface
 			vieww = this._vieww,
 			viewh = this._viewh;
 		
-		// Translate viewport in the graphics
-		__g.translate(mapToScreenX(0) - __g.getTranslateX(),
-			mapToScreenY(0) - __g.getTranslateY());
-		
 		// MegaTiles do not often change
 		MegaTileCacher mtcacher = this.mtcacher;
 		
@@ -238,8 +234,8 @@ public class GameInterface
 			mex = this._mex,
 			mey = this._mey;
 		for (int my = msy,
-			sy = my * MegaTile.MEGA_TILE_PIXEL_SIZE,
-			bsx = msx * MegaTile.MEGA_TILE_PIXEL_SIZE;
+			sy = mapToScreenX(my * MegaTile.MEGA_TILE_PIXEL_SIZE),
+			bsx = mapToScreenX(msx * MegaTile.MEGA_TILE_PIXEL_SIZE);
 			my < mey; my++, sy += MegaTile.MEGA_TILE_PIXEL_SIZE)
 			for (int mx = msx, sx = bsx; mx < mex; mx++,
 				sx += MegaTile.MEGA_TILE_PIXEL_SIZE)
