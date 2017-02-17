@@ -611,7 +611,6 @@ public class GameInterface
 		for (int i = 0, n = drawunits.size(); i < n; i++)
 			try
 			{
-				System.err.println("DEBUG -- Draw unit");
 				// Get unit, and its information
 				Unit unit = drawunits.get(i).get();
 				UnitType type = unit.type();

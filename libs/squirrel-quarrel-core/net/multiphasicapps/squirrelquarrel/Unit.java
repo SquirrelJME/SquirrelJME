@@ -202,10 +202,10 @@ public class Unit
 		if (__link)
 		{
 			// Determine start and ending megatiles where this unit is located
-			int sx = this._x1 / MegaTile.TILE_PIXEL_SIZE,
-				sy = this._y1 / MegaTile.TILE_PIXEL_SIZE,
-				ex = this._x2 / MegaTile.TILE_PIXEL_SIZE,
-				ey = this._y2 / MegaTile.TILE_PIXEL_SIZE;
+			int sx = this._x1 / MegaTile.MEGA_TILE_PIXEL_SIZE,
+				sy = this._y1 / MegaTile.MEGA_TILE_PIXEL_SIZE,
+				ex = this._x2 / MegaTile.MEGA_TILE_PIXEL_SIZE,
+				ey = this._y2 / MegaTile.MEGA_TILE_PIXEL_SIZE;
 			
 			// Get map size
 			Level level = this.game.level();
@@ -223,8 +223,8 @@ public class Unit
 				ey = mth - 1;
 			
 			// Add this unit to the megatile chain
-			for (; sy < ey; sy++)
-				for (int x = sx; x < ex; x++)
+			for (; sy <= ey; sy++)
+				for (int x = sx; x <= ex; x++)
 				{
 					MegaTile mt = level.megaTile(x, sy);
 					
