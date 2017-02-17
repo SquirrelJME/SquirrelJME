@@ -26,7 +26,7 @@ public abstract class BasicGraphics
 {
 	/** The RGB slice size. */
 	public static final int PIXEL_SLICE =
-		256;
+		1024;
 	
 	/** Clipping above. */
 	private static final int _CLIP_ABOVE =
