@@ -225,6 +225,10 @@ public class GameInterface
 			vieww = this._vieww,
 			viewh = this._viewh;
 		
+		// Translate viewport in the graphics
+		__g.translate(mapToScreenX(0) - __g.getTranslateX(),
+			mapToScreenY(0) - __g.getTranslateY());
+		
 		// MegaTiles do not often change
 		MegaTileCacher mtcacher = this.mtcacher;
 		
@@ -234,8 +238,8 @@ public class GameInterface
 			mex = this._mex,
 			mey = this._mey;
 		for (int my = msy,
-			sy = mapToScreenY(my * MegaTile.MEGA_TILE_PIXEL_SIZE),
-			bsx = mapToScreenX(msx * MegaTile.MEGA_TILE_PIXEL_SIZE);
+			sy = my * MegaTile.MEGA_TILE_PIXEL_SIZE,
+			bsx = msx * MegaTile.MEGA_TILE_PIXEL_SIZE;
 			my < mey; my++, sy += MegaTile.MEGA_TILE_PIXEL_SIZE)
 			for (int mx = msx, sx = bsx; mx < mex; mx++,
 				sx += MegaTile.MEGA_TILE_PIXEL_SIZE)
@@ -245,6 +249,9 @@ public class GameInterface
 				
 				// Draw it
 				__g.drawImage(mtcacher.cacheMegaTile(mt), sx, sy, 0);
+				
+				// Draw units in this mega tile
+				__drawUnits(__g, mt);
 				
 				// Setup flags for fog drawing
 				__g.setColor(0x000000);
@@ -286,6 +293,9 @@ public class GameInterface
 						psx = bpsx + (end * MegaTile.TILE_PIXEL_SIZE);
 					}
 			}
+		
+		// Reset translation for the HUD
+		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
 		
 		// Draw the automap in the bottom left corner
 		Image map = this.automap.update();
@@ -558,6 +568,20 @@ public class GameInterface
 	public int viewportY()
 	{
 		return this._viewy;
+	}
+	
+	/**
+	 * Draws units in this megatile.
+	 *
+	 * @param __g The target graphics.
+	 * @param __mt The megatile to source from.
+	 * @since 2017/02/17
+	 */
+	private void __drawUnits(Graphics __g, MegaTile __mt)
+	{
+		// Store the old clip
+		
+		// Restore the old clip
 	}
 }
 
