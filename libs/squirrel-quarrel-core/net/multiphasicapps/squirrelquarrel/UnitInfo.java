@@ -64,7 +64,7 @@ public final class UnitInfo
 		// specified unit type. (The unit type)}
 		catch (IOException e)
 		{
-			throw new RuntimeException(String.format("BE0a %s", __t));
+			throw new RuntimeException(String.format("BE0a %s", __t), e);
 		}
 	}
 	

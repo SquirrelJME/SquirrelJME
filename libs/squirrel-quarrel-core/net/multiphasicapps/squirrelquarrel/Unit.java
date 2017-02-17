@@ -29,6 +29,12 @@ public class Unit
 	final List<MegaTile> _linked =
 		new ArrayList<>();
 	
+	/** The current unit type. */
+	private volatile UnitType _type;
+	
+	/** The unit information. */
+	private volatile UnitInfo _info;
+	
 	/** A pointer to this unit. */
 	private volatile Reference<Unit.Pointer> _pointer;
 	
@@ -69,6 +75,15 @@ public class Unit
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// If the type remains the same, do nothing
+		UnitType oldtype = this._type;
+		if (oldtype == __t)
+			return;
+		
+		// Get info, needed for some details
+		UnitInfo oldinfo = this._info,
+			newinfo = __t.info();
+		
 		throw new Error("TODO");
 	}
 	
@@ -95,6 +110,18 @@ public class Unit
 			this._pointer = new WeakReference<>(rv = new Unit.Pointer(this));
 		
 		return rv;
+	}
+	
+	/**
+	 * Links or unlinks the unit into the mega tile unit list.
+	 *
+	 * @param __link If {@code true} then the unit becomes linked, otherwise
+	 * it is unlinked.
+	 * @since 2017/02/16
+	 */
+	void __link(boolean __link)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
