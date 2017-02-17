@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 
 /**
  * This contains a cachable.
@@ -22,6 +23,62 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
  */
 public final class UnitInfo
 {
+	/** Key for hitpoints. */
+	public static final JavaManifestKey HP_KEY =
+		new JavaManifestKey("hp");
+	
+	/** Key for armor. */
+	public static final JavaManifestKey ARMOR_KEY =
+		new JavaManifestKey("armor");
+	
+	/** Key for unit size. */
+	public static final JavaManifestKey SIZE_KEY =
+		new JavaManifestKey("size");
+	
+	/** Key for unit cost in salt. */
+	public static final JavaManifestKey SALT_COST_KEY =
+		new JavaManifestKey("salt-cost");
+	
+	/** Key for unit cost in peppers. */
+	public static final JavaManifestKey PEPPER_COST_KEY =
+		new JavaManifestKey("pepper-cost");
+	
+	/** Key for build time in frames. */
+	public static final JavaManifestKey BUILD_TIME_KEY =
+		new JavaManifestKey("build-time");
+	
+	/** Key for the amount of supply that is provided. */
+	public static final JavaManifestKey SUPPLY_PROVIDED_KEY =
+		new JavaManifestKey("supply-provided");
+	
+	/** Key for the amount of supply that is consumed. */
+	public static final JavaManifestKey SUPPLY_COST_KEY =
+		new JavaManifestKey("supply-cost");
+	
+	/** Key for the dimensions of the unit in pixels. */
+	public static final JavaManifestKey PIXEL_DIMENSIONS_KEY =
+		new JavaManifestKey("pixel-dimensions");
+	
+	/** Key for the offsets in dimensions (used for buildings). */
+	public static final JavaManifestKey OFFSET_DIMENSIONS_KEY =
+		new JavaManifestKey("offset-dimensions");
+	
+	/** The key for sight range. */
+	public static final JavaManifestKey SIGHT_RANGE_KEY =
+		new JavaManifestKey("sight");
+	
+	/** Key for the build score of the unit. */
+	public static final JavaManifestKey SCORE_BUILD_KEY =
+		new JavaManifestKey("score-build");
+	
+	/** Key for the destroy score of the unit. */
+	public static final JavaManifestKey SCORE_DESTROY_KEY =
+		new JavaManifestKey("score-destroy");
+	
+	/** Key for the speed of the unit. */
+	public static final JavaManifestKey SPEED_KEY =
+		new JavaManifestKey("speed");
+	
 	/** The type of unit this has info for. */
 	protected final UnitType type;
 	
