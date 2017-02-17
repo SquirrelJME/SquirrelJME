@@ -154,40 +154,129 @@ public class PixelArrayGraphics
 			alpha = (__color >> 24) & 0xFF,
 			dest = (iw * __y1) + __x1;
 		
-		// Draw plot
-		boolean dot = true;
-		for (;;)
+		// Blended?
+		if (__blend)
 		{
-			// Draw the dot?
-			if (dot)
-				if (__blend)
+			// Dotted
+			if (__dotted)
+				for (boolean dot = true;; dot = !dot)
+				{
+					// Draw the dot?
+					if (dot)
+						data[dest] = __blend(__color, data[dest], __bor,
+							alpha);
+					
+					// End
+					if (__x1 == __x2 && __y1 == __y2)
+						break;
+					
+					// Increase X
+					int brr = err;
+					if (brr > -dx)
+					{
+						err -= dy;
+						__x1++;
+						dest++;
+					}
+			
+					// Increase Y
+					if (brr < dy)
+					{
+						err += dx;
+						__y1 += sy;
+						dest += ssy;
+					}
+				}
+			
+			// Not dotted
+			else
+				for (;;)
+				{
 					data[dest] = __blend(__color, data[dest], __bor, alpha);
-				else
+					
+					// End
+					if (__x1 == __x2 && __y1 == __y2)
+						break;
+					
+					// Increase X
+					int brr = err;
+					if (brr > -dx)
+					{
+						err -= dy;
+						__x1++;
+						dest++;
+					}
+			
+					// Increase Y
+					if (brr < dy)
+					{
+						err += dx;
+						__y1 += sy;
+						dest += ssy;
+					}
+				}
+		}
+		
+		// Not blended
+		else
+		{
+			// Dotted
+			if (__dotted)
+				for (boolean dot = true;; dot = !dot)
+				{
+					// Draw the dot?
+					if (dot)
+						data[dest] = __color;
+					
+					// End
+					if (__x1 == __x2 && __y1 == __y2)
+						break;
+					
+					// Increase X
+					int brr = err;
+					if (brr > -dx)
+					{
+						err -= dy;
+						__x1++;
+						dest++;
+					}
+			
+					// Increase Y
+					if (brr < dy)
+					{
+						err += dx;
+						__y1 += sy;
+						dest += ssy;
+					}
+				}
+			
+			// Not dotted
+			else
+				for (;;)
+				{
 					data[dest] = __color;
+					
+					// End
+					if (__x1 == __x2 && __y1 == __y2)
+						break;
+					
+					// Increase X
+					int brr = err;
+					if (brr > -dx)
+					{
+						err -= dy;
+						__x1++;
+						dest++;
+					}
 			
-			// End
-			if (__x1 == __x2 && __y1 == __y2)
-				break;
-			
-			// Switch dot?
-			dot ^= __dotted;
-			
-			// Increase X
-			int brr = err;
-			if (brr > -dx)
-			{
-				err -= dy;
-				__x1++;
-				dest++;
-			}
-			
-			// Increase Y
-			if (brr < dy)
-			{
-				err += dx;
-				__y1 += sy;
-				dest += ssy;
-			}
+					// Increase Y
+					if (brr < dy)
+					{
+						err += dx;
+						__y1 += sy;
+						dest += ssy;
+					}
+				}
 		}
 	}
 	
