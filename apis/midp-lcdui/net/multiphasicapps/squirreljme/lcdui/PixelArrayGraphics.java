@@ -287,8 +287,6 @@ public class PixelArrayGraphics
 		int qq = 255 - sa;
 		
 		// Perform blending
-		// The right shifts by 8 used to be divides by 255, however right
-		// shifting 7 times is faster than dividing 7 times
 		int xa = (sa + da - ((sa * da) / 255)) | __bor,
 			xr = ((sr * sa) + (dr * qq)) / 255,
 			xg = ((sg * sa) + (dg * qq)) / 255,
