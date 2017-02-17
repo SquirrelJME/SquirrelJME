@@ -164,7 +164,56 @@ public class Unit
 		if (this._islinked == __link)
 			return;
 		
-		throw new Error("TODO");
+		// Linking in?
+		List<MegaTile> linked = this._linked;
+		if (__link)
+		{
+			// Determine start and ending megatiles where this unit is located
+			int sx = this._x1 / MegaTile.TILE_PIXEL_SIZE,
+				sy = this._y1 / MegaTile.TILE_PIXEL_SIZE,
+				ex = this._x2 / MegaTile.TILE_PIXEL_SIZE,
+				ey = this._y2 / MegaTile.TILE_PIXEL_SIZE;
+			
+			// Get map size
+			Level level = this.game.level();
+			int mtw = level.megaTileWidth(),
+				mth = level.megaTileHeight();
+			
+			// Force bounds within the map
+			if (sx < 0)
+				sx = 0;
+			if (sy < 0)
+				sy = 0;
+			if (ex >= mtw)
+				ex = mtw - 1;
+			if (ey >= mth)
+				ey = mth - 1;
+			
+			// Add this unit to the megatile chain
+			for (; sy < ey; sy++)
+				for (int x = sx; x < ex; x++)
+				{
+					MegaTile mt = level.megaTile(x, sy);
+					
+					// Link both sides
+					linked.add(mt);
+					mt._units.add(this);
+				}
+		}
+		
+		// Linking out
+		else
+		{
+			// Remove this unit from the tile links
+			for (int i = 0, n = linked.size(); i < n; i++)
+				linked.get(i)._units.remove(this);
+			
+			// Remove all links
+			linked.clear();
+		}
+		
+		// Set new link state
+		this._islinked = __link;
 	}
 	
 	/**
