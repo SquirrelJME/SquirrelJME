@@ -232,16 +232,22 @@ public class PixelArrayGraphics
 		int __h, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
-		int iw = this._width;
+		int iw = this._width,
+			dest = (__y * iw) + __x,
+			ey = dest + (iw * __h);
 		
 		// Draw line
 		int skip = (__dotted ? iw << 1 : iw);
 		int alpha = (__color >> 24) & 0xFF;
-		for (int dest = (__y * iw) + __x, ey = dest + (iw * __h); dest < ey;
-			dest += skip)
-			if (__blend)
+		
+		// Blended?
+		if (__blend)
+			for (; dest < ey; dest += skip)
 				data[dest] = __blend(__color, data[dest], __bor, alpha);
-			else
+		
+		// Not blended
+		else
+			for (; dest < ey; dest += skip)
 				data[dest] = __color;
 	}
 	
