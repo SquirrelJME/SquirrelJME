@@ -119,6 +119,9 @@ public class Unit
 	 */
 	public static class Pointer
 	{
+		/** The unit hash code, needed because pointers can be hashmaps. */
+		protected final int hash;
+		
 		/** The unit this points to. */
 		private volatile Unit _unit;
 		
@@ -138,6 +141,28 @@ public class Unit
 			
 			// The unit it points to
 			this._unit = __u;
+			hash = __u.hashCode();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/16
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			if (!(__o instanceof Pointer))
+				return false;
+			
+			Pointer o = (Pointer)__o;
+			Unit a = this._unit, b = o._unit;
+			
+			// Null pointers only compare to self
+			if (a == null || b == null)
+				return (this == __o);
+			
+			// Otherwise must be the same unit
+			return a == b;
 		}
 		
 		/**
@@ -156,6 +181,16 @@ public class Unit
 				throw new UnitDeletedException("BE08");
 			
 			return rv;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/16
+		 */
+		@Override
+		public int hashCode()
+		{
+			return this.hash;
 		}
 	}
 }

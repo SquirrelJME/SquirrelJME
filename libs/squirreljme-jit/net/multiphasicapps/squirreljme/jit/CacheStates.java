@@ -15,6 +15,8 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * This class is mutable and will change as the JIT progresses.
  *
+ * This class is not thread safe.
+ *
  * @see CacheState
  * @since 2017/02/16
  */
@@ -38,6 +40,38 @@ public class CacheStates
 		// Set
 		this.maxstack = __ms;
 		this.maxlocals = __ml;
+	}
+	
+	/**
+	 * Potentially creates the cache state at the given index if it does not
+	 * exist, otherwise it will return the already existing state.
+	 *
+	 * @param __i The address to get the state of or to initialize.
+	 * @return The state of the cache at this address, which may be newly
+	 * intiialized.
+	 * @since 2017/02/16 
+	 */
+	public CacheState create(int __i)
+	{
+		// Get pre-existing state
+		CacheState rv = get(__i);
+		if (rv != null)
+			return rv;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This returns an already existing state for the specified address.
+	 *
+	 * @parma __i The address to get the state of.
+	 * @return The state at the given address or {@code null} if there is not
+	 * set state.
+	 * @since 2017/02/16
+	 */
+	public CacheState get(int __i)
+	{
+		throw new Error("TODO");
 	}
 }
 

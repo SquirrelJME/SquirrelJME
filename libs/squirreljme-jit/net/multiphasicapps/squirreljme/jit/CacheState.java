@@ -16,6 +16,8 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * For maximum flexibility, this class is mutable.
  *
+ * This class is not thread safe.
+ *
  * @since 2017/02/16
  */
 public class CacheState

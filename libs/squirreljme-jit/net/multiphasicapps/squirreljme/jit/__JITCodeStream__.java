@@ -158,6 +158,9 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- initArgs: %s %s %d%n", Arrays.asList(__cv),
 			Arrays.asList(__st), __sh);
 		
+		// Get state at the entry point
+		CacheState cs = this._states.create(0);
+		
 		throw new Error("TODO");
 	}
 	
