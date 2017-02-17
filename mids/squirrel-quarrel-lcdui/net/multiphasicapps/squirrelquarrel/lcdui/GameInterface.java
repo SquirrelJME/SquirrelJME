@@ -623,7 +623,7 @@ public class GameInterface
 					dy = mapToScreenY(unit.centerY());
 				
 				// Draw sprite
-				__g.drawRect(dx - 10, dy - 10, dx + 10, dy + 10);
+				__g.drawRect(dx - 10, dy - 10, 20, 20);
 			}
 			
 			// Ignore due to threading potential
