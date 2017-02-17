@@ -12,6 +12,8 @@ package net.multiphasicapps.squirrelquarrel;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This represents and holds information for a single unit in the game.
@@ -22,6 +24,10 @@ public class Unit
 {
 	/** The game which owns this unit. */
 	protected final Game game;
+	
+	/** The megatiles that this unit is in. */
+	final List<MegaTile> _linked =
+		new ArrayList<>();
 	
 	/** A pointer to this unit. */
 	private volatile Reference<Unit.Pointer> _pointer;

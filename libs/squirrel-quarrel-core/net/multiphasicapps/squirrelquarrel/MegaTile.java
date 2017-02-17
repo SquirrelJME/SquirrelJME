@@ -13,6 +13,8 @@ package net.multiphasicapps.squirrelquarrel;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This represents a single mega tile which represents a small region in the
@@ -58,6 +60,10 @@ public class MegaTile
 	
 	/** Megatile Y position. */
 	protected final int megay;
+	
+	/** The units which are linked in this megatile. */
+	final List<Unit.Pointer> _units =
+		new ArrayList<>();
 	
 	/** Terrain information. */
 	private final byte[] _terrain =
