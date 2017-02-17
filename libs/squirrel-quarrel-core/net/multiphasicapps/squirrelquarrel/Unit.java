@@ -41,6 +41,12 @@ public class Unit
 	/** Was this unit deleted? */
 	private volatile boolean _deleted;
 	
+	/** Hitpoints of the current unit. */
+	private volatile int _hp;
+	
+	/** Unit shields. */
+	private volatile int _shields;
+	
 	/**
 	 * Initializes the unit.
 	 *
@@ -84,7 +90,17 @@ public class Unit
 		UnitInfo oldinfo = this._info,
 			newinfo = __t.info();
 		
-		throw new Error("TODO");
+		// No previous type, set details
+		if (oldtype == null)
+		{
+			this._hp = newinfo.hp;
+			this._shields = newinfo.shields;
+		}
+		
+		// Average the stats so that the new health is a precentage of the
+		// old health
+		else
+			throw new Error("TODO");
 	}
 	
 	/**

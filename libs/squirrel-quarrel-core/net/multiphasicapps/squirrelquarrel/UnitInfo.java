@@ -85,58 +85,58 @@ public final class UnitInfo
 		new JavaManifestKey("speed");
 	
 	/** The type of unit this has info for. */
-	protected final UnitType type;
+	public final UnitType type;
 	
 	/** Unit hitpoints. */
-	protected final int hp;
+	public final int hp;
 	
 	/** Unit shields. */
-	protected final int shields;
+	public final int shields;
 	
 	/** Armor. */
-	protected final int armor;
+	public final int armor;
 	
 	/** Unit size. */
-	protected final UnitSize size;
+	public final UnitSize size;
 	
 	/** The cost in salt. */
-	protected final int salt;
+	public final int salt;
 	
 	/** The cost in pepper. */
-	protected final int pepper;
+	public final int pepper;
 	
 	/** The build time in frames. */
-	protected final int buildtime;
+	public final int buildtime;
 	
 	/** The supply provided. */
-	protected final int supplyprovided;
+	public final int supplyprovided;
 	
 	/** The supply cost. */
-	protected final int supplycost;
+	public final int supplycost;
 	
 	/** The dimension of the unit in pixels. */
-	protected final Dimension pixeldimension;
+	public final Dimension pixeldimension;
 	
 	/** Center point offset for the unit. */
-	protected final Point centerpointoffset;
+	public final Point centerpointoffset;
 	
 	/** The center point offset used for buildings (based on tile grid). */
-	protected final Point buildingcenterpointoffset;
+	public final Point buildingcenterpointoffset;
 	
 	/** The unit size in tiles (for buildings). */
-	protected final Dimension tiledimension;
+	public final Dimension tiledimension;
 	
 	/** The sight range. */
-	protected final int sight;
+	public final int sight;
 	
 	/** The score for creating this unit. */
-	protected final int scorebuild;
+	public final int scorebuild;
 	
 	/** The score for destroying this unit. */
-	protected final int scoredestroy;
+	public final int scoredestroy;
 	
 	/** The speed of this unit, in 16.16 fixed point. */
-	protected final int speed;
+	public final int speed;
 	
 	/**
 	 * Initializes the unit information.
