@@ -97,7 +97,7 @@ public enum TerrainType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	private static final String __lower(String __s)
+	static final String __lower(String __s)
 		throws NullPointerException
 	{
 		// Check

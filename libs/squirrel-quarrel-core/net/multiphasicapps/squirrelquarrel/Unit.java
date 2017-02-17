@@ -42,7 +42,7 @@ public class Unit
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/14
 	 */
-	public Unit(Game __g)
+	Unit(Game __g)
 		throws NullPointerException
 	{
 		// Check

@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirrelquarrel;
 
+import java.io.InputStream;
+import java.io.IOException;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+
 /**
  * This contains a cachable.
  *
@@ -37,7 +42,30 @@ public final class UnitInfo
 		// Set
 		this.type = __t;
 		
-		throw new Error("TODO");
+		// Could fail
+		String path = "units/" + TerrainType.__lower(__t.name()) + "/info";
+		try (InputStream is = UnitInfo.class.getResourceAsStream(path))
+		{
+			// {@squirreljme.error BE0b No information resource exists for the
+			// given unit type. (The unit type; The attempted path)}
+			if (is == null)
+				throw new IOException(String.format("BE0b %s %s", __t, path));
+			
+			// Load manifest
+			JavaManifest man = new JavaManifest(is);
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			if (false)
+				throw new IOException("OOPS");
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error BE0a Failed to load information for the
+		// specified unit type. (The unit type)}
+		catch (IOException e)
+		{
+			throw new RuntimeException(String.format("BE0a %s", __t));
+		}
 	}
 	
 	/**

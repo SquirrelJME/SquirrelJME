@@ -230,8 +230,8 @@ public class Game
 	 * @param __spt How the unit should be placed on the map.
 	 * @param __t The type of unit to spawn.
 	 * @param __creator The creating unit, may be {@code null}.
-	 * @param __x The target X position.
-	 * @param __y The target Y position.
+	 * @param __x The target center X position.
+	 * @param __y The target center Y position.
 	 * @return The created unit or {@code null} if it could not be created.
 	 * @throws NullPointerException If no spawn type or unit type was
 	 * specified.
@@ -245,7 +245,50 @@ public class Game
 		if (__spt == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Setup unit
+		Unit rv = new Unit(this);
+		
+		// Morph to the given unti type
+		rv.morph(__t);
+		
+		// Determine the location where the unit is to be placed
+		switch (__spt)
+		{
+				// No restriction
+			case FORCED:
+				if (true)
+					throw new Error("TODO");
+				break;
+				
+				// Building
+			case BUILDING:
+				if (true)
+					throw new Error("TODO");
+				break;
+				
+				// Normal placement
+			case NORMAL:
+				if (true)
+					throw new Error("TODO");
+				break;
+				
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		
+		// Try to replace an existing null with this new unit
+		List<Unit> units = this._units;
+		for (int n = units.size(), i = n - 1; i >= 0; i++)
+			if (units.get(i) == null)
+			{
+				units.set(i, rv);
+				return rv;
+			}
+		
+		// Otherwise place at end
+		units.add(rv);
+		return rv;
 	}
 }
 
