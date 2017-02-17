@@ -172,6 +172,28 @@ public class MegaTile
 	}
 	
 	/**
+	 * Return the megatile X position.
+	 *
+	 * @return The X position of the megatile.
+	 * @since 2017/02/17
+	 */
+	public int x()
+	{
+		return this.megax;
+	}
+	
+	/**
+	 * Return the megatile Y position.
+	 *
+	 * @return The Y position of the megatile.
+	 * @since 2017/02/17
+	 */
+	public int y()
+	{
+		return this.megay;
+	}
+	
+	/**
 	 * This cycles the fog of war.
 	 *
 	 * @since 2017/02/14

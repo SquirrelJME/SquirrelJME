@@ -122,7 +122,51 @@ public class PixelArrayGraphics
 	protected void primitiveLine(int __x1, int __y1, int __x2,
 		int __y2, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
-		throw new Error("TODO");
+		int[] data = this._data;
+		int iw = this._width,
+			dx = __x2 - __x1,
+			dy = Math.abs(__y2 - __y1),
+			sy = (__y1 < __y2 ? 1 : -1),
+			ssy = iw * sy,
+			err = (dx > dy ? dx : -dy) / 2,
+			alpha = (__color >> 24) & 0xFF,
+			dest = (iw * __y1) + __x1;
+		
+		// Draw plot
+		boolean dot = true;
+		for (;;)
+		{
+			// Draw the dot?
+			if (dot)
+				if (__blend)
+					data[dest] = __blend(__color, data[dest], __bor, alpha);
+				else
+					data[dest] = __color;
+			
+			// End
+			if (__x1 == __x2 && __y1 == __y2)
+				break;
+			
+			// Switch dot?
+			dot ^= __dotted;
+			
+			// Increase X
+			int brr = err;
+			if (brr > -dx)
+			{
+				err -= dy;
+				__x1++;
+				dest++;
+			}
+			
+			// Increase Y
+			if (brr < dy)
+			{
+				err += dx;
+				__y1 += sy;
+				dest += ssy;
+			}
+		}
 	}
 	
 	/**

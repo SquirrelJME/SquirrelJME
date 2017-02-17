@@ -234,7 +234,7 @@ public class GameInterface
 			mex = this._mex,
 			mey = this._mey;
 		for (int my = msy,
-			sy = mapToScreenX(my * MegaTile.MEGA_TILE_PIXEL_SIZE),
+			sy = mapToScreenY(my * MegaTile.MEGA_TILE_PIXEL_SIZE),
 			bsx = mapToScreenX(msx * MegaTile.MEGA_TILE_PIXEL_SIZE);
 			my < mey; my++, sy += MegaTile.MEGA_TILE_PIXEL_SIZE)
 			for (int mx = msx, sx = bsx; mx < mex; mx++,
@@ -245,7 +245,7 @@ public class GameInterface
 				
 				// Draw it
 				__g.drawImage(mtcacher.cacheMegaTile(mt), sx, sy, 0);
-				
+					
 				// Draw units in this mega tile
 				__drawUnits(__g, mt);
 				
@@ -576,8 +576,30 @@ public class GameInterface
 	private void __drawUnits(Graphics __g, MegaTile __mt)
 	{
 		// Store the old clip
+		int oldcx = __g.getClipX(),
+			oldcy = __g.getClipY(),
+			oldcw = __g.getClipWidth(),
+			oldch = __g.getClipHeight();
+		
+		// Used for selection boxes
+		__g.setColor(0xFFFF00);
+		__g.setStrokeStyle(Graphics.SOLID);
+		
+		// Set new clipping so units are not drawn outside of the tile and
+		// potentially into other tiles
+		int mdx = mapToScreenX(__mt.x() * MegaTile.MEGA_TILE_PIXEL_SIZE),
+			mdy = mapToScreenY(__mt.y() * MegaTile.MEGA_TILE_PIXEL_SIZE);
+		__g.setClip(mdx, mdy, mdx + MegaTile.MEGA_TILE_PIXEL_SIZE,
+			mdy + MegaTile.MEGA_TILE_PIXEL_SIZE);
+		
+		__g.setColor(0xFF00FF);
+		__g.drawLine(mdx, mdy, mdx + MegaTile.MEGA_TILE_PIXEL_SIZE,
+			mdy + MegaTile.MEGA_TILE_PIXEL_SIZE);
+		__g.drawLine(mdx, mdy + MegaTile.MEGA_TILE_PIXEL_SIZE,
+			mdx + MegaTile.MEGA_TILE_PIXEL_SIZE, mdy);
 		
 		// Restore the old clip
+		__g.setClip(oldcx, oldcy, oldcw, oldch);
 	}
 }
 
