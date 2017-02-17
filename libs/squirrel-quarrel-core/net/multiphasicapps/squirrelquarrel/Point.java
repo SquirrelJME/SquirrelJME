@@ -14,33 +14,33 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This contains immutable dimension information for width and height.
+ * This is an immutable class which contains X and Y coordinates.
  *
  * @since 2017/02/17
  */
-public final class Dimension
-	implements Comparable<Dimension>
+public final class Point
+	implements Comparable<Point>
 {
-	/** Width. */
-	public final int width;
+	/** X coordinate. */
+	public final int x;
 	
-	/** Height. */
-	public final int height;
+	/** Y coordinate. */
+	public final int y;
 	
 	/** String form. */
 	private volatile Reference<String> _string;
 	
 	/**
-	 * Initializes the dimension.
+	 * Initializes the point.
 	 *
-	 * @param __w Width.
-	 * @param __h Height.
+	 * @param __x X coordinate.
+	 * @param __y Y coordinate.
 	 * @since 2017/02/17
 	 */
-	public Dimension(int __w, int __h)
+	public Point(int __x, int __y)
 	{
-		this.width = __w;
-		this.height = __h;
+		this.x = __x;
+		this.y = __y;
 	}
 	
 	/**
@@ -48,21 +48,17 @@ public final class Dimension
 	 * @since 2017/02/17
 	 */
 	@Override
-	public int compareTo(Dimension __o)
+	public int compareTo(Point __o)
 	{
-		int rv,
-			aw = this.width,
-			as = aw * this.height,
-			bw = __o.width,
-			bs = bw * __o.height;
+		int rv;
 		
-		// Compare surface area first
-		rv = as - bs;
+		// Compare x
+		rv = this.x - __o.x;
 		if (rv != 0)
 			return rv;
 		
-		// Compare the width
-		return aw - bw;
+		// Compare y
+		return this.y - __o.y;
 	}
 	
 	/**
@@ -73,11 +69,11 @@ public final class Dimension
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof Dimension))
+		if (!(__o instanceof Point))
 			return false;
 		
-		Dimension o = (Dimension)__o;
-		return this.width == o.width && this.height == o.height;
+		Point o = (Point)__o;
+		return this.x == o.x && this.y == o.y;
 	}
 	
 	/**
@@ -87,7 +83,7 @@ public final class Dimension
 	@Override
 	public int hashCode()
 	{
-		return this.width ^ ~(this.height);
+		return this.x ^ ~(this.y);
 	}
 	
 	/**
@@ -103,7 +99,7 @@ public final class Dimension
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				rv = String.format("[%d, %d]", this.width, this.height));
+				rv = String.format("(%d, %d)", this.x, this.y));
 		
 		return rv;
 	}
