@@ -203,25 +203,24 @@ public class PixelArrayGraphics
 		int[] data = this._data;
 		int iw = this._width;
 		
-		// Draw loop
-		for (int dest = (__y * iw) + __x, src = 0, ey = __y + __h;
-			__y < ey; __y++, dest += iw, src += __sl)
-		{
-			// Calculate the end of the scanlines
-			int sp = src,
-				spend = src + __w,
-				dp = dest;
-			
-			// Blending pixels
-			if (__blend)
-				for (; sp < spend; sp++, dp++)
-					data[dp] = __blend(__b[sp], data[dp], __bor, __alpha);
-			
-			// Not blending
-			else
-				for (; sp < spend; sp++, dp++)
-					data[dp] = __b[sp];
-		}
+		// The distance from the end of a row to the scanline, this way the
+		// source variable does not need an extra copy
+		int eosa = __sl - __w;
+		
+		// Blending?
+		int dest = (__y * iw) + __x, src = 0, ey = __y + __h;
+		if (__blend)
+			for (; __y < ey; __y++, dest += iw, src += eosa)
+				for (int spend = src + __w, dp = dest; src < spend;
+					dp++, src++)
+					data[dp] = __blend(__b[src], data[dp], __bor, __alpha);
+		
+		// Not blending
+		else
+			for (; __y < ey; __y++, dest += iw, src += eosa)
+				for (int spend = src + __w, dp = dest; src < spend;
+					dp++, src++)
+					data[dp] = __b[src];
 	}
 	
 	/**
