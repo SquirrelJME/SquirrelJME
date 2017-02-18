@@ -81,7 +81,7 @@ public class SwingEngine
 		
 		// {@squirreljme.error BM0a The specified class cannot be shown by
 		// this engine because it is not supported. (The class used for the
-		// displayable))
+		// displayable)}
 		throw new DisplayCapabilityException(String.format("BM0a %s",
 			__d.getClass()));
 	}
