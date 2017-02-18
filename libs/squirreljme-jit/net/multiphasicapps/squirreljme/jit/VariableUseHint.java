@@ -39,6 +39,12 @@ public enum VariableUseHint
 	 */
 	STORED,
 	
+	/**
+	 * This indicates that the value is to be dropped and it no longer has to
+	 * have its value stored.
+	 */
+	DROP,
+	
 	/** End. */
 	;
 }
