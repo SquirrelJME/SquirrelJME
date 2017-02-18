@@ -10,11 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.AbstractList;
+import java.util.List;
+import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 
 /**
  * This contains a single state which specifies local values which may be
- * cached on the stack.
+ * cached on the stack. This also contains the mappings between variables and
+ * their bound native information, if applicable.
  *
  * For maximum flexibility, this class is mutable.
  *
@@ -25,10 +29,10 @@ import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 public class CacheState
 {
 	/** Stack code variables. */
-	private final CodeVariable[] _stackvars;
+	protected final Stack stack;
 	
 	/** Local code variables. */
-	private final CodeVariable[] _localvars;
+	protected final Locals locals;
 	
 	/**
 	 * Initializes the cache state.
@@ -40,8 +44,137 @@ public class CacheState
 	CacheState(int __ms, int __ml)
 	{
 		// Allocate
-		this._stackvars = new CodeVariable[__ms];
-		this._localvars = new CodeVariable[__ml];
+		this.stack = new Stack(__ms);
+		this.locals = new Locals(__ml);
+	}
+	
+	/**
+	 * Returns the cached local variable assignments.
+	 *
+	 * @return The cached local variables.
+	 * @since 2017/02/18
+	 */
+	public Locals locals()
+	{
+		return this.locals;
+	}
+	
+	/**
+	 * Returns the cached stack variable assignments.
+	 *
+	 * @return The cached stack variables.
+	 * @since 2017/02/18
+	 */
+	public Stack stack()
+	{
+		return this.stack;
+	}
+	
+	/**
+	 * Contains the mappings for cached local values.
+	 *
+	 * @since 2017/02/18
+	 */
+	public static final class Locals
+		extends __Tread__
+	{
+		/**
+		 * Initializes locals.
+		 *
+		 * @param __n Local count.
+		 * @since 2017/02/18
+		 */
+		private Locals(int __n)
+		{
+			super(__n);
+		}
+	}
+	
+	/**
+	 * Contains the mappings for cached stack values.
+	 *
+	 * @since 2017/02/18
+	 */
+	public static final class Stack
+		extends __Tread__
+	{
+		/**
+		 * Initializes stack.
+		 *
+		 * @param __n Stack count.
+		 * @since 2017/02/18
+		 */
+		private Stack(int __n)
+		{
+			super(__n);
+		}
+	}
+	
+	/**
+	 * This represents a slot within the cache state and stores the
+	 * information 
+	 *
+	 * @since 2017/02/18
+	 */
+	public static final class Slot
+	{
+	}
+	
+	/**
+	 * This is a tread of variabels which stores cached state.
+	 *
+	 * @since 2017/02/18
+	 */
+	private static abstract class __Tread__
+		extends AbstractList<CodeVariable>
+		implements RandomAccess
+	{
+		/** Variables used. */
+		private final CodeVariable[] _vars;
+		
+		/**
+		 * Initializes the tread.
+		 *
+		 * @param __n The tread size.
+		 * @since 2017/02/18
+		 */
+		private __Tread__(int __n)
+		{
+			this._vars = new CodeVariable[__n];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/18
+		 */
+		@Override
+		public CodeVariable get(int __i)
+		{
+			return this._vars[__i];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/18
+		 */
+		@Override
+		public CodeVariable set(int __i, CodeVariable __e)
+		{
+			CodeVariable[] vars = this._vars;
+			CodeVariable rv = vars[__i];
+			vars[__i] = __e;
+			return rv;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/18
+		 */
+		@Override
+		public int size()
+		{
+			return this._vars.length;
+		}
 	}
 }
 
