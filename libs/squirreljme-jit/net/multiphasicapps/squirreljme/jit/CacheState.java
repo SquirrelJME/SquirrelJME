@@ -22,5 +22,16 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class CacheState
 {
+	/**
+	 * Initializes the cache state.
+	 *
+	 * @param __ms The number of stack items.
+	 * @param __ml The number of local items.
+	 * @since 2017/02/18
+	 */
+	CacheState(int __ms, int __ml)
+	{
+		throw new Error("TODO");
+	}
 }
 

@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This contains multiple cached states for specific spots within the method.
  *
@@ -27,6 +31,14 @@ public class CacheStates
 	
 	/** Number of locals. */
 	protected final int maxlocals;
+	
+	/** The address where the cache states are valid. */
+	private final List<Integer> _pos =
+		new ArrayList<>();
+	
+	/** The individual cache states. */
+	private final List<CacheState> _states =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the cache states.
@@ -53,12 +65,26 @@ public class CacheStates
 	 */
 	public CacheState create(int __i)
 	{
-		// Get pre-existing state
-		CacheState rv = get(__i);
-		if (rv != null)
-			return rv;
+		List<Integer> pos = this._pos;
+		List<CacheState> states = this._states;
 		
-		throw new Error("TODO");
+		// Find it
+		int dx = Collections.<Integer>binarySearch(this._pos, __i);
+		
+		// Not found, create
+		if (dx < 0)
+		{
+			dx = (-(dx) - 1);
+			pos.add(dx, __i);
+			CacheState rv;
+			states.add(dx,
+				(rv = new CacheState(this.maxstack, this.maxlocals)));
+			return rv; 
+		}
+		
+		// Use it
+		else
+			return states.get(dx);
 	}
 	
 	/**
@@ -71,7 +97,15 @@ public class CacheStates
 	 */
 	public CacheState get(int __i)
 	{
-		throw new Error("TODO");
+		// Find it
+		int dx = Collections.<Integer>binarySearch(this._pos, __i);
+		
+		// Not found
+		if (dx < 0)
+			return null;
+		
+		// Get it
+		return this._states.get(dx);
 	}
 }
 
