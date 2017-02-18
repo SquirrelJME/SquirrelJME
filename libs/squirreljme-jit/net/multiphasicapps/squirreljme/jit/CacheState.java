@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.classformat.CodeVariable;
+
 /**
  * This contains a single state which specifies local values which may be
  * cached on the stack.
@@ -22,6 +24,12 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class CacheState
 {
+	/** Stack code variables. */
+	private final CodeVariable[] _stackvars;
+	
+	/** Local code variables. */
+	private final CodeVariable[] _localvars;
+	
 	/**
 	 * Initializes the cache state.
 	 *
@@ -31,7 +39,9 @@ public class CacheState
 	 */
 	CacheState(int __ms, int __ml)
 	{
-		throw new Error("TODO");
+		// Allocate
+		this._stackvars = new CodeVariable[__ms];
+		this._localvars = new CodeVariable[__ml];
 	}
 }
 
