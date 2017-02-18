@@ -41,6 +41,9 @@ class __JITCodeStream__
 	/** The instance of the translation engine. */
 	final TranslationEngine _engine;
 	
+	/** The currently active state. */
+	private volatile CacheState _activestate;
+	
 	/** The state of stack and locals for most instruction addresses. */
 	private volatile CacheStates _states;
 	
@@ -158,10 +161,16 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- initArgs: %s %s %d%n", Arrays.asList(__cv),
 			Arrays.asList(__st), __sh);
 		
-		// Get state at the entry point
-		CacheState cs = this._states.create(0);
+		// Setup initial active state
+		CacheStates states = this._states;
+		CacheState activestate = states.initializeNew();
+		this._activestate = activestate;
 		
-		throw new Error("TODO");
+		if (true)
+			throw new Error("TODO");
+		
+		// Set entry point state
+		states.set(0, activestate.copy());
 	}
 	
 	/**

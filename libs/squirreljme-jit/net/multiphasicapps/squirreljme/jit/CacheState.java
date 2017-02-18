@@ -11,8 +11,10 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.AbstractList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 
 /**
@@ -34,6 +36,10 @@ public class CacheState
 	/** Local code variables. */
 	protected final Locals locals;
 	
+	/** Bindings between code variables and natural placements. */
+	protected final Map<CodeVariable, Binding> bindings =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the cache state.
 	 *
@@ -49,14 +55,66 @@ public class CacheState
 	}
 	
 	/**
+	 * Returns a copy of this cache state and returns the new copy.
+	 *
+	 * @return The copy of this state.
+	 * @since 2017/02/18
+	 */
+	public CacheState copy()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Gets the binding of a given code variable.
+	 *
+	 * @param <B> The binding sub-class.
+	 * @param __cl The class to cast to.
+	 * @param __cv The variable to get the binding of.
+	 * @return The binding for the given variable, or {@code null} if it has
+	 * not been set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/18
+	 */
+	public <B extends Binding> B getBinding(Class<B> __cl, CodeVariable __cv)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null || __cv == null)
+			throw new NullPointerException("NARG");
+		
+		// Get
+		return __cl.cast(this.bindings.get(__cv));
+	}
+	
+	/**
 	 * Returns the cached local variable assignments.
 	 *
 	 * @return The cached local variables.
 	 * @since 2017/02/18
 	 */
-	public Locals locals()
+	public CacheState.Locals locals()
 	{
 		return this.locals;
+	}
+	
+	/**
+	 * Sets the binding for the given code variable.
+	 *
+	 * @param __cv The variable to set a binding for.
+	 * @param __b The binding of the variable, may be {@code null}.
+	 * @return The old binding.
+	 * @throws NullPointerException If no variable was specified.
+	 * @since 2017/02/18
+	 */
+	public Binding setBinding(CodeVariable __cv, Binding __b)
+	{
+		// Check
+		if (__cv == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		return this.bindings.put(__cv, __b);
 	}
 	
 	/**
@@ -65,7 +123,7 @@ public class CacheState
 	 * @return The cached stack variables.
 	 * @since 2017/02/18
 	 */
-	public Stack stack()
+	public CacheState.Stack stack()
 	{
 		return this.stack;
 	}

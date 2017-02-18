@@ -55,39 +55,6 @@ public class CacheStates
 	}
 	
 	/**
-	 * Potentially creates the cache state at the given index if it does not
-	 * exist, otherwise it will return the already existing state.
-	 *
-	 * @param __i The address to get the state of or to initialize.
-	 * @return The state of the cache at this address, which may be newly
-	 * intiialized.
-	 * @since 2017/02/16 
-	 */
-	public CacheState create(int __i)
-	{
-		List<Integer> pos = this._pos;
-		List<CacheState> states = this._states;
-		
-		// Find it
-		int dx = Collections.<Integer>binarySearch(this._pos, __i);
-		
-		// Not found, create
-		if (dx < 0)
-		{
-			dx = (-(dx) - 1);
-			pos.add(dx, __i);
-			CacheState rv;
-			states.add(dx,
-				(rv = new CacheState(this.maxstack, this.maxlocals)));
-			return rv; 
-		}
-		
-		// Use it
-		else
-			return states.get(dx);
-	}
-	
-	/**
 	 * This returns an already existing state for the specified address.
 	 *
 	 * @parma __i The address to get the state of.
@@ -106,6 +73,47 @@ public class CacheStates
 		
 		// Get it
 		return this._states.get(dx);
+	}
+	
+	/**
+	 * Initializes a new compatible cache state which is empty.
+	 *
+	 * @return The new blank cache state.
+	 * @since 2017/02/18
+	 */
+	public CacheState initializeNew()
+	{
+		return new CacheState(this.maxstack, this.maxlocals);
+	}
+	
+	/**
+	 * Sets the cache state for a given address.
+	 *
+	 * @param __i The address to set.
+	 * @param __v The state to set, this is not copied.
+	 * @return The previous state, this is not a copy.
+	 * @since 2017/02/18
+	 */
+	public CacheState set(int __i, CacheState __v)
+	{
+		List<Integer> pos = this._pos;
+		List<CacheState> states = this._states;
+		
+		// Find it
+		int dx = Collections.<Integer>binarySearch(this._pos, __i);
+		
+		// Not found, insert it
+		if (dx < 0)
+		{
+			dx = (-(dx) - 1);
+			pos.add(dx, __i);
+			states.add(dx, __v);
+			return null; 
+		}
+		
+		// Otherwise replace
+		else
+			return states.set(dx, __v);
 	}
 }
 
