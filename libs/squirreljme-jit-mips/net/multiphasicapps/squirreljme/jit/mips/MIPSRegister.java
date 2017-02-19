@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
  *
  * @since 2017/02/19
  */
-public class MIPSRegister
+public enum MIPSRegister
 {
 	/** r0, always zero. */
 	R0(false, 0),

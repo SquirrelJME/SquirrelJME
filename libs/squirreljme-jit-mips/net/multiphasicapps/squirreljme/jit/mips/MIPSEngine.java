@@ -18,6 +18,12 @@ import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 /**
  * This is the engine which is able to generate MIPS machine code.
  *
+ * The ABI that this engine uses on MIPS machines is NUBI, documentation of it
+ * is available here:
+ * {@link ftp://ftp.linux-mips.org/pub/linux/mips/doc/NUBI/} in a file called
+ * {@code MD00438-2C-NUBIDESC-SPC-00.20.pdf}.
+ *
+ * @see NUBI
  * @since 2017/02/11
  */
 public class MIPSEngine
