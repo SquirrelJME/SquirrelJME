@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -123,6 +125,27 @@ public abstract class JITConfig<C extends JITConfig<C>>
 			throw new NullPointerException("NARG");
 		
 		return this._values.get(__s);
+	}
+	
+	/**
+	 * Returns the data type that is used for pointers.
+	 *
+	 * @return The data type for pointers.
+	 * @since 2017/02/19
+	 */
+	public DataType pointerDataType()
+	{
+		switch (bits())
+		{
+			case 8:		return DataType.BYTE;
+			case 16:	return DataType.SHORT;
+			case 32:	return DataType.INTEGER;
+			case 64:	return DataType.LONG;
+			
+				// {@squirreljme.error ED07 Unknown pointer data type.}
+			default:
+				throw new JITException("ED07");
+		}
 	}
 	
 	/**
