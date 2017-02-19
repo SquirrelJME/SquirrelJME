@@ -118,6 +118,27 @@ public class CacheState
 	}
 	
 	/**
+	 * Sets the binding for the given code variable.
+	 *
+	 * @param <B> The type of binding to put.
+	 * @param __cv The variable to set a binding for.
+	 * @param __cl The target class binding.
+	 * @param __b The binding of the variable, may be {@code null}.
+	 * @return The old binding.
+	 * @throws NullPointerException If no variable or class was specified.
+	 * @since 2017/02/18
+	 */
+	public <B extends Binding> B setBinding(CodeVariable __cv, Class<B> __cl,
+		B __b)
+	{
+		// Check
+		if (__cl == null || __cv == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this.bindings.put(__cv, __b));
+	}
+	
+	/**
 	 * Returns the cached stack variable assignments.
 	 *
 	 * @return The cached stack variables.
