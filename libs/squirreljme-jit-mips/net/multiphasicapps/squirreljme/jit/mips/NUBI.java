@@ -287,6 +287,5 @@ public final class NUBI
 	/** Saved float register 12. */
 	public static final MIPSRegister FS11 =
 		MIPSRegister.F23;
-
 }
 
