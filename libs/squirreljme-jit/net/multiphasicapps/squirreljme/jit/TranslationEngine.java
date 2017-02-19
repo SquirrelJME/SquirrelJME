@@ -66,5 +66,14 @@ public abstract class TranslationEngine
 		
 		return __cl.cast(this.config);
 	}
+	
+	/**
+	 * Binds the specified cache state for entry into the current method from
+	 * an external caller.
+	 *
+	 * @param __cs The state to bind variables for.
+	 * @since 2017/02/19
+	 */
+	public abstract void bindStateForEntry(CacheState __cs);
 }
 

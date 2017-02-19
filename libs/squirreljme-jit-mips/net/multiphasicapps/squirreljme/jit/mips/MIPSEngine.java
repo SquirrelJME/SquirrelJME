@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 
@@ -37,6 +39,21 @@ public class MIPSEngine
 		
 		// Set
 		this.config = __conf;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/19
+	 */
+	@Override
+	public void bindStateForEntry(CacheState __cs)
+		throws NullPointerException
+	{
+		// Check
+		if (__cs == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

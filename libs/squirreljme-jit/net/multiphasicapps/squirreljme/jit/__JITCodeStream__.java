@@ -78,6 +78,16 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/19
+	 */
+	@Override
+	public CacheState activeCacheState()
+	{
+		return this._activestate;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/07
 	 */
 	@Override
@@ -166,8 +176,22 @@ class __JITCodeStream__
 		CacheState activestate = states.initializeNew();
 		this._activestate = activestate;
 		
-		if (true)
-			throw new Error("TODO");
+		// Load variables into the state
+		CacheState.Locals l = activestate.locals();
+		CacheState.Stack s = activestate.stack();
+		for (CodeVariable v : __cv)
+		{
+			int id = v.id();
+			
+			// Place at its location
+			if (v.isLocal())
+				l.set(id, v);
+			else
+				s.set(id, v);
+		}
+		
+		// Setup native bindings
+		this._engine.bindStateForEntry(activestate);
 		
 		// Set entry point state
 		states.set(0, activestate.copy());
