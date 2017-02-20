@@ -142,26 +142,14 @@ public class NewBootstrap
 		
 		// Load all projects in the build directory
 		Map<String, BuildProject> projects = new LinkedHashMap<>();
-		try (DirectoryStream<Path> ds =
-			Files.newDirectoryStream(__src.resolve("build")))
-		{
-			// Go through all directories
-			for (Path p : ds)
-			{
-				// Must be a directory
-				if (!Files.isDirectory(p))
-					continue;
-			
-				// See if the manifest exists
-				Path man = p.resolve("META-INF").resolve("MANIFEST.MF");
-				if (!Files.exists(man))
-					continue;
-			
-				// Load project
-				BuildProject bp = new BuildProject(p, man);
-				projects.put(bp.projectName(), bp);
-			}
-		}
+		__loadProjects(projects, __src.resolve("build"));
+		
+		// Then add supporting projects also
+		__loadProjects(projects, __src.resolve("apis"));
+		__loadProjects(projects, __src.resolve("libs"));
+		__loadProjects(projects, __src.resolve("mids"));
+		
+		// Use them
 		this.projects = projects;
 	}
 		
@@ -250,6 +238,50 @@ public class NewBootstrap
 				catch (IOException e)
 				{
 				}
+		}
+	}
+	
+	/**
+	 * Loads projects in the given directory and places them into the existing
+	 * map if they do not exist.
+	 *
+	 * @param __t The target project mapping.
+	 * @param __p The source path.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/20
+	 */
+	private void __loadProjects(Map<String, BuildProject> __t, Path __p)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__t == null || __p == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through files
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__p))
+		{
+			// Go through all directories
+			for (Path p : ds)
+			{
+				// Must be a directory
+				if (!Files.isDirectory(p))
+					continue;
+			
+				// See if the manifest exists
+				Path man = p.resolve("META-INF").resolve("MANIFEST.MF");
+				if (!Files.exists(man))
+					continue;
+			
+				// Load project
+				BuildProject bp = new BuildProject(p, man);
+				
+				// Add project, but never replace projects (this way the
+				// build directory takes priority)
+				String pn = bp.projectName();
+				if (!__t.containsKey(pn))
+					__t.put(bp.projectName(), bp);
+			}
 		}
 	}
 	
@@ -533,7 +565,7 @@ public class NewBootstrap
 			
 			// Determine dependencies
 			Set<String> depends = new LinkedHashSet<>();
-			String rd = attr.getValue("X-SquirrelJME-BuildHostDepends");
+			String rd = attr.getValue("X-SquirrelJME-Depends");
 			if (rd != null)
 				for (String s : rd.split("[ \t]"))
 					depends.add(__correctProjectName(s.trim()));
