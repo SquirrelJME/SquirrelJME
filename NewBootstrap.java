@@ -569,6 +569,11 @@ public class NewBootstrap
 			if (rd != null)
 				for (String s : rd.split("[ \t]"))
 					depends.add(__correctProjectName(s.trim()));
+			
+			// Force a dependency on the CLDC Compact library
+			depends.add(__correctProjectName("cldc-compact"));
+			
+			// Set
 			this.depends = depends;
 		}
 		
