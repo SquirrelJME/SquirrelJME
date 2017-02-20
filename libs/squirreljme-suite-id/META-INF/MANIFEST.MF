@@ -8,4 +8,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains classes which are used to 
  easily manage midlet names and identities which exist within 
  manifests.
+MicroEdition-Configuration: CLDC-1.8-Compact
 
