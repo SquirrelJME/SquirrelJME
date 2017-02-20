@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.unsafe;
+package net.multiphasicapps.squirreljme.softmath;
 
 /**
  * This class contains software 64-bit floating point support for Java

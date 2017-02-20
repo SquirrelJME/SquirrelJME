@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: a87bbcbb-2c02-40f5-a7c4-c4172947a40c
+X-SquirrelJME-Error: AQ
+X-SquirrelJME-Name: Software Floating Point
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Description: This project contains support for software 
+ floating point which allows systems with no floating pointing or 
+ incompatible floating point hardware (or software) to be calculated 
+ so that it matches the Java specification.
+

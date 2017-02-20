@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.unsafe;
+package net.multiphasicapps.squirreljme.softmath;
 
 /**
  * This class contains software 32-bit floating point support for Java
@@ -59,8 +59,7 @@ public final class SoftFloat
 	 */
 	public static int floatAdd(int __a, int __b)
 	{
-		return SoftDouble.doubleToFloat(
-			SoftDouble.doubleAdd(floatToDouble(__a), floatToDouble(__b)));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -74,8 +73,11 @@ public final class SoftFloat
 	 */
 	public static int floatCompareGreater(int __a, int __b)
 	{
-		return SoftDouble.doubleCompareGreater(
-			floatToDouble(__a), floatToDouble(__b));
+		// If either side is NaN, stop
+		if (floatIsNaN(__a) || floatIsNaN(__b))
+			return 1;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -89,8 +91,11 @@ public final class SoftFloat
 	 */
 	public static int floatCompareLesser(int __a, int __b)
 	{
-		return SoftDouble.doubleCompareLesser(
-			floatToDouble(__a), floatToDouble(__b));
+		// If either side is NaN, stop
+		if (floatIsNaN(__a) || floatIsNaN(__b))
+			return -1;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -103,8 +108,7 @@ public final class SoftFloat
 	 */
 	public static int floatDivide(int __a, int __b)
 	{
-		return SoftDouble.doubleToFloat(
-			SoftDouble.doubleDivide(floatToDouble(__a), floatToDouble(__b)));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -117,8 +121,7 @@ public final class SoftFloat
 	 */
 	public static int floatMultiply(int __a, int __b)
 	{
-		return SoftDouble.doubleToFloat(
-			SoftDouble.doubleMultiply(floatToDouble(__a), floatToDouble(__b)));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -130,8 +133,7 @@ public final class SoftFloat
 	 */
 	public static int floatNegate(int __a)
 	{
-		return SoftDouble.doubleToFloat(
-			SoftDouble.doubleNegate(floatToDouble(__a)));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -144,8 +146,7 @@ public final class SoftFloat
 	 */
 	public static int floatRemainder(int __a, int __b)
 	{
-		return SoftDouble.doubleToFloat(SoftDouble.doubleRemainder(
-			floatToDouble(__a), floatToDouble(__b)));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -158,8 +159,7 @@ public final class SoftFloat
 	 */
 	public static int floatSubtract(int __a, int __b)
 	{
-		return SoftDouble.doubleToFloat(
-			SoftDouble.doubleSubtract(floatToDouble(__a), floatToDouble(__b)));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public final class SoftFloat
 	 */
 	public static int floatToInteger(int __f)
 	{
-		return SoftDouble.doubleToInteger(floatToDouble(__f));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -195,7 +195,7 @@ public final class SoftFloat
 	 */
 	public static long floatToLong(int __f)
 	{
-		return SoftDouble.doubleToLong(floatToDouble(__f));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -208,7 +208,7 @@ public final class SoftFloat
 	 */
 	public static long hardFloatToSoftDouble(float __f)
 	{
-		return floatToDouble(Float.floatToRawIntBits(__f));
+		throw new Error("TODO");
 	}
 }
 
