@@ -8,7 +8,5 @@ X-SquirrelJME-Description: This project contains an implementation of a
  is used by the kernel to manage communication between the kernel and 
  processes or processes to other processes.
 X-SquirrelJME-Depends: squirreljme-suite-id
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@midlet-identity
 X-SquirrelJME-Error: BW
 X-SquirrelJME-UUID: e21f83e9-0974-4e1d-8171-4bd9733f7350

@@ -618,11 +618,33 @@ public class NewBootstrap
 			// Build loop
 			try
 			{
-				// {@squirreljme.error NB05 The specified project eventually
-				// depends on itself. (The name of this project)}
+				// If the project is being compiled, as a hack allow it to be
+				// used as a dependency
 				if (this._incompile)
-					throw new IllegalStateException(String.format("NB05 %s",
-						this.name));
+				{
+					// Add seld
+					rv.add(this);
+					
+					// Add dependencies
+					for (String dep : this.depends)
+					{
+						// {@squirreljme.error NB02 The dependency of a given
+						// project does not exist. (This project; The project
+						// it depends on)}
+						BuildProject dp = projects.get(dep);
+						if (dp == null)
+							throw new IllegalStateException(String.format(
+								"NB02 %s %s", this.name, dep));
+						
+						// Add it
+						rv.add(dp);
+					}
+					
+					// Early return
+					return rv;
+				}
+				
+				// Currently compiling
 				this._incompile = true;
 				
 				// Compile dependencies first
@@ -639,8 +661,9 @@ public class NewBootstrap
 							"NB06 %s %s", this.name, dep));
 					
 					// Compile the dependency and add it to the merge group
-					for (BuildProject bp : dp.compile())
-						rv.add(bp);
+					if (!dp._incompile)
+						for (BuildProject bp : dp.compile())
+							rv.add(bp);
 				}
 				
 				// Other complation state
