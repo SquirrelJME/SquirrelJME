@@ -571,7 +571,8 @@ public class NewBootstrap
 					depends.add(__correctProjectName(s.trim()));
 			
 			// Force a dependency on the CLDC Compact library
-			depends.add(__correctProjectName("cldc-compact"));
+			if (!name.equals("cldc-compact"))
+				depends.add(__correctProjectName("cldc-compact"));
 			
 			// Set
 			this.depends = depends;
