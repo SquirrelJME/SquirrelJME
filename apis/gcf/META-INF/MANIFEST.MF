@@ -3,12 +3,9 @@ X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Generic Connection Framework
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: squirreljme-suite-id 
- squirreljme-virtual-unsafe meep-midlet
-X-SquirrelJME-Description: This projects contains the Genericconnection 
- framework which is used to create connections to other resources.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@meep-midlet
-X-SquirrelJME-Dependency-3: liblet:unknown@midlet-identity
+X-SquirrelJME-Depends: cldc-compact squirreljme-suite-id meep-midlet
+X-SquirrelJME-Description: This projects contains the Generic 
+ connection framework which is used to create connections to other 
+ resources.
 X-SquirrelJME-Error: EC
 X-SquirrelJME-UUID: 1358142d-037f-4421-9a52-0534764a45d3
