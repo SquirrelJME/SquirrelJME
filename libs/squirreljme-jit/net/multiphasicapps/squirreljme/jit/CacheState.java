@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.RandomAccess;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 
 /**
  * This contains a single state which specifies local values which may be
@@ -38,6 +39,10 @@ public class CacheState
 	
 	/** Bindings between code variables and natural placements. */
 	protected final Map<CodeVariable, Binding> bindings =
+		new HashMap<>();
+	
+	/** Code variable types. */
+	protected final Map<CodeVariable, StackMapType> types =
 		new HashMap<>();
 	
 	/** The global cache state. */
@@ -106,6 +111,23 @@ public class CacheState
 		throws ClassCastException, NullPointerException
 	{
 		return __cl.cast(this._global);
+	}
+	
+	/**
+	 * Returns the stack type of the given code variable.
+	 *
+	 * @param __cv The variable to get the type for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/20
+	 */
+	public StackMapType getType(CodeVariable __cv)
+		throws NullPointerException
+	{
+		// Check
+		if (__cv == null)
+			throw new NullPointerException("NARG");
+		
+		return this.types.get(__cv);
 	}
 	
 	/**
@@ -196,6 +218,26 @@ public class CacheState
 		GlobalBinding rv = this._global;
 		this._global = __cl.cast(__g);
 		return __cl.cast(rv);
+	}
+	
+	/**
+	 * Sets the specified code variable to the given type.
+	 *
+	 * @param __cv The code variable to set the type for.
+	 * @param __t The type to set as, may be {@code null} to clear.
+	 * @return The old type.
+	 * @throws NullPointerException If no variable was specified.
+	 * @since 2017/02/20
+	 */
+	public StackMapType setType(CodeVariable __cv, StackMapType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__cv == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		return this.types.put(__cv, __t);
 	}
 	
 	/**

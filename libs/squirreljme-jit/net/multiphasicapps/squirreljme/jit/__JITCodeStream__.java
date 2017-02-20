@@ -179,15 +179,23 @@ class __JITCodeStream__
 		// Load variables into the state
 		CacheState.Locals l = activestate.locals();
 		CacheState.Stack s = activestate.stack();
-		for (CodeVariable v : __cv)
+		for (int i = 0, n = __cv.length; i < n; i++)
 		{
+			CodeVariable v = __cv[i];
 			int id = v.id();
 			
 			// Place at its location
 			if (v.isLocal())
 				l.set(id, v);
+			
+			// {@squirreljme.error ED08 Initial method arguments placed on the
+			// stack is not supported, the initial state must only have local
+			// variables used.}
 			else
-				s.set(id, v);
+				throw new JITException("ED08");
+			
+			// Set the type of the code variable
+			activestate.setType(v, __st[i]);
 		}
 		
 		// Setup native bindings

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This class just contains public fields and helper methods for the NUBI ABI
  * and is given registers as needed.
@@ -287,5 +289,55 @@ public final class NUBI
 	/** Saved float register 12. */
 	public static final MIPSRegister FS11 =
 		MIPSRegister.F23;
+	
+	/**
+	 * Returns the argument register which follows this.
+	 *
+	 * @param __r The next register.
+	 * @return The next register, or {@code null} if no next register remains.
+	 * @throws JITException If the specified register is not an argument
+	 * register.
+	 * @since 2017/02/20
+	 */
+	public static MIPSRegister nextArgument(MIPSRegister __r)
+		throws JITException
+	{
+		// Integer
+		if (__r == NUBI.A1)
+			return NUBI.A2;
+		else if (__r == NUBI.A2)
+			return NUBI.A3;
+		else if (__r == NUBI.A3)
+			return NUBI.A4;
+		else if (__r == NUBI.A4)
+			return NUBI.A5;
+		else if (__r == NUBI.A5)
+			return NUBI.A6;
+		else if (__r == NUBI.A6)
+			return NUBI.A7;
+		else if (__r == NUBI.A7)
+			return null;
+		
+		// Floating point
+		else if (__r == NUBI.FA1)
+			return NUBI.FA2;
+		else if (__r == NUBI.FA2)
+			return NUBI.FA3;
+		else if (__r == NUBI.FA3)
+			return NUBI.FA4;
+		else if (__r == NUBI.FA4)
+			return NUBI.FA5;
+		else if (__r == NUBI.FA5)
+			return NUBI.FA6;
+		else if (__r == NUBI.FA6)
+			return NUBI.FA7;
+		else if (__r == NUBI.FA7)
+			return null;
+		
+		// {@squirreljme.error AM04 The specified register is not an
+		// argument register. (The specified register)}
+		else
+			throw new JITException(String.format("AM04 %s", __r));
+	}
 }
 

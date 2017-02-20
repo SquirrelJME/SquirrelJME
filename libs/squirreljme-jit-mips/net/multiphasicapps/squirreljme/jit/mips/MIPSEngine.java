@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.classformat.CodeVariable;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.CacheState;
+import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 
@@ -59,7 +62,89 @@ public class MIPSEngine
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Need some config details
+		MIPSConfig config = this.config;
+		int bits = config.bits();
+		
+		// Starting register points where arguments are placed
+		MIPSRegister ni = NUBI.A1;
+		MIPSRegister nf = NUBI.FA1;
+		
+		// Go through local variables
+		CacheState.Locals locals = __cs.locals();
+		for (int i = 0, n = locals.size(); i < n; i++)
+		{
+			// Get variable here
+			CodeVariable cv = locals.get(i);
+			
+			// Ignore empty variables
+			if (cv == null)
+				continue;
+			
+			// Alias type (float can turn into int for example)
+			DataType type = __aliasType(__cs.getType(cv));
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Aliases the specified stack map type to a data type.
+	 *
+	 * @param __t The stack type to alias.
+	 * @return The data type for the stack type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/20
+	 */
+	DataType __aliasType(StackMapType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// If an object use the size of a pointer
+		if (__t == StackMapType.OBJECT)
+			return (this.config.bits() > 32 ? DataType.LONG :
+				DataType.INTEGER);
+		
+		// Use normal mapping
+		return __aliasType(DataType.of(__t));
+	}
+	
+	/**
+	 * Aliases the given data type to handle software floating point.
+	 *
+	 * @parma __t The type to alias.
+	 * @return The same type or the alias of the type for example if it is
+	 * using software floating point.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/20
+	 */
+	DataType __aliasType(DataType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__t)
+		{
+				// Keep as is
+			case INTEGER:
+			case LONG:
+				return __t;
+				
+				// Adjust if software mode
+			case FLOAT:
+			case DOUBLE:
+				throw new Error("TODO");
+				
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 
