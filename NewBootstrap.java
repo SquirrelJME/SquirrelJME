@@ -162,7 +162,7 @@ public class NewBootstrap
 	{
 		// {@squirreljme.error NB03 The entry point project does not exist.}
 		Map<String, BuildProject> projects = this.projects;
-		BuildProject bp = projects.get("host-javase");
+		BuildProject bp = projects.get("squirreljme-build-host");
 		if (bp == null)
 			throw new IllegalStateException("NB03");
 		
@@ -618,31 +618,11 @@ public class NewBootstrap
 			// Build loop
 			try
 			{
-				// If the project is being compiled, as a hack allow it to be
-				// used as a dependency
+				// {@squirreljme.error NB02 The specified project eventually
+				// depends on itself. (The project name)}
 				if (this._incompile)
-				{
-					// Add seld
-					rv.add(this);
-					
-					// Add dependencies
-					for (String dep : this.depends)
-					{
-						// {@squirreljme.error NB02 The dependency of a given
-						// project does not exist. (This project; The project
-						// it depends on)}
-						BuildProject dp = projects.get(dep);
-						if (dp == null)
-							throw new IllegalStateException(String.format(
-								"NB02 %s %s", this.name, dep));
-						
-						// Add it
-						rv.add(dp);
-					}
-					
-					// Early return
-					return rv;
-				}
+					throw new IllegalStateException(String.format(
+						"NB02 %s", this.name));
 				
 				// Currently compiling
 				this._incompile = true;
