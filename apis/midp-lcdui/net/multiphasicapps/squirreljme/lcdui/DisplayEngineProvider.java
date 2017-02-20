@@ -11,8 +11,8 @@
 package net.multiphasicapps.squirreljme.lcdui;
 
 /**
- * This is accessed via the {@link ServiceLoader} to provide the ability to
- * use displays to interact with the user.
+ * This is accessed via the system services interface to provide display
+ * engines for the LCDUI interface.
  *
  * @since 2017/02/08
  */
