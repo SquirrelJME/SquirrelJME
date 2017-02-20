@@ -4,7 +4,7 @@ X-SquirrelJME-Error: BE
 X-SquirrelJME-Name: Squirrel Quarrel Core Game
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-BuildHostDepends: java-manifest midp-lcdui
+X-SquirrelJME-Depends: java-manifest midp-lcdui
 X-SquirrelJME-Description: This contains the core interfaces and 
  classes for the Squirrel Quarrel game. It does not contain any 
  frontends, only game logic which may be used by front ends.

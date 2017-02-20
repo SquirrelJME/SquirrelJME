@@ -3,7 +3,7 @@ X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Generic Connection Framework
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-BuildHostDepends: squirreljme-suite-id 
+X-SquirrelJME-Depends: squirreljme-suite-id 
  squirreljme-virtual-unsafe meep-midlet
 X-SquirrelJME-Description: This projects contains the Genericconnection 
  framework which is used to create connections to other resources.

@@ -6,6 +6,6 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides Squirrel Quarrel through the 
  standard LCD UI interface that is used on MIDP based Java ME systems.
-X-SquirrelJME-BuildHostDepends: squirrel-quarrel-core meep-midlet 
+X-SquirrelJME-Depends: squirrel-quarrel-core meep-midlet 
  midp-lcdui image-xpm-reader
 

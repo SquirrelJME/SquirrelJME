@@ -3,7 +3,7 @@ X-SquirrelJME-Type: liblet
 X-SquirrelJME-Title: Stream ZIP Reader
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-BuildHostDepends: zip
+X-SquirrelJME-Depends: zip
 X-SquirrelJME-Description: This allows reading of ZIP files which have 
  been sourced from an input stream. Due to the design of ZIP files, they
   do not need to be accessed through a block level access.

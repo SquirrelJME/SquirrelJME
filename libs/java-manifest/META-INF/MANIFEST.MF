@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-X-SquirrelJME-BuildHostDepends: unmodifiable-collections
 X-SquirrelJME-Title: Manifest File Decoder
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2

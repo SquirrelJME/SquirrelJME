@@ -4,7 +4,7 @@ X-SquirrelJME-Error: AB
 X-SquirrelJME-Name: Mutabl Java Manifest
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-BuildHostDepends: java-manifest
+X-SquirrelJME-Depends: java-manifest
 X-SquirrelJME-Description: This project allows for creating standard 
  Java manifest files using a mutable class.
 

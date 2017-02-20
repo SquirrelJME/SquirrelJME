@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: ae2e523f-a413-4f79-a992-211ac91dd7d4
 X-SquirrelJME-Error: CJ
-X-SquirrelJME-BuildHostDepends: zip
+X-SquirrelJME-Depends: zip
 LIBlet-Name: Blocked Based ZIP File Reader
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

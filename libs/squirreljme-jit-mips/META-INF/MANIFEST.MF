@@ -6,5 +6,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains support in the JIT to 
  generate MIPS machine code.
-X-SquirrelJME-BuildHostDepends: squirreljme-jit
+X-SquirrelJME-Depends: squirreljme-jit
 

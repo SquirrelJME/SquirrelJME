@@ -7,7 +7,7 @@ X-SquirrelJME-Description: This implements the just in time compiler
  which is used to generate native code. This JIT is designed in a way 
  where it performs all of the compilation work as required in a single
  pass.
-X-SquirrelJME-BuildHostDepends: squirreljme-executable 
+X-SquirrelJME-Depends: squirreljme-executable 
  squirreljme-class-format data-deque-buffer
 X-SquirrelJME-Error: ED
 X-SquirrelJME-UUID: 73dc1d84-de7d-4548-8e66-9e83af4b9a4b

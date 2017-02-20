@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: b6f127ce-3bb7-420e-99b3-5a636ff2dbc5
-X-SquirrelJME-BuildHostDepends: build-base sorted-collections 
+X-SquirrelJME-Depends: build-base sorted-collections 
  java-manifest 
  squirreljme-suite-id empty-collections zip-reader-block 
  zip-writer-stream mutable-java-manifest

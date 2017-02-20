@@ -6,5 +6,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains virtual support for unsafe 
  operations within SquirrelJME.
-X-SquirrelJME-BuildHostDepends: sorted-collections squirreljme-ipc
+X-SquirrelJME-Depends: sorted-collections squirreljme-ipc
 
