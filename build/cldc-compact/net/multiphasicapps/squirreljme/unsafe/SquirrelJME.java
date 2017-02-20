@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.unsafe;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.BindException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.ipc.PostBox;
@@ -42,6 +44,10 @@ public final class SquirrelJME
 	/** Post mailboxes. */
 	private static final Map<Integer, PostBox> _POST_BOXES =
 		new HashMap<>();
+	
+	/** System services which have been initialized. */
+	private static final List<Object> _SYSTEM_SERVICES =
+		new ArrayList<>();
 	
 	/** Post destination next id. */
 	private static volatile int _nextpostdest =
@@ -433,6 +439,131 @@ public final class SquirrelJME
 	{
 		// Always zero, for the kernel
 		return 0;
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @return As duplicated.
+	 * @since 2017/02/20
+	 */
+	public static long nanoTime()
+	{
+		return System.nanoTime();
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __b As duplicated.
+	 * @since 2017/02/20
+	 */
+	public static void stdErr(int __b)
+	{
+		System.err.write(__b);
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __b As duplicated.
+	 * @param __o As duplicated.
+	 * @param __l As duplicated.
+	 * @throws ArrayIndexOutOfBoundsException As duplicated.
+	 * @since 2017/02/20
+	 */
+	public static void stdErr(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		System.err.write(__b, __o, __l);
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __b As duplicated.
+	 * @since 2017/02/20
+	 */
+	public static void stdOut(int __b)
+	{
+		System.out.write(__b);
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param __b As duplicated.
+	 * @param __o As duplicated.
+	 * @param __l As duplicated.
+	 * @throws ArrayIndexOutOfBoundsException As duplicated.
+	 * @since 2017/02/20
+	 */
+	public static void stdOut(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		System.out.write(__b, __o, __l);
+	}
+	
+	/**
+	 * As duplicated.
+	 *
+	 * @param <C> As duplicated.
+	 * @param __cl As duplicated.
+	 * @return As duplicated.
+	 * @throws NullPointerException As duplicated.
+	 * @since 2017/02/20
+	 */
+	public static <C> C systemService(Class<C> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on services
+		List<Object> services = _SYSTEM_SERVICES;
+		synchronized (services)
+		{
+			// Check if the service was already initialized
+			for (Object o : services)
+				if (__cl.isInstance(o))
+					return __cl.cast(__cl);
+			
+			// Otherwise find the name of the class to use
+			String use;
+			switch (__cl.getName())
+			{
+					// Display engine for swing output
+				case "net.multiphasicapps.squirreljme.lcdui." +
+					"DisplayEngineProvider":
+					use ="net.multiphasicapps.squirreljme." +
+						"build.host.javase.SwingEngineProvider";
+					break;
+					
+					// Unknown
+				default:
+					use = null;
+					break;
+			}
+			
+			// Not found?
+			if (use == null)
+				return null;
+			
+			// Create instance
+			try
+			{
+				C rv = __cl.cast(Class.forName(use).newInstance());
+				services.add(rv);
+				return rv;
+			}
+			
+			// Failed
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
 	}
 	
 	/**
