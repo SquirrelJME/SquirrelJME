@@ -84,7 +84,88 @@ public class MIPSEngine
 			// Alias type (float can turn into int for example)
 			DataType type = __aliasType(__cs.getType(cv));
 			
-			throw new Error("TODO");
+			// Depends
+			MIPSBinding bind;
+			switch (type)
+			{
+					// int
+				case INTEGER:
+					// Use single register
+					if (ni != null)
+					{
+						bind = new MIPSBinding(ni);
+						ni = NUBI.nextArgument(ni);
+					}
+					
+					// Stack allocate
+					else
+						bind = null;
+					break;
+					
+					// long
+				case LONG:
+					// Register might be available
+					if (ni != null)
+					{
+						// 32-bit uses single register
+						if (bits > 32)
+						{
+							bind = new MIPSBinding(ni);
+							ni = NUBI.nextArgument(ni);
+						}
+						
+						// Otherwise
+						else
+						{
+							MIPSRegister hi = ni;
+							MIPSRegister lo = NUBI.nextArgument(hi);
+							
+							// Make sure the entire value vits in registers so
+							// that cross stack/register combinations are not
+							// used
+							if (hi != null && lo != null)
+							{
+								bind = new MIPSBinding(hi, lo);
+								ni = NUBI.nextArgument(lo);
+							}
+							
+							// Use stack
+							else
+								bind = null;
+						}
+					}
+					
+					// Stack
+					else
+						bind = null;
+					break;
+					
+					// float or double
+				case FLOAT:
+				case DOUBLE:
+					// Use single register
+					if (nf != null)
+					{
+						bind = new MIPSBinding(nf);
+						nf = NUBI.nextArgument(nf);
+					}
+					
+					// Stack allocate
+					else
+						bind = null;
+					break;
+				
+					// Should not happen
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// No bind specified, allocate on the stack
+			if (bind == null)
+				throw new Error("TODO");
+			
+			// Set binding
+			__cs.setBinding(cv, bind);
 		}
 	}
 	

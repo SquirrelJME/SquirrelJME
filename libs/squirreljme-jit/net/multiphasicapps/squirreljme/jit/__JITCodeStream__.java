@@ -203,6 +203,9 @@ class __JITCodeStream__
 		
 		// Set entry point state
 		states.set(0, activestate.copy());
+		
+		// Debug
+		System.err.printf("DEBUG -- initArgs: %s%n", activestate);
 	}
 	
 	/**

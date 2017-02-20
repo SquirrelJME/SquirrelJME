@@ -252,6 +252,18 @@ public class CacheState
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/20
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("{stack=%s, locals=%s, bindings=%s, types=%s, " +
+			"global=%s}", this.stack, this.locals, this.bindings, this.types,
+			this._global);
+	}
+	
+	/**
 	 * Contains the mappings for cached local values.
 	 *
 	 * @since 2017/02/18
