@@ -40,6 +40,9 @@ public class CacheState
 	protected final Map<CodeVariable, Binding> bindings =
 		new HashMap<>();
 	
+	/** The global cache state. */
+	private volatile GlobalBinding _global;
+	
 	/**
 	 * Initializes the cache state.
 	 *
@@ -73,11 +76,12 @@ public class CacheState
 	 * @param __cv The variable to get the binding of.
 	 * @return The binding for the given variable, or {@code null} if it has
 	 * not been set.
+	 * @throws ClassCastException If the class does not match.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/18
 	 */
 	public <B extends Binding> B getBinding(Class<B> __cl, CodeVariable __cv)
-		throws NullPointerException
+		throws ClassCastException, NullPointerException
 	{
 		// Check
 		if (__cl == null || __cv == null)
@@ -85,6 +89,23 @@ public class CacheState
 		
 		// Get
 		return __cl.cast(this.bindings.get(__cv));
+	}
+	
+	/**
+	 * Returns the global binding which is associated with the cached state
+	 * as a whole.
+	 *
+	 * @param <B> The class type of the gloal binding.
+	 * @param __cl The class to cast to.
+	 * @return The global binding.
+	 * @throws ClassCastException If the class does not match.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/20
+	 */
+	public <B extends GlobalBinding> B getGlobal(Class<B> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		return __cl.cast(this._global);
 	}
 	
 	/**
@@ -125,17 +146,56 @@ public class CacheState
 	 * @param __cl The target class binding.
 	 * @param __b The binding of the variable, may be {@code null}.
 	 * @return The old binding.
+	 * @throws ClassCastException If the class does not match.
 	 * @throws NullPointerException If no variable or class was specified.
 	 * @since 2017/02/18
 	 */
 	public <B extends Binding> B setBinding(CodeVariable __cv, Class<B> __cl,
 		B __b)
+		throws ClassCastException, NullPointerException
 	{
 		// Check
 		if (__cl == null || __cv == null)
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(this.bindings.put(__cv, __b));
+	}
+	
+	/**
+	 * Sets the global binding.
+	 *
+	 * @param __g The global binding to use.
+	 * @return The old global binding.
+	 * @since 2017/02/20
+	 */
+	public GlobalBinding setGlobal(GlobalBinding __g)
+	{
+		GlobalBinding rv = this._global;
+		this._global = __g;
+		return rv;
+	}
+	
+	/**
+	 * Sets the global binding.
+	 *
+	 * @param <B> The class type of the global binding.
+	 * @param __cl The class type of the global binding.
+	 * @param __g The global binding to use.
+	 * @return The old global binding.
+	 * @throws ClassCastException If the class type differs.
+	 * @throws NullPointerException If no class was specified.
+	 * @since 2017/02/20
+	 */
+	public <B extends GlobalBinding> B setGlobal(Class<B> __cl, B __g)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		GlobalBinding rv = this._global;
+		this._global = __cl.cast(__g);
+		return __cl.cast(rv);
 	}
 	
 	/**
