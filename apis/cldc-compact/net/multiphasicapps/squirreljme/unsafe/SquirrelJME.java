@@ -368,5 +368,23 @@ public final class SquirrelJME
 	{
 		throw new RuntimeException("OOPS");
 	}
+	
+	/**
+	 * This obtains a class which implements a system specific service.
+	 * All services that exist are singletons, calling this same method twice
+	 * must return the same object for the given class.
+	 *
+	 * @param <C> The class to get the singleton service for.
+	 * @param __cl The class to get the singleton service for.
+	 * @return The singleton instance of the given class or {@code null} if
+	 * no service for that class exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/20
+	 */
+	public static <C> C systemService(Class<C> __cl)
+		throws NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
 }
 
