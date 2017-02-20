@@ -20,13 +20,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
 import net.multiphasicapps.squirreljme.lcdui.DisplayEngineProvider;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
 {
@@ -925,11 +925,9 @@ public class Display
 			{
 				// Load displays from engines
 				List<Display> to = new ArrayList<>();
-				for (DisplayEngineProvider dep :
-					ServiceLoader.<DisplayEngineProvider>load(
-						DisplayEngineProvider.class))
-					for (DisplayEngine de : dep.engines())
-						to.add(new Display(de));
+				for (DisplayEngine de : SquirrelJME.systemService(
+					DisplayEngineProvider.class).engines())
+					to.add(new Display(de));
 				
 				// Set
 				_DISPLAYS =
