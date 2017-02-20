@@ -22,7 +22,6 @@ import net.multiphasicapps.squirreljme.ipc.PostDestination;
 import net.multiphasicapps.squirreljme.ipc.PostOffice;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This class contains implementations of unsafe SquirrelJME operations which
