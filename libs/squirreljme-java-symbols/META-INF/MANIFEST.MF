@@ -6,6 +6,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains parsers and handlers which are 
  ableto read, provide, and construct information that is related to 
  binarynames, identifiers, method descriptors, and field descriptors.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: AL
 X-SquirrelJME-UUID: c51c05cc-565e-409e-b71c-642470bdf24e

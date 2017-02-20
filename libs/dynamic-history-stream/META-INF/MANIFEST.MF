@@ -6,7 +6,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project provides an InputStream which is
   buffered to a dynamic and changeable set of bytes to allow for reading
   for a limited set of history that the bytes which were just read.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@util-datadeque
 X-SquirrelJME-Error: BI
 X-SquirrelJME-UUID: ca3eab81-73a3-4fdf-a23d-c0af445dc664

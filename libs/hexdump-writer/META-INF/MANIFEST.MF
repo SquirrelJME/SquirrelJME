@@ -5,7 +5,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains a class which dumpstext
   to a given stream.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@io-psw
 X-SquirrelJME-Error: BP
 X-SquirrelJME-UUID: e21d8dcf-34aa-4321-b517-f73e31b6e3d2

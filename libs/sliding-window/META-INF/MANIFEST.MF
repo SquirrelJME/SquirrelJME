@@ -5,7 +5,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides sliding windows which get data 
  at the end and remove data at the very start.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@util-datadeque
 X-SquirrelJME-Error: AI
 X-SquirrelJME-UUID: 4a4eac91-13ec-4385-980f-3ed23c1346bb

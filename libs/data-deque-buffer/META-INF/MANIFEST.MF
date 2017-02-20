@@ -5,6 +5,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to a dynamically sized 
  byte buffer with a Deque-like interface.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: AE
 X-SquirrelJME-UUID: 82c221db-c5d8-4aad-a8e4-ac1a2a91d17c

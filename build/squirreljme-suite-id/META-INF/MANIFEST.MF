@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 324a9876-c9d1-46ad-be25-6376511d3da2
+X-SquirrelJME-Name: Virtual Package For Dependency Tricking
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+

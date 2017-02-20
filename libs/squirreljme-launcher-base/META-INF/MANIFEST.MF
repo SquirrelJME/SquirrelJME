@@ -5,8 +5,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project implements the base support 
  needed for launchers to operate correctly within SquirrelJME.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
-X-SquirrelJME-Dependency-2: liblet:unknown@meep-lui
-X-SquirrelJME-Dependency-3: liblet:unknown@midlet-identity
 X-SquirrelJME-Error: CM
 X-SquirrelJME-UUID: 6ace2255-222e-43d6-9330-cb6918c00f8f

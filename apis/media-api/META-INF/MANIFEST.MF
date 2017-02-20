@@ -5,6 +5,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the implementation of 
  the MIDP 3.0 Media API which is also specified in JSR 135.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-compact
 X-SquirrelJME-Error: EA
 X-SquirrelJME-UUID: 1be6eb96-52e4-4762-a1d0-5dd95e0c9f39
