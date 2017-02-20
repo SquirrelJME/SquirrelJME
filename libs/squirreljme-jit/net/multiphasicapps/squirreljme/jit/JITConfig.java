@@ -80,7 +80,7 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	public int bits()
 		throws JITException
 	{
-		String v = internalValue("bits");
+		String v = internalValue("generic.bits");
 		
 		// {@squirreljme.error ED03 CPU bits not specified.}
 		if (v == null)

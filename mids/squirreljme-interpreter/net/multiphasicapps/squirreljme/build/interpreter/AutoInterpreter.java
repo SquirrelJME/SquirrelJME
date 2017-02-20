@@ -202,8 +202,9 @@ public class AutoInterpreter
 		
 		// Setup translation engine the JIT uses
 		this.engineprovider = new MIPSEngineProvider(new MIPSConfig(
-			"CPU", "mips1",
-			"enDian", "big"));
+			"mips.cpu", "mips1",
+			"generic.endian", "big",
+			"generic.bits", "32"));
 	}
 	
 	/**
