@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
+import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirrelquarrel.lcdui.MainMidlet;
 
 /**
@@ -90,7 +92,8 @@ public class BuildSystem
 		// interpreter which is used to create simulated SquirrelJME
 		// environments.;
 		// {@code squirrel-quarrel}: Runs a sample real-time strategy game
-		// in the build environment.)
+		// in the build environment.;
+		// {@code build [project]}: Builds the specified project.)
 		//}
 		int na = __args.length;
 		if (na <= 0)
@@ -101,6 +104,29 @@ public class BuildSystem
 		switch ((command = Objects.toString(__args[0], "").trim().
 			toLowerCase()))
 		{
+				// Build a project
+			case "build":
+				{
+					// {@squirreljme.error AO04 The build command requires a
+					// project to build.}
+					if (na < 2)
+						throw new IllegalArgumentException("AO04");
+					
+					// Get project
+					ProjectManager projects = this.projects;
+					Project p = projects.get(new ProjectName(__args[1]));
+					
+					// {@squirreljme.error AO05 The specified project is not
+					// valid. (The project name)}
+					if (p == null)
+						throw new IllegalArgumentException(String.format(
+							"AO05 %s", __args[1]));
+					
+					// Just get the binary (which tries to compile it)
+					p.binary();
+				}
+				break;
+			
 				// Run the auto-interpreter
 			case "interpret":
 			case "interpreter":
