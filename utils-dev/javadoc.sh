@@ -75,7 +75,7 @@ do
 			-squirreljme-depends "$__depscom" \
 			-private \
 			-source 1.7 \
-			-docletpath "doclet.jar:." \
+			-docletpath "sjmedoclet.jar:." \
 			-classpath "$__dpath" \
 			-bootclasspath "$__dpath" \
 			-sourcepath "$__dir" \
