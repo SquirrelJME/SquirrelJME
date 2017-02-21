@@ -35,9 +35,16 @@ __recursive_deps()
 	__pd="$(echo "$__md" | grep -i 'x-squirreljme-depends' |
 		sed 's/^[^:]*:[ \t]*//' | sed 's/,/ /g')"
 	
+	# If this is not cldc-compact, depend on it
+	if [ "$1" != "cldc-compact" ]
+	then
+		echo "cldc-compact"
+	fi
+		
 	# Add them all
 	(for __dep in $__pd
 	do
+		# That dependency
 		echo "$__dep"
 		
 		# Recursive run
@@ -49,5 +56,5 @@ __recursive_deps()
 }
 
 # Run
-__recursive_deps "$__name"
+__recursive_deps "$__name" | sort | uniq
 
