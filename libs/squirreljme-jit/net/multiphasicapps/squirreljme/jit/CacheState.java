@@ -17,6 +17,7 @@ import java.util.RandomAccess;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains a single state which specifies local values which may be
@@ -39,11 +40,11 @@ public class CacheState
 	
 	/** Bindings between code variables and natural placements. */
 	protected final Map<CodeVariable, Binding> bindings =
-		new HashMap<>();
+		new SortedTreeMap<>();
 	
 	/** Code variable types. */
 	protected final Map<CodeVariable, StackMapType> types =
-		new HashMap<>();
+		new SortedTreeMap<>();
 	
 	/** The global cache state. */
 	private volatile GlobalBinding _global;
