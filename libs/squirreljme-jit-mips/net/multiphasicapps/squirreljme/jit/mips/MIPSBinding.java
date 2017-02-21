@@ -10,25 +10,34 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.jit.Binding;
 
 /**
  * This is a binding for MIPS register or stack values which determines where
  * values exist.
  *
+ * This class is immutable.
+ *
  * @since 2017/02/19
  */
-public class MIPSBinding
+public final class MIPSBinding
 	implements Binding
 {
+	/** The stack offset. */
+	protected final int stackoffset;
+	
+	/** The stack length. */
+	protected final int stacklength;
+	
 	/** Registers which are associated with this binding. */
 	private final MIPSRegister[] _registers;
 	
-	/** The stack offset. */
-	private final int _stackoffset;
-	
-	/** The stack length. */
-	private final int _stacklength;
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the MIPS binding to a register.
@@ -44,7 +53,12 @@ public class MIPSBinding
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set single register
+		this._registers = new MIPSRegister[]{__r};
+		
+		// Not used
+		this.stackoffset = Integer.MIN_VALUE;
+		this.stacklength = Integer.MIN_VALUE;
 	}
 	
 	/**
@@ -62,7 +76,20 @@ public class MIPSBinding
 		if (__r == null || __a == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy registers
+		int n = 1 + __a.length;
+		MIPSRegister[] registers = new MIPSRegister[n];
+		registers[0] = __r;
+		for (int i = 0, o = 1; o < n; i++, o++)
+			registers[o] = Objects.<MIPSRegister>requireNonNull(__a[i], 
+				"NARG");
+		
+		// Set
+		this._registers = registers;
+		
+		// Not used
+		this.stackoffset = Integer.MIN_VALUE;
+		this.stacklength = Integer.MIN_VALUE;
 	}
 	
 	/**
@@ -72,7 +99,8 @@ public class MIPSBinding
 	@Override
 	public MIPSBinding copy()
 	{
-		throw new Error("TODO");
+		// This class is immutable, so it can just return self
+		return this;
 	}
 	
 	/**
@@ -93,6 +121,33 @@ public class MIPSBinding
 	public int hashCode()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/19
+	 */
+	@Override
+	public String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			MIPSRegister[] registers = this._registers;
+			if (registers != null)
+				rv = Arrays.asList(registers).toString();
+			else
+				rv = String.format("<%+d, %d>", this.stackoffset,
+					this.stacklength);
+			
+			// Store
+			this._string = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 }
 

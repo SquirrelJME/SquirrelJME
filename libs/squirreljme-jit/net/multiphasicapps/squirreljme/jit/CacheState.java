@@ -70,7 +70,49 @@ public class CacheState
 	 */
 	public CacheState copy()
 	{
-		throw new Error("TODO");
+		// Get sizes for each tread
+		Stack oldstack = this.stack;
+		Locals oldlocals = this.locals;
+		int ns = oldstack.size(),
+			nl = oldlocals.size();
+		
+		// Setup new state
+		CacheState rv = new CacheState(ns, nl);
+		Stack newstack = rv.stack;
+		Locals newlocals = rv.locals;
+		
+		// Copy variable bindings
+		for (int i = 0; i < ns; i++)
+			newstack.set(i, oldstack.get(i));
+		for (int i = 0; i < nl; i++)
+			newlocals.set(i, oldlocals.get(i));
+		
+		// Copy global if it is set
+		GlobalBinding oldglobal = this._global;
+		if (oldglobal != null)
+			rv._global = oldglobal.copy();
+		
+		// Copy bindings
+		Map<CodeVariable, Binding> oldbindings = this.bindings;
+		Map<CodeVariable, Binding> newbindings = rv.bindings;
+		for (Map.Entry<CodeVariable, Binding> e : oldbindings.entrySet())
+		{
+			// Ignore null entries
+			Binding b = e.getValue();
+			if (b == null)
+				continue;
+			
+			// Copy
+			newbindings.put(e.getKey(), b.copy());
+		}
+		
+		// Copy types
+		Map<CodeVariable, StackMapType> oldtypes = this.types;
+		Map<CodeVariable, StackMapType> newtypes = rv.types;
+		for (Map.Entry<CodeVariable, StackMapType> e : oldtypes.entrySet())
+			newtypes.put(e.getKey(), e.getValue());
+		
+		return rv;
 	}
 	
 	/**
