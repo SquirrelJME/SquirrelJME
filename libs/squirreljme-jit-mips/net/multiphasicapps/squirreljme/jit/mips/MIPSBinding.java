@@ -21,6 +21,15 @@ import net.multiphasicapps.squirreljme.jit.Binding;
 public class MIPSBinding
 	implements Binding
 {
+	/** Registers which are associated with this binding. */
+	private final MIPSRegister[] _registers;
+	
+	/** The stack offset. */
+	private final int _stackoffset;
+	
+	/** The stack length. */
+	private final int _stacklength;
+	
 	/**
 	 * Initializes the MIPS binding to a register.
 	 *
