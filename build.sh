@@ -54,6 +54,12 @@ then
 	exit 1
 fi
 
+# If building the doclet, do not run it since there is nothing to run
+if [ "$1" = "build-doclet" ]
+then
+	exit 0
+fi
+
 # Run it again to run the bootstrap
 if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dproject.root=$__exedir" \

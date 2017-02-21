@@ -6,7 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This implements the Doclet API and generates 
  a human readable set of Markdown documents which should neatly contain 
  all of the SquirrelJME API documentation.
-X-SquirrelJME-Dependency-1: liblet:unknown@doclet-common
-X-SquirrelJME-Dependency-2: liblet:unknown@markdown-writer
+X-SquirrelJME-Depends: doclet-common markdown-writer
 X-SquirrelJME-Error: CF
 X-SquirrelJME-UUID: 8969189b-0210-4eeb-accf-60c3682bf3c7
