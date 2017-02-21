@@ -4,7 +4,7 @@ X-SquirrelJME-Title: JavaME 8 Device I/O (Generic)
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to generic devices.
-X-SquirrelJME-Dependency-1: liblet:unknown@dio
+X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DS
 X-SquirrelJME-StandardLib: dio.generic;1.0.1
 X-SquirrelJME-UUID: 8ea65d38-ad58-4ce8-9b02-1ca66a7d8adf

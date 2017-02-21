@@ -6,7 +6,7 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides support for quering the current
   electrical state of the device along with the setting of potential new
   power modes.
-X-SquirrelJME-Dependency-1: liblet:unknown@meep
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DJ
 X-SquirrelJME-StandardLib: microedition.power;0.0.0
 X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6

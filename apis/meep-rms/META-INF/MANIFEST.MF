@@ -6,7 +6,7 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the implementation of the 
  record management system which is used to manage records whichmay be 
  used instead of the filesystem (if a filesystem is notsupported).
-X-SquirrelJME-Dependency-1: liblet:unknown@meep
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DC
 X-SquirrelJME-StandardLib: microedition.rms;0.0.0
 X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d

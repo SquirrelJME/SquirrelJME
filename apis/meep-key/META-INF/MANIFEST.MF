@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains classes for handling key and 
  other user input events.
-X-SquirrelJME-Dependency-1: liblet:unknown@meep
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DB
 X-SquirrelJME-StandardLib: microedition.key;0.0.0
 X-SquirrelJME-UUID: 90e52d37-a976-4f38-a194-9c65d34b6615

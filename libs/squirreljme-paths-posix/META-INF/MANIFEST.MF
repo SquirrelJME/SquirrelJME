@@ -5,6 +5,6 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the native path manager for 
  POSIX based systems.
-X-SquirrelJME-Dependency-1: liblet:unknown@paths
+X-SquirrelJME-Depends: squirreljme-paths
 X-SquirrelJME-Error: BN
 X-SquirrelJME-UUID: 6218877d-cdac-4fce-9189-0d1fc30eaf5f

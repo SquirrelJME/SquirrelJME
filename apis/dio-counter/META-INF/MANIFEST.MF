@@ -4,8 +4,7 @@ X-SquirrelJME-Title: JavaME 8 Device I/O (Counters)
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to hardware counters.
-X-SquirrelJME-Dependency-1: liblet:unknown@dio
-X-SquirrelJME-Dependency-2: liblet:unknown@dio-gpio
+X-SquirrelJME-Depends: dio dio-gpio
 X-SquirrelJME-Error: DQ
 X-SquirrelJME-StandardLib: dio.counter;1.0.1
 X-SquirrelJME-UUID: be0423c3-2f29-4dec-abf1-d6385cdfd723

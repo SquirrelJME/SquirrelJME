@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides the base support for devices 
  that may be provided by an implementation.
-X-SquirrelJME-Dependency-1: liblet:unknown@cldc-full
+X-SquirrelJME-Depends: cldc
 X-SquirrelJME-Error: CR
 X-SquirrelJME-StandardLib: dio;1.0.1
 X-SquirrelJME-UUID: b45e9ac9-53bc-4e2a-9265-b5b5bca3d482

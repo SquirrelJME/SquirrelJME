@@ -10,7 +10,6 @@ X-SquirrelJME-Description: This contains an implementation of OpenGL ES
  utilizes the CPU and as such it may cause overhead when drawing. The 
  software rasterizer does not care about the type of display that is 
  used, since it relies only on the Graphics instance.
-X-SquirrelJME-Dependency-1: liblet:unknown@opengles
-X-SquirrelJME-Dependency-2: liblet:unknown@midp-lcdui
+X-SquirrelJME-Depends: opengles midp-lcdui
 X-SquirrelJME-Error: EL
 X-SquirrelJME-UUID: c7109a90-fc06-4a6b-8054-0e5d5647c4a8

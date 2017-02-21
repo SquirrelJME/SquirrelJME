@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides support for application suites 
  and LIBlets.
-X-SquirrelJME-Dependency-1: liblet:unknown@meep
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DL
 X-SquirrelJME-StandardLib: microedition.liblets;0.0.0
 X-SquirrelJME-UUID: aa14fb14-9806-40b6-9e27-6cc15cc2b457

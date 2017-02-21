@@ -4,8 +4,7 @@ X-SquirrelJME-Title: JavaME 8 Device I/O (UART)
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to serial UARTs.
-X-SquirrelJME-Dependency-1: liblet:unknown@dio
-X-SquirrelJME-Dependency-2: liblet:unknown@dio-modem
+X-SquirrelJME-Depends: dio dio-modem
 X-SquirrelJME-Error: CX
 X-SquirrelJME-StandardLib: dio.uart;1.0.1
 X-SquirrelJME-UUID: dc4c49eb-90b2-4845-9a87-bba0d21e2160
