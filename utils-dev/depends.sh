@@ -23,15 +23,13 @@ else
 	__name="$1"
 fi
 
-# Root directory is the source directory
-__root="$__exedir/../src"
-
 # Recursive
 __recursive_deps()
 {
 	# Convert manifest data
-	__md="$(tr '\n' '\v' < "$__root/$1/META-INF/MANIFEST.MF" | sed 's/\v //g' |
-		tr '\v' '\n')"
+	__md="$(tr '\n' '\v' < \
+		"$("$__exedir/projectwhere.sh" "$1")/META-INF/MANIFEST.MF" | \
+		sed 's/\v //g' | tr '\v' '\n')"
 	
 	# Get dependencies
 	__pd="$(echo "$__md" | grep -i 'x-squirreljme-depends' |

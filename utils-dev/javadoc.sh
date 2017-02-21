@@ -32,7 +32,7 @@ rm -rf -- "javadoc"
 for __ns in $("$__exedir/lsnamespaces.sh")
 do
 	# Generate documentation for all projects
-	for __dir in $("$__exedir/../$__ns/"* )
+	for __dir in "$__exedir/../$__ns/"*
 	do
 		# If not a directory and does not contain a manifest, ignore
 		if [ ! -d "$__dir" ] || [ ! -f "$__dir/META-INF/MANIFEST.MF" ]
