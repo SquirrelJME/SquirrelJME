@@ -8,4 +8,5 @@ X-SquirrelJME-Description: This project contains support for software
  floating point which allows systems with no floating pointing or 
  incompatible floating point hardware (or software) to be calculated 
  so that it matches the Java specification.
+Microedition-Configuration: CLDC-1.8-Compact
 

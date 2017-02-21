@@ -6,4 +6,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This is an empty support project so that 
  the dependency on `cldc` does not use SquirrelJME's version of the 
  basic class library, but the system host.
+Microedition-Configuration: CLDC-1.8-Compact
 

@@ -8,4 +8,5 @@ X-SquirrelJME-Description: This provides Squirrel Quarrel through the
  standard LCD UI interface that is used on MIDP based Java ME systems.
 X-SquirrelJME-Depends: squirrel-quarrel-core meep-midlet 
  midp-lcdui image-xpm-reader
+Microedition-Configuration: CLDC-1.8-Compact
 

@@ -8,3 +8,4 @@ X-SquirrelJME-Description: This contains the definitions for the doclet
 X-SquirrelJME-Depends: cldc
 X-SquirrelJME-Error: CD
 X-SquirrelJME-UUID: 3b3439b1-8f52-4ed6-8d70-70aff98bd860
+Microedition-Configuration: CLDC-1.8-Compact

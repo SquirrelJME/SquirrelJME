@@ -7,4 +7,5 @@ X-SquirrelJME-Depends: empty-collections
 X-SquirrelJME-Description: This contains basic support for the build 
  system and project manager. The interfaces declared by this class 
  must be implemented in order for the build system to be functional.
+Microedition-Configuration: CLDC-1.8-Compact
 

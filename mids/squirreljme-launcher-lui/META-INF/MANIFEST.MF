@@ -10,3 +10,4 @@ X-SquirrelJME-Error: CN
 X-SquirrelJME-UUID: 5ee74e69-0c4d-465e-acea-dc50507a1b19
 MIDlet-1: SquirrelJME Launcher (Console), , net.multiphasicapps.launcher
  .lui.MidletMain
+Microedition-Configuration: CLDC-1.8-Compact

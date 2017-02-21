@@ -10,3 +10,4 @@ X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DJ
 X-SquirrelJME-StandardLib: microedition.power;0.0.0
 X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6
+Microedition-Configuration: CLDC-1.8-Compact

@@ -8,3 +8,4 @@ X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CT
 X-SquirrelJME-StandardLib: dio.i2cbus;1.0.1
 X-SquirrelJME-UUID: 0d788331-6b08-45b6-a506-bb61efe926a9
+Microedition-Configuration: CLDC-1.8-Compact

@@ -6,4 +6,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains virtual support for unsafe 
  operations within SquirrelJME.
+Microedition-Configuration: CLDC-1.8-Compact
 

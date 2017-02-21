@@ -11,3 +11,4 @@ X-SquirrelJME-Depends: squirreljme-executable
  squirreljme-class-format data-deque-buffer sorted-collections
 X-SquirrelJME-Error: ED
 X-SquirrelJME-UUID: 73dc1d84-de7d-4548-8e66-9e83af4b9a4b
+Microedition-Configuration: CLDC-1.8-Compact

@@ -5,4 +5,5 @@ X-SquirrelJME-Error: AG
 X-SquirrelJME-Description: This contains the entry system which runs 
  on Java ME environments such as SquirrelJME. This allows for example 
  SquirrelJME to build itself.
+Microedition-Configuration: CLDC-1.8-Compact
 

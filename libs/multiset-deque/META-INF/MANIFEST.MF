@@ -8,3 +8,4 @@ X-SquirrelJME-Description: This project contains the MultiSetDeque class
  queue are unique as if they were in a set.
 X-SquirrelJME-Error: BZ
 X-SquirrelJME-UUID: 052b967b-85a8-46b6-8876-9f454ba02403
+Microedition-Configuration: CLDC-1.8-Compact

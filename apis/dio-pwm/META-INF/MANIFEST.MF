@@ -8,3 +8,4 @@ X-SquirrelJME-Depends: dio dio-gpio
 X-SquirrelJME-Error: DR
 X-SquirrelJME-StandardLib: dio.pwm;1.0.1
 X-SquirrelJME-UUID: 8e9685ee-2479-4d22-b5f7-12358d385225
+Microedition-Configuration: CLDC-1.8-Compact

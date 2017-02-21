@@ -10,3 +10,4 @@ X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DC
 X-SquirrelJME-StandardLib: microedition.rms;0.0.0
 X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
+Microedition-Configuration: CLDC-1.8-Compact

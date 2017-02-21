@@ -9,3 +9,4 @@ X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DO
 X-SquirrelJME-StandardLib: microedition.securityframework;0.0.0
 X-SquirrelJME-UUID: f0dbaace-ab99-4e1c-b967-959d8fa4b70a
+Microedition-Configuration: CLDC-1.8-Compact

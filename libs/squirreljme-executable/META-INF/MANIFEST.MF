@@ -6,4 +6,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the classes which are 
  needed by the compiler at run-time.
+Microedition-Configuration: CLDC-1.8-Compact
 

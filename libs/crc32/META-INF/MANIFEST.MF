@@ -5,4 +5,5 @@ LIBlet-Name: CRC32 Calculator
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This calculates the CRC32 of input data.
+Microedition-Configuration: CLDC-1.8-Compact
 

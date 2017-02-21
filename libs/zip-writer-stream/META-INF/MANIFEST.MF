@@ -10,3 +10,4 @@ X-SquirrelJME-Description: This allows writing of ZIP files using a
 X-SquirrelJME-Depends: zip io-data
 X-SquirrelJME-Error: BC
 X-SquirrelJME-UUID: 30adac32-ff30-41c7-8406-3e0230a22ed0
+Microedition-Configuration: CLDC-1.8-Compact

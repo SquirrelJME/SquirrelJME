@@ -7,4 +7,5 @@ LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This supports block based and random access to 
  ZIP files.
+Microedition-Configuration: CLDC-1.8-Compact
 

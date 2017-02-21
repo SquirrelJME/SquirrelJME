@@ -8,3 +8,4 @@ X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DS
 X-SquirrelJME-StandardLib: dio.generic;1.0.1
 X-SquirrelJME-UUID: 8ea65d38-ad58-4ce8-9b02-1ca66a7d8adf
+Microedition-Configuration: CLDC-1.8-Compact

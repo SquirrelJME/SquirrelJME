@@ -9,3 +9,4 @@ X-SquirrelJME-Depends: dio dio-modem
 X-SquirrelJME-Error: CZ
 X-SquirrelJME-StandardLib: dio.atcmd;1.0.1
 X-SquirrelJME-UUID: e7560687-abe6-428c-88cd-ec2ab5aa7640
+Microedition-Configuration: CLDC-1.8-Compact

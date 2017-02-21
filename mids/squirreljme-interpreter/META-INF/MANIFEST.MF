@@ -9,4 +9,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the auto interpreter which 
  bridges the project system to a virtualized interpretive environment 
  which is used to simulate various configurations of SquirrelJME.
+Microedition-Configuration: CLDC-1.8-Compact
 

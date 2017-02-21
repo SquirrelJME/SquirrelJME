@@ -9,3 +9,4 @@ X-SquirrelJME-Description: This allows reading of ZIP files which have
   do not need to be accessed through a block level access.
 X-SquirrelJME-Error: BG
 X-SquirrelJME-UUID: a57bdac6-eae3-456f-bf2b-a57caa65569d
+Microedition-Configuration: CLDC-1.8-Compact

@@ -9,4 +9,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the SquirrelJME 
  kernel which is used to forward IPC communications, manage processes, 
  manage threads, and provide access to devices.
+Microedition-Configuration: CLDC-1.8-Compact
 

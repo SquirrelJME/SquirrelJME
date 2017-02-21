@@ -8,3 +8,4 @@ X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CU
 X-SquirrelJME-StandardLib: dio.spibus;1.0.1
 X-SquirrelJME-UUID: a1890b74-ba77-4661-8e2a-020d36bfba34
+Microedition-Configuration: CLDC-1.8-Compact

@@ -8,3 +8,4 @@ X-SquirrelJME-Depends: dio dio-modem
 X-SquirrelJME-Error: CX
 X-SquirrelJME-StandardLib: dio.uart;1.0.1
 X-SquirrelJME-UUID: dc4c49eb-90b2-4845-9a87-bba0d21e2160
+Microedition-Configuration: CLDC-1.8-Compact

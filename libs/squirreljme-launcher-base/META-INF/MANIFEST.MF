@@ -7,3 +7,4 @@ X-SquirrelJME-Description: This project implements the base support
  needed for launchers to operate correctly within SquirrelJME.
 X-SquirrelJME-Error: CM
 X-SquirrelJME-UUID: 6ace2255-222e-43d6-9330-cb6918c00f8f
+Microedition-Configuration: CLDC-1.8-Compact

@@ -12,3 +12,4 @@ X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DM
 X-SquirrelJME-StandardLib: microedition.provisioning;0.0.0
 X-SquirrelJME-UUID: 98ab129b-9ad6-4546-9782-9ef69c8f237a
+Microedition-Configuration: CLDC-1.8-Compact

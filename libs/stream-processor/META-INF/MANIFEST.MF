@@ -6,4 +6,5 @@ LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This is used to process data from one source and 
  pass it to another source.
+Microedition-Configuration: CLDC-1.8-Compact
 

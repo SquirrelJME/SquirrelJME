@@ -7,4 +7,5 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the build system which is 
  used to generate target SquirrelJME binaries.
+Microedition-Configuration: CLDC-1.8-Compact
 

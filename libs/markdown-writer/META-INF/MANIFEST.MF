@@ -8,3 +8,4 @@ X-SquirrelJME-Description: This project contains a formatted markdown
  have state on which properties to apply to the output.
 X-SquirrelJME-Error: CG
 X-SquirrelJME-UUID: df4c851d-8e50-4efb-bd60-e4e8e5a2f7a3
+Microedition-Configuration: CLDC-1.8-Compact

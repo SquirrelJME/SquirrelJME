@@ -8,3 +8,4 @@ X-SquirrelJME-Description: This contains the native path manager for
 X-SquirrelJME-Depends: squirreljme-paths
 X-SquirrelJME-Error: BN
 X-SquirrelJME-UUID: 6218877d-cdac-4fce-9189-0d1fc30eaf5f
+Microedition-Configuration: CLDC-1.8-Compact

@@ -9,3 +9,4 @@ X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CV
 X-SquirrelJME-StandardLib: dio.adc;1.0.1
 X-SquirrelJME-UUID: ee88b4c5-ed8c-4465-805b-84b0ac6984f0
+Microedition-Configuration: CLDC-1.8-Compact

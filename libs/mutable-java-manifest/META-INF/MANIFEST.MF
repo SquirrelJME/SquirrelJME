@@ -7,4 +7,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: java-manifest
 X-SquirrelJME-Description: This project allows for creating standard 
  Java manifest files using a mutable class.
+Microedition-Configuration: CLDC-1.8-Compact
 

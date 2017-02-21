@@ -9,3 +9,4 @@ X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DH
 X-SquirrelJME-StandardLib: microedition.cellular;0.0.0
 X-SquirrelJME-UUID: eac4a39d-b264-44ca-9e77-38a96a6e30cc
+Microedition-Configuration: CLDC-1.8-Compact

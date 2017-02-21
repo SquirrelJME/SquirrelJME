@@ -9,3 +9,4 @@ X-SquirrelJME-Depends: sun-doclet-api sorted-collections
  unmodifiable-collections squirreljme-java-symbols
 X-SquirrelJME-Error: EN
 X-SquirrelJME-UUID: 9089b6e6-c628-4d73-ba89-661d2c8de768
+Microedition-Configuration: CLDC-1.8-Compact

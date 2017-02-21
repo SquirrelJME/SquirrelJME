@@ -8,3 +8,4 @@ X-SquirrelJME-Description: This contains parsers and handlers which are
  binarynames, identifiers, method descriptors, and field descriptors.
 X-SquirrelJME-Error: AL
 X-SquirrelJME-UUID: c51c05cc-565e-409e-b71c-642470bdf24e
+Microedition-Configuration: CLDC-1.8-Compact

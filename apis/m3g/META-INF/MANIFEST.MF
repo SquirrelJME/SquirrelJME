@@ -9,3 +9,4 @@ X-SquirrelJME-Description: This contains an implementation of the J2ME
 X-SquirrelJME-Depends: opengles
 X-SquirrelJME-Error: EK
 X-SquirrelJME-UUID: f9f9a2bc-de6e-4225-82c1-47b5b0523e77
+Microedition-Configuration: CLDC-1.8-Compact

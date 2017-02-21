@@ -7,3 +7,4 @@ X-SquirrelJME-Description: This provides sliding windows which get data
  at the end and remove data at the very start.
 X-SquirrelJME-Error: AI
 X-SquirrelJME-UUID: 4a4eac91-13ec-4385-980f-3ed23c1346bb
+Microedition-Configuration: CLDC-1.8-Compact

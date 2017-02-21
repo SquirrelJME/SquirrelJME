@@ -11,3 +11,4 @@ X-SquirrelJME-Depends: meep empty-collections
 X-SquirrelJME-Error: DG
 X-SquirrelJME-StandardLib: microedition.swm;0.0.0
 X-SquirrelJME-UUID: 30e471c6-3fd7-4c78-b97e-0d6e3af8d0e1
+Microedition-Configuration: CLDC-1.8-Compact
