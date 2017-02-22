@@ -110,7 +110,11 @@ public final class MidletDependency
 		
 		// Compare
 		MidletDependency o = (MidletDependency)__o;
-		throw new Error("TODO");
+		return this.type.equals(o.type) &&
+			this.level.equals(o.level) &&
+			Objects.equals(this.name, o.name) &&
+			Objects.equals(this.vendor, o.vendor) &&
+			Objects.equals(this.version, o.version);
 	}
 	
 	/**
@@ -120,7 +124,11 @@ public final class MidletDependency
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		return this.type.hashCode() ^
+			this.level.hashCode() ^
+			Objects.hashCode(this.name) ^
+			Objects.hashCode(this.vendor) ^
+			Objects.hashCode(this.version);
 	}
 	
 	/**
@@ -152,7 +160,28 @@ public final class MidletDependency
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// These are optional
+			MidletSuiteName name = this.name;
+			MidletSuiteVendor vendor = this.vendor;
+			MidletVersionRange version = this.version;
+			
+			// Generate
+			this._string = new WeakReference<>((rv = String.format(
+				"%s;%s;%s;%s;%s", this.type, this.level,
+				(name == null ? "" : name),
+				(vendor == null ? "" : vendor),
+				(version == null ? "" : version))));
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
