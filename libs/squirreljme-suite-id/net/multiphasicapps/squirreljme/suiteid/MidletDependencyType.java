@@ -45,7 +45,7 @@ public enum MidletDependencyType
 			case LIBLET:		return "liblet";
 			case STANDARD:		return "standard";
 			case SERVICE:		return "service";
-			case PROPRIETARY:	return "propprietary";
+			case PROPRIETARY:	return "proprietary";
 			default:
 				throw new RuntimeException("OOPS");
 		}
