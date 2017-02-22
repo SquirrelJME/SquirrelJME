@@ -36,6 +36,9 @@ public final class MidletSuiteName
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// Trim whitespace
+		__v = __v.trim();
+		
 		// Go through all characters
 		int n = __v.length();
 		for (int i = 0; i < n; i++)

@@ -254,6 +254,9 @@ public final class MidletVersion
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// Trim whitespace
+		__v = __v.trim();
+		
 		// Output array
 		int[] rv = new int[3];
 		
