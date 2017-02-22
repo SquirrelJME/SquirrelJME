@@ -158,7 +158,7 @@ public final class MidletDependency
 		MidletVersionRange version = this.version;
 		return Objects.equals(this.name, __n) &&
 			Objects.equals(this.vendor, __e) &&
-			(__v != null ? version.inRange(__v) :
+			(version != null && __v != null ? version.inRange(__v) :
 				(version == null) == (__v == null));
 	}
 	
