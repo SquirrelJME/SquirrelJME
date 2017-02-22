@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
 
 /**
  * This class represents the base for projects. A project may be an API, a
@@ -248,6 +249,21 @@ public final class Project
 	public int hashCode()
 	{
 		return this.name.hashCode();
+	}
+	
+	/**
+	 * Checks whether this given project is of the given dependency.
+	 *
+	 * @param __d The dependency to check.
+	 * @return {@code true} if this project is the given dependency.
+	 * @throws NullPointerException On null arguments
+	 * @since 2017/02/22
+	 */
+	public final boolean isDependency(MidletDependency __d)
+		throws NullPointerException
+	{
+		// Use the most up to date project
+		return __mostUpToDate().isDependency(__d);
 	}
 	
 	/**

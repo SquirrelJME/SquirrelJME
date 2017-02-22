@@ -28,6 +28,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
+import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -219,6 +220,24 @@ public abstract class ProjectBase
 	}
 	
 	/**
+	 * Checks whether this given project is of the given dependency.
+	 *
+	 * @param __d The dependency to check.
+	 * @return {@code true} if this project is the given dependency.
+	 * @throws NullPointerException On null arguments
+	 * @since 2017/02/22
+	 */
+	public final boolean isDependency(MidletDependency __d)
+		throws NullPointerException
+	{
+		// Check
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the name of this project.
 	 *
 	 * @return The project name.
@@ -313,7 +332,7 @@ public abstract class ProjectBase
 	 * @throws InvalidProjectException If the service identifier is not valid.
 	 * @since 2017/02/22
 	 */
-	public ServiceSuiteID serviceId()
+	public final ServiceSuiteID serviceId()
 		throws InvalidProjectException
 	{
 		// Must be an API

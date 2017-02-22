@@ -111,7 +111,13 @@ public abstract class ProjectBinary
 					name()), e);
 			}
 			
-			throw new Error("TODO");
+			// Go through projects and use the first matching dependency
+			for (Project p : projectManager())
+				if (p.isDependency(md))
+				{
+					__out.add(p);
+					break;
+				}
 		}
 	}
 	
