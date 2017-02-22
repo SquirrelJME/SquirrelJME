@@ -39,6 +39,7 @@ import net.multiphasicapps.squirreljme.java.manifest.mutable.
 import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifestAttributes;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
 import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
@@ -242,29 +243,29 @@ public abstract class ProjectSource
 			
 			// {@squirreljme.error AT0r This project is missing the project
 			// name key. (The name of this project)}
-			String name = attr.get(_SOURCE_NAME_KEY)
+			String name = attr.get(_SOURCE_NAME_KEY);
 			if (name == null)
 				throw new InvalidProjectException(String.format("AT0r %s",
-					this.name));
+					name()));
 			
 			// {@squirreljme.error AT0s This project is missing the project
 			// vendor key. (The name of this project)}
-			String vendor = attr.get(_SOURCE_VENDOR_KEY)
+			String vendor = attr.get(_SOURCE_VENDOR_KEY);
 			if (vendor == null)
 				throw new InvalidProjectException(String.format("AT0s %s",
-					this.name));
+					name()));
 			
 			// {@squirreljme.error AT0t This project is missing the project
 			// version key. (The name of this project)}
-			String version = attr.get(_SOURCE_VERSION_KEY)
+			String version = attr.get(_SOURCE_VERSION_KEY);
 			if (version == null)
 				throw new InvalidProjectException(String.format("AT0t %s",
-					this.name));
+					name()));
 			
 			// Generate
 			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
 				new MidletSuiteName(name), new MidletSuiteVendor(vendor),
-				new MidletSuiteVersion(version))));
+				new MidletVersion(version))));
 		}
 		
 		return rv;

@@ -22,6 +22,9 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 
 /**
  * This represents the base for a binary project which is a compiled form
@@ -34,6 +37,9 @@ public abstract class ProjectBinary
 {
 	/** The manifest for this binary. */
 	private volatile Reference<JavaManifest> _manifest;
+	
+	/** The suite identifier. */
+	private volatile Reference<MidletSuiteID> _suiteid;
 	
 	/**
 	 * Initializes the project binary.
