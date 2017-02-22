@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
 import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
+import net.multiphasicapps.squirreljme.suiteid.MidletDependencyType;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -234,16 +235,33 @@ public abstract class ProjectBase
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// We are an API
+		// Nothing may ever depend on a midlet
 		NamespaceType nstype = type();
+		if (nstype == NamespaceType.MIDLET)
+			return false;
+		
+		// Services may be used by either APIs or LIBlets
+		MidletDependencyType deptype = __d.type();
+		if (deptype == MidletDependencyType.SERVICE)
+			throw new Error("TODO");
+		
+		// Standards are only valid on APIs
 		if (nstype == NamespaceType.API)
 		{
+			// Only depend on standards
+			if (deptype != MidletDependencyType.STANDARD)
+				return false;
+			
 			throw new Error("TODO");
 		}
 		
-		// Midlet or Liblet
+		// Otherwise, everything else can rely on liblets
 		else
 		{
+			// Only depend on liblets
+			if (deptype != MidletDependencyType.LIBLET)
+				return false;
+			
 			throw new Error("TODO");
 		}
 	}
