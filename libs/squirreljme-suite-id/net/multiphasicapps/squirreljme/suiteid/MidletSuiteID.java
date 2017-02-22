@@ -40,6 +40,22 @@ public final class MidletSuiteID
 	/**
 	 * Initializes the suite identifier.
 	 *
+	 * @param __name The name of the suite.
+	 * @param __vendor The vendor of the suite.
+	 * @param __ver The version of the suite.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/22
+	 */
+	public MidletSuiteID(MidletSuiteName __name, MidletSuiteVendor __ven,
+		MidletVersion __ver)
+		throws NullPointerException
+	{
+		this(__ven, __name, __ver);
+	}
+	
+	/**
+	 * Initializes the suite identifier.
+	 *
 	 * @param __vendor The vendor of the suite.
 	 * @param __name The name of the suite.
 	 * @param __ver The version of the suite.

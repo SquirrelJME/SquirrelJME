@@ -60,11 +60,26 @@ public abstract class ProjectSource
 	private static final JavaManifestKey _DEPENDS_PROPERTY =
 		new JavaManifestKey("X-SquirrelJME-Depends");
 	
+	/** Name of the project. */
+	static final JavaManifestKey _SOURCE_NAME_KEY =
+		new JavaManifestKey("X-SquirrelJME-Name");
+	
+	/** Vendor of the project. */
+	static final JavaManifestKey _SOURCE_VENDOR_KEY =
+		new JavaManifestKey("X-SquirrelJME-Vendor");
+	
+	/** Version of the project. */
+	static final JavaManifestKey _SOURCE_VERSION_KEY =
+		new JavaManifestKey("X-SquirrelJME-Version");
+	
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
 	
 	/** Dependencies of this project. */
 	private volatile Reference<Set<Project>> _depends;
+	
+	/** The suite identifier. */
+	private volatile Reference<MidletSuiteID> _suiteid;
 	
 	/**
 	 * Initializes the source representation.
@@ -216,7 +231,43 @@ public abstract class ProjectSource
 	public MidletSuiteID suiteId()
 		throws InvalidProjectException
 	{
-		throw new Error("TODO");
+		Reference<MidletSuiteID> ref = this._suiteid;
+		MidletSuiteID rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			JavaManifest man = manifest();
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			// {@squirreljme.error AT0r This project is missing the project
+			// name key. (The name of this project)}
+			String name = attr.get(_SOURCE_NAME_KEY)
+			if (name == null)
+				throw new InvalidProjectException(String.format("AT0r %s",
+					this.name));
+			
+			// {@squirreljme.error AT0s This project is missing the project
+			// vendor key. (The name of this project)}
+			String vendor = attr.get(_SOURCE_VENDOR_KEY)
+			if (vendor == null)
+				throw new InvalidProjectException(String.format("AT0s %s",
+					this.name));
+			
+			// {@squirreljme.error AT0t This project is missing the project
+			// version key. (The name of this project)}
+			String version = attr.get(_SOURCE_VERSION_KEY)
+			if (version == null)
+				throw new InvalidProjectException(String.format("AT0t %s",
+					this.name));
+			
+			// Generate
+			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
+				new MidletSuiteName(name), new MidletSuiteVendor(vendor),
+				new MidletSuiteVersion(version))));
+		}
+		
+		return rv;
 	}
 	
 	/**
