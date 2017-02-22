@@ -17,7 +17,6 @@ import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
-import net.multiphasicapps.squirrelquarrel.lcdui.MainMidlet;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -151,13 +150,6 @@ public class BuildSystem
 				}
 				break;
 				
-				// Run Squirrel Quarrel
-			case "sq":
-			case "squirrelquarrel":
-			case "squirrel-quarrel":
-				new MainMidlet();
-				break;
-			
 				// {@squirreljme.error AO02 An unknown command was specified.
 				// Check the description for error code AO01 to see which
 				// commands are valid. (The command)}
