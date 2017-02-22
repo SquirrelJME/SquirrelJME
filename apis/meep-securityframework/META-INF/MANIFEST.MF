@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This is used to control and potentially grant
   or deny access to specific features that applicationsmay use.
 X-SquirrelJME-Error: DO
-X-SquirrelJME-StandardLib: microedition.securityframework;0.0.0
+X-SquirrelJME-Standard: microedition.securityframework;;
 X-SquirrelJME-UUID: f0dbaace-ab99-4e1c-b967-959d8fa4b70a
 Microedition-Configuration: CLDC-1.8-Compact

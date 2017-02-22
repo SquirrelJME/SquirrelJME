@@ -9,6 +9,6 @@ X-SquirrelJME-Description: This contains the standard MIDP LCD User
  much more capable graphical system.
 X-SquirrelJME-Depends: meep-midlet gcf
 X-SquirrelJME-Error: EB
-X-SquirrelJME-StandardLib: microedition.lcdui;0.0.0
+X-SquirrelJME-Standard: microedition.lcdui;;
 X-SquirrelJME-UUID: bdd52a0a-1d53-4d80-b54d-6ab5316603f9
 Microedition-Configuration: CLDC-1.8-Compact

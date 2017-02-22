@@ -9,6 +9,6 @@ X-SquirrelJME-Description: This contains the application management
  which may have been sourced from other locations.
 X-SquirrelJME-Depends: empty-collections
 X-SquirrelJME-Error: DG
-X-SquirrelJME-StandardLib: microedition.swm;0.0.0
+X-SquirrelJME-Standard: microedition.swm;;
 X-SquirrelJME-UUID: 30e471c6-3fd7-4c78-b97e-0d6e3af8d0e1
 Microedition-Configuration: CLDC-1.8-Compact

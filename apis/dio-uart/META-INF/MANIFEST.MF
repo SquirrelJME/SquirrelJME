@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to serial UARTs.
 X-SquirrelJME-Depends: dio dio-modem
 X-SquirrelJME-Error: CX
-X-SquirrelJME-StandardLib: dio.uart;1.0.1
+X-SquirrelJME-Standard: dio.uart;;1.0.1
 X-SquirrelJME-UUID: dc4c49eb-90b2-4845-9a87-bba0d21e2160
 Microedition-Configuration: CLDC-1.8-Compact

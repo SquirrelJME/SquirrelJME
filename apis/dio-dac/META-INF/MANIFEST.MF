@@ -7,6 +7,6 @@ X-SquirrelJME-Description: This provides access to digital to analog con
  verters.
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CW
-X-SquirrelJME-StandardLib: dio.dac;1.0.1
+X-SquirrelJME-Standard: dio.dac;;1.0.1
 X-SquirrelJME-UUID: d5bbdfa5-192a-4921-b48a-08ecc15e8499
 Microedition-Configuration: CLDC-1.8

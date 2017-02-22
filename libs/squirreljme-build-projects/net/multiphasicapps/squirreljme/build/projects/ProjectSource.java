@@ -39,6 +39,9 @@ import net.multiphasicapps.squirreljme.java.manifest.mutable.
 import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifestAttributes;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
+import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
 import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -348,45 +351,65 @@ public abstract class ProjectSource
 		MutableJavaManifest man = new MutableJavaManifest(manifest());
 		MutableJavaManifestAttributes attr = man.getMainAttributes();
 		
-		// Write the API implementation details, this is used by SquirrelJME
+		// Write midlet details
 		boolean midlet = (type() == NamespaceType.MIDLET);
-		if (type() == NamespaceType.API)
+		if (type() != NamespaceType.API)
 		{
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		// Otherwise write liblet or liblet details
-		else
-		{
-			if (true)
-				throw new Error("TODO");
+			// Just check if it has the given key
+			if (midlet)
+			{
+				// {@squirreljme.error AT0q The MIDlet is missing the required
+				// {@code MIDlet-1} property.}
+				if (null == attr.get(_FIRST_MIDLET))
+					throw new IOException("AT0q");
+			}
+			
+			// Write the name, vendor, and version
+			MidletSuiteID msid = suiteId();
+			attr.put((midlet ? _MIDLET_NAME : _LIBLET_NAME),
+				msid.name().toString());
+			attr.put((midlet ? _MIDLET_VENDOR : _LIBLET_VENDOR),
+				msid.vendor().toString());
+			attr.put((midlet ? _MIDLET_VERSION : _LIBLET_VERSION),
+				msid.version().toString());
 		}
 		
 		// Go through dependencies and generate liblet/midlet dependencies
-		int count = 1;
+		int depcount = 1;
 		for (ProjectBinary bp : __deps)
 		{
-			// Build target key for value placement
-			JavaManifestKey key = new JavaManifestKey(
-				String.format("%s-Dependency-%d",
-				(midlet ? "MIDlet" : "LIBlet"), count++));
 			String value;
 			
 			// Depends on an API, refer to it by its special API identifier
 			// if applicable since it does not exist as a liblet
 			if (bp.type() == NamespaceType.API)
-				throw new Error("TODO");
+			{
+				// This might be an API but there might not be any service to
+				// implement so ignore it
+				ServiceSuiteID ssid = bp.serviceId();
+				if (ssid == null)
+					continue;
+				
+				// Format service
+				MidletSuiteVendor ven = ssid.vendor();
+				MidletVersion ver = ssid.version();
+				value = String.format("service;required;%s;%s;%s%s",
+					ssid.name(), (ven != null ? ven : ""),
+					(ver != null ? ver : ""), (ver != null ? "+" : ""));
+			}
 			
 			// Depends on a liblet
 			else
 			{
 				MidletSuiteID msid = bp.suiteId();
-				value = String.format("liblet;required;%s;%s;%s",
+				value = String.format("liblet;required;%s;%s;%s+",
 					msid.name(), msid.vendor(), msid.version());
 			}
 			
-			// Write value
+			// Build target key for value placement then write value
+			JavaManifestKey key = new JavaManifestKey(
+				String.format("%s-Dependency-%d",
+				(midlet ? "MIDlet" : "LIBlet"), depcount++));
 			attr.put(key, value);
 		}
 		

@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to the watchdog.
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DP
-X-SquirrelJME-StandardLib: dio.watchdog;1.0.1
+X-SquirrelJME-Standard: dio.watchdog;;1.0.1
 X-SquirrelJME-UUID: 0b4cb53e-3479-4133-b6f3-9de977c1e8db
 Microedition-Configuration: CLDC-1.8

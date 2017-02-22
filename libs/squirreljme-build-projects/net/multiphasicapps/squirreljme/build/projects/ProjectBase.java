@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -54,6 +55,38 @@ public abstract class ProjectBase
 	static final JavaManifestKey _NO_DEPENDS_CONFIGURATION_KEY =
 		new JavaManifestKey("X-SquirrelJME-NoDependsConfiguration");
 	
+	/** Standard supported. */
+	static final JavaManifestKey _STANDARD_KEY =
+		new JavaManifestKey("X-SquirrelJME-Standard");
+	
+	/** The first MIDlet key. */
+	static final JavaManifestKey _FIRST_MIDLET =
+		new JavaManifestKey("MIDlet-1");
+	
+	/** Liblet name. */
+	static final JavaManifestKey _LIBLET_NAME =
+		new JavaManifestKey("LIBlet-Name");
+	
+	/** Liblet vendor. */
+	static final JavaManifestKey _LIBLET_VENDOR =
+		new JavaManifestKey("LIBlet-Vendor");
+	
+	/** Liblet version. */
+	static final JavaManifestKey _LIBLET_VERSION =
+		new JavaManifestKey("LIBlet-Version");
+	
+	/** Midlet name. */
+	static final JavaManifestKey _MIDLET_NAME =
+		new JavaManifestKey("MIDlet-Name");
+	
+	/** Midlet vendor. */
+	static final JavaManifestKey _MIDLET_VENDOR =
+		new JavaManifestKey("MIDlet-Vendor");
+	
+	/** Midlet version. */
+	static final JavaManifestKey _MIDLET_VERSION =
+		new JavaManifestKey("MIDlet-Version");
+	
 	/** The earliest date. */
 	private static final FileTime _EARLIEST_DATE =
 		FileTime.fromMillis(Long.MIN_VALUE);
@@ -70,6 +103,9 @@ public abstract class ProjectBase
 	
 	/** Supported configurations. */
 	private volatile Reference<Collection<APIConfiguration>> _configs;
+	
+	/** The service ID. */
+	private volatile Reference<ServiceSuiteID> _serviceid;
 	
 	/**
 	 * Initializes the source representation.
@@ -267,6 +303,54 @@ public abstract class ProjectBase
 	public final ProjectManager projectManager()
 	{
 		return this.project.projectManager();
+	}
+	
+	/**
+	 * This returns the service ID of this project, this is optional and is
+	 * only valid for APIs.
+	 *
+	 * @return The service identifier or {@code null} if it is not specified.
+	 * @throws InvalidProjectException If the service identifier is not valid.
+	 * @since 2017/02/22
+	 */
+	public ServiceSuiteID serviceId()
+		throws InvalidProjectException
+	{
+		// Must be an API
+		if (type() != NamespaceType.API)
+			return null;
+		
+		Reference<ServiceSuiteID> ref = this._serviceid;
+		ServiceSuiteID rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Get the manifest
+			JavaManifest man = manifest();
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			// Needs to have the standard field
+			String val = attr.get(_STANDARD_KEY);
+			if (val == null)
+				return null;
+			
+			// Parse it
+			try
+			{
+				this._serviceid = new WeakReference<>(
+					(rv = new ServiceSuiteID(val)));
+			}
+			
+			// {@squirreljme.error AT0p Could not parse the supplied service
+			// identifier field.}
+			catch (IllegalArgumentException e)
+			{
+				throw new InvalidProjectException("AT0p", e);
+			}
+		}
+		
+		return rv;
 	}
 	
 	/**

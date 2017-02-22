@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to hardware counters.
 X-SquirrelJME-Depends: dio dio-gpio
 X-SquirrelJME-Error: DQ
-X-SquirrelJME-StandardLib: dio.counter;1.0.1
+X-SquirrelJME-Standard: dio.counter;;1.0.1
 X-SquirrelJME-UUID: be0423c3-2f29-4dec-abf1-d6385cdfd723
 Microedition-Configuration: CLDC-1.8-Compact
