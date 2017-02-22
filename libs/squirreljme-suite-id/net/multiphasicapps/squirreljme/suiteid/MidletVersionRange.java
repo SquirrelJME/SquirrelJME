@@ -77,7 +77,89 @@ public final class MidletVersionRange
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Trim
+		__s = __s.trim();
+		
+		// {@squirreljme.error CC0f The version range cannot be blank.}
+		int sl = __s.length();
+		if (sl <= 0)
+			throw new IllegalArgumentException("CC0f");
+		
+		// Get the last character
+		char lc = __s.charAt(__s.length() - 1);
+		
+		// All versions following this.
+		if (lc == '+')
+		{
+			this.from = new MidletVersion(__s.substring(0, sl - 1));
+			this.to = new MidletVersion(99, 99, 99);
+		}
+		
+		// All versions in the group
+		else if (lc == '*')
+		{
+			// Get the last dot, if any
+			int ld = __s.lastIndexOf('.');
+			if (ld < 0)
+			{
+				// Any version, does not matter
+				if (sl == 1)
+				{
+					this.from = new MidletVersion(0);
+					this.to = new MidletVersion(99, 99, 99);
+				}
+				
+				// {@squirreljme.error CC0g Major only wildcard versions must
+				// be a single asterisk. (The input string)}
+				else
+					throw new IllegalArgumentException(String.format("CC0g %s",
+						__s));
+			}
+			
+			// Parse otherwise, just count the number of dots to determine
+			// how deep it goes
+			else
+			{
+				// {@squirreljme.error CC0h The last dot in a wildcard must be
+				// before the asterisk. (The input string)}
+				if (ld != sl - 1)
+					throw new IllegalArgumentException(String.format("CC0h %s",
+						__s));
+				
+				// Source range is simple
+				MidletVersion ver = new MidletVersion(
+					__s.substring(0, sl - 2));
+				this.from = ver;
+				
+				// Count dots, determines major/minor
+				int numdots = 0;
+				for (int i = 0; i < sl; i++)
+					if (__s.charAt(i) == '.')
+						numdots++;
+				
+				// minor and release wildcard
+				if (numdots == 1)
+					this.to = new MidletVersion(ver.major(), 99, 99);
+				
+				// release ranged wildcard
+				else if (numdots == 2)
+					this.to = new MidletVersion(ver.major(), ver.minor(), 99);
+				
+				// {@squirreljme.error CC0i There are too many decimal points
+				// in the wildcard version string. (The input string)}
+				else
+					throw new IllegalArgumentException(String.format("CC0i %s",
+						__s));
+			}
+		}
+		
+		// Only this version
+		else
+		{
+			MidletVersion ver = new MidletVersion(__s);
+			this.from = ver;
+			this.to = ver;
+		}
 	}
 	
 	/**

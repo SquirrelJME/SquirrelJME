@@ -219,6 +219,39 @@ public final class MidletVersion
 	}
 	
 	/**
+	 * Returns the major version.
+	 *
+	 * @return The major version.
+	 * @since 2017/02/22
+	 */
+	public int major()
+	{
+		return this.major;
+	}
+	
+	/**
+	 * Returns the minor version.
+	 *
+	 * @return The minor version.
+	 * @since 2017/02/22
+	 */
+	public int minor()
+	{
+		return this.minor;
+	}
+	
+	/**
+	 * Returns the release version.
+	 *
+	 * @return The release version.
+	 * @since 2017/02/22
+	 */
+	public int release()
+	{
+		return this.release;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/10/12
 	 */
