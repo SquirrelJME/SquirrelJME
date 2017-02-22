@@ -123,10 +123,10 @@ public abstract class ProjectBinary
 				}
 			
 			// {@squirreljme.error AT0y A required dependency was not found.
-			// (The project name)}
+			// (The project name; The dependency)}
 			if (!found && md.level() != MidletDependencyLevel.OPTIONAL)
-				throw new InvalidProjectException(String.format("AT0y %s",
-					name()));
+				throw new InvalidProjectException(String.format("AT0y %s %s",
+					name(), md));
 		}
 	}
 	

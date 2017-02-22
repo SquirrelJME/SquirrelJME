@@ -236,7 +236,85 @@ public final class MidletVersionRange
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Slowly build version
+			StringBuilder sb = new StringBuilder();
+			MidletVersion from = this.from;
+			MidletVersion to = this.to;
+			
+			// Start with major
+			int a = from.major(),
+				b = to.major();
+			if (a == 0 && b == 99)
+				sb.append("*");
+			
+			// Plus
+			else if (a < 99 && b == 99)
+			{
+				sb.append(a);
+				sb.append('+');
+			}
+			
+			// Not wildcard
+			else
+			{
+				// Add
+				sb.append(a);
+				sb.append('.');
+				
+				// Get minor range
+				a = from.minor();
+				b = to.minor();
+				
+				// Wildcard
+				if (a == 0 && b == 99)
+					sb.append("*");
+				
+				// Plus
+				else if (a < 99 && b == 99)
+				{
+					sb.append(a);
+					sb.append('+');
+				}
+				
+				// Release range
+				else
+				{
+					sb.append(a);
+					sb.append('.');
+					
+					// Get range
+					a = from.release();
+					b = to.release();
+					
+					// Wildcard?
+					if (a == 0 && b == 0)
+						sb.append("*");
+					
+					// Plus
+					else if (a < 99 && b == 99)
+					{
+						sb.append(a);
+						sb.append('+');
+					}
+					
+					// Fixed
+					else
+						sb.append(a);
+				}
+			}
+			
+			// Store
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 }
 

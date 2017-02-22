@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: f30e359c-bc12-4452-8fc0-b4ddc565ef2c
 X-SquirrelJME-Error: CP
-LIBlet-Name: CRC32 Calculator
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 0.0.2
-LIBlet-Description: This calculates the CRC32 of input data.
+X-SquirrelJME-Name: CRC32 Calculator
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This calculates the CRC32 of input data.
 Microedition-Configuration: CLDC-1.8-Compact
 
