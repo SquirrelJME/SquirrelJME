@@ -87,10 +87,10 @@ public final class MidletSuiteVendor
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof MidletSuiteName))
+		if (!(__o instanceof MidletSuiteVendor))
 			return false;
 		
-		return this.string.equals(((MidletSuiteName)__o).string);
+		return this.string.equals(((MidletSuiteVendor)__o).string);
 	}
 	
 	/**
