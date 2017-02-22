@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the base support for the line 
  based interface.
-X-SquirrelJME-Depends: meep meep-key empty-collections gcf
+X-SquirrelJME-Depends: meep-key empty-collections gcf
 X-SquirrelJME-Error: DA
 X-SquirrelJME-StandardLib: microedition.lui;0.0.0
 X-SquirrelJME-UUID: 67a3561d-4c0d-495e-b4b6-6ec07a9ed71b
