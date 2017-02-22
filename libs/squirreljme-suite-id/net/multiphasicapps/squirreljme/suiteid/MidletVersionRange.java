@@ -248,66 +248,49 @@ public final class MidletVersionRange
 			MidletVersion from = this.from;
 			MidletVersion to = this.to;
 			
-			// Start with major
-			int a = from.major(),
-				b = to.major();
-			if (a == 0 && b == 99)
-				sb.append("*");
+			// Get all values
+			int amaj = from.major(),
+				amin = from.minor(),
+				arel = from.release(),
+				bmaj = to.major(),
+				bmin = to.minor(),
+				brel = to.release();
 			
-			// Plus
-			else if (a < 99 && b == 99)
-			{
-				sb.append(a);
-				sb.append('+');
-			}
+			// Pure wildcard
+			if (amaj == 0 && amin == 0 && arel == 0 &&
+				bmaj == 99 && bmin == 99 && brel == 99)
+				sb.append('*');
 			
-			// Not wildcard
+			// Exact, subwildcard, or any following
 			else
 			{
-				// Add
-				sb.append(a);
+				// Add major version
+				sb.append(amaj);
 				sb.append('.');
 				
-				// Get minor range
-				a = from.minor();
-				b = to.minor();
+				// Wild card minor and release
+				if (amin == 0 && arel == 0 && bmin == 99 && brel == 99)
+					sb.append('*');
 				
-				// Wildcard
-				if (a == 0 && b == 99)
-					sb.append("*");
-				
-				// Plus
-				else if (a < 99 && b == 99)
-				{
-					sb.append(a);
-					sb.append('+');
-				}
-				
-				// Release range
+				// Not wild
 				else
 				{
-					sb.append(a);
+					// Add version
+					sb.append(amin);
 					sb.append('.');
 					
-					// Get range
-					a = from.release();
-					b = to.release();
+					// Wild card release
+					if (arel == 0 && brel == 99)
+						sb.append('*');
 					
-					// Wildcard?
-					if (a == 0 && b == 0)
-						sb.append("*");
-					
-					// Plus
-					else if (a < 99 && b == 99)
-					{
-						sb.append(a);
-						sb.append('+');
-					}
-					
-					// Fixed
+					// Would be exact (or plus)
 					else
-						sb.append(a);
+						sb.append(arel);
 				}
+			
+				// Will be all versions following
+				if (bmaj == 99 && bmin == 99 && brel == 99)
+					sb.append('+');
 			}
 			
 			// Store
