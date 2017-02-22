@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
@@ -94,6 +95,21 @@ public abstract class ProjectBinary
 				"%s-Dependency-%d", (midlet ? "MIDlet" : "LIBlet"), count)));
 			if (val == null)
 				break;
+			
+			// Parse it
+			MidletDependency md;
+			try
+			{
+				md = new MidletDependency(val);
+			}
+			
+			// {@squirreljme.error AT0x The dependency field for the given
+			// midlet or liblet is not valid. (The name of this project)}
+			catch (IllegalArgumentException e)
+			{
+				throw new InvalidProjectException(String.format("AT0x %s",
+					name()), e);
+			}
 			
 			throw new Error("TODO");
 		}
