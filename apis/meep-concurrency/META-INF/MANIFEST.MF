@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
-X-SquirrelJME-Title: MEEP Concurrency
+X-SquirrelJME-Name: MEEP Concurrency
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: The concurrency APIs allows multiple 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
-X-SquirrelJME-Title: Extra IO Regions
+X-SquirrelJME-Name: Extra IO Regions
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains input stream region limits and 

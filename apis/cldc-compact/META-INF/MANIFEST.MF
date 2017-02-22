@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: a41e003e-598d-4ba0-a935-33b2cf30d9cb
 X-SquirrelJME-Error: ZZ
-X-SquirrelJME-Title: Connection Limited Device Configuration (Compact)
+X-SquirrelJME-Name: Connection Limited Device Configuration (Compact)
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 1.8
 X-SquirrelJME-Description: This is the standard JavaME 8 Connection 

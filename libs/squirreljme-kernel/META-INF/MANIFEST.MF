@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 557bff19-c91d-4344-a05f-16e87a837dd6
 X-SquirrelJME-Depends: java-manifest squirreljme-suite-id 
  squirreljme-constants squirreljme-executable
 X-SquirrelJME-Error: BH
-X-SquirrelJME-Title: SquirrelJME Kernel
+X-SquirrelJME-Name: SquirrelJME Kernel
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the SquirrelJME 

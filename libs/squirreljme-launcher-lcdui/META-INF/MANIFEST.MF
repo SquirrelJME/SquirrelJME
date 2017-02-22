@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
-X-SquirrelJME-Title: SquirrelJME Launcher (Graphical)
+X-SquirrelJME-Name: SquirrelJME Launcher (Graphical)
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the graphical launcher 
