@@ -86,15 +86,26 @@ public final class MidletDependency
 			inversion = __s.substring(sc[3] + 1).trim();
 		
 		// Required fields
-		this.type = MidletDependencyType.of(intype);
+		MidletDependencyType type;
+		this.type = (type = MidletDependencyType.of(intype));
 		this.level = MidletDependencyLevel.of(inlevel);
 		
 		// Optional fields
-		this.name = (inname.isEmpty() ? null : new MidletSuiteName(inname));
-		this.vendor = (invendor.isEmpty() ? null :
-			new MidletSuiteVendor(invendor));
-		this.version = (inversion.isEmpty() ? null :
-			new MidletVersionRange(inversion));
+		MidletSuiteName name;
+		MidletSuiteVendor vendor;
+		MidletVersionRange version;
+		this.name = (name = (inname.isEmpty() ? null :
+			new MidletSuiteName(inname)));
+		this.vendor = (vendor = (invendor.isEmpty() ? null :
+			new MidletSuiteVendor(invendor)));
+		this.version = (version = (inversion.isEmpty() ? null :
+			new MidletVersionRange(inversion)));
+		
+		// {@squirreljme.error CC0j Dependencies on LIBlets must have the
+		// name, vendor, and version set. (The input string)}
+		if (type == MidletDependencyType.LIBLET && (name == null ||
+			vendor == null || version == null))
+			throw new IllegalArgumentException(String.format("CC0j %s", __s));
 	}
 	
 	/**
@@ -129,6 +140,26 @@ public final class MidletDependency
 			Objects.hashCode(this.name) ^
 			Objects.hashCode(this.vendor) ^
 			Objects.hashCode(this.version);
+	}
+	
+	/**
+	 * Checks if this dependency matches the specified name, vendor, and
+	 * version.
+	 *
+	 * @param __n The name.
+	 * @param __e The vendor.
+	 * @param __v The version.
+	 * @return {@code true} if the details match for a library.
+	 * @since 2017/02/22
+	 */
+	public boolean isCompatible(MidletSuiteName __n, MidletSuiteVendor __e,
+		MidletVersion __v)
+	{
+		MidletVersionRange version = this.version;
+		return Objects.equals(this.name, __n) &&
+			Objects.equals(this.vendor, __e) &&
+			(__v != null ? version.inRange(__v) :
+				(version == null) == (__v == null));
 	}
 	
 	/**

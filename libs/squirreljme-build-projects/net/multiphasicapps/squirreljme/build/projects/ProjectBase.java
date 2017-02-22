@@ -262,7 +262,9 @@ public abstract class ProjectBase
 			if (deptype != MidletDependencyType.LIBLET)
 				return false;
 			
-			throw new Error("TODO");
+			// Check
+			MidletSuiteID s = suiteId();
+			return __d.isCompatible(s.name(), s.vendor(), s.version());
 		}
 	}
 	
