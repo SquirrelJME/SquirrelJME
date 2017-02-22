@@ -445,7 +445,7 @@ public abstract class ProjectSource
 				// Format service
 				MidletSuiteVendor ven = ssid.vendor();
 				MidletVersion ver = ssid.version();
-				value = String.format("service;required;%s;%s;%s%s",
+				value = String.format("standard;required;%s;%s;%s%s",
 					ssid.name(), (ven != null ? ven : ""),
 					(ver != null ? ver : ""), (ver != null ? "+" : ""));
 			}

@@ -243,7 +243,10 @@ public abstract class ProjectBase
 		// Services may be used by either APIs or LIBlets
 		MidletDependencyType deptype = __d.type();
 		if (deptype == MidletDependencyType.SERVICE)
+		{
+			System.err.printf("DEBUG -- Service Check: %s%n", __d);
 			throw new Error("TODO");
+		}
 		
 		// Standards are only valid on APIs
 		if (nstype == NamespaceType.API)
