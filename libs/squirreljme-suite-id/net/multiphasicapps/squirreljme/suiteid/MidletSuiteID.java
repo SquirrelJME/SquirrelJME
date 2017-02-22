@@ -31,11 +31,14 @@ public final class MidletSuiteID
 	/** The suite version. */
 	protected final MidletVersion version;
 	
-	/** The string representation. */
-	private volatile Reference<String> _string;
+	/** The string representation for JARs. */
+	private volatile Reference<String> _jar;
 	
 	/** The string representation used by the IMC Connection. */
 	private volatile Reference<String> _imc;
+	
+	/** String representation for dependencies. */
+	private volatile Reference<String> _dep;
 	
 	/**
 	 * Initializes the suite identifier.
@@ -77,39 +80,23 @@ public final class MidletSuiteID
 	}
 	
 	/**
-	 * Decodes a midlet suite ID, a reverse operation to the
-	 * {@link #toString()} method.
-	 * 
-	 * @param __s The string to decode.
-	 * @throws IllegalArgumentException If the string is malformed.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/10/13
-	 */
-	public MidletSuiteID(String __s)
-		throws IllegalArgumentException, NullPointerException
-	{
-		this(__s, false);
-	}
-	
-	/**
 	 * Initializes the suite identifier from the specified string.
 	 *
 	 * @param __s The string to decode.
-	 * @param __imc If {@code true} then the identifier is parsed as if it were
-	 * part of an IMC address, otherwise it is read as if it were a JAR.
+	 * @param __f The format of the suite identifier.
 	 * @throws IllegalArgumentException If the string is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	public MidletSuiteID(String __s, boolean __imc)
+	public MidletSuiteID(String __s, MidletSuiteIDFormat __f)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__s == null)
+		if (__s == null || __f == null)
 			throw new NullPointerException("NARG");
 		
 		// Separator char depends
-		char sep = (__imc ? ':' : ';');
+		char sep = (__f == MidletSuiteIDFormat.IMC ? ':' : ';');
 		
 		// {@squirreljme.error CC06 Expected a separator to appear in the
 		// specified string. (The input string; The separator)}
@@ -125,9 +112,24 @@ public final class MidletSuiteID
 			throw new IllegalArgumentException(String.format("CC07 %s %c",
 				__s, sep));
 		
-		// Split and parse
-		this.vendor = new MidletSuiteVendor(__s.substring(0, cola));
-		this.name = new MidletSuiteName(__s.substring(cola + 1, colb));
+		// Depending on the format, the fields may be in a separate order
+		// Dependencies have the name first
+		String a = __s.substring(0, cola),
+			b = __s.substring(cola + 1, colb);
+		if (__f == MidletSuiteIDFormat.DEPENDENCY)
+		{
+			this.vendor = new MidletSuiteVendor(b);
+			this.name = new MidletSuiteName(a);
+		}
+		
+		// Everything else has the vendor first
+		else
+		{
+			this.vendor = new MidletSuiteVendor(a);
+			this.name = new MidletSuiteName(b);
+		}
+		
+		// This is in the same location
 		this.version = new MidletVersion(__s.substring(colb + 1));
 	}
 	
@@ -189,6 +191,27 @@ public final class MidletSuiteID
 	}
 	
 	/**
+	 * This returns the suite ID as it is used in dependencies.
+	 *
+	 * @return A string that can be used as a dependency.
+	 * @since 2017/02/22
+	 */
+	public String toDependencyString()
+	{
+		// Get
+		Reference<String> ref = this._dep;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._dep = new WeakReference<>((rv = this.name + ";" +
+				this.vendor + ";" + this.version));
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
 	 * This returns the suite ID as an inter-midlet communication string.
 	 *
 	 * @return A string able to be used in inter-midlet communication.
@@ -217,16 +240,52 @@ public final class MidletSuiteID
 	public String toString()
 	{
 		// Get
-		Reference<String> ref = this._string;
+		Reference<String> ref = this._jar;
 		String rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = this.vendor + ";" +
+			this._jar = new WeakReference<>((rv = this.vendor + ";" +
 				this.name + ";" + this.version));
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Returns the string format of the suite ID using the given format.
+	 *
+	 * @param __f The format to use.
+	 * @return The string representation in the given format.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/22
+	 */
+	public String toString(MidletSuiteIDFormat __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__f)
+		{
+				// Jar
+			case JAR:
+				return toString();
+				
+				// Dependency
+			case DEPENDENCY:
+				return toDependencyString();
+				
+				// Intermidlet communication
+			case IMC:
+				return toIMCString();
+			
+				// Should not happen
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**

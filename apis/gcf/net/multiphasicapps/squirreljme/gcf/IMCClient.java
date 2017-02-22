@@ -22,6 +22,7 @@ import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteIDFormat;
 import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
@@ -124,7 +125,8 @@ public class IMCClient
 		// Otherwise obtain it from the socket
 		else
 			this.connectid = new MidletSuiteID(new String(
-				SquirrelJME.mailboxRemoteID(fd), "utf-8"));
+				SquirrelJME.mailboxRemoteID(fd), "utf-8"),
+				MidletSuiteIDFormat.JAR);
 	}
 	
 	/**
@@ -158,7 +160,8 @@ public class IMCClient
 		try
 		{
 			this.connectid = new MidletSuiteID(new String(
-				SquirrelJME.mailboxRemoteID(__clfd), "utf-8"));
+				SquirrelJME.mailboxRemoteID(__clfd), "utf-8"),
+				MidletSuiteIDFormat.JAR);
 		}
 		
 		// Should never occur

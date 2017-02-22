@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.gcf;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteIDFormat;
 import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
 
 /**
@@ -106,7 +107,8 @@ public class IMCFactory
 						"EC0b %s", __par));
 				
 				// Parse suite ID
-				connect = new MidletSuiteID(rest.substring(0, colc), true);
+				connect = new MidletSuiteID(rest.substring(0, colc),
+					MidletSuiteIDFormat.IMC);
 				
 				// The rest is anything after the third
 				rest = rest.substring(colc + 1);

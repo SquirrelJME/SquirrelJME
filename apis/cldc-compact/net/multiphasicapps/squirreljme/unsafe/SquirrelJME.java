@@ -258,7 +258,8 @@ public final class SquirrelJME
 	 * Returns the remote ID of the connected mailbox.
 	 *
 	 * @param __fd The remote file descriptor.
-	 * @return The byte array representing the remote ID.
+	 * @return The byte array representing the remote ID, the format is in the
+	 * form of {@code <vendor>;<name>;<version>}.
 	 * @throws IllegalArgumentException If the mailbox descriptor is not valid.
 	 * @since 2016/10/13
 	 */
