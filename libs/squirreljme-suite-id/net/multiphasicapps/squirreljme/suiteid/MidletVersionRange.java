@@ -214,8 +214,8 @@ public final class MidletVersionRange
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		return this.from.compareTo(__v) <= 0 &&
-			this.to.compareTo(__v) >= 0;
+		return __v.compareTo(this.from) >= 0 &&
+			__v.compareTo(this.to) <= 0;
 	}
 	
 	/**

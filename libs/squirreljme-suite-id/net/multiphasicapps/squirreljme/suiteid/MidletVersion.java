@@ -163,26 +163,23 @@ public final class MidletVersion
 	@Override
 	public int compareTo(MidletVersion __o)
 	{
-		int amaj = this.major, amin = this.minor, arel = this.release;
-		int bmaj = __o.major, bmin = __o.minor, brel = __o.release;
-		
 		// Major first
-		if (amaj < bmaj)
-			return -1;
-		else if (amaj > bmaj)
-			return 1;
+		int amaj = this.major, bmaj = __o.major;
+		int rv = amaj - bmaj;
+		if (rv != 0)
+			return rv;
 		
 		// Then minor
-		if (amin < bmin)
-			return -1;
-		else if (amin > bmin)
-			return 1;
+		int amin = this.minor, bmin = __o.minor;
+		rv = amin - bmin;
+		if (rv != 0)
+			return rv;
 		
 		// Then release
-		if (arel < brel)
-			return -1;
-		else if (arel > brel)
-			return 1;
+		int arel = this.release, brel = __o.release;
+		rv = arel - brel;
+		if (rv != 0)
+			return rv;
 		
 		// The same
 		return 0;
