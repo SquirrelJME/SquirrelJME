@@ -21,6 +21,21 @@ import java.util.Objects;
  */
 public final class MidletDependency
 {
+	/** The dependency type. */
+	protected final MidletDependencyType type;
+	
+	/** The dependency level. */
+	protected final MidletDependencyLevel level;
+	
+	/** The name. */
+	protected final MidletSuiteName name;
+	
+	/** The vendor. */
+	protected final MidletSuiteVendor vendor;
+	
+	/** The version range. */
+	protected final MidletVersionRange version;
+	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -44,22 +59,42 @@ public final class MidletDependency
 		
 		// Extract all semicolon positions
 		int[] sc = new int[4];
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			int lastpos = (i == 0 ? 0 : sc[i - 1] + 1);
 			
 			// {@squirreljme.error CC0e Expected four semi-colons in the
 			// dependency field. (The input dependency)}
 			int com = __s.indexOf(';', lastpos);
-			if (com < 0)
+			if ((i < 4 && com < 0) || (i >= 4 && com >= 0))
 				throw new IllegalArgumentException(String.format(
 					"CC0e %s", __s));
+			
+			// Stop
+			if (i == 4)
+				break;
 			
 			// Store
 			sc[i] = com;
 		}
 		
-		throw new Error("TODO");
+		// Split fields
+		String intype = __s.substring(0, sc[0]).trim(),
+			inlevel = __s.substring(sc[0] + 1, sc[1]).trim(),
+			inname = __s.substring(sc[1] + 1, sc[2]).trim(),
+			invendor = __s.substring(sc[2] + 1, sc[3]).trim(),
+			inversion = __s.substring(sc[3] + 1).trim();
+		
+		// Required fields
+		this.type = MidletDependencyType.of(intype);
+		this.level = MidletDependencyLevel.of(inlevel);
+		
+		// Optional fields
+		this.name = (inname.isEmpty() ? null : new MidletSuiteName(inname));
+		this.vendor = (invendor.isEmpty() ? null :
+			new MidletSuiteVendor(invendor));
+		this.version = (inversion.isEmpty() ? null :
+			new MidletVersionRange(inversion));
 	}
 	
 	/**
