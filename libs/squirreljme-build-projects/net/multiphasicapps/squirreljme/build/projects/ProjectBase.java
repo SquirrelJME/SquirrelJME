@@ -234,7 +234,18 @@ public abstract class ProjectBase
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// We are an API
+		NamespaceType nstype = type();
+		if (nstype == NamespaceType.API)
+		{
+			throw new Error("TODO");
+		}
+		
+		// Midlet or Liblet
+		else
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

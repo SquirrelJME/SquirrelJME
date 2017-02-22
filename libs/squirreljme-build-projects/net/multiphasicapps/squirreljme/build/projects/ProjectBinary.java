@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
+import net.multiphasicapps.squirreljme.suiteid.MidletDependencyLevel;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
@@ -112,12 +113,20 @@ public abstract class ProjectBinary
 			}
 			
 			// Go through projects and use the first matching dependency
+			boolean found = false;
 			for (Project p : projectManager())
 				if (p.isDependency(md))
 				{
 					__out.add(p);
+					found = true;
 					break;
 				}
+			
+			// {@squirreljme.error AT0y A required dependency was not found.
+			// (The project name)}
+			if (!found && md.level() != MidletDependencyLevel.OPTIONAL)
+				throw new InvalidProjectException(String.format("AT0y %s",
+					name()));
 		}
 	}
 	
