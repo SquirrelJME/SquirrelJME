@@ -38,6 +38,7 @@ import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifestAttributes;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -205,6 +206,17 @@ public abstract class ProjectSource
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/21
+	 */
+	@Override
+	public MidletSuiteID suiteId()
+		throws InvalidProjectException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Compiles the source code for this project.
 	 *
 	 * @param __dest The destination path where the binary should be placed.
@@ -336,9 +348,47 @@ public abstract class ProjectSource
 		MutableJavaManifest man = new MutableJavaManifest(manifest());
 		MutableJavaManifestAttributes attr = man.getMainAttributes();
 		
-		// Write the API implementation details
+		// Write the API implementation details, this is used by SquirrelJME
+		boolean midlet = (type() == NamespaceType.MIDLET);
 		if (type() == NamespaceType.API)
-			System.err.println("DEBUG -- Write API details.");
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Otherwise write liblet or liblet details
+		else
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Go through dependencies and generate liblet/midlet dependencies
+		int count = 1;
+		for (ProjectBinary bp : __deps)
+		{
+			// Build target key for value placement
+			JavaManifestKey key = new JavaManifestKey(
+				String.format("%s-Dependency-%d",
+				(midlet ? "MIDlet" : "LIBlet"), count++));
+			String value;
+			
+			// Depends on an API, refer to it by its special API identifier
+			// if applicable since it does not exist as a liblet
+			if (bp.type() == NamespaceType.API)
+				throw new Error("TODO");
+			
+			// Depends on a liblet
+			else
+			{
+				MidletSuiteID msid = bp.suiteId();
+				value = String.format("liblet;required;%s;%s;%s",
+					msid.name(), msid.vendor(), msid.version());
+			}
+			
+			// Write value
+			attr.put(key, value);
+		}
 		
 		// Write it
 		man.write(__os);

@@ -28,6 +28,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.suiteid.APIConfiguration;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -121,6 +122,16 @@ public abstract class ProjectBase
 	 * @since 2016/12/27
 	 */
 	public abstract JavaManifest manifest()
+		throws InvalidProjectException;
+	
+	/**
+	 * Returns the Suite ID of this project.
+	 *
+	 * @return The suite ID.
+	 * @throws InvalidProjectException If it is not valid.
+	 * @since 2017/02/21
+	 */
+	public abstract MidletSuiteID suiteId()
 		throws InvalidProjectException;
 	
 	/**

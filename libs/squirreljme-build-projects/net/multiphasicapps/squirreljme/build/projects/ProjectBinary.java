@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 
 /**
  * This represents the base for a binary project which is a compiled form
@@ -112,6 +113,17 @@ public abstract class ProjectBinary
 		
 		// Return
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/21
+	 */
+	@Override
+	public MidletSuiteID suiteId()
+		throws InvalidProjectException
+	{
+		throw new Error("TODO");
 	}
 }
 
