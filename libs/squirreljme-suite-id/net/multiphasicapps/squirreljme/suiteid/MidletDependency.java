@@ -124,6 +124,28 @@ public final class MidletDependency
 	}
 	
 	/**
+	 * Returns the dependency level.
+	 *
+	 * @return The dependency level.
+	 * @since 2017/02/22
+	 */
+	public MidletDependencyLevel level()
+	{
+		return this.level;
+	}
+	
+	/**
+	 * Returns the dependency name.
+	 *
+	 * @return The dependency name, may be {@code null}.
+	 * @since 2017/02/22
+	 */
+	public MidletSuiteName name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/22
 	 */
@@ -131,6 +153,39 @@ public final class MidletDependency
 	public String toString()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the dependency type.
+	 *
+	 * @return The dependency type.
+	 * @since 2017/02/22
+	 */
+	public MidletDependencyType type()
+	{
+		return this.type;
+	}
+	
+	/**
+	 * Returns the dependency vendor.
+	 *
+	 * @return The dependency vendor, may be {@code null}.
+	 * @since 2017/02/22
+	 */
+	public MidletSuiteVendor vendor()
+	{
+		return this.vendor;
+	}
+	
+	/**
+	 * Returns the dependency version.
+	 *
+	 * @return The dependency version, may be {@code null}.
+	 * @since 2017/02/22
+	 */
+	public MidletVersionRange version()
+	{
+		return this.version;
 	}
 }
 
