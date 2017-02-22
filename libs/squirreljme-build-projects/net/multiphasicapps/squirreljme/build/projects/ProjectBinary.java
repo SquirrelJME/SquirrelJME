@@ -129,7 +129,48 @@ public abstract class ProjectBinary
 	public MidletSuiteID suiteId()
 		throws InvalidProjectException
 	{
-		throw new Error("TODO");
+		Reference<MidletSuiteID> ref = this._suiteid;
+		MidletSuiteID rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			JavaManifest man = manifest();
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			// This a midlet?
+			boolean midlet = (type() == NamespaceType.MIDLET);
+			
+			// {@squirreljme.error AT0u This project is missing the project
+			// name key. (The name of this project)}
+			String name = attr.get((midlet ? _MIDLET_NAME : _LIBLET_NAME));
+			if (name == null)
+				throw new InvalidProjectException(String.format("AT0u %s",
+					name()));
+			
+			// {@squirreljme.error AT0v This project is missing the project
+			// vendor key. (The name of this project)}
+			String vendor = attr.get((midlet ? _MIDLET_VENDOR :
+				_LIBLET_VENDOR));
+			if (vendor == null)
+				throw new InvalidProjectException(String.format("AT0v %s",
+					name()));
+			
+			// {@squirreljme.error AT0w This project is missing the project
+			// version key. (The name of this project)}
+			String version = attr.get((midlet ? _MIDLET_VERSION :
+				_LIBLET_VERSION));
+			if (version == null)
+				throw new InvalidProjectException(String.format("AT0w %s",
+					name()));
+			
+			// Generate
+			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
+				new MidletSuiteName(name), new MidletSuiteVendor(vendor),
+				new MidletVersion(version))));
+		}
+		
+		return rv;
 	}
 }
 
