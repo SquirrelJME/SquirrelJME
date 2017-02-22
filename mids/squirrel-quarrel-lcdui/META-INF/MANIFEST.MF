@@ -6,7 +6,9 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides Squirrel Quarrel through the 
  standard LCD UI interface that is used on MIDP based Java ME systems.
-X-SquirrelJME-Depends: squirrel-quarrel-core meep-midlet 
+X-SquirrelJME-Depends: squirrel-quarrel-core 
  midp-lcdui image-xpm-reader
 Microedition-Configuration: CLDC-1.8-Compact
+MIDlet-1: Squirrel Quarrel (LCDUI), , net.multiphasicapps.squirrelquarr
+ el.lcdui.MainMidlet
 
