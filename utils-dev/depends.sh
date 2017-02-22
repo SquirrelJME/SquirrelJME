@@ -39,6 +39,12 @@ __recursive_deps()
 	if [ "$1" != "cldc-compact" ]
 	then
 		echo "cldc-compact"
+		
+		# Depend on the normal CLDC
+		if [ "$1" != "cldc" ]
+		then
+			echo "cldc"
+		fi
 	fi
 		
 	# Add them all
