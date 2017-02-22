@@ -85,8 +85,18 @@ public abstract class ProjectBinary
 		// Add common dependencies
 		__commonDependencies(__out);
 		
-		// TODO
-		System.err.println("TODO -- Determine binary depends.");
+		// Parse Xlet-Dependency-# fields
+		boolean midlet = (type() == NamespaceType.MIDLET);
+		for (int count = 1; count < Integer.MAX_VALUE; count++)
+		{
+			// There must be a key, if it is missing then stop
+			String val = attr.get(new JavaManifestKey(String.format(
+				"%s-Dependency-%d", (midlet ? "MIDlet" : "LIBlet"), count)));
+			if (val == null)
+				break;
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
