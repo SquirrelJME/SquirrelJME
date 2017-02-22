@@ -255,7 +255,13 @@ public abstract class ProjectBase
 			if (deptype != MidletDependencyType.STANDARD)
 				return false;
 			
-			throw new Error("TODO");
+			// This might be an API which defines no standards
+			ServiceSuiteID s = serviceId();
+			if (s == null)
+				return false;
+			
+			// Check
+			return __d.isCompatible(s.name(), s.vendor(), s.version());
 		}
 		
 		// Otherwise, everything else can rely on liblets
