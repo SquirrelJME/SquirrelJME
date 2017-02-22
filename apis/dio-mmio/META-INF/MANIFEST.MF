@@ -9,4 +9,4 @@ X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DT
 X-SquirrelJME-StandardLib: dio.mmio;1.0.1
 X-SquirrelJME-UUID: 2ca1c809-eca9-41ae-94d3-b4f850a6b14f
-Microedition-Configuration: CLDC-1.8-Compact
+Microedition-Configuration: CLDC-1.8

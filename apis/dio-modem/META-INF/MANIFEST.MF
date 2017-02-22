@@ -8,4 +8,4 @@ X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CY
 X-SquirrelJME-StandardLib: dio.modem;1.0.1
 X-SquirrelJME-UUID: 7dd14ab6-78db-43ae-8d62-78f6b94103e2
-Microedition-Configuration: CLDC-1.8-Compact
+Microedition-Configuration: CLDC-1.8
