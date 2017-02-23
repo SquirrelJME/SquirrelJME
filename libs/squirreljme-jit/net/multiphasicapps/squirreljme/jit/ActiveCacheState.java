@@ -45,7 +45,9 @@ public final class ActiveCacheState
 		if (__te == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Setup treads
+		this.stack = new Tread(__te, true, __ms);
+		this.locals = new Tread(__te, false, __ml);
 	}
 	
 	/**
@@ -111,14 +113,37 @@ public final class ActiveCacheState
 	 */
 	public final class Slot
 	{
+		/** Is this the stack? */
+		protected final boolean isstack;
+		
+		/** The index of this slot. */
+		protected final int index;
+		
+		/** The active binding. */
+		protected final ActiveBinding binding;
+		
 		/**
 		 * Initializes the slot.
 		 *
+		 * @param __te The translation engine (used to obtain bindings).
+		 * @param __stack If {@code true} then these values are on the stack.
+		 * @param __n The number of slots.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot()
+		private Slot(TranslationEngine __te, boolean __stack, int __i)
+			throws NullPointerException
 		{
-			throw new Error("TODO");
+			// Check
+			if (__te == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.isstack = __stack;
+			this.index = __i;
+			
+			// Setup binding
+			this.binding = __te.createActiveBinding();
 		}
 		
 		/**
@@ -134,7 +159,12 @@ public final class ActiveCacheState
 		public <B extends ActiveBinding> B binding(Class<B> __cl)
 			throws ClassCastException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Check
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+			
+			// Cast
+			return __cl.cast(this.binding);
 		}
 		
 		/**
@@ -157,15 +187,30 @@ public final class ActiveCacheState
 		extends AbstractList<Slot>
 		implements RandomAccess
 	{
+		/** Slots. */
+		private final Slot[] _slots;
+		
 		/**
 		 * Initializes the tread.
 		 *
+		 * @param __te The translation engine (used to obtain bindings).
+		 * @param __stack If {@code true} then these values are on the stack.
 		 * @param __n The number of slots.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Tread(int __n)
+		private Tread(TranslationEngine __te, boolean __stack, int __n)
+			throws NullPointerException
 		{
-			throw new Error("TODO");
+			// Check
+			if (__te == null)
+				throw new NullPointerException("NARG");
+			
+			// Initialize slots
+			Slot[] slots = new Slot[__n];
+			for (int i = 0; i < __n; i++)
+				slots[i] = new Slot(__te, __stack, i);
+			this._slots = slots;
 		}
 		
 		/**
@@ -175,7 +220,7 @@ public final class ActiveCacheState
 		@Override
 		public Slot get(int __i)
 		{
-			throw new Error("TODO");
+			return this._slots[__i];
 		}
 		
 		/**
@@ -185,7 +230,7 @@ public final class ActiveCacheState
 		@Override
 		public int size()
 		{
-			throw new Error("TODO");
+			return this._slots.length;
 		}
 	}
 }

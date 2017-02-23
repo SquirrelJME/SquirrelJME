@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.CacheState;
@@ -175,6 +176,16 @@ public class MIPSEngine
 			__cs.setBinding(cv, bind);
 			*/
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/23
+	 */
+	@Override
+	public ActiveBinding createActiveBinding()
+	{
+		return new MIPSActiveBinding();
 	}
 	
 	/**

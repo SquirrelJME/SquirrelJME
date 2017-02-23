@@ -75,5 +75,13 @@ public abstract class TranslationEngine
 	 * @since 2017/02/19
 	 */
 	public abstract void bindStateForEntry(ActiveCacheState __cs);
+	
+	/**
+	 * Creates an active binding.
+	 *
+	 * @return The newly created active binding.
+	 * @since 2017/02/23
+	 */
+	public abstract ActiveBinding createActiveBinding();
 }
 
