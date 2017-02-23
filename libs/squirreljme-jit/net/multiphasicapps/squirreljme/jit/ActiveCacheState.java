@@ -64,7 +64,11 @@ public final class ActiveCacheState
 		if (__cv == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends
+		int id = __cv.id();
+		if (__cv.isStack())
+			return this.stack.get(id);
+		return this.locals.get(id);
 	}
 	
 	/**
