@@ -52,6 +52,16 @@ public interface CodeDescriptionStream
 		throws NullPointerException;
 	
 	/**
+	 * This is called when the instruction parse pointer has finished a given
+	 * instruction and is ready to move to the next.
+	 *
+	 * @param __code The operation that is was decoded.
+	 * @param __pos The position of the given operation.
+	 * @since 2017/02/23
+	 */
+	public abstract void endInstruction(int __code, int __pos);
+	
+	/**
 	 * This is used to specify which exceptions exist within the exception
 	 * table.
 	 *

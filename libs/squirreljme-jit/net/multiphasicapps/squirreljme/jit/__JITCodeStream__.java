@@ -140,6 +140,19 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/23
+	 */
+	@Override
+	public void endInstruction(int __code, int __pos)
+	{
+		// Debug
+		System.err.printf("DEBUG -- End %d (pos %d)%n", __code, __pos);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 201702/09
 	 */
 	@Override

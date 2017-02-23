@@ -158,6 +158,9 @@ final class __OpParser__
 				if (true)
 					throw new Error("TODO");
 			}
+			
+			// Report end
+			writer.endInstruction(code, nowpos);
 		}
 		
 		throw new Error("TODO");
