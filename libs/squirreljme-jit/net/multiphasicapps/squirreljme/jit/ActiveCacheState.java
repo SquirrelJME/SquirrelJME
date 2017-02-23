@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.util.AbstractList;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 
 /**
  * This represents the currently active cache state which is used to store
@@ -126,6 +127,10 @@ public final class ActiveCacheState
 		/** The active binding. */
 		protected final ActiveBinding binding;
 		
+		/** The type of value stored here. */
+		private volatile StackMapType _type =
+			StackMapType.NOTHING;
+		
 		/**
 		 * Initializes the slot.
 		 *
@@ -169,6 +174,32 @@ public final class ActiveCacheState
 			
 			// Cast
 			return __cl.cast(this.binding);
+		}
+		
+		/**
+		 * Sets the type of value stored in this slot.
+		 *
+		 * @param __t The type of value to store.
+		 * @return The old type.
+		 * @throws JITException If the type is {@link StackMapType#TOP} type.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/02/23
+		 */
+		public StackMapType setType(StackMapType __t)
+			throws JITException, NullPointerException
+		{
+			// Check
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error ED0b Cannot set the top type.}
+			if (__t == StackMapType.TOP)
+				throw new JITException("ED0b");
+			
+			// Set, return old
+			StackMapType rv = this._type;
+			this._type = __t;
+			return rv;
 		}
 		
 		/**

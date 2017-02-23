@@ -202,7 +202,8 @@ class __JITCodeStream__
 			// Get slot for the entry
 			ActiveCacheState.Slot slot = activestate.getSlot(v);
 			
-			throw new Error("TODO");
+			// Set slot type
+			slot.setType(__st[i]);
 		}
 		
 		// Setup native bindings
