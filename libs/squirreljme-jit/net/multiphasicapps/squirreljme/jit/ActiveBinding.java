@@ -8,46 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.mips;
-
-import net.multiphasicapps.squirreljme.jit.GlobalBinding;
+package net.multiphasicapps.squirreljme.jit;
 
 /**
- * Global binding for MIPS based systems.
+ * This represents an active binding.
  *
- * @since 2017/02/20
+ * Instances of this class are not required to be thread safe but are expected
+ * to be mutable.
+ *
+ * @since 2017/02/23
  */
-public class MIPSGlobalBinding
-	implements GlobalBinding
+public interface ActiveBinding
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/20
+	 * Loads the information stored in the immutable binding and copies its
+	 * state to this active binding.
+	 *
+	 * @param __b The binding to switch from.
+	 * @throws JITException If the binding is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/23
 	 */
-	@Override
-	public MIPSGlobalBinding copy()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/20
-	 */
-	@Override
-	public boolean equals(Object __o)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/20
-	 */
-	@Override
-	public int hashCode()
-	{
-		throw new Error("TODO");
-	}
+	public abstract void switchFrom(Binding __b)
+		throws JITException, NullPointerException;
 }
 

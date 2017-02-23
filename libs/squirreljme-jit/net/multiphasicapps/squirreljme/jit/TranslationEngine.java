@@ -74,6 +74,6 @@ public abstract class TranslationEngine
 	 * @param __cs The state to bind variables for.
 	 * @since 2017/02/19
 	 */
-	public abstract void bindStateForEntry(CacheState __cs);
+	public abstract void bindStateForEntry(ActiveCacheState __cs);
 }
 

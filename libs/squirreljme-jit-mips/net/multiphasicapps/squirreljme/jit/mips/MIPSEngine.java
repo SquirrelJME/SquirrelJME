@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
@@ -55,7 +56,7 @@ public class MIPSEngine
 	 * @since 2017/02/19
 	 */
 	@Override
-	public void bindStateForEntry(CacheState __cs)
+	public void bindStateForEntry(ActiveCacheState __cs)
 		throws NullPointerException
 	{
 		// Check
@@ -70,10 +71,16 @@ public class MIPSEngine
 		MIPSRegister ni = NUBI.A1;
 		MIPSRegister nf = NUBI.FA1;
 		
-		// Go through local variables
-		CacheState.Locals locals = __cs.locals();
+		// Go through variables
+		ActiveCacheState.Tread locals = __cs.locals();
 		for (int i = 0, n = locals.size(); i < n; i++)
 		{
+			// Get slot
+			ActiveCacheState.Slot slot = locals.get(i);
+			
+			throw new Error("TODO");
+			
+			/*
 			// Get variable here
 			CodeVariable cv = locals.get(i);
 			
@@ -166,6 +173,7 @@ public class MIPSEngine
 			
 			// Set binding
 			__cs.setBinding(cv, bind);
+			*/
 		}
 	}
 	

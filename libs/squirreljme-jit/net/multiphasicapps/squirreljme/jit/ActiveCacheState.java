@@ -11,22 +11,16 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.AbstractList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.RandomAccess;
-import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
-import net.multiphasicapps.squirreljme.classformat.StackMapType;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
- * This contains the state of the stack and local variables.
+ * This represents the currently active cache state which is used to store
+ * bindings.
  *
- * This class is immutable and must be initialized from an active state.
- *
- * @since 2017/02/16
+ * @since 2017/02/23
  */
-public final class CacheState
+public final class ActiveCacheState
 {
 	/** Stack code variables. */
 	protected final Tread stack;
@@ -35,18 +29,20 @@ public final class CacheState
 	protected final Tread locals;
 	
 	/**
-	 * Initializes the cache state which is a copy of the active state.
+	 * Initializes the active cache state which stores the current state
+	 * information.
 	 *
-	 * @param __e The translation engine being used.
-	 * @param __a The active state to copy.
+	 * @param __te The translation engine being used.
+	 * @param __ms The number of stack entries.
+	 * @param __ml The number of local entries.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	CacheState(TranslationEngine __e, ActiveCacheState __a)
+	ActiveCacheState(TranslationEngine __te, int __ms, int __ml)
 		throws NullPointerException
 	{
 		// Check
-		if (__e == null || __a == null)
+		if (__te == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
@@ -73,9 +69,9 @@ public final class CacheState
 	 * Returns the cached local variable assignments.
 	 *
 	 * @return The cached local variables.
-	 * @since 2017/02/18
+	 * @since 2017/02/23
 	 */
-	public CacheState.Tread locals()
+	public ActiveCacheState.Tread locals()
 	{
 		return this.locals;
 	}
@@ -84,28 +80,34 @@ public final class CacheState
 	 * Returns the cached stack variable assignments.
 	 *
 	 * @return The cached stack variables.
-	 * @since 2017/02/18
+	 * @since 2017/02/23
 	 */
-	public CacheState.Tread stack()
+	public ActiveCacheState.Tread stack()
 	{
 		return this.stack;
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/20
+	 * Switches to the specified cache state.
+	 *
+	 * @param __cs The state to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/23
 	 */
-	@Override
-	public String toString()
+	public void switchFrom(CacheState __cs)
+		throws NullPointerException
 	{
-		return String.format("{stack=%s, locals=%s}", this.stack, this.locals);
+		// Check
+		if (__cs == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
-	 * This represents a slot within the cache state and stores the
-	 * information 
+	 * The slot stores the information on the current element.
 	 *
-	 * @since 2017/02/18
+	 * @since 2017/02/23
 	 */
 	public final class Slot
 	{
@@ -116,13 +118,40 @@ public final class CacheState
 		 */
 		private Slot()
 		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * This returns the active binding for this slot.
+		 *
+		 * @param <B> The active binding type used.
+		 * @param __cl The class to cast to.
+		 * @return The active binding.
+		 * @throws ClassCastException If the class type is not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/02/23
+		 */
+		public <B extends ActiveBinding> B binding(Class<B> __cl)
+			throws ClassCastException, NullPointerException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/23
+		 */
+		@Override
+		public String toString()
+		{
+			throw new Error("TODO");
 		}
 	}
 	
 	/**
-	 * This is a tread of variables which stores cached state.
+	 * This is used to represent an active tread.
 	 *
-	 * @since 2017/02/18
+	 * @since 2017/02/23
 	 */
 	public final class Tread
 		extends AbstractList<Slot>
@@ -131,7 +160,7 @@ public final class CacheState
 		/**
 		 * Initializes the tread.
 		 *
-		 * @param __n The number of tread elements.
+		 * @param __n The number of slots.
 		 * @since 2017/02/23
 		 */
 		private Tread(int __n)
@@ -141,7 +170,7 @@ public final class CacheState
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2017/02/18
+		 * @since 2017/02/23
 		 */
 		@Override
 		public Slot get(int __i)
@@ -151,7 +180,7 @@ public final class CacheState
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2017/02/18
+		 * @since 2017/02/23
 		 */
 		@Override
 		public int size()

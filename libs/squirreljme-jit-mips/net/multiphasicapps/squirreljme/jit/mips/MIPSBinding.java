@@ -97,17 +97,6 @@ public final class MIPSBinding
 	 * @since 2017/02/19
 	 */
 	@Override
-	public MIPSBinding copy()
-	{
-		// This class is immutable, so it can just return self
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/19
-	 */
-	@Override
 	public boolean equals(Object __o)
 	{
 		throw new Error("TODO");

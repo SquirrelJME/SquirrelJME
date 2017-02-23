@@ -24,7 +24,7 @@ public interface JITStateAccessor
 	 * @return The currently active cache state.
 	 * @since 2017/02/19
 	 */
-	public abstract CacheState activeCacheState();
+	public abstract ActiveCacheState activeCacheState();
 	
 	/**
 	 * Returns the state of cached variables across the entire program.

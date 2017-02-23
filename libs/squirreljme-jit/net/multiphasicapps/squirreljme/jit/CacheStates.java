@@ -17,20 +17,18 @@ import java.util.List;
 /**
  * This contains multiple cached states for specific spots within the method.
  *
- * This class is mutable and will change as the JIT progresses.
+ * This class is mutable and will change as the JIT progresses, although the
+ * individual states are immutable.
  *
  * This class is not thread safe.
  *
  * @see CacheState
  * @since 2017/02/16
  */
-public class CacheStates
+public final class CacheStates
 {
-	/** Number of stack entries. */
-	protected final int maxstack;
-	
-	/** Number of locals. */
-	protected final int maxlocals;
+	/** The engine used. */
+	protected final TranslationEngine engine;
 	
 	/** The address where the cache states are valid. */
 	private final List<Integer> _pos =
@@ -43,15 +41,31 @@ public class CacheStates
 	/**
 	 * Initializes the cache states.
 	 *
-	 * @param __ms The number of stack entries.
-	 * @param __ml The number of local entries.
+	 * @param __te The translation engine to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/16
 	 */
-	CacheStates(int __ms, int __ml)
+	CacheStates(TranslationEngine __te)
+		throws NullPointerException
 	{
+		// Check
+		if (__te == null)
+			throw new NullPointerException("NARG");
+		
 		// Set
-		this.maxstack = __ms;
-		this.maxlocals = __ml;
+		this.engine = __te;
+	}
+	
+	/**
+	 * Checks whether the given state exists or not for the given address.
+	 *
+	 * @parma __i The address to check.
+	 * @return {@code true} if a state exists at the specified point.
+	 * @since 2017/02/23
+	 */
+	public boolean contains(int __i)
+	{
+		return get(__i) != null;
 	}
 	
 	/**
@@ -76,26 +90,23 @@ public class CacheStates
 	}
 	
 	/**
-	 * Initializes a new compatible cache state which is empty.
-	 *
-	 * @return The new blank cache state.
-	 * @since 2017/02/18
-	 */
-	public CacheState initializeNew()
-	{
-		return new CacheState(this.maxstack, this.maxlocals);
-	}
-	
-	/**
-	 * Sets the cache state for a given address.
+	 * Sets the cache state for a given address, each address may only be set
+	 * once.
 	 *
 	 * @param __i The address to set.
-	 * @param __v The state to set, this is not copied.
-	 * @return The previous state, this is not a copy.
+	 * @param __v The state to set, all information is copied and made
+	 * immutable.
+	 * @throws JITException If a state already exists for the given address.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/18
 	 */
-	public CacheState set(int __i, CacheState __v)
+	public void set(int __i, ActiveCacheState __v)
+		throws JITException, NullPointerException
 	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
 		List<Integer> pos = this._pos;
 		List<CacheState> states = this._states;
 		
@@ -107,13 +118,13 @@ public class CacheStates
 		{
 			dx = (-(dx) - 1);
 			pos.add(dx, __i);
-			states.add(dx, __v);
-			return null; 
+			states.add(dx, new CacheState(this.engine, __v));
 		}
 		
-		// Otherwise replace
+		// {@squirreljme.error ED0a A cache state already exists at the
+		// specified address. (The address)}
 		else
-			return states.set(dx, __v);
+			throw new JITException(String.format("ED0a %d", __i));
 	}
 }
 

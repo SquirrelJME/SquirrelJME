@@ -42,7 +42,7 @@ class __JITCodeStream__
 	final TranslationEngine _engine;
 	
 	/** The currently active state. */
-	private volatile CacheState _activestate;
+	private volatile ActiveCacheState _activestate;
 	
 	/** The state of stack and locals for most instruction addresses. */
 	private volatile CacheStates _states;
@@ -81,7 +81,7 @@ class __JITCodeStream__
 	 * @since 2017/02/19
 	 */
 	@Override
-	public CacheState activeCacheState()
+	public ActiveCacheState activeCacheState()
 	{
 		return this._activestate;
 	}
@@ -184,38 +184,32 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- initArgs: %s %s %d%n", Arrays.asList(__cv),
 			Arrays.asList(__st), __sh);
 		
-		// Setup initial active state
-		CacheStates states = this._states;
-		CacheState activestate = states.initializeNew();
-		this._activestate = activestate;
+		// Get active state
+		ActiveCacheState activestate = this._activestate;
 		
 		// Load variables into the state
-		CacheState.Locals l = activestate.locals();
-		CacheState.Stack s = activestate.stack();
 		for (int i = 0, n = __cv.length; i < n; i++)
 		{
 			CodeVariable v = __cv[i];
 			int id = v.id();
 			
-			// Place at its location
-			if (v.isLocal())
-				l.set(id, v);
-			
 			// {@squirreljme.error ED08 Initial method arguments placed on the
 			// stack is not supported, the initial state must only have local
 			// variables used.}
-			else
+			if (!v.isLocal())
 				throw new JITException("ED08");
 			
-			// Set the type of the code variable
-			activestate.setType(v, __st[i]);
+			// Get slot for the entry
+			ActiveCacheState.Slot slot = activestate.getSlot(v);
+			
+			throw new Error("TODO");
 		}
 		
 		// Setup native bindings
 		this._engine.bindStateForEntry(activestate);
 		
 		// Set entry point state
-		states.set(0, activestate.copy());
+		this._states.set(0, activestate);
 		
 		// Debug
 		System.err.printf("DEBUG -- initArgs: %s%n", activestate);
@@ -261,7 +255,11 @@ class __JITCodeStream__
 		// Initilaize cache states, this is needed for stack caching to work
 		// properly along with restoring or merging into state of another
 		// instruction
-		this._states = new CacheStates(__ms, __ml);
+		TranslationEngine engine = this._engine;
+		this._states = new CacheStates(engine);
+		
+		// Also setup active state
+		this._activestate = new ActiveCacheState(engine, __ms, __ml);
 	}
 }
 
