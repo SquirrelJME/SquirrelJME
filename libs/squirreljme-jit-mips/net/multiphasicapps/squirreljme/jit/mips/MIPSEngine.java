@@ -79,6 +79,11 @@ public class MIPSEngine
 			// Get slot
 			ActiveCacheState.Slot slot = locals.get(i);
 			
+			// Only assign registers if the type is not nothing
+			StackMapType stype = slot.type();
+			if (stype == StackMapType.NOTHING)
+				continue;
+			
 			throw new Error("TODO");
 			
 			/*

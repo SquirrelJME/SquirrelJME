@@ -211,6 +211,17 @@ public final class ActiveCacheState
 		{
 			throw new Error("TODO");
 		}
+		
+		/**
+		 * Returns the type of value that is stored here.
+		 *
+		 * @return The type of value to store.
+		 * @since 2017/02/23
+		 */
+		public StackMapType type()
+		{
+			return this._type;
+		}
 	}
 	
 	/**
