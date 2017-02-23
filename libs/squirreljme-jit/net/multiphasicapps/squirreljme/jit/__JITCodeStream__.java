@@ -133,7 +133,7 @@ class __JITCodeStream__
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		System.err.printf("DEBUG -- Move %s %s -> %s%n", __type, __from, __to);
+		System.err.printf("DEBUG -- Copy %s %s -> %s%n", __type, __from, __to);
 		
 		throw new Error("TODO");
 	}
