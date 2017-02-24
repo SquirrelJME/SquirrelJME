@@ -24,5 +24,15 @@ import java.io.IOException;
 public abstract class StreamProcessor
 	implements Closeable
 {
+	/**
+	 * Returns the number of output bytes which are available for usage.
+	 *
+	 * @return The number of output bytes available, may be zero.
+	 * @since 2017/02/24
+	 */
+	public final int available()
+	{
+		throw new Error("TODO");
+	}
 }
 

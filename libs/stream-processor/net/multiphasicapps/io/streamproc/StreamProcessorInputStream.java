@@ -33,6 +33,7 @@ public class StreamProcessorInputStream
 	 *
 	 * @param __in Where to read data from.
 	 * @param __out The processor used to process the data with.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/20
 	 */
 	public StreamProcessorInputStream(InputStream __in, StreamProcessor __sp)
@@ -55,7 +56,7 @@ public class StreamProcessorInputStream
 	public int available()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return this.processor.available();
 	}
 	
 	/**
@@ -66,7 +67,38 @@ public class StreamProcessorInputStream
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Close the input stream
+		IOException fail = null;
+		try
+		{
+			this.in.close();
+		}
+		
+		// {@squirreljme.error CK01 Failed to close the input stream.}
+		catch (Throwable e)
+		{
+			if (fail != null)
+				fail = new IOException("CK01");
+			fail.addSuppressed(e);
+		}
+		
+		// Close the input stream processor
+		try
+		{
+			this.processor.close();
+		}
+		
+		// {@squirreljme.error CK02 Failed to close the stream processor.}
+		catch (Throwable e)
+		{
+			if (fail != null)
+				fail = new IOException("CK02");
+			fail.addSuppressed(e);
+		}
+		
+		// Threw an exception?
+		if (fail != null)
+			throw fail;
 	}
 	
 	/**
