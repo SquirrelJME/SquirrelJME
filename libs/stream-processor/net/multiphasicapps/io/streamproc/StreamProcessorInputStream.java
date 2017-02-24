@@ -144,14 +144,8 @@ public class StreamProcessorInputStream
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
-		// Check
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		int bl = __b.length;
-		if (__o < 0 || __l < 0 || (__o + __l) > bl)
-			throw new ArrayIndexOutOfBoundsException("AIOB");
-		
-		throw new Error("TODO");
+		// Just call the processor
+		return this.processor.read(__b, __o, __l);
 	}
 }
 

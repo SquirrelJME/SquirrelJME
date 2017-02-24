@@ -34,5 +34,35 @@ public abstract class StreamProcessor
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Attempts to fill the entire destination buffer with bytes which have
+	 * been processed by this processor.
+	 *
+	 * @param __i The stream to read bytes from for output.
+	 * @param __b The destination array.
+	 * @param __o The offset into the target.
+	 * @param __l The maximum number of bytes to process.
+	 * @return The number of processed bytes or a negative value if the 
+	 * stream has terminated.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IOException On processing errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/24
+	 */
+	public final int process(StreamInput __i, byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IOException,
+			NullPointerException
+	{
+		// Check
+		if (__i == null || __b == null)
+			throw new NullPointerException("NARG");
+		int bl = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > bl)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		throw new Error("TODO");
+	}
 }
 
