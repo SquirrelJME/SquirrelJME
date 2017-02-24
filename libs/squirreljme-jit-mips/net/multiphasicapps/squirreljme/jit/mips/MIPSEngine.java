@@ -84,88 +84,32 @@ public class MIPSEngine
 			if (stype == StackMapType.NOTHING)
 				continue;
 			
-			throw new Error("TODO");
+			// Get binding here
+			MIPSActiveBinding bind = slot.<MIPSActiveBinding>binding(
+				MIPSActiveBinding.class);
 			
-			/*
-			// Get variable here
-			CodeVariable cv = locals.get(i);
-			
-			// Ignore empty variables
-			if (cv == null)
-				continue;
-			
-			// Alias type (float can turn into int for example)
-			DataType type = __aliasType(__cs.getType(cv));
-			
-			// Depends
-			MIPSBinding bind;
+			// Allocate values into registers, if they do not fit then they
+			// will be placed on the stack
+			DataType type = __aliasType(stype);
 			switch (type)
 			{
-					// int
+					// 32-bit int
 				case INTEGER:
-					// Use single register
-					if (ni != null)
-					{
-						bind = new MIPSBinding(ni);
-						ni = NUBI.nextArgument(ni);
-					}
-					
-					// Stack allocate
-					else
-						bind = null;
+					if (true)
+						throw new Error("TODO");
 					break;
 					
-					// long
+					// 64-bit long
 				case LONG:
-					// Register might be available
-					if (ni != null)
-					{
-						// 32-bit uses single register
-						if (bits > 32)
-						{
-							bind = new MIPSBinding(ni);
-							ni = NUBI.nextArgument(ni);
-						}
-						
-						// Otherwise
-						else
-						{
-							MIPSRegister hi = ni;
-							MIPSRegister lo = NUBI.nextArgument(hi);
-							
-							// Make sure the entire value vits in registers so
-							// that cross stack/register combinations are not
-							// used
-							if (hi != null && lo != null)
-							{
-								bind = new MIPSBinding(hi, lo);
-								ni = NUBI.nextArgument(lo);
-							}
-							
-							// Use stack
-							else
-								bind = null;
-						}
-					}
-					
-					// Stack
-					else
-						bind = null;
+					if (true)
+						throw new Error("TODO");
 					break;
-					
-					// float or double
+				
+					// NUBI has 64-bit registers but 
 				case FLOAT:
 				case DOUBLE:
-					// Use single register
-					if (nf != null)
-					{
-						bind = new MIPSBinding(nf);
-						nf = NUBI.nextArgument(nf);
-					}
-					
-					// Stack allocate
-					else
-						bind = null;
+					if (true)
+						throw new Error("TODO");
 					break;
 				
 					// Should not happen
@@ -173,13 +117,8 @@ public class MIPSEngine
 					throw new RuntimeException("OOPS");
 			}
 			
-			// No bind specified, allocate on the stack
-			if (bind == null)
-				throw new Error("TODO");
-			
-			// Set binding
-			__cs.setBinding(cv, bind);
-			*/
+			// Use common stack allocation if not register claimed
+			throw new Error("TODO");
 		}
 	}
 	
