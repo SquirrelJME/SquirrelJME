@@ -18,6 +18,8 @@ import java.io.OutputStream;
  * This wraps a stream processor so that any data written to the output stream
  * is ran through the processor and sent to the output stream.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/12/20
  */
 public final class StreamProcessorOutputStream

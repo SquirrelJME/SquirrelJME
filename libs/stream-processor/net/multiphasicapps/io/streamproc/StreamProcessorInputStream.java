@@ -17,6 +17,8 @@ import java.io.IOException;
  * This wraps an input stream and for any bytes read from the input it returns
  * as read data.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/12/20
  */
 public class StreamProcessorInputStream
@@ -27,6 +29,10 @@ public class StreamProcessorInputStream
 	
 	/** The stream processor used. */
 	protected final StreamProcessor processor;
+	
+	/** Single byte read. */
+	private final byte[] _solo =
+		new byte[1];
 	
 	/**
 	 * Initializes the input stream processor.
@@ -109,7 +115,24 @@ public class StreamProcessorInputStream
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Try reading a single byte
+		byte[] solo = this._solo;
+		for (;;)
+		{
+			int rv = read(solo, 0, 1);
+			
+			// EOF?
+			if (rv < 0)
+				return rv;
+			
+			// Try again
+			else if (rv == 0)
+				continue;
+			
+			// Return that byte
+			else
+				return (solo[0] & 0xFF);
+		}
 	}
 	
 	/**

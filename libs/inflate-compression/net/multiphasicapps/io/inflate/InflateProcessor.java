@@ -16,6 +16,8 @@ import net.multiphasicapps.io.streamproc.StreamProcessor;
 /**
  * This is used to inflate deflate compressed streams.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/12/20
  */
 public class InflateProcessor
