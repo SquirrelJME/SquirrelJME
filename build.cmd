@@ -63,7 +63,7 @@ REM Execute Java
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
 	-Dnet.multiphasicapps.squirreljme.build.onlybuild=true
 	-Dnet.multiphasicapps.squirreljme.build.source=%__EXEDIR% ^
-	-Dnet.multiphasicapps.squirreljme.build.binary=. ^
+	-Dnet.multiphasicapps.squirreljme.build.binary=bins ^
 	%BOOTSTRAP_CLASS% %*
 
 REM Failed to build the bootstrap (stage 1)
@@ -80,7 +80,7 @@ REM the JVM is performed.
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
 	-Dnet.multiphasicapps.squirreljme.build.onlybuild=false
 	-Dnet.multiphasicapps.squirreljme.build.source=%__EXEDIR% ^
-	-Dnet.multiphasicapps.squirreljme.build.binary=. ^
+	-Dnet.multiphasicapps.squirreljme.build.binary=bins ^
 	-jar sjmeboot.jar %*
 
 REM Failed?

@@ -35,7 +35,7 @@ do
 	__i="1"
 	
 	# Add line
-	echo -n "$__line.jar"
+	echo -n "bins/$__line.jar"
 done
 echo ""
 

@@ -48,7 +48,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
 	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=true" \
 	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)" \
+	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)/bins" \
 	"$BOOTSTRAP_CLASS" $*
 then
 	exit 1
@@ -68,7 +68,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
 	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=false" \
 	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)" \
+	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)/bins" \
 	-jar "sjmeboot.jar" $*
 then
 	exit 1

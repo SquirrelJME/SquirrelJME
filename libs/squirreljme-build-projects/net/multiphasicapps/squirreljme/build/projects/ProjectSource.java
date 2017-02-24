@@ -362,6 +362,11 @@ public abstract class ProjectSource
 				zsw.flush();
 			}
 			
+			// Make sure the destination directory where binaries go exists
+			Path par = __dest.getParent();
+			if (par != null)
+				Files.createDirectories(par);
+			
 			// Replace the JAR
 			Files.move(tempjar, __dest, StandardCopyOption.REPLACE_EXISTING);
 		}
