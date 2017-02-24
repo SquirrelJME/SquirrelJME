@@ -21,7 +21,7 @@ import net.multiphasicapps.zip.blockreader.BlockAccessor;
  *
  * @since 2016/12/27
  */
-class __FileChannelBlockAccessor__
+public class FileChannelBlockAccessor
 	implements BlockAccessor
 {
 	/** The file channel to wrap. */
@@ -35,7 +35,7 @@ class __FileChannelBlockAccessor__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	__FileChannelBlockAccessor__(FileChannel __fc)
+	public FileChannelBlockAccessor(FileChannel __fc)
 		throws IOException, NullPointerException
 	{
 		// Check

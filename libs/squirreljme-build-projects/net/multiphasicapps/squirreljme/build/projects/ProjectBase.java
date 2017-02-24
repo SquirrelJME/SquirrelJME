@@ -320,7 +320,7 @@ public abstract class ProjectBase
 			
 			// Open as a ZIP
 			return new __ZipFileDirectory__(new ZipBlockReader(
-				new __FileChannelBlockAccessor__(fc)));
+				new FileChannelBlockAccessor(fc)));
 		}
 		
 		// Failed to open, make sure the channel gets closed
