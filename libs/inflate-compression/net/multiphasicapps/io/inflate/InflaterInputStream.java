@@ -647,6 +647,9 @@ public class InflaterInputStream
 				miniwindow |= ((readin[i] & 0xFF) << minisize);
 				minisize += 8;
 			}
+			
+			System.err.printf("DEBUG -- mw=%08x ms=%s%n", miniwindow,
+				minisize);
 		}
 		
 		// Mask in the value, which is always at the lower bits
