@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: a0fdc588-b378-4094-a364-400717d48f2b
 X-SquirrelJME-Error: BY
-X-SquirrelJME-Depends: stream-processor
 X-SquirrelJME-Name: Inflate Decompression Algorithm
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2

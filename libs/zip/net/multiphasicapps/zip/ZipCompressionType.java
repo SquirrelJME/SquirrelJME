@@ -15,8 +15,7 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.io.inflate.InflateProcessor;
-import net.multiphasicapps.io.streamproc.StreamProcessorInputStream;
+import net.multiphasicapps.io.inflate.InflaterInputStream;
 
 /**
  * This represents the type of compression that is used in a ZIP file.
@@ -95,8 +94,7 @@ public enum ZipCompressionType
 			
 				// Inflate
 			case DEFLATE:
-				return new StreamProcessorInputStream(__is,
-					new InflateProcessor());
+				return new InflaterInputStream(__is);
 				
 				// {@squirreljme.error BF03 Decompressing using the given
 				// method is not supported. (The current compression method)}

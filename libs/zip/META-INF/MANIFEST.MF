@@ -4,8 +4,7 @@ X-SquirrelJME-Name: Basic ZIP Classes
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains base ZIP classes.
-X-SquirrelJME-Depends: inflate-compression crc32 
- stream-processor
+X-SquirrelJME-Depends: inflate-compression crc32
 X-SquirrelJME-Error: BF
 X-SquirrelJME-UUID: 34332adb-2c68-4805-8adf-873e3ed6e136
 Microedition-Configuration: CLDC-1.8-Compact
