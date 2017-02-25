@@ -650,8 +650,7 @@ public class InflaterInputStream
 		}
 		
 		// Mask in the value, which is always at the lower bits
-		int mask = (1 << __n) - 1;
-		int rv = miniwindow & mask;
+		int rv = miniwindow & ((1 << __n) - 1);
 		
 		// Shift down the mini window for the next read
 		// Make sure the shift down is unsigned so that zeroes are in the
