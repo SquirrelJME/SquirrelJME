@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.util.huffmantree;
 
+import java.io.IOException;
+
 /**
  * This is used for huffman tree traversal.
  *
@@ -21,8 +23,10 @@ public interface BitSource
 	 * Returns the next bit.
 	 *
 	 * @return The next bit.
+	 * @throws IOException On read errors.
 	 * @since 2016/08/16
 	 */
-	public abstract boolean nextBit();
+	public abstract boolean nextBit()
+		throws IOException;
 }
 

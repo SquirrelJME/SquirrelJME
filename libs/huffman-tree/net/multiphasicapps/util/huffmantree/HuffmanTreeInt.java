@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.huffmantree;
 
+import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -235,13 +236,14 @@ public class HuffmanTreeInt
 	 * Returns the value obtained via the given bit source.
 	 *
 	 * @param __bs The source for bits.
-	 * @return The value
+	 * @return The value.
+	 * @thorws IOException On read errors.
 	 * @throws NoSuchElementException If no value was found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/16
 	 */
 	public final int getValue(BitSource __bs)
-		throws NoSuchElementException, NullPointerException
+		throws IOException, NoSuchElementException, NullPointerException
 	{
 		// Check
 		if (__bs == null)

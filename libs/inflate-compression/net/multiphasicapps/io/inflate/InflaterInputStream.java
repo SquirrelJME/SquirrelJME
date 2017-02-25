@@ -12,8 +12,10 @@ package net.multiphasicapps.io.inflate;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
+import net.multiphasicapps.util.huffmantree.BitSource;
 import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
 
 /**
@@ -70,13 +72,35 @@ public class InflaterInputStream
 	private final byte[] _readin =
 		new byte[4];
 	
-	/** Raw code lengths. */
-	private int byte[] _rawcodelens =
-		new byte[19];
+	/**
+	 * Raw code lengths (allocated once), the size is the max code length
+	 * count.
+	 */
+	private final int[] _rawcodelens =
+		new int[19];
+	
+	/**
+	 * Raw literal and distances (allocated once), the size is the total of
+	 * both the maximum length count and distance count.
+	 */
+	private final int[] _rawlitdistlens =
+		new int[322];
 	
 	/** The code length tree. */
 	private final HuffmanTreeInt _codelentree =
 		new HuffmanTreeInt();
+	
+	/** The literal tree. */
+	private final HuffmanTreeInt _literaltree =
+		new HuffmanTreeInt();
+	
+	/** The distance tree. */
+	private final HuffmanTreeInt _distancetree =
+		new HuffmanTreeInt();
+	
+	/** The bit source for reading. */
+	private final BitSource _bitsource =
+		new __BitSource__();
 	
 	/**
 	 * The miniature read window, it stores a 32-bit value and is given input
@@ -313,74 +337,15 @@ public class InflaterInputStream
 		// Read the code length tree
 		HuffmanTreeInt codelentree = __decompressDynamicLoadLenTree(dhclen);
 		
+		// Read the literal and distance trees
+		HuffmanTreeInt literaltree = this._literaltree,
+			distancetree = this._distancetree;
+		__decompressDynamicLoadLitDistTree(codelentree, dhlit, dhdist,
+			literaltree, distancetree);
+		
 		if (true)
 			throw new Error("TODO");
-		
-		// Get the tree and the max bit count used
-		HuffmanTreeInt htree = _clentree;
-		int maxbits = htree.maximumBits();
-		int hlit = _dhlit;
-		int hdist = _dhdist;
-		int total = hlit + hdist;
-		
-		// Get raw literal lengths
-		int[] rawints = _rawlitdistlens;
-		if (rawints == null)
-			_rawlitdistlens = rawints = new int[total];
-		
-		// Read loop
-		try
-		{
-			int next = this._nexthlitdist;
-			for (;;)
-			{
-				// Read them all?
-				if (next >= total)
-				{
-					// No longer needed
-					_clentree = null;
-					
-					// Generate trees
-					_treehlit = __thunkCodeLengthTree(rawints, 0, hlit);
-					_treedist = __thunkCodeLengthTree(rawints, hlit, hdist);
-					
-					// Read the compressed data now
-					_task = __TASK__DYNAMIC_HUFFMAN_COMPRESSED;
-					
-					// Store value before stalling
-					this._nexthlitdist = next;
-					
-					// This method is called by the main loop code, so just
-					// return
-					return;
-				}
-				
-				// Not enough bits to read code lengths?
-				// Add 7 due to the repeat zero many times symbol
-				if (!isInputComplete() && __zzAvailable() < maxbits + 7)
-				{
-					// Store value before stalling
-					this._nexthlitdist = next;
-					
-					// Now stall
-					throw _STALLED;
-				}
-				
-				// Read in code
-				int cbskip = __readCodeBits(htree, rawints, next);
-				
-				// Increase read
-				next += cbskip;
-			}
-		}
-		
-		// Out of bits or a bad tree
-		catch (NoSuchElementException nsee)
-		{
-			// {@squirreljme.error AF0i The compressed stream is damaged by
-			// being too short or having an illegal tree access.}
-			throw new PipeProcessException("AF0i", nsee);
-		}
+		/*
 		
 		// Get both trees
 		HuffmanTreeInt thlit = _treehlit;
@@ -394,12 +359,61 @@ public class InflaterInputStream
 		while (isInputComplete() || __zzAvailable() >= maxbits + 32)
 		{
 			// Decode literal code
-			int code = __readTreeCode(thlit);
+			int code = thlit.getValue(this._bitsource);
 			
 			// Handle it
 			if (__handleCode(code, thlit, tdist));
 				break;
+		}*/
+	}
+	
+	/**
+	 * Reads the literal and distance trees.
+	 *
+	 * @param __cltree The code length tree.
+	 * @param __dhlit The literal count.
+	 * @param __dhdist The distance count.
+	 * @param __ltree The literal tree.
+	 * @param __dtree The distance tree.
+	 * @throws IOException On read errors.
+	 * @since 2017/02/25
+	 */
+	private void __decompressDynamicLoadLitDistTree(HuffmanTreeInt __cltree,
+		int __dhlit, int __dhdist, HuffmanTreeInt __ltree,
+		HuffmanTreeInt __dtree)
+		throws IOException
+	{
+		// Determine the maximum bit count that is used when reading values
+		int maxbits = __cltree.maximumBits();
+		int total = __dhlit + __dhdist;
+		
+		// Cached
+		int[] rawlitdistlens = this._rawlitdistlens;
+		
+		// Read every code
+		for (int next = 0; next < total;)
+		{
+			try
+			{
+				// Read in code
+				int cbskip = __readCodeBits(__cltree, rawlitdistlens, next);
+				
+				// Skip
+				next += cbskip;
+			}
+
+			// {@squirreljme.error BY08 The compressed stream is
+			// damaged by being too short or having an illegal tree
+			// access.}				
+			catch (NoSuchElementException e)
+			{
+				throw new IOException("BY08", e);
+			}
 		}
+		
+		// Initialize both trees
+		__thunkCodeLengthTree(__ltree, rawlitdistlens, 0, __dhlit);
+		__thunkCodeLengthTree(__dtree, rawlitdistlens, __dhlit, __dhdist);
 	}
 	
 	/**
@@ -417,8 +431,8 @@ public class InflaterInputStream
 		
 		// {@squirreljme.error BY07 There may only be at most 19 used
 		// code lengths. (The number of code lengths)}
-		if (__dhclen >= 19)
-			throw new InflaterException(String.format("BY07 %d", __dhclen));
+		if (__dhclen > 19)
+			throw new IOException(String.format("BY07 %d", __dhclen));
 		
 		// Read lengths, they are just 3 bits but their placement values are
 		// shuffled since some sequences are more common than others
@@ -605,7 +619,7 @@ public class InflaterInputStream
 	 * @throws IOException On read errors.
 	 * @since 2017/02/25
 	 */
-	private int __readBits(int __n, boolean __msb)
+	int __readBits(int __n, boolean __msb)
 		throws IOException
 	{
 		// Nothing to read
@@ -672,6 +686,102 @@ public class InflaterInputStream
 		
 		// Return read result
 		return rv;
+	}
+	
+	/**
+	 * Reads code bits using the given huffman tree and into the specified
+	 * array.
+	 *
+	 * @param __codes The huffman tree which contains the length codes which
+	 * the values being read are encoded with.
+	 * @param __out The output array.
+	 * @param __next The next value to read.
+	 * @throws IOException On read or decompression errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/28
+	 */
+	private int __readCodeBits(HuffmanTreeInt __codes, int[] __out,
+		int __next)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__codes == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		// Read in code based on an input huffman tree
+		int basenext = __next;
+		int code = __codes.getValue(this._bitsource);
+		
+		// Literal length, the input is used
+		if (code >= 0 && code < 16)
+			__out[__next++] = code;
+		
+		// Repeating
+		else
+		{
+			// Repeat this value and for this many lengths
+			int repval;
+			int repfor;
+			
+			// Repeat the previous length 3-6 times
+			if (code == 16)
+			{
+				// {@squirreljme.error BY08 A repeat code was specified,
+				// however this is the first entry. (The last length index)}
+				int lastlendx = __next - 1;
+				if (lastlendx < 0)
+					throw new IOException(String.format("BY08 %d",
+						lastlendx));
+				
+				// Read the last
+				repval = __out[lastlendx];
+				
+				// Read the repeat count
+				repfor = 3 + __readBits(2, false);
+			}
+			
+			// Repeat zero for 3-10 times
+			else if (code == 17)
+			{
+				// Use zero
+				repval = 0;
+				
+				// Read 3 bits
+				repfor = 3 + __readBits(3, false);
+			}
+			
+			// Repeat zero for 11-138 times
+			else if (code == 18)
+			{
+				// Use zero
+				repval = 0;
+				
+				// Read 7 bits
+				repfor = 11 + __readBits(7, false);
+			}
+			
+			// {@squirreljme.error BY09 Illegal code. (The code)}
+			else
+				throw new IOException(String.format("BY09 %d", code));
+			
+			// Could fail
+			try
+			{
+				// Place in repeated values
+				for (int i = 0; i < repfor; i++)
+					__out[__next++] = repval;
+			}
+			
+			// Out of bounds entry
+			catch (IndexOutOfBoundsException ioobe)
+			{
+				// {@squirreljme.error BY0a Out of bounds index read.}
+				throw new IOException("BY0a", ioobe);
+			}
+		}
+		
+		// Skip count
+		return __next - basenext;
 	}
 	
 	/**
@@ -858,6 +968,26 @@ public class InflaterInputStream
 		// Store the write window info
 		this._writewindow = writewindow;
 		this._writesize = writesize;
+	}
+	
+	/**
+	 * Bit source for huffman reads.
+	 *
+	 * @since 2017/02/25
+	 */
+	private final class __BitSource__
+		implements BitSource
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/25
+		 */
+		@Override
+		public boolean nextBit()
+			throws IOException
+		{
+			return 0 != InflaterInputStream.this.__readBits(1, true);
+		}
 	}
 }
 
