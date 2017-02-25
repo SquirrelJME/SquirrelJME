@@ -291,86 +291,77 @@ public class InflaterInputStream
 	{
 		// Read until the sequence has ended
 		for (;;)
-			if (__handleFixedCode(__readFixedHuffman()))
-				break;
-	}
-	
-	/**
-	 * Handles a fixed huffman code
-	 *
-	 * @param __c The code used.
-	 * @return {@code true} on termination.
-	 * @throws IOException On read or decompression errors.
-	 * @since 2017/02/25
-	 */
-	private boolean __handleFixedCode(int __c)
-		throws IOException
-	{
-		// Literal byte value
-		if (__c >= 0 && __c <= 255)
 		{
-			__write(__c, 0xFF, false);
-			
-			// Do not break
-			return false;
-		}
-		
-		// Stop processing
-		else if (__c == 256)
-			return true;
-		
-		// Window based result
-		else if (__c >= 257 && __c <= 285)
-		{
-			// Read the length
-			int lent = __handleLength(__c);
-			
-			// Read the distance
-			int dist = __handleFixedDistance();
-			
-			// Get the maximum valid length, so for example if the length is 5
-			// and the distance is two, then only read two bytes.
-			int maxlen;
-			if (dist - lent < 0)
-				maxlen = dist;
-			else
-				maxlen = lent;
-			
-			// Create a byte array from the sliding window data
-			byte[] winb = new byte[maxlen];
-			try
-			{
-				this.window.get(dist, winb, 0, maxlen);
-			}
-			
-			// Bad window read
-			catch (IndexOutOfBoundsException ioobe)
-			{
-				// {@squirreljme.error BY06 Window access out of range.
-				// (The distance; The length)}
-				throw new IOException(String.format(
-					"BY06 %d %d", dist, lent), ioobe);
-			}
-			
-			// Add those bytes to the output, handle wrapping around if the
-			// length is greater than the current position
-			for (int i = 0, v = 0; i < lent; i++, v++)
-			{
-				// Write byte
-				__write(winb[v] & 0xFF, 0xFF, false);
+			// Read code
+			int code = __readFixedHuffman();
 				
-				// Wrap around
-				if (v >= maxlen)
-					v = 0;
+			// Literal byte value
+			if (code >= 0 && code <= 255)
+			{
+				System.err.printf("DEBUG -- Fixed Code: %d %02x 0b%s%n", code,
+					code, Integer.toString(code, 2));
+				
+				__write(code, 0xFF, false);
 			}
-			
-			// Do not break the loop
-			return false;
-		}
 		
-		// {@squirreljme.error BY05 Illegal code. (The code.)}
-		else
-			throw new IOException(String.format("BY05 %d", __c));
+			// Stop processing
+			else if (code == 256)
+				return;
+		
+			// Window based result
+			else if (code >= 257 && code <= 285)
+			{
+				// Read the length
+				int lent = __handleLength(code);
+			
+				// Read the distance
+				int dist = __handleFixedDistance();
+				
+				System.err.printf("DEBUG -- Length: %d, Distance: %d%n",
+					lent, dist);
+			
+				// Get the maximum valid length, so for example if the length
+				// is 5 and the distance is two, then only read two bytes.
+				int maxlen;
+				if (dist - lent < 0)
+					maxlen = dist;
+				else
+					maxlen = lent;
+			
+				// Create a byte array from the sliding window data
+				byte[] winb = new byte[maxlen];
+				try
+				{
+					this.window.get(dist, winb, 0, maxlen);
+				}
+			
+				// Bad window read
+				catch (IndexOutOfBoundsException ioobe)
+				{
+					// {@squirreljme.error BY06 Window access out of range.
+					// (The distance; The length)}
+					throw new IOException(String.format(
+						"BY06 %d %d", dist, lent), ioobe);
+				}
+			
+				// Add those bytes to the output, handle wrapping around if the
+				// length is greater than the current position
+				for (int i = 0, v = 0; i < lent; i++, v++)
+				{
+					// Write byte
+					__write(winb[v], 0xFF, false);
+				
+					// Wrap around
+					if (v >= maxlen)
+						v = 0;
+				}
+			}
+		
+			// {@squirreljme.error BY05 Illegal fixed huffman code. (The
+			// code.)}
+			else
+				throw new IOException(String.format("BY05 %d", code));
+		}
 	}
 	
 	/**
@@ -497,6 +488,10 @@ public class InflaterInputStream
 			}
 		}
 		
+		// Debug
+		System.err.printf("DEBUG -- Window In: 0b%32s %d%n",
+			Integer.toString(miniwindow, 2), minisize);
+		
 		// Mask in the value, which is always at the lower bits
 		int mask = (1 << __n) - 1;
 		int rv = miniwindow & mask;
@@ -507,9 +502,20 @@ public class InflaterInputStream
 		miniwindow >>>= __n;
 		minisize -= __n;
 		
+		// Debug
+		System.err.printf("DEBUG -- Window At: 0b%32s %d%n",
+			Integer.toString(miniwindow, 2), minisize);
+		
 		// Store for next run
 		this._miniwindow = miniwindow;
 		this._minisize = minisize;
+		
+		System.err.printf("DEBUG -- Read: rv=%d (0b%s) msb=%b bits=%d%n",
+			(__msb ? rv :
+				Integer.reverse(rv) >>> (32 - __n)),
+			(__msb ? Integer.toString(rv, 2) :
+				Integer.toString(Integer.reverse(rv) >>> (32 - __n), 2)),
+			__msb, __n);
 		
 		// Want LSB to be first, need to swap all the bits so the lowest ones
 		// are at the highest positions
@@ -583,7 +589,7 @@ public class InflaterInputStream
 		
 		// Write LSB value, need to swap bits
 		__v &= __mask;
-		if (!__msb)
+		if (__msb)
 			__v = Integer.reverse(__v) >>> (32 - bits);
 		
 		// Get the current write window
