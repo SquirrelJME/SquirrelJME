@@ -354,8 +354,15 @@ public class InflaterInputStream
 			
 			// Add those bytes to the output, handle wrapping around if the
 			// length is greater than the current position
-			for (int i = 0; i < lent; i++)
-				__write(winb[i % maxlen] & 0xFF, 0xFF, false);
+			for (int i = 0, v = 0; i < lent; i++, v++)
+			{
+				// Write byte
+				__write(winb[v] & 0xFF, 0xFF, false);
+				
+				// Wrap around
+				if (v >= maxlen)
+					v = 0;
+			}
 			
 			// Do not break the loop
 			return false;
@@ -532,26 +539,26 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// The long if statement block
-		if (__readBits(1, false) == 1)
-			if (__readBits(1, false) == 1)
-				if (__readBits(1, false) == 1)
+		if (__readBits(1, true) == 1)
+			if (__readBits(1, true) == 1)
+				if (__readBits(1, true) == 1)
 					return 192 + __readBits(6, true);
 				else
-					if (__readBits(1, false) == 1)
+					if (__readBits(1, true) == 1)
 						return 160 + __readBits(5, true);
 					else
-						if (__readBits(1, false) == 1)
+						if (__readBits(1, true) == 1)
 							return 144 + __readBits(4, true);
 						else
 							return 280 + __readBits(3, true);
 			else
 				return 80 + __readBits(6, true);
 		else
-			if (__readBits(1, false) == 1)
+			if (__readBits(1, true) == 1)
 				return 16 + __readBits(6, true);
 			else
-				if (__readBits(1, false) == 1)
-					if (__readBits(1, false) == 1)
+				if (__readBits(1, true) == 1)
+					if (__readBits(1, true) == 1)
 						return 0 + __readBits(4, true);
 					else
 						return 272 + __readBits(3, true);
@@ -575,6 +582,7 @@ public class InflaterInputStream
 		int bits = Integer.bitCount(__mask);
 		
 		// Write LSB value, need to swap bits
+		__v &= __mask;
 		if (!__msb)
 			__v = Integer.reverse(__v) >>> (32 - bits);
 		
@@ -583,7 +591,7 @@ public class InflaterInputStream
 			writesize = this._writesize;
 		
 		// Add bits to write
-		writewindow |= (__v & __mask) << writesize;
+		writewindow |= __v << writesize;
 		writesize += bits;
 		
 		// Enough bytes to write to the output?
@@ -608,7 +616,7 @@ public class InflaterInputStream
 				System.err.printf("DEBUG -- Write 0x%02x (%c)%n", b,
 					(b >= ' ' ? (char)b : '?'));
 				writewindow >>>= 8;
-				writesize--;
+				writesize -= 8;
 				
 				// Can fit in the output buffer
 				if (targoff < targend)
@@ -625,6 +633,10 @@ public class InflaterInputStream
 			// Store new position
 			this._targoff = targoff;
 		}
+		
+		// Store the write window info
+		this._writewindow = writewindow;
+		this._writesize = writesize;
 	}
 }
 
