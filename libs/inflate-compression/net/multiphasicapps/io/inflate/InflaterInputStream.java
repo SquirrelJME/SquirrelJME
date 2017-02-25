@@ -73,8 +73,23 @@ public class InflaterInputStream
 	/** Represents the number of bits in the mini window. */
 	private volatile int _minisize;
 	
+	/** The output write window, this is used to shift out writes as needed. */
+	private volatile int _writewindow;
+	
+	/** The number of bits in the write window. */
+	private volatile int _writesize;
+	
 	/** EOF has been reached? */
 	private volatile boolean _eof;
+	
+	/** The target byte array for writes. */
+	private byte[] _targ;
+	
+	/** The target offset for writes. */
+	private int _targoff;
+	
+	/** The target end offset for writes. */
+	private int _targend;
 	
 	/**
 	 * Initializes the deflate compression stream inflater.
@@ -187,10 +202,17 @@ public class InflaterInputStream
 		if (c >= __l)
 			return c;
 		
+		// Store write information
+		this._targ = __b;
+		
 		// Try to fit as many bytes as possible into the output
 		while (c < __l)
 		{
-			int rv = __decompress(__b, __o + c, __l - c);
+			// Decompress
+			int base;
+			this._targoff = (base = __o + c);
+			this._targend = base + (__l - c);
+			int rv = __decompress();
 			
 			// Ended?
 			if (rv < 0)
@@ -207,15 +229,12 @@ public class InflaterInputStream
 	/**
 	 * Reads the input and performs decompression on the data.
 	 *
-	 * @param __b The array to write into.
-	 * @param __o The offset into the array.
-	 * @parma __l The number of bytes to store.
 	 * @return The number of stored bytes or a negative value if the stream
 	 * has terminated.
 	 * @throws IOException On read or decompression errors.
 	 * @since 2017/02/25
 	 */
-	private int __decompress(byte[] __b, int __o, int __l)
+	private int __decompress()
 		throws IOException
 	{
 		// Read the final bit which determines if this is the last block
@@ -231,7 +250,8 @@ public class InflaterInputStream
 				
 				// Fixed huffman
 			case _TYPE_FIXED_HUFFMAN:
-				throw new Error("TODO");
+				__decompressFixed();
+				break;
 				
 				// Dynamic huffman
 			case _TYPE_DYNAMIC_HUFFMAN:
@@ -244,6 +264,185 @@ public class InflaterInputStream
 				// was reached. (The type code used in the stream)}
 				throw new IOException(String.format("BY01 %d", type));
 		}
+		
+		// If this was the last block to read, then return EOF if no data
+		// was actually read, but mark EOF otherwise
+		int rv = (this._targend - this._targoff);
+		if (finalhit != 0)
+		{
+			this._eof = true;
+			return (rv == 0 ? -1 : rv);
+		}
+		
+		// Just the read count
+		else
+			return rv;
+	}
+	
+	/**
+	 * Decompressed data stored with the fixed huffman table and decompresses
+	 * it.
+	 *
+	 * @throws IOException On read or decompression errors.
+	 * @since 2017/02/25
+	 */
+	private void __decompressFixed()
+		throws IOException
+	{
+		// Read until the sequence has ended
+		for (;;)
+			if (__handleFixedCode(__readFixedHuffman()))
+				break;
+	}
+	
+	/**
+	 * Handles a fixed huffman code
+	 *
+	 * @param __c The code used.
+	 * @return {@code true} on termination.
+	 * @throws IOException On read or decompression errors.
+	 * @since 2017/02/25
+	 */
+	private boolean __handleFixedCode(int __c)
+		throws IOException
+	{
+		// Literal byte value
+		if (__c >= 0 && __c <= 255)
+		{
+			__write(__c, 0xFF, false);
+			
+			// Do not break
+			return false;
+		}
+		
+		// Stop processing
+		else if (__c == 256)
+			return true;
+		
+		// Window based result
+		else if (__c >= 257 && __c <= 285)
+		{
+			// Read the length
+			int lent = __handleLength(__c);
+			
+			// Read the distance
+			int dist = __handleFixedDistance();
+			
+			// Get the maximum valid length, so for example if the length is 5
+			// and the distance is two, then only read two bytes.
+			int maxlen;
+			if (dist - lent < 0)
+				maxlen = dist;
+			else
+				maxlen = lent;
+			
+			// Create a byte array from the sliding window data
+			byte[] winb = new byte[maxlen];
+			try
+			{
+				this.window.get(dist, winb, 0, maxlen);
+			}
+			
+			// Bad window read
+			catch (IndexOutOfBoundsException ioobe)
+			{
+				// {@squirreljme.error BY06 Window access out of range.
+				// (The distance; The length)}
+				throw new IOException(String.format(
+					"BY06 %d %d", dist, lent), ioobe);
+			}
+			
+			// Add those bytes to the output, handle wrapping around if the
+			// length is greater than the current position
+			for (int i = 0; i < lent; i++)
+				__write(winb[i % maxlen] & 0xFF, 0xFF, false);
+			
+			// Do not break the loop
+			return false;
+		}
+		
+		// {@squirreljme.error BY05 Illegal code. (The code.)}
+		else
+			throw new IOException(String.format("BY05 %d", __c));
+	}
+	
+	/**
+	 * Handles fixed huffman distance.
+	 *
+	 * @return The ditsance read.
+	 * @throws IOException On read errors.
+	 * @since 2017/02/25
+	 */
+	private int __handleFixedDistance()
+		throws IOException
+	{
+		// If using fixed huffman read 5 bits since they are all the same
+		int code = __readBits(5, true);
+		
+		// {@squirreljme.error BY04 Illegal fixed distance code. (The distance
+		// code)}
+		if (code > 29)
+			throw new IOException(String.format("BY04 %d", code));
+		
+		// Calculate the required distance to use
+		int rv = 1;
+		for (int i = 0; i < code; i++)
+		{
+			// This uses a similar pattern to the length code, however the
+			// division is half the size (so there are groups of 2 now).
+			rv += (1 << ((i / 2) - 1));
+		}
+		
+		// Determine the number of extra bits
+		// If there are bits to read then read them in
+		int extrabits = ((code / 2) - 1);
+		if (extrabits > 0)
+			rv += __readBits(extrabits, false);
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Reads length codes from the input.
+	 *
+	 * @param __c Input code value.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/12
+	 */
+	private int __handleLength(int __c)
+		throws IOException
+	{
+		// If the code is 285 then the length will be that
+		if (__c == 285)
+			return 285;
+		
+		// Get the base code
+		int base = __c - 257;
+		
+		// {@squirreljme.error BY03 Illegal length code. (The length code)}
+		if (base < 0)
+			throw new IOException(String.format("BY03 %d", __c));
+		
+		// Calculate the required length to use
+		int rv = 3;
+		for (int i = 0; i < base; i++)
+		{
+			// Determine how many groups of 4 the code is long. Since zero
+			// appears as items then subtract 1 to make it longer. However
+			// after the first 8 it goes up in a standard pattern.
+			rv += (1 << ((i / 4) - 1));
+		}
+		
+		// Calculate the number of extra bits to read
+		int extrabits = (base / 4) - 1;
+		
+		// Read in those bits, if applicable
+		if (extrabits > 0)
+			rv += __readBits(extrabits, false);
+		
+		// Return the length
+		return rv;
 	}
 	
 	/**
@@ -315,6 +514,64 @@ public class InflaterInputStream
 		
 		// Return read result
 		return rv;
+	}
+	
+	/**
+	 * Reads a fixed huffman code for use by the {@code _TYPE_FIXED_HUFFMAN}
+	 * state. This method does not traverse a huffman tree so to speak, but it
+	 * instead uses many if statements. Initially every consideration was made
+	 * but now instead it uses ranges once it keeps deep enough into the tree.
+	 * This method is faster and provides a built-in huffman tree while not
+	 * taking up too many bytes in the byte code.
+	 *
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/10
+	 */
+	private int __readFixedHuffman()
+		throws IOException
+	{
+		// The long if statement block
+		if (__readBits(1, false) == 1)
+			if (__readBits(1, false) == 1)
+				if (__readBits(1, false) == 1)
+					return 192 + __readBits(6, true);
+				else
+					if (__readBits(1, false) == 1)
+						return 160 + __readBits(5, true);
+					else
+						if (__readBits(1, false) == 1)
+							return 144 + __readBits(4, true);
+						else
+							return 280 + __readBits(3, true);
+			else
+				return 80 + __readBits(6, true);
+		else
+			if (__readBits(1, false) == 1)
+				return 16 + __readBits(6, true);
+			else
+				if (__readBits(1, false) == 1)
+					if (__readBits(1, false) == 1)
+						return 0 + __readBits(4, true);
+					else
+						return 272 + __readBits(3, true);
+				else
+					return 256 + __readBits(4, true);
+	}
+	
+	/**
+	 * Writes the specified value to the output.
+	 *
+	 * @param __v The value to write.
+	 * @param __mask The mask of the value.
+	 * @param __msb Most significant bits first?
+	 * @throws IOException On write errors.
+	 * @since 2017/02/25
+	 */
+	private void __write(int __v, int __mask, boolean __msb)
+		throws IOException
+	{
+		throw new Error("TODO");
 	}
 }
 
