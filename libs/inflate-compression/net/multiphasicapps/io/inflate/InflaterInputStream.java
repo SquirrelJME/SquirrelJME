@@ -571,7 +571,60 @@ public class InflaterInputStream
 	private void __write(int __v, int __mask, boolean __msb)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Count bits to write
+		int bits = Integer.bitCount(__mask);
+		
+		// Write LSB value, need to swap bits
+		if (!__msb)
+			__v = Integer.reverse(__v) >>> (32 - bits);
+		
+		// Get the current write window
+		int writewindow = this._writewindow,
+			writesize = this._writesize;
+		
+		// Add bits to write
+		writewindow |= (__v & __mask) << writesize;
+		writesize += bits;
+		
+		// Enough bytes to write to the output?
+		if (writesize >= 8)
+		{
+			// Write to a byte array first
+			byte[] targ = this._targ;
+			int targoff = this._targoff,
+				targend = this._targend;
+			
+			// But if writes overflow then add to the overflow buffer
+			ByteDeque overflow = this.overflow;
+			
+			// Any bytes written are appended to the sliding window
+			SlidingByteWindow window = this.window;
+			
+			// Write bytes
+			do
+			{
+				// Read input byte
+				byte b = (byte)writewindow;
+				System.err.printf("DEBUG -- Write 0x%02x (%c)%n", b,
+					(b >= ' ' ? (char)b : '?'));
+				writewindow >>>= 8;
+				writesize--;
+				
+				// Can fit in the output buffer
+				if (targoff < targend)
+					targ[targoff++] = b;
+				
+				// Overflows
+				else
+					overflow.offerLast(b);
+				
+				// Append to the window
+				window.append(b);
+			} while (writesize >= 8);
+			
+			// Store new position
+			this._targoff = targoff;
+		}
 	}
 }
 
