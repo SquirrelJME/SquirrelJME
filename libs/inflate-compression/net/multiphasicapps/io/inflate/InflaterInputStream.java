@@ -323,7 +323,7 @@ public class InflaterInputStream
 				// Get the maximum valid length, so for example if the length
 				// is 5 and the distance is two, then only read two bytes.
 				int maxlen;
-				if (dist - lent < 0)
+				if (dist < lent)
 					maxlen = dist;
 				else
 					maxlen = lent;
@@ -488,10 +488,6 @@ public class InflaterInputStream
 			}
 		}
 		
-		// Debug
-		System.err.printf("DEBUG -- Window In: 0b%32s %d%n",
-			Integer.toString(miniwindow, 2), minisize);
-		
 		// Mask in the value, which is always at the lower bits
 		int mask = (1 << __n) - 1;
 		int rv = miniwindow & mask;
@@ -502,27 +498,23 @@ public class InflaterInputStream
 		miniwindow >>>= __n;
 		minisize -= __n;
 		
-		// Debug
-		System.err.printf("DEBUG -- Window At: 0b%32s %d%n",
-			Integer.toString(miniwindow, 2), minisize);
-		
 		// Store for next run
 		this._miniwindow = miniwindow;
 		this._minisize = minisize;
 		
 		System.err.printf("DEBUG -- Read: rv=%d (0b%s) msb=%b bits=%d%n",
-			(__msb ? rv :
+			(!__msb ? rv :
 				Integer.reverse(rv) >>> (32 - __n)),
-			(__msb ? Integer.toString(rv, 2) :
+			(!__msb ? Integer.toString(rv, 2) :
 				Integer.toString(Integer.reverse(rv) >>> (32 - __n), 2)),
 			__msb, __n);
 		
-		// Want LSB to be first, need to swap all the bits so the lowest ones
+		// Want MSB to be first, need to swap all the bits so the lowest ones
 		// are at the highest positions
 		// Luckily such a method already exists and it could potentially be
 		// inlined by the JVM or converted to native code if such an
 		// instruction exists.
-		if (!__msb)
+		if (__msb)
 			return Integer.reverse(rv) >>> (32 - __n);
 		
 		// Return read result
@@ -545,26 +537,26 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// The long if statement block
-		if (__readBits(1, true) == 1)
-			if (__readBits(1, true) == 1)
-				if (__readBits(1, true) == 1)
+		if (__readBits(1, true) != 0)
+			if (__readBits(1, true) != 0)
+				if (__readBits(1, true) != 0)
 					return 192 + __readBits(6, true);
 				else
-					if (__readBits(1, true) == 1)
+					if (__readBits(1, true) != 0)
 						return 160 + __readBits(5, true);
 					else
-						if (__readBits(1, true) == 1)
+						if (__readBits(1, true) != 0)
 							return 144 + __readBits(4, true);
 						else
 							return 280 + __readBits(3, true);
 			else
 				return 80 + __readBits(6, true);
 		else
-			if (__readBits(1, true) == 1)
+			if (__readBits(1, true) != 0)
 				return 16 + __readBits(6, true);
 			else
-				if (__readBits(1, true) == 1)
-					if (__readBits(1, true) == 1)
+				if (__readBits(1, true) != 0)
+					if (__readBits(1, true) != 0)
 						return 0 + __readBits(4, true);
 					else
 						return 272 + __readBits(3, true);
@@ -589,7 +581,7 @@ public class InflaterInputStream
 		
 		// Write LSB value, need to swap bits
 		__v &= __mask;
-		if (__msb)
+		if (!__msb)
 			__v = Integer.reverse(__v) >>> (32 - bits);
 		
 		// Get the current write window
