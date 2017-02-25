@@ -186,6 +186,23 @@ public class HuffmanTreeInt
 	}
 	
 	/**
+	 * Clears the huffman tree.
+	 *
+	 * @since 2017/02/25
+	 */
+	public void clear()
+	{
+		// Reset parameters
+		this._table = null;
+		this._values = null;
+		this._modcount = 0;
+		this._maxbits = 0;
+		
+		// Setup initial tree
+		__addTableSpace();
+	}
+	
+	/**
 	 * Finds the bit sequence associated with the given value.
 	 *
 	 * @param __i The value to find the sequence for the given bit pattern.

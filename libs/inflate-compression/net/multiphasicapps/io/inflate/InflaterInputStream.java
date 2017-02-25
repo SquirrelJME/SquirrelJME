@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
+import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
 
 /**
  * This is used to decompress standard deflate compressed stream.
@@ -43,6 +44,13 @@ public class InflaterInputStream
 	private static final int _TYPE_ERROR =
 		0b11;
 	
+	/** Shuffled bit values when reading values. */
+	private static final int[] _SHUFFLE_BITS =
+		new int[]
+		{
+			16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
+		};
+	
 	/** The deflated compressed stream to be decompressed. */
 	protected final InputStream in;
 	
@@ -61,6 +69,14 @@ public class InflaterInputStream
 	/** The read-in buffer which is used to bulk read input bytes. */
 	private final byte[] _readin =
 		new byte[4];
+	
+	/** Raw code lengths. */
+	private int byte[] _rawcodelens =
+		new byte[19];
+	
+	/** The code length tree. */
+	private final HuffmanTreeInt _codelentree =
+		new HuffmanTreeInt();
 	
 	/**
 	 * The miniature read window, it stores a 32-bit value and is given input
@@ -255,7 +271,8 @@ public class InflaterInputStream
 				
 				// Dynamic huffman
 			case _TYPE_DYNAMIC_HUFFMAN:
-				throw new Error("TODO");
+				__decompressDynamic();
+				break;
 			
 				// Error or unknown
 			case _TYPE_ERROR:
@@ -277,6 +294,142 @@ public class InflaterInputStream
 		// Just the read count
 		else
 			return rv;
+	}
+	
+	/**
+	 * Decompress dynamic huffman code.
+	 *
+	 * @throws On read or decompression errors.
+	 * @since 2017/02/25
+	 */
+	private void __decompressDynamic()
+		throws IOException
+	{
+		// Read the code length parameters
+		int dhlit = __readBits(5, false) + 257;
+		int dhdist = __readBits(5, false) + 1;
+		int dhclen = __readBits(4, false) + 4;
+		
+		// Read the code length tree
+		HuffmanTreeInt codelentree = __decompressDynamicLoadLenTree(dhclen);
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Get the tree and the max bit count used
+		HuffmanTreeInt htree = _clentree;
+		int maxbits = htree.maximumBits();
+		int hlit = _dhlit;
+		int hdist = _dhdist;
+		int total = hlit + hdist;
+		
+		// Get raw literal lengths
+		int[] rawints = _rawlitdistlens;
+		if (rawints == null)
+			_rawlitdistlens = rawints = new int[total];
+		
+		// Read loop
+		try
+		{
+			int next = this._nexthlitdist;
+			for (;;)
+			{
+				// Read them all?
+				if (next >= total)
+				{
+					// No longer needed
+					_clentree = null;
+					
+					// Generate trees
+					_treehlit = __thunkCodeLengthTree(rawints, 0, hlit);
+					_treedist = __thunkCodeLengthTree(rawints, hlit, hdist);
+					
+					// Read the compressed data now
+					_task = __TASK__DYNAMIC_HUFFMAN_COMPRESSED;
+					
+					// Store value before stalling
+					this._nexthlitdist = next;
+					
+					// This method is called by the main loop code, so just
+					// return
+					return;
+				}
+				
+				// Not enough bits to read code lengths?
+				// Add 7 due to the repeat zero many times symbol
+				if (!isInputComplete() && __zzAvailable() < maxbits + 7)
+				{
+					// Store value before stalling
+					this._nexthlitdist = next;
+					
+					// Now stall
+					throw _STALLED;
+				}
+				
+				// Read in code
+				int cbskip = __readCodeBits(htree, rawints, next);
+				
+				// Increase read
+				next += cbskip;
+			}
+		}
+		
+		// Out of bits or a bad tree
+		catch (NoSuchElementException nsee)
+		{
+			// {@squirreljme.error AF0i The compressed stream is damaged by
+			// being too short or having an illegal tree access.}
+			throw new PipeProcessException("AF0i", nsee);
+		}
+		
+		// Get both trees
+		HuffmanTreeInt thlit = _treehlit;
+		HuffmanTreeInt tdist = _treedist;
+		
+		// Maximum number of btis to read
+		int maxbits = Math.max(thlit.maximumBits(), tdist.maximumBits());
+		
+		// Need to be able to read a value from the tree along with any
+		// extra distance and length codes it may have
+		while (isInputComplete() || __zzAvailable() >= maxbits + 32)
+		{
+			// Decode literal code
+			int code = __readTreeCode(thlit);
+			
+			// Handle it
+			if (__handleCode(code, thlit, tdist));
+				break;
+		}
+	}
+	
+	/**
+	 * Reads the code length tree.
+	 *
+	 * @param __dhclen The code length size.
+	 * @throws IOException On read errors.
+	 * @since 2017/02/25
+	 */
+	private HuffmanTreeInt __decompressDynamicLoadLenTree(int __dhclen)
+		throws IOException
+	{
+		// Target tree
+		HuffmanTreeInt codelentree = this._codelentree;
+		
+		// {@squirreljme.error BY07 There may only be at most 19 used
+		// code lengths. (The number of code lengths)}
+		if (__dhclen >= 19)
+			throw new InflaterException(String.format("BY07 %d", __dhclen));
+		
+		// Read lengths, they are just 3 bits but their placement values are
+		// shuffled since some sequences are more common than others
+		int[] rawcodelens = this._rawcodelens;
+		int[] hsbits = _SHUFFLE_BITS;
+		for (int next = 0; next < __dhclen; next++)
+			rawcodelens[hsbits[next++]] = __readBits(3, false);
+		
+		// Thunk the tree and return it
+		return __thunkCodeLengthTree(codelentree, rawcodelens, 0,
+			rawcodelens.length);
 	}
 	
 	/**
@@ -562,6 +715,76 @@ public class InflaterInputStream
 						return 272 + __readBits(3, true);
 				else
 					return 256 + __readBits(4, true);
+	}
+	
+	/**
+	 * Creates a huffman tree from the given code lengths. These generate
+	 * symbols which are used to determine how the dynamic huffman data is to
+	 * be decoded.
+	 *
+	 * @param __rv The tree to output.
+	 * @param __lens The input code lengths.
+	 * @param __o The starting offset.
+	 * @param __l The number of lengths to decode.
+	 * @return A huffman tree from the code length input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/28
+	 */
+	private HuffmanTreeInt __thunkCodeLengthTree(HuffmanTreeInt __tree,
+		int[] __lens, int __o, int __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__lens == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup target tree
+		__tree.clear();
+		
+		// The number of lengths
+		int n = __l;
+		
+		// Obtain the number of bits that are available in all of the input
+		// lengths
+		int maxbits = 0;
+		for (int i = 0; i < n; i++)
+			maxbits = Math.max(maxbits, __lens[__o + i]);
+		
+		// Determine the bitlength count for all of the inputs
+		int[] bl_count = new int[n];
+		for (int i = 0; i < n; i++)
+			bl_count[__lens[__o + i]]++;
+		
+		// Find the numerical value of the smallest code for each code
+		// length.
+		int code = 0;
+		int[] next_code = new int[maxbits + 1];
+		bl_count[0] = 0;
+		for (int bits = 1; bits <= maxbits; bits++)
+		{
+			code = (code + bl_count[bits - 1]) << 1;
+			next_code[bits] = code;
+		}
+	
+		// Assign values to all codes
+		for (int q = 0; q < n; q++)
+		{
+			// Get length
+			int len = __lens[__o + q];
+		
+			// Calculate
+			if (len != 0)
+			{
+				// The bits to use
+				int use = ((next_code[len])++);
+				
+				// Add to the output table
+				__tree.add(q, use, (1 << len) - 1);
+			}
+		}
+		
+		// Return it
+		return __tree;
 	}
 	
 	/**
