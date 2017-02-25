@@ -6,5 +6,6 @@ X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This implements support for inflating 
  deflate compressed streams.
+X-SquirrelJME-Depends: data-deque-buffer sliding-window
 Microedition-Configuration: CLDC-1.8-Compact
 

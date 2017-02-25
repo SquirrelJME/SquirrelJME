@@ -12,6 +12,8 @@ package net.multiphasicapps.io.inflate;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.slidingwndow.SlidingByteWindow
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is used to decompress standard deflate compressed stream.
@@ -21,12 +23,27 @@ import java.io.IOException;
 public class InflaterInputStream
 	extends InputStream
 {
+	/** The size of the sliding window. */
+	protected static final int SLIDING_WINDOW_SIZE =
+		32768;
+	
 	/** The deflated compressed stream to be decompressed. */
 	protected final InputStream in;
+	
+	/** Sliding window for accessing old bytes. */
+	protected final SlidingByteWindow window =
+		new SlidingByteWindow(SLIDING_WINDOW_SIZE);
+	
+	/** If the output cannot be filled, bytes are written here instead. */
+	protected final ByteDeque overflow =
+		new ByteDeque();
 	
 	/** Single byte read. */
 	private final byte[] _solo =
 		new byte[1];
+	
+	/** EOF has been reached? */
+	private volatile int _eof;
 	
 	/**
 	 * Initializes the deflate compression stream inflater.
@@ -42,7 +59,8 @@ public class InflaterInputStream
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.in = __in;
 	}
 	
 	/**
@@ -53,7 +71,9 @@ public class InflaterInputStream
 	public int available()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Use the number of bytes that are able to be read quickly without
+		// requiring decompression
+		return this.overflow.available();
 	}
 	
 	/**
@@ -105,7 +125,47 @@ public class InflaterInputStream
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int bl = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > bl)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
+		// If there are bytes in the overflow buffer, read them first into the
+		// output because they are the result of previous decompression.
+		ByteDeque overflow = this.overflow;
+		int ovn = overflow.available(),
+			ovr = (ovn < __l ? ovn : __l);
+		int c = overflow.removeFirst(__b, __o, __l);
+		
+		// End of stream reached
+		if (this._eof)
+		{
+			// Never return EOF if no bytes were read and bytes were available
+			// even when EOF has been triggered.
+			if (c > 0 || overflow.available())
+				return c;
+			
+			// Otherwise EOF
+			return -1;
+		}
+		
+		// Only read overflow bytes? Do not bother decompressing more data
+		// because it will just be added to the queue
+		if (c >= __l)
+			return c;
+		
+		// Since overflow bytes were read, adjust the output and length
+		// accordingly
+		__o += c;
+		__l -= c;
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Return the read count
+		return c;
 	}
 }
 
