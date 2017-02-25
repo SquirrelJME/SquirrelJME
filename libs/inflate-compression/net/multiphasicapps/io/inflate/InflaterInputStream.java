@@ -391,24 +391,18 @@ public class InflaterInputStream
 		int[] rawlitdistlens = this._rawlitdistlens;
 		
 		// Read every code
-		for (int next = 0; next < total;)
+		try
 		{
-			try
-			{
-				// Read in code
-				int cbskip = __readCodeBits(__cltree, rawlitdistlens, next);
-				
-				// Skip
-				next += cbskip;
-			}
+			for (int next = 0; next < total;)
+				next += __readCodeBits(__cltree, rawlitdistlens, next);
+		}
 
-			// {@squirreljme.error BY08 The compressed stream is
-			// damaged by being too short or having an illegal tree
-			// access.}				
-			catch (NoSuchElementException e)
-			{
-				throw new IOException("BY08", e);
-			}
+		// {@squirreljme.error BY08 The compressed stream is
+		// damaged by being too short or having an illegal tree
+		// access.}				
+		catch (NoSuchElementException e)
+		{
+			throw new IOException("BY08", e);
 		}
 		
 		// Initialize both trees
