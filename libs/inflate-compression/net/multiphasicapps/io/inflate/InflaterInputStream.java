@@ -12,7 +12,7 @@ package net.multiphasicapps.io.inflate;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.slidingwndow.SlidingByteWindow
+import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
@@ -43,7 +43,7 @@ public class InflaterInputStream
 		new byte[1];
 	
 	/** EOF has been reached? */
-	private volatile int _eof;
+	private volatile boolean _eof;
 	
 	/**
 	 * Initializes the deflate compression stream inflater.
@@ -144,7 +144,7 @@ public class InflaterInputStream
 		{
 			// Never return EOF if no bytes were read and bytes were available
 			// even when EOF has been triggered.
-			if (c > 0 || overflow.available())
+			if (c > 0 || overflow.available() > 0)
 				return c;
 			
 			// Otherwise EOF

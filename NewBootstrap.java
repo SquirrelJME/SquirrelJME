@@ -657,9 +657,8 @@ public class NewBootstrap
 							"NB06 %s %s", this.name, dep));
 					
 					// Compile the dependency and add it to the merge group
-					if (!dp._incompile)
-						for (BuildProject bp : dp.compile())
-							rv.add(bp);
+					for (BuildProject bp : dp.compile())
+						rv.add(bp);
 				}
 				
 				// Other complation state
@@ -719,6 +718,16 @@ public class NewBootstrap
 			
 			// Return it
 			return rv;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/25
+		 */
+		@Override
+		public String toString()
+		{
+			return this.name;
 		}
 		
 		/**
