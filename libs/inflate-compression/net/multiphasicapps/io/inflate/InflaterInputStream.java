@@ -256,7 +256,10 @@ public class InflaterInputStream
 			
 			// Ended?
 			if (rv < 0)
+			{
 				this._eof = true;
+				break;
+			}
 			
 			// Otherwise add those bytes
 			c += rv;
@@ -277,6 +280,10 @@ public class InflaterInputStream
 	private int __decompress()
 		throws IOException
 	{
+		// Do nothing on EOF
+		if (this._eof)
+			return -1;
+		
 		// Read the final bit which determines if this is the last block
 		int finalhit = __readBits(1, false);
 		
@@ -286,7 +293,8 @@ public class InflaterInputStream
 		{
 				// None
 			case _TYPE_NO_COMPRESSION:
-				throw new Error("TODO");
+				__decompressNone();
+				break;
 				
 				// Fixed huffman
 			case _TYPE_FIXED_HUFFMAN:
@@ -488,6 +496,37 @@ public class InflaterInputStream
 	}
 	
 	/**
+	 * Decompresses uncompressed data.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2017/02/25
+	 */
+	private void __decompressNone()
+		throws IOException
+	{
+		// Throw out bits that have been read so that the following reads are
+		// aligned to byte boundaries
+		int minisub = this._minisize & 7;
+		if (minisub > 0)
+			__readBits(8 - minisub, false);
+		
+		// Read length and the one's complement of it
+		int len = __readBits(16, false);
+		int com = __readBits(16, false);
+		
+		// The complemented length must be equal to the complement
+		// {@squirreljme.error BY0c Value mismatch reading the number of
+		// uncompressed symbols that exist. (The length; The complement)}
+		if ((len ^ 0xFFFF) != com)
+			throw new IOException(String.format("BY0c %x %x",
+				len, com));
+		
+		// Read all bytes
+		for (int i = 0; i < len; i++)
+			__write(__readBits(8, false), 0xFF, false);
+	}
+	
+	/**
 	 * Handles decompressing window data.
 	 *
 	 * @param __len The length to read, must be prehandled.
@@ -659,9 +698,10 @@ public class InflaterInputStream
 			int rc = this.in.read(readin, 0, bc);
 			
 			// {@squirreljme.error BY02 Reached EOF while reading bytes to
-			// decompress.}
+			// decompress. (Bits in the queue; Requested number of bits)}
 			if (rc < 0)
-				throw new IOException("BY02");
+				throw new IOException(String.format("BY02 %d %d", minisize,
+					__n));
 			
 			// Shift in the read bytes to the higher positions
 			for (int i = 0; i < rc; i++)
