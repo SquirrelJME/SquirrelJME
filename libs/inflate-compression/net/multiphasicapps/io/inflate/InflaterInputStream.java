@@ -668,12 +668,8 @@ public class InflaterInputStream
 			// Shift in the read bytes to the higher positions
 			for (int i = 0; i < rc; i++)
 			{
-				System.err.printf("DEBUG -- In: %02x%n", readin[i] & 0xFF);
 				miniwindow |= ((readin[i] & 0xFF) << minisize);
 				minisize += 8;
-				
-				System.err.printf("DEBUG -- mw=%08x ms=%s%n", miniwindow,
-					minisize);
 			}
 		}
 		
@@ -689,13 +685,6 @@ public class InflaterInputStream
 		// Store for next run
 		this._miniwindow = miniwindow;
 		this._minisize = minisize;
-		
-		System.err.printf("DEBUG -- Read: rv=%d (0b%s) msb=%b bits=%d%n",
-			(!__msb ? rv :
-				Integer.reverse(rv) >>> (32 - __n)),
-			(!__msb ? Integer.toString(rv, 2) :
-				Integer.toString(Integer.reverse(rv) >>> (32 - __n), 2)),
-			__msb, __n);
 		
 		// Want MSB to be first, need to swap all the bits so the lowest ones
 		// are at the highest positions
