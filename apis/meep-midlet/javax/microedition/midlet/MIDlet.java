@@ -15,16 +15,10 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 public abstract class MIDlet
 {
-	/** Lock to prevent multiple midlets from running. */
-	private static final Object _ACTIVE_LOCK =
-		new Object();
-	
-	/** Only a single midlet may run at a time. */
-	private static volatile MIDlet _ACTIVE_MIDLET;
-	
 	/** The cached manifest for obtaining properties. */
 	private volatile Reference<JavaManifest> _manifest;
 	
@@ -38,22 +32,12 @@ public abstract class MIDlet
 	 */
 	protected MIDlet()
 	{
-		// Prevent multiple MIDlet launches
-		synchronized (_ACTIVE_LOCK)
-		{
-			// {@squirreljme.error AD01 Only a single MIDlet may be active at
-			// a time.}
-			MIDlet active = _ACTIVE_MIDLET;
-			if (active != null)
-				throw new IllegalStateException("AD01");
-			
-			// Set active midlet
-			_ACTIVE_MIDLET = this;
-			
-			// Create a thread which just calls startApp
-			Thread t = new Thread(new __RunMidlet__(), "squirreljme-midlet");
-			t.start();
-		}
+		// Set the active midlet to this one
+		ActiveMidlet.set(this);
+		
+		// Create a thread which just calls startApp
+		Thread t = new Thread(new __RunMidlet__(), "squirreljme-midlet");
+		t.start();
 	}
 	
 	protected abstract void destroyApp(boolean __uc)
