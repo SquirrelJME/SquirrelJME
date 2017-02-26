@@ -489,10 +489,12 @@ public class RecordStore
 	}
 	
 	/**
-	 * Returns the list of record stores that are available.
+	 * Returns the list of record stores that are available and owned by
+	 * this suite.
 	 *
 	 * @return The list of available record stores, the order is unspecified
-	 * and implementation dependent.
+	 * and implementation dependent. If there are no records then {@code null}
+	 * will be returned.
 	 * @since 2017/02/26
 	 */
 	public static String[] listRecordStores()
