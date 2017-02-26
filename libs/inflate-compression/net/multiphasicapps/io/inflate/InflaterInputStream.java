@@ -351,12 +351,7 @@ public class InflaterInputStream
 			
 			// Literal byte value
 			if (code >= 0 && code <= 255)
-			{
-				System.err.printf("DEBUG -- Dyn Code: %d %02x 0b%s%n", code,
-					code, Integer.toString(code, 2));
-				
 				__write(code, 0xFF, false);
-			}
 		
 			// Stop processing
 			else if (code == 256)
@@ -365,7 +360,7 @@ public class InflaterInputStream
 			// Window based result
 			else if (code >= 257 && code <= 285)
 				__decompressWindow(__handleLength(code),
-					distancetree.getValue(this._bitsource));
+					__handleDistance(distancetree.getValue(this._bitsource)));
 			
 			// {@squirreljme.error BY0b Illegal dynamic huffman code. (The
 			// code.)}
@@ -487,7 +482,8 @@ public class InflaterInputStream
 		
 			// Window based result
 			else if (code >= 257 && code <= 285)
-				__decompressWindow(code, __readBits(5, true));
+				__decompressWindow(__handleLength(code),
+					__handleDistance(__readBits(5, true)));
 		
 			// {@squirreljme.error BY05 Illegal fixed huffman code. (The
 			// code.)}
@@ -536,13 +532,13 @@ public class InflaterInputStream
 	
 		// Add those bytes to the output, handle wrapping around if the
 		// length is greater than the current position
-		for (int i = 0, v = 0; i < __len; i++, v++)
+		for (int i = 0, v = 0; i < __len; i++)
 		{
 			// Write byte
 			__write(winb[v], 0xFF, false);
 		
 			// Wrap around
-			if (v >= maxlen)
+			if ((++v) >= maxlen)
 				v = 0;
 		}
 	}
