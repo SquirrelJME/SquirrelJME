@@ -23,7 +23,8 @@ package javax.microedition.rms;
  *     return a;
  * }
  *
- * @see RecordEnumeration RecordFilter
+ * @see RecordEnumeration
+ * @see RecordFilter
  * @since 2017/02/26
  */
 public interface RecordComparator

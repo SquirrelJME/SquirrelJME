@@ -16,6 +16,7 @@ package javax.microedition.rms;
  * @since 2017/02/26
  */
 public class RecordStoreException
+	extends Exception
 {
 	/**
 	 * Initializes the exception with no message or cause.
