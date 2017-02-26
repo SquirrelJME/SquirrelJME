@@ -87,9 +87,12 @@ public final class RecordStoreInfo
 	}
 	
 	/**
-	 * Returns {@code true} if the record store can be written to.
+	 * Returns {@code true} if the record store can be written to by other
+	 * suites. A value of {@code false} still specifies that the record may
+	 * be written to by the current application.
 	 *
-	 * @return {@code true} if the record store can be written to.
+	 * @return {@code true} if the record store can be written to by other
+	 * suites.
 	 * @throws RecordStoreNotOpenException If the record store is not open.
 	 * @since 2017/02/26
 	 */

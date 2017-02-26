@@ -44,6 +44,6 @@ public interface RecordListener
 	 * {@link InvalidRecordIDException}.
 	 * @since 2017/02/26
 	 */
-	public abstract void recordAdded(RecordStore __rs, int __id);
+	public abstract void recordDeleted(RecordStore __rs, int __id);
 }
 

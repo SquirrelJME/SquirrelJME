@@ -23,7 +23,7 @@ public class RecordStoreException
 	 *
 	 * @since 2017/02/26
 	 */
-	public InvalidRecordIDException()
+	public RecordStoreException()
 	{
 	}
 	
@@ -33,7 +33,7 @@ public class RecordStoreException
 	 * @param __m The exception message.
 	 * @since 2017/02/26
 	 */
-	public InvalidRecordIDException(String __m)
+	public RecordStoreException(String __m)
 	{
 		super(__m);
 	}
