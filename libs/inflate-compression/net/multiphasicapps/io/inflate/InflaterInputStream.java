@@ -922,9 +922,9 @@ public class InflaterInputStream
 		// Count bits to write
 		int bits = Integer.bitCount(__mask);
 		
-		// Write LSB value, need to swap bits
+		// Write LSB value, need to swap bits if writing MSB
 		__v &= __mask;
-		if (!__msb)
+		if (__msb)
 			__v = Integer.reverse(__v) >>> (32 - bits);
 		
 		// Get the current write window
