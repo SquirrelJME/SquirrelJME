@@ -284,6 +284,9 @@ public class InflaterInputStream
 		if (this._eof)
 			return -1;
 		
+		// The target offset on entry
+		int enteroff = this._targoff;
+		
 		// Read the final bit which determines if this is the last block
 		int finalhit = __readBits(1, false);
 		
@@ -316,7 +319,7 @@ public class InflaterInputStream
 		
 		// If this was the last block to read, then return EOF if no data
 		// was actually read, but mark EOF otherwise
-		int rv = (this._targend - this._targoff);
+		int rv = (this._targoff - enteroff);
 		if (finalhit != 0)
 		{
 			this._eof = true;
@@ -404,12 +407,7 @@ public class InflaterInputStream
 		try
 		{
 			for (int next = 0; next < total;)
-			{
-				int skip = __readCodeBits(__cltree, rawlitdistlens, next);
-				System.err.printf("DEBUG -- Read LitDist: %d skip=%d total=%d%n",
-					next, skip, total);
-				next += skip;
-			}
+				next += __readCodeBits(__cltree, rawlitdistlens, next);
 		}
 
 		// {@squirreljme.error BY08 The compressed stream is
@@ -448,11 +446,7 @@ public class InflaterInputStream
 		int[] rawcodelens = this._rawcodelens;
 		int[] hsbits = _SHUFFLE_BITS;
 		for (int next = 0; next < __dhclen; next++)
-		{
-			System.err.printf("DEBUG -- Read codelen: %d of %d%n", next,
-				__dhclen);
 			rawcodelens[hsbits[next]] = __readBits(3, false);
-		}
 		
 		// Thunk the tree and return it
 		return __thunkCodeLengthTree(codelentree, rawcodelens, 0,
@@ -539,9 +533,6 @@ public class InflaterInputStream
 	{
 		// Handle distance
 		__dist = __handleDistance(__dist);
-		
-		System.err.printf("DEBUG -- Length: %d, Distance: %d%n",
-			__len, __dist);
 	
 		// Get the maximum valid length, so for example if the length
 		// is 5 and the distance is two, then only read two bytes.
@@ -614,7 +605,7 @@ public class InflaterInputStream
 		int extrabits = ((__code / 2) - 1);
 		if (extrabits > 0)
 			rv += __readBits(extrabits, false);
-		System.err.printf("DEBUG -- Use dist: %d%n", rv);
+		
 		// Return it
 		return rv;
 	}
@@ -992,8 +983,6 @@ public class InflaterInputStream
 			{
 				// Read input byte
 				byte b = (byte)writewindow;
-				System.err.printf("DEBUG -- Write 0x%02x (%c)%n", b,
-					(b >= ' ' ? (char)b : '?'));
 				writewindow >>>= 8;
 				writesize -= 8;
 				
