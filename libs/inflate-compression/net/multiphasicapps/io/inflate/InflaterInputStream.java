@@ -394,7 +394,12 @@ public class InflaterInputStream
 		try
 		{
 			for (int next = 0; next < total;)
-				next += __readCodeBits(__cltree, rawlitdistlens, next);
+			{
+				int skip = __readCodeBits(__cltree, rawlitdistlens, next);
+				System.err.printf("DEBUG -- Read LitDist: %d skip=%d total=%d%n",
+					next, skip, total);
+				next += skip;
+			}
 		}
 
 		// {@squirreljme.error BY08 The compressed stream is
@@ -433,7 +438,11 @@ public class InflaterInputStream
 		int[] rawcodelens = this._rawcodelens;
 		int[] hsbits = _SHUFFLE_BITS;
 		for (int next = 0; next < __dhclen; next++)
-			rawcodelens[hsbits[next++]] = __readBits(3, false);
+		{
+			System.err.printf("DEBUG -- Read codelen: %d of %d%n", next,
+				__dhclen);
+			rawcodelens[hsbits[next]] = __readBits(3, false);
+		}
 		
 		// Thunk the tree and return it
 		return __thunkCodeLengthTree(codelentree, rawcodelens, 0,
