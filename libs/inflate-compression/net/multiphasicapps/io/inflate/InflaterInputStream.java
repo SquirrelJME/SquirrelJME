@@ -360,7 +360,7 @@ public class InflaterInputStream
 			// Window based result
 			else if (code >= 257 && code <= 285)
 				__decompressWindow(__handleLength(code),
-					__handleDistance(distancetree.getValue(this._bitsource)));
+					distancetree.getValue(this._bitsource));
 			
 			// {@squirreljme.error BY0b Illegal dynamic huffman code. (The
 			// code.)}
@@ -469,12 +469,7 @@ public class InflaterInputStream
 				
 			// Literal byte value
 			if (code >= 0 && code <= 255)
-			{
-				System.err.printf("DEBUG -- Fixed Code: %d %02x 0b%s%n", code,
-					code, Integer.toString(code, 2));
-				
 				__write(code, 0xFF, false);
-			}
 		
 			// Stop processing
 			else if (code == 256)
@@ -483,7 +478,7 @@ public class InflaterInputStream
 			// Window based result
 			else if (code >= 257 && code <= 285)
 				__decompressWindow(__handleLength(code),
-					__handleDistance(__readBits(5, true)));
+					__readBits(5, true));
 		
 			// {@squirreljme.error BY05 Illegal fixed huffman code. (The
 			// code.)}
@@ -495,7 +490,7 @@ public class InflaterInputStream
 	/**
 	 * Handles decompressing window data.
 	 *
-	 * @param __len The length to read.
+	 * @param __len The length to read, must be prehandled.
 	 * @param __dist The distance to read.
 	 * @throws IOException On read errors.
 	 * @since 2017/02/25
@@ -503,6 +498,9 @@ public class InflaterInputStream
 	private void __decompressWindow(int __len, int __dist)
 		throws IOException
 	{
+		// Handle distance
+		__dist = __handleDistance(__dist);
+		
 		System.err.printf("DEBUG -- Length: %d, Distance: %d%n",
 			__len, __dist);
 	
