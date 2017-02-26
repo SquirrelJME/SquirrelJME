@@ -14,10 +14,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.ReflectiveOperationException;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.io.hex.HexInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 import net.multiphasicapps.squirreljme.build.projects.FileChannelBlockAccessor;
@@ -52,6 +56,7 @@ public class HostedLaunch
 		
 		// Load the target ZIP to the read manifest
 		Path p = Paths.get(__args[0]);
+		Class<?> mainclass;
 		try (FileChannel fc = FileChannel.open(p, StandardOpenOption.READ);
 			ZipBlockReader zip = new ZipBlockReader(
 				new FileChannelBlockAccessor(fc)))
@@ -71,13 +76,59 @@ public class HostedLaunch
 			if (midletval == null)
 				throw new RuntimeException("BM0d");
 			
-			throw new Error("TODO");
+			// The MIDlet field is in 3 fields: name, icon, class
+			// {@squirreljme.error BM0e Expected two commas in the MIDlet
+			// field.}
+			int pc = midletval.indexOf(','),
+				sc = midletval.indexOf(',', Math.max(pc + 1, 0));
+			if (pc < 0 || sc < 0)
+				throw new RuntimeException("BM0e");
+			
+			// Split fields
+			String name = midletval.substring(0, pc).trim(),
+				icon = midletval.substring(pc + 1, sc).trim(),
+				main = midletval.substring(sc + 1).trim();
+			
+			// Get the main class, which is in our own classpath!
+			mainclass = Class.forName(main);
+		}
+		
+		// {@squirreljme.error BM0f Failed to find the main class.}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException("BM0f", e);
 		}
 		
 		// {@squirreljme.error BM0c Failed to read the manifest.}
 		catch (IOException e)
 		{
 			throw new RuntimeException("BM0c", e);
+		}
+		
+		// Construct the main MIDlet then start it
+		try
+		{
+			// Get constructor
+			Constructor<?> cons = mainclass.getConstructor();
+			
+			// Make sure it can be called
+			cons.setAccessible(true);
+			
+			// Create instance
+			MIDlet mid = (MIDlet)cons.newInstance();
+			
+			// Start it
+			Method startmethod = MIDlet.class.getMethod("startApp");
+			startmethod.setAccessible(true);
+			
+			// Call it
+			startmethod.invoke(mid);
+		}
+		
+		// {@squirreljme.error BM0g Failed to launch the MIDlet.}
+		catch (ReflectiveOperationException|SecurityException e)
+		{
+			throw new RuntimeException("BM0g", e);
 		}
 	}
 }
