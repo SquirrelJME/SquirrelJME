@@ -688,9 +688,44 @@ public class Display
 		throw new Error("TODO");
 	}
 	
-	public boolean vibrate(int __a)
+	/**
+	 * Attempts to vibrate the device for the given number of milliseconds.
+	 *
+	 * The values here only set the duration to vibrate for from the current
+	 * point in time and will not increase the length of vibration.
+	 *
+	 * The return value will be {@code false} if the display is in the
+	 * background, the device cannot vibrate, or the vibrator cannot be
+	 * controlled.
+	 *
+	 * Note that excessive vibration may cause the battery life for a device to
+	 * be lowered, thus it should be used sparingly.
+	 *
+	 * @param __d The number of milliseconds to vibrate for, if zero the
+	 * vibrator will be switched off.
+	 * @return {@code true} if the vibrator is controllable by this application
+	 * and the display is active.
+	 * @throws IllegalArgumentException If the duration is negative.
+	 * @since 2017/02/26
+	 */
+	public boolean vibrate(int __d)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error AD04 Cannot vibrate for a negative duration.}
+		if (__d < 0)
+			throw new IllegalArgumentException("AD04");
+		
+		// Display is not attached, do not vibrate
+		DisplayInstance instance = this._instance;
+		if (instance == null)
+			return false;
+		
+		// In the background
+		if (instance.getState() == STATE_BACKGROUND)
+			return false;
+		
+		// Otherwise vibrate
+		return instance.vibrate(__d);
 	}
 	
 	/**

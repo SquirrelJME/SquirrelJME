@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.awt.Dimension;
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
@@ -86,6 +87,17 @@ public abstract class SwingInstance
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/26
+	 */
+	@Override
+	public int getState()
+	{
+		// Applications are always in the foreground
+		return Display.STATE_BACKGROUND;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/08
 	 */
 	@Override
@@ -111,6 +123,17 @@ public abstract class SwingInstance
 	@Override
 	public void update()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/26
+	 */
+	@Override
+	public boolean vibrate(int __d)
+	{
+		// Not supported in Swing
+		return false;
 	}
 }
 

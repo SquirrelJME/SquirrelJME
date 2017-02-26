@@ -47,6 +47,14 @@ public interface DisplayInstance
 	public abstract int getHeight();
 	
 	/**
+	 * Returns the foreground or background state of the displayable.
+	 *
+	 * @return The displayable state.
+	 * @since 2017/02/26
+	 */
+	public abstract int getState();
+	
+	/**
 	 * Returns the width of the displayable in pixels.
 	 *
 	 * @return The width in pixels or if the displayable is not shown, a
@@ -90,5 +98,15 @@ public interface DisplayInstance
 	 * @since 2017/02/08
 	 */
 	public abstract void update();
+	
+	/**
+	 * Vibrates the display for the specified number of milliseconds.
+	 *
+	 * @param __d The number of milliseconds to vibrate for, zero stops
+	 * vibration.
+	 * @return {@code true} if the vibration has been set.
+	 * @since 2017/02/26
+	 */
+	public abstract boolean vibrate(int __d);
 }
 
