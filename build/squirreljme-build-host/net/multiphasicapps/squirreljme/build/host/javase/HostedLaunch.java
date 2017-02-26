@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.ReflectiveOperationException;
 import java.nio.channels.FileChannel;
@@ -118,7 +119,7 @@ public class HostedLaunch
 			MIDlet mid = (MIDlet)cons.newInstance();
 			
 			// Start it
-			Method startmethod = MIDlet.class.getMethod("startApp");
+			Method startmethod = mainclass.getMethod("startApp");
 			startmethod.setAccessible(true);
 			
 			// Call it
@@ -128,6 +129,17 @@ public class HostedLaunch
 		// {@squirreljme.error BM0g Failed to launch the MIDlet.}
 		catch (ReflectiveOperationException|SecurityException e)
 		{
+			// Forward these unwrapped
+			if (e instanceof InvocationTargetException)
+			{
+				Throwable t = e.getCause();
+				
+				if (t instanceof Error)
+					throw (Error)t;
+				else if (t instanceof RuntimeException)
+					throw (RuntimeException)t;
+			}
+			
 			throw new RuntimeException("BM0g", e);
 		}
 	}
