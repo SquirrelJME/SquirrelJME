@@ -343,28 +343,35 @@ public class InflaterInputStream
 		__decompressDynamicLoadLitDistTree(codelentree, dhlit, dhdist,
 			literaltree, distancetree);
 		
-		if (true)
-			throw new Error("TODO");
-		/*
-		
-		// Get both trees
-		HuffmanTreeInt thlit = _treehlit;
-		HuffmanTreeInt tdist = _treedist;
-		
-		// Maximum number of btis to read
-		int maxbits = Math.max(thlit.maximumBits(), tdist.maximumBits());
-		
-		// Need to be able to read a value from the tree along with any
-		// extra distance and length codes it may have
-		while (isInputComplete() || __zzAvailable() >= maxbits + 32)
+		// Decode input
+		for (;;)
 		{
-			// Decode literal code
-			int code = thlit.getValue(this._bitsource);
+			// Read code
+			int code = literaltree.getValue(this._bitsource);
 			
-			// Handle it
-			if (__handleCode(code, thlit, tdist));
-				break;
-		}*/
+			// Literal byte value
+			if (code >= 0 && code <= 255)
+			{
+				System.err.printf("DEBUG -- Dyn Code: %d %02x 0b%s%n", code,
+					code, Integer.toString(code, 2));
+				
+				__write(code, 0xFF, false);
+			}
+		
+			// Stop processing
+			else if (code == 256)
+				return;
+		
+			// Window based result
+			else if (code >= 257 && code <= 285)
+				__decompressWindow(__handleLength(code),
+					distancetree.getValue(this._bitsource));
+			
+			// {@squirreljme.error BY0b Illegal dynamic huffman code. (The
+			// code.)}
+			else
+				throw new IOException(String.format("BY0b %d", code));
+		}
 	}
 	
 	/**
@@ -480,52 +487,7 @@ public class InflaterInputStream
 		
 			// Window based result
 			else if (code >= 257 && code <= 285)
-			{
-				// Read the length
-				int lent = __handleLength(code);
-			
-				// Read the distance
-				int dist = __handleFixedDistance();
-				
-				System.err.printf("DEBUG -- Length: %d, Distance: %d%n",
-					lent, dist);
-			
-				// Get the maximum valid length, so for example if the length
-				// is 5 and the distance is two, then only read two bytes.
-				int maxlen;
-				if (dist < lent)
-					maxlen = dist;
-				else
-					maxlen = lent;
-			
-				// Create a byte array from the sliding window data
-				byte[] winb = new byte[maxlen];
-				try
-				{
-					this.window.get(dist, winb, 0, maxlen);
-				}
-			
-				// Bad window read
-				catch (IndexOutOfBoundsException ioobe)
-				{
-					// {@squirreljme.error BY06 Window access out of range.
-					// (The distance; The length)}
-					throw new IOException(String.format(
-						"BY06 %d %d", dist, lent), ioobe);
-				}
-			
-				// Add those bytes to the output, handle wrapping around if the
-				// length is greater than the current position
-				for (int i = 0, v = 0; i < lent; i++, v++)
-				{
-					// Write byte
-					__write(winb[v], 0xFF, false);
-				
-					// Wrap around
-					if (v >= maxlen)
-						v = 0;
-				}
-			}
+				__decompressWindow(code, __readBits(5, true));
 		
 			// {@squirreljme.error BY05 Illegal fixed huffman code. (The
 			// code.)}
@@ -535,38 +497,89 @@ public class InflaterInputStream
 	}
 	
 	/**
+	 * Handles decompressing window data.
+	 *
+	 * @param __len The length to read.
+	 * @param __dist The distance to read.
+	 * @throws IOException On read errors.
+	 * @since 2017/02/25
+	 */
+	private void __decompressWindow(int __len, int __dist)
+		throws IOException
+	{
+		System.err.printf("DEBUG -- Length: %d, Distance: %d%n",
+			__len, __dist);
+	
+		// Get the maximum valid length, so for example if the length
+		// is 5 and the distance is two, then only read two bytes.
+		int maxlen;
+		if (__dist < __len)
+			maxlen = __dist;
+		else
+			maxlen = __len;
+	
+		// Create a byte array from the sliding window data
+		byte[] winb = new byte[maxlen];
+		try
+		{
+			this.window.get(__dist, winb, 0, maxlen);
+		}
+	
+		// Bad window read
+		catch (IndexOutOfBoundsException ioobe)
+		{
+			// {@squirreljme.error BY06 Window access out of range.
+			// (The distance; The length)}
+			throw new IOException(String.format(
+				"BY06 %d %d", __dist, __len), ioobe);
+		}
+	
+		// Add those bytes to the output, handle wrapping around if the
+		// length is greater than the current position
+		for (int i = 0, v = 0; i < __len; i++, v++)
+		{
+			// Write byte
+			__write(winb[v], 0xFF, false);
+		
+			// Wrap around
+			if (v >= maxlen)
+				v = 0;
+		}
+	}
+	
+	/**
 	 * Handles fixed huffman distance.
 	 *
+	 * @param __code The input code.
 	 * @return The ditsance read.
 	 * @throws IOException On read errors.
 	 * @since 2017/02/25
 	 */
-	private int __handleFixedDistance()
+	private int __handleDistance(int __code)
 		throws IOException
 	{
-		// If using fixed huffman read 5 bits since they are all the same
-		int code = __readBits(5, true);
-		
 		// {@squirreljme.error BY04 Illegal fixed distance code. (The distance
 		// code)}
-		if (code > 29)
-			throw new IOException(String.format("BY04 %d", code));
+		if (__code > 29)
+			throw new IOException(String.format("BY04 %d", __code));
 		
 		// Calculate the required distance to use
 		int rv = 1;
-		for (int i = 0; i < code; i++)
+		for (int i = 0; i < __code; i++)
 		{
 			// This uses a similar pattern to the length code, however the
 			// division is half the size (so there are groups of 2 now).
-			rv += (1 << ((i / 2) - 1));
+			int v = ((i / 2) - 1);
+			if (v > 0)
+				rv += (1 << v);
 		}
 		
 		// Determine the number of extra bits
 		// If there are bits to read then read them in
-		int extrabits = ((code / 2) - 1);
+		int extrabits = ((__code / 2) - 1);
 		if (extrabits > 0)
 			rv += __readBits(extrabits, false);
-		
+		System.err.printf("DEBUG -- Use dist: %d%n", rv);
 		// Return it
 		return rv;
 	}
@@ -599,7 +612,9 @@ public class InflaterInputStream
 			// Determine how many groups of 4 the code is long. Since zero
 			// appears as items then subtract 1 to make it longer. However
 			// after the first 8 it goes up in a standard pattern.
-			rv += (1 << ((i / 4) - 1));
+			int v = ((i / 4) - 1);
+			if (v > 0)
+				rv += (1 << v);
 		}
 		
 		// Calculate the number of extra bits to read
