@@ -17,6 +17,13 @@ package javax.microedition.rms;
  * Opened record stores have an open count, as such for every open operation
  * there must be a close operation.
  *
+ * Whenever the record store is modified, the version number will be
+ * incremented.
+ *
+ * Record stores may optionally permit other suites to access and potentially
+ * write their records, otherwise only the current suite may modify its own
+ * records.
+ *
  * @since 2017/02/26
  */
 public class RecordStore
@@ -79,7 +86,7 @@ public class RecordStore
 	 * @throws RecordStoreFullException As forwarded.
 	 * @since 2017/02/26
 	 */
-	public int addRecord(byte[] __b, int __o, int __l, int __tag)
+	public int addRecord(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException,
 			RecordStoreNotOpenException, RecordStoreException,
 			RecordStoreFullException
@@ -295,6 +302,169 @@ public class RecordStore
 			RecordStoreNotOpenException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the record store information.
+	 *
+	 * @return The record store information.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2016/02/26
+	 */
+	public RecordStoreInfo getRecordStoreInfo()
+		throws RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the size of the record store.
+	 *
+	 * @return The record store size, not to exceed {@link Integer#MAX_VALUE}.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2016/02/26
+	 */
+	@Deprecated
+	public int getSize()
+		throws RecordStoreNotOpenException
+	{
+		return (int)Math.min(Integer.MAX_VALUE,
+			getRecordStoreInfo().getSize());
+	}
+	
+	/**
+	 * Returns the available size of the record store.
+	 *
+	 * @return The available record store size, not to exceed
+	 * {@link Integer#MAX_VALUE}.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2016/02/26
+	 */
+	@Deprecated
+	public int getSizeAvailable()
+		throws RecordStoreNotOpenException
+	{
+		return (int)Math.min(Integer.MAX_VALUE,
+			getRecordStoreInfo().getSizeAvailable());
+	}
+	
+	/**
+	 * Returns the tag of the given record.
+	 *
+	 * @param __id The record ID to get the tag for.
+	 * @return The tag of the given record.
+	 * @throws InvalidRecordIDException If the record ID is not valid.
+	 * @throws RecordStoreException If another problem occurs with the record
+	 * store.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2016/02/26
+	 */
+	public int getTag(int __id)
+		throws InvalidRecordIDException, RecordStoreException,
+			RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the version of the record store, this may be used to quickly
+	 * determine if a store has been modified.
+	 *
+	 * @return The version of this record store.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2016/02/26
+	 */
+	public int getVersion()
+		throws RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Removes the specified record listener, this has no effect if it has
+	 * already been removed or was never added.
+	 *
+	 * @param __l The record listener to remove.
+	 * @since 2017/02/26
+	 */
+	public void removeRecordListener(RecordListener __l)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the mode of the record store which permits or denies other suites
+	 * access to this record store.
+	 *
+	 * This may only operate on fully closed record stores and no other
+	 * suites must have this record store open when this is called.
+	 *
+	 * @param __auth The authorization mode to use.
+	 * @param __write Whether writing should be permitted.
+	 * @throws IllegalArgumentException If the authorization mode is not
+	 * valid.
+	 * @throws IllegalStateException If the record store is opened by any
+	 * application.
+	 * @throws RecordStoreException If some other problem occurs with the
+	 * record store.
+	 * @throws SecurityException If changing the mode is not permitted.
+	 * @since 2017/02/26
+	 */
+	public void setMode(int __auth, boolean __write)
+		throws IllegalArgumentException, IllegalStateException,
+			RecordStoreException, SecurityException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the data for a record.
+	 *
+	 * @param __id The record ID to set.
+	 * @param __b The input data.
+	 * @param __o The offset into the array
+	 * @param __l The number of bytes to write.
+	 * @param __tag The new tag to set for the record, this replaces the
+	 * old tag.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws InvalidRecordIDException If the record ID is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If another unspecified error happens.
+	 * @throws RecordStoreFullException If there is not enough space to store
+	 * the data.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2017/02/26
+	 */
+	public void setRecord(int __id, byte[] __b, int __o, int __l, int __tag)
+		throws ArrayIndexOutOfBoundsException, InvalidRecordIDException,
+			NullPointerException, RecordStoreException,
+			RecordStoreFullException, RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Calls {@code setRecord(__id, __b, __o, __l, getTag(__id))}.
+	 *
+	 * @param __id As forwarded.
+	 * @param __b As forwarded.
+	 * @param __o As forwarded.
+	 * @param __l As forwarded.
+	 * @throws ArrayIndexOutOfBoundsException As forwarded.
+	 * @throws InvalidRecordIDException As forwarded.
+	 * @throws NullPointerException As forwarded.
+	 * @throws RecordStoreException As forwarded.
+	 * @throws RecordStoreFullException As forwarded.
+	 * @throws RecordStoreNotOpenException As forwarded.
+	 * @since 2017/02/26
+	 */
+	public void setRecord(int __id, byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, InvalidRecordIDException,
+			NullPointerException, RecordStoreException,
+			RecordStoreFullException, RecordStoreNotOpenException
+	{
+		setRecord(__id, __b, __o, __l, getTag(__id));
 	}
 	
 	/**
