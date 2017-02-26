@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -50,6 +51,7 @@ public class HostedLaunch
 			throw new IllegalArgumentException("BM0b");
 			
 		// DEBUG -- Remove this
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try (InflaterInputStream in = new InflaterInputStream(
 			new HexInputStream(new ByteArrayInputStream((
 "7d525d4fd360147e5ed6ad5dadda0d068aa07c6a87c04451d12228bb6109892624238b579535a3"+
@@ -66,12 +68,31 @@ public class HostedLaunch
 "579423287de41bbadf831ae1dab7085a84ebdf63c657dcc14caab28e4c5c64e1276ea44267b849"+
 "6c7d8e2867d0e948c408854107b3ff3bd8483b584e89c5e225558be38942521aff00").getBytes()))))
 		{
+			byte buf[] = new byte[32];
 			for (;;)
 			{
-				int b = in.read();
-				if (b < 0)
+				int rv = in.read(buf);
+				if (rv < 0)
 					break;
+				baos.write(buf, 0, rv);
 			}
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
+		try (InputStream in = new ByteArrayInputStream(baos.toByteArray()))
+		{
+			System.err.println("<<<");
+			for (;;)
+			{
+				int rv = in.read();
+				if (rv < 0)
+					break;
+				System.err.printf("%02x", rv);
+			}
+			System.err.println(">>>");
 		}
 		catch (IOException e)
 		{
