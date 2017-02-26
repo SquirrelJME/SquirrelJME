@@ -56,6 +56,34 @@ public class HostedLaunch
 			ZipBlockReader zip = new ZipBlockReader(
 				new FileChannelBlockAccessor(fc)))
 		{
+			long entertime = System.nanoTime();
+			int readbytes = 0;
+			try
+			{
+				try (InputStream in = zip.get("busybox").open())
+				{
+					byte[] buf = new byte[512];
+					for (;;)
+					{
+						int rc = in.read(buf);
+						if (rc < 0)
+							break;
+						readbytes += rc;
+					}
+				}
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
+			finally
+			{
+				long difftime = System.nanoTime() - entertime;
+				System.err.printf("DEBUG -- nano=%d, msec=%d, read=%d%n",
+					difftime, difftime / 1_000_000L, readbytes);
+				System.exit(-1);
+			}
+			
 			// Read the manifest
 			ZipBlockEntry entry = zip.get("META-INF/MANIFEST.MF");
 			JavaManifest man;

@@ -12,6 +12,8 @@ package net.multiphasicapps.io.inflate;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
@@ -72,6 +74,10 @@ public class InflaterInputStream
 	private final byte[] _readin =
 		new byte[4];
 	
+	/** The bit source for reading. */
+	private final BitSource _bitsource =
+		new __BitSource__();
+	
 	/**
 	 * Raw code lengths (allocated once), the size is the max code length
 	 * count.
@@ -87,20 +93,16 @@ public class InflaterInputStream
 		new int[322];
 	
 	/** The code length tree. */
-	private final HuffmanTreeInt _codelentree =
-		new HuffmanTreeInt();
+	private volatile Reference<HuffmanTreeInt> _codelentree;
 	
 	/** The literal tree. */
-	private final HuffmanTreeInt _literaltree =
-		new HuffmanTreeInt();
+	private volatile Reference<HuffmanTreeInt> _literaltree;
 	
 	/** The distance tree. */
-	private final HuffmanTreeInt _distancetree =
-		new HuffmanTreeInt();
+	private volatile Reference<HuffmanTreeInt> _distancetree;
 	
-	/** The bit source for reading. */
-	private final BitSource _bitsource =
-		new __BitSource__();
+	/** Window reader. */
+	private volatile Reference<byte[]> _readwindow;
 	
 	/**
 	 * The miniature read window, it stores a 32-bit value and is given input
@@ -349,8 +351,8 @@ public class InflaterInputStream
 		HuffmanTreeInt codelentree = __decompressDynamicLoadLenTree(dhclen);
 		
 		// Read the literal and distance trees
-		HuffmanTreeInt literaltree = this._literaltree,
-			distancetree = this._distancetree;
+		HuffmanTreeInt literaltree = __obtainLiteralTree(),
+			distancetree = __obtainDistanceTree();
 		__decompressDynamicLoadLitDistTree(codelentree, dhlit, dhdist,
 			literaltree, distancetree);
 		
@@ -434,7 +436,7 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// Target tree
-		HuffmanTreeInt codelentree = this._codelentree;
+		HuffmanTreeInt codelentree = __obtainCodeLenTree();
 		
 		// {@squirreljme.error BY07 There may only be at most 19 used
 		// code lengths. (The number of code lengths)}
@@ -541,6 +543,37 @@ public class InflaterInputStream
 			maxlen = __dist;
 		else
 			maxlen = __len;
+		
+		// Read from the sliding window, which could fail
+		/*
+		try
+		{
+			SlidingByteWindow window = this.window;
+			byte[] wind = __obtainReadWindow();
+			int windl = wind.length;
+			for (int i = 0, v = 0; i < maxlen)
+			{
+				// Get from the window
+				window.get(__dist, wind, 0, read);
+				int rc = 
+			
+				if (rc 
+			
+				// Wrap around
+				if ((++v) >= maxlen)
+					v = 0;
+			}
+		}
+	
+		// Bad window read
+		catch (IndexOutOfBoundsException ioobe)
+		{
+			// {@squirreljme.error BY06 Window access out of range.
+			// (The distance; The length)}
+			throw new IOException(String.format(
+				"BY06 %d %d", __dist, __len), ioobe);
+		}
+		*/
 	
 		// Create a byte array from the sliding window data
 		byte[] winb = new byte[maxlen];
@@ -653,6 +686,77 @@ public class InflaterInputStream
 			rv += __readBits(extrabits, false);
 		
 		// Return the length
+		return rv;
+	}
+	/**
+	 * Obtains the code length tree.
+	 *
+	 * @return The code length tree.
+	 * @since 2017/02/27
+	 */
+	private HuffmanTreeInt __obtainCodeLenTree()
+	{
+		Reference<HuffmanTreeInt> ref = this._codelentree;
+		HuffmanTreeInt rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._codelentree = new WeakReference<>(
+				(rv = new HuffmanTreeInt()));
+		
+		return rv;
+	}
+	
+	/**
+	 * Obtains the distance tree.
+	 *
+	 * @return The distance tree.
+	 * @since 2017/02/27
+	 */
+	private HuffmanTreeInt __obtainDistanceTree()
+	{
+		Reference<HuffmanTreeInt> ref = this._distancetree;
+		HuffmanTreeInt rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._distancetree = new WeakReference<>(
+				(rv = new HuffmanTreeInt()));
+		
+		return rv;
+	}
+	
+	/**
+	 * Obtains the literal tree.
+	 *
+	 * @return The literal tree.
+	 * @since 2017/02/27
+	 */
+	private HuffmanTreeInt __obtainLiteralTree()
+	{
+		Reference<HuffmanTreeInt> ref = this._literaltree;
+		HuffmanTreeInt rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._literaltree = new WeakReference<>(
+				(rv = new HuffmanTreeInt()));
+		
+		return rv;
+	}
+	
+	/**
+	 * Obtains the read window.
+	 *
+	 * @return The read window.
+	 * @since 2017/02/26
+	 */
+	private byte[] __obtainReadWindow()
+	{
+		Reference<byte[]> ref = this._readwindow;
+		byte[] rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._readwindow = new WeakReference<>(
+				(rv = new byte[128]));
+		
 		return rv;
 	}
 	
@@ -897,7 +1001,11 @@ public class InflaterInputStream
 		// lengths
 		int maxbits = 0;
 		for (int i = 0; i < n; i++)
-			maxbits = Math.max(maxbits, __lens[__o + i]);
+		{
+			int v = __lens[__o + i];
+			if (v > maxbits)
+				maxbits = v;
+			}
 		
 		// Determine the bitlength count for all of the inputs
 		int[] bl_count = new int[n];
