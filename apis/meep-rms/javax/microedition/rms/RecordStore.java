@@ -40,6 +40,69 @@ public class RecordStore
 	}
 	
 	/**
+	 * Adds the specified record to the record store and returns the record
+	 * id for the newly added record.
+	 *
+	 * @param __b The data to store.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the array.
+	 * @param __tag The tag to identify the given record with.
+	 * @return The record ID of the newly created record.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @throws RecordStoreException If some other error occurs.
+	 * @throws RecordStoreFullException If there is not enough space to store
+	 * the data.
+	 * @since 2017/02/26
+	 */
+	public int addRecord(byte[] __b, int __o, int __l, int __tag)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+			RecordStoreNotOpenException, RecordStoreException,
+			RecordStoreFullException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Calls {@code addRecord(__b, __o, __l, 0)}.
+	 *
+	 * @param __b As forwarded.
+	 * @param __o As forwarded.
+	 * @param __l As forwarded.
+	 * @return As forwarded.
+	 * @throws ArrayIndexOutOfBoundsException As forwarded.
+	 * @throws NullPointerException As forwarded.
+	 * @throws RecordStoreNotOpenException As forwarded.
+	 * @throws RecordStoreException As forwarded.
+	 * @throws RecordStoreFullException As forwarded.
+	 * @since 2017/02/26
+	 */
+	public int addRecord(byte[] __b, int __o, int __l, int __tag)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+			RecordStoreNotOpenException, RecordStoreException,
+			RecordStoreFullException
+	{
+		return addRecord(__b, __o, __l, 0);
+	}
+	
+	/**
+	 * Adds a record listener to the given store to notify of when changes
+	 * are made to records.
+	 *
+	 * If the record store is closed then this has no effect.
+	 *
+	 * @param __l The listener to call for changes, a listener which has
+	 * already been added will not be added a second time.
+	 * @since 2017/02/26
+	 */
+	public void addRecordListener(RecordListener __l)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/26
 	 */
@@ -56,6 +119,8 @@ public class RecordStore
 	 * Note that due to the ability to have record stores opened multiple times
 	 * the open count must reach zero before it is actually closed.
 	 *
+	 * When the store is fully closed all listeners will be removed.
+	 *
 	 * @throws RecordStoreNotOpenException If the record is not open.
 	 * @throws RecordStoreException If there was an issue closing it.
 	 * @since 2017/02/26
@@ -67,7 +132,173 @@ public class RecordStore
 	}
 	
 	/**
-	 * Delets the specified record store.
+	 * Deletes the specified record.
+	 *
+	 * @param __id The record to delete.
+	 * @throws InvalidRecordIDException If the record ID is not valid.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @throws RecordStoreException If there was an issue deleting the record.
+	 * @throws SecurityException If the record cannot be deleted.
+	 * @since 2017/02/26
+	 */
+	public void deleteRecord(int __id)
+		throws InvalidRecordIDException, RecordStoreNotOpenException,
+			RecordStoreException, SecurityException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Enumerates through the records that exist within this store.
+	 *
+	 * If a comparator is not specified then the traversal order is not
+	 * defined.
+	 *
+	 * @param __f An optional filter used to filter records, may be
+	 * {@code null}.
+	 * @param __c An optional comparator used to modify the sort order, may
+	 * be {@code null}.
+	 * @param __ku If {@code true} then the enumeration is kept up to date.
+	 * @param __tags The tags to use for basic filtering, if this is empty then
+	 * an empty enumeration will be returned, if this is {@code null} then all
+	 * tags will be selected.
+	 * @return The enumeration over the records.
+	 * @throws RecordStoreNotOpenException If this record store is not open.
+	 * @since 2017/02/26
+	 */
+	public RecordEnumeration enumerateRecords(RecordFilter __f,
+		RecordComparator __c, boolean __ku, int[] __tags)
+		throws RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Calls {@code enumerateRecords(__f, __c, __ku, null)}.
+	 *
+	 * @param __f As forwarded.
+	 * @param __c As forwarded.
+	 * @param __ku As forwarded.
+	 * @return As forwarded.
+	 * @throws RecordStoreNotOpenException As forwarded.
+	 * @since 2017/02/26
+	 */
+	public RecordEnumeration enumerateRecords(RecordFilter __f,
+		RecordComparator __c, boolean __ku)
+		throws RecordStoreNotOpenException
+	{
+		return enumerateRecords(__f, __c, __ku, null);
+	}
+	
+	/**
+	 * Returns the last modification date of the record store.
+	 *
+	 * @return The last modification date of the record store.
+	 * @throws RecordStoreNotOpenException If this record store is not open.
+	 * @since 2017/02/26
+	 */
+	public long getLastModified()
+		throws RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the name of the record store.
+	 *
+	 * @return The name of the record store.
+	 * @throws RecordStoreNotOpenException If this record store is not open.
+	 * @since 2017/02/26
+	 */
+	public String getName()
+		throws RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This returns the next record ID which would be used if a new record
+	 * were to be added to this record store.
+	 *
+	 * The returned ID is only valid while the store remains open and before
+	 * {@code addRecord()} is called.
+	 *
+	 * @return The next record ID.
+	 * @throws RecordStoreException If there was another issue with the
+	 * record store.
+	 * @throws RecordStoreNotOpenException If this record store is not open.
+	 * @since 2017/02/26
+	 */
+	public int getNextRecordID()
+		throws RecordStoreException, RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns a copy of the data which is stored in the given record.
+	 *
+	 * @param __id The ID of the record to get.
+	 * @return A copy of the data stored in this record, if there is no data
+	 * then this will return {@code null}.
+	 * @throws InvalidRecordIDException If the ID is not valid.
+	 * @throws RecordStoreException If there is a problem with the record
+	 * store.
+	 * @throws RecordStoreNotOpenException If this record store is not open.
+	 * @since 2017/02/26
+	 */
+	public byte[] getRecord(int __id)
+		throws InvalidRecordIDException, RecordStoreException,
+			RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Fills the specified array with a copy of the data within the given
+	 * record.
+	 *
+	 * @param __id The ID of the record to get.
+	 * @param __b The array to write data to.
+	 * @param __o The offset into the array.
+	 * @return The number of bytes copied into the array.
+	 * @throws ArrayIndexOutOfBoundsException If the offset is negative or
+	 * the record data exceeds the size of the output array.
+	 * @throws InvalidRecordIDException If the record ID is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If another problem occurs with the record
+	 * store.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2017/02/26
+	 */
+	public int getRecord(int __id, byte[] __b, int __o)
+		throws ArrayIndexOutOfBoundsException, InvalidRecordIDException,
+			NullPointerException, RecordStoreException,
+			RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the size of the given record.
+	 *
+	 * @param __id The record ID to get the size for.
+	 * @return The size of the given record.
+	 * @throws InvalidRecordIDException If the record ID is not valid.
+	 * @throws RecordStoreException If another problem occurs with the record
+	 * store.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2016/02/26
+	 */
+	public int getRecordSize(int __id)
+		throws InvalidRecordIDException, RecordStoreException,
+			RecordStoreNotOpenException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Deletes the specified record store.
 	 *
 	 * Suites may only delete their own record store.
 	 *
