@@ -27,7 +27,7 @@ __file="$1"
 __proj="$(basename "$__file" .jar)"
 
 # Build these projects because they are standard and may be relied upon
-for __maybe in midp-lcdui
+for __maybe in midp-lcdui meep-rms
 do
 	if ! "$__exedir/../build.sh" build "$__maybe"
 	then
