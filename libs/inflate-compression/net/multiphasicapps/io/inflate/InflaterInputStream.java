@@ -566,6 +566,8 @@ public class InflaterInputStream
 			int v = ((i / 2) - 1);
 			if (v > 0)
 				rv += (1 << v);
+			else
+				rv++;
 		}
 		
 		// Determine the number of extra bits
@@ -609,6 +611,8 @@ public class InflaterInputStream
 			int v = ((i / 4) - 1);
 			if (v > 0)
 				rv += (1 << v);
+			else
+				rv++;
 		}
 		
 		// Calculate the number of extra bits to read
