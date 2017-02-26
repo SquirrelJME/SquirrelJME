@@ -34,10 +34,6 @@ public abstract class MIDlet
 	{
 		// Set the active midlet to this one
 		ActiveMidlet.set(this);
-		
-		// Create a thread which just calls startApp
-		Thread t = new Thread(new __RunMidlet__(), "squirreljme-midlet");
-		t.start();
 	}
 	
 	protected abstract void destroyApp(boolean __uc)
@@ -168,58 +164,6 @@ public abstract class MIDlet
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Creates an instance of the application MIDlet and then launches it.
-	 *
-	 * @since 2017/01/16
-	 */
-	private static void __launchMidlet()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * This runs the actual MIDlet in its own thread.
-	 *
-	 * @since 2017/02/08
-	 */
-	private final class __RunMidlet__
-		implements Runnable
-	{
-		/** Has this been started? */
-		protected volatile boolean _started;
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/08
-		 */
-		@Override
-		public void run()
-		{
-			// {@squirreljme.error AD02 Run operation has already been
-			// performed.}
-			synchronized (this)
-			{
-				if (this._started)
-					throw new IllegalStateException("AD02");
-				this._started = true;
-			}
-			
-			// Start it
-			MIDlet midlet = MIDlet.this;
-			try
-			{
-				midlet.startApp();
-			}
-			
-			// {@squirreljme.error AD03 Failed to change the MIDlet state.}
-			catch (MIDletStateChangeException e)
-			{
-				throw new RuntimeException("AD03", e);
-			}
-		}
 	}
 }
 
