@@ -540,6 +540,12 @@ public final class SquirrelJME
 						"build.host.javase.SwingEngineProvider";
 					break;
 					
+					// Record store manager
+				case "net.multiphasicapps.squirreljme.rms.RecordStoreManager":
+					use = "net.multiphasicapps.squirreljme.rms.file." +
+						"FileRecordStoreManager";
+					break;
+					
 					// Unknown
 				default:
 					use = null;

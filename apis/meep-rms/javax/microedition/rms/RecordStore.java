@@ -10,6 +10,9 @@
 
 package javax.microedition.rms;
 
+import net.multiphasicapps.squirreljme.rms.RecordStoreManager;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+
 /**
  * This is a record store which may be used by an application to store
  * information about it in an implementation defined manner.
@@ -36,6 +39,27 @@ public class RecordStore
 	/** Specifies that only record store creator may access the records. */
 	public static final int AUTHMODE_PRIVATE =
 		0;
+	
+	/**
+	 * The record store manager.
+	 *
+	 * @since 2017/02/27
+	 */
+	private static final RecordStoreManager _MANAGER;
+	
+	/**
+	 * Initializes the record store manager.
+	 *
+	 * @since 2017/02/27
+	 */
+	static
+	{
+		// {@squirreljme.error DC01 No record store manager exists.}
+		_MANAGER = SquirrelJME.<RecordStoreManager>systemService(
+			RecordStoreManager.class);
+		if (_MANAGER == null)
+			throw new RuntimeException("DC01");
+	}
 	
 	/**
 	 * Internally used.
