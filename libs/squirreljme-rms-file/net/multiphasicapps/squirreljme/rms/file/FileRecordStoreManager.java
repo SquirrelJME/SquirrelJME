@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.rms.file;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import net.multiphasicapps.squirreljme.rms.RecordStoreManager;
 
 /**
@@ -22,13 +25,62 @@ public class FileRecordStoreManager
 	extends RecordStoreManager
 {
 	/**
-	 * Initializes the file backed record store manager.
+	 * {@squirreljme.property
+	 * net.multiphasicapps.squirreljme.rms.file.recordstorepath=path
+	 * This is used to specify an alternative default path where record stores
+	 * will be located.}
+	 */
+	public static final String RECORD_STORE_PATH_PROPERTY =
+		"net.multiphasicapps.squirreljme.rms.file.recordstorepath";
+	
+	/**
+	 * Initializes the file backed record store manager using the default
+	 * location.
 	 *
 	 * @since 2017/02/27
 	 */
 	public FileRecordStoreManager()
 	{
+		this(__defaultPath());
+	}
+	
+	/**
+	 * Initializes the file backed record store manager.
+	 *
+	 * @param __p The path where records are stored.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/27
+	 */
+	public FileRecordStoreManager(Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the default path where record stores are located.
+	 *
+	 * @return The path where record stores are located.
+	 * @since 2017/02/27
+	 */
+	private static final Path __defaultPath()
+	{
+		// If the record store path is used then use that location insted
+		String prop = System.getProperty(RECORD_STORE_PATH_PROPERTY);
+		if (prop != null)
+			return Paths.get(prop);
+		
+		// Otherwise use another directory for the records
+		prop = System.getProperty("user.home");
+		if (prop != null)
+			return Paths.get(prop).resolve(".squirreljme");
+		
+		// Otherwise use the default path
+		return Paths.get("");
 	}
 }
 
