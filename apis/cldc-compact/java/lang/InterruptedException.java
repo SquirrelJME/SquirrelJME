@@ -15,12 +15,12 @@ public class InterruptedException
 {
 	public InterruptedException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InterruptedException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

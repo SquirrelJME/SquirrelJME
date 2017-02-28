@@ -15,22 +15,22 @@ public class UnsupportedOperationException
 {
 	public UnsupportedOperationException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnsupportedOperationException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnsupportedOperationException(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnsupportedOperationException(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

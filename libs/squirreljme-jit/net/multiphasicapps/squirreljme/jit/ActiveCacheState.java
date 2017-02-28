@@ -108,7 +108,7 @@ public final class ActiveCacheState
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public final class ActiveCacheState
 		@Override
 		public String toString()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		/**

@@ -30,7 +30,7 @@ public class ConsoleMain
 	protected void destroyApp(boolean __uc)
 		throws MIDletStateChangeException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class ConsoleMain
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

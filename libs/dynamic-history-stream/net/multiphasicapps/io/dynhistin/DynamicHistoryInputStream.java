@@ -169,7 +169,7 @@ public class DynamicHistoryInputStream
 		if (avail < __a)
 			return -1;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

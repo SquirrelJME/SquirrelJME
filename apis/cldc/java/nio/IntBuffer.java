@@ -16,7 +16,7 @@ public abstract class IntBuffer
 {
 	IntBuffer()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract int get();
@@ -35,75 +35,75 @@ public abstract class IntBuffer
 	
 	public final int[] array()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int arrayOffset()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(IntBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IntBuffer get(int[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IntBuffer get(int[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean hasArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IntBuffer put(IntBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IntBuffer put(int[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final IntBuffer put(int[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static IntBuffer wrap(int[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static IntBuffer wrap(int[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

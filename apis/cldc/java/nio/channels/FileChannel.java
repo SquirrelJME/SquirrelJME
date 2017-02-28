@@ -23,7 +23,7 @@ public abstract class FileChannel
 {
 	protected FileChannel()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void force(boolean __a)
@@ -59,7 +59,7 @@ public abstract class FileChannel
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static FileChannel open(Path __a, OpenOption... __b)
@@ -67,7 +67,7 @@ public abstract class FileChannel
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

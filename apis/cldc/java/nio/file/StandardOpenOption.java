@@ -38,7 +38,7 @@ public enum StandardOpenOption
 	
 	private StandardOpenOption()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

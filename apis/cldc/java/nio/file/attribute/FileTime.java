@@ -16,37 +16,37 @@ public final class FileTime
 	private FileTime()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(FileTime __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long toMillis()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static FileTime fromMillis(long __v)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

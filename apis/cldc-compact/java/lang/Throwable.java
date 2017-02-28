@@ -16,78 +16,78 @@ public class Throwable
 {
 	public Throwable()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable(String __a, Throwable __b, boolean __c, boolean __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void addSuppressed(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable fillInStackTrace()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable getCause()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getLocalizedMessage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getMessage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Throwable[] getSuppressed()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable initCause(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void printStackTrace()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void printStackTrace(PrintStream __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

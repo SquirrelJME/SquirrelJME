@@ -15,12 +15,12 @@ public class ReferenceQueue<T>
 	public ReferenceQueue()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Reference<? extends T> poll()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Reference<? extends T> remove(long __a)
@@ -30,7 +30,7 @@ public class ReferenceQueue<T>
 			throw new IllegalArgumentException();
 		if (false)
 			throw new InterruptedException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Reference<? extends T> remove()
@@ -38,7 +38,7 @@ public class ReferenceQueue<T>
 	{
 		if (false)
 			throw new InterruptedException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

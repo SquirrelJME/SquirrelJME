@@ -116,7 +116,7 @@ class __MapIterator__<K, V>
 	@Override
 	public void remove()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

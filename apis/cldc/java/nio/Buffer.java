@@ -15,57 +15,57 @@ public abstract class Buffer
 	Buffer()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int capacity()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Buffer clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Buffer flip()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean hasRemaining()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int limit()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Buffer limit(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int position()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Buffer position(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int remaining()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Buffer rewind()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

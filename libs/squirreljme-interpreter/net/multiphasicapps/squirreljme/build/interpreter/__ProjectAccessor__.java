@@ -95,7 +95,7 @@ class __ProjectAccessor__
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

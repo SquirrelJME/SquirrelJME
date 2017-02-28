@@ -16,13 +16,13 @@ public class NoSuchFileException
 	public NoSuchFileException(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NoSuchFileException(String __a, String __b, String __c)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

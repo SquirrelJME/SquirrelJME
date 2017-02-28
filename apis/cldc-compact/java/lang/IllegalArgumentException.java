@@ -15,22 +15,22 @@ public class IllegalArgumentException
 {
 	public IllegalArgumentException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IllegalArgumentException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IllegalArgumentException(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IllegalArgumentException(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

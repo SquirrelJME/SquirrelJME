@@ -16,13 +16,13 @@ public class ClassFormatError
 	public ClassFormatError()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ClassFormatError(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

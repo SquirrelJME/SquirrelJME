@@ -16,7 +16,7 @@ public abstract class ShortBuffer
 {
 	ShortBuffer()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract short get();
@@ -35,75 +35,75 @@ public abstract class ShortBuffer
 	
 	public final short[] array()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int arrayOffset()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(ShortBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ShortBuffer get(short[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ShortBuffer get(short[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean hasArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ShortBuffer put(ShortBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ShortBuffer put(short[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final ShortBuffer put(short[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ShortBuffer wrap(short[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ShortBuffer wrap(short[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

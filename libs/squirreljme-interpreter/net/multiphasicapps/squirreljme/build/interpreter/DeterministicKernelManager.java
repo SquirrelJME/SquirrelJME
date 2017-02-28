@@ -68,9 +68,9 @@ public class DeterministicKernelManager
 			throw new NullPointerException("NARG");
 		
 		if (true)
-			throw new Error("TODO");
+			throw new todo.TODO();
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class DeterministicKernelManager
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class DeterministicKernelManager
 		if (__k == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class DeterministicKernelManager
 		if (__kp == null || __mc == null || __m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class DeterministicKernelManager
 	public void runThreads()
 		throws InterruptedException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

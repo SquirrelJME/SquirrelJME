@@ -14,12 +14,12 @@ public final class Paths
 {
 	private Paths()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Path get(String __a, String... __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -16,19 +16,19 @@ public class ArrayIndexOutOfBoundsException
 	public ArrayIndexOutOfBoundsException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ArrayIndexOutOfBoundsException(int __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ArrayIndexOutOfBoundsException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

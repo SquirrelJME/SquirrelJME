@@ -15,12 +15,12 @@ public class IllegalAccessException
 {
 	public IllegalAccessException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IllegalAccessException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

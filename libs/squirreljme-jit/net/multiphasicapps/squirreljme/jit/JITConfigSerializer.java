@@ -38,7 +38,7 @@ public abstract class JITConfigSerializer<C extends JITConfig<C>>
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public abstract class JITConfigSerializer<C extends JITConfig<C>>
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

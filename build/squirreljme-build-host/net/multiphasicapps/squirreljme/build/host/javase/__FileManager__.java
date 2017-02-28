@@ -131,7 +131,7 @@ class __FileManager__
 		String __b, String __c)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -143,7 +143,7 @@ class __FileManager__
 		String __b, String __c, FileObject __d)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -155,7 +155,7 @@ class __FileManager__
 		JavaFileManager.Location __a, String __b, JavaFileObject.Kind __c)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -248,7 +248,7 @@ class __FileManager__
 	public Iterable<? extends File> getLocation(
 		JavaFileManager.Location __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -258,7 +258,7 @@ class __FileManager__
 	@Override
 	public boolean handleOption(String __a, Iterator<String> __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -318,7 +318,7 @@ class __FileManager__
 	@Override
 	public boolean isSameFile(FileObject __a, FileObject __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 		
 	/**
@@ -328,7 +328,7 @@ class __FileManager__
 	@Override
 	public int isSupportedOption(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

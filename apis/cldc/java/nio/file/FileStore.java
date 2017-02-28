@@ -16,7 +16,7 @@ public abstract class FileStore
 {
 	protected FileStore()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract Object getAttribute(String __a)

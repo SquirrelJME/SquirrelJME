@@ -130,7 +130,7 @@ public final class Kernel
 	 */
 	public final boolean isExiting()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public final class Kernel
 				// Check if there are any interrupts to be handled at this
 				// stage, if any are handled then the exception is consumed
 				if (true)
-					throw new Error("TODO");
+					throw new todo.TODO();
 				
 				// Otherwise throw above
 				throw e;

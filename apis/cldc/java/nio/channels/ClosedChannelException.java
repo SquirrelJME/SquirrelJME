@@ -18,6 +18,6 @@ public class ClosedChannelException
 	public ClosedChannelException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }

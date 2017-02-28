@@ -43,7 +43,7 @@ class __VarTypeCalc__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

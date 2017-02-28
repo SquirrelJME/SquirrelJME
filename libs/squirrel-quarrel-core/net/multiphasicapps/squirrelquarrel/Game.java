@@ -115,7 +115,7 @@ public class Game
 		random.setRawSeed((((long)input.readInt()) << 32L) |
 			input.readInt());
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -270,7 +270,7 @@ public class Game
 				
 				// Normal placement
 			case NORMAL:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Unknown
 			default:

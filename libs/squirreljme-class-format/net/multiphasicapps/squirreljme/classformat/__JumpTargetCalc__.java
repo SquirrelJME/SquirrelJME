@@ -174,11 +174,11 @@ class __JumpTargetCalc__
 				
 				// Table switch
 			case ClassByteCodeIndex.TABLESWITCH:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Lookup switch
 			case ClassByteCodeIndex.LOOKUPSWITCH:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Comparisons
 			case ClassByteCodeIndex.IF_ACMPEQ:

@@ -15,58 +15,58 @@ public abstract class Enum<E extends Enum<E>>
 {
 	protected Enum(String __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	protected final Object clone()
 		throws CloneNotSupportedException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int compareTo(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public final boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Class<E> getDeclaringClass()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public final int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final String name()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int ordinal()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static <T extends Enum<T>> T valueOf(Class<T> __a, 
 		String __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -61,7 +61,7 @@ public final class ByteOrder
 	
 	public static ByteOrder nativeOrder()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

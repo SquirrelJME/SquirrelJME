@@ -16,34 +16,34 @@ public class InvalidPathException
 	public InvalidPathException(String __a, String __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InvalidPathException(String __a, String __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getIndex()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getInput()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String getMessage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getReason()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

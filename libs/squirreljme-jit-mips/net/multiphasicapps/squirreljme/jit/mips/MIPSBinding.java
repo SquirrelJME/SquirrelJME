@@ -99,7 +99,7 @@ public final class MIPSBinding
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public final class MIPSBinding
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

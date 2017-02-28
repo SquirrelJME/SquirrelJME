@@ -18,33 +18,33 @@ public class FileSystemException
 	public FileSystemException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public FileSystemException(String __a, String __b, String __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getFile()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getMessage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getOtherFile()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getReason()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

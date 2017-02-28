@@ -18,27 +18,27 @@ public final class Channels
 	private Channels()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ReadableByteChannel newChannel(InputStream __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static WritableByteChannel newChannel(OutputStream __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static InputStream newInputStream(ReadableByteChannel __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static OutputStream newOutputStream(WritableByteChannel __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -20,7 +20,7 @@ public enum LinkOption
 	
 	private LinkOption()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

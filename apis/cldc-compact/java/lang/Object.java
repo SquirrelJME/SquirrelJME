@@ -40,7 +40,7 @@ public class Object
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class Object
 	 */
 	public boolean equals(Object __o)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class Object
 	public final void notify()
 		throws IllegalMonitorStateException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class Object
 	public final void notifyAll()
 		throws IllegalMonitorStateException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public class Object
 	 */
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class Object
 	public final void wait()
 		throws InterruptedException, IllegalMonitorStateException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public class Object
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class Object
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

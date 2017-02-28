@@ -58,7 +58,7 @@ public final class Class<T>
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public T cast(Object __o)
@@ -67,7 +67,7 @@ public final class Class<T>
 		if (__o == null)
 			return null;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public final class Class<T>
 	
 	public String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -152,7 +152,7 @@ public final class Class<T>
 			StringBuilder sb = new StringBuilder();
 			
 			if (true)
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 			// Use it
 			res = sb.toString();
@@ -169,7 +169,7 @@ public final class Class<T>
 		// Open it
 		return vmi.jar.openResource(found);
 		*/
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -180,17 +180,17 @@ public final class Class<T>
 	 */
 	public boolean isArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isAssignableFrom(Class<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isInterface()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isInstance(Object __o)
@@ -199,19 +199,19 @@ public final class Class<T>
 		if (__o == null)
 			return false;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

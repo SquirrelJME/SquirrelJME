@@ -156,14 +156,14 @@ final class __OpParser__
 				
 				// Verify that they are correct
 				if (true)
-					throw new Error("TODO");
+					throw new todo.TODO();
 			}
 			
 			// Report end
 			writer.endInstruction(code, nowpos);
 		}
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -184,11 +184,11 @@ final class __OpParser__
 		{
 				// Waste electrons
 			case ClassByteCodeIndex.NOP:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Push null constant
 			case ClassByteCodeIndex.ACONST_NULL:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Push int constant
 			case ClassByteCodeIndex.ICONST_M1:
@@ -198,30 +198,30 @@ final class __OpParser__
 			case ClassByteCodeIndex.ICONST_3:
 			case ClassByteCodeIndex.ICONST_4:
 			case ClassByteCodeIndex.ICONST_5:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Push long constant
 			case ClassByteCodeIndex.LCONST_0:
 			case ClassByteCodeIndex.LCONST_1:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Push float constant
 			case ClassByteCodeIndex.FCONST_0:
 			case ClassByteCodeIndex.FCONST_1:
 			case ClassByteCodeIndex.FCONST_2:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Push double constant
 			case ClassByteCodeIndex.DCONST_0:
 			case ClassByteCodeIndex.DCONST_1:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 			case ClassByteCodeIndex.BIPUSH:
 			case ClassByteCodeIndex.SIPUSH:
 			case ClassByteCodeIndex.LDC:
 			case ClassByteCodeIndex.LDC_W:
 			case ClassByteCodeIndex.LDC2_W:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Push local int to the stack
 			case ClassByteCodeIndex.ILOAD:
@@ -326,42 +326,42 @@ final class __OpParser__
 			case ClassByteCodeIndex.FSTORE:
 			case ClassByteCodeIndex.DSTORE:
 			case ClassByteCodeIndex.ASTORE:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Store int into local
 			case ClassByteCodeIndex.ISTORE_0:
 			case ClassByteCodeIndex.ISTORE_1:
 			case ClassByteCodeIndex.ISTORE_2:
 			case ClassByteCodeIndex.ISTORE_3:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Store long into local
 			case ClassByteCodeIndex.LSTORE_0:
 			case ClassByteCodeIndex.LSTORE_1:
 			case ClassByteCodeIndex.LSTORE_2:
 			case ClassByteCodeIndex.LSTORE_3:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Store float into local
 			case ClassByteCodeIndex.FSTORE_0:
 			case ClassByteCodeIndex.FSTORE_1:
 			case ClassByteCodeIndex.FSTORE_2:
 			case ClassByteCodeIndex.FSTORE_3:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Store double into local
 			case ClassByteCodeIndex.DSTORE_0:
 			case ClassByteCodeIndex.DSTORE_1:
 			case ClassByteCodeIndex.DSTORE_2:
 			case ClassByteCodeIndex.DSTORE_3:
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 				// Store object into local
 			case ClassByteCodeIndex.ASTORE_0:
 			case ClassByteCodeIndex.ASTORE_1:
 			case ClassByteCodeIndex.ASTORE_2:
 			case ClassByteCodeIndex.ASTORE_3:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Invoke interface method
 			case ClassByteCodeIndex.INVOKEINTERFACE:
@@ -570,7 +570,7 @@ final class __OpParser__
 		int write = xc - 1, popcount = 0;
 		for (int i = 0; i < na; i++)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		// Check if instance is correct

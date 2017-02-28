@@ -48,7 +48,7 @@ public class NormalKernelProcess
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

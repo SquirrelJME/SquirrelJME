@@ -15,12 +15,12 @@ public class InstantiationException
 {
 	public InstantiationException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InstantiationException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

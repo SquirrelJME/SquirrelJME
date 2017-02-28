@@ -175,7 +175,7 @@ public class Game
 				if (!e.isSpawned())
 					continue;
 				
-				throw new Error("TODO");
+				throw new todo.TODO();
 			}
 			
 			// Always increment the game frame

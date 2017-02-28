@@ -15,27 +15,27 @@ public abstract class Reference<T>
 	Reference()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean enqueue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public T get()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isEnqueued()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

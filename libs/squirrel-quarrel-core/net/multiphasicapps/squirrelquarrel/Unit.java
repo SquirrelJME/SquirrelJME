@@ -141,7 +141,7 @@ public class Unit
 		else
 		{
 			if (true)
-				throw new Error("TODO");
+				throw new todo.TODO();
 			
 			// Recenter
 			__move(this._cx, this._cy);

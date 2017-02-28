@@ -96,7 +96,7 @@ class __JITCodeStream__
 		// Debug
 		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -135,7 +135,7 @@ class __JITCodeStream__
 		// Debug
 		System.err.printf("DEBUG -- Copy %s %s -> %s%n", __type, __from, __to);
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -148,7 +148,7 @@ class __JITCodeStream__
 		// Debug
 		System.err.printf("DEBUG -- End %d (pos %d)%n", __code, __pos);
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -231,7 +231,7 @@ class __JITCodeStream__
 			((__rv == null) != (__rvt == null)))
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

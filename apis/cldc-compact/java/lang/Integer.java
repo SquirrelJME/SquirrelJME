@@ -29,7 +29,7 @@ public final class Integer
 	public Integer(int __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Integer(String __a)
@@ -38,70 +38,70 @@ public final class Integer
 		super();
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public byte byteValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(Integer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public double doubleValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public float floatValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int intValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public long longValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public short shortValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int bitCount(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer decode(String __a)
@@ -109,42 +109,42 @@ public final class Integer
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer getInteger(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer getInteger(String __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer getInteger(String __a, Integer __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int highestOneBit(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int lowestOneBit(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int numberOfLeadingZeros(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int numberOfTrailingZeros(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int parseInt(String __a, int __b)
@@ -152,7 +152,7 @@ public final class Integer
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int parseInt(String __a)
@@ -160,57 +160,57 @@ public final class Integer
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int reverse(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int reverseBytes(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int rotateLeft(int __i, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int rotateRight(int __i, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int signum(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toBinaryString(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toHexString(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toOctalString(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toString(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toString(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer valueOf(String __a, int __b)
@@ -218,7 +218,7 @@ public final class Integer
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer valueOf(String __a)
@@ -226,12 +226,12 @@ public final class Integer
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Integer valueOf(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -16,13 +16,13 @@ public class WeakReference<T>
 	public WeakReference(T __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public WeakReference(T __a, ReferenceQueue<? super T> __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

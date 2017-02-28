@@ -17,7 +17,7 @@ public abstract class PermissionCollection
 	public PermissionCollection()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void add(Permission __a);
@@ -28,18 +28,18 @@ public abstract class PermissionCollection
 	
 	public boolean isReadOnly()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setReadOnly()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

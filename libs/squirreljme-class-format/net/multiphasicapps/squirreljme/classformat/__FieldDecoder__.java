@@ -110,7 +110,7 @@ class __FieldDecoder__
 					throw new ClassFormatException("AY0c");
 				
 				if (true)
-					throw new Error("TODO");
+					throw new todo.TODO();
 				
 				return;
 			

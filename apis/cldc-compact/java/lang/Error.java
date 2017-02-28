@@ -20,22 +20,22 @@ public class Error
 {
 	public Error()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Error(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Error(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Error(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

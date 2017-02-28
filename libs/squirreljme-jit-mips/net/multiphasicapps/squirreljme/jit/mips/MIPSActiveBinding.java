@@ -45,7 +45,7 @@ public class MIPSActiveBinding
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class MIPSActiveBinding
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class MIPSActiveBinding
 			throw new JITException("AM05");
 		MIPSBinding bind = (MIPSBinding)__b;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class MIPSActiveBinding
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

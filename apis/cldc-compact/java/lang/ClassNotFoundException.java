@@ -16,30 +16,30 @@ public class ClassNotFoundException
 	public ClassNotFoundException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ClassNotFoundException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ClassNotFoundException(String __a, Throwable __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public Throwable getCause()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Throwable getException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

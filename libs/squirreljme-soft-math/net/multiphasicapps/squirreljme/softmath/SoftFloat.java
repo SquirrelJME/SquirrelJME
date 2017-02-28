@@ -59,7 +59,7 @@ public final class SoftFloat
 	 */
 	public static int floatAdd(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public final class SoftFloat
 		if (floatIsNaN(__a) || floatIsNaN(__b))
 			return 1;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public final class SoftFloat
 		if (floatIsNaN(__a) || floatIsNaN(__b))
 			return -1;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public final class SoftFloat
 	 */
 	public static int floatDivide(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public final class SoftFloat
 	 */
 	public static int floatMultiply(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public final class SoftFloat
 	 */
 	public static int floatNegate(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public final class SoftFloat
 	 */
 	public static int floatRemainder(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public final class SoftFloat
 	 */
 	public static int floatSubtract(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public final class SoftFloat
 	 */
 	public static long floatToDouble(int __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public final class SoftFloat
 	 */
 	public static int floatToInteger(int __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -195,7 +195,7 @@ public final class SoftFloat
 	 */
 	public static long floatToLong(int __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -208,7 +208,7 @@ public final class SoftFloat
 	 */
 	public static long hardFloatToSoftDouble(float __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

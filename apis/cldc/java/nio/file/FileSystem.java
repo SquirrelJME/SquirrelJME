@@ -19,7 +19,7 @@ public abstract class FileSystem
 {
 	protected FileSystem()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void close()

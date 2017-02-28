@@ -49,7 +49,7 @@ public final class CacheState
 		if (__e == null || __a == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public final class CacheState
 		if (__cv == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public final class CacheState
 		 */
 		private Tread(int __n)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		/**
@@ -146,7 +146,7 @@ public final class CacheState
 		@Override
 		public Slot get(int __i)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		/**
@@ -156,7 +156,7 @@ public final class CacheState
 		@Override
 		public int size()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

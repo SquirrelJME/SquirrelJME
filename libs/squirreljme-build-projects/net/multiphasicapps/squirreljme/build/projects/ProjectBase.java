@@ -245,7 +245,7 @@ public abstract class ProjectBase
 		if (deptype == MidletDependencyType.SERVICE)
 		{
 			System.err.printf("DEBUG -- Service Check: %s%n", __d);
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		// Standards are only valid on APIs
@@ -596,7 +596,7 @@ public abstract class ProjectBase
 		// Decode profile
 		String prof = attr.get(_PROFILE_KEY);
 		if (prof != null)
-			throw new Error("TODO");
+			throw new todo.TODO();
 	}
 	
 	/**

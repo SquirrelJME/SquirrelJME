@@ -96,20 +96,20 @@ public class MIPSEngine
 					// 32-bit int
 				case INTEGER:
 					if (true)
-						throw new Error("TODO");
+						throw new todo.TODO();
 					break;
 					
 					// 64-bit long
 				case LONG:
 					if (true)
-						throw new Error("TODO");
+						throw new todo.TODO();
 					break;
 				
 					// NUBI has 64-bit registers but 
 				case FLOAT:
 				case DOUBLE:
 					if (true)
-						throw new Error("TODO");
+						throw new todo.TODO();
 					break;
 				
 					// Should not happen
@@ -118,7 +118,7 @@ public class MIPSEngine
 			}
 			
 			// Use common stack allocation if not register claimed
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -183,7 +183,7 @@ public class MIPSEngine
 				// Adjust if software mode
 			case FLOAT:
 			case DOUBLE:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Unknown
 			default:

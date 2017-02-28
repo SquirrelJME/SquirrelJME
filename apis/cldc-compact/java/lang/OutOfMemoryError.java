@@ -16,12 +16,12 @@ public class OutOfMemoryError
 	public OutOfMemoryError()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public OutOfMemoryError(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }

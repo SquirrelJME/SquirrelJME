@@ -16,13 +16,13 @@ public class IndexOutOfBoundsException
 	public IndexOutOfBoundsException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IndexOutOfBoundsException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

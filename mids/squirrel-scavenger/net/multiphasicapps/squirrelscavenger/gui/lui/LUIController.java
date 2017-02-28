@@ -48,7 +48,7 @@ public class LUIController
 	@Override
 	public void keyPressed(InputDevice __dev, int __code, int __mod)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class LUIController
 	@Override
 	public void keyReleased(InputDevice __dev, int __code, int __mod)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class LUIController
 	@Override
 	public void keyRepeated(InputDevice __dev, int __code, int __mod)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

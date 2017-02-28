@@ -47,13 +47,13 @@ public final class Float
 	public Float(float __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Float(double __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Float(String __a)
@@ -62,105 +62,105 @@ public final class Float
 		super();
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public byte byteValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(Float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public double doubleValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public float floatValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int intValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isInfinite()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isNaN()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public long longValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public short shortValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int compare(float __a, float __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int floatToIntBits(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int floatToRawIntBits(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static float intBitsToFloat(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isInfinite(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isNaN(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static float parseFloat(String __a)
@@ -168,12 +168,12 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toString(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Float valueOf(String __a)
@@ -181,12 +181,12 @@ public final class Float
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Float valueOf(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

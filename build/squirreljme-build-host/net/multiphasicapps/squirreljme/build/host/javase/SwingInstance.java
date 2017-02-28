@@ -82,7 +82,7 @@ public abstract class SwingInstance
 	@Override
 	public void destroy()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -136,7 +136,7 @@ public class LUIGUI
 		// Go through the image data and draw the image contents as ASCII
 		// characters, where the color average is translated to an intensity
 		// based mapping of ASCII characters
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

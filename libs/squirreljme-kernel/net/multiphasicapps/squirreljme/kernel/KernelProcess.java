@@ -155,7 +155,7 @@ public abstract class KernelProcess
 	@Override
 	public final void close()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

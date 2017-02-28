@@ -234,7 +234,7 @@ class __JITClassStream__
 	 */
 	final ExecutableClass __build()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

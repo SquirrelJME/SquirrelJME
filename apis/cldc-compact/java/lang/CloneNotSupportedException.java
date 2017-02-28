@@ -15,12 +15,12 @@ public class CloneNotSupportedException
 {
 	public CloneNotSupportedException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public CloneNotSupportedException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

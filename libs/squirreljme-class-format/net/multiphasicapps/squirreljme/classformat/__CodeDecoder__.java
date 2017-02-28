@@ -200,7 +200,7 @@ final class __CodeDecoder__
 		}
 		
 		// Done
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

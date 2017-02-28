@@ -59,7 +59,7 @@ public abstract class KernelThread
 				e);
 		}
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public abstract class KernelThread
 	@Override
 	public final void close()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

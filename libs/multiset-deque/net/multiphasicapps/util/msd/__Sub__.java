@@ -111,7 +111,7 @@ final class __Sub__<V>
 	@Override
 	public void addFirst(V __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -146,7 +146,7 @@ final class __Sub__<V>
 	@Override
 	public void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -156,7 +156,7 @@ final class __Sub__<V>
 	@Override
 	public boolean contains(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -166,7 +166,7 @@ final class __Sub__<V>
 	@Override
 	public boolean containsAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -176,7 +176,7 @@ final class __Sub__<V>
 	@Override
 	public Iterator<V> descendingIterator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -196,7 +196,7 @@ final class __Sub__<V>
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -222,7 +222,7 @@ final class __Sub__<V>
 	@Override
 	public V getLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -232,7 +232,7 @@ final class __Sub__<V>
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -242,7 +242,7 @@ final class __Sub__<V>
 	@Override
 	public boolean isEmpty()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -252,7 +252,7 @@ final class __Sub__<V>
 	@Override
 	public Iterator<V> iterator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -428,7 +428,7 @@ final class __Sub__<V>
 	@Override
 	public boolean remove(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -448,7 +448,7 @@ final class __Sub__<V>
 	@Override
 	public boolean removeAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -485,7 +485,7 @@ final class __Sub__<V>
 	@Override
 	public boolean removeFirstOccurrence(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -496,7 +496,7 @@ final class __Sub__<V>
 	public V removeLast()
 		throws NoSuchElementException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -506,7 +506,7 @@ final class __Sub__<V>
 	@Override
 	public boolean removeLastOccurrence(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**
@@ -516,7 +516,7 @@ final class __Sub__<V>
 	@Override
 	public boolean retainAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	/**

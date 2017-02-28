@@ -17,7 +17,7 @@ public abstract class ByteBuffer
 	ByteBuffer()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract FloatBuffer asFloatBuffer();
@@ -64,90 +64,90 @@ public abstract class ByteBuffer
 	
 	public final byte[] array()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int arrayOffset()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(ByteBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ByteBuffer get(byte[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ByteBuffer get(byte[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean hasArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final ByteOrder order()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final ByteBuffer order(ByteOrder __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ByteBuffer put(ByteBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ByteBuffer put(byte[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final ByteBuffer put(byte[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ByteBuffer allocateDirect(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ByteBuffer wrap(byte[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ByteBuffer wrap(byte[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

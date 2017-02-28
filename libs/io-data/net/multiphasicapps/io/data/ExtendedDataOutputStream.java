@@ -241,7 +241,7 @@ public class ExtendedDataOutputStream
 	public final void writeBytes(String __s)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -453,7 +453,7 @@ public class ExtendedDataOutputStream
 	public final void writeUTF(String __s)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

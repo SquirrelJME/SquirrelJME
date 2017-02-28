@@ -36,7 +36,7 @@ public final class SoftInteger
 	 */
 	public static long integerToDouble(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public final class SoftInteger
 	 */
 	public static int integerToFloat(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public final class SoftInteger
 	 */
 	public static long longToDouble(long __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public final class SoftInteger
 	 */
 	public static int longToFloat(long __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

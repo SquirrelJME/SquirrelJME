@@ -16,13 +16,13 @@ public class VirtualMachineError
 	public VirtualMachineError()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VirtualMachineError(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

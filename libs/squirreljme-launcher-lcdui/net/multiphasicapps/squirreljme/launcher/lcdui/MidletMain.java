@@ -29,7 +29,7 @@ public class MidletMain
 	protected void destroyApp(boolean __uc)
 		throws MIDletStateChangeException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class MidletMain
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

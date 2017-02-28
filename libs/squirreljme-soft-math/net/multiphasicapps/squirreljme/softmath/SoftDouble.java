@@ -39,7 +39,7 @@ public final class SoftDouble
 	 */
 	public static long doubleAdd(long __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public final class SoftDouble
 		if (doubleIsNaN(__a) || doubleIsNaN(__b))
 			return 1;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public final class SoftDouble
 		if (doubleIsNaN(__a) || doubleIsNaN(__b))
 			return -1;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public final class SoftDouble
 	 */
 	public static long doubleDivide(long __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public final class SoftDouble
 	 */
 	public static boolean doubleIsNaN(long __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public final class SoftDouble
 	 */
 	public static long doubleMultiply(long __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public final class SoftDouble
 	 */
 	public static long doubleNegate(long __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public final class SoftDouble
 	 */
 	public static long doubleRemainder(long __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public final class SoftDouble
 	 */
 	public static long doubleSubtract(long __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public final class SoftDouble
 	 */
 	public static int doubleToFloat(long __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -175,7 +175,7 @@ public final class SoftDouble
 	 */
 	public static int doubleToInteger(long __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -187,7 +187,7 @@ public final class SoftDouble
 	 */
 	public static long doubleToLong(long __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

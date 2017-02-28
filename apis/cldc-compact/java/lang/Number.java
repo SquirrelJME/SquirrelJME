@@ -15,7 +15,7 @@ public abstract class Number
 	public Number()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract double doubleValue();
@@ -28,12 +28,12 @@ public abstract class Number
 	
 	public byte byteValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public short shortValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

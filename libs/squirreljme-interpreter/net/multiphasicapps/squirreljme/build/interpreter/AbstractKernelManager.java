@@ -135,7 +135,7 @@ public abstract class AbstractKernelManager
 	@Override
 	public final UserInstalledSuites userSuites()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 
