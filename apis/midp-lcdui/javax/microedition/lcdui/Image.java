@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
@@ -289,10 +290,10 @@ public class Image
 			return createImage(new ByteArrayInputStream(__b, __o, __l));
 		}
 		
-		// {@squirreljme.error EB0t Could not load the image data.}
+		// {@squirreljme.error EB0u Could not load the image data.}
 		catch (IOException e)
 		{
-			throw new IllegalArgumentException("EB0t", e);
+			throw new IllegalArgumentException("EB0u", e);
 		}
 	}
 	
@@ -346,21 +347,20 @@ public class Image
 	/**
 	 * Loads the image from the specified input stream.
 	 *
-	 * @param __a The stream to read image data from.
+	 * @param __is The stream to read image data from.
 	 * @throws IOException If the image could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	public static Image createImage(InputStream __a)
+	public static Image createImage(InputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__a == null)
+		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Parse
+		return __ImageParseDispatcher__.__parse(new DataInputStream(__is));
 	}
 	
 	/**
