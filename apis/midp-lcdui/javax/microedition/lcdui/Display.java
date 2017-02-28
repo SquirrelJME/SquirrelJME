@@ -711,9 +711,9 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AD04 Cannot vibrate for a negative duration.}
+		// {@squirreljme.error EB0q Cannot vibrate for a negative duration.}
 		if (__d < 0)
-			throw new IllegalArgumentException("AD04");
+			throw new IllegalArgumentException("EB0q");
 		
 		// Display is not attached, do not vibrate
 		DisplayInstance instance = this._instance;

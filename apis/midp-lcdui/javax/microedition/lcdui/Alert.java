@@ -15,8 +15,12 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 public class Alert
 	extends Screen
 {
+	/**
+	 * This is delivered to a listener to specify that the alert has been
+	 * dismissed.
+	 */
 	public static final Command DISMISS_COMMAND =
-		new Command(null, null, null, -1, -1);
+		new Command("", Command.OK, 0);
 	
 	public static final int FOREVER =
 		-2;
