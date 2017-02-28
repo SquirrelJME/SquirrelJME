@@ -13,7 +13,8 @@ package net.multiphasicapps.squirreljme.midlet;
 import javax.microedition.midlet.MIDlet;
 
 /**
- * DESCRIBE THIS.
+ * This is used to store the current MIDlet which is being run in the current
+ * process.
  *
  * @since 2017/02/26
  */

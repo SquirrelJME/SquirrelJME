@@ -10,8 +10,13 @@
 
 package javax.microedition.rms;
 
+import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 import net.multiphasicapps.squirreljme.rms.RecordCluster;
 import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
+import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**
@@ -698,7 +703,22 @@ public class RecordStore
 			// Open cluster connection?
 			RecordCluster rv = _THIS_CLUSTER;
 			if (rv == null)
-				throw new Error("TODO");
+			{
+				// Need to build the MIDlet name
+				MIDlet mid = ActiveMidlet.get();
+				
+				// {@squirreljme.error DC02 Could not get the name and/or
+				// vendor of the current MIDlet}
+				String name = mid.getAppProperty("midlet-name"),
+					vend = mid.getAppProperty("midlet-vendor");
+				if (name == null || vend == null)
+					throw new RuntimeException("DC02");
+				
+				// Open the cluster
+				rv = _MANAGER.open(new RecordStoreOwner(
+					new MidletSuiteName(name),
+					new MidletSuiteVendor(vend)));
+			}
 			
 			return rv;
 		}

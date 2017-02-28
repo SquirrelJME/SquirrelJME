@@ -18,5 +18,22 @@ package net.multiphasicapps.squirreljme.rms;
  */
 public abstract class RecordClusterManager
 {
+	/**
+	 * Opens the cluster manager for the given suite.
+	 *
+	 * @param __o The suite to open the cluster for, if it is already open
+	 * then the existing cluster will be returned.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/27
+	 */
+	public final RecordCluster open(RecordStoreOwner __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

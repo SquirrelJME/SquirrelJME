@@ -15,10 +15,15 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 public abstract class MIDlet
 {
+	/** This is the prefix used to override settings. */
+	private static final String _APP_PROPERTY_OVERRIDE =
+		"net.multiphasicapps.squirreljme.midlet.override.";
+	
 	/** The cached manifest for obtaining properties. */
 	private volatile Reference<JavaManifest> _manifest;
 	
@@ -67,6 +72,12 @@ public abstract class MIDlet
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
+		// Overridden property?
+		JavaManifestKey key = new JavaManifestKey(__p);
+		String val = System.getProperty(_APP_PROPERTY_OVERRIDE + key);
+		if (val != null)
+			return val;
+		
 		// If there is not manifest, ignore this step
 		if (!this._nomanifest)
 		{
@@ -105,7 +116,8 @@ public abstract class MIDlet
 			// Try to get key value
 			if (manifest != null)
 			{
-				String rv = manifest.getMainAttributes().get(__p);
+				String rv = manifest.getMainAttributes().get(
+					new JavaManifestKey(__p));
 				if (rv != null)
 					return rv;
 			}
