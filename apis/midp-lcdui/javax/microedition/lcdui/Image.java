@@ -10,10 +10,12 @@
 
 package javax.microedition.lcdui;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
 import net.multiphasicapps.squirreljme.lcdui.PixelArrayGraphics;
+import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 public class Image
 {
@@ -260,9 +262,38 @@ public class Image
 		return (this instanceof ScalableImage);
 	}
 	
-	public static Image createImage(byte[] __a, int __b, int __c)
+	/**
+	 * Loads the specified image from the specified byte array.
+	 *
+	 * @param __b The array to read from.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the array.
+	 * @return The loaded image.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IllegalArgumentException If the image could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
+	public static Image createImage(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Could fail
+		try
+		{
+			return createImage(new ByteArrayInputStream(__b, __o, __l));
+		}
+		
+		// {@squirreljme.error EB0t Could not load the image data.}
+		catch (IOException e)
+		{
+			throw new IllegalArgumentException("EB0t", e);
+		}
 	}
 	
 	/**
@@ -312,20 +343,53 @@ public class Image
 		return new Image(data, __w, __h, true, __alpha);
 	}
 	
+	/**
+	 * Loads the image from the specified input stream.
+	 *
+	 * @param __a The stream to read image data from.
+	 * @throws IOException If the image could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
 	public static Image createImage(InputStream __a)
-		throws IOException
+		throws IOException, NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();
 	}
 	
-	public static Image createImage(String __a)
-		throws IOException
+	/**
+	 * This loads the specified resource as an image.
+	 *
+	 * @param __s The string to load the resource for.
+	 * @throws IOException If the resource does not exist or the image data
+	 * could not be decoded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
+	public static Image createImage(String __s)
+		throws IOException, NullPointerException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Try loading it
+		try (InputStream is = ActiveMidlet.get().getClass().
+			getResourceAsStream(__s))
+		{
+			// {@squirreljme.error EB0t The specified resource does not
+			// exist. (The resource name)}
+			if (is == null)
+				throw new IOException(String.format("EB0t %s", __s));
+			
+			return createImage(is);
+		}
 	}
 	
 	public static Image createImage(Image __a)
