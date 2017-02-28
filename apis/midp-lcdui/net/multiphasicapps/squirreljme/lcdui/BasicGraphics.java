@@ -1064,7 +1064,7 @@ public abstract class BasicGraphics
 		
 		// {@squirreljme.error EB0g Cannot set the overlay blending mode
 		// because this graphics context does not have the alpha channel.}
-		if (__m == SRC_OVER && !primitiveHasAlphaChannel())
+		if (__m == SRC && !primitiveHasAlphaChannel())
 			throw new IllegalArgumentException("EB0g");
 		
 		// Set
