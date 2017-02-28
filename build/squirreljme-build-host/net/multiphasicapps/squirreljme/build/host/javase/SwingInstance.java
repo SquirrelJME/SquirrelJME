@@ -98,6 +98,31 @@ public abstract class SwingInstance
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/02/28
+	 */
+	@Override
+	public void setFullScreen(boolean __f)
+	{
+		JFrame frame = this.frame;
+		
+		// Programatically maximize?
+		int state = frame.getExtendedState();
+		if (__f)
+			state |= JFrame.MAXIMIZED_BOTH;
+		else
+			state &= JFrame.MAXIMIZED_BOTH;
+		frame.setExtendedState(state);
+		
+		// If not maximized then repack and recenter
+		if (!__f)
+		{
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/08
 	 */
 	@Override

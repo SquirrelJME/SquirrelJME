@@ -417,9 +417,20 @@ public abstract class Canvas
 		throw new Error("TODO");
 	}
 	
-	public void setFullScreenMode(boolean __a)
+	/**
+	 * This specifies that the canvas should enter full screen mode which
+	 * takes up the maximum amount of space that is possible on the display.
+	 *
+	 * Note that this might not use the entire screen.
+	 *
+	 * @param __f If {@code true} then fullscreen mode should be used.
+	 * @since 2017/02/28
+	 */
+	public void setFullScreenMode(boolean __f)
 	{
-		throw new Error("TODO");
+		DisplayInstance instance = this._instance;
+		if (instance != null)
+			instance.setFullScreen(__f);
 	}
 	
 	/**

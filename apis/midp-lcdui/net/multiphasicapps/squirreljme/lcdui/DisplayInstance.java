@@ -76,6 +76,15 @@ public interface DisplayInstance
 	public abstract void repaint(int __x, int __y, int __w, int __h);
 	
 	/**
+	 * Tells the display to enter or leave fullscreen mode.
+	 *
+	 * @param __f If {@code true} then fullscreen mode should be used,
+	 * otherwise it should not be used.
+	 * @since 2017/02/28
+	 */
+	public abstract void setFullScreen(boolean __f);
+	
+	/**
 	 * Sets the state of the instance engine.
 	 *
 	 * @param __s The state to use.
