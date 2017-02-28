@@ -10,6 +10,7 @@
 
 package javax.microedition.rms;
 
+import net.multiphasicapps.squirreljme.rms.RecordCluster;
 import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
@@ -40,12 +41,15 @@ public class RecordStore
 	public static final int AUTHMODE_PRIVATE =
 		0;
 	
-	/**
-	 * The record store manager.
-	 *
-	 * @since 2017/02/27
-	 */
+	/** The record store manager. */
 	private static final RecordClusterManager _MANAGER;
+	
+	/** Lock on the cluster. */
+	private static final Object _THIS_CLUSTER_LOCK =
+		new Object();
+	
+	/** The cluster for this midlet suite. */
+	private static volatile RecordCluster _THIS_CLUSTER;
 	
 	/**
 	 * Initializes the record store manager.
@@ -523,7 +527,7 @@ public class RecordStore
 	 */
 	public static String[] listRecordStores()
 	{
-		throw new Error("TODO");
+		return __thisCluster().listRecordStores();
 	}
 	
 	/**
@@ -678,6 +682,26 @@ public class RecordStore
 			SecurityException
 	{
 		return openRecordStore(__n, __vend, __suite, "");
+	}
+	
+	/**
+	 * Returns the cluster for this MIDlet.
+	 *
+	 * @return The cluster for this MIDlet.
+	 * @since 2017/02/27
+	 */
+	private static RecordCluster __thisCluster()
+	{
+		// Lock
+		synchronized (_THIS_CLUSTER_LOCK)
+		{
+			// Open cluster connection?
+			RecordCluster rv = _THIS_CLUSTER;
+			if (rv == null)
+				throw new Error("TODO");
+			
+			return rv;
+		}
 	}
 }
 
