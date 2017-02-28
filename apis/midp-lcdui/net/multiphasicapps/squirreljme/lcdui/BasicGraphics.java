@@ -80,6 +80,9 @@ public abstract class BasicGraphics
 	private volatile int _clipey =
 		Integer.MAX_VALUE;
 	
+	/** The current font, null means default. */
+	private volatile Font _font;
+	
 	/**
 	 * Returns {@code true} if the image has an alpha channel.
 	 *
@@ -869,7 +872,7 @@ public abstract class BasicGraphics
 	@Override
 	public final Font getFont()
 	{
-		throw new Error("TODO");
+		return this._font;
 	}
 	
 	/**
@@ -1147,7 +1150,8 @@ public abstract class BasicGraphics
 	@Override
 	public final void setFont(Font __a)
 	{
-		throw new Error("TODO");
+		// Just set it
+		this._font = __a;
 	}
 	
 	/**
