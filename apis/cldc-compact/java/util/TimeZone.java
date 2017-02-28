@@ -22,7 +22,7 @@ public abstract class TimeZone
 	public TimeZone()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract int getOffset(int __a, int __b, int __c, int __d, int __e
@@ -39,49 +39,49 @@ public abstract class TimeZone
 	@Override
 	public Object clone()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDSTSavings()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final String getDisplayName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final String getDisplayName(boolean __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getID()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getOffset(long __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean hasSameRules(TimeZone __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setID(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String[] getAvailableIDs(int __a)
 	{
 		synchronized (TimeZone.class)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -89,26 +89,26 @@ public abstract class TimeZone
 	{
 		synchronized (TimeZone.class)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public static TimeZone getDefault()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static TimeZone getTimeZone(String __a)
 	{
 		synchronized (TimeZone.class)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public static void setDefault(TimeZone __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -18,13 +18,13 @@ public class I2CPermission
 	public I2CPermission(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public I2CPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

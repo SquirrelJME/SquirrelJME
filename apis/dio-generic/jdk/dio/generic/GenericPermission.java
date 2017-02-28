@@ -18,13 +18,13 @@ public class GenericPermission
 	public GenericPermission(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public GenericPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

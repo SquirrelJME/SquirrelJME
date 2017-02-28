@@ -36,21 +36,21 @@ public final class PulseCounterConfig
 	public PulseCounterConfig(int __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public PulseCounterConfig(int __a, int __b, int __c, GPIOPinConfig __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public PulseCounterConfig(String __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -58,48 +58,48 @@ public final class PulseCounterConfig
 		)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getChannelNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getControllerName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getControllerNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public GPIOPin getSource()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public GPIOPinConfig getSourceConfig()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int serialize(OutputStream __a)
@@ -107,7 +107,7 @@ public final class PulseCounterConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static PulseCounterConfig deserialize(InputStream __a)
@@ -115,7 +115,7 @@ public final class PulseCounterConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static final class Builder
@@ -123,37 +123,37 @@ public final class PulseCounterConfig
 		public Builder()
 		{
 			super();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public PulseCounterConfig build()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setChannelNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setSourceConfig(GPIOPinConfig __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setType(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

@@ -22,51 +22,51 @@ public final class Formatter
 	public Formatter()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Formatter(Appendable __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Formatter(PrintStream __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void close()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void flush()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Formatter format(String __a, Object... __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IOException ioException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Appendable out()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

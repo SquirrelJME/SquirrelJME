@@ -16,13 +16,13 @@ public class NoSuchElementException
 	public NoSuchElementException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NoSuchElementException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

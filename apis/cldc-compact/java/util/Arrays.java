@@ -23,7 +23,7 @@ public class Arrays
 	private Arrays()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -51,236 +51,236 @@ public class Arrays
 	
 	public static int binarySearch(long[] __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(long[] __a, int __b, int __c, long __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(int[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(int[] __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(short[] __a, short __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(short[] __a, int __b, int __c, short __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(char[] __a, char __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(char[] __a, int __b, int __c, char __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(byte[] __a, byte __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(byte[] __a, int __b, int __c, byte __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(double[] __a, double __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(double[] __a, int __b, int __c, double __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(float[] __a, float __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(float[] __a, int __b, int __c, float __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(Object[] __a, Object __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int binarySearch(Object[] __a, int __b, int __c, Object __d
 		)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static <T> int binarySearch(T[] __a, T __b, Comparator<? super T>
 		__c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static <T> int binarySearch(T[] __a, int __b, int __c, T __d,
 		Comparator<? super T> __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static <T> T[] copyOf(T[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static <T, U> T[] copyOf(U[] __a, int __b, Class<? extends T[]>
 		__c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static byte[] copyOf(byte[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static short[] copyOf(short[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int[] copyOf(int[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static long[] copyOf(long[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static char[] copyOf(char[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static float[] copyOf(float[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static double[] copyOf(double[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean[] copyOf(boolean[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(long[] __a, long[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(int[] __a, int[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(short[] __a, short[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(char[] __a, char[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(byte[] __a, byte[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(boolean[] __a, boolean[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(double[] __a, double[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(float[] __a, float[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean equals(Object[] __a, Object[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(long[] __a, long __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(int[] __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(short[] __a, short __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(char[] __a, char __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(byte[] __a, byte __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(boolean[] __a, boolean __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(double[] __a, double __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(float[] __a, float __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void fill(Object[] __a, Object __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -317,7 +317,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -354,7 +354,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -391,7 +391,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -428,7 +428,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -465,7 +465,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -502,7 +502,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -539,7 +539,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -594,7 +594,7 @@ public class Arrays
 		if (__from == __to)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

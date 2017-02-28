@@ -149,7 +149,7 @@ public abstract class Calendar
 	protected Calendar()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void add(int __a, int __b);
@@ -170,173 +170,173 @@ public abstract class Calendar
 	
 	public boolean after(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean before(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void clear(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Object clone()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(Calendar __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void complete()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int get(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getActualMaximum(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getActualMinimum(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getFirstDayOfWeek()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMinimalDaysInFirstWeek()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Date getTime()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long getTimeInMillis()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public TimeZone getTimeZone()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final int internalGet(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isLenient()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean isSet(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void roll(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void set(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void set(int __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void set(int __a, int __b, int __c, int __d, int __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void set(int __a, int __b, int __c, int __d, int __e, int
 		__f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFirstDayOfWeek(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setLenient(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMinimalDaysInFirstWeek(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void setTime(Date __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTimeInMillis(long __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTimeZone(TimeZone __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Calendar getInstance()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Calendar getInstance(TimeZone __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

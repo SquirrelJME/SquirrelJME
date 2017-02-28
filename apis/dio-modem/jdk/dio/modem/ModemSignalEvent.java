@@ -23,23 +23,23 @@ public class ModemSignalEvent<P extends Device<? super P>>
 	public ModemSignalEvent(P __a, int __b, boolean __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ModemSignalEvent(P __a, int __b, boolean __c, long __d, int __e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSignalID()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean getSignalState()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

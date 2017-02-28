@@ -17,13 +17,13 @@ public class InvalidOutputSamplingRateException
 	public InvalidOutputSamplingRateException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InvalidOutputSamplingRateException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

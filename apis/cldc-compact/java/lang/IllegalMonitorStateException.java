@@ -15,12 +15,12 @@ public class IllegalMonitorStateException
 {
 	public IllegalMonitorStateException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IllegalMonitorStateException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

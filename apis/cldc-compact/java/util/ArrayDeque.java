@@ -17,189 +17,189 @@ public class ArrayDeque<E>
 	public ArrayDeque()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ArrayDeque(int __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ArrayDeque(Collection<? extends E> __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean add(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addFirst(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addLast(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public ArrayDeque<E> clone()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean contains(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Iterator<E> descendingIterator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E element()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E getFirst()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E getLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean isEmpty()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean offer(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean offerFirst(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean offerLast(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E peek()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E peekFirst()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E peekLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E poll()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E pollFirst()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E pollLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E pop()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void push(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E remove()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean remove(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E removeFirst()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean removeFirstOccurrence(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public E removeLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean removeLastOccurrence(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public Object[] toArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public <T> T[] toArray(T[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

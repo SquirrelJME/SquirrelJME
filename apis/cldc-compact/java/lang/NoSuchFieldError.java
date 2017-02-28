@@ -16,13 +16,13 @@ public class NoSuchFieldError
 	public NoSuchFieldError()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NoSuchFieldError(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

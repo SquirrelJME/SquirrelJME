@@ -32,7 +32,7 @@ public final class SPIDeviceConfig
 		__f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -40,7 +40,7 @@ public final class SPIDeviceConfig
 		__f, int __g)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -48,7 +48,7 @@ public final class SPIDeviceConfig
 		int __f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -56,67 +56,67 @@ public final class SPIDeviceConfig
 		int __f, int __g)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAddress()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBitOrdering()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCSActiveLevel()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getClockFrequency()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getClockMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getControllerName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getControllerNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWordLength()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int serialize(OutputStream __a)
@@ -124,7 +124,7 @@ public final class SPIDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static SPIDeviceConfig deserialize(InputStream __a)
@@ -132,7 +132,7 @@ public final class SPIDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static final class Builder
@@ -140,62 +140,62 @@ public final class SPIDeviceConfig
 		public Builder()
 		{
 			super();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public SPIDeviceConfig build()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setAddress(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setBitOrdering(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setCSActiveLevel(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setClockFrequency(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setClockMode(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setWordLength(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

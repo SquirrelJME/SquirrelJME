@@ -15,12 +15,12 @@ public class UnsupportedEncodingException
 {
 	public UnsupportedEncodingException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnsupportedEncodingException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

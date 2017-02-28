@@ -16,13 +16,13 @@ public class UTFDataFormatException
 	public UTFDataFormatException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UTFDataFormatException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

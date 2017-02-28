@@ -26,13 +26,13 @@ public abstract class Writer
 	protected Writer()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected Writer(Object __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void write(int __a)
@@ -77,7 +77,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void write(char[] __a)
@@ -85,7 +85,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void write(String __a)
@@ -93,7 +93,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void write(String __a, int __b, int __c)
@@ -101,7 +101,7 @@ public abstract class Writer
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

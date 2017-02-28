@@ -16,7 +16,7 @@ public abstract class AbstractSequentialList<E>
 	protected AbstractSequentialList()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -25,37 +25,37 @@ public abstract class AbstractSequentialList<E>
 	@Override
 	public void add(int __a, E __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean addAll(int __a, Collection<? extends E> __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public E get(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public E remove(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public E set(int __a, E __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -16,13 +16,13 @@ public class ConnectException
 	public ConnectException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ConnectException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

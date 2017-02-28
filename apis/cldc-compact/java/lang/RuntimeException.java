@@ -15,22 +15,22 @@ public class RuntimeException
 {
 	public RuntimeException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public RuntimeException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public RuntimeException(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public RuntimeException(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

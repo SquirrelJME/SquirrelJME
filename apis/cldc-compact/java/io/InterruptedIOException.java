@@ -18,13 +18,13 @@ public class InterruptedIOException
 	public InterruptedIOException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InterruptedIOException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

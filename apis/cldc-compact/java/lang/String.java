@@ -42,7 +42,7 @@ public final class String
 	
 	public String()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String(String __a)
@@ -52,18 +52,18 @@ public final class String
 	
 	public String(char[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String(char[] __a, int __o, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String(byte[] __a, int __o, int __l, String __e)
 		throws NullPointerException, UnsupportedEncodingException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String(byte[] __a, String __e)
@@ -74,12 +74,12 @@ public final class String
 	
 	public String(byte[] __a, int __o, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String(byte[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String(StringBuffer __a)
@@ -111,12 +111,12 @@ public final class String
 		if (__str == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public char charAt(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -170,32 +170,32 @@ public final class String
 	
 	public int compareToIgnoreCase(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String concat(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean contains(CharSequence __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean contentEquals(StringBuffer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean contentEquals(CharSequence __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean endsWith(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -220,12 +220,12 @@ public final class String
 		if (mlen != olen)
 			return false;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equalsIgnoreCase(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -245,7 +245,7 @@ public final class String
 		if (__enc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public byte[] getBytes()
@@ -266,33 +266,33 @@ public final class String
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int indexOf(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int indexOf(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int indexOf(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int indexOf(String __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -308,48 +308,48 @@ public final class String
 	 */
 	public String intern()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isEmpty()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int lastIndexOf(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int lastIndexOf(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int lastIndexOf(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int lastIndexOf(String __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int length()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean regionMatches(int __a, String __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean regionMatches(boolean __a, int __b, String __c, int __d,
 		int __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String replace(char __a, char __b)
@@ -359,22 +359,22 @@ public final class String
 		if (__a == __b)
 			return this;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean startsWith(String __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean startsWith(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public CharSequence subSequence(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String substring(int __s)
@@ -396,28 +396,28 @@ public final class String
 		if (__s == 0 && __e == n)
 			return this;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public char[] toCharArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String toLowerCase()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String toUpperCase()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -483,7 +483,7 @@ public final class String
 	
 	public static String format(String __a, Object... __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -517,7 +517,7 @@ public final class String
 	public static String valueOf(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String valueOf(boolean __a)

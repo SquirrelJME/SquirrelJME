@@ -16,13 +16,13 @@ public class BufferedReader
 	public BufferedReader(Reader __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public BufferedReader(Reader __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -31,7 +31,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -40,13 +40,13 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean markSupported()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String readLine()
@@ -72,7 +72,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -81,7 +81,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -99,7 +99,7 @@ public class BufferedReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

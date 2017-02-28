@@ -16,17 +16,17 @@ public class GenericDeviceControl<T>
 	public GenericDeviceControl(int __a, Class<T> __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getID()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Class<T> getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

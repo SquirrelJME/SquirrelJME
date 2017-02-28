@@ -15,22 +15,22 @@ public class Exception
 {
 	public Exception()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Exception(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Exception(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Exception(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

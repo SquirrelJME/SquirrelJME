@@ -21,12 +21,12 @@ public class NullPointerException
 {
 	public NullPointerException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NullPointerException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

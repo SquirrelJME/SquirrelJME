@@ -18,13 +18,13 @@ public class SPIPermission
 	public SPIPermission(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public SPIPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

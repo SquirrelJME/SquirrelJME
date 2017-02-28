@@ -17,7 +17,7 @@ public class Runtime
 	private Runtime()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -33,7 +33,7 @@ public class Runtime
 	
 	public long freeMemory()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -49,17 +49,17 @@ public class Runtime
 	
 	public long maxMemory()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long totalMemory()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Runtime getRuntime()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

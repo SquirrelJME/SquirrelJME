@@ -17,13 +17,13 @@ public class InvalidWordLengthException
 	public InvalidWordLengthException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InvalidWordLengthException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

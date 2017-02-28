@@ -25,30 +25,30 @@ public class Thread
 	public Thread()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Thread(Runnable __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Thread(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Thread(Runnable __a, String __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void checkAccess()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected Object clone()
@@ -56,37 +56,37 @@ public class Thread
 	{
 		if (false)
 			throw new CloneNotSupportedException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long getId()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getPriority()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void interrupt()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean isAlive()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isInterrupted()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void join(long __a)
@@ -97,7 +97,7 @@ public class Thread
 			if (false)
 				throw new
 					InterruptedException();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -109,7 +109,7 @@ public class Thread
 			if (false)
 				throw new
 					InterruptedException();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -118,59 +118,59 @@ public class Thread
 	{
 		if (false)
 			throw new InterruptedException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void run()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void setName(String __a)
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public final void setPriority(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void start()
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int activeCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Thread currentThread()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean holdsLock(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean interrupted()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void sleep(long __a)
@@ -184,12 +184,12 @@ public class Thread
 	{
 		if (false)
 			throw new InterruptedException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void yield()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

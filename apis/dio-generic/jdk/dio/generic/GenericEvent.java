@@ -27,18 +27,18 @@ public class GenericEvent
 	public GenericEvent(GenericDevice __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public GenericEvent(GenericDevice __a, int __b, long __c, int __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getID()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -16,13 +16,13 @@ public class PortUnreachableException
 	public PortUnreachableException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PortUnreachableException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

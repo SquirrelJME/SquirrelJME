@@ -22,49 +22,49 @@ public final class GenericDeviceConfig
 	public GenericDeviceConfig(int __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public GenericDeviceConfig(String __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getChannelNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getControllerName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getControllerNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getInputBufferSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int serialize(OutputStream __a)
@@ -72,7 +72,7 @@ public final class GenericDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static GenericDeviceConfig deserialize(InputStream __a)
@@ -80,7 +80,7 @@ public final class GenericDeviceConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static final class Builder
@@ -88,37 +88,37 @@ public final class GenericDeviceConfig
 		public Builder()
 		{
 			super();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public GenericDeviceConfig build()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setChannelNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setInputBufferSize(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

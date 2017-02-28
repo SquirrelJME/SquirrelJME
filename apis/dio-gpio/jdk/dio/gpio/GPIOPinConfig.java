@@ -68,7 +68,7 @@ public final class GPIOPinConfig
 		__f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -76,52 +76,52 @@ public final class GPIOPinConfig
 		boolean __f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getControllerName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getControllerNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDirection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDriveMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean getInitValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPinNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getTrigger()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int serialize(OutputStream __a)
@@ -129,7 +129,7 @@ public final class GPIOPinConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static GPIOPinConfig deserialize(InputStream __a)
@@ -137,7 +137,7 @@ public final class GPIOPinConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static final class Builder
@@ -145,47 +145,47 @@ public final class GPIOPinConfig
 		public Builder()
 		{
 			super();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public GPIOPinConfig build()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setDirection(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setDriveMode(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setInitValue(boolean __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setPinNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setTrigger(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

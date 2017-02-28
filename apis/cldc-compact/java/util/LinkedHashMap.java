@@ -17,54 +17,54 @@ public class LinkedHashMap<K, V>
 	public LinkedHashMap(int __a, float __b)
 	{
 		super(0, 0);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashMap(int __a)
 	{
 		super(0, 0);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashMap()
 	{
 		super(0, 0);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashMap(Map<? extends K, ? extends V> __a)
 	{
 		super(0, 0);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashMap(int __a, float __b, boolean __c)
 	{
 		super(0, 0);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean containsValue(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public V get(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected boolean removeEldestEntry(Map.Entry<K, V> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

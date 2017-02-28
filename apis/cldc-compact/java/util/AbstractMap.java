@@ -21,7 +21,7 @@ public abstract class AbstractMap<K, V>
 	
 	public void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -30,75 +30,75 @@ public abstract class AbstractMap<K, V>
 	{
 		if (false)
 			throw new CloneNotSupportedException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean containsKey(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean containsValue(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public V get(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isEmpty()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Set<K> keySet()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public V put(K __a, V __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void putAll(Map<? extends K, ? extends V> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public V remove(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int size()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Collection<V> values()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

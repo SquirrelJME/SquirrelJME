@@ -33,7 +33,7 @@ public final class System
 	public static void arraycopy(Object __a, int __b, Object __c, int __d,
 		int __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static long currentTimeMillis()
@@ -151,7 +151,7 @@ public final class System
 		// Not allowed to do this?
 		getSecurityManager().checkPropertyAccess(__k);
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String getProperty(String __k, String __d)
@@ -169,7 +169,7 @@ public final class System
 	
 	public static SecurityManager getSecurityManager()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

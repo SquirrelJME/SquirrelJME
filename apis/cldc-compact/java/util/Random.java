@@ -15,68 +15,68 @@ public class Random
 	public Random()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Random(long __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected int next(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean nextBoolean()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void nextBytes(byte[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public double nextDouble()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float nextFloat()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public double nextGaussian()
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public int nextInt()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int nextInt(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long nextLong()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSeed(long __a)
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

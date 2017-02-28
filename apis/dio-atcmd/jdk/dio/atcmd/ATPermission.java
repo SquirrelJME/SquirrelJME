@@ -21,18 +21,18 @@ public class ATPermission
 	public ATPermission(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ATPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getActions()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

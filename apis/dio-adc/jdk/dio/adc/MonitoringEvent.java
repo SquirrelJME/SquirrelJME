@@ -24,24 +24,24 @@ public class MonitoringEvent
 	public MonitoringEvent(ADCChannel __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public MonitoringEvent(ADCChannel __a, int __b, int __c, long __d, int 
 		__e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

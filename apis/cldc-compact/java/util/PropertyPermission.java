@@ -20,37 +20,37 @@ public final class PropertyPermission
 	public PropertyPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String getActions()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean implies(Permission __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

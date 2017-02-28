@@ -15,7 +15,7 @@ public abstract class AbstractCollection<E>
 {
 	protected AbstractCollection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract Iterator<E> iterator();
@@ -24,63 +24,63 @@ public abstract class AbstractCollection<E>
 	
 	public boolean add(E __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean addAll(Collection<? extends E> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void clear()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean contains(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean containsAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isEmpty()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean remove(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean removeAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean retainAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Object[] toArray()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public <T> T[] toArray(T[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

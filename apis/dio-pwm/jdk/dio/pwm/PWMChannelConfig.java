@@ -39,7 +39,7 @@ public final class PWMChannelConfig
 	public PWMChannelConfig(int __a, int __b, int __c, int __d, int __e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -47,14 +47,14 @@ public final class PWMChannelConfig
 		GPIOPinConfig __f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public PWMChannelConfig(String __a, int __b, int __c, int __d, int __e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
@@ -62,68 +62,68 @@ public final class PWMChannelConfig
 		GPIOPinConfig __f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getChannelNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getControllerName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getControllerNumber()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getIdleState()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public GPIOPin getOutput()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getOutputBufferSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public GPIOPinConfig getOutputConfig()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPulseAlignment()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPulsePeriod()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public double getScaleFactor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int serialize(OutputStream __a)
@@ -131,7 +131,7 @@ public final class PWMChannelConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static PWMChannelConfig deserialize(InputStream __a)
@@ -139,7 +139,7 @@ public final class PWMChannelConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static final class Builder
@@ -147,57 +147,57 @@ public final class PWMChannelConfig
 		public Builder()
 		{
 			super();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public PWMChannelConfig build()
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setChannelNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerName(String __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setControllerNumber(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setIdleState(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setOutputBufferSize(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setOutputConfig(GPIOPinConfig __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setPulseAlignment(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setPulsePeriod(int __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 		
 		public Builder setScaleFactor(double __a)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

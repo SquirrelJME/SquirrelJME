@@ -24,13 +24,13 @@ public class ByteArrayInputStream
 	public ByteArrayInputStream(byte[] __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ByteArrayInputStream(byte[] __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class ByteArrayInputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -48,19 +48,19 @@ public class ByteArrayInputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void mark(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean markSupported()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -68,7 +68,7 @@ public class ByteArrayInputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class ByteArrayInputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -86,7 +86,7 @@ public class ByteArrayInputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class ByteArrayInputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

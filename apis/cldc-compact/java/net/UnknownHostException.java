@@ -18,12 +18,12 @@ public class UnknownHostException
 	public UnknownHostException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnknownHostException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }

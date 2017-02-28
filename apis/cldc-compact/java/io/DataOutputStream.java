@@ -20,7 +20,7 @@ public class DataOutputStream
 	
 	public DataOutputStream(OutputStream __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -38,12 +38,12 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int size()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class DataOutputStream
 			if (false)
 				throw new
 					IOException();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class DataOutputStream
 			if (false)
 				throw new
 					IOException();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class DataOutputStream
 			if (false)
 				throw new
 					IOException();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -90,7 +90,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeByte(int __a)
@@ -98,7 +98,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeBytes(String __a)
@@ -106,7 +106,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeChar(int __a)
@@ -114,7 +114,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeChars(String __a)
@@ -122,7 +122,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeDouble(double __a)
@@ -130,7 +130,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeFloat(float __a)
@@ -138,7 +138,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeInt(int __a)
@@ -146,7 +146,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeLong(long __a)
@@ -154,7 +154,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeShort(int __a)
@@ -162,7 +162,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void writeUTF(String __a)
@@ -170,7 +170,7 @@ public class DataOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

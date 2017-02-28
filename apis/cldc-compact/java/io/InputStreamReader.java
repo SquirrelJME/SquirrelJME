@@ -16,7 +16,7 @@ public class InputStreamReader
 	public InputStreamReader(InputStream __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InputStreamReader(InputStream __a, String __b)
@@ -25,7 +25,7 @@ public class InputStreamReader
 		super();
 		if (false)
 			throw new UnsupportedEncodingException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -34,12 +34,12 @@ public class InputStreamReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getEncoding()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class InputStreamReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class InputStreamReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class InputStreamReader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

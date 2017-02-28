@@ -86,7 +86,7 @@ public class LinkedList<E>
 	@Override
 	public Object clone()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class LinkedList<E>
 	@Override
 	public Iterator<E> descendingIterator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public class LinkedList<E>
 	@Override
 	public ListIterator<E> listIterator(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -314,7 +314,7 @@ public class LinkedList<E>
 	@Override
 	public E removeFirst()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -349,7 +349,7 @@ public class LinkedList<E>
 	@Override
 	public E removeLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

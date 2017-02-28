@@ -33,38 +33,38 @@ public final class GPIOPortConfig
 	public GPIOPortConfig(int __a, int __b, GPIOPinConfig... __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDirection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getInitValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public GPIOPinConfig[] getPinConfigs()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public GPIOPin[] getPins()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int serialize(OutputStream __a)
@@ -72,7 +72,7 @@ public final class GPIOPortConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static GPIOPortConfig deserialize(InputStream __a)
@@ -80,7 +80,7 @@ public final class GPIOPortConfig
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

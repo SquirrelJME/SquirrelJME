@@ -34,94 +34,94 @@ public final class Character
 	public Character(char __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public char charValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int compareTo(Character __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int digit(char __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static char forDigit(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isDigit(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isISOControl(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isLowerCase(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isSpaceChar(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isUpperCase(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isWhitespace(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static char toLowerCase(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String toString(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static char toUpperCase(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Character valueOf(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

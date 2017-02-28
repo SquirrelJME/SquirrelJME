@@ -24,29 +24,29 @@ public class CountingEvent
 	public CountingEvent(PulseCounter __a, int __b, int __c, long __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public CountingEvent(PulseCounter __a, int __b, int __c, long __d, long 
 		__e, int __f)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long getInterval()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -18,13 +18,13 @@ public abstract class Reader
 	protected Reader()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected Reader(Object __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void close()
@@ -38,12 +38,12 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean markSupported()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int read()
@@ -51,7 +51,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int read(char[] __a)
@@ -59,7 +59,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean ready()
@@ -67,7 +67,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void reset()
@@ -75,7 +75,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long skip(long __a)
@@ -83,7 +83,7 @@ public abstract class Reader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

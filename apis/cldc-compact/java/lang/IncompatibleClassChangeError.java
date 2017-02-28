@@ -16,13 +16,13 @@ public class IncompatibleClassChangeError
 	public IncompatibleClassChangeError()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IncompatibleClassChangeError(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -16,49 +16,49 @@ public class StringTokenizer
 	public StringTokenizer(String __a, String __b, boolean __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public StringTokenizer(String __a, String __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public StringTokenizer(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int countTokens()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean hasMoreElements()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean hasMoreTokens()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Object nextElement()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String nextToken()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String nextToken(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -15,22 +15,22 @@ public class IOException
 {
 	public IOException()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IOException(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IOException(String __a, Throwable __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IOException(Throwable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

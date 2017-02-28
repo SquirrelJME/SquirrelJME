@@ -16,13 +16,13 @@ public class ServiceConfigurationError
 	public ServiceConfigurationError(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ServiceConfigurationError(String __a, Throwable __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

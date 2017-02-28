@@ -16,13 +16,13 @@ public class NoRouteToHostException
 	public NoRouteToHostException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NoRouteToHostException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

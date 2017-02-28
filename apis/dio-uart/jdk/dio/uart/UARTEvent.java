@@ -36,18 +36,18 @@ public class UARTEvent
 	public UARTEvent(UART __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UARTEvent(UART __a, int __b, long __c, int __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getID()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

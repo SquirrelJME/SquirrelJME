@@ -15,7 +15,7 @@ public abstract class InputStream
 {
 	public InputStream()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract int read()
@@ -24,47 +24,47 @@ public abstract class InputStream
 	public int available()
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void mark(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean markSupported()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int read(byte[] __a)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int read(byte[] __a, int __b, int __c)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void reset()
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long skip(long __a)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

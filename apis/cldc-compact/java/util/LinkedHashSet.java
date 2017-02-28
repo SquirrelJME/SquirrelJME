@@ -17,25 +17,25 @@ public class LinkedHashSet<E>
 	public LinkedHashSet(int __a, float __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashSet(int __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashSet()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public LinkedHashSet(Collection<? extends E> __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

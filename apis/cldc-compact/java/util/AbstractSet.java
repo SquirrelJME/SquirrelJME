@@ -17,25 +17,25 @@ public abstract class AbstractSet<E>
 	protected AbstractSet()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean removeAll(Collection<?> __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

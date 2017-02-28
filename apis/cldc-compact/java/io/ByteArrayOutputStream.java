@@ -20,13 +20,13 @@ public class ByteArrayOutputStream
 	public ByteArrayOutputStream()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ByteArrayOutputStream(int __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -35,14 +35,14 @@ public class ByteArrayOutputStream
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void reset()
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class ByteArrayOutputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -58,7 +58,7 @@ public class ByteArrayOutputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -67,7 +67,7 @@ public class ByteArrayOutputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -76,7 +76,7 @@ public class ByteArrayOutputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -85,7 +85,7 @@ public class ByteArrayOutputStream
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -97,7 +97,7 @@ public class ByteArrayOutputStream
 			if (false)
 				throw new
 					IOException();
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

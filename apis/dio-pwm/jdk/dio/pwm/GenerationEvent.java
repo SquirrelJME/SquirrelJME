@@ -18,18 +18,18 @@ public class GenerationEvent
 	public GenerationEvent(PWMChannel __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public GenerationEvent(PWMChannel __a, int __b, long __c, int __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPulseCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

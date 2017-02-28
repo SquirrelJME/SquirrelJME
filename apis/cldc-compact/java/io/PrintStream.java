@@ -16,177 +16,177 @@ public class PrintStream
 {
 	public PrintStream(OutputStream __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream(OutputStream __a, boolean __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream(OutputStream __a, boolean __b, String __c)
 		throws UnsupportedEncodingException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream append(CharSequence __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream append(CharSequence __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream append(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean checkError()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void clearError()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void close()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void flush()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream format(String __a, Object... __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(long __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(double __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(char[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void print(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PrintStream printf(String __a, Object... __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(long __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(double __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(char[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void println(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void setError()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void write(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void write(byte[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

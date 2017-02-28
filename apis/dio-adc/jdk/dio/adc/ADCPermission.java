@@ -18,13 +18,13 @@ public class ADCPermission
 	public ADCPermission(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ADCPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

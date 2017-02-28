@@ -16,32 +16,32 @@ public class Hashtable<K, V>
 	public Hashtable(int __a, float __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Hashtable(int __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Hashtable()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Hashtable(Map<? extends K, ? extends V> __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void clear()
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -58,7 +58,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -66,26 +66,26 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public boolean containsValue(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Enumeration<V> elements()
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -102,7 +102,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -110,7 +110,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -119,7 +119,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -128,20 +128,20 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public Set<K> keySet()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Enumeration<K> keys()
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -150,7 +150,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -166,13 +166,13 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	protected void rehash()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
@@ -180,7 +180,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -188,7 +188,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -196,7 +196,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -204,7 +204,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -213,7 +213,7 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
@@ -222,13 +222,13 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 	
 	public Collection<V> values()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 
