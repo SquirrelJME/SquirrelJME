@@ -22,6 +22,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.io.hex.HexInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
@@ -39,6 +40,10 @@ import net.multiphasicapps.zip.blockreader.ZipBlockReader;
  */
 public class HostedLaunch
 {
+	/** This is the prefix used to override settings. */
+	private static final String _APP_PROPERTY_OVERRIDE =
+		"net.multiphasicapps.squirreljme.midlet.override.";
+	
 	/**
 	 * Main entry point.
 	 *
@@ -92,6 +97,14 @@ public class HostedLaunch
 			
 			// Get the main class, which is in our own classpath!
 			mainclass = Class.forName(main);
+			
+			// This is used to hack around the application properties so that
+			// they exist (using their manifest values) without needing to have
+			// a very buggy and broken ClassLoader setup to mimick the
+			// proper Java ME getResourceAsStream.
+			for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
+				System.setProperty(_APP_PROPERTY_OVERRIDE + e.getKey(),
+					e.getValue());
 		}
 		
 		// {@squirreljme.error BM0f Failed to find the main class.}
