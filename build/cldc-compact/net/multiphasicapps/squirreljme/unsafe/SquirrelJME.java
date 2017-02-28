@@ -75,8 +75,8 @@ public final class SquirrelJME
 	 */
 	public static boolean isKernel()
 	{
-		// Always runs on the kernel
-		return true;
+		// Not the kernel
+		return false;
 	}
 	
 	/**
