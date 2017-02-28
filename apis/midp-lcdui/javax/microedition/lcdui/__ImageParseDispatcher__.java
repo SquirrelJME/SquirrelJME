@@ -53,7 +53,7 @@ final class __ImageParseDispatcher__
 		
 		// PNG?
 		else if (head == 0x89)
-			throw new todo.TODO();
+			return new __PNGImageParser__(__is).__parse();
 		
 		// JPEG?
 		else if (head == 0xFF)
