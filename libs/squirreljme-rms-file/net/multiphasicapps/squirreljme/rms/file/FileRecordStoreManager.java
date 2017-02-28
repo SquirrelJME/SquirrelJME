@@ -33,6 +33,9 @@ public class FileRecordStoreManager
 	public static final String RECORD_STORE_PATH_PROPERTY =
 		"net.multiphasicapps.squirreljme.rms.file.recordstorepath";
 	
+	/** The path where records are stored. */
+	protected final Path path;
+	
 	/**
 	 * Initializes the file backed record store manager using the default
 	 * location.
@@ -58,7 +61,8 @@ public class FileRecordStoreManager
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.path = __p;
 	}
 	
 	/**
