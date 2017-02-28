@@ -26,32 +26,32 @@ public class Camera
 	public Camera()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getProjection(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getProjection(Transform __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setGeneric(Transform __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setParallel(float __a, float __b, float __c, float __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPerspective(float __a, float __b, float __c, float __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

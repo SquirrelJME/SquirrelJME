@@ -28,33 +28,33 @@ public class DateField
 	public DateField(String __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public DateField(String __a, int __b, TimeZone __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Date getDate()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getInputMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDate(Date __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setInputMode(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -17,13 +17,13 @@ public class DeviceAlreadyExistsException
 	public DeviceAlreadyExistsException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public DeviceAlreadyExistsException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

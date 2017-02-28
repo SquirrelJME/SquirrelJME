@@ -32,50 +32,50 @@ public class Image2D
 	public Image2D(int __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image2D(int __a, int __b, int __c, byte[] __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image2D(int __a, int __b, int __c, byte[] __d, byte[] __e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image2D(int __a, Object __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getFormat()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isMutable()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void set(int __a, int __b, int __c, int __d, byte[] __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -16,12 +16,12 @@ public class ContentDescriptor
 	public ContentDescriptor(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getContentType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -28,32 +28,32 @@ public class DeviceMgmtPermission
 	public DeviceMgmtPermission(String __a, String __b)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean equals(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getActions()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean implies(Permission __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

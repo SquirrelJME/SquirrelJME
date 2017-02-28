@@ -20,7 +20,7 @@ public abstract class DataSource
 	public DataSource(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void connect()
@@ -44,7 +44,7 @@ public abstract class DataSource
 	
 	public String getLocator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

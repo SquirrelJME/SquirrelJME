@@ -17,42 +17,42 @@ public class LayerManager
 	public LayerManager()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void append(Layer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Layer getLayerAt(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void insert(Layer __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void paint(Graphics __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void remove(Layer __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setViewWindow(int __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

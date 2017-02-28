@@ -22,12 +22,12 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 	public AbstractDevice()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final <U extends P> DeviceDescriptor<U> getDescriptor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void tryLock(int __a)
@@ -40,7 +40,7 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 			throw new ClosedDeviceException();
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void unlock()
@@ -48,7 +48,7 @@ public abstract class AbstractDevice<P extends Device<? super P>>
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

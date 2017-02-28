@@ -38,67 +38,67 @@ public class PolygonMode
 	public PolygonMode()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCulling()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getShading()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWinding()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isLocalCameraLightingEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isPerspectiveCorrectionEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isTwoSidedLightingEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCulling(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setLocalCameraLightingEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPerspectiveCorrectionEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setShading(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTwoSidedLightingEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setWinding(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

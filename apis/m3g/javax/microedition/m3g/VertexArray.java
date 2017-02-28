@@ -17,42 +17,42 @@ public class VertexArray
 	public VertexArray(int __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void get(int __a, int __b, byte[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void get(int __a, int __b, short[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getComponentCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getComponentType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getVertexCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void set(int __a, int __b, byte[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void set(int __a, int __b, short[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

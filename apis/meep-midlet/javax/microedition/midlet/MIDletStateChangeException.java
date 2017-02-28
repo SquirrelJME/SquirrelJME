@@ -17,14 +17,14 @@ public class MIDletStateChangeException
 	public MIDletStateChangeException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	@Deprecated
 	public MIDletStateChangeException(String __s)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

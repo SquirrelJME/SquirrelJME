@@ -16,67 +16,67 @@ public abstract class Object3D
 	Object3D()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addAnimationTrack(AnimationTrack __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int animate(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final Object3D duplicate()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Object3D find(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public AnimationTrack getAnimationTrack(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAnimationTrackCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getReferences(Object3D[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getUserID()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Object getUserObject()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeAnimationTrack(AnimationTrack __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setUserID(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setUserObject(Object __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

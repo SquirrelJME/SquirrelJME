@@ -24,7 +24,7 @@ public class SuiteInstaller
 	 */
 	private SuiteInstaller()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class SuiteInstaller
 		if (__sl == null)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class SuiteInstaller
 	 */
 	public void cancel()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class SuiteInstaller
 		if (__sl == null)
 			return;
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class SuiteInstaller
 	 */
 	public SuiteManagementTracker start()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

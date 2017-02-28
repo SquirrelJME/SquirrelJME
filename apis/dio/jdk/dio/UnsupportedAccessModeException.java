@@ -17,13 +17,13 @@ public class UnsupportedAccessModeException
 	public UnsupportedAccessModeException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnsupportedAccessModeException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

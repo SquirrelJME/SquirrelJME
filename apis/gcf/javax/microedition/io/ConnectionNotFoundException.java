@@ -18,13 +18,13 @@ public class ConnectionNotFoundException
 	public ConnectionNotFoundException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ConnectionNotFoundException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

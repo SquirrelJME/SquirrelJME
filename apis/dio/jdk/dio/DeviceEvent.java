@@ -28,37 +28,37 @@ public abstract class DeviceEvent<P extends Device<? super P>>
 	public DeviceEvent()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final P getDevice()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final long getLastTimeStamp()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getLastTimeStampMicros()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final long getTimeStamp()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getTimeStampMicros()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

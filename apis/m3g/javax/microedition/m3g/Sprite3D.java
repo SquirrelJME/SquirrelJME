@@ -17,57 +17,57 @@ public class Sprite3D
 	public Sprite3D(boolean __a, Image2D __b, Appearance __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Appearance getAppearance()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropX()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropY()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image2D getImage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isScaled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAppearance(Appearance __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCrop(int __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image2D __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

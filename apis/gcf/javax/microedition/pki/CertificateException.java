@@ -60,23 +60,23 @@ public class CertificateException
 	public CertificateException(Certificate __a, byte __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public CertificateException(String __a, Certificate __b, byte __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Certificate getCertificate()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public byte getReason()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

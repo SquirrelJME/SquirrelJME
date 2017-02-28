@@ -19,7 +19,7 @@ public class MorphingMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public MorphingMesh(VertexBuffer __a, VertexBuffer[] __b, IndexBuffer __c
@@ -27,27 +27,27 @@ public class MorphingMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VertexBuffer getMorphTarget(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMorphTargetCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void getWeights(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setWeights(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

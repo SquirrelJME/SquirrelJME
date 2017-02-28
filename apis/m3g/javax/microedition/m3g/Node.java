@@ -32,77 +32,77 @@ public abstract class Node
 	Node()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final void align(Node __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Node getAlignmentReference(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAlignmentTarget(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getAlphaFactor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Node getParent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getScope()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean getTransformTo(Node __a, Transform __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isPickingEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isRenderingEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAlignment(Node __a, int __b, Node __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAlphaFactor(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPickingEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setRenderingEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setScope(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

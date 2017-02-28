@@ -102,7 +102,7 @@ public class RecordStore
 			RecordStoreNotOpenException, RecordStoreException,
 			RecordStoreFullException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class RecordStore
 	 */
 	public void addRecordListener(RecordListener __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class RecordStore
 	public void closeRecordStore()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -210,7 +210,7 @@ public class RecordStore
 		RecordComparator __c, boolean __ku, int[] __tags)
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -240,7 +240,7 @@ public class RecordStore
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -253,7 +253,7 @@ public class RecordStore
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -272,7 +272,7 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -291,7 +291,7 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -316,7 +316,7 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -334,7 +334,7 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -347,7 +347,7 @@ public class RecordStore
 	public RecordStoreInfo getRecordStoreInfo()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -396,7 +396,7 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -410,7 +410,7 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -422,7 +422,7 @@ public class RecordStore
 	 */
 	public void removeRecordListener(RecordListener __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -447,7 +447,7 @@ public class RecordStore
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -474,7 +474,7 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -518,7 +518,7 @@ public class RecordStore
 	public static void deleteRecordStore(String __n)
 		throws RecordStoreException, RecordStoreNotFoundException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -586,7 +586,7 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -673,7 +673,7 @@ public class RecordStore
 			RecordStoreNotFoundException, SecureRecordStoreException,
 			SecurityException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

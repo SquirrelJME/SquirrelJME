@@ -17,7 +17,7 @@ public class NetworkInterface
 	public NetworkInterface()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void connect(AccessPoint __a)
@@ -25,7 +25,7 @@ public class NetworkInterface
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean disconnect(AccessPoint __a)
@@ -33,7 +33,7 @@ public class NetworkInterface
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean disconnectAll()
@@ -41,42 +41,42 @@ public class NetworkInterface
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public AccessPoint[] getConnectedAccessPoints()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isRoaming()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean supportsConcurrentAccessPoints()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static NetworkInterface[] getNetworkInterfaces(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String[] getNetworkTypes()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

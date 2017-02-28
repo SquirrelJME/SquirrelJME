@@ -47,67 +47,67 @@ public class Texture2D
 	public Texture2D(Image2D __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBlendColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBlending()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image2D getImage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getImageFilter()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getLevelFilter()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWrappingS()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWrappingT()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setBlendColor(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setBlending(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFiltering(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image2D __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setWrapping(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

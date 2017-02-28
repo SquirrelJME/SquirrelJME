@@ -18,7 +18,7 @@ public class NetworkUtilities
 	public NetworkUtilities()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String getByName(String __a)
@@ -26,7 +26,7 @@ public class NetworkUtilities
 	{
 		if (false)
 			throw new UnknownHostException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String getCanonicalHostName(String __a)
@@ -36,7 +36,7 @@ public class NetworkUtilities
 			throw new IllegalArgumentException();
 		if (false)
 			throw new UnknownHostException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean isReachable(String __a, int __b, int __c)
@@ -44,7 +44,7 @@ public class NetworkUtilities
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

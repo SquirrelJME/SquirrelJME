@@ -17,7 +17,7 @@ public class Loader
 	private Loader()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Object3D[] load(byte[] __a, int __b)
@@ -25,7 +25,7 @@ public class Loader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Object3D[] load(String __a)
@@ -33,7 +33,7 @@ public class Loader
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

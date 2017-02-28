@@ -19,23 +19,23 @@ public abstract class GCFPermission
 	public GCFPermission(String __a)
 	{
 		super((String)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getProtocol()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getURI()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

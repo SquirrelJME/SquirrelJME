@@ -156,7 +156,7 @@ public abstract class GameCanvas
 	
 	public int getKeyStates()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

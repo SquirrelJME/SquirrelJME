@@ -80,27 +80,27 @@ public class AnimationTrack
 	public AnimationTrack(KeyframeSequence __a, int __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public AnimationController getController()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public KeyframeSequence getKeyframeSequence()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getTargetProperty()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setController(AnimationController __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

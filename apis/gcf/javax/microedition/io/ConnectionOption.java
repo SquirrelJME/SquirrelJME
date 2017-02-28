@@ -16,17 +16,17 @@ public class ConnectionOption<T>
 	public ConnectionOption(String __a, T __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public T getValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

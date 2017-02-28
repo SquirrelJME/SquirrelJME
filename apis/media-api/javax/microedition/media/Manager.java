@@ -39,7 +39,7 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Player createPlayer(String __a)
@@ -50,7 +50,7 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Player createPlayer(DataSource __a)
@@ -61,25 +61,25 @@ public final class Manager
 			throw new IOException();
 		if (false)
 			throw new MediaException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String[] getSupportedContentTypes(String __a)
 	{
 		System.err.printf("DEBUG -- getSupportedContentTypes(%s)%n", __a);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String[] getSupportedProtocols(String __a)
 	{
 		System.err.printf("DEBUG -- getSupportedProtocols(%s)%n", __a);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static TimeBase getSystemTimeBase()
 	{
 		System.err.printf("DEBUG -- getSystemTimeBase()%n");
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static void playTone(int __a, int __b, int __c)
@@ -88,7 +88,7 @@ public final class Manager
 		System.err.printf("DEBUG -- playTone(%d, %d, %d)%n", __a, __b, __c);
 		if (false)
 			throw new MediaException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

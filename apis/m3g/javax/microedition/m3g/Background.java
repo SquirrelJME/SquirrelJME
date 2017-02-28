@@ -23,87 +23,87 @@ public class Background
 	public Background()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropX()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCropY()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image2D getImage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getImageModeX()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getImageModeY()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isColorClearEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isDepthClearEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setColor(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setColorClearEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCrop(int __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDepthClearEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image2D __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImageMode(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

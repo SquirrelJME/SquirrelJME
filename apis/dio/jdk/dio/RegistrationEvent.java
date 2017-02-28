@@ -18,23 +18,23 @@ public class RegistrationEvent<P extends Device<? super P>>
 	public RegistrationEvent(String __a, DeviceDescriptor<P> __b)
 	{
 		super((Object)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public RegistrationEvent(DeviceDescriptor<P> __a)
 	{
 		super((Object)null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public DeviceDescriptor<P> getDescriptor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getInitiator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

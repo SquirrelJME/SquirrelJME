@@ -19,7 +19,7 @@ public class SkinnedMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public SkinnedMesh(VertexBuffer __a, IndexBuffer __b, Appearance __c, 
@@ -27,27 +27,27 @@ public class SkinnedMesh
 	{
 		super((VertexBuffer)null, (IndexBuffer[])null, (Appearance[])null
 			);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addTransform(Node __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void getBoneTransform(Node __a, Transform __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBoneVertices(Node __a, int[] __b, float[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Group getSkeleton()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

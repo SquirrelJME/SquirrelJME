@@ -19,11 +19,11 @@ public final class AutoStartPermission
 	public AutoStartPermission()
 	{
 		super(null);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	public boolean implies(Permission __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }

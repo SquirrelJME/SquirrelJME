@@ -17,57 +17,57 @@ public class AnimationController
 	public AnimationController()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getActiveIntervalEnd()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getActiveIntervalStart()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getPosition(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getRefWorldTime()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getSpeed()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getWeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setActiveInterval(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPosition(float __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSpeed(float __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setWeight(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

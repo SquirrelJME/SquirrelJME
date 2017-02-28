@@ -16,52 +16,52 @@ public class RayIntersection
 	public RayIntersection()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getDistance()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Node getIntersected()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getNormalX()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getNormalY()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getNormalZ()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void getRay(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSubmeshIndex()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getTextureS(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getTextureT(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

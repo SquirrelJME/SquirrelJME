@@ -25,27 +25,27 @@ public class KeyManager
 	
 	public static Iterator<InputDevice> getInputDevices()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	public static Iterator<InputDevice> getHeadlessInputDevices()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	public static void addInputDeviceListener(InputDeviceListener __dl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	public static void removeInputDeviceListener(InputDeviceListener __dl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 
 	public static void setGeneralKeyListener(KeyListener __kl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

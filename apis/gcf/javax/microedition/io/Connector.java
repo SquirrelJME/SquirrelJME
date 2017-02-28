@@ -52,7 +52,7 @@ public class Connector
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static long getBytesWritten(Connection __a)
@@ -60,7 +60,7 @@ public class Connector
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -234,27 +234,27 @@ public class Connector
 		{
 				// Communication port, which may be a modem
 			case "comm":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// UDP datagrams
 			case "datagram":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// SSL UDP datagrams
 			case "dtls":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Local Files
 			case "file":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// HTTP
 			case "http":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// HTTPS
 			case "https":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Intermidlet communication
 			case "imc":
@@ -262,15 +262,15 @@ public class Connector
 				
 				// UDP Multicast
 			case "multicast":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// TCP Socket
 			case "socket":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// SSL/TLS TCP Socket
 			case "ssl":
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// {@squirreljme.error EC04 Unhandled URI protocol. (The URI)}.
 			default:

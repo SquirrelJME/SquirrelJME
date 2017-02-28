@@ -32,7 +32,7 @@ public class ManagerFactory
 	public static SuiteManager getSuiteManager()
 		throws SecurityException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class ManagerFactory
 	public static TaskManager getTaskManager()
 		throws SecurityException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

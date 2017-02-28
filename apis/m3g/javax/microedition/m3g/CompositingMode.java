@@ -32,82 +32,82 @@ public class CompositingMode
 	public CompositingMode()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getAlphaThreshold()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBlending()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getDepthOffsetFactor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getDepthOffsetUnits()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isAlphaWriteEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isColorWriteEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isDepthTestEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isDepthWriteEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAlphaThreshold(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAlphaWriteEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setBlending(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setColorWriteEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDepthOffset(float __a, float __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDepthTestEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDepthWriteEnable(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

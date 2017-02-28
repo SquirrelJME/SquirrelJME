@@ -43,7 +43,7 @@ public abstract class CustomItem
 	
 	protected CustomItem(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected abstract int getMinContentHeight();
@@ -58,97 +58,97 @@ public abstract class CustomItem
 	
 	public int getGameAction(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final int getInteractionModes()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getKeyCode(int __action)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void hideNotify()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final void invalidate()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void keyPressed(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void keyReleased(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void keyRepeated(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void pointerDragged(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void pointerPressed(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void pointerReleased(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final void repaint()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final void repaint(int __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setKeyListener(KeyListener __kl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPaintMode(boolean __opaque)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void showNotify()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void sizeChanged(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected boolean traverse(int __a, int __b, int __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void traverseOut()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

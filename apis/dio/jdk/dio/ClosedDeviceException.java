@@ -18,7 +18,7 @@ public class ClosedDeviceException
 	public ClosedDeviceException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

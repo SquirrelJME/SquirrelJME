@@ -17,63 +17,63 @@ public class VertexBuffer
 	public VertexBuffer()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VertexArray getColors()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDefaultColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VertexArray getNormals()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VertexArray getPositions(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VertexArray getTexCoords(int __a, float[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getVertexCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setColors(VertexArray __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDefaultColor(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setNormals(VertexArray __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPositions(VertexArray __a, float __b, float[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTexCoords(int __a, VertexArray __b, float __c, float[] __d
 		)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

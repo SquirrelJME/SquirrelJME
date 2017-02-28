@@ -38,67 +38,67 @@ public class KeyframeSequence
 	public KeyframeSequence(int __a, int __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getComponentCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDuration()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getInterpolationType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getKeyframe(int __a, float[] __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getKeyframeCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getRepeatMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getValidRangeFirst()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getValidRangeLast()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDuration(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setKeyframe(int __a, int __b, float[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setRepeatMode(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setValidRange(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

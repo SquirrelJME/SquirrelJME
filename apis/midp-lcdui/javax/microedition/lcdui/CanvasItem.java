@@ -14,62 +14,62 @@ public abstract class CanvasItem
 {
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Object getParent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPositionX()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPositionY()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getZPosition()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setParent(Object __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPositionX(int __x)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPositionY(int __y)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSize(int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setVisible(boolean __v)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setZPosition(int __z)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

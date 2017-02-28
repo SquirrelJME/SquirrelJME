@@ -17,18 +17,18 @@ public class AnimatedImage
 		throws IndexOutOfBoundsException
 		
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getFrameDelay(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getLoopCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

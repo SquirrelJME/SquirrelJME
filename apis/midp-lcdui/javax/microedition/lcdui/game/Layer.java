@@ -17,49 +17,49 @@ public abstract class Layer
 	Layer()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract void paint(Graphics __a);
 	
 	public final int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getX()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getY()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final boolean isVisible()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void move(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPosition(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setVisible(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

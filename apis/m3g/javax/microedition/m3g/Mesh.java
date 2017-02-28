@@ -17,38 +17,38 @@ public class Mesh
 	public Mesh(VertexBuffer __a, IndexBuffer[] __b, Appearance[] __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Mesh(VertexBuffer __a, IndexBuffer __b, Appearance __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Appearance getAppearance(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IndexBuffer getIndexBuffer(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSubmeshCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public VertexBuffer getVertexBuffer()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAppearance(int __a, Appearance __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

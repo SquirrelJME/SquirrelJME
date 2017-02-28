@@ -17,7 +17,7 @@ public abstract class IndexBuffer
 	IndexBuffer()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public abstract int getIndexCount();

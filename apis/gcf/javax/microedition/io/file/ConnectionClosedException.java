@@ -17,13 +17,13 @@ public class ConnectionClosedException
 	public ConnectionClosedException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ConnectionClosedException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

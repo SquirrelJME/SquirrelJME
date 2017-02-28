@@ -29,77 +29,77 @@ public class Light
 	public Light()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getConstantAttenuation()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getIntensity()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getLinearAttenuation()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getQuadraticAttenuation()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getSpotAngle()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getSpotExponent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAttenuation(float __a, float __b, float __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setColor(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setIntensity(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMode(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSpotAngle(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSpotExponent(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

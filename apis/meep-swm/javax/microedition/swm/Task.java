@@ -29,7 +29,7 @@ public final class Task
 	 */
 	private Task()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public final class Task
 	 */
 	public int getHeapUse()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public final class Task
 	 */
 	public String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public final class Task
 	 */
 	public Suite getSuite()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

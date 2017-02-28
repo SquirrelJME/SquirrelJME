@@ -17,12 +17,12 @@ public class AccessPoint
 	public AccessPoint()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addListener(AccessPointListener __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean connect()
@@ -30,7 +30,7 @@ public class AccessPoint
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean disconnect()
@@ -38,77 +38,77 @@ public class AccessPoint
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NetworkInterface getNetworkInterface()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getProperty(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String[] getPropertyNames()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String[] getPropertyValues(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getTimeout()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isConnected()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isRemovable()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeListener(AccessPointListener __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTimeout(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static AccessPoint[] getAccessPoints(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static AccessPoint of(String __a, ConnectionOption... __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean remove(AccessPoint __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

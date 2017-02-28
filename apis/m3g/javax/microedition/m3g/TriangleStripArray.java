@@ -17,25 +17,25 @@ public class TriangleStripArray
 	public TriangleStripArray(int[] __a, int[] __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public TriangleStripArray(int __a, int[] __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getIndexCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void getIndices(int[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -17,27 +17,27 @@ public class World
 	public World()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Camera getActiveCamera()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Background getBackground()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setActiveCamera(Camera __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setBackground(Background __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

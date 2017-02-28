@@ -19,68 +19,68 @@ public class TiledLayer
 	public TiledLayer(int __a, int __b, Image __c, int __d, int __e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int createAnimatedTile(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void fillCells(int __a, int __b, int __c, int __d, int __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAnimatedTile(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCell(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getCellHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getCellWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getColumns()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public final int getRows()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public final void paint(Graphics __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAnimatedTile(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCell(int __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setStaticTileSet(Image __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

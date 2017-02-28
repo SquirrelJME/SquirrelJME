@@ -200,7 +200,7 @@ public class IMCClient
 	@Override
 	public MIDletIdentity getRemoteIdentity()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -17,13 +17,13 @@ public class UnsupportedDeviceTypeException
 	public UnsupportedDeviceTypeException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public UnsupportedDeviceTypeException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

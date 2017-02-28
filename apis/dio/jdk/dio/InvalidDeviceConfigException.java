@@ -17,13 +17,13 @@ public class InvalidDeviceConfigException
 	public InvalidDeviceConfigException()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public InvalidDeviceConfigException(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

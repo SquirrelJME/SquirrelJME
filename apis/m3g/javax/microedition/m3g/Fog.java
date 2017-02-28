@@ -23,52 +23,52 @@ public class Fog
 	public Fog()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getDensity()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getFarDistance()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public float getNearDistance()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setColor(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setDensity(float __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setLinear(float __a, float __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMode(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

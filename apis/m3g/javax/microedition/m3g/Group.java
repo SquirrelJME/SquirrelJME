@@ -17,39 +17,39 @@ public class Group
 	public Group()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addChild(Node __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Node getChild(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getChildCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean pick(int __a, float __b, float __c, float __d, float __e, 
 		float __f, float __g, RayIntersection __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean pick(int __a, float __b, float __c, Camera __d, 
 		RayIntersection __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeChild(Node __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

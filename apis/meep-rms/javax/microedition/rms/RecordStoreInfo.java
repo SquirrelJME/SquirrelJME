@@ -24,7 +24,7 @@ public final class RecordStoreInfo
 	 */
 	RecordStoreInfo()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public final class RecordStoreInfo
 	public int getAuthMode()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public final class RecordStoreInfo
 	public long getSize()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public final class RecordStoreInfo
 	public long getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public final class RecordStoreInfo
 	public boolean isEncrypted()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public final class RecordStoreInfo
 	public boolean isWriteable()
 		throws RecordStoreNotOpenException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -51,7 +51,7 @@ public abstract class MIDlet
 	public final int checkPermission(String __p)
 		throws IllegalStateException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public abstract class MIDlet
 	
 	public final void notifyDestroyed()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -159,13 +159,13 @@ public abstract class MIDlet
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Deprecated
 	public final void resumeRequest()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static String getAppProperty(String __name, String __vend,
@@ -175,7 +175,7 @@ public abstract class MIDlet
 		if (__attrname == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

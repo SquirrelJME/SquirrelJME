@@ -16,78 +16,78 @@ public class Transform
 	public Transform()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Transform(Transform __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void get(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void invert()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void postMultiply(Transform __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void postRotate(float __a, float __b, float __c, float __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void postRotateQuat(float __a, float __b, float __c, float __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void postScale(float __a, float __b, float __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void postTranslate(float __a, float __b, float __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void set(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void set(Transform __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setIdentity()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void transform(float[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void transform(VertexArray __a, float[] __b, boolean __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void transpose()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

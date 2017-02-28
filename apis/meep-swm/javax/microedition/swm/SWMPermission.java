@@ -48,7 +48,7 @@ public final class SWMPermission
 		if (__scope == null || __actions == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

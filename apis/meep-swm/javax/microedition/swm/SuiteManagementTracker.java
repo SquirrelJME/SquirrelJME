@@ -37,7 +37,7 @@ public class SuiteManagementTracker
 	 */
 	public Suite getSuite()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

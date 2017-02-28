@@ -19,27 +19,27 @@ public final class MIDletIdentity
 	 */
 	MIDletIdentity()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getClient()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getName()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getVendor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getVersion()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public final class MIDletIdentity
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 
