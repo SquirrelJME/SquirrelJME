@@ -1,0 +1,122 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package net.multiphasicapps.squirreljme.rms;
+
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
+import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+
+/**
+ * This represents the owner of a record store and is used to access record
+ * stores.
+ *
+ * @since 2017/02/27
+ */
+public final class RecordStoreOwner
+{
+	/** The name of the suite. */
+	protected final MidletSuiteName name;
+	
+	/** The vendor of the suite. */
+	protected final MidletSuiteVendor vendor;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
+	/**
+	 * Initializes the owner of the record store.
+	 *
+	 * @param __n The name of the suite.
+	 * @param __v The vendor of the suite.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/27
+	 */
+	public RecordStoreOwner(MidletSuiteName __n, MidletSuiteVendor __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+		this.vendor = __v;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/27
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof RecordStoreOwner))
+			return false;
+		
+		// Cast
+		RecordStoreOwner o = (RecordStoreOwner)__o;
+		return this.name.equals(o.name) &&
+			this.vendor.equals(o.vendor);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/27
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode() ^ this.name.vendor();
+	}
+	
+	/**
+	 * Returns the name of the suite.
+	 *
+	 * @return The suite name.
+	 * @since 2017/02/27
+	 */
+	public MidletSuiteName name()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/27
+	 */
+	@Override
+	public String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = this.name + ";" + this.vendor));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the vendor of the suite.
+	 *
+	 * @return The suite vendor.
+	 * @since 2017/02/27
+	 */
+	public MidletSuiteVendor vendor()
+	{
+		return this.vendor;
+	}
+}
+

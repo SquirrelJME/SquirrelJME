@@ -9,4 +9,5 @@ X-SquirrelJME-Description: This contains the implementation of the
 X-SquirrelJME-Error: DC
 X-SquirrelJME-Standard: microedition.rms;;
 X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
+X-SquirrelJME-Depends: squirreljme-suite-id
 Microedition-Configuration: CLDC-1.8-Compact
