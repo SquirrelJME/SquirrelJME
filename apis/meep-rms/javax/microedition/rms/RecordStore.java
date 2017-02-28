@@ -703,22 +703,8 @@ public class RecordStore
 			// Open cluster connection?
 			RecordCluster rv = _THIS_CLUSTER;
 			if (rv == null)
-			{
-				// Need to build the MIDlet name
-				MIDlet mid = ActiveMidlet.get();
-				
-				// {@squirreljme.error DC02 Could not get the name and/or
-				// vendor of the current MIDlet}
-				String name = mid.getAppProperty("midlet-name"),
-					vend = mid.getAppProperty("midlet-vendor");
-				if (name == null || vend == null)
-					throw new RuntimeException("DC02");
-				
-				// Open the cluster
-				rv = _MANAGER.open(new RecordStoreOwner(
-					new MidletSuiteName(name),
-					new MidletSuiteVendor(vend)));
-			}
+				_THIS_CLUSTER = (rv =
+					_MANAGER.open(RecordClusterManager.thisOwner()));
 			
 			return rv;
 		}
