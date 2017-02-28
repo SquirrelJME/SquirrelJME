@@ -27,8 +27,6 @@ do
 	fi
 	
 	# Commit?
-	__i="$(expr $__i + 1)"
-	__j="$(expr $__j + 1)"
 	if [ "$__i" -ge "100" ]
 	then
 		# Go back
@@ -40,10 +38,12 @@ do
 			exit 1
 		fi
 	fi
+	__i="$(expr $__i + 1)"
+	__j="$(expr $__j + 1)"
 done
 
 # Commit
-if ! fossil commit -m "Migrate TODO (files so far $__j)"
+if ! fossil commit -m "Finish TODO migrate (files migrated $__j)"
 then
 	exit 1
 fi
