@@ -16,6 +16,11 @@ import java.io.IOException;
 /**
  * This class parses PNG images.
  *
+ * PNG specifications:
+ * {@link http://www.libpng.org/pub/png/pngdocs.html}
+ * {@link https://www.w3.org/TR/PNG/}
+ * {@link https://tools.ietf.org/html/rfc2083}
+ *
  * @since 2017/02/28
  */
 class __PNGImageParser__
