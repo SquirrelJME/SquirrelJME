@@ -131,7 +131,7 @@ public class FileRecordCluster
 		for (int i = __hc;; i++)
 		{
 			// Try this path
-			Path maybe = __base.resolve(Integer.toString(i, 36));
+			Path maybe = __base.resolve(Long.toString(i & 0xFFFFFFFFL, 36));
 			Path mpath = maybe.resolve("RECORD.MF");
 			
 			// Open the manifest if it exists
