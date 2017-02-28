@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.rms;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
@@ -29,11 +31,27 @@ public abstract class RecordClusterManager
 	/** The current owner. */
 	private static volatile Reference<RecordStoreOwner> _THIS_OWNER;
 	
+	/** Current opened record clusters. */
+	private final Map<RecordStoreOwner, RecordCluster> _clusters =
+		new HashMap<>();
+	
+	/**
+	 * Internally opens the record cluster for the given suite.
+	 *
+	 * @param __o The cluster to open.
+	 * @return The opened cluster.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
+	protected abstract RecordCluster internalOpen(RecordStoreOwner __o)
+		throws NullPointerException;
+	
 	/**
 	 * Opens the cluster manager for the given suite.
 	 *
 	 * @param __o The suite to open the cluster for, if it is already open
 	 * then the existing cluster will be returned.
+	 * @return The opened cluster.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/27
 	 */
@@ -44,7 +62,16 @@ public abstract class RecordClusterManager
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock on clusters
+		Map<RecordStoreOwner, RecordCluster> clusters = this._clusters;
+		synchronized (clusters)
+		{
+			RecordCluster rv = clusters.get(__o);
+			if (rv == null)
+				clusters.put(__o, (rv = internalOpen(__o)));
+			
+			return rv;
+		}
 	}
 	
 	/**
