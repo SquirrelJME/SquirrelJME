@@ -15,11 +15,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.microedition.rms.RecordStoreException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -36,11 +40,18 @@ import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
 /**
  * This is a cluster which is backed by the filesystem.
  *
+ * Record stores are placed in individual directories with an identifying
+ * manifest.
+ *
  * @since 2017/02/28
  */
 public class FileRecordCluster
 	extends RecordCluster
 {
+	/** The key used for store names. */
+	private static final JavaManifestKey _STORE_NAME_KEY =
+		new JavaManifestKey("store-name");
+	
 	/** The root where record stores exist. */
 	protected final Path path;
 	
@@ -102,7 +113,54 @@ public class FileRecordCluster
 	public String[] listRecordStores()
 		throws RecordStoreException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Iterate through the cluster to find record stores
+			try (DirectoryStream<Path> ds =
+				Files.newDirectoryStream(this.path))
+			{
+				Collection<String> output = new HashSet<>();
+			
+				// Iterate
+				for (Path p : ds)
+				{
+					// Ignore non-directories
+					if (!Files.isDirectory(p))
+						continue;
+					
+					// Potential path where the manifest may be
+					Path manpath = p.resolve("RECORD.MF");
+					try (InputStream is = Channels.newInputStream(
+						FileChannel.open(manpath, StandardOpenOption.READ)))
+					{
+						// Read manifest
+						JavaManifest man = new JavaManifest(is);
+						JavaManifestAttributes attr = man.getMainAttributes();
+						
+						// Only add store if it is specified
+						String val = attr.get(_STORE_NAME_KEY);
+						if (val != null)
+							output.add(val);
+					}
+					
+					// Ignore
+					catch (NoSuchFileException e)
+					{
+						continue;
+					}
+				}
+				
+				// Use them
+				return output.<String>toArray(new String[output.size()]);
+			}
+		
+			// {@squirreljme.error AW02 Could not list record store contents}
+			catch (IOException e)
+			{
+				throw new RecordStoreException("AW02");
+			}
+		}
 	}
 	
 	/**

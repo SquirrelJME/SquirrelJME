@@ -20,6 +20,10 @@ import javax.microedition.rms.RecordStoreException;
  */
 public abstract class RecordCluster
 {
+	/** Lock on operations in the record cluster, since they are atomic. */
+	protected final Object lock =
+		new Object();
+	
 	/** The owner of the cluster. */
 	protected final RecordStoreOwner owner;
 	
