@@ -38,6 +38,8 @@ public abstract class RecordClusterManager
 	/**
 	 * Internally opens the record cluster for the given suite.
 	 *
+	 * It is guaranteed that only a single cluster is being opened.
+	 *
 	 * @param __o The cluster to open.
 	 * @return The opened cluster.
 	 * @throws NullPointerException On null arguments.

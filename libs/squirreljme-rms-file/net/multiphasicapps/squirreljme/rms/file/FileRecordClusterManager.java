@@ -79,7 +79,8 @@ public class FileRecordClusterManager
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create
+		return new FileRecordCluster(__o, this.path);
 	}
 	
 	/**
