@@ -22,15 +22,19 @@ public final class Manager
 	public static final String TONE_DEVICE_LOCATOR =
 		"device://tone";
 	
+	/**
+	 * Not used.
+	 *
+	 * @since 2017/02/28
+	 */
 	private Manager()
 	{
-		super();
-		throw new Error("TODO");
 	}
 	
 	public static Player createPlayer(InputStream __a, String __b)
 		throws IOException, MediaException
 	{
+		System.err.printf("DEBUG -- createPlayer(%s, %s)%n", __a, __b);
 		if (false)
 			throw new IOException();
 		if (false)
@@ -41,6 +45,7 @@ public final class Manager
 	public static Player createPlayer(String __a)
 		throws IOException, MediaException
 	{
+		System.err.printf("DEBUG -- createPlayer(%s)%n", __a);
 		if (false)
 			throw new IOException();
 		if (false)
@@ -51,6 +56,7 @@ public final class Manager
 	public static Player createPlayer(DataSource __a)
 		throws IOException, MediaException
 	{
+		System.err.printf("DEBUG -- createPlayer(%s)%n", __a);
 		if (false)
 			throw new IOException();
 		if (false)
@@ -60,22 +66,26 @@ public final class Manager
 	
 	public static String[] getSupportedContentTypes(String __a)
 	{
+		System.err.printf("DEBUG -- getSupportedContentTypes(%s)%n", __a);
 		throw new Error("TODO");
 	}
 	
 	public static String[] getSupportedProtocols(String __a)
 	{
+		System.err.printf("DEBUG -- getSupportedProtocols(%s)%n", __a);
 		throw new Error("TODO");
 	}
 	
 	public static TimeBase getSystemTimeBase()
 	{
+		System.err.printf("DEBUG -- getSystemTimeBase()%n");
 		throw new Error("TODO");
 	}
 	
 	public static void playTone(int __a, int __b, int __c)
 		throws MediaException
 	{
+		System.err.printf("DEBUG -- playTone(%d, %d, %d)%n", __a, __b, __c);
 		if (false)
 			throw new MediaException();
 		throw new Error("TODO");
