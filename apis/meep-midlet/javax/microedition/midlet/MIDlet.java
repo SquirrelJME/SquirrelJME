@@ -76,7 +76,7 @@ public abstract class MIDlet
 		JavaManifestKey key = new JavaManifestKey(__p);
 		String val = System.getProperty(_APP_PROPERTY_OVERRIDE + key);
 		if (val != null)
-			return val;
+			return val.trim();
 		
 		// If there is not manifest, ignore this step
 		if (!this._nomanifest)
@@ -119,7 +119,7 @@ public abstract class MIDlet
 				String rv = manifest.getMainAttributes().get(
 					new JavaManifestKey(__p));
 				if (rv != null)
-					return rv;
+					return rv.trim();
 			}
 		}
 		
