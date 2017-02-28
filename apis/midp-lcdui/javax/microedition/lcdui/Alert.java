@@ -25,16 +25,46 @@ public class Alert
 	public static final int FOREVER =
 		-2;
 	
-	public Alert(String __a)
+	/** The title of the alert. */
+	private final String _title;
+	
+	/** The message to display. */
+	private volatile String _message;
+	
+	/** The icon to use. */
+	private volatile Image _icon;
+	
+	/** The type of alert this is. */
+	private volatile AlertType _type;
+	
+	/**
+	 * Initializes the alert with just a title.
+	 *
+	 * @param __title The title of the alert, may be {@code null}.
+	 * @since 2017/02/28
+	 */
+	public Alert(String __title)
 	{
-		super();
-		throw new Error("TODO");
+		this(__title, null, null, null);
 	}
 	
-	public Alert(String __a, String __b, Image __c, AlertType __d)
+	/**
+	 * Initializes the alert with just a title, message, image, and type.
+	 *
+	 * @param __title The title of the alert, may be {@code null}.
+	 * @param __message The message to show in the alert, may be {@code null}.
+	 * @param __icon The icon to display, may be {@code null}.
+	 * @param __type The type of this alert, may be {@code null}.
+	 * @since 2017/02/28
+	 */
+	public Alert(String __title, String __message, Image __icon,
+		AlertType __type)
 	{
-		super();
-		throw new Error("TODO");
+		// Set
+		this._title = __title;
+		this._message = __message;
+		this._icon = __icon;
+		this._type = __type;
 	}
 	
 	@Override
@@ -117,9 +147,15 @@ public class Alert
 		throw new Error("TODO");
 	}
 	
-	public void setType(AlertType __a)
+	/**
+	 * Sets the type of this alert.
+	 *
+	 * @param __t The alert type, may be {@code null}.
+	 * @since 2017/02/28
+	 */
+	public void setType(AlertType __t)
 	{
-		throw new Error("TODO");
+		this._type = __t;
 	}
 	
 	/**

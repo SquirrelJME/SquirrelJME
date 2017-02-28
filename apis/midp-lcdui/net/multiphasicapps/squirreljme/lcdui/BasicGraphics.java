@@ -1010,6 +1010,7 @@ public abstract class BasicGraphics
 		this._strokestyle = SOLID;
 		this._transx = 0;
 		this._transy = 0;
+		this._font = null;
 	
 		// Reset clip also
 		if (__clip)
