@@ -101,6 +101,16 @@ public abstract class GameCanvas
 		flushGraphics(0, 0, getWidth(), getHeight());
 	}
 	
+	/**
+	 * Flushes the specified off-screen buffer area to the display.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws IllegalStateException If the buffer is preserved.
+	 * @since 2017/02/28
+	 */
 	public void flushGraphics(int __x, int __y, int __w, int __h)
 		throws IllegalStateException
 	{
@@ -113,7 +123,9 @@ public abstract class GameCanvas
 		if (!this._preservebuffer)
 			throw new IllegalStateException("EB07");
 		
-		throw new Error("TODO");
+		// Just tell the canvas to repaint because it is final and our paint
+		// method just draws the backing buffer to the screen
+		super.repaint(__x, __y, __w, __h);
 	}
 	
 	/**
