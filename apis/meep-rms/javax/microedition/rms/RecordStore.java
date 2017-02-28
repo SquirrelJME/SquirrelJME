@@ -10,7 +10,7 @@
 
 package javax.microedition.rms;
 
-import net.multiphasicapps.squirreljme.rms.RecordStoreManager;
+import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**
@@ -45,7 +45,7 @@ public class RecordStore
 	 *
 	 * @since 2017/02/27
 	 */
-	private static final RecordStoreManager _MANAGER;
+	private static final RecordClusterManager _MANAGER;
 	
 	/**
 	 * Initializes the record store manager.
@@ -55,8 +55,8 @@ public class RecordStore
 	static
 	{
 		// {@squirreljme.error DC01 No record store manager exists.}
-		_MANAGER = SquirrelJME.<RecordStoreManager>systemService(
-			RecordStoreManager.class);
+		_MANAGER = SquirrelJME.<RecordClusterManager>systemService(
+			RecordClusterManager.class);
 		if (_MANAGER == null)
 			throw new RuntimeException("DC01");
 	}

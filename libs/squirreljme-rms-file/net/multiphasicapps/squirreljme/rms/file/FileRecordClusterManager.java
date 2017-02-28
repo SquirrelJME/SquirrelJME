@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.rms.file;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import net.multiphasicapps.squirreljme.rms.RecordStoreManager;
+import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
 
 /**
  * This is a record store manager which uses the local file system to manage
@@ -21,8 +21,8 @@ import net.multiphasicapps.squirreljme.rms.RecordStoreManager;
  *
  * @since 2017/02/27
  */
-public class FileRecordStoreManager
-	extends RecordStoreManager
+public class FileRecordClusterManager
+	extends RecordClusterManager
 {
 	/**
 	 * {@squirreljme.property
@@ -42,7 +42,7 @@ public class FileRecordStoreManager
 	 *
 	 * @since 2017/02/27
 	 */
-	public FileRecordStoreManager()
+	public FileRecordClusterManager()
 	{
 		this(__defaultPath());
 	}
@@ -54,7 +54,7 @@ public class FileRecordStoreManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/27
 	 */
-	public FileRecordStoreManager(Path __p)
+	public FileRecordClusterManager(Path __p)
 		throws NullPointerException
 	{
 		// Check

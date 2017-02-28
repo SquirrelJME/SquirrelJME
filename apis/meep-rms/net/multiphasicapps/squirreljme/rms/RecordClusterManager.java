@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.rms;
  *
  * @since 2017/02/27
  */
-public abstract class RecordStoreManager
+public abstract class RecordClusterManager
 {
 }
 

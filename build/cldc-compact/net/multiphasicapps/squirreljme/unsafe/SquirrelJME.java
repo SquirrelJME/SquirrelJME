@@ -541,9 +541,10 @@ public final class SquirrelJME
 					break;
 					
 					// Record store manager
-				case "net.multiphasicapps.squirreljme.rms.RecordStoreManager":
+				case "net.multiphasicapps.squirreljme.rms." +
+					"RecordClusterManager":
 					use = "net.multiphasicapps.squirreljme.rms.file." +
-						"FileRecordStoreManager";
+						"FileRecordClusterManager";
 					break;
 					
 					// Unknown

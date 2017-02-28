@@ -76,7 +76,7 @@ public final class RecordStoreOwner
 	@Override
 	public int hashCode()
 	{
-		return this.name.hashCode() ^ this.name.vendor();
+		return this.name.hashCode() ^ this.vendor.hashCode();
 	}
 	
 	/**
