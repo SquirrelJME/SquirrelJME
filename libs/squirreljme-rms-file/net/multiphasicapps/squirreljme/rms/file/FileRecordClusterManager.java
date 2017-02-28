@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.rms.file;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.microedition.rms.RecordStoreException;
 import net.multiphasicapps.squirreljme.rms.RecordCluster;
 import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
 import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
@@ -42,9 +43,12 @@ public class FileRecordClusterManager
 	 * Initializes the file backed record store manager using the default
 	 * location.
 	 *
+	 * @throws RecordStoreException If there was a problem initializing the
+	 * record store.
 	 * @since 2017/02/27
 	 */
 	public FileRecordClusterManager()
+		throws RecordStoreException
 	{
 		this(__defaultPath());
 	}
@@ -54,10 +58,12 @@ public class FileRecordClusterManager
 	 *
 	 * @param __p The path where records are stored.
 	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If there was a problem initializing the
+	 * record store.
 	 * @since 2017/02/27
 	 */
 	public FileRecordClusterManager(Path __p)
-		throws NullPointerException
+		throws RecordStoreException, NullPointerException
 	{
 		// Check
 		if (__p == null)
@@ -73,7 +79,7 @@ public class FileRecordClusterManager
 	 */
 	@Override
 	protected RecordCluster internalOpen(RecordStoreOwner __o)
-		throws NullPointerException
+		throws RecordStoreException, NullPointerException
 	{
 		// Check
 		if (__o == null)

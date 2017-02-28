@@ -100,6 +100,7 @@ public class FileRecordCluster
 	 */
 	@Override
 	public String[] listRecordStores()
+		throws RecordStoreException
 	{
 		throw new Error("TODO");
 	}

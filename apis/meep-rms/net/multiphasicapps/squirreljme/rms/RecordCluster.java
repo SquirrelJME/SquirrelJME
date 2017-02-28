@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.rms;
 
+import javax.microedition.rms.RecordStoreException;
+
 /**
  * This is a class which provides access to a cluster of record stores which
  * are owned by the specified suite.
@@ -45,8 +47,11 @@ public abstract class RecordCluster
 	 * @return The list of available record stores, the order is unspecified
 	 * and implementation dependent. If there are no records then {@code null}
 	 * will be returned.
+	 * @throws RecordStoreException If there was an error reading the list
+	 * of record stores.
 	 * @since 2017/02/27
 	 */
-	public abstract String[] listRecordStores();
+	public abstract String[] listRecordStores()
+		throws RecordStoreException;
 }
 

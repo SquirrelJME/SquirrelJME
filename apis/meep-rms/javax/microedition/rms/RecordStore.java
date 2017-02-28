@@ -532,7 +532,17 @@ public class RecordStore
 	 */
 	public static String[] listRecordStores()
 	{
-		return __thisCluster().listRecordStores();
+		// Internally all operations throw an exception
+		try
+		{
+			return __thisCluster().listRecordStores();
+		}
+		
+		// But if they fail then say there are no records
+		catch (RecordStoreException e)
+		{
+			return null;
+		}
 	}
 	
 	/**
@@ -693,9 +703,12 @@ public class RecordStore
 	 * Returns the cluster for this MIDlet.
 	 *
 	 * @return The cluster for this MIDlet.
+	 * @throws RecordStoreException If there was a problem opening this
+	 * cluster.
 	 * @since 2017/02/27
 	 */
 	private static RecordCluster __thisCluster()
+		throws RecordStoreException
 	{
 		// Lock
 		synchronized (_THIS_CLUSTER_LOCK)
