@@ -54,7 +54,7 @@ public class DefaultEGL
 	public boolean eglBindTexImage(EGLDisplay __a, EGLSurface __b, 
 		int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 		
 	/**
@@ -130,7 +130,7 @@ public class DefaultEGL
 			throw new IllegalArgumentException("EJ09");
 		}
 		
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class DefaultEGL
 	public boolean eglCopyBuffers(EGLDisplay __a, EGLSurface __b, 
 		Object __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -152,7 +152,7 @@ public class DefaultEGL
 	public EGLContext eglCreateContext(EGLDisplay __a, EGLConfig __b
 		, EGLContext __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public class DefaultEGL
 	public EGLSurface eglCreatePbufferSurface(EGLDisplay __a, 
 		EGLConfig __b, int[] __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class DefaultEGL
 	public EGLSurface eglCreatePixmapSurface(EGLDisplay __a, 
 		EGLConfig __b, Object __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class DefaultEGL
 	public EGLSurface eglCreateWindowSurface(EGLDisplay __a, 
 		EGLConfig __b, Object __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -195,7 +195,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglDestroyContext(EGLDisplay __a, EGLContext __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -205,7 +205,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglDestroySurface(EGLDisplay __a, EGLSurface __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public class DefaultEGL
 	public boolean eglGetConfigAttrib(EGLDisplay __a, EGLConfig __b,
 		int __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public class DefaultEGL
 	public boolean eglGetConfigs(EGLDisplay __a, EGLConfig[] __b, 
 		int __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -237,7 +237,7 @@ public class DefaultEGL
 	@Override
 	public EGLContext eglGetCurrentContext()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -247,7 +247,7 @@ public class DefaultEGL
 	@Override
 	public EGLDisplay eglGetCurrentDisplay()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class DefaultEGL
 	@Override
 	public EGLSurface eglGetCurrentSurface(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -340,7 +340,7 @@ public class DefaultEGL
 	public boolean eglMakeCurrent(EGLDisplay __a, EGLSurface __b, 
 		EGLSurface __c, EGLContext __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -351,7 +351,7 @@ public class DefaultEGL
 	public boolean eglQueryContext(EGLDisplay __a, EGLContext __b, 
 		int __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -414,7 +414,7 @@ public class DefaultEGL
 	public boolean eglQuerySurface(EGLDisplay __a, EGLSurface __b, 
 		int __c, int[] __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -425,7 +425,7 @@ public class DefaultEGL
 	public boolean eglReleaseTexImage(EGLDisplay __a, EGLSurface __b
 		, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -436,7 +436,7 @@ public class DefaultEGL
 	public boolean eglSurfaceAttrib(EGLDisplay __a, EGLSurface __b, 
 		int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -446,7 +446,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglSwapBuffers(EGLDisplay __a, EGLSurface __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -456,7 +456,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglSwapInterval(EGLDisplay __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -466,7 +466,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglTerminate(EGLDisplay __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -476,7 +476,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglWaitGL()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -486,7 +486,7 @@ public class DefaultEGL
 	@Override
 	public boolean eglWaitNative(int __a, Object __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -60,180 +60,180 @@ public final class Font
 	private Font()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int charWidth(char __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int charsWidth(char[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Font deriveFont(int __pxs)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Font deriveFont(int __style, int __pxs)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAscent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBaselinePosition()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDescent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getFace()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getFamily()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getLeading()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMaxAscent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMaxDescent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPixelSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getStyle()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isBold()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isItalic()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isPlain()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isUnderlined()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int stringWidth(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int substringWidth(String __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font createFont(InputStream __data)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font[] getAvailableFonts()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font[] getAvailableFonts(int __style)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font[] getAvailableFonts(int __face, int __style, int __pxs)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font getDefaultFont()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font getFont(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font getFont(int __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Font getFont(String __name, int __style, int __pxs)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int getPixelSize(String __name)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int getStyle(String __name)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

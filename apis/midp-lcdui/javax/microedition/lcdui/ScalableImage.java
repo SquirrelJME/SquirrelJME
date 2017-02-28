@@ -15,32 +15,32 @@ public class ScalableImage
 {
 	public int getViewportHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getViewportWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setHeight(int __h, boolean __mar)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setWidth(int __w, boolean __mar)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void unbind()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static ScalableImage bind(Object __esi)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

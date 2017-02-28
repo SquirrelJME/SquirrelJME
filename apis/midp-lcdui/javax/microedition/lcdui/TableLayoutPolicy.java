@@ -16,7 +16,7 @@ public final class TableLayoutPolicy
 	public TableLayoutPolicy(Form __f, int __cols)
 	{
 		super(__f);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -27,12 +27,12 @@ public final class TableLayoutPolicy
 	protected void doLayout(int __vpx, int __vpy, int __vpw,
 		int __vph, int[] __ts)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getColumns()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public final class TableLayoutPolicy
 	@Override
 	protected Item getTraverse(Item __i, int __dir)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

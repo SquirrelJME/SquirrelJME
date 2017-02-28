@@ -55,7 +55,7 @@ public class AlertType
 	
 	public boolean playSound(Display __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -14,57 +14,57 @@ public class Notification
 {
 	public Notification(NotificationType __t)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Notification(NotificationType __t, String __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Notification(NotificationType __t, String __l, Image __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public long getTimeStamp()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public NotificationType getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void post(boolean __s)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void post(boolean __s, int __dur)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void remove()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setLabel(String __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setListener(NotificationListener __nl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

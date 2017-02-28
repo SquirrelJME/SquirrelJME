@@ -230,12 +230,12 @@ public class Display
 	
 	public void callSerially(Runnable __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean flashBacklight(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -247,7 +247,7 @@ public class Display
 	 */
 	public int getActivityMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public class Display
 	
 	public int getBorderStyle(boolean __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -316,7 +316,7 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -342,7 +342,7 @@ public class Display
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 		/*
 		// Depends
 		DisplayProperty p;
@@ -402,12 +402,12 @@ public class Display
 	
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int[] getCommandPreferredPlacements(int __ct)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -427,7 +427,7 @@ public class Display
 	
 	public int getDisplayState()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -442,17 +442,17 @@ public class Display
 	 */
 	public int getDotPitch()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int[] getExactPlacementPositions(int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getHardwareState()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -463,27 +463,27 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public IdleItem getIdleItem()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int[] getMenuPreferredPlacements()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int[] getMenuSupportedPlacements()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getOrientation()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -494,7 +494,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -527,7 +527,7 @@ public class Display
 	 */
 	public boolean isBuiltIn()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -538,7 +538,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -553,7 +553,7 @@ public class Display
 	 */
 	public int numAlphaLevels()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -568,12 +568,12 @@ public class Display
 	 */
 	public int numColors()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeCurrent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -590,11 +590,11 @@ public class Display
 	{
 		// Active?
 		if (__m == MODE_ACTIVE)
-			throw new Error("TODO");
+			throw new todo.TODO();
 	
 		// Normal
 		else if (__m == MODE_NORMAL)
-			throw new Error("TODO");
+			throw new todo.TODO();
 	
 		// {@squirreljme.error EB02 Unknown activity mode specified.}
 		else
@@ -603,7 +603,7 @@ public class Display
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -675,17 +675,17 @@ public class Display
 	
 	public void setCurrentItem(Item __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setIdleItem(IdleItem __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setPreferredOrientation(int __o)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -739,7 +739,7 @@ public class Display
 	private int __bestImageSize(int __e)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 		/*
 		// Depends
 		DisplayProperty p;
@@ -906,7 +906,7 @@ public class Display
 	
 	public static void addDisplayListener(DisplayListener __dl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -986,7 +986,7 @@ public class Display
 	
 	public static void removeDisplayListener(DisplayListener __dl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

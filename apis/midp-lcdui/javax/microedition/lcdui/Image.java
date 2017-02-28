@@ -34,7 +34,7 @@ public class Image
 	
 	Image()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class Image
 	public void getARGB16(short[] __data, int __off, int __scanlen, int __x,
 		int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public class Image
 		
 		// Scalable images must be rasterized
 		if (isScalable())
-			throw new Error("TODO");
+			throw new todo.TODO();
 			
 		// Check
 		if (__b == null)
@@ -202,7 +202,7 @@ public class Image
 	public void getRGB16(short[] __data, int __off, int __scanlen, int __x,
 		int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -262,7 +262,7 @@ public class Image
 	
 	public static Image createImage(byte[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -317,7 +317,7 @@ public class Image
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Image createImage(String __a)
@@ -325,24 +325,24 @@ public class Image
 	{
 		if (false)
 			throw new IOException();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Image createImage(Image __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Image createImage(Image __a, int __b, int __c, int __d, int
 		__e, int __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static Image createImage(Image __i, int __x, int __y, int __w,
 		int __h, int __trans, int __iw, int __ih)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

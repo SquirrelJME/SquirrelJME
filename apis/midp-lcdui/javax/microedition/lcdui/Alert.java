@@ -79,71 +79,71 @@ public class Alert
 	@Override
 	public void addCommand(Command __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getDefaultTimeout()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image getImage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Gauge getIndicator()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getTimeout()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public AlertType getType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void removeCommand(Command __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void setCommandListener(CommandListener __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setIndicator(Gauge __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -220,7 +220,7 @@ public class Alert
 		@Override
 		public void sizeChanged(int __w, int __h)
 		{
-			throw new Error("TODO");
+			throw new todo.TODO();
 		}
 	}
 }

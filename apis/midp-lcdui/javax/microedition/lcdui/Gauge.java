@@ -32,52 +32,52 @@ public class Gauge
 	public Gauge(String __a, boolean __b, int __c, int __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getIncrementValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMaxValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMinValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getValue()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isInteractive()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setIncrementValue(int __v)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMaxValue(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMinValue(int __v)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setValue(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

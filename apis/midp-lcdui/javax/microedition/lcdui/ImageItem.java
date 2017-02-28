@@ -35,50 +35,50 @@ public class ImageItem
 	public ImageItem(String __a, Image __b, int __c, String __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public ImageItem(String __a, Image __b, int __c, String __d, int __e)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getAltText()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAppearanceMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image getImage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getLayout()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAltText(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public void setLayout(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

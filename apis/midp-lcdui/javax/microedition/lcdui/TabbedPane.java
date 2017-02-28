@@ -17,69 +17,69 @@ public class TabbedPane
 {
 	public TabbedPane(String __title, boolean __stringtab, boolean __suptitle)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addTab(Screen __t, Image __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void addTabListener(TabListener __tl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Screen getScreen(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSelectedIndex()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image getTabIcon(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void insertTab(int __i, Screen __t, Image __img)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeTab(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFocus(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTabIcon(int __i, Image __icon)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class TabbedPane
 	@Override
 	DisplayConnector __connector()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

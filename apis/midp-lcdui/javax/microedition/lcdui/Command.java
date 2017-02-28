@@ -135,67 +135,67 @@ public class Command
 	
 	public int getCommandType()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean getEnabled()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Font getFont()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Image getImage()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getLabel()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getLongLabel()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getPriority()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void onParentEnabled(boolean __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setEnabled(boolean __e)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFont(Font __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setLabel(String __s)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setLongLabel(String __s)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setImage(Image __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

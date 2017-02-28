@@ -38,56 +38,56 @@ public class FileSelector
 	
 	public FileSelector(String __title, int __mode)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String[] getFilterExtensions()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getURL()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public StreamConnection open(int __mode, boolean __to)
 		throws ConnectionNotFoundException, IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFilterExtensions(String[] __ext)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMode(int __m)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setURL(String __u)
 		throws IOException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class FileSelector
 	@Override
 	DisplayConnector __connector()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

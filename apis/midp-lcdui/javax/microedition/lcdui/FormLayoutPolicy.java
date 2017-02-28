@@ -20,7 +20,7 @@ public abstract class FormLayoutPolicy
 	
 	protected FormLayoutPolicy(Form __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected abstract void doLayout(int __vpx, int __vpy, int __vpw,
@@ -30,52 +30,52 @@ public abstract class FormLayoutPolicy
 	
 	protected final Form getForm()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final int getHeight(Item __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final int getWidth(Item __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final int getX(Item __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final int getY(Item __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final boolean isValid(Item __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final void setPosition(Item __i, int __x, int __y)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final void setSize(Item __i, int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected final void setValid(Item __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static final int getLayoutDirection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

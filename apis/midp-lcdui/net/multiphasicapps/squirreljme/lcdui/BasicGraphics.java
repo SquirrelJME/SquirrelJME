@@ -155,7 +155,7 @@ public abstract class BasicGraphics
 	@Override
 	public final void clipRect(int __x, int __y, int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -167,7 +167,7 @@ public abstract class BasicGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public abstract class BasicGraphics
 	public final void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -190,7 +190,7 @@ public abstract class BasicGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -200,7 +200,7 @@ public abstract class BasicGraphics
 	@Override
 	public final void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -212,7 +212,7 @@ public abstract class BasicGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -472,7 +472,7 @@ public abstract class BasicGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -484,7 +484,7 @@ public abstract class BasicGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -605,7 +605,7 @@ public abstract class BasicGraphics
 		int __wdest, int __hdest)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -616,7 +616,7 @@ public abstract class BasicGraphics
 	public final void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -628,7 +628,7 @@ public abstract class BasicGraphics
 		int __anchor)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -640,7 +640,7 @@ public abstract class BasicGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -651,7 +651,7 @@ public abstract class BasicGraphics
 	public final void drawText(Text __t, int __x, int __y)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -662,7 +662,7 @@ public abstract class BasicGraphics
 	public final void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -751,7 +751,7 @@ public abstract class BasicGraphics
 	public final void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -762,7 +762,7 @@ public abstract class BasicGraphics
 	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -1256,7 +1256,7 @@ public abstract class BasicGraphics
 				
 				// Baseline
 			case BASELINE:
-				throw new Error("TODO");
+				throw new todo.TODO();
 				
 				// Bottom
 			case BOTTOM:

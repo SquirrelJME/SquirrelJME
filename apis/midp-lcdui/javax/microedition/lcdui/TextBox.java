@@ -18,99 +18,99 @@ public class TextBox
 	public TextBox(String __a, String __b, int __c, int __d)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void delete(int __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCaretPosition()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getChars(char[] __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getConstraints()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getMaxSize()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	@Override
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void insert(char[] __a, int __b, int __c, int __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void insert(String __a, int __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCaret(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setChars(char[] __a, int __b, int __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setConstraints(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setHighlight(int __i, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setInitialInputMode(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int setMaxSize(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setString(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int size()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class TextBox
 	@Override
 	DisplayConnector __connector()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

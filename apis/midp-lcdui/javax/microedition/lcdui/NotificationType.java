@@ -32,7 +32,7 @@ public final class NotificationType
 	
 	public NotificationType(String __dl, Image __di)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

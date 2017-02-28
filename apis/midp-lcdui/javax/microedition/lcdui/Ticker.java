@@ -16,17 +16,17 @@ public class Ticker
 	public Ticker(String __a)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getString()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setString(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

@@ -202,7 +202,7 @@ public abstract class Canvas
 	
 	public int getKeyCode(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -221,7 +221,7 @@ public abstract class Canvas
 	
 	public int[] getSoftkeyLabelCoordinates(int __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -285,12 +285,12 @@ public abstract class Canvas
 	
 	protected void hideNotify()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isDoubleBuffered()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -414,7 +414,7 @@ public abstract class Canvas
 	
 	public final void serviceRepaints()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -469,12 +469,12 @@ public abstract class Canvas
 	
 	public void setRequiredActions(int __actions)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void showNotify()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

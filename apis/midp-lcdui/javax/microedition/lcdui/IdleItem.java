@@ -16,17 +16,17 @@ public abstract class IdleItem
 	protected IdleItem(String __label)
 	{
 		super(__label);
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void addedToDisplay(Display __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	protected void removedFromDisplay(Display __d)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

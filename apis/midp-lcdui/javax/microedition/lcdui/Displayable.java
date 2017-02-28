@@ -78,22 +78,22 @@ public abstract class Displayable
 	
 	public void addCommand(Command __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Command getCommand(int __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public CommandLayoutPolicy getCommandLayoutPolicy()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Command[] getCommands()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -109,12 +109,12 @@ public abstract class Displayable
 	
 	public Menu getMenu(int __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Ticker getTicker()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -130,47 +130,47 @@ public abstract class Displayable
 	
 	public void invalidateCommandLayout()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean isShown()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeCommand(Command __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void removeCommandOrMenu(int __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCommand(Command __c, int __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCommandListener(CommandListener __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setMenu(Menu __m, int __p)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setTicker(Ticker __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	/**

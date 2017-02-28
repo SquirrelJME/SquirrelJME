@@ -15,27 +15,27 @@ public abstract class Doclet
 	public Doclet()
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static LanguageVersion languageVersion()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static int optionLength(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean start(RootDoc __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public static boolean validOptions(String[][] __a, DocErrorReporter __b)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

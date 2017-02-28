@@ -21,7 +21,7 @@ public enum LanguageVersion
 	
 	private LanguageVersion()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

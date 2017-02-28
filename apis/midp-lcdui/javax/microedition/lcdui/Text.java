@@ -38,227 +38,227 @@ public class Text
 	
 	public Text()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Text(String __c, int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Text(String __c, int __o, int __l, int __w, int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void delete(int __i, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAlignment()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getBackgroundColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCaret()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void getCharExtent(int __i, int[] __ext)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getCharIndex(int __x, int __y)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Font getFont()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Font getFont(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getForegroundColor()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getForegroundColor(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getHighlightIndex()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getHighlightLength()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getIndent()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getInitialDirection()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getRequiredHeight()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getRequiredLineCount()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getScrollOffset()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSpaceAbove()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getSpaceBelow()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getText(int __i, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getTextLength()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getWidth()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void insert(int __i, String __c)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int lastRenderedIndex()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void moveCaret(int __nl)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setAlignment(int __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setBackgroundColor(int __argb)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setCaret(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFont(Font __f)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFont(Font __f, int __i, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setForegroundColor(int __argb)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setForegroundColor(int __argb, int __i, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setHeight(int __h)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setHighlight(int __i, int __l)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setIndent(int __i)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setInitialDirection(int __dir)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setScrollOffset(int __o)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSpaceAbove(int __sa)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setSpaceBelow(int __sb)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setWidth(int __w)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public boolean textFits()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 

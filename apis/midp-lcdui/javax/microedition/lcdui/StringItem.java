@@ -17,38 +17,38 @@ public class StringItem
 	public StringItem(String __a, String __b)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public StringItem(String __a, String __b, int __c)
 	{
 		super();
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public int getAppearanceMode()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public Font getFont()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public String getText()
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setFont(Font __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 	
 	public void setText(String __a)
 	{
-		throw new Error("TODO");
+		throw new todo.TODO();
 	}
 }
 
