@@ -22,6 +22,7 @@ public class Alert
 	public static final Command DISMISS_COMMAND =
 		new Command("", Command.OK, 0);
 	
+	/** Specifies that the alert should last forever. */
 	public static final int FOREVER =
 		-2;
 	
@@ -36,6 +37,10 @@ public class Alert
 	
 	/** The type of alert this is. */
 	private volatile AlertType _type;
+	
+	/** The duration the alert should last in milliseconds. */
+	private volatile int _timeout =
+		FOREVER;
 	
 	/**
 	 * Initializes the alert with just a title.
@@ -137,14 +142,38 @@ public class Alert
 		throw new Error("TODO");
 	}
 	
-	public void setString(String __a)
+	/**
+	 * Sets the message which is used in the alert.
+	 *
+	 * @param __s The message to use.
+	 * @since 2017/02/28
+	 */
+	public void setString(String __s)
 	{
-		throw new Error("TODO");
+		this._message = __s;
+		
+		System.err.printf("DEBUG -- Set alert message: %s%n", __s);
 	}
 	
-	public void setTimeout(int __a)
+	/**
+	 * Sets the duration for which the alert should last.
+	 *
+	 * @param __ms The number of milliseconds to display the message for or
+	 * {@link #FOREVER}.
+	 * @throws IllegalArgumentException If the duration is not positive and is
+	 * not {@link #FOREVER}.
+	 * @since 2017/02/28
+	 */
+	public void setTimeout(int __ms)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error EB0s The specified number of milliseconds is
+		// negative. (The number of milliseconds specified)}
+		if (__ms < 0 && __ms != FOREVER)
+			throw new IllegalArgumentException(String.format("EB0s %d", __ms));
+		
+		// Set
+		this._timeout = __ms;
 	}
 	
 	/**
