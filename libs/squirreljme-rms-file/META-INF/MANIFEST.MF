@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: b600863c-fbba-41ec-9ca1-544e71d6f86d
 X-SquirrelJME-Error: AW
-X-SquirrelJME-Depends: meep-rms
+X-SquirrelJME-Depends: meep-rms java-manifest mutable-java-manifest
 X-SquirrelJME-Name: File Backed RecordStore
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2

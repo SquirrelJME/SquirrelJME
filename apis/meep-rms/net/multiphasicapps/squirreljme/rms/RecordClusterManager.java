@@ -43,10 +43,12 @@ public abstract class RecordClusterManager
 	 * @param __o The cluster to open.
 	 * @return The opened cluster.
 	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If there is a problem with the record
+	 * system.
 	 * @since 2017/02/28
 	 */
 	protected abstract RecordCluster internalOpen(RecordStoreOwner __o)
-		throws NullPointerException;
+		throws NullPointerException, RecordStoreException;
 	
 	/**
 	 * Opens the cluster manager for the given suite.
@@ -55,10 +57,12 @@ public abstract class RecordClusterManager
 	 * then the existing cluster will be returned.
 	 * @return The opened cluster.
 	 * @throws NullPointerException On null arguments.
+	 * @throws RecordStoreException If there is a problem with the record
+	 * system.
 	 * @since 2017/02/27
 	 */
 	public final RecordCluster open(RecordStoreOwner __o)
-		throws NullPointerException
+		throws NullPointerException, RecordStoreException
 	{
 		// Check
 		if (__o == null)
