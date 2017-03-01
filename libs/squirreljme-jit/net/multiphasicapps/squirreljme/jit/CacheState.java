@@ -49,7 +49,9 @@ public final class CacheState
 		if (__e == null || __a == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Copy locals and the stack
+		this.locals = __snapTread(__a.locals());
+		this.stack = __snapTread(__a.stack());
 	}
 	
 	/**
@@ -102,6 +104,24 @@ public final class CacheState
 	}
 	
 	/**
+	 * Snapshots the specified tread and returns it.
+	 *
+	 * @param __from The tread to copy.
+	 * @return The copied and snapshotted tread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/01
+	 */
+	private static CacheState.Tread __snapTread(ActiveCacheState.Tread __from)
+		throws NullPointerException
+	{
+		// Check
+		if (__from == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * This represents a slot within the cache state and stores the
 	 * information 
 	 *
@@ -116,6 +136,25 @@ public final class CacheState
 		 */
 		private Slot()
 		{
+		}
+		
+		/**
+		 * Returns the binding as the specified class.
+		 *
+		 * @param <B> The class to cast to.
+		 * @param __cl The class to cast to.
+		 * @return The binding for this slot.
+		 * @throws ClassCastException If the class type is incorrect.
+		 * @since 2017/03/01
+		 */
+		public <B extends Binding> B getBinding(Class<B> __cl)
+			throws ClassCastException, NullPointerException
+		{
+			// Check
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+			
+			throw new Error("TODO");
 		}
 	}
 	
