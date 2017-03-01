@@ -514,10 +514,11 @@ public class InflaterInputStream
 		
 		// The complemented length must be equal to the complement
 		// {@squirreljme.error BY0c Value mismatch reading the number of
-		// uncompressed symbols that exist. (The length; The complement)}
+		// uncompressed symbols that exist. (The length; The complement;
+		// The complemented input length; The complemented input complement)}
 		if ((len ^ 0xFFFF) != com)
-			throw new IOException(String.format("BY0c %04x %04x",
-				len, com));
+			throw new IOException(String.format("BY0c %04x %04x %04x %04x",
+				len, com, len ^ 0xFFFF, com ^ 0xFFFF));
 		
 		// Read all bytes
 		for (int i = 0; i < len; i++)
