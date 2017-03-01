@@ -555,12 +555,13 @@ public final class ZipStreamEntry
 			// For simplicity, use single byte read because the end may
 			// either be defined or undefined
 			int c = 0;
+			boolean eofed = false;
 			for (int i = 0, o = __o; i < __l; i++, o++)
 			{
 				int v = read();
 				
 				// EOF?
-				if (v < 0)
+				if ((eofed = (v < 0)))
 					break;
 				
 				__b[o] = (byte)v;
@@ -568,6 +569,8 @@ public final class ZipStreamEntry
 			}
 			
 			// Return the read count
+			if (eofed && c <= 0)
+				return -1;
 			return c;
 		}
 		
