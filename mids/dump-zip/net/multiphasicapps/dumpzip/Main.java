@@ -62,7 +62,7 @@ public class Main
 			{
 				// Filtered?
 				String name = entry.name();
-				if (!filter.isEmpty() && filter.contains(name))
+				if (!filter.isEmpty() && !filter.contains(name))
 					continue;
 				System.out.printf("> Dumping `%s`...%n", name);
 				lastentry = name;

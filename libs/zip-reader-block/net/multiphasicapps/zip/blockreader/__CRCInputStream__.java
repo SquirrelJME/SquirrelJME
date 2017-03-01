@@ -36,6 +36,9 @@ class __CRCInputStream__
 			ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
 			ZipCRCConstants.CRC_FINALXOR);
 	
+	/** The number of read bytes. */
+	private volatile int _count;
+	
 	/**
 	 * Calcualtes the CRC of another given input stream.
 	 *
@@ -96,11 +99,11 @@ class __CRCInputStream__
 		if (rv < 0)
 		{
 			// {@squirreljme.error CJ0n CRC mismatch. (The expected CRC; The
-			// calculated CRC})
+			// calculated CRC; The number of read bytes})
 			int thiscrc = crccalc.crc(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
-				throw new IOException(String.format("CJ0n %08x %08x", wantcrc,
-					thiscrc));
+				throw new IOException(String.format("CJ0n %08x %08x %d",
+					wantcrc, thiscrc, this._count));
 			
 			// EOF
 			return -1;
@@ -108,6 +111,7 @@ class __CRCInputStream__
 		
 		// Calculate
 		crccalc.offer((byte)rv);
+		this._count += 1;
 		
 		// Return
 		return rv;
@@ -148,6 +152,7 @@ class __CRCInputStream__
 		
 		// Calculate
 		crccalc.offer(__b, __o, rv);
+		this._count += rv;
 		
 		// Return
 		return rv;
