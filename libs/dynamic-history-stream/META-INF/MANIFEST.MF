@@ -8,4 +8,5 @@ X-SquirrelJME-Description: This project provides an InputStream which is
   for a limited set of history that the bytes which were just read.
 X-SquirrelJME-Error: BI
 X-SquirrelJME-UUID: ca3eab81-73a3-4fdf-a23d-c0af445dc664
+X-SquirrelJME-Depends: data-deque-buffer
 Microedition-Configuration: CLDC-1.8-Compact

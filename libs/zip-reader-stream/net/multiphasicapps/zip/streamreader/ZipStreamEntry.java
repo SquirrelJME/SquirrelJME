@@ -308,7 +308,6 @@ public final class ZipStreamEntry
 		public void flush()
 			throws IOException
 		{
-			this.crccalc.flush();
 		}
 		
 		/**
