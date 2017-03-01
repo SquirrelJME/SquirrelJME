@@ -502,9 +502,11 @@ public class InflaterInputStream
 	{
 		// Throw out bits that have been read so that the following reads are
 		// aligned to byte boundaries
+		System.err.printf("DEBUG -- Mini was %d%n", this._minisize);
 		int minisub = this._minisize & 7;
 		if (minisub > 0)
-			__readBits(8 - minisub, false);
+			__readBits(minisub, false);
+		System.err.printf("DEBUG -- Mini now %d%n", this._minisize);
 		
 		// Read length and the one's complement of it
 		int len = __readBits(16, false);
@@ -514,7 +516,7 @@ public class InflaterInputStream
 		// {@squirreljme.error BY0c Value mismatch reading the number of
 		// uncompressed symbols that exist. (The length; The complement)}
 		if ((len ^ 0xFFFF) != com)
-			throw new IOException(String.format("BY0c %x %x",
+			throw new IOException(String.format("BY0c %04x %04x",
 				len, com));
 		
 		// Read all bytes
