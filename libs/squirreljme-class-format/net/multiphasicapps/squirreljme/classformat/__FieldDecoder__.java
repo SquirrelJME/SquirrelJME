@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.linkage.ClassFlags;
 import net.multiphasicapps.squirreljme.linkage.FieldFlags;
 
 /**
- * This decodes ields.
+ * This decodes fields.
  *
  * @since 2016/08/27
  */

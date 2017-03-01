@@ -551,37 +551,6 @@ public class InflaterInputStream
 		else
 			maxlen = __len;
 		
-		// Read from the sliding window, which could fail
-		/*
-		try
-		{
-			SlidingByteWindow window = this.window;
-			byte[] wind = __obtainReadWindow();
-			int windl = wind.length;
-			for (int i = 0, v = 0; i < maxlen)
-			{
-				// Get from the window
-				window.get(__dist, wind, 0, read);
-				int rc = 
-			
-				if (rc 
-			
-				// Wrap around
-				if ((++v) >= maxlen)
-					v = 0;
-			}
-		}
-	
-		// Bad window read
-		catch (IndexOutOfBoundsException ioobe)
-		{
-			// {@squirreljme.error BY06 Window access out of range.
-			// (The distance; The length)}
-			throw new IOException(String.format(
-				"BY06 %d %d", __dist, __len), ioobe);
-		}
-		*/
-	
 		// Create a byte array from the sliding window data
 		byte[] winb = new byte[maxlen];
 		try
