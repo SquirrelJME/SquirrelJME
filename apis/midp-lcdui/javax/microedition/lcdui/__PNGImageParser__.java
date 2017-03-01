@@ -344,6 +344,11 @@ class __PNGImageParser__
 						int v = ((int)(window >>> valshift)) & bitmask;
 						valshift -= bitdepth;
 						
+						// 16-bit pixels are in MSB order, but input bytes are
+						// read in little endian order
+						if (bitdepth == 16)
+							v = ((v >>> 8) & 0xFF) | ((v & 0xFF) << 8);
+						
 						// If not using paletted mode, adjust the colors so
 						// that they become normalized to [0, 255]
 						if (colortype != 3)
