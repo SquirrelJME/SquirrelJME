@@ -71,7 +71,7 @@ public class Main
 				try (InputStream in = entry.open())
 				{
 					// Dump bytes
-					try (OutputStream os = new HexDumpOutputStream(
+					try (OutputStream os = /*new HexDumpOutputStream*/(
 						System.out))
 					{
 						for (;;)

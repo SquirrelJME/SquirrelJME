@@ -464,8 +464,8 @@ public class InflaterInputStream
 	}
 	
 	/**
-	 * Decompressed data stored with the fixed huffman table and decompresses
-	 * it.
+	 * Decodes decompressed data stored with the fixed huffman table and
+	 * decompresses it.
 	 *
 	 * @throws IOException On read or decompression errors.
 	 * @since 2017/02/25
@@ -489,8 +489,7 @@ public class InflaterInputStream
 		
 			// Window based result
 			else if (code >= 257 && code <= 285)
-				__decompressWindow(__handleLength(code),
-					__readBits(5, true));
+				__decompressWindow(__handleLength(code), Integer.MIN_VALUE);
 		
 			// {@squirreljme.error BY05 Illegal fixed huffman code. (The
 			// code.)}
@@ -624,6 +623,10 @@ public class InflaterInputStream
 	private int __handleDistance(int __code)
 		throws IOException
 	{
+		// Read distance
+		if (__code == Integer.MIN_VALUE)
+			__code = __readBits(5, true);
+		
 		// {@squirreljme.error BY04 Illegal fixed distance code. (The distance
 		// code)}
 		if (__code > 29)
