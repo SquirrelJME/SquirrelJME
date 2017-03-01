@@ -107,6 +107,10 @@ class __PNGImageParser__
 						// Image data
 					case 0x49444154:
 						throw new todo.TODO();
+						
+						// Transparency information
+					case 0x74524E53:
+						throw new todo.TODO();
 					
 						// Unknown, ignore
 					default:
