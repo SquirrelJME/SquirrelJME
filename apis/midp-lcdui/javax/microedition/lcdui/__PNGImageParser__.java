@@ -49,6 +49,9 @@ class __PNGImageParser__
 	/** RGB image data. */
 	private volatile int[] _argb;
 	
+	/** Palette data. */
+	private volatile int[] _palette;
+	
 	/**
 	 * Initializes the PNG parser.
 	 *
@@ -121,7 +124,8 @@ class __PNGImageParser__
 						
 						// Palette
 					case 0x504c5445:
-						throw new todo.TODO();
+						__parsePalette(data, len);
+						break;
 						
 						// Image data
 					case 0x49444154:
@@ -219,6 +223,46 @@ class __PNGImageParser__
 		
 		// Allocate image buffer
 		this._argb = new int[width * height];
+	}
+	
+	/**
+	 * Parses the PNG palette.
+	 *
+	 * @param __in The stream to read data from.
+	 * @param __len The length of the palette data.
+	 * @throws IOException On parse errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
+	private void __parsePalette(DataInputStream __in, int __len)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore the palette if this is not an indexed image
+		if (this._colortype != 3)
+			return;
+		
+		// Read color color
+		int numcolors = __len / 3,
+			maxcolors = 1 << this._bitdepth;
+		if (numcolors > maxcolors)
+			numcolors = maxcolors;
+		
+		// Load palette data
+		int[] palette = new int[numcolors];
+		this._palette = palette;
+		for (int i = 0; i < numcolors; i++)
+		{
+			int r = __in.readUnsignedByte(),
+				g = __in.readUnsignedByte(),
+				b = __in.readUnsignedByte();
+			
+			// Fill in color
+			palette[i] = (r << 16) | (g << 8) | b;
+		}
 	}
 }
 
