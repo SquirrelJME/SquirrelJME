@@ -112,6 +112,16 @@ public final class ActiveCacheState
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/01
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("{stack=%s, locals=%s}", this.stack, this.locals);
+	}
+	
+	/**
 	 * The slot stores the information on the current element.
 	 *
 	 * @since 2017/02/23

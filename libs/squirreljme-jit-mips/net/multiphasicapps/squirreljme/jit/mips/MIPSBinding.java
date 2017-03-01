@@ -40,56 +40,24 @@ public final class MIPSBinding
 	private volatile Reference<String> _string;
 	
 	/**
-	 * Initializes the MIPS binding to a register.
+	 * Initializes the MIPS binding which snapshots an active binding
 	 *
-	 * @param __r The register to bind to.
+	 * @param __b The binding to snapshot.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/20
 	 */
-	public MIPSBinding(MIPSRegister __r)
+	MIPSBinding(MIPSActiveBinding __b)
 		throws NullPointerException
 	{
 		// Check
-		if (__r == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Set single register
-		this._registers = new MIPSRegister[]{__r};
-		
-		// Not used
-		this.stackoffset = Integer.MIN_VALUE;
-		this.stacklength = Integer.MIN_VALUE;
-	}
-	
-	/**
-	 * Initializes the MIPS binding to multiple registers.
-	 *
-	 * @param __r The register to bind to.
-	 * @param __a The other registers to bind to.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/20
-	 */
-	public MIPSBinding(MIPSRegister __r, MIPSRegister... __a)
-		throws NullPointerException
-	{
-		// Check
-		if (__r == null || __a == null)
-			throw new NullPointerException("NARG");
-		
-		// Copy registers
-		int n = 1 + __a.length;
-		MIPSRegister[] registers = new MIPSRegister[n];
-		registers[0] = __r;
-		for (int i = 0, o = 1; o < n; i++, o++)
-			registers[o] = Objects.<MIPSRegister>requireNonNull(__a[i], 
-				"NARG");
-		
-		// Set
-		this._registers = registers;
-		
-		// Not used
-		this.stackoffset = Integer.MIN_VALUE;
-		this.stacklength = Integer.MIN_VALUE;
+		// Copy
+		MIPSRegister[] registers = __b.registers();
+		this._registers = (registers != null ? registers.clone() : null);
+		this.stackoffset = __b.stackOffset();
+		this.stacklength = __b.stackLength();
 	}
 	
 	/**
@@ -99,7 +67,33 @@ public final class MIPSBinding
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof MIPSBinding))
+			return false;
+		
+		// Compare registers first
+		MIPSBinding o = (MIPSBinding)__o;
+		MIPSRegister[] ar = this._registers;
+		MIPSRegister[] br = o._registers;
+		if ((ar == null) != (br == null))
+			return false;
+		if (ar != null)
+		{
+			// Length mismatch
+			int an = ar.length,
+				bn = br.length;
+			if (an != bn)
+				return false;
+			
+			// Compare individual elements
+			for (int i = 0; i < an; i++)
+				if (!ar[i].equals(br[i]))
+					return false;
+		}
+		
+		// Then the stack
+		return this.stackoffset == o.stackoffset &&
+			this.stacklength == o.stacklength;
 	}
 	
 	/**
@@ -109,7 +103,52 @@ public final class MIPSBinding
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		MIPSRegister[] registers = this._registers;
+		if (registers != null)
+			for (int i = 0, n = registers.length; i < n; i++)
+				rv ^= registers[i].hashCode();
+		return rv ^ this.stackoffset ^ (~this.stacklength);
+	}
+	
+	/**
+	 * Returns the currently assigned registers.
+	 *
+	 * @return The assigned registers.
+	 * @since 2017/03/01
+	 */
+	public MIPSRegister[] registers()
+	{
+		// Stack only
+		if (this.stacklength > 0)
+			return null;
+		
+		// Clone
+		return this._registers.clone();
+	}
+	
+	/**
+	 * Returns the length of the value on the stack.
+	 *
+	 * @return The stack length or {@link Integer#MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2017/03/01
+	 */
+	public int stackLength()
+	{
+		return this.stacklength;
+	}
+	
+	/**
+	 * Returns the offset on the stack the value will be placed.
+	 *
+	 * @return The stack offset or {@link Integer#MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2017/03/01
+	 */
+	public int stackOffset()
+	{
+		return this.stackoffset;
 	}
 	
 	/**
@@ -125,12 +164,12 @@ public final class MIPSBinding
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
-			MIPSRegister[] registers = this._registers;
-			if (registers != null)
-				rv = Arrays.asList(registers).toString();
+			int stacklength = this.stacklength;
+			if (stacklength <= 0)
+				rv = Arrays.asList(this._registers).toString();
 			else
 				rv = String.format("<%+d, %d>", this.stackoffset,
-					this.stacklength);
+					stacklength);
 			
 			// Store
 			this._string = new WeakReference<>(rv);

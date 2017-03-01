@@ -32,6 +32,14 @@ public class MIPSActiveBinding
 	protected final List<MIPSRegister> registers =
 		new ArrayList<>();
 	
+	/** The stack offset. */
+	private volatile int _stackoffset =
+		Integer.MIN_VALUE;
+	
+	/** The stack length. */
+	private volatile int _stacklength =
+		Integer.MIN_VALUE;
+	
 	/**
 	 * Initializes the active binding.
 	 *
@@ -48,7 +56,14 @@ public class MIPSActiveBinding
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof MIPSBinding))
+			return false;
+		
+		MIPSActiveBinding o = (MIPSActiveBinding)__o;
+		return this._stackoffset == o._stackoffset &&
+			this._stacklength == o._stacklength &&
+			this.registers.equals(o.registers);
 	}
 	
 	/**
@@ -58,7 +73,29 @@ public class MIPSActiveBinding
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		List<MIPSRegister> registers = this.registers;
+		for (int i = 0, n = registers.size(); i < n; i++)
+			rv ^= registers.get(i).hashCode();
+		return rv ^ this._stackoffset ^ (~this._stacklength);
+	}
+	
+	/**
+	 * Returns the currently assigned registers.
+	 *
+	 * @return The assigned registers.
+	 * @since 2017/03/01
+	 */
+	public MIPSRegister[] registers()
+	{
+		// Stack only
+		if (this._stacklength > 0)
+			return null;
+		
+		// Convert
+		List<MIPSRegister> registers = this.registers;
+		return registers.<MIPSRegister>toArray(
+			new MIPSRegister[registers.size()]);
 	}
 	
 	/**
@@ -73,6 +110,34 @@ public class MIPSActiveBinding
 		registers.clear();
 		for (MIPSRegister r : __r)
 			registers.add(r);
+		
+		// Clear the stack
+		this._stacklength = Integer.MIN_VALUE;
+		this._stackoffset = Integer.MIN_VALUE;
+	}
+	
+	/**
+	 * Returns the length of the value on the stack.
+	 *
+	 * @return The stack length or {@link Integer#MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2017/03/01
+	 */
+	public int stackLength()
+	{
+		return this._stacklength;
+	}
+	
+	/**
+	 * Returns the offset on the stack the value will be placed.
+	 *
+	 * @return The stack offset or {@link Integer#MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2017/03/01
+	 */
+	public int stackOffset()
+	{
+		return this._stackoffset;
 	}
 	
 	/**
@@ -87,12 +152,20 @@ public class MIPSActiveBinding
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AM05 The input binding is not one for this JIT.}
-		if (!(__b instanceof MIPSBinding))
-			throw new JITException("AM05");
+		// Cast
 		MIPSBinding bind = (MIPSBinding)__b;
 		
-		throw new todo.TODO();
+		// Copy registers
+		List<MIPSRegister> registers = this.registers;
+		MIPSRegister[] fromregs = bind.registers();
+		registers.clear();
+		if (fromregs != null)
+			for (int i = 0, n = fromregs.length; i < n; i++)
+				registers.add(fromregs[i]);
+		
+		// Set stack properties
+		this._stackoffset = bind.stackOffset();
+		this._stacklength = bind.stackLength();
 	}
 	
 	/**
@@ -102,7 +175,12 @@ public class MIPSActiveBinding
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		int stacklength = this._stacklength;
+		if (stacklength <= 0)
+			return this.registers.toString();
+		else
+			return String.format("<%+d, %d>", this._stackoffset,
+				stacklength);
 	}
 }
 

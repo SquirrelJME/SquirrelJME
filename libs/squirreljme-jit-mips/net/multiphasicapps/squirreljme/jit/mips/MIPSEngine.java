@@ -151,7 +151,8 @@ public class MIPSEngine
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Snapshot
+		return new MIPSBinding((MIPSActiveBinding)__b);
 	}
 	
 	/**
