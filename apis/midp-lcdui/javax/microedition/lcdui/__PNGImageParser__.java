@@ -52,6 +52,9 @@ class __PNGImageParser__
 	/** Palette data. */
 	private volatile int[] _palette;
 	
+	/** Was an alpha channel used? */
+	private volatile boolean _hasalpha;
+	
 	/**
 	 * Initializes the PNG parser.
 	 *
@@ -129,7 +132,8 @@ class __PNGImageParser__
 						
 						// Image data
 					case 0x49444154:
-						throw new todo.TODO();
+						__parseImage(data);
+						break;
 						
 						// Transparency information
 					case 0x74524E53:
@@ -150,7 +154,14 @@ class __PNGImageParser__
 					want, real));
 		}
 		
-		throw new todo.TODO();
+		// {@squirreljme.error EB15 No image data has been loaded.}
+		int[] argb = this._argb;
+		if (argb == null)
+			throw new IOException("EB15");
+		
+		// Create image
+		return new Image(argb, this._width, this._height, false,
+			this._hasalpha);
 	}
 	
 	/**
@@ -202,6 +213,9 @@ class __PNGImageParser__
 		this._bitdepth = bitdepth;
 		this._colortype = colortype;
 		
+		// These two color types have alpha
+		this._hasalpha = (colortype == 4 || colortype == 6);
+		
 		// {@squirreljme.error EB10 Only deflate compressed PNG images are
 		// supported. (The compression method)}
 		int compressionmethod = __in.readUnsignedByte();
@@ -223,6 +237,32 @@ class __PNGImageParser__
 		
 		// Allocate image buffer
 		this._argb = new int[width * height];
+	}
+	
+	/**
+	 * Parses the PNG image data.
+	 *
+	 * @param __in The stream to read data from.
+	 * @throws IOException On parse errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
+	private void __parseImage(DataInputStream __in)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Get output
+		int[] argb = this._argb;
+		int width = this._width,
+			height = this._height,
+			colortype = this._colortype,
+			bitdepth = this._bitdepth;
+		boolean adamseven = this._adamseven;
+		
+		throw new todo.TODO();
 	}
 	
 	/**
