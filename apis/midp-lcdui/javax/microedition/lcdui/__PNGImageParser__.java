@@ -98,7 +98,8 @@ class __PNGImageParser__
 				{
 						// Header
 					case 0x49484452:
-						throw new todo.TODO();
+						__parseHeader(data);
+						break;
 						
 						// Palette
 					case 0x504c5445:
@@ -128,6 +129,24 @@ class __PNGImageParser__
 		}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the PNG header.
+	 *
+	 * @param __in The stream to read data from.
+	 * @throws IOException On parse errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/28
+	 */
+	private void __parseHeader(DataInputStream __in)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
