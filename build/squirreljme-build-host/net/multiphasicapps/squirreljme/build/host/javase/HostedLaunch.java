@@ -22,6 +22,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.io.hex.HexInputStream;
@@ -63,6 +64,7 @@ public class HostedLaunch
 		// Load the target ZIP to the read manifest
 		Path p = Paths.get(__args[0]);
 		Class<?> mainclass;
+		boolean stdmain = false;
 		try (FileChannel fc = FileChannel.open(p, StandardOpenOption.READ);
 			ZipBlockReader zip = new ZipBlockReader(
 				new FileChannelBlockAccessor(fc)))
@@ -76,27 +78,39 @@ public class HostedLaunch
 			}
 			JavaManifestAttributes attr = man.getMainAttributes();
 			
-			// {@squirreljme.error BM0d The JAR to launch does not specify any
-			// midlets.}
+			// This might not be an actual MIDlet
 			String midletval = attr.get(new JavaManifestKey("MIDlet-1"));
 			if (midletval == null)
-				throw new RuntimeException("BM0d");
+			{
+				// {@squirreljme.error BM0d The JAR to launch does not specify
+				// any midlets and there is no main class.}
+				String oldclass = attr.get(new JavaManifestKey("Main-Class"));
+				if (oldclass == null)
+					throw new RuntimeException("BM0d");
+				
+				// Use standard main
+				mainclass = Class.forName(oldclass);
+				stdmain = true;
+			}
 			
-			// The MIDlet field is in 3 fields: name, icon, class
-			// {@squirreljme.error BM0e Expected two commas in the MIDlet
-			// field.}
-			int pc = midletval.indexOf(','),
-				sc = midletval.indexOf(',', Math.max(pc + 1, 0));
-			if (pc < 0 || sc < 0)
-				throw new RuntimeException("BM0e");
+			else
+			{
+				// The MIDlet field is in 3 fields: name, icon, class
+				// {@squirreljme.error BM0e Expected two commas in the MIDlet
+				// field.}
+				int pc = midletval.indexOf(','),
+					sc = midletval.indexOf(',', Math.max(pc + 1, 0));
+				if (pc < 0 || sc < 0)
+					throw new RuntimeException("BM0e");
 			
-			// Split fields
-			String name = midletval.substring(0, pc).trim(),
-				icon = midletval.substring(pc + 1, sc).trim(),
-				main = midletval.substring(sc + 1).trim();
+				// Split fields
+				String name = midletval.substring(0, pc).trim(),
+					icon = midletval.substring(pc + 1, sc).trim(),
+					main = midletval.substring(sc + 1).trim();
 			
-			// Get the main class, which is in our own classpath!
-			mainclass = Class.forName(main);
+				// Get the main class, which is in our own classpath!
+				mainclass = Class.forName(main);
+			}
 			
 			// This is used to hack around the application properties so that
 			// they exist (using their manifest values) without needing to have
@@ -122,21 +136,37 @@ public class HostedLaunch
 		// Construct the main MIDlet then start it
 		try
 		{
-			// Get constructor
-			Constructor<?> cons = mainclass.getConstructor();
+			// Old style main
+			if (stdmain)
+			{
+				// Get method
+				Method startmethod = mainclass.getMethod("main",
+					(Class)String[].class);
+				
+				// Execute
+				startmethod.invoke(null, (Object)Arrays.<String>copyOfRange(
+					__args, 1, __args.length));
+			}
 			
-			// Make sure it can be called
-			cons.setAccessible(true);
+			// Launch midlet
+			else
+			{
+				// Get constructor
+				Constructor<?> cons = mainclass.getConstructor();
 			
-			// Create instance
-			MIDlet mid = (MIDlet)cons.newInstance();
+				// Make sure it can be called
+				cons.setAccessible(true);
 			
-			// Start it
-			Method startmethod = mainclass.getMethod("startApp");
-			startmethod.setAccessible(true);
+				// Create instance
+				MIDlet mid = (MIDlet)cons.newInstance();
 			
-			// Call it
-			startmethod.invoke(mid);
+				// Start it
+				Method startmethod = mainclass.getMethod("startApp");
+				startmethod.setAccessible(true);
+			
+				// Call it
+				startmethod.invoke(mid);
+			}
 		}
 		
 		// {@squirreljme.error BM0g Failed to launch the MIDlet.}

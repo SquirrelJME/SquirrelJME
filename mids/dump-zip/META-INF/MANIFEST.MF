@@ -7,5 +7,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This dumps ZIP files.
 X-SquirrelJME-Depends: zip-reader-stream hexdump-writer
 Microedition-Configuration: CLDC-1.8
-MIDlet-1: ZIP File Dumper,, net.multiphasicapps.dumpzip.Main
+Main-Class: net.multiphasicapps.dumpzip.Main
 

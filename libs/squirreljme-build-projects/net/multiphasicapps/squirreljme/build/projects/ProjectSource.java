@@ -73,6 +73,10 @@ public abstract class ProjectSource
 	static final JavaManifestKey _SOURCE_VERSION_KEY =
 		new JavaManifestKey("X-SquirrelJME-Version");
 	
+	/** Classic main class key. */
+	static final JavaManifestKey _MAIN_CLASS_KEY =
+		new JavaManifestKey("Main-Class");
+	
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
 	
@@ -416,8 +420,10 @@ public abstract class ProjectSource
 			if (midlet)
 			{
 				// {@squirreljme.error AT0q The MIDlet is missing the required
-				// {@code MIDlet-1} property.}
-				if (null == attr.get(_FIRST_MIDLET))
+				// {@code MIDlet-1} property and does not have a fallback
+				// {@code Main-Class} property.}
+				if (null == attr.get(_FIRST_MIDLET) &&
+					null == attr.get(_MAIN_CLASS_KEY))
 					throw new IOException("AT0q");
 			}
 			
