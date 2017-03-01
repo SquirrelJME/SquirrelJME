@@ -140,6 +140,21 @@ public class MIPSEngine
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/01
+	 */
+	@Override
+	public Binding snapshotBinding(ActiveBinding __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Aliases the specified stack map type to a data type.
 	 *
 	 * @param __t The stack type to alias.

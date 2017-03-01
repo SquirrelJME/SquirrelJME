@@ -83,5 +83,15 @@ public abstract class TranslationEngine
 	 * @since 2017/02/23
 	 */
 	public abstract ActiveBinding createActiveBinding();
+	
+	/**
+	 * Creates a snapshot of the specified binding returning an immutable one
+	 *
+	 * @param __b The binding to snapshot.
+	 * @return The snapshotted binding.
+	 * @since 2017/03/01
+	 */
+	public abstract Binding snapshotBinding(ActiveBinding __b)
+		throws NullPointerException;
 }
 

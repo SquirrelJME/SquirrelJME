@@ -177,6 +177,39 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Returns the index of this slot.
+		 *
+		 * @return The slot index.
+		 * @since 2017/03/01
+		 */
+		public int index()
+		{
+			return this.index;
+		}
+		
+		/**
+		 * Returns {@code true} if this is a local slot.
+		 *
+		 * @return {@code true} if a local slot.
+		 * @since 2017/03/01
+		 */
+		public boolean isLocal()
+		{
+			return !this.isstack;
+		}
+		
+		/**
+		 * Returns {@code true} if this is a stack slot.
+		 *
+		 * @return {@code true} if a stack slot.
+		 * @since 2017/03/01
+		 */
+		public boolean isStack()
+		{
+			return this.isstack;
+		}
+		
+		/**
 		 * Sets the type of value stored in this slot.
 		 *
 		 * @param __t The type of value to store.
@@ -209,7 +242,9 @@ public final class ActiveCacheState
 		@Override
 		public String toString()
 		{
-			throw new todo.TODO();
+			return String.format("{%c#%d: type=%s, binding=%s}",
+				(this.isstack ? 'S' : 'L'), this.index, this._type,
+				this.binding);
 		}
 		
 		/**

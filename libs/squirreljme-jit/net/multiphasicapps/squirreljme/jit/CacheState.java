@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,9 @@ public final class CacheState
 	/** Local code variables. */
 	protected final Tread locals;
 	
+	/** String representation of this state. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the cache state which is a copy of the active state.
 	 *
@@ -50,8 +55,8 @@ public final class CacheState
 			throw new NullPointerException("NARG");
 		
 		// Copy locals and the stack
-		this.locals = __snapTread(__a.locals());
-		this.stack = __snapTread(__a.stack());
+		this.locals = __snapTread(__e, __a.locals());
+		this.stack = __snapTread(__e, __a.stack());
 	}
 	
 	/**
@@ -68,7 +73,11 @@ public final class CacheState
 		if (__cv == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Depends
+		int id = __cv.id();
+		if (__cv.isStack())
+			return this.stack.get(id);
+		return this.locals.get(id);
 	}
 	
 	/**
@@ -100,25 +109,42 @@ public final class CacheState
 	@Override
 	public String toString()
 	{
-		return String.format("{stack=%s, locals=%s}", this.stack, this.locals);
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"{stack=%s, locals=%s}", this.stack, this.locals)));
+		
+		return rv;
 	}
 	
 	/**
 	 * Snapshots the specified tread and returns it.
 	 *
+	 * @param __e The translation engine.
 	 * @param __from The tread to copy.
 	 * @return The copied and snapshotted tread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/01
 	 */
-	private static CacheState.Tread __snapTread(ActiveCacheState.Tread __from)
+	private CacheState.Tread __snapTread(TranslationEngine __e,
+		ActiveCacheState.Tread __from)
 		throws NullPointerException
 	{
 		// Check
 		if (__from == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Setup copies of slots
+		int n = __from.size();
+		Slot[] slots = new Slot[n];
+		for (int i = 0; i < n; i++)
+			slots[i] = new Slot(__e, __from.get(i));
+		
+		// Initialize
+		return new Tread(slots);
 	}
 	
 	/**
@@ -129,13 +155,42 @@ public final class CacheState
 	 */
 	public final class Slot
 	{
+		/** Is this the stack? */
+		protected final boolean isstack;
+		
+		/** The index of this slot. */
+		protected final int index;
+		
+		/** The binding for this slot. */
+		protected final Binding binding;
+		
+		/** The type of value stored here. */
+		protected final StackMapType type;
+		
+		/** String representation of this slot. */
+		private volatile Reference<String> _string;
+		
 		/**
 		 * Initializes the slot.
 		 *
+		 * @param __e The translation engine used.
+		 * @param __from The source slot.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot()
+		private Slot(TranslationEngine __e, ActiveCacheState.Slot __from)
+			throws NullPointerException
 		{
+			// Check
+			if (__e == null || __from == null)
+				throw new NullPointerException("NARG");
+			
+			// Copy fields
+			this.isstack = __from.isStack();
+			this.index = __from.index();
+			this.binding = __e.snapshotBinding(
+				__from.<ActiveBinding>binding(ActiveBinding.class));
+			this.type = __from.type();
 		}
 		
 		/**
@@ -154,7 +209,59 @@ public final class CacheState
 			if (__cl == null)
 				throw new NullPointerException("NARG");
 			
-			throw new Error("TODO");
+			return __cl.cast(this.binding);
+		}
+		
+		/**
+		 * Returns the index of this slot.
+		 *
+		 * @return The slot index.
+		 * @since 2017/03/01
+		 */
+		public int index()
+		{
+			return this.index;
+		}
+		
+		/**
+		 * Returns {@code true} if this is a local slot.
+		 *
+		 * @return {@code true} if a local slot.
+		 * @since 2017/03/01
+		 */
+		public boolean isLocal()
+		{
+			return !this.isstack;
+		}
+		
+		/**
+		 * Returns {@code true} if this is a stack slot.
+		 *
+		 * @return {@code true} if a stack slot.
+		 * @since 2017/03/01
+		 */
+		public boolean isStack()
+		{
+			return this.isstack;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/01
+		 */
+		@Override
+		public String toString()
+		{
+			Reference<String> ref = this._string;
+			String rv;
+		
+			// Cache?
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>((rv = String.format(
+					"{%c#%d: type=%s, binding=%s}", (this.isstack ? 'S' : 'L'),
+					this.index, this.type, this.binding)));
+		
+			return rv;
 		}
 	}
 	
@@ -167,15 +274,28 @@ public final class CacheState
 		extends AbstractList<Slot>
 		implements RandomAccess
 	{
+		/** Slots in this tread. */
+		private final Slot[] _slots;
+		
+		/** String representation of this tread. */
+		private volatile Reference<String> _string;
+		
 		/**
 		 * Initializes the tread.
 		 *
-		 * @param __n The number of tread elements.
+		 * @param __s The source slots, this is used directly.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Tread(int __n)
+		private Tread(Slot[] __s)
+			throws NullPointerException
 		{
-			throw new todo.TODO();
+			// Check
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this._slots = __s;
 		}
 		
 		/**
@@ -185,7 +305,7 @@ public final class CacheState
 		@Override
 		public Slot get(int __i)
 		{
-			throw new todo.TODO();
+			return this._slots[__i];
 		}
 		
 		/**
@@ -195,7 +315,24 @@ public final class CacheState
 		@Override
 		public int size()
 		{
-			throw new todo.TODO();
+			return this._slots.length;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/01
+		 */
+		@Override
+		public String toString()
+		{
+			Reference<String> ref = this._string;
+			String rv;
+		
+			// Cache?
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>((rv = super.toString()));
+		
+			return rv;
 		}
 	}
 }
