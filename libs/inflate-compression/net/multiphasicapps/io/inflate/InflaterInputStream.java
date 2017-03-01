@@ -634,8 +634,8 @@ public class InflaterInputStream
 				rv++;
 		}
 		
-		// Determine the number of extra bits
-		// If there are bits to read then read them in
+		// Determine the number of extra bits that make up the distance which
+		// is used as an additional distance value
 		int extrabits = ((__code / 2) - 1);
 		if (extrabits > 0)
 			rv += __readBits(extrabits, false);
@@ -679,16 +679,15 @@ public class InflaterInputStream
 				rv++;
 		}
 		
-		// Calculate the number of extra bits to read
+		// Add extra bits which are used to modify the amount of data read
 		int extrabits = (base / 4) - 1;
-		
-		// Read in those bits, if applicable
 		if (extrabits > 0)
 			rv += __readBits(extrabits, false);
 		
 		// Return the length
 		return rv;
 	}
+	
 	/**
 	 * Obtains the code length tree.
 	 *
