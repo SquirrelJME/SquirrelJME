@@ -31,6 +31,24 @@ class __PNGImageParser__
 	/** The input source. */
 	protected final DataInputStream in;
 	
+	/** Image width. */
+	private volatile int _width;
+	
+	/** Image height. */
+	private volatile int _height;
+	
+	/** The bit depth. */
+	private volatile int _bitdepth;
+	
+	/** The color type. */
+	private volatile int _colortype;
+	
+	/** Is adam7 interlacing being used? */
+	private volatile boolean _adamseven;
+	
+	/** RGB image data. */
+	private volatile int[] _argb;
+	
 	/**
 	 * Initializes the PNG parser.
 	 *
@@ -146,7 +164,61 @@ class __PNGImageParser__
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error EB0y Image has zero or negative width.
+		// (The width)}
+		int width = __in.readInt();
+		if (width <= 0)
+			throw new IOException(String.format("EB0y %d", width));
+		this._width = width;
+		
+		// {@squirreljme.error EB0z Image has zero or negative height. (The
+		// height)}
+		int height = __in.readInt();
+		if (height <= 0)
+			throw new IOException(String.format("EB0z %d", height));
+		this._height = height;
+		
+		// Read the bit depth and the color type
+		int bitdepth = __in.readUnsignedByte(),
+			colortype = __in.readUnsignedByte();
+		
+		// {@squirreljme.error EB12 Invalid PNG bit depth.
+		// (The bit depth)}
+		if (Integer.bitCount(bitdepth) != 1 || bitdepth < 0 || bitdepth > 16)
+			throw new IOException(String.format("EB12 %d", bitdepth));
+		
+		// {@squirreljme.error EB11 Invalid PNG bit depth and color type
+		// combination. (The color type; The bit depth)}
+		if ((bitdepth < 8 && (colortype != 0 && colortype != 3)) ||
+			(bitdepth > 8 && colortype != 3))
+			throw new IOException(String.format("EB11 %d %d", colortype,
+				bitdepth));
+			
+		// Set
+		this._bitdepth = bitdepth;
+		this._colortype = colortype;
+		
+		// {@squirreljme.error EB10 Only deflate compressed PNG images are
+		// supported. (The compression method)}
+		int compressionmethod = __in.readUnsignedByte();
+		if (compressionmethod != 0)
+			throw new IOException(String.format("EB10 %d", compressionmethod));
+		
+		// {@squirreljme.error EB13 Only adapative filtered PNGs are supported.
+		// (The filter type)}
+		int filter = __in.readUnsignedByte();
+		if (filter != 0)
+			throw new IOException(String.format("EB13 %d", filter));
+		
+		// {@squirreljme.error EB14 Unsupported PNG interlace method. (The
+		// interlace type)}
+		int interlace = __in.readUnsignedByte();
+		if (interlace != 0 && interlace != 1)
+			throw new IOException(String.format("EB14 %d", interlace));
+		this._adamseven = (interlace == 1);
+		
+		// Allocate image buffer
+		this._argb = new int[width * height];
 	}
 }
 
