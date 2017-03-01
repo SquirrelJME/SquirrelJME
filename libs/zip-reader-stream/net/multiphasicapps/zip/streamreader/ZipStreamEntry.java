@@ -23,6 +23,8 @@ import net.multiphasicapps.zip.ZipException;
  * This provides an interface to interact with a single entry within a ZIP
  * stream.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/07/19
  */
 public final class ZipStreamEntry
@@ -31,9 +33,6 @@ public final class ZipStreamEntry
 	/** The maximum size the data descriptor can be (if there is one). */
 	private static final int _MAX_DESCRIPTOR_SIZE =
 		16;
-	
-	/** The data lock. */
-	protected final Object lock;
 	
 	/** The owning stream reader. */
 	protected final ZipStreamReader zipreader;
@@ -67,23 +66,21 @@ public final class ZipStreamEntry
 	 * @param __uncomp The uncompressed size.
 	 * @param __method The compression method.
 	 * @param __ins The input data source.
-	 * @param __lock The data lock.
 	 * @throws IOException If the decompressor could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
 	ZipStreamEntry(ZipStreamReader __zsr, String __fn, boolean __undef,
 		int __crc, int __comp, int __uncomp, ZipCompressionType __method,
-		DynamicHistoryInputStream __ins, Object __lock)
+		DynamicHistoryInputStream __ins)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__zsr == null || __fn == null || __method == null ||
-			__ins == null || __lock == null)
+			__ins == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.lock = __lock;
 		this.zipreader = __zsr;
 		this.filename = __fn;
 		this.method = __method;
@@ -108,37 +105,33 @@ public final class ZipStreamEntry
 	public void close()
 		throws IOException
 	{
-		// Lock
-		synchronized (this.lock)
+		if (!this._closed)
 		{
-			if (!this._closed)
-			{
-				// Mark closed
-				this._closed = true;
-				
-				// Read all the remaining bytes
-				while (read() >= 0)
-					;
-				
-				// Calculate the CRC
-				__HigherStream__ higher = this._higher;
-				higher.flush();
-				
-				// Close the higher end
-				this._higher.close();
-				
-				// {@squirreljme.error BG03 The expected CRC and the actual
-				// CRC do not match, the data is corrupt. (The expected CRC;
-				// The actual CRC)}
-				int wantcrc, wascrc;
-				if ((wantcrc = this._wantcrc) !=
-					(wascrc = higher.crccalc.crc()))
-					throw new ZipException(String.format("BG03 %08x %08x",
-						wantcrc, wascrc));
-				
-				// Clear it
-				this.zipreader.__closeEntry(this);
-			}
+			// Mark closed
+			this._closed = true;
+			
+			// Read all the remaining bytes
+			while (read() >= 0)
+				;
+			
+			// Calculate the CRC
+			__HigherStream__ higher = this._higher;
+			higher.flush();
+			
+			// Close the higher end
+			this._higher.close();
+			
+			// {@squirreljme.error BG03 The expected CRC and the actual
+			// CRC do not match, the data is corrupt. (The expected CRC;
+			// The actual CRC)}
+			int wantcrc, wascrc;
+			if ((wantcrc = this._wantcrc) !=
+				(wascrc = higher.crccalc.crc()))
+				throw new ZipException(String.format("BG03 %08x %08x",
+					wantcrc, wascrc));
+			
+			// Clear it
+			this.zipreader.__closeEntry(this);
 		}
 	}
 	
@@ -172,11 +165,7 @@ public final class ZipStreamEntry
 	public int read()
 		throws IOException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			return this._higher.read();
-		}
+		return this._higher.read();
 	}
 	
 	/**
@@ -194,11 +183,7 @@ public final class ZipStreamEntry
 		if (__o < 0 || __l < 0 || (__o + __l) > n)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			return this._higher.read(__b, __o, __l);
-		}
+		return this._higher.read(__b, __o, __l);
 	}
 	
 	/**
@@ -211,10 +196,6 @@ public final class ZipStreamEntry
 		extends InputStream
 		implements Flushable
 	{
-		/** Lock. */
-		protected final Object lock =
-			ZipStreamEntry.this.lock;
-		
 		/** CRC calculation. */
 		protected final CRC32Calculator crccalc =
 			new CRC32Calculator(ZipCRCConstants.CRC_REFLECT_DATA,
@@ -277,27 +258,24 @@ public final class ZipStreamEntry
 		public final void close()
 			throws IOException
 		{
-			// Lock
 			InputStream input = this.input;
-			synchronized (this.lock)
+			
+			// Handle closing by reading the rest of the stream
+			if (!this._closed)
 			{
-				// Handle closing by reading the rest of the stream
-				if (!this._closed)
-				{
-					// Do not do it again
-					this._closed = true;
-					
-					// Read until EOF
-					while (read() >= 0)
-						;
-					
-					// Close the lower stream
-					ZipStreamEntry.this._lower.close();
-				}
+				// Do not do it again
+				this._closed = true;
 				
-				// Close the input
-				input.close();
+				// Read until EOF
+				while (read() >= 0)
+					;
+				
+				// Close the lower stream
+				ZipStreamEntry.this._lower.close();
 			}
+			
+			// Close the input
+			input.close();
 		}
 		
 		/**
@@ -318,36 +296,33 @@ public final class ZipStreamEntry
 		public final int read()
 			throws IOException
 		{
-			// Lock
 			InputStream input = this.input;
-			synchronized (this.lock)
+			
+			// if EOF read, read nothing
+			if (this._eof)
+				return -1;
+			
+			// Read a single byte from the input
+			int rv = input.read();
+			
+			// EOF?
+			if (rv < 0)
 			{
-				// if EOF read, read nothing
-				if (this._eof)
-					return -1;
-				
-				// Read a single byte from the input
-				int rv = input.read();
-				
-				// EOF?
-				if (rv < 0)
-				{
-					// Tell lower stream that EOF was reached in the data
-					if (!this._eof)
-					{	
-						this._eof = true;
-						ZipStreamEntry.this._lower.__eof();
-					}
-					
-					// EOF
-					return -1;
+				// Tell lower stream that EOF was reached in the data
+				if (!this._eof)
+				{	
+					this._eof = true;
+					ZipStreamEntry.this._lower.__eof();
 				}
 				
-				// Calculate CRC
-				crccalc.offer((byte)rv);
-				this._size += 1;
-				return rv;
+				// EOF
+				return -1;
 			}
+			
+			// Calculate CRC
+			crccalc.offer((byte)rv);
+			this._size += 1;
+			return rv;
 		}
 		
 		/**
@@ -365,25 +340,22 @@ public final class ZipStreamEntry
 			if (__o < 0 || __l < 0 || (__o + __l) > n)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			// Lock
 			InputStream input = this.input;
-			synchronized (this.lock)
+			
+			// Read bytes from the input
+			int rc = input.read(__b, __o, __l);
+			
+			// EOF?
+			if (rc < 0)
 			{
-				// Read bytes from the input
-				int rc = input.read(__b, __o, __l);
-				
-				// EOF?
-				if (rc < 0)
-				{
-					ZipStreamEntry.this._lower.__eof();
-					return -1;
-				}
-				
-				// Calculate CRC
-				crccalc.offer(__b, __o, rc);
-				this._size += rc;
-				return rc;
+				ZipStreamEntry.this._lower.__eof();
+				return -1;
 			}
+			
+			// Calculate CRC
+			crccalc.offer(__b, __o, rc);
+			this._size += rc;
+			return rc;
 		}
 	}
 	
@@ -395,10 +367,6 @@ public final class ZipStreamEntry
 	private final class __LowerStream__
 		extends InputStream
 	{
-		/** Lock. */
-		protected final Object lock =
-			ZipStreamEntry.this.lock;
-		
 		/** The input source for bytes (and where to detect EOF). */
 		protected final DynamicHistoryInputStream input;
 		
@@ -459,31 +427,27 @@ public final class ZipStreamEntry
 		public final void close()
 			throws IOException
 		{
-			// Lock
-			synchronized (this.lock)
+			// If not closed, seek to the end
+			if (!this._closed)
 			{
-				// If not closed, seek to the end
-				if (!this._closed)
+				// Mark closed
+				this._closed = true;
+				
+				// Seek to the end
+				byte[] descbuf = this._descbuf;
+				if (descbuf == null)
+					descbuf = new byte[64];
+				for (;;)
 				{
-					// Mark closed
-					this._closed = true;
+					int rc = read(descbuf);
 					
-					// Seek to the end
-					byte[] descbuf = this._descbuf;
-					if (descbuf == null)
-						descbuf = new byte[64];
-					for (;;)
-					{
-						int rc = read(descbuf);
-						
-						// EOF reached
-						if (rc < 0)
-							break;
-					}
-					
-					// Call upper close
-					ZipStreamEntry.this.close();
+					// EOF reached
+					if (rc < 0)
+						break;
 				}
+				
+				// Call upper close
+				ZipStreamEntry.this.close();
 			}
 		}
 		
@@ -495,81 +459,77 @@ public final class ZipStreamEntry
 		public final int read()
 			throws IOException
 		{
-			// Lock
-			synchronized (this.lock)
+			// Higher stream EOFed
+			if (this._eof)
+				return -1;
+			
+			// Undefined size, have to guess
+			if (this.undefined)
 			{
-				// Higher stream EOFed
-				if (this._eof)
+				int count = this._count;
+				byte[] descbuf = this._descbuf;
+				DynamicHistoryInputStream input = this.input;
+				
+				// Read ahead to detect the descriptor
+				int act = input.peek(0, descbuf);
+				
+				// {@squirreljme.error BG04 Truncated ZIP file.}
+				if (act < _MAX_DESCRIPTOR_SIZE)
+					throw new ZipException("BG04");
+				
+				// Is this the descriptor magic number? If so then stop
+				// if the current read number of bytes matches the current
+				// size.
+				if (ZipStreamReader.__readInt(descbuf, 0) == 0x08074B50)
+					if (ZipStreamReader.__readInt(descbuf, 8) == count)
+					{
+						// Read the desired CRC
+						ZipStreamEntry.this._wantcrc =
+							ZipStreamReader.__readInt(descbuf, 4);
+						
+						// No more bytes left
+						this._eof = true;
+						return -1;
+					}
+				
+				// Read normal byte otherwise
+				int rv = input.read();
+				
+				// {@squirreljme.error BG05 Expected a byte and not EOF
+				// while reading an unknown size compressed entry.}
+				if (rv < 0)
+					throw new ZipException("BG05");
+				
+				// Increase count
+				this._count = count + 1;
+				
+				// Return
+				return rv;
+			}
+			
+			// Size is known
+			else
+			{
+				// Get current count
+				int count = this._count;
+				
+				// Reached end?
+				if (count >= this.compressedsize)
 					return -1;
 				
-				// Undefined size, have to guess
-				if (this.undefined)
-				{
-					int count = this._count;
-					byte[] descbuf = this._descbuf;
-					DynamicHistoryInputStream input = this.input;
-					
-					// Read ahead to detect the descriptor
-					int act = input.peek(0, descbuf);
-					
-					// {@squirreljme.error BG04 Truncated ZIP file.}
-					if (act < _MAX_DESCRIPTOR_SIZE)
-						throw new ZipException("BG04");
-					
-					// Is this the descriptor magic number? If so then stop
-					// if the current read number of bytes matches the current
-					// size.
-					if (ZipStreamReader.__readInt(descbuf, 0) == 0x08074B50)
-						if (ZipStreamReader.__readInt(descbuf, 8) == count)
-						{
-							// Read the desired CRC
-							ZipStreamEntry.this._wantcrc =
-								ZipStreamReader.__readInt(descbuf, 4);
-							
-							// No more bytes left
-							this._eof = true;
-							return -1;
-						}
-					
-					// Read normal byte otherwise
-					int rv = input.read();
-					
-					// {@squirreljme.error BG05 Expected a byte and not EOF
-					// while reading an unknown size compressed entry.}
-					if (rv < 0)
-						throw new ZipException("BG05");
-					
-					// Increase count
-					this._count = count + 1;
-					
-					// Return
-					return rv;
-				}
+				// Read otherwise
+				int rv = this.input.read();
 				
-				// Size is known
-				else
-				{
-					// Get current count
-					int count = this._count;
-					
-					// Reached end?
-					if (count >= this.compressedsize)
-						return -1;
-					
-					// Read otherwise
-					int rv = this.input.read();
-					
-					// {@squirreljme.error BG02 Expected a byte and not EOF
-					// while reading compressed entry data.}
-					if (rv < 0)
-						throw new ZipException("BG02");
-					
-					// Increase count
-					this._count = count + 1;
-					
-					// Return it
-					return rv;
-				}
+				// {@squirreljme.error BG02 Expected a byte and not EOF
+				// while reading compressed entry data.}
+				if (rv < 0)
+					throw new ZipException("BG02");
+				
+				// Increase count
+				this._count = count + 1;
+				
+				// Return it
+				return rv;
 			}
 		}
 		
@@ -588,31 +548,27 @@ public final class ZipStreamEntry
 			if (__o < 0 || __l < 0 || (__o + __l) > n)
 				throw new IndexOutOfBoundsException("IOOB"); 
 			
-			// Lock
-			synchronized (this.lock)
+			// Higher stream EOFed
+			if (this._eof)
+				return -1;	
+			
+			// For simplicity, use single byte read because the end may
+			// either be defined or undefined
+			int c = 0;
+			for (int i = 0, o = __o; i < __l; i++, o++)
 			{
-				// Higher stream EOFed
-				if (this._eof)
-					return -1;	
+				int v = read();
 				
-				// For simplicity, use single byte read because the end may
-				// either be defined or undefined
-				int c = 0;
-				for (int i = 0, o = __o; i < __l; i++, o++)
-				{
-					int v = read();
-					
-					// EOF?
-					if (v < 0)
-						break;
-					
-					__b[o] = (byte)v;
-					c++;
-				}
+				// EOF?
+				if (v < 0)
+					break;
 				
-				// Return the read count
-				return c;
+				__b[o] = (byte)v;
+				c++;
 			}
+			
+			// Return the read count
+			return c;
 		}
 		
 		/**
@@ -623,10 +579,7 @@ public final class ZipStreamEntry
 		 */
 		final void __eof()
 		{
-			synchronized (this.lock)
-			{
-				this._eof = true;
-			}
+			this._eof = true;
 		}
 	}
 }

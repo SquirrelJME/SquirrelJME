@@ -29,6 +29,8 @@ import net.multiphasicapps.zip.ZipException;
  * specified for entries then they must have the optional descriptor magic
  * number included.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/07/19
  */
 public class ZipStreamReader
@@ -45,10 +47,6 @@ public class ZipStreamReader
 	/** The local header magic number. */
 	private static final int _LOCAL_HEADER_MAGIC =
 		0x04034B50;
-	
-	/** Lock. */
-	protected final Object lock =
-		new Object();
 	
 	/** The dynamic history stream. */
 	protected final DynamicHistoryInputStream input;
@@ -99,16 +97,12 @@ public class ZipStreamReader
 	public void close()
 		throws IOException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Mark EOF
-			this._eof = true;
-			
-			// Close the source
-			this.input.close();
-			this.data.close();
-		}
+		// Mark EOF
+		this._eof = true;
+		
+		// Close the source
+		this.input.close();
+		this.data.close();
 	}
 	
 	/**
@@ -136,175 +130,171 @@ public class ZipStreamReader
 	public ZipStreamEntry nextEntry()
 		throws IOException
 	{
-		// Lock
-		synchronized (this.lock)
+		// {@squirreljme.error BG01 An entry is currently being read, it
+		// must first be closed.}
+		if (this._entry != null)
+			throw new IOException("BG01");
+		
+		// End of file reached?
+		if (this._eof)
+			return null;
+		
+		// Read until an entry is found
+		DynamicHistoryInputStream input = this.input;
+		ExtendedDataInputStream data = this.data;
+		byte[] localheader = this._localheader;
+		for (; !this._eof;)
 		{
-			// {@squirreljme.error BG01 An entry is currently being read, it
-			// must first be closed.}
-			if (this._entry != null)
-				throw new IOException("BG01");
-			
-			// End of file reached?
-			if (this._eof)
-				return null;
-			
-			// Read until an entry is found
-			DynamicHistoryInputStream input = this.input;
-			ExtendedDataInputStream data = this.data;
-			byte[] localheader = this._localheader;
-			for (; !this._eof;)
+			// Peek the magic number
+			int rhcount = input.peek(0, localheader, 0, 4);
+		
+			// Could not fit the magic number, treat as EOF
+			if (rhcount < 4)
 			{
-				// Peek the magic number
-				int rhcount = input.peek(0, localheader, 0, 4);
+				this._eof = true;
+				return null;
+			}
+		
+			// Does not match the magic number for local headers
+			int lhskip = __skipLocalHeader(localheader);
 			
-				// Could not fit the magic number, treat as EOF
-				if (rhcount < 4)
+			// Not one
+			if (lhskip > 0)
+			{
+				// Read
+				try
+				{
+					data.readFully(localheader, 0, lhskip);
+				}
+				
+				// End of file
+				catch (EOFException e)
 				{
 					this._eof = true;
-					return null;
-				}
-			
-				// Does not match the magic number for local headers
-				int lhskip = __skipLocalHeader(localheader);
-				
-				// Not one
-				if (lhskip > 0)
-				{
-					// Read
-					try
-					{
-						data.readFully(localheader, 0, lhskip);
-					}
-					
-					// End of file
-					catch (EOFException e)
-					{
-						this._eof = true;
-					}
-					
-					// Return null on the next loop
-					continue;
 				}
 				
-				// Read the rest of the header
-				rhcount = input.peek(0, localheader);
-				
-				// EOF reached (cannot fit a local header in this many bytes)
-				// Ignore the somewhat malformed ZIP since it could be part of
-				// another file structure due to polyglots
-				if (rhcount < _MINIMUM_HEADER_SIZE)
-				{
-					this._eof = true;
-					return null;
-				}
-				
-				// Deferred exception?
-				ZipException defer = null;
-				
-				// Check the version needed for extracting
-				int xver = __readUnsignedShort(localheader, 4);
-				boolean deny = false;
-				deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
-				
-				// {@squirreljme.error BG07 Zip version not suppored. (The
-				// version)}
-				if (defer == null && deny)
-					defer = new ZipException(String.format("BG07 %d",
-						xver));
-				
-				// Read bit flags
-				int gpfs = __readUnsignedShort(localheader, 6);
-				boolean utf = (0 != (gpfs & (1 << 11)));
-				boolean undefinedsize = (0 != (gpfs & (1 << 3)));
-				
-				// Cannot read encrypted entries
-				deny |= (0 != (gpfs & 1));
-				
-				// {@squirreljme.error BG08 Encrypted entries not supported.}
-				if (defer == null && deny)
-					defer = new ZipException("BG08");
-				
-				// Read the compression method
-				ZipCompressionType cmeth = ZipCompressionType.forMethod(
-					__readUnsignedShort(localheader, 8));
-				deny |= (cmeth == null);
-				
-				// {@squirreljme.error BG09 Compression method not supported.
-				// (The method)}
-				if (defer == null && deny)
-					defer = new ZipException(String.format("BG09 %d", cmeth));
-				
-				// Read CRC32
-				int crc = __readInt(localheader, 14);
-				
-				// Read Compressed size
-				int csz = __readInt(localheader, 18);
-				if (!undefinedsize)
-					deny |= (csz < 0);
-				
-				// Uncompressed size
-				int usz = __readInt(localheader, 22);
-				if (!undefinedsize)
-					deny |= (usz < 0);
-				
-				// {@squirreljme.error BG0a Entry exceeds 2GiB in size.
-				// (The compressed size; The uncompressed size)}
-				if (defer == null && deny)
-					defer = new ZipException(String.format("BG0a %d %d", csz,
-						usz));
-				
-				// File name length
-				int fnl = __readUnsignedShort(localheader, 26);
-				
-				// Comment length
-				int cml = __readUnsignedShort(localheader, 28);
-				
-				// If denying, read a single byte and try again, this could
-				// just be very ZIP-like data or the local header number could
-				// be a constant in an executable.
-				if (deny)
-				{
-					// Defer the issue, if set
-					if (defer != null)
-						this._defer = defer;
-					
-					// Skip 4 bytes because the header was already read
-					this.data.readFully(localheader, 0, 4);
-					continue;
-				}
-				
-				// Read the local header normally to consume it
-				data.readFully(localheader);
-				
-				// Read the file name, if EOF was reached then ignore
-				byte[] rawname = new byte[fnl];
-				data.readFully(rawname);
-				
-				// If UTF-8 then use internal handling
-				String filename;
-				if (utf)
-					filename = new String(rawname, 0, fnl, "utf-8");
-			
-				// Otherwise use codepage handling, Java ME only has two
-				// character sets available
-				else
-					filename = IBM437CodePage.toString(rawname, 0, fnl);
-				
-				// Skip the comment
-				data.readFully(localheader, 0, Math.min(cml,
-					_MINIMUM_HEADER_SIZE));
-				
-				// Create entry so the data can actually be used
-				ZipStreamEntry rv = new ZipStreamEntry(this, filename,
-					undefinedsize, crc, csz, usz, cmeth, input, this.lock);
-				this._entry = rv;
-				return rv;
+				// Return null on the next loop
+				continue;
 			}
 			
-			// No entry
-			this._eof = true;
-			return null;
+			// Read the rest of the header
+			rhcount = input.peek(0, localheader);
+			
+			// EOF reached (cannot fit a local header in this many bytes)
+			// Ignore the somewhat malformed ZIP since it could be part of
+			// another file structure due to polyglots
+			if (rhcount < _MINIMUM_HEADER_SIZE)
+			{
+				this._eof = true;
+				return null;
+			}
+			
+			// Deferred exception?
+			ZipException defer = null;
+			
+			// Check the version needed for extracting
+			int xver = __readUnsignedShort(localheader, 4);
+			boolean deny = false;
+			deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
+			
+			// {@squirreljme.error BG07 Zip version not suppored. (The
+			// version)}
+			if (defer == null && deny)
+				defer = new ZipException(String.format("BG07 %d",
+					xver));
+			
+			// Read bit flags
+			int gpfs = __readUnsignedShort(localheader, 6);
+			boolean utf = (0 != (gpfs & (1 << 11)));
+			boolean undefinedsize = (0 != (gpfs & (1 << 3)));
+			
+			// Cannot read encrypted entries
+			deny |= (0 != (gpfs & 1));
+			
+			// {@squirreljme.error BG08 Encrypted entries not supported.}
+			if (defer == null && deny)
+				defer = new ZipException("BG08");
+			
+			// Read the compression method
+			ZipCompressionType cmeth = ZipCompressionType.forMethod(
+				__readUnsignedShort(localheader, 8));
+			deny |= (cmeth == null);
+			
+			// {@squirreljme.error BG09 Compression method not supported.
+			// (The method)}
+			if (defer == null && deny)
+				defer = new ZipException(String.format("BG09 %d", cmeth));
+			
+			// Read CRC32
+			int crc = __readInt(localheader, 14);
+			
+			// Read Compressed size
+			int csz = __readInt(localheader, 18);
+			if (!undefinedsize)
+				deny |= (csz < 0);
+			
+			// Uncompressed size
+			int usz = __readInt(localheader, 22);
+			if (!undefinedsize)
+				deny |= (usz < 0);
+			
+			// {@squirreljme.error BG0a Entry exceeds 2GiB in size.
+			// (The compressed size; The uncompressed size)}
+			if (defer == null && deny)
+				defer = new ZipException(String.format("BG0a %d %d", csz,
+					usz));
+			
+			// File name length
+			int fnl = __readUnsignedShort(localheader, 26);
+			
+			// Comment length
+			int cml = __readUnsignedShort(localheader, 28);
+			
+			// If denying, read a single byte and try again, this could
+			// just be very ZIP-like data or the local header number could
+			// be a constant in an executable.
+			if (deny)
+			{
+				// Defer the issue, if set
+				if (defer != null)
+					this._defer = defer;
+				
+				// Skip 4 bytes because the header was already read
+				this.data.readFully(localheader, 0, 4);
+				continue;
+			}
+			
+			// Read the local header normally to consume it
+			data.readFully(localheader);
+			
+			// Read the file name, if EOF was reached then ignore
+			byte[] rawname = new byte[fnl];
+			data.readFully(rawname);
+			
+			// If UTF-8 then use internal handling
+			String filename;
+			if (utf)
+				filename = new String(rawname, 0, fnl, "utf-8");
+		
+			// Otherwise use codepage handling, Java ME only has two
+			// character sets available
+			else
+				filename = IBM437CodePage.toString(rawname, 0, fnl);
+			
+			// Skip the comment
+			data.readFully(localheader, 0, Math.min(cml,
+				_MINIMUM_HEADER_SIZE));
+			
+			// Create entry so the data can actually be used
+			ZipStreamEntry rv = new ZipStreamEntry(this, filename,
+				undefinedsize, crc, csz, usz, cmeth, input);
+			this._entry = rv;
+			return rv;
 		}
+		
+		// No entry
+		this._eof = true;
+		return null;
 	}
 	
 	/**
@@ -322,16 +312,12 @@ public class ZipStreamReader
 		if (__ent == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BG06 Close of an incorrect entry.}
-			if (this._entry != __ent)
-				throw new IOException("BG06");
-			
-			// Clear it
-			this._entry = null;
-		}
+		// {@squirreljme.error BG06 Close of an incorrect entry.}
+		if (this._entry != __ent)
+			throw new IOException("BG06");
+		
+		// Clear it
+		this._entry = null;
 	}
 	
 	/**
