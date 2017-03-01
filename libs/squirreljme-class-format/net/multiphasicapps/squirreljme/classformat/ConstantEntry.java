@@ -85,8 +85,8 @@ public final class ConstantEntry
 		// {@squirreljme.error AY0b No constant pool entry was defined at
 		// this position. (The index; The expected type)}
 		if (rv == null)
-			throw new ClassFormatException(String.format("AY0b %d %s", this.index,
-				__cl));
+			throw new ClassFormatException(String.format("AY0b %d %s",
+				this.index, __cl));
 		
 		// Ok
 		return rv;
@@ -207,8 +207,8 @@ public final class ConstantEntry
 					// pool entry information because its tag data relation is
 					// not known. (The index; The tag type)}
 				default:
-					throw new ClassFormatException(String.format("AY0f %d %d", mydx,
-						tag));
+					throw new ClassFormatException(String.format("AY0f %d %d",
+						mydx, tag));
 			}
 			
 			// {@squirreljme.error AY0g The field data was never translated
@@ -224,8 +224,8 @@ public final class ConstantEntry
 		// the expected class type. (The index; The expected type; The type
 		// that it was)}
 		if (!__cl.isInstance(raw))
-			throw new ClassFormatException(String.format("AY0e %d %s", mydx, __cl,
-				raw.getClass()));
+			throw new ClassFormatException(String.format("AY0e %d %s", mydx,
+				__cl, raw.getClass()));
 		
 		// Activate?
 		if (__act && this._actdx < 0)

@@ -109,9 +109,28 @@ class __FieldDecoder__
 				if (this._fieldcv != null)
 					throw new ClassFormatException("AY0c");
 				
-				if (true)
-					throw new todo.TODO();
+				// Read from the constant pool
+				ConstantPool pool = this.pool;
+				Object val = pool.get(__is.readUnsignedShort()).<Object>get(
+					true, Object.class);
 				
+				// {@squirreljme.error AY14 No constant value was specified
+				// for the field.}
+				if (val == null)
+					throw new ClassFormatException("AY14");
+				
+				// {@squirreljme.error AY1a Illegal constant value type.
+				// (The class type)}
+				if (!(val instanceof String) &&
+					!(val instanceof Integer) &&
+					!(val instanceof Long) &&
+					!(val instanceof Float) &&
+					!(val instanceof Double))
+					throw new ClassFormatException(String.format("AY1a %s",
+						val.getClass()));
+				
+				// Set
+				this._fieldcv = val;
 				return;
 			
 				// Unknown
