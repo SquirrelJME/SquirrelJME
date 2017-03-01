@@ -52,6 +52,7 @@ public class Main
 		
 		// Open all files and dump entries
 		byte[] buf = new byte[512];
+		String lastentry = null;
 		try (ZipBlockReader zsr = new ZipBlockReader(
 			new FileChannelBlockAccessor(FileChannel.open(Paths.get(__args[0]),
 			StandardOpenOption.READ))))
@@ -64,6 +65,7 @@ public class Main
 				if (!filter.isEmpty() && filter.contains(name))
 					continue;
 				System.out.printf("> Dumping `%s`...%n", name);
+				lastentry = name;
 				
 				// Read it
 				try (InputStream in = entry.open())
@@ -89,10 +91,11 @@ public class Main
 		}
 	
 		// {@squirreljme.error AX01 Failed to properly read the specified
-		// file. (The file name)}
+		// file. (The file name; The last entry read)}
 		catch (IOException e)
 		{
-			throw new RuntimeException(String.format("AX01 %s", __args[0]), e);
+			throw new RuntimeException(String.format("AX01 %s %s", __args[0],
+				lastentry), e);
 		}
 	}
 }
