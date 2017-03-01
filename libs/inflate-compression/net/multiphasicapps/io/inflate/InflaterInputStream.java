@@ -711,6 +711,8 @@ public class InflaterInputStream
 			this._codelentree = new WeakReference<>(
 				(rv = new HuffmanTreeInt()));
 		
+		// Clear before return
+		rv.clear();
 		return rv;
 	}
 	
@@ -729,6 +731,8 @@ public class InflaterInputStream
 			this._distancetree = new WeakReference<>(
 				(rv = new HuffmanTreeInt()));
 		
+		// Clear before return
+		rv.clear();
 		return rv;
 	}
 	
@@ -747,6 +751,8 @@ public class InflaterInputStream
 			this._literaltree = new WeakReference<>(
 				(rv = new HuffmanTreeInt()));
 		
+		// Clear before return
+		rv.clear();
 		return rv;
 	}
 	
