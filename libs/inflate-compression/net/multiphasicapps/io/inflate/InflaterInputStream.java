@@ -402,8 +402,10 @@ public class InflaterInputStream
 		int maxbits = __cltree.maximumBits();
 		int total = __dhlit + __dhdist;
 		
-		// Cached
+		// Cached, erase the data because later reads may have less
 		int[] rawlitdistlens = this._rawlitdistlens;
+		for (int i = 0, n = rawlitdistlens.length; i < n; i++)
+			rawlitdistlens[i] = 0;
 		
 		// Read every code
 		try
@@ -1000,22 +1002,19 @@ public class InflaterInputStream
 		// Setup target tree
 		__tree.clear();
 		
-		// The number of lengths
-		int n = __l;
-		
 		// Obtain the number of bits that are available in all of the input
 		// lengths
 		int maxbits = 0;
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < __l; i++)
 		{
 			int v = __lens[__o + i];
 			if (v > maxbits)
 				maxbits = v;
-			}
+		}
 		
 		// Determine the bitlength count for all of the inputs
-		int[] bl_count = new int[n];
-		for (int i = 0; i < n; i++)
+		int[] bl_count = new int[__l];
+		for (int i = 0; i < __l; i++)
 			bl_count[__lens[__o + i]]++;
 		
 		// Find the numerical value of the smallest code for each code
@@ -1030,7 +1029,7 @@ public class InflaterInputStream
 		}
 	
 		// Assign values to all codes
-		for (int q = 0; q < n; q++)
+		for (int q = 0; q < __l; q++)
 		{
 			// Get length
 			int len = __lens[__o + q];
