@@ -443,9 +443,15 @@ public class InflaterInputStream
 		if (__dhclen > 19)
 			throw new IOException(String.format("BY07 %d", __dhclen));
 		
+		// The same array is used for reading code lengths but the next time
+		// around it is possible that less code lengths are read, so if the
+		// higher elements have previously been set they will be used
+		int[] rawcodelens = this._rawcodelens;
+		for (int i = 0, n = rawcodelens.length; i < n; i++)
+			rawcodelens[i] = 0;
+		
 		// Read lengths, they are just 3 bits but their placement values are
 		// shuffled since some sequences are more common than others
-		int[] rawcodelens = this._rawcodelens;
 		int[] hsbits = _SHUFFLE_BITS;
 		for (int next = 0; next < __dhclen; next++)
 			rawcodelens[hsbits[next]] = __readBits(3, false);
