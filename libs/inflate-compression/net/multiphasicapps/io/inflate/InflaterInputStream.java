@@ -399,7 +399,6 @@ public class InflaterInputStream
 		throws IOException
 	{
 		// Determine the maximum bit count that is used when reading values
-		int maxbits = __cltree.maximumBits();
 		int total = __dhlit + __dhdist;
 		
 		// Cached, erase the data because later reads may have less
