@@ -25,6 +25,7 @@ fi
 # Determine project name, if possible
 __file="$1"
 __proj="$(basename "$__file" .jar)"
+shift 1
 
 # Build these projects because they are standard and may be relied upon
 for __maybe in midp-lcdui meep-rms squirreljme-rms-file media-api
@@ -69,8 +70,19 @@ __gen_classpath()
 	echo "$__rv"
 }
 
+# The file to run
+if [ -f "$__file" ]
+then
+	__run="$__file"
+elif [ -f "bins/$__proj.jar" ]
+then
+	__run="bins/$__proj.jar"
+else
+	__run="$__file"
+fi
+
 # Run the JVM with the bootstrap followed
-java -classpath "$(__gen_classpath "$__file")" \
-	net.multiphasicapps.squirreljme.build.host.javase.HostedLaunch $*
+java -classpath "$(__gen_classpath "$__run")" \
+	net.multiphasicapps.squirreljme.build.host.javase.HostedLaunch "$__run" $*
 exit $?
 
