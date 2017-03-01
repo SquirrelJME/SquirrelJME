@@ -172,7 +172,9 @@ public class HexDumpOutputStream
 			this._at = at;
 			
 			// Send to the output
-			this.pipe.write(__b);
+			OutputStream pipe = this.pipe;
+			if (pipe != null)
+				pipe.write(__b);
 		}
 		
 		// Check if a row is to be printed
