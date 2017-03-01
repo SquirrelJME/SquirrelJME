@@ -502,11 +502,9 @@ public class InflaterInputStream
 	{
 		// Throw out bits that have been read so that the following reads are
 		// aligned to byte boundaries
-		System.err.printf("DEBUG -- Mini was %d%n", this._minisize);
 		int minisub = this._minisize & 7;
 		if (minisub > 0)
 			__readBits(minisub, false);
-		System.err.printf("DEBUG -- Mini now %d%n", this._minisize);
 		
 		// Read length and the one's complement of it
 		int len = __readBits(16, false);
