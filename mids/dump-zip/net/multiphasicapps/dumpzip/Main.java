@@ -12,6 +12,7 @@ package net.multiphasicapps.dumpzip;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
@@ -64,7 +65,7 @@ public class Main
 						{
 							for (;;)
 							{
-								int rc = os.read(buf);
+								int rc = entry.read(buf);
 							
 								// EOF?
 								if (rc < 0)
