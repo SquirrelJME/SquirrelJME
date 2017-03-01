@@ -12,12 +12,15 @@ package javax.microedition.lcdui;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.crc32.CRC32Calculator;
+import net.multiphasicapps.io.region.SizeLimitedInputStream;
 
 /**
  * This class parses PNG images.
  *
  * PNG specifications:
  * {@link http://www.libpng.org/pub/png/pngdocs.html}
+ * {@link http://www.libpng.org/pub/png/spec/iso/index-object.html}
  * {@link https://www.w3.org/TR/PNG/}
  * {@link https://tools.ietf.org/html/rfc2083}
  *
@@ -56,6 +59,69 @@ class __PNGImageParser__
 		throws IOException
 	{
 		DataInputStream in = this.in;
+		
+		// {@squirreljme.error EB0w Illegal PNG magic number.}
+		if (in.readUnsignedByte() != 80 ||
+			in.readUnsignedByte() != 78 ||
+			in.readUnsignedByte() != 71 ||
+			in.readUnsignedByte() != 13 ||
+			in.readUnsignedByte() != 10 ||
+			in.readUnsignedByte() != 26 ||
+			in.readUnsignedByte() != 10)
+			throw new IOException("EB0w");
+		
+		// Keep reading chunks in the file
+		for (;;)
+		{
+			// {@squirreljme.erorr EB0x Length of chunk is negative.}
+			int len = in.readInt();
+			if (len < 0)
+				throw new IOException("EB0x");
+			
+			// Setup data stream for reading packet data, do not propogate
+			// close
+			CRC32Calculator crc = new CRC32Calculator(true, true, 0x04C11DB7,
+				0xFFFFFFFF, 0xFFFFFFFF);
+			try (DataInputStream data = new DataInputStream(
+				new __PNGCRCInputStream__(crc, new SizeLimitedInputStream(
+				in, len + 4, true, false))))
+			{
+				// Read the packet type
+				int type = data.readInt();
+				
+				// End of PNG, stop processing
+				if (type == 0x49454E44)
+					break;
+				
+				// Depends on the type
+				switch (type)
+				{
+						// Header
+					case 0x49484452:
+						throw new todo.TODO();
+						
+						// Palette
+					case 0x504c5445:
+						throw new todo.TODO();
+						
+						// Image data
+					case 0x49444154:
+						throw new todo.TODO();
+					
+						// Unknown, ignore
+					default:
+						break;
+				}
+			}
+			
+			// {@squirreljme.error EB0x CRC mismatch in PNG data chunk.
+			// (Desired CRC; Actual CRC)}
+			int want = in.readInt(),
+				real = crc.crc();
+			if (want != real)
+				throw new IOException(String.format("EB0x %08x %08x",
+					want, real));
+		}
 		
 		throw new todo.TODO();
 	}
