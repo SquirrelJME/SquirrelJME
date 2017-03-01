@@ -18,7 +18,11 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
+import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -38,52 +42,58 @@ public class Main
 	public static void main(String... __args)
 	{
 		// Do nothing
-		if (__args == null || __args.length <= 0)
+		if (__args == null)
 			return;
+		
+		// Filter files?
+		Set<String> filter = new HashSet<>();
+		for (int i = 1, n = __args.length; i < n; i++)
+			filter.add(__args[i]);
 		
 		// Open all files and dump entries
 		byte[] buf = new byte[512];
-		for (String arg : __args)
-			try (ZipStreamReader zsr = new ZipStreamReader(
-				Channels.newInputStream(FileChannel.open(Paths.get(arg),
-				StandardOpenOption.READ))))
+		try (ZipBlockReader zsr = new ZipBlockReader(
+			new FileChannelBlockAccessor(FileChannel.open(Paths.get(__args[0]),
+			StandardOpenOption.READ))))
+		{
+			// Go through all entries
+			for (ZipBlockEntry entry : zsr)
 			{
-				// Dump all entries
-				for (;;)
-					try (ZipStreamEntry entry = zsr.nextEntry())
+				// Filtered?
+				String name = entry.name();
+				if (!filter.isEmpty() && filter.contains(name))
+					continue;
+				System.out.printf("> Dumping `%s`...%n", name);
+				
+				// Read it
+				try (InputStream in = entry.open())
+				{
+					// Dump bytes
+					try (OutputStream os = new HexDumpOutputStream(
+						System.out))
 					{
-						// No more?
-						if (entry == null)
-							break;
-						
-						// Note it
-						System.out.printf("> Dumping `%s`...%n", entry.name());
-						
-						// Dump bytes
-						try (OutputStream os = new HexDumpOutputStream(
-							System.out))
+						for (;;)
 						{
-							for (;;)
-							{
-								int rc = entry.read(buf);
+							int rc = in.read(buf);
+						
+							// EOF?
+							if (rc < 0)
+								break;
 							
-								// EOF?
-								if (rc < 0)
-									break;
-								
-								// Dump
-								os.write(buf, 0, rc);
-							}
+							// Dump
+							os.write(buf, 0, rc);
 						}
 					}
+				}
 			}
-		
-			// {@squirreljme.error AX01 Failed to properly read the specified
-			// file. (The file name)}
-			catch (IOException e)
-			{
-				throw new RuntimeException(String.format("AX01 %s", arg), e);
-			}
+		}
+	
+		// {@squirreljme.error AX01 Failed to properly read the specified
+		// file. (The file name)}
+		catch (IOException e)
+		{
+			throw new RuntimeException(String.format("AX01 %s", __args[0]), e);
+		}
 	}
 }
 

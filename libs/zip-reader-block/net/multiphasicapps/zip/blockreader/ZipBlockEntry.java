@@ -143,6 +143,17 @@ public final class ZipBlockEntry
 	}
 	
 	/**
+	 * Returns the name of this entry.
+	 *
+	 * @return The entry name.
+	 * @since 2017/03/01
+	 */
+	public String name()
+	{
+		return toString();
+	}
+	
+	/**
 	 * Opens the input stream for this entry's data.
 	 *
 	 * @return The entry data.

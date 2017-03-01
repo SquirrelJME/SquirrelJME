@@ -5,7 +5,8 @@ X-SquirrelJME-Name: ZIP File Dumper
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This dumps ZIP files.
-X-SquirrelJME-Depends: zip-reader-stream hexdump-writer
+X-SquirrelJME-Depends: zip-reader-stream zip-reader-block 
+ hexdump-writer
 Microedition-Configuration: CLDC-1.8
 Main-Class: net.multiphasicapps.dumpzip.Main
 
