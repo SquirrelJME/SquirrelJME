@@ -303,7 +303,9 @@ public final class NUBI
 		throws JITException
 	{
 		// Integer
-		if (__r == NUBI.A1)
+		if (__r == NUBI.A0)
+			return NUBI.A1;
+		else if (__r == NUBI.A1)
 			return NUBI.A2;
 		else if (__r == NUBI.A2)
 			return NUBI.A3;
@@ -319,6 +321,8 @@ public final class NUBI
 			return null;
 		
 		// Floating point
+		else if (__r == NUBI.FA0)
+			return NUBI.FA1;
 		else if (__r == NUBI.FA1)
 			return NUBI.FA2;
 		else if (__r == NUBI.FA2)
