@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32Calculator;
+import net.multiphasicapps.io.inflate.InflaterInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 
 /**
@@ -106,12 +107,14 @@ class __PNGImageParser__
 			// close
 			CRC32Calculator crc = new CRC32Calculator(true, true, 0x04C11DB7,
 				0xFFFFFFFF, 0xFFFFFFFF);
+			int lasttype = 0;
 			try (DataInputStream data = new DataInputStream(
-				new __PNGCRCInputStream__(crc, new SizeLimitedInputStream(
-				in, len + 4, true, false))))
+				new SizeLimitedInputStream(new __PNGCRCInputStream__(crc, in),
+				len + 4, true, false)))
 			{
 				// Read the packet type
 				int type = data.readInt();
+				lasttype = type;
 				
 				// End of PNG, stop processing
 				if (type == 0x49454E44)
@@ -146,12 +149,12 @@ class __PNGImageParser__
 			}
 			
 			// {@squirreljme.error EB0x CRC mismatch in PNG data chunk.
-			// (Desired CRC; Actual CRC)}
+			// (Desired CRC; Actual CRC; Last chunk type read)}
 			int want = in.readInt(),
 				real = crc.crc();
 			if (want != real)
-				throw new IOException(String.format("EB0x %08x %08x",
-					want, real));
+				throw new IOException(String.format("EB0x %08x %08x %08x",
+					want, real, lasttype));
 		}
 		
 		// {@squirreljme.error EB15 No image data has been loaded.}
@@ -256,13 +259,149 @@ class __PNGImageParser__
 		
 		// Get output
 		int[] argb = this._argb;
+		int[] palette = this._palette;
 		int width = this._width,
 			height = this._height,
 			colortype = this._colortype,
-			bitdepth = this._bitdepth;
+			bitdepth = this._bitdepth,
+			bitmask = (1 << bitdepth) - 1,
+			numpals = (palette != null ? palette.length : 0);
 		boolean adamseven = this._adamseven;
 		
-		throw new todo.TODO();
+		// {@squirreljme.error EB16 Paletted PNG image has no palette.}
+		if (colortype == 3 && palette == null)
+			throw new IOException("EB16");
+		
+		// Calculate the number of bytes that are used to represent the image
+		// pixel data.
+		// Also the number of individual channels
+		int readcount = bitdepth / 8,
+			numchannels;
+		if (readcount < 1)
+			readcount = 1;
+			
+		// Image formats have multiple channels per set of data
+		// RGB
+		if (colortype == 2)
+			numchannels = 3;
+			
+		// YA
+		else if (colortype == 4)
+			numchannels = 2;
+		
+		// RGBA
+		else if (colortype == 6)
+			numchannels = 4;
+		
+		// Just one channel
+		else
+			numchannels = 1;
+		
+		// Need to read all channel data
+		readcount *= numchannels;
+		int readbits = readcount * 8;
+		
+		// Input image data is compressed using deflate
+		try (DataInputStream data = new DataInputStream(
+			new InflaterInputStream(__in)))
+		{
+			// Window used to pixel data, along with the remaining bits
+			long window = 0;
+			int valshift = 0;
+			
+			// All pixels are stored on scanlines
+			int[] channels = new int[4];
+			for (int vy = 0; vy < height; vy++)
+			{
+				// Clear the window, since pixels are reset on scanlines
+				window = 0;
+				valshift = -1;
+				
+				// Where data goes on the output ARGB array, linearly speaking
+				int out = (vy * width);
+				
+				// Read in single line
+				for (int vx = 0; vx < width; vx++)
+				{
+					// If the window is empty then read everything in
+					if (valshift < 0)
+					{
+						// Read pixel
+						for (int i = 0, sh = 0; i < readcount; i++)
+						{
+							window |= ((long)data.readUnsignedByte()) << sh;
+							sh += 8;
+						}
+						
+						// Initialize the rolling mask
+						valshift = (readbits - bitdepth);
+					}
+					
+					// Decode input channel data
+					for (int i = 0; i < numchannels; i++)
+					{
+						// Read next color
+						int v = ((int)(window >>> valshift)) & bitmask;
+						valshift -= bitdepth;
+						
+						// If not using paletted mode, adjust the colors so
+						// that they become normalized to [0, 255]
+						if (colortype != 3)
+							if (bitdepth == 1)
+								v = (v != 0 ? 255 : 0);
+							else
+								v = (v * 255) / bitmask;
+						
+						// Set
+						channels[i] = v;
+					}
+					
+					// Decode that information to ARGB
+					int color;
+					
+					// Grayscale pixel
+					if (colortype == 0 || colortype == 4)
+					{
+						int v = channels[0];
+						color = (v << 16) | (v << 8) | v;
+					}
+					
+					// Palette
+					else if (colortype == 3)
+					{
+						// {@squirreljme.error EB17 Index exceeds the size of
+						// a palette. (The index; The palette size)}
+						int v = channels[0];
+						if (v >= numpals)
+							throw new IOException(String.format("EB17 %d %d",
+								v, numpals));
+						color = palette[v];
+					}
+					
+					// Triplet
+					else
+						color = (channels[0] << 16) | (channels[1] << 8) |
+							channels[2];
+					
+					// Alpha channel
+					if (colortype == 4 || colortype == 6)
+						color |= (channels[numchannels - 1] << 24);
+					
+					// No alpha
+					else
+						color |= 0xFF000000;
+					
+					// Place the pixel on the output buffer
+					// Interlaced
+					if (adamseven)
+						throw new todo.TODO();
+					
+					// Linear
+					else
+						argb[out++] = color;
+				}
+			}
+		}
 	}
 	
 	/**
