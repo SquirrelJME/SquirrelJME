@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -26,8 +28,9 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public class MIPSActiveBinding
 	implements ActiveBinding
 {
-	/** String representation. */
-	private volatile Reference<String> _string;
+	/** Registers being used. */
+	protected final List<MIPSRegister> registers =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the active binding.
@@ -56,6 +59,20 @@ public class MIPSActiveBinding
 	public int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the registers which are used for the binding.
+	 *
+	 * @param __r The registers to use.
+	 * @since 2017/03/01
+	 */
+	public void setRegisters(MIPSRegister... __r)
+	{
+		List<MIPSRegister> registers = this.registers;
+		registers.clear();
+		for (MIPSRegister r : __r)
+			registers.add(r);
 	}
 	
 	/**

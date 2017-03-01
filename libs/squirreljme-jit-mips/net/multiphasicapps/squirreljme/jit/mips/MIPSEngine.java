@@ -95,8 +95,15 @@ public class MIPSEngine
 			{
 					// 32-bit int
 				case INTEGER:
-					if (true)
-						throw new todo.TODO();
+					if (ni != null)
+					{
+						// Set used registers
+						bind.setRegisters(ni);
+						
+						// Claimed
+						ni = NUBI.nextArgument(ni);
+						continue;
+					}
 					break;
 					
 					// 64-bit long
