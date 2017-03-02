@@ -167,6 +167,12 @@ public final class CacheState
 		/** The type of value stored here. */
 		protected final StackMapType type;
 		
+		/** Aliased to the stack?. */
+		protected final boolean stackalias;
+		
+		/** Slot this is aliased to. */
+		protected final int idalias;
+		
 		/** String representation of this slot. */
 		private volatile Reference<String> _string;
 		
@@ -191,6 +197,40 @@ public final class CacheState
 			this.binding = __e.snapshotBinding(
 				__from.<ActiveBinding>binding(ActiveBinding.class));
 			this.type = __from.type();
+			
+			// Aliased?
+			ActiveCacheState.Slot alias = __from.alias();
+			if (alias != null)
+			{
+				this.stackalias = alias.isStack();
+				this.idalias = alias.index();
+			}
+			
+			// Not aliased
+			else
+			{
+				this.stackalias = false;
+				this.idalias = -1;
+			}
+		}
+		
+		/**
+		 * Returns the slot that this is aliased to or {@code null} if it
+		 * is not aliased.
+		 *
+		 * @return The aliased slot or {@code null} if not aliased.
+		 * @since 2017/03/01
+		 */
+		public Slot alias()
+		{
+			// Aliased?
+			int idalias = this.idalias;
+			if (idalias < 0)
+				return null;
+			
+			// In that tread
+			return (this.stackalias ? CacheState.this.stack :
+				CacheState.this.locals).get(idalias);
 		}
 		
 		/**
@@ -257,9 +297,15 @@ public final class CacheState
 		
 			// Cache?
 			if (ref == null || null == (rv = ref.get()))
+			{
+				int idalias = this.idalias;
+				String alias = (idalias >= 0 ? String.format("%c#%d",
+					(this.stackalias ? 'S' : 'L'), idalias) : "not aliased");
 				this._string = new WeakReference<>((rv = String.format(
-					"{%c#%d: type=%s, binding=%s}", (this.isstack ? 'S' : 'L'),
-					this.index, this.type, this.binding)));
+					"{%c#%d: type=%s, binding=%s, %s}",
+					(this.isstack ? 'S' : 'L'),
+					this.index, this.type, this.binding, alias)));
+			}
 		
 			return rv;
 		}

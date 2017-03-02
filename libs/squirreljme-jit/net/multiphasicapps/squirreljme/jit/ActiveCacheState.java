@@ -143,6 +143,12 @@ public final class ActiveCacheState
 		private volatile StackMapType _type =
 			StackMapType.NOTHING;
 		
+		/** Aliased to the stack?. */
+		private volatile boolean _stackalias;
+		
+		/** Slot this is aliased to. */
+		private volatile int _idalias;
+		
 		/**
 		 * Initializes the slot.
 		 *
@@ -189,6 +195,25 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Returns the slot that this is aliased to or {@code null} if it
+		 * is not aliased.
+		 *
+		 * @return The aliased slot or {@code null} if not aliased.
+		 * @since 2017/03/01
+		 */
+		public Slot alias()
+		{
+			// Aliased?
+			int idalias = this._idalias;
+			if (idalias < 0)
+				return null;
+			
+			// In that tread
+			return (this._stackalias ? ActiveCacheState.this.stack :
+				ActiveCacheState.this.locals).get(idalias);
+		}
+		
+		/**
 		 * Returns the index of this slot.
 		 *
 		 * @return The slot index.
@@ -219,6 +244,50 @@ public final class ActiveCacheState
 		public boolean isStack()
 		{
 			return this.isstack;
+		}
+		
+		/**
+		 * Aliases the value of this slot to another slot.
+		 *
+		 * @param __cv The slot to alias to.
+		 * @throws IllegalArgumentException If the slot is not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/03/01
+		 */
+		public void setAlias(CodeVariable __cv)
+			throws IllegalArgumentException, NullPointerException
+		{
+			// Check
+			if (__cv == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			setAlias(__cv.isStack(), __cv.id());
+		}
+		
+		/**
+		 * Aliases the value of this slot to another slot.
+		 *
+		 * @param __s Is this aliased to the stack?
+		 * @param __id The slot index this is aliased to.
+		 * @throws IllegalArgumentException If the slot is not valid.
+		 * @since 2017/03/01
+		 */
+		public void setAlias(boolean __s, int __id)
+			throws IllegalArgumentException
+		{
+			// {@squirreljme.error ED0d The specified index exceeds the
+			// bounds of the target tread. (Aliased to the stack?; The index
+			// aliased to)}
+			Tread against = (__s ? ActiveCacheState.this.stack :
+				ActiveCacheState.this.locals);
+			if (__id < 0 || __id >= against.size())
+				throw new IllegalArgumentException(String.format("ED0d %b %d",
+					__s, __id));
+			
+			// Set
+			this._stackalias = __s;
+			this._idalias = __id;
 		}
 		
 		/**
@@ -254,9 +323,12 @@ public final class ActiveCacheState
 		@Override
 		public String toString()
 		{
-			return String.format("{%c#%d: type=%s, binding=%s}",
+			int idalias = this._idalias; 
+			String alias = (idalias >= 0 ? String.format("%c#%d",
+				(this._stackalias ? 'S' : 'L'), idalias) : "not aliased");
+			return String.format("{%c#%d: type=%s, binding=%s, %s}",
 				(this.isstack ? 'S' : 'L'), this.index, this._type,
-				this.binding);
+				this.binding, alias);
 		}
 		
 		/**
@@ -287,6 +359,21 @@ public final class ActiveCacheState
 			// Copy state
 			this._type = __s.type();
 			this.binding.switchFrom(__s.<Binding>binding(Binding.class));
+			
+			// Aliased?
+			CacheState.Slot alias = __s.alias();
+			if (alias != null)
+			{
+				this._stackalias = alias.isStack();
+				this._idalias = alias.index();
+			}
+			
+			// Not aliased
+			else
+			{
+				this._stackalias = false;
+				this._idalias = -1;
+			}
 		}
 	}
 	
