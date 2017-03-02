@@ -96,7 +96,11 @@ class __JITCodeStream__
 		// Debug
 		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
 		
-		throw new todo.TODO();
+		// Restore the stored state, if there is one
+		CacheStates states = this._states;
+		CacheState state = states.get(__pos);
+		if (state != null)
+			this._activestate.switchFrom(state);
 	}
 	
 	/**
