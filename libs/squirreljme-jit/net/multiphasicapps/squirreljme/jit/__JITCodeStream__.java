@@ -93,6 +93,8 @@ class __JITCodeStream__
 	@Override
 	public void atInstruction(int __code, int __pos)
 	{
+		ActiveCacheState activestate = this._activestate;
+		
 		// Debug
 		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
 		
@@ -100,7 +102,10 @@ class __JITCodeStream__
 		CacheStates states = this._states;
 		CacheState state = states.get(__pos);
 		if (state != null)
-			this._activestate.switchFrom(state);
+			activestate.switchFrom(state);
+		
+		// Debug
+		System.err.printf("DEBUG -- Enter state: %s%n", activestate);
 	}
 	
 	/**
@@ -139,7 +144,18 @@ class __JITCodeStream__
 		// Debug
 		System.err.printf("DEBUG -- Copy %s %s -> %s%n", __type, __from, __to);
 		
-		throw new todo.TODO();
+		// If the destination is a local variable then make it so the value is
+		// actually copied (because locals persist in exception handlers). As
+		// such this makes the JIT design a bit simpler at the cost of some
+		// copies.
+		ActiveCacheState activestate = this._activestate;
+		if (__to.isLocal())
+			throw new todo.TODO();
+	
+		// Otherwise for stack targets, just alias them to local variables
+		// because these will for the most part be temporaries
+		else
+			activestate.getSlot(__to).setAlias(__from);
 	}
 	
 	/**
@@ -149,10 +165,16 @@ class __JITCodeStream__
 	@Override
 	public void endInstruction(int __code, int __pos)
 	{
+		ActiveCacheState activestate = this._activestate;
+		
 		// Debug
 		System.err.printf("DEBUG -- End %d (pos %d)%n", __code, __pos);
+		System.err.printf("DEBUG -- Exit state: %s%n", activestate);
 		
-		throw new todo.TODO();
+		// Handle exceptional jump targets, check their state
+		ExceptionHandlerTable exceptions = this._exceptions;
+		if (exceptions != null)
+			throw new todo.TODO();
 	}
 	
 	/**

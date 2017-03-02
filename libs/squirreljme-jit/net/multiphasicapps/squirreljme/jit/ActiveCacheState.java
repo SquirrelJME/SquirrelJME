@@ -325,7 +325,7 @@ public final class ActiveCacheState
 		public String toString()
 		{
 			int idalias = this._idalias; 
-			String alias = (idalias >= 0 ? String.format("%c#%d",
+			String alias = (idalias >= 0 ? String.format("copied=%c#%d",
 				(this._stackalias ? 'S' : 'L'), idalias) : "not aliased");
 			return String.format("{%c#%d: type=%s, binding=%s, %s}",
 				(this.isstack ? 'S' : 'L'), this.index, this._type,

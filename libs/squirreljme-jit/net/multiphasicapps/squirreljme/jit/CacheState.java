@@ -299,7 +299,7 @@ public final class CacheState
 			if (ref == null || null == (rv = ref.get()))
 			{
 				int idalias = this.idalias;
-				String alias = (idalias >= 0 ? String.format("%c#%d",
+				String alias = (idalias >= 0 ? String.format("copied=%c#%d",
 					(this.stackalias ? 'S' : 'L'), idalias) : "not aliased");
 				this._string = new WeakReference<>((rv = String.format(
 					"{%c#%d: type=%s, binding=%s, %s}",
