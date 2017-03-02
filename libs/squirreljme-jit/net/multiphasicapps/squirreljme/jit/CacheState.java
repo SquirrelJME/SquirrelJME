@@ -202,7 +202,7 @@ public final class CacheState
 		 * @throws ClassCastException If the class type is incorrect.
 		 * @since 2017/03/01
 		 */
-		public <B extends Binding> B getBinding(Class<B> __cl)
+		public <B extends Binding> B binding(Class<B> __cl)
 			throws ClassCastException, NullPointerException
 		{
 			// Check
@@ -262,6 +262,17 @@ public final class CacheState
 					this.index, this.type, this.binding)));
 		
 			return rv;
+		}
+		
+		/**
+		 * Returns the type of value that is stored here.
+		 *
+		 * @return The type of value to store.
+		 * @since 2017/03/01
+		 */
+		public StackMapType type()
+		{
+			return this.type;
 		}
 	}
 	

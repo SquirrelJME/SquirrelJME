@@ -108,7 +108,9 @@ public final class ActiveCacheState
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Restore state
+		this.stack.__switchFrom(__cs.stack());
+		this.locals.__switchFrom(__cs.locals());
 	}
 	
 	/**
@@ -267,6 +269,25 @@ public final class ActiveCacheState
 		{
 			return this._type;
 		}
+		
+		/**
+		 * Switches to the specified state.
+		 *
+		 * @param __t The slot to copy from.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/03/01
+		 */
+		private void __switchFrom(CacheState.Slot __s)
+			throws NullPointerException
+		{
+			// Check
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			// Copy state
+			this._type = __s.type();
+			this.binding.switchFrom(__s.<Binding>binding(Binding.class));
+		}
 	}
 	
 	/**
@@ -322,6 +343,26 @@ public final class ActiveCacheState
 		public int size()
 		{
 			return this._slots.length;
+		}
+		
+		/**
+		 * Switches to the specified state.
+		 *
+		 * @param __t The tread to copy from.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/03/01
+		 */
+		private void __switchFrom(CacheState.Tread __t)
+			throws NullPointerException
+		{
+			// Check
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			// Go through all variables
+			Slot[] slots = this._slots;
+			for (int i = 0, n = slots.length; i < n; i++)
+				slots[i].__switchFrom(__t.get(i));
 		}
 	}
 }
