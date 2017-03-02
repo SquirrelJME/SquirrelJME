@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.ClassDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.ClassVersion;
 import net.multiphasicapps.squirreljme.classformat.ConstantPool;
@@ -24,7 +26,9 @@ import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
 import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+import net.multiphasicapps.squirreljme.linkage.Linkage;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
 /**
  * This is the class description stream that the JIT uses for each class that
@@ -45,6 +49,10 @@ class __JITClassStream__
 	/** Methods in the class. */
 	final List<__JITMethodStream__> _methods =
 		new ArrayList<>();
+	
+	/** This is used to manage linkage used my method code. */
+	final Map<Linkage, Integer> _linkage =
+		new LinkedHashMap<>();
 	
 	/** The name of this class. */
 	volatile ClassNameSymbol _classname;
@@ -246,6 +254,35 @@ class __JITClassStream__
 	final JIT __jit()
 	{
 		return this.jit;
+	}
+	
+	/**
+	 * Adds a linkage to the class which is used to refer to external fields
+	 * and methods.
+	 *
+	 * @param __l The linkage to link in.
+	 * @return The index of the linked item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/02
+	 */
+	final int __link(Linkage __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		// If it is not in the, store it into the map
+		Map<Linkage, Integer> linkage = this._linkage;
+		Integer rv = linkage.get(__l);
+		if (rv == null)
+		{
+			rv = Integer.valueOf(linkage.size());
+			linkage.put(__l, rv);
+		}
+		
+		// Otherwise return the index
+		return rv.intValue();
 	}
 }
 

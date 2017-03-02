@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.linkage.Linkage;
+
 /**
  * This interface is used to provide an interface that the translation engine
  * can use to interact directly with the JIT translator for the current method.
@@ -33,5 +35,16 @@ public interface JITStateAccessor
 	 * @since 2017/02/16
 	 */
 	public abstract CacheStates cacheStates();
+	
+	/**
+	 * This returns the index of link index to another class, field, or method.
+	 *
+	 * @param __l The external linkage to get the link index for.
+	 * @return The link index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/02
+	 */
+	public abstract int link(Linkage __l)
+		throws NullPointerException;
 }
 

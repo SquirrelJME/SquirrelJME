@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.linkage;
  * @since 2016/09/06
  */
 public abstract class MemberLinkage<L extends MemberReference>
+	implements Linkage
 {
 	/** The source method. */
 	protected final MethodReference from;

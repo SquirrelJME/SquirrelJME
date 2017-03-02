@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.ExceptionHandlerTable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.linkage.Linkage;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
@@ -257,6 +258,10 @@ class __JITCodeStream__
 			((__rv == null) != (__rvt == null)))
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		System.err.printf("DEBUG -- Invoke %s rv=%s/%s args=%s/%s%n", __link,
+			__rv, __rvt, Arrays.asList(__cargs), Arrays.asList(__targs));
+		
 		throw new todo.TODO();
 	}
 	
@@ -270,6 +275,17 @@ class __JITCodeStream__
 	{
 		// Set
 		this._jumptargets = __t.clone();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/02
+	 */
+	@Override
+	public int link(Linkage __l)
+		throws NullPointerException
+	{
+		return this._classstream.__link(__l);
 	}
 	
 	/**
