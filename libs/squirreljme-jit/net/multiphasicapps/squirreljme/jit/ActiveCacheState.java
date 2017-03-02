@@ -147,7 +147,8 @@ public final class ActiveCacheState
 		private volatile boolean _stackalias;
 		
 		/** Slot this is aliased to. */
-		private volatile int _idalias;
+		private volatile int _idalias =
+			-1;
 		
 		/**
 		 * Initializes the slot.
