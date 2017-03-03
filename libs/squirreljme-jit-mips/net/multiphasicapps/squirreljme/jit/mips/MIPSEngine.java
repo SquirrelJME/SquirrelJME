@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
+import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
 /**
  * This is the engine which is able to generate MIPS machine code.
@@ -137,6 +138,22 @@ public class MIPSEngine
 	public ActiveBinding createActiveBinding()
 	{
 		return new MIPSActiveBinding();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/03
+	 */
+	@Override
+	public void invokeMethod(MethodLinkage __ml,
+		ActiveCacheState.Slot __rv, ActiveCacheState.Slot[] __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__ml == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

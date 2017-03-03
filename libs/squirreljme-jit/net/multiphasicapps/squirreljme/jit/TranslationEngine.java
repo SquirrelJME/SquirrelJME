@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
+
 /**
  * This is the base class for the JIT translation engine and is used to
  * translate class files to {@link ExecutableClass}es which may be executed
@@ -83,6 +85,25 @@ public abstract class TranslationEngine
 	 * @since 2017/02/23
 	 */
 	public abstract ActiveBinding createActiveBinding();
+	
+	/**
+	 * Invokes the specified method with the given arguments, returning the
+	 * value in the specified slot.
+	 *
+	 * If a return value is specified, it will always be on the stack. Note
+	 * that there may be an existing value at this location.
+	 *
+	 * @param __ml The method to be invoked.
+	 * @param __rv Where the return value is placed, may be {@code null} if
+	 * there is no return value.
+	 * @param __args Arguments to the method, will be their cached and aliased
+	 * slots.
+	 * @throws NullPointerException If no method or arguments were specified.
+	 * @since 2017/03/03
+	 */
+	public abstract void invokeMethod(MethodLinkage __ml,
+		ActiveCacheState.Slot __rv, ActiveCacheState.Slot[] __args)
+		throws NullPointerException;
 	
 	/**
 	 * Creates a snapshot of the specified binding returning an immutable one

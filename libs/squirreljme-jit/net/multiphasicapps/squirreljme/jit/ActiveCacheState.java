@@ -225,6 +225,17 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Clears the alias for this slot.
+		 *
+		 * @since 2017/03/03
+		 */
+		public void clearAlias()
+		{
+			this._stackalias = false;
+			this._idalias = -1;
+		}
+		
+		/**
 		 * Returns the index of this slot.
 		 *
 		 * @return The slot index.

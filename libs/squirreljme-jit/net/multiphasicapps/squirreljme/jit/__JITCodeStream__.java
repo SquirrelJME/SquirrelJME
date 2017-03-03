@@ -276,11 +276,27 @@ class __JITCodeStream__
 			slots[i] = (cached != null ? cached : origin);
 		}
 		
-		// Debug
-		System.err.printf("DEBUG -- Actual slots: %s%n",
-			Arrays.asList(slots));
+		// Return value slots are not stack cached and are truly stored on
+		// the stack
+		ActiveCacheState.Slot rvs = (__rv == null ? null :
+			activestate.getSlot(__rv));
 		
-		throw new todo.TODO();
+		// Debug
+		System.err.printf("DEBUG -- Actual slots: %s %s%n",
+			rvs, Arrays.asList(slots));
+		
+		// Invoke
+		this._engine.invokeMethod(__link, rvs, slots);
+		
+		// If there is a return value set up the type
+		if (rvs != null)
+		{
+			// This will set the state for the next instruction
+			rvs.setType(__rvt);
+			
+			// Return values are never aliased
+			rvs.clearAlias();
+		}
 	}
 	
 	/**
