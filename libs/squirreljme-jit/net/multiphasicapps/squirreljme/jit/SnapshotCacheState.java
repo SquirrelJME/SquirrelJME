@@ -28,7 +28,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/02/16
  */
-public final class CacheState
+public final class SnapshotCacheState
 {
 	/** Stack code variables. */
 	protected final Tread stack;
@@ -47,7 +47,7 @@ public final class CacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	CacheState(TranslationEngine __e, ActiveCacheState __a)
+	SnapshotCacheState(TranslationEngine __e, ActiveCacheState __a)
 		throws NullPointerException
 	{
 		// Check
@@ -86,7 +86,7 @@ public final class CacheState
 	 * @return The cached local variables.
 	 * @since 2017/02/18
 	 */
-	public CacheState.Tread locals()
+	public SnapshotCacheState.Tread locals()
 	{
 		return this.locals;
 	}
@@ -97,7 +97,7 @@ public final class CacheState
 	 * @return The cached stack variables.
 	 * @since 2017/02/18
 	 */
-	public CacheState.Tread stack()
+	public SnapshotCacheState.Tread stack()
 	{
 		return this.stack;
 	}
@@ -129,7 +129,7 @@ public final class CacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/01
 	 */
-	private CacheState.Tread __snapTread(TranslationEngine __e,
+	private SnapshotCacheState.Tread __snapTread(TranslationEngine __e,
 		ActiveCacheState.Tread __from)
 		throws NullPointerException
 	{
@@ -162,7 +162,7 @@ public final class CacheState
 		protected final int index;
 		
 		/** The binding for this slot. */
-		protected final Binding binding;
+		protected final SnapshotBinding binding;
 		
 		/** The type of value stored here. */
 		protected final StackMapType type;
@@ -235,8 +235,8 @@ public final class CacheState
 			
 				// {@squirreljme.error ED0c Slot eventually references itself.
 				// (This slot)}
-				at = (at.stackalias ? CacheState.this.stack :
-					CacheState.this.locals).get(idalias);
+				at = (at.stackalias ? SnapshotCacheState.this.stack :
+					SnapshotCacheState.this.locals).get(idalias);
 				if (at == this)
 					throw new IllegalStateException(String.format("ED0c %s",
 						this));
@@ -252,7 +252,7 @@ public final class CacheState
 		 * @throws ClassCastException If the class type is incorrect.
 		 * @since 2017/03/01
 		 */
-		public <B extends Binding> B binding(Class<B> __cl)
+		public <B extends SnapshotBinding> B binding(Class<B> __cl)
 			throws ClassCastException, NullPointerException
 		{
 			// Check

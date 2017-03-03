@@ -34,7 +34,7 @@ public interface JITStateAccessor
 	 * @return The cache states, or {@code null} if they are not yet available.
 	 * @since 2017/02/16
 	 */
-	public abstract CacheStates cacheStates();
+	public abstract SnapshotCacheStates cacheStates();
 	
 	/**
 	 * This returns the index of link index to another class, field, or method.

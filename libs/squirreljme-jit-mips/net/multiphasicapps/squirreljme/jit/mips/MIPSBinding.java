@@ -14,7 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 
 /**
  * This is a binding for MIPS register or stack values which determines where
@@ -25,7 +25,7 @@ import net.multiphasicapps.squirreljme.jit.Binding;
  * @since 2017/02/19
  */
 public final class MIPSBinding
-	implements Binding
+	implements SnapshotBinding
 {
 	/** The stack offset. */
 	protected final int stackoffset;

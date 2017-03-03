@@ -11,31 +11,31 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This interface is used to describe registers.
+ * This interface describes binding information which is assigned to an
+ * abstract code variable to a native representation of where it should be
+ * placed and how it is represented. Since this is architecture specific, the
+ * actual binding information is not defined.
  *
- * Registers compare to their index first then with their {@link DataType}. If
- * two registers share the same index and {@link DataType} they are considered
- * equal to each other.
+ * Instances of this class must be immutable.
  *
- * @since 2017/02/13
+ * {@link #equals(Object)} and {@link #hashCode()} must be implemented.
+ *
+ * @since 2017/02/18
  */
-public interface Register
-	extends Comparable<Register>
+public interface SnapshotBinding
 {
 	/**
-	 * Returns the index of the register.
-	 *
-	 * @return The register index.
-	 * @since 2017/02/13
+	 * {@inheritDoc}
+	 * @since 2017/02/18
 	 */
-	public abstract int index();
+	@Override
+	public boolean equals(Object __o);
 	
 	/**
-	 * Returns the type of value the register stores.
-	 *
-	 * @return The data type of the register.
-	 * @since 2017/02/13
+	 * {@inheritDoc}
+	 * @since 2017/02/18
 	 */
-	public abstract DataType type();
+	@Override
+	public int hashCode();
 }
 

@@ -101,7 +101,7 @@ public final class ActiveCacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	public void switchFrom(CacheState __cs)
+	public void switchFrom(SnapshotCacheState __cs)
 		throws NullPointerException
 	{
 		// Check
@@ -371,7 +371,7 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/01
 		 */
-		private void __switchFrom(CacheState.Slot __s)
+		private void __switchFrom(SnapshotCacheState.Slot __s)
 			throws NullPointerException
 		{
 			// Check
@@ -380,10 +380,10 @@ public final class ActiveCacheState
 			
 			// Copy state
 			this._type = __s.type();
-			this.binding.switchFrom(__s.<Binding>binding(Binding.class));
+			this.binding.switchFrom(__s.<SnapshotBinding>binding(SnapshotBinding.class));
 			
 			// Aliased?
-			CacheState.Slot alias = __s.alias();
+			SnapshotCacheState.Slot alias = __s.alias();
 			if (alias != null)
 			{
 				this._stackalias = alias.isStack();
@@ -461,7 +461,7 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/01
 		 */
-		private void __switchFrom(CacheState.Tread __t)
+		private void __switchFrom(SnapshotCacheState.Tread __t)
 			throws NullPointerException
 		{
 			// Check

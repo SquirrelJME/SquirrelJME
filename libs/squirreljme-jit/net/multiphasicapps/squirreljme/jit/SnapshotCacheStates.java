@@ -22,10 +22,10 @@ import java.util.List;
  *
  * This class is not thread safe.
  *
- * @see CacheState
+ * @see SnapshotCacheState
  * @since 2017/02/16
  */
-public final class CacheStates
+public final class SnapshotCacheStates
 {
 	/** The engine used. */
 	protected final TranslationEngine engine;
@@ -35,7 +35,7 @@ public final class CacheStates
 		new ArrayList<>();
 	
 	/** The individual cache states. */
-	private final List<CacheState> _states =
+	private final List<SnapshotCacheState> _states =
 		new ArrayList<>();
 	
 	/**
@@ -45,7 +45,7 @@ public final class CacheStates
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/16
 	 */
-	CacheStates(TranslationEngine __te)
+	SnapshotCacheStates(TranslationEngine __te)
 		throws NullPointerException
 	{
 		// Check
@@ -76,7 +76,7 @@ public final class CacheStates
 	 * set state.
 	 * @since 2017/02/16
 	 */
-	public CacheState get(int __i)
+	public SnapshotCacheState get(int __i)
 	{
 		// Find it
 		int dx = Collections.<Integer>binarySearch(this._pos, __i);
@@ -108,7 +108,7 @@ public final class CacheStates
 			throw new NullPointerException("NARG");
 		
 		List<Integer> pos = this._pos;
-		List<CacheState> states = this._states;
+		List<SnapshotCacheState> states = this._states;
 		
 		// Find it
 		int dx = Collections.<Integer>binarySearch(this._pos, __i);
@@ -118,7 +118,7 @@ public final class CacheStates
 		{
 			dx = (-(dx) - 1);
 			pos.add(dx, __i);
-			states.add(dx, new CacheState(this.engine, __v));
+			states.add(dx, new SnapshotCacheState(this.engine, __v));
 		}
 		
 		// {@squirreljme.error ED0a A cache state already exists at the

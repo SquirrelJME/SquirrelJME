@@ -46,7 +46,7 @@ class __JITCodeStream__
 	private volatile ActiveCacheState _activestate;
 	
 	/** The state of stack and locals for most instruction addresses. */
-	private volatile CacheStates _states;
+	private volatile SnapshotCacheStates _states;
 	
 	/** Jump targets in the code, where state transfers occur. */
 	private volatile int[] _jumptargets;
@@ -100,8 +100,8 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
 		
 		// Restore the stored state, if there is one
-		CacheStates states = this._states;
-		CacheState state = states.get(__pos);
+		SnapshotCacheStates states = this._states;
+		SnapshotCacheState state = states.get(__pos);
 		if (state != null)
 			activestate.switchFrom(state);
 		
@@ -114,7 +114,7 @@ class __JITCodeStream__
 	 * @since 2017/02/16
 	 */
 	@Override
-	public CacheStates cacheStates()
+	public SnapshotCacheStates cacheStates()
 	{
 		return this._states;
 	}
@@ -354,7 +354,7 @@ class __JITCodeStream__
 		// properly along with restoring or merging into state of another
 		// instruction
 		TranslationEngine engine = this._engine;
-		this._states = new CacheStates(engine);
+		this._states = new SnapshotCacheStates(engine);
 		
 		// Also setup active state
 		this._activestate = new ActiveCacheState(engine, __ms, __ml);

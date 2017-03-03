@@ -14,8 +14,8 @@ import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
-import net.multiphasicapps.squirreljme.jit.Binding;
-import net.multiphasicapps.squirreljme.jit.CacheState;
+import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
+import net.multiphasicapps.squirreljme.jit.SnapshotCacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
@@ -161,7 +161,7 @@ public class MIPSEngine
 	 * @since 2017/03/01
 	 */
 	@Override
-	public Binding snapshotBinding(ActiveBinding __b)
+	public SnapshotBinding snapshotBinding(ActiveBinding __b)
 		throws NullPointerException
 	{
 		// Check

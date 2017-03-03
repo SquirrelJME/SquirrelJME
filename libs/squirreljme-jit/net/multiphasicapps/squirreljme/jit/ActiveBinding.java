@@ -29,7 +29,7 @@ public interface ActiveBinding
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	public abstract void switchFrom(Binding __b)
+	public abstract void switchFrom(SnapshotBinding __b)
 		throws JITException, NullPointerException;
 }
 

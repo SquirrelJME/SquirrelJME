@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
-import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -145,7 +145,7 @@ public class MIPSActiveBinding
 	 * @since 2017/02/23
 	 */
 	@Override
-	public void switchFrom(Binding __b)
+	public void switchFrom(SnapshotBinding __b)
 		throws JITException, NullPointerException
 	{
 		// Check
