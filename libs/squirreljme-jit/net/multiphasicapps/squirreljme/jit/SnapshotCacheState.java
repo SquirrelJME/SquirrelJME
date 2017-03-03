@@ -154,6 +154,7 @@ public final class SnapshotCacheState
 	 * @since 2017/02/18
 	 */
 	public final class Slot
+		implements CacheState.Slot
 	{
 		/** Is this the stack? */
 		protected final boolean isstack;
