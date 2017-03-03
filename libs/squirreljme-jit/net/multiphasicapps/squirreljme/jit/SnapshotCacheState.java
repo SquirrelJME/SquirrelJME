@@ -19,7 +19,6 @@ import java.util.RandomAccess;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains the state of the stack and local variables.
@@ -29,6 +28,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * @since 2017/02/16
  */
 public final class SnapshotCacheState
+	implements CacheState
 {
 	/** Stack code variables. */
 	protected final Tread stack;
@@ -339,7 +339,7 @@ public final class SnapshotCacheState
 	 */
 	public final class Tread
 		extends AbstractList<Slot>
-		implements RandomAccess
+		implements CacheState.Tread, RandomAccess
 	{
 		/** Slots in this tread. */
 		private final Slot[] _slots;

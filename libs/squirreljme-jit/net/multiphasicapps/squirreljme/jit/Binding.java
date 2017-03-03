@@ -11,17 +11,26 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This interface describes binding information which is assigned to an
- * abstract code variable to a native representation of where it should be
- * placed and how it is represented. Since this is architecture specific, the
- * actual binding information is not defined.
+ * This is the base class for bindings which are used to represent state.
  *
- * Instances of this class must be immutable.
+ * {@link #equals(Object)} and {@link #hashCode()} must be implemented.
  *
- * @since 2017/02/18
+ * @since 2017/03/03
  */
-public interface SnapshotBinding
-	extends Binding
+public interface Binding
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/18
+	 */
+	@Override
+	public boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/18
+	 */
+	@Override
+	public int hashCode();
 }
 

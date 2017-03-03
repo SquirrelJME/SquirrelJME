@@ -19,6 +19,7 @@ package net.multiphasicapps.squirreljme.jit;
  * @since 2017/02/23
  */
 public interface ActiveBinding
+	extends Binding
 {
 	/**
 	 * Loads the information stored in the immutable binding and copies its
@@ -29,7 +30,7 @@ public interface ActiveBinding
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	public abstract void switchFrom(SnapshotBinding __b)
+	public abstract void switchFrom(Binding __b)
 		throws JITException, NullPointerException;
 }
 

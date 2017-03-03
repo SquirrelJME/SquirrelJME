@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
  * @since 2017/02/23
  */
 public final class ActiveCacheState
+	implements CacheState
 {
 	/** Stack code variables. */
 	protected final Tread stack;
@@ -52,12 +53,10 @@ public final class ActiveCacheState
 	}
 	
 	/**
-	 * Returns the slot which is associated with the given variable.
-	 *
-	 * @param __cv The variable to get the slot of.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
+	@Override
 	public Slot getSlot(CodeVariable __cv)
 		throws NullPointerException
 	{
@@ -73,22 +72,20 @@ public final class ActiveCacheState
 	}
 	
 	/**
-	 * Returns the cached local variable assignments.
-	 *
-	 * @return The cached local variables.
+	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
+	@Override
 	public ActiveCacheState.Tread locals()
 	{
 		return this.locals;
 	}
 	
 	/**
-	 * Returns the cached stack variable assignments.
-	 *
-	 * @return The cached stack variables.
+	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
+	@Override
 	public ActiveCacheState.Tread stack()
 	{
 		return this.stack;
@@ -101,7 +98,7 @@ public final class ActiveCacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	public void switchFrom(SnapshotCacheState __cs)
+	public void switchFrom(CacheState __cs)
 		throws NullPointerException
 	{
 		// Check
@@ -129,6 +126,7 @@ public final class ActiveCacheState
 	 * @since 2017/02/23
 	 */
 	public final class Slot
+		implements CacheState.Slot
 	{
 		/** Is this the stack? */
 		protected final boolean isstack;
@@ -371,7 +369,7 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/01
 		 */
-		private void __switchFrom(SnapshotCacheState.Slot __s)
+		private void __switchFrom(CacheState.Slot __s)
 			throws NullPointerException
 		{
 			// Check
@@ -380,7 +378,7 @@ public final class ActiveCacheState
 			
 			// Copy state
 			this._type = __s.type();
-			this.binding.switchFrom(__s.<SnapshotBinding>binding(SnapshotBinding.class));
+			this.binding.switchFrom(__s.<Binding>binding(Binding.class));
 			
 			// Aliased?
 			SnapshotCacheState.Slot alias = __s.alias();
@@ -406,7 +404,7 @@ public final class ActiveCacheState
 	 */
 	public final class Tread
 		extends AbstractList<Slot>
-		implements RandomAccess
+		implements CacheState.Tread, RandomAccess
 	{
 		/** Slots. */
 		private final Slot[] _slots;
@@ -461,7 +459,7 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/01
 		 */
-		private void __switchFrom(SnapshotCacheState.Tread __t)
+		private void __switchFrom(CacheState.Tread __t)
 			throws NullPointerException
 		{
 			// Check
