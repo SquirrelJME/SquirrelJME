@@ -151,12 +151,22 @@ class __JITCodeStream__
 		// copies.
 		ActiveCacheState activestate = this._activestate;
 		if (__to.isLocal())
+		{
+			// Since locals are always written to, instructions must be
+			// generated
 			throw new todo.TODO();
+		}
 	
 		// Otherwise for stack targets, just alias them to local variables
 		// because these will for the most part be temporaries
 		else
+		{
+			// There might be an alias between stack entries
+			__deAliasStack(__to);
+			
+			// Generate alias
 			activestate.getSlot(__to).setAlias(__from);
+		}
 	}
 	
 	/**
@@ -266,6 +276,7 @@ class __JITCodeStream__
 		// cached there are likely to not be values on the stack.
 		int n = __cargs.length;
 		ActiveCacheState activestate = this._activestate;
+		ActiveCacheState.Slot[] stackslots = new ActiveCacheState.Slot[n];
 		ActiveCacheState.Slot[] slots = new ActiveCacheState.Slot[n];
 		for (int i = 0; i < n; i++)
 		{
@@ -274,6 +285,9 @@ class __JITCodeStream__
 			ActiveCacheState.Slot origin = activestate.getSlot(__cargs[i]);
 			ActiveCacheState.Slot cached = origin.alias();
 			slots[i] = (cached != null ? cached : origin);
+			
+			// The stack slots need to be destroyed later
+			stackslots[i] = origin;
 		}
 		
 		// Return value slots are not stack cached and are truly stored on
@@ -284,6 +298,9 @@ class __JITCodeStream__
 		// Debug
 		System.err.printf("DEBUG -- Actual slots: %s %s%n",
 			rvs, Arrays.asList(slots));
+		
+		// De-alias stack slots
+		__deAliasStack(slots);
 		
 		// Invoke
 		this._engine.invokeMethod(__link, rvs, slots);
@@ -297,6 +314,9 @@ class __JITCodeStream__
 			// Return values are never aliased
 			rvs.clearAlias();
 		}
+		
+		// Destroy the stack so their bindings are not valid
+		__destroyStack((__rv != null ? 1 : 0), stackslots);
 	}
 	
 	/**
@@ -337,6 +357,43 @@ class __JITCodeStream__
 		
 		// Also setup active state
 		this._activestate = new ActiveCacheState(engine, __ms, __ml);
+	}
+	
+	/**
+	 * This de-aliases the specified stack value slots so that if any values
+	 * are aliased to stack entries they will be unsplit and moved.
+	 *
+	 * @param __s Slots to de-alias.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/03
+	 */
+	private void __deAliasStack(ActiveCacheState.Slot... __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * For any slot which exists on the stack, the associated bindings will
+	 * be destroyed.
+	 *
+	 * @param __o The starting offset into the array.
+	 * @param __s The slots to destroy on the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/03
+	 */
+	private void __destroyStack(int __o, ActiveCacheState.Slot... __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
