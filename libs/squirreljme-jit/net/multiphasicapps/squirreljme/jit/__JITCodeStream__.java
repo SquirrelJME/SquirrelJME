@@ -162,10 +162,11 @@ class __JITCodeStream__
 		else
 		{
 			// There might be an alias between stack entries
-			__deAliasStack(__to);
+			ActiveCacheState.Slot to = activestate.getSlot(__to);
+			__deAliasStack(to);
 			
 			// Generate alias
-			activestate.getSlot(__to).setAlias(__from);
+			to.setAlias(__from);
 		}
 	}
 	
