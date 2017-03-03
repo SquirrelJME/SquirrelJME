@@ -262,6 +262,24 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- Invoke %s rv=%s/%s args=%s/%s%n", __link,
 			__rv, __rvt, Arrays.asList(__cargs), Arrays.asList(__targs));
 		
+		// Get the actual slots which arguments point to, since everything is
+		// cached there are likely to not be values on the stack.
+		int n = __cargs.length;
+		ActiveCacheState activestate = this._activestate;
+		ActiveCacheState.Slot[] slots = new ActiveCacheState.Slot[n];
+		for (int i = 0; i < n; i++)
+		{
+			// However not all slots will be cached, so those must not use
+			// null aliases
+			ActiveCacheState.Slot origin = activestate.getSlot(__cargs[i]);
+			ActiveCacheState.Slot cached = origin.alias();
+			slots[i] = (cached != null ? cached : origin);
+		}
+		
+		// Debug
+		System.err.printf("DEBUG -- Actual slots: %s%n",
+			Arrays.asList(slots));
+		
 		throw new todo.TODO();
 	}
 	
