@@ -223,14 +223,24 @@ public final class CacheState
 		 */
 		public Slot alias()
 		{
-			// Aliased?
-			int idalias = this.idalias;
-			if (idalias < 0)
-				return null;
+			for (Slot at = this;;)
+			{
+				// Aliased?
+				int idalias = at.idalias;
+				if (idalias < 0)
+					if (at == this)
+						return null;
+					else
+						return at;
 			
-			// In that tread
-			return (this.stackalias ? CacheState.this.stack :
-				CacheState.this.locals).get(idalias);
+				// {@squirreljme.error ED0c Slot eventually references itself.
+				// (This slot)}
+				at = (at.stackalias ? CacheState.this.stack :
+					CacheState.this.locals).get(idalias);
+				if (at == this)
+					throw new IllegalStateException(String.format("ED0c %s",
+						this));
+			}
 		}
 		
 		/**

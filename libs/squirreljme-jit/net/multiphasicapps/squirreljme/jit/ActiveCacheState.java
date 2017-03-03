@@ -204,14 +204,24 @@ public final class ActiveCacheState
 		 */
 		public Slot alias()
 		{
-			// Aliased?
-			int idalias = this._idalias;
-			if (idalias < 0)
-				return null;
+			for (Slot at = this;;)
+			{
+				// Aliased?
+				int idalias = at._idalias;
+				if (idalias < 0)
+					if (at == this)
+						return null;
+					else
+						return at;
 			
-			// In that tread
-			return (this._stackalias ? ActiveCacheState.this.stack :
-				ActiveCacheState.this.locals).get(idalias);
+				// {@squirreljme.error ED0e Slot eventually references itself.
+				// (This slot)}
+				at = (at._stackalias ? ActiveCacheState.this.stack :
+					ActiveCacheState.this.locals).get(idalias);
+				if (at == this)
+					throw new IllegalStateException(String.format("ED0e %s",
+						this));
+			}
 		}
 		
 		/**
