@@ -64,7 +64,7 @@ public class Main
 				String name = entry.name();
 				if (!filter.isEmpty() && !filter.contains(name))
 					continue;
-				System.out.printf("> Dumping `%s`...%n", name);
+				System.err.printf("> Dumping `%s`...%n", name);
 				lastentry = name;
 				
 				// Read it
