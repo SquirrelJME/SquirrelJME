@@ -334,6 +334,7 @@ public final class ActiveCacheState
 				case LONG:		ct = ActiveBindingChangeType.TO_LONG; break;
 				case FLOAT:		ct = ActiveBindingChangeType.TO_FLOAT; break;
 				case DOUBLE:	ct = ActiveBindingChangeType.TO_DOUBLE; break;
+				case OBJECT:	ct = ActiveBindingChangeType.TO_OBJECT; break;
 				
 					// Unknown
 				default:
