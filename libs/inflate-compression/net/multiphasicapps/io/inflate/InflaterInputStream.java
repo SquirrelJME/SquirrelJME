@@ -29,7 +29,7 @@ public class InflaterInputStream
 	extends InputStream
 {
 	/** The size of the sliding window. */
-	private static final int _SLIDING_WINDOW_SIZE =
+	private static final int _DEFAULT_SLIDING_WINDOW_SIZE =
 		32768;
 	
 	/** No compression. */
@@ -63,8 +63,7 @@ public class InflaterInputStream
 	protected final InputStream in;
 	
 	/** Sliding window for accessing old bytes. */
-	protected final SlidingByteWindow window =
-		new SlidingByteWindow(_SLIDING_WINDOW_SIZE);
+	protected final SlidingByteWindow window;
 	
 	/** If the output cannot be filled, bytes are written here instead. */
 	protected final ByteDeque overflow =
@@ -155,12 +154,27 @@ public class InflaterInputStream
 	public InflaterInputStream(InputStream __in)
 		throws NullPointerException
 	{
+		this(__in, _DEFAULT_SLIDING_WINDOW_SIZE);
+	}
+	
+	/**
+	 * Initializes the deflate compression stream inflater with a custom
+	 * size specified for the sliding window.
+	 *
+	 * @param __in The stream to inflate.
+	 * @param __sls Custom size to the sliding window.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/04
+	 */
+	public InflaterInputStream(InputStream, int __sls)
+	{
 		// Check
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.in = __in;
+		this.window = new SlidingByteWindow(__sls);
 	}
 	
 	/**
