@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
@@ -146,12 +147,12 @@ public class MIPSEngine
 	 * @since 2017/03/03
 	 */
 	@Override
-	public void invokeMethod(MethodLinkage __ml,
-		ActiveCacheState.Slot __rv, ActiveCacheState.Slot[] __args)
-		throws NullPointerException
+	public void invokeMethod(CacheState __in, ActiveCacheState __out,
+		MethodLinkage __ml, ActiveCacheState.Slot __rv,
+		ActiveCacheState.Slot[] __args)
 	{
 		// Check
-		if (__ml == null || __args == null)
+		if (__in == null || __out == null || __ml == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

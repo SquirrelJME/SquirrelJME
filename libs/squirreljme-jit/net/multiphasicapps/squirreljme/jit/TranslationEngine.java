@@ -93,16 +93,20 @@ public abstract class TranslationEngine
 	 * If a return value is specified, it will always be on the stack. Note
 	 * that there may be an existing value at this location.
 	 *
+	 * @param __in Input state
+	 * @param __out Output state.
 	 * @param __ml The method to be invoked.
 	 * @param __rv Where the return value is placed, may be {@code null} if
 	 * there is no return value.
 	 * @param __args Arguments to the method, will be their cached and aliased
 	 * slots.
-	 * @throws NullPointerException If no method or arguments were specified.
+	 * @throws NullPointerException If no input state, output state, method, or
+	 * arguments were specified.
 	 * @since 2017/03/03
 	 */
-	public abstract void invokeMethod(MethodLinkage __ml,
-		ActiveCacheState.Slot __rv, ActiveCacheState.Slot[] __args)
+	public abstract void invokeMethod(CacheState __in, ActiveCacheState __out,
+		MethodLinkage __ml, ActiveCacheState.Slot __rv,
+		ActiveCacheState.Slot[] __args)
 		throws NullPointerException;
 	
 	/**

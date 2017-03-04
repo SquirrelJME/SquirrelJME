@@ -42,8 +42,11 @@ class __JITCodeStream__
 	/** The instance of the translation engine. */
 	final TranslationEngine _engine;
 	
-	/** The currently active state. */
-	private volatile ActiveCacheState _activestate;
+	/** The input state at the start of every instruction. */
+	private volatile ActiveCacheState _instate;
+	
+	/** The output state at the end of every instruction. */
+	private volatile ActiveCacheState _outstate;
 	
 	/** The state of stack and locals for most instruction addresses. */
 	private volatile SnapshotCacheStates _states;
@@ -79,34 +82,28 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/19
-	 */
-	@Override
-	public ActiveCacheState activeCacheState()
-	{
-		return this._activestate;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2017/02/07
 	 */
 	@Override
 	public void atInstruction(int __code, int __pos)
 	{
-		ActiveCacheState activestate = this._activestate;
+		ActiveCacheState instate = this._instate;
+		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
 		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
 		
-		// Restore the stored state, if there is one
+		// Setup input state if there is a pre-existing state available
 		SnapshotCacheStates states = this._states;
 		SnapshotCacheState state = states.get(__pos);
 		if (state != null)
-			activestate.switchFrom(state);
+			instate.switchFrom(state);
+		
+		// The output state is always a copy of the input state
+		outstate.switchFrom(instate);
 		
 		// Debug
-		System.err.printf("DEBUG -- Enter state: %s%n", activestate);
+		System.err.printf("DEBUG -- Enter state: %s%n", instate);
 	}
 	
 	/**
@@ -149,7 +146,7 @@ class __JITCodeStream__
 		// actually copied (because locals persist in exception handlers). As
 		// such this makes the JIT design a bit simpler at the cost of some
 		// copies.
-		ActiveCacheState activestate = this._activestate;
+		ActiveCacheState activestate = this._instate;
 		if (__to.isLocal())
 		{
 			// Since locals are always written to, instructions must be
@@ -177,11 +174,12 @@ class __JITCodeStream__
 	@Override
 	public void endInstruction(int __code, int __pos)
 	{
-		ActiveCacheState activestate = this._activestate;
+		ActiveCacheState instate = this._instate;
+		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
 		System.err.printf("DEBUG -- End %d (pos %d)%n", __code, __pos);
-		System.err.printf("DEBUG -- Exit state: %s%n", activestate);
+		System.err.printf("DEBUG -- Exit state: %s%n", outstate);
 		
 		// Handle exceptional jump targets, check their state
 		ExceptionHandlerTable exceptions = this._exceptions;
@@ -223,7 +221,7 @@ class __JITCodeStream__
 			Arrays.asList(__st), __sh);
 		
 		// Get active state
-		ActiveCacheState activestate = this._activestate;
+		ActiveCacheState outstate = this._outstate;
 		
 		// Load variables into the state
 		for (int i = 0, n = __cv.length; i < n; i++)
@@ -238,20 +236,20 @@ class __JITCodeStream__
 				throw new JITException("ED08");
 			
 			// Get slot for the entry
-			ActiveCacheState.Slot slot = activestate.getSlot(v);
+			ActiveCacheState.Slot slot = outstate.getSlot(v);
 			
 			// Set slot type
 			slot.setType(__st[i]);
 		}
 		
 		// Setup native bindings
-		this._engine.bindStateForEntry(activestate);
+		this._engine.bindStateForEntry(outstate);
 		
 		// Set entry point state
-		this._states.set(0, activestate);
+		this._states.set(0, outstate);
 		
 		// Debug
-		System.err.printf("DEBUG -- initArgs: %s%n", activestate);
+		System.err.printf("DEBUG -- initArgs: %s%n", outstate);
 	}
 	
 	/**
@@ -273,6 +271,13 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- Invoke %s rv=%s/%s args=%s/%s%n", __link,
 			__rv, __rvt, Arrays.asList(__cargs), Arrays.asList(__targs));
 		
+		// Get active state
+		ActiveCacheState instate = this._instate;
+		ActiveCacheState outstate = this._outstate;
+		
+		throw new todo.TODO();
+		
+		/*
 		// Get the actual slots which arguments point to, since everything is
 		// cached there are likely to not be values on the stack.
 		int n = __cargs.length;
@@ -318,6 +323,7 @@ class __JITCodeStream__
 		
 		// Destroy the stack so their bindings are not valid
 		__destroyStack((__rv != null ? 1 : 0), stackslots);
+		*/
 	}
 	
 	/**
@@ -356,8 +362,9 @@ class __JITCodeStream__
 		TranslationEngine engine = this._engine;
 		this._states = new SnapshotCacheStates(engine);
 		
-		// Also setup active state
-		this._activestate = new ActiveCacheState(engine, __ms, __ml);
+		// Also input and output states
+		this._instate = new ActiveCacheState(engine, __ms, __ml);
+		this._outstate = new ActiveCacheState(engine, __ms, __ml);
 	}
 	
 	/**

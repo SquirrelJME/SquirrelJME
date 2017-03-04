@@ -21,14 +21,6 @@ import net.multiphasicapps.squirreljme.linkage.Linkage;
 public interface JITStateAccessor
 {
 	/**
-	 * Returns the currently active cache state.
-	 *
-	 * @return The currently active cache state.
-	 * @since 2017/02/19
-	 */
-	public abstract ActiveCacheState activeCacheState();
-	
-	/**
 	 * Returns the state of cached variables across the entire program.
 	 *
 	 * @return The cache states, or {@code null} if they are not yet available.
