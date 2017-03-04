@@ -239,6 +239,10 @@ public final class Kernel
 		// Destroy the process
 		catch (RuntimeException|Error e)
 		{
+			// Print the trace
+			e.printStackTrace();
+			
+			// Close
 			if (rv != null)
 				try
 				{
