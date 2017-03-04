@@ -999,9 +999,6 @@ public class InflaterInputStream
 		if (__lens == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup target tree
-		__tree.clear();
-		
 		// Initialize both arrays with zero
 		int[] bl_count = this._blcount;
 		int[] next_code = this._nextcode;
@@ -1012,8 +1009,8 @@ public class InflaterInputStream
 		}
 		
 		// Determine the bitlength count for all of the inputs
-		for (int i = 0; i < __l; i++)
-			bl_count[__lens[__o + i]]++;
+		for (int i = 0, p = __o; i < __l; i++, p++)
+			bl_count[__lens[p]]++;
 		bl_count[0] = 0;
 		
 		// Find the numerical value of the smallest code for each code
@@ -1026,20 +1023,15 @@ public class InflaterInputStream
 		}
 	
 		// Assign values to all codes
-		for (int q = 0; q < __l; q++)
+		__tree.clear();
+		for (int q = 0, p = __o; q < __l; q++, p++)
 		{
 			// Get length
-			int len = __lens[__o + q];
+			int len = __lens[p];
 		
-			// Calculate
+			// Add code length to the huffman tree
 			if (len != 0)
-			{
-				// The bits to use
-				int use = ((next_code[len])++);
-				
-				// Add to the output table
-				__tree.add(q, use, (1 << len) - 1);
-			}
+				__tree.add(q, (next_code[len])++, (1 << len) - 1);
 		}
 		
 		// Return it
