@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 64a2785c-df2a-4e4f-8ad6-f16d9084dd07
+X-SquirrelJME-Error: BU
+X-SquirrelJME-Name: Adler32 Checksum
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This implements the Adler32 checksum 
+ algorithm.
+Microedition-Configuration: CLDC-1.8-Compact
+
