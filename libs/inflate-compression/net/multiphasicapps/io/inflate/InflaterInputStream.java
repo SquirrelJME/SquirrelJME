@@ -145,9 +145,6 @@ public class InflaterInputStream
 	/** The target end offset for writes. */
 	private int _targend;
 	
-	/** Debug counts. */
-	private int _debugnumnone, _debugnumfixed, _debugnumdynamic;
-	
 	/**
 	 * Initializes the deflate compression stream inflater.
 	 *
@@ -164,7 +161,6 @@ public class InflaterInputStream
 		
 		// Set
 		this.in = __in;
-		System.err.println("DEBUG -- -----------------------------");
 	}
 	
 	/**
@@ -313,20 +309,17 @@ public class InflaterInputStream
 		switch (type)
 		{
 				// None
-			case _TYPE_NO_COMPRESSION:System.err.println("DEBUG -- NONE");
-				this._debugnumnone++;
+			case _TYPE_NO_COMPRESSION:
 				__decompressNone();
 				break;
 				
 				// Fixed huffman
-			case _TYPE_FIXED_HUFFMAN:System.err.println("DEBUG -- FIXD");
-				this._debugnumfixed++;
+			case _TYPE_FIXED_HUFFMAN:
 				__decompressFixed();
 				break;
 				
 				// Dynamic huffman
-			case _TYPE_DYNAMIC_HUFFMAN:System.err.println("DEBUG -- DYNA");
-				this._debugnumdynamic++;
+			case _TYPE_DYNAMIC_HUFFMAN:
 				__decompressDynamic();
 				break;
 			
@@ -343,11 +336,6 @@ public class InflaterInputStream
 		int rv = (this._targoff - enteroff);
 		if (finalhit != 0)
 		{
-			// DEBUG
-			System.err.printf("DEBUG -- NONE: %d%n", this._debugnumnone);
-			System.err.printf("DEBUG -- FIXD: %d%n", this._debugnumfixed);
-			System.err.printf("DEBUG -- DYNA: %d%n", this._debugnumdynamic);
-			
 			this._eof = true;
 			return (rv == 0 ? -1 : rv);
 		}

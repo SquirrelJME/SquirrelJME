@@ -196,6 +196,9 @@ class __PNGImageParser__
 			throw new IOException(String.format("EB0z %d", height));
 		this._height = height;
 		
+		// Debug
+		System.err.printf("DEBUG -- Size: %dx%d%n", width, height);
+		
 		// Read the bit depth and the color type
 		int bitdepth = __in.readUnsignedByte(),
 			colortype = __in.readUnsignedByte();
