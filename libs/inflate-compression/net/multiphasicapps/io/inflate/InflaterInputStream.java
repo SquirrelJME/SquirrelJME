@@ -601,6 +601,20 @@ public class InflaterInputStream
 			if ((++v) >= maxlen)
 				v = 0;
 		}
+		
+		// Debug
+		System.out.printf("DEBUG -- Window len=%4d max=%4d dist=%4d `",
+			__len, maxlen, __dist);
+		for (int i = 0, v = 0; i < __len; i++)
+		{
+			byte b = winb[v];
+			System.out.print(b >= ' ' ? (char)b : '?');
+			
+			// Wrap around
+			if ((++v) >= maxlen)
+				v = 0;
+		}
+		System.out.println("`");
 	}
 	
 	/**
@@ -630,7 +644,7 @@ public class InflaterInputStream
 			// This uses a similar pattern to the length code, however the
 			// division is half the size (so there are groups of 2 now).
 			int v = ((i / 2) - 1);
-			if (v > 0)
+			if (v >= 0)
 				rv += (1 << v);
 			else
 				rv++;
