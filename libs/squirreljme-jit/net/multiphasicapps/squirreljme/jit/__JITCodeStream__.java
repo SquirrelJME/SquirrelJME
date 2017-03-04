@@ -139,32 +139,20 @@ class __JITCodeStream__
 		if (__type == null || __from == null || __to == null)
 			throw new NullPointerException("NARG");
 		
+		// If copying from the same
+		if (__from.equals(__to))
+			return;
+		
+		// Get active state
+		ActiveCacheState instate = this._instate;
+		ActiveCacheState outstate = this._outstate;
+		
 		// Debug
 		System.err.printf("DEBUG -- Copy %s %s -> %s%n", __type, __from, __to);
 		
-		// If the destination is a local variable then make it so the value is
-		// actually copied (because locals persist in exception handlers). As
-		// such this makes the JIT design a bit simpler at the cost of some
-		// copies.
-		ActiveCacheState activestate = this._instate;
-		if (__to.isLocal())
-		{
-			// Since locals are always written to, instructions must be
-			// generated
-			throw new todo.TODO();
-		}
-	
-		// Otherwise for stack targets, just alias them to local variables
-		// because these will for the most part be temporaries
-		else
-		{
-			// There might be an alias between stack entries
-			ActiveCacheState.Slot to = activestate.getSlot(__to);
-			__deAliasStack(to);
-			
-			// Generate alias
-			to.setAlias(__from);
-		}
+		// Forward to primitive copy
+		__primitiveCopy(instate, outstate, instate.getSlot(__from),
+			outstate.getSlot(__to), true, true);
 	}
 	
 	/**
@@ -401,6 +389,58 @@ class __JITCodeStream__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Performs a primitive copy operation of one value to another.
+	 *
+	 * @param __instate The input state.
+	 * @param __outstate The output state.
+	 * @param __srcslot The source slot to copy from.
+	 * @param __destslot The destination slot to copy to.
+	 * @param __doalias If {@code true} then aliasing is permitted.
+	 * @param __dogenop If {@code true} then generating opcodes is permitted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/04
+	 */
+	private void __primitiveCopy(CacheState __instate,
+		ActiveCacheState __outstate, CacheState.Slot __srcslot,
+		CacheState.Slot __destslot, boolean __doalias, boolean __dogenop)
+		throws NullPointerException
+	{
+		// Check
+		if (__instate == null || __outstate == null || __srcslot == null ||
+			__destslot == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- primitiveCopy: %s -> %s%n", __srcslot,
+			__destslot);
+		
+		/*
+		// If the destination is a local variable then make it so the value is
+		// actually copied (because locals persist in exception handlers). As
+		// such this makes the JIT design a bit simpler at the cost of some
+		// copies.
+		if (__to.isLocal())
+		{
+			// Since locals are always written to, instructions must be
+			// generated
+			throw new todo.TODO();
+		}
+	
+		// Otherwise for stack targets, just alias them to local variables
+		// because these will for the most part be temporaries
+		else
+		{
+			// There might be an alias between stack entries
+			ActiveCacheState.Slot to = instate.getSlot(__to);
+			__deAliasStack(to);
+			
+			// Generate alias
+			to.setAlias(__from);
+		}*/
 		throw new todo.TODO();
 	}
 }
