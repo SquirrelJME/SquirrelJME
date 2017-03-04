@@ -239,7 +239,7 @@ class __JITCodeStream__
 			ActiveCacheState.Slot slot = outstate.getSlot(v);
 			
 			// Set slot type
-			slot.setType(__st[i]);
+			slot.setType(__st[i], false);
 		}
 		
 		// Setup native bindings
