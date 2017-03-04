@@ -399,7 +399,7 @@ public final class ActiveCacheState
 			String alias = (idalias >= 0 ? String.format("copied=%c#%d",
 				(this._stackalias ? 'S' : 'L'), idalias) : "not aliased");
 			return String.format("{%c#%d: type=%s, binding=%s, %s}",
-				(this.isstack ? 'S' : 'L'), this.index, this._type,
+				(this.isstack ? 'S' : 'L'), this.index, type(),
 				this.binding, alias);
 		}
 		
@@ -410,6 +410,11 @@ public final class ActiveCacheState
 		@Override
 		public StackMapType type()
 		{
+			// Use aliased yype
+			Slot alias = alias();
+			if (alias != null)
+				return alias.type();
+			
 			return this._type;
 		}
 		

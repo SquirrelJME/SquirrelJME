@@ -306,7 +306,7 @@ public final class SnapshotCacheState
 				this._string = new WeakReference<>((rv = String.format(
 					"{%c#%d: type=%s, binding=%s, %s}",
 					(this.isstack ? 'S' : 'L'),
-					this.index, this.type, this.binding, alias)));
+					this.index, type(), this.binding, alias)));
 			}
 		
 			return rv;
@@ -319,6 +319,11 @@ public final class SnapshotCacheState
 		@Override
 		public StackMapType type()
 		{
+			// Use aliased yype
+			Slot alias = alias();
+			if (alias != null)
+				return alias.type();
+			
 			return this.type;
 		}
 	}
