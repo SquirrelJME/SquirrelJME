@@ -140,6 +140,23 @@ public class SlidingByteWindow
 	}
 	
 	/**
+	 * Obtains a single byte at the specified position in the past.
+	 *
+	 * @param __ago The number of positions ago to get the value for.
+	 * @return The byte value at the given position.
+	 * @throws IndexOutOfBoundsException If the position is not within the
+	 * bounds of the sliding window.
+	 * @since 2017/03/04
+	 */
+	public byte get(int __ago)
+		throws IndexOutOfBoundsException
+	{
+		byte[] solo = this._solo;
+		get(__ago, solo, 0, 1);
+		return solo[0];
+	}
+	
+	/**
 	 * This reads bytes from the sliding window at a given historical index
 	 * and writes them to the input array.
 	 *

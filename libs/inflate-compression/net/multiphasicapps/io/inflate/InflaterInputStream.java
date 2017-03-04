@@ -1098,6 +1098,19 @@ public class InflaterInputStream
 				
 				// Append to the window
 				window.append(b);
+				
+				// Trace
+				System.out.println("DEBUG ---------------------------");
+				System.out.printf("DEBUG -- %02x `", b);
+				for (int i = 48; i >= 1; i--)
+					if (i < window.size())
+					{
+						byte q = window.get(i);
+						System.out.print((q >= ' ' ? (char)q : '?'));
+					}
+				System.out.println('`');
+				new Throwable().printStackTrace(System.out);
+				System.out.println("DEBUG ---------------------------");
 			} while (writesize >= 8);
 			
 			// Store new position
