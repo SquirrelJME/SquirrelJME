@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
+
 /**
  * This specifies the reason for the change in an active binding's binding.
  *

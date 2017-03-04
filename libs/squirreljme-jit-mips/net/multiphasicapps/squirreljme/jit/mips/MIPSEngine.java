@@ -137,8 +137,7 @@ public class MIPSEngine
 	 * @since 2017/02/23
 	 */
 	@Override
-	public abstract ActiveBinding createActiveBinding(
-		ActiveCacheState.Slot __s)
+	public ActiveBinding createActiveBinding(ActiveCacheState.Slot __s)
 		throws NullPointerException
 	{
 		return new MIPSActiveBinding(this, __s);

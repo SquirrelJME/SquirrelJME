@@ -75,14 +75,14 @@ public class MIPSActiveBinding
 	 * @since 2017/03/03
 	 */
 	@Override
-	public changeBinding(ActiveBindingChangeType __t)
+	public void changeBinding(ActiveBindingChangeType __t)
 		throws NullPointerException
 	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw todo.TODO();
+		throw new todo.TODO();
 	}
 	
 	/**

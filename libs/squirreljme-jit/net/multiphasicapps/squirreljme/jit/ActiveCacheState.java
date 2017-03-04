@@ -320,8 +320,30 @@ public final class ActiveCacheState
 			if (__t == StackMapType.TOP)
 				throw new JITException("ED0b");
 			
-			// Set, return old
+			// Do nothing if the type remains the same
 			StackMapType rv = this._type;
+			if (__t == rv)
+				return __t;
+			
+			// Depending on the target type, specify the change
+			ActiveBindingChangeType ct;
+			switch (__t)
+			{
+				case NOTHING:	ct = ActiveBindingChangeType.CLEARED; break;
+				case INTEGER:	ct = ActiveBindingChangeType.TO_INTEGER; break;
+				case LONG:		ct = ActiveBindingChangeType.TO_LONG; break;
+				case FLOAT:		ct = ActiveBindingChangeType.TO_FLOAT; break;
+				case DOUBLE:	ct = ActiveBindingChangeType.TO_DOUBLE; break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// Set change
+			this.binding.changeBinding(ct);
+			
+			// Set, return old
 			this._type = __t;
 			return rv;
 		}

@@ -104,6 +104,9 @@ public final class Kernel
 		// Failed to create it, destroy it
 		catch (RuntimeException|Error e)
 		{
+			// Print the trace
+			e.printStackTrace();
+			
 			// Destroy the process but do not override failure state
 			if (lp != null)
 				try
