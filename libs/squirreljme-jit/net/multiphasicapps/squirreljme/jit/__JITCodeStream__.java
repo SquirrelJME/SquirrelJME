@@ -406,7 +406,7 @@ class __JITCodeStream__
 	 */
 	private void __primitiveCopy(CacheState __instate,
 		ActiveCacheState __outstate, CacheState.Slot __srcslot,
-		CacheState.Slot __destslot, boolean __doalias, boolean __dogenop)
+		ActiveCacheState.Slot __destslot, boolean __doalias, boolean __dogenop)
 		throws NullPointerException
 	{
 		// Check

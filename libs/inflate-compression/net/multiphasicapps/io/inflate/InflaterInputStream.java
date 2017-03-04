@@ -48,6 +48,10 @@ public class InflaterInputStream
 	private static final int _TYPE_ERROR =
 		0b11;
 	
+	/** The maximum number of bits in the code length tree. */
+	private static final int _MAX_BITS =
+		15;
+	
 	/** Shuffled bit values when reading values. */
 	private static final int[] _SHUFFLE_BITS =
 		new int[]
@@ -91,6 +95,14 @@ public class InflaterInputStream
 	 */
 	private final int[] _rawlitdistlens =
 		new int[322];
+	
+	/** Used to store bit length counts. */
+	private final int[] _blcount =
+		new int[_MAX_BITS + 1];
+	
+	/** Used to store the next code. */
+	private final int[] _nextcode =
+		new int[_MAX_BITS + 1];
 	
 	/** The code length tree. */
 	private volatile Reference<HuffmanTreeInt> _codelentree;
@@ -990,27 +1002,24 @@ public class InflaterInputStream
 		// Setup target tree
 		__tree.clear();
 		
-		// Obtain the number of bits that are available in all of the input
-		// lengths
-		int maxbits = 0;
-		for (int i = 0; i < __l; i++)
+		// Initialize both arrays with zero
+		int[] bl_count = this._blcount;
+		int[] next_code = this._nextcode;
+		for (int i = 0, n = bl_count.length; i < n; i++)
 		{
-			int v = __lens[__o + i];
-			if (v > maxbits)
-				maxbits = v;
+			bl_count[i] = 0;
+			next_code[i] = 0;
 		}
 		
 		// Determine the bitlength count for all of the inputs
-		int[] bl_count = new int[__l];
 		for (int i = 0; i < __l; i++)
 			bl_count[__lens[__o + i]]++;
+		bl_count[0] = 0;
 		
 		// Find the numerical value of the smallest code for each code
 		// length.
 		int code = 0;
-		int[] next_code = new int[maxbits + 1];
-		bl_count[0] = 0;
-		for (int bits = 1; bits <= maxbits; bits++)
+		for (int bits = 1; bits <= _MAX_BITS; bits++)
 		{
 			code = (code + bl_count[bits - 1]) << 1;
 			next_code[bits] = code;
