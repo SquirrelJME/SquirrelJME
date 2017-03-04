@@ -173,33 +173,10 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * This returns the active binding for this slot.
-		 *
-		 * @param <B> The active binding type used.
-		 * @param __cl The class to cast to.
-		 * @return The active binding.
-		 * @throws ClassCastException If the class type is not valid.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/02/23
-		 */
-		public <B extends ActiveBinding> B binding(Class<B> __cl)
-			throws ClassCastException, NullPointerException
-		{
-			// Check
-			if (__cl == null)
-				throw new NullPointerException("NARG");
-			
-			// Cast
-			return __cl.cast(this.binding);
-		}
-		
-		/**
-		 * Returns the slot that this is aliased to or {@code null} if it
-		 * is not aliased.
-		 *
-		 * @return The aliased slot or {@code null} if not aliased.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public Slot alias()
 		{
 			for (Slot at = this;;)
@@ -223,6 +200,22 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/23
+		 */
+		@Override
+		public <B extends Binding> B binding(Class<B> __cl)
+			throws ClassCastException, NullPointerException
+		{
+			// Check
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+			
+			// Cast
+			return __cl.cast(this.binding);
+		}
+		
+		/**
 		 * Clears the alias for this slot.
 		 *
 		 * @since 2017/03/03
@@ -234,33 +227,30 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Returns the index of this slot.
-		 *
-		 * @return The slot index.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public int index()
 		{
 			return this.index;
 		}
 		
 		/**
-		 * Returns {@code true} if this is a local slot.
-		 *
-		 * @return {@code true} if a local slot.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public boolean isLocal()
 		{
 			return !this.isstack;
 		}
 		
 		/**
-		 * Returns {@code true} if this is a stack slot.
-		 *
-		 * @return {@code true} if a stack slot.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public boolean isStack()
 		{
 			return this.isstack;
@@ -352,11 +342,10 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Returns the type of value that is stored here.
-		 *
-		 * @return The type of value to store.
+		 * {@inheritDoc}
 		 * @since 2017/02/23
 		 */
+		@Override
 		public StackMapType type()
 		{
 			return this._type;
@@ -381,7 +370,7 @@ public final class ActiveCacheState
 			this.binding.switchFrom(__s.<Binding>binding(Binding.class));
 			
 			// Aliased?
-			SnapshotCacheState.Slot alias = __s.alias();
+			CacheState.Slot alias = __s.alias();
 			if (alias != null)
 			{
 				this._stackalias = alias.isStack();

@@ -112,7 +112,7 @@ public abstract class TranslationEngine
 	 * @return The snapshotted binding.
 	 * @since 2017/03/01
 	 */
-	public abstract SnapshotBinding snapshotBinding(ActiveBinding __b)
+	public abstract SnapshotBinding snapshotBinding(Binding __b)
 		throws NullPointerException;
 }
 

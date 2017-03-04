@@ -54,6 +54,60 @@ public interface CacheState
 	 */
 	public static interface Slot
 	{
+		/**
+		 * Returns the slot that this is aliased to or {@code null} if it
+		 * is not aliased. If the slot is aliased to another which has an
+		 * alias then it should follow and return that alias instead.
+		 *
+		 * @return The aliased slot or {@code null} if not aliased.
+		 * @since 2017/03/03
+		 */
+		public abstract Slot alias();
+		
+		/**
+		 * This returns the active binding for this slot.
+		 *
+		 * @param <B> The active binding type used.
+		 * @param __cl The class to cast to.
+		 * @return The active binding.
+		 * @throws ClassCastException If the class type is not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/03/03
+		 */
+		public abstract <B extends Binding> B binding(Class<B> __cl)
+			throws ClassCastException, NullPointerException;
+		
+		/**
+		 * Returns the index of this slot.
+		 *
+		 * @return The slot index.
+		 * @since 2017/03/03
+		 */
+		public abstract int index();
+		
+		/**
+		 * Returns {@code true} if this is a local slot.
+		 *
+		 * @return {@code true} if a local slot.
+		 * @since 2017/03/03
+		 */
+		public abstract boolean isLocal();
+		
+		/**
+		 * Returns {@code true} if this is a stack slot.
+		 *
+		 * @return {@code true} if a stack slot.
+		 * @since 2017/03/03
+		 */
+		public abstract boolean isStack();
+		
+		/**
+		 * Returns the type of value that is stored here.
+		 *
+		 * @return The type of value to store.
+		 * @since 2017/03/03
+		 */
+		public abstract StackMapType type();
 	}
 	
 	/**

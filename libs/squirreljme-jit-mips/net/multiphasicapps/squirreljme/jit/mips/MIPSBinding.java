@@ -10,59 +10,46 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
-import java.util.Objects;
-import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
+import net.multiphasicapps.squirreljme.jit.Binding;
 
 /**
- * This is a binding for MIPS register or stack values which determines where
- * values exist.
+ * This is the base interface for bindings for the MIPS JIT.
  *
- * This class is immutable.
- *
- * @since 2017/02/19
+ * @since 2017/03/03
  */
-public final class MIPSBinding
-	implements SnapshotBinding
+public abstract class MIPSBinding
+	implements Binding
 {
-	/** The stack offset. */
-	protected final int stackoffset;
-	
-	/** The stack length. */
-	protected final int stacklength;
-	
-	/** Registers which are associated with this binding. */
-	private final MIPSRegister[] _registers;
-	
-	/** String representation. */
-	private volatile Reference<String> _string;
+	/**
+	 * Returns the currently assigned registers.
+	 *
+	 * @return The assigned registers.
+	 * @since 2017/03/03
+	 */
+	public abstract MIPSRegister[] registers();
 	
 	/**
-	 * Initializes the MIPS binding which snapshots an active binding
+	 * Returns the length of the value on the stack.
 	 *
-	 * @param __b The binding to snapshot.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/20
+	 * @return The stack length or {@link Integer#MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2017/03/03
 	 */
-	MIPSBinding(MIPSActiveBinding __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		// Copy
-		MIPSRegister[] registers = __b.registers();
-		this._registers = (registers != null ? registers.clone() : null);
-		this.stackoffset = __b.stackOffset();
-		this.stacklength = __b.stackLength();
-	}
+	public abstract int stackLength();
+	
+	/**
+	 * Returns the offset on the stack the value will be placed.
+	 *
+	 * @return The stack offset or {@link Integer#MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2017/03/03
+	 */
+	public abstract int stackOffset();
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/19
+	 * @since 2017/02/23
 	 */
 	@Override
 	public boolean equals(Object __o)
@@ -71,111 +58,25 @@ public final class MIPSBinding
 		if (!(__o instanceof MIPSBinding))
 			return false;
 		
-		// Compare registers first
 		MIPSBinding o = (MIPSBinding)__o;
-		MIPSRegister[] ar = this._registers;
-		MIPSRegister[] br = o._registers;
-		if ((ar == null) != (br == null))
-			return false;
-		if (ar != null)
-		{
-			// Length mismatch
-			int an = ar.length,
-				bn = br.length;
-			if (an != bn)
-				return false;
-			
-			// Compare individual elements
-			for (int i = 0; i < an; i++)
-				if (!ar[i].equals(br[i]))
-					return false;
-		}
-		
-		// Then the stack
-		return this.stackoffset == o.stackoffset &&
-			this.stacklength == o.stacklength;
+		return this.stackOffset() == o.stackOffset() &&
+			this.stackLength() == o.stackLength() &&
+			Arrays.equals(this.registers(), o.registers());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/19
+	 * @since 2017/02/23
 	 */
 	@Override
 	public int hashCode()
 	{
 		int rv = 0;
-		MIPSRegister[] registers = this._registers;
-		if (registers != null)
-			for (int i = 0, n = registers.length; i < n; i++)
-				rv ^= registers[i].hashCode();
-		return rv ^ this.stackoffset ^ (~this.stacklength);
+		MIPSRegister[] registers = this.registers();
+		for (int i = 0, n = registers.length; i < n; i++)
+			rv ^= registers[i].hashCode();
+		return rv ^ this.stackOffset() ^ (~this.stackLength());
 	}
 	
-	/**
-	 * Returns the currently assigned registers.
-	 *
-	 * @return The assigned registers.
-	 * @since 2017/03/01
-	 */
-	public MIPSRegister[] registers()
-	{
-		// Stack only
-		if (this.stacklength > 0)
-			return null;
-		
-		// Clone
-		return this._registers.clone();
-	}
-	
-	/**
-	 * Returns the length of the value on the stack.
-	 *
-	 * @return The stack length or {@link Integer#MIN_VALUE} if it is not
-	 * valid.
-	 * @since 2017/03/01
-	 */
-	public int stackLength()
-	{
-		return this.stacklength;
-	}
-	
-	/**
-	 * Returns the offset on the stack the value will be placed.
-	 *
-	 * @return The stack offset or {@link Integer#MIN_VALUE} if it is not
-	 * valid.
-	 * @since 2017/03/01
-	 */
-	public int stackOffset()
-	{
-		return this.stackoffset;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/19
-	 */
-	@Override
-	public String toString()
-	{
-		Reference<String> ref = this._string;
-		String rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-		{
-			int stacklength = this.stacklength;
-			if (stacklength <= 0)
-				rv = Arrays.asList(this._registers).toString();
-			else
-				rv = String.format("<%+d, %d>", this.stackoffset,
-					stacklength);
-			
-			// Store
-			this._string = new WeakReference<>(rv);
-		}
-		
-		return rv;
-	}
 }
 

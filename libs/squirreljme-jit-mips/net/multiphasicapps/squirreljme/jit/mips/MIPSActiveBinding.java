@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
+import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
@@ -26,6 +27,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2017/02/23
  */
 public class MIPSActiveBinding
+	extends MIPSBinding
 	implements ActiveBinding
 {
 	/** Registers being used. */
@@ -51,39 +53,6 @@ public class MIPSActiveBinding
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/23
-	 */
-	@Override
-	public boolean equals(Object __o)
-	{
-		// Check
-		if (!(__o instanceof MIPSBinding))
-			return false;
-		
-		MIPSActiveBinding o = (MIPSActiveBinding)__o;
-		return this._stackoffset == o._stackoffset &&
-			this._stacklength == o._stacklength &&
-			this.registers.equals(o.registers);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/23
-	 */
-	@Override
-	public int hashCode()
-	{
-		int rv = 0;
-		List<MIPSRegister> registers = this.registers;
-		for (int i = 0, n = registers.size(); i < n; i++)
-			rv ^= registers.get(i).hashCode();
-		return rv ^ this._stackoffset ^ (~this._stacklength);
-	}
-	
-	/**
-	 * Returns the currently assigned registers.
-	 *
-	 * @return The assigned registers.
 	 * @since 2017/03/01
 	 */
 	public MIPSRegister[] registers()
@@ -117,24 +86,20 @@ public class MIPSActiveBinding
 	}
 	
 	/**
-	 * Returns the length of the value on the stack.
-	 *
-	 * @return The stack length or {@link Integer#MIN_VALUE} if it is not
-	 * valid.
+	 * {@inheritDoc}
 	 * @since 2017/03/01
 	 */
+	@Override
 	public int stackLength()
 	{
 		return this._stacklength;
 	}
 	
 	/**
-	 * Returns the offset on the stack the value will be placed.
-	 *
-	 * @return The stack offset or {@link Integer#MIN_VALUE} if it is not
-	 * valid.
+	 * {@inheritDoc}
 	 * @since 2017/03/01
 	 */
+	@Override
 	public int stackOffset()
 	{
 		return this._stackoffset;
@@ -145,7 +110,7 @@ public class MIPSActiveBinding
 	 * @since 2017/02/23
 	 */
 	@Override
-	public void switchFrom(SnapshotBinding __b)
+	public void switchFrom(Binding __b)
 		throws JITException, NullPointerException
 	{
 		// Check

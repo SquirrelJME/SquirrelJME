@@ -13,7 +13,8 @@ package net.multiphasicapps.squirreljme.jit;
 /**
  * This is the base class for bindings which are used to represent state.
  *
- * {@link #equals(Object)} and {@link #hashCode()} must be implemented.
+ * {@link #equals(Object)} and {@link #hashCode()} must be implemented and
+ * they must be equal at the level of this interface and not any sub-interface.
  *
  * @since 2017/03/03
  */

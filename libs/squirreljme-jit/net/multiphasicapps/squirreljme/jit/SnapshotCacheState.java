@@ -216,12 +216,10 @@ public final class SnapshotCacheState
 		}
 		
 		/**
-		 * Returns the slot that this is aliased to or {@code null} if it
-		 * is not aliased.
-		 *
-		 * @return The aliased slot or {@code null} if not aliased.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public Slot alias()
 		{
 			for (Slot at = this;;)
@@ -245,15 +243,11 @@ public final class SnapshotCacheState
 		}
 		
 		/**
-		 * Returns the binding as the specified class.
-		 *
-		 * @param <B> The class to cast to.
-		 * @param __cl The class to cast to.
-		 * @return The binding for this slot.
-		 * @throws ClassCastException If the class type is incorrect.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
-		public <B extends SnapshotBinding> B binding(Class<B> __cl)
+		@Override
+		public <B extends Binding> B binding(Class<B> __cl)
 			throws ClassCastException, NullPointerException
 		{
 			// Check
@@ -264,33 +258,30 @@ public final class SnapshotCacheState
 		}
 		
 		/**
-		 * Returns the index of this slot.
-		 *
-		 * @return The slot index.
+		 * {inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public int index()
 		{
 			return this.index;
 		}
 		
 		/**
-		 * Returns {@code true} if this is a local slot.
-		 *
-		 * @return {@code true} if a local slot.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public boolean isLocal()
 		{
 			return !this.isstack;
 		}
 		
 		/**
-		 * Returns {@code true} if this is a stack slot.
-		 *
-		 * @return {@code true} if a stack slot.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public boolean isStack()
 		{
 			return this.isstack;
@@ -322,11 +313,10 @@ public final class SnapshotCacheState
 		}
 		
 		/**
-		 * Returns the type of value that is stored here.
-		 *
-		 * @return The type of value to store.
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
+		@Override
 		public StackMapType type()
 		{
 			return this.type;
