@@ -81,10 +81,13 @@ public abstract class TranslationEngine
 	/**
 	 * Creates an active binding.
 	 *
+	 * @param __s The slot owning this binding.
 	 * @return The newly created active binding.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	public abstract ActiveBinding createActiveBinding();
+	public abstract ActiveBinding createActiveBinding(
+		ActiveCacheState.Slot __s);
 	
 	/**
 	 * Invokes the specified method with the given arguments, returning the

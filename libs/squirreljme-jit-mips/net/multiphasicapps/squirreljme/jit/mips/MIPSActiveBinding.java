@@ -15,6 +15,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
+import net.multiphasicapps.squirreljme.jit.ActiveBindingChangeType;
+import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -34,6 +36,12 @@ public class MIPSActiveBinding
 	protected final List<MIPSRegister> registers =
 		new ArrayList<>();
 	
+	/** The translation engine used. */
+	protected final MIPSEngine engine;
+	
+	/** The owning cache state. */
+	protected final ActiveCacheState.Slot inslot;
+	
 	/** The stack offset. */
 	private volatile int _stackoffset =
 		Integer.MIN_VALUE;
@@ -45,16 +53,43 @@ public class MIPSActiveBinding
 	/**
 	 * Initializes the active binding.
 	 *
+	 * @param __e The owning engine.
+	 * @param __cs The owning slot.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	public MIPSActiveBinding()
+	public MIPSActiveBinding(MIPSEngine __e, ActiveCacheState.Slot __cs)
+		throws NullPointerException
 	{
+		// Check
+		if (__e == null || __cs == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.engine = __e;
+		this.inslot = __cs;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/03
+	 */
+	@Override
+	public changeBinding(ActiveBindingChangeType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/03/01
 	 */
+	@Override
 	public MIPSRegister[] registers()
 	{
 		// Stack only

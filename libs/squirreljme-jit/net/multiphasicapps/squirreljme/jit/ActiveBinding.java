@@ -22,6 +22,16 @@ public interface ActiveBinding
 	extends Binding
 {
 	/**
+	 * Changes the binding information within the active binding.
+	 *
+	 * @param __t The type of change to perform.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/03
+	 */
+	public abstract void changeBinding(ActiveBindingChangeType __t)
+		throws NullPointerException;
+	
+	/**
 	 * Loads the information stored in the immutable binding and copies its
 	 * state to this active binding.
 	 *

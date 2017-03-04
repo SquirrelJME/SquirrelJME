@@ -169,7 +169,7 @@ public final class ActiveCacheState
 			this.index = __i;
 			
 			// Setup binding
-			this.binding = __te.createActiveBinding();
+			this.binding = __te.createActiveBinding(this);
 		}
 		
 		/**
