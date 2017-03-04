@@ -301,7 +301,8 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Sets the type of value stored in this slot.
+		 * Sets the type of value stored in this slot along with also causing
+		 * a binding change.
 		 *
 		 * @param __t The type of value to store.
 		 * @return The old type.
@@ -310,6 +311,24 @@ public final class ActiveCacheState
 		 * @since 2017/02/23
 		 */
 		public StackMapType setType(StackMapType __t)
+			throws JITException, NullPointerException
+		{
+			return setType(__t, true);
+		}
+		
+		/**
+		 * Sets the type of value stored in this slot.
+		 *
+		 * @param __t The type of value to store.
+		 * @param __ebc If the type is to change, should the binding be
+		 * notified of the change so it may potentially adjust the binding
+		 * data?
+		 * @return The old type.
+		 * @throws JITException If the type is {@link StackMapType#TOP} type.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/02/23
+		 */
+		public StackMapType setType(StackMapType __t, boolean __ebc)
 			throws JITException, NullPointerException
 		{
 			// Check
@@ -326,23 +345,43 @@ public final class ActiveCacheState
 				return __t;
 			
 			// Depending on the target type, specify the change
-			ActiveBindingChangeType ct;
-			switch (__t)
+			if (__ebc)
 			{
-				case NOTHING:	ct = ActiveBindingChangeType.CLEARED; break;
-				case INTEGER:	ct = ActiveBindingChangeType.TO_INTEGER; break;
-				case LONG:		ct = ActiveBindingChangeType.TO_LONG; break;
-				case FLOAT:		ct = ActiveBindingChangeType.TO_FLOAT; break;
-				case DOUBLE:	ct = ActiveBindingChangeType.TO_DOUBLE; break;
-				case OBJECT:	ct = ActiveBindingChangeType.TO_OBJECT; break;
+				ActiveBindingChangeType ct;
+				switch (__t)
+				{
+					case NOTHING:
+						ct = ActiveBindingChangeType.CLEARED;
+						break;
+						
+					case INTEGER:
+						ct = ActiveBindingChangeType.TO_INTEGER;
+						break;
+						
+					case LONG:
+						ct = ActiveBindingChangeType.TO_LONG;
+						break;
+						
+					case FLOAT:
+						ct = ActiveBindingChangeType.TO_FLOAT;
+						break;
+						
+					case DOUBLE:
+						ct = ActiveBindingChangeType.TO_DOUBLE;
+						break;
+						
+					case OBJECT:
+						ct = ActiveBindingChangeType.TO_OBJECT;
+						break;
 				
-					// Unknown
-				default:
-					throw new RuntimeException("OOPS");
-			}
+						// Unknown
+					default:
+						throw new RuntimeException("OOPS");
+				}
 			
-			// Set change
-			this.binding.changeBinding(ct);
+				// Set change
+				this.binding.changeBinding(ct);
+			}
 			
 			// Set, return old
 			this._type = __t;
