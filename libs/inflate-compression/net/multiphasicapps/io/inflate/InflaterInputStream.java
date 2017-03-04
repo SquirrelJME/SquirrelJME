@@ -670,9 +670,9 @@ public class InflaterInputStream
 	private int __handleLength(int __c)
 		throws IOException
 	{
-		// If the code is 285 then the length will be that
+		// The maximum length that can ever be used is 258, it has no bits also
 		if (__c == 285)
-			return 285;
+			return 258;
 		
 		// Get the base code
 		int base = __c - 257;
@@ -698,7 +698,7 @@ public class InflaterInputStream
 		// Add extra bits which are used to modify the amount of data read
 		int extrabits = (base / 4) - 1;
 		if (extrabits > 0)
-			rv += __readBits(extrabits, false);
+			rv += (extrabits = __readBits(extrabits, false));
 		
 		// Return the length
 		return rv;
