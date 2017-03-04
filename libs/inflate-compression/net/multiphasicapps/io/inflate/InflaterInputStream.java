@@ -164,6 +164,7 @@ public class InflaterInputStream
 		
 		// Set
 		this.in = __in;
+		System.err.println("DEBUG -- -----------------------------");
 	}
 	
 	/**
@@ -312,19 +313,19 @@ public class InflaterInputStream
 		switch (type)
 		{
 				// None
-			case _TYPE_NO_COMPRESSION:
+			case _TYPE_NO_COMPRESSION:System.err.println("DEBUG -- NONE");
 				this._debugnumnone++;
 				__decompressNone();
 				break;
 				
 				// Fixed huffman
-			case _TYPE_FIXED_HUFFMAN:
+			case _TYPE_FIXED_HUFFMAN:System.err.println("DEBUG -- FIXD");
 				this._debugnumfixed++;
 				__decompressFixed();
 				break;
 				
 				// Dynamic huffman
-			case _TYPE_DYNAMIC_HUFFMAN:
+			case _TYPE_DYNAMIC_HUFFMAN:System.err.println("DEBUG -- DYNA");
 				this._debugnumdynamic++;
 				__decompressDynamic();
 				break;
