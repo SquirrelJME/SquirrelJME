@@ -13,7 +13,6 @@ package net.multiphasicapps.io.zlibdecompression;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
-import net.multiphasicapps.io.region.SizeLimitedInputStream;
 
 /**
  * This class supports decompressing ZLib streams.
@@ -37,6 +36,9 @@ public class ZLibDecompressor
 	
 	/** Current stream to read data from, will change for blocks. */
 	private volatile InputStream _current;
+	
+	/** Has EOF been read? */
+	private volatile boolean _eof;
 	
 	/**
 	 * Initializes the ZLib decompressor.
@@ -132,7 +134,21 @@ public class ZLibDecompressor
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		throw new todo.TODO();
+		// Read EOF?
+		if (this._eof)
+			return -1;
+		
+		// Try to fill the buffer up as much as possible
+		int rv = 0;
+		boolean eof = false;
+		InputStream current = this._current;
+		while (rv < __l)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Return EOF or the read count
+		return (eof && rv == 0 ? -1 : rv);
 	}
 }
 
