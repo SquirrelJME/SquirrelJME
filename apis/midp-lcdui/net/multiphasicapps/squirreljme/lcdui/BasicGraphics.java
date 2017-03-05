@@ -588,11 +588,12 @@ public abstract class BasicGraphics
 	 */
 	@Override
 	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch)
-		throws NullPointerException
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anch)
+		throws IllegalArgumentException, NullPointerException
 	{
-		drawRegion(__src, __xsrc, __ysrc, __w, __h, __trans, __xdest, __ydest,
-			__anch, __w, __h);
+		drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch, __wsrc, __hsrc);
 	}
 	
 	/**
@@ -601,10 +602,38 @@ public abstract class BasicGraphics
 	 */
 	@Override
 	public final void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch,
-		int __wdest, int __hdest)
-		throws NullPointerException
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anchor, int __wdest, int __hdest)
+		throws IllegalArgumentException, NullPointerException
 	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB18 Images cannot have the baseline anchor
+		// point.}
+		if (__anchor == BASELINE)
+			throw new IllegalArgumentException("EB18");
+		
+		// Calculate source image coordinates
+		int iw = __src.getWidth(),
+			ih = __src.getHeight(),
+			exsrc = __xsrc + __wsrc,
+			eysrc = __ysrc + __hsrc;
+		
+		// {@squirreljme.error EB19 Source rectangle from an image exceeds the
+		// bounds of the image.}
+		if (__xsrc < 0 || __ysrc < 0 || exsrc > iw || eysrc > ih)
+			throw new IllegalArgumentException("EB19");
+		
+		// Transform
+		__xdest += this._transx;
+		__ydest += this._transy;
+		
+		// The destination is anchored
+		__xdest = __anchorX(__xdest, __wdest, __anchor);
+		__ydest = __anchorY(__ydest, __hdest, __anchor);
+		
 		throw new todo.TODO();
 	}
 	

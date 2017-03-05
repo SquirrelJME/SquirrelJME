@@ -140,7 +140,7 @@ public class HostedLaunch
 			if (stdmain)
 			{
 				// Get method
-				Method startmethod = mainclass.getMethod("main",
+				Method startmethod = mainclass.getDeclaredMethod("main",
 					(Class)String[].class);
 				
 				// Execute
@@ -157,14 +157,14 @@ public class HostedLaunch
 				// Make sure it can be called
 				cons.setAccessible(true);
 			
-				// Create instance
-				MIDlet mid = (MIDlet)cons.newInstance();
-			
-				// Start it
-				Method startmethod = mainclass.getMethod("startApp");
+				// So it can be started
+				Method startmethod = MIDlet.class.
+					getDeclaredMethod("startApp");
 				startmethod.setAccessible(true);
 			
-				// Call it
+				// Create instance and start
+				System.err.println("Starting application...");
+				MIDlet mid = (MIDlet)cons.newInstance();
 				startmethod.invoke(mid);
 			}
 		}

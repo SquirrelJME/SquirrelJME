@@ -224,14 +224,14 @@ public abstract class Graphics
 	public abstract void drawRect(int __x, int __y, int __w, int __h);
 	
 	/**
-	 * Same as {@code drawRegion(__src, __xsrc __ysrc, __w, __h, __trans,
-	 * __xdest, __ydest, __anch, __w, __h);}.
+	 * Same as {@code drawRegion(__src, __xsrc __ysrc, __wsrc, __hsrc, __trans,
+	 * __xdest, __ydest, __anch, __wsrc, __hsrc);}.
 	 *
 	 * @param __src The source image.
 	 * @param __xsrc The source X position.
 	 * @param __ysrc The source Y position.
-	 * @param __w The width of the source region.
-	 * @param __h The height of the source region.
+	 * @param __wsrc The width of the source region.
+	 * @param __hsrc The height of the source region.
 	 * @param __trans Sprite translation and/or rotation, see {@link Sprite}.
 	 * @param __xdest The destination X position, is translated..
 	 * @param __ydest The destination Y position, is translated..
@@ -243,12 +243,34 @@ public abstract class Graphics
 	 * @since 2017/02/11 
 	 */
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch)
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anch)
 		throws IllegalArgumentException, NullPointerException;
 	
+	/**
+	 * Draws the specified region of the given image with potential scaling
+	 * and transformations.
+	 *
+	 * @param __src The source image.
+	 * @param __xsrc The source X position.
+	 * @param __ysrc The source Y position.
+	 * @param __wsrc The width of the source region.
+	 * @param __hsrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation, see {@link Sprite}.
+	 * @param __xdest The destination X position, is translated..
+	 * @param __ydest The destination Y position, is translated..
+	 * @param __anch The anchor point.
+	 * @param __wdest The destination width.
+	 * @param __hdest The destination height.
+	 * @throws IllegalArgumentException If the source is the destination
+	 * image; the source region exceeds the image bounds; the sprite
+	 * transformation is not valid; The anchor is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/11 
+	 */
 	public abstract void drawRegion(Image __src, int __xsrc, int __ysrc,
-		int __w, int __h, int __trans, int __xdest, int __ydest, int __anch,
-		int __wdest, int __hdest)
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException;
 	
 	public abstract void drawRoundRect(int __x, int __y, int __w, int __h,
