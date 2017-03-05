@@ -57,6 +57,9 @@ public class GameInterface
 	/** The automap. */
 	protected final Automap automap;
 	
+	/** Debug image. */
+	protected final Image debugimage;
+	
 	/** The width of the level in pixels. */
 	protected final int levelpxw;
 	
@@ -151,6 +154,26 @@ public class GameInterface
 		
 		// Setup automap
 		this.automap = new Automap(this, 128, 128);
+		
+		// Draw debug image
+		int ww = 200, hh = 100;
+		Image debugimage = Image.createImage(ww, hh, true, 0);
+		this.debugimage = debugimage;
+		ww--;
+		hh--;
+		Graphics g = debugimage.getGraphics();
+		g.setColor(0xFF0000);
+		g.drawLine(0, 0, ww, 0);
+		g.drawLine((ww / 2), (hh / 2), (ww / 2), 0);
+		g.setColor(0x00FF00);
+		g.drawLine(ww, 0, ww, hh);
+		g.drawLine((ww / 2), (hh / 2), ww, (hh / 2));
+		g.setColor(0x0000FF);
+		g.drawLine(ww, hh, 0, hh);
+		g.drawLine((ww / 2), (hh / 2), (ww / 2), hh);
+		g.setColor(0xFFFF00);
+		g.drawLine(0, hh, 0, 0);
+		g.drawLine((ww / 2), (hh / 2), 0, (hh / 2));
 	}
 	
 	/**
@@ -307,6 +330,22 @@ public class GameInterface
 		Image map = this.automap.update();
 		__g.setAlpha(160);
 		__g.drawImage(map, 0, viewh, Graphics.LEFT | Graphics.BOTTOM);
+		
+		// Draw debug image
+		__g.setAlpha(255);
+		Image debugimage = this.debugimage;
+		int ww = debugimage.getWidth(), hh = debugimage.getHeight();
+		int sx = 50 - 5, sy = 50 - 5,
+			ex = sx + (ww + 10), ey = sy + (hh + 10);
+		__g.drawImage(debugimage, sx + 5, sy + 5, 0);
+		__g.setColor(0xFF0000);
+		__g.drawLine(sx, sy, ex, sy);
+		__g.setColor(0x00FF00);
+		__g.drawLine(ex, sy, ex, ey);
+		__g.setColor(0x0000FF);
+		__g.drawLine(ex, ey, sx, ey);
+		__g.setColor(0xFFFF00);
+		__g.drawLine(sx, ey, sx, sy);
 		
 		// No longer painting
 		this._inpaint = false;
