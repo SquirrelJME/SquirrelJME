@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.game.GameCanvas;
+import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.KeyListener;
@@ -336,8 +337,9 @@ public class GameInterface
 		Image debugimage = this.debugimage;
 		int ww = debugimage.getWidth(), hh = debugimage.getHeight();
 		int sx = 50 - 5, sy = 50 - 5,
-			ex = sx + (ww + 10), ey = sy + (hh + 10);
-		__g.drawImage(debugimage, sx + 5, sy + 5, 0);
+			ex = sx + ((ww * 3) + 10), ey = sy + ((hh * 3) + 10);
+		__g.drawRegion(debugimage, 0, 0, ww, hh, Sprite.TRANS_NONE,
+			sx + 5, sy + 5, 0, ww * 3, hh * 3);
 		__g.setColor(0xFF0000);
 		__g.drawLine(sx, sy, ex, sy);
 		__g.setColor(0x00FF00);
