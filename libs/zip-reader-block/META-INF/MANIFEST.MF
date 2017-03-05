@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: ae2e523f-a413-4f79-a992-211ac91dd7d4
 X-SquirrelJME-Error: CJ
-X-SquirrelJME-Depends: zip
+X-SquirrelJME-Depends: zip checksum
 X-SquirrelJME-Name: Blocked Based ZIP File Reader
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2

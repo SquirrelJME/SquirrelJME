@@ -3,7 +3,8 @@ X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: Stream ZIP Reader
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: zip dynamic-history-stream io-data io-region
+X-SquirrelJME-Depends: zip dynamic-history-stream io-data io-region 
+ checksum
 X-SquirrelJME-Description: This allows reading of ZIP files which have 
  been sourced from an input stream. Due to the design of ZIP files, they
   do not need to be accessed through a block level access.
