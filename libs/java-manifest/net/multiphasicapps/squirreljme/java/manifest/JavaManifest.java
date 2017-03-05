@@ -99,6 +99,7 @@ public final class JavaManifest
 		
 		// Read all input characters
 		int stage = _STAGE_KEY;
+		boolean firstchar = true;
 		for (;;)
 		{
 			// Read single character
@@ -108,6 +109,17 @@ public final class JavaManifest
 			// EOF?
 			if (ci < 0)
 				break;
+			
+			// It is possible for a manifest to have a BOM at the start, if it
+			// does just remove it
+			if (firstchar)
+			{
+				firstchar = false;
+				
+				// Ignore the BOM
+				if (c == 0xFEFF)
+					continue;
+			}
 			
 			// Line might continue?
 			if (stage == _STAGE_VALUE_MIGHT_CONTINUE)
