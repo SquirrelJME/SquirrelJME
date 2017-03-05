@@ -197,8 +197,8 @@ public class ZLibDecompressor
 				else
 				{
 					at += rc;
-					rest -= rc;
 					rv += rc;
+					rest -= rc;
 				}
 			}
 			

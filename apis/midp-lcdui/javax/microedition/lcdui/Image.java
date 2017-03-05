@@ -390,6 +390,14 @@ public class Image
 			
 			return createImage(is);
 		}
+		
+		// Debug
+		catch (IOException|RuntimeException|Error e)
+		{
+			System.err.println("DEBUG -- Image read error.");
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	public static Image createImage(Image __a)

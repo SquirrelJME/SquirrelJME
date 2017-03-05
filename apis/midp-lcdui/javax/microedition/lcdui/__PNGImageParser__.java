@@ -57,6 +57,12 @@ class __PNGImageParser__
 	/** Was an alpha channel used? */
 	private volatile boolean _hasalpha;
 	
+	/** Initial value for read Y position, for multiple IDAT chunks. */
+	private volatile int _initvy;
+	
+	/** Initial value for read X position, for multiple IDAT chunks. */
+	private volatile int _initvx;
+	
 	/**
 	 * Initializes the PNG parser.
 	 *
@@ -313,9 +319,16 @@ class __PNGImageParser__
 			long window = 0;
 			int valshift = 0;
 			
+			// Get initializing positions and clear, because multiple IDAT
+			// chunks are treated somewhat as a single data stream
+			int initvy = this._initvy,
+				initvx = this._initvx;
+			this._initvy = 0;
+			this._initvx = 0;
+			
 			// All pixels are stored on scanlines
 			int[] channels = new int[4];
-			for (int vy = 0; vy < height; vy++)
+			for (int vy = initvy; vy < height; vy++, initvx = 0)
 			{
 				// Clear the window, since pixels are reset on scanlines
 				window = 0;
@@ -325,7 +338,7 @@ class __PNGImageParser__
 				int out = (vy * width);
 				
 				// Read in single line
-				for (int vx = 0; vx < width; vx++)
+				for (int vx = initvx; vx < width; vx++)
 				{
 					// If the window is empty then read everything in
 					if (valshift < 0)
@@ -333,7 +346,20 @@ class __PNGImageParser__
 						// Read pixel
 						for (int i = 0, sh = 0; i < readcount; i++)
 						{
-							window |= ((long)data.readUnsignedByte()) << sh;
+							// If the EOF is unexpected it is possible that
+							// the remaining image data is in another chunk
+							int rv = data.read();
+							if (rv < 0)
+							{
+								// Store the read parameters
+								this._initvx = vx;
+								this._initvy = vy;
+								
+								return;
+							}
+							
+							// Shift in
+							window |= ((long)rv) << sh;
 							sh += 8;
 						}
 						
@@ -410,6 +436,12 @@ class __PNGImageParser__
 						argb[out++] = color;
 				}
 			}
+			
+			// Waste all remaining bytes until EOF so that the checksum is
+			// read in the source stream
+			int rc;
+			while ((rc = in.read()) >= 0)
+				;
 		}
 	}
 	
