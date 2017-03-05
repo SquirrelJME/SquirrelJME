@@ -210,8 +210,8 @@ public class SizeLimitedInputStream
 		if (current >= limit)
 		{
 			// {@squirreljme.error AP02 Required an exact number of bytes
-			// however the limit was not yet reached. (The limit; The
-			// current position)}
+			// however the limit was not yet reached, the file is too short.
+			// (The limit; The current position)}
 			if (exact && current != limit)
 				throw new IOException(String.format("AP02 %d %d",
 					limit, current));

@@ -440,7 +440,7 @@ class __PNGImageParser__
 			// Waste all remaining bytes until EOF so that the checksum is
 			// read in the source stream
 			int rc;
-			while ((rc = in.read()) >= 0)
+			while ((rc = data.read()) >= 0)
 				;
 		}
 	}
