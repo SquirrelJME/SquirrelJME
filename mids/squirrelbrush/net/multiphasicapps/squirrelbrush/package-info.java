@@ -10,8 +10,7 @@
 
 /**
  * This package contains the Squirrelbrush program which is used as a basic
- * drawing program
- .
+ * drawing program.
  *
  * @since 2017/03/05
  */
