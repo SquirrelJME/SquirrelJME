@@ -153,6 +153,11 @@ public class StandardCompiler
 				UnmodifiableSet.<String>of(this._compile)))
 				units.add(f);
 			
+			// If there is nothing to compile then compilation will fail so
+			// just pass
+			if (units.isEmpty())
+				return true;
+			
 			// Setup target task
 			JavaCompiler javac = this.javac;
 			JavaCompiler.CompilationTask task = javac.getTask(
