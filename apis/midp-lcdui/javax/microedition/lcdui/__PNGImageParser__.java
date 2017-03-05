@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.checksum.ChecksumInputStream;
 import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
@@ -116,7 +117,7 @@ class __PNGImageParser__
 				0xFFFFFFFF, 0xFFFFFFFF);
 			int lasttype = 0;
 			try (DataInputStream data = new DataInputStream(
-				new SizeLimitedInputStream(new __PNGCRCInputStream__(crc, in),
+				new SizeLimitedInputStream(new ChecksumInputStream(crc, in),
 				len + 4, true, false)))
 			{
 				// Read the packet type
@@ -158,7 +159,7 @@ class __PNGImageParser__
 			// {@squirreljme.error EB0x CRC mismatch in PNG data chunk.
 			// (Desired CRC; Actual CRC; Last chunk type read)}
 			int want = in.readInt(),
-				real = crc.crc();
+				real = crc.checksum();
 			if (want != real)
 				throw new IOException(String.format("EB0x %08x %08x %08x",
 					want, real, lasttype));

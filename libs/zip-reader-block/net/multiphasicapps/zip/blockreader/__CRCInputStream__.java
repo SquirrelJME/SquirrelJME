@@ -100,7 +100,7 @@ class __CRCInputStream__
 		{
 			// {@squirreljme.error CJ0n CRC mismatch. (The expected CRC; The
 			// calculated CRC; The number of read bytes})
-			int thiscrc = crccalc.crc(), wantcrc = this.crc;
+			int thiscrc = crccalc.checksum(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
 				throw new IOException(String.format("CJ0n %08x %08x %d",
 					wantcrc, thiscrc, this._count));
@@ -141,7 +141,7 @@ class __CRCInputStream__
 		{
 			// {@squirreljme.error CJ0o CRC mismatch. (The expected CRC; The
 			// calculated CRC; The number of read bytes})
-			int thiscrc = crccalc.crc(), wantcrc = this.crc;
+			int thiscrc = crccalc.checksum(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
 				throw new IOException(String.format("CJ0o %08x %08x %d",
 					wantcrc, thiscrc, this._count));

@@ -398,7 +398,7 @@ public class ZipStreamWriter
 			last._compressed = comp;
 			
 			// Determine CRC
-			int crc = outer.crccalc.crc();
+			int crc = outer.crccalc.checksum();
 			last._crc = crc;
 			
 			// The magic number of the data descriptor is not needed, however

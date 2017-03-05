@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.io.crc32;
 
+import net.multiphasicapps.io.checksum.Checksum;
+
 /**
  * This is a data sink which supports the CRC 32 algorithm.
  *
@@ -18,6 +20,7 @@ package net.multiphasicapps.io.crc32;
  * @since 2016/07/16
  */
 public class CRC32Calculator
+	implements Checksum
 {
 	/** Working buffer size. */
 	private static final int _WORK_BUFFER =
@@ -34,6 +37,9 @@ public class CRC32Calculator
 	
 	/** Reflect the remainder? */
 	protected final boolean reflectremainder;
+	
+	/** The initial remainder. */
+	protected final int initremainder;
 	
 	/** The CRC Table. */
 	final __CRC32Table__ _table;
@@ -63,6 +69,7 @@ public class CRC32Calculator
 		this.reflectremainder = __rrem;
 		this.polynomial = __poly;
 		this.finalxor = __fxor;
+		this.initremainder = __initrem;
 		this._remainder = __initrem;
 		
 		// Setup table
@@ -70,12 +77,11 @@ public class CRC32Calculator
 	}
 	
 	/**
-	 * Returns the currently calculated CRC value.
-	 *
-	 * @return The current CRC value.
+	 * {@inheritDoc}
 	 * @since 2016/07/16
 	 */
-	public int crc()
+	@Override
+	public final int checksum()
 	{
 		// Return the current CRC
 		int rem = this._remainder;
@@ -84,23 +90,20 @@ public class CRC32Calculator
 	}
 	
 	/**
-	 * Offers a single byte for CRC calcualtion.
-	 *
-	 * @param __b The byte to offer.
-	 * @since 2016/
+	 * {@inheritDoc}
+	 * @since 2016/12/20
 	 */
+	@Override
 	public final void offer(byte __b)
 	{
 		offer(new byte[]{__b}, 0, 1);
 	}
 	
 	/**
-	 * Offers multiple byte for CRC calculation.
-	 *
-	 * @param __b The bytes to offer.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2016/12/20
 	 */
+	@Override
 	public final void offer(byte[] __b)
 		throws NullPointerException
 	{
@@ -108,16 +111,10 @@ public class CRC32Calculator
 	}
 	
 	/**
-	 * Offers multiple byte for CRC calculation.
-	 *
-	 * @param __b The bytes to offer.
-	 * @param __o The starting offset to read bytes from.
-	 * @param __l The number of bytes to buffer.
-	 * @throws ArrayIndexOutOfBoundsException If the offset or length are
-	 * negative or they exceed the array bounds.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2016/12/20
 	 */
+	@Override
 	public final void offer(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -146,6 +143,17 @@ public class CRC32Calculator
 		
 		// Set new remainder
 		this._remainder = remainder;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/05
+	 */
+	@Override
+	public final void reset()
+	{
+		// Only the remainder has to be updated
+		this._remainder = this.initremainder;
 	}
 }
 

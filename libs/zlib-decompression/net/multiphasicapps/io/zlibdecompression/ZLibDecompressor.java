@@ -13,6 +13,8 @@ package net.multiphasicapps.io.zlibdecompression;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.adler32.Adler32Calculator;
+import net.multiphasicapps.io.checksum.ChecksumInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 
 /**
@@ -54,6 +56,10 @@ public class ZLibDecompressor
 	/** Single byte array to be shared for single reads. */
 	private final byte[] _solo =
 		new byte[1];
+	
+	/** The current checksum being calculated. */
+	private final Adler32Calculator _checksum =
+		new Adler32Calculator();
 	
 	/** Current stream to read data from, will change for blocks. */
 	private volatile InputStream _current;
@@ -164,6 +170,7 @@ public class ZLibDecompressor
 		boolean eof = false;
 		DataInputStream in = this.in;
 		InputStream current = this._current;
+		Adler32Calculator checksum = this._checksum;
 		for (int at = __o, rest = __l; rv < __l;)
 		{
 			// There is a current stream being read
@@ -174,15 +181,11 @@ public class ZLibDecompressor
 				// If EOF is reached then the checksum must be checked
 				if (rc < 0)
 				{
-					// Read checksums
-					int want = in.readInt(),
-						was = 0;
-					if (true)
-						throw new todo.TODO();
-					
 					// {@squirreljme.error BT05 The checksum for the ZLib
 					// stream is not valid. (The desired checksum; The actual
 					// checksum)}
+					int want = in.readInt(),
+						was = checksum.checksum();
 					if (want != was)
 						throw new IOException(String.format("BT05 %08x %08x",
 							want, was));
@@ -254,7 +257,9 @@ public class ZLibDecompressor
 					throw new IOException("BT01");
 				
 				// Setup inflate stream
-				current = new InflaterInputStream(in, slwin);
+				checksum.reset();
+				current = new InflaterInputStream(
+					new ChecksumInputStream(checksum, in), slwin);
 				this._current = current;
 			}
 		}

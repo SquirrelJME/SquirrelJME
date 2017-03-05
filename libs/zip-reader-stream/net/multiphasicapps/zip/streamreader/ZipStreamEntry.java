@@ -126,7 +126,7 @@ public final class ZipStreamEntry
 			// The actual CRC)}
 			int wantcrc, wascrc;
 			if ((wantcrc = this._wantcrc) !=
-				(wascrc = higher.crccalc.crc()))
+				(wascrc = higher.crccalc.checksum()))
 				throw new ZipException(String.format("BG03 %08x %08x",
 					wantcrc, wascrc));
 			

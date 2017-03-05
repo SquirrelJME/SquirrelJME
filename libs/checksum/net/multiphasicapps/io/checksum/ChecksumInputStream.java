@@ -8,22 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package net.multiphasicapps.io.checksum;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.crc32.CRC32Calculator;
 
 /**
- * This processes the input stream and calculates the CRC.
+ * The forwards data from an input stream and calculates the checksum for that
+ * data stream.
  *
- * @since 2017/02/28
+ * @since 2017/03/05
  */
-class __PNGCRCInputStream__
+public class ChecksumInputStream
 	extends InputStream
 {
-	/** The CRC Calculator used. */
-	protected final CRC32Calculator crc;
+	/** The checksum Calculator used. */
+	protected final Checksum checksum;
 	
 	/** Input stream. */
 	protected final InputStream in;
@@ -31,12 +31,12 @@ class __PNGCRCInputStream__
 	/**
 	 * Initializes the calculator.
 	 *
-	 * @param __crc The CRC calculator to write to.
+	 * @param __checksum The checksum calculator to write to.
 	 * @param __in The stream to read from.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	__PNGCRCInputStream__(CRC32Calculator __calc, InputStream __in)
+	public ChecksumInputStream(Checksum __calc, InputStream __in)
 		throws NullPointerException
 	{
 		// Check
@@ -44,7 +44,7 @@ class __PNGCRCInputStream__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.crc = __calc;
+		this.checksum = __calc;
 		this.in = __in;
 	}
 	
@@ -84,8 +84,8 @@ class __PNGCRCInputStream__
 		if (rv < 0)
 			return rv;
 		
-		// Calculate CRC
-		this.crc.offer((byte)rv);
+		// Calculate checksum
+		this.checksum.offer((byte)rv);
 		
 		// Return
 		return rv;
@@ -106,8 +106,8 @@ class __PNGCRCInputStream__
 		if (rv < 0)
 			return rv;
 		
-		// Calculate CRC
-		this.crc.offer(__b, __o, rv);
+		// Calculate checksum
+		this.checksum.offer(__b, __o, rv);
 		
 		// Read count
 		return rv;
