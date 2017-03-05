@@ -15,6 +15,7 @@ import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.io.zlibdecompression.ZLibDecompressor;
 
 /**
  * This class parses PNG images.
@@ -306,7 +307,7 @@ class __PNGImageParser__
 		
 		// Input image data is compressed using deflate
 		try (DataInputStream data = new DataInputStream(
-			new InflaterInputStream(__in)))
+			new ZLibDecompressor(__in)))
 		{
 			// Window used to pixel data, along with the remaining bits
 			long window = 0;

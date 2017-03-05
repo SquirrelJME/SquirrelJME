@@ -166,7 +166,7 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/04
 	 */
-	public InflaterInputStream(InputStream, int __sls)
+	public InflaterInputStream(InputStream __in, int __sls)
 	{
 		// Check
 		if (__in == null)
