@@ -44,8 +44,12 @@ public class CRC32Calculator
 	/** The CRC Table. */
 	final __CRC32Table__ _table;
 	
+	/** Solo buffer. */
+	private final byte[] _solo =
+		new byte[1];
+	
 	/** The work buffer. */
-	private byte[] _work =
+	private final byte[] _work =
 		new byte[_WORK_BUFFER];
 	
 	/** The current CRC value (remainder). */
@@ -96,7 +100,9 @@ public class CRC32Calculator
 	@Override
 	public final void offer(byte __b)
 	{
-		offer(new byte[]{__b}, 0, 1);
+		byte[] solo = this._solo;
+		solo[0] = __b;
+		offer(solo, 0, 1);
 	}
 	
 	/**

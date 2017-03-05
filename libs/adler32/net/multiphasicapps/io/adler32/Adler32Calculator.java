@@ -15,11 +15,28 @@ import net.multiphasicapps.io.checksum.Checksum;
 /**
  * This class calculates the Adler32 checksum.
  *
+ * This class is not thread safe.
+ *
  * @since 2017/03/05
  */
 public class Adler32Calculator
 	implements Checksum
 {
+	/** The modulo for adler values. */
+	private static final int _ADLER_MODULO =
+		65521;
+	
+	/** Single byte read. */
+	private final byte[] _solo =
+		new byte[1];
+	
+	/** The A value. */
+	private volatile int _a =
+		1;
+	
+	/** The B value. */
+	private volatile int _b;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/03/05
@@ -27,7 +44,7 @@ public class Adler32Calculator
 	@Override
 	public final int checksum()
 	{
-		throw new todo.TODO();
+		return (this._b << 16) | this._a;
 	}
 	
 	/**
@@ -37,7 +54,9 @@ public class Adler32Calculator
 	@Override
 	public final void offer(byte __b)
 	{
-		throw new todo.TODO();
+		byte[] solo = this._solo;
+		solo[0] = __b;
+		offer(solo, 0, 1);
 	}
 	
 	/**
@@ -48,7 +67,7 @@ public class Adler32Calculator
 	public final void offer(byte[] __b)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		offer(__b, 0, __b.length);
 	}
 	
 	/**
@@ -59,7 +78,26 @@ public class Adler32Calculator
 	public final void offer(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("BAOB");
+		
+		// Get parameters
+		int a = this._a,
+			b = this._b;
+		
+		// Calculate
+		for (int p = __o, e = __o + __l; p < e; p++)
+		{
+			a = (a + (__b[p] & 0xFF)) % _ADLER_MODULO;
+			b = (b + a) % _ADLER_MODULO;
+		}
+		
+		// Set parameters
+		this._a = a;
+		this._b = b;
 	}
 	
 	/**
@@ -69,7 +107,9 @@ public class Adler32Calculator
 	@Override
 	public final void reset()
 	{
-		throw new todo.TODO();
+		// Reset both parameters
+		this._a = 1;
+		this._b = 0;
 	}
 }
 

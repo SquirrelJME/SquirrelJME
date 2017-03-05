@@ -258,8 +258,8 @@ public class ZLibDecompressor
 				
 				// Setup inflate stream
 				checksum.reset();
-				current = new InflaterInputStream(
-					new ChecksumInputStream(checksum, in), slwin);
+				current = new ChecksumInputStream(checksum,
+					new InflaterInputStream(in, slwin));
 				this._current = current;
 			}
 		}
