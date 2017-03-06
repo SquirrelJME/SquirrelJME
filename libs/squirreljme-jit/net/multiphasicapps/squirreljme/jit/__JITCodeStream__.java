@@ -264,9 +264,17 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- Invoke %s rv=%s/%s args=%s/%s%n", __link,
 			__rv, __rvt, Arrays.asList(__cargs), Arrays.asList(__targs));
 		
-		// Get active state
-		ActiveCacheState instate = this._instate;
+		// Get states
+		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
+		
+		// Go through the arguments and initialize the output state to match
+		// what everything should look like once the method invoke has
+		// finished
+		for (int i = 0; i < n; i++)
+		{
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 		
