@@ -139,7 +139,7 @@ final class __OpParser__
 			// Handle jump targets
 			// This verifies that for each jump target or implicit flow that
 			// the resulting stack state matches the expected one
-			int n = jt.length;
+			int n = jt.length, inextpos = -1;
 			for (int i = 0; i < n; i++)
 			{
 				// Get jump target, if it is implicit next then use the
@@ -147,7 +147,10 @@ final class __OpParser__
 				int jumpto = jt[i];
 				boolean implicit;
 				if ((implicit = (jumpto == -1)))
+				{
 					jumpto = (int)input.size();
+					inextpos = jumpto;
+				}
 				
 				// If there is no state, do not need to verify
 				__SMTState__ intostate = smt.get(jumpto);
@@ -160,7 +163,7 @@ final class __OpParser__
 			}
 			
 			// Report end
-			writer.endInstruction(code, nowpos);
+			writer.endInstruction(code, nowpos, inextpos);
 		}
 		
 		throw new todo.TODO();
@@ -393,7 +396,8 @@ final class __OpParser__
 			case ClassByteCodeIndex.BREAKPOINT:
 			case ClassByteCodeIndex.IMPDEP1:
 			case ClassByteCodeIndex.IMPDEP2:
-				throw new ClassFormatException(String.format("AY38 %d", __code));
+				throw new ClassFormatException(
+					String.format("AY38 %d", __code));
 			
 			case ClassByteCodeIndex.IASTORE:
 			case ClassByteCodeIndex.LASTORE:

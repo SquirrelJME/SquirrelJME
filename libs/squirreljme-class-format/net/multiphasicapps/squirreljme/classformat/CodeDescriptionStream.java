@@ -57,9 +57,11 @@ public interface CodeDescriptionStream
 	 *
 	 * @param __code The operation that is was decoded.
 	 * @param __pos The position of the given operation.
+	 * @param __next The position of the next instruction for natural program
+	 * flow, if there is none then the value will be negative.
 	 * @since 2017/02/23
 	 */
-	public abstract void endInstruction(int __code, int __pos);
+	public abstract void endInstruction(int __code, int __pos, int __next);
 	
 	/**
 	 * This is used to specify which exceptions exist within the exception

@@ -160,14 +160,19 @@ class __JITCodeStream__
 	 * @since 2017/02/23
 	 */
 	@Override
-	public void endInstruction(int __code, int __pos)
+	public void endInstruction(int __code, int __pos, int __next)
 	{
 		ActiveCacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
-		System.err.printf("DEBUG -- End %d (pos %d)%n", __code, __pos);
+		System.err.printf("DEBUG -- End %d (pos %d, next %d)%n", __code,
+			__pos, __next);
 		System.err.printf("DEBUG -- Exit state: %s%n", outstate);
+		
+		// Either check or store the exit state to the implicit next target
+		if (__next >= 0)
+			throw new todo.TODO();
 		
 		// Handle exceptional jump targets, check their state
 		ExceptionHandlerTable exceptions = this._exceptions;
