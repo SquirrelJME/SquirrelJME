@@ -358,6 +358,9 @@ class __JITCodeStream__
 		// Also input and output states
 		this._instate = new ActiveCacheState(engine, __ms, __ml);
 		this._outstate = new ActiveCacheState(engine, __ms, __ml);
+		
+		// Report sizes for potential stack slots
+		engine.slotCount(__ms, __ml);
 	}
 	
 	/**

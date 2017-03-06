@@ -37,26 +37,11 @@ import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 public class MIPSEngine
 	extends TranslationEngine
 {
-	/** Invalid stack offset. */
-	public static final INVALID_STACK_OFFSET =
-		Integer.MAX_VALUE;
-	
 	/** The configuration used. */
 	protected final MIPSConfig config;
 	
-	/**
-	 * This contains the array of stack offsets which are associated with slots
-	 * with their given offset onto the stack.
-	 *
-	 * If a 64-bit value is set and a 32-bit value is not set then the 32-bit
-	 * value will be set from the 64-bit one (with potential offset). Otherwise
-	 * if the 64-bit offset is set after a 32-bit one a new position will be
-	 * used because there is no room to store a value without overwriting
-	 * adjacent space.
-	 *
-	 * Array 0 is for 32-bit values while array 1 is for 64-bit values.
-	 */
-	private volatile int[][] _stackoffsets;
+	/** Stack offsets for slot entries. */
+	private volatile StackSlotOffsets _stackoffsets;
 	
 	/**
 	 * Initializes the MIPS engine.
@@ -94,6 +79,7 @@ public class MIPSEngine
 		MIPSRegister nf = NUBI.FA0;
 		
 		// Go through variables
+		StackSlotOffsets stackoffsets = this._stackoffsets;
 		ActiveCacheState.Tread locals = __cs.locals();
 		for (int i = 0, n = locals.size(); i < n; i++)
 		{
@@ -175,6 +161,17 @@ public class MIPSEngine
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/06
+	 */
+	@Override
+	public void slotCount(int __ms, int __ml)
+	{
+		// Initialize stack offsets
+		this._stackoffsets = new StackSlotOffsets(__ms, __ml);
 	}
 	
 	/**

@@ -113,6 +113,16 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Reports to the engine how many entries exist on the stack and the local
+	 * variables for potential stack allocation.
+	 *
+	 * @param __ms The number of stack entries.
+	 * @param __ml The number of local entries.
+	 * @since 2017/03/06
+	 */
+	public abstract void slotCount(int __ms, int __ml);
+	
+	/**
 	 * Creates a snapshot of the specified binding returning an immutable one
 	 *
 	 * @param __b The binding to snapshot.
