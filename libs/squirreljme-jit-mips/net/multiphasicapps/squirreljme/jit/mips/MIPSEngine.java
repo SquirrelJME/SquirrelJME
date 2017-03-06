@@ -37,8 +37,26 @@ import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 public class MIPSEngine
 	extends TranslationEngine
 {
+	/** Invalid stack offset. */
+	public static final INVALID_STACK_OFFSET =
+		Integer.MAX_VALUE;
+	
 	/** The configuration used. */
 	protected final MIPSConfig config;
+	
+	/**
+	 * This contains the array of stack offsets which are associated with slots
+	 * with their given offset onto the stack.
+	 *
+	 * If a 64-bit value is set and a 32-bit value is not set then the 32-bit
+	 * value will be set from the 64-bit one (with potential offset). Otherwise
+	 * if the 64-bit offset is set after a 32-bit one a new position will be
+	 * used because there is no room to store a value without overwriting
+	 * adjacent space.
+	 *
+	 * Array 0 is for 32-bit values while array 1 is for 64-bit values.
+	 */
+	private volatile int[][] _stackoffsets;
 	
 	/**
 	 * Initializes the MIPS engine.
