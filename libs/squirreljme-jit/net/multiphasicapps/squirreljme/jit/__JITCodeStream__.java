@@ -509,7 +509,10 @@ class __JITCodeStream__
 					slot, false, true);
 		}
 		
-		throw new todo.TODO();
+		// Away it goes!
+		ActiveCacheState.Slot gone = __os.getSlot(__cv);
+		gone.clearAlias();
+		gone.setType(StackMapType.NOTHING);
 	}
 }
 
