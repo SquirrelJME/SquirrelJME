@@ -100,7 +100,7 @@ public final class SnapshotCacheStates
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/18
 	 */
-	public void set(int __i, ActiveCacheState __v)
+	public void set(int __i, CacheState __v)
 		throws JITException, NullPointerException
 	{
 		// Check

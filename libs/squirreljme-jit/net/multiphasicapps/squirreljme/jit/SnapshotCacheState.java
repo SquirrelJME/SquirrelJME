@@ -43,11 +43,11 @@ public final class SnapshotCacheState
 	 * Initializes the cache state which is a copy of the active state.
 	 *
 	 * @param __e The translation engine being used.
-	 * @param __a The active state to copy.
+	 * @param __a The state to copy.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	SnapshotCacheState(TranslationEngine __e, ActiveCacheState __a)
+	SnapshotCacheState(TranslationEngine __e, CacheState __a)
 		throws NullPointerException
 	{
 		// Check
@@ -130,7 +130,7 @@ public final class SnapshotCacheState
 	 * @since 2017/03/01
 	 */
 	private SnapshotCacheState.Tread __snapTread(TranslationEngine __e,
-		ActiveCacheState.Tread __from)
+		CacheState.Tread __from)
 		throws NullPointerException
 	{
 		// Check
@@ -185,7 +185,7 @@ public final class SnapshotCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot(TranslationEngine __e, ActiveCacheState.Slot __from)
+		private Slot(TranslationEngine __e, CacheState.Slot __from)
 			throws NullPointerException
 		{
 			// Check
@@ -200,7 +200,7 @@ public final class SnapshotCacheState
 			this.type = __from.type();
 			
 			// Aliased?
-			ActiveCacheState.Slot alias = __from.alias();
+			CacheState.Slot alias = __from.alias();
 			if (alias != null)
 			{
 				this.stackalias = alias.isStack();

@@ -124,6 +124,14 @@ public interface CacheState
 		 * @since 2017/03/03
 		 */
 		public abstract CacheState.Slot get(int __i);
+		
+		/**
+		 * Returns the size of this tread.
+		 *
+		 * @return The tread size.
+		 * @since 2017/03/06
+		 */
+		public abstract int size();
 	}
 }
 

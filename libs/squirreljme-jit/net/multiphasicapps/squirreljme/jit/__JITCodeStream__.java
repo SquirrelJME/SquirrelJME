@@ -172,7 +172,7 @@ class __JITCodeStream__
 		
 		// Either check or store the exit state to the implicit next target
 		if (__next >= 0)
-			throw new todo.TODO();
+			__checkStoreState(__next, outstate);
 		
 		// Handle exceptional jump targets, check their state
 		ExceptionHandlerTable exceptions = this._exceptions;
@@ -361,40 +361,30 @@ class __JITCodeStream__
 	}
 	
 	/**
-	 * This de-aliases the specified stack value slots so that if any values
-	 * are aliased to stack entries they will be unsplit and moved.
+	 * If the given address already has a stored state then it will be checked
+	 * to see if it is compatible. If it is not in the states, it is just
+	 * stored.
 	 *
-	 * @param __s Slots to de-alias.
+	 * @param __next The instruction to check and store the state of.
+	 * @param __out The state to store.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/03
+	 * @since 2017/03/06
 	 */
-	private void __deAliasStack(ActiveCacheState.Slot... __s)
+	private void __checkStoreState(int __next, CacheState __out)
 		throws NullPointerException
 	{
 		// Check
-		if (__s == null)
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * For any slot which exists on the stack, the associated bindings will
-	 * be destroyed.
-	 *
-	 * @param __o The starting offset into the array.
-	 * @param __s The slots to destroy on the stack.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/03
-	 */
-	private void __destroyStack(int __o, ActiveCacheState.Slot... __s)
-		throws NullPointerException
-	{
-		// Check
-		if (__s == null)
-			throw new NullPointerException("NARG");
+		// If no state has been set, store it
+		SnapshotCacheStates states = this._states;
+		if (!states.contains(__next))
+			states.set(__next, __out);
 		
-		throw new todo.TODO();
+		// Otherwise check that the state is consistent
+		else
+			throw new todo.TODO();
 	}
 	
 	/**
