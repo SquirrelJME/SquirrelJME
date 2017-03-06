@@ -211,7 +211,12 @@ public final class ActiveCacheState
 			if (__cl == null)
 				throw new NullPointerException("NARG");
 			
-			// Cast
+			// Use the aliased binding
+			Slot alias = alias();
+			if (alias != null)
+				return alias.<B>binding(__cl);
+			
+			// Otherwise, use our own binding
 			return __cl.cast(this.binding);
 		}
 		
@@ -400,7 +405,7 @@ public final class ActiveCacheState
 				(this._stackalias ? 'S' : 'L'), idalias) : "not aliased");
 			return String.format("{%c#%d: type=%s, binding=%s, %s}",
 				(this.isstack ? 'S' : 'L'), this.index, type(),
-				this.binding, alias);
+				binding(Binding.class), alias);
 		}
 		
 		/**

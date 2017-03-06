@@ -254,6 +254,12 @@ public final class SnapshotCacheState
 			if (__cl == null)
 				throw new NullPointerException("NARG");
 			
+			// Use the aliased binding
+			Slot alias = alias();
+			if (alias != null)
+				return alias.<B>binding(__cl);
+			
+			// Otherwise, use our own binding
 			return __cl.cast(this.binding);
 		}
 		
@@ -306,7 +312,7 @@ public final class SnapshotCacheState
 				this._string = new WeakReference<>((rv = String.format(
 					"{%c#%d: type=%s, binding=%s, %s}",
 					(this.isstack ? 'S' : 'L'),
-					this.index, type(), this.binding, alias)));
+					this.index, type(), binding(Binding.class), alias)));
 			}
 		
 			return rv;

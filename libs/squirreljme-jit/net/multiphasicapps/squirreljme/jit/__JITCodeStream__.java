@@ -418,30 +418,34 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- primitiveCopy: %s -> %s%n", __srcslot,
 			__destslot);
 		
-		/*
 		// If the destination is a local variable then make it so the value is
 		// actually copied (because locals persist in exception handlers). As
 		// such this makes the JIT design a bit simpler at the cost of some
-		// copies.
-		if (__to.isLocal())
+		// copies. Locals are never aliased.
+		if (__destslot.isLocal())
+			__doalias = false;
+		
+		// Aliasing one value to another
+		if (__doalias)
 		{
-			// Since locals are always written to, instructions must be
-			// generated
-			throw new todo.TODO();
+			// Set the type, do not modify the binding because the binding of
+			// the slot uses the binding of what it is aliased to.
+			__destslot.setType(__srcslot.type(), false);
+			
+			// Alias
+			__destslot.setAlias(__srcslot.isStack(), __srcslot.index());
 		}
-	
-		// Otherwise for stack targets, just alias them to local variables
-		// because these will for the most part be temporaries
+		
+		// Copying over a value, replace it
 		else
 		{
-			// There might be an alias between stack entries
-			ActiveCacheState.Slot to = instate.getSlot(__to);
-			__deAliasStack(to);
+			// Set the type from the source type
+			__destslot.setType(__srcslot.type(), true);
 			
-			// Generate alias
-			to.setAlias(__from);
-		}*/
-		throw new todo.TODO();
+			// Generate operations for the copy
+			if (__dogenop)
+				throw new todo.TODO();
+		}
 	}
 }
 
