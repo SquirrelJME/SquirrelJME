@@ -81,6 +81,19 @@ public final class SnapshotCacheState
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/06
+	 */
+	@Override
+	public Slot getSlot(boolean __s, int __i)
+		throws NullPointerException
+	{
+		if (__s)
+			return this.stack.get(__i);
+		return this.locals.get(__i);
+	}
+	
+	/**
 	 * Returns the cached local variable assignments.
 	 *
 	 * @return The cached local variables.
@@ -331,6 +344,19 @@ public final class SnapshotCacheState
 				return alias.type();
 			
 			return this.type;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/06
+		 */
+		@Override
+		public Slot value()
+		{
+			Slot rv = alias();
+			if (rv == null)
+				return this;
+			return rv;
 		}
 	}
 	

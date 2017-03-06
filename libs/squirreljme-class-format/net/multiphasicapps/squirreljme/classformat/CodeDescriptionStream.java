@@ -95,7 +95,8 @@ public interface CodeDescriptionStream
 	 *
 	 * @param __link The method linkage.
 	 * @param __d The depth of the Java stack when all arguments have been
-	 * popped and no return value has been pushed.
+	 * popped and no return value has been pushed, this can be used to not
+	 * preserve certain values.
 	 * @param __rv The variable to obtain the return value.
 	 * @param __rvt The type of return value returned.
 	 * @param __cargs The input arguments to the method, the code variables

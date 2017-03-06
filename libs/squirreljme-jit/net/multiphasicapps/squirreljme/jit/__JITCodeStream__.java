@@ -271,9 +271,16 @@ class __JITCodeStream__
 		// Go through the arguments and initialize the output state to match
 		// what everything should look like once the method invoke has
 		// finished
+		int n = __cargs.length;
+		CacheState.Slot[] args = new CacheState.Slot[n];
 		for (int i = 0; i < n; i++)
 		{
-			throw new todo.TODO();
+			// Fill input slot value to pass in the future
+			CodeVariable cv = __cargs[i];
+			args[i] = instate.getSlot(cv).value();
+			
+			// Stack elements are destroyed on input
+			__removeStackSlot(instate, outstate, cv, __d);
 		}
 		
 		throw new todo.TODO();
@@ -446,12 +453,63 @@ class __JITCodeStream__
 		else
 		{
 			// Set the type from the source type
+			__destslot.clearAlias();
 			__destslot.setType(__srcslot.type(), true);
 			
 			// Generate operations for the copy
 			if (__dogenop)
 				throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * This removes the the specified information in the given stack position.
+	 * This clears any state
+	 *
+	 * @param __is Input state.
+	 * @param __os Output state.
+	 * @param __cv The variable to be removed, must be on the stack.
+	 * @param __d The depth of the stack, used to not copy values that are
+	 * going to be removed anyway.
+	 * @throws IllegalArgumentException If the input variable is a local
+	 * variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/06
+	 */
+	private void __removeStackSlot(CacheState __is, ActiveCacheState __os,
+		CodeVariable __cv, int __d)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__is == null || __os == null || __cv == null)
+			throw new IllegalArgumentException("NARG");
+		
+		// {@squirreljme.error ED0g Cannot remove local variable on the stack.
+		// (The variable to remove)}
+		if (__cv.isLocal())
+			throw new IllegalArgumentException(String.format("ED0g %s", __cv));
+		
+		// Go through the stack and check for any items which are aliased to
+		// this stack entry, if they are perform a non-aliased copy and
+		// generate code for it
+		ActiveCacheState.Tread stack = __os.stack();
+		int n = stack.size(), dest = __cv.id();
+		for (int i = 0; i < __d; i++)
+		{
+			// Ignore empty values
+			ActiveCacheState.Slot slot = stack.get(i);
+			if (slot.type() == StackMapType.NOTHING)
+				continue;
+			
+			// Copy the value from the other stack entry to this one so that
+			// it is no longer aliased (its value is to be destroyed)
+			ActiveCacheState.Slot alias = slot.alias();
+			if (alias != null && alias.isStack() && alias.index() == dest)
+				__primitiveCopy(__is, __os, __is.getSlot(true, i),
+					slot, false, true);
+		}
+		
+		throw new todo.TODO();
 	}
 }
 

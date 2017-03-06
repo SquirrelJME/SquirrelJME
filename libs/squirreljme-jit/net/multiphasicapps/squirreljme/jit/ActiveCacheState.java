@@ -73,6 +73,19 @@ public final class ActiveCacheState
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/06
+	 */
+	@Override
+	public Slot getSlot(boolean __s, int __i)
+		throws NullPointerException
+	{
+		if (__s)
+			return this.stack.get(__i);
+		return this.locals.get(__i);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
 	@Override
@@ -300,6 +313,12 @@ public final class ActiveCacheState
 				throw new IllegalArgumentException(String.format("ED0d %b %d",
 					__s, __id));
 			
+			// {@squirreljme.error ED0f Local variables cannot alias values on
+			// the stack. (The index on the stack to be aliased to)}
+			if (isLocal() && this._stackalias)
+				throw new IllegalArgumentException(String.format("ED0f %d",
+					__id));
+			
 			// Set
 			this._stackalias = __s;
 			this._idalias = __id;
@@ -324,7 +343,8 @@ public final class ActiveCacheState
 		/**
 		 * Sets the type of value stored in this slot.
 		 *
-		 * @param __t The type of value to store.
+		 * @param __t The type of value to store, if this slot is aliased and
+		 * the alias is not compatible it will be removed.
 		 * @param __ebc If the type is to change, should the binding be
 		 * notified of the change so it may potentially adjust the binding
 		 * data?
@@ -388,6 +408,9 @@ public final class ActiveCacheState
 				this.binding.changeBinding(ct);
 			}
 			
+			// The alias is removed because the type changed
+			clearAlias();
+			
 			// Set, return old
 			this._type = __t;
 			return rv;
@@ -421,6 +444,19 @@ public final class ActiveCacheState
 				return alias.type();
 			
 			return this._type;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/06
+		 */
+		@Override
+		public Slot value()
+		{
+			Slot rv = alias();
+			if (rv == null)
+				return this;
+			return rv;
 		}
 		
 		/**

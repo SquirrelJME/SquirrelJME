@@ -32,6 +32,17 @@ public interface CacheState
 		throws NullPointerException;
 	
 	/**
+	 * Returns the slot which is associated with the given tread and index.
+	 *
+	 * @param __s Is the slot on the stack?
+	 * @param __i The index of the slot.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/06
+	 */
+	public abstract Slot getSlot(boolean __s, int __i)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the cached local variable assignments.
 	 *
 	 * @return The cached local variables.
@@ -108,6 +119,15 @@ public interface CacheState
 		 * @since 2017/03/03
 		 */
 		public abstract StackMapType type();
+		
+		/**
+		 * Returns the slot which contains the value for this slot, if the
+		 * slot is aliased it will return the alias, otherwise this slot.
+		 *
+		 * @return The aliased slot or {@code this} if not aliased.
+		 * @since 2017/03/06
+		 */
+		public abstract Slot value();
 	}
 	
 	/**
