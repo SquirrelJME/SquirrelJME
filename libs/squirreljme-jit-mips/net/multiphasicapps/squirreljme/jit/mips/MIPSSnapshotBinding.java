@@ -63,6 +63,27 @@ public final class MIPSSnapshotBinding
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/07
+	 */
+	@Override
+	public MIPSRegister getRegister(int __i)
+		throws IndexOutOfBoundsException
+	{
+		return this._registers[__i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/07
+	 */
+	@Override
+	public int numRegisters()
+	{
+		return this._registers.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/01
 	 */
 	@Override

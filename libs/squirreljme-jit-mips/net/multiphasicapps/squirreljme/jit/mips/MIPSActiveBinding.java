@@ -87,6 +87,27 @@ public class MIPSActiveBinding
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/07
+	 */
+	@Override
+	public MIPSRegister getRegister(int __i)
+		throws IndexOutOfBoundsException
+	{
+		return this.registers.get(__i);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/07
+	 */
+	@Override
+	public int numRegisters()
+	{
+		return this.registers.size();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/01
 	 */
 	@Override

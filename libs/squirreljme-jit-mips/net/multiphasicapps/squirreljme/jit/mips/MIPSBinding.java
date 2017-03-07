@@ -22,6 +22,25 @@ public abstract class MIPSBinding
 	implements Binding
 {
 	/**
+	 * Gets the register by the given index.
+	 *
+	 * @param __i The register index.
+	 * @return The register at the given index.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2017/03/07
+	 */
+	public abstract MIPSRegister getRegister(int __i)
+		throws IndexOutOfBoundsException;
+	
+	/**
+	 * Returns the number of registers which are used.
+	 *
+	 * @return The used register count.
+	 * @since 2017/03/07
+	 */
+	public abstract int numRegisters();
+	
+	/**
 	 * Returns the currently assigned registers.
 	 *
 	 * @return The assigned registers.
@@ -78,5 +97,27 @@ public abstract class MIPSBinding
 		return rv ^ this.stackOffset() ^ (~this.stackLength());
 	}
 	
+	/**
+	 * Checks if this binding uses the specified register.
+	 *
+	 * @param __r The register to check.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/07
+	 */
+	public boolean usesRegister(MIPSRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all registers
+		for (int i = 0, n = numRegisters(); i < n; i++)
+			if (__r.equals(getRegister(i)))
+				return true;
+		
+		// Not found
+		return false;
+	}
 }
 
