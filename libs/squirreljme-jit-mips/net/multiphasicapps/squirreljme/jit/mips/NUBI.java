@@ -343,5 +343,58 @@ public final class NUBI
 		else
 			throw new JITException(String.format("AM04 %s", __r));
 	}
+	
+	/**
+	 * Returns the temporary register which follows the specified register.
+	 *
+	 * @param __r The register to get the next of.
+	 * @return The following register or {@code null}.
+	 * @throws JITException If the specified register is not valid.
+	 * @since 2017/03/07
+	 */
+	public static MIPSRegister nextTemporary(MIPSRegister __r)
+		throws JITException
+	{
+		// Integer
+		if (__r == NUBI.T0)
+			return NUBI.T1;
+		else if (__r == NUBI.T1)
+			return NUBI.T2;
+		else if (__r == NUBI.T2)
+			return NUBI.T3;
+		else if (__r == NUBI.T3)
+			return null;
+		
+		// Floating point
+		else if (__r == NUBI.FT0)
+			return NUBI.FT1;
+		else if (__r == NUBI.FT1)
+			return NUBI.FT2;
+		else if (__r == NUBI.FT2)
+			return NUBI.FT3;
+		else if (__r == NUBI.FT3)
+			return NUBI.FT4;
+		else if (__r == NUBI.FT4)
+			return NUBI.FT5;
+		else if (__r == NUBI.FT5)
+			return NUBI.FT6;
+		else if (__r == NUBI.FT6)
+			return NUBI.FT7;
+		else if (__r == NUBI.FT7)
+			return NUBI.FT8;
+		else if (__r == NUBI.FT8)
+			return NUBI.FT9;
+		else if (__r == NUBI.FT9)
+			return NUBI.FT10;
+		else if (__r == NUBI.FT10)
+			return NUBI.FT11;
+		else if (__r == NUBI.FT11)
+			return null;
+		
+		// {@squirreljme.error AM06 The specified register is not a
+		// temporary register. (The specified register)}
+		else
+			throw new JITException(String.format("AM06 %s", __r));
+	}
 }
 
