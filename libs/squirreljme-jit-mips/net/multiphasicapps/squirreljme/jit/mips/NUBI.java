@@ -290,6 +290,30 @@ public final class NUBI
 	public static final MIPSRegister FS11 =
 		MIPSRegister.F23;
 	
+	/** The first integer argument register. */
+	public static final MIPSRegister FIRST_INT_ARGUMENT =
+		A0;
+	
+	/** The first floating point argument register. */
+	public static final MIPSRegister FIRST_FLOAT_ARGUMENT =
+		FA0;
+	
+	/** The first integer saved register. */
+	public static final MIPSRegister FIRST_INT_SAVED =
+		S0;
+	
+	/** The first floating point saved register. */
+	public static final MIPSRegister FIRST_FLOAT_SAVED =
+		FS0;
+	
+	/** The first integer temporary register. */
+	public static final MIPSRegister FIRST_INT_TEMPORARY =
+		T1;
+	
+	/** The first floating point temporary register. */
+	public static final MIPSRegister FIRST_FLOAT_TEMPORARY =
+		FT0;
+	
 	/**
 	 * Returns the argument register which follows this.
 	 *
@@ -345,6 +369,75 @@ public final class NUBI
 	}
 	
 	/**
+	 * Returns the saved register which follows the specified register.
+	 *
+	 * @param __r The register to get the next of.
+	 * @return The following register or {@code null}.
+	 * @throws JITException If the specified register is not valid.
+	 * @since 2017/03/07
+	 */
+	public static MIPSRegister nextSaved(MIPSRegister __r)
+		throws JITException
+	{
+		// Integer
+		if (__r == NUBI.S0)
+			return NUBI.S1;
+		else if (__r == NUBI.S1)
+			return NUBI.S2;
+		else if (__r == NUBI.S2)
+			return NUBI.S3;
+		else if (__r == NUBI.S3)
+			return NUBI.S4;
+		else if (__r == NUBI.S4)
+			return NUBI.S5;
+		else if (__r == NUBI.S5)
+			return NUBI.S6;
+		else if (__r == NUBI.S6)
+			return NUBI.S7;
+		else if (__r == NUBI.S7)
+			return NUBI.S8;
+		else if (__r == NUBI.S8)
+			return NUBI.S9;
+		else if (__r == NUBI.S9)
+			return NUBI.S10;
+		else if (__r == NUBI.S10)
+			return NUBI.S11;
+		else if (__r == NUBI.S11)
+			return null;
+		
+		// Floating point
+		else if (__r == NUBI.FS0)
+			return NUBI.FS1;
+		else if (__r == NUBI.FS1)
+			return NUBI.FS2;
+		else if (__r == NUBI.FS2)
+			return NUBI.FS3;
+		else if (__r == NUBI.FS3)
+			return NUBI.FS4;
+		else if (__r == NUBI.FS4)
+			return NUBI.FS5;
+		else if (__r == NUBI.FS5)
+			return NUBI.FS6;
+		else if (__r == NUBI.FS6)
+			return NUBI.FS7;
+		else if (__r == NUBI.FS7)
+			return NUBI.FS8;
+		else if (__r == NUBI.FS8)
+			return NUBI.FS9;
+		else if (__r == NUBI.FS9)
+			return NUBI.FS10;
+		else if (__r == NUBI.FS10)
+			return NUBI.FS11;
+		else if (__r == NUBI.FS11)
+			return null;
+		
+		// {@squirreljme.error AM07 The specified register is not a
+		// saved register. (The specified register)}
+		else
+			throw new JITException(String.format("AM07 %s", __r));
+	}
+	
+	/**
 	 * Returns the temporary register which follows the specified register.
 	 *
 	 * @param __r The register to get the next of.
@@ -356,9 +449,7 @@ public final class NUBI
 		throws JITException
 	{
 		// Integer
-		if (__r == NUBI.T0)
-			return NUBI.T1;
-		else if (__r == NUBI.T1)
+		if (__r == NUBI.T1)
 			return NUBI.T2;
 		else if (__r == NUBI.T2)
 			return NUBI.T3;

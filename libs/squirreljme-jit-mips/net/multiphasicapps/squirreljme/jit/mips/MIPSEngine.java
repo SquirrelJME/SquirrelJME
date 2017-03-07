@@ -75,8 +75,8 @@ public class MIPSEngine
 		int bits = config.bits();
 		
 		// Starting register points where arguments are placed
-		MIPSRegister ni = NUBI.A0;
-		MIPSRegister nf = NUBI.FA0;
+		MIPSRegister ni = NUBI.FIRST_INT_ARGUMENT;
+		MIPSRegister nf = NUBI.FIRST_FLOAT_ARGUMENT;
 		
 		// Go through variables
 		StackSlotOffsets stackoffsets = this._stackoffsets;
