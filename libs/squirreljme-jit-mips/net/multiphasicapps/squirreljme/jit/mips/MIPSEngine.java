@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
@@ -39,6 +41,10 @@ public class MIPSEngine
 {
 	/** The configuration used. */
 	protected final MIPSConfig config;
+	
+	/** Saved registers which were used, so they are stored/restored. */
+	final Set<MIPSRegister> _savedused =
+		new LinkedHashSet<>();
 	
 	/** Stack offsets for slot entries. */
 	private volatile StackSlotOffsets _stackoffsets;

@@ -14,10 +14,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.ActiveBindingChangeType;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
@@ -82,6 +84,48 @@ public class MIPSActiveBinding
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Clear
+		List<MIPSRegister> registers = this.registers;
+		registers.clear();
+		this._stackoffset = Integer.MIN_VALUE;
+		this._stacklength = Integer.MIN_VALUE;
+		
+		// Is cleared, do nothing
+		if (__t == ActiveBindingChangeType.CLEARED)
+			return;
+		
+		// Get target data type, determines which registers are used
+		MIPSEngine engine = this.engine;
+		DataType dt = engine.__aliasType(__t.target());
+		
+		// Find registers which are free for usage
+		ActiveCacheState state = this.inslot.tread().state();
+		ActiveCacheState.Tread stack = state.stack();
+		ActiveCacheState.Tread locals = state.locals();
+		for (int step = 0; step < 2; step++)
+		{
+			// Using saved registers?
+			boolean usesave = (step == 1);
+			MIPSRegister ai, af;
+			if (usesave)
+			{
+				ai = NUBI.FIRST_INT_TEMPORARY;
+				af = NUBI.FIRST_FLOAT_TEMPORARY;
+			}
+			
+			// Use temporary registers
+			else
+			{
+				ai = NUBI.FIRST_INT_SAVED;
+				af = NUBI.FIRST_FLOAT_SAVED;
+			}
+			
+			throw new todo.TODO();
+		}
+		
+		// If this point has been reached then that means no registers are
+		// available, not even saved ones. As such, allocate the storage areas
+		// on the stack.
 		throw new todo.TODO();
 	}
 	
