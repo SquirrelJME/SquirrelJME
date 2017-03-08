@@ -33,7 +33,7 @@ public class StackSlotOffsets
 {
 	/** Invalid stack offset. */
 	private static final int _INVALID_STACK_OFFSET =
-		Integer.MAX_VALUE;
+		Integer.MIN_VALUE;
 	
 	/** The owning engine. */
 	protected final MIPSEngine engine;
@@ -114,17 +114,34 @@ public class StackSlotOffsets
 	 * @param __t The type stored in the variable.
 	 * @return The stack position of the slot or {@link Integer#MIN_VALUE} if
 	 * it is not valid.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/07
 	 */
 	public int get(boolean __stack, int __i, DataType __t)
-		throws NullPointerException
+		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AM09 Slot index outside bounds of the tread.
+		// (The index)}
+		int numlocals = this.numlocals,
+			numstack = this.numstack;
+		if (__i < 0 || __i >= (__stack ? numstack : numlocals))
+			throw new IndexOutOfBoundsException(String.format("AM09 %d", __i));
+		
+		// If the item is greater than 32-bit then use the long offset first
+		int[][] offsets = this._offsets;
+		int at = (__stack ? numlocals + __i : __i),
+			rv = _INVALID_STACK_OFFSET;
+		if (__t.length() > 4)
+			if (_INVALID_STACK_OFFSET != (rv = offsets[1][at]))
+				return rv;
+		
+		// Otherwise use the 32-bit offset
+		return offsets[0][at];
 	}
 	
 	/**
