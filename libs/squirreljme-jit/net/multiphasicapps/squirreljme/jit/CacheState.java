@@ -113,6 +113,14 @@ public interface CacheState
 		public abstract boolean isStack();
 		
 		/**
+		 * Returns the tread this slot is in.
+		 *
+		 * @return The tread this slot is in.
+		 * @since 2017/03/07
+		 */
+		public abstract Tread tread();
+		
+		/**
 		 * Returns the type of value that is stored here.
 		 *
 		 * @return The type of value to store.
@@ -152,6 +160,14 @@ public interface CacheState
 		 * @since 2017/03/06
 		 */
 		public abstract int size();
+		
+		/**
+		 * Returns the state this tread is within.
+		 *
+		 * @return The owning state.
+		 * @since 2017/03/07
+		 */
+		public abstract CacheState state();
 	}
 }
 

@@ -433,6 +433,17 @@ public final class ActiveCacheState
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2017/03/07
+		 */
+		@Override
+		public Tread tread()
+		{
+			return (this.isstack ? ActiveCacheState.this.stack :
+				ActiveCacheState.this.locals);
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2017/02/23
 		 */
 		@Override
@@ -547,6 +558,16 @@ public final class ActiveCacheState
 		public int size()
 		{
 			return this._slots.length;
+		}
+		
+		/**
+		 * {@Override}
+		 * @since 2017/03/07
+		 */
+		@Override
+		public ActiveCacheState state()
+		{
+			return ActiveCacheState.this;
 		}
 		
 		/**

@@ -333,6 +333,17 @@ public final class SnapshotCacheState
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2017/03/07
+		 */
+		@Override
+		public Tread tread()
+		{
+			return (this.isstack ? SnapshotCacheState.this.stack :
+				SnapshotCacheState.this.locals);
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
 		@Override
@@ -411,6 +422,16 @@ public final class SnapshotCacheState
 		public int size()
 		{
 			return this._slots.length;
+		}
+		
+		/**
+		 * {@Override}
+		 * @since 2017/03/07
+		 */
+		@Override
+		public SnapshotCacheState state()
+		{
+			return SnapshotCacheState.this;
 		}
 		
 		/**
