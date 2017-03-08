@@ -47,7 +47,7 @@ public class MIPSEngine
 		new LinkedHashSet<>();
 	
 	/** Stack offsets for slot entries. */
-	private volatile StackSlotOffsets _stackoffsets;
+	volatile StackSlotOffsets _stackoffsets;
 	
 	/**
 	 * Initializes the MIPS engine.
@@ -177,7 +177,7 @@ public class MIPSEngine
 	public void slotCount(int __ms, int __ml)
 	{
 		// Initialize stack offsets
-		this._stackoffsets = new StackSlotOffsets(__ms, __ml);
+		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml);
 	}
 	
 	/**

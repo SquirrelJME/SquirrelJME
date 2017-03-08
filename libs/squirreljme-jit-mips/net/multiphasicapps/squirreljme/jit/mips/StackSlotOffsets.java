@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.jit.DataType;
+import net.multiphasicapps.squirreljme.jit.CacheState;
 
 /**
  * This class is used to store the offsets for each slot which exists on the
@@ -34,6 +35,9 @@ public class StackSlotOffsets
 	private static final int _INVALID_STACK_OFFSET =
 		Integer.MAX_VALUE;
 	
+	/** The owning engine. */
+	protected final MIPSEngine engine;
+	
 	/** The number of local entries. */
 	protected final int numlocals;
 	
@@ -52,13 +56,21 @@ public class StackSlotOffsets
 	/**
 	 * Initialzies the stack slot offsets.
 	 *
+	 * @param __e The owning engine.
 	 * @param __ms Number of stack entries.
 	 * @param __ml Number of local entries.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	public StackSlotOffsets(int __ms, int __ml)
+	public StackSlotOffsets(MIPSEngine __e, int __ms, int __ml)
+		throws NullPointerException
 	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
 		// Set
+		this.engine = __e;
 		this.numstack = __ms;
 		this.numlocals = __ml;
 		int total = __ms + __ml;
@@ -92,6 +104,69 @@ public class StackSlotOffsets
 		
 		// Modify
 		this._depth += __v;
+	}
+	
+	/**
+	 * Returns the stack offset of the specified variable.
+	 *
+	 * @param __stack Is this on the stack?
+	 * @param __i The index of the entry.
+	 * @param __t The type stored in the variable.
+	 * @return The stack position of the slot or {@link Integer#MIN_VALUE} if
+	 * it is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/07
+	 */
+	public int get(boolean __stack, int __i, DataType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the stack offset of the specified variable.
+	 *
+	 * @param __cv The variable to get offet for.
+	 * @param __t The type stored in the variable.
+	 * @return The stack position of the slot or {@link Integer#MIN_VALUE} if
+	 * it is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/07
+	 */
+	public int get(CodeVariable __cv, DataType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__cv == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return get(__cv.isStack(), __cv.id(), __t);
+	}
+	
+	/**
+	 * Returns the stack offset of the specified slot.
+	 *
+	 * @param __s The slot to get the offset for.
+	 * @return The stack position of the slot or {@link Integer#MIN_VALUE} if
+	 * it is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/07
+	 */
+	public int get(CacheState.Slot __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return get(__s.isStack(), __s.index(),
+			this.engine.__aliasType(__s.type()));
 	}
 	
 	/**
