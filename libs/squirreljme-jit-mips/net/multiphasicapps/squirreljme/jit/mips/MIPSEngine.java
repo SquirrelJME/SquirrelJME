@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
@@ -160,11 +161,15 @@ public class MIPSEngine
 	@Override
 	public void invokeMethod(CacheState __in, ActiveCacheState __out,
 		MethodLinkage __ml, ActiveCacheState.Slot __rv,
-		ActiveCacheState.Slot[] __args)
+		CacheState.Slot[] __args)
 	{
 		// Check
 		if (__in == null || __out == null || __ml == null || __args == null)
 			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- in=%s out=%s ml=%s rv=%s args=%s%n",
+			__in, __out, __ml, __rv, Arrays.asList(__args));
 		
 		throw new todo.TODO();
 	}

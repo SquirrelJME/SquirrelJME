@@ -174,8 +174,15 @@ public final class MIPSSnapshotBinding
 			if (registers.length > 0)
 				rv = Arrays.asList(registers).toString();
 			else
-				rv = String.format("<%+d, %d>", stackOffset(),
-					stackLength());
+			{
+				int stackoffset = stackOffset();
+				if (stackoffset != Integer.MIN_VALUE)
+					rv = String.format("<%+d, %d>", stackOffset(),
+						stackLength());
+				else
+					rv = String.format("---", stackOffset(),
+						stackLength());
+			}
 			
 			// Store
 			this._string = new WeakReference<>(rv);

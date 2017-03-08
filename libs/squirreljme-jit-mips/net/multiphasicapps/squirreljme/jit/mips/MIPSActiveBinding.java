@@ -273,8 +273,15 @@ public class MIPSActiveBinding
 		if (!registers.isEmpty())
 			return this.registers.toString();
 		else
-			return String.format("<%+d, %d>", stackOffset(),
-				stackLength());
+		{
+			int stackoffset = stackOffset();
+			if (stackoffset != Integer.MIN_VALUE)
+				return String.format("<%+d, %d>", stackOffset(),
+					stackLength());
+			else
+				return String.format("---", stackOffset(),
+					stackLength());
+		}
 	}
 }
 

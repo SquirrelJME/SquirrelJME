@@ -283,6 +283,22 @@ class __JITCodeStream__
 			__removeStackSlot(instate, outstate, cv, __d);
 		}
 		
+		// No return value
+		ActiveCacheState.Slot rv;
+		if (__rv == null)
+			rv = null;
+		
+		// Setup output return value
+		else
+		{
+			// Set the output type
+			rv = outstate.getSlot(__rv);
+			rv.setType(__rvt);
+		}
+		
+		// Forward invoke
+		this._engine.invokeMethod(instate, outstate, __link, rv, args);
+		
 		throw new todo.TODO();
 		
 		/*
