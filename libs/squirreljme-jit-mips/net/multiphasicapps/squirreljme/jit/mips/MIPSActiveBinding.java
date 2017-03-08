@@ -45,10 +45,12 @@ public class MIPSActiveBinding
 	protected final ActiveCacheState.Slot inslot;
 	
 	/** The stack offset. */
+	@Deprecated
 	private volatile int _stackoffset =
 		Integer.MIN_VALUE;
 	
 	/** The stack length. */
+	@Deprecated
 	private volatile int _stacklength =
 		Integer.MIN_VALUE;
 	

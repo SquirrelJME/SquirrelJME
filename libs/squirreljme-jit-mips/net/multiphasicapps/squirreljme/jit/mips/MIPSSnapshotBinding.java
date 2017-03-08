@@ -29,9 +29,11 @@ public final class MIPSSnapshotBinding
 	implements SnapshotBinding
 {
 	/** The stack offset. */
+	@Deprecated
 	protected final int stackoffset;
 	
 	/** The stack length. */
+	@Deprecated
 	protected final int stacklength;
 	
 	/** Registers which are associated with this binding. */
