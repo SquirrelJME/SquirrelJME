@@ -193,7 +193,7 @@ public class MIPSEngine
 			throw new NullPointerException("NARG");
 		
 		// Snapshot
-		return new MIPSSnapshotBinding((MIPSBinding)__b);
+		return new MIPSSnapshotBinding(this, (MIPSBinding)__b);
 	}
 	
 	/**

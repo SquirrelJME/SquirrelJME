@@ -51,6 +51,9 @@ public abstract class MIPSBinding
 	/**
 	 * Returns the length of the value on the stack.
 	 *
+	 * Note that the value may be valid even if registers are being used and
+	 * the slot is eventually allocated in the future.
+	 *
 	 * @return The stack length or {@link Integer#MIN_VALUE} if it is not
 	 * valid.
 	 * @since 2017/03/03
@@ -59,6 +62,9 @@ public abstract class MIPSBinding
 	
 	/**
 	 * Returns the offset on the stack the value will be placed.
+	 *
+	 * Note that the value may be valid even if registers are being used and
+	 * the slot is eventually allocated in the future.
 	 *
 	 * @return The stack offset or {@link Integer#MIN_VALUE} if it is not
 	 * valid.

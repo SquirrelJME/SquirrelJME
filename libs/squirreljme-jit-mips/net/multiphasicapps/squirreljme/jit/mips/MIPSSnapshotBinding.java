@@ -28,13 +28,8 @@ public final class MIPSSnapshotBinding
 	extends MIPSBinding
 	implements SnapshotBinding
 {
-	/** The stack offset. */
-	@Deprecated
-	protected final int stackoffset;
-	
-	/** The stack length. */
-	@Deprecated
-	protected final int stacklength;
+	/** The owning engine. */
+	protected final MIPSEngine engine;
 	
 	/** Registers which are associated with this binding. */
 	private final MIPSRegister[] _registers;
@@ -45,22 +40,24 @@ public final class MIPSSnapshotBinding
 	/**
 	 * Initializes the MIPS binding which snapshots an active binding
 	 *
+	 * @param __e The engine owning this binding.
 	 * @param __b The binding to snapshot.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/20
 	 */
-	MIPSSnapshotBinding(MIPSBinding __b)
+	MIPSSnapshotBinding(MIPSEngine __e, MIPSBinding __b)
 		throws NullPointerException
 	{
 		// Check
-		if (__b == null)
+		if (__e == null || __b == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.engine = __e;
 		
 		// Copy
 		MIPSRegister[] registers = __b.registers();
 		this._registers = (registers != null ? registers.clone() : null);
-		this.stackoffset = __b.stackOffset();
-		this.stacklength = __b.stackLength();
 	}
 	
 	/**
@@ -71,6 +68,10 @@ public final class MIPSSnapshotBinding
 	public MIPSRegister getRegister(int __i)
 		throws IndexOutOfBoundsException
 	{
+		// {@squirreljme.error AM08 Register index out of bounds. (The index)}
+		MIPSRegister[] registers = this._registers;
+		if (registers == null)
+			throw new IndexOutOfBoundsException(String.format("AM08 %d", __i));
 		return this._registers[__i];
 	}
 	
@@ -81,6 +82,9 @@ public final class MIPSSnapshotBinding
 	@Override
 	public int numRegisters()
 	{
+		MIPSRegister[] registers = this._registers;
+		if (registers == null)
+			return 0;
 		return this._registers.length;
 	}
 	
@@ -91,11 +95,10 @@ public final class MIPSSnapshotBinding
 	@Override
 	public MIPSRegister[] registers()
 	{
-		// Stack only
-		if (this.stacklength > 0)
-			return null;
-		
 		// Clone
+		MIPSRegister[] registers = this._registers;
+		if (registers == null)
+			return null;
 		return this._registers.clone();
 	}
 	
@@ -106,7 +109,7 @@ public final class MIPSSnapshotBinding
 	@Override
 	public int stackLength()
 	{
-		return this.stacklength;
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -116,7 +119,7 @@ public final class MIPSSnapshotBinding
 	@Override
 	public int stackOffset()
 	{
-		return this.stackoffset;
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -132,12 +135,12 @@ public final class MIPSSnapshotBinding
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
-			int stacklength = this.stacklength;
-			if (stacklength <= 0)
-				rv = Arrays.asList(this._registers).toString();
+			MIPSRegister[] registers = this._registers;
+			if (registers.length > 0)
+				rv = Arrays.asList(registers).toString();
 			else
-				rv = String.format("<%+d, %d>", this.stackoffset,
-					stacklength);
+				rv = String.format("<%+d, %d>", stackOffset(),
+					stackLength());
 			
 			// Store
 			this._string = new WeakReference<>(rv);

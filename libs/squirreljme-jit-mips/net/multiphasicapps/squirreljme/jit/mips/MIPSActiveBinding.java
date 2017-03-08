@@ -44,16 +44,6 @@ public class MIPSActiveBinding
 	/** The owning cache state. */
 	protected final ActiveCacheState.Slot inslot;
 	
-	/** The stack offset. */
-	@Deprecated
-	private volatile int _stackoffset =
-		Integer.MIN_VALUE;
-	
-	/** The stack length. */
-	@Deprecated
-	private volatile int _stacklength =
-		Integer.MIN_VALUE;
-	
 	/**
 	 * Initializes the active binding.
 	 *
@@ -86,11 +76,9 @@ public class MIPSActiveBinding
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Clear
+		// Clear only registers, the stack positions are fixed
 		List<MIPSRegister> registers = this.registers;
 		registers.clear();
-		this._stackoffset = Integer.MIN_VALUE;
-		this._stacklength = Integer.MIN_VALUE;
 		
 		// Is cleared, do nothing
 		if (__t == ActiveBindingChangeType.CLEARED)
@@ -124,6 +112,11 @@ public class MIPSActiveBinding
 			
 			throw new todo.TODO();
 		}
+		
+		// About to allocate on the stack but it already has a stack
+		// position specified for it
+		if (stackLength() >= dt.length())
+			return;
 		
 		// If this point has been reached then that means no registers are
 		// available, not even saved ones. As such, allocate the storage areas
@@ -159,12 +152,10 @@ public class MIPSActiveBinding
 	@Override
 	public MIPSRegister[] registers()
 	{
-		// Stack only
-		if (this._stacklength > 0)
-			return null;
-		
 		// Convert
 		List<MIPSRegister> registers = this.registers;
+		if (registers.isEmpty())
+			return null;
 		return registers.<MIPSRegister>toArray(
 			new MIPSRegister[registers.size()]);
 	}
@@ -181,10 +172,6 @@ public class MIPSActiveBinding
 		registers.clear();
 		for (MIPSRegister r : __r)
 			registers.add(r);
-		
-		// Clear the stack
-		this._stacklength = Integer.MIN_VALUE;
-		this._stackoffset = Integer.MIN_VALUE;
 	}
 	
 	/**
@@ -194,7 +181,7 @@ public class MIPSActiveBinding
 	@Override
 	public int stackLength()
 	{
-		return this._stacklength;
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -204,7 +191,7 @@ public class MIPSActiveBinding
 	@Override
 	public int stackOffset()
 	{
-		return this._stackoffset;
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -229,10 +216,6 @@ public class MIPSActiveBinding
 		if (fromregs != null)
 			for (int i = 0, n = fromregs.length; i < n; i++)
 				registers.add(fromregs[i]);
-		
-		// Set stack properties
-		this._stackoffset = bind.stackOffset();
-		this._stacklength = bind.stackLength();
 	}
 	
 	/**
@@ -242,12 +225,12 @@ public class MIPSActiveBinding
 	@Override
 	public String toString()
 	{
-		int stacklength = this._stacklength;
-		if (stacklength <= 0)
+		List<MIPSRegister> registers = this.registers;
+		if (!registers.isEmpty())
 			return this.registers.toString();
 		else
-			return String.format("<%+d, %d>", this._stackoffset,
-				stacklength);
+			return String.format("<%+d, %d>", stackOffset(),
+				stackLength());
 	}
 }
 

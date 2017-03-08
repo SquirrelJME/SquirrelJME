@@ -62,6 +62,17 @@ public enum DataType
 	}
 	
 	/**
+	 * Returns the length of the data type.
+	 *
+	 * @return The data type length.
+	 * @since 2017/03/07
+	 */
+	public int length()
+	{
+		return this.bytes;
+	}
+	
+	/**
 	 * Maps the specified stack type to the data type.
 	 *
 	 * @param __t The stack type to map.
