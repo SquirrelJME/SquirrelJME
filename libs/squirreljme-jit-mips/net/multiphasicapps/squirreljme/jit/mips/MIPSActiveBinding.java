@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.ActiveBindingChangeType;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -38,9 +39,6 @@ public class MIPSActiveBinding
 	protected final List<MIPSRegister> registers =
 		new ArrayList<>();
 	
-	/** The translation engine used. */
-	protected final MIPSEngine engine;
-	
 	/** The owning cache state. */
 	protected final ActiveCacheState.Slot inslot;
 	
@@ -55,12 +53,13 @@ public class MIPSActiveBinding
 	public MIPSActiveBinding(MIPSEngine __e, ActiveCacheState.Slot __cs)
 		throws NullPointerException
 	{
+		super(__e);
+		
 		// Check
-		if (__e == null || __cs == null)
+		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.engine = __e;
 		this.inslot = __cs;
 	}
 	
@@ -137,6 +136,26 @@ public class MIPSActiveBinding
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/08
+	 */
+	@Override
+	public int index()
+	{
+		return this.inslot.index();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/08
+	 */
+	@Override
+	public boolean isStack()
+	{
+		return this.inslot.isStack();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/07
 	 */
 	@Override
@@ -181,7 +200,14 @@ public class MIPSActiveBinding
 	@Override
 	public int stackLength()
 	{
-		throw new todo.TODO();
+		// Must first be valid
+		CacheState.Slot slot = this.inslot;
+		StackMapType type = slot.type();
+		if (type == StackMapType.NOTHING)
+			return Integer.MIN_VALUE;
+		
+		// Use datatype length
+		return this.engine.__aliasType(type).length();
 	}
 	
 	/**
@@ -191,7 +217,25 @@ public class MIPSActiveBinding
 	@Override
 	public int stackOffset()
 	{
-		throw new todo.TODO();
+		// Must be a vlid type
+		CacheState.Slot slot = this.inslot;
+		StackMapType type = slot.type();
+		if (type == StackMapType.NOTHING)
+			return Integer.MIN_VALUE;
+		
+		// Get based on slot
+		return this.engine._stackoffsets.get(slot);
+	}
+	
+	/**
+	 * Returns the slot this binding is associated with.
+	 *
+	 * @return The owning slot for this binding.
+	 * @since 2017/03/08
+	 */
+	public ActiveCacheState.Slot slot()
+	{
+		return this.inslot;
 	}
 	
 	/**

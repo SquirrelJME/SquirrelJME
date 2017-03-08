@@ -14,6 +14,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.jit.CacheState;
+import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 
 /**
@@ -28,8 +31,17 @@ public final class MIPSSnapshotBinding
 	extends MIPSBinding
 	implements SnapshotBinding
 {
-	/** The owning engine. */
-	protected final MIPSEngine engine;
+	/** Is this a stack item? */
+	protected final boolean isstack;
+	
+	/** The slot index. */
+	protected final int index;
+	
+	/** The length of the stack. */
+	protected final int stacklen;
+	
+	/** The stack offset. */
+	protected final int stackoff;
 	
 	/** Registers which are associated with this binding. */
 	private final MIPSRegister[] _registers;
@@ -48,14 +60,17 @@ public final class MIPSSnapshotBinding
 	MIPSSnapshotBinding(MIPSEngine __e, MIPSBinding __b)
 		throws NullPointerException
 	{
+		super(__e);
+		
 		// Check
-		if (__e == null || __b == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.engine = __e;
-		
 		// Copy
+		this.isstack = __b.isStack();
+		this.index = __b.index();
+		this.stacklen = __b.stackLength();
+		this.stackoff = __b.stackOffset();
 		MIPSRegister[] registers = __b.registers();
 		this._registers = (registers != null ? registers.clone() : null);
 	}
@@ -73,6 +88,26 @@ public final class MIPSSnapshotBinding
 		if (registers == null)
 			throw new IndexOutOfBoundsException(String.format("AM08 %d", __i));
 		return this._registers[__i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/08
+	 */
+	@Override
+	public int index()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/08
+	 */
+	@Override
+	public boolean isStack()
+	{
+		return this.isstack;
 	}
 	
 	/**
@@ -104,22 +139,22 @@ public final class MIPSSnapshotBinding
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/03/01
+	 * @since 2017/03/08
 	 */
 	@Override
 	public int stackLength()
 	{
-		throw new todo.TODO();
+		return this.stacklen;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/03/01
+	 * @since 2017/03/08
 	 */
 	@Override
 	public int stackOffset()
 	{
-		throw new todo.TODO();
+		return this.stackoff;
 	}
 	
 	/**

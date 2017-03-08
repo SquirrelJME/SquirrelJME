@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import java.util.Arrays;
 import net.multiphasicapps.squirreljme.jit.Binding;
+import net.multiphasicapps.squirreljme.jit.CacheState;
 
 /**
  * This is the base interface for bindings for the MIPS JIT.
@@ -21,6 +22,26 @@ import net.multiphasicapps.squirreljme.jit.Binding;
 public abstract class MIPSBinding
 	implements Binding
 {
+	/** The owning engine. */
+	protected final MIPSEngine engine;
+	
+	/**
+	 * Initializes the base binding.
+	 *
+	 * @param __e The owing engine.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/18
+	 */
+	public MIPSBinding(MIPSEngine __e)
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.engine = __e;
+	}
+	
 	/**
 	 * Gets the register by the given index.
 	 *
@@ -31,6 +52,22 @@ public abstract class MIPSBinding
 	 */
 	public abstract MIPSRegister getRegister(int __i)
 		throws IndexOutOfBoundsException;
+	
+	/**
+	 * Returns the index of the slot this is bound to.
+	 *
+	 * @return The bound slot index.
+	 * @since 2017/03/08
+	 */
+	public abstract int index();
+	
+	/**
+	 * Is this binding on the stack?
+	 *
+	 * @return {@code true} if on the stack.
+	 * @since 2017/03/08
+	 */
+	public abstract boolean isStack();
 	
 	/**
 	 * Returns the number of registers which are used.
@@ -110,7 +147,7 @@ public abstract class MIPSBinding
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/07
 	 */
-	public boolean usesRegister(MIPSRegister __r)
+	public final boolean usesRegister(MIPSRegister __r)
 		throws NullPointerException
 	{
 		// Check
