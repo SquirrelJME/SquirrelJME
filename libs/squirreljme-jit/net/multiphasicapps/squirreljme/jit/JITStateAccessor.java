@@ -38,5 +38,13 @@ public interface JITStateAccessor
 	 */
 	public abstract int link(Linkage __l)
 		throws NullPointerException;
+	
+	/**
+	 * Returns the offsets for stack slots.
+	 *
+	 * @return The stack slot offset table.
+	 * @since 2017/03/11
+	 */
+	public abstract StackSlotOffsets stackSlotOffset();
 }
 

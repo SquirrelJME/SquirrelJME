@@ -378,6 +378,16 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/11
+	 */
+	@Override
+	public StackSlotOffsets stackSlotOffset()
+	{
+		return this._stackoffsets;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/07
 	 */
 	@Override
