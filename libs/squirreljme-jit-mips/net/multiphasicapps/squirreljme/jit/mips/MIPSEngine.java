@@ -145,17 +145,6 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/23
-	 */
-	@Override
-	public ActiveBinding createActiveBinding(ActiveCacheState.Slot __s)
-		throws NullPointerException
-	{
-		return new MIPSActiveBinding(this, __s);
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2017/03/03
 	 */
 	@Override
@@ -183,22 +172,6 @@ public class MIPSEngine
 	{
 		// Initialize stack offsets
 		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/03/01
-	 */
-	@Override
-	public SnapshotBinding snapshotBinding(Binding __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		// Snapshot
-		return new MIPSSnapshotBinding(this, (MIPSBinding)__b);
 	}
 	
 	/**

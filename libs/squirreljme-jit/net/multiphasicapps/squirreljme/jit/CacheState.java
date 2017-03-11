@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.List;
+import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 
@@ -19,28 +20,16 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
  *
  * @since 2017/03/03
  */
-public interface CacheState
+public abstract class CacheState
 {
 	/**
-	 * Returns the slot which is associated with the given variable.
+	 * Base initialization.
 	 *
-	 * @param __cv The variable to get the slot of.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/03
+	 * @since 2017/03/11
 	 */
-	public abstract Slot getSlot(CodeVariable __cv)
-		throws NullPointerException;
-	
-	/**
-	 * Returns the slot which is associated with the given tread and index.
-	 *
-	 * @param __s Is the slot on the stack?
-	 * @param __i The index of the slot.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/06
-	 */
-	public abstract Slot getSlot(boolean __s, int __i)
-		throws NullPointerException;
+	CacheState()
+	{
+	}
 	
 	/**
 	 * Returns the cached local variable assignments.
@@ -59,12 +48,58 @@ public interface CacheState
 	public abstract Tread stack();
 	
 	/**
+	 * Returns the slot which is associated with the given variable.
+	 *
+	 * @param __cv The variable to get the slot of.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/03
+	 */
+	public Slot getSlot(CodeVariable __cv)
+		throws NullPointerException
+	{
+		// Check
+		if (__cv == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		int id = __cv.id();
+		if (__cv.isStack())
+			return this.stack.get(id);
+		return this.locals.get(id);
+	}
+	
+	/**
+	 * Returns the slot which is associated with the given tread and index.
+	 *
+	 * @param __s Is the slot on the stack?
+	 * @param __i The index of the slot.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/06
+	 */
+	public Slot getSlot(boolean __s, int __i)
+		throws NullPointerException
+	{
+		if (__s)
+			return this.stack.get(__i);
+		return this.locals.get(__i);
+	}
+	
+	/**
 	 * This interface acts as the base for slots within the cache state.
 	 *
 	 * @since 2017/03/03
 	 */
-	public static interface Slot
+	public abstract class Slot
 	{
+		/**
+		 * Initializes the base slot.
+		 *
+		 * @since 2017/03/11
+		 */
+		Slot()
+		{
+		}
+		
 		/**
 		 * Returns the slot that this is aliased to or {@code null} if it
 		 * is not aliased. If the slot is aliased to another which has an
@@ -113,6 +148,14 @@ public interface CacheState
 		public abstract boolean isStack();
 		
 		/**
+		 * Returns the list of registers which are stored in this slot.
+		 *
+		 * @return the list of associated registers.
+		 * @since 2017/03/11
+		 */
+		public abstract List<Register> registers();
+		
+		/**
 		 * Returns the tread this slot is in.
 		 *
 		 * @return The tread this slot is in.
@@ -143,8 +186,18 @@ public interface CacheState
 	 *
 	 * @since 2017/03/03
 	 */
-	public static interface Tread
+	public abstract class Tread
+		implements RandomAccess
 	{
+		/**
+		 * Initializes the base tread.
+		 *
+		 * @since 2017/03/11
+		 */
+		Tread()
+		{
+		}
+		
 		/**
 		 * Gets the specified slot in this tread.
 		 *

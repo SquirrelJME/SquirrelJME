@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
@@ -54,34 +56,24 @@ public final class ActiveCacheState
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/23
+	 * @since 2017/03/03
 	 */
 	@Override
 	public Slot getSlot(CodeVariable __cv)
 		throws NullPointerException
 	{
-		// Check
-		if (__cv == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends
-		int id = __cv.id();
-		if (__cv.isStack())
-			return this.stack.get(id);
-		return this.locals.get(id);
+		return (Slot)getSlot(__cv);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/03/06
+	 * @since 2017/03/03
 	 */
 	@Override
 	public Slot getSlot(boolean __s, int __i)
 		throws NullPointerException
 	{
-		if (__s)
-			return this.stack.get(__i);
-		return this.locals.get(__i);
+		return (Slot)getSlot(__s, __i);
 	}
 	
 	/**
@@ -139,7 +131,7 @@ public final class ActiveCacheState
 	 * @since 2017/02/23
 	 */
 	public final class Slot
-		implements CacheState.Slot
+		extends CacheState.Slot
 	{
 		/** Is this the stack? */
 		protected final boolean isstack;
@@ -511,8 +503,8 @@ public final class ActiveCacheState
 	 * @since 2017/02/23
 	 */
 	public final class Tread
-		extends AbstractList<Slot>
-		implements CacheState.Tread, RandomAccess
+		extends CacheState.Tread
+		implements List<ActiveCacheState.Slot>, RandomAccess
 	{
 		/** Slots. */
 		private final Slot[] _slots;

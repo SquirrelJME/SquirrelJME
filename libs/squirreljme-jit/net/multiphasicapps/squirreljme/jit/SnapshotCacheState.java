@@ -60,40 +60,6 @@ public final class SnapshotCacheState
 	}
 	
 	/**
-	 * Returns the slot which is associated with the given variable.
-	 *
-	 * @param __cv The variable to get the slot of.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/23
-	 */
-	public Slot getSlot(CodeVariable __cv)
-		throws NullPointerException
-	{
-		// Check
-		if (__cv == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends
-		int id = __cv.id();
-		if (__cv.isStack())
-			return this.stack.get(id);
-		return this.locals.get(id);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/03/06
-	 */
-	@Override
-	public Slot getSlot(boolean __s, int __i)
-		throws NullPointerException
-	{
-		if (__s)
-			return this.stack.get(__i);
-		return this.locals.get(__i);
-	}
-	
-	/**
 	 * Returns the cached local variable assignments.
 	 *
 	 * @return The cached local variables.
@@ -167,7 +133,7 @@ public final class SnapshotCacheState
 	 * @since 2017/02/18
 	 */
 	public final class Slot
-		implements CacheState.Slot
+		extends CacheState.Slot
 	{
 		/** Is this the stack? */
 		protected final boolean isstack;
@@ -377,8 +343,8 @@ public final class SnapshotCacheState
 	 * @since 2017/02/18
 	 */
 	public final class Tread
-		extends AbstractList<Slot>
-		implements CacheState.Tread, RandomAccess
+		extends CacheState.Tread
+		implements List<SnapshotCacheState.Slot>, RandomAccess
 	{
 		/** Slots in this tread. */
 		private final Slot[] _slots;
