@@ -79,17 +79,6 @@ public abstract class TranslationEngine
 	public abstract void bindStateForEntry(ActiveCacheState __cs);
 	
 	/**
-	 * Creates an active binding.
-	 *
-	 * @param __s The slot owning this binding.
-	 * @return The newly created active binding.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/23
-	 */
-	public abstract ActiveBinding createActiveBinding(
-		ActiveCacheState.Slot __s);
-	
-	/**
 	 * Invokes the specified method with the given arguments, returning the
 	 * value in the specified slot.
 	 *
@@ -121,15 +110,5 @@ public abstract class TranslationEngine
 	 * @since 2017/03/06
 	 */
 	public abstract void slotCount(int __ms, int __ml);
-	
-	/**
-	 * Creates a snapshot of the specified binding returning an immutable one
-	 *
-	 * @param __b The binding to snapshot.
-	 * @return The snapshotted binding.
-	 * @since 2017/03/01
-	 */
-	public abstract SnapshotBinding snapshotBinding(Binding __b)
-		throws NullPointerException;
 }
 
