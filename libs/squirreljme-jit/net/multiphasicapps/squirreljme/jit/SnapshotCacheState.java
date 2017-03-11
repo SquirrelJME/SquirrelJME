@@ -13,12 +13,14 @@ package net.multiphasicapps.squirreljme.jit;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This contains the state of the stack and local variables.
@@ -149,6 +151,12 @@ public final class SnapshotCacheState
 		/** Slot this is aliased to. */
 		protected final int idalias;
 		
+		/** Registers used */
+		private final Register[] _registers;
+		
+		/** Read-only registers. */
+		private volatile Reference<List<Register>> _roregs;
+		
 		/** String representation of this slot. */
 		private volatile Reference<String> _string;
 		
@@ -167,14 +175,18 @@ public final class SnapshotCacheState
 			if (__from == null)
 				throw new NullPointerException("NARG");
 			
-			// Set change
-			if (true)
-				throw new todo.TODO();
-			
 			// Copy fields
 			this.isstack = __from.thisIsStack();
 			this.index = __from.thisIndex();
 			this.type = __from.thisType();
+			
+			// Copy Registers
+			List<Register> fromregisters = __from.thisRegisters();
+			int n = fromregisters.size();
+			Register[] registers = new Register[n];
+			for (int i = 0; i < n; i++)
+				registers[i] = fromregisters.get(i);
+			this._registers = registers;
 			
 			// Copy alias
 			CacheState.Slot alias = __from.value();
@@ -229,7 +241,16 @@ public final class SnapshotCacheState
 		@Override
 		public List<Register> thisRegisters()
 		{
-			throw new todo.TODO();
+			Reference<List<Register>> ref = this._roregs;
+			List<Register> rv;
+			
+			// Cache?
+			if (ref == null || null == (rv = ref.get()))
+				this._roregs = new WeakReference<>((rv =
+					UnmodifiableList.<Register>of(
+					Arrays.<Register>asList(this._registers))));
+			
+			return rv;
 		}
 		
 		/**
