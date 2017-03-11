@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.mips;
+package net.multiphasicapps.squirreljme.jit;
 
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.jit.DataType;
@@ -18,11 +18,9 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
  * This class is used to store the offsets for each slot which exists on the
  * stack. 
  *
- * If a 64-bit value is set and a 32-bit value is not set then the 32-bit
- * value will be set from the 64-bit one (with potential offset). Otherwise
- * if the 64-bit offset is set after a 32-bit one a new position will be
- * used because there is no room to store a value without overwriting
- * adjacent space.
+ * If a value with a higher length is specified before one of a lower length
+ * then any set of a value with a lower length will have no effect and return
+ * the associated offset of the higher length.
  *
  * Generally these offsets are shared across the entire method so that
  * shuffling is not required.
@@ -36,7 +34,7 @@ public class StackSlotOffsets
 		Integer.MIN_VALUE;
 	
 	/** The owning engine. */
-	protected final MIPSEngine engine;
+	protected final TranslationEngine engine;
 	
 	/** The number of local entries. */
 	protected final int numlocals;

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
 /**
@@ -47,26 +48,6 @@ public abstract class TranslationEngine
 		// Set
 		this.config = __c;
 		this.accessor = __jsa;
-	}
-	
-	/**
-	 * This returns the configuration that the translation engine was
-	 * initialized with.
-	 *
-	 * @param <C> The class to cast to.
-	 * @param __cl The class to cast to.
-	 * @return The configuration to use for the JIT.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/02
-	 */
-	public final <C extends JITConfig<C>> JITConfig<C> config(Class<C> __cl)
-		throws NullPointerException
-	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		return __cl.cast(this.config);
 	}
 	
 	/**
@@ -110,5 +91,37 @@ public abstract class TranslationEngine
 	 * @since 2017/03/06
 	 */
 	public abstract void slotCount(int __ms, int __ml);
+	
+	/**
+	 * This translates the specified stack type to the given data type, this
+	 * is used for allocating space on the stack to store the value.
+	 *
+	 * @param __t The stack type to translate to a data type.
+	 * @return The data type for the given stack type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/11
+	 */
+	public abstract DataType toDataType(StackMapType __t)
+		throws NullPointerException;
+	
+	/**
+	 * This returns the configuration that the translation engine was
+	 * initialized with.
+	 *
+	 * @param <C> The class to cast to.
+	 * @param __cl The class to cast to.
+	 * @return The configuration to use for the JIT.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/02
+	 */
+	public final <C extends JITConfig<C>> JITConfig<C> config(Class<C> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this.config);
+	}
 }
 
