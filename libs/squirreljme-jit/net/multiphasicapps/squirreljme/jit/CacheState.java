@@ -182,6 +182,17 @@ public abstract class CacheState
 		public abstract Slot value();
 		
 		/**
+		 * Returns {@code true} if this slot is aliased.
+		 *
+		 * @return {@code true} if this is an aliased slot.
+		 * @since 2017/03/11
+		 */
+		public final boolean isAliased()
+		{
+			return value() != this;
+		}
+		
+		/**
 		 * Returns the value index of this slot.
 		 *
 		 * @return The slot index.
