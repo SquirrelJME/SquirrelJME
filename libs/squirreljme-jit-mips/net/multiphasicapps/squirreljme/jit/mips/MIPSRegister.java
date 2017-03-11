@@ -10,12 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.Register;
+
 /**
  * This represents a MIPS CPU register.
  *
  * @since 2017/02/19
  */
 public enum MIPSRegister
+	implements Register
 {
 	/** r0, always zero. */
 	R0(false, 0),
