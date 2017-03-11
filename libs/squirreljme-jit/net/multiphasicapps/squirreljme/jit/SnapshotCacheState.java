@@ -28,7 +28,7 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
  * @since 2017/02/16
  */
 public final class SnapshotCacheState
-	implements CacheState
+	extends CacheState
 {
 	/** Stack code variables. */
 	protected final Tread stack;
@@ -50,13 +50,15 @@ public final class SnapshotCacheState
 	SnapshotCacheState(TranslationEngine __e, CacheState __a)
 		throws NullPointerException
 	{
+		super(__e);
+		
 		// Check
-		if (__e == null || __a == null)
+		if (__a == null)
 			throw new NullPointerException("NARG");
 		
 		// Copy locals and the stack
-		this.locals = __snapTread(__e, __a.locals());
-		this.stack = __snapTread(__e, __a.stack());
+		this.locals = __snapTread(__a.locals());
+		this.stack = __snapTread(__a.stack());
 	}
 	
 	/**
@@ -102,14 +104,12 @@ public final class SnapshotCacheState
 	/**
 	 * Snapshots the specified tread and returns it.
 	 *
-	 * @param __e The translation engine.
 	 * @param __from The tread to copy.
 	 * @return The copied and snapshotted tread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/01
 	 */
-	private SnapshotCacheState.Tread __snapTread(TranslationEngine __e,
-		CacheState.Tread __from)
+	private SnapshotCacheState.Tread __snapTread(CacheState.Tread __from)
 		throws NullPointerException
 	{
 		// Check
@@ -120,7 +120,7 @@ public final class SnapshotCacheState
 		int n = __from.size();
 		Slot[] slots = new Slot[n];
 		for (int i = 0; i < n; i++)
-			slots[i] = new Slot(__e, __from.get(i));
+			slots[i] = new Slot(__from.get(i));
 		
 		// Initialize
 		return new Tread(slots);
@@ -140,9 +140,6 @@ public final class SnapshotCacheState
 		
 		/** The index of this slot. */
 		protected final int index;
-		
-		/** The binding for this slot. */
-		protected final SnapshotBinding binding;
 		
 		/** The type of value stored here. */
 		protected final StackMapType type;
@@ -164,18 +161,20 @@ public final class SnapshotCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot(TranslationEngine __e, CacheState.Slot __from)
+		private Slot(CacheState.Slot __from)
 			throws NullPointerException
 		{
 			// Check
-			if (__e == null || __from == null)
+			if (__from == null)
 				throw new NullPointerException("NARG");
+			
+			// Set change
+			if (true)
+				throw new todo.TODO();
 			
 			// Copy fields
 			this.isstack = __from.isStack();
 			this.index = __from.index();
-			this.binding = __e.snapshotBinding(
-				__from.<ActiveBinding>binding(ActiveBinding.class));
 			this.type = __from.type();
 			
 			// Aliased?
@@ -222,27 +221,6 @@ public final class SnapshotCacheState
 		}
 		
 		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public <B extends Binding> B binding(Class<B> __cl)
-			throws ClassCastException, NullPointerException
-		{
-			// Check
-			if (__cl == null)
-				throw new NullPointerException("NARG");
-			
-			// Use the aliased binding
-			Slot alias = alias();
-			if (alias != null)
-				return alias.<B>binding(__cl);
-			
-			// Otherwise, use our own binding
-			return __cl.cast(this.binding);
-		}
-		
-		/**
 		 * {inheritDoc}
 		 * @since 2017/03/01
 		 */
@@ -274,6 +252,16 @@ public final class SnapshotCacheState
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2017/03/11
+		 */
+		@Override
+		public List<Register> registers()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2017/03/01
 		 */
 		@Override
@@ -289,9 +277,8 @@ public final class SnapshotCacheState
 				String alias = (idalias >= 0 ? String.format("copied=%c#%d",
 					(this.stackalias ? 'S' : 'L'), idalias) : "not aliased");
 				this._string = new WeakReference<>((rv = String.format(
-					"{%c#%d: type=%s, binding=%s, %s}",
-					(this.isstack ? 'S' : 'L'),
-					this.index, type(), binding(Binding.class), alias)));
+					"{%c#%d: type=%s, %s}",
+					(this.isstack ? 'S' : 'L'), this.index, type(), alias)));
 			}
 		
 			return rv;
@@ -343,8 +330,8 @@ public final class SnapshotCacheState
 	 * @since 2017/02/18
 	 */
 	public final class Tread
-		extends CacheState.Tread
-		implements List<SnapshotCacheState.Slot>, RandomAccess
+		extends AbstractList<Slot>
+		implements CacheState.Tread, RandomAccess
 	{
 		/** Slots in this tread. */
 		private final Slot[] _slots;

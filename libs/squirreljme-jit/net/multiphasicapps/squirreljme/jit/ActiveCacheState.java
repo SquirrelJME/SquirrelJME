@@ -24,7 +24,7 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
  * @since 2017/02/23
  */
 public final class ActiveCacheState
-	implements CacheState
+	extends CacheState
 {
 	/** Stack code variables. */
 	protected final Tread stack;
@@ -45,13 +45,11 @@ public final class ActiveCacheState
 	ActiveCacheState(TranslationEngine __te, int __ms, int __ml)
 		throws NullPointerException
 	{
-		// Check
-		if (__te == null)
-			throw new NullPointerException("NARG");
+		super(__te);
 		
 		// Setup treads
-		this.stack = new Tread(__te, true, __ms);
-		this.locals = new Tread(__te, false, __ml);
+		this.stack = new Tread(true, __ms);
+		this.locals = new Tread(false, __ml);
 	}
 	
 	/**
@@ -139,9 +137,6 @@ public final class ActiveCacheState
 		/** The index of this slot. */
 		protected final int index;
 		
-		/** The active binding. */
-		protected final ActiveBinding binding;
-		
 		/** The type of value stored here. */
 		private volatile StackMapType _type =
 			StackMapType.NOTHING;
@@ -156,25 +151,21 @@ public final class ActiveCacheState
 		/**
 		 * Initializes the slot.
 		 *
-		 * @param __te The translation engine (used to obtain bindings).
 		 * @param __stack If {@code true} then these values are on the stack.
 		 * @param __n The number of slots.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot(TranslationEngine __te, boolean __stack, int __i)
+		private Slot(boolean __stack, int __i)
 			throws NullPointerException
 		{
-			// Check
-			if (__te == null)
-				throw new NullPointerException("NARG");
+			// Set change
+			if (true)
+				throw new todo.TODO();
 			
 			// Set
 			this.isstack = __stack;
 			this.index = __i;
-			
-			// Setup binding
-			this.binding = __te.createActiveBinding(this);
 		}
 		
 		/**
@@ -202,27 +193,6 @@ public final class ActiveCacheState
 					throw new IllegalStateException(String.format("ED0e %s",
 						this));
 			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/23
-		 */
-		@Override
-		public <B extends Binding> B binding(Class<B> __cl)
-			throws ClassCastException, NullPointerException
-		{
-			// Check
-			if (__cl == null)
-				throw new NullPointerException("NARG");
-			
-			// Use the aliased binding
-			Slot alias = alias();
-			if (alias != null)
-				return alias.<B>binding(__cl);
-			
-			// Otherwise, use our own binding
-			return __cl.cast(this.binding);
 		}
 		
 		/**
@@ -264,6 +234,16 @@ public final class ActiveCacheState
 		public boolean isStack()
 		{
 			return this.isstack;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/11
+		 */
+		@Override
+		public List<Register> registers()
+		{
+			throw new todo.TODO();
 		}
 		
 		/**
@@ -364,40 +344,7 @@ public final class ActiveCacheState
 			// Depending on the target type, specify the change
 			if (__ebc)
 			{
-				ActiveBindingChangeType ct;
-				switch (__t)
-				{
-					case NOTHING:
-						ct = ActiveBindingChangeType.CLEARED;
-						break;
-						
-					case INTEGER:
-						ct = ActiveBindingChangeType.TO_INTEGER;
-						break;
-						
-					case LONG:
-						ct = ActiveBindingChangeType.TO_LONG;
-						break;
-						
-					case FLOAT:
-						ct = ActiveBindingChangeType.TO_FLOAT;
-						break;
-						
-					case DOUBLE:
-						ct = ActiveBindingChangeType.TO_DOUBLE;
-						break;
-						
-					case OBJECT:
-						ct = ActiveBindingChangeType.TO_OBJECT;
-						break;
-				
-						// Unknown
-					default:
-						throw new RuntimeException("OOPS");
-				}
-			
-				// Set change
-				this.binding.changeBinding(ct);
+				throw new todo.TODO();
 			}
 			
 			// The alias is removed because the type changed
@@ -418,9 +365,8 @@ public final class ActiveCacheState
 			int idalias = this._idalias; 
 			String alias = (idalias >= 0 ? String.format("copied=%c#%d",
 				(this._stackalias ? 'S' : 'L'), idalias) : "not aliased");
-			return String.format("{%c#%d: type=%s, binding=%s, %s}",
-				(this.isstack ? 'S' : 'L'), this.index, type(),
-				binding(Binding.class), alias);
+			return String.format("{%c#%d: type=%s, %s}",
+				(this.isstack ? 'S' : 'L'), this.index, type(), alias);
 		}
 		
 		/**
@@ -478,7 +424,6 @@ public final class ActiveCacheState
 			
 			// Copy state
 			this._type = __s.type();
-			this.binding.switchFrom(__s.<Binding>binding(Binding.class));
 			
 			// Aliased?
 			CacheState.Slot alias = __s.alias();
@@ -503,8 +448,8 @@ public final class ActiveCacheState
 	 * @since 2017/02/23
 	 */
 	public final class Tread
-		extends CacheState.Tread
-		implements List<ActiveCacheState.Slot>, RandomAccess
+		extends AbstractList<Slot>
+		implements CacheState.Tread, RandomAccess
 	{
 		/** Slots. */
 		private final Slot[] _slots;
@@ -512,23 +457,18 @@ public final class ActiveCacheState
 		/**
 		 * Initializes the tread.
 		 *
-		 * @param __te The translation engine (used to obtain bindings).
 		 * @param __stack If {@code true} then these values are on the stack.
 		 * @param __n The number of slots.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Tread(TranslationEngine __te, boolean __stack, int __n)
+		private Tread(boolean __stack, int __n)
 			throws NullPointerException
 		{
-			// Check
-			if (__te == null)
-				throw new NullPointerException("NARG");
-			
 			// Initialize slots
 			Slot[] slots = new Slot[__n];
 			for (int i = 0; i < __n; i++)
-				slots[i] = new Slot(__te, __stack, i);
+				slots[i] = new Slot(__stack, i);
 			this._slots = slots;
 		}
 		

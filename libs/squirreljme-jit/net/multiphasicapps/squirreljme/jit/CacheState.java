@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
@@ -22,13 +23,25 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
  */
 public abstract class CacheState
 {
+	/** The owning translation engine. */
+	protected final TranslationEngine engine;
+	
 	/**
 	 * Base initialization.
 	 *
+	 * @param __te The translation engine used.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/11
 	 */
-	CacheState()
+	CacheState(TranslationEngine __te)
+		throws NullPointerException
 	{
+		// Check
+		if (__te == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.engine = __te;
 	}
 	
 	/**
@@ -64,8 +77,8 @@ public abstract class CacheState
 		// Depends
 		int id = __cv.id();
 		if (__cv.isStack())
-			return this.stack.get(id);
-		return this.locals.get(id);
+			return stack().get(id);
+		return locals().get(id);
 	}
 	
 	/**
@@ -80,8 +93,8 @@ public abstract class CacheState
 		throws NullPointerException
 	{
 		if (__s)
-			return this.stack.get(__i);
-		return this.locals.get(__i);
+			return stack().get(__i);
+		return locals().get(__i);
 	}
 	
 	/**
@@ -109,19 +122,6 @@ public abstract class CacheState
 		 * @since 2017/03/03
 		 */
 		public abstract Slot alias();
-		
-		/**
-		 * This returns the active binding for this slot.
-		 *
-		 * @param <B> The active binding type used.
-		 * @param __cl The class to cast to.
-		 * @return The active binding.
-		 * @throws ClassCastException If the class type is not valid.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/03/03
-		 */
-		public abstract <B extends Binding> B binding(Class<B> __cl)
-			throws ClassCastException, NullPointerException;
 		
 		/**
 		 * Returns the index of this slot.
@@ -186,18 +186,9 @@ public abstract class CacheState
 	 *
 	 * @since 2017/03/03
 	 */
-	public abstract class Tread
-		implements RandomAccess
+	public interface Tread
+		extends RandomAccess
 	{
-		/**
-		 * Initializes the base tread.
-		 *
-		 * @since 2017/03/11
-		 */
-		Tread()
-		{
-		}
-		
 		/**
 		 * Gets the specified slot in this tread.
 		 *
