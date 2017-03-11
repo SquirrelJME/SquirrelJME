@@ -92,12 +92,11 @@ public final class SnapshotCacheState
 	{
 		Reference<String> ref = this._string;
 		String rv;
-		
+	
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = String.format(
-				"{stack=%s, locals=%s}", this.stack, this.locals)));
-		
+			this._string = new WeakReference<>((rv = super.toString()));
+	
 		return rv;
 	}
 	
@@ -173,16 +172,16 @@ public final class SnapshotCacheState
 				throw new todo.TODO();
 			
 			// Copy fields
-			this.isstack = __from.isStack();
-			this.index = __from.index();
-			this.type = __from.type();
+			this.isstack = __from.thisIsStack();
+			this.index = __from.thisIndex();
+			this.type = __from.thisType();
 			
-			// Aliased?
-			CacheState.Slot alias = __from.alias();
-			if (alias != null)
+			// Copy alias
+			CacheState.Slot alias = __from.value();
+			if (alias != __from)
 			{
-				this.stackalias = alias.isStack();
-				this.idalias = alias.index();
+				this.stackalias = alias.thisIsStack();
+				this.idalias = alias.thisIndex();
 			}
 			
 			// Not aliased
@@ -194,38 +193,11 @@ public final class SnapshotCacheState
 		}
 		
 		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public Slot alias()
-		{
-			for (Slot at = this;;)
-			{
-				// Aliased?
-				int idalias = at.idalias;
-				if (idalias < 0)
-					if (at == this)
-						return null;
-					else
-						return at;
-			
-				// {@squirreljme.error ED0c Slot eventually references itself.
-				// (This slot)}
-				at = (at.stackalias ? SnapshotCacheState.this.stack :
-					SnapshotCacheState.this.locals).get(idalias);
-				if (at == this)
-					throw new IllegalStateException(String.format("ED0c %s",
-						this));
-			}
-		}
-		
-		/**
 		 * {inheritDoc}
 		 * @since 2017/03/01
 		 */
 		@Override
-		public int index()
+		public int thisIndex()
 		{
 			return this.index;
 		}
@@ -235,7 +207,7 @@ public final class SnapshotCacheState
 		 * @since 2017/03/01
 		 */
 		@Override
-		public boolean isLocal()
+		public boolean thisIsLocal()
 		{
 			return !this.isstack;
 		}
@@ -245,7 +217,7 @@ public final class SnapshotCacheState
 		 * @since 2017/03/01
 		 */
 		@Override
-		public boolean isStack()
+		public boolean thisIsStack()
 		{
 			return this.isstack;
 		}
@@ -255,9 +227,30 @@ public final class SnapshotCacheState
 		 * @since 2017/03/11
 		 */
 		@Override
-		public List<Register> registers()
+		public List<Register> thisRegisters()
 		{
 			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/07
+		 */
+		@Override
+		public Tread thisTread()
+		{
+			return (this.isstack ? SnapshotCacheState.this.stack :
+				SnapshotCacheState.this.locals);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/01
+		 */
+		@Override
+		public StackMapType thisType()
+		{
+			return this.type;
 		}
 		
 		/**
@@ -272,42 +265,9 @@ public final class SnapshotCacheState
 		
 			// Cache?
 			if (ref == null || null == (rv = ref.get()))
-			{
-				int idalias = this.idalias;
-				String alias = (idalias >= 0 ? String.format("copied=%c#%d",
-					(this.stackalias ? 'S' : 'L'), idalias) : "not aliased");
-				this._string = new WeakReference<>((rv = String.format(
-					"{%c#%d: type=%s, %s}",
-					(this.isstack ? 'S' : 'L'), this.index, type(), alias)));
-			}
+				this._string = new WeakReference<>((rv = super.toString()));
 		
 			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/07
-		 */
-		@Override
-		public Tread tread()
-		{
-			return (this.isstack ? SnapshotCacheState.this.stack :
-				SnapshotCacheState.this.locals);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public StackMapType type()
-		{
-			// Use aliased yype
-			Slot alias = alias();
-			if (alias != null)
-				return alias.type();
-			
-			return this.type;
 		}
 		
 		/**
@@ -317,10 +277,24 @@ public final class SnapshotCacheState
 		@Override
 		public Slot value()
 		{
-			Slot rv = alias();
-			if (rv == null)
-				return this;
-			return rv;
+			for (Slot at = this;;)
+			{
+				// Aliased?
+				int idalias = at.idalias;
+				if (idalias < 0)
+					if (at == this)
+						return this;
+					else
+						return at;
+			
+				// {@squirreljme.error ED0c Slot eventually references itself.
+				// (This slot)}
+				at = (at.stackalias ? SnapshotCacheState.this.stack :
+					SnapshotCacheState.this.locals).get(idalias);
+				if (at == this)
+					throw new IllegalStateException(String.format("ED0c %s",
+						this));
+			}
 		}
 	}
 	

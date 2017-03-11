@@ -10,12 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This represents the currently active cache state which is used to store
@@ -114,16 +117,6 @@ public final class ActiveCacheState
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2017/03/01
-	 */
-	@Override
-	public String toString()
-	{
-		return String.format("{stack=%s, locals=%s}", this.stack, this.locals);
-	}
-	
-	/**
 	 * The slot stores the information on the current element.
 	 *
 	 * @since 2017/02/23
@@ -137,6 +130,10 @@ public final class ActiveCacheState
 		/** The index of this slot. */
 		protected final int index;
 		
+		/** List of registers used. */
+		private final List<Register> _registers =
+			new ArrayList<>();
+		
 		/** The type of value stored here. */
 		private volatile StackMapType _type =
 			StackMapType.NOTHING;
@@ -147,6 +144,9 @@ public final class ActiveCacheState
 		/** Slot this is aliased to. */
 		private volatile int _idalias =
 			-1;
+		
+		/** Unmodifiable registers. */
+		private volatile Reference<List<Register>> _umregs;
 		
 		/**
 		 * Initializes the slot.
@@ -159,40 +159,9 @@ public final class ActiveCacheState
 		private Slot(boolean __stack, int __i)
 			throws NullPointerException
 		{
-			// Set change
-			if (true)
-				throw new todo.TODO();
-			
 			// Set
 			this.isstack = __stack;
 			this.index = __i;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public Slot alias()
-		{
-			for (Slot at = this;;)
-			{
-				// Aliased?
-				int idalias = at._idalias;
-				if (idalias < 0)
-					if (at == this)
-						return null;
-					else
-						return at;
-			
-				// {@squirreljme.error ED0e Slot eventually references itself.
-				// (This slot)}
-				at = (at._stackalias ? ActiveCacheState.this.stack :
-					ActiveCacheState.this.locals).get(idalias);
-				if (at == this)
-					throw new IllegalStateException(String.format("ED0e %s",
-						this));
-			}
 		}
 		
 		/**
@@ -204,46 +173,6 @@ public final class ActiveCacheState
 		{
 			this._stackalias = false;
 			this._idalias = -1;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public int index()
-		{
-			return this.index;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public boolean isLocal()
-		{
-			return !this.isstack;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public boolean isStack()
-		{
-			return this.isstack;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/11
-		 */
-		@Override
-		public List<Register> registers()
-		{
-			throw new todo.TODO();
 		}
 		
 		/**
@@ -357,16 +286,49 @@ public final class ActiveCacheState
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2017/02/23
+		 * @since 2017/03/01
 		 */
 		@Override
-		public String toString()
+		public int thisIndex()
 		{
-			int idalias = this._idalias; 
-			String alias = (idalias >= 0 ? String.format("copied=%c#%d",
-				(this._stackalias ? 'S' : 'L'), idalias) : "not aliased");
-			return String.format("{%c#%d: type=%s, %s}",
-				(this.isstack ? 'S' : 'L'), this.index, type(), alias);
+			return this.index;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/01
+		 */
+		@Override
+		public boolean thisIsLocal()
+		{
+			return !this.isstack;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/01
+		 */
+		@Override
+		public boolean thisIsStack()
+		{
+			return this.isstack;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/11
+		 */
+		@Override
+		public List<Register> thisRegisters()
+		{
+			Reference<List<Register>> ref = this._umregs;
+			List<Register> rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._umargs = new WeakReference<>(
+					(rv = UnmodifiableList.<Register>of(this._registers)));
+			
+			return rv;
 		}
 		
 		/**
@@ -374,7 +336,7 @@ public final class ActiveCacheState
 		 * @since 2017/03/07
 		 */
 		@Override
-		public Tread tread()
+		public Tread thisTread()
 		{
 			return (this.isstack ? ActiveCacheState.this.stack :
 				ActiveCacheState.this.locals);
@@ -385,13 +347,8 @@ public final class ActiveCacheState
 		 * @since 2017/02/23
 		 */
 		@Override
-		public StackMapType type()
+		public StackMapType thisType()
 		{
-			// Use aliased yype
-			Slot alias = alias();
-			if (alias != null)
-				return alias.type();
-			
 			return this._type;
 		}
 		
@@ -402,10 +359,24 @@ public final class ActiveCacheState
 		@Override
 		public Slot value()
 		{
-			Slot rv = alias();
-			if (rv == null)
-				return this;
-			return rv;
+			for (Slot at = this;;)
+			{
+				// Aliased?
+				int idalias = at._idalias;
+				if (idalias < 0)
+					if (at == this)
+						return this;
+					else
+						return at;
+			
+				// {@squirreljme.error ED0e Slot eventually references itself.
+				// (This slot)}
+				at = (at._stackalias ? ActiveCacheState.this.stack :
+					ActiveCacheState.this.locals).get(idalias);
+				if (at == this)
+					throw new IllegalStateException(String.format("ED0e %s",
+						this));
+			}
 		}
 		
 		/**

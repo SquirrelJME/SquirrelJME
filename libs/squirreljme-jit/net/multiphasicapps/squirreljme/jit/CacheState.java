@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This interface acts as the base for the mutable and immutable cache states.
@@ -98,6 +99,16 @@ public abstract class CacheState
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/20
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("{stack=%s, locals=%s}", this.stack, this.locals);
+	}
+	
+	/**
 	 * This interface acts as the base for slots within the cache state.
 	 *
 	 * @since 2017/03/03
@@ -114,22 +125,12 @@ public abstract class CacheState
 		}
 		
 		/**
-		 * Returns the slot that this is aliased to or {@code null} if it
-		 * is not aliased. If the slot is aliased to another which has an
-		 * alias then it should follow and return that alias instead.
-		 *
-		 * @return The aliased slot or {@code null} if not aliased.
-		 * @since 2017/03/03
-		 */
-		public abstract Slot alias();
-		
-		/**
 		 * Returns the index of this slot.
 		 *
 		 * @return The slot index.
 		 * @since 2017/03/03
 		 */
-		public abstract int index();
+		public abstract int thisIndex();
 		
 		/**
 		 * Returns {@code true} if this is a local slot.
@@ -137,7 +138,7 @@ public abstract class CacheState
 		 * @return {@code true} if a local slot.
 		 * @since 2017/03/03
 		 */
-		public abstract boolean isLocal();
+		public abstract boolean thisIsLocal();
 		
 		/**
 		 * Returns {@code true} if this is a stack slot.
@@ -145,7 +146,7 @@ public abstract class CacheState
 		 * @return {@code true} if a stack slot.
 		 * @since 2017/03/03
 		 */
-		public abstract boolean isStack();
+		public abstract boolean thisIsStack();
 		
 		/**
 		 * Returns the list of registers which are stored in this slot.
@@ -153,7 +154,7 @@ public abstract class CacheState
 		 * @return the list of associated registers.
 		 * @since 2017/03/11
 		 */
-		public abstract List<Register> registers();
+		public abstract List<Register> thisRegisters();
 		
 		/**
 		 * Returns the tread this slot is in.
@@ -161,7 +162,7 @@ public abstract class CacheState
 		 * @return The tread this slot is in.
 		 * @since 2017/03/07
 		 */
-		public abstract Tread tread();
+		public abstract Tread thisTread();
 		
 		/**
 		 * Returns the type of value that is stored here.
@@ -169,7 +170,7 @@ public abstract class CacheState
 		 * @return The type of value to store.
 		 * @since 2017/03/03
 		 */
-		public abstract StackMapType type();
+		public abstract StackMapType thisType();
 		
 		/**
 		 * Returns the slot which contains the value for this slot, if the
@@ -179,6 +180,117 @@ public abstract class CacheState
 		 * @since 2017/03/06
 		 */
 		public abstract Slot value();
+		
+		/**
+		 * Returns the value index of this slot.
+		 *
+		 * @return The slot index.
+		 * @since 2017/03/11
+		 */
+		public final int valueIndex()
+		{
+			return value().index();
+		}
+		
+		/**
+		 * Returns {@code true} if this is a local slot.
+		 *
+		 * @return {@code true} if a local slot.
+		 * @since 2017/03/11
+		 */
+		public final boolean valueIsLocal()
+		{
+			return value().thisIsLocal();
+		}
+		
+		/**
+		 * Returns {@code true} if this is a stack slot.
+		 *
+		 * @return {@code true} if a stack slot.
+		 * @since 2017/03/11
+		 */
+		public final boolean valueIsStack()
+		{
+			return value().thisIsStack();
+		}
+		
+		/**
+		 * Returns the list of registers which are stored in this slot.
+		 *
+		 * @return the list of associated registers.
+		 * @since 2017/03/11
+		 */
+		public final List<Register> valueRegisters()
+		{
+			return value().thisRegisters();
+		}
+		
+		/**
+		 * Returns the tread this slot is in.
+		 *
+		 * @return The tread this slot is in.
+		 * @since 2017/03/11
+		 */
+		public final Tread valueTread()
+		{
+			return value().thisTread();
+		}
+		
+		/**
+		 * Returns the type of value that is stored here.
+		 *
+		 * @return The type of value to store.
+		 * @since 2017/03/11
+		 */
+		public final StackMapType valueType()
+		{
+			return value().thisType();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/23
+		 */
+		@Override
+		public String toString()
+		{
+			// Is this slot aliased?
+			Slot alias = alias();
+			
+			// Build string
+			StringBuiler sb = new StringBuilder();
+			
+			// If the slot is aliased, show the aliased value, the actual
+			// slot information will appear in parenthesis to show what would
+			// have been masked away
+			if (alias != this)
+			{
+				sb.append('(');
+				sb.append(alias.toString());
+			}
+			
+			// Add the actual slot identifier
+			sb.append('<');
+			sb.append(thisIsStack() ? 'S' : 'L');
+			sb.append('#');
+			sb.append(thisIndex());
+			sb.append('>');
+			
+			// Type
+			sb.append(':');
+			sb.append(thisType());
+			
+			// Registers
+			sb.append(':');
+			sb.append('r');
+			sb.append(thisRegisters().toString());
+			
+			// End marker
+			if (alias != this)
+				sb.append(')');
+			
+			return sb.toString();
+		}
 	}
 	
 	/**
