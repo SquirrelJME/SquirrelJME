@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/02/23
  */
+@Deprecated
 public interface ActiveBinding
 	extends Binding
 {

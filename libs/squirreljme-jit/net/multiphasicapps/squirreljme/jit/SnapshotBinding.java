@@ -20,6 +20,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/02/18
  */
+@Deprecated
 public interface SnapshotBinding
 	extends Binding
 {

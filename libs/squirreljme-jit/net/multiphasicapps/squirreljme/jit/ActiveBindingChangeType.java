@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
  *
  * @since 2017/03/04
  */
+@Deprecated
 public enum ActiveBindingChangeType
 {
 	/** The binding is to be cleared, no value is stored here. */

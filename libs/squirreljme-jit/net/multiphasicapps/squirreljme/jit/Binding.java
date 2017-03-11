@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/03/03
  */
+@Deprecated
 public interface Binding
 {
 	/**
