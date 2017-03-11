@@ -381,7 +381,7 @@ class __JITCodeStream__
 	 * @since 2017/03/11
 	 */
 	@Override
-	public StackSlotOffsets stackSlotOffset()
+	public StackSlotOffsets stackSlotOffsets()
 	{
 		return this._stackoffsets;
 	}

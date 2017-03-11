@@ -226,6 +226,34 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Sets the registers that the slot allocates to.
+		 *
+		 * @param __r The registers to set the slot.
+		 * @since 2017/03/11
+		 */
+		public void setRegisters(Register... __r)
+		{
+			List<Register> registers = this._registers;
+			registers.clear();
+			for (Register r : __r)
+				registers.add(r);
+		}
+		
+		/**
+		 * Sets the registers that the slot allocates to.
+		 *
+		 * @param __r The registers to set the slot.
+		 * @since 2017/03/11
+		 */
+		public void setRegisters(Iterable<Register> __r)
+		{
+			List<Register> registers = this._registers;
+			registers.clear();
+			for (Register r : __r)
+				registers.add(r);
+		}
+		
+		/**
 		 * Sets the type of value stored in this slot along with also causing
 		 * a binding change.
 		 *

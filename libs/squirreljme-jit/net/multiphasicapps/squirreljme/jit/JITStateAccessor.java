@@ -45,6 +45,6 @@ public interface JITStateAccessor
 	 * @return The stack slot offset table.
 	 * @since 2017/03/11
 	 */
-	public abstract StackSlotOffsets stackSlotOffset();
+	public abstract StackSlotOffsets stackSlotOffsets();
 }
 

@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
@@ -20,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.SnapshotCacheState;
+import net.multiphasicapps.squirreljme.jit.StackSlotOffsets;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
@@ -71,8 +73,6 @@ public class MIPSEngine
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
 		// Need some config details
 		MIPSConfig config = this.config;
 		int bits = config.bits();
@@ -82,7 +82,7 @@ public class MIPSEngine
 		MIPSRegister nf = NUBI.FIRST_FLOAT_ARGUMENT;
 		
 		// Go through variables
-		StackSlotOffsets stackoffsets = this._stackoffsets;
+		StackSlotOffsets stackoffsets = this.accessor.stackSlotOffsets();
 		ActiveCacheState.Tread locals = __cs.locals();
 		for (int i = 0, n = locals.size(); i < n; i++)
 		{
@@ -90,17 +90,13 @@ public class MIPSEngine
 			ActiveCacheState.Slot slot = locals.get(i);
 			
 			// Only assign registers if the type is not nothing
-			StackMapType stype = slot.type();
+			StackMapType stype = slot.thisType();
 			if (stype == StackMapType.NOTHING)
 				continue;
 			
-			// Get binding here
-			MIPSActiveBinding bind = slot.<MIPSActiveBinding>binding(
-				MIPSActiveBinding.class);
-			
 			// Allocate values into registers, if they do not fit then they
 			// will be placed on the stack
-			DataType type = __aliasType(stype);
+			DataType type = toDataType(stype);
 			switch (type)
 			{
 					// 32-bit int
@@ -108,7 +104,7 @@ public class MIPSEngine
 					if (ni != null)
 					{
 						// Set used registers
-						bind.setRegisters(ni);
+						slot.setRegisters(ni);
 						
 						// Claimed
 						ni = NUBI.nextArgument(ni);
@@ -137,7 +133,6 @@ public class MIPSEngine
 			// Use common stack allocation if not register claimed
 			throw new todo.TODO();
 		}
-		*/
 	}
 	
 	/**
