@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/02/23
  */
+@Override
 public class MIPSActiveBinding
 	extends MIPSBinding
 	implements ActiveBinding

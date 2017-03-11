@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
  *
  * @since 2017/03/03
  */
+@Override
 public abstract class MIPSBinding
 	implements Binding
 {

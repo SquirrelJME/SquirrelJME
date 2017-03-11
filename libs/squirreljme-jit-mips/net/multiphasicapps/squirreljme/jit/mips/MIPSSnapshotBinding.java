@@ -27,6 +27,7 @@ import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
  *
  * @since 2017/02/19
  */
+@Override
 public final class MIPSSnapshotBinding
 	extends MIPSBinding
 	implements SnapshotBinding
