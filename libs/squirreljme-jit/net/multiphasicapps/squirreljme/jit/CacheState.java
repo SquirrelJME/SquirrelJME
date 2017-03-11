@@ -105,7 +105,7 @@ public abstract class CacheState
 	@Override
 	public String toString()
 	{
-		return String.format("{stack=%s, locals=%s}", this.stack, this.locals);
+		return String.format("{stack=%s, locals=%s}", stack(), locals());
 	}
 	
 	/**
@@ -200,7 +200,7 @@ public abstract class CacheState
 		 */
 		public final int valueIndex()
 		{
-			return value().index();
+			return value().thisIndex();
 		}
 		
 		/**
@@ -266,18 +266,18 @@ public abstract class CacheState
 		public String toString()
 		{
 			// Is this slot aliased?
-			Slot alias = alias();
+			Slot value = value();
 			
 			// Build string
-			StringBuiler sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			
 			// If the slot is aliased, show the aliased value, the actual
 			// slot information will appear in parenthesis to show what would
 			// have been masked away
-			if (alias != this)
+			if (value != this)
 			{
+				sb.append(value.toString());
 				sb.append('(');
-				sb.append(alias.toString());
 			}
 			
 			// Add the actual slot identifier
@@ -297,7 +297,7 @@ public abstract class CacheState
 			sb.append(thisRegisters().toString());
 			
 			// End marker
-			if (alias != this)
+			if (value != this)
 				sb.append(')');
 			
 			return sb.toString();

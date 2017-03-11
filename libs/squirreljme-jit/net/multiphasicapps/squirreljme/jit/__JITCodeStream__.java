@@ -451,6 +451,8 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- primitiveCopy: %s -> %s%n", __srcslot,
 			__destslot);
 		
+		throw new todo.TODO();
+		/*
 		// If the destination is a local variable then make it so the value is
 		// actually copied (because locals persist in exception handlers). As
 		// such this makes the JIT design a bit simpler at the cost of some
@@ -479,7 +481,7 @@ class __JITCodeStream__
 			// Generate operations for the copy
 			if (__dogenop)
 				throw new todo.TODO();
-		}
+		}*/
 	}
 	
 	/**
@@ -509,6 +511,8 @@ class __JITCodeStream__
 		if (__cv.isLocal())
 			throw new IllegalArgumentException(String.format("ED0g %s", __cv));
 		
+		throw new todo.TODO();
+		/*
 		// Go through the stack and check for any items which are aliased to
 		// this stack entry, if they are perform a non-aliased copy and
 		// generate code for it
@@ -533,6 +537,7 @@ class __JITCodeStream__
 		ActiveCacheState.Slot gone = __os.getSlot(__cv);
 		gone.clearAlias();
 		gone.setType(StackMapType.NOTHING);
+		*/
 	}
 }
 

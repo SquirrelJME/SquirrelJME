@@ -63,7 +63,7 @@ public final class ActiveCacheState
 	public Slot getSlot(CodeVariable __cv)
 		throws NullPointerException
 	{
-		return (Slot)getSlot(__cv);
+		return (Slot)super.getSlot(__cv);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public final class ActiveCacheState
 	public Slot getSlot(boolean __s, int __i)
 		throws NullPointerException
 	{
-		return (Slot)getSlot(__s, __i);
+		return (Slot)super.getSlot(__s, __i);
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public final class ActiveCacheState
 			
 			// {@squirreljme.error ED0f Local variables cannot alias values on
 			// the stack. (The index on the stack to be aliased to)}
-			if (isLocal() && this._stackalias)
+			if (thisIsLocal() && this._stackalias)
 				throw new IllegalArgumentException(String.format("ED0f %d",
 					__id));
 			
@@ -325,7 +325,7 @@ public final class ActiveCacheState
 			List<Register> rv;
 			
 			if (ref == null || null == (rv = ref.get()))
-				this._umargs = new WeakReference<>(
+				this._umregs = new WeakReference<>(
 					(rv = UnmodifiableList.<Register>of(this._registers)));
 			
 			return rv;
@@ -394,14 +394,14 @@ public final class ActiveCacheState
 				throw new NullPointerException("NARG");
 			
 			// Copy state
-			this._type = __s.type();
+			CacheState.Slot value = __s.value();
+			this._type = value.thisType();
 			
 			// Aliased?
-			CacheState.Slot alias = __s.alias();
-			if (alias != null)
+			if (value != __s)
 			{
-				this._stackalias = alias.isStack();
-				this._idalias = alias.index();
+				this._stackalias = value.thisIsStack();
+				this._idalias = value.thisIndex();
 			}
 			
 			// Not aliased

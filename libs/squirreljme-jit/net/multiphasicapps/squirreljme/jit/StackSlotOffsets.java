@@ -180,8 +180,8 @@ public class StackSlotOffsets
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		return get(__s.isStack(), __s.index(),
-			this.engine.toDataType(__s.type()));
+		return get(__s.valueIsStack(), __s.valueIndex(),
+			this.engine.toDataType(__s.valueType()));
 	}
 	
 	/**
