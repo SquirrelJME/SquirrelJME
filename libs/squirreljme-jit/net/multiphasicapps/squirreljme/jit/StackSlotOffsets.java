@@ -60,7 +60,7 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	public StackSlotOffsets(MIPSEngine __e, int __ms, int __ml)
+	public StackSlotOffsets(TranslationEngine __e, int __ms, int __ml)
 		throws NullPointerException
 	{
 		// Check
@@ -181,7 +181,7 @@ public class StackSlotOffsets
 		
 		// Forward
 		return get(__s.isStack(), __s.index(),
-			this.engine.__aliasType(__s.type()));
+			this.engine.toDataType(__s.type()));
 	}
 	
 	/**
