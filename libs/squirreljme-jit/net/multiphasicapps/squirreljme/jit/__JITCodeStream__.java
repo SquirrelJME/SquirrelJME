@@ -51,6 +51,9 @@ class __JITCodeStream__
 	/** The state of stack and locals for most instruction addresses. */
 	private volatile SnapshotCacheStates _states;
 	
+	/** Stack slot offsets. */
+	private volatile StackSlotOffsets _stackoffsets;
+	
 	/** Jump targets in the code, where state transfers occur. */
 	private volatile int[] _jumptargets;
 	
@@ -385,6 +388,7 @@ class __JITCodeStream__
 		// instruction
 		TranslationEngine engine = this._engine;
 		this._states = new SnapshotCacheStates(engine);
+		this._stackoffsets = new StackSlotOffsets(engine, __ms, __ml);
 		
 		// Also input and output states
 		this._instate = new ActiveCacheState(engine, __ms, __ml);

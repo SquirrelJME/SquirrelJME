@@ -15,13 +15,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
-import net.multiphasicapps.squirreljme.jit.ActiveBinding;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
-import net.multiphasicapps.squirreljme.jit.Binding;
 import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
-import net.multiphasicapps.squirreljme.jit.SnapshotBinding;
 import net.multiphasicapps.squirreljme.jit.SnapshotCacheState;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
@@ -46,9 +43,6 @@ public class MIPSEngine
 	/** Saved registers which were used, so they are stored/restored. */
 	final Set<MIPSRegister> _savedused =
 		new LinkedHashSet<>();
-	
-	/** Stack offsets for slot entries. */
-	volatile StackSlotOffsets _stackoffsets;
 	
 	/**
 	 * Initializes the MIPS engine.
@@ -77,6 +71,8 @@ public class MIPSEngine
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// Need some config details
 		MIPSConfig config = this.config;
 		int bits = config.bits();
@@ -141,6 +137,7 @@ public class MIPSEngine
 			// Use common stack allocation if not register claimed
 			throw new todo.TODO();
 		}
+		*/
 	}
 	
 	/**
@@ -170,19 +167,14 @@ public class MIPSEngine
 	@Override
 	public void slotCount(int __ms, int __ml)
 	{
-		// Initialize stack offsets
-		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml);
 	}
 	
 	/**
-	 * Aliases the specified stack map type to a data type.
-	 *
-	 * @param __t The stack type to alias.
-	 * @return The data type for the stack type.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2017/02/20
 	 */
-	DataType __aliasType(StackMapType __t)
+	@Override
+	public DataType toDataType(StackMapType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -195,7 +187,7 @@ public class MIPSEngine
 				DataType.INTEGER);
 		
 		// Use normal mapping
-		return __aliasType(DataType.of(__t));
+		return toDataType(DataType.of(__t));
 	}
 	
 	/**
@@ -207,7 +199,7 @@ public class MIPSEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/20
 	 */
-	DataType __aliasType(DataType __t)
+	public DataType toDataType(DataType __t)
 		throws NullPointerException
 	{
 		// Check
