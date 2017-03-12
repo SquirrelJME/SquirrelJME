@@ -497,6 +497,11 @@ class __JITCodeStream__
 			if (xs == ss && xi == si)
 				continue;
 			
+			// If the target slot has no tyoe then it cannot get aliases to
+			// it clobbered
+			if (slot.valueType() == StackMapType.NOTHING)
+				continue;
+			
 			// If any entry uses a stack entry which is about to be destroyed
 			// then it must get its value copied before it is removed and
 			// de-aliased
