@@ -283,7 +283,8 @@ class __JITCodeStream__
 			args[i] = instate.getSlot(cv).value();
 			
 			// Stack elements are destroyed on input
-			__removeStackSlot(instate, outstate, cv, __d);
+			__removeSlot(instate, outstate, outstate.getSlot(cv), true,
+				__d);
 		}
 		
 		// No return value
@@ -485,42 +486,11 @@ class __JITCodeStream__
 			return;
 		
 		// Go through the target stack, any stack slots which alias to the
-		// replaced slot 
-		ActiveCacheState.Tread stack = __outstate.stack();
-		for (int i = 0, n = stack.size(); i < n; i++)
-		{
-			ActiveCacheState.Slot slot = stack.get(i);
-			boolean xs = slot.valueIsStack();
-			int xi = slot.valueIndex();
-			
-			// Ignore the source slot
-			if (xs == ss && xi == si)
-				continue;
-			
-			// If the target slot has no tyoe then it cannot get aliases to
-			// it clobbered
-			if (slot.valueType() == StackMapType.NOTHING)
-				continue;
-			
-			// If any entry uses a stack entry which is about to be destroyed
-			// then it must get its value copied before it is removed and
-			// de-aliased
-			if (xs == ds && xi == di)
-			{
-				// Reassign
-				if (true)
-					throw new todo.TODO();
-				
-				// Generate operations to copy the data
-				if (__dogenop)
-					throw new todo.TODO();
-				
-				// Go though the stack and check if any other entries on it
-				// are mapped to the destination slot. If they are then
-				// backalias to lower entries
-				throw new todo.TODO();
-			}
-		}
+		// replaced slot
+		// This is always done because the destination slot will always be
+		// kludged
+		__removeSlot(__instate, __outstate, __destslot, __dogenop,
+			Integer.MAX_VALUE);
 		
 		// The destination slot always gets the type associated with it
 		__destslot.setType(__srcslot.thisType(), !__doalias);
@@ -557,56 +527,73 @@ class __JITCodeStream__
 	 * This removes the the specified information in the given stack position.
 	 * This clears any state
 	 *
-	 * @param __is Input state.
-	 * @param __os Output state.
-	 * @param __cv The variable to be removed, must be on the stack.
-	 * @param __d The depth of the stack, used to not copy values that are
-	 * going to be removed anyway.
+	 * @param __instate Input state.
+	 * @param __outstate Output state.
+	 * @param __slot The target slot to be destroyed.
+	 * @param __dogenop If {@code true} then machine code will be generated
+	 * when de-aliasing values.
+	 * @param __sl The limit of the stack, used to not copy values that are
+	 * going to be removed anyway. Any slots which are aliased after this point
+	 * will not be re-associated if they alias earlier values.
 	 * @throws IllegalArgumentException If the input variable is a local
 	 * variable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	private void __removeStackSlot(CacheState __is, ActiveCacheState __os,
-		CodeVariable __cv, int __d)
+	private void __removeSlot(CacheState __instate,
+		ActiveCacheState __outstate, ActiveCacheState.Slot __slot,
+		boolean __dogenop, int __sl)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__is == null || __os == null || __cv == null)
+		if (__instate == null || __outstate == null || __slot == null)
 			throw new IllegalArgumentException("NARG");
 		
-		// {@squirreljme.error ED0g Cannot remove local variable on the stack.
-		// (The variable to remove)}
-		if (__cv.isLocal())
-			throw new IllegalArgumentException(String.format("ED0g %s", __cv));
+		// If the destination slot has no value then nothing needs to be done
+		if (__slot.valueType() == StackMapType.NOTHING)
+			return;
 		
-		throw new todo.TODO();
-		/*
-		// Go through the stack and check for any items which are aliased to
-		// this stack entry, if they are perform a non-aliased copy and
-		// generate code for it
-		ActiveCacheState.Tread stack = __os.stack();
-		int n = stack.size(), dest = __cv.id();
-		for (int i = 0; i < __d; i++)
+		// Only refer to the current slot and not any aliased one
+		boolean ss = __slot.thisIsStack();
+		int si = __slot.thisIndex();
+		
+		// Messing with the stack is only needed if this value is on the
+		// stack
+		if (__slot.thisIsStack())
 		{
-			// Ignore empty values
-			ActiveCacheState.Slot slot = stack.get(i);
-			if (slot.type() == StackMapType.NOTHING)
-				continue;
+			// Go through the stack and remove any aliases to the target
+			ActiveCacheState.Tread stack = __outstate.stack();
+			int limit = Math.min(__sl, stack.size());
+			for (int i = 0; i < limit; i++)
+			{
+				ActiveCacheState.Slot slot = stack.get(i);
+				boolean xs = slot.valueIsStack();
+				int xi = slot.valueIndex();
 			
-			// Copy the value from the other stack entry to this one so that
-			// it is no longer aliased (its value is to be destroyed)
-			ActiveCacheState.Slot alias = slot.alias();
-			if (alias != null && alias.isStack() && alias.index() == dest)
-				__primitiveCopy(__is, __os, __is.getSlot(true, i),
-					slot, false, true);
+				// Ignore the source slot
+				if (xs == ss && xi == si)
+					continue;
+			
+				// If the target slot has no tyoe then it cannot get aliases to
+				// it clobbered
+				if (slot.valueType() == StackMapType.NOTHING)
+					continue;
+			
+				// This slot aliases the slot to be removed, it must get the
+				// value copied to it before this actually happens
+				if (true)
+					throw new todo.TODO();
+		
+				// Generate operations to copy the data
+				if (__dogenop)
+					throw new todo.TODO();
+			}
 		}
 		
-		// Away it goes!
-		ActiveCacheState.Slot gone = __os.getSlot(__cv);
-		gone.clearAlias();
-		gone.setType(StackMapType.NOTHING);
-		*/
+		// Clear information in the target slot
+		__slot.clearAlias();
+		__slot.setType(StackMapType.NOTHING);
+		__slot.clearRegisters();
 	}
 }
 

@@ -176,6 +176,16 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Clears the used registers.
+		 *
+		 * @since 2017/03/12
+		 */
+		public void clearRegisters()
+		{
+			this._registers.clear();
+		}
+		
+		/**
 		 * Aliases the value of this slot to another slot.
 		 *
 		 * @param __cv The slot to alias to.
