@@ -309,7 +309,9 @@ public final class ActiveCacheState
 				return __t;
 			
 			// Depending on the target type, specify the change
-			if (__ebc)
+			// However if nothing is going to be used here then nothing needs
+			// to actually be changed
+			if (__ebc && __t != StackMapType.NOTHING)
 			{
 				throw new todo.TODO();
 			}
@@ -431,6 +433,11 @@ public final class ActiveCacheState
 			// Copy state
 			CacheState.Slot value = __s.value();
 			this._type = value.thisType();
+			
+			// Copy registers
+			List<Register> registers = this._registers;
+			registers.clear();
+			registers.addAll(__s.thisRegisters());
 			
 			// Aliased?
 			if (value != __s)

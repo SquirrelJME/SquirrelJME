@@ -242,7 +242,7 @@ class __JITCodeStream__
 		this._engine.bindStateForEntry(outstate);
 		
 		// Set entry point state
-		this._states.set(0, outstate);
+		__checkStoreState(0, outstate);
 		
 		// Debug
 		System.err.printf("DEBUG -- initArgs: %s%n", outstate);
