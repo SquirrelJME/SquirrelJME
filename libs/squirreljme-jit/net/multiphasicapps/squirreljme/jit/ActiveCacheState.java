@@ -304,9 +304,6 @@ public final class ActiveCacheState
 				throw new todo.TODO();
 			}
 			
-			// The alias is removed because the type changed
-			clearAlias();
-			
 			// Set, return old
 			this._type = __t;
 			return rv;

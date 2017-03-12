@@ -461,37 +461,91 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- primitiveCopy: %s -> %s%n", __srcslot,
 			__destslot);
 		
-		throw new todo.TODO();
-		/*
+		// {@squirreljme.error ED0h Cannot copy from a slot which has no
+		// value.}
+		if (__srcslot.valueType() == StackMapType.NOTHING)
+			throw new JITException("ED0h");
+		
 		// If the destination is a local variable then make it so the value is
 		// actually copied (because locals persist in exception handlers). As
 		// such this makes the JIT design a bit simpler at the cost of some
 		// copies. Locals are never aliased.
-		if (__destslot.isLocal())
+		if (__destslot.thisIsLocal())
 			__doalias = false;
 		
-		// Aliasing one value to another
-		if (__doalias)
+		// The source slot to be copied, the source is always derived from its
+		// own alias
+		boolean ss = __srcslot.valueIsStack(),
+			ds = __destslot.thisIsStack();
+		int si = __srcslot.valueIndex(),
+			di = __destslot.thisIndex();
+		
+		// Alias/copy to self, do nothing
+		if (ss == ds && si == di)
+			return;
+		
+		// Go through the target stack, any stack slots which alias to the
+		// replaced slot 
+		ActiveCacheState.Tread stack = __outstate.stack();
+		for (int i = 0, n = stack.size(); i < n; i++)
 		{
-			// Set the type, do not modify the binding because the binding of
-			// the slot uses the binding of what it is aliased to.
-			__destslot.setType(__srcslot.type(), false);
+			ActiveCacheState.Slot slot = stack.get(i);
+			boolean xs = slot.valueIsStack();
+			int xi = slot.valueIndex();
 			
-			// Alias
-			__destslot.setAlias(__srcslot.isStack(), __srcslot.index());
+			// Ignore the source slot
+			if (xs == ss && xi == si)
+				continue;
+			
+			// If any entry uses a stack entry which is about to be destroyed
+			// then it must get its value copied before it is removed and
+			// de-aliased
+			if (xs == ds && xi == di)
+			{
+				// Reassign
+				if (true)
+					throw new todo.TODO();
+				
+				// Generate operations to copy the data
+				if (__dogenop)
+					throw new todo.TODO();
+				
+				// Go though the stack and check if any other entries on it
+				// are mapped to the destination slot. If they are then
+				// backalias to lower entries
+				throw new todo.TODO();
+			}
 		}
+		
+		// The destination slot always gets the type associated with it
+		__destslot.setType(__srcslot.thisType(), !__doalias);
+		
+		// Alias this slot to another, note that no value is actually copied
+		// and only the type is set in the destination slot (bindings are
+		// forwarded)
+		// An alias though might point to another alias however.
+		if (__doalias)
+			__destslot.setAlias(ss, si);
 		
 		// Copying over a value, replace it
 		else
 		{
-			// Set the type from the source type
+			// The target slot might have an alias, after it is replaced it
+			// should never have one
 			__destslot.clearAlias();
-			__destslot.setType(__srcslot.type(), true);
 			
 			// Generate operations for the copy
 			if (__dogenop)
+			{
+				// The target may need registers allocated to it if they
+				// for example are not of a compatible type
+				if (true)
+					throw new todo.TODO();
+				
+				// Generate opcodes
 				throw new todo.TODO();
-		}*/
+			}
+		}
 	}
 	
 	/**
