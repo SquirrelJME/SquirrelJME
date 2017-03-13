@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 9ce114b0-de74-48e4-88f5-48ee01db83ce
+X-SquirrelJME-Error: CA
+X-SquirrelJME-Name: Web Demo JIT
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This is a JIT which compiles to Javascript 
+ so that the web demo runs at the speed of the Javascript engine.
+

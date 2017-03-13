@@ -150,6 +150,10 @@ public class BuildSystem
 				}
 				break;
 				
+				// Builds the web demo and outputs it to standard output
+			case "webdemo":
+				throw new todo.TODO();
+				
 				// {@squirreljme.error AO02 An unknown command was specified.
 				// Check the description for error code AO01 to see which
 				// commands are valid. (The command)}
