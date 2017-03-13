@@ -14,33 +14,22 @@ export LC_ALL=C
 
 # Directory of this script
 __exedir="$(dirname -- "$0")"
-__root="$("$__exedir/absolute.sh" "$__exedir")"
-
-# Setup temp dir
-mkdir /tmp/$$
-cd /tmp/$$
 
 # Demo file location
-__demo="/tmp/$$/webdemo.html"
+__demo="webdemo.html"
 
 # Build the web demo
-if "$__root/../build.sh" "webdemo" "$__demo"
+if "$__exedir/build.sh" "webdemo" "$__demo"
 then
 	# Go to fossil directory
-	cd "$__root"
+	cd "$__exedir"
 	
 	# Update
 	fossil uv add "$__demo" --as "webdemo.html"
 # Failed
 else
-	# Cleanup
-	rm -rvf /tmp/$$
-	
 	# Fail
 	echo "Failed to build the web demo."
 	exit 1
 fi
-
-# Cleanup
-rm -rvf /tmp/$$
 
