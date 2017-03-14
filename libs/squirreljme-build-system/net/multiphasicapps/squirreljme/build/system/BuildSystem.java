@@ -10,13 +10,25 @@
 
 package net.multiphasicapps.squirreljme.build.system;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
+import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
+import net.multiphasicapps.squirreljme.build.system.target.TargetConfigBuilder;
+import net.multiphasicapps.squirreljme.build.system.target.webdemo.
+	WebDemoTarget;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -153,16 +165,51 @@ public class BuildSystem
 				// Builds the web demo and outputs it to the file specified
 				// on the command line
 			case "webdemo":
+				Path temp = null;
+				try
 				{
 					// {@squirreljme.error AO06 The web demo command requires
 					// a path to be specified for the output file.}
 					if (na < 2)
 						throw new IllegalArgumentException("AO06");
 					
-					// Need project manager
-					ProjectManager projects = this.projects;
+					// Output file
+					temp = Files.createTempFile("squirreljme", "targetbuild");
+					try (OutputStream os = Files.newOutputStream(temp,
+						StandardOpenOption.CREATE,
+						StandardOpenOption.TRUNCATE_EXISTING))
+					{
+						// Setup configuration
+						TargetConfigBuilder tcb = new TargetConfigBuilder();
 					
-					throw new todo.TODO();
+						// Run the build sytstem
+						new WebDemoTarget(this.projects, tcb.build(), os).
+							run();
+					}
+					
+					// Built, move it out
+					Files.move(temp, Paths.get(__args[2]),
+						StandardCopyOption.REPLACE_EXISTING);
+				}
+					
+				// Oops
+				catch (IOException e)
+				{
+					// Delete temp if it exists
+					if (temp != null)
+						try
+						{
+							Files.delete(temp);
+						}
+						catch (IOException f)
+						{
+							// Ignore
+							f.printStackTrace();
+						}
+					
+					// {@squirreljme.error AO07 Failed to build the
+					// web demo.}
+					throw new RuntimeException("AO07", e);
 				}
 				break;
 				
