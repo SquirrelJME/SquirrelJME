@@ -150,9 +150,21 @@ public class BuildSystem
 				}
 				break;
 				
-				// Builds the web demo and outputs it to standard output
+				// Builds the web demo and outputs it to the file specified
+				// on the command line
 			case "webdemo":
-				throw new todo.TODO();
+				{
+					// {@squirreljme.error AO06 The web demo command requires
+					// a path to be specified for the output file.}
+					if (na < 2)
+						throw new IllegalArgumentException("AO06");
+					
+					// Need project manager
+					ProjectManager projects = this.projects;
+					
+					throw new todo.TODO();
+				}
+				break;
 				
 				// {@squirreljme.error AO02 An unknown command was specified.
 				// Check the description for error code AO01 to see which
