@@ -64,6 +64,10 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
  * Front facing social media:
    * [Twitter](https://twitter.com/MultiPhasicApps)
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
+ * Personal Accounts (If you wish to contact me this way)
+   * [FurAffinity](https://www.furaffinity.net/user/mpasteven/)
+   * [GitHub](https://github.com/mpasteven/)
+   * [LinkedIn](https://www.linkedin.com/in/steven-gawroriski/)
 
 ## Goals
 
