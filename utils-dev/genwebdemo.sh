@@ -19,13 +19,14 @@ __exedir="$(dirname -- "$0")"
 __demo="webdemo.html"
 
 # Build the web demo
-if "$__exedir/build.sh" "webdemo" "$__demo"
+if "$__exedir/../build.sh" "webdemo" "$__demo"
 then
 	# Go to fossil directory
 	cd "$__exedir"
 	
 	# Update
 	fossil uv add "$__demo" --as "webdemo.html"
+
 # Failed
 else
 	# Fail
