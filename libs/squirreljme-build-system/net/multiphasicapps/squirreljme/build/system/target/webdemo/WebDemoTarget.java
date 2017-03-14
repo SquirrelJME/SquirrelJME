@@ -10,8 +10,12 @@
 
 package net.multiphasicapps.squirreljme.build.system.target.webdemo;
 
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.system.target.AbstractTarget;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
@@ -25,6 +29,9 @@ import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
 public class WebDemoTarget
 	extends AbstractTarget
 {
+	/** The output stream where the generated HTML goes. */
+	protected final Writer output;
+	
 	/**
 	 * Initializes the target to the Web demo.
 	 *
@@ -40,7 +47,8 @@ public class WebDemoTarget
 	{
 		super(__pm, __conf, __os);
 		
-		throw new todo.TODO();
+		// Setup output, always write in UTF-8
+		this.output = new OutputStreamWriter(__os, "utf-8");
 	}
 	
 	/**
@@ -49,8 +57,57 @@ public class WebDemoTarget
 	 */
 	@Override
 	public void run()
+		throws IOException
 	{
-		throw new todo.TODO();
+		// Close when finished
+		try (Writer output = this.output)
+		{
+			// Generate code
+			try
+			{
+				// Copy header
+				char[] buf = new char[256];
+				try (Reader r = new InputStreamReader(WebDemoTarget.class.
+					getResourceAsStream("header.html"), "utf-8"))
+				{
+					for (;;)
+					{
+						int rc = r.read(buf);
+						
+						// EOF?
+						if (rc < 0)
+							break;
+						
+						output.write(buf, 0, rc);
+					}
+				}
+				
+				if (true)
+					throw new todo.TODO();
+				
+				// Copy footer
+				try (Reader r = new InputStreamReader(WebDemoTarget.class.
+					getResourceAsStream("footer.html"), "utf-8"))
+				{
+					for (;;)
+					{
+						int rc = r.read(buf);
+						
+						// EOF?
+						if (rc < 0)
+							break;
+						
+						output.write(buf, 0, rc);
+					}
+				}
+			}
+			
+			// Always flush
+			finally
+			{
+				output.flush();
+			}
+		}
 	}
 }
 

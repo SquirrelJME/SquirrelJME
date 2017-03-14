@@ -20,7 +20,6 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
  * @since 2017/03/13
  */
 public abstract class AbstractTarget
-	implements Runnable
 {
 	/** The manager for projects. */
 	protected final ProjectManager projects;
@@ -50,5 +49,14 @@ public abstract class AbstractTarget
 		this.projects = __pm;
 		this.config = __conf;
 	}
+	
+	/**
+	 * Runs the target generator.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2017/03/14
+	 */
+	public abstract void run()
+		throws IOException;
 }
 
