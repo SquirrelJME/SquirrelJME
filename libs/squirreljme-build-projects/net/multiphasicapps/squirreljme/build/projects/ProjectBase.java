@@ -62,6 +62,10 @@ public abstract class ProjectBase
 	static final JavaManifestKey _STANDARD_KEY =
 		new JavaManifestKey("X-SquirrelJME-Standard");
 	
+	/** Groups the project si in. */
+	static final JavaManifestKey _GROUP_KEY =
+		new JavaManifestKey("X-SquirrelJME-Group");
+	
 	/** The first MIDlet key. */
 	static final JavaManifestKey _FIRST_MIDLET =
 		new JavaManifestKey("MIDlet-1");
@@ -244,8 +248,38 @@ public abstract class ProjectBase
 			
 			// Setup set
 			rv = new LinkedHashSet<>();
-			if (true)
-				throw new todo.TODO();
+			String val = attr.get(_GROUP_KEY);
+			if (val != null)
+			{
+				for (int i = 0, n = val.length(); i < n; i++)
+				{
+					// Ignore spaces
+					if (val.charAt(i) <= ' ')
+						continue;
+					
+					// Find next space
+					int nt = val.indexOf(' ', i);
+					if (nt < 0)
+						nt = n;
+					
+					// Lowercase
+					StringBuilder sb = new StringBuilder();
+					for (int j = i; j < nt; j++)
+					{
+						char c = val.charAt(j);
+						
+						// Lowercase?
+						if (c >= 'A' && c <= 'Z')
+							c = (char)((c - 'A') + 'a');
+						
+						sb.append(c);
+					}
+					rv.add(sb.toString());
+					
+					// Space will be skipped
+					i = nt;
+				}
+			}
 			
 			// Cache
 			this._groups = new WeakReference<>(
