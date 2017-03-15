@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.system.target;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -70,7 +71,20 @@ public abstract class AbstractTarget
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/15
 	 */
-	protected abstract void accept(ExecutableClass __ec)
+	protected abstract void acceptClass(ExecutableClass __ec)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * This is called when a resource should be written the specified output
+	 * stream.
+	 *
+	 * @param __n The name of the resource.
+	 * @param __is The input stream to the resource data.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/15
+	 */
+	protected abstract void acceptResource(String __n, InputStream __is)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -145,17 +159,18 @@ public abstract class AbstractTarget
 		try (FileDirectory fd = __pb.openFileDirectory())
 		{
 			for (String fn : fd)
-			{
-				// Compile Java class file
-				if (fn.endsWith(".class"))
+				try (InputStream is = fd.open(fn))
 				{
-					throw new todo.TODO();
-				}
+					// Compile Java class file
+					if (fn.endsWith(".class"))
+					{
+						throw new todo.TODO();
+					}
 				
-				// Add resource
-				else
-					throw new todo.TODO();
-			}
+					// Add resource
+					else
+						acceptResource(fn, is);
+				}
 		}
 	}
 }

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.system.target.webdemo;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,11 +59,26 @@ public class WebDemoTarget
 	 * @since 2017/03/15
 	 */
 	@Override
-	protected void accept(ExecutableClass __ec)
+	protected void acceptClass(ExecutableClass __ec)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__ec == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/15
+	 */
+	@Override
+	protected void acceptResource(String __n, InputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__n == null || __is == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
