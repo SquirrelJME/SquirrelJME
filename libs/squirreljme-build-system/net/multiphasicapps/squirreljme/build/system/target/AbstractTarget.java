@@ -66,25 +66,28 @@ public abstract class AbstractTarget
 	 * This is called when the compilation step generates an executable from
 	 * the compiled code.
 	 *
+	 * @param __jn The name of the project the class is contained within.
 	 * @param __ec The executable that was just compiled.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/15
 	 */
-	protected abstract void acceptClass(ExecutableClass __ec)
+	protected abstract void acceptClass(String __jn, ExecutableClass __ec)
 		throws IOException, NullPointerException;
 	
 	/**
 	 * This is called when a resource should be written the specified output
 	 * stream.
 	 *
-	 * @param __n The name of the resource.
+	 * @param __jn The name of the project the resource is contained within.
+	 * @param __fn The name of the resource.
 	 * @param __is The input stream to the resource data.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/15
 	 */
-	protected abstract void acceptResource(String __n, InputStream __is)
+	protected abstract void acceptResource(String __jn, String __fn,
+		InputStream __is)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -156,6 +159,7 @@ public abstract class AbstractTarget
 			return;
 		
 		// Process all files in the JAR
+		String name = __pb.name().toString();
 		try (FileDirectory fd = __pb.openFileDirectory())
 		{
 			for (String fn : fd)
@@ -169,7 +173,7 @@ public abstract class AbstractTarget
 				
 					// Add resource
 					else
-						acceptResource(fn, is);
+						acceptResource(name, fn, is);
 				}
 		}
 	}

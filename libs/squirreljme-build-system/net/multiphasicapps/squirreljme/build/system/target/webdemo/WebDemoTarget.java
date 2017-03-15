@@ -15,12 +15,14 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Writer;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.system.target.AbstractTarget;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.jit.webdemo.JSEngine;
 import net.multiphasicapps.squirreljme.jit.webdemo.JSEngineProvider;
 
 /**
@@ -33,7 +35,7 @@ public class WebDemoTarget
 	extends AbstractTarget
 {
 	/** The output stream where the generated HTML goes. */
-	protected final Writer output;
+	protected final PrintStream output;
 	
 	/**
 	 * Initializes the target to the Web demo.
@@ -51,7 +53,8 @@ public class WebDemoTarget
 		super(__pm, __conf, __os);
 		
 		// Setup output, always write in UTF-8
-		this.output = new OutputStreamWriter(__os, "utf-8");
+		this.output = new PrintStream(new __DebugOutput__(__os),
+			true, "utf-8");
 	}
 	
 	/**
@@ -59,11 +62,11 @@ public class WebDemoTarget
 	 * @since 2017/03/15
 	 */
 	@Override
-	protected void acceptClass(ExecutableClass __ec)
+	protected void acceptClass(String __jn, ExecutableClass __ec)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__ec == null)
+		if (__jn == null || __ec == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -74,14 +77,60 @@ public class WebDemoTarget
 	 * @since 2017/03/15
 	 */
 	@Override
-	protected void acceptResource(String __n, InputStream __is)
+	protected void acceptResource(String __jn, String __fn, InputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__n == null || __is == null)
+		if (__jn == null || __fn == null || __is == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		PrintStream output = this.output;
+		
+		// Declare a string named by this resource
+		output.print("var ");
+		output.print(__jn);
+		output.print(__fn);
+		output.print(" = \"");
+		
+		// Write string data, but use a fancy encoding format because
+		// Javascript encodes data as the character set of the string and on
+		// top of that there are no binary data types used.
+		// \ ' and " must be escaped
+		// It is easier to have a binary mode in place which switches encoding
+		// as such.
+		boolean binmode = false;
+		for (;;)
+		{
+			// Read a byte
+			int v = __is.read();
+			if (v < 0)
+				break;
+			
+			// Is a binary character being input?
+			boolean isbin = (v < ' ' || v == '\\' || v == '\'' || v == '\"' ||
+				v == '~' || v >= 127);
+			
+			// Switch of mode
+			if (isbin != binmode)
+			{
+				output.print("~");
+				binmode = isbin;
+			}
+			
+			// Encode binary data
+			if (binmode)
+			{
+				output.print(Character.forDigit((v >>> 4) & 0xF, 16));
+				output.print(Character.forDigit(v & 0xF, 16));
+			}
+			
+			// Normal mode directly copies
+			else
+				output.print((char)v);
+		}
+		
+		// End it
+		output.println("\";");
 	}
 	
 	/**
@@ -93,7 +142,7 @@ public class WebDemoTarget
 		throws IOException
 	{
 		// Close when finished
-		try (Writer output = this.output)
+		try (PrintStream output = this.output)
 		{
 			// Generate code
 			try
@@ -111,11 +160,13 @@ public class WebDemoTarget
 						if (rc < 0)
 							break;
 						
-						output.write(buf, 0, rc);
+						for (int i = 0; i < rc; i++)
+							output.print(buf[i]);
 					}
 				}
 				
 				// Perform JIT compilation of all the code
+				output.flush();
 				super.compile(new JSEngineProvider());
 				
 				// Pack final executable bits
@@ -134,9 +185,11 @@ public class WebDemoTarget
 						if (rc < 0)
 							break;
 						
-						output.write(buf, 0, rc);
+						for (int i = 0; i < rc; i++)
+							output.print(buf[i]);
 					}
 				}
+				output.flush();
 			}
 			
 			// Always flush
