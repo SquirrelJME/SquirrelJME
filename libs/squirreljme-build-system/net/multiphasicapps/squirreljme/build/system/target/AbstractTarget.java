@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.build.system.target;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 
 /**
  * This is the base class which is implemented for any target output handler.
@@ -51,6 +53,18 @@ public abstract class AbstractTarget
 	}
 	
 	/**
+	 * This is called when the compilation step generates an executable from
+	 * the compiled code.
+	 *
+	 * @param __ec The executable that was just compiled.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/15
+	 */
+	protected abstract void accept(ExecutableClass __ec)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Runs the target generator.
 	 *
 	 * @throws IOException On read/write errors.
@@ -58,5 +72,24 @@ public abstract class AbstractTarget
 	 */
 	public abstract void run()
 		throws IOException;
+	
+	/**
+	 * Performs the compilation step by running through every project to be
+	 * included and compiles it.
+	 *
+	 * @param __tep The engine provider.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/15
+	 */
+	protected final void compile(TranslationEngineProvider __tep)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__tep == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

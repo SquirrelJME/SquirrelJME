@@ -19,6 +19,7 @@ import java.io.Writer;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.system.target.AbstractTarget;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.jit.webdemo.JSEngineProvider;
 
 /**
@@ -54,6 +55,21 @@ public class WebDemoTarget
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/15
+	 */
+	@Override
+	protected void accept(ExecutableClass __ec)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__ec == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/13
 	 */
 	@Override
@@ -83,9 +99,10 @@ public class WebDemoTarget
 					}
 				}
 				
-				// This engine is used for JIT compilation
-				JSEngineProvider ep = new JSEngineProvider();
+				// Perform JIT compilation of all the code
+				super.compile(new JSEngineProvider());
 				
+				// Pack final executable bits
 				if (true)
 					throw new todo.TODO();
 				
