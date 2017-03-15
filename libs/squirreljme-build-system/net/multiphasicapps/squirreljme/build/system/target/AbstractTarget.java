@@ -12,6 +12,10 @@ package net.multiphasicapps.squirreljme.build.system.target;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
+import net.multiphasicapps.squirreljme.build.projects.Project;
+import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
@@ -28,6 +32,10 @@ public abstract class AbstractTarget
 	
 	/** The target configuration. */
 	protected final TargetConfig config;
+	
+	/** Binary projects which were accepted. */
+	private final Set<ProjectBinary> _accepted =
+		new HashSet<>();
 	
 	/**
 	 * Initializes the base target.
@@ -89,6 +97,52 @@ public abstract class AbstractTarget
 		if (__tep == null)
 			throw new NullPointerException("NARG");
 		
+		// Go through projects and compile ones to be included
+		ProjectManager projects = this.projects;
+		TargetConfig config = this.config;
+		Set<Project> did = new HashSet<>();
+		for (Project mp : projects)
+		{
+			// Check if this project is in the given group
+			if (true)
+				throw new todo.TODO();
+			
+			// Compile the target and additionally any of its dependecies
+			ProjectBinary mb = mp.binary();
+			for (ProjectBinary db : mb.binaryDependencies(true))
+				__accept(db);
+			
+			// Accept the primary binary
+			__accept(mb);
+		}
+	}
+	
+	/**
+	 * Compiles the specified binary to native code and accepts it
+	 *
+	 * @param __pb The binary to compile then accept.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/15
+	 */
+	private final void __accept(ProjectBinary __pb)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__pb == null)
+			throw new NullPointerException("NARG");
+		
+		// Only accept once, otherwise binaries will be bloated with a few
+		// dozen copies of the same code
+		Set<ProjectBinary> accepted = this._accepted;
+		if (accepted.contains(__pb))
+			return;
+		
+		// Perform JIT compilation
+		if (true)
+			throw new todo.TODO();
+		
+		// Accept it now
 		throw new todo.TODO();
 	}
 }
