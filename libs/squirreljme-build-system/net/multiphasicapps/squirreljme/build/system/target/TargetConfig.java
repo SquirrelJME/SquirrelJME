@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.build.system.target;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * This stores the configuration which is used to specify differences in how
  * the target projects are built.
@@ -18,6 +21,10 @@ package net.multiphasicapps.squirreljme.build.system.target;
  */
 public final class TargetConfig
 {
+	/** Groups to build. */
+	private final Set<String> _groups =
+		new LinkedHashSet<>();
+	
 	/**
 	 * Initializes the target configuration.
 	 *
@@ -31,6 +38,36 @@ public final class TargetConfig
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
+		
+		// Copy
+		this._groups.addAll(__b._groups);
+	}
+	
+	/**
+	 * Checks whether the target configuration includes the given group.
+	 *
+	 * @param __g The group to check for inclusion.
+	 * @return If the group is to be included.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/15
+	 */
+	public boolean hasGroup(String __g)
+		throws NullPointerException
+	{
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Lowercase because all groups are lowercase
+		__g = TargetConfigBuilder.__lowercase(__g);
+		
+		// Go through groups
+		for (String s : this._groups)
+			if (s.equals(__g))
+				return true;
+		
+		// Not found
+		return false;
 	}
 }
 

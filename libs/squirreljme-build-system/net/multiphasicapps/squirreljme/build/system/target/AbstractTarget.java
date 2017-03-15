@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
@@ -100,12 +101,14 @@ public abstract class AbstractTarget
 		// Go through projects and compile ones to be included
 		ProjectManager projects = this.projects;
 		TargetConfig config = this.config;
-		Set<Project> did = new HashSet<>();
 		for (Project mp : projects)
 		{
 			// Check if this project is in the given group
-			if (true)
-				throw new todo.TODO();
+			boolean was = false;
+			for (String g : mp.groups())
+				was |= config.hasGroup(g);
+			if (!was)
+				continue;
 			
 			// Compile the target and additionally any of its dependecies
 			ProjectBinary mb = mp.binary();
@@ -138,12 +141,22 @@ public abstract class AbstractTarget
 		if (accepted.contains(__pb))
 			return;
 		
-		// Perform JIT compilation
-		if (true)
-			throw new todo.TODO();
-		
-		// Accept it now
-		throw new todo.TODO();
+		// Process all files in the JAR
+		try (FileDirectory fd = __pb.openFileDirectory())
+		{
+			for (String fn : fd)
+			{
+				// Compile Java class file
+				if (fn.endsWith(".class"))
+				{
+					throw new todo.TODO();
+				}
+				
+				// Add resource
+				else
+					throw new todo.TODO();
+			}
+		}
 	}
 }
 

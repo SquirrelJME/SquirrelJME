@@ -242,6 +242,17 @@ public final class Project
 	}
 	
 	/**
+	 * Returns the groups that the project is within.
+	 *
+	 * @return The project groups.
+	 * @since 2017/03/15
+	 */
+	public Set<String> groups()
+	{
+		return __mostUpToDate().groups(); 
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/12/14
 	 */

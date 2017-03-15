@@ -32,6 +32,7 @@ import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
 import net.multiphasicapps.squirreljme.suiteid.MidletDependencyType;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -108,6 +109,9 @@ public abstract class ProjectBase
 	
 	/** The service ID. */
 	private volatile Reference<ServiceSuiteID> _serviceid;
+	
+	/** Groups the project is in. */
+	private volatile Reference<Set<String>> _groups;
 	
 	/**
 	 * Initializes the source representation.
@@ -217,6 +221,37 @@ public abstract class ProjectBase
 	{
 		Set<Project> rv = new LinkedHashSet<>();
 		dependencies(rv);
+		return rv;
+	}
+	
+	/**
+	 * Returns the groups the project is in.
+	 *
+	 * @return The project groups.
+	 * @since 2017/03/15
+	 */
+	public final Set<String> groups()
+	{
+		Reference<Set<String>> ref = this._groups;
+		Set<String> rv;
+		
+		// Cache
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Need the manifest
+			JavaManifest man = manifest();
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			// Setup set
+			rv = new LinkedHashSet<>();
+			if (true)
+				throw new todo.TODO();
+			
+			// Cache
+			this._groups = new WeakReference<>(
+				(rv = UnmodifiableSet.<String>of(rv)));
+		}
+		
 		return rv;
 	}
 	
