@@ -19,6 +19,7 @@ import java.io.Writer;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.system.target.AbstractTarget;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
+import net.multiphasicapps.squirreljme.jit.webdemo.JSEngineProvider;
 
 /**
  * This is the target which generates the Web demo which runs on top of
@@ -81,6 +82,9 @@ public class WebDemoTarget
 						output.write(buf, 0, rc);
 					}
 				}
+				
+				// This engine is used for JIT compilation
+				JSEngineProvider ep = new JSEngineProvider();
 				
 				if (true)
 					throw new todo.TODO();
