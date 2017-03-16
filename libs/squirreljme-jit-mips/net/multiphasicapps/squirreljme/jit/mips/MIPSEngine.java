@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
+import net.multiphasicapps.squirreljme.jit.Register;
 import net.multiphasicapps.squirreljme.jit.SnapshotCacheState;
 import net.multiphasicapps.squirreljme.jit.StackSlotOffsets;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
@@ -153,6 +154,69 @@ public class MIPSEngine
 			__in, __out, __ml, __rv, Arrays.asList(__args));
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/16
+	 */
+	@Override
+	public boolean isRegisterArgument(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		return (__r == NUBI.A0 || __r == NUBI.A1 || __r == NUBI.A2 ||
+			__r == NUBI.A3 || __r == NUBI.A4 || __r == NUBI.A5 ||
+			__r == NUBI.A6 || __r == NUBI.A7 ||
+			__r == NUBI.FA0 || __r == NUBI.FA1 || __r == NUBI.FA2 ||
+			__r == NUBI.FA3 || __r == NUBI.FA4 || __r == NUBI.FA5 ||
+			__r == NUBI.FA6 || __r == NUBI.FA7);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/16
+	 */
+	@Override
+	public boolean isRegisterSaved(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		return (__r == NUBI.S0 || __r == NUBI.S1 || __r == NUBI.S2 ||
+			__r == NUBI.S3 || __r == NUBI.S4 || __r == NUBI.S5 ||
+			__r == NUBI.S6 || __r == NUBI.S7 || __r == NUBI.S8 ||
+			__r == NUBI.S9 || __r == NUBI.S10 || __r == NUBI.S11 ||
+			__r == NUBI.FS0 || __r == NUBI.FS1 || __r == NUBI.FS2 ||
+			__r == NUBI.FS3 || __r == NUBI.FS4 || __r == NUBI.FS5 ||
+			__r == NUBI.FS6 || __r == NUBI.FS7 || __r == NUBI.FS8 ||
+			__r == NUBI.FS9 || __r == NUBI.FS10 || __r == NUBI.FS11);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/16
+	 */
+	@Override
+	public boolean isRegisterTemporary(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Includes the PIC function call address
+		return (__r == NUBI.PF ||
+			__r == NUBI.T1 || __r == NUBI.T2 || __r == NUBI.T3 ||
+			__r == NUBI.FT0 || __r == NUBI.FT1 || __r == NUBI.FT2 ||
+			__r == NUBI.FT3 || __r == NUBI.FT4 || __r == NUBI.FT5 ||
+			__r == NUBI.FT6 || __r == NUBI.FT7 || __r == NUBI.FT8 ||
+			__r == NUBI.FT9 || __r == NUBI.FT10 || __r == NUBI.FT11);
 	}
 	
 	/**

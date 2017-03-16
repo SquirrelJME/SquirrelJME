@@ -83,6 +83,41 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Checks if the specified register is an argument register.
+	 *
+	 * @param __r The register to check to see if it is an argument regster.
+	 * @return {@code true} if the register is an argument register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/16
+	 */
+	public abstract boolean isRegisterArgument(Register __r)
+		throws NullPointerException;
+	
+	/**
+	 * Checks if the specified register is a callee saved register, one that
+	 * is saved at the start of a method and restored before it returns.
+	 *
+	 * @param __r The register to check to see if it is saved.
+	 * @return {@code true} if the register is saved.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/16
+	 */
+	public abstract boolean isRegisterSaved(Register __r)
+		throws NullPointerException;
+	
+	/**
+	 * Checks if the specified register is a caller saved register, one that
+	 * is saved before a method call and restored following it.
+	 *
+	 * @param __r The register to check to see if it is temporary.
+	 * @return {@code true} if the register is temporary.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/16
+	 */
+	public abstract boolean isRegisterTemporary(Register __r)
+		throws NullPointerException;
+	
+	/**
 	 * Reports to the engine how many entries exist on the stack and the local
 	 * variables for potential stack allocation.
 	 *
