@@ -329,6 +329,7 @@ public abstract class CacheState
 			sb.append(thisRegisters().toString());
 			
 			// Stack
+			sb.append(':');
 			int so = thisStackOffset();
 			if (so == Integer.MIN_VALUE)
 				sb.append("s---");
