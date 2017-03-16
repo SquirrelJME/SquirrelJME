@@ -44,15 +44,15 @@ public final class SnapshotCacheState
 	/**
 	 * Initializes the cache state which is a copy of the active state.
 	 *
-	 * @param __e The translation engine being used.
+	 * @param __cs The code stream.
 	 * @param __a The state to copy.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	SnapshotCacheState(TranslationEngine __e, CacheState __a)
+	SnapshotCacheState(__JITCodeStream__ __cs, CacheState __a)
 		throws NullPointerException
 	{
-		super(__e);
+		super(__cs);
 		
 		// Check
 		if (__a == null)

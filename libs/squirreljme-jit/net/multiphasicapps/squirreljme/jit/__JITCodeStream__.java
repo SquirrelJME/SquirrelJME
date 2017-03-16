@@ -407,12 +407,12 @@ class __JITCodeStream__
 		// properly along with restoring or merging into state of another
 		// instruction
 		TranslationEngine engine = this._engine;
-		this._states = new SnapshotCacheStates(engine);
-		this._stackoffsets = new StackSlotOffsets(engine, __ms, __ml);
+		this._states = new SnapshotCacheStates(this);
+		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml);
 		
 		// Also input and output states
-		this._instate = new ActiveCacheState(engine, __ms, __ml);
-		this._outstate = new ActiveCacheState(engine, __ms, __ml);
+		this._instate = new ActiveCacheState(this, __ms, __ml);
+		this._outstate = new ActiveCacheState(this, __ms, __ml);
 		
 		// Report sizes for potential stack slots
 		engine.slotCount(__ms, __ml);

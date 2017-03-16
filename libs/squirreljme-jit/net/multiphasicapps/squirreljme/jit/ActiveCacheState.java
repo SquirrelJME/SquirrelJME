@@ -39,16 +39,16 @@ public final class ActiveCacheState
 	 * Initializes the active cache state which stores the current state
 	 * information.
 	 *
-	 * @param __te The translation engine being used.
+	 * @param __te The code stream
 	 * @param __ms The number of stack entries.
 	 * @param __ml The number of local entries.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	ActiveCacheState(TranslationEngine __te, int __ms, int __ml)
+	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml)
 		throws NullPointerException
 	{
-		super(__te);
+		super(__cs);
 		
 		// Setup treads
 		this.stack = new Tread(true, __ms);

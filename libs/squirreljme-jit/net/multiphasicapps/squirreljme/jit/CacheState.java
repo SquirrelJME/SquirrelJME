@@ -24,25 +24,25 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  */
 public abstract class CacheState
 {
-	/** The owning translation engine. */
-	protected final TranslationEngine engine;
+	/** The owning code stream. */
+	private final __JITCodeStream__ _codestream;
 	
 	/**
 	 * Base initialization.
 	 *
-	 * @param __te The translation engine used.
+	 * @param __cs The owning code stream.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/11
 	 */
-	CacheState(TranslationEngine __te)
+	CacheState(__JITCodeStream__ __cs)
 		throws NullPointerException
 	{
 		// Check
-		if (__te == null)
+		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.engine = __te;
+		this._codestream = __cs;
 	}
 	
 	/**
@@ -193,6 +193,26 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Returns the stack offset of this slot.
+		 *
+		 * @return The stack offset of this slot or
+		 * {@code Integer#MIN_VALUE} if it is not valid.
+		 * @since 2017/03/16
+		 */
+		public final int thisStackOffset()
+		{
+			// If the type is nothing it will never have a stack offset
+			StackMapType type = thisType();
+			if (type == StackMapType.NOTHING)
+				return Integer.MIN_VALUE;
+			
+			// Return the offset for the given entry
+			__JITCodeStream__ jcs = CacheState.this._codestream;
+			return ((JITStateAccessor)jcs).stackSlotOffsets().get(
+				thisIsStack(), thisIndex(), jcs._engine.toDataType(type));
+		}
+		
+		/**
 		 * Returns the value index of this slot.
 		 *
 		 * @return The slot index.
@@ -234,6 +254,18 @@ public abstract class CacheState
 		public final List<Register> valueRegisters()
 		{
 			return value().thisRegisters();
+		}
+		
+		/**
+		 * Returns the stack offset of the value slot.
+		 *
+		 * @return The stack offset of the value slot or
+		 * {@code Integer#MIN_VALUE} if it is not valid.
+		 * @since 2017/03/16
+		 */
+		public final int valueStackOffset()
+		{
+			return value().thisStackOffset();
 		}
 		
 		/**
@@ -295,6 +327,16 @@ public abstract class CacheState
 			sb.append(':');
 			sb.append('r');
 			sb.append(thisRegisters().toString());
+			
+			// Stack
+			int so = thisStackOffset();
+			if (so == Integer.MIN_VALUE)
+				sb.append("s---");
+			else
+			{
+				sb.append('s');
+				sb.append(so);
+			}
 			
 			// End marker
 			if (value != this)

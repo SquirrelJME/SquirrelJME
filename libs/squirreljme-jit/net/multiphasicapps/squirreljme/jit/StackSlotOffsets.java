@@ -45,6 +45,9 @@ public class StackSlotOffsets
 	/** Total number of entries. */
 	protected final int total;
 	
+	/** The owning code stream. */
+	private final __JITCodeStream__ _codestream;
+	
 	/** The offset of each stack entry, 0 is 32-bit, 1 is 64-bit. */
 	private final int[][] _offsets;
 	
@@ -60,7 +63,7 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	public StackSlotOffsets(TranslationEngine __e, int __ms, int __ml)
+	StackSlotOffsets(__JITCodeStream__ __e, int __ms, int __ml)
 		throws NullPointerException
 	{
 		// Check
@@ -68,7 +71,8 @@ public class StackSlotOffsets
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.engine = __e;
+		this._codestream = __e;
+		this.engine = __e._engine;
 		this.numstack = __ms;
 		this.numlocals = __ml;
 		int total = __ms + __ml;

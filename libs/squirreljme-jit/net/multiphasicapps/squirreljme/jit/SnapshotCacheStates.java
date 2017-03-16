@@ -27,8 +27,8 @@ import java.util.List;
  */
 public final class SnapshotCacheStates
 {
-	/** The engine used. */
-	protected final TranslationEngine engine;
+	/** The code stream being used. */
+	protected final __JITCodeStream__ _codestream;
 	
 	/** The address where the cache states are valid. */
 	private final List<Integer> _pos =
@@ -41,19 +41,19 @@ public final class SnapshotCacheStates
 	/**
 	 * Initializes the cache states.
 	 *
-	 * @param __te The translation engine to use.
+	 * @param __cs The code stream being used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/16
 	 */
-	SnapshotCacheStates(TranslationEngine __te)
+	SnapshotCacheStates(__JITCodeStream__ __cs)
 		throws NullPointerException
 	{
 		// Check
-		if (__te == null)
+		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.engine = __te;
+		this._codestream = __cs;
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public final class SnapshotCacheStates
 		{
 			dx = (-(dx) - 1);
 			pos.add(dx, __i);
-			states.add(dx, new SnapshotCacheState(this.engine, __v));
+			states.add(dx, new SnapshotCacheState(this._codestream, __v));
 		}
 		
 		// {@squirreljme.error ED0a A cache state already exists at the
