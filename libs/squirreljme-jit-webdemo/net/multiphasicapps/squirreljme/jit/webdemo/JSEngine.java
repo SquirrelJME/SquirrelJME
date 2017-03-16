@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
+import net.multiphasicapps.squirreljme.jit.Register;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
@@ -60,6 +61,36 @@ public class JSEngine
 		throws NullPointerException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/16
+	 */
+	@Override
+	public boolean isRegisterArgument(Register __r)
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/16
+	 */
+	@Override
+	public boolean isRegisterSaved(Register __r)
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/16
+	 */
+	@Override
+	public boolean isRegisterTemporary(Register __r)
+	{
+		return false;
 	}
 	
 	/**

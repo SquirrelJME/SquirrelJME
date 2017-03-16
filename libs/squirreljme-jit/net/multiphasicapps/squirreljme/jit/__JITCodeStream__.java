@@ -300,8 +300,17 @@ class __JITCodeStream__
 			rv.setType(__rvt);
 		}
 		
+		// Save all registers
+		System.err.printf("DEBUG -- Before savetemp: %s%n", outstate);
+		__saveTempRegisters(instate, outstate, __d);
+		System.err.printf("DEBUG -- After savetemp: %s%n", outstate);
+		
 		// Forward invoke
 		this._engine.invokeMethod(instate, outstate, __link, rv, args);
+		
+		// Restore registers after the call
+		if (true)
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 		
@@ -594,6 +603,84 @@ class __JITCodeStream__
 		__slot.clearAlias();
 		__slot.setType(StackMapType.NOTHING);
 		__slot.clearRegisters();
+	}
+	
+	/**
+	 * Saves all registers that are in argument and tempory registers onto
+	 * their associated stack positions.
+	 *
+	 * @param __instate The input state.
+	 * @param __outstate The output state.
+	 * @param __d The depth of the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/16
+	 */
+	private void __saveTempRegisters(CacheState __instate,
+		ActiveCacheState __outstate, int __d)
+		throws NullPointerException
+	{
+		// Check
+		if (__instate == null || __outstate == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through both treads and store them
+		TranslationEngine engine = this._engine;
+		for (int z = 0; z < 2; z++)
+		{
+			// Local variables
+			ActiveCacheState.Tread tread;
+			int limit;
+			if (z == 0)
+			{
+				tread = __outstate.locals();
+				limit = tread.size();
+			}
+			
+			// Stack, only go up to the stack depth because everything after
+			// that point is going to be destroyed anyway
+			else
+			{
+				tread = __outstate.stack();
+				limit = __d;
+			}
+			
+			// Check for slots that need saving
+			for (int i = 0; i < limit; i++)
+			{
+				ActiveCacheState.Slot slot = tread.get(i);
+				
+				// Ignore aliased slots and slots with no value
+				if (slot.value() != slot ||
+					slot.valueType() == StackMapType.NOTHING)
+					continue;
+				
+				List<Register> regs = slot.valueRegisters();
+				boolean needsave = false;
+				for (Register r : regs)
+					if (engine.isRegisterTemporary(r) ||
+						engine.isRegisterArgument(r))
+					{
+						needsave = true;
+						break;
+					}
+				
+				// Needs to save
+				if (needsave)
+				{
+					// Debug
+					System.err.printf("DEBUG -- Need to save: %s%n", slot);
+					
+					if (true)
+						throw new todo.TODO();
+					
+					// The values are placed on the stack, so their output
+					// register set is actually invalid until they are used
+					// again. If a stored temporary values
+					__outstate.getSlot(slot.valueIsStack(), slot.valueIndex()).
+						clearRegisters();
+				}
+			}
+		}
 	}
 }
 
