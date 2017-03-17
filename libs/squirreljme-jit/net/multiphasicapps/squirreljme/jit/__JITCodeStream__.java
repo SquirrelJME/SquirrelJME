@@ -625,6 +625,7 @@ class __JITCodeStream__
 		
 		// Go through both treads and store them
 		TranslationEngine engine = this._engine;
+		StackSlotOffsets stackoffsets = this._stackoffsets;
 		for (int z = 0; z < 2; z++)
 		{
 			// Local variables
@@ -650,8 +651,9 @@ class __JITCodeStream__
 				ActiveCacheState.Slot slot = tread.get(i);
 				
 				// Ignore aliased slots and slots with no value
+				StackMapType type = slot.valueType();
 				if (slot.value() != slot ||
-					slot.valueType() == StackMapType.NOTHING)
+					type == StackMapType.NOTHING)
 					continue;
 				
 				List<Register> regs = slot.valueRegisters();
@@ -667,6 +669,12 @@ class __JITCodeStream__
 				// Needs to save
 				if (needsave)
 				{
+					// Assign stack slot
+					boolean onstack = slot.valueIsStack();
+					int index = slot.valueIndex();
+					stackoffsets.assign(onstack, index,
+						engine.toDataType(type));
+					
 					// Debug
 					System.err.printf("DEBUG -- Need to save: %s%n", slot);
 					
@@ -676,8 +684,7 @@ class __JITCodeStream__
 					// The values are placed on the stack, so their output
 					// register set is actually invalid until they are used
 					// again. If a stored temporary values
-					__outstate.getSlot(slot.valueIsStack(), slot.valueIndex()).
-						clearRegisters();
+					__outstate.getSlot(onstack, index).clearRegisters();
 				}
 			}
 		}

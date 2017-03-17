@@ -29,10 +29,6 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
  */
 public class StackSlotOffsets
 {
-	/** Invalid stack offset. */
-	private static final int _INVALID_STACK_OFFSET =
-		Integer.MIN_VALUE;
-	
 	/** The owning engine. */
 	protected final TranslationEngine engine;
 	
@@ -83,9 +79,48 @@ public class StackSlotOffsets
 		this._offsets = offsets;
 		for (int i = 0; i < total; i++)
 		{
-			offsets[0][i] = _INVALID_STACK_OFFSET;
-			offsets[1][i] = _INVALID_STACK_OFFSET;
+			offsets[0][i] = Integer.MIN_VALUE;
+			offsets[1][i] = Integer.MIN_VALUE;
 		}
+	}
+	
+	/**
+	 * This assigns a slot to a position on the stack if it is not currently
+	 * assigned.
+	 *
+	 * @param __stack Is the slot on the stack?
+	 * @param __i The index of the slot.
+	 * @param __t The type of data to store in the slot.
+	 * @return The position of the stack entry.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/17
+	 */
+	public int assign(boolean __stack, int __i, DataType __t)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// If a value is already assigned, ignore
+		int rv = get(__stack, __i, __t);
+		if (rv != Integer.MIN_VALUE)
+			return rv;
+		
+		// Increase the depth by the type size
+		// The stack always grows down
+		int depth = this._depth,
+			len = Math.max(4, __t.length()),
+			at = (__stack ? numlocals + __i : __i);
+		depth -= len;
+		
+		// Set position of the entry
+		this._offsets[(len > 32 ? 1 : 0)][at] = depth;
+		
+		// Use depth for next time
+		this._depth = depth;
+		return depth;
 	}
 	
 	/**
@@ -137,9 +172,9 @@ public class StackSlotOffsets
 		// If the item is greater than 32-bit then use the long offset first
 		int[][] offsets = this._offsets;
 		int at = (__stack ? numlocals + __i : __i),
-			rv = _INVALID_STACK_OFFSET;
+			rv = Integer.MIN_VALUE;
 		if (__t.length() > 4)
-			if (_INVALID_STACK_OFFSET != (rv = offsets[1][at]))
+			if (Integer.MIN_VALUE != (rv = offsets[1][at]))
 				return rv;
 		
 		// Otherwise use the 32-bit offset
