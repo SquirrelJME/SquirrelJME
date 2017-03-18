@@ -6,6 +6,7 @@
    <http://multiphasicapps.net/>
  * _Lex_ (The SquirrelJME Mascot) was drawn by...
    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+ * [Patreon](https://www.patreon.com/mpasteven)
 
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. That is, you would be able to have a Java
