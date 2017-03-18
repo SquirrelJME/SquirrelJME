@@ -29,6 +29,21 @@ public interface JITStateAccessor
 	public abstract SnapshotCacheStates cacheStates();
 	
 	/**
+	 * This returns the code fragment used by the JIT and returns it as the
+	 * specified class.
+	 *
+	 * @param <F> The sub-class to return it as.
+	 * @param __cl The sub-class to return it as.
+	 * @return The fragment where generated code is plaecd.
+	 * @throws ClassCastException If the class type is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/18
+	 */
+	public abstract <F extends CodeFragmentOutput> F codeFragment(
+		Class<F> __cl)
+		throws ClassCastException, NullPointerException;
+	
+	/**
 	 * This returns the index of link index to another class, field, or method.
 	 *
 	 * @param __l The external linkage to get the link index for.

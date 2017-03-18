@@ -8,11 +8,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the JIT for the web demo.
- *
- * @since 2017/03/13
- */
+package net.multiphasicapps.squirreljme.jit;
 
-package net.multiphasicapps.squirreljme.jit.webdemo;
+import net.multiphasicapps.util.datadeque.ByteDeque;
+
+/**
+ * This is a code fragment.
+ *
+ * @since 2017/03/18
+ */
+public class CodeFragmentOutput
+{
+	/** The byte deque containing machine code. */
+	protected final ByteDeque deque =
+		new ByteDeque();
+}
 

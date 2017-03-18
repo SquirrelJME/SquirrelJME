@@ -26,8 +26,8 @@ class __JITMethodStream__
 	extends __JITMemberStream__<MethodFlags, MethodSymbol>
 	implements MethodDescriptionStream
 {
-	/** The generated stream code. */
-	volatile __JITCodeStream__ _code;
+	/** The generated machine code fragment for this method. */
+	volatile CodeFragmentOutput _fragment;
 	
 	/**
 	 * Initializes the method information.
@@ -51,8 +51,11 @@ class __JITMethodStream__
 	@Override
 	public CodeDescriptionStream code()
 	{
-		__JITCodeStream__ rv = new __JITCodeStream__(this._classstream);
-		this._code = rv;
+		__JITClassStream__ jcs = this._classstream;
+		CodeFragmentOutput frag = jcs.__jit().engineProvider().
+			newCodeFragmentOutput();
+		__JITCodeStream__ rv = new __JITCodeStream__(jcs, frag);
+		this._fragment = frag;
 		return rv;
 	}
 	

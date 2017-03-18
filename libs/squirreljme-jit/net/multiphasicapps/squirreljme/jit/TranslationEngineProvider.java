@@ -27,5 +27,13 @@ public interface TranslationEngineProvider
 	 * @since 2017/01/30
 	 */
 	public abstract TranslationEngine createEngine(JITStateAccessor __jsa);
+	
+	/**
+	 * Creates a new instance of the code fragment output.
+	 *
+	 * @return The new code fragment instance.
+	 * @since 2017/03/18
+	 */
+	public abstract CodeFragmentOutput newCodeFragmentOutput();
 }
 

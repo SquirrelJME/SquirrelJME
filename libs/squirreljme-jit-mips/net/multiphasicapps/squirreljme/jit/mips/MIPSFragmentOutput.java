@@ -8,37 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.webdemo;
+package net.multiphasicapps.squirreljme.jit.mips;
 
-import net.multiphasicapps.squirreljme.jit.JITConfig;
-import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
+import net.multiphasicapps.squirreljme.jit.CodeFragmentOutput;
 
 /**
- * Javascript configuration.
+ * This is a fragment output which can be used to generated MIPS instructions.
  *
- * @since 2017/03/14
+ * @since 2017/03/18
  */
-public class JSConfig
-	extends JITConfig<JSConfig>
+public class MIPSFragmentOutput
+	extends CodeFragmentOutput
 {
-	/**
-	 * Initializes the configuration.
-	 *
-	 * @sine 2017/03/14
-	 */
-	public JSConfig()
-	{
-		super("generic.bits", "32");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/03/14
-	 */
-	@Override
-	public JITConfigSerializer<JSConfig> serializer()
-	{
-		throw new todo.TODO();
-	}
 }
 

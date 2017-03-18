@@ -42,6 +42,9 @@ class __JITCodeStream__
 	/** The instance of the translation engine. */
 	final TranslationEngine _engine;
 	
+	/** Fragment of machine code. */
+	final CodeFragmentOutput _fragment;
+	
 	/** The input state at the start of every instruction. */
 	private volatile ActiveCacheState _instate;
 	
@@ -64,18 +67,20 @@ class __JITCodeStream__
 	 * Initializes the code stream.
 	 *
 	 * @param __c The owning class.
+	 * @param __f The fragment where machine code is placed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/07
 	 */
-	__JITCodeStream__(__JITClassStream__ __c)
+	__JITCodeStream__(__JITClassStream__ __c, CodeFragmentOutput __f)
 		throws NullPointerException
 	{
 		// Check
-		if (__c == null)
+		if (__c == null || __f == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this._classstream = __c;
+		this._fragment = __f;
 		
 		// Setup engine
 		TranslationEngine engine = __c.__jit().engineProvider().
@@ -117,6 +122,22 @@ class __JITCodeStream__
 	public SnapshotCacheStates cacheStates()
 	{
 		return this._states;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/18
+	 */
+	@Override
+	public <F extends CodeFragmentOutput> F codeFragment(
+		Class<F> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(_fragment);
 	}
 	
 	/**

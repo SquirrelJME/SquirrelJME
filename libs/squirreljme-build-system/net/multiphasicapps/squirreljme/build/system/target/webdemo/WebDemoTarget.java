@@ -22,8 +22,6 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.system.target.AbstractTarget;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
-import net.multiphasicapps.squirreljme.jit.webdemo.JSEngine;
-import net.multiphasicapps.squirreljme.jit.webdemo.JSEngineProvider;
 
 /**
  * This is the target which generates the Web demo which runs on top of
@@ -167,7 +165,9 @@ public class WebDemoTarget
 				
 				// Perform JIT compilation of all the code
 				output.flush();
-				super.compile(new JSEngineProvider());
+				if (true)
+					throw new todo.TODO();
+				/*super.compile(new JSEngineProvider());*/
 				
 				// Pack final executable bits
 				if (true)

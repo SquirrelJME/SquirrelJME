@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import net.multiphasicapps.squirreljme.jit.CodeFragmentOutput;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.TranslationEngine;
 import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
@@ -52,6 +53,16 @@ public class MIPSEngineProvider
 	{
 		// Create engine
 		return new MIPSEngine(this.config, __jsa);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/18
+	 */
+	@Override
+	public CodeFragmentOutput newCodeFragmentOutput()
+	{
+		return new MIPSFragmentOutput();
 	}
 }
 
