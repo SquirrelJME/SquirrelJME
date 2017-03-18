@@ -128,6 +128,16 @@ public abstract class TranslationEngine
 	public abstract void slotCount(int __ms, int __ml);
 	
 	/**
+	 * Store the specified slot onto the stack.
+	 *
+	 * @param __s The slot to store on the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/18
+	 */
+	public abstract void storeSlotToStack(CacheState.Slot __s)
+		throws NullPointerException;
+	
+	/**
 	 * This translates the specified stack type to the given data type, this
 	 * is used for allocating space on the stack to store the value.
 	 *

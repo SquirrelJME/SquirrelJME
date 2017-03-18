@@ -230,6 +230,21 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/18
+	 */
+	@Override
+	public void storeSlotToStack(CacheState.Slot __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/02/20
 	 */
 	@Override
