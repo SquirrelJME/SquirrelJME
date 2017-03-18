@@ -62,7 +62,7 @@ public class MIPSEngineProvider
 	@Override
 	public CodeFragmentOutput newCodeFragmentOutput()
 	{
-		return new MIPSFragmentOutput();
+		return new MIPSFragmentOutput(this.config);
 	}
 }
 

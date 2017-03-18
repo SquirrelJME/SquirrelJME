@@ -27,6 +27,9 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	/** Mapping of configuration values. */
 	private final Map<String, String> _values;
 	
+	/** Endianess. */
+	private volatile Reference<Endian> _endian;
+	
 	/**
 	 * Initializes the JIT configuration.
 	 *
@@ -107,6 +110,45 @@ public abstract class JITConfig<C extends JITConfig<C>>
 		{
 			throw new JITException("ED05", e);
 		}
+	}
+	
+	/**
+	 * Returns the target endianess.
+	 *
+	 * @return The target endianess.
+	 * @throws JITException If it is not set.
+	 * @since 2017/03/18
+	 */
+	public Endian endianess()
+		throws JITException
+	{
+		Reference<Endian> ref = this._endian;
+		Endian rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// {@squirreljme.error ED0g The endianess has not been specified.}
+			String val = internalValue("generic.endianess");
+			if (val == null)
+				throw new JITException("ED0g");
+			
+			// Depends
+			switch (val)
+			{
+				case "big": rv = Endian.BIG; break;
+				case "little": rv = Endian.LITTLE; break;
+				
+					// {@squirreljme.error ED0i Unknown endianess specified.
+					// (The endianess)}
+				default:
+					throw new JITException(String.format("ED0i %s", val));
+			}
+			
+			// Cache
+			this._endian = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

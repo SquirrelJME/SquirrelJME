@@ -20,5 +20,21 @@ import net.multiphasicapps.squirreljme.jit.CodeFragmentOutput;
 public class MIPSFragmentOutput
 	extends CodeFragmentOutput
 {
+	/** The MIPS configuration. */
+	protected final MIPSConfig config;
+	
+	/**
+	 * Sets the used MIPS configuration.
+	 *
+	 * @param __c The configuration to use.
+	 * @since 2017/03/18
+	 */
+	public MIPSFragmentOutput(MIPSConfig __c)
+	{
+		super(__c);
+		
+		// Set
+		this.config = __c;
+	}
 }
 

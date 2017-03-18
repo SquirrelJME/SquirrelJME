@@ -13,7 +13,8 @@ package net.multiphasicapps.squirreljme.jit;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
- * This is a code fragment.
+ * This is a code fragment output which is where generated machine code
+ * instructions are placed during method generation.
  *
  * @since 2017/03/18
  */
@@ -22,5 +23,26 @@ public class CodeFragmentOutput
 	/** The byte deque containing machine code. */
 	protected final ByteDeque deque =
 		new ByteDeque();
+	
+	/** The configuration for the output. */
+	protected final JITConfig config;
+	
+	/**
+	 * Initializes the code fragment output.
+	 *
+	 * @param __conf The configuration used for the JIT.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/18
+	 */
+	public CodeFragmentOutput(JITConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+	}
 }
 
