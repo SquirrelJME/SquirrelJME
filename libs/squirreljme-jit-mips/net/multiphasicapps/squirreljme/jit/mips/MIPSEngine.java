@@ -153,6 +153,8 @@ public class MIPSEngine
 		System.err.printf("DEBUG -- in=%s out=%s ml=%s rv=%s args=%s%n",
 			__in, __out, __ml, __rv, Arrays.asList(__args));
 		
+		// Need to potentially copy values to atrget 
+		
 		throw new todo.TODO();
 	}
 	
@@ -211,8 +213,8 @@ public class MIPSEngine
 			throw new NullPointerException("NARG");
 		
 		// Includes the PIC function call address
-		return (__r == NUBI.PF ||
-			__r == NUBI.T1 || __r == NUBI.T2 || __r == NUBI.T3 ||
+		return (__r == NUBI.PF || __r == NUBI.AT ||
+			__r == NUBI.T1 || __r == NUBI.T2 ||
 			__r == NUBI.FT0 || __r == NUBI.FT1 || __r == NUBI.FT2 ||
 			__r == NUBI.FT3 || __r == NUBI.FT4 || __r == NUBI.FT5 ||
 			__r == NUBI.FT6 || __r == NUBI.FT7 || __r == NUBI.FT8 ||

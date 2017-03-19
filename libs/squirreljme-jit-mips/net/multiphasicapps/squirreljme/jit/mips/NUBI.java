@@ -134,8 +134,8 @@ public final class NUBI
 	public static final MIPSRegister T2 =
 		MIPSRegister.R25;
 	
-	/** Temporary 3. */
-	public static final MIPSRegister T3 =
+	/** Assembler Temporary. */
+	public static final MIPSRegister AT =
 		MIPSRegister.R1;
 	
 	/** Reserved for trap/interrupt handler 1. */
@@ -452,8 +452,6 @@ public final class NUBI
 		if (__r == NUBI.T1)
 			return NUBI.T2;
 		else if (__r == NUBI.T2)
-			return NUBI.T3;
-		else if (__r == NUBI.T3)
 			return null;
 		
 		// Floating point
