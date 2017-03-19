@@ -193,6 +193,19 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Returns the registers using the given type.
+		 *
+		 * @param <R> The type contained in the list.
+		 * @return The registers for this slot.
+		 * @since 2017/03/19
+		 */
+		@SuppressWarnings({"unchecked"})
+		public final <R extends Register> List<R> thisRegistersAs()
+		{
+			return (List<R>)((Object)thisRegisters());
+		}
+		
+		/**
 		 * Returns the stack offset of this slot.
 		 *
 		 * @return The stack offset of this slot or
@@ -254,6 +267,19 @@ public abstract class CacheState
 		public final List<Register> valueRegisters()
 		{
 			return value().thisRegisters();
+		}
+		
+		/**
+		 * Returns the registers using the given type.
+		 *
+		 * @param <R> The type contained in the list.
+		 * @return The value registers.
+		 * @since 2017/03/19
+		 */
+		@SuppressWarnings({"unchecked"})
+		public final <R extends Register> List<R> valueRegistersAs()
+		{
+			return (List<R>)((Object)valueRegisters());
 		}
 		
 		/**

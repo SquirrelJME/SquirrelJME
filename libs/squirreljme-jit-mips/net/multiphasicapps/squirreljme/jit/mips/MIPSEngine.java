@@ -240,7 +240,34 @@ public class MIPSEngine
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Depends on the data type used
+		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
+			codeFragment(MIPSFragmentOutput.class);
+		List<MIPSRegister> regs = __s.<MIPSRegister>valueRegistersAs();
+		int stackoff = __s.valueStackOffset();
+		switch (toDataType(__s.valueType()))
+		{
+				// Only the first register needs to be stored
+			case INTEGER:
+				output.storeWord(regs.get(0), stackoff, NUBI.FP);
+				break;
+				
+				// long
+			case LONG:
+				throw new todo.TODO();
+				
+				// float
+			case FLOAT:
+				throw new todo.TODO();
+				
+				// double
+			case DOUBLE:
+				throw new todo.TODO();
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**

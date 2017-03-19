@@ -27,6 +27,9 @@ public class CodeFragmentOutput
 	/** The configuration for the output. */
 	protected final JITConfig config;
 	
+	/** Debug counter. */
+	private volatile int _debug;
+	
 	/**
 	 * Initializes the code fragment output.
 	 *
@@ -54,6 +57,13 @@ public class CodeFragmentOutput
 	public final void appendByte(byte __b)
 	{
 		this.deque.offerLast(__b);
+		
+		System.err.printf("%02x ", __b);
+		if (++this._debug >= 4)
+		{
+			System.err.println();
+			this._debug = 0;
+		}
 	}
 	
 	/**
