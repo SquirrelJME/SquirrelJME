@@ -44,5 +44,110 @@ public class CodeFragmentOutput
 		// Set
 		this.config = __conf;
 	}
+	
+	/**
+	 * Appends a single byte to the end of the fragment.
+	 *
+	 * @param __b The byte to append.
+	 * @since 2017/03/18
+	 */
+	public final void appendByte(byte __b)
+	{
+		this.deque.offerLast(__b);
+	}
+	
+	/**
+	 * Appends a single integer to the end of the fragment.
+	 *
+	 * @param __v The integer to append.
+	 * @since 2017/03/18
+	 */
+	public final void appendInteger(int __v)
+	{
+		switch (this.config.endianess())
+		{
+			case BIG:
+				appendByte((byte)((__v >>> 24) & 0xFF));
+				appendByte((byte)((__v >>> 16) & 0xFF));
+				appendByte((byte)((__v >>> 8) & 0xFF));
+				appendByte((byte)((__v) & 0xFF));
+				break;
+			
+			case LITTLE:
+				appendByte((byte)((__v) & 0xFF));
+				appendByte((byte)((__v >>> 8) & 0xFF));
+				appendByte((byte)((__v >>> 16) & 0xFF));
+				appendByte((byte)((__v >>> 24) & 0xFF));
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Appends a single long to the end of the fragment.
+	 *
+	 * @param __v The long to append.
+	 * @since 2017/03/18
+	 */
+	public final void appendLong(long __v)
+	{
+		switch (this.config.endianess())
+		{
+			case BIG:
+				appendByte((byte)((__v >>> 56) & 0xFF));
+				appendByte((byte)((__v >>> 48) & 0xFF));
+				appendByte((byte)((__v >>> 40) & 0xFF));
+				appendByte((byte)((__v >>> 32) & 0xFF));
+				appendByte((byte)((__v >>> 24) & 0xFF));
+				appendByte((byte)((__v >>> 16) & 0xFF));
+				appendByte((byte)((__v >>> 8) & 0xFF));
+				appendByte((byte)((__v) & 0xFF));
+				break;
+			
+			case LITTLE:
+				appendByte((byte)((__v) & 0xFF));
+				appendByte((byte)((__v >>> 8) & 0xFF));
+				appendByte((byte)((__v >>> 16) & 0xFF));
+				appendByte((byte)((__v >>> 24) & 0xFF));
+				appendByte((byte)((__v >>> 32) & 0xFF));
+				appendByte((byte)((__v >>> 40) & 0xFF));
+				appendByte((byte)((__v >>> 48) & 0xFF));
+				appendByte((byte)((__v >>> 56) & 0xFF));
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Appends a single short to the end of the fragment.
+	 *
+	 * @param __v The short to append.
+	 * @since 2017/03/18
+	 */
+	public final void appendShort(short __v)
+	{
+		switch (this.config.endianess())
+		{
+			case BIG:
+				appendByte((byte)((__v >>> 8) & 0xFF));
+				appendByte((byte)((__v) & 0xFF));
+				break;
+			
+			case LITTLE:
+				appendByte((byte)((__v) & 0xFF));
+				appendByte((byte)((__v >>> 8) & 0xFF));
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 
