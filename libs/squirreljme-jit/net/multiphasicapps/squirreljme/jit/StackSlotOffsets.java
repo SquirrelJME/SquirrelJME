@@ -233,5 +233,25 @@ public class StackSlotOffsets
 	{
 		return this._depth;
 	}
+	
+	/**
+	 * Assigns the specified slot to the given location on the stack.
+	 *
+	 * @param __cv The slot to assign.
+	 * @param __t The type of data stored here.
+	 * @param __so The offset on the stack.
+	 * @throws JITException If the given slot is already assigned for that
+	 * data type; If the position of the slot overlaps another slot.
+	 * @since 2017/03/20
+	 */
+	public void set(CodeVariable __cv, DataType __t, int __so)
+		throws JITException
+	{
+		// Check
+		if (__cv == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

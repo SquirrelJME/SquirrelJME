@@ -42,11 +42,13 @@ public final class ArgumentAllocation
 	 *
 	 * @param __t The type of data stored in the argument.
 	 * @param __so The stack offset of the argument.
-	 * @throws IllegalArgumentException If the stack offset is not valid.
+	 * @param __sl The length of the entry on the stack.
+	 * @throws IllegalArgumentException If the stack offset is not valid or
+	 * the stack length is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(DataType __t, int __so)
+	public ArgumentAllocation(DataType __t, int __so, int __sl)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -56,6 +58,10 @@ public final class ArgumentAllocation
 		// {@squirreljme.error ED0j Invalid stack offset specified.}
 		if (__so == Integer.MIN_VALUE)
 			throw new IllegalArgumentException("ED0j");
+		
+		// {@squirreljme.error ED0k Invalid stack length specified.}
+		if (__sl <= 0)
+			throw new IllegalArgumentException("ED0k");
 		
 		throw new todo.TODO();
 	}
@@ -104,6 +110,17 @@ public final class ArgumentAllocation
 	}
 	
 	/**
+	 * Returns {@code true} if the allocation has registers.
+	 *
+	 * @return {@code true} if registers are valid.
+	 * @since 2017/03/20
+	 */
+	public boolean hasRegisters()
+	{
+		return 0 != numRegisters();
+	}
+	
+	/**
 	 * Returns the number of registers used.
 	 *
 	 * @return The register use count.
@@ -112,6 +129,29 @@ public final class ArgumentAllocation
 	public int numRegisters()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns all of the allocated registers.
+	 *
+	 * @return The allocated registers.
+	 * @since 2017/03/20
+	 */
+	public Register[] registers()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the stack length of the argument.
+	 *
+	 * @return The stack length of the argument or {@link Integer#MIN_VALUE}
+	 * if it is not valid.
+	 * @since 2017/03/20
+	 */
+	public int stackLength()
+	{
+		return type().length();
 	}
 	
 	/**
@@ -132,6 +172,17 @@ public final class ArgumentAllocation
 	 */
 	@Override
 	public String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * The type of data being stored.
+	 *
+	 * @return The data type used.
+	 * @since 2017/03/20
+	 */
+	public DataType type()
 	{
 		throw new todo.TODO();
 	}

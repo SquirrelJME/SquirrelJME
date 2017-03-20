@@ -51,13 +51,16 @@ public abstract class TranslationEngine
 	}
 	
 	/**
-	 * Binds the specified cache state for entry into the current method from
-	 * an external caller.
+	 * Returns the allocations for entry into a method with the specified set
+	 * of arguments.
 	 *
-	 * @param __cs The state to bind variables for.
-	 * @since 2017/02/19
+	 * @param __t The arguments of the method.
+	 * @return The allocations for the method entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/20
 	 */
-	public abstract void bindStateForEntry(ActiveCacheState __cs);
+	public abstract ArgumentAllocation[] allocationForEntry(StackMapType[] __t)
+		throws NullPointerException;
 	
 	/**
 	 * Invokes the specified method with the given arguments, returning the

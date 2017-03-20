@@ -259,8 +259,23 @@ class __JITCodeStream__
 			slot.setType(__st[i], false);
 		}
 		
-		// Setup native bindings
-		this._engine.bindStateForEntry(outstate);
+		// Assign registers and stack entries 
+		ArgumentAllocation[] allocs = this._engine.allocationForEntry(__st);
+		StackSlotOffsets stackoffsets = this._stackoffsets;
+		for (int i = 0, n = allocs.length; i < n; i++)
+		{
+			CodeVariable cv = __cv[i];
+			ActiveCacheState.Slot slot = outstate.getSlot(cv);
+			ArgumentAllocation alloc = allocs[i];
+			
+			// Assigning registers?
+			if (alloc.hasRegisters())
+				slot.setRegisters(alloc.registers());
+			
+			// Set stack position
+			else
+				stackoffsets.set(cv, alloc.type(), alloc.stackOffset());
+		}
 		
 		// Set entry point state
 		__checkStoreState(0, outstate);
