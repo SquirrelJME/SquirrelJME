@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -74,65 +75,42 @@ public class MIPSEngine
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
-		// Need some config details
-		MIPSConfig config = this.config;
-		int bits = config.bits();
-		
-		// Starting register points where arguments are placed
-		MIPSRegister ni = NUBI.FIRST_INT_ARGUMENT;
-		MIPSRegister nf = NUBI.FIRST_FLOAT_ARGUMENT;
-		
-		// Go through variables
-		StackSlotOffsets stackoffsets = this.accessor.stackSlotOffsets();
+		// Fill types for entry
+		List<StackMapType> argts = new ArrayList<>();
+		List<ActiveCacheState.Slot> tslots = new ArrayList<>();
 		ActiveCacheState.Tread locals = __cs.locals();
 		for (int i = 0, n = locals.size(); i < n; i++)
 		{
 			// Get slot
 			ActiveCacheState.Slot slot = locals.get(i);
 			
-			// Only assign registers if the type is not nothing
+			// No value stored here
 			StackMapType stype = slot.thisType();
 			if (stype == StackMapType.NOTHING)
 				continue;
 			
-			// Allocate values into registers, if they do not fit then they
-			// will be placed on the stack
-			DataType type = toDataType(stype);
-			switch (type)
-			{
-					// 32-bit int
-				case INTEGER:
-					if (ni != null)
-					{
-						// Set used registers
-						slot.setRegisters(ni);
-						
-						// Claimed
-						ni = NUBI.nextArgument(ni);
-						continue;
-					}
-					break;
-					
-					// 64-bit long
-				case LONG:
-					if (true)
-						throw new todo.TODO();
-					break;
-				
-					// NUBI has 64-bit registers but 
-				case FLOAT:
-				case DOUBLE:
-					if (true)
-						throw new todo.TODO();
-					break;
-				
-					// Should not happen
-				default:
-					throw new RuntimeException("OOPS");
-			}
+			// Add
+			argts.add(stype);
+			tslots.add(slot);
+		}
+		
+		// Get the associated registers
+		MIPSRegister[][] argregs = __getArgumentRegisters(
+			argts.<StackMapType>toArray(new StackMapType[argts.size()]));
+		
+		// Assign registers and stack elements
+		for (int i = 0, n = argregs.length; i < n; i++)
+		{
+			MIPSRegister[] mr = argregs[i];
+			ActiveCacheState.Slot slot = tslots.get(i);
 			
-			// Use common stack allocation if not register claimed
-			throw new todo.TODO();
+			// Assigning registers?
+			if (mr != null)
+				slot.setRegisters(mr);
+			
+			// Allocate on the stack
+			else
+				throw new todo.TODO();
 		}
 	}
 	
@@ -153,7 +131,17 @@ public class MIPSEngine
 		System.err.printf("DEBUG -- in=%s out=%s ml=%s rv=%s args=%s%n",
 			__in, __out, __ml, __rv, Arrays.asList(__args));
 		
-		// Need to potentially copy values to atrget 
+		// Get the registers where target values are placed
+		int n = __args.length;
+		StackMapType[] atypes = new StackMapType[n];
+		for (int i = 0; i < n; i++)
+			atypes[i] = __args[i].valueType();
+		MIPSRegister[][] targs = __getArgumentRegisters(atypes);
+		
+		// Debug
+		for (int i = 0; i < n; i++)
+			System.err.printf("DEBUG -- Target %d: %s%n", i,
+			(targs[i] == null ? null : Arrays.asList(targs[i])));
 		
 		throw new todo.TODO();
 	}
@@ -326,6 +314,75 @@ public class MIPSEngine
 			default:
 				throw new RuntimeException("OOPS");
 		}
+	}
+	
+	/**
+	 * This obtains the argument registers which are associated with a method
+	 * of the given types.
+	 *
+	 * @param __ts The types of values used for the method.
+	 * @return The registers associated with the given
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/20
+	 */
+	private MIPSRegister[][] __getArgumentRegisters(StackMapType[] __ts)
+		throws NullPointerException
+	{
+		// Check
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup return value
+		int n = __ts.length;
+		MIPSRegister[][] rv = new MIPSRegister[n][];
+		
+		// Starting register points where arguments are placed
+		MIPSRegister ni = NUBI.FIRST_INT_ARGUMENT;
+		MIPSRegister nf = NUBI.FIRST_FLOAT_ARGUMENT;
+		
+		// Go through types
+		MIPSConfig config = this.config;
+		int bits = config.bits();
+		for (int i = 0; i < n; i++)
+		{
+			// Allocate values into registers, if they do not fit then they
+			// will be placed on the stack
+			DataType type = toDataType(__ts[i]);
+			switch (type)
+			{
+					// 32-bit int
+				case INTEGER:
+					if (ni != null)
+					{
+						// Set used registers
+						rv[i] = new MIPSRegister[]{ni};
+						
+						// Claimed
+						ni = NUBI.nextArgument(ni);
+						continue;
+					}
+					break;
+					
+					// 64-bit long
+				case LONG:
+					if (true)
+						throw new todo.TODO();
+					break;
+				
+					// NUBI has 64-bit registers but 
+				case FLOAT:
+				case DOUBLE:
+					if (true)
+						throw new todo.TODO();
+					break;
+				
+					// Should not happen
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		}
+		
+		return rv;
 	}
 }
 
