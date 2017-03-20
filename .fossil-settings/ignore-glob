@@ -38,4 +38,8 @@ contrib/
 contrib/*
 contrib/*.*
 *.zip
-
+hardcopy.*
+ci-comment*.txt
+*.s
+*.so
+*.png
