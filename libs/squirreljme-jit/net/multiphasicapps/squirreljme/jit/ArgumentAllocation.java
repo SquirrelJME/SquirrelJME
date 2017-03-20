@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+
 /**
  * This is used to store the information such as which registers and the stack
  * offsets which are used to store a given argument on initial entry of a
@@ -19,6 +23,18 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public final class ArgumentAllocation
 {
+	/** The type of data used for the allocation. */
+	protected final DataType type;
+	
+	/** The stack offset. */
+	protected final int stackoffset;
+	
+	/** Registers available for usage. */
+	private final Register[] _registers;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the argument allocation with the specified registers.
 	 *
@@ -34,7 +50,16 @@ public final class ArgumentAllocation
 		if (__t == null || __r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.type = __t;
+		this.stackoffset = Integer.MIN_VALUE;
+		
+		// Copy registers
+		__r = __r.clone();
+		this._registers = __r;
+		for (Register r : __r)
+			if (r == null)
+				throw new NullPointerException("NARG");
 	}
 	
 	/**
@@ -42,13 +67,11 @@ public final class ArgumentAllocation
 	 *
 	 * @param __t The type of data stored in the argument.
 	 * @param __so The stack offset of the argument.
-	 * @param __sl The length of the entry on the stack.
-	 * @throws IllegalArgumentException If the stack offset is not valid or
-	 * the stack length is not valid.
+	 * @throws IllegalArgumentException If the stack offset is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(DataType __t, int __so, int __sl)
+	public ArgumentAllocation(DataType __t, int __so)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -59,11 +82,10 @@ public final class ArgumentAllocation
 		if (__so == Integer.MIN_VALUE)
 			throw new IllegalArgumentException("ED0j");
 		
-		// {@squirreljme.error ED0k Invalid stack length specified.}
-		if (__sl <= 0)
-			throw new IllegalArgumentException("ED0k");
-		
-		throw new todo.TODO();
+		// Set
+		this.type = __t;
+		this.stackoffset = __so;
+		this._registers = null;
 	}
 	
 	/**
@@ -73,7 +95,14 @@ public final class ArgumentAllocation
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof ArgumentAllocation))
+			return false;
+		
+		ArgumentAllocation o = (ArgumentAllocation)__o;
+		return this.type == o.type &&
+			this.stackoffset == o.stackoffset &&
+			Arrays.equals(this._registers, o._registers);
 	}
 	
 	/**
@@ -96,7 +125,8 @@ public final class ArgumentAllocation
 		if (__i < 0 || __i >= numRegisters())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		Register[] registers = this._registers;
+		return __cl.cast(registers[__i]);
 	}
 	
 	/**
@@ -106,7 +136,12 @@ public final class ArgumentAllocation
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = this.type.hashCode() ^ (~this.stackoffset);
+		Register[] registers = this._registers;
+		if (registers != null)
+			for (Register r : registers)
+				rv ^= r.hashCode();
+		return rv;
 	}
 	
 	/**
@@ -128,18 +163,20 @@ public final class ArgumentAllocation
 	 */
 	public int numRegisters()
 	{
-		throw new todo.TODO();
+		Register[] registers = this._registers;
+		return (registers == null ? 0 : registers.length);
 	}
 	
 	/**
 	 * Returns all of the allocated registers.
 	 *
-	 * @return The allocated registers.
+	 * @return The allocated registers or {@code null} if there are none.
 	 * @since 2017/03/20
 	 */
 	public Register[] registers()
 	{
-		throw new todo.TODO();
+		Register[] registers = this._registers;
+		return (registers == null ? null : registers.clone());
 	}
 	
 	/**
@@ -163,7 +200,7 @@ public final class ArgumentAllocation
 	 */
 	public int stackOffset()
 	{
-		throw new todo.TODO();
+		return this.stackoffset;
 	}
 	
 	/**
@@ -173,7 +210,27 @@ public final class ArgumentAllocation
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// On the stack?
+			DataType type = this.type;
+			Register[] registers = this._registers;
+			if (registers == null)
+				rv = String.format("%s:s%d", type, this.stackoffset);
+			
+			// or in registers?
+			else
+				rv = String.format("%s:r%s", type,
+					Arrays.asList(registers).toString());
+			
+			this._string = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -184,7 +241,7 @@ public final class ArgumentAllocation
 	 */
 	public DataType type()
 	{
-		throw new todo.TODO();
+		return this.type;
 	}
 }
 
