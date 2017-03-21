@@ -336,13 +336,17 @@ class __JITCodeStream__
 			rv.setType(__rvt);
 		}
 		
+		TranslationEngine engine = this._engine;
+		ArgumentAllocation[] allocs = engine.allocationForEntry(__targs);
+		
 		// Save all registers
 		System.err.printf("DEBUG -- Before savetemp: %s%n", outstate);
 		__saveTempRegisters(instate, outstate, __d);
 		System.err.printf("DEBUG -- After savetemp: %s%n", outstate);
 		
 		// Forward invoke
-		this._engine.invokeMethod(instate, outstate, __link, rv, args);
+		this._engine.invokeMethod(instate, outstate, __link, rv, args,
+			allocs);
 		
 		// Restore registers after the call
 		if (true)

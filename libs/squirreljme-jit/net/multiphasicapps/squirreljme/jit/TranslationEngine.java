@@ -76,13 +76,14 @@ public abstract class TranslationEngine
 	 * there is no return value.
 	 * @param __args Arguments to the method, will be their cached and aliased
 	 * slots. Arguments are used as input.
+	 * @param __allocs Allocations used for the target method call.
 	 * @throws NullPointerException If no input state, output state, method, or
 	 * arguments were specified.
 	 * @since 2017/03/03
 	 */
 	public abstract void invokeMethod(CacheState __in, ActiveCacheState __out,
 		MethodLinkage __ml, ActiveCacheState.Slot __rv,
-		CacheState.Slot[] __args)
+		CacheState.Slot[] __args, ArgumentAllocation[] __allocs)
 		throws NullPointerException;
 	
 	/**

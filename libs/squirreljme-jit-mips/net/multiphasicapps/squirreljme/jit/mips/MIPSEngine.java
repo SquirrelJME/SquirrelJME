@@ -139,15 +139,16 @@ public class MIPSEngine
 	@Override
 	public void invokeMethod(CacheState __in, ActiveCacheState __out,
 		MethodLinkage __ml, ActiveCacheState.Slot __rv,
-		CacheState.Slot[] __args)
+		CacheState.Slot[] __args, ArgumentAllocation[] __allocs)
 	{
 		// Check
 		if (__in == null || __out == null || __ml == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		System.err.printf("DEBUG -- in=%s out=%s ml=%s rv=%s args=%s%n",
-			__in, __out, __ml, __rv, Arrays.asList(__args));
+		System.err.printf("DEBUG -- in=%s out=%s ml=%s rv=%s args=%s al=%s%n",
+			__in, __out, __ml, __rv, Arrays.asList(__args),
+			Arrays.asList(__allocs));
 		
 		throw new todo.TODO();
 	}
