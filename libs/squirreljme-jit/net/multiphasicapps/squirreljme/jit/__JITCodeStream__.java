@@ -754,6 +754,10 @@ class __JITCodeStream__
 		Register fp = engine.framePointerRegister();
 		List<Register> regs = __s.<Register>valueRegistersAs();
 		int stackoff = __s.valueStackOffset();
+		
+		// Go through all registers and store their value
+		throw new todo.TODO();
+		/*
 		switch (engine.toDataType(__s.valueType()))
 		{
 				// Only the first register needs to be stored
@@ -777,7 +781,7 @@ class __JITCodeStream__
 				// Unknown
 			default:
 				throw new RuntimeException("OOPS");
-		}
+		}*/
 	}
 }
 
