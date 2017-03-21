@@ -29,6 +29,9 @@ public abstract class TranslationEngine
 	/** The accessor to the JIT. */
 	protected final JITStateAccessor accessor;
 	
+	/** Is the engine targetting a 64-bit system? */
+	protected final boolean islonglong;
+	
 	/**
 	 * Initializes the base translation engine.
 	 *
@@ -48,6 +51,9 @@ public abstract class TranslationEngine
 		// Set
 		this.config = __c;
 		this.accessor = __jsa;
+		
+		// 64-bit target?
+		this.islonglong = (__c.bits() > 32);
 	}
 	
 	/**
@@ -193,6 +199,17 @@ public abstract class TranslationEngine
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(this.config);
+	}
+	
+	/**
+	 * Is the target system a 64-bit system?
+	 *
+	 * @return {@code true} if the target system is 64-bit.
+	 * @since 2017/03/21
+	 */
+	public final boolean isLongLong()
+	{
+		return this.islonglong;
 	}
 }
 
