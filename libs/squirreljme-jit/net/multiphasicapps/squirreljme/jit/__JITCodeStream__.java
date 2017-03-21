@@ -715,7 +715,9 @@ class __JITCodeStream__
 					System.err.printf("DEBUG -- Need to save: %s%n", slot);
 					
 					// Generate store operation
-					engine.storeSlotToStack(slot);
+					if (true)
+						throw new todo.TODO();
+					//engine.storeSlotToStack(slot);
 					
 					// The values are placed on the stack, so their output
 					// register set is actually invalid until they are used

@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.ArgumentAllocation;
 import net.multiphasicapps.squirreljme.jit.CacheState;
 import net.multiphasicapps.squirreljme.jit.DataType;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.Register;
 import net.multiphasicapps.squirreljme.jit.SnapshotCacheState;
@@ -218,12 +219,20 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/03/18
+	 * @since 2017/03/21
 	 */
 	@Override
-	public void storeSlotToStack(CacheState.Slot __s)
-		throws NullPointerException
+	public void storeRegister(DataType __t, Register __src,
+		int __off, Register __base)
+		throws JITException, NullPointerException
 	{
+		// Check
+		if (__t == null || __src == null || __base == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		/*
 		// Check
 		if (__s == null)
 			throw new NullPointerException("NARG");
@@ -256,6 +265,7 @@ public class MIPSEngine
 			default:
 				throw new RuntimeException("OOPS");
 		}
+		*/
 	}
 	
 	/**

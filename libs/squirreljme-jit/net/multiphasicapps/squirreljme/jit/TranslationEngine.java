@@ -122,14 +122,21 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
-	 * Store the specified slot onto the stack.
+	 * This stores the register to the specified offset with the given register
+	 * at its base.
 	 *
-	 * @param __s The slot to store on the stack.
+	 * @param __t The type of data to be stored.
+	 * @param __src The source register.
+	 * @param __off The offset from the base.
+	 * @param __base The base register.
+	 * @throws JITException If the store is not valid for the register type,
+	 * the offset is out of range, or the base register is not valid.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/18
+	 * @since 2017/03/21
 	 */
-	public abstract void storeSlotToStack(CacheState.Slot __s)
-		throws NullPointerException;
+	public abstract void storeRegister(DataType __t, Register __src,
+		int __off, Register __base)
+		throws JITException, NullPointerException;
 	
 	/**
 	 * This translates the specified stack type to the given data type, this
