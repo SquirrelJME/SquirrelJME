@@ -344,6 +344,11 @@ class __JITCodeStream__
 		__saveTempRegisters(instate, outstate, __d);
 		System.err.printf("DEBUG -- After savetemp: %s%n", outstate);
 		
+		// Shuffle registers and stack elements around so that the values are
+		// in the right position for the method call.
+		if (true)
+			throw new todo.TODO();
+		
 		// Forward invoke
 		engine.invokeMethod(instate, outstate, __link, rv, args, allocs);
 		

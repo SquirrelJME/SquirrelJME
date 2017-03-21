@@ -268,6 +268,22 @@ public class MIPSEngine
 	 * @since 2017/03/21
 	 */
 	@Override
+	public void moveRegister(DataType __t, List<Register> __src,
+		List<Register> __dest)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null || __src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/21
+	 */
+	@Override
 	public void storeRegister(DataType __t, List<Register> __src,
 		int __off, Register __base)
 		throws JITException, NullPointerException

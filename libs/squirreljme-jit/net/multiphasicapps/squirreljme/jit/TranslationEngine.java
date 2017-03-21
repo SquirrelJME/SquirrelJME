@@ -149,6 +149,22 @@ public abstract class TranslationEngine
 		throws JITException, NullPointerException;
 	
 	/**
+	 * Copies the value from the source registers to the destination
+	 * registers.
+	 *
+	 * @param __t The type of data to be copied.
+	 * @param __src The source registers.
+	 * @param __dest The destination registers.
+	 * @throws JITException If the copy is not valid for the given register
+	 * types or the source and destination are not balanced.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public abstract void moveRegister(DataType __t, List<Register> __src,
+		List<Register> __dest)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * This stores the register to the specified offset with the given register
 	 * at its base.
 	 *
@@ -268,6 +284,65 @@ public abstract class TranslationEngine
 		throws JITException, NullPointerException
 	{
 		loadRegister(__t, Arrays.<Register>asList(__dest), __off, __base);
+	}
+	
+	/**
+	 * Copies the value from the source registers to the destination
+	 * registers.
+	 *
+	 * @param __t The type of data to be copied.
+	 * @param __src The source register.
+	 * @param __dest The destination register.
+	 * @throws JITException If the copy is not valid for the given register
+	 * types or the source and destination are not balanced.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public final void moveRegister(DataType __t, Register __src,
+		Register __dest)
+		throws JITException, NullPointerException
+	{
+		moveRegister(__t, new Register[]{__src}, new Register[]{__dest});
+	}
+	
+	/**
+	 * Copies the value from the source registers to the destination
+	 * registers.
+	 *
+	 * @param __t The type of data to be copied.
+	 * @param __src The source registers.
+	 * @param __dest The destination registers.
+	 * @throws JITException If the copy is not valid for the given register
+	 * types or the source and destination are not balanced.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public final void moveRegister(DataType __t, Register[] __src,
+		Register[] __dest)
+		throws JITException, NullPointerException
+	{
+		moveRegister(__t, Arrays.<Register>asList(__src),
+			Arrays.<Register>asList(__dest));
+	}
+	
+	/**
+	 * This stores the register to the specified offset with the given register
+	 * at its base.
+	 *
+	 * @param __t The type of data to be stored.
+	 * @param __src The source registers.
+	 * @param __off The offset from the base.
+	 * @param __base The base register.
+	 * @throws JITException If the store is not valid for the register type,
+	 * the offset is out of range, or the base register is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public final void storeRegister(DataType __t, Register __src,
+		int __off, Register __base)
+		throws JITException, NullPointerException
+	{
+		storeRegister(__t, new Register[]{__src}, __off, __base);
 	}
 	
 	/**
