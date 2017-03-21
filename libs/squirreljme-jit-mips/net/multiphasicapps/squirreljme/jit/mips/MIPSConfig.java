@@ -64,6 +64,17 @@ public class MIPSConfig
 	}
 	
 	/**
+	 * Are doubles 64-bit?
+	 *
+	 * @return {@code true} if doubles are 64-bit.
+	 * @since 2017/03/21
+	 */
+	public boolean isLongDouble()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the revision of the MIPS CPU to target.
 	 *
 	 * @return The revision of the CPU to target, if not specified it defaults

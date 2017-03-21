@@ -721,11 +721,6 @@ class __JITCodeStream__
 					// Store the slot
 					__storeSlot(slot);
 					
-					// Generate store operation
-					if (true)
-						throw new todo.TODO();
-					//engine.storeSlotToStack(slot);
-					
 					// The values are placed on the stack, so their output
 					// register set is actually invalid until they are used
 					// again. If a stored temporary values
@@ -749,39 +744,11 @@ class __JITCodeStream__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Depends on the data type used
+		// Store the registers used in the slot
 		TranslationEngine engine = this._engine;
-		Register fp = engine.framePointerRegister();
-		List<Register> regs = __s.<Register>valueRegistersAs();
-		int stackoff = __s.valueStackOffset();
-		
-		// Go through all registers and store their value
-		throw new todo.TODO();
-		/*
-		switch (engine.toDataType(__s.valueType()))
-		{
-				// Only the first register needs to be stored
-			case INTEGER:
-				engine.storeRegister(DataType.INTEGER, regs.get(0), stackoff,
-					fp);
-				break;
-				
-				// long
-			case LONG:
-				throw new todo.TODO();
-				
-				// float
-			case FLOAT:
-				throw new todo.TODO();
-				
-				// double
-			case DOUBLE:
-				throw new todo.TODO();
-			
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}*/
+		engine.storeRegister(engine.toDataType(__s.valueType()),
+			__s.valueRegisters(), __s.valueStackOffset(),
+			engine.framePointerRegister());
 	}
 }
 

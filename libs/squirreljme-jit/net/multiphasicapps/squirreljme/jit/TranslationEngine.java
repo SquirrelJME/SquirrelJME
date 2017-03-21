@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
@@ -28,9 +30,6 @@ public abstract class TranslationEngine
 	
 	/** The accessor to the JIT. */
 	protected final JITStateAccessor accessor;
-	
-	/** Is the engine targetting a 64-bit system? */
-	protected final boolean islonglong;
 	
 	/**
 	 * Initializes the base translation engine.
@@ -51,9 +50,6 @@ public abstract class TranslationEngine
 		// Set
 		this.config = __c;
 		this.accessor = __jsa;
-		
-		// 64-bit target?
-		this.islonglong = (__c.bits() > 32);
 	}
 	
 	/**
@@ -140,7 +136,7 @@ public abstract class TranslationEngine
 	 * register.
 	 *
 	 * @param __t The type of data to be read.
-	 * @param __dest The destination register.
+	 * @param __dest The destination registers.
 	 * @param __off The offset from the base.
 	 * @param __base The base register.
 	 * @throws JITException If the load is not valid for the register type,
@@ -148,7 +144,7 @@ public abstract class TranslationEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/21
 	 */
-	public abstract void loadRegister(DataType __t, Register __dest,
+	public abstract void loadRegister(DataType __t, List<Register> __dest,
 		int __off, Register __base)
 		throws JITException, NullPointerException;
 	
@@ -157,7 +153,7 @@ public abstract class TranslationEngine
 	 * at its base.
 	 *
 	 * @param __t The type of data to be stored.
-	 * @param __src The source register.
+	 * @param __src The source registers.
 	 * @param __off The offset from the base.
 	 * @param __base The base register.
 	 * @throws JITException If the store is not valid for the register type,
@@ -165,7 +161,7 @@ public abstract class TranslationEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/21
 	 */
-	public abstract void storeRegister(DataType __t, Register __src,
+	public abstract void storeRegister(DataType __t, List<Register> __src,
 		int __off, Register __base)
 		throws JITException, NullPointerException;
 	
@@ -202,6 +198,28 @@ public abstract class TranslationEngine
 	}
 	
 	/**
+	 * Is the target big endian?
+	 *
+	 * @return {@code true} if the target is big endian.
+	 * @since 2017/03/21
+	 */
+	public final boolean isBigEndian()
+	{
+		return Endian.BIG == this.config.endianess();
+	}
+	
+	/**
+	 * Is the target little endian?
+	 *
+	 * @return {@code true} if the target is little endian.
+	 * @since 2017/03/21
+	 */
+	public final boolean isLittleEndian()
+	{
+		return Endian.LITTLE == this.config.endianess();
+	}
+	
+	/**
 	 * Is the target system a 64-bit system?
 	 *
 	 * @return {@code true} if the target system is 64-bit.
@@ -209,7 +227,67 @@ public abstract class TranslationEngine
 	 */
 	public final boolean isLongLong()
 	{
-		return this.islonglong;
+		return (this.config.bits() > 32);
+	}
+	
+	/**
+	 * This loads the address from the given base register into the destination
+	 * register.
+	 *
+	 * @param __t The type of data to be read.
+	 * @param __dest The destination register.
+	 * @param __off The offset from the base.
+	 * @param __base The base register.
+	 * @throws JITException If the load is not valid for the register type,
+	 * the offset is out of range, or the base register is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public final void loadRegister(DataType __t, Register __dest,
+		int __off, Register __base)
+		throws JITException, NullPointerException
+	{
+		loadRegister(__t, new Register[]{__dest}, __off, __base);
+	}
+	
+	/**
+	 * This loads the address from the given base register into the destination
+	 * register.
+	 *
+	 * @param __t The type of data to be read.
+	 * @param __dest The destination registers.
+	 * @param __off The offset from the base.
+	 * @param __base The base register.
+	 * @throws JITException If the load is not valid for the register type,
+	 * the offset is out of range, or the base register is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public final void loadRegister(DataType __t, Register[] __dest,
+		int __off, Register __base)
+		throws JITException, NullPointerException
+	{
+		loadRegister(__t, Arrays.<Register>asList(__dest), __off, __base);
+	}
+	
+	/**
+	 * This stores the register to the specified offset with the given register
+	 * at its base.
+	 *
+	 * @param __t The type of data to be stored.
+	 * @param __src The source registers.
+	 * @param __off The offset from the base.
+	 * @param __base The base register.
+	 * @throws JITException If the store is not valid for the register type,
+	 * the offset is out of range, or the base register is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public final void storeRegister(DataType __t, Register[] __src,
+		int __off, Register __base)
+		throws JITException, NullPointerException
+	{
+		storeRegister(__t, Arrays.<Register>asList(__src), __off, __base);
 	}
 }
 

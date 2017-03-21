@@ -240,7 +240,7 @@ public class MIPSEngine
 	 * @since 2017/03/21
 	 */
 	@Override
-	public void loadRegister(DataType __t, Register __dest,
+	public void loadRegister(DataType __t, List<Register> __dest,
 		int __off, Register __base)
 		throws JITException, NullPointerException
 	{
@@ -248,9 +248,17 @@ public class MIPSEngine
 		if (__t == null || __dest == null || __base == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AM0e Cannot use a floating point register as a
+		// base for a load operation. (The specified register)}
+		MIPSRegister base = (MIPSRegister)__base;
+		if (base.isFloat())
+			throw new JITException(String.format("AM0e %s", base));
+		
 		// {@squirreljme.error AM0b Offset out of range for load. (The offset)}
 		if (__off < _MIN_IOFFSET || __off > _MAX_IOFFSET)
 			throw new JITException(String.format("AM0b %d", __off));
+		
+		MIPSConfig config = this.config;
 		
 		throw new todo.TODO();
 	}
@@ -260,7 +268,7 @@ public class MIPSEngine
 	 * @since 2017/03/21
 	 */
 	@Override
-	public void storeRegister(DataType __t, Register __src,
+	public void storeRegister(DataType __t, List<Register> __src,
 		int __off, Register __base)
 		throws JITException, NullPointerException
 	{
@@ -268,12 +276,36 @@ public class MIPSEngine
 		if (__t == null || __src == null || __base == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AM0c Offset out of range for store. (The
-		// offset)}
-		if (__off < _MIN_IOFFSET || __off > _MAX_IOFFSET)
-			throw new JITException(String.format("AM0c %d", __off));
+		// {@squirreljme.error AM0d Cannot use a floating point register as a
+		// base for a store operation. (The specified register)}
+		MIPSRegister base = (MIPSRegister)__base;
+		if (base.isFloat())
+			throw new JITException(String.format("AM0d %s", base));
 		
-		throw new todo.TODO();
+		// Write all registers
+		MIPSConfig config = this.config;
+		for (int i = 0, n = __src.size(), at = __off; i < n; i++)
+		{
+			// {@squirreljme.error AM0c Offset out of range for store. (The
+			// offset)}
+			if (at < _MIN_IOFFSET || at > _MAX_IOFFSET)
+				throw new JITException(String.format("AM0c %d", __off));
+			
+			// Get
+			MIPSRegister r = (MIPSRegister)__src.get(i);
+			
+			// Generate
+			if (true)
+				throw new todo.TODO();
+			
+			// Integers match the word size
+			if (r.isInteger())
+				at += (isLongLong() ? 8 : 4);
+			
+			// Float depends (could be 32-bit or 64-bit)
+			else
+				throw new todo.TODO();
+		}
 	}
 	
 	/**
