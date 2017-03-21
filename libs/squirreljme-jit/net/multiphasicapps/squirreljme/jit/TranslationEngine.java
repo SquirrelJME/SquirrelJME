@@ -63,6 +63,14 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Returns the frame pointer register.
+	 *
+	 * @return The register at the base of the stack.
+	 * @since 2017/03/21
+	 */
+	public abstract Register framePointerRegister();
+	
+	/**
 	 * Invokes the specified method with the given arguments, returning the
 	 * value in the specified slot.
 	 *

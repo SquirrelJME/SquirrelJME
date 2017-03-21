@@ -707,12 +707,19 @@ class __JITCodeStream__
 				{
 					// Assign stack slot
 					boolean onstack = slot.valueIsStack();
-					int index = slot.valueIndex();
-					stackoffsets.assign(onstack, index,
-						engine.toDataType(type));
+					int index = slot.valueIndex(),
+						stackoffset = slot.valueStackOffset();
+					
+					// Assign the offset?
+					if (stackoffset == Integer.MIN_VALUE)
+						stackoffset = stackoffsets.assign(onstack, index,
+							engine.toDataType(type));
 					
 					// Debug
 					System.err.printf("DEBUG -- Need to save: %s%n", slot);
+					
+					// Store the slot
+					__storeSlot(slot);
 					
 					// Generate store operation
 					if (true)
@@ -725,6 +732,51 @@ class __JITCodeStream__
 					__outstate.getSlot(onstack, index).clearRegisters();
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Stores the specified slot.
+	 *
+	 * @param __s The slot to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	private final void __storeSlot(CacheState.Slot __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the data type used
+		TranslationEngine engine = this._engine;
+		Register fp = engine.framePointerRegister();
+		List<Register> regs = __s.<Register>valueRegistersAs();
+		int stackoff = __s.valueStackOffset();
+		switch (engine.toDataType(__s.valueType()))
+		{
+				// Only the first register needs to be stored
+			case INTEGER:
+				engine.storeRegister(DataType.INTEGER, regs.get(0), stackoff,
+					fp);
+				break;
+				
+				// long
+			case LONG:
+				throw new todo.TODO();
+				
+				// float
+			case FLOAT:
+				throw new todo.TODO();
+				
+				// double
+			case DOUBLE:
+				throw new todo.TODO();
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
 		}
 	}
 }

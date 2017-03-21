@@ -143,6 +143,16 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/21
+	 */
+	@Override
+	public Register framePointerRegister()
+	{
+		return NUBI.FP;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/03
 	 */
 	@Override
@@ -264,41 +274,6 @@ public class MIPSEngine
 			throw new JITException(String.format("AM0c %d", __off));
 		
 		throw new todo.TODO();
-		
-		/*
-		// Check
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends on the data type used
-		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
-			codeFragment(MIPSFragmentOutput.class);
-		List<MIPSRegister> regs = __s.<MIPSRegister>valueRegistersAs();
-		int stackoff = __s.valueStackOffset();
-		switch (toDataType(__s.valueType()))
-		{
-				// Only the first register needs to be stored
-			case INTEGER:
-				output.storeWord(regs.get(0), stackoff, NUBI.FP);
-				break;
-				
-				// long
-			case LONG:
-				throw new todo.TODO();
-				
-				// float
-			case FLOAT:
-				throw new todo.TODO();
-				
-				// double
-			case DOUBLE:
-				throw new todo.TODO();
-			
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}
-		*/
 	}
 	
 	/**
