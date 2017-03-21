@@ -43,6 +43,14 @@ import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 public class MIPSEngine
 	extends TranslationEngine
 {
+	/** Minimum i-offset. */
+	private static final int _MIN_IOFFSET =
+		-32768;
+	
+	/** Maximum i-offset. (*/
+	private static final int _MAX_IOFFSET =
+		32767;
+	
 	/** The configuration used. */
 	protected final MIPSConfig config;
 	
@@ -222,6 +230,26 @@ public class MIPSEngine
 	 * @since 2017/03/21
 	 */
 	@Override
+	public void loadRegister(DataType __t, Register __dest,
+		int __off, Register __base)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null || __dest == null || __base == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AM0b Offset out of range for load. (The offset)}
+		if (__off < _MIN_IOFFSET || __off > _MAX_IOFFSET)
+			throw new JITException(String.format("AM0b %d", __off));
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/21
+	 */
+	@Override
 	public void storeRegister(DataType __t, Register __src,
 		int __off, Register __base)
 		throws JITException, NullPointerException
@@ -229,6 +257,11 @@ public class MIPSEngine
 		// Check
 		if (__t == null || __src == null || __base == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AM0c Offset out of range for store. (The
+		// offset)}
+		if (__off < _MIN_IOFFSET || __off > _MAX_IOFFSET)
+			throw new JITException(String.format("AM0c %d", __off));
 		
 		throw new todo.TODO();
 		

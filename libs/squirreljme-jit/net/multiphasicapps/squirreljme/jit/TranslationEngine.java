@@ -122,6 +122,23 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * This loads the address from the given base register into the destination
+	 * register.
+	 *
+	 * @param __t The type of data to be read.
+	 * @param __dest The destination register.
+	 * @param __off The offset from the base.
+	 * @param __base The base register.
+	 * @throws JITException If the load is not valid for the register type,
+	 * the offset is out of range, or the base register is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/21
+	 */
+	public abstract void loadRegister(DataType __t, Register __dest,
+		int __off, Register __base)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * This stores the register to the specified offset with the given register
 	 * at its base.
 	 *
