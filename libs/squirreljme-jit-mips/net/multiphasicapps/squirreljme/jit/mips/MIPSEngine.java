@@ -282,29 +282,57 @@ public class MIPSEngine
 		if (base.isFloat())
 			throw new JITException(String.format("AM0d %s", base));
 		
-		// Write all registers
-		MIPSConfig config = this.config;
-		for (int i = 0, n = __src.size(), at = __off; i < n; i++)
+		// Registers in slots start with lower indexes having least significant
+		// values
+		// So because of this on big endian place values at the end
+		int at, sign;
+		if (isBigEndian())
 		{
+			at = __off + __t.length();
+			sign = -1;
+		}
+		
+		// Otherwise the lower end
+		else
+		{
+			at = __off;
+			sign = 1;
+		}
+		
+		// Write all registers
+		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
+			codeFragment(MIPSFragmentOutput.class);
+		MIPSConfig config = this.config;
+		for (int i = 0, n = __src.size(); i < n; i++)
+		{
+			// Get
+			MIPSRegister r = (MIPSRegister)__src.get(i);
+			
+			// Get the size of thi
+			// Integers match the word size
+			int rs;
+			if (r.isInteger())
+				rs = (isLongLong() ? 8 : 4);
+			
+			// Float depends (could be 32-bit or 64-bit)
+			else
+				throw new todo.TODO();
+			
+			// Lower first for big endian since it starts at the end
+			if (isBigEndian())
+				at -= rs;
+			
 			// {@squirreljme.error AM0c Offset out of range for store. (The
 			// offset)}
 			if (at < _MIN_IOFFSET || at > _MAX_IOFFSET)
 				throw new JITException(String.format("AM0c %d", __off));
 			
-			// Get
-			MIPSRegister r = (MIPSRegister)__src.get(i);
-			
 			// Generate
-			if (true)
-				throw new todo.TODO();
+			output.storeWord(r, at, base);
 			
-			// Integers match the word size
-			if (r.isInteger())
-				at += (isLongLong() ? 8 : 4);
-			
-			// Float depends (could be 32-bit or 64-bit)
-			else
-				throw new todo.TODO();
+			// Little endian adds following to get to higher addresses
+			if (!isBigEndian())
+				at += rs;
 		}
 	}
 	

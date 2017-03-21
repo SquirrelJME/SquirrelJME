@@ -151,6 +151,8 @@ public abstract class CacheState
 		/**
 		 * Returns the list of registers which are stored in this slot.
 		 *
+		 * Lower indexes are the least significant values.
+		 *
 		 * @return the list of associated registers.
 		 * @since 2017/03/11
 		 */
@@ -260,6 +262,8 @@ public abstract class CacheState
 		
 		/**
 		 * Returns the list of registers which are stored in this slot.
+		 *
+		 * Lower indexes are the least significant values.
 		 *
 		 * @return the list of associated registers.
 		 * @since 2017/03/11

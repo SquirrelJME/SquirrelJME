@@ -238,6 +238,8 @@ public final class ActiveCacheState
 		/**
 		 * Sets the registers that the slot allocates to.
 		 *
+		 * Lower indexes are the least significant values.
+		 *
 		 * @param __r The registers to set the slot.
 		 * @since 2017/03/11
 		 */
@@ -251,6 +253,8 @@ public final class ActiveCacheState
 		
 		/**
 		 * Sets the registers that the slot allocates to.
+		 *
+		 * Lower indexes are the least significant values.
 		 *
 		 * @param __r The registers to set the slot.
 		 * @since 2017/03/11
