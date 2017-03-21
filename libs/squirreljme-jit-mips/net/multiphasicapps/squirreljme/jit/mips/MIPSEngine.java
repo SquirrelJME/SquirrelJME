@@ -218,15 +218,6 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/03/06
-	 */
-	@Override
-	public void slotCount(int __ms, int __ml)
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2017/03/18
 	 */
 	@Override

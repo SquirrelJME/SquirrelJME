@@ -345,8 +345,7 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- After savetemp: %s%n", outstate);
 		
 		// Forward invoke
-		this._engine.invokeMethod(instate, outstate, __link, rv, args,
-			allocs);
+		engine.invokeMethod(instate, outstate, __link, rv, args, allocs);
 		
 		// Restore registers after the call
 		if (true)
@@ -453,9 +452,6 @@ class __JITCodeStream__
 		// Also input and output states
 		this._instate = new ActiveCacheState(this, __ms, __ml);
 		this._outstate = new ActiveCacheState(this, __ms, __ml);
-		
-		// Report sizes for potential stack slots
-		engine.slotCount(__ms, __ml);
 	}
 	
 	/**
