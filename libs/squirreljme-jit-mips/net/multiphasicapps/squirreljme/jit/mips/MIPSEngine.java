@@ -204,10 +204,13 @@ public class MIPSEngine
 	public void invokeMethod(int __dx)
 	{
 		// Need output
+		MIPSConfig config = this.config;
 		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
 			codeFragment(MIPSFragmentOutput.class);
 		
-		//
+		// Load the pointer of the index to be invoked
+		output.loadWord(NUBI.AT, __dx * config.bitsDataType().length(),
+			NUBI.GP);
 		
 		throw new todo.TODO();
 	}

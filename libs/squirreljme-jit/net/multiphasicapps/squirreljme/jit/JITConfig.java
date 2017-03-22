@@ -113,6 +113,27 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	}
 	
 	/**
+	 * Returns the data type that is used for the pointer.
+	 *
+	 * @return The pointer data type.
+	 * @since 2017/03/2
+	 */
+	public final DataType bitsDataType()
+	{
+		switch (bits())
+		{
+			case 8:		return DataType.BYTE;
+			case 16:	return DataType.SHORT;
+			case 32:	return DataType.INTEGER;
+			case 64:	return DataType.LONG;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Returns the target endianess.
 	 *
 	 * @return The target endianess.

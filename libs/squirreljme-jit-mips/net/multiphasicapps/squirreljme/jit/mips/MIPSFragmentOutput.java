@@ -39,6 +39,38 @@ public class MIPSFragmentOutput
 	}
 	
 	/**
+	 * Loads the specified register with the given offset into the given
+	 * register.
+	 *
+	 * @param __rt The target register where the value is placed.
+	 * @param __off The offset from the base.
+	 * @param __b The base register to derive the memory address from.
+	 * @throws JITException If the offset is out of range or the input
+	 * registers are not integer registers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/22
+	 */
+	public final void loadWord(MIPSRegister __rt, int __off, MIPSRegister __b)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__rt == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AM0f Offset out of range. (The offset base)}
+		if (__off < -32768 || __off > 32767)
+			throw new JITException(String.format("AM0f %d", __off));
+		
+		// {@squirreljme.error AM0g Floating point registers specified. (The
+		// target register; The base register)}
+		if (__rt.isFloat() || __b.isFloat())
+			throw new JITException(String.format("AM0g %s %s", __rt, __b));
+		
+		// Encode
+		mipsTypeI(0b100011, __b, __rt, __off);
+	}
+	
+	/**
 	 * This writes an i-type instruction.
 	 *
 	 * @param __op The opcode.
