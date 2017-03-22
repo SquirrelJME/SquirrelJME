@@ -40,16 +40,21 @@ public class TODO
 		// Ending banner
 		ps.println("*******************************************************");
 		
-		// At least try to exit
-		try
-		{
-			System.exit(1);
-		}
+		// {@squirreljme.property
+		// net.multiphasicapps.squirreljme.notodoexit=(boolean)
+		// If this is {@code true} then the ToDo exception will not tell the
+		// virtual machine to exit.}
+		if (!Boolean.valueOf(
+			System.getProperty("net.multiphasicapps.squirreljme.notodoexit")))
+			try
+			{
+				System.exit(3);
+			}
 		
-		// Ignore
-		catch (SecurityException e)
-		{
-		}
+			// Ignore
+			catch (SecurityException e)
+			{
+			}
 	}
 }
 
