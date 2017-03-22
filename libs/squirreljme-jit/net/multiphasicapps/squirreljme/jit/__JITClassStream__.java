@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.linkage.FieldFlags;
 import net.multiphasicapps.squirreljme.linkage.Linkage;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
+import net.multiphasicapps.squirreljme.linkage.MethodTableLinkage;
 
 /**
  * This is the class description stream that the JIT uses for each class that
@@ -280,6 +281,10 @@ class __JITClassStream__
 			rv = Integer.valueOf(linkage.size());
 			linkage.put(__l, rv);
 		}
+		
+		// If this is a method create a new entry for the table link
+		if (__l instanceof MethodLinkage)
+			__link(((MethodLinkage)__l).tableLink());
 		
 		// Otherwise return the index
 		return rv.intValue();

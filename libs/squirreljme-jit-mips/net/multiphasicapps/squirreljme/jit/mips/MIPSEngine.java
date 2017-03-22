@@ -201,18 +201,33 @@ public class MIPSEngine
 	 * @since 2017/03/03
 	 */
 	@Override
-	public void invokeMethod(int __dx)
+	public void invokeMethod(int __dx, int __got)
 	{
 		// Need output
 		MIPSConfig config = this.config;
 		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
 			codeFragment(MIPSFragmentOutput.class);
 		
-		// Load the pointer of the index to be invoked
+		// Store old stack things (old GOT, SP, etc.)
+		System.err.println("TODO -- Store register state.");
+		
+		// Load the address of the remote method (where to jump to)
 		output.loadWord(NUBI.AT, __dx * config.bitsDataType().length(),
 			NUBI.GP);
+		if (config.hasLoadDelaySlots())
+			output.nop();
 		
-		throw new todo.TODO();
+		// The method's class GOT must be loaded
+		output.loadWord(NUBI.GP, __got * config.bitsDataType().length(),
+			NUBI.GP);
+		if (config.hasLoadDelaySlots())
+			output.nop();
+		
+		// Execute the jump
+		output.jumpAndLinkRegisterImplied(NUBI.AT);
+		
+		// Restore register after the call
+		System.err.println("TODO -- Restore register state.");
 	}
 	
 	/**

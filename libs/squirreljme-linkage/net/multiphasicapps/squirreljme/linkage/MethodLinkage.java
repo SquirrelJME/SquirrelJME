@@ -24,6 +24,9 @@ public final class MethodLinkage
 	/** The type of link this is. */
 	protected final MethodInvokeType type;
 	
+	/** The method linkage table. */
+	private volatile Reference<MethodTableLinkage> _table;
+	
 	/** String reference. */
 	private volatile Reference<String> _string;
 	
@@ -76,6 +79,25 @@ public final class MethodLinkage
 	public int hashCode()
 	{
 		return super.hashCode() ^ this.type.hashCode();
+	}
+	
+	/**
+	 * This returns the linkage to the target method's table.
+	 *
+	 * @return The linkage to the method table.
+	 * @since 2017/03/22
+	 */
+	public MethodTableLinkage tableLink()
+	{
+		Reference<MethodTableLinkage> ref = this._table;
+		MethodTableLinkage rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._table = new WeakReference<>(
+				(rv = new MethodTableLinkage(this)));
+		
+		return rv;
 	}
 	
 	/**

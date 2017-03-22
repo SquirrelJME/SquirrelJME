@@ -370,14 +370,11 @@ class __JITCodeStream__
 			throw new todo.TODO();
 		}
 		
-		// Get the index for the method to call
-		int gotdx = this._classstream.__link(__link);
-		
-		// Debug
-		System.err.printf("DEBUG -- Invoke DX: %d%n", gotdx);
-		
-		// Generate invoke of method
-		engine.invokeMethod(gotdx);
+		// Generate invoke of method, the target methods pointer and the class
+		// link table must be obtained also
+		__JITClassStream__ classstream = this._classstream;
+		engine.invokeMethod(classstream.__link(__link),
+			classstream.__link(__link.tableLink()));
 		
 		// Move the return value
 		if (true)

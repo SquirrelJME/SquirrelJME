@@ -87,9 +87,10 @@ public abstract class TranslationEngine
 	 * Invokes the specified method at the given global table index.
 	 *
 	 * @param __dx The index in the global index table to jump to.
+	 * @param __got The index to the target method's class GOT.
 	 * @since 2017/03/03
 	 */
-	public abstract void invokeMethod(int __dx);
+	public abstract void invokeMethod(int __dx, int __got);
 	
 	/**
 	 * Checks if the specified register is an argument register.
