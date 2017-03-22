@@ -156,6 +156,24 @@ public final class ArgumentAllocation
 	}
 	
 	/**
+	 * Checks if these this allocation is register compatible with another.
+	 *
+	 * @param __o The other allocation to check.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/22
+	 */
+	public boolean isRegisterCompatible(ArgumentAllocation __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		return this.type == __o.type &&
+			Arrays.equals(this._registers, __o._registers);
+	}
+	
+	/**
 	 * Returns the number of registers used.
 	 *
 	 * @return The register use count.

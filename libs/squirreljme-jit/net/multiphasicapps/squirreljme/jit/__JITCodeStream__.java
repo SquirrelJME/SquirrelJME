@@ -358,28 +358,16 @@ class __JITCodeStream__
 		boolean[] stacked = new boolean[n];
 		for (int i = 0; i < n; i++)
 		{
-			ArgumentAllocation aa = allocs[i];
-			CacheState.Slot in = instate.getSlot(__cargs[i]).value();
-			List<Register> regs = in.valueRegisters();
+			// Need allocations
+			ArgumentAllocation source = instate.getSlot(__cargs[i]).
+				valueAllocation();
+			ArgumentAllocation target = allocs[i];
 			
-			// Copy value from stack?
-			if (stacked[i] || regs.isEmpty())
-			{
-				throw new todo.TODO();
-			}
+			// If the registers are the same, nothing has to be done
+			if (source.isRegisterCompatible(target))
+				continue;
 			
-			// Copy from a register?
-			else
-			{
-				if (true)
-					throw new todo.TODO();
-				
-				// Arguments may be clobbered by the target write
-				for (int j = i; j < n; j++)
-				{
-					throw new todo.TODO();
-				}
-			}
+			throw new todo.TODO();
 		}
 		
 		// Forward invoke
