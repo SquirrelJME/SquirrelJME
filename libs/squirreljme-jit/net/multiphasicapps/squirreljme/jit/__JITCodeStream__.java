@@ -376,63 +376,16 @@ class __JITCodeStream__
 		engine.invokeMethod(classstream.__link(__link),
 			classstream.__link(__link.tableLink()));
 		
-		// Move the return value
-		if (true)
-			throw new todo.TODO();
-		
-		// Restore registers after the call
-		if (true)
-			throw new todo.TODO();
-		
-		throw new todo.TODO();
-		
-		/*
-		// Get the actual slots which arguments point to, since everything is
-		// cached there are likely to not be values on the stack.
-		int n = __cargs.length;
-		ActiveCacheState activestate = this._activestate;
-		ActiveCacheState.Slot[] stackslots = new ActiveCacheState.Slot[n];
-		ActiveCacheState.Slot[] slots = new ActiveCacheState.Slot[n];
-		for (int i = 0; i < n; i++)
+		// If a return value is used then handle moving it
+		if (__rv != null)
 		{
-			// However not all slots will be cached, so those must not use
-			// null aliases
-			ActiveCacheState.Slot origin = activestate.getSlot(__cargs[i]);
-			ActiveCacheState.Slot cached = origin.alias();
-			slots[i] = (cached != null ? cached : origin);
-			
-			// The stack slots need to be destroyed later
-			stackslots[i] = origin;
+			throw new todo.TODO();
 		}
 		
-		// Return value slots are not stack cached and are truly stored on
-		// the stack
-		ActiveCacheState.Slot rvs = (__rv == null ? null :
-			activestate.getSlot(__rv));
-		
-		// Debug
-		System.err.printf("DEBUG -- Actual slots: %s %s%n",
-			rvs, Arrays.asList(slots));
-		
-		// De-alias stack slots
-		__deAliasStack(slots);
-		
-		// Invoke
-		this._engine.invokeMethod(__link, rvs, slots);
-		
-		// If there is a return value set up the type
-		if (rvs != null)
-		{
-			// This will set the state for the next instruction
-			rvs.setType(__rvt);
-			
-			// Return values are never aliased
-			rvs.clearAlias();
-		}
-		
-		// Destroy the stack so their bindings are not valid
-		__destroyStack((__rv != null ? 1 : 0), stackslots);
-		*/
+		// Because the values are stack cached they do not need to be read from
+		// the stack again until they are needed. So if a bunch of local
+		// variables were stored but they are not used at all, then there is
+		// no need to restore them at all.
 	}
 	
 	/**
