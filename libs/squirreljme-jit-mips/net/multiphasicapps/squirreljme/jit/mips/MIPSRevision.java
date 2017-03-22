@@ -71,6 +71,29 @@ public enum MIPSRevision
 	}
 	
 	/**
+	 * Returns {@code true} if the revision has branch delay slots.
+	 *
+	 * @return {@code true} if this revision has branch delay slots.
+	 * @since 2017/03/22
+	 */
+	public boolean hasBranchDelaySlots()
+	{
+		return true;
+	}
+	
+	/**
+	 * Returns {@code true} if the revision has load delay slots.
+	 *
+	 * @return {@code true} if this revision has load delay slots.
+	 * @since 2017/03/22
+	 */
+	public boolean hasLoadDelaySlots()
+	{
+		// Only the original MIPS has load delay slots
+		return this == I;
+	}
+	
+	/**
 	 * Checks if the CPU revision supports the given bits.
 	 *
 	 * @param __b The bits to check.

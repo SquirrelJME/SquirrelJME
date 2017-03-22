@@ -370,8 +370,14 @@ class __JITCodeStream__
 			throw new todo.TODO();
 		}
 		
-		// Forward invoke
-		engine.invokeMethod(instate, outstate, __link, rv, args, allocs);
+		// Get the index for the method to call
+		int gotdx = this._classstream.__link(__link);
+		
+		// Debug
+		System.err.printf("DEBUG -- Invoke DX: %d%n", gotdx);
+		
+		// Generate invoke of method
+		engine.invokeMethod(gotdx);
 		
 		// Move the return value
 		if (true)

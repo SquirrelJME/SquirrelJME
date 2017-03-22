@@ -84,28 +84,12 @@ public abstract class TranslationEngine
 	public abstract Register framePointerRegister();
 	
 	/**
-	 * Invokes the specified method with the given arguments, returning the
-	 * value in the specified slot.
+	 * Invokes the specified method at the given global table index.
 	 *
-	 * If a return value is specified, it will always be on the stack. Note
-	 * that there may be an existing value at this location.
-	 *
-	 * @param __in Input state
-	 * @param __out Output state.
-	 * @param __ml The method to be invoked.
-	 * @param __rv Where the return value is placed, may be {@code null} if
-	 * there is no return value.
-	 * @param __args Arguments to the method, will be their cached and aliased
-	 * slots. Arguments are used as input.
-	 * @param __allocs Allocations used for the target method call.
-	 * @throws NullPointerException If no input state, output state, method, or
-	 * arguments were specified.
+	 * @param __dx The index in the global index table to jump to.
 	 * @since 2017/03/03
 	 */
-	public abstract void invokeMethod(CacheState __in, ActiveCacheState __out,
-		MethodLinkage __ml, ActiveCacheState.Slot __rv,
-		CacheState.Slot[] __args, ArgumentAllocation[] __allocs)
-		throws NullPointerException;
+	public abstract void invokeMethod(int __dx);
 	
 	/**
 	 * Checks if the specified register is an argument register.

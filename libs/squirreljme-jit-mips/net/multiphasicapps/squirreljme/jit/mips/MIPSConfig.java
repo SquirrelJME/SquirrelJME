@@ -64,6 +64,46 @@ public class MIPSConfig
 	}
 	
 	/**
+	 * Returns {@code true} if branch delay slots are to be used.
+	 *
+	 * @return {@code true} if branch delay slots are used.
+	 * @since 2017/03/22
+	 */
+	public boolean hasBranchDelaySlots()
+	{
+		// Force no delay slots
+		if (Boolean.valueOf(internalValue("mips.nobranchdelayslots")))
+			return false;
+		
+		// Force delay slots
+		else if (Boolean.valueOf(internalValue("mips.usebranchdelayslots")))
+			return true;
+		
+		// Depends on the revision
+		return mipsRevision().hasBranchDelaySlots();
+	}
+	
+	/**
+	 * Returns {@code true} if load delay slots are to be used.
+	 *
+	 * @return {@code true} if load delay slots are used.
+	 * @since 2017/03/22
+	 */
+	public boolean hasLoadDelaySlots()
+	{
+		// Force no delay slots
+		if (Boolean.valueOf(internalValue("mips.noloaddelayslots")))
+			return false;
+		
+		// Force delay slots
+		else if (Boolean.valueOf(internalValue("mips.useloaddelayslots")))
+			return true;
+		
+		// Depends on the revision
+		return mipsRevision().hasLoadDelaySlots();
+	}
+	
+	/**
 	 * Are doubles 64-bit?
 	 *
 	 * @return {@code true} if doubles are 64-bit.

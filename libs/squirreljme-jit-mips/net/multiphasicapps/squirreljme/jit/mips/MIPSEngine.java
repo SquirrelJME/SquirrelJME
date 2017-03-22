@@ -201,18 +201,13 @@ public class MIPSEngine
 	 * @since 2017/03/03
 	 */
 	@Override
-	public void invokeMethod(CacheState __in, ActiveCacheState __out,
-		MethodLinkage __ml, ActiveCacheState.Slot __rv,
-		CacheState.Slot[] __args, ArgumentAllocation[] __allocs)
+	public void invokeMethod(int __dx)
 	{
-		// Check
-		if (__in == null || __out == null || __ml == null || __args == null)
-			throw new NullPointerException("NARG");
+		// Need output
+		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
+			codeFragment(MIPSFragmentOutput.class);
 		
-		// Debug
-		System.err.printf("DEBUG -- in=%s out=%s ml=%s rv=%s args=%s al=%s%n",
-			__in, __out, __ml, __rv, Arrays.asList(__args),
-			Arrays.asList(__allocs));
+		//
 		
 		throw new todo.TODO();
 	}
