@@ -554,9 +554,9 @@ final class __OpParser__
 		// Count the number of stack elements to count and pass to the method
 		MethodSymbol sym = ref.methodType();
 		int na = sym.argumentCount();
-		int xc = (isinstance ? 1:  0);
+		int xc = (isinstance ? 1 : 0);
 		for (int i = 0; i < na; i++)
-			if (StackMapType.bySymbol(sym.get(na)).isWide())
+			if (StackMapType.bySymbol(sym.get(i)).isWide())
 				xc += 2;
 			else
 				xc++;
