@@ -347,7 +347,7 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- Allocate: %s %s%n", Arrays.asList(allocs),
 			rvalloc);
 		
-		// Save all registers
+		// Save all registers (including argument registers)
 		System.err.printf("DEBUG -- Before savetemp: %s%n", outstate);
 		__saveTempRegisters(instate, outstate, __d);
 		System.err.printf("DEBUG -- After savetemp: %s%n", outstate);
@@ -371,7 +371,14 @@ class __JITCodeStream__
 			// Copy from a register?
 			else
 			{
-				throw new todo.TODO();
+				if (true)
+					throw new todo.TODO();
+				
+				// Arguments may be clobbered by the target write
+				for (int j = i; j < n; j++)
+				{
+					throw new todo.TODO();
+				}
 			}
 		}
 		

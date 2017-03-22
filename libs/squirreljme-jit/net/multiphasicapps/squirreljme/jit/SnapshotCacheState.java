@@ -157,6 +157,9 @@ public final class SnapshotCacheState
 		/** Read-only registers. */
 		private volatile Reference<List<Register>> _roregs;
 		
+		/** The allocation used. */
+		private volatile Reference<ArgumentAllocation> _alloc;
+		
 		/** String representation of this slot. */
 		private volatile Reference<String> _string;
 		
@@ -202,6 +205,24 @@ public final class SnapshotCacheState
 				this.stackalias = false;
 				this.idalias = -1;
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/22
+		 */
+		@Override
+		public ArgumentAllocation thisAllocation()
+		{
+			Reference<ArgumentAllocation> ref = this._alloc;
+			ArgumentAllocation rv;
+			
+			// Cache?
+			if (ref == null || null == (rv = ref.get()))
+				this._alloc = new WeakReference<>(
+					(rv = super.thisAllocation()));
+			
+			return rv;
 		}
 		
 		/**

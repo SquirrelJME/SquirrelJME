@@ -195,6 +195,33 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Returns the allocation of this slot.
+		 *
+		 * @return The allocation of this slot, or {@code null} if there is
+		 * none.
+		 * @since 2017/03/22
+		 */
+		public ArgumentAllocation thisAllocation()
+		{
+			// Nothing has no allocation
+			StackMapType type = thisType();
+			if (type == null)
+				return null;
+			
+			// Need data type, used by the allocation class
+			DataType dt = CacheState.this._codestream._engine.toDataType(type);
+			
+			// Purely on the stack?
+			List<Register> registers = thisRegisters();
+			if (registers.isEmpty())
+				return new ArgumentAllocation(dt, thisStackOffset());
+			
+			// In registers
+			return new ArgumentAllocation(dt, registers.<Register>toArray(
+				new Register[registers.size()]));
+		}
+		
+		/**
 		 * Returns the registers using the given type.
 		 *
 		 * @param <R> The type contained in the list.
@@ -225,6 +252,17 @@ public abstract class CacheState
 			__JITCodeStream__ jcs = CacheState.this._codestream;
 			return ((JITStateAccessor)jcs).stackSlotOffsets().get(
 				thisIsStack(), thisIndex(), jcs._engine.toDataType(type));
+		}
+		
+		/**
+		 * Returns the allocation value of this slot.
+		 *
+		 * @return The allocation value, or {@code null} if there is none.
+		 * @since 2017/03/22
+		 */
+		public final ArgumentAllocation valueAllocation()
+		{
+			return value().thisAllocation();
 		}
 		
 		/**
