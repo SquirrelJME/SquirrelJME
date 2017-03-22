@@ -143,6 +143,51 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/22
+	 */
+	@Override
+	public ArgumentAllocation allocationForReturn(StackMapType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the type
+		MIPSConfig config = this.config;
+		DataType type;
+		switch ((type = toDataType(__t)))
+		{
+				// int
+			case INTEGER:
+				return new ArgumentAllocation(type, NUBI.A0);
+			
+				// long
+			case LONG:
+				if (isLongLong())
+					return new ArgumentAllocation(type, NUBI.A0); 
+				else
+					return new ArgumentAllocation(type, NUBI.A0, NUBI.A1);
+			
+				// float
+			case FLOAT:
+				return new ArgumentAllocation(type, NUBI.FA0);
+			
+				// double
+			case DOUBLE:
+				if (config.isLongDouble())
+					return new ArgumentAllocation(type, NUBI.FA0);
+				else
+					return new ArgumentAllocation(type, NUBI.FA0, NUBI.FA1);
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/21
 	 */
 	@Override

@@ -65,6 +65,17 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Returns the allocation that is used to return a value of the given type.
+	 *
+	 * @param __t The type of value to return.
+	 * @return The allocation for the return value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/22
+	 */
+	public abstract ArgumentAllocation allocationForReturn(StackMapType __t)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the frame pointer register.
 	 *
 	 * @return The register at the base of the stack.

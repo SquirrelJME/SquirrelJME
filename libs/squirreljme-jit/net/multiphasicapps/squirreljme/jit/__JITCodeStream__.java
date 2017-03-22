@@ -336,8 +336,16 @@ class __JITCodeStream__
 			rv.setType(__rvt);
 		}
 		
+		// Need to determine the allocations for calling methods along with
+		// returning any potential values
 		TranslationEngine engine = this._engine;
 		ArgumentAllocation[] allocs = engine.allocationForEntry(__targs);
+		ArgumentAllocation rvalloc = (rv == null ? null :
+			engine.allocationForReturn(__rvt));
+		
+		// Debug
+		System.err.printf("DEBUG -- Allocate: %s %s%n", Arrays.asList(allocs),
+			rvalloc);
 		
 		// Save all registers
 		System.err.printf("DEBUG -- Before savetemp: %s%n", outstate);
@@ -345,7 +353,8 @@ class __JITCodeStream__
 		System.err.printf("DEBUG -- After savetemp: %s%n", outstate);
 		
 		// Shuffle registers and stack elements around so that the values are
-		// in the right position for the method call.
+		// in the right position for the method call. Also store stack values
+		// too.
 		if (true)
 			throw new todo.TODO();
 		
