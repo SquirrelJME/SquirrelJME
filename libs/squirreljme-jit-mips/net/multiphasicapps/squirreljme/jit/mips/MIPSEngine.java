@@ -411,8 +411,7 @@ public class MIPSEngine
 		
 		// If an object use the size of a pointer
 		if (__t == StackMapType.OBJECT)
-			return (this.config.bits() > 32 ? DataType.LONG :
-				DataType.INTEGER);
+			return (isLongLong() ? DataType.LONG : DataType.INTEGER);
 		
 		// Use normal mapping
 		return toDataType(DataType.of(__t));
