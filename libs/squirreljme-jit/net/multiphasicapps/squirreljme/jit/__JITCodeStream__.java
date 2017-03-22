@@ -355,11 +355,32 @@ class __JITCodeStream__
 		// Shuffle registers and stack elements around so that the values are
 		// in the right position for the method call. Also store stack values
 		// too.
-		if (true)
-			throw new todo.TODO();
+		boolean[] stacked = new boolean[n];
+		for (int i = 0; i < n; i++)
+		{
+			ArgumentAllocation aa = allocs[i];
+			CacheState.Slot in = instate.getSlot(__cargs[i]).value();
+			List<Register> regs = in.valueRegisters();
+			
+			// Copy value from stack?
+			if (stacked[i] || regs.isEmpty())
+			{
+				throw new todo.TODO();
+			}
+			
+			// Copy from a register?
+			else
+			{
+				throw new todo.TODO();
+			}
+		}
 		
 		// Forward invoke
 		engine.invokeMethod(instate, outstate, __link, rv, args, allocs);
+		
+		// Move the return value
+		if (true)
+			throw new todo.TODO();
 		
 		// Restore registers after the call
 		if (true)
