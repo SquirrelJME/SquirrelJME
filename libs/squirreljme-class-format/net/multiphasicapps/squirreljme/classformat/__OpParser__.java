@@ -554,12 +554,18 @@ final class __OpParser__
 		// Count the number of stack elements to count and pass to the method
 		MethodSymbol sym = ref.methodType();
 		int na = sym.argumentCount();
-		int xc = (isinstance ? 1 : 0);
+		int xc = (isinstance ? 1 : 0),
+			vi = xc;
 		for (int i = 0; i < na; i++)
+		{
 			if (StackMapType.bySymbol(sym.get(i)).isWide())
 				xc += 2;
 			else
 				xc++;
+			
+			// Increase normal count
+			vi++;
+		}
 		
 		// {@squirreljme.error AY3y Stack underflow during invocation of
 		// method.}
@@ -568,20 +574,52 @@ final class __OpParser__
 			throw new ClassFormatException("AY3y");
 		
 		// Stack positions and types
-		StackMapType[] st = new StackMapType[xc];
+		CodeVariable[] vargs = new CodeVariable[vi];
+		StackMapType[] st = new StackMapType[vi];
 		
 		// Fill types and check that they are valid
-		int write = xc - 1, popcount = 0;
-		for (int i = 0; i < na; i++)
+		int write = vi - 1, popcount = 0;
+		for (int i = na - 1; i >= 0; i--)
 		{
-			throw new todo.TODO();
+			// Map it
+			StackMapType map = stack.get(at);
+			StackMapType is = StackMapType.bySymbol(sym.get(i));
+			
+			// Check for top
+			if (is.isWide())
+			{
+				// {@squirreljme.error AY0k Expected a TOP to be on the stack.
+				// (The actual value on the stack)}
+				if (map != StackMapType.TOP)
+					throw new ClassFormatException(String.format("AY0k %s",
+						map));
+				
+				// Get the next lowest entry
+				map = stack.get(--at);
+				
+				// This gets popped
+				popcount++;
+			}
+			
+			// {@squirreljme.error AY0p Did not expect the specified type on
+			// the stack. (The actual type; The expected type)}
+			if (map != is)
+				throw new ClassFormatException(String.format("AY0p %s", map,
+					is));
+			
+			// Map it
+			vargs[write] = CodeVariable.of(true, at--);
+			st[write--] = map;
+			
+			// And it gets popped
+			popcount++;
 		}
 		
 		// Check if instance is correct
 		if (isinstance)
 		{
 			// Map it
-			StackMapType map = stack.get(at--);
+			StackMapType map = stack.get(at);
 			
 			// {@squirreljme.error AY3z Expected an object to be the instance
 			// variable. (The actual type)}
@@ -589,6 +627,7 @@ final class __OpParser__
 				throw new ClassFormatException(String.format("AY3z %s", map));
 			
 			// Store
+			vargs[write] = CodeVariable.of(true, at--);
 			st[write--] = map;
 			
 			// Increase the pop count
@@ -620,9 +659,6 @@ final class __OpParser__
 		stack.__pop(this, popcount);
 		
 		// Send in the call
-		CodeVariable[] vargs = new CodeVariable[popcount];
-		for (int i = 0, b = end; i < popcount; i++, b++)
-			vargs[i] = CodeVariable.of(true, b);
 		this.writer.invokeMethod(new MethodLinkage(this.methodref, ref,
 			__type), end, (rv != null ? (popcount > 0 ? vargs[0] :
 			CodeVariable.of(true, end)) : null), rvs, vargs, st);
