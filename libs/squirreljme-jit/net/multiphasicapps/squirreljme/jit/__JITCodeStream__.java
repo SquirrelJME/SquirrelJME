@@ -367,7 +367,34 @@ class __JITCodeStream__
 			if (source.isRegisterCompatible(target))
 				continue;
 			
-			throw new todo.TODO();
+			// Check if the value would be on the stack
+			boolean onstack = !source.hasRegisters();
+			if (!onstack)
+				for (Register r : source.registers())
+					if (engine.isRegisterTemporary(r) ||
+						engine.isRegisterArgument(r))
+					{
+						onstack = true;
+						break;
+					}
+			
+			// Target is in registers
+			if (target.hasRegisters())
+			{
+				// If the value is on the stack, do a read from it
+				if (onstack)
+					engine.loadRegister(target.type(), target.registers(),
+						source.stackOffset(), engine.stackPointerRegister());
+			
+				// Otherwise copy the registers
+				else
+					engine.moveRegister(target.type(), source.registers(),
+						target.registers());
+			}
+			
+			// Target is on the stack
+			else
+				throw new todo.TODO();
 		}
 		
 		// Generate invoke of method, the target methods pointer and the class
@@ -734,7 +761,7 @@ class __JITCodeStream__
 		TranslationEngine engine = this._engine;
 		engine.storeRegister(engine.toDataType(__s.valueType()),
 			__s.valueRegisters(), __s.valueStackOffset(),
-			engine.framePointerRegister());
+			engine.stackPointerRegister());
 	}
 }
 

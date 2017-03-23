@@ -161,6 +161,14 @@ public abstract class TranslationEngine
 		throws JITException, NullPointerException;
 	
 	/**
+	 * Returns the stack pointer register.
+	 *
+	 * @return The stack pointer register.
+	 * @since 2017/03/23
+	 */
+	public abstract Register stackPointerRegister();
+	
+	/**
 	 * This stores the register to the specified offset with the given register
 	 * at its base.
 	 *

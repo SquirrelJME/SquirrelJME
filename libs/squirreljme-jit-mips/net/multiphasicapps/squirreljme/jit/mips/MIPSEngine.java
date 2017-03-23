@@ -339,6 +339,16 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/23
+	 */
+	@Override
+	public Register stackPointerRegister()
+	{
+		return NUBI.SP;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/21
 	 */
 	@Override
