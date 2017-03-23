@@ -64,6 +64,13 @@ public interface CodeDescriptionStream
 	public abstract void endInstruction(int __code, int __pos, int __next);
 	
 	/**
+	 * This is called when the method has been fully parsed.
+	 *
+	 * @since 2017/03/23
+	 */
+	public abstract void endMethod();
+	
+	/**
 	 * This is used to specify which exceptions exist within the exception
 	 * table.
 	 *

@@ -206,6 +206,16 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/23
+	 */
+	@Override
+	public void endMethod()
+	{
+		System.err.println("TODO -- Any endMethod() generation.");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 201702/09
 	 */
 	@Override

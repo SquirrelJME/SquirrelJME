@@ -166,7 +166,8 @@ final class __OpParser__
 			writer.endInstruction(code, nowpos, inextpos);
 		}
 		
-		throw new todo.TODO();
+		// End of method parsing
+		writer.endMethod();
 	}
 	
 	/**
