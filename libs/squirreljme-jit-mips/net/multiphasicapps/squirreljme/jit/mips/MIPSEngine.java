@@ -302,23 +302,7 @@ public class MIPSEngine
 		int __off, Register __base)
 		throws JITException, NullPointerException
 	{
-		// Check
-		if (__t == null || __dest == null || __base == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AM0e Cannot use a floating point register as a
-		// base for a load operation. (The specified register)}
-		MIPSRegister base = (MIPSRegister)__base;
-		if (base.isFloat())
-			throw new JITException(String.format("AM0e %s", base));
-		
-		// {@squirreljme.error AM0b Offset out of range for load. (The offset)}
-		if (__off < _MIN_IOFFSET || __off > _MAX_IOFFSET)
-			throw new JITException(String.format("AM0b %d", __off));
-		
-		MIPSConfig config = this.config;
-		
-		throw new todo.TODO();
+		__commonLoadStore(__t, __dest, __off, __base, false);
 	}
 	
 	/**
@@ -356,68 +340,7 @@ public class MIPSEngine
 		int __off, Register __base)
 		throws JITException, NullPointerException
 	{
-		// Check
-		if (__t == null || __src == null || __base == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AM0d Cannot use a floating point register as a
-		// base for a store operation. (The specified register)}
-		MIPSRegister base = (MIPSRegister)__base;
-		if (base.isFloat())
-			throw new JITException(String.format("AM0d %s", base));
-		
-		// Registers in slots start with lower indexes having least significant
-		// values
-		// So because of this on big endian place values at the end
-		int at, sign;
-		if (isBigEndian())
-		{
-			at = __off + __t.length();
-			sign = -1;
-		}
-		
-		// Otherwise the lower end
-		else
-		{
-			at = __off;
-			sign = 1;
-		}
-		
-		// Write all registers
-		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
-			codeFragment(MIPSFragmentOutput.class);
-		MIPSConfig config = this.config;
-		for (int i = 0, n = __src.size(); i < n; i++)
-		{
-			// Get
-			MIPSRegister r = (MIPSRegister)__src.get(i);
-			
-			// Get the size of thi
-			// Integers match the word size
-			int rs;
-			if (r.isInteger())
-				rs = (isLongLong() ? 8 : 4);
-			
-			// Float depends (could be 32-bit or 64-bit)
-			else
-				throw new todo.TODO();
-			
-			// Lower first for big endian since it starts at the end
-			if (isBigEndian())
-				at -= rs;
-			
-			// {@squirreljme.error AM0c Offset out of range for store. (The
-			// offset)}
-			if (at < _MIN_IOFFSET || at > _MAX_IOFFSET)
-				throw new JITException(String.format("AM0c %d", __off));
-			
-			// Generate
-			output.storeWord(r, at, base);
-			
-			// Little endian adds following to get to higher addresses
-			if (!isBigEndian())
-				at += rs;
-		}
+		__commonLoadStore(__t, __src, __off, __base, true);
 	}
 	
 	/**
@@ -472,6 +395,159 @@ public class MIPSEngine
 				// Unknown
 			default:
 				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Loading and storing of register values since they share common logic.
+	 *
+	 * @param __t The type used.
+	 * @param __ds The destination or source register.
+	 * @param __off The offset from the base register.
+	 * @param __base The base register.
+	 * @param __store If {@code true} then a value is stored.
+	 * @throws JITException If the registers are not valid or the stack offset
+	 * is too large.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/23
+	 */
+	private void __commonLoadStore(DataType __t, List<Register> __ds,
+		int __off, Register __base, boolean __store)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null || __ds == null || __base == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AM0d Cannot use a floating point register as a
+		// base for a load/store operation. (The specified register)}
+		MIPSRegister base = (MIPSRegister)__base;
+		if (base.isFloat())
+			throw new JITException(String.format("AM0d %s", base));
+		
+		// Registers in slots start with lower indexes having least significant
+		// values
+		// So because of this on big endian place values at the end
+		int at, sign;
+		if (isBigEndian())
+		{
+			at = __off + __t.length();
+			sign = -1;
+		}
+		
+		// Otherwise the lower end
+		else
+		{
+			at = __off;
+			sign = 1;
+		}
+		
+		// Write all registers
+		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
+			codeFragment(MIPSFragmentOutput.class);
+		MIPSConfig config = this.config;
+		for (int i = 0, n = __ds.size(); i < n; i++)
+		{
+			// Get
+			MIPSRegister r = (MIPSRegister)__ds.get(i);
+			
+			// Integers match the word size
+			int rs;
+			if (r.isInteger())
+				rs = (isLongLong() ? 8 : 4);
+			
+			// Float depends (could be 32-bit or 64-bit)
+			else
+				throw new todo.TODO();
+			
+			// Lower first for big endian since it starts at the end
+			if (isBigEndian())
+				at -= rs;
+			
+			// {@squirreljme.error AM0c Offset out of range for load/store.
+			// (The offset)}
+			if (at < _MIN_IOFFSET || at > _MAX_IOFFSET)
+				throw new JITException(String.format("AM0c %d", __off));
+			
+			// Store
+			if (__store)
+			{
+				switch (__t)
+				{
+						// byte
+					case BYTE:
+						throw new todo.TODO();
+						
+						// short
+					case SHORT:
+						throw new todo.TODO();
+						
+						// int
+					case INTEGER:
+						output.storeWord(r, at, base);
+						break;
+						
+						// long
+					case LONG:
+						throw new todo.TODO();
+						
+						// float
+					case FLOAT:
+						throw new todo.TODO();
+						
+						// double
+					case DOUBLE:
+						throw new todo.TODO();
+					
+						// Unknown
+					default:
+						throw new RuntimeException("OOPS");
+				}
+			}
+			
+			// Load
+			else
+			{
+				switch (__t)
+				{
+						// byte
+					case BYTE:
+						throw new todo.TODO();
+						
+						// short
+					case SHORT:
+						throw new todo.TODO();
+						
+						// int
+					case INTEGER:
+						output.loadWord(r, at, base);
+						break;
+						
+						// long
+					case LONG:
+						throw new todo.TODO();
+						
+						// float
+					case FLOAT:
+						throw new todo.TODO();
+						
+						// double
+					case DOUBLE:
+						throw new todo.TODO();
+					
+						// Unknown
+					default:
+						throw new RuntimeException("OOPS");
+				}
+				
+				// Generate NOP if no more loads are to be performed
+				if (i + 1 >= n && config.hasLoadDelaySlots())
+					output.nop();
+			}
+			
+			// Little endian adds following to get to higher addresses
+			if (!isBigEndian())
+				at += rs;
 		}
 	}
 }
