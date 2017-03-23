@@ -198,9 +198,6 @@ final class __CodeDecoder__
 			new __OpParser__(writer, dis, smt, decoder._classflags,
 				pool, ref).__decodeAll();
 		}
-		
-		// Done
-		throw new todo.TODO();
 	}
 	
 	/**
