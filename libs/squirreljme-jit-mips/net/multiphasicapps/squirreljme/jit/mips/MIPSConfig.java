@@ -130,6 +130,17 @@ public class MIPSConfig
 	}
 	
 	/**
+	 * Returns {@code true} if this is at least a 6th revision MIPS.
+	 *
+	 * @return {@code true} if this uses 6th revision MIPS.
+	 * @since 2017/03/23
+	 */
+	public boolean mipsSix()
+	{
+		return mipsRevision().ordinal() >= MIPSRevision.R6.ordinal();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/02
 	 */

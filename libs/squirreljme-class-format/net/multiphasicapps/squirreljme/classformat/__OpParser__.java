@@ -386,6 +386,30 @@ final class __OpParser__
 			case ClassByteCodeIndex.INVOKEVIRTUAL:
 				return __executeInvoke(MethodInvokeType.VIRTUAL,
 					input.readUnsignedShort());
+				
+				// Return int
+			case ClassByteCodeIndex.IRETURN:
+				return __executeReturn(StackMapType.INTEGER);
+				
+				// Return long
+			case ClassByteCodeIndex.LRETURN:
+				return __executeReturn(StackMapType.LONG);
+				
+				// Return float
+			case ClassByteCodeIndex.FRETURN:
+				return __executeReturn(StackMapType.FLOAT);
+				
+				// Return double
+			case ClassByteCodeIndex.DRETURN:
+				return __executeReturn(StackMapType.DOUBLE);
+				
+				// Return object
+			case ClassByteCodeIndex.ARETURN:
+				return __executeReturn(StackMapType.OBJECT);
+				
+				// Return nothing
+			case ClassByteCodeIndex.RETURN:
+				return __executeReturn(null);
 			
 				// {@squirreljme.error AY38 Defined operation cannot be
 				// used in Java ME programs. (The operation)}
@@ -490,12 +514,6 @@ final class __OpParser__
 			case ClassByteCodeIndex.GOTO:
 			case ClassByteCodeIndex.TABLESWITCH:
 			case ClassByteCodeIndex.LOOKUPSWITCH:
-			case ClassByteCodeIndex.IRETURN:
-			case ClassByteCodeIndex.LRETURN:
-			case ClassByteCodeIndex.FRETURN:
-			case ClassByteCodeIndex.DRETURN:
-			case ClassByteCodeIndex.ARETURN:
-			case ClassByteCodeIndex.RETURN:
 			case ClassByteCodeIndex.GETSTATIC:
 			case ClassByteCodeIndex.PUTSTATIC:
 			case ClassByteCodeIndex.GETFIELD:
@@ -517,7 +535,8 @@ final class __OpParser__
 				// {@squirreljme.error AY37 Unknown byte-code operation.
 				// (The operation)}
 			default:
-				throw new ClassFormatException(String.format("AY37 %d", __code));
+				throw new ClassFormatException(
+					String.format("AY37 %d", __code));
 		}
 	}
 	
@@ -710,6 +729,26 @@ final class __OpParser__
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
+	}
+	
+	/**
+	 * Handles returning of values if one is to be returned.
+	 *
+	 * @param __t The type of value to return, may be {@code null}.
+	 * @since 2017/03/23
+	 */
+	private int[] __executeReturn(StackMapType __t)
+	{
+		// Handle returning of value
+		CodeVariable rv = null;
+		if (__t != null)
+			throw new todo.TODO();
+		
+		// Send operation
+		this.writer.returnValue(__t, rv);
+		
+		// No next instruction
+		return new int[0];
 	}
 }
 

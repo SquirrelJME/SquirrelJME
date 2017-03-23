@@ -145,6 +145,15 @@ public abstract class TranslationEngine
 		throws JITException, NullPointerException;
 	
 	/**
+	 * Generates a return from the method.
+	 *
+	 * @throws JITException If the return could not be generated.
+	 * @since 2017/03/23
+	 */
+	public abstract void methodReturn()
+		throws JITException;
+	
+	/**
 	 * Copies the value from the source registers to the destination
 	 * registers.
 	 *

@@ -307,6 +307,24 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/23
+	 */
+	@Override
+	public void methodReturn()
+		throws JITException
+	{
+		// Generate return to the link register
+		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
+			codeFragment(MIPSFragmentOutput.class);
+		output.jumpRegister(NUBI.RA);
+		
+		// Branch delay slot
+		if (config.hasBranchDelaySlots())
+			output.nop();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/21
 	 */
 	@Override

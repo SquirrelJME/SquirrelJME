@@ -124,6 +124,18 @@ public interface CodeDescriptionStream
 		throws NullPointerException;
 	
 	/**
+	 * Potentially returns the specified value.
+	 *
+	 * @param __t The type of value to return.
+	 * @param __cv The variable containing the return value.
+	 * @throws NullPointerException If one argument is {@code null} and the
+	 * other is not.
+	 * @since 2017/03/23
+	 */
+	public abstract void returnValue(StackMapType __t, CodeVariable __cv)
+		throws NullPointerException;
+	
+	/**
 	 * This is called when the number of variables that are stored on the
 	 * stack and the local variables is known.
 	 *

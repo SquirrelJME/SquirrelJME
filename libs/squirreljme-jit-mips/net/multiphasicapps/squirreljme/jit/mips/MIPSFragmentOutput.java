@@ -80,6 +80,31 @@ public class MIPSFragmentOutput
 	}
 	
 	/**
+	 * Jumps to the value in the specified register.
+	 *
+	 * @param __r The register to jump to.
+	 * @throws JITException If the register is a floating point register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/23
+	 */
+	public final void jumpRegister(MIPSRegister __r)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AM0m Cannot jump to the value in a floating
+		// point register. (The register)}
+		if (__r.isFloat())
+			throw new JITException(String.format("AM0m %s", __r));
+		
+		// Generate
+		mipsTypeR(0, __r.id(), 0, 0, 0, (this.config.mipsSix() ? 0b001001 :
+			0b001000));
+	}
+	
+	/**
 	 * Loads the specified register with the given offset into the given
 	 * register.
 	 *

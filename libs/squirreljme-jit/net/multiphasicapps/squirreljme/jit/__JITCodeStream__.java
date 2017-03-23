@@ -440,6 +440,30 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/23
+	 */
+	@Override
+	public void returnValue(StackMapType __t, CodeVariable __cv)
+		throws NullPointerException
+	{
+		// Check
+		if ((__t == null) != (__cv == null))
+			throw new NullPointerException("NARG");
+		
+		// Returning a value, load it to the return register
+		TranslationEngine engine = this._engine;
+		if (__t != null)
+			throw new todo.TODO();
+		
+		// Restore callee saved values
+		System.err.println("TODO -- Restore callee saved values.");
+		
+		// Generate return instruction
+		engine.methodReturn();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/11
 	 */
 	@Override
