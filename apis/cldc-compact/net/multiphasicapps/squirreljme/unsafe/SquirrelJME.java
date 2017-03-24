@@ -20,6 +20,10 @@ import java.util.NoSuchElementException;
  * library code to perform special system and virtual machine related
  * functions.
  *
+ * The true unsafe logic is within {@link __Internal__} which is implementation
+ * specific for a given target.
+ *
+ * @see __Internal__
  * @since 2016/08/07
  */
 public final class SquirrelJME
