@@ -188,12 +188,32 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/24
+	 */
+	@Override
+	public Register assemblerTemporaryRegister()
+	{
+		return NUBI.AT;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/21
 	 */
 	@Override
 	public Register framePointerRegister()
 	{
 		return NUBI.FP;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/24
+	 */
+	@Override
+	public Register globalTableRegister()
+	{
+		return NUBI.GP;
 	}
 	
 	/**

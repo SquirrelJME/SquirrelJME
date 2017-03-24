@@ -76,12 +76,28 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Returns the temporary assembler register.
+	 *
+	 * @return The temporary assembler register.
+	 * @since 2017/03/24
+	 */
+	public abstract Register assemblerTemporaryRegister();
+	
+	/**
 	 * Returns the frame pointer register.
 	 *
 	 * @return The register at the base of the stack.
 	 * @since 2017/03/21
 	 */
 	public abstract Register framePointerRegister();
+	
+	/**
+	 * The register is contains the global table register.
+	 *
+	 * @return The global table register.
+	 * @since 2017/03/24
+	 */
+	public abstract Register globalTableRegister();
 	
 	/**
 	 * Invokes the specified method at the given global table index.
