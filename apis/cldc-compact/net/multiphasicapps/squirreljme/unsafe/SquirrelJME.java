@@ -190,6 +190,22 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Checks whether the specified object is an instance of the given class.
+	 *
+	 * @param __cl The class to check.
+	 * @param __o The object to check if it is an instance.
+	 * @return {@code true} if the object is an instance of the specified
+	 * class.
+	 * @throws NullPointerException If no class was specified.
+	 * @since 2017/03/24
+	 */
+	public static boolean isInstance(Class<?> __cl, Object __o)
+		throws NullPointerException
+	{
+		throw new NullPointerException("OOPS");
+	}
+	
+	/**
 	 * Is this the SquirrelJME kernel?
 	 *
 	 * @return {@code true} if this is the kernel process, otherwise
@@ -413,9 +429,10 @@ public final class SquirrelJME
 	 * @throws IllegalAccessException If the class cannot be accessed from the
 	 * calling class.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
 	 */
 	public static <C> C newInstance(Class<C> __cl)
-		throws InstantiationException, ullPointerException
+		throws InstantiationException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}

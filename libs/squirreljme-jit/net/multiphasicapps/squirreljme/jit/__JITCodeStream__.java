@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.ExceptionHandlerTable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.linkage.ClassLinkage;
 import net.multiphasicapps.squirreljme.linkage.Linkage;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 import net.multiphasicapps.util.datadeque.ByteDeque;
@@ -446,6 +447,21 @@ class __JITCodeStream__
 		throws NullPointerException
 	{
 		return this._classstream.__link(__l);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/24
+	 */
+	@Override
+	public void loadConstant(ClassLinkage __cl, CodeVariable __cv)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

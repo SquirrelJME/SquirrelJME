@@ -131,8 +131,8 @@ public final class ClassDecoder
 		ClassVersion version = ClassVersion.findVersion(cver);
 		this._version = version;
 		if (version == null)
-			throw new ClassFormatException(String.format("AY13 %d.%d", cver >>> 16,
-				(cver & 0xFFFF)));
+			throw new ClassFormatException(String.format("AY13 %d.%d",
+				cver >>> 16, (cver & 0xFFFF)));
 		
 		// Report it
 		output.version(version);

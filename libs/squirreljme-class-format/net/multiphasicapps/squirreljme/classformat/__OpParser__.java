@@ -13,9 +13,12 @@ package net.multiphasicapps.squirreljme.classformat;
 import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.ClassLinkage;
 import net.multiphasicapps.squirreljme.linkage.FieldFlags;
 import net.multiphasicapps.squirreljme.linkage.FieldLinkage;
 import net.multiphasicapps.squirreljme.linkage.FieldReference;
@@ -35,6 +38,13 @@ final class __OpParser__
 	/** Implicit next operation. */
 	private static final int[] IMPLICIT_NEXT =
 		new int[]{-1};
+	
+	/** Unsafe reference to the new instance of a class. */
+	private static final MethodReference _UNSAFE_NEWINSTANCE =
+		new MethodReference(ClassNameSymbol.of(
+		"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
+		IdentifierSymbol.of("newInstance"),
+		MethodSymbol.of("(Ljava/lang/Class;)Ljava/lang/Object;"), false);
 	
 	/** The input operation data. */
 	protected final ExtendedDataInputStream input;
@@ -182,6 +192,7 @@ final class __OpParser__
 	{
 		// Get
 		ExtendedDataInputStream input = this.input;
+		ConstantPool pool = this.pool;
 		
 		// Depends
 		switch (__code)
@@ -411,6 +422,11 @@ final class __OpParser__
 				// Return nothing
 			case ClassByteCodeIndex.RETURN:
 				return __executeReturn(null);
+				
+				// Create new object
+			case ClassByteCodeIndex.NEW:
+				return __executeNew(pool.get(input.readUnsignedShort()).
+					<ClassNameSymbol>get(true, ClassNameSymbol.class));
 			
 				// {@squirreljme.error AY38 Defined operation cannot be
 				// used in Java ME programs. (The operation)}
@@ -519,7 +535,6 @@ final class __OpParser__
 			case ClassByteCodeIndex.PUTSTATIC:
 			case ClassByteCodeIndex.GETFIELD:
 			case ClassByteCodeIndex.PUTFIELD:
-			case ClassByteCodeIndex.NEW:
 			case ClassByteCodeIndex.NEWARRAY:
 			case ClassByteCodeIndex.ANEWARRAY:
 			case ClassByteCodeIndex.ARRAYLENGTH:
@@ -733,9 +748,48 @@ final class __OpParser__
 	}
 	
 	/**
+	 * Allocates a new instance of the given object.
+	 *
+	 * @param __cn The class to allocate.
+	 * @return Jump targets.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
+	 */
+	private int[] __executeNew(ClassNameSymbol __cn)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the top of the stack
+		__SMTState__ smwork = this._smwork;
+		__SMTStack__ stack = smwork._stack;
+		int top = stack.top();
+		CodeVariable cvtop = CodeVariable.of(true, top);
+		
+		// Push object to the stack
+		stack.push(StackMapType.OBJECT);
+		
+		// There is no special new operation in the class output, it is the
+		// same as invoking a special static method. This reduces duplicate
+		// code since this operation does the same thing as a normal invoke.
+		CodeDescriptionStream writer = this.writer;
+		writer.loadConstant(new ClassLinkage(__cn), cvtop);
+		writer.invokeMethod(new MethodLinkage(this.methodref,
+			_UNSAFE_NEWINSTANCE, MethodInvokeType.STATIC), top, cvtop,
+			StackMapType.OBJECT, new CodeVariable[]{cvtop},
+			new StackMapType[]{StackMapType.OBJECT});
+		
+		// Naturally flows
+		return IMPLICIT_NEXT;
+	}
+	
+	/**
 	 * Handles returning of values if one is to be returned.
 	 *
 	 * @param __t The type of value to return, may be {@code null}.
+	 * @return Jump targets.
 	 * @since 2017/03/23
 	 */
 	private int[] __executeReturn(StackMapType __t)

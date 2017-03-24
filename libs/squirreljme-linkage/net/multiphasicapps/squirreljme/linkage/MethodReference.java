@@ -31,6 +31,7 @@ public final class MethodReference
 	 * @param __cn The class name.
 	 * @param __mn The member name.
 	 * @param __mt the member type.
+	 * @param __int Is this an interface linkage?
 	 * @since 2016/08/14
 	 */
 	public MethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.classformat;
 
+import net.multiphasicapps.squirreljme.linkage.ClassLinkage;
 import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
 /**
@@ -128,6 +129,18 @@ public interface CodeDescriptionStream
 	 * @since 2016/09/09
 	 */
 	public abstract void jumpTargets(int[] __t)
+		throws NullPointerException;
+	
+	/**
+	 * This loads the given reference to the class object of the specified
+	 * class into the specified variable.
+	 *
+	 * @param __cl The class constant to place.
+	 * @param __cv The target slot where the constant is to be placed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
+	 */
+	public abstract void loadConstant(ClassLinkage __cl, CodeVariable __cv)
 		throws NullPointerException;
 	
 	/**
