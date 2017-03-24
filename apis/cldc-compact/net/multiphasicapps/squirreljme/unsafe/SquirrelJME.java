@@ -23,12 +23,46 @@ import java.util.NoSuchElementException;
  */
 public final class SquirrelJME
 {
+	/** Private access. */
+	public static final int ACCESS_PRIVATE =
+		0;
+	
+	/** Package private access. */
+	public static final int ACCESS_PACKAGE_PRIVATE =
+		1;
+	
+	/** Protected access. */
+	public static final int ACCESS_PROTECTED =
+		2;
+	
+	/** Public access. */
+	public static final int ACCESS_PUBLIC =
+		3;
+	
 	/**
 	 * Not used.
 	 *
 	 * @since 2016/08/07
 	 */
 	private SquirrelJME()
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Returns the class which called the method which called this method.
+	 *
+	 * With the following stack trace:
+	 * {@code
+	 * SquirrelJME.callingClass()
+	 * ClassB.methodB()
+	 * ClassA.methodA()
+	 * } this returns {@code ClassA}.
+	 *
+	 * @return The class which called the method which called this method.
+	 * @since 2017/03/24
+	 */
+	public static Class<?> callingClass()
 	{
 		throw new RuntimeException("OOPS");
 	}
@@ -71,6 +105,21 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Returns the access level of the classe's default constructor.
+	 *
+	 * @param __cl The class to get the default constructor for.
+	 * @return The access level, if there is no default constructor then a
+	 * negative value is returned.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
+	 */
+	public static int defaultConstructorAccess(Class<?> __cl)
+		throws NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * This exits the virtual machine using the specifed exit code.
 	 *
 	 * @param __e The exit code to use.
@@ -105,6 +154,21 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Checks if the specified class is visible from the from class.
+	 *
+	 * @param __from The source class to check visibility for.
+	 * @param __cl The target class to check if it is visible.
+	 * @return {@code true} if the specified class is visible.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
+	 */
+	public static boolean isClassVisibleFrom(Class<?> __from, Class<?> __cl)
+		throws NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Is this the SquirrelJME kernel?
 	 *
 	 * @return {@code true} if this is the kernel process, otherwise
@@ -112,6 +176,20 @@ public final class SquirrelJME
 	 * @since 2016/10/11
 	 */
 	public static boolean isKernel()
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Checks if the two classes are in the same package.
+	 *
+	 * @param __a The first class.
+	 * @param __b The second class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
+	 */
+	public static boolean isSamePackage(Class<?> __a, Class<?> __b)
+		throws NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
@@ -300,6 +378,23 @@ public final class SquirrelJME
 	 * @since 2016/10/13
 	 */
 	public static int midletID()
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Creates a new instance of the given class.
+	 *
+	 * @param <C> The class to create.
+	 * @param __cl The class to create.
+	 * @return The created class.
+	 * @throws InstantiationException If the class could not be initialized.
+	 * @throws IllegalAccessException If the class cannot be accessed from the
+	 * calling class.
+	 * @throws NullPointerException On null arguments.
+	 */
+	public static <C> C newInstance(Class<C> __cl)
+		throws InstantiationException, ullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
