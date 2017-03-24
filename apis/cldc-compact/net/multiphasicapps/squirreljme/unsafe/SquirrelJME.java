@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.BindException;
 import java.util.NoSuchElementException;
@@ -88,6 +89,22 @@ public final class SquirrelJME
 	 * @since 2016/08/07
 	 */
 	public static Class<?> classOf(Object __o)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Returns a stream to the resource associated with the given class.
+	 *
+	 * @param __cl The class to get a resource from.
+	 * @param __rc The resource name of the class.
+	 * @return The input stream of the resource or {@code null} if it does not
+	 * exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/24
+	 */
+	public static InputStream classResource(Class<?> __cl, String __rc)
+		throws NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
