@@ -221,33 +221,27 @@ public class MIPSEngine
 	 * @since 2017/03/03
 	 */
 	@Override
-	public void invokeMethod(int __dx, int __got)
+	public void invokeRegister(Register __r)
+		throws JITException, NullPointerException
 	{
-		// Need output
-		MIPSConfig config = this.config;
-		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
-			codeFragment(MIPSFragmentOutput.class);
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
 		
-		// Store old stack things (old GOT, SP, etc.)
-		System.err.println("TODO -- Store register state.");
-		
-		// Load the address of the remote method (where to jump to)
-		output.loadWord(NUBI.AT, __dx * config.bitsDataType().length(),
-			NUBI.GP);
-		if (config.hasLoadDelaySlots())
-			output.nop();
-		
-		// The method's class GOT must be loaded
-		output.loadWord(NUBI.GP, __got * config.bitsDataType().length(),
-			NUBI.GP);
-		if (config.hasLoadDelaySlots())
-			output.nop();
+		// {@squirreljme.error AM0j Cannot jump to the value contained in the
+		// floating point register. (The register)}
+		MIPSRegister r = (MIPSRegister)__r;
+		if (r.isFloat())
+			throw new JITException(String.format("AM0j %s", __r));
 		
 		// Execute the jump
-		output.jumpAndLinkRegisterImplied(NUBI.AT);
+		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
+			codeFragment(MIPSFragmentOutput.class);
+		output.jumpAndLinkRegisterImplied(r);
 		
-		// Restore register after the call
-		System.err.println("TODO -- Restore register state.");
+		// Do nothing in the branch delay slot
+		if (config.hasBranchDelaySlots())
+			output.nop();
 	}
 	
 	/**

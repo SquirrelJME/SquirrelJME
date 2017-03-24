@@ -100,13 +100,15 @@ public abstract class TranslationEngine
 	public abstract Register globalTableRegister();
 	
 	/**
-	 * Invokes the specified method at the given global table index.
+	 * Invokes the pointer that is contained in the given register.
 	 *
-	 * @param __dx The index in the global index table to jump to.
-	 * @param __got The index to the target method's class GOT.
+	 * @param __r The register to invoke.
+	 * @throws JITException If the given register cannot be invoked.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/03
 	 */
-	public abstract void invokeMethod(int __dx, int __got);
+	public abstract void invokeRegister(Register __r)
+		throws JITException, NullPointerException;
 	
 	/**
 	 * Checks if the specified register is an argument register.

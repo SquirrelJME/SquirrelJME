@@ -33,6 +33,9 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
 class __JITCodeStream__
 	implements CodeDescriptionStream, JITStateAccessor
 {
+	/** The JIT configuration. */
+	protected final JITConfig config;
+	
 	/** The owning class stream. */
 	final __JITClassStream__ _classstream;
 	
@@ -87,6 +90,7 @@ class __JITCodeStream__
 		TranslationEngine engine = __c.__jit().engineProvider().
 			createEngine(this);
 		this._engine = engine;
+		this.config = engine.<JITConfig>config(JITConfig.class);
 	}
 	
 	/**
@@ -408,11 +412,33 @@ class __JITCodeStream__
 				throw new todo.TODO();
 		}
 		
+		// Need registers for usage
+		JITConfig config = this.config;
+		DataType pointertype = config.pointerDataType();
+		int pointerbytes = pointertype.length();
+		__JITClassStream__ classstream = this._classstream;
+		Register at = engine.assemblerTemporaryRegister(),
+			got = engine.globalTableRegister(),
+			sp = engine.stackPointerRegister(),
+			fp = engine.framePointerRegister();
+
+		// Store old stack things (old GOT, SP, etc.)
+		System.err.println("TODO -- Store GOT/SP/etc. state.");
+		
+		// Load the address of the remote method (where to jump to)
+		engine.loadRegister(pointertype, at,
+			classstream.__link(__link) * pointerbytes, got);
+		
+		// The method's class GOT must be loaded
+		engine.loadRegister(pointertype, got,
+			classstream.__link(__link.tableLink()) * pointerbytes, got);
+		
 		// Generate invoke of method, the target methods pointer and the class
 		// link table must be obtained also
-		__JITClassStream__ classstream = this._classstream;
-		engine.invokeMethod(classstream.__link(__link),
-			classstream.__link(__link.tableLink()));
+		engine.invokeRegister(at);
+			
+		// Restore special registers after the call
+		System.err.println("TODO -- Restore GOT/SP/etc. state.");
 		
 		// If a return value is used then handle moving it
 		if (__rv != null)
