@@ -294,6 +294,7 @@ public final class ActiveCacheState
 		 */
 		public void clearAlias()
 		{
+			// Clear
 			this._stackalias = false;
 			this._idalias = -1;
 		}
@@ -306,6 +307,24 @@ public final class ActiveCacheState
 		public void clearRegisters()
 		{
 			this._registers.clear();
+		}
+		
+		/**
+		 * Removes the value contained within this slot.
+		 *
+		 * If other slots alias this slot then they will lose their value and
+		 * become copies.
+		 *
+		 * @param __genop If {@code true} then operations are generated.
+		 * @since 2017/03/25
+		 */
+		public void remove(boolean __genop)
+		{
+			// Do nothing if there is no value here
+			if (thisType() == StackMapType.NOTHING)
+				return;
+			
+			throw new todo.TODO();
 		}
 		
 		/**
@@ -338,24 +357,25 @@ public final class ActiveCacheState
 		public void setAlias(boolean __s, int __id)
 			throws IllegalArgumentException
 		{
-			// {@squirreljme.error ED0d The specified index exceeds the
-			// bounds of the target tread. (Aliased to the stack?; The index
-			// aliased to)}
-			Tread against = (__s ? ActiveCacheState.this.stack :
-				ActiveCacheState.this.locals);
-			if (__id < 0 || __id >= against.size())
-				throw new IllegalArgumentException(String.format("ED0d %b %d",
-					__s, __id));
+			// Do not have recursive aliases
+			Slot target = getSlot(__s, __id).value();
 			
-			// {@squirreljme.error ED0f Local variables cannot alias values on
-			// the stack. (The index on the stack to be aliased to)}
-			if (thisIsLocal() && this._stackalias)
-				throw new IllegalArgumentException(String.format("ED0f %d",
-					__id));
+			// {@squirreljme.error ED0f Local variables cannot alias other
+			// slots. (This slot; The target slot)}
+			if (thisIsLocal())
+				throw new IllegalArgumentException(String.format("ED0f %s %s",
+					this, __id));
+			
+			// {@squirreljme.error ED0d Cannot alias the current slot to the
+			// target slot becuase the target has no set value. (This slot; The
+			// target slot)}
+			if (target.thisType() == StackMapType.NOTHING)
+				throw new JITException(String.format("ED0d %s %s", this,
+					target));
 			
 			// Set
-			this._stackalias = __s;
-			this._idalias = __id;
+			this._stackalias = target.thisIsStack();
+			this._idalias = target.thisIndex();
 		}
 		
 		/**
