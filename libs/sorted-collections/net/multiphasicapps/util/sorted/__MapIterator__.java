@@ -111,12 +111,18 @@ class __MapIterator__<K, V>
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/06
+	 * @since 2017/03/25
 	 */
 	@Override
 	public void remove()
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error CE02 No last entry exists for deletion.}
+		__Node__<K, V> last = this._last;
+		if (last == null)
+			throw new IllegalStateException("CE02");
+		
+		// Clear
+		map.__remove(last);
 	}
 }
 

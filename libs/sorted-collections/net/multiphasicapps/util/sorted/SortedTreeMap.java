@@ -373,6 +373,23 @@ public class SortedTreeMap<K, V>
 	}
 	
 	/**
+	 * Removes the specified node from the tree.
+	 *
+	 * @param __at The node to remove.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/25
+	 */
+	final void __remove(__Node__<K, V> __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Rotates a node a given direction.
 	 *
 	 * @param __at The node to rotate.
