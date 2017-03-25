@@ -50,7 +50,7 @@ class __JITCodeStream__
 	final CodeFragmentOutput _fragment;
 	
 	/** The input state at the start of every instruction. */
-	private volatile ActiveCacheState _instate;
+	private volatile CacheState _instate;
 	
 	/** The output state at the end of every instruction. */
 	private volatile ActiveCacheState _outstate;
@@ -100,7 +100,7 @@ class __JITCodeStream__
 	@Override
 	public void atInstruction(int __code, int __pos)
 	{
-		ActiveCacheState instate = this._instate;
+		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
@@ -110,7 +110,7 @@ class __JITCodeStream__
 		SnapshotCacheStates states = this._states;
 		SnapshotCacheState state = states.get(__pos);
 		if (state != null)
-			instate.switchFrom(state);
+			((ActiveCacheState)instate).switchFrom(state);
 		
 		// The output state is always a copy of the input state
 		outstate.switchFrom(instate);
@@ -173,7 +173,7 @@ class __JITCodeStream__
 			return;
 		
 		// Get active state
-		ActiveCacheState instate = this._instate;
+		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
@@ -181,7 +181,7 @@ class __JITCodeStream__
 		
 		// Forward to primitive copy
 		__primitiveCopy(instate, outstate, instate.getSlot(__from),
-			outstate.getSlot(__to), true, true);
+			outstate.getSlot(__to), true);
 	}
 	
 	/**
@@ -191,7 +191,7 @@ class __JITCodeStream__
 	@Override
 	public void endInstruction(int __code, int __pos, int __next)
 	{
-		ActiveCacheState instate = this._instate;
+		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
@@ -271,7 +271,7 @@ class __JITCodeStream__
 			ActiveCacheState.Slot slot = outstate.getSlot(v);
 			
 			// Set slot type
-			slot.setType(__st[i], false);
+			slot.setType(__st[i]);
 		}
 		
 		// Assign registers and stack entries 
@@ -334,7 +334,7 @@ class __JITCodeStream__
 			args[i] = instate.getSlot(cv).value();
 			
 			// Stack elements are destroyed on input
-			outstate.getSlot(cv).remove(true);
+			outstate.getSlot(cv).remove();
 		}
 		
 		// No return value
@@ -548,8 +548,8 @@ class __JITCodeStream__
 		// Also input and output states
 		Register[] sv = engine.allocationRegisters(true),
 			tm = engine.allocationRegisters(false);
-		this._instate = new ActiveCacheState(this, __ms, __ml, sv, tm);
-		this._outstate = new ActiveCacheState(this, __ms, __ml, sv, tm);
+		this._instate = new ActiveCacheState(this, __ms, __ml, sv, tm, false);
+		this._outstate = new ActiveCacheState(this, __ms, __ml, sv, tm, true);
 	}
 	
 	/**
@@ -587,13 +587,12 @@ class __JITCodeStream__
 	 * @param __srcslot The source slot to copy from.
 	 * @param __destslot The destination slot to copy to.
 	 * @param __doalias If {@code true} then aliasing is permitted.
-	 * @param __dogenop If {@code true} then generating opcodes is permitted.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/04
 	 */
 	private void __primitiveCopy(CacheState __instate,
 		ActiveCacheState __outstate, CacheState.Slot __srcslot,
-		ActiveCacheState.Slot __destslot, boolean __doalias, boolean __dogenop)
+		ActiveCacheState.Slot __destslot, boolean __doalias)
 		throws NullPointerException
 	{
 		// Check
@@ -632,10 +631,7 @@ class __JITCodeStream__
 		// replaced slot
 		// This is always done because the destination slot will always be
 		// kludged
-		__destslot.remove(__dogenop);
-		
-		// The destination slot always gets the type associated with it
-		__destslot.setType(__srcslot.thisType(), !__doalias);
+		__destslot.remove();
 		
 		// Alias this slot to another, note that no value is actually copied
 		// and only the type is set in the destination slot (bindings are
@@ -647,21 +643,16 @@ class __JITCodeStream__
 		// Copying over a value, replace it
 		else
 		{
-			// The target slot might have an alias, after it is replaced it
-			// should never have one
-			__destslot.clearAlias();
+			// Set the type
+			__destslot.setType(__srcslot.thisType());
 			
-			// Generate operations for the copy
-			if (__dogenop)
-			{
-				// The target may need registers allocated to it if they
-				// for example are not of a compatible type
-				if (true)
-					throw new todo.TODO();
-				
-				// Generate opcodes
+			// The target may need registers allocated to it if they
+			// for example are not of a compatible type
+			if (true)
 				throw new todo.TODO();
-			}
+			
+			// Generate opcodes
+			throw new todo.TODO();
 		}
 	}
 	

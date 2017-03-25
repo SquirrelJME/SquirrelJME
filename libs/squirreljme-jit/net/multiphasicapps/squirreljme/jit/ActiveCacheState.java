@@ -89,6 +89,9 @@ public final class ActiveCacheState
 	protected final Deque<Register> tempfloat =
 		this.foralloc.subDeque();
 	
+	/** Generate machine code operations? */
+	protected final boolean genops;
+	
 	/** Saved registers available for allocation. */
 	private final Set<Register> _availsaved;
 	
@@ -104,11 +107,12 @@ public final class ActiveCacheState
 	 * @param __ml The number of local entries.
 	 * @param __sv Saved registers for allocation.
 	 * @param __tm Temporary registers for allocation.
+	 * @param __go Generate operations?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
 	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml,
-		Register[] __sv, Register[] __tm)
+		Register[] __sv, Register[] __tm, boolean __go)
 		throws NullPointerException
 	{
 		super(__cs);
@@ -119,6 +123,7 @@ public final class ActiveCacheState
 		
 		// Setup treads
 		this.engine = __cs._engine;
+		this.genops = __go;
 		this.stack = new Tread(true, __ms);
 		this.locals = new Tread(false, __ml);
 		
@@ -332,7 +337,7 @@ public final class ActiveCacheState
 		public void clearAlias()
 		{
 			// Remove alias
-			__deAliasFromThis(true);
+			__deAliasFromThis();
 			
 			// Clear
 			this._stackalias = false;
@@ -355,17 +360,16 @@ public final class ActiveCacheState
 		 * If other slots alias this slot then they will lose their value and
 		 * become copies.
 		 *
-		 * @param __genop If {@code true} then operations are generated.
 		 * @since 2017/03/25
 		 */
-		public void remove(boolean __genop)
+		public void remove()
 		{
 			// Do nothing if there is no value here
 			if (thisType() == StackMapType.NOTHING)
 				return;
 			
 			// Remove aliases to this slot
-			__deAliasFromThis(__genop);
+			__deAliasFromThis();
 			
 			// Remove cached information
 			if (!isAliased())
@@ -425,8 +429,8 @@ public final class ActiveCacheState
 				throw new JITException(String.format("ED0d %s %s", this,
 					target));
 			
-			// De-alias anything pointing to this slot
-			__deAliasFromThis(true);
+			// Remove any information in this slot
+			remove();
 			
 			// Set
 			this._stackalias = target.thisIsStack();
@@ -488,33 +492,16 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Sets the type of value stored in this slot along with also causing
-		 * a binding change.
+		 * Sets the type of value stored in this slot.
 		 *
-		 * @param __t The type of value to store.
+		 * @param __t The type of value to store, if this slot is aliased and
+		 * the alias is not compatible it will be removed.
 		 * @return The old type.
 		 * @throws JITException If the type is {@link StackMapType#TOP} type.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
 		public StackMapType setType(StackMapType __t)
-			throws JITException, NullPointerException
-		{
-			return setType(__t, true);
-		}
-		
-		/**
-		 * Sets the type of value stored in this slot.
-		 *
-		 * @param __t The type of value to store, if this slot is aliased and
-		 * the alias is not compatible it will be removed.
-		 * @param __genop Generate operations for the change of type?
-		 * @return The old type.
-		 * @throws JITException If the type is {@link StackMapType#TOP} type.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/02/23
-		 */
-		public StackMapType setType(StackMapType __t, boolean __genop)
 			throws JITException, NullPointerException
 		{
 			// Check
@@ -530,13 +517,12 @@ public final class ActiveCacheState
 			if (__t == StackMapType.NOTHING)
 				throw new IllegalStateException("EB0p");
 			
-			// Do nothing if the type remains the same
+			// Remove the type information
 			StackMapType rv = this._type;
-			if (__t == rv)
-				return __t;
+			remove();
 			
-			// Remove alias
-			__deAliasFromThis(__genop);
+			// Allocate registers if possible
+			System.err.println("TODO -- Allocate registers.");
 			
 			// Set, return old
 			this._type = __t;
@@ -750,12 +736,12 @@ public final class ActiveCacheState
 		/**
 		 * De-alias any slots which are aliased by this slot.
 		 *
-		 * @param __genop If {@code true} then operations are generated.
 		 * @since 2017/03/25
 		 */
-		private void __deAliasFromThis(boolean __genop)
+		private void __deAliasFromThis()
 		{
 			// Remove alias to this slot
+			boolean genops = ActiveCacheState.this.genops;
 			Set<Slot> aliasedby = this._aliasedby;
 			for (Slot by : aliasedby)
 			{
@@ -763,7 +749,7 @@ public final class ActiveCacheState
 					throw new todo.TODO();
 				
 				// Generate operation?
-				if (__genop)
+				if (genops)
 					throw new todo.TODO();
 			}
 			
