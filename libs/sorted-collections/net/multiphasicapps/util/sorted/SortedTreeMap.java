@@ -376,10 +376,11 @@ public class SortedTreeMap<K, V>
 	 * Removes the specified node from the tree.
 	 *
 	 * @param __at The node to remove.
+	 * @param __k The key value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/25
 	 */
-	final void __remove(__Node__<K, V> __at)
+	final void __remove(__Node__<K, V> __at, K __k)
 		throws NullPointerException
 	{
 		// Check
