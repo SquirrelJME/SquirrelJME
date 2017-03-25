@@ -330,21 +330,6 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Clears the alias for this slot.
-		 *
-		 * @since 2017/03/03
-		 */
-		public void clearAlias()
-		{
-			// Remove alias
-			__deAliasFromThis();
-			
-			// Clear
-			this._stackalias = false;
-			this._idalias = -1;
-		}
-		
-		/**
 		 * Clears the used registers.
 		 *
 		 * @since 2017/03/12
