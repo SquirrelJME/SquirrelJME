@@ -522,18 +522,15 @@ public final class ActiveCacheState
 			if (__t == StackMapType.TOP)
 				throw new JITException("ED0b");
 			
+			// {@squirreljme.error EB0p Cannot set the type to nothing, use
+			// remove for that.}
+			if (__t == StackMapType.NOTHING)
+				throw new IllegalStateException("EB0p");
+			
 			// Do nothing if the type remains the same
 			StackMapType rv = this._type;
 			if (__t == rv)
 				return __t;
-			
-			// Depending on the target type, specify the change
-			// However if nothing is going to be used here then nothing needs
-			// to actually be changed
-			if (__genop && __t != StackMapType.NOTHING)
-			{
-				throw new todo.TODO();
-			}
 			
 			// Set, return old
 			this._type = __t;
