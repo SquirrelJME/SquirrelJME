@@ -360,6 +360,10 @@ public final class ActiveCacheState
 			// Do not have recursive aliases
 			Slot target = getSlot(__s, __id).value();
 			
+			// Do nothing if this aliases to self
+			if (target == this)
+				return;
+			
 			// {@squirreljme.error ED0f Local variables cannot alias other
 			// slots. (This slot; The target slot)}
 			if (thisIsLocal())
