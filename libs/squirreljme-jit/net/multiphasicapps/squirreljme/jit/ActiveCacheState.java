@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.util.msd.MultiSetDeque;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -33,6 +35,31 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public final class ActiveCacheState
 	extends CacheState
 {
+	/** Comparator for aliased by slots. */
+	private static final Comparator<ActiveCacheState.Slot> _SLOT_COMPARATOR =
+		new Comparator<ActiveCacheState.Slot>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2017/03/25
+			 */
+			@Override
+			public int compare(ActiveCacheState.Slot __a,
+				ActiveCacheState.Slot __b)
+			{
+				// Locals first
+				boolean sa = __a.thisIsStack(),
+					sb = __b.thisIsStack();
+				if (!sa && sb)
+					return -1;
+				else if (sa && !sb)
+					return 1;
+				
+				// Then the index
+				return __a.thisIndex() - __b.thisIndex();
+			}
+		};
+	
 	/** The owning translation engine. */
 	protected final TranslationEngine engine;
 	
@@ -173,8 +200,14 @@ public final class ActiveCacheState
 		__initDeque();
 		
 		// Restore state
-		this.stack.__switchFrom(__cs.stack());
-		this.locals.__switchFrom(__cs.locals());
+		Tread stack = this.stack,
+			locals = this.locals;
+		stack.__switchFrom(__cs.stack());
+		locals.__switchFrom(__cs.locals());
+		
+		// Correct aliased by
+		stack.__fixAliasedBy();
+		locals.__fixAliasedBy();
 	}
 	
 	/**
@@ -257,6 +290,10 @@ public final class ActiveCacheState
 		private final List<Register> _registers =
 			new ArrayList<>();
 		
+		/** Slots which alias this slot. */
+		private final Set<Slot> _aliasedby =
+			new SortedTreeSet<>(_SLOT_COMPARATOR);
+		
 		/** The type of value stored here. */
 		private volatile StackMapType _type =
 			StackMapType.NOTHING;
@@ -324,7 +361,15 @@ public final class ActiveCacheState
 			if (thisType() == StackMapType.NOTHING)
 				return;
 			
-			throw new todo.TODO();
+			// Remove aliases to this slot
+			__deAliasFromThis(__genop);
+			
+			// Remove cached information
+			if (!isAliased())
+				__clearRegisters();
+			this._type = StackMapType.NOTHING;
+			this._stackalias = false;
+			this._idalias = -1;
 		}
 		
 		/**
@@ -360,14 +405,9 @@ public final class ActiveCacheState
 			// Do not have recursive aliases
 			Slot target = getSlot(__s, __id).value();
 			
-			// Do nothing if this aliases to self
+			// {@squirreljme.error ED0o Cannot alias slot to self. (This slot)}
 			if (target == this)
-			{
-				// Clear it in case it points to another value
-				this._stackalias = false;
-				this._idalias = -1;
-				return;
-			}
+				throw new JITException(String.format("ED0o %s", this));
 			
 			// {@squirreljme.error ED0f Local variables cannot alias other
 			// slots. (This slot; The target slot)}
@@ -381,6 +421,9 @@ public final class ActiveCacheState
 			if (target.thisType() == StackMapType.NOTHING)
 				throw new JITException(String.format("ED0d %s %s", this,
 					target));
+			
+			// De-alias anything pointing to this slot
+			__deAliasFromThis(false);
 			
 			// Set
 			this._stackalias = target.thisIsStack();
@@ -462,15 +505,13 @@ public final class ActiveCacheState
 		 *
 		 * @param __t The type of value to store, if this slot is aliased and
 		 * the alias is not compatible it will be removed.
-		 * @param __ebc If the type is to change, should the binding be
-		 * notified of the change so it may potentially adjust the binding
-		 * data?
+		 * @param __genop Generate operations for the change of type?
 		 * @return The old type.
 		 * @throws JITException If the type is {@link StackMapType#TOP} type.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		public StackMapType setType(StackMapType __t, boolean __ebc)
+		public StackMapType setType(StackMapType __t, boolean __genop)
 			throws JITException, NullPointerException
 		{
 			// Check
@@ -489,7 +530,7 @@ public final class ActiveCacheState
 			// Depending on the target type, specify the change
 			// However if nothing is going to be used here then nothing needs
 			// to actually be changed
-			if (__ebc && __t != StackMapType.NOTHING)
+			if (__genop && __t != StackMapType.NOTHING)
 			{
 				throw new todo.TODO();
 			}
@@ -565,6 +606,43 @@ public final class ActiveCacheState
 		public StackMapType thisType()
 		{
 			return this._type;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/25
+		 */
+		@Override
+		public String toString()
+		{
+			// If aliased by nothing, do not print that information
+			Set<Slot> aliasedby = this._aliasedby;
+			if (aliasedby.isEmpty())
+				return super.toString();
+			
+			// Otherwise do build it
+			StringBuilder sb = new StringBuilder(super.toString());
+			sb.append("<~[");
+			
+			// Go through aliases and just print their IDs
+			boolean comma = false;
+			for (Slot s : aliasedby)
+			{
+				// Space?
+				if (!comma)
+					comma = true;
+				else
+					sb.append(", ");
+				
+				// Print info
+				sb.append((s.thisIsStack() ? 'S' : 'L'));
+				sb.append('#');
+				sb.append(s.thisIndex());
+			}
+			
+			// Finish
+			sb.append("]");
+			return sb.toString();
 		}
 		
 		/**
@@ -667,6 +745,30 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * De-alias any slots which are aliased by this slot.
+		 *
+		 * @param __genop If {@code true} then operations are generated.
+		 * @since 2017/03/25
+		 */
+		private void __deAliasFromThis(boolean __genop)
+		{
+			// Remove alias to this slot
+			Set<Slot> aliasedby = this._aliasedby;
+			for (Slot by : aliasedby)
+			{
+				if (true)
+					throw new todo.TODO();
+				
+				// Generate operation?
+				if (__genop)
+					throw new todo.TODO();
+			}
+			
+			// Clear it
+			aliasedby.clear();
+		}
+		
+		/**
 		 * Switches to the specified state.
 		 *
 		 * @param __t The slot to copy from.
@@ -679,6 +781,9 @@ public final class ActiveCacheState
 			// Check
 			if (__s == null)
 				throw new NullPointerException("NARG");
+			
+			// The aliased by is set later
+			this._aliasedby.clear();
 			
 			// Copy state
 			CacheState.Slot value = __s.value();
@@ -767,6 +872,26 @@ public final class ActiveCacheState
 		public ActiveCacheState state()
 		{
 			return ActiveCacheState.this;
+		}
+		
+		/**
+		 * Fixes the aliased by set for the slots.
+		 *
+		 * @since 2017/03/25
+		 */
+		private void __fixAliasedBy()
+		{
+			Slot[] slots = this._slots;
+			for (int i = 0, n = slots.length; i < n; i++)
+			{
+				// This slot and its value
+				Slot self = slots[i],
+					value = self.value();
+				
+				// If this slot aliases another then point to it
+				if (self != value)
+					value._aliasedby.add(self);
+			}
 		}
 		
 		/**
