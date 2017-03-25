@@ -174,6 +174,26 @@ public final class ActiveCacheState
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/25
+	 */
+	@Override
+	public String toString()
+	{
+		// Start with the parent state
+		StringBuilder sb = new StringBuilder("{state=");
+		sb.append(super.toString());
+		
+		// Then add the remaining registers
+		sb.append(", free=");
+		sb.append(this.foralloc);
+		
+		// Finish
+		sb.append('}');
+		return sb.toString();
+	}
+	
+	/**
 	 * Initializes the register dequeues.
 	 *
 	 * @sine 2017/03/25
