@@ -362,7 +362,12 @@ public final class ActiveCacheState
 			
 			// Do nothing if this aliases to self
 			if (target == this)
+			{
+				// Clear it in case it points to another value
+				this._stackalias = false;
+				this._idalias = -1;
 				return;
+			}
 			
 			// {@squirreljme.error ED0f Local variables cannot alias other
 			// slots. (This slot; The target slot)}
