@@ -491,8 +491,8 @@ class __JITCodeStream__
 		DataType pointertype = config.pointerDataType();
 		
 		// Need to allocate the target slot for the given type
-		ActiveCacheState.Slot outslot = __valueizeSlot(outstate,
-			StackMapType.OBJECT, __cv);
+		ActiveCacheState.Slot outslot = outstate.getSlot(__cv);
+		outslot.setType(StackMapType.OBJECT);
 		
 		throw new todo.TODO();
 	}
@@ -773,33 +773,6 @@ class __JITCodeStream__
 		engine.storeRegister(engine.toDataType(__s.valueType()),
 			__s.valueRegisters(), __s.valueStackOffset(),
 			engine.stackPointerRegister());
-	}
-	
-	/**
-	 * Initializes a target slot to contain a value of the given type.
-	 *
-	 * @param __outstate The output state.
-	 * @param __t The type of value to store.
-	 * @param __cv The slot where a value is allocated.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/25
-	 */
-	private final ActiveCacheState.Slot __valueizeSlot(
-		ActiveCacheState __outstate, StackMapType __t, CodeVariable __cv)
-		throws NullPointerException
-	{
-		// Check
-		if (__outstate == null || __t == null || __cv == null)
-			throw new NullPointerException("NARG");
-		
-		// Debug
-		System.err.printf("DEBUG -- Valuize %s%n", __cv);
-		
-		// Remove the output slot
-		ActiveCacheState.Slot slot = __outstate.getSlot(__cv);
-		slot.remove(true);
-		
-		throw new todo.TODO();
 	}
 }
 
