@@ -356,9 +356,15 @@ public final class ActiveCacheState
 			// Remove aliases to this slot
 			__deAliasFromThis();
 			
-			// Remove cached information
+			// Clear registers if not aliased
 			if (!isAliased())
 				__clearRegisters();
+			
+			// Otherwise remove alias links for this slot
+			else
+				value()._aliasedby.remove(this);
+			
+			// Clear other info
 			this._type = StackMapType.NOTHING;
 			this._stackalias = false;
 			this._idalias = -1;
