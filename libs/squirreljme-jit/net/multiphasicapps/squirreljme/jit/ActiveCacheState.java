@@ -33,6 +33,9 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public final class ActiveCacheState
 	extends CacheState
 {
+	/** The owning translation engine. */
+	protected final TranslationEngine engine;
+	
 	/** Stack code variables. */
 	protected final Tread stack;
 	
@@ -88,6 +91,7 @@ public final class ActiveCacheState
 			throw new NullPointerException("NARG");
 		
 		// Setup treads
+		this.engine = __cs._engine;
 		this.stack = new Tread(true, __ms);
 		this.locals = new Tread(false, __ml);
 		
@@ -600,8 +604,37 @@ public final class ActiveCacheState
 			if (isAliased())
 				throw new JITException(String.format("ED0n %s", this));
 			
-			// Clear
-			this._registers.clear();
+			// Refill free register usage
+			TranslationEngine engine = ActiveCacheState.this.engine;
+			Deque<Register> savedint = ActiveCacheState.this.savedint,
+				savedfloat = ActiveCacheState.this.savedfloat,
+				tempint = ActiveCacheState.this.tempint,
+				tempfloat = ActiveCacheState.this.tempfloat;
+			List<Register> registers = this._registers;
+			while (!registers.isEmpty())
+			{
+				// Remove the last registers
+				Register r = registers.remove(registers.size() - 1);
+				
+				// Temporary
+				if (engine.isRegisterArgument(r) ||
+					engine.isRegisterTemporary(r))
+				{
+					if (r.isInteger())
+						tempint.offerFirst(r);
+					if (r.isFloat())
+						tempfloat.offerFirst(r);
+				}
+				
+				// Saved
+				else
+				{
+					if (r.isInteger())
+						savedint.offerFirst(r);
+					if (r.isFloat())
+						savedfloat.offerFirst(r);
+				}
+			}
 		}
 		
 		/**
@@ -641,6 +674,7 @@ public final class ActiveCacheState
 				this._idalias = -1;
 				
 				// Use all registers
+				registers.clear();
 				setRegisters(__s.thisRegisters());
 			}
 		}
