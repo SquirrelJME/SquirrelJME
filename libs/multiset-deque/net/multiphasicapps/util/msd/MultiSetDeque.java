@@ -118,6 +118,9 @@ public class MultiSetDeque<V>
 		for (int i = 0; i < n; i++)
 			rv |= subs.get(i).__remove(__v);
 		
+		// Remove from the master set because it will be no sub-deque
+		master.remove(__v);
+		
 		// Was it removed?
 		return rv;
 	}
