@@ -188,6 +188,16 @@ public class MIPSEngine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/25
+	 */
+	@Override
+	public Register[] allocationRegisters(boolean __saved)
+	{
+		return NUBI.allocationRegisters(__saved);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/24
 	 */
 	@Override

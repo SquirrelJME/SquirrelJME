@@ -24,5 +24,20 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public interface Register
 {
+	/**
+	 * Is this a floating point register?
+	 *
+	 * @return {@code true} if a floating point register.
+	 * @since 2017/03/25
+	 */
+	public abstract boolean isFloat();
+	
+	/**
+	 * Is this an integer register?
+	 *
+	 * @return {@code true} if an integer register.
+	 * @since 2017/03/25
+	 */
+	public abstract boolean isInteger();
 }
 

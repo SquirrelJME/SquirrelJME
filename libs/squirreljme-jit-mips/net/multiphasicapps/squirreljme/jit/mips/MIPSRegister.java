@@ -247,22 +247,20 @@ public enum MIPSRegister
 	}
 	
 	/**
-	 * Is this a floating point register?
-	 *
-	 * @return {@code true} if a floating point register.
+	 * {@inheritDoc}
 	 * @since 2016/09/24
 	 */
+	@Override
 	public final boolean isFloat()
 	{
 		return this.isfloat;
 	}
 	
 	/**
-	 * Is this an integer register?
-	 *
-	 * @return {@code true} if an integer register.
+	 * {@inheritDoc}
 	 * @since 2016/09/24
 	 */
+	@Override
 	public final boolean isInteger()
 	{
 		return !this.isfloat;

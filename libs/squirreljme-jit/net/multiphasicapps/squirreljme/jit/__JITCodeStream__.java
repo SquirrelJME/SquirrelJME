@@ -546,8 +546,10 @@ class __JITCodeStream__
 		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml);
 		
 		// Also input and output states
-		this._instate = new ActiveCacheState(this, __ms, __ml);
-		this._outstate = new ActiveCacheState(this, __ms, __ml);
+		Register[] sv = engine.allocationRegisters(true),
+			tm = engine.allocationRegisters(false);
+		this._instate = new ActiveCacheState(this, __ms, __ml, sv, tm);
+		this._outstate = new ActiveCacheState(this, __ms, __ml, sv, tm);
 	}
 	
 	/**

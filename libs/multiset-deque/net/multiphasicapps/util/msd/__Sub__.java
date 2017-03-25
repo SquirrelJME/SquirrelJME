@@ -156,7 +156,7 @@ final class __Sub__<V>
 	@Override
 	public boolean contains(Object __a)
 	{
-		throw new todo.TODO();
+		return this._deque.contains(__a);
 	}
 
 	/**
@@ -196,6 +196,7 @@ final class __Sub__<V>
 	@Override
 	public boolean equals(Object __a)
 	{
+		
 		throw new todo.TODO();
 	}
 
@@ -232,7 +233,7 @@ final class __Sub__<V>
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this._deque.hashCode();
 	}
 
 	/**
@@ -547,6 +548,27 @@ final class __Sub__<V>
 	public Object[] toArray()
 	{
 		return this._deque.toArray();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/25
+	 */
+	@Override
+	public String toString()
+	{
+		return this._deque.toString();
+	}
+	
+	/**
+	 * Quick clear of the queue.
+	 *
+	 * @since 2017/03/25
+	 */
+	final void __clear()
+	{
+		this._deque.clear();
+		this._set.clear();
 	}
 	
 	/**

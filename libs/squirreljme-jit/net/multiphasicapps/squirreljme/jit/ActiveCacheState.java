@@ -14,10 +14,14 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.util.msd.MultiSetDeque;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -35,6 +39,32 @@ public final class ActiveCacheState
 	/** Local code variables. */
 	protected final Tread locals;
 	
+	/** Registers available for allocation. */
+	protected final MultiSetDeque<Register> foralloc =
+		new MultiSetDeque<>();
+	
+	/** Saved integer registers available for allocation. */
+	protected final Deque<Register> savedint =
+		this.foralloc.subDeque();
+	
+	/** Saved float registers available for allocation. */
+	protected final Deque<Register> savedfloat =
+		this.foralloc.subDeque();
+	
+	/** Temporary integer registers available for allocation. */
+	protected final Deque<Register> tempint =
+		this.foralloc.subDeque();
+	
+	/** Temporary float registers available for allocation. */
+	protected final Deque<Register> tempfloat =
+		this.foralloc.subDeque();
+	
+	/** Saved registers available for allocation. */
+	private final Set<Register> _availsaved;
+	
+	/** Temporary registers available for allocation. */
+	private final Set<Register> _availtemp;
+	
 	/**
 	 * Initializes the active cache state which stores the current state
 	 * information.
@@ -42,17 +72,41 @@ public final class ActiveCacheState
 	 * @param __te The code stream
 	 * @param __ms The number of stack entries.
 	 * @param __ml The number of local entries.
+	 * @param __sv Saved registers for allocation.
+	 * @param __tm Temporary registers for allocation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml)
+	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml,
+		Register[] __sv, Register[] __tm)
 		throws NullPointerException
 	{
 		super(__cs);
 		
+		// Check
+		if (__sv == null || __tm == null)
+			throw new NullPointerException("NARG");
+		
 		// Setup treads
 		this.stack = new Tread(true, __ms);
 		this.locals = new Tread(false, __ml);
+		
+		// Copy saved registers
+		Set<Register> availsaved = new LinkedHashSet<>();
+		for (Register r : __sv)
+			if (r != null)
+				availsaved.add(r);
+		this._availsaved = availsaved;
+		
+		// Copy saved registers
+		Set<Register> availtemp = new LinkedHashSet<>();
+		for (Register r : __tm)
+			if (r != null)
+				availtemp.add(r);
+		this._availtemp = availtemp;
+		
+		// Initialize register deque
+		__initDeque();
 	}
 	
 	/**
@@ -111,9 +165,54 @@ public final class ActiveCacheState
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
+		// Initialize the deques for allocation
+		__initDeque();
+		
 		// Restore state
 		this.stack.__switchFrom(__cs.stack());
 		this.locals.__switchFrom(__cs.locals());
+	}
+	
+	/**
+	 * Initializes the register dequeues.
+	 *
+	 * @sine 2017/03/25
+	 */
+	private void __initDeque()
+	{
+		// Remove all allocations
+		this.foralloc.clear();
+		
+		// Saved the temporary
+		Deque<Register> toint, tofloat;
+		for (int z = 0; z < 2; z++)
+		{
+			// Saved
+			Set<Register> source;
+			if (z == 0)
+			{
+				source = this._availsaved;
+				toint = this.savedint;
+				tofloat = this.savedfloat;
+			}
+			
+			// Temporary
+			else
+			{
+				source = this._availtemp;
+				toint = this.tempint;
+				tofloat = this.tempfloat;
+			}
+			
+			// Fill
+			for (Register r : source)
+			{
+				if (r.isInteger())
+					toint.offerLast(r);
+				if (r.isFloat())
+					tofloat.offerLast(r);
+			}
+		}
 	}
 	
 	/**
@@ -241,14 +340,25 @@ public final class ActiveCacheState
 		 * Lower indexes are the least significant values.
 		 *
 		 * @param __r The registers to set the slot.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/11
 		 */
 		public void setRegisters(Register... __r)
+			throws NullPointerException
 		{
-			List<Register> registers = this._registers;
-			registers.clear();
+			// Check
+			if (__r == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error ED0k Cannot set registers for aliased
+			// slots.}
+			if (isAliased())
+				throw new JITException("ED0k");
+			
+			// Copy
+			__clearRegisters();
 			for (Register r : __r)
-				registers.add(r);
+				__addRegister(r);
 		}
 		
 		/**
@@ -257,14 +367,25 @@ public final class ActiveCacheState
 		 * Lower indexes are the least significant values.
 		 *
 		 * @param __r The registers to set the slot.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/11
 		 */
 		public void setRegisters(Iterable<Register> __r)
+			throws NullPointerException
 		{
-			List<Register> registers = this._registers;
-			registers.clear();
+			// Check
+			if (__r == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error ED0l Cannot set registers for aliased
+			// slots.}
+			if (isAliased())
+				throw new JITException("ED0l");
+			
+			// Copy
+			__clearRegisters();
 			for (Register r : __r)
-				registers.add(r);
+				__addRegister(r);
 		}
 		
 		/**
@@ -421,6 +542,49 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Adds a register to the used registers.
+		 *
+		 * @param __r The register to add.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/03/25
+		 */
+		private void __addRegister(Register __r)
+			throws NullPointerException
+		{
+			// Check
+			if (__r == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error ED0m Add of a register which is not
+			// allocatable naturally to a slot or one which has already been
+			// consumed. (The register that was removed; This slot; The
+			// registers available for allocation)}
+			MultiSetDeque<Register> foralloc = ActiveCacheState.this.foralloc;
+			if (!foralloc.remove(__r))
+				throw new JITException(String.format("ED0m %s %s %s", __r,
+					this, foralloc));
+			
+			// Add to register list
+			this._registers.add(__r);
+		}
+		
+		/**
+		 * Clears all registers.
+		 *
+		 * @since 2017/03/25
+		 */
+		private void __clearRegisters()
+		{
+			// {@squirreljme.error ED0n Attempt to clear registers for a slot
+			// which is aliased. (This slot)}
+			if (isAliased())
+				throw new JITException(String.format("ED0n %s", this));
+			
+			// Clear
+			this._registers.clear();
+		}
+		
+		/**
 		 * Switches to the specified state.
 		 *
 		 * @param __t The slot to copy from.
@@ -438,16 +602,16 @@ public final class ActiveCacheState
 			CacheState.Slot value = __s.value();
 			this._type = value.thisType();
 			
-			// Copy registers
-			List<Register> registers = this._registers;
-			registers.clear();
-			registers.addAll(__s.thisRegisters());
-			
 			// Aliased?
+			List<Register> registers = this._registers;
 			if (value != __s)
 			{
 				this._stackalias = value.thisIsStack();
 				this._idalias = value.thisIndex();
+				
+				// Aliased entries do not use registers because their register
+				// usage is a purely virtual
+				registers.clear();
 			}
 			
 			// Not aliased
@@ -455,6 +619,9 @@ public final class ActiveCacheState
 			{
 				this._stackalias = false;
 				this._idalias = -1;
+				
+				// Use all registers
+				setRegisters(__s.thisRegisters());
 			}
 		}
 	}

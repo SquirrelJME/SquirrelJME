@@ -55,6 +55,44 @@ public class MultiSetDeque<V>
 	}
 	
 	/**
+	 * Clears the multi-set deque and every sub-deque so that all are empty.
+	 *
+	 * @since 2017/03/25
+	 */
+	public final void clear()
+	{
+		// Clear the master set
+		this._master.clear();
+		
+		// And all the subsets
+		for (__Sub__<V> s : this._subs)
+			s.__clear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/25
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (!(__o instanceof MultiSetDeque))
+			return false;
+		
+		return this._subs.equals(((MultiSetDeque<?>)__o)._subs);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/25
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this._subs.hashCode();
+	}
+	
+	/**
 	 * Removes the given element from any of the sub-{@link Deque}s that are
 	 * a part of the multi-set.
 	 *
@@ -137,6 +175,16 @@ public class MultiSetDeque<V>
 		__Sub__<V> rv = new __Sub__<>(this, __l);
 		this._subs.add(rv);
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/25
+	 */
+	@Override
+	public final String toString()
+	{
+		return this._subs.toString();
 	}
 }
 

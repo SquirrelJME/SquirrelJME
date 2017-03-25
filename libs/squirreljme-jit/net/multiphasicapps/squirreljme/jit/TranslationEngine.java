@@ -76,6 +76,15 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Returns the set of registers which are available for allocation.
+	 *
+	 * @param __saved If {@code true} then request saved registers.
+	 * @return The registers available for allocation.
+	 * @since 2017/03/25
+	 */
+	public abstract Register[] allocationRegisters(boolean __saved);
+	
+	/**
 	 * Returns the temporary assembler register.
 	 *
 	 * @return The temporary assembler register.
