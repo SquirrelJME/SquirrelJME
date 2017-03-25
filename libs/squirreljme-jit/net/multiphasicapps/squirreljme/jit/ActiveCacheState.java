@@ -331,6 +331,9 @@ public final class ActiveCacheState
 		 */
 		public void clearAlias()
 		{
+			// Remove alias
+			__deAliasFromThis(true);
+			
 			// Clear
 			this._stackalias = false;
 			this._idalias = -1;
@@ -423,7 +426,7 @@ public final class ActiveCacheState
 					target));
 			
 			// De-alias anything pointing to this slot
-			__deAliasFromThis(false);
+			__deAliasFromThis(true);
 			
 			// Set
 			this._stackalias = target.thisIsStack();
@@ -531,6 +534,9 @@ public final class ActiveCacheState
 			StackMapType rv = this._type;
 			if (__t == rv)
 				return __t;
+			
+			// Remove alias
+			__deAliasFromThis(__genop);
 			
 			// Set, return old
 			this._type = __t;
