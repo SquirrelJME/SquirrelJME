@@ -334,8 +334,7 @@ class __JITCodeStream__
 			args[i] = instate.getSlot(cv).value();
 			
 			// Stack elements are destroyed on input
-			__removeSlot(instate, outstate, outstate.getSlot(cv), true,
-				__d);
+			__removeSlot(outstate, outstate.getSlot(cv), true, __d);
 		}
 		
 		// No return value
@@ -484,8 +483,16 @@ class __JITCodeStream__
 		throws NullPointerException
 	{
 		// Check
-		if (__cl == null)
+		if (__cl == null || __cv == null)
 			throw new NullPointerException("NARG");
+			
+		ActiveCacheState outstate = this._outstate;
+		JITConfig config = this.config;
+		DataType pointertype = config.pointerDataType();
+		
+		// Need to allocate the target slot for the given type
+		ActiveCacheState.Slot outslot = __valueizeSlot(outstate,
+			StackMapType.OBJECT, __cv);
 		
 		throw new todo.TODO();
 	}
@@ -623,8 +630,7 @@ class __JITCodeStream__
 		// replaced slot
 		// This is always done because the destination slot will always be
 		// kludged
-		__removeSlot(__instate, __outstate, __destslot, __dogenop,
-			Integer.MAX_VALUE);
+		__removeSlot(__outstate, __destslot, __dogenop, Integer.MAX_VALUE);
 		
 		// The destination slot always gets the type associated with it
 		__destslot.setType(__srcslot.thisType(), !__doalias);
@@ -661,7 +667,6 @@ class __JITCodeStream__
 	 * This removes the the specified information in the given stack position.
 	 * This clears any state
 	 *
-	 * @param __instate Input state.
 	 * @param __outstate Output state.
 	 * @param __slot The target slot to be destroyed.
 	 * @param __dogenop If {@code true} then machine code will be generated
@@ -674,13 +679,12 @@ class __JITCodeStream__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	private void __removeSlot(CacheState __instate,
-		ActiveCacheState __outstate, ActiveCacheState.Slot __slot,
-		boolean __dogenop, int __sl)
+	private void __removeSlot(ActiveCacheState __outstate,
+		ActiveCacheState.Slot __slot, boolean __dogenop, int __sl)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__instate == null || __outstate == null || __slot == null)
+		if (__outstate == null || __slot == null)
 			throw new IllegalArgumentException("NARG");
 		
 		// If the destination slot has no value then nothing needs to be done
@@ -691,16 +695,29 @@ class __JITCodeStream__
 		boolean ss = __slot.thisIsStack();
 		int si = __slot.thisIndex();
 		
-		// Messing with the stack is only needed if this value is on the
-		// stack
-		if (__slot.thisIsStack())
+		// Go through both stack and locals to remove the specified value
+		for (int z = 0; z < 2; z++)
 		{
-			// Go through the stack and remove any aliases to the target
-			ActiveCacheState.Tread stack = __outstate.stack();
-			int limit = Math.min(__sl, stack.size());
+			// Local variables
+			ActiveCacheState.Tread tread;
+			int limit;
+			if (z == 0)
+			{
+				tread = __outstate.locals();
+				limit = tread.size();
+			}
+			
+			// Stack variables
+			else
+			{
+				tread = __outstate.stack();
+				limit = Math.min(__sl, tread.size());
+			}
+			
+			// Go through the tread and remove any aliases to the target
 			for (int i = 0; i < limit; i++)
 			{
-				ActiveCacheState.Slot slot = stack.get(i);
+				ActiveCacheState.Slot slot = tread.get(i);
 				boolean xs = slot.valueIsStack();
 				int xi = slot.valueIndex();
 			
@@ -767,7 +784,7 @@ class __JITCodeStream__
 			else
 			{
 				tread = __outstate.stack();
-				limit = __d;
+				limit = Math.min(tread.size(), __d);
 			}
 			
 			// Check for slots that need saving
@@ -838,6 +855,33 @@ class __JITCodeStream__
 		engine.storeRegister(engine.toDataType(__s.valueType()),
 			__s.valueRegisters(), __s.valueStackOffset(),
 			engine.stackPointerRegister());
+	}
+	
+	/**
+	 * Initializes a target slot to contain a value of the given type.
+	 *
+	 * @param __outstate The output state.
+	 * @param __t The type of value to store.
+	 * @param __cv The slot where a value is allocated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/25
+	 */
+	private final ActiveCacheState.Slot __valueizeSlot(
+		ActiveCacheState __outstate, StackMapType __t, CodeVariable __cv)
+		throws NullPointerException
+	{
+		// Check
+		if (__outstate == null || __t == null || __cv == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Valuize %s%n", __cv);
+		
+		// Remove the output slot
+		ActiveCacheState.Slot slot = __outstate.getSlot(__cv);
+		__removeSlot(__outstate, slot, true, Integer.MAX_VALUE);
+		
+		throw new todo.TODO();
 	}
 }
 
