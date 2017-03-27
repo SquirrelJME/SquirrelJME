@@ -160,7 +160,7 @@ public final class TestName
 		
 		// Setup copy
 		for (i = 0; i < n; i++)
-			rv[i] = 
+			rv[i] = fragments[i];
 		rv[i] = __s;
 		
 		// Create
@@ -176,7 +176,7 @@ public final class TestName
 	public String resourceList()
 		throws NullPointerException
 	{
-		return prefixed().replace('.', '/') + "/tests.lst";
+		return "/" + prefixed().replace('.', '/') + "/tests.lst";
 	}
 	
 	/**
