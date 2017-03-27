@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.test;
 public class TestResult
 {
 	/** The name of the test. */
-	protected final String name;
+	protected final TestName name;
 	
 	/**
 	 * Initializes the storage for the test result.
@@ -27,7 +27,7 @@ public class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/25
 	 */
-	public TestResult(String __n)
+	public TestResult(TestName __n)
 		throws NullPointerException
 	{
 		// Check

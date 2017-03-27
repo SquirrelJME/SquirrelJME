@@ -49,6 +49,46 @@ public class Main
 	}
 	
 	/**
+	 * Runs the specified test.
+	 *
+	 * @param __tn The test to run.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/27
+	 */
+	public static void runTest(TestName __tn)
+		throws NullPointerException
+	{
+		// Check
+		if (__tn == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Test: %s%n", __tn);
+		
+		// Future result
+		TestResult result = new TestResult(__tn);
+		
+		// The class instance of the test
+		TestFunction func;
+		try
+		{
+			Class<?> cl = Class.forName(__tn.prefixed());
+			func = (TestFunction)(cl.newInstance());
+		}
+		
+		// Could not locate
+		catch (ClassCastException|ClassNotFoundException|
+			IllegalAccessException|InstantiationException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+		
+		//
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Recursively runs the specified test directory.
 	 *
 	 * @param __tn The test directory to run.
@@ -127,6 +167,10 @@ public class Main
 		// Process tests directories first
 		for (TestName subdir : dirs)
 			runTestDirectory(subdir);
+		
+		// Run individual tests
+		for (TestName subtest : tests)
+			runTest(subtest);
 	}
 }
 

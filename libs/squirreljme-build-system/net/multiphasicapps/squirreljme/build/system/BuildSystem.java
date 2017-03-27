@@ -103,7 +103,7 @@ public class BuildSystem
 		// interpreter which is used to create simulated SquirrelJME
 		// environments.;
 		// {@code build [project]}: Builds the specified project.)
-		//}
+		// }
 		int na = __args.length;
 		if (na <= 0)
 			throw new IllegalArgumentException("AO01");
