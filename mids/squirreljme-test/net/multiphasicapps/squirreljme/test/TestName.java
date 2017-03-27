@@ -125,8 +125,15 @@ public final class TestName
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._prefixed = new WeakReference<>((rv =
-				"net.multiphasicapps.squirreljme.test." + toString()));
+		{
+			// Never end in a dot
+			rv = "net.multiphasicapps.squirreljme.test." + toString();
+			if (rv.charAt(rv.length() - 1) == '.')
+				rv = rv.substring(0, rv.length() - 1);
+			
+			// Cache
+			this._prefixed = new WeakReference<>(rv);
+		}
 		
 		return rv;
 	}
@@ -158,6 +165,18 @@ public final class TestName
 		
 		// Create
 		return new TestName(rv);
+	}
+	
+	/**
+	 * Returns the resource name for these tests.
+	 *
+	 * @return The resource list for these tests.
+	 * @since 2017/03/27
+	 */
+	public String resourceList()
+		throws NullPointerException
+	{
+		return prefixed().replace('.', '/') + "/tests.lst";
 	}
 	
 	/**
