@@ -11,42 +11,24 @@
 package net.multiphasicapps.squirreljme.test;
 
 /**
- * This contains results for tests.
+ * This is used to provide a default profile for results within tests. Since
+ * tests are completely comparison based, if there is no other test sequence to
+ * compare to then this interface provides a specially defined.
  *
- * @since 2017/03/25
+ * @see TestFunction
+ * @since 2017/03/27
  */
-public class TestResult
+public interface TestDefaultFunction
 {
-	/** The name of the test. */
-	protected final String name;
-	
 	/**
-	 * Initializes the storage for the test result.
+	 * May potentially run a test or just places the expected result of the
+	 * test.
 	 *
-	 * @param __n The name of the test.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/25
-	 */
-	public TestResult(String __n)
-		throws NullPointerException
-	{
-		// Check
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.name = __n;
-	}
-	
-	/**
-	 * Provides the specified result.
-	 *
-	 * @param __v The result.
+	 * @param __r Where the result of the test is to be stored.
+	 * @throws Throwable On any errors or exceptions.
 	 * @since 2017/03/27
 	 */
-	public void result(int __v)
-	{
-		throw new todo.TODO();
-	}
+	public abstract void defaultRun(TestResult __r)
+		throws Throwable;
 }
 

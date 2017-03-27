@@ -102,8 +102,6 @@ public class BuildSystem
 		// ({@code interpret [interpreter arguments...]}: Runs the auto
 		// interpreter which is used to create simulated SquirrelJME
 		// environments.;
-		// {@code squirrel-quarrel}: Runs a sample real-time strategy game
-		// in the build environment.;
 		// {@code build [project]}: Builds the specified project.)
 		//}
 		int na = __args.length;
