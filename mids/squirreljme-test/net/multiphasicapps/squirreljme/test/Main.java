@@ -164,6 +164,10 @@ public class Main
 			throw new RuntimeException(String.format("BA01 %s", __tn));
 		}
 		
+		// Sort the tests
+		Collections.sort(dirs);
+		Collections.sort(tests);
+		
 		// Process tests directories first
 		for (TestName subdir : dirs)
 			runTestDirectory(subdir);
