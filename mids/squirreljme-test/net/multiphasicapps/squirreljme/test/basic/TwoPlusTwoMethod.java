@@ -31,7 +31,7 @@ public class TwoPlusTwoMethod
 	public void defaultRun(TestResult __r)
 		throws Throwable
 	{
-		__r.result(4);
+		__r.result("result", 4);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class TwoPlusTwoMethod
 		throws Throwable
 	{
 		// Do some work to prevent the compiler from optimizing it
-		__r.result(__add(2, 2));
+		__r.result("result", __add(2, 2));
 	}
 	
 	/**

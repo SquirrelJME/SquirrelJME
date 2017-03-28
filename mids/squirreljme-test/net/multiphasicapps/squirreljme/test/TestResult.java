@@ -11,6 +11,11 @@
 package net.multiphasicapps.squirreljme.test;
 
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains results for tests.
@@ -22,11 +27,9 @@ public class TestResult
 	/** The name of the test. */
 	protected final TestName name;
 	
-	/** The result of the test. */
-	private volatile Object _result;
-	
-	/** Has a result been set? */
-	private volatile boolean _set;
+	/** Test results. */
+	protected final Map<String, Object> results =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes the storage for the test result.
@@ -47,32 +50,43 @@ public class TestResult
 	}
 	
 	/**
-	 * Compares this result against another.
+	 * Checks whether the result contains the specified sub-test.
 	 *
-	 * @param __o The result to compare to.
-	 * @return The result of the comparison.
-	 * @throws NullPointerException On null arguments.
+	 * @param __n The sub-test to check.
+	 * @return {@code true} if the result contains the given sub-test.
 	 * @since 2017/03/28
 	 */
-	public boolean compareResult(TestResult __o)
-		throws NullPointerException
+	public boolean contains(String __n)
 	{
 		// Check
-		if (__o == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this.results.containsKey(__n);
 	}
 	
 	/**
-	 * Returns the result that was obtained.
+	 * Returns the result that was obtained for the given test.
 	 *
-	 * @return The result.
+	 * @return The result for the test.
+	 * @throws NoSuchElementException If there is no result for the given
+	 * sub-test.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017//03/28
 	 */
-	public Object get()
+	public Object get(String __n)
+		throws NoSuchElementException, NullPointerException
 	{
-		return this._result;
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BA04 There is no result for the specified
+		// sub-test. (The sub-test name)}
+		Map<String, Object> results = this.results;
+		if (!results.containsKey(__n))
+			throw new NoSuchElementException(String.format("BA04 %s", __n));
+		return results.get(__n);
 	}
 	
 	/**
@@ -89,9 +103,20 @@ public class TestResult
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		__ps.print(this.name);
-		__ps.print(" PROF ");
-		__ps.println((this._set ? __toString(this._result) : "noresult"));
+		// Print all results
+		Map<String, Object> results = this.results;
+		for (Map.Entry<String, Object> e : this.results.entrySet())
+		{
+			// Name
+			__ps.print(this.name);
+			__ps.print('#');
+			__ps.print(e.getKey());
+			__ps.println(" PROF");
+			
+			// Value
+			__ps.print('\t');
+			__ps.println(e.getValue());
+		}
 	}
 	
 	/**
@@ -109,66 +134,125 @@ public class TestResult
 		if (__exp == null || __ps == null)
 			throw new NullPointerException("NARG");
 		
-		__ps.print(this.name);
-		__ps.print(' ');
-		__ps.print((compareResult(__exp) ? "PASS" : "FAIL"));
-		__ps.print(' ');
-		__ps.print((this._set ? __toString(this._result) : "noresult"));
-		__ps.print(' ');
-		__ps.println((__exp._set ? __toString(__exp._result) : "noresult"));
+		// Print all results and compare
+		Map<String, Object> results = this.results;
+		for (Map.Entry<String, Object> e : this.results.entrySet())
+		{
+			// Check if this is a pass condition
+			String k = e.getKey();
+			boolean pass = __exp.contains(k),
+				contained = pass;
+			Object other;
+			if (pass)
+				pass = __equals(e.getValue(), (other = __exp.get(k)));
+			else
+				other = null;
+			
+			// Name
+			__ps.print(this.name);
+			__ps.print('#');
+			__ps.print(e.getKey());
+			__ps.println((pass ? " PASS" : " FAIL"));
+			
+			// Results (expected and was)
+			__ps.print('\t');
+			__ps.println((contained ? __toString(other) : "noresult"));
+			__ps.print('\t');
+			__ps.println(__toString(other));
+		}
 	}
 	
 	/**
 	 * Provides the specified result.
 	 *
+	 * @param __n The sub-test name.
 	 * @param __v The result.
 	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
 	 * @since 2017/03/27
 	 */
-	public void result(int __v)
-		throws IllegalStateException
+	public void result(String __n, int __v)
+		throws IllegalStateException, NullPointerException
 	{
-		__checkResult(__v);
+		__checkResult(__n, __v);
 	}
 	
 	/**
 	 * Inidicates that something was thrown.
 	 *
+	 * If a result was set then it is removed.
+	 *
+	 * @param __n The sub-test name.
 	 * @param __t The value which was thrown.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/28
 	 */
-	public void threw(Throwable __t)
+	public void threw(String __n, Throwable __t)
 		throws NullPointerException
 	{
 		// Check
-		if (__t == null)
+		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._set = true;
-		this._result = __t;
+		results.put(__n, new TestException(__t));
 	}
 	
 	/**
 	 * Sets the result of the test if it has not been set.
 	 *
+	 * @param __n The name of the sub-test.
 	 * @param __v The result of the test.
 	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
 	 * @since 2017/03/28
 	 */
-	private void __checkResult(Object __v)
-		throws IllegalStateException
+	private void __checkResult(String __n, Object __v)
+		throws IllegalStateException, NullPointerException
 	{
 		// {@squirreljme.error BA03 A result has already been set. (The test
-		// name)}
-		if (this._set)
-			throw new IllegalStateException(String.format("BA03 %s",
-				this.name));
+		// name; The sub-test name)}
+		Map<String, Object> results = this.results;
+		if (results.containsKey(__n))
+			throw new IllegalStateException(String.format("BA03 %s %s",
+				this.name, __n));
 		
 		// Set
-		this._set = true;
-		this._result = __v;
+		results.put(__n, __v);
+	}
+	
+	/**
+	 * Checks if the two values are equal to each other.
+	 *
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @return Whether the values are equal.
+	 * @since 2017/03/28
+	 */
+	private static boolean __equals(Object __a, Object __b)
+	{
+		if (__a instanceof TestException && __b instanceof TestException)
+			return ((TestException)__a).isCompatible((TestException)__b);
+		else if (__a instanceof boolean[] && __b instanceof boolean[])
+			return Arrays.equals((boolean[])__a, (boolean[])__b);
+		else if (__a instanceof byte[] && __b instanceof byte[])
+			return Arrays.equals((byte[])__a, (byte[])__b);
+		else if (__a instanceof short[] && __b instanceof short[])
+			return Arrays.equals((short[])__a, (short[])__b);
+		else if (__a instanceof char[] && __b instanceof char[])
+			return Arrays.equals((char[])__a, (char[])__b);
+		else if (__a instanceof int[] && __b instanceof int[])
+			return Arrays.equals((int[])__a, (int[])__b);
+		else if (__a instanceof long[] && __b instanceof long[])
+			return Arrays.equals((long[])__a, (long[])__b);
+		else if (__a instanceof float[] && __b instanceof float[])
+			return Arrays.equals((float[])__a, (float[])__b);
+		else if (__a instanceof double[] && __b instanceof double[])
+			return Arrays.equals((double[])__a, (double[])__b);
+		else if (__a instanceof String[] && __b instanceof String[])
+			return Arrays.equals((String[])__a, (String[])__b);
+		else
+			return Objects.equals(__a, __b);
 	}
 	
 	/**
@@ -202,6 +286,49 @@ public class TestResult
 				sb.append("number:");
 			
 			// values use the same representation
+			sb.append(__v);
+		}
+		
+		// Boolean array
+		else if (__v instanceof boolean[])
+			throw new todo.TODO();
+		
+		// Byte array
+		else if (__v instanceof byte[])
+			throw new todo.TODO();
+		
+		// Short array
+		else if (__v instanceof short[])
+			throw new todo.TODO();
+		
+		// Character array
+		else if (__v instanceof char[])
+			throw new todo.TODO();
+		
+		// Integer array
+		else if (__v instanceof int[])
+			throw new todo.TODO();
+		
+		// Long array
+		else if (__v instanceof long[])
+			throw new todo.TODO();
+		
+		// Float array
+		else if (__v instanceof float[])
+			throw new todo.TODO();
+		
+		// Double array
+		else if (__v instanceof double[])
+			throw new todo.TODO();
+		
+		// String array
+		else if (__v instanceof String[])
+			throw new todo.TODO();
+		
+		// Represented exception
+		else if (__v instanceof TestException)
+		{
+			sb.append("throwable:");
 			sb.append(__v);
 		}
 		

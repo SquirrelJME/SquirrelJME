@@ -34,7 +34,7 @@ public class TwoPlusTwoField
 	public void defaultRun(TestResult __r)
 		throws Throwable
 	{
-		__r.result(4);
+		__r.result("result", 4);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class TwoPlusTwoField
 	{
 		// Do some work to prevent the compiler from optimizing it
 		int two = ZERO | 2;
-		__r.result(two + two);
+		__r.result("result", two + two);
 	}
 }
 

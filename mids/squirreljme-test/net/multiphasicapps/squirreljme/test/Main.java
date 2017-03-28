@@ -99,7 +99,7 @@ public class Main
 			// And it did
 			catch (Throwable t)
 			{
-				expected.threw(t);
+				expected.threw("", t);
 			}
 		}
 		
@@ -112,7 +112,7 @@ public class Main
 		// Failed
 		catch (Throwable t)
 		{
-			result.threw(t);
+			result.threw("", t);
 		}
 		
 		// Print result
