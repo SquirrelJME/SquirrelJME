@@ -1178,6 +1178,23 @@ cheap to produce).
 	
 	 1. Grants a patent license, as per the GNU GPLv3.
 	 2. The ability to re-license the contributing code under any license.
+	 3. Specified that you have not derived your contribution and/or knowledge
+	    from the specified virtual machine implementations via direct
+	    source code or reverse engineering (but not limited to):
+	    * Android (Google)
+	    * Apache Harmony (Apache Foundation)
+	    * CVM (Sun Microsystems/Oracle)
+	    * Excelsior JET (Excelsior LLC)
+	    * GNU Classpath (Free Software Foundation)
+	    * GNU GCJ/GIJ (Free Software Foundation)
+	    * JamVM (Robert Lougher)
+	    * Microsoft Java Virtual Machine (Microsoft)
+	    * Microsoft .NET (Microsoft)
+	    * Mono (Microsoft)
+	    * OpenJDK (Sun Microsystems/Oracle)
+	    * PhoneME (Sun Microsystems/Oracle)
+	 4. If employed by a company, you have a right by that company to provide
+	    contributions to this project.
 
 ## Multi-Phasic Applications: SquirrelJME Proprietary License
 
