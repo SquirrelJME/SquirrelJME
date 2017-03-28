@@ -52,7 +52,7 @@ public final class TestName
 		List<String> fragments = new ArrayList<>();
 		for (String q : __n)
 		{
-			// 
+			// Split fragments
 			for (int i = 0, n = q.length(); i < n; i++)
 			{
 				// Find next dot, or the end of the string
@@ -61,7 +61,7 @@ public final class TestName
 					nd = n;
 				
 				// Add
-				fragments.add(q.substring(i, nd));
+				fragments.add(q.substring(i, nd).trim());
 				
 				// Set to dot position (gets skipped over)
 				i = nd;
