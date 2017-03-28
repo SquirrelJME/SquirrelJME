@@ -1,4 +1,5 @@
 TestHashMap
+TestHashtable
 TestLinkedHashMapAccess
 TestLinkedHashMapInsert
 TestSortedTreeMap
