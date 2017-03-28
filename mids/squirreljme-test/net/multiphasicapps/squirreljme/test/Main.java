@@ -38,7 +38,7 @@ public class Main
 		// Run the first test directory
 		try
 		{
-			runTestDirectory(new TestName(""));
+			runTestDirectory(null, false, new TestName(""));
 		}
 		
 		// {@squirreljme.error BA02 Failed to run the test framework.}
@@ -51,11 +51,13 @@ public class Main
 	/**
 	 * Runs the specified test.
 	 *
+	 * @param __tp The test profile.
+	 * @param __p Is profiling being performed?
 	 * @param __tn The test to run.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no name was specified.
 	 * @since 2017/03/27
 	 */
-	public static void runTest(TestName __tn)
+	public static void runTest(TestProfile __tp, boolean __p, TestName __tn)
 		throws NullPointerException
 	{
 		// Check
@@ -84,18 +86,58 @@ public class Main
 			return;
 		}
 		
-		//
-		throw new todo.TODO();
+		// Get the expected test
+		TestResult expected = null;
+		if (__tp != null)
+			expected = __tp.get(__tn);
+		if (expected == null && (func instanceof TestDefaultFunction))
+		{
+			// The expected result could throw an exception
+			expected = new TestResult(__tn);
+			try
+			{
+				((TestDefaultFunction)func).defaultRun(expected);
+			}
+			
+			// And it did
+			catch (Throwable t)
+			{
+				expected.threw(t);
+			}
+		}
+		
+		// Run the test
+		try
+		{
+			func.run(result);
+		}
+		
+		// Failed
+		catch (Throwable t)
+		{
+			result.threw(t);
+		}
+		
+		// Print result
+		if (__p || expected == null)
+			result.print(System.out);
+		
+		// Compare
+		else
+			result.print(expected, System.out);
 	}
 	
 	/**
 	 * Recursively runs the specified test directory.
 	 *
+	 * @param __tp The test profile.
+	 * @param __p Is profiling being performed?
 	 * @param __tn The test directory to run.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no name was specified.
 	 * @since 2017/03/27
 	 */
-	public static void runTestDirectory(TestName __tn)
+	public static void runTestDirectory(TestProfile __tp, boolean __p,
+		TestName __tn)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -170,11 +212,11 @@ public class Main
 		
 		// Process tests directories first
 		for (TestName subdir : dirs)
-			runTestDirectory(subdir);
+			runTestDirectory(__tp, __p, subdir);
 		
 		// Run individual tests
 		for (TestName subtest : tests)
-			runTest(subtest);
+			runTest(__tp, __p, subtest);
 	}
 }
 
