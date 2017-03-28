@@ -38,7 +38,7 @@ public class Main
 		// Run the first test directory
 		try
 		{
-			runTestDirectory(null, false, new TestName(""));
+			runTestDirectory(null, true, new TestName(""));
 		}
 		
 		// {@squirreljme.error BA02 Failed to run the test framework.}
@@ -63,9 +63,6 @@ public class Main
 		// Check
 		if (__tn == null)
 			throw new NullPointerException("NARG");
-		
-		// Debug
-		System.err.printf("DEBUG -- Test: %s%n", __tn);
 		
 		// Future result
 		TestResult result = new TestResult(__tn);
@@ -143,9 +140,6 @@ public class Main
 		// Check
 		if (__tn == null)
 			throw new NullPointerException("NARG");
-		
-		// Debug
-		System.err.printf("DEBUG -- Testdir: %s%n", __tn);
 		
 		// Process test listing
 		List<TestName> dirs = new ArrayList<>(),
