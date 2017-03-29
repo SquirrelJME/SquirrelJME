@@ -36,6 +36,7 @@ public class CommonData
 				case 1: return "IsAGraySquirrel";
 				case 2: return "ICsOfTheEras";
 				case 3: return "IsLegal";
+				case 4: return "CoyoteOfTheBlueSky";
 				default: return null;
 			}
 		
@@ -47,6 +48,7 @@ public class CommonData
 				case 1: return "xer";
 				case 2: return "nekoed";
 				case 3: return "quaa";
+				case 4: return "mojavekoyote";
 				default: return null;
 			}
 	}
