@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.test.collections;
 
 import java.util.Map;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.test.CommonData;
 import net.multiphasicapps.squirreljme.test.TestFunction;
 import net.multiphasicapps.squirreljme.test.TestResult;
@@ -64,6 +65,7 @@ abstract class __BaseMap__
 		boolean ordered = this.ordered;
 		
 		// Add a bunch of elements
+		int lasti = 0;
 		try
 		{
 			for (int i = 0;; i++)
@@ -75,6 +77,7 @@ abstract class __BaseMap__
 				
 				// Add
 				map.put(k, CommonData.__keyValue(true, i));
+				lasti = i;
 			}
 		}
 		catch (Throwable t)
@@ -91,6 +94,36 @@ abstract class __BaseMap__
 			catch (Throwable t)
 			{
 				__r.threw("putorder", t);
+			}
+		
+		// Get every element, in reverse order
+		try
+		{
+			boolean[] res = new boolean[lasti + 1];
+			String a, b, k;
+			for (int i = lasti; i >= 0; i--)
+			{
+				k = CommonData.__keyValue(false, i);
+				res[i] = Objects.equals(
+					(a = CommonData.__keyValue(true, i)),
+					(b = map.get(k)));
+			}
+			__r.result("get", res);
+		}
+		catch (Throwable t)
+		{
+			__r.threw("get", t);
+		}
+		
+		// Get order (for access order in LinkedHashMap)
+		if (ordered)
+			try
+			{
+				__r.result("getorder", __mapToArray(map));
+			}
+			catch (Throwable t)
+			{
+				__r.threw("getorder", t);
 			}
 	}
 	

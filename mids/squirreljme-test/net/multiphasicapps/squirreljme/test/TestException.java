@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirreljme.test;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This is used to wrap an exception and record its family so that profiling
  * can be used for comparison. Stack traces are not recorded. This just places
@@ -22,6 +28,12 @@ package net.multiphasicapps.squirreljme.test;
  */
 public final class TestException
 {
+	/** The family of classes used in the throwable. */
+	private final String[] _classes;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the exception holder sourced from the given Throwable.
 	 *
@@ -36,8 +48,39 @@ public final class TestException
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		throw new todo.TODO();
+		// Record all classes
+		List<String> classes = new ArrayList<>();
+		for (Class<?> rover = __t.getClass(); rover != null;
+			rover = rover.getSuperclass())
+			classes.add(rover.getName());
+		this._classes = classes.<String>toArray(new String[classes.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/29
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof TestException))
+			return false;
+		
+		return Arrays.equals(this._classes, ((TestException)__o)._classes);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/29
+	 */
+	@Override
+	public int hashCode()
+	{
+		int rv = 0;
+		for (String s : this._classes)
+			rv ^= s.hashCode();
+		return rv;
 	}
 	
 	/**
@@ -66,7 +109,26 @@ public final class TestException
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Escape all strings
+			StringBuilder sb = new StringBuilder();
+			for (String v : this._classes)
+			{
+				if (sb.length() > 0)
+					sb.append('|');
+				sb.append(TestResult.__escapeString(v));
+			}
+			
+			// Store
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 }
 

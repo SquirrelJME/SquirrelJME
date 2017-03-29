@@ -171,6 +171,21 @@ public class TestResult
 	 * @throws NullPointerException If no sub-test was specified.
 	 * @since 2017/03/27
 	 */
+	public void result(String __n, boolean __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/27
+	 */
 	public void result(String __n, int __v)
 		throws IllegalStateException, NullPointerException
 	{
@@ -217,6 +232,21 @@ public class TestResult
 	 * @since 2017/03/28
 	 */
 	public void result(String __n, double __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, String __v)
 		throws IllegalStateException, NullPointerException
 	{
 		__checkResult(__n, __v);
@@ -443,7 +473,7 @@ public class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/28
 	 */
-	private static String __escapeString(String __v)
+	static String __escapeString(String __v)
 		throws NullPointerException
 	{
 		// Check
@@ -509,7 +539,11 @@ public class TestResult
 		
 		// Boolean array
 		else if (__v instanceof boolean[])
-			throw new todo.TODO();
+		{
+			sb.append("bool[]:");
+			for (boolean v : (boolean[])__v)
+				sb.append((v ? 'T' : 'F'));
+		}
 		
 		// Byte array
 		else if (__v instanceof byte[])
@@ -567,6 +601,13 @@ public class TestResult
 		{
 			sb.append("string:");
 			sb.append(__escapeString((String)__v));
+		}
+		
+		// Boolean
+		else if (__v instanceof Boolean)
+		{
+			sb.append("bool:");
+			sb.append(__v);
 		}
 		
 		// Unknown

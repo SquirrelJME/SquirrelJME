@@ -173,6 +173,17 @@ public final class Class<T>
 	}
 	
 	/**
+	 * Returns the class which is the superclass of this class.
+	 *
+	 * @return The superclass or {@code null} if there is none.
+	 * @since 2017/03/29
+	 */
+	public Class<? super T> getSuperclass()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns {@code true} if this class represents an array type.
 	 *
 	 * @return {@code true} if this class represents an array type.
