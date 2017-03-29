@@ -122,7 +122,7 @@ class __MapIterator__<K, V>
 			throw new IllegalStateException("CE02");
 		
 		// Clear
-		map.__remove(last, last._key);
+		map.remove(last._key);
 	}
 }
 

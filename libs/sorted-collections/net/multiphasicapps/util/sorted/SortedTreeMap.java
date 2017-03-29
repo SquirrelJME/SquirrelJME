@@ -202,6 +202,26 @@ public class SortedTreeMap<K, V>
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/03/29
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public V remove(Object __k)
+	{
+		// If the map is empty then do not bother
+		__Node__<K, V> root = this._root;
+		if (root == null)
+			return null;
+		
+		// Start at the root and return the old value
+		this._found = null;
+		__Node__<K, V> now = __remove(root, (K)__k);
+		__Node__<K, V> act = this._found;
+		return act._value;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/06
 	 */
 	@Override
@@ -502,6 +522,12 @@ public class SortedTreeMap<K, V>
 			__Node__<K, V> right = __at._right;
 			if (res == 0 && right == null)
 			{
+				// Set as found
+				this._found = __at;
+				
+				// Count as removed
+				this._size--;
+				
 				// Remove child links from parent node
 				__Node__<K, V> oldparent = __at._parent;
 				boolean wasleft, wasright;
@@ -533,13 +559,12 @@ public class SortedTreeMap<K, V>
 						oldparent._right = left;
 				}
 				
-				// Destroy node data
-				__at._value = null;
+				// Destroy node data, but keep the value
 				__at._left = null;
 				__at._right = null;
 				__at._parent = null;
 				
-				// No node to return
+				// Return the current node
 				return null;
 			}
 			
