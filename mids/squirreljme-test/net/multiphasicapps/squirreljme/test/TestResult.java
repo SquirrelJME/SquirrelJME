@@ -115,7 +115,7 @@ public class TestResult
 			
 			// Value
 			__ps.print('\t');
-			__ps.println(e.getValue());
+			__ps.println(__toString(e.getValue()));
 		}
 	}
 	
@@ -172,6 +172,186 @@ public class TestResult
 	 * @since 2017/03/27
 	 */
 	public void result(String __n, int __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, long __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, float __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, double __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, boolean[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, byte[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, short[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, char[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, int[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, long[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, float[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, double[] __v)
+		throws IllegalStateException, NullPointerException
+	{
+		__checkResult(__n, __v);
+	}
+	
+	/**
+	 * Provides the specified result.
+	 *
+	 * @param __n The sub-test name.
+	 * @param __v The result.
+	 * @throws IllegalStateException If a result is already set.
+	 * @throws NullPointerException If no sub-test was specified.
+	 * @since 2017/03/28
+	 */
+	public void result(String __n, String[] __v)
 		throws IllegalStateException, NullPointerException
 	{
 		__checkResult(__n, __v);
@@ -256,6 +436,44 @@ public class TestResult
 	}
 	
 	/**
+	 * Escapes the specified string.
+	 *
+	 * @param __v The string to escape.
+	 * @return The escaped representation of the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/28
+	 */
+	private static String __escapeString(String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Escape
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __v.length(); i < n; i++)
+		{
+			char c = __v.charAt(i);
+			
+			// Encode (pipe is included because it splits)
+			// Backslash because it is used for escapes
+			if (c <= ' ' || c >= 0x7E || c == '|' || c == '\\')
+			{
+				sb.append("\\x");
+				sb.append(Character.forDigit(c >>> 4, 16));
+				sb.append(Character.forDigit(c & 0xF, 16));
+			}
+			
+			// As-is
+			else
+				sb.append(c);
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
 	 * Encodes the specified object as a string.
 	 *
 	 * @param __v The object to encode.
@@ -323,7 +541,19 @@ public class TestResult
 		
 		// String array
 		else if (__v instanceof String[])
-			throw new todo.TODO();
+		{
+			sb.append("string[]:");
+			String[] a = (String[])__v;
+			for (int i = 0, n = a.length; i < n; i++)
+			{
+				// Pipe splits strings
+				if (i > 0)
+					sb.append('|');
+				
+				// Use normal output
+				sb.append(__escapeString(a[i]));
+			}
+		}
 		
 		// Represented exception
 		else if (__v instanceof TestException)
@@ -336,23 +566,7 @@ public class TestResult
 		else if (__v instanceof String)
 		{
 			sb.append("string:");
-			String v = (String)__v;
-			for (int i = 0, n = v.length(); i < n; i++)
-			{
-				char c = v.charAt(i);
-				
-				// Encode
-				if (c <= ' ' || c >= 0x7E)
-				{
-					sb.append("\\x");
-					sb.append(Character.forDigit(c >>> 4, 16));
-					sb.append(Character.forDigit(c & 0xF, 16));
-				}
-				
-				// As-is
-				else
-					sb.append(c);
-			}
+			sb.append(__escapeString((String)__v));
 		}
 		
 		// Unknown

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.test.collections;
 
 import java.util.Map;
+import net.multiphasicapps.squirreljme.test.CommonData;
 import net.multiphasicapps.squirreljme.test.TestFunction;
 import net.multiphasicapps.squirreljme.test.TestResult;
 
@@ -59,7 +60,63 @@ abstract class __BaseMap__
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<String, String> map = this.map;
+		boolean ordered = this.ordered;
+		
+		// Add a bunch of elements
+		try
+		{
+			for (int i = 0;; i++)
+			{
+				// Need key
+				String k = CommonData.__keyValue(false, i);
+				if (k == null)
+					break;
+				
+				// Add
+				map.put(k, CommonData.__keyValue(true, i));
+			}
+		}
+		catch (Throwable t)
+		{
+			__r.threw("put", t);
+		}
+		
+		// Put order (significant)
+		if (ordered)
+			try
+			{
+				__r.result("putorder", __mapToArray(map));
+			}
+			catch (Throwable t)
+			{
+				__r.threw("putorder", t);
+			}
+	}
+	
+	/**
+	 * Converts a map to an array of strings with key/value pairs.
+	 *
+	 * @param __m The map to convert.
+	 * @return The mapping as key/value pairs in the specified array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/28
+	 */
+	private static String[] __mapToArray(Map<String, String> __m)
+		throws NullPointerException
+	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Map values to entries
+		int n = __m.size(), i = 0;
+		String[] rv = new String[n];
+		for (Map.Entry<String, String> e : __m.entrySet())
+			rv[i++] = e.getKey() + "+" + e.getValue();
+		
+		// Done
+		return rv;
 	}
 }
 
