@@ -504,10 +504,34 @@ public class SortedTreeMap<K, V>
 			{
 				// Remove child links from parent node
 				__Node__<K, V> oldparent = __at._parent;
-				if (oldparent._left == __at)
+				boolean wasleft, wasright;
+				if (wasleft = (oldparent._left == __at))
 					oldparent._left = null;
-				if (oldparent._right == __at)
+				if (wasright = (oldparent._right == __at))
 					oldparent._right = null;
+				
+				// {@squirreljme.error CE05 A node was not linked into any
+				// parent.}
+				if (!wasright && !wasleft)
+					throw new IllegalStateException("CE05");
+				
+				// {@squirreljme.error CE06 A node was linked into both the
+				// left and right side of the parent.}
+				if (wasright && wasleft)
+					throw new IllegalStateException("CE06");
+				
+				// If we have a left node
+				left = __at._left;
+				if (left != null)
+				{
+					left._parent = oldparent;
+					
+					// Give that left node the side we were on
+					if (wasleft)
+						oldparent._left = left;
+					else
+						oldparent._right = left;
+				}
 				
 				// Destroy node data
 				__at._value = null;

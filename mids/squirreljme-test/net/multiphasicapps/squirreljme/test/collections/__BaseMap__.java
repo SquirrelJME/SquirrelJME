@@ -126,9 +126,13 @@ abstract class __BaseMap__
 				__r.threw("getorder", t);
 			}
 		
-		// Remove 
+		// Remove
 		try
 		{
+			// Count before remove
+			__r.result("countbeforeremove", map.size());
+			
+			// Perform the remove
 			int removecount = (lasti + 1) / 2, at = 0;
 			boolean[] res = new boolean[removecount];
 			String a, b, k;
@@ -140,6 +144,9 @@ abstract class __BaseMap__
 					(b = map.remove(k)));
 			}
 			__r.result("remove", res);
+			
+			// Count after remove
+			__r.result("countafterremove", map.size());
 		}
 		catch (Throwable t)
 		{
@@ -157,6 +164,42 @@ abstract class __BaseMap__
 				__r.threw("removeorder", t);
 			}
 		
+		// Put every element back into the map again
+		try
+		{
+			// Count before more put
+			__r.result("countbeforeputmore", map.size());
+			
+			// Put
+			for (int i = 0;; i++)
+			{
+				// Need key
+				String k = CommonData.__keyValue(false, i);
+				if (k == null)
+					break;
+				
+				// Add
+				map.put(k, CommonData.__keyValue(true, i));
+			}
+			
+			// Count after more put
+			__r.result("countafterputmore", map.size());
+		}
+		catch (Throwable t)
+		{
+			__r.threw("putmore", t);
+		}
+		
+		// Put order (significant)
+		if (ordered)
+			try
+			{
+				__r.result("putmoreorder", __mapToArray(map));
+			}
+			catch (Throwable t)
+			{
+				__r.threw("putmoreorder", t);
+			}
 	}
 	
 	/**
