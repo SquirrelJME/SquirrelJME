@@ -33,7 +33,9 @@ public class CommonData
 			switch (__i)
 			{
 				case 0: return "AreAwesome";
-				case 1: return "YoursTruly";
+				case 1: return "IsAGraySquirrel";
+				case 2: return "ICsOfTheEras";
+				case 3: return "IsLegal";
 				default: return null;
 			}
 		
@@ -43,6 +45,8 @@ public class CommonData
 			{
 				case 0: return "squirrels";
 				case 1: return "xer";
+				case 2: return "nekoed";
+				case 3: return "quaa";
 				default: return null;
 			}
 	}
