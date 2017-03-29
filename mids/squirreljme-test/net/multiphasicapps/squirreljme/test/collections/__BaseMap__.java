@@ -125,6 +125,26 @@ abstract class __BaseMap__
 			{
 				__r.threw("getorder", t);
 			}
+		
+		// Remove 
+		try
+		{
+			int removecount = (lasti + 1) / 2, at = 0;
+			boolean[] res = new boolean[removecount];
+			String a, b, k;
+			for (int i = lasti; i >= 0; i -= 2)
+			{
+				k = CommonData.__keyValue(false, i);
+				res[at++] = Objects.equals(
+					(a = CommonData.__keyValue(true, i)),
+					(b = map.remove(k)));
+			}
+			__r.result("remove", res);
+		}
+		catch (Throwable t)
+		{
+			__r.threw("remove", t);
+		}
 	}
 	
 	/**
