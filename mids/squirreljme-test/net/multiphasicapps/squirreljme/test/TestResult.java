@@ -488,7 +488,8 @@ public class TestResult
 			
 			// Encode (pipe is included because it splits)
 			// Backslash because it is used for escapes
-			if (c <= ' ' || c >= 0x7E || c == '|' || c == '\\')
+			// and ! is used for null
+			if (c <= ' ' || c >= 0x7E || c == '|' || c == '\\' || c == '!')
 			{
 				sb.append("\\x");
 				sb.append(Character.forDigit(c >>> 4, 16));
@@ -585,7 +586,11 @@ public class TestResult
 					sb.append('|');
 				
 				// Use normal output
-				sb.append(__escapeString(a[i]));
+				String s = a[i];
+				if (s == null)
+					sb.append("!null");
+				else
+					sb.append(__escapeString(s));
 			}
 		}
 		

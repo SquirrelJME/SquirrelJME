@@ -48,6 +48,9 @@ public final class TestException
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		__t.printStackTrace();
+		
 		// Record all classes
 		List<String> classes = new ArrayList<>();
 		for (Class<?> rover = __t.getClass(); rover != null;

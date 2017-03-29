@@ -145,6 +145,18 @@ abstract class __BaseMap__
 		{
 			__r.threw("remove", t);
 		}
+		
+		// Remove order
+		if (ordered)
+			try
+			{
+				__r.result("removeorder", __mapToArray(map));
+			}
+			catch (Throwable t)
+			{
+				__r.threw("removeorder", t);
+			}
+		
 	}
 	
 	/**

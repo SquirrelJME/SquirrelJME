@@ -26,7 +26,7 @@ class __Node__<K, V>
 	volatile V _value;
 	
 	/** The color, defaults to red. */
-	volatile boolean _color =
+	volatile boolean _isred =
 		true;
 	
 	/** The node to the left. */
@@ -67,7 +67,7 @@ class __Node__<K, V>
 			return false;
 		
 		// Check
-		return __red == n._color;
+		return __red == n._isred;
 	}
 	
 	/**

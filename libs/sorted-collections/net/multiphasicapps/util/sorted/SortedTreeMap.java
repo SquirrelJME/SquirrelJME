@@ -189,7 +189,7 @@ public class SortedTreeMap<K, V>
 		}
 
 		// Force to black
-		now._color = true;
+		now._isred = true;
 		
 		// Set new value
 		__Node__<K, V> act = this._found;
@@ -208,6 +208,40 @@ public class SortedTreeMap<K, V>
 	public int size()
 	{
 		return this._size;
+	}
+	
+	/**
+	 * Corrects nodes traversing back up the tree.
+	 *
+	 * @param __at The node to correct.
+	 * @return The currected rotated node which is at the root.
+	 * @since 2017/03/29
+	 */
+	public __Node__<K, V> __correctUp(__Node__<K, V> __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// If the right side is red then rotate left
+		if (__at.isSideColorRed(true))
+			__at = __rotate(__at, false);
+		
+		// If the left node is red and it has another left node which is also
+		// red then rotate right
+		__Node__<K, V> atleft = __at._left;
+		if (atleft != null && __at.isSideColorRed(false) &&
+			atleft.isSideColorRed(false))
+			__at = __rotate(__at, true);
+		
+		// If both sides are red then they must become black while the node
+		// above becomes red
+		if (__at.isSideColorRed(false) && __at.isSideColorRed(true))
+			__flipColor(__at);
+		
+		// Return the node, which may have been rotated
+		return __at;
 	}
 	
 	/**
@@ -267,15 +301,15 @@ public class SortedTreeMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Flip parent
-		__at._color = !__at._color;
+		__at._isred = !__at._isred;
 		
 		// Flip left
 		__Node__<K, V> left = __at._left;
-		left._color = !left._color;
+		left._isred = !left._isred;
 		
 		// Flip right
 		__Node__<K, V> right = __at._right;
-		right._color = !right._color;
+		right._isred = !right._isred;
 	}
 	
 	/**
@@ -352,23 +386,74 @@ public class SortedTreeMap<K, V>
 			}
 		}
 		
-		// If the right side is red then rotate left
-		if (__at.isSideColorRed(true))
-			__at = __rotate(__at, false);
+		// Correct nodes up the tree
+		return __correctUp(__at);
+	}
+	
+	/**
+	 * Moves the dangling red nodee around in the tree in the given direction.
+	 *
+	 * @param __at The node to move.
+	 * @param __r If {@code true} then rotation is to the right.
+	 * @throws NullPointerException On null arguments.
+	 * @return The node at the top position.
+	 * @since 2017/03/29
+	 */
+	final __Node__<K, V> __moveRed(__Node__<K, V> __at, boolean __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
 		
-		// If the left node is red and it has another left node which is also
-		// red then rotate right
-		__Node__<K, V> atleft = __at._left;
-		if (atleft != null && __at.isSideColorRed(false) &&
-			atleft.isSideColorRed(false))
-			__at = __rotate(__at, true);
+		// Flip the nodes on the left and right
+		__flipColor(__at);
 		
-		// If both sides are red then they must become black while the node
-		// above becomes red
-		if (__at.isSideColorRed(false) && __at.isSideColorRed(true))
-			__flipColor(__at);
+		// Right direction
+		if (__r)
+		{
+			// {@squirreljme.error CE04 Expected a node on the left side when
+			// moving red node to the right.}
+			__Node__<K, V> left = __at._left;
+			if (left == null)
+				throw new IllegalStateException("CE04");
+			
+			// If the node on the left is red then flip the current node right
+			__Node__<K, V> leftleft = left._left;
+			if (leftleft != null && leftleft._isred)
+			{
+				// Rotate
+				__at = __rotate(__at, true);
+				
+				// Correct color
+				__flipColor(__at);
+			}
+		}
 		
-		// Return the node, which may have been rotated
+		// Left direction
+		else
+		{
+			// {@squirreljme.error CE03 Expected a node on the right side when
+			// moving red node to the left.}
+			__Node__<K, V> right = __at._right;
+			if (right == null)
+				throw new IllegalStateException("CE03");
+		
+			// If the node on the left of the right node is red then rotate it
+			// to the top position
+			__Node__<K, V> rightleft = right._left;
+			if (rightleft != null && rightleft._isred)
+			{
+				// Rotate nodes around
+				__rotate(right, true);
+				__at = __rotate(__at, false);
+			
+				// Correct color
+				__flipColor(__at);
+			}
+		}
+		
+		// Kept the same or is the top node
 		return __at;
 	}
 	
@@ -377,17 +462,86 @@ public class SortedTreeMap<K, V>
 	 *
 	 * @param __at The node to remove.
 	 * @param __k The key value.
+	 * @return The top of the node on removal.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/25
 	 */
-	final void __remove(__Node__<K, V> __at, K __k)
+	final __Node__<K, V> __remove(__Node__<K, V> __at, K __k)
 		throws NullPointerException
 	{
 		// Check
 		if (__at == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Compare node and value
+		Comparator<K> compare = this._compare;
+		K existval = __at._key;
+		int res = compare.compare(__k, existval);
+		
+		// Less than
+		if (res < 0)
+		{
+			// Move red node to the left if this is lower than the key
+			__Node__<K, V> left = __at._left;
+			if (!left._isred && !left.isSideColor(false, true))
+				__at = __moveRed(__at, false);
+			
+			// Recursive removal
+			__at._left = __remove(__at._left, __k);
+		}
+		
+		// Equal or greater
+		else
+		{
+			// If the left node is red then rotate to the right
+			__Node__<K, V> left = __at._left;
+			if (left != null && left._isred)
+				__at = __rotate(__at, true);
+			
+			// If equal and there is no right side then just unlink the node
+			__Node__<K, V> right = __at._right;
+			if (res == 0 && right == null)
+			{
+				// Remove child links from parent node
+				__Node__<K, V> oldparent = __at._parent;
+				if (oldparent._left == __at)
+					oldparent._left = null;
+				if (oldparent._right == __at)
+					oldparent._right = null;
+				
+				// Destroy node data
+				__at._value = null;
+				__at._left = null;
+				__at._right = null;
+				__at._parent = null;
+				
+				// No node to return
+				return null;
+			}
+			
+			// If the right side is black and its left side is also black
+			// make the nodes red and move them to the left
+			if (!right._isred && !right.isSideColor(false, true))
+				__at = __moveRed(__at, true);
+			
+			// Potentially moved or rotated, recalculate key direction
+			existval = __at._key;
+			res = compare.compare(__k, existval);
+			
+			// Keys are equal
+			if (res == 0)
+			{
+				// Unlink from the tree
+				throw new todo.TODO();
+			}
+			
+			// Traverse right side of tree
+			else
+				__at._right = __remove(__at._right, __k);
+		}
+		
+		// Correct up the tree
+		return __correctUp(__at);
 	}
 	
 	/**
@@ -451,8 +605,8 @@ public class SortedTreeMap<K, V>
 		lean._parent = parent;
 		
 		// Adjust colors
-		lean._color = __at._color;
-		__at._color = true;
+		lean._isred = __at._isred;
+		__at._isred = true;
 		
 		// Return the leaning node
 		return lean;
