@@ -71,6 +71,19 @@ class __Node__<K, V>
 	}
 	
 	/**
+	 * Checks if a node on a given side is of the black color.
+	 *
+	 * @param __r If {@code true} then the right side is checked, otherwise
+	 * the left.
+	 * @return {@code true} if the side is black.
+	 * @since 2017/03/30
+	 */
+	final boolean isSideColorBlack(boolean __r)
+	{
+		return isSideColor(__r, false);
+	}
+	
+	/**
 	 * Checks if a node on a given side is of the red color.
 	 *
 	 * @param __r If {@code true} then the right side is checked, otherwise

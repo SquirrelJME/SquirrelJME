@@ -29,14 +29,19 @@ import java.util.Set;
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
+	/** Left side. */
+	private static final boolean _LEFT =
+		false;
+	
+	/** Right side. */
+	private static final boolean _RIGHT =
+		true;
+	
 	/** The comparison method to use. */
 	private final Comparator<K> _compare;
 	
 	/** The entry set. */
 	private volatile Reference<Set<Map.Entry<K, V>>> _entryset;
-	
-	/** The found node in the search. */
-	private volatile __Node__<K, V> _found;
 	
 	/** The root node. */
 	volatile __Node__<K, V> _root;
@@ -177,9 +182,9 @@ public class SortedTreeMap<K, V>
 	public V put(K __k, V __v)
 	{
 		// Replace the root
-		this._found = null;
+		__Search__ search = new __Search__();
 		__Node__<K, V> was = this._root;
-		__Node__<K, V> now = __insert(was, __k);
+		__Node__<K, V> now = __insert(search, was, __k);
 
 		// Changed?
 		if (was != now)
@@ -192,7 +197,7 @@ public class SortedTreeMap<K, V>
 		now._isred = true;
 		
 		// Set new value
-		__Node__<K, V> act = this._found;
+		__Node__<K, V> act = search._node;
 		if (act == null)
 			throw new RuntimeException("OOPS");
 		V old = act._value;
@@ -214,9 +219,9 @@ public class SortedTreeMap<K, V>
 			return null;
 		
 		// Start at the root and return the old value
-		this._found = null;
-		__Node__<K, V> now = __remove(root, (K)__k);
-		__Node__<K, V> act = this._found;
+		__Search__ search = new __Search__();
+		__Node__<K, V> now = __remove(search, root, (K)__k);
+		__Node__<K, V> act = search._node;
 		return act._value;
 	}
 	
@@ -335,13 +340,20 @@ public class SortedTreeMap<K, V>
 	/**
 	 * Inserts a node into the tree.
 	 *
+	 * @param __s Node search information.
 	 * @param __at The current node the algorithm is at.
 	 * @param __k The key to insert.
 	 * @return The newly created node.
+	 * @throws NullPointerException If no search was specified.
 	 * @since 2016/09/06
 	 */
-	private final __Node__<K, V> __insert(__Node__<K, V> __at, K __k)
+	private final __Node__<K, V> __insert(__Search__ __s, __Node__<K, V> __at,
+		K __k)
 	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
 		// The tree is empty, adding an element is trivial
 		if (__at == null)
 		{
@@ -349,7 +361,7 @@ public class SortedTreeMap<K, V>
 			__Node__<K, V> rv = new __Node__<K, V>(__k);
 			
 			// Set last found node
-			this._found = rv;
+			__s._node = rv;
 			
 			// Increase size
 			this._size++;
@@ -368,7 +380,7 @@ public class SortedTreeMap<K, V>
 		if (res == 0)
 		{
 			// Set as found
-			this._found = __at;
+			__s._node = __at;
 			
 			// Return it
 			return __at;
@@ -378,7 +390,7 @@ public class SortedTreeMap<K, V>
 		else if (res < 0)
 		{
 			__Node__<K, V> was = __at._left;
-			__Node__<K, V> now = __insert(was, __k);
+			__Node__<K, V> now = __insert(__s, was, __k);
 			
 			// Changed?
 			if (was != now)
@@ -394,7 +406,7 @@ public class SortedTreeMap<K, V>
 		else if (res > 0)
 		{
 			__Node__<K, V> was = __at._right;
-			__Node__<K, V> now = __insert(was, __k);
+			__Node__<K, V> now = __insert(__s, was, __k);
 			
 			// Changed?
 			if (was != now)
@@ -487,17 +499,18 @@ public class SortedTreeMap<K, V>
 	/**
 	 * Removes the specified node from the tree.
 	 *
+	 * @param __s Node search information.
 	 * @param __at The node to remove.
 	 * @param __k The key value.
 	 * @return The top of the node on removal.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for the key.
 	 * @since 2017/03/25
 	 */
-	final __Node__<K, V> __remove(__Node__<K, V> __at, K __k)
+	final __Node__<K, V> __remove(__Search__ __s, __Node__<K, V> __at, K __k)
 		throws NullPointerException
 	{
 		// Check
-		if (__at == null)
+		if (__s == null || __at == null)
 			throw new NullPointerException("NARG");
 		
 		// Compare node and value
@@ -508,6 +521,9 @@ public class SortedTreeMap<K, V>
 		// Less than
 		if (res < 0)
 		{
+			if (true)
+				throw new todo.TODO();
+			/*
 			// Move red node to the left if this is lower than the key
 			__Node__<K, V> left = __at._left;
 			if (!left._isred && !left.isSideColor(false, true))
@@ -523,12 +539,15 @@ public class SortedTreeMap<K, V>
 				// Reparent if valid
 				if (now != null)
 					now._parent = __at;
-			}
+			}*/
 		}
 		
 		// Equal or greater
 		else
 		{
+			if (true)
+				throw new todo.TODO();
+			/*
 			// If the left node is red then rotate to the right
 			__Node__<K, V> left = __at._left;
 			if (left != null && left._isred)
@@ -618,7 +637,7 @@ public class SortedTreeMap<K, V>
 					if (now != null)
 						now._parent = __at;
 				}
-			}
+			}*/
 		}
 		
 		// Correct up the tree
@@ -691,6 +710,17 @@ public class SortedTreeMap<K, V>
 		
 		// Return the leaning node
 		return lean;
+	}
+	
+	/**
+	 * Search information.
+	 *
+	 * @since 2017/03/20
+	 */
+	private final class __Search__
+	{
+		/** The node that was found. */
+		volatile __Node__<K, V> _node;
 	}
 }
 
