@@ -377,6 +377,13 @@ class __JITCodeStream__
 				valueAllocation();
 			ArgumentAllocation target = allocs[i];
 			
+			// {@squirreljme.error ED0p Inconsistent input state, the slot has
+			// no allocation but was specified as an argument to a method.
+			// (The slot; The input state)}
+			if (source == null)
+				throw new IllegalStateException(String.format("ED0p %s %s",
+					__cargs[i], instate));
+			
 			// If the registers are the same, nothing has to be done
 			if (source.isRegisterCompatible(target))
 				continue;
