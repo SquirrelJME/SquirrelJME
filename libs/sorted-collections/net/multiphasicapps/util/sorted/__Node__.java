@@ -20,7 +20,7 @@ package net.multiphasicapps.util.sorted;
 class __Node__<K, V>
 {
 	/** The color, defaults to red. */
-	private volatile boolean _isred =
+	volatile boolean _isred =
 		true;
 	
 	/** The currently associated data for this node. */
@@ -31,6 +31,42 @@ class __Node__<K, V>
 	
 	/** The node to the right. */
 	volatile __Node__<K, V> _right;
+	
+	/**
+	 * Compares this node against the given key.
+	 *
+	 * @param __n The key to compare against.
+	 * @return The comparison result.
+	 * @since 2017/03/30
+	 */
+	final int __compare(K __k)
+	{
+		return this._data.__compare(__k);
+	}
+	
+	/**
+	 * Compares this node against the given data.
+	 *
+	 * @param __n The data to compare against.
+	 * @return The comparison result.
+	 * @since 2017/03/30
+	 */
+	final int __compare(__Data__<K, V> __d)
+	{
+		return this._data.__compare(__d);
+	}
+	
+	/**
+	 * Compares this node against the given node.
+	 *
+	 * @param __n The node to compare against.
+	 * @return The comparison result.
+	 * @since 2017/03/30
+	 */
+	final int __compare(__Node__<K, V> __n)
+	{
+		return this._data.__compare(__n);
+	}
 	
 	/**
 	 * Makes the node black.

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.sorted;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,6 +22,9 @@ import java.util.Objects;
 class __Data__<K, V>
 	implements Map.Entry<K, V>
 {
+	/** The comparison method to use. */
+	final Comparator<K> _compare;
+	
 	/** The key for this data. */
 	final K _key;
 	
@@ -39,12 +43,20 @@ class __Data__<K, V>
 	/**
 	 * Initializes the data.
 	 *
+	 * @param __m The owning map.
 	 * @param __k The key used for this data.
 	 * @param __v The value to initially store.
+	 * @throws NullPointerException If no map was specified.
 	 * @since 2017/03/30
 	 */
-	__Data__(K __k, V __v)
+	__Data__(SortedTreeMap<K, V> __m, K __k, V __v)
+		throws NullPointerException
 	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		this._compare = __m._compare;
 		this._key = __k;
 		this._value = __v;
 	}
@@ -106,6 +118,42 @@ class __Data__<K, V>
 		V rv = this._value;
 		this._value = __a;
 		return rv;
+	}
+	
+	/**
+	 * Compares this data against the given key.
+	 *
+	 * @param __n The key to compare against.
+	 * @return The comparison result.
+	 * @since 2017/03/30
+	 */
+	final int __compare(K __k)
+	{
+		return this._compare.compare(this._key, __k);
+	}
+	
+	/**
+	 * Compares this data against the given data.
+	 *
+	 * @param __n The data to compare against.
+	 * @return The comparison result.
+	 * @since 2017/03/30
+	 */
+	final int __compare(__Data__<K, V> __d)
+	{
+		return __compare(__d._key);
+	}
+	
+	/**
+	 * Compares this data against the given node.
+	 *
+	 * @param __n The node to compare against.
+	 * @return The comparison result.
+	 * @since 2017/03/30
+	 */
+	final int __compare(__Node__<K, V> __n)
+	{
+		return __compare(__n._data);
 	}
 }
 

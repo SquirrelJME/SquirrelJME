@@ -29,8 +29,16 @@ import java.util.Set;
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
+	/** Rotate left. */
+	private static final boolean _LEFT =
+		false;
+	
+	/** Rotate right. */
+	private static final boolean _RIGHT =
+		true;
+	
 	/** The comparison method to use. */
-	private final Comparator<K> _compare;
+	final Comparator<K> _compare;
 	
 	/** The entry set. */
 	private volatile Reference<Set<Map.Entry<K, V>>> _entryset;
@@ -120,8 +128,8 @@ public class SortedTreeMap<K, V>
 	@Override
 	public void clear()
 	{
-		// Clear the root and the size
 		this._root = null;
+		this._min = null;
 		this._size = 0;
 	}
 	
@@ -210,6 +218,38 @@ public class SortedTreeMap<K, V>
 	}
 	
 	/**
+	 * Corrects nodes going back up the tree.
+	 *
+	 * @param __at The node to potentially correct.
+	 * @return The parent node and not a side node.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/30
+	 */
+	private __Node__<K, V> __correctNodes(__Node__<K, V> __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// Rotate right side value to the left
+		if (__isRed(__at._right))
+			__at = __rotate(__at, _LEFT);
+		
+		// If there are a bunch of dangling red nodes on the left balance
+		// them
+		if (__isRed(__at._left) && __isRed(__at._left._left))
+			__at = __rotate(__at, _RIGHT);
+		
+		// If both nodes are red then flip the color of this node
+		if (__isRed(__at._left) && __isRed(__at._right))
+			__flipColor(__at);
+		
+		// Return current node
+		return __at;
+	}
+	
+	/**
 	 * Finds the node with the given value.
 	 *
 	 * @param __o The object to find.
@@ -232,6 +272,8 @@ public class SortedTreeMap<K, V>
 			// Compare
 			K against = rover._data._key;
 			int res = compare.compare((K)__o, against);
+			System.err.printf("DEBUG -- Compare %s ? %s = %d%n", __o,
+				against, res);
 			
 			// The same? stop here
 			if (res == 0)
@@ -248,6 +290,26 @@ public class SortedTreeMap<K, V>
 		
 		// Not found
 		return null;
+	}
+	
+	/**
+	 * Flips the color of the specified node.
+	 *
+	 * @param __at The node to flip colors for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/30
+	 */
+	private final void __flipColor(__Node__<K, V> __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// Flip node colors
+		__at._isred = !__at._isred;
+		__at._left._isred = !__at._left._isred;
+		__at._right._isred = !__at._right._isred;
 	}
 	
 	/**
@@ -269,14 +331,64 @@ public class SortedTreeMap<K, V>
 		if (__at == null)
 		{
 			// Setup data
-			__Data__<K, V> data = new __Data__<>(__k, __v);
+			__Data__<K, V> data = new __Data__<>(this, __k, __v);
 			
 			// Create new node
 			__at = new __Node__<>();
 			__at._data = data;
 			
-			// The minimum value of the tree is this only node
-			this._min = data;
+			// Need to link the data in with the source nodes data chain
+			if (__from != null)
+			{
+				// Need to directly modify the from data links
+				__Data__<K, V> fd = __from._data;
+				
+				// Link before the from node?
+				if (data.__compare(fd) < 0)
+				{
+					// The from's previous data needs to point to this node
+					// and not the from data
+					__Data__<K, V> pp = fd._prev;
+					if (pp != null)
+						pp._next = data;
+					
+					// This links back to that from data
+					data._prev = pp;
+					
+					// and then links to the from data
+					data._next = fd;
+					
+					// Then the from's previous becomes this data
+					fd._prev = data;
+				}
+				
+				// Link after
+				else
+				{
+					// The from's next has to point back to this data
+					__Data__<K, V> nn = fd._next;
+					if (nn != null)
+						nn._prev = data;
+					
+					// This links back into the from node
+					data._prev = fd;
+					
+					// And links to the original next in the from
+					data._next = nn;
+					
+					// Then the from next links to this data
+					fd._next = data;
+				}
+			}
+			
+			// If the tree has no minimum use this node as it
+			__Data__<K, V> oldmin = this._min;
+			if (oldmin == null)
+				this._min = oldmin;
+			
+			// Otherwise always use the smaller value
+			else if (data.__compare(oldmin) < 0)
+				this._min = data;
 			
 			// Use this new node
 			return __at;
@@ -285,7 +397,77 @@ public class SortedTreeMap<K, V>
 		// This is needed for data link chaining
 		__Node__<K, V> setfrom = __at;
 		
-		throw new todo.TODO();
+		// Matched key, set its value
+		int comp = __at.__compare(__k);
+		if (comp == 0)
+		{
+			__found._oldvalue = __at._data._value;
+			__at._data._value = __v;
+		}
+		
+		// Less than
+		else if (comp < 0)
+			__at._left = __insert(__at, __at._left, __found, __k, __v);
+		
+		// Greater
+		else
+			__at._right = __insert(__at, __at._right, __found, __k, __v);
+		
+		// Correct nodes going back up
+		return __correctNodes(__at);
+	}
+	
+	/**
+	 * Returns {@code true} if the given node is red.
+	 *
+	 * @param __n The node to see if it is red.
+	 * @return {@code true} if the node is red.
+	 * @since 2017/03/30
+	 */
+	private final boolean __isRed(__Node__<K, V> __n)
+	{
+		if (__n == null)
+			return false;
+		return __n._isred;
+	}
+	
+	/**
+	 * Rotates the nodes in the given direction.
+	 *
+	 * @param __at The node to rotate.
+	 * @param __r If {@code true} then rotation is to the right, otherwise it
+	 * is to the left.
+	 * @return The center node.
+	 * @since 2017/03/27
+	 */
+	private final __Node__<K, V> __rotate(__Node__<K, V> __at, boolean __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// Rotate right
+		if (__r)
+		{
+			__Node__<K, V> x = __at._left;
+			__at._left = x._right;
+			x._right = __at;
+			x._isred = x._right._isred;
+			x._right._isred = true;
+			return x;
+		}
+		
+		// Rotate left
+		else
+		{
+			__Node__<K, V> x = __at._right;
+			__at._right = x._left;
+			x._left = __at;
+			x._isred = x._left._isred;
+			x._left._isred = true;
+			return x;
+		}
 	}
 	
 	/**
