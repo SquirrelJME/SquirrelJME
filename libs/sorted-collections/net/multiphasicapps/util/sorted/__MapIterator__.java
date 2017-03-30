@@ -57,7 +57,10 @@ class __MapIterator__<K, V>
 	@Override
 	public boolean hasNext()
 	{
-		return (__detect(this._at) != null);
+		__Data__<K, V> at = this._at;
+		if (at == null)
+			return false;
+		return (__detect(at) != null);
 	}
 	
 	/**

@@ -121,6 +121,16 @@ class __Data__<K, V>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("[%s, %s]", this._key, this._value);
+	}
+	
+	/**
 	 * Compares this data against the given key.
 	 *
 	 * @param __n The key to compare against.

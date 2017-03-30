@@ -264,7 +264,8 @@ public class SortedTreeMap<K, V>
 		__Node__<K, V> rover = this._root;
 		if (rover == null)
 			return null;
-		
+		System.err.printf("DEBUG -- Want: %s in %s (min=%s)%n", __o, this,
+			this._min);
 		// Constant search
 		Comparator<K> compare = this._compare;
 		while (rover != null)
@@ -329,13 +330,14 @@ public class SortedTreeMap<K, V>
 	{
 		// No root of the tree?
 		if (__at == null)
-		{
+		{System.err.printf("DEBUG -- Place: %s%n", __k);
 			// Setup data
 			__Data__<K, V> data = new __Data__<>(this, __k, __v);
 			
 			// Create new node
 			__at = new __Node__<>();
 			__at._data = data;
+			data._node = __at;
 			
 			// Need to link the data in with the source nodes data chain
 			if (__from != null)
@@ -382,12 +384,9 @@ public class SortedTreeMap<K, V>
 			}
 			
 			// If the tree has no minimum use this node as it
-			__Data__<K, V> oldmin = this._min;
-			if (oldmin == null)
-				this._min = oldmin;
-			
 			// Otherwise always use the smaller value
-			else if (data.__compare(oldmin) < 0)
+			__Data__<K, V> oldmin = this._min;
+			if (oldmin == null || data.__compare(oldmin) < 0)
 				this._min = data;
 			
 			// Use this new node
