@@ -212,7 +212,7 @@ public final class SnapshotCacheState
 		 * @since 2017/03/22
 		 */
 		@Override
-		public ArgumentAllocation thisAllocation()
+		public ArgumentAllocation thisAllocation(boolean __a)
 		{
 			Reference<ArgumentAllocation> ref = this._alloc;
 			ArgumentAllocation rv;
@@ -220,7 +220,7 @@ public final class SnapshotCacheState
 			// Cache?
 			if (ref == null || null == (rv = ref.get()))
 				this._alloc = new WeakReference<>(
-					(rv = super.thisAllocation()));
+					(rv = super.thisAllocation(false)));
 			
 			return rv;
 		}

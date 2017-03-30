@@ -195,17 +195,32 @@ public abstract class CacheState
 		}
 		
 		/**
-		 * Returns the allocation of this slot.
+		 * Returns the allocation of this slot, the stack offset is assigned by
+		 * default.
 		 *
 		 * @return The allocation of this slot, or {@code null} if there is
 		 * none.
 		 * @since 2017/03/22
 		 */
-		public ArgumentAllocation thisAllocation()
+		public final ArgumentAllocation thisAllocation()
+		{
+			return thisAllocation(true);
+		}
+		
+		/**
+		 * Returns the allocation of this slot.
+		 *
+		 * @param __a If {@code true} the stack offset is assigned if it is
+		 * not assigned and this is on the stack.
+		 * @return The allocation of this slot, or {@code null} if there is
+		 * none.
+		 * @since 2017/03/22
+		 */
+		public ArgumentAllocation thisAllocation(boolean __a)
 		{
 			// Nothing has no allocation
 			StackMapType type = thisType();
-			if (type == null)
+			if (type == null || type == StackMapType.NOTHING)
 				return null;
 			
 			// Need data type, used by the allocation class
@@ -214,7 +229,7 @@ public abstract class CacheState
 			// Purely on the stack?
 			List<Register> registers = thisRegisters();
 			if (registers.isEmpty())
-				return new ArgumentAllocation(dt, thisStackOffset());
+				return new ArgumentAllocation(dt, thisStackOffset(__a));
 			
 			// In registers
 			return new ArgumentAllocation(dt, registers.<Register>toArray(
@@ -235,13 +250,28 @@ public abstract class CacheState
 		}
 		
 		/**
-		 * Returns the stack offset of this slot.
+		 * Returns the stack offset of this slot. By default the offset is
+		 * allocated.
 		 *
 		 * @return The stack offset of this slot or
 		 * {@code Integer#MIN_VALUE} if it is not valid.
 		 * @since 2017/03/16
 		 */
 		public final int thisStackOffset()
+		{
+			return thisStackOffset(true);
+		}
+		
+		/**
+		 * Returns the stack offset of this slot.
+		 *
+		 * @param __a If {@code true} then the offset is allocated, otherwise
+		 * it is not allocated.
+		 * @return The stack offset of this slot or
+		 * {@code Integer#MIN_VALUE} if it is not valid.
+		 * @since 2017/03/30
+		 */
+		public final int thisStackOffset(boolean __a)
 		{
 			// If the type is nothing it will never have a stack offset
 			StackMapType type = thisType();
@@ -250,19 +280,39 @@ public abstract class CacheState
 			
 			// Return the offset for the given entry
 			__JITCodeStream__ jcs = CacheState.this._codestream;
+			DataType dt = jcs._engine.toDataType(type);
+			boolean iss = thisIsStack();
+			int idx = thisIndex();
+			if (__a)
+				return ((JITStateAccessor)jcs).stackSlotOffsets().assign(
+				iss, idx, dt);
 			return ((JITStateAccessor)jcs).stackSlotOffsets().get(
-				thisIsStack(), thisIndex(), jcs._engine.toDataType(type));
+				iss, idx, dt);
 		}
 		
 		/**
-		 * Returns the allocation value of this slot.
+		 * Returns the allocation value of this slot. The stack offset is
+		 * assigned if it is not assigned.
 		 *
 		 * @return The allocation value, or {@code null} if there is none.
 		 * @since 2017/03/22
 		 */
 		public final ArgumentAllocation valueAllocation()
 		{
-			return value().thisAllocation();
+			return value().thisAllocation(true);
+		}
+		
+		/**
+		 * Returns the allocation value of this slot.
+		 *
+		 * @param __a If {@code true} then a stack offset is assigned if it
+		 * has not been assigned and the value is on the stack.
+		 * @return The allocation value, or {@code null} if there is none.
+		 * @since 2017/03/22
+		 */
+		public final ArgumentAllocation valueAllocation(boolean __a)
+		{
+			return value().thisAllocation(__a);
 		}
 		
 		/**
@@ -325,7 +375,8 @@ public abstract class CacheState
 		}
 		
 		/**
-		 * Returns the stack offset of the value slot.
+		 * Returns the stack offset of the value slot. By default the offset is
+		 * allocated if it is not allocated.
 		 *
 		 * @return The stack offset of the value slot or
 		 * {@code Integer#MIN_VALUE} if it is not valid.
@@ -334,6 +385,20 @@ public abstract class CacheState
 		public final int valueStackOffset()
 		{
 			return value().thisStackOffset();
+		}
+		
+		/**
+		 * Returns the stack offset of the value slot.
+		 *
+		 * @param __a If {@code true} then the offset is allocated if it is
+		 * not allocated.
+		 * @return The stack offset of the value slot or
+		 * {@code Integer#MIN_VALUE} if it is not valid.
+		 * @since 2017/03/30
+		 */
+		public final int valueStackOffset(boolean __a)
+		{
+			return value().thisStackOffset(__a);
 		}
 		
 		/**
@@ -398,7 +463,7 @@ public abstract class CacheState
 			
 			// Stack
 			sb.append(':');
-			int so = thisStackOffset();
+			int so = thisStackOffset(false);
 			if (so == Integer.MIN_VALUE)
 				sb.append("s---");
 			else
