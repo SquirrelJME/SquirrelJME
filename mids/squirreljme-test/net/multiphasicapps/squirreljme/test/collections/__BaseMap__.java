@@ -82,18 +82,18 @@ abstract class __BaseMap__
 		}
 		catch (Throwable t)
 		{
-			__r.threw("put", t);
+			__r.threw("1put", t);
 		}
 		
 		// Put order (significant)
 		if (ordered)
 			try
 			{
-				__r.result("putorder", __mapToArray(map));
+				__r.result("1putorder", __mapToArray(map));
 			}
 			catch (Throwable t)
 			{
-				__r.threw("putorder", t);
+				__r.threw("1putorder", t);
 			}
 		
 		// Get every element, in reverse order
@@ -108,29 +108,29 @@ abstract class __BaseMap__
 					(a = CommonData.__keyValue(true, i)),
 					(b = map.get(k)));
 			}
-			__r.result("get", res);
+			__r.result("2get", res);
 		}
 		catch (Throwable t)
 		{
-			__r.threw("get", t);
+			__r.threw("2get", t);
 		}
 		
 		// Get order (for access order in LinkedHashMap)
 		if (ordered)
 			try
 			{
-				__r.result("getorder", __mapToArray(map));
+				__r.result("2getorder", __mapToArray(map));
 			}
 			catch (Throwable t)
 			{
-				__r.threw("getorder", t);
+				__r.threw("2getorder", t);
 			}
 		
 		// Remove
 		try
 		{
 			// Count before remove
-			__r.result("countbeforeremove", map.size());
+			__r.result("3countbeforeremove", map.size());
 			
 			// Perform the remove
 			int removecount = (lasti + 1) / 2, at = 0;
@@ -143,32 +143,32 @@ abstract class __BaseMap__
 					(a = CommonData.__keyValue(true, i)),
 					(b = map.remove(k)));
 			}
-			__r.result("remove", res);
+			__r.result("3remove", res);
 			
 			// Count after remove
-			__r.result("countafterremove", map.size());
+			__r.result("3countafterremove", map.size());
 		}
 		catch (Throwable t)
 		{
-			__r.threw("remove", t);
+			__r.threw("3remove", t);
 		}
 		
 		// Remove order
 		if (ordered)
 			try
 			{
-				__r.result("removeorder", __mapToArray(map));
+				__r.result("3removeorder", __mapToArray(map));
 			}
 			catch (Throwable t)
 			{
-				__r.threw("removeorder", t);
+				__r.threw("3removeorder", t);
 			}
 		
 		// Put every element back into the map again
 		try
 		{
 			// Count before more put
-			__r.result("countbeforeputmore", map.size());
+			__r.result("4countbeforeputmore", map.size());
 			
 			// Put
 			for (int i = 0;; i++)
@@ -183,22 +183,22 @@ abstract class __BaseMap__
 			}
 			
 			// Count after more put
-			__r.result("countafterputmore", map.size());
+			__r.result("4countafterputmore", map.size());
 		}
 		catch (Throwable t)
 		{
-			__r.threw("putmore", t);
+			__r.threw("4putmore", t);
 		}
 		
 		// Put order (significant)
 		if (ordered)
 			try
 			{
-				__r.result("putmoreorder", __mapToArray(map));
+				__r.result("4putmoreorder", __mapToArray(map));
 			}
 			catch (Throwable t)
 			{
-				__r.threw("putmoreorder", t);
+				__r.threw("4putmoreorder", t);
 			}
 	}
 	

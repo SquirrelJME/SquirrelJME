@@ -493,6 +493,8 @@ public class SortedTreeMap<K, V>
 		if (__at == null)
 			throw new NullPointerException("NARG");
 		
+		System.err.printf("DEBUG -- Remove at: %s%n", __at._key);
+		
 		// Compare node and value
 		Comparator<K> compare = this._compare;
 		K existval = __at._key;
@@ -507,7 +509,16 @@ public class SortedTreeMap<K, V>
 				__at = __moveRed(__at, false);
 			
 			// Recursive removal
-			__at._left = __remove(__at._left, __k);
+			__Node__<K, V> was = __at;
+			__Node__<K, V> now = __remove(__at._left, __k);
+			if (was != now)
+			{
+				__at._left = now;
+				
+				// Reparent if valid
+				if (now != null)
+					now._parent = __at;
+			}
 		}
 		
 		// Equal or greater
@@ -564,7 +575,7 @@ public class SortedTreeMap<K, V>
 				__at._right = null;
 				__at._parent = null;
 				
-				// Return the current node
+				// No node used
 				return null;
 			}
 			
@@ -580,13 +591,29 @@ public class SortedTreeMap<K, V>
 			// Keys are equal
 			if (res == 0)
 			{
+				// Set as found
+				this._found = __at;
+				
 				// Unlink from the tree
 				throw new todo.TODO();
 			}
 			
 			// Traverse right side of tree
 			else
-				__at._right = __remove(__at._right, __k);
+			{
+				__Node__<K, V> was = __at._right;
+				__Node__<K, V> now = __remove(__at._right, __k);
+				
+				// Correct parent?
+				if (was != now)
+				{
+					__at._right = now;
+					
+					// Reparent if valid
+					if (now != null)
+						now._parent = __at;
+				}
+			}
 		}
 		
 		// Correct up the tree
