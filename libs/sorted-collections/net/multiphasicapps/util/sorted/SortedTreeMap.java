@@ -204,7 +204,16 @@ public class SortedTreeMap<K, V>
 	@SuppressWarnings({"unchecked"})
 	public V remove(Object __k)
 	{
-		throw new todo.TODO();
+		// Delete node
+		__Found__ found = new __Found__();
+		__Node__<K, V> newroot = __remove(this._root, found, (K)__k);
+		
+		// The root of the tree is always black
+		this._root = newroot;
+		newroot._isred = false;
+		
+		// Old value
+		return found._oldvalue;
 	}
 	
 	/**
@@ -264,8 +273,7 @@ public class SortedTreeMap<K, V>
 		__Node__<K, V> rover = this._root;
 		if (rover == null)
 			return null;
-		System.err.printf("DEBUG -- Want: %s in %s (min=%s)%n", __o, this,
-			this._min);
+		
 		// Constant search
 		Comparator<K> compare = this._compare;
 		while (rover != null)
@@ -273,18 +281,16 @@ public class SortedTreeMap<K, V>
 			// Compare
 			K against = rover._data._key;
 			int res = compare.compare((K)__o, against);
-			System.err.printf("DEBUG -- Compare %s ? %s = %d%n", __o,
-				against, res);
 			
 			// The same? stop here
 			if (res == 0)
 				return rover;
 			
-			// The object is lower, go left
-			else if (res > 0)
+			// Go left
+			else if (res < 0)
 				rover = rover._left;
 			
-			// The object is higher, go right
+			// Otherwise go right
 			else
 				rover = rover._right;
 		}
@@ -330,7 +336,7 @@ public class SortedTreeMap<K, V>
 	{
 		// No root of the tree?
 		if (__at == null)
-		{System.err.printf("DEBUG -- Place: %s%n", __k);
+		{
 			// Setup data
 			__Data__<K, V> data = new __Data__<>(this, __k, __v);
 			
@@ -396,11 +402,8 @@ public class SortedTreeMap<K, V>
 			return __at;
 		}
 		
-		// This is needed for data link chaining
-		__Node__<K, V> setfrom = __at;
-		
 		// Matched key, set its value
-		int comp = __at.__compare(__k);
+		int comp = this._compare.compare(__k, __at._data._key);
 		if (comp == 0)
 		{
 			__found._oldvalue = __at._data._value;
@@ -431,6 +434,117 @@ public class SortedTreeMap<K, V>
 		if (__n == null)
 			return false;
 		return __n._isred;
+	}
+	
+	/**
+	 * Moves the specified red node.
+	 *
+	 * @param __at The node to move.
+	 * @return The node that is not a side node.
+	 * @since 2017/03/30
+	 */
+	private final __Node__<K, V> __moveRed(__Node__<K, V> __at, boolean __r)
+	{
+		// Flip the node color
+		__flipColor(__at);
+		
+		// Move to the right
+		if (__r)
+		{
+			if (__isRed(__at._left._left))
+				__at = __rotate(__at, _RIGHT);
+			
+			__flipColor(__at);
+		}
+		
+		// Move to the left
+		else
+		{
+			if (__isRed(__at._right._left))
+			{
+				__at._right = __rotate(__at._right, _RIGHT);
+				__at = __rotate(__at, _LEFT);
+				
+				__flipColor(__at);
+			}
+		}
+		
+		// This would be the node at the top
+		return __at;
+	}
+	
+	/**
+	 * Recursive node removal based on the given key.
+	 *
+	 * @param __at The current node being traversed.
+	 * @param __found Node searching information.
+	 * @param __k The key to remove the value from.
+	 * @return The node at the top (will not be a leaf)
+	 * @since 2017/03/30
+	 */
+	private final __Node__<K, V> __remove(__Node__<K, V> __at,
+		__Found__ __found, K __k)
+	{
+		// Key is lower?
+		Comparator<K> compare = this._compare;
+		int comp = compare.compare(__k, __at._data._key);
+		if (comp < 0)
+		{
+			// Move red node to the left
+			if (!__isRed(__at._left) && !__isRed(__at._left._left))
+				__at = __moveRed(__at, _LEFT);
+			
+			// Delete left side
+			__at._left = __remove(__at._left, __found, __k);
+		}
+		
+		// Equal or higher
+		else
+		{
+			// If the left is red then rotate it to the right
+			if (__isRed(__at._left))
+			{
+				__at = __rotate(__at, _RIGHT);
+				
+				// Compare value is trashed, recompute
+				comp = compare.compare(__k, __at._data._key);
+			}
+			
+			// If this is the key and there is no right then no values need
+			// to be shifted in
+			if (comp == 0 && __at._right == null)
+			{
+				// De-link and clear value
+				if (true)
+					throw new todo.TODO();
+				
+				// Return no key
+				return null;
+			}
+			
+			// If the red side contains a black chain move red nodes to the
+			// right
+			if (!__isRed(__at._right) && !__isRed(__at._right._left))
+			{
+				__at = __moveRed(__at, _RIGHT);
+				
+				// Comparison is trashed
+				comp = compare.compare(__k, __at._data._key);
+			}
+			
+			// Keys are the same
+			if (comp == 0)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Delete right side of the tree
+			else
+				__at._right = __remove(__at._right, __found, __k);
+		}
+		
+		// Correct tree on the way up
+		return __correctNodes(__at);
 	}
 	
 	/**
