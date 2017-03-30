@@ -39,7 +39,7 @@ public class SortedTreeMap<K, V>
 	volatile __Node__<K, V> _root;
 	
 	/** The minimum value. */
-	volatile __Node__<K, V> _min;
+	volatile __Data__<K, V> _min;
 	
 	/** The size of the tree. */
 	volatile int _size;
@@ -165,7 +165,7 @@ public class SortedTreeMap<K, V>
 		__Node__<K, V> node = __findNode(__k);
 		if (node == null)
 			return null;
-		return node._value;
+		return node._data._value;
 	}
 	
 	/**
@@ -221,7 +221,7 @@ public class SortedTreeMap<K, V>
 		while (rover != null)
 		{
 			// Compare
-			K against = rover._key;
+			K against = rover._data._key;
 			int res = compare.compare((K)__o, against);
 			
 			// The same? stop here

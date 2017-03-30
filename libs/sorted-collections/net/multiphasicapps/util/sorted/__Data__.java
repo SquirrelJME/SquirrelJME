@@ -27,6 +27,9 @@ class __Data__<K, V>
 	/** The value of the data. */
 	volatile V _value;
 	
+	/** The node owning this data (used only to detect modification). */
+	volatile __Node__<K, V> _node;
+	
 	/** The data before this one. */
 	volatile __Data__<K, V> _prev;
 	

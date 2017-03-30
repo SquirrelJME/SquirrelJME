@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.sorted;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -26,10 +27,10 @@ class __MapIterator__<K, V>
 	protected final SortedTreeMap<K, V> map;
 	
 	/** The current node position. */
-	private volatile __Node__<K, V> _at;
+	private volatile __Data__<K, V> _at;
 	
 	/** The last visited node (for deletion). */
-	private volatile __Node__<K, V> _last;
+	private volatile __Data__<K, V> _last;
 	
 	/**
 	 * Iterates over the given map.
@@ -56,7 +57,7 @@ class __MapIterator__<K, V>
 	@Override
 	public boolean hasNext()
 	{
-		return (this._at != null);
+		return (__detect(this._at) != null);
 	}
 	
 	/**
@@ -67,10 +68,13 @@ class __MapIterator__<K, V>
 	public Map.Entry<K, V> next()
 	{
 		// {@squirreljme.error CE01 No more elements to iterate over.}
-		__Node__<K, V> rv = this._at;
+		__Data__<K, V> rv = this._at;
 		if (rv == null)
 			throw new NoSuchElementException("CE01");
-			
+		
+		// Make sure the value was not removed
+		rv = __detect(rv);
+		
 		// Store last node (for removal) and iterate to the next node value
 		this._last = rv;
 		this._at = rv._next;
@@ -86,12 +90,35 @@ class __MapIterator__<K, V>
 	public void remove()
 	{
 		// {@squirreljme.error CE02 No last entry exists for deletion.}
-		__Node__<K, V> last = this._last;
+		__Data__<K, V> last = this._last;
 		if (last == null)
 			throw new IllegalStateException("CE02");
 		
 		// Clear
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Detects if concurrent modification has occured.
+	 *
+	 * @param __data The data to check.
+	 * @return {@code __data}.
+	 * @throws ConcurrentModificationException If modification was detected.
+	 * @throws NullPointerException On null arguments. 
+	 * @since 2017/03/30
+	 */
+	private final __Data__<K, V> __detect(__Data__<K, V> __data)
+		throws ConcurrentModificationException, NullPointerException
+	{
+		// Check
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CE03 Referenced node was deleted.}
+		if (__data._node == null)
+			throw new ConcurrentModificationException("CE03");
+		
+		return __data;
 	}
 }
 
