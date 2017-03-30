@@ -488,13 +488,28 @@ class __JITCodeStream__
 			
 		ActiveCacheState outstate = this._outstate;
 		JITConfig config = this.config;
+		TranslationEngine engine = this._engine;
 		DataType pointertype = config.pointerDataType();
 		
 		// Need to allocate the target slot for the given type
 		ActiveCacheState.Slot outslot = outstate.getSlot(__cv);
 		outslot.setType(StackMapType.OBJECT);
 		
-		throw new todo.TODO();
+		// Load value to registers, if the variable is not in registers the
+		// value must be temporarily placed in a temporary register
+		boolean tr;
+		List<Register> target = ((tr = !outslot.thisRegisters().isEmpty()) ?
+			outslot.thisRegisters() :
+			Arrays.<Register>asList(engine.assemblerTemporaryRegister()));
+		
+		// Load from the global table
+		engine.loadRegister(pointertype, target, pointertype.length() *
+			this._classstream.__link(__cl), engine.globalTableRegister());
+		
+		// Copy that to the stack for the slot
+		if (!tr)
+			engine.storeRegister(pointertype, target,
+				outslot.thisStackOffset(), engine.stackPointerRegister());
 	}
 	
 	/**
