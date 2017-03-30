@@ -464,8 +464,15 @@ public class SortedTreeMap<K, V>
 			__Node__<K, V> rightleft = right._left;
 			if (rightleft != null && rightleft._isred)
 			{
-				// Rotate nodes around
-				__rotate(right, true);
+				// Rotate right node
+				__Node__<K, V> nowright = __rotate(right, true);
+				if (nowright != right)
+				{
+					__at._right = nowright;
+					nowright._parent = __at;
+				}
+				
+				// Rotate this one to the left
 				__at = __rotate(__at, false);
 			
 				// Correct color
@@ -492,8 +499,6 @@ public class SortedTreeMap<K, V>
 		// Check
 		if (__at == null)
 			throw new NullPointerException("NARG");
-		
-		System.err.printf("DEBUG -- Remove at: %s%n", __at._key);
 		
 		// Compare node and value
 		Comparator<K> compare = this._compare;
