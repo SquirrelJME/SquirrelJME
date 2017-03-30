@@ -10,47 +10,37 @@
 
 package net.multiphasicapps.util.sorted;
 
+import java.util.Map;
+
 /**
- * This represents a single node within the tree.
+ * This stores a key and value pair which is referenced by a node.
  *
- * @param <K> The key used.
- * @param <V> The value used.
- * @since 2016/09/06
+ * @since 2017/03/30
  */
-class __Node__<K, V>
+class __Data__<K, V>
+	implements Map.Entry<K, V>
 {
-	/** The color, defaults to red. */
-	private volatile boolean _isred =
-		true;
-		
-	/** The key. */
-	volatile K _key;
+	/** The key for this data. */
+	final K _key;
 	
-	/** The value. */
+	/** The value of the data. */
 	volatile V _value;
 	
-	/** The node to the left. */
-	volatile __Node__<K, V> _left;
+	/** The data before this one. */
+	volatile __Data__<K, V> _prev;
 	
-	/** The node to the right. */
-	volatile __Node__<K, V> _right;
-	
-	/** Previous key value. */
-	volatile __Node__<K, V> _prev;
-	
-	/** Next key value. */
-	volatile __Node__<K, V> _next;
+	/** The data after this one. */
+	volatile __Data__<K, V> _next;
 	
 	/**
-	 * Initializes a node with no value.
+	 * Initializes the data.
 	 *
-	 * @param __k The key.
-	 * @param __v The value.
-	 * @since 2016/09/06
+	 * @param __k The key used for this data.
+	 * @param __v The value to initially store.
+	 * @since 2017/03/30
 	 */
-	__Node__(K __k, V __v)
+	__Data__(K __k, V __v)
 	{
-		// Set
 		this._key = __k;
 		this._value = __v;
 	}

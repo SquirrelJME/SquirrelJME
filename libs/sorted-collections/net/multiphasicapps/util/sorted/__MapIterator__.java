@@ -46,13 +46,7 @@ class __MapIterator__<K, V>
 		
 		// Set
 		this.map = __m;
-		
-		// Start at the root node and go all the way left
-		__Node__<K, V> rover = __m._root, next;
-		if (rover != null)
-			while ((next = rover._left) != null)
-				rover = next;
-		this._at = rover;
+		this._at = __m._min;
 	}
 	
 	/**
@@ -76,37 +70,12 @@ class __MapIterator__<K, V>
 		__Node__<K, V> rv = this._at;
 		if (rv == null)
 			throw new NoSuchElementException("CE01");
-		
-		// Move the at pointer to the next node
-		__Node__<K, V> rover = rv._right;
-		
-		// There is a right, just go as deep left as possible
-		if (rover != null)
-		{
-			__Node__<K, V> left;
-			while ((left = rover._left) != null)
-				rover = left;
-		}
-		
-		// Go to the parent of this node
-		else
-		{
-			rover = rv._parent;
 			
-			__Node__<K, V> was = rv;
-			while (rover != null && (rover._right == was))
-			{
-				was = rover;
-				rover = rover._parent;
-			}
-		}
-		
-		// Set next
-		this._at = rover;
-		
-		// Return the value
+		// Store last node (for removal) and iterate to the next node value
 		this._last = rv;
-		return new __MapEntry__<K, V>(rv);
+		this._at = rv._next;
+		
+		return rv;
 	}
 	
 	/**
@@ -122,7 +91,7 @@ class __MapIterator__<K, V>
 			throw new IllegalStateException("CE02");
 		
 		// Clear
-		map.remove(last._key);
+		throw new todo.TODO();
 	}
 }
 
