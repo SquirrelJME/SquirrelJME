@@ -281,7 +281,7 @@ public class SortedTreeMap<K, V>
 				return rover;
 			
 			// The object is lower, go left
-			else if (res < 0)
+			else if (res > 0)
 				rover = rover._left;
 			
 			// The object is higher, go right
@@ -388,6 +388,9 @@ public class SortedTreeMap<K, V>
 			__Data__<K, V> oldmin = this._min;
 			if (oldmin == null || data.__compare(oldmin) < 0)
 				this._min = data;
+			
+			// Size of the tree increased
+			this._size++;
 			
 			// Use this new node
 			return __at;
