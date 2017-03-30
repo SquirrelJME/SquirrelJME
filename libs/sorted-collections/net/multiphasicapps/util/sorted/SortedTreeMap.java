@@ -176,7 +176,16 @@ public class SortedTreeMap<K, V>
 	@SuppressWarnings({"unchecked"})
 	public V put(K __k, V __v)
 	{
-		throw new todo.TODO();
+		// Insert node
+		__Found__ found = new __Found__();
+		__Node__<K, V> now = __insert(this._root, found, __k, __v);
+		
+		// The root of the tree always becomes black
+		now.__makeBlack();
+		this._root = now;
+		
+		// Old value
+		return found._oldvalue;
 	}
 	
 	/**
@@ -239,6 +248,50 @@ public class SortedTreeMap<K, V>
 		
 		// Not found
 		return null;
+	}
+	
+	/**
+	 * Inserts the given node into the tree
+	 *
+	 * @param __at The current node iteration.
+	 * @param __f The previous node found information.
+	 * @param __k The key to use.
+	 * @param __v The value to use.
+	 * @return The root of the local segment, the first iteration of this call
+	 * will always return the root of the tree.
+	 * @since 2017/03/30
+	 */
+	private final __Node__<K, V> __insert(__Node__<K, V> __at, __Found__ __f,
+		K __k, V __v)
+	{
+		// No root of the tree?
+		if (__at == null)
+		{
+			// Setup data
+			__Data__<K, V> data = new __Data__<>(__k, __v);
+			
+			// Create new node
+			__at = new __Node__<>();
+			__at._data = data;
+			
+			// The minimum value of the tree is this only node
+			this._min = data;
+			
+			// Use this new node
+			return __at;
+		}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * The data which used to be at the given position.
+	 *
+	 * @since 2017/03/30
+	 */
+	private final class __Found__
+	{
+		V _oldvalue;
 	}
 }
 

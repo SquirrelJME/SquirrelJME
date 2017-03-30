@@ -31,5 +31,15 @@ class __Node__<K, V>
 	
 	/** The node to the right. */
 	volatile __Node__<K, V> _right;
+	
+	/**
+	 * Makes the node black.
+	 *
+	 * @since 2017/03/30
+	 */
+	final void __makeBlack()
+	{
+		this._isred = false;
+	}
 }
 
