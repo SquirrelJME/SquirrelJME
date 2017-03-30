@@ -178,7 +178,7 @@ public class SortedTreeMap<K, V>
 	{
 		// Insert node
 		__Found__ found = new __Found__();
-		__Node__<K, V> now = __insert(this._root, found, __k, __v);
+		__Node__<K, V> now = __insert(null, this._root, found, __k, __v);
 		
 		// The root of the tree always becomes black
 		now.__makeBlack();
@@ -253,16 +253,17 @@ public class SortedTreeMap<K, V>
 	/**
 	 * Inserts the given node into the tree
 	 *
+	 * @param __from The node this iterated from.
 	 * @param __at The current node iteration.
-	 * @param __f The previous node found information.
+	 * @param __found The value information when a value is discovered.
 	 * @param __k The key to use.
 	 * @param __v The value to use.
 	 * @return The root of the local segment, the first iteration of this call
 	 * will always return the root of the tree.
 	 * @since 2017/03/30
 	 */
-	private final __Node__<K, V> __insert(__Node__<K, V> __at, __Found__ __f,
-		K __k, V __v)
+	private final __Node__<K, V> __insert(__Node__<K, V> __from,
+		__Node__<K, V> __at, __Found__ __found, K __k, V __v)
 	{
 		// No root of the tree?
 		if (__at == null)
@@ -280,6 +281,9 @@ public class SortedTreeMap<K, V>
 			// Use this new node
 			return __at;
 		}
+		
+		// This is needed for data link chaining
+		__Node__<K, V> setfrom = __at;
 		
 		throw new todo.TODO();
 	}
