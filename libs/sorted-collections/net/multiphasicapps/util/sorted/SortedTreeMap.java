@@ -266,7 +266,6 @@ public class SortedTreeMap<K, V>
 	 * found.
 	 * @since 2016/09/06
 	 */
-	@SuppressWarnings({"unchecked"})
 	final __Node__<K, V> __findNode(Object __o)
 	{
 		// If there are no nodes then the tree is empty
@@ -274,25 +273,39 @@ public class SortedTreeMap<K, V>
 		if (rover == null)
 			return null;
 		
+		return __findNode(rover, __o);
+	}
+	
+	/**
+	 * Finds the node with the given key starting at the specified node.
+	 *
+	 * @param __at The node to start at.
+	 * @param __k The key to find.
+	 * @return The specified node or {@code null} if not found.
+	 * @since 2017/03/30
+	 */
+	@SuppressWarnings({"unchecked"})
+	final __Node__<K, V> __findNode(__Node__<K, V> __at, Object __k)
+	{	
 		// Constant search
 		Comparator<K> compare = this._compare;
-		while (rover != null)
+		while (__at != null)
 		{
 			// Compare
-			K against = rover._data._key;
-			int res = compare.compare((K)__o, against);
+			K against = __at._data._key;
+			int res = compare.compare((K)__k, against);
 			
 			// The same? stop here
 			if (res == 0)
-				return rover;
+				return __at;
 			
 			// Go left
 			else if (res < 0)
-				rover = rover._left;
+				__at = __at._left;
 			
 			// Otherwise go right
 			else
-				rover = rover._right;
+				__at = __at._right;
 		}
 		
 		// Not found
@@ -437,6 +450,19 @@ public class SortedTreeMap<K, V>
 	}
 	
 	/**
+	 * Returns the minimum node.
+	 *
+	 * @return The minimum node.
+	 * @since 2017/03/30
+	 */
+	private final __Node__<K, V> __min(__Node__<K, V> __at)
+	{
+		while (__at._left != null)
+			__at = __at._left;
+		return __at;
+	}
+	
+	/**
 	 * Moves the specified red node.
 	 *
 	 * @param __at The node to move.
@@ -516,33 +542,7 @@ public class SortedTreeMap<K, V>
 			// to be shifted in
 			if (comp == 0 && __at._right == null)
 			{
-				// Get the data to unlink
-				__Data__<K, V> unlink = __at._data;
-				__found._oldvalue = unlink._value;
-				
-				// Link next node with the previous
-				__Data__<K, V> prev = unlink._prev,
-					next = unlink._next;
-				if (next != null)
-					next._prev = prev;
-				
-				// Link previous node with the next one
-				if (prev != null)
-					prev._next = next;
-				
-				// If this is the minimum node then the next one will be the
-				// new minimum
-				if (this._min == unlink)
-					this._min = next;
-				
-				// Destroy chains
-				unlink._value = null;
-				unlink._node = null;
-				unlink._prev = null;
-				unlink._next = null;
-				
-				// Reduce count
-				this._size--;
+				__unlink(__at, __found);
 				
 				// Return no key
 				return null;
@@ -561,7 +561,19 @@ public class SortedTreeMap<K, V>
 			// Keys are the same
 			if (comp == 0)
 			{
-				throw new todo.TODO();
+				// Get the node with the minimum value on the right side
+				__Node__<K, V> right = __at._right;
+				__Node__<K, V> minright = __min(right);
+				
+				// Unlink the current data because that is getting destroyed
+				__unlink(__at, __found);
+				
+				// The current node gets the data for that key
+				__at._data = minright._data;
+				
+				// Remove the minimum without unlinking (because it gets
+				// re-associated)
+				__removeMin(right, null, false);
 			}
 			
 			// Delete right side of the tree
@@ -570,6 +582,40 @@ public class SortedTreeMap<K, V>
 		}
 		
 		// Correct tree on the way up
+		return __correctNodes(__at);
+	}
+	
+	/**
+	 * Removes the minimum node.
+	 *
+	 * @param __at Current node.
+	 * @param __found The found node information.
+	 * @param __unlink If {@code true} the node is unlinked.
+	 * @return The top node.
+	 * @since 2017/03/30
+	 */
+	private final __Node__<K, V> __removeMin(__Node__<K, V> __at,
+		__Found__ __found, boolean __unlink)
+	{
+		// If there is no left, remove the left node
+		if (__at._left == null)
+		{
+			// Unlink our node
+			if (__unlink)
+				__unlink(__at, __found);
+			
+			// No left node
+			return null;
+		}
+		
+		// If the left side is black move red to the left
+		if (!__isRed(__at._left) && !__isRed(__at._left._left))
+			__at = __moveRed(__at, _LEFT);
+		
+		// Continue deleting the minimum
+		__at._left = __removeMin(__at, __found, __unlink);
+		
+		// Correct nodes back up the tree
 		return __correctNodes(__at);
 	}
 	
@@ -610,6 +656,45 @@ public class SortedTreeMap<K, V>
 			x._left._isred = true;
 			return x;
 		}
+	}
+	
+	/**
+	 * Unlinks the specified node.
+	 *
+	 * @param __at The node to unlink.
+	 * @param __found The found node data.
+	 * @since 2017/03/30
+	 */
+	private final void __unlink(__Node__<K, V> __at, __Found__ __found)
+	{
+		// Get the data to unlink
+		__Data__<K, V> unlink = __at._data;
+		if (__found != null)
+			__found._oldvalue = unlink._value;
+		
+		// Link next node with the previous
+		__Data__<K, V> prev = unlink._prev,
+			next = unlink._next;
+		if (next != null)
+			next._prev = prev;
+		
+		// Link previous node with the next one
+		if (prev != null)
+			prev._next = next;
+		
+		// If this is the minimum node then the next one will be the
+		// new minimum
+		if (this._min == unlink)
+			this._min = next;
+		
+		// Destroy chains
+		unlink._value = null;
+		unlink._node = null;
+		unlink._prev = null;
+		unlink._next = null;
+		
+		// Reduce count
+		this._size--;
 	}
 	
 	/**
