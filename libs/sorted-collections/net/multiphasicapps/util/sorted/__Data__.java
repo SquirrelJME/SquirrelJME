@@ -11,6 +11,7 @@
 package net.multiphasicapps.util.sorted;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This stores a key and value pair which is referenced by a node.
@@ -43,6 +44,65 @@ class __Data__<K, V>
 	{
 		this._key = __k;
 		this._value = __v;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Must be another entry
+		if (!(__o instanceof Map.Entry))
+			return false;
+		
+		// Compare
+		Map.Entry<?, ?> o = (Map.Entry<?, ?>)__o;
+		return Objects.equals(this._key, o.getKey()) &&
+			Objects.equals(this._value, o.getValue());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public K getKey()
+	{
+		return this._key;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public V getValue()
+	{
+		return this._value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public int hashCode()
+	{
+		return Objects.hashCode(this._key) ^ Objects.hashCode(this._value);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public V setValue(V __a)
+	{
+		V rv = this._value;
+		this._value = __a;
+		return rv;
 	}
 }
 
