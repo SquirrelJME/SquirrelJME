@@ -134,7 +134,7 @@ abstract class __BaseMap__
 			
 			// Perform the remove
 			int removecount = (lasti + 1) / 2, at = 0;
-			boolean[] res = new boolean[removecount];
+			boolean[] res = new boolean[removecount + 1];
 			String a, b, k;
 			for (int i = lasti; i >= 0; i -= 2)
 			{
