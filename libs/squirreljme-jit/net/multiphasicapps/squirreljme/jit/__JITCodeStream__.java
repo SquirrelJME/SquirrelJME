@@ -67,6 +67,9 @@ class __JITCodeStream__
 	/** The exception handler table. */
 	private volatile ExceptionHandlerTable _exceptions;
 	
+	/** Has the input been transited? */
+	private volatile boolean _transition;
+	
 	/**
 	 * Initializes the code stream.
 	 *
@@ -114,6 +117,9 @@ class __JITCodeStream__
 		
 		// The output state is always a copy of the input state
 		outstate.switchFrom(instate);
+		
+		// Clear the transition flag
+		this._transition = false;
 		
 		// Debug
 		System.err.printf("DEBUG -- Enter state: %s%n", instate);
@@ -173,7 +179,7 @@ class __JITCodeStream__
 			return;
 		
 		// Get active state
-		CacheState instate = this._instate;
+		CacheState instate = __transitedInput();
 		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
@@ -182,6 +188,9 @@ class __JITCodeStream__
 		// Forward to primitive copy
 		__primitiveCopy(instate, outstate, instate.getSlot(__from),
 			outstate.getSlot(__to), true);
+		
+		// Transit input
+		__transitInput();
 	}
 	
 	/**
@@ -319,7 +328,7 @@ class __JITCodeStream__
 			__rv, __rvt, Arrays.asList(__cargs), Arrays.asList(__targs));
 		
 		// Get states
-		CacheState instate = this._instate;
+		CacheState instate = __transitedInput();
 		ActiveCacheState outstate = this._outstate;
 		
 		// Go through the arguments and initialize the output state to match
@@ -456,6 +465,9 @@ class __JITCodeStream__
 		// the stack again until they are needed. So if a bunch of local
 		// variables were stored but they are not used at all, then there is
 		// no need to restore them at all.
+		
+		// Transit input
+		__transitInput();
 	}
 	
 	/**
@@ -517,6 +529,9 @@ class __JITCodeStream__
 		if (!tr)
 			engine.storeRegister(pointertype, target,
 				outslot.thisStackOffset(), engine.stackPointerRegister());
+		
+		// Transit input
+		__transitInput();
 	}
 	
 	/**
@@ -786,6 +801,42 @@ class __JITCodeStream__
 		engine.storeRegister(engine.toDataType(__s.valueType()),
 			__s.valueRegisters(), __s.valueStackOffset(),
 			engine.stackPointerRegister());
+	}
+	
+	/**
+	 * Returns the transited input state.
+	 *
+	 * @return The input cache state.
+	 * @since 2017/03/30
+	 */
+	private final CacheState __transitedInput()
+	{
+		// Get input and output
+		ActiveCacheState input = (ActiveCacheState)this._instate,
+			output = this._outstate;
+		
+		// If transiting set the input from the output
+		if (this._transition)
+		{
+			input.switchFrom(output);
+			
+			// Clear transition
+			this._transition = false;
+		}
+		
+		// Use the input state
+		return input;
+	}
+	
+	/**
+	 * Marks the flag so that the output state is placed into the input state
+	 * for consecutive calls.
+	 *
+	 * @since 2017/03/30
+	 */
+	private final void __transitInput()
+	{
+		this._transition = true;
 	}
 }
 
