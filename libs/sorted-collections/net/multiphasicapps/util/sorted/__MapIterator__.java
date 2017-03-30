@@ -94,8 +94,9 @@ class __MapIterator__<K, V>
 		if (last == null)
 			throw new IllegalStateException("CE02");
 		
-		// Clear
-		throw new todo.TODO();
+		// Remove the entry
+		this._last = null;
+		this.map.remove(last._key);
 	}
 	
 	/**
