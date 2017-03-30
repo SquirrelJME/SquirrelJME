@@ -210,7 +210,8 @@ public class SortedTreeMap<K, V>
 		
 		// The root of the tree is always black
 		this._root = newroot;
-		newroot._isred = false;
+		if (newroot != null)
+			newroot._isred = false;
 		
 		// Old value
 		return found._oldvalue;
