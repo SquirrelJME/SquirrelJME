@@ -250,7 +250,7 @@ public class SortedTreeMap<K, V>
 		if (__isRed(__at._left) && __isRed(__at._left._left))
 			__at = __rotate(__at, _RIGHT);
 		
-		// If both nodes are red then flip the color of this node
+		// If both side nodes are red then flip the color of this node
 		if (__isRed(__at._left) && __isRed(__at._right))
 			__flipColor(__at);
 		
@@ -452,9 +452,11 @@ public class SortedTreeMap<K, V>
 		if (__r)
 		{
 			if (__isRed(__at._left._left))
+			{
 				__at = __rotate(__at, _RIGHT);
 			
-			__flipColor(__at);
+				__flipColor(__at);
+			}
 		}
 		
 		// Move to the left
@@ -514,9 +516,33 @@ public class SortedTreeMap<K, V>
 			// to be shifted in
 			if (comp == 0 && __at._right == null)
 			{
-				// De-link and clear value
-				if (true)
-					throw new todo.TODO();
+				// Get the data to unlink
+				__Data__<K, V> unlink = __at._data;
+				__found._oldvalue = unlink._value;
+				
+				// Link next node with the previous
+				__Data__<K, V> prev = unlink._prev,
+					next = unlink._next;
+				if (next != null)
+					next._prev = prev;
+				
+				// Link previous node with the next one
+				if (prev != null)
+					prev._next = next;
+				
+				// If this is the minimum node then the next one will be the
+				// new minimum
+				if (this._min == unlink)
+					this._min = next;
+				
+				// Destroy chains
+				unlink._value = null;
+				unlink._node = null;
+				unlink._prev = null;
+				unlink._next = null;
+				
+				// Reduce count
+				this._size--;
 				
 				// Return no key
 				return null;
