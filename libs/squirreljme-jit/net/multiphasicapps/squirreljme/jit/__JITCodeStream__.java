@@ -188,9 +188,6 @@ class __JITCodeStream__
 		// Forward to primitive copy
 		__primitiveCopy(instate, outstate, instate.getSlot(__from),
 			outstate.getSlot(__to), true);
-		
-		// Transit input
-		__transitInput();
 	}
 	
 	/**
@@ -465,9 +462,6 @@ class __JITCodeStream__
 		// the stack again until they are needed. So if a bunch of local
 		// variables were stored but they are not used at all, then there is
 		// no need to restore them at all.
-		
-		// Transit input
-		__transitInput();
 	}
 	
 	/**
@@ -529,9 +523,6 @@ class __JITCodeStream__
 		if (!tr)
 			engine.storeRegister(pointertype, target,
 				outslot.thisStackOffset(), engine.stackPointerRegister());
-		
-		// Transit input
-		__transitInput();
 	}
 	
 	/**
@@ -566,6 +557,16 @@ class __JITCodeStream__
 	public StackSlotOffsets stackSlotOffsets()
 	{
 		return this._stackoffsets;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/30
+	 */
+	@Override
+	public void transitionState()
+	{
+		this._transition = true;
 	}
 	
 	/**
@@ -826,17 +827,6 @@ class __JITCodeStream__
 		
 		// Use the input state
 		return input;
-	}
-	
-	/**
-	 * Marks the flag so that the output state is placed into the input state
-	 * for consecutive calls.
-	 *
-	 * @since 2017/03/30
-	 */
-	private final void __transitInput()
-	{
-		this._transition = true;
 	}
 }
 

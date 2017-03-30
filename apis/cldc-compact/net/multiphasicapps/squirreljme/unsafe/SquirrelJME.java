@@ -55,6 +55,23 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Creates a new instance of the given class.
+	 *
+	 * @param <C> The class to allocate.
+	 * @param __cl The class to allocate.
+	 * @return The allocated class.
+	 * @throws IllegalAccessException If the class cannot be accessed from the
+	 * calling class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/30
+	 */
+	public static <C> C allocateInstance(Class<C> __cl)
+		throws IllegalAccessException, IllegalNullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Returns the class which called the method which called this method.
 	 *
 	 * With the following stack trace:
@@ -425,14 +442,15 @@ public final class SquirrelJME
 	 * @param <C> The class to create.
 	 * @param __cl The class to create.
 	 * @return The created class.
-	 * @throws InstantiationException If the class could not be initialized.
 	 * @throws IllegalAccessException If the class cannot be accessed from the
 	 * calling class.
+	 * @throws InstantiationException If the class could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/24
 	 */
 	public static <C> C newInstance(Class<C> __cl)
-		throws InstantiationException, NullPointerException
+		throws IllegalAccessException, InstantiationException,
+			NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}

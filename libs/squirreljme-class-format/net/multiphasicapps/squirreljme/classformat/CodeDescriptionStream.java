@@ -15,7 +15,12 @@ import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 
 /**
  * This interface is called during the parsing of the code attribute within
- * a method.
+ * a method. In most cases all methods should operate as if they do not require
+ * their input state to be changed.
+ *
+ * However as an exception to this there is potential for states to be
+ * transitioned where multiple methods are called per instruction. When this
+ * occurs {@link #transitionState()} will be called.
  *
  * @since 2016/09/09
  */
@@ -154,6 +159,13 @@ public interface CodeDescriptionStream
 	 */
 	public abstract void returnValue(StackMapType __t, CodeVariable __cv)
 		throws NullPointerException;
+	
+	/**
+	 * This is called when 
+	 *
+	 * @since 2017/03/30
+	 */
+	public abstract void transitionState();
 	
 	/**
 	 * This is called when the number of variables that are stored on the

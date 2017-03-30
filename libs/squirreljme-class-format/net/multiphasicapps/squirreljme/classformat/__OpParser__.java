@@ -43,7 +43,7 @@ final class __OpParser__
 	private static final MethodReference _UNSAFE_NEWINSTANCE =
 		new MethodReference(ClassNameSymbol.of(
 		"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
-		IdentifierSymbol.of("newInstance"),
+		IdentifierSymbol.of("allocateObject"),
 		MethodSymbol.of("(Ljava/lang/Class;)Ljava/lang/Object;"), false);
 	
 	/** The input operation data. */
@@ -776,6 +776,7 @@ final class __OpParser__
 		// code since this operation does the same thing as a normal invoke.
 		CodeDescriptionStream writer = this.writer;
 		writer.loadConstant(new ClassLinkage(__cn), cvtop);
+		writer.transitionState();
 		writer.invokeMethod(new MethodLinkage(this.methodref,
 			_UNSAFE_NEWINSTANCE, MethodInvokeType.STATIC), top, cvtop,
 			StackMapType.OBJECT, new CodeVariable[]{cvtop},
