@@ -96,7 +96,7 @@ public class StackSlotOffsets
 		total += __mw;
 		
 		// Final total
-		this._total = total;
+		this.total = total;
 		
 		// Initialize offsets
 		int[][] offsets = new int[2][total];
