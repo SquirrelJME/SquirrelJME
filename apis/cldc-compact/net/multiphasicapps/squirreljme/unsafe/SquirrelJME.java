@@ -18,7 +18,8 @@ import java.util.NoSuchElementException;
 /**
  * This class contains static methods which are used by the standard class
  * library code to perform special system and virtual machine related
- * functions.
+ * functions. These methods are specific to SquirrelJME and using them will
+ * cause your code to not be compatible with other virtual machines.
  *
  * The true unsafe logic is within {@link __Internal__} which is implementation
  * specific for a given target.
@@ -534,6 +535,20 @@ public final class SquirrelJME
 	 * @since 2017/02/20
 	 */
 	public static <C> C systemService(Class<C> __cl)
+		throws NullPointerException
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Throws the specified throwable, on successful throws this method does
+	 * not return. This method also causes the stack to unwind.
+	 *
+	 * @param __t The throwable to throw
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/31
+	 */
+	public static void throwThrowable(Throwable __t)
 		throws NullPointerException
 	{
 		throw new RuntimeException("OOPS");
