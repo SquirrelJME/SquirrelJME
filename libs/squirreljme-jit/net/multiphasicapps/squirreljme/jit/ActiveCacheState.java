@@ -634,24 +634,7 @@ public final class ActiveCacheState
 		@Override
 		public Slot value()
 		{
-			for (Slot at = this;;)
-			{
-				// Aliased?
-				int idalias = at._idalias;
-				if (idalias < 0)
-					if (at == this)
-						return this;
-					else
-						return at;
-			
-				// {@squirreljme.error ED0e Slot eventually references itself.
-				// (This slot)}
-				at = (at._stackalias ? ActiveCacheState.this.stack :
-					ActiveCacheState.this.locals).get(idalias);
-				if (at == this)
-					throw new IllegalStateException(String.format("ED0e %s",
-						this));
-			}
+			return (Slot)super.value();
 		}
 		
 		/**

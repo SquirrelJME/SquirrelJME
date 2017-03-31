@@ -204,7 +204,26 @@ public abstract class CacheState
 		 * @return The aliased slot or {@code this} if not aliased.
 		 * @since 2017/03/06
 		 */
-		public abstract Slot value();
+		public Slot value()
+		{
+			for (Slot at = this;;)
+			{
+				// Aliased?
+				int idalias = at.idalias;
+				if (idalias < 0)
+					if (at == this)
+						return this;
+					else
+						return at;
+			
+				// {@squirreljme.error ED0c Slot eventually references itself.
+				// (This slot)}
+				at = CacheState.this.getTread(this.area).get(idalias);
+				if (at == this)
+					throw new IllegalStateException(String.format("ED0c %s",
+						this));
+			}
+		}
 		
 		/**
 		 * Returns {@code true} if this slot is aliased.

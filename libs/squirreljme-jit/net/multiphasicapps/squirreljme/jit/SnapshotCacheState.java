@@ -308,24 +308,7 @@ public final class SnapshotCacheState
 		@Override
 		public Slot value()
 		{
-			for (Slot at = this;;)
-			{
-				// Aliased?
-				int idalias = at.idalias;
-				if (idalias < 0)
-					if (at == this)
-						return this;
-					else
-						return at;
-			
-				// {@squirreljme.error ED0c Slot eventually references itself.
-				// (This slot)}
-				at = (at.stackalias ? SnapshotCacheState.this.stack :
-					SnapshotCacheState.this.locals).get(idalias);
-				if (at == this)
-					throw new IllegalStateException(String.format("ED0c %s",
-						this));
-			}
+			return (Slot)super.value();
 		}
 	}
 	
