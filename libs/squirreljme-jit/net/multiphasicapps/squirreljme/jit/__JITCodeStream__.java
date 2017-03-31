@@ -270,9 +270,9 @@ class __JITCodeStream__
 			
 			// {@squirreljme.error ED08 Initial method arguments placed on the
 			// stack or work area is not supported, the initial state must
-			// only have local variables used.}
+			// only have local variables used. (The variable specified)}
 			if (v.area() != AreaType.LOCAL)
-				throw new JITException("ED08");
+				throw new JITException(String.format("ED08 %s", v));
 			
 			// Get slot for the entry
 			ActiveCacheState.Slot slot = outstate.getSlot(v);
