@@ -204,6 +204,20 @@ class __JITCodeStream__
 		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
 		
+		// Remove work states
+		ActiveCacheState.Tread worktread = outstate.work();
+		for (int i = 0, n = worktread.size(); i < n; i++)
+		{
+			ActiveCacheState.Slot s = worktread.get(i);
+			
+			// Nothing here, ignore
+			if (s.thisType() == StackMapType.NOTHING)
+				continue;
+			
+			// Remove it
+			s.remove();
+		}
+		
 		// Debug
 		System.err.printf("DEBUG -- End %d (pos %d, next %d)%n", __code,
 			__pos, __next);
@@ -344,8 +358,10 @@ class __JITCodeStream__
 			CodeVariable cv = __cargs[i];
 			args[i] = instate.getSlot(cv).value();
 			
-			// Stack elements are destroyed on input
-			outstate.getSlot(cv).remove();
+			// Stack elements are destroyed on input, but only if they are
+			// on the stack
+			if (cv.area() == AreaType.STACK)
+				outstate.getSlot(cv).remove();
 		}
 		
 		// No return value
