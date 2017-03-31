@@ -163,7 +163,7 @@ public final class ActiveCacheState
 	 * @since 2017/03/03
 	 */
 	@Override
-	public Slot getSlot(boolean __s, int __i)
+	public Slot getSlot(AreaType __s, int __i)
 		throws NullPointerException
 	{
 		return (Slot)super.getSlot(__s, __i);
@@ -287,12 +287,6 @@ public final class ActiveCacheState
 	public final class Slot
 		extends CacheState.Slot
 	{
-		/** Is this the stack? */
-		protected final boolean isstack;
-		
-		/** The index of this slot. */
-		protected final int index;
-		
 		/** List of registers used. */
 		private final List<Register> _registers =
 			new ArrayList<>();
@@ -318,17 +312,15 @@ public final class ActiveCacheState
 		/**
 		 * Initializes the slot.
 		 *
-		 * @param __stack If {@code true} then these values are on the stack.
-		 * @param __n The number of slots.
+		 * @param __stack The area this slot is in.
+		 * @param __i The index of this slot.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot(boolean __stack, int __i)
+		private Slot(AreaType __a, int __i)
 			throws NullPointerException
 		{
-			// Set
-			this.isstack = __stack;
-			this.index = __i;
+			super(__a, __i);
 		}
 		
 		/**
@@ -524,16 +516,6 @@ public final class ActiveCacheState
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public int thisIndex()
-		{
-			return this.index;
-		}
-		
-		/**
-		 * {@inheritDoc}
 		 * @since 2017/03/11
 		 */
 		@Override
@@ -596,7 +578,7 @@ public final class ActiveCacheState
 					sb.append(", ");
 				
 				// Print info
-				sb.append((s.thisIsStack() ? 'S' : 'L'));
+				sb.append(s.thisArea());
 				sb.append('#');
 				sb.append(s.thisIndex());
 			}
@@ -772,18 +754,20 @@ public final class ActiveCacheState
 		/**
 		 * Initializes the tread.
 		 *
-		 * @param __stack If {@code true} then these values are on the stack.
+		 * @param __a The area type.
 		 * @param __n The number of slots.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Tread(boolean __stack, int __n)
+		private Tread(AreaType __a, int __n)
 			throws NullPointerException
 		{
+			super(__a);
+			
 			// Initialize slots
 			Slot[] slots = new Slot[__n];
 			for (int i = 0; i < __n; i++)
-				slots[i] = new Slot(__stack, i);
+				slots[i] = new Slot(__a, i);
 			this._slots = slots;
 		}
 		
