@@ -66,7 +66,7 @@ public final class SquirrelJME
 	 * @since 2017/03/30
 	 */
 	public static <C> C allocateInstance(Class<C> __cl)
-		throws IllegalAccessException, IllegalNullPointerException
+		throws IllegalAccessException, NullPointerException
 	{
 		throw new RuntimeException("OOPS");
 	}
