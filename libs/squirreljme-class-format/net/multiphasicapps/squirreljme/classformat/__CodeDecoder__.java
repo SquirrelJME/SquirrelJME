@@ -316,7 +316,7 @@ final class __CodeDecoder__
 			// Add if it has a value
 			if (q.hasValue())
 			{
-				cvs.add(CodeVariable.of(true, i));
+				cvs.add(CodeVariable.of(AreaType.LOCAL, i));
 				sts.add(q);
 			}
 		}
@@ -330,7 +330,7 @@ final class __CodeDecoder__
 			// Add if it has a value
 			if (q.hasValue())
 			{
-				cvs.add(CodeVariable.of(false, i));
+				cvs.add(CodeVariable.of(AreaType.STACK, i));
 				sts.add(q);
 			}
 		}

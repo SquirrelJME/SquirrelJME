@@ -565,9 +565,10 @@ final class __OpParser__
 	/**
 	 * Generates a throw of the exception on the top of the stack.
 	 *
+	 * @return Jump targets.
 	 * @since 2017/03/31
 	 */
-	private void __executeAThrow()
+	private int[] __executeAThrow()
 	{
 		throw new todo.TODO();
 	}
@@ -575,6 +576,7 @@ final class __OpParser__
 	/**
 	 * Duplicates the topmost entry on the stack.
 	 *
+	 * @return Jump targets.
 	 * @since 2017/03/31
 	 */
 	private int[] __executeDup()
@@ -596,8 +598,8 @@ final class __OpParser__
 		stack.push(tt);
 		
 		// Generate the copy
-		this.writer.copy(tt, CodeVariable.of(true, top - 1),
-			CodeVariable.of(true, top));
+		this.writer.copy(tt, CodeVariable.of(AreaType.STACK, top - 1),
+			CodeVariable.of(AreaType.STACK, top));
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
@@ -690,7 +692,7 @@ final class __OpParser__
 					is));
 			
 			// Map it
-			vargs[write] = CodeVariable.of(true, at--);
+			vargs[write] = CodeVariable.of(AreaType.STACK, at--);
 			st[write--] = map;
 			
 			// And it gets popped
@@ -709,7 +711,7 @@ final class __OpParser__
 				throw new ClassFormatException(String.format("AY3z %s", map));
 			
 			// Store
-			vargs[write] = CodeVariable.of(true, at--);
+			vargs[write] = CodeVariable.of(AreaType.STACK, at--);
 			st[write--] = map;
 			
 			// Increase the pop count
@@ -743,7 +745,7 @@ final class __OpParser__
 		// Send in the call
 		this.writer.invokeMethod(new MethodLinkage(this.methodref, ref,
 			__type), end, (rv != null ? (popcount > 0 ? vargs[0] :
-			CodeVariable.of(true, end)) : null), rvs, vargs, st);
+			CodeVariable.of(AreaType.STACK, end)) : null), rvs, vargs, st);
 		
 		// Push return value if there is one
 		if (rv != null)
@@ -787,8 +789,8 @@ final class __OpParser__
 		stack.push(was);
 		
 		// Send copy operation
-		this.writer.copy(__t, CodeVariable.of(false, __from),
-			CodeVariable.of(true, top));
+		this.writer.copy(__t, CodeVariable.of(AreaType.LOCAL, __from),
+			CodeVariable.of(AreaType.STACK, top));
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
@@ -817,7 +819,7 @@ final class __OpParser__
 		__SMTState__ smwork = this._smwork;
 		__SMTStack__ stack = smwork._stack;
 		int top = stack.top();
-		CodeVariable cvtop = CodeVariable.of(true, top);
+		CodeVariable cvtop = CodeVariable.of(AreaType.STACK, top);
 		
 		// Push object to the stack
 		stack.push(StackMapType.OBJECT);
