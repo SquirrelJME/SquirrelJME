@@ -156,23 +156,23 @@ class __SMTStack__
 	 *
 	 * @param __op The operation parser.
 	 * @param __n The number of elements to pop.
-	 * @return The cached stack variables to use.
+	 * @return The stack type used.
 	 * @throws ClassFormatException If popping more items from the stack than
 	 * what is on the stack occurs or the number of elements to pop is a
 	 * negative value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	void __pop(__OpParser__ __op, int __n)
+	StackMapType __pop(__OpParser__ __op, int __n)
 		throws ClassFormatException, NullPointerException
 	{
 		// Check
 		if (__op == null)
 			throw new NullPointerException("NARG");
 		
-		// Popping nothing
-		if (__n == 0)
-			return;
+		// {@squirreljme.error AY0u Not popping anything.}
+		if (__n <= 0)
+			throw new IllegalArgumentException("AY0u");
 		
 		// {@squirreljme.error AY41 The stack underflowed.}
 		int top = top(), end = top - __n;
@@ -180,7 +180,11 @@ class __SMTStack__
 			throw new ClassFormatException("AY41");
 		
 		// Set new top
+		StackMapType rv = get(end);
 		setStackTop(end);
+		
+		// Return the popped type
+		return rv;
 	}
 }
 

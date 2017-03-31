@@ -46,6 +46,13 @@ final class __OpParser__
 		IdentifierSymbol.of("allocateObject"),
 		MethodSymbol.of("(Ljava/lang/Class;)Ljava/lang/Object;"), false);
 	
+	/** Unsafe throw of a throwable object. */
+	private static final MethodReference _UNSAFE_THROWTHROWABLE =
+		new MethodReference(ClassNameSymbol.of(
+		"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
+		IdentifierSymbol.of("throwThrowable"),
+		MethodSymbol.of("(Ljava/lang/Throwable;)V"), false);
+	
 	/** The input operation data. */
 	protected final ExtendedDataInputStream input;
 	
@@ -570,7 +577,25 @@ final class __OpParser__
 	 */
 	private int[] __executeAThrow()
 	{
-		throw new todo.TODO();
+		// Pop type off the stack
+		__SMTState__ smwork = this._smwork;
+		__SMTStack__ stack = smwork._stack;
+		int popdx = stack.top() - 1;
+		StackMapType popped = stack.__pop(this, 1);
+		
+		// {@squirreljme.error AY0t Expected an object to be at the top of the
+		// stack. (The popped type}}
+		if (popped != StackMapType.OBJECT)
+			throw new ClassFormatException(String.format("AY0t %s", popped));
+		
+		// Invoke
+		writer.invokeMethod(new MethodLinkage(this.methodref,
+			_UNSAFE_THROWTHROWABLE, MethodInvokeType.STATIC), popdx, null,
+			null, new CodeVariable[]{CodeVariable.of(AreaType.STACK, popdx)},
+			new StackMapType[]{StackMapType.OBJECT});
+		
+		// No next instruction
+		return new int[0];
 	}
 	
 	/**
