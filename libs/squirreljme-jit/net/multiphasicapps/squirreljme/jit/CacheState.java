@@ -641,6 +641,27 @@ public abstract class CacheState
 		 * @since 2017/03/07
 		 */
 		public abstract CacheState state();
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/31
+		 */
+		@Override
+		public String toString()
+		{
+			// Build tread
+			StringBuilder sb = new StringBuilder("[");
+			for (int i = 0, n = size(); i < n; i++)
+			{
+				if (i > 0)
+					sb.append(", ");
+				sb.append(get(i));
+			}
+			
+			// Finish
+			sb.append(']');
+			return sb.toString();
+		}
 	}
 }
 

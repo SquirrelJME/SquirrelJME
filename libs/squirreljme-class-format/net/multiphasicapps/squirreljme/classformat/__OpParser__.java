@@ -824,15 +824,18 @@ final class __OpParser__
 		// Push object to the stack
 		stack.push(StackMapType.OBJECT);
 		
+		// Temporary used for the class object
+		CodeVariable temp = CodeVariable.of(AreaType.WORK, 0);
+		
 		// There is no special new operation in the class output, it is the
 		// same as invoking a special static method. This reduces duplicate
 		// code since this operation does the same thing as a normal invoke.
 		CodeDescriptionStream writer = this.writer;
-		writer.loadConstant(new ClassLinkage(__cn), cvtop);
+		writer.loadConstant(new ClassLinkage(__cn), temp);
 		writer.transitionState();
 		writer.invokeMethod(new MethodLinkage(this.methodref,
 			_UNSAFE_NEWINSTANCE, MethodInvokeType.STATIC), top, cvtop,
-			StackMapType.OBJECT, new CodeVariable[]{cvtop},
+			StackMapType.OBJECT, new CodeVariable[]{temp},
 			new StackMapType[]{StackMapType.OBJECT});
 		
 		// Naturally flows
