@@ -298,6 +298,8 @@ class __SMTParser__
 		// the full frame exceeds the maximum permitted local variable
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
+		int maxlocals = this.maxlocals,
+			maxstack = this.maxstack;
 		if (nl > maxlocals)
 			throw new ClassFormatException(String.format("AY30 %d %d", nl,
 				maxlocals));
@@ -455,7 +457,7 @@ class __SMTParser__
 		// Set the single stack
 		__SMTStack__ stack = next._stack;
 		stack.setStackTop(1);
-		stack.set(maxlocals, __loadInfo());
+		stack.set(0, __loadInfo());
 	}
 	
 	/**
