@@ -556,8 +556,7 @@ public final class ActiveCacheState
 		@Override
 		public Tread thisTread()
 		{
-			return (this.isstack ? ActiveCacheState.this.stack :
-				ActiveCacheState.this.locals);
+			return (Tread)super.thisTread();
 		}
 		
 		/**

@@ -182,14 +182,6 @@ public abstract class CacheState
 		public abstract List<Register> thisRegisters();
 		
 		/**
-		 * Returns the tread this slot is in.
-		 *
-		 * @return The tread this slot is in.
-		 * @since 2017/03/07
-		 */
-		public abstract Tread thisTread();
-		
-		/**
 		 * Returns the type of value that is stored here.
 		 *
 		 * @return The type of value to store.
@@ -363,6 +355,17 @@ public abstract class CacheState
 				iss, idx, dt);
 			return ((JITStateAccessor)jcs).stackSlotOffsets().get(
 				iss, idx, dt);
+		}
+		
+		/**
+		 * Returns the tread this slot is in.
+		 *
+		 * @return The tread this slot is in.
+		 * @since 2017/03/07
+		 */
+		public Tread thisTread()
+		{
+			return CacheState.this.getTread(this.area);
 		}
 		
 		/**

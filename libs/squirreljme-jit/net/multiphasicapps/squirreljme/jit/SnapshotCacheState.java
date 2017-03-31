@@ -270,8 +270,7 @@ public final class SnapshotCacheState
 		@Override
 		public Tread thisTread()
 		{
-			return (this.isstack ? SnapshotCacheState.this.stack :
-				SnapshotCacheState.this.locals);
+			return (Tread)super.thisTread();
 		}
 		
 		/**
