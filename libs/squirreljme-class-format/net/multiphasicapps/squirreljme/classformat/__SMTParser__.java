@@ -173,7 +173,7 @@ class __SMTParser__
 			false);
 		
 		// Stack is cleared
-		next._stack.setStackTop(maxlocals);
+		next._stack.setStackTop(0);
 		
 		// Read in local variables
 		__SMTLocals__ locals = next._locals;
@@ -250,7 +250,7 @@ class __SMTParser__
 			false);
 		
 		// No stack
-		next._stack.setStackTop(maxlocals);
+		next._stack.setStackTop(0);
 		
 		// Chop off some locals
 		__SMTLocals__ locals = next._locals;
@@ -310,8 +310,8 @@ class __SMTParser__
 		
 		// Read in stack variables
 		__SMTStack__ stack = next._stack;
-		int ns = maxlocals + das.readUnsignedShort();
-		for (i = maxlocals; i < ns; i++)
+		int ns = das.readUnsignedShort();
+		for (i = 0; i < ns; i++)
 			stack.set(i, __loadInfo());
 		stack.setStackTop(ns);
 	}
@@ -454,7 +454,7 @@ class __SMTParser__
 		
 		// Set the single stack
 		__SMTStack__ stack = next._stack;
-		stack.setStackTop(maxlocals + 1);
+		stack.setStackTop(1);
 		stack.set(maxlocals, __loadInfo());
 	}
 	
