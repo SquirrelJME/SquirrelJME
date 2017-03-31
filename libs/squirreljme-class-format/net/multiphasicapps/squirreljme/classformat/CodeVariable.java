@@ -25,7 +25,7 @@ public final class CodeVariable
 	implements Comparable<CodeVariable>
 {
 	/** Where is this variable stored? */
-	protected final StoreArea type;
+	protected final AreaType type;
 	
 	/** The position of this variable. */
 	protected final int id;
@@ -41,7 +41,7 @@ public final class CodeVariable
 	 * @throws IndexOutOfBoundsException If the identifier is negative.
 	 * @since 2016/09/15
 	 */
-	private CodeVariable(StoreArea __t, int __id)
+	private CodeVariable(AreaType __t, int __id)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -142,7 +142,7 @@ public final class CodeVariable
 	 * @return The area storage type.
 	 * @since 2017/03/31
 	 */
-	public final StoreArea type()
+	public final AreaType type()
 	{
 		return this.type();
 	}
@@ -156,7 +156,7 @@ public final class CodeVariable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public static CodeVariable of(StoreArea __t, int __id)
+	public static CodeVariable of(AreaType __t, int __id)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		return new CodeVariable(__t, __id);

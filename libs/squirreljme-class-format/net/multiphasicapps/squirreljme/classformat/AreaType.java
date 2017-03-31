@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2017/03/31
  */
-public enum StoreArea
+public enum AreaType
 {
 	/** Local variables. */
 	LOCAL,
