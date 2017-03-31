@@ -95,6 +95,9 @@ class __JITCodeStream__
 			createEngine(this);
 		this._engine = engine;
 		this.config = engine.<JITConfig>config(JITConfig.class);
+		
+		// Debug
+		System.err.printf("DEBUG -- ****************************************");
 	}
 	
 	/**
@@ -507,7 +510,11 @@ class __JITCodeStream__
 		// Check
 		if (__cl == null || __cv == null)
 			throw new NullPointerException("NARG");
-			
+		
+		// Debug
+		System.err.printf("DEBUG -- loadConstant %s -> %s%n", __cl, __cv);
+		
+		// Get
 		ActiveCacheState outstate = this._outstate;
 		JITConfig config = this.config;
 		TranslationEngine engine = this._engine;
