@@ -173,8 +173,9 @@ public interface CodeDescriptionStream
 	 *
 	 * @param __ms The number of stack variables.
 	 * @param __ml The number of local variables.
+	 * @param __mw The number of work variables.
 	 * @since 2016/09/09
 	 */
-	public abstract void variableCounts(int __ms, int __ml);
+	public abstract void variableCounts(int __ms, int __ml, int __mw);
 }
 

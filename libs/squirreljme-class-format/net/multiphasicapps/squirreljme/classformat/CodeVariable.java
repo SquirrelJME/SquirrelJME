@@ -25,7 +25,7 @@ public final class CodeVariable
 	implements Comparable<CodeVariable>
 {
 	/** Where is this variable stored? */
-	protected final AreaType type;
+	protected final AreaType area;
 	
 	/** The position of this variable. */
 	protected final int id;
@@ -54,8 +54,19 @@ public final class CodeVariable
 			throw new IndexOutOfBoundsException("AY0j");
 		
 		// Set
-		this.type = __t;
+		this.area = __t;
 		this.id = __id;
+	}
+	
+	/**
+	 * Returns the storage type area.
+	 *
+	 * @return The area storage type.
+	 * @since 2017/03/31
+	 */
+	public final AreaType area()
+	{
+		return this.area();
 	}
 	
 	/**
@@ -71,7 +82,7 @@ public final class CodeVariable
 			throw new NullPointerException("NARG");
 		
 		// Compare type first
-		int rv = this.type.ordinal() - __o.type.ordinal();
+		int rv = this.area.ordinal() - __o.area.ordinal();
 		if (rv != 0)
 			return rv;
 		
@@ -92,7 +103,7 @@ public final class CodeVariable
 		
 		// Cast and compare
 		CodeVariable o = (CodeVariable)__o;
-		return this.type == o.type && this.id == o.id;
+		return this.area == o.area && this.id == o.id;
 	}
 	
 	/**
@@ -102,7 +113,7 @@ public final class CodeVariable
 	@Override
 	public final int hashCode()
 	{
-		return id ^ this.type.hashCode();
+		return id ^ this.area.hashCode();
 	}
 	
 	/**
@@ -129,22 +140,11 @@ public final class CodeVariable
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = this.type + "#" +
+			this._string = new WeakReference<>((rv = this.area + "#" +
 				this.id));
 		
 		// Return
 		return rv;
-	}
-	
-	/**
-	 * Returns the storage type area.
-	 *
-	 * @return The area storage type.
-	 * @since 2017/03/31
-	 */
-	public final AreaType type()
-	{
-		return this.type();
 	}
 	
 	/**

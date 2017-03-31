@@ -28,5 +28,9 @@ public enum AreaType
 	
 	/** End. */
 	;
+	
+	/** The number of area types available. */
+	public static final int COUNT =
+		values().length;
 }
 

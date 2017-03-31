@@ -38,6 +38,10 @@ final class __CodeDecoder__
 	private static final int _CODE_SIZE_LIMIT =
 		65535;
 	
+	/** The number of slots that are used in the working area. */
+	private static final int _NUM_WORK_SLOTS =
+		4;
+	
 	/** Constant pool. */
 	protected final ConstantPool pool;
 	
@@ -132,7 +136,7 @@ final class __CodeDecoder__
 		this._maxlocals = maxlocals;
 		
 		// Report this to the writer
-		writer.variableCounts(maxstack, maxlocals);
+		writer.variableCounts(maxstack, maxlocals, _NUM_WORK_SLOTS);
 		
 		// {@squirreljme.error AY36 The code for a given method exceeds the
 		// code size limit, or the size is zero. (The current code length;

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.classformat.AreaType;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.CacheState;
@@ -32,12 +33,6 @@ public class StackSlotOffsets
 	/** The owning engine. */
 	protected final TranslationEngine engine;
 	
-	/** The number of local entries. */
-	protected final int numlocals;
-	
-	/** The number of stack entries. */
-	protected final int numstack;
-	
 	/** Total number of entries. */
 	protected final int total;
 	
@@ -46,6 +41,12 @@ public class StackSlotOffsets
 	
 	/** The offset of each stack entry, 0 is 32-bit, 1 is 64-bit. */
 	private final int[][] _offsets;
+	
+	/** The number of entries for each area. */
+	private final int[] _areacount;
+	
+	/** The base offset in the total offsets for each area. */
+	private final int[] _areaoff;
 	
 	/** The current stack depth. */
 	private volatile int _depth;
@@ -56,10 +57,11 @@ public class StackSlotOffsets
 	 * @param __e The owning engine.
 	 * @param __ms Number of stack entries.
 	 * @param __ml Number of local entries.
+	 * @param __mw Number of work entries.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	StackSlotOffsets(__JITCodeStream__ __e, int __ms, int __ml)
+	StackSlotOffsets(__JITCodeStream__ __e, int __ms, int __ml, int __mw)
 		throws NullPointerException
 	{
 		// Check
@@ -69,10 +71,32 @@ public class StackSlotOffsets
 		// Set
 		this._codestream = __e;
 		this.engine = __e._engine;
-		this.numstack = __ms;
-		this.numlocals = __ml;
-		int total = __ms + __ml;
 		this.total = total;
+		
+		// Setup counts and offsets
+		int z, total = 0;
+		int[] areacount = new int[AreaType.COUNT],
+			areaoff = new int[AreaType.COUNT];
+		this._areacount = areacount;
+		this._areaoff = areaoff;
+		
+		// Locals
+		areacount[(z = AreaType.LOCAL.ordinal())] = __ml;
+		areaoff[z] = 0;
+		total += __ml;
+		
+		// Stack
+		areacount[(z = AreaType.STACK.ordinal())] = __ms;
+		areaoff[z] = __ml;
+		total += __ms;
+		
+		// Working
+		areacount[(z = AreaType.WORK.ordinal())] = __ms;
+		areaoff[z] = __ml + __ms;
+		total += __mw;
+		
+		// Final total
+		this._total = total;
 		
 		// Initialize offsets
 		int[][] offsets = new int[2][total];
@@ -88,7 +112,7 @@ public class StackSlotOffsets
 	 * This assigns a slot to a position on the stack if it is not currently
 	 * assigned.
 	 *
-	 * @param __stack Is the slot on the stack?
+	 * @param __a The area the variable exists in.
 	 * @param __i The index of the slot.
 	 * @param __t The type of data to store in the slot.
 	 * @return The position of the stack entry.
@@ -96,15 +120,15 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/17
 	 */
-	public int assign(boolean __stack, int __i, DataType __t)
+	public int assign(AreaType __a, int __i, DataType __t)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
-		if (__t == null)
+		if (__a == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// If a value is already assigned, ignore
-		int rv = get(__stack, __i, __t);
+		int rv = get(__a, __i, __t);
 		if (rv != Integer.MIN_VALUE)
 			return rv;
 		
@@ -112,7 +136,7 @@ public class StackSlotOffsets
 		// The stack always grows down
 		int depth = this._depth,
 			len = Math.max(4, __t.length()),
-			at = (__stack ? numlocals + __i : __i);
+			at = this._areaoff[__a.ordinal()] + __i;
 		depth -= len;
 		
 		// Set position of the entry
@@ -146,7 +170,7 @@ public class StackSlotOffsets
 	/**
 	 * Returns the stack offset of the specified variable.
 	 *
-	 * @param __stack Is this on the stack?
+	 * @param __a The area where the variable is stored.
 	 * @param __i The index of the entry.
 	 * @param __t The type stored in the variable.
 	 * @return The stack position of the slot or {@link Integer#MIN_VALUE} if
@@ -155,23 +179,21 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/07
 	 */
-	public int get(boolean __stack, int __i, DataType __t)
+	public int get(AreaType __a, int __i, DataType __t)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
-		if (__t == null)
+		if (__a == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error AM09 Slot index outside bounds of the tread.
 		// (The index)}
-		int numlocals = this.numlocals,
-			numstack = this.numstack;
-		if (__i < 0 || __i >= (__stack ? numstack : numlocals))
+		if (__i < 0 || __i >= this._areacount[__a.ordinal()])
 			throw new IndexOutOfBoundsException(String.format("AM09 %d", __i));
 		
 		// If the item is greater than 32-bit then use the long offset first
 		int[][] offsets = this._offsets;
-		int at = (__stack ? numlocals + __i : __i),
+		int at = this._areaoff[__a.ordinal()] + __i,
 			rv = Integer.MIN_VALUE;
 		if (__t.length() > 4)
 			if (Integer.MIN_VALUE != (rv = offsets[1][at]))
@@ -199,7 +221,7 @@ public class StackSlotOffsets
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		return get(__cv.isStack(), __cv.id(), __t);
+		return get(__cv.area(), __cv.id(), __t);
 	}
 	
 	/**
@@ -219,7 +241,7 @@ public class StackSlotOffsets
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		return get(__s.valueIsStack(), __s.valueIndex(),
+		return get(__s.valueArea(), __s.valueIndex(),
 			this.engine.toDataType(__s.valueType()));
 	}
 	
