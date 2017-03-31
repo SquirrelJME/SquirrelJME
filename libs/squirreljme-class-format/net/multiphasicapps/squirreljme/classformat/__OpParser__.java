@@ -427,6 +427,10 @@ final class __OpParser__
 			case ClassByteCodeIndex.NEW:
 				return __executeNew(pool.get(input.readUnsignedShort()).
 					<ClassNameSymbol>get(true, ClassNameSymbol.class));
+					
+				// Duplicate variables
+			case ClassByteCodeIndex.DUP:
+				return __executeDup();
 			
 				// {@squirreljme.error AY38 Defined operation cannot be
 				// used in Java ME programs. (The operation)}
@@ -450,7 +454,6 @@ final class __OpParser__
 			case ClassByteCodeIndex.SASTORE:
 			case ClassByteCodeIndex.POP:
 			case ClassByteCodeIndex.POP2:
-			case ClassByteCodeIndex.DUP:
 			case ClassByteCodeIndex.DUP_X1:
 			case ClassByteCodeIndex.DUP_X2:
 			case ClassByteCodeIndex.DUP2:
@@ -554,6 +557,37 @@ final class __OpParser__
 				throw new ClassFormatException(
 					String.format("AY37 %d", __code));
 		}
+	}
+	
+	/**
+	 * Duplicates the topmost entry on the stack.
+	 *
+	 * @since 2017/03/31
+	 */
+	private int[] __executeDup()
+	{
+		// Get
+		__SMTState__ smwork = this._smwork;
+		__SMTStack__ stack = smwork._stack;
+		
+		// Get the element on the top of the stack
+		int top = stack.top();
+		StackMapType tt = stack.get(top - 1);
+		
+		// {@squirreljme.error AY0q The specified type cannot be duplicated
+		// on the stack. (The type at the top of the stack)}
+		if (!tt.isValid() || tt.isWide())
+			throw new ClassFormatException(String.format("AY0q %s", tt));
+		
+		// Push this type to the top
+		stack.push(tt);
+		
+		// Generate the copy
+		this.writer.copy(tt, CodeVariable.of(true, top - 1),
+			CodeVariable.of(true, top));
+		
+		// Implicit next
+		return IMPLICIT_NEXT;
 	}
 	
 	/**

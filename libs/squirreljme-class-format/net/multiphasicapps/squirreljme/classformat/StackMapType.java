@@ -71,6 +71,17 @@ public enum StackMapType
 	}
 	
 	/**
+	 * Is this a valid type for storing of a value?
+	 *
+	 * @return {@code true} if this is not nothing or the top type.
+	 * @since 2017/03/31
+	 */
+	public final boolean isValid()
+	{
+		return this != NOTHING && this != TOP;
+	}
+	
+	/**
 	 * Returns {@code true} if this is a wide type.
 	 *
 	 * @return {@code true} if a wide type.

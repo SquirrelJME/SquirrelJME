@@ -30,28 +30,32 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 ## Repository
 
  * [Online repository](http://multiphasicapps.net/)
-   * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
-   * The repository may be cloned with:
+   ([HTTPS](https://multiphasicapps.net/))
+ * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
+ * The repository may be cloned with:
+   * One of these commands
      * `fossil clone -u http://multiphasicapps.net/ squirreljme.fossil`
-     * `mkdir squireljme`
-     * `cd squirreljme`
-     * `fossil open ../squirreljme.fossil`
-   * Trunk Source Snapshot (`fossil serve` only):
-     * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
-     * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
-   * Read-Only Mirrors:
-     * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
-     * GitHub: <http://github.com/mpasteven/SquirrelJME>
-     * GitLab: <https://gitlab.com/mpasteven/SquirrelJME>
-     * Tor: <http://squirrelzarhffxz.onion/>
-       (`fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`)
+     * `fossil clone -u https://multiphasicapps.net/ squirreljme.fossil`
+   * `mkdir squireljme`
+   * `cd squirreljme`
+   * `fossil open ../squirreljme.fossil`
+ * Trunk Source Snapshot (`fossil serve` only):
+   * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
+   * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
+ * Read-Only Mirrors:
+   * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
+   * GitHub: <https://github.com/mpasteven/SquirrelJME>
+   * GitLab: <https://gitlab.com/mpasteven/SquirrelJME>
+   * Tor: <http://squirrelzarhffxz.onion/>
+     (`fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`)
 
 ## Documents
 
  * [Code of Conduct](code-of-conduct.mkd)
  * [Developer Notes](/uv/developer-notes/index.mkd)
    * [Alternative URL](http://multiphasicapps.net/uv/developer-notes/index.mkd)
-     (Links to the main repository)
+     ([HTTPS](https://multiphasicapps.net/uv/developer-notes/index.mkd);
+     Links to the main repository, do not follow via Tor use the direct link)
  * [Manual](assets/manual/index.mkd)
  * [Project Scope](scope.mkd)
  * [Why?](assets/manual/user/why.mkd)
