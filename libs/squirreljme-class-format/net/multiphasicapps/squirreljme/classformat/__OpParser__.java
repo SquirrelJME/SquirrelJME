@@ -427,6 +427,10 @@ final class __OpParser__
 			case ClassByteCodeIndex.NEW:
 				return __executeNew(pool.get(input.readUnsignedShort()).
 					<ClassNameSymbol>get(true, ClassNameSymbol.class));
+				
+				// Throw throwable
+			case ClassByteCodeIndex.ATHROW:
+				return __executeAThrow();
 					
 				// Duplicate variables
 			case ClassByteCodeIndex.DUP:
@@ -541,7 +545,6 @@ final class __OpParser__
 			case ClassByteCodeIndex.NEWARRAY:
 			case ClassByteCodeIndex.ANEWARRAY:
 			case ClassByteCodeIndex.ARRAYLENGTH:
-			case ClassByteCodeIndex.ATHROW:
 			case ClassByteCodeIndex.CHECKCAST:
 			case ClassByteCodeIndex.INSTANCEOF:
 			case ClassByteCodeIndex.MONITORENTER:
@@ -557,6 +560,16 @@ final class __OpParser__
 				throw new ClassFormatException(
 					String.format("AY37 %d", __code));
 		}
+	}
+	
+	/**
+	 * Generates a throw of the exception on the top of the stack.
+	 *
+	 * @since 2017/03/31
+	 */
+	private void __executeAThrow()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -795,6 +808,10 @@ final class __OpParser__
 		// Check
 		if (__cn == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY0r You cannot new an array or primitive type.}
+		if (__cn.isArray() || __cn.isPrimitive())
+			throw new ClassFormatException(String.format("AY0r %s", __cn));
 		
 		// Determine the top of the stack
 		__SMTState__ smwork = this._smwork;
