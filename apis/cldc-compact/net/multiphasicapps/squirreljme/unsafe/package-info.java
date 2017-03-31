@@ -9,7 +9,12 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the bridge between Java code that runs and the kernel.
+ * This package contains the bridge between Java code that runs and the kernel
+ * or user space.
+ *
+ * The classes within this package are only meant to be used internally by
+ * SquirrelJME and are not portable across virtual machines. Backwards and
+ * forwards compatibility does not exist for this package.
  *
  * @since 2016/05/27
  */
