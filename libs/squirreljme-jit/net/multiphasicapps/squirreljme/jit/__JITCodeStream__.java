@@ -111,7 +111,7 @@ class __JITCodeStream__
 		ActiveCacheState outstate = this._outstate;
 		
 		// Debug
-		System.err.printf("DEBUG -- At %d (pos %d)%n", __code, __pos);
+		System.err.printf("DEBUG -- ^^^^^^^^ At %d (pos %d)%n", __code, __pos);
 		
 		// Setup input state if there is a pre-existing state available
 		SnapshotCacheStates states = this._states;
