@@ -663,7 +663,7 @@ class __JITCodeStream__
 		// such this makes the JIT design a bit simpler at the cost of some
 		// copies. Locals are never aliased.
 		// The work area never has aliases either
-		AreaType da = __destsot.thisArea(),
+		AreaType da = __destslot.thisArea(),
 			sa = __srcslot.valueArea();
 		if (da == AreaType.LOCAL || da == AreaType.WORK || sa == AreaType.WORK)
 			__doalias = false;
@@ -727,24 +727,15 @@ class __JITCodeStream__
 		// Go through both treads and store them
 		TranslationEngine engine = this._engine;
 		StackSlotOffsets stackoffsets = this._stackoffsets;
-		for (int z = 0; z < 2; z++)
+		for (AreaType treadarea : AreaType.values())
 		{
-			// Local variables
-			ActiveCacheState.Tread tread;
-			int limit;
-			if (z == 0)
-			{
-				tread = __outstate.locals();
-				limit = tread.size();
-			}
+			ActiveCacheState.Tread tread = __outstate.getTread(treadarea);
+			int limit = tread.size();
 			
-			// Stack, only go up to the stack depth because everything after
-			// that point is going to be destroyed anyway
-			else
-			{
-				tread = __outstate.stack();
-				limit = Math.min(tread.size(), __d);
-			}
+			// Cap limit to the top of the stack if this is the stack
+			if (treadarea == AreaType.STACK)
+				if (__d < limit)
+					limit = __d;
 			
 			// Check for slots that need saving
 			for (int i = 0; i < limit; i++)
@@ -771,13 +762,13 @@ class __JITCodeStream__
 				if (needsave)
 				{
 					// Assign stack slot
-					boolean onstack = slot.valueIsStack();
+					AreaType area = slot.valueArea();
 					int index = slot.valueIndex(),
 						stackoffset = slot.valueStackOffset();
 					
 					// Assign the offset?
 					if (stackoffset == Integer.MIN_VALUE)
-						stackoffset = stackoffsets.assign(onstack, index,
+						stackoffset = stackoffsets.assign(area, index,
 							engine.toDataType(type));
 					
 					// Debug
@@ -789,7 +780,7 @@ class __JITCodeStream__
 					// The values are placed on the stack, so their output
 					// register set is actually invalid until they are used
 					// again. If a stored temporary values
-					__outstate.getSlot(onstack, index).clearRegisters();
+					__outstate.getSlot(area, index).clearRegisters();
 				}
 			}
 		}

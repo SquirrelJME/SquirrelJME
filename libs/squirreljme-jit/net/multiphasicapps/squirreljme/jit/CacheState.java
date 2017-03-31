@@ -110,7 +110,7 @@ public abstract class CacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/31
 	 */
-	public final Tread getTread(AreaType __t)
+	public Tread getTread(AreaType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -217,8 +217,8 @@ public abstract class CacheState
 			for (Slot at = this;;)
 			{
 				// Aliased?
-				AreaType idarea = cv.thisAliasedArea();
-				int idalias = cv.thisAliasedVariable();
+				AreaType idarea = at.thisAliasedArea();
+				int idalias = at.thisAliasedIndex();
 				if (idarea == null || idalias < 0)
 					if (at == this)
 						return this;
@@ -257,7 +257,7 @@ public abstract class CacheState
 			AreaType area = thisAliasedArea();
 			if (area == null)
 				return null;
-			return new CodeVariable(area, thisAliasedIndex());
+			return CodeVariable.of(area, thisAliasedIndex());
 		}
 		
 		/**
@@ -380,7 +380,7 @@ public abstract class CacheState
 			// Return the offset for the given entry
 			__JITCodeStream__ jcs = CacheState.this._codestream;
 			DataType dt = jcs._engine.toDataType(type);
-			boolean iss = thisIsStack();
+			AreaType iss = thisArea();
 			int idx = thisIndex();
 			if (__a)
 				return ((JITStateAccessor)jcs).stackSlotOffsets().assign(

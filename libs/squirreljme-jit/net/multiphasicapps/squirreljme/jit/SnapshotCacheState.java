@@ -65,9 +65,7 @@ public final class SnapshotCacheState
 		// Copy locals and the stack
 		this.locals = __snapTread(AreaType.LOCAL, __a.locals());
 		this.stack = __snapTread(AreaType.STACK, __a.stack());
-		
-		// Work variables are never snapshotted
-		this.work = new Tread(AreaType.WORK, __a.work().size());
+		this.work = __snapTread(AreaType.WORK, __a.work());
 	}
 	
 	/**
@@ -134,7 +132,7 @@ public final class SnapshotCacheState
 		throws NullPointerException
 	{
 		// Check
-		if (__a = null || __from == null)
+		if (__a == null || __from == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup copies of slots
@@ -156,9 +154,6 @@ public final class SnapshotCacheState
 	public final class Slot
 		extends CacheState.Slot
 	{
-		/** The index of this slot. */
-		protected final int index;
-		
 		/** The type of value stored here. */
 		protected final StackMapType type;
 		
@@ -189,7 +184,7 @@ public final class SnapshotCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot(AreaType __a, CacheState.Slot __from)
+		private Slot(AreaType __a, int __i, CacheState.Slot __from)
 			throws NullPointerException
 		{
 			super(__a, __i);
@@ -199,7 +194,6 @@ public final class SnapshotCacheState
 				throw new NullPointerException("NARG");
 			
 			// Copy fields
-			this.isstack = __from.thisIsStack();
 			this.type = __from.thisType();
 			
 			// Copy Registers

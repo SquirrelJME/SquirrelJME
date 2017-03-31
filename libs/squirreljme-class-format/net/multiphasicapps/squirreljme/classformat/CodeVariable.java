@@ -66,7 +66,7 @@ public final class CodeVariable
 	 */
 	public final AreaType area()
 	{
-		return this.area();
+		return this.area;
 	}
 	
 	/**

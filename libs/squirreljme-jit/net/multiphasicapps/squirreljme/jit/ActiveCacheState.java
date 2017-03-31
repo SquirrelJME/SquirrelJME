@@ -48,13 +48,10 @@ public final class ActiveCacheState
 			public int compare(ActiveCacheState.Slot __a,
 				ActiveCacheState.Slot __b)
 			{
-				// Locals first
-				boolean sa = __a.thisIsStack(),
-					sb = __b.thisIsStack();
-				if (!sa && sb)
-					return -1;
-				else if (sa && !sb)
-					return 1;
+				// Area first
+				int rv = __a.thisArea().ordinal() - __b.thisArea().ordinal();
+				if (rv != 0)
+					return rv;
 				
 				// Then the index
 				return __a.thisIndex() - __b.thisIndex();
@@ -69,6 +66,9 @@ public final class ActiveCacheState
 	
 	/** Local code variables. */
 	protected final Tread locals;
+	
+	/** The working tread. */
+	protected final Tread work;
 	
 	/** Registers available for allocation. */
 	protected final MultiSetDeque<Register> foralloc =
@@ -126,8 +126,9 @@ public final class ActiveCacheState
 		// Setup treads
 		this.engine = __cs._engine;
 		this.genops = __go;
-		this.stack = new Tread(true, __ms);
-		this.locals = new Tread(false, __ml);
+		this.stack = new Tread(AreaType.STACK, __ms);
+		this.locals = new Tread(AreaType.LOCAL, __ml);
+		this.work = new Tread(AreaType.WORK, __mw);
 		
 		// Copy saved registers
 		Set<Register> availsaved = new LinkedHashSet<>();
@@ -167,6 +168,16 @@ public final class ActiveCacheState
 		throws NullPointerException
 	{
 		return (Slot)super.getSlot(__s, __i);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/31
+	 */
+	@Override
+	public Tread getTread(AreaType __a)
+	{
+		return (Tread)super.getTread(__a);
 	}
 	
 	/**
@@ -211,10 +222,12 @@ public final class ActiveCacheState
 			locals = this.locals;
 		stack.__switchFrom(__cs.stack());
 		locals.__switchFrom(__cs.locals());
+		work.__switchFrom(__cs.work());
 		
 		// Correct aliased by
 		stack.__fixAliasedBy();
 		locals.__fixAliasedBy();
+		work.__fixAliasedBy();
 	}
 	
 	/**
@@ -235,6 +248,16 @@ public final class ActiveCacheState
 		// Finish
 		sb.append('}');
 		return sb.toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/03/31
+	 */
+	@Override
+	public Tread work()
+	{
+		return this.work;
 	}
 	
 	/**
@@ -406,9 +429,10 @@ public final class ActiveCacheState
 			if (target == this)
 				throw new JITException(String.format("ED0o %s", this));
 			
-			// {@squirreljme.error ED0f Local variables cannot alias other
-			// slots. (This slot; The target slot)}
-			if (thisIsLocal())
+			// {@squirreljme.error ED0f Local or work variables cannot alias
+			// other slots. (This slot; The target slot)}
+			AreaType myarea = thisArea();
+			if (myarea == AreaType.LOCAL || myarea == AreaType.WORK)
 				throw new IllegalArgumentException(String.format("ED0f %s %s",
 					this, __id));
 			
