@@ -97,7 +97,7 @@ class __JITCodeStream__
 		this.config = engine.<JITConfig>config(JITConfig.class);
 		
 		// Debug
-		System.err.printf("DEBUG -- ****************************************");
+		System.err.println("DEBUG -- ***************************************");
 	}
 	
 	/**
@@ -227,6 +227,7 @@ class __JITCodeStream__
 	public void endMethod()
 	{
 		System.err.println("TODO -- Any endMethod() generation.");
+		System.err.println("DEBUG -- ***************************************");
 	}
 	
 	/**
