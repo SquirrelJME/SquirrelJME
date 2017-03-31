@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
+import net.multiphasicapps.squirreljme.classformat.AreaType;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
@@ -62,6 +63,14 @@ public abstract class CacheState
 	public abstract Tread stack();
 	
 	/**
+	 * The working tread.
+	 *
+	 * @return The working tread of variables.
+	 * @since 2017/03/31
+	 */
+	public abstract Tread work();
+	
+	/**
 	 * Returns the slot which is associated with the given variable.
 	 *
 	 * @param __cv The variable to get the slot of.
@@ -76,26 +85,47 @@ public abstract class CacheState
 			throw new NullPointerException("NARG");
 		
 		// Depends
-		int id = __cv.id();
-		if (__cv.isStack())
-			return stack().get(id);
-		return locals().get(id);
+		return getTread(__cv.area()).get(id);
 	}
 	
 	/**
 	 * Returns the slot which is associated with the given tread and index.
 	 *
-	 * @param __s Is the slot on the stack?
+	 * @param __t Which area is this tread on?
 	 * @param __i The index of the slot.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	public Slot getSlot(boolean __s, int __i)
+	public Slot getSlot(AreaType __t, int __i)
 		throws NullPointerException
 	{
-		if (__s)
-			return stack().get(__i);
-		return locals().get(__i);
+		return getTread(__t).get(__i);
+	}
+	
+	/**
+	 * Returns the tread with the given area type.
+	 * 
+	 * @param __t The tread to get.
+	 * @return The tread for the given area.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/03/31
+	 */
+	public final Tread getTread(AreaType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__t)
+		{
+			case LOCAL: return locals();
+			case STACK: return stack();
+			case WORK: return work();
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -105,7 +135,8 @@ public abstract class CacheState
 	@Override
 	public String toString()
 	{
-		return String.format("{stack=%s, locals=%s}", stack(), locals());
+		return String.format("{stack=%s, locals=%s, work=%s}", stack(),
+			locals(), work());
 	}
 	
 	/**
@@ -115,13 +146,24 @@ public abstract class CacheState
 	 */
 	public abstract class Slot
 	{
+		/** The area this slot is in. */
+		protected final AreaType area;
+		
 		/**
 		 * Initializes the base slot.
 		 *
+		 * @param __a The slot area.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/11
 		 */
-		Slot()
+		Slot(AreaType __a)
+			throws NullPointerException
 		{
+			// Check
+			if (__a == null)
+				throw new NullPointerException("NARG");
+			
+			this.area = __a;
 		}
 		
 		/**
@@ -131,22 +173,6 @@ public abstract class CacheState
 		 * @since 2017/03/03
 		 */
 		public abstract int thisIndex();
-		
-		/**
-		 * Returns {@code true} if this is a local slot.
-		 *
-		 * @return {@code true} if a local slot.
-		 * @since 2017/03/03
-		 */
-		public abstract boolean thisIsLocal();
-		
-		/**
-		 * Returns {@code true} if this is a stack slot.
-		 *
-		 * @return {@code true} if a stack slot.
-		 * @since 2017/03/03
-		 */
-		public abstract boolean thisIsStack();
 		
 		/**
 		 * Returns the list of registers which are stored in this slot.
@@ -234,6 +260,17 @@ public abstract class CacheState
 			// In registers
 			return new ArgumentAllocation(dt, registers.<Register>toArray(
 				new Register[registers.size()]));
+		}
+		
+		/**
+		 * Returns the area of this slot.
+		 *
+		 * @return The area of this slot.
+		 * @since 2017/03/31
+		 */
+		public final AreaType thisArea()
+		{
+			return this.area;
 		}
 		
 		/**
@@ -327,6 +364,17 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Returns the area of the value slot.
+		 *
+		 * @return The area of the value slot.
+		 * @since 2017/03/31
+		 */
+		public final boolean valueArea()
+		{
+			return value().thisArea();
+		}
+		
+		/**
 		 * Are registers used in the value?
 		 *
 		 * @return {@code true} if registers are used in the value.
@@ -346,28 +394,6 @@ public abstract class CacheState
 		public final int valueIndex()
 		{
 			return value().thisIndex();
-		}
-		
-		/**
-		 * Returns {@code true} if this is a local slot.
-		 *
-		 * @return {@code true} if a local slot.
-		 * @since 2017/03/11
-		 */
-		public final boolean valueIsLocal()
-		{
-			return value().thisIsLocal();
-		}
-		
-		/**
-		 * Returns {@code true} if this is a stack slot.
-		 *
-		 * @return {@code true} if a stack slot.
-		 * @since 2017/03/11
-		 */
-		public final boolean valueIsStack()
-		{
-			return value().thisIsStack();
 		}
 		
 		/**
@@ -469,7 +495,7 @@ public abstract class CacheState
 			
 			// Add the actual slot identifier
 			sb.append('<');
-			sb.append(thisIsStack() ? 'S' : 'L');
+			sb.append(thisArea());
 			sb.append('#');
 			sb.append(thisIndex());
 			sb.append('>');
@@ -510,6 +536,26 @@ public abstract class CacheState
 	public interface Tread
 		extends RandomAccess
 	{
+		/** The area this tread belongs in. */
+		protected final AreaType area;
+		
+		/**
+		 * Initializes the base tread.
+		 *
+		 * @param __a The area type.
+		 * @throws NullPointerException On null arguments.
+		 */
+		Tread(AreaType __a)
+			throws NullPointerException
+		{
+			// Check
+			if (__a == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.area = __a;
+		}
+		
 		/**
 		 * Gets the specified slot in this tread.
 		 *
