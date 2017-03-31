@@ -534,26 +534,6 @@ public final class ActiveCacheState
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public boolean thisIsLocal()
-		{
-			return !this.isstack;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public boolean thisIsStack()
-		{
-			return this.isstack;
-		}
-		
-		/**
-		 * {@inheritDoc}
 		 * @since 2017/03/11
 		 */
 		@Override
