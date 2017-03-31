@@ -310,19 +310,17 @@ final class __CodeDecoder__
 		List<CodeVariable> cvs = new ArrayList<>(maxuse);
 		List<StackMapType> sts = new ArrayList<>(maxuse);
 		
-		// Determine stack first
+		// There has to be nothing on the stack
 		__SMTStack__ stack = state._stack;
 		int sh = stack.top();
 		for (int i = 0; i < sh; i++)
 		{
 			StackMapType q = stack.get(i);
 			
-			// Add if it has a value
+			// {@squirreljme.error AY0s The initial state of a method cannot
+			// have any entries on the stack.}
 			if (q.hasValue())
-			{
-				cvs.add(CodeVariable.of(AreaType.LOCAL, i));
-				sts.add(q);
-			}
+				throw new ClassFormatException("AY0s");
 		}
 		
 		// Then locals
@@ -334,7 +332,7 @@ final class __CodeDecoder__
 			// Add if it has a value
 			if (q.hasValue())
 			{
-				cvs.add(CodeVariable.of(AreaType.STACK, i));
+				cvs.add(CodeVariable.of(AreaType.LOCAL, i));
 				sts.add(q);
 			}
 		}
