@@ -300,7 +300,7 @@ public final class ActiveCacheState
 			StackMapType.NOTHING;
 		
 		/** Aliased to the stack?. */
-		private volatile boolean _stackalias;
+		private volatile AreaType _atalias;
 		
 		/** Slot this is aliased to. */
 		private volatile int _idalias =
@@ -360,7 +360,7 @@ public final class ActiveCacheState
 			
 			// Clear other info
 			this._type = StackMapType.NOTHING;
-			this._stackalias = false;
+			this._atalias = null;
 			this._idalias = -1;
 		}
 		
@@ -380,22 +380,27 @@ public final class ActiveCacheState
 				throw new NullPointerException("NARG");
 			
 			// Set
-			setAlias(__cv.isStack(), __cv.id());
+			setAlias(__cv.area(), __cv.id());
 		}
 		
 		/**
 		 * Aliases the value of this slot to another slot.
 		 *
-		 * @param __s Is this aliased to the stack?
+		 * @param __a The area to alias to.
 		 * @param __id The slot index this is aliased to.
 		 * @throws IllegalArgumentException If the slot is not valid.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/01
 		 */
-		public void setAlias(boolean __s, int __id)
-			throws IllegalArgumentException
+		public void setAlias(AreaType __a, int __id)
+			throws IllegalArgumentException, NullPointerException
 		{
+			// Check
+			if (__a == null)
+				throw new NullPointerException("NARG");
+			
 			// Do not have recursive aliases
-			Slot target = getSlot(__s, __id).value();
+			Slot target = getSlot(__a, __id).value();
 			
 			// {@squirreljme.error ED0o Cannot alias slot to self. (This slot)}
 			if (target == this)
@@ -418,7 +423,7 @@ public final class ActiveCacheState
 			remove();
 			
 			// Set
-			this._stackalias = target.thisIsStack();
+			this._atalias = target.thisArea();
 			this._idalias = target.thisIndex();
 		}
 		
@@ -512,6 +517,26 @@ public final class ActiveCacheState
 			// Set, return old
 			this._type = __t;
 			return rv;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/31
+		 */
+		@Override
+		protected AreaType thisAliasedArea()
+		{
+			return this._atalias;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/31
+		 */
+		@Override
+		protected int thisAliasedIndex()
+		{
+			return this._idalias;
 		}
 		
 		/**
@@ -719,7 +744,7 @@ public final class ActiveCacheState
 			List<Register> registers = this._registers;
 			if (value != __s)
 			{
-				this._stackalias = value.thisIsStack();
+				this._atalias = value.thisArea();
 				this._idalias = value.thisIndex();
 				
 				// Aliased entries do not use registers because their register
@@ -730,7 +755,7 @@ public final class ActiveCacheState
 			// Not aliased
 			else
 			{
-				this._stackalias = false;
+				this._atalias = null;
 				this._idalias = -1;
 				
 				// Use all registers

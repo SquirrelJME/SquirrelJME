@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.classformat.AreaType;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.ExceptionHandlerTable;
@@ -268,9 +269,9 @@ class __JITCodeStream__
 			int id = v.id();
 			
 			// {@squirreljme.error ED08 Initial method arguments placed on the
-			// stack is not supported, the initial state must only have local
-			// variables used.}
-			if (!v.isLocal())
+			// stack or work area is not supported, the initial state must
+			// only have local variables used.}
+			if (v.area() != AreaType.LOCAL)
 				throw new JITException("ED08");
 			
 			// Get slot for the entry
@@ -661,18 +662,19 @@ class __JITCodeStream__
 		// actually copied (because locals persist in exception handlers). As
 		// such this makes the JIT design a bit simpler at the cost of some
 		// copies. Locals are never aliased.
-		if (__destslot.thisIsLocal())
+		// The work area never has aliases either
+		AreaType da = __destsot.thisArea(),
+			sa = __srcslot.valueArea();
+		if (da == AreaType.LOCAL || da == AreaType.WORK || sa == AreaType.WORK)
 			__doalias = false;
 		
 		// The source slot to be copied, the source is always derived from its
 		// own alias
-		boolean ss = __srcslot.valueIsStack(),
-			ds = __destslot.thisIsStack();
 		int si = __srcslot.valueIndex(),
 			di = __destslot.thisIndex();
 		
 		// Alias/copy to self, do nothing
-		if (ss == ds && si == di)
+		if (sa == da && si == di)
 			return;
 		
 		// Go through the target stack, any stack slots which alias to the
@@ -686,7 +688,7 @@ class __JITCodeStream__
 		// forwarded)
 		// An alias though might point to another alias however.
 		if (__doalias)
-			__destslot.setAlias(ss, si);
+			__destslot.setAlias(sa, si);
 		
 		// Copying over a value, replace it
 		else

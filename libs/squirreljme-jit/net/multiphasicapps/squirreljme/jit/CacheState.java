@@ -85,7 +85,7 @@ public abstract class CacheState
 			throw new NullPointerException("NARG");
 		
 		// Depends
-		return getTread(__cv.area()).get(id);
+		return getTread(__cv.area()).get(__cv.id());
 	}
 	
 	/**
@@ -172,6 +172,22 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Returns the area that this aliases to.
+		 *
+		 * @return The aliased area or {@code null} if it is not aliased.
+		 * @since 2017/03/31
+		 */
+		protected abstract AreaType thisAliasedArea();
+		
+		/**
+		 * Returns the index that this aliases to.
+		 *
+		 * @return The aliased index or a negative value if it is not aliased.
+		 * @since 2017/03/31
+		 */
+		protected abstract int thisAliasedIndex();
+		
+		/**
 		 * Returns the list of registers which are stored in this slot.
 		 *
 		 * Lower indexes are the least significant values.
@@ -201,8 +217,9 @@ public abstract class CacheState
 			for (Slot at = this;;)
 			{
 				// Aliased?
-				int idalias = at.idalias;
-				if (idalias < 0)
+				AreaType idarea = cv.thisAliasedArea();
+				int idalias = cv.thisAliasedVariable();
+				if (idarea == null || idalias < 0)
 					if (at == this)
 						return this;
 					else
@@ -210,7 +227,7 @@ public abstract class CacheState
 			
 				// {@squirreljme.error ED0c Slot eventually references itself.
 				// (This slot)}
-				at = CacheState.this.getTread(this.area).get(idalias);
+				at = CacheState.this.getTread(idarea).get(idalias);
 				if (at == this)
 					throw new IllegalStateException(String.format("ED0c %s",
 						this));
@@ -226,6 +243,21 @@ public abstract class CacheState
 		public final boolean isAliased()
 		{
 			return value() != this;
+		}
+		
+		/**
+		 * The aliased variable for this slot.
+		 *
+		 * @return The variable that this aliases or {@code null} if this is
+		 * not aliased to anything.
+		 * @since 2017/03/31
+		 */
+		public final CodeVariable thisAliasedVariable()
+		{
+			AreaType area = thisAliasedArea();
+			if (area == null)
+				return null;
+			return new CodeVariable(area, thisAliasedIndex());
 		}
 		
 		/**

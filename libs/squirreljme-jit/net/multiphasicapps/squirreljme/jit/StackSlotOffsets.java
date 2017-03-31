@@ -71,7 +71,6 @@ public class StackSlotOffsets
 		// Set
 		this._codestream = __e;
 		this.engine = __e._engine;
-		this.total = total;
 		
 		// Setup counts and offsets
 		int z, total = 0;

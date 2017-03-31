@@ -163,7 +163,7 @@ public final class SnapshotCacheState
 		protected final StackMapType type;
 		
 		/** Aliased to the stack?. */
-		protected final boolean stackalias;
+		protected final AreaType areaalias;
 		
 		/** Slot this is aliased to. */
 		protected final int idalias;
@@ -214,16 +214,36 @@ public final class SnapshotCacheState
 			CacheState.Slot alias = __from.value();
 			if (alias != __from)
 			{
-				this.stackalias = alias.thisIsStack();
+				this.areaalias = alias.thisArea();
 				this.idalias = alias.thisIndex();
 			}
 			
 			// Not aliased
 			else
 			{
-				this.stackalias = false;
+				this.areaalias = null;
 				this.idalias = -1;
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/31
+		 */
+		@Override
+		protected AreaType thisAliasedArea()
+		{
+			return this.areaalias;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/03/31
+		 */
+		@Override
+		protected int thisAliasedIndex()
+		{
+			return this.idalias;
 		}
 		
 		/**
