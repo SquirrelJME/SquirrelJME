@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.classformat.AreaType;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.util.msd.MultiSetDeque;
@@ -105,13 +106,14 @@ public final class ActiveCacheState
 	 * @param __te The code stream
 	 * @param __ms The number of stack entries.
 	 * @param __ml The number of local entries.
+	 * @param __mw The number of work entries.
 	 * @param __sv Saved registers for allocation.
 	 * @param __tm Temporary registers for allocation.
 	 * @param __go Generate operations?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml,
+	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml, int __mw,
 		Register[] __sv, Register[] __tm, boolean __go)
 		throws NullPointerException
 	{
@@ -800,8 +802,7 @@ public final class ActiveCacheState
 	 * @since 2017/02/23
 	 */
 	public final class Tread
-		extends AbstractList<Slot>
-		implements CacheState.Tread, RandomAccess
+		extends CacheState.Tread
 	{
 		/** Slots. */
 		private final Slot[] _slots;

@@ -149,14 +149,18 @@ public abstract class CacheState
 		/** The area this slot is in. */
 		protected final AreaType area;
 		
+		/** The slot index. */
+		protected final int index;
+		
 		/**
 		 * Initializes the base slot.
 		 *
 		 * @param __a The slot area.
+		 * @param __i The index of this slot.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/11
 		 */
-		Slot(AreaType __a)
+		Slot(AreaType __a, int __i)
 			throws NullPointerException
 		{
 			// Check
@@ -164,15 +168,8 @@ public abstract class CacheState
 				throw new NullPointerException("NARG");
 			
 			this.area = __a;
+			this.index = __i;
 		}
-		
-		/**
-		 * Returns the index of this slot.
-		 *
-		 * @return The slot index.
-		 * @since 2017/03/03
-		 */
-		public abstract int thisIndex();
 		
 		/**
 		 * Returns the list of registers which are stored in this slot.
@@ -285,6 +282,17 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Returns the index of this slot.
+		 *
+		 * @return The slot index.
+		 * @since 2017/03/03
+		 */
+		public final int thisIndex()
+		{
+			return this.index;
+		}
+		
+		/**
 		 * Returns the registers using the given type.
 		 *
 		 * @param <R> The type contained in the list.
@@ -369,7 +377,7 @@ public abstract class CacheState
 		 * @return The area of the value slot.
 		 * @since 2017/03/31
 		 */
-		public final boolean valueArea()
+		public final AreaType valueArea()
 		{
 			return value().thisArea();
 		}
@@ -533,8 +541,8 @@ public abstract class CacheState
 	 *
 	 * @since 2017/03/03
 	 */
-	public interface Tread
-		extends RandomAccess
+	public abstract class Tread
+		implements RandomAccess
 	{
 		/** The area this tread belongs in. */
 		protected final AreaType area;

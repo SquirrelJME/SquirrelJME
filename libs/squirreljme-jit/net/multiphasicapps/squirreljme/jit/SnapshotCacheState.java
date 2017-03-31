@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.classformat.AreaType;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
@@ -37,6 +38,9 @@ public final class SnapshotCacheState
 	
 	/** Local code variables. */
 	protected final Tread locals;
+	
+	/** Work variables. */
+	protected final Tread work;
 	
 	/** String representation of this state. */
 	private volatile Reference<String> _string;
@@ -59,8 +63,11 @@ public final class SnapshotCacheState
 			throw new NullPointerException("NARG");
 		
 		// Copy locals and the stack
-		this.locals = __snapTread(__a.locals());
-		this.stack = __snapTread(__a.stack());
+		this.locals = __snapTread(AreaType.LOCAL, __a.locals());
+		this.stack = __snapTread(AreaType.STACK, __a.stack());
+		
+		// Work variables are never snapshotted
+		this.work = new Tread(AreaType.WORK, __a.work().size());
 	}
 	
 	/**
@@ -103,28 +110,41 @@ public final class SnapshotCacheState
 	}
 	
 	/**
+	 * Returns the work tread, which is empty.
+	 *
+	 * @return The empty work tread.
+	 * @since 2017/03/31
+	 */
+	public SnapshotCacheState.Tread work()
+	{
+		return this.work;
+	}
+	
+	/**
 	 * Snapshots the specified tread and returns it.
 	 *
+	 * @param __a The area type.
 	 * @param __from The tread to copy.
 	 * @return The copied and snapshotted tread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/01
 	 */
-	private SnapshotCacheState.Tread __snapTread(CacheState.Tread __from)
+	private SnapshotCacheState.Tread __snapTread(AreaType __a,
+		CacheState.Tread __from)
 		throws NullPointerException
 	{
 		// Check
-		if (__from == null)
+		if (__a = null || __from == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup copies of slots
 		int n = __from.size();
 		Slot[] slots = new Slot[n];
 		for (int i = 0; i < n; i++)
-			slots[i] = new Slot(__from.get(i));
+			slots[i] = new Slot(__a, i, __from.get(i));
 		
 		// Initialize
-		return new Tread(slots);
+		return new Tread(__a, slots);
 	}
 	
 	/**
@@ -136,9 +156,6 @@ public final class SnapshotCacheState
 	public final class Slot
 		extends CacheState.Slot
 	{
-		/** Is this the stack? */
-		protected final boolean isstack;
-		
 		/** The index of this slot. */
 		protected final int index;
 		
@@ -166,21 +183,23 @@ public final class SnapshotCacheState
 		/**
 		 * Initializes the slot.
 		 *
-		 * @param __e The translation engine used.
+		 * @param __a The area this slot is in.
+		 * @param __i The index.
 		 * @param __from The source slot.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Slot(CacheState.Slot __from)
+		private Slot(AreaType __a, CacheState.Slot __from)
 			throws NullPointerException
 		{
+			super(__a, __i);
+			
 			// Check
 			if (__from == null)
 				throw new NullPointerException("NARG");
 			
 			// Copy fields
 			this.isstack = __from.thisIsStack();
-			this.index = __from.thisIndex();
 			this.type = __from.thisType();
 			
 			// Copy Registers
@@ -223,36 +242,6 @@ public final class SnapshotCacheState
 					(rv = super.thisAllocation(false)));
 			
 			return rv;
-		}
-		
-		/**
-		 * {inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public int thisIndex()
-		{
-			return this.index;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public boolean thisIsLocal()
-		{
-			return !this.isstack;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/01
-		 */
-		@Override
-		public boolean thisIsStack()
-		{
-			return this.isstack;
 		}
 		
 		/**
@@ -346,8 +335,7 @@ public final class SnapshotCacheState
 	 * @since 2017/02/18
 	 */
 	public final class Tread
-		extends AbstractList<Slot>
-		implements CacheState.Tread, RandomAccess
+		extends CacheState.Tread
 	{
 		/** Slots in this tread. */
 		private final Slot[] _slots;
@@ -358,13 +346,16 @@ public final class SnapshotCacheState
 		/**
 		 * Initializes the tread.
 		 *
+		 * @param __a The slot area type.
 		 * @param __s The source slots, this is used directly.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		private Tread(Slot[] __s)
+		private Tread(AreaType __a, Slot[] __s)
 			throws NullPointerException
 		{
+			super(__a);
+			
 			// Check
 			if (__s == null)
 				throw new NullPointerException("NARG");

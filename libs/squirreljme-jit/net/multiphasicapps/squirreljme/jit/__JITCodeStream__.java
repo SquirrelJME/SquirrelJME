@@ -582,20 +582,22 @@ class __JITCodeStream__
 	 * @since 2017/02/07
 	 */
 	@Override
-	public void variableCounts(int __ms, int __ml)
+	public void variableCounts(int __ms, int __ml, int __mw)
 	{
 		// Initilaize cache states, this is needed for stack caching to work
 		// properly along with restoring or merging into state of another
 		// instruction
 		TranslationEngine engine = this._engine;
 		this._states = new SnapshotCacheStates(this);
-		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml);
+		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml, __mw);
 		
 		// Also input and output states
 		Register[] sv = engine.allocationRegisters(true),
 			tm = engine.allocationRegisters(false);
-		this._instate = new ActiveCacheState(this, __ms, __ml, sv, tm, false);
-		this._outstate = new ActiveCacheState(this, __ms, __ml, sv, tm, true);
+		this._instate = new ActiveCacheState(this, __ms, __ml, __mw, sv, tm,
+			false);
+		this._outstate = new ActiveCacheState(this, __ms, __ml, __mw, sv, tm,
+			true);
 	}
 	
 	/**
