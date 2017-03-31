@@ -14,8 +14,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This represents a single variable that refers a local variable or a stack
- * variable.
+ * This represents a single variable that refers to a slot on the stack, in
+ * locla variables, or the working area.
  *
  * This class is immutable.
  *
@@ -24,8 +24,8 @@ import java.lang.ref.WeakReference;
 public final class CodeVariable
 	implements Comparable<CodeVariable>
 {
-	/** Is this a stack variable? */
-	protected final boolean stack;
+	/** Where is this variable stored? */
+	protected final StoreArea type;
 	
 	/** The position of this variable. */
 	protected final int id;
@@ -36,21 +36,25 @@ public final class CodeVariable
 	/**
 	 * Initializes the variable.
 	 *
-	 * @param __s If {@code true} then the variable is a stack variable.
+	 * @param __t The location where the variable is stored.
 	 * @param __id The identifier of the variable.
 	 * @throws IndexOutOfBoundsException If the identifier is negative.
 	 * @since 2016/09/15
 	 */
-	private CodeVariable(boolean __s, int __id)
-		throws IndexOutOfBoundsException
+	private CodeVariable(StoreArea __t, int __id)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error AY0j Code variable identifier cannot be
 		// negative.}
 		if (__id < 0)
 			throw new IndexOutOfBoundsException("AY0j");
 		
 		// Set
-		this.stack = __s;
+		this.type = __t;
 		this.id = __id;
 	}
 	
@@ -66,20 +70,13 @@ public final class CodeVariable
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// Locals before stack
-		boolean as = this.stack, bs = __o.stack;
-		if (!as && bs)
-			return -1;
-		else if (as && !bs)
-			return 1;
+		// Compare type first
+		int rv = this.type.ordinal() - __o.type.ordinal();
+		if (rv != 0)
+			return rv;
 		
-		// Compare by ID
-		int ai = this.id, bi = __o.id;
-		if (ai < bi)
-			return -1;
-		else if (ai > bi)
-			return 1;
-		return 0;
+		// Then by ID
+		return this.id - __o.id;
 	}
 	
 	/**
@@ -95,7 +92,7 @@ public final class CodeVariable
 		
 		// Cast and compare
 		CodeVariable o = (CodeVariable)__o;
-		return this.stack == o.stack && this.id == o.id;
+		return this.type == o.type && this.id == o.id;
 	}
 	
 	/**
@@ -105,10 +102,7 @@ public final class CodeVariable
 	@Override
 	public final int hashCode()
 	{
-		int id = this.id;
-		if (this.stack)
-			return ~id;
-		return id;
+		return id ^ this.type.hashCode();
 	}
 	
 	/**
@@ -120,28 +114,6 @@ public final class CodeVariable
 	public final int id()
 	{
 		return id;
-	}
-	
-	/**
-	 * Returns whether or not this is a local variable.
-	 *
-	 * @return {@code true} if a local variable.
-	 * @since 2016/09/15
-	 */
-	public final boolean isLocal()
-	{
-		return !this.stack;
-	}
-	
-	/**
-	 * Returns whether or not this is a stack variable.
-	 *
-	 * @return {@code true} if a stack variable.
-	 * @since 2016/09/15
-	 */
-	public final boolean isStack()
-	{
-		return this.stack;
 	}
 	
 	/**
@@ -157,25 +129,37 @@ public final class CodeVariable
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = (this.stack ? "stack" :
-				"local") + "#" + this.id));
+			this._string = new WeakReference<>((rv = this.type + "#" +
+				this.id));
 		
 		// Return
 		return rv;
 	}
 	
 	/**
+	 * Returns the storage type area.
+	 *
+	 * @return The area storage type.
+	 * @since 2017/03/31
+	 */
+	public final StoreArea type()
+	{
+		return this.type();
+	}
+	
+	/**
 	 * Initializes the variable of the given type and positioned identifier.
 	 *
-	 * @param __s If {@code true} then the variable is a stack variable.
+	 * @param __t Where this variable is stored.
 	 * @param __id The identifier of the variable.
 	 * @throws IndexOutOfBoundsException If the identifier is negative.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public static CodeVariable of(boolean __s, int __id)
-		throws IndexOutOfBoundsException
+	public static CodeVariable of(StoreArea __t, int __id)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		return new CodeVariable(__s, __id);
+		return new CodeVariable(__t, __id);
 	}
 }
 
