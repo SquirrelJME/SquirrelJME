@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.List;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This is used to store the information such as which registers and the stack
@@ -34,6 +36,9 @@ public final class ArgumentAllocation
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
+	
+	/** List of registers. */
+	private volatile Reference<List<Register>> _lregs;
 	
 	/**
 	 * Initializes the argument allocation with the specified registers.
@@ -183,6 +188,26 @@ public final class ArgumentAllocation
 	{
 		Register[] registers = this._registers;
 		return (registers == null ? 0 : registers.length);
+	}
+	
+	/**
+	 * Returns the list of registers that are available for usage.
+	 *
+	 * @return The list of registers, this list is not modifiable.
+	 * @since 2017/03/31
+	 */
+	public List<Register> registerList()
+	{
+		Reference<List<Register>> ref = this._lregs;
+		List<Register> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._lregs = new WeakReference<>((rv =
+				UnmodifiableList.<Register>of(Arrays.<Register>asList(
+				this._registers))));
+		
+		return rv;
 	}
 	
 	/**

@@ -237,6 +237,17 @@ public abstract class CacheState
 		}
 		
 		/**
+		 * Are registers used in this slot?
+		 *
+		 * @return {@code true} if registers are used in the slot.
+		 * @since 2017/03/31
+		 */
+		public final boolean thisHasRegisters()
+		{
+			return !thisRegisters().isEmpty();
+		}
+		
+		/**
 		 * Returns the registers using the given type.
 		 *
 		 * @param <R> The type contained in the list.
@@ -313,6 +324,17 @@ public abstract class CacheState
 		public final ArgumentAllocation valueAllocation(boolean __a)
 		{
 			return value().thisAllocation(__a);
+		}
+		
+		/**
+		 * Are registers used in the value?
+		 *
+		 * @return {@code true} if registers are used in the value.
+		 * @since 2017/03/31
+		 */
+		public final boolean valueHasRegisters()
+		{
+			return value().thisHasRegisters();
 		}
 		
 		/**

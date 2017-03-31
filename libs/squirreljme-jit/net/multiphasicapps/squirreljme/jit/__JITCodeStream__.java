@@ -455,7 +455,15 @@ class __JITCodeStream__
 		// If a return value is used then handle moving it
 		if (__rv != null)
 		{
-			throw new todo.TODO();
+			// Return to registers
+			DataType rt = rvalloc.type();
+			List<Register> rl = rvalloc.registerList();
+			if (rv.thisHasRegisters())
+				engine.moveRegister(rt, rl, rv.thisRegisters());
+			
+			// Return to stack
+			else
+				engine.storeRegister(rt, rl, rv.thisStackOffset(), fp);
 		}
 		
 		// Because the values are stack cached they do not need to be read from
