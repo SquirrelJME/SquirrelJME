@@ -832,6 +832,9 @@ class __JITCodeStream__
 		{
 			input.switchFrom(output);
 			
+			// Debug
+			System.err.printf("DEBUG -- Transited output to input state!");
+			
 			// Clear transition
 			this._transition = false;
 		}

@@ -219,7 +219,8 @@ public final class ActiveCacheState
 		
 		// Restore state
 		Tread stack = this.stack,
-			locals = this.locals;
+			locals = this.locals,
+			work = this.work;
 		stack.__switchFrom(__cs.stack());
 		locals.__switchFrom(__cs.locals());
 		work.__switchFrom(__cs.work());
