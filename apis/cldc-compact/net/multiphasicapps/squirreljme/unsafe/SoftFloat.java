@@ -112,6 +112,18 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Checks if the specified floating point value is NaN.
+	 *
+	 * @param __v The value to check.
+	 * @return {@code true} if the value is NaN.
+	 * @since 2017/04/01
+	 */
+	public static final boolean floatIsNaN(float __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Multiplies two values.
 	 *
 	 * @param __a The first.
