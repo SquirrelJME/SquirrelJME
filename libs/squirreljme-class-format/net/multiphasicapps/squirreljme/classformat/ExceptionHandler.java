@@ -123,6 +123,19 @@ public final class ExceptionHandler
 	}
 	
 	/**
+	 * Checks whether the address is in range of this exception handler, that
+	 * it there is a handler for this instruction.
+	 *
+	 * @param __i The address to check.
+	 * @return {@code true} if the address is in range.
+	 * @since 2017/04/01
+	 */
+	public boolean inRange(int __i)
+	{
+		return __i >= this.startpc && __i < this.endpc;
+	}
+	
+	/**
 	 * Returns the start address.
 	 *
 	 * @return The start address.

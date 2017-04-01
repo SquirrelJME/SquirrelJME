@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
@@ -133,6 +135,7 @@ final class __OpParser__
 		ExceptionHandlerTable exceptions = this.exceptions;
 		
 		// Decode loop
+		List<ExceptionHandler> ehl = new ArrayList<>();
 		for (;;)
 		{
 			// Read
@@ -156,7 +159,16 @@ final class __OpParser__
 			ExceptionHandler[] eh = null;
 			if (exceptions != null)
 			{
-				throw new todo.TODO();
+				// Add exceptions in range
+				ehl.clear();
+				for (ExceptionHandler x : exceptions)
+					if (x.inRange(nowpos))
+						ehl.add(x);
+				
+				// Set
+				if (ehl.size() > 0)
+					eh = ehl.<ExceptionHandler>toArray(
+						new ExceptionHandler[ehl.size()]);
 			}
 			
 			// Report it
