@@ -159,6 +159,54 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Returns a raw bit representation of the given value.
+	 *
+	 * @param __v The input value.
+	 * @return The raw bits.
+	 * @since 2017/04/01
+	 */
+	public static long directDoubleToLong(double __v)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Returns a raw bit representation of the given value.
+	 *
+	 * @param __v The input value.
+	 * @return The raw bits.
+	 * @since 2017/04/01
+	 */
+	public static int directFloatToInt(float __v)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Translates the raw bits to the specified type of value.
+	 *
+	 * @param __v The input raw bits.
+	 * @return The value of those bits.
+	 * @since 2017/04/01
+	 */
+	public static float directIntToFloat(int __v)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Translates the raw bits to the specified type of value.
+	 *
+	 * @param __v The input raw bits.
+	 * @return The value of those bits.
+	 * @since 2017/04/01
+	 */
+	public static double directLongToDouble(long __v)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * This exits the virtual machine using the specifed exit code.
 	 *
 	 * @param __e The exit code to use.
