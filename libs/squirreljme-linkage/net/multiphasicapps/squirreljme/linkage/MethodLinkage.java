@@ -82,6 +82,17 @@ public final class MethodLinkage
 	}
 	
 	/**
+	 * Returns the invoke target for this linkage.
+	 *
+	 * @return The invoke target.
+	 * @since 2017/04/01
+	 */
+	public MethodInvokeTarget invokeTarget()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * This returns the linkage to the target method's table.
 	 *
 	 * @return The linkage to the method table.
