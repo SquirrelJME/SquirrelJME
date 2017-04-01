@@ -18,6 +18,7 @@ import java.util.Map;
 import net.multiphasicapps.squirreljme.classformat.AreaType;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.CodeVariable;
+import net.multiphasicapps.squirreljme.classformat.ExceptionHandler;
 import net.multiphasicapps.squirreljme.classformat.ExceptionHandlerTable;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.linkage.ClassLinkage;
@@ -105,7 +106,8 @@ class __JITCodeStream__
 	 * @since 2017/02/07
 	 */
 	@Override
-	public void atInstruction(int __code, int __pos)
+	public void atInstruction(int __code, int __pos,
+		ExceptionHandler[] __eh)
 	{
 		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
@@ -127,6 +129,12 @@ class __JITCodeStream__
 		
 		// Debug
 		System.err.printf("DEBUG -- Enter state: %s%n", instate);
+		
+		// Set exception handlers
+		if (__eh != null)
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -199,7 +207,8 @@ class __JITCodeStream__
 	 * @since 2017/02/23
 	 */
 	@Override
-	public void endInstruction(int __code, int __pos, int __next)
+	public void endInstruction(int __code, int __pos, int __next,
+		ExceptionHandler[] __eh)
 	{
 		CacheState instate = this._instate;
 		ActiveCacheState outstate = this._outstate;
@@ -228,9 +237,10 @@ class __JITCodeStream__
 			__checkStoreState(__next, outstate);
 		
 		// Handle exceptional jump targets, check their state
-		ExceptionHandlerTable exceptions = this._exceptions;
-		if (exceptions != null)
+		if (__eh != null)
+		{
 			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -242,22 +252,6 @@ class __JITCodeStream__
 	{
 		System.err.println("TODO -- Any endMethod() generation.");
 		System.err.println("DEBUG -- ***************************************");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 201702/09
-	 */
-	@Override
-	public void exceptionTable(ExceptionHandlerTable __eht)
-		throws NullPointerException
-	{
-		// Check
-		if (__eht == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._exceptions = __eht;
 	}
 	
 	/**

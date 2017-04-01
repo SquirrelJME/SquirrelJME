@@ -165,9 +165,6 @@ final class __CodeDecoder__
 			// Read
 			exceptions = __readExceptions(numex);
 			this._exceptions = exceptions;
-			
-			// Report
-			writer.exceptionTable(exceptions);
 		}
 		
 		// Read attributes
@@ -200,7 +197,7 @@ final class __CodeDecoder__
 			dis.reset();
 			__MethodDecoder__ decoder = this._decoder;
 			new __OpParser__(writer, dis, smt, decoder._classflags,
-				pool, ref).__decodeAll();
+				pool, ref, exceptions).__decodeAll();
 		}
 	}
 	

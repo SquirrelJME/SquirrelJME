@@ -32,9 +32,12 @@ public interface CodeDescriptionStream
 	 *
 	 * @param __code The operation that is about to be decoded.
 	 * @param __pos The position of the given operation.
+	 * @param __eh The exceptions under effect in this instruction, will be
+	 * {@code null} if there are none.
 	 * @since 2016/09/09
 	 */
-	public abstract void atInstruction(int __code, int __pos);
+	public abstract void atInstruction(int __code, int __pos,
+		ExceptionHandler[] __eh);
 	
 	/**
 	 * This specifies the length of the program.
@@ -65,9 +68,12 @@ public interface CodeDescriptionStream
 	 * @param __pos The position of the given operation.
 	 * @param __next The position of the next instruction for natural program
 	 * flow, if there is none then the value will be negative.
+	 * @param __eh The exceptions under effect in this instruction, will be
+	 * {@code null} if there are none.
 	 * @since 2017/02/23
 	 */
-	public abstract void endInstruction(int __code, int __pos, int __next);
+	public abstract void endInstruction(int __code, int __pos, int __next,
+		ExceptionHandler[] __eh);
 	
 	/**
 	 * This is called when the method has been fully parsed.
@@ -75,17 +81,6 @@ public interface CodeDescriptionStream
 	 * @since 2017/03/23
 	 */
 	public abstract void endMethod();
-	
-	/**
-	 * This is used to specify which exceptions exist within the exception
-	 * table.
-	 *
-	 * @param __eht The exception handler table.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/09
-	 */
-	public abstract void exceptionTable(ExceptionHandlerTable __eht)
-		throws NullPointerException;
 	
 	/**
 	 * Specifies the initial argument types which are used on entry to the

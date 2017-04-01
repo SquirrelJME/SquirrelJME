@@ -68,6 +68,9 @@ final class __OpParser__
 	/** The method this is in. */
 	protected final MethodReference methodref;
 	
+	/** Exceptions used. */
+	protected final ExceptionHandlerTable exceptions;
+	
 	/** The stack map table. */
 	private final Map<Integer, __SMTState__> _smt;
 	
@@ -83,13 +86,15 @@ final class __OpParser__
 	 * @param __cf The class flags.
 	 * @param __pool The constant pool.
 	 * @param __mr This method reference.
-	 * @throws NullPointerException On null arguments.
+	 * @param __eht The table for exceptions.
+	 * @throws NullPointerException On null arguments, except for the exception
+	 * table.
 	 * @since 2016/08/29
 	 */
 	__OpParser__(CodeDescriptionStream __desc,
 		ExtendedDataInputStream __dis,
 		Map<Integer, __SMTState__> __smt, ClassFlags __cf,
-		ConstantPool __pool, MethodReference __mr)
+		ConstantPool __pool, MethodReference __mr, ExceptionHandlerTable __eht)
 		throws NullPointerException
 	{
 		// Check
@@ -104,6 +109,7 @@ final class __OpParser__
 		this.pool = __pool;
 		this.writer = __desc;
 		this.methodref = __mr;
+		this.exceptions = __eht;
 		
 		// Set working state
 		this._smwork = new __SMTState__(__smt.get(0));
@@ -124,6 +130,7 @@ final class __OpParser__
 		Map<Integer, __SMTState__> smt = this._smt;
 		__SMTState__ smwork = this._smwork;
 		CodeDescriptionStream writer = this.writer;
+		ExceptionHandlerTable exceptions = this.exceptions;
 		
 		// Decode loop
 		for (;;)
@@ -145,8 +152,15 @@ final class __OpParser__
 			if (bias != null)
 				smwork.from(bias);
 			
+			// Mark used exceptions
+			ExceptionHandler[] eh = null;
+			if (exceptions != null)
+			{
+				throw new todo.TODO();
+			}
+			
 			// Report it
-			writer.atInstruction(code, nowpos);
+			writer.atInstruction(code, nowpos, eh);
 			
 			// Decode single operation
 			int[] jt = __decodeOne(code);
@@ -180,7 +194,7 @@ final class __OpParser__
 			}
 			
 			// Report end
-			writer.endInstruction(code, nowpos, inextpos);
+			writer.endInstruction(code, nowpos, inextpos, eh);
 		}
 		
 		// End of method parsing
