@@ -19,7 +19,7 @@ package net.multiphasicapps.squirreljme.jit;
  * @param <C> The configuration class used.
  * @since 2017/02/02
  */
-public abstract class JITConfigSerializer<C extends JITConfig<C>>
+public abstract class JITConfigSerializer
 {
 	/**
 	 * De-serializes the specified string and returns a new configuration

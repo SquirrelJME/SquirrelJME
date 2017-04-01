@@ -22,7 +22,7 @@ import java.util.Map;
  * @param <C> The configuration class.
  * @since 2017/02/02
  */
-public abstract class JITConfig<C extends JITConfig<C>>
+public abstract class JITConfig
 {
 	/** Mapping of configuration values. */
 	private final Map<String, String> _values;
@@ -65,13 +65,22 @@ public abstract class JITConfig<C extends JITConfig<C>>
 	}
 	
 	/**
+	 * Obtains the register dictionary which is used to provide registers that
+	 * are available for usage.
+	 *
+	 * @return The register dictionary.
+	 * @since 2017/04/01
+	 */
+	public abstract RegisterDictionary registerDictionary();
+	
+	/**
 	 * Returns the class which is used to serialize and de-serialize the
 	 * JIT.
 	 *
 	 * @return The serializer for this JIT configuration.
 	 * @since 2017/02/01
 	 */
-	public abstract JITConfigSerializer<C> serializer();
+	public abstract JITConfigSerializer serializer();
 	
 	/**
 	 * Returns the number of bits which are used by the given CPU.
