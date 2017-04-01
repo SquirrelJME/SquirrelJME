@@ -38,6 +38,9 @@ class __JITCodeStream__
 	/** The JIT configuration. */
 	protected final JITConfig config;
 	
+	/** The register dictionary used. */
+	protected final RegisterDictionary rdict;
+	
 	/** The owning class stream. */
 	final __JITClassStream__ _classstream;
 	
@@ -90,7 +93,9 @@ class __JITCodeStream__
 		TranslationEngine engine = __c.__jit().engineProvider().
 			createEngine(this);
 		this._engine = engine;
-		this.config = engine.<JITConfig>config(JITConfig.class);
+		JITConfig config;
+		this.config = (config = engine.config());
+		this.rdict = config.registerDictionary();
 		
 		// Debug
 		System.err.println("DEBUG -- ***************************************");
