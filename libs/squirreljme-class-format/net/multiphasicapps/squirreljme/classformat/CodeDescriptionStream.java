@@ -48,6 +48,36 @@ public interface CodeDescriptionStream
 	public abstract void codeLength(int __n);
 	
 	/**
+	 * Compares the two code variables and if the comparison type matches a
+	 * branch will occur.
+	 *
+	 * @param __c The type of comparison to perform.
+	 * @param __a The first variable.
+	 * @param __b The second variable.
+	 * @param __jt On success the branch will be taken to this instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/01
+	 */
+	public abstract void compareAndBranch(ObjectCompareType __c,
+		CodeVariable __a, CodeVariable __b, int __jt);
+		throws NullPointerException;
+	
+	/**
+	 * Compares the two code variables and if the comparison type matches a
+	 * branch will occur.
+	 *
+	 * @param __c The type of comparison to perform.
+	 * @param __a The first variable.
+	 * @param __b The second variable.
+	 * @param __jt On success the branch will be taken to this instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/01
+	 */
+	public abstract void compareAndBranch(IntegerCompareType __c,
+		CodeVariable __a, CodeVariable __b, int __jt)
+		throws NullPointerException;
+	
+	/**
 	 * Copies the value of one variable to another.
 	 *
 	 * @param __type The type of value to copy.

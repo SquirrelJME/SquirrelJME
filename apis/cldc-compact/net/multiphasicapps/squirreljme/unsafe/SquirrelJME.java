@@ -132,6 +132,19 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * Compares two long values and returns the sign result of the comparison.
+	 *
+	 * @param __a The first comparison.
+	 * @param __b The second comparison.
+	 * @return The sign result of comparison.
+	 * @since 2017/04/01
+	 */
+	public static int compareLong(long __a, long __b)
+	{
+		throw new RuntimeException("OOPS");
+	}
+	
+	/**
 	 * Returns the number of milliseconds that have passed in the UTC
 	 * timezone since the Java epoch.
 	 *
