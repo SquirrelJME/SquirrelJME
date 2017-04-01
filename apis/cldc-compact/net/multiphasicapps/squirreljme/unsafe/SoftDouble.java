@@ -8,44 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.softmath;
+package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This class contains software 32-bit floating point support for Java
+ * This class contains software 64-bit floating point support for Java
  * operations.
  *
  * All methods here map to Java byte code instructions.
  *
  * @since 2016/08/29
  */
-public final class SoftFloat
+public final class SoftDouble
 {
-	/** The shift to get to the exponent. */
-	private static final int _EXPONENT_SHIFT =
-		23;
-	
-	/** Bits in the exponent. */
-	private static final int _EXPONENT_BITS =
-		8;
-	
-	/** The exponent value mask. */
-	private static final int _EXPONENT_VALUE_MASK =
-		(1 << _EXPONENT_BITS) - 1;
-	
-	/** The fraction value mask. */
-	private static final int _FRACTION_VALUE_MASK =
-		(1 << _EXPONENT_SHIFT) - 1;
-	
-	/** The sign bit mask. */
-	private static final int _SIGN_SHIFTED_MASK =
-		(1 << (_EXPONENT_BITS + _EXPONENT_SHIFT));
-	
 	/**
 	 * Not used.
 	 *
-	 * @since 2916/08/29
+	 * @since 2016/08/29
 	 */
-	private SoftFloat()
+	private SoftDouble()
 	{
 	}
 	
@@ -57,7 +37,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2016/08/29
 	 */
-	public static int floatAdd(int __a, int __b)
+	public static double doubleAdd(double __a, double __b)
 	{
 		throw new todo.TODO();
 	}
@@ -71,10 +51,10 @@ public final class SoftFloat
 	 * is returned.
 	 * @since 2016/08/29
 	 */
-	public static int floatCompareGreater(int __a, int __b)
+	public static int doubleCompareGreater(double __a, double __b)
 	{
 		// If either side is NaN, stop
-		if (floatIsNaN(__a) || floatIsNaN(__b))
+		if (doubleIsNaN(__a) || doubleIsNaN(__b))
 			return 1;
 		
 		throw new todo.TODO();
@@ -89,10 +69,10 @@ public final class SoftFloat
 	 * is returned.
 	 * @since 2016/08/29
 	 */
-	public static int floatCompareLesser(int __a, int __b)
+	public static int doubleCompareLesser(double __a, double __b)
 	{
 		// If either side is NaN, stop
-		if (floatIsNaN(__a) || floatIsNaN(__b))
+		if (doubleIsNaN(__a) || doubleIsNaN(__b))
 			return -1;
 		
 		throw new todo.TODO();
@@ -106,7 +86,19 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2016/08/29
 	 */
-	public static int floatDivide(int __a, int __b)
+	public static double doubleDivide(double __a, double __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns {@code true} if the represented double value represents NaN.
+	 *
+	 * @param __a The value to check.
+	 * @return {@code true} if the value is NaN.
+	 * @since 2016/08/29
+	 */
+	public static boolean doubleIsNaN(double __a)
 	{
 		throw new todo.TODO();
 	}
@@ -119,7 +111,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2016/08/29
 	 */
-	public static int floatMultiply(int __a, int __b)
+	public static double doubleMultiply(double __a, double __b)
 	{
 		throw new todo.TODO();
 	}
@@ -131,7 +123,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2016/08/29
 	 */
-	public static int floatNegate(int __a)
+	public static double doubleNegate(double __a)
 	{
 		throw new todo.TODO();
 	}
@@ -144,7 +136,7 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2016/08/29
 	 */
-	public static int floatRemainder(int __a, int __b)
+	public static double doubleRemainder(double __a, double __b)
 	{
 		throw new todo.TODO();
 	}
@@ -157,19 +149,19 @@ public final class SoftFloat
 	 * @return The result.
 	 * @since 2016/08/29
 	 */
-	public static int floatSubtract(int __a, int __b)
+	public static double doubleSubtract(double __a, double __b)
 	{
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * Converts the value to a double.
+	 * Converts the value to a float.
 	 *
-	 * @param __f The value to convert.
+	 * @param __d The value to convert.
 	 * @return The converted value.
 	 * @since 2016/08/29
 	 */
-	public static long floatToDouble(int __f)
+	public static float doubleToFloat(double __d)
 	{
 		throw new todo.TODO();
 	}
@@ -177,11 +169,11 @@ public final class SoftFloat
 	/**
 	 * Converts the value to an integer.
 	 *
-	 * @param __f The value to convert.
+	 * @param __d The value to convert.
 	 * @return The converted value.
 	 * @since 2016/08/29
 	 */
-	public static int floatToInteger(int __f)
+	public static int doubleToInteger(double __d)
 	{
 		throw new todo.TODO();
 	}
@@ -189,24 +181,11 @@ public final class SoftFloat
 	/**
 	 * Converts the value to a long.
 	 *
-	 * @param __f The value to convert.
+	 * @param __d The value to convert.
 	 * @return The converted value.
 	 * @since 2016/08/29
 	 */
-	public static long floatToLong(int __f)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Converts a hardware single precision floating point number to a software
-	 * double precision floating point number.
-	 *
-	 * @param __f The value to convert.
-	 * @return The converted value.
-	 * @since 2016/08/29
-	 */
-	public static long hardFloatToSoftDouble(float __f)
+	public static long doubleToLong(double __d)
 	{
 		throw new todo.TODO();
 	}
