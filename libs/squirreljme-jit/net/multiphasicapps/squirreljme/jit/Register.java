@@ -25,6 +25,15 @@ package net.multiphasicapps.squirreljme.jit;
 public interface Register
 {
 	/**
+	 * Returns the index of the register. Most architectures index their
+	 * registers by the index of that register.
+	 *
+	 * @return The index of the register.
+	 * @since 2017/04/01
+	 */
+	public abstract int index();
+	
+	/**
 	 * Is this a floating point register?
 	 *
 	 * @return {@code true} if a floating point register.

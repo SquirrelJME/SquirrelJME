@@ -26,6 +26,9 @@ public final class Card
 	/** The owning deck. */
 	protected final Deck deck;
 	
+	/** The card face. */
+	private volatile Face _face;
+	
 	/**
 	 * Internally initializes the card.
 	 *
@@ -42,6 +45,60 @@ public final class Card
 		
 		// Set
 		this.deck = __d;
+	}
+	
+	/**
+	 * Returns the card face.
+	 *
+	 * @return The card face.
+	 * @since 2017/04/01
+	 */
+	public Face face()
+	{
+		throw new todo.TODO();
+	}
+	
+	
+	/**
+	 * Returns the card face.
+	 *
+	 * @return The card face.
+	 * @since 2017/04/01
+	 */
+	public Face face()
+	{
+		return this._face;
+	}
+	
+	/**
+	 * Returns the card face casted to the given sub-class.
+	 *
+	 * @param <F> The class to cast to.
+	 * @param __cl The class to cast to.
+	 * @return The card face casted as the given class.
+	 * @throws ClassCastException If the class type was not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public <F extends Face> F face(Class<F> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this._face);
+	}
+	
+	/**
+	 * Sets the face of the card.
+	 *
+	 * @param __f The card face.
+	 * @since 2017/04/01
+	 */
+	public void setFace(Face __f)
+	{
+		this._face = __f;
 	}
 }
 
