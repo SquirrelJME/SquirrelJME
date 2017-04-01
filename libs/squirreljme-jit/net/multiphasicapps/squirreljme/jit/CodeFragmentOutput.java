@@ -18,6 +18,7 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  *
  * @since 2017/03/18
  */
+@Deprecated
 public class CodeFragmentOutput
 {
 	/** The byte deque containing machine code. */
