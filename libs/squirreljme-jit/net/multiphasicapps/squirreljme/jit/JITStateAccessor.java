@@ -29,19 +29,12 @@ public interface JITStateAccessor
 	public abstract SnapshotCacheStates cacheStates();
 	
 	/**
-	 * This returns the code fragment used by the JIT and returns it as the
-	 * specified class.
+	 * Returns the deck which is used to hold native instruction cards.
 	 *
-	 * @param <F> The sub-class to return it as.
-	 * @param __cl The sub-class to return it as.
-	 * @return The fragment where generated code is plaecd.
-	 * @throws ClassCastException If the class type is not correct.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/18
+	 * @return The deck.
+	 * @since 2017/04/01
 	 */
-	public abstract <F extends CodeFragmentOutput> F codeFragment(
-		Class<F> __cl)
-		throws ClassCastException, NullPointerException;
+	public abstract Deck deck();
 	
 	/**
 	 * This returns the index of link index to another class, field, or method.

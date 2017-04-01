@@ -41,15 +41,12 @@ class __JITCodeStream__
 	/** The owning class stream. */
 	final __JITClassStream__ _classstream;
 	
-	/** The buffer which contains the native machine code. */
-	final ByteDeque _codebuffer =
-		new ByteDeque();
-	
 	/** The instance of the translation engine. */
 	final TranslationEngine _engine;
 	
-	/** Fragment of machine code. */
-	final CodeFragmentOutput _fragment;
+	/** The deck containing the output for the machine code instructions. */
+	final Deck _deck =
+		new Deck();
 	
 	/** The input state at the start of every instruction. */
 	private volatile CacheState _instate;
@@ -76,20 +73,18 @@ class __JITCodeStream__
 	 * Initializes the code stream.
 	 *
 	 * @param __c The owning class.
-	 * @param __f The fragment where machine code is placed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/07
 	 */
-	__JITCodeStream__(__JITClassStream__ __c, CodeFragmentOutput __f)
+	__JITCodeStream__(__JITClassStream__ __c)
 		throws NullPointerException
 	{
 		// Check
-		if (__c == null || __f == null)
+		if (__c == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this._classstream = __c;
-		this._fragment = __f;
 		
 		// Setup engine
 		TranslationEngine engine = __c.__jit().engineProvider().
@@ -149,22 +144,6 @@ class __JITCodeStream__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/03/18
-	 */
-	@Override
-	public <F extends CodeFragmentOutput> F codeFragment(
-		Class<F> __cl)
-		throws ClassCastException, NullPointerException
-	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		return __cl.cast(_fragment);
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2017/02/07
 	 */
 	@Override
@@ -200,6 +179,16 @@ class __JITCodeStream__
 		// Forward to primitive copy
 		__primitiveCopy(instate, outstate, instate.getSlot(__from),
 			outstate.getSlot(__to), true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/01
+	 */
+	@Override
+	public Deck deck()
+	{
+		return this._deck;
 	}
 	
 	/**
