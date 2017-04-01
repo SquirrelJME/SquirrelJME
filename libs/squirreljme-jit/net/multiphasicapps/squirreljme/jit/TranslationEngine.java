@@ -26,7 +26,7 @@ import net.multiphasicapps.squirreljme.linkage.MethodLinkage;
 public abstract class TranslationEngine
 {
 	/** The configuration used. */
-	protected final JITConfig<?> config;
+	protected final JITConfig config;
 	
 	/** The accessor to the JIT. */
 	protected final JITStateAccessor accessor;
@@ -40,7 +40,7 @@ public abstract class TranslationEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public TranslationEngine(JITConfig<?> __c, JITStateAccessor __jsa)
+	public TranslationEngine(JITConfig __c, JITStateAccessor __jsa)
 		throws NullPointerException
 	{
 		// Check
@@ -158,6 +158,17 @@ public abstract class TranslationEngine
 		throws NullPointerException;
 	
 	/**
+	 * Returns the configuration.
+	 *
+	 * @return The used configuration.
+	 * @since 2017/04/01
+	 */
+	public final JITConfig C config()
+	{
+		return this.config;
+	}
+	
+	/**
 	 * This returns the configuration that the translation engine was
 	 * initialized with.
 	 *
@@ -167,7 +178,7 @@ public abstract class TranslationEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public final <C extends JITConfig<C>> JITConfig<C> config(Class<C> __cl)
+	public final <C extends JITConfig> C config(Class<C> __cl)
 		throws NullPointerException
 	{
 		// Check

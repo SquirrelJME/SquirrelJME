@@ -27,12 +27,14 @@ public abstract class JITConfigSerializer
 	 *
 	 * @param __v The string to deserialize into the configuration.
 	 * @return The deserialized configuration.
+	 * @throws ClassCastException If the serializer does not serialize the
+	 * given configuration class type.
 	 * @throws JITException If the input configuration is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public final C deserialize(String __v)
-		throws JITException, NullPointerException
+	public final JITConfig deserialize(String __v)
+		throws ClassCastException, JITException, NullPointerException
 	{
 		// Check
 		if (__v == null)
@@ -45,12 +47,14 @@ public abstract class JITConfigSerializer
 	 * Serializes the configuration so that it may be stored in a string.
 	 *
 	 * @param __c The configuration to serialize.
-	 * @return The serialized configuration. 
+	 * @return The serialized configuration.
+	 * @throws ClassCastException If the serializer does not serialize the
+	 * given configuration class type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/02
 	 */
-	public final String serialize(C __c)
-		throws NullPointerException
+	public final String serialize(JITConfig __c)
+		throws ClassCastException, NullPointerException
 	{
 		// Check
 		if (__c == null)
