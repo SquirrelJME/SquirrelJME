@@ -8,8 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.jit;
+
 /**
- * This package contains the base card system for implementing output for raw
+ * This contains the card system for implementing output for raw
  * machine code instructions. Basically the output of a method is contained
  * within a deck where individual instructions are represented as cards in the
  * deck. When the machine code is to be processed the cards will be iterated
@@ -21,8 +23,21 @@
  * provide instructions do not extend cards (which are final), they are only
  * pointed to by the cards as a generated instruction type.
  *
+ * This class is not thread safe.
+ *
+ * @see Card
+ * @see Face
  * @since 2017/04/01
  */
-
-package net.multiphasicapps.squirreljme.jit.cards;
+public class Deck
+{
+	/**
+	 * Initializes the deck.
+	 *
+	 * @since 2017/04/01
+	 */
+	public Deck()
+	{
+	}
+}
 

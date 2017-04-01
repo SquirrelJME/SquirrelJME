@@ -58,9 +58,9 @@ public interface CodeDescriptionStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/01
 	 */
-	public abstract void compareAndBranch(ObjectCompareType __c,
+	/*public abstract void compareAndBranch(ObjectCompareType __c,
 		CodeVariable __a, CodeVariable __b, int __jt)
-		throws NullPointerException;
+		throws NullPointerException;*/
 	
 	/**
 	 * Compares the two code variables and if the comparison type matches a
@@ -73,9 +73,9 @@ public interface CodeDescriptionStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/01
 	 */
-	public abstract void compareAndBranch(IntegerCompareType __c,
+	/*public abstract void compareAndBranch(IntegerCompareType __c,
 		CodeVariable __a, CodeVariable __b, int __jt)
-		throws NullPointerException;
+		throws NullPointerException;*/
 	
 	/**
 	 * Copies the value of one variable to another.
