@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.Set;
+
 /**
  * This register dictionary contains the registers that are available for
  * usage in the target architecture. This contains information needed for
@@ -19,6 +21,23 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public abstract class RegisterDictionary
 {
+	/**
+	 * Returns the set of registers which are available for allocation.
+	 *
+	 * @param __saved If {@code true} then request saved registers.
+	 * @return The registers available for allocation.
+	 * @since 2017/03/25
+	 */
+	public abstract Set<Register> allocationRegisters(boolean __saved);
+	
+	/**
+	 * Returns the argument registers.
+	 *
+	 * @return The argument registers.
+	 * @since 2017/04/01
+	 */
+	public abstract Set<Register> argumentRegisters();
+	
 	/**
 	 * Returns the temporary assembler register.
 	 *
@@ -44,6 +63,30 @@ public abstract class RegisterDictionary
 	public abstract Register globalTableRegister();
 	
 	/**
+	 * Returns the set of every register which is saved.
+	 *
+	 * @return The set of saved registers.
+	 * @since 2017/04/01
+	 */
+	public abstract Set<Register> savedRegisters();
+	
+	/**
+	 * Returns the stack pointer register.
+	 *
+	 * @return The stack pointer register.
+	 * @since 2017/03/23
+	 */
+	public abstract Register stackPointerRegister();
+	
+	/**
+	 * Returns the set of every register which is temporary.
+	 *
+	 * @return The set of temporary registers.
+	 * @since 2017/04/01
+	 */
+	public abstract Set<Register> temporaryRegisters();
+	
+	/**
 	 * Checks if the specified register is an argument register.
 	 *
 	 * @param __r The register to check to see if it is an argument regster.
@@ -51,8 +94,15 @@ public abstract class RegisterDictionary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/16
 	 */
-	public abstract boolean isRegisterArgument(Register __r)
-		throws NullPointerException;
+	public final boolean isRegisterArgument(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		return argumentRegisters().contains(__r);
+	}
 	
 	/**
 	 * Checks if the specified register is a callee saved register, one that
@@ -63,8 +113,15 @@ public abstract class RegisterDictionary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/16
 	 */
-	public abstract boolean isRegisterSaved(Register __r)
-		throws NullPointerException;
+	public final boolean isRegisterSaved(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		return savedRegisters().contains(__r);
+	}
 	
 	/**
 	 * Checks if the specified register is a caller saved register, one that
@@ -75,15 +132,14 @@ public abstract class RegisterDictionary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/16
 	 */
-	public abstract boolean isRegisterTemporary(Register __r)
-		throws NullPointerException;
-	
-	/**
-	 * Returns the stack pointer register.
-	 *
-	 * @return The stack pointer register.
-	 * @since 2017/03/23
-	 */
-	public abstract Register stackPointerRegister();
+	public final boolean isRegisterTemporary(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		return temporaryRegisters().contains(__r);
+	}
 }
 
