@@ -41,7 +41,7 @@ public final class Card
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.deck;
+		this.deck = __d;
 	}
 }
 
