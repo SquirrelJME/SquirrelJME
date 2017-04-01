@@ -20,7 +20,9 @@ import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.ActiveCacheState;
 import net.multiphasicapps.squirreljme.jit.ArgumentAllocation;
 import net.multiphasicapps.squirreljme.jit.CacheState;
+import net.multiphasicapps.squirreljme.jit.Card;
 import net.multiphasicapps.squirreljme.jit.DataType;
+import net.multiphasicapps.squirreljme.jit.Deck;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITStateAccessor;
 import net.multiphasicapps.squirreljme.jit.Register;
@@ -245,6 +247,9 @@ public class MIPSEngine
 			throw new JITException(String.format("AM0j %s", __r));
 		
 		// Execute the jump
+		if (true)
+			throw new todo.TODO();
+		/*
 		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
 			codeFragment(MIPSFragmentOutput.class);
 		output.jumpAndLinkRegisterImplied(r);
@@ -252,6 +257,7 @@ public class MIPSEngine
 		// Do nothing in the branch delay slot
 		if (config.hasBranchDelaySlots())
 			output.nop();
+		*/
 	}
 	
 	/**
@@ -337,6 +343,9 @@ public class MIPSEngine
 	public void methodReturn()
 		throws JITException
 	{
+		if (true)
+			throw new todo.TODO();
+		/*
 		// Generate return to the link register
 		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
 			codeFragment(MIPSFragmentOutput.class);
@@ -345,6 +354,7 @@ public class MIPSEngine
 		// Branch delay slot
 		if (config.hasBranchDelaySlots())
 			output.nop();
+		*/
 	}
 	
 	/**
@@ -485,6 +495,9 @@ public class MIPSEngine
 		}
 		
 		// Write all registers
+		if (true)
+			throw new todo.TODO();
+		/*
 		MIPSFragmentOutput output = this.accessor.<MIPSFragmentOutput>
 			codeFragment(MIPSFragmentOutput.class);
 		MIPSConfig config = this.config;
@@ -591,6 +604,7 @@ public class MIPSEngine
 			if (!isBigEndian())
 				at += rs;
 		}
+		*/
 	}
 }
 
