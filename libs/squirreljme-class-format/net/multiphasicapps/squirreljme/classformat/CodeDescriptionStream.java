@@ -59,7 +59,7 @@ public interface CodeDescriptionStream
 	 * @since 2017/01/01
 	 */
 	public abstract void compareAndBranch(ObjectCompareType __c,
-		CodeVariable __a, CodeVariable __b, int __jt);
+		CodeVariable __a, CodeVariable __b, int __jt)
 		throws NullPointerException;
 	
 	/**

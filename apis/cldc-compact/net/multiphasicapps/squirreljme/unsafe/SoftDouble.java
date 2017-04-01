@@ -189,5 +189,29 @@ public final class SoftDouble
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Returns a raw bit representation of the given value.
+	 *
+	 * @param __v The input value.
+	 * @return The raw bits.
+	 * @since 2017/04/01
+	 */
+	public static long doubleToRawLong(double __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Translates the raw bits to the specified type of value.
+	 *
+	 * @param __v The input raw bits.
+	 * @return The value of those bits.
+	 * @since 2017/04/01
+	 */
+	public static double rawLongToDouble(long __v)
+	{
+		throw new todo.TODO();
+	}
 }
 

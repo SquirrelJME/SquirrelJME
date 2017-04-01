@@ -52,7 +52,6 @@ public final class SquirrelJME
 	 */
 	private SquirrelJME()
 	{
-		throw new RuntimeException("OOPS");
 	}
 	
 	/**
@@ -69,7 +68,7 @@ public final class SquirrelJME
 	public static <C> C allocateInstance(Class<C> __cl)
 		throws IllegalAccessException, NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -87,7 +86,7 @@ public final class SquirrelJME
 	 */
 	public static Class<?> callingClass()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -100,7 +99,7 @@ public final class SquirrelJME
 	 */
 	public static Class<?> classForName(String __n)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -112,7 +111,7 @@ public final class SquirrelJME
 	 */
 	public static Class<?> classOf(Object __o)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -128,20 +127,7 @@ public final class SquirrelJME
 	public static InputStream classResource(Class<?> __cl, String __rc)
 		throws NullPointerException
 	{
-		throw new RuntimeException("OOPS");
-	}
-	
-	/**
-	 * Compares two long values and returns the sign result of the comparison.
-	 *
-	 * @param __a The first comparison.
-	 * @param __b The second comparison.
-	 * @return The sign result of comparison.
-	 * @since 2017/04/01
-	 */
-	public static int compareLong(long __a, long __b)
-	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -153,7 +139,7 @@ public final class SquirrelJME
 	 */
 	public static long currentTimeMillis()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -168,55 +154,7 @@ public final class SquirrelJME
 	public static int defaultConstructorAccess(Class<?> __cl)
 		throws NullPointerException
 	{
-		throw new RuntimeException("OOPS");
-	}
-	
-	/**
-	 * Returns a raw bit representation of the given value.
-	 *
-	 * @param __v The input value.
-	 * @return The raw bits.
-	 * @since 2017/04/01
-	 */
-	public static long directDoubleToLong(double __v)
-	{
-		throw new RuntimeException("OOPS");
-	}
-	
-	/**
-	 * Returns a raw bit representation of the given value.
-	 *
-	 * @param __v The input value.
-	 * @return The raw bits.
-	 * @since 2017/04/01
-	 */
-	public static int directFloatToInt(float __v)
-	{
-		throw new RuntimeException("OOPS");
-	}
-	
-	/**
-	 * Translates the raw bits to the specified type of value.
-	 *
-	 * @param __v The input raw bits.
-	 * @return The value of those bits.
-	 * @since 2017/04/01
-	 */
-	public static float directIntToFloat(int __v)
-	{
-		throw new RuntimeException("OOPS");
-	}
-	
-	/**
-	 * Translates the raw bits to the specified type of value.
-	 *
-	 * @param __v The input raw bits.
-	 * @return The value of those bits.
-	 * @since 2017/04/01
-	 */
-	public static double directLongToDouble(long __v)
-	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -227,7 +165,7 @@ public final class SquirrelJME
 	 */
 	public static void exit(int __e)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -237,7 +175,7 @@ public final class SquirrelJME
 	 */
 	public static void gc()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -250,7 +188,7 @@ public final class SquirrelJME
 	 */
 	public static short identityHashCode(Object __o)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -265,7 +203,7 @@ public final class SquirrelJME
 	public static boolean isClassVisibleFrom(Class<?> __from, Class<?> __cl)
 		throws NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -281,7 +219,7 @@ public final class SquirrelJME
 	public static boolean isInstance(Class<?> __cl, Object __o)
 		throws NullPointerException
 	{
-		throw new NullPointerException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -293,7 +231,7 @@ public final class SquirrelJME
 	 */
 	public static boolean isKernel()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -307,7 +245,7 @@ public final class SquirrelJME
 	public static boolean isSamePackage(Class<?> __a, Class<?> __b)
 		throws NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -319,7 +257,7 @@ public final class SquirrelJME
 	 */
 	public static boolean isSquirrelJME()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -336,7 +274,7 @@ public final class SquirrelJME
 	public static int mailboxAccept(int __ld)
 		throws IllegalArgumentException, IOException, InterruptedException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -350,7 +288,7 @@ public final class SquirrelJME
 	 */
 	public static void mailboxClose(int __fd)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -384,7 +322,7 @@ public final class SquirrelJME
 		throws ArrayIndexOutOfBoundsException, BindException,
 			IllegalArgumentException, IOException, NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -408,7 +346,7 @@ public final class SquirrelJME
 		throws ArrayIndexOutOfBoundsException,
 			IllegalArgumentException, IOException, NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -445,7 +383,7 @@ public final class SquirrelJME
 			IllegalArgumentException, InterruptedException,
 			NoSuchElementException, NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -460,7 +398,7 @@ public final class SquirrelJME
 	public static byte[] mailboxRemoteID(int __fd)
 		throws IllegalArgumentException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -483,7 +421,7 @@ public final class SquirrelJME
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			IOException, NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -495,7 +433,7 @@ public final class SquirrelJME
 	 */
 	public static int midletID()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -514,7 +452,7 @@ public final class SquirrelJME
 		throws IllegalAccessException, InstantiationException,
 			NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -526,7 +464,7 @@ public final class SquirrelJME
 	 */
 	public static long nanoTime()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -537,7 +475,7 @@ public final class SquirrelJME
 	 */
 	public static void stdErr(int __b)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -553,7 +491,7 @@ public final class SquirrelJME
 	public static void stdErr(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -564,7 +502,7 @@ public final class SquirrelJME
 	 */
 	public static void stdOut(int __b)
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -580,7 +518,7 @@ public final class SquirrelJME
 	public static void stdOut(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -598,7 +536,7 @@ public final class SquirrelJME
 	public static <C> C systemService(Class<C> __cl)
 		throws NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -612,7 +550,7 @@ public final class SquirrelJME
 	public static void throwThrowable(Throwable __t)
 		throws NullPointerException
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.TODO();
 	}
 }
 
