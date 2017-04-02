@@ -23,6 +23,10 @@ import net.multiphasicapps.squirreljme.executable.ExecutableClass;
  */
 public final class JIT
 {
+	/** The magic number of the class file. */
+	private static final int _MAGIC_NUMBER =
+		0xCAFEBABE;
+	
 	/** The input class file stream. */
 	protected final DataInputStream input;
 	
@@ -60,6 +64,23 @@ public final class JIT
 	public ExecutableClass run()
 		throws IOException, JITException
 	{
+		DataInputStream input = this.input;
+		
+		// {@squirreljme.error AQ0b The magic number of the input data stream
+		// does not match that of the Java class file. (The magic number which
+		// was read)}
+		int fail;
+		if ((fail = input.readInt()) != _MAGIC_NUMBER)
+			throw new JITException(String.format("AQ0b %08x", fail));
+		
+		// {@squirreljme.error AQ0c The version number of the input class file
+		// is not valid. (The version number)}
+		int cver = input.readShort() | (input.readShort() << 16);
+		ClassVersion version = ClassVersion.findVersion(cver);
+		if (version == null)
+			throw new JITException(String.format("AQ0c %d.%d",
+				cver >>> 16, (cver & 0xFFFF)));
+		
 		throw new todo.TODO();
 	}
 }
