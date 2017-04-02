@@ -71,7 +71,7 @@ class __ProjectAccessor__
 		try (FileDirectory fd = this.project.openFileDirectory();
 			InputStream is = fd.open(__name + ".class"))
 		{
-			throw new todo.TODO();
+			return this.interpreter.provider().config().jit(is).run();
 		}
 		
 		// {@squirreljme.error AV04 Failed to read the given input class.
