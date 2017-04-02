@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -197,6 +199,24 @@ public abstract class JITConfig
 			throw new NullPointerException("NARG");
 		
 		return this._values.get(__s);
+	}
+	
+	/**
+	 * Creates an instance of the JIT using this configuration.
+	 *
+	 * @param __is The input class file.
+	 * @return The JIT translator.
+	 * @since 2017/04/02
+	 */
+	public final JIT jit(InputStream __is)
+		throws NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new JIT(new DataInputStream(__is), this);
 	}
 	
 	/**
