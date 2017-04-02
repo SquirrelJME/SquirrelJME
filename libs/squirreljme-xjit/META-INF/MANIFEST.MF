@@ -4,6 +4,7 @@ X-SquirrelJME-Error: AQ
 X-SquirrelJME-Name: SquirrelJME JIT
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Depends: unmodifiable-collections sorted-collections
 X-SquirrelJME-Description: This contains the AOT/JIT compiler for 
  SquirrelJME. It handles decoding of the class file format and the 
  translation of Java byte code into native machine code.
