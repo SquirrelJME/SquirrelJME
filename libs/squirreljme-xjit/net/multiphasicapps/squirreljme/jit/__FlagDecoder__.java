@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.jit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -85,10 +85,10 @@ final class __FlagDecoder__
 			return new ClassFlags(fl);
 		}
 		
-		// {@squirreljme.error AY01 Invalid class flags.}
+		// {@squirreljme.error AQ0m Invalid class flags.}
 		catch (InvalidFlagsException e)
 		{
-			throw new ClassFormatException("AY01", e);
+			throw new JITException("AQ0m", e);
 		}
 	}
 	
@@ -147,10 +147,10 @@ final class __FlagDecoder__
 			return new FieldFlags(__oc, ff);
 		}
 		
-		// {@squirreljme.error AY02 Invalid field flags.}
+		// {@squirreljme.error AQ0n Invalid field flags.}
 		catch (InvalidFlagsException e)
 		{
-			throw new ClassFormatException("AY02", e);
+			throw new JITException("AQ0n", e);
 		}
 	}
 	/**
@@ -220,10 +220,10 @@ final class __FlagDecoder__
 			return new MethodFlags(__oc, ff);
 		}
 		
-		// {@squirreljme.error AY03 Invalid method flags.}
+		// {@squirreljme.error AQ0o Invalid method flags.}
 		catch (InvalidFlagsException e)
 		{
-			throw new ClassFormatException("AY03", e);
+			throw new JITException("AQ0o", e);
 		}
 	}
 }
