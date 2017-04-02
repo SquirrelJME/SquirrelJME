@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
@@ -85,6 +86,7 @@ public class AutoInterpreter
 		
 		// Parse them
 		Set<String> selects = new SortedTreeSet<>();
+		Map<String, String> extraj = new HashMap<>();
 		while (!aq.isEmpty())
 		{
 			String arg = aq.peekFirst();
@@ -100,15 +102,26 @@ public class AutoInterpreter
 			if (arg.equals("--"))
 				break;
 			
+			// Extra JIT options for the config (can be used to change the
+			// generated instruction format along with the interpreter)
+			else if (arg.startsWith("-J"))
+			{
+				// Ignore blank J options
+				if (arg.equals("-J"))
+					continue;
+				
+				// Split off key and value
+				int eqs = arg.indexOf('=');
+				extraj.put((eqs >= 0 ? arg.substring(2, eqs) :
+					arg.substring(2)),
+					(eqs >= 0 ? arg.substring(eqs + 1) : ""));
+			}
+			
 			// X command which modifies the interpreter potentially
-			if (arg.startsWith("-X"))
+			else if (arg.startsWith("-X"))
 			{
 				// {@squirreljme.error AV02 Empty X option specified.
-				// (-Xrecord=path: Use the determinisitic interpreter and
-				// record run-time actions to the given path.;
-				// -Xreplay=path: Use the determinisitic interpreter and replay
-				// a pre-existing recording.;
-				// -Xselect=items(,items...): Selects the API, MIDlet, and
+				// (-Xselect=items(,items...): Selects the API, MIDlet, and
 				// LIBlet categories to use during the run-time process.
 				// )}
 				if (arg.equals("-X"))
