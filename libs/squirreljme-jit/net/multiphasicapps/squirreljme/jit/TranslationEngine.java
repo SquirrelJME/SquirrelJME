@@ -163,7 +163,7 @@ public abstract class TranslationEngine
 	 * @return The used configuration.
 	 * @since 2017/04/01
 	 */
-	public final JITConfig C config()
+	public final JITConfig config()
 	{
 		return this.config;
 	}

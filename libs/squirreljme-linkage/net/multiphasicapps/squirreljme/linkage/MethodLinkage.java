@@ -30,6 +30,9 @@ public final class MethodLinkage
 	/** String reference. */
 	private volatile Reference<String> _string;
 	
+	/** Invocation target. */
+	private volatile Reference<MethodInvokeTarget> _target;
+	
 	/**
 	 * Initializes the link of one method to another.
 	 *
@@ -89,7 +92,15 @@ public final class MethodLinkage
 	 */
 	public MethodInvokeTarget invokeTarget()
 	{
-		throw new todo.TODO();
+		Reference<MethodInvokeTarget> ref = this._target;
+		MethodInvokeTarget rv;
+		
+		// Check
+		if (ref == null || null == (rv = ref.get()))
+			this._target = new WeakReference<>(
+				(rv = new MethodInvokeTarget(this.to, this.type)));
+		
+		return rv;
 	}
 	
 	/**
