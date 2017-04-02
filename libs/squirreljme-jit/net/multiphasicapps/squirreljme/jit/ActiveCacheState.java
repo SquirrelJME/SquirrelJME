@@ -93,6 +93,9 @@ public final class ActiveCacheState
 	/** Generate machine code operations? */
 	protected final boolean genops;
 	
+	/** The register dictionary. */
+	protected final RegisterDictionary rdict;
+	
 	/** Saved registers available for allocation. */
 	private final Set<Register> _availsaved;
 	
@@ -107,20 +110,19 @@ public final class ActiveCacheState
 	 * @param __ms The number of stack entries.
 	 * @param __ml The number of local entries.
 	 * @param __mw The number of work entries.
-	 * @param __sv Saved registers for allocation.
-	 * @param __tm Temporary registers for allocation.
+	 * @param __rd The register dictionary.
 	 * @param __go Generate operations?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
 	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml, int __mw,
-		Register[] __sv, Register[] __tm, boolean __go)
+		RegisterDictionary __rd, boolean __go)
 		throws NullPointerException
 	{
 		super(__cs);
 		
 		// Check
-		if (__sv == null || __tm == null)
+		if (__rd == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup treads
@@ -129,20 +131,11 @@ public final class ActiveCacheState
 		this.stack = new Tread(AreaType.STACK, __ms);
 		this.locals = new Tread(AreaType.LOCAL, __ml);
 		this.work = new Tread(AreaType.WORK, __mw);
+		this.rdict = __rd;
 		
-		// Copy saved registers
-		Set<Register> availsaved = new LinkedHashSet<>();
-		for (Register r : __sv)
-			if (r != null)
-				availsaved.add(r);
-		this._availsaved = availsaved;
-		
-		// Copy saved registers
-		Set<Register> availtemp = new LinkedHashSet<>();
-		for (Register r : __tm)
-			if (r != null)
-				availtemp.add(r);
-		this._availtemp = availtemp;
+		// Available register sets
+		this._availsaved = __rd.savedRegisters();
+		this._availtemp = __rd.temporaryRegisters();
 		
 		// Initialize register deque
 		__initDeque();
@@ -694,14 +687,15 @@ public final class ActiveCacheState
 				tempint = ActiveCacheState.this.tempint,
 				tempfloat = ActiveCacheState.this.tempfloat;
 			List<Register> registers = this._registers;
+			RegisterDictionary rdict = ActiveCacheState.this.rdict;
 			while (!registers.isEmpty())
 			{
 				// Remove the last registers
 				Register r = registers.remove(registers.size() - 1);
 				
 				// Temporary
-				if (engine.isRegisterArgument(r) ||
-					engine.isRegisterTemporary(r))
+				if (rdict.isRegisterArgument(r) ||
+					rdict.isRegisterTemporary(r))
 				{
 					if (r.isInteger())
 						tempint.offerFirst(r);

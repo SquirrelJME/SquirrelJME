@@ -384,6 +384,7 @@ class __JITCodeStream__
 		// Shuffle registers and stack elements around so that the values are
 		// in the right position for the method call. Also store stack values
 		// too.
+		RegisterDictionary rdict = this.rdict;
 		boolean[] stacked = new boolean[n];
 		for (int i = 0; i < n; i++)
 		{
@@ -407,8 +408,8 @@ class __JITCodeStream__
 			boolean onstack = !source.hasRegisters();
 			if (!onstack)
 				for (Register r : source.registers())
-					if (engine.isRegisterTemporary(r) ||
-						engine.isRegisterArgument(r))
+					if (rdict.isRegisterTemporary(r) ||
+						rdict.isRegisterArgument(r))
 					{
 						onstack = true;
 						break;
@@ -420,7 +421,7 @@ class __JITCodeStream__
 				// If the value is on the stack, do a read from it
 				if (onstack)
 					engine.loadRegister(target.type(), target.registers(),
-						source.stackOffset(), engine.stackPointerRegister());
+						source.stackOffset(), rdict.stackPointerRegister());
 			
 				// Otherwise copy the registers
 				else
@@ -438,10 +439,10 @@ class __JITCodeStream__
 		DataType pointertype = config.pointerDataType();
 		int pointerbytes = pointertype.length();
 		__JITClassStream__ classstream = this._classstream;
-		Register at = engine.assemblerTemporaryRegister(),
-			got = engine.globalTableRegister(),
-			sp = engine.stackPointerRegister(),
-			fp = engine.framePointerRegister();
+		Register at = rdict.assemblerTemporaryRegister(),
+			got = rdict.globalTableRegister(),
+			sp = rdict.stackPointerRegister(),
+			fp = rdict.framePointerRegister();
 
 		// Store old stack things (old GOT, SP, etc.)
 		System.err.println("TODO -- Store GOT/SP/etc. state.");
@@ -532,18 +533,19 @@ class __JITCodeStream__
 		// Load value to registers, if the variable is not in registers the
 		// value must be temporarily placed in a temporary register
 		boolean tr;
+		RegisterDictionary rdict = this.rdict;
 		List<Register> target = ((tr = !outslot.thisRegisters().isEmpty()) ?
 			outslot.thisRegisters() :
-			Arrays.<Register>asList(engine.assemblerTemporaryRegister()));
+			Arrays.<Register>asList(rdict.assemblerTemporaryRegister()));
 		
 		// Load from the global table
 		engine.loadRegister(pointertype, target, pointertype.length() *
-			this._classstream.__link(__cl), engine.globalTableRegister());
+			this._classstream.__link(__cl), rdict.globalTableRegister());
 		
 		// Copy that to the stack for the slot
 		if (!tr)
 			engine.storeRegister(pointertype, target,
-				outslot.thisStackOffset(), engine.stackPointerRegister());
+				outslot.thisStackOffset(), rdict.stackPointerRegister());
 	}
 	
 	/**
@@ -605,11 +607,10 @@ class __JITCodeStream__
 		this._stackoffsets = new StackSlotOffsets(this, __ms, __ml, __mw);
 		
 		// Also input and output states
-		Register[] sv = engine.allocationRegisters(true),
-			tm = engine.allocationRegisters(false);
-		this._instate = new ActiveCacheState(this, __ms, __ml, __mw, sv, tm,
+		RegisterDictionary rdict = this.rdict;
+		this._instate = new ActiveCacheState(this, __ms, __ml, __mw, rdict,
 			false);
-		this._outstate = new ActiveCacheState(this, __ms, __ml, __mw, sv, tm,
+		this._outstate = new ActiveCacheState(this, __ms, __ml, __mw, rdict,
 			true);
 	}
 	
@@ -739,6 +740,7 @@ class __JITCodeStream__
 		// Go through both treads and store them
 		TranslationEngine engine = this._engine;
 		StackSlotOffsets stackoffsets = this._stackoffsets;
+		RegisterDictionary rdict = this.rdict;
 		for (AreaType treadarea : AreaType.values())
 		{
 			ActiveCacheState.Tread tread = __outstate.getTread(treadarea);
@@ -763,8 +765,8 @@ class __JITCodeStream__
 				List<Register> regs = slot.valueRegisters();
 				boolean needsave = false;
 				for (Register r : regs)
-					if (engine.isRegisterTemporary(r) ||
-						engine.isRegisterArgument(r))
+					if (rdict.isRegisterTemporary(r) ||
+						rdict.isRegisterArgument(r))
 					{
 						needsave = true;
 						break;
@@ -814,9 +816,10 @@ class __JITCodeStream__
 		
 		// Store the registers used in the slot
 		TranslationEngine engine = this._engine;
+		RegisterDictionary rdict = this.rdict;
 		engine.storeRegister(engine.toDataType(__s.valueType()),
 			__s.valueRegisters(), __s.valueStackOffset(),
-			engine.stackPointerRegister());
+			rdict.stackPointerRegister());
 	}
 	
 	/**

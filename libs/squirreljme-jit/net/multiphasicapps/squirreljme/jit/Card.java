@@ -55,18 +55,6 @@ public final class Card
 	 */
 	public Face face()
 	{
-		throw new todo.TODO();
-	}
-	
-	
-	/**
-	 * Returns the card face.
-	 *
-	 * @return The card face.
-	 * @since 2017/04/01
-	 */
-	public Face face()
-	{
 		return this._face;
 	}
 	
