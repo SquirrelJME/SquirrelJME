@@ -262,6 +262,60 @@ public abstract class TranslationEngine
 	}
 	
 	/**
+	 * Loads the specified registers from the stack, via the frame pointer.
+	 *
+	 * @param __t The type of data to load.
+	 * @param __dest The destination registers.
+	 * @param __off The position on the stack.
+	 * @throws JITException If the load is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public final void loadRegisterFromStack(DataType __t,
+		List<Register> __dest, int __off)
+		throws JITException, NullPointerException
+	{
+		loadRegister(__t, __dest, __off,
+			this.config.registerDictionary().framePointerRegister());
+	}
+	
+	/**
+	 * Loads the specified registers from the stack, via the frame pointer.
+	 *
+	 * @param __t The type of data to load.
+	 * @param __dest The destination registers.
+	 * @param __off The position on the stack.
+	 * @throws JITException If the load is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public final void loadRegisterFromStack(DataType __t, Register[] __dest,
+		int __off)
+		throws JITException, NullPointerException
+	{
+		loadRegister(__t, __dest, __off,
+			this.config.registerDictionary().framePointerRegister());
+	}
+	
+	/**
+	 * Loads the specified register from the stack, via the frame pointer.
+	 *
+	 * @param __t The type of data to load.
+	 * @param __dest The destination registers.
+	 * @param __off The position on the stack.
+	 * @throws JITException If the load is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public final void loadRegisterFromStack(DataType __t, Register __dest,
+		int __off)
+		throws JITException, NullPointerException
+	{
+		loadRegister(__t, __dest, __off,
+			this.config.registerDictionary().framePointerRegister());
+	}
+	
+	/**
 	 * Copies the value from the source registers to the destination
 	 * registers.
 	 *
@@ -338,6 +392,60 @@ public abstract class TranslationEngine
 		throws JITException, NullPointerException
 	{
 		storeRegister(__t, Arrays.<Register>asList(__src), __off, __base);
+	}
+	
+	/**
+	 * Stores the specified registers to the stack, via the frame pointer.
+	 *
+	 * @param __t The type of data to store.
+	 * @param __src The source registers.
+	 * @param __off The position on the stack.
+	 * @throws JITException If the store is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public final void storeRegisterOnStack(DataType __t, List<Register> __src,
+		int __off)
+		throws JITException, NullPointerException
+	{
+		storeRegister(__t, __src, __off,
+			this.config.registerDictionary().framePointerRegister());
+	}
+	
+	/**
+	 * Stores the specified registers to the stack, via the frame pointer.
+	 *
+	 * @param __t The type of data to store.
+	 * @param __src The source registers.
+	 * @param __off The position on the stack.
+	 * @throws JITException If the store is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public final void storeRegisterOnStack(DataType __t, Register[] __src,
+		int __off)
+		throws JITException, NullPointerException
+	{
+		storeRegister(__t, __src, __off,
+			this.config.registerDictionary().framePointerRegister());
+	}
+	
+	/**
+	 * Stores the specified register to the stack, via the frame pointer.
+	 *
+	 * @param __t The type of data to store.
+	 * @param __src The source register.
+	 * @param __off The position on the stack.
+	 * @throws JITException If the store is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/01
+	 */
+	public final void storeRegisterOnStack(DataType __t, Register __src,
+		int __off)
+		throws JITException, NullPointerException
+	{
+		storeRegister(__t, __src, __off,
+			this.config.registerDictionary().framePointerRegister());
 	}
 }
 
