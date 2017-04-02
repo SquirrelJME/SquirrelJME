@@ -17,6 +17,10 @@ import java.util.Set;
  * usage in the target architecture. This contains information needed for
  * storing saved, temporary, argument, and other special registers.
  *
+ * All {@link Set}s used in this class must be ordered (insertion order in
+ * {@link LinkedHashSet} for example) in that every iteration must return the
+ * register in the sequence.
+ *
  * @since 2017/04/01
  */
 public abstract class RegisterDictionary
