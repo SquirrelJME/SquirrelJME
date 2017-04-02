@@ -21,8 +21,14 @@ import net.multiphasicapps.squirreljme.executable.ExecutableClass;
  *
  * @since 2017/04/02
  */
-public class JIT
+public final class JIT
 {
+	/** The input class file stream. */
+	protected final DataInputStream input;
+	
+	/** The configuration for the JIT. */
+	protected final JITConfig config;
+	
 	/**
 	 * Initializes the JIT processor.
 	 *
@@ -38,7 +44,9 @@ public class JIT
 		if (__is == null || __conf == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.input = __is;
+		this.config = __conf;
 	}
 	
 	/**
