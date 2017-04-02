@@ -4,6 +4,7 @@ X-SquirrelJME-Error: CA
 X-SquirrelJME-Name: SquirrelJME MIPS JIT
 X-SquirrelJME-Vendor: Steven Gawroriski
 X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Depends: squirreljme-xjit
 X-SquirrelJME-Description: This is an implementation of the JIT which 
  targets systems with MIPS CPUs.
 
