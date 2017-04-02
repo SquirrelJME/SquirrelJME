@@ -10,15 +10,13 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.classformat.StackMapType;
-
 /**
  * This represents the type of data which could be stored at a given memory
  * address, these map to primitive types.
  *
  * @since 2017/02/08
  */
-public enum DataType
+public enum NativeType
 {
 	/** Byte. */
 	BYTE(false, 1),
@@ -54,7 +52,7 @@ public enum DataType
 	 * @param __nb The number of bytes that fit in the data type.
 	 * @since 2017/02/08
 	 */
-	private DataType(boolean __float, int __nb)
+	private NativeType(boolean __float, int __nb)
 	{
 		// Set
 		this.isfloat = __float;
@@ -70,38 +68,6 @@ public enum DataType
 	public int length()
 	{
 		return this.bytes;
-	}
-	
-	/**
-	 * Maps the specified stack type to the data type.
-	 *
-	 * @param __t The stack type to map.
-	 * @return The data type for the given stack type.
-	 * @throws JITException If the type could not be mapped.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/20
-	 */
-	public static DataType of(StackMapType __t)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends
-		switch (__t)
-		{
-				// Get type
-			case INTEGER:	return DataType.INTEGER;
-			case LONG:		return DataType.LONG;
-			case FLOAT:		return DataType.FLOAT;
-			case DOUBLE:	return DataType.DOUBLE;
-			
-				// {@squirreljme.error AQ08 The specified stack type cannot
-				// be mapped to a data type. (The input stack type)}
-			default:
-				throw new JITException(String.format("AQ08 %s", __t));
-		}
 	}
 }
 

@@ -127,14 +127,14 @@ public abstract class JITConfig
 	 * @return The pointer data type.
 	 * @since 2017/03/2
 	 */
-	public final DataType bitsDataType()
+	public final NativeType bitsNativeType()
 	{
 		switch (bits())
 		{
-			case 8:		return DataType.BYTE;
-			case 16:	return DataType.SHORT;
-			case 32:	return DataType.INTEGER;
-			case 64:	return DataType.LONG;
+			case 8:		return NativeType.BYTE;
+			case 16:	return NativeType.SHORT;
+			case 32:	return NativeType.INTEGER;
+			case 64:	return NativeType.LONG;
 			
 				// Unknown
 			default:
@@ -205,18 +205,51 @@ public abstract class JITConfig
 	 * @return The data type for pointers.
 	 * @since 2017/02/19
 	 */
-	public DataType pointerDataType()
+	public NativeType pointerNativeType()
 	{
 		switch (bits())
 		{
-			case 8:		return DataType.BYTE;
-			case 16:	return DataType.SHORT;
-			case 32:	return DataType.INTEGER;
-			case 64:	return DataType.LONG;
+			case 8:		return NativeType.BYTE;
+			case 16:	return NativeType.SHORT;
+			case 32:	return NativeType.INTEGER;
+			case 64:	return NativeType.LONG;
 			
 				// {@squirreljme.error AQ07 Unknown pointer data type.}
 			default:
 				throw new JITException("AQ07");
+		}
+	}
+	
+	/**
+	 * Maps the specified stack type to the data type.
+	 *
+	 * @param __t The stack type to map.
+	 * @return The data type for the given stack type.
+	 * @throws JITException If the type could not be mapped.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/02
+	 */
+	public final NativeType toNativeType(JavaType __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__t)
+		{
+				// Get type
+			case INTEGER:	return NativeType.INTEGER;
+			case LONG:		return NativeType.LONG;
+			case FLOAT:		return NativeType.FLOAT;
+			case DOUBLE:	return NativeType.DOUBLE;
+			case OBJECT:	return pointerNativeType();
+			
+				// {@squirreljme.error AQ08 The specified stack type cannot
+				// be mapped to a data type. (The input stack type)}
+			default:
+				throw new JITException(String.format("AQ08 %s", __t));
 		}
 	}
 	
@@ -227,7 +260,7 @@ public abstract class JITConfig
 	 * @return The lowercased string or {@code null} if it was {@code null}.
 	 * @since 2017/02/02
 	 */
-	private static final String __lower(String __s)
+	static final String __lower(String __s)
 	{
 		// Do nothing with null
 		if (__s == null)

@@ -224,9 +224,9 @@ class __KVPMap__
 			int at = this._at;
 			int len = pairs.length;
 			
-			// {@squirreljme.error ED02 No more entries.}
+			// None left
 			if (at >= len)
-				throw new NoSuchElementException("ED02");
+				throw new NoSuchElementException("NSEE");
 			
 			// Setup return value
 			Map.Entry<String, String> rv = new __Entry__(pairs[at],
