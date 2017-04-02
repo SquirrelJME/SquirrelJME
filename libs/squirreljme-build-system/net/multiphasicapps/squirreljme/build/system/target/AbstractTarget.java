@@ -20,7 +20,6 @@ import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
-import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
 
 /**
  * This is the base class which is implemented for any target output handler.
@@ -103,18 +102,12 @@ public abstract class AbstractTarget
 	 * Performs the compilation step by running through every project to be
 	 * included and compiles it.
 	 *
-	 * @param __tep The engine provider.
 	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/15
 	 */
-	protected final void compile(TranslationEngineProvider __tep)
-		throws IOException, NullPointerException
+	protected final void compile()
+		throws IOException
 	{
-		// Check
-		if (__tep == null)
-			throw new NullPointerException("NARG");
-		
 		// Go through projects and compile ones to be included
 		ProjectManager projects = this.projects;
 		TargetConfig config = this.config;
