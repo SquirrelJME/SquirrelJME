@@ -10,28 +10,46 @@
 
 package net.multiphasicapps.squirreljme.build.interpreter;
 
+import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.kernel.ContextClass;
+import net.multiphasicapps.squirreljme.kernel.ContextLoadException;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
- * This provides the base process representation for the interpreter.
+ * This represents a normal kernel process which has no deterministic factors.
  *
  * @since 2017/01/03
  */
-public abstract class AbstractKernelProcess
+public class InterpreterKernelProcess
 	extends KernelProcess
 {
 	/**
-	 * Initializes the abstract process.
+	 * Initializes the normal process.
 	 *
 	 * @param __k The owning kernel.
-	 * @param __cp The class path.
+	 * @param __cp Class path.
 	 * @since 2017/01/03
 	 */
-	public AbstractKernelProcess(Kernel __k, SuiteDataAccessor[] __cp)
+	public InterpreterKernelProcess(Kernel __k, SuiteDataAccessor[] __cp)
 	{
 		super(__k, __cp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/01/16
+	 */
+	@Override
+	protected ContextClass initializeClassContext(ExecutableClass __e)
+		throws ContextLoadException, NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

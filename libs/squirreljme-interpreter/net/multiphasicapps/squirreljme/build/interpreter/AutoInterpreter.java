@@ -45,7 +45,7 @@ public class AutoInterpreter
 	protected final TranslationEngineProvider engineprovider;
 	
 	/** The kernel manager. */
-	private final AbstractKernelManager _akm;
+	private final InterpreterKernelManager _akm;
 	
 	/**
 	 * Initializes the auto interpreter.
@@ -84,7 +84,6 @@ public class AutoInterpreter
 		klpb.parseCommandLine(__args);
 		
 		// Parse them
-		Path detrecord = null, detreplay = null;
 		Set<String> selects = new SortedTreeSet<>();
 		while (!aq.isEmpty())
 		{
@@ -124,16 +123,6 @@ public class AutoInterpreter
 				// Depends on the key
 				switch (key)
 				{
-						// Deterministic record
-					case "record":
-						detrecord = Paths.get(val);
-						break;
-						
-						// Determinstic playback
-					case "replay":
-						detreplay = Paths.get(val);
-						break;
-						
 						// Select APIs, MIDlets, and LIBlets to use
 					case "select":
 						{
@@ -187,18 +176,9 @@ public class AutoInterpreter
 		// Finish building the parameters
 		KernelLaunchParameters klp = klpb.build();
 		
-		// Determinisitic kernel manager
-		AbstractKernelManager akm;
-		if (detrecord != null || detreplay != null)
-			akm = new DeterministicKernelManager(this, klp, detreplay,
-				detrecord);
-		
-		// Normal kernel manager
-		else
-			akm = new NormalKernelManager(this, klp);
-		
-		// Set manager
-		this._akm = akm;
+		// Initialize the kernel manager
+		InterpreterKernelManager akm;
+		this._akm = akm = (new InterpreterKernelManager(this, klp));
 		
 		// Setup translation engine the JIT uses
 		this.engineprovider = new MIPSEngineProvider(new MIPSConfig(
@@ -216,7 +196,7 @@ public class AutoInterpreter
 		throws IOException
 	{
 		// Close the kernel manager? May be used by the deterministic code.
-		AbstractKernelManager akm = this._akm;
+		InterpreterKernelManager akm = this._akm;
 		if (akm instanceof Closeable)
 			((Closeable)akm).close();
 	}
@@ -240,7 +220,7 @@ public class AutoInterpreter
 	public void run()
 	{
 		// Setup abstract kernel
-		AbstractKernelManager akm = this._akm;
+		InterpreterKernelManager akm = this._akm;
 		
 		// Setup kernel parameters
 		KernelBuilder kb = new KernelBuilder();

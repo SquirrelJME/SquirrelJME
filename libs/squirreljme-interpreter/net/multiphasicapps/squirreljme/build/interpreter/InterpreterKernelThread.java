@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.kernel.KernelThread;
  *
  * @since 2017/01/16
  */
-public abstract class InterpreterKernelThread
+public class InterpreterKernelThread
 	extends KernelThread
 {
 	/**
