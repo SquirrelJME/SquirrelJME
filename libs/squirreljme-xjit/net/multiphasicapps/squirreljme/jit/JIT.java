@@ -81,6 +81,9 @@ public final class JIT
 			throw new JITException(String.format("AQ0c %d.%d",
 				cver >>> 16, (cver & 0xFFFF)));
 		
+		// Parse the constant pool
+		__Pool__ pool = new __Pool__(input);
+		
 		throw new todo.TODO();
 	}
 }
