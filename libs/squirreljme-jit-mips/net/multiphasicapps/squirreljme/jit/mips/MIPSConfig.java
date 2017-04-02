@@ -22,8 +22,11 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2017/02/02
  */
 public class MIPSConfig
-	extends JITConfig<MIPSConfig>
+	extends JITConfig
 {
+	/** The register dictionary for this config. */
+	protected final MIPSRegisterDictionary rdict;
+	
 	/**
 	 * Initializes the MIPS config.
 	 *
@@ -33,6 +36,9 @@ public class MIPSConfig
 	public MIPSConfig(String... __kvp)
 	{
 		super(__kvp);
+		
+		// Setup
+		this.rdict = new MIPSRegisterDictionary();
 	}
 	
 	/**
@@ -44,6 +50,9 @@ public class MIPSConfig
 	public MIPSConfig(Map<String, String> __kvp)
 	{
 		super(__kvp);
+		
+		// Setup
+		this.rdict = new MIPSRegisterDictionary();
 	}
 	
 	/**
@@ -138,6 +147,16 @@ public class MIPSConfig
 	public boolean mipsSix()
 	{
 		return mipsRevision().ordinal() >= MIPSRevision.R6.ordinal();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/01
+	 */
+	@Override
+	public MIPSRegisterDictionary registerDictionary()
+	{
+		return this.rdict;
 	}
 	
 	/**

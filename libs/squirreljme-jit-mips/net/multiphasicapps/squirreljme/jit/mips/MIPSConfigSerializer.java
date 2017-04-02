@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
  * @since 2017/02/02
  */
 public class MIPSConfigSerializer
-	extends JITConfigSerializer<MIPSConfig>
+	extends JITConfigSerializer
 {
 	/** The cached instance. */
 	private static volatile Reference<MIPSConfigSerializer> _INSTANCE;

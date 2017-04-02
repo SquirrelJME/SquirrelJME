@@ -236,12 +236,11 @@ public enum MIPSRegister
 	}
 	
 	/**
-	 * Returns the register ID.
-	 *
-	 * @return The register ID.
+	 * {@inheritDoc}
 	 * @since 2016/09/24
 	 */
-	public final int id()
+	@Override
+	public final int index()
 	{
 		return this.id;
 	}

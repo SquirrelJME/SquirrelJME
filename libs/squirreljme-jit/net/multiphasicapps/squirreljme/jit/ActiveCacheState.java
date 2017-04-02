@@ -134,8 +134,8 @@ public final class ActiveCacheState
 		this.rdict = __rd;
 		
 		// Available register sets
-		this._availsaved = __rd.savedRegisters();
-		this._availtemp = __rd.temporaryRegisters();
+		this._availsaved = __rd.allocationRegisters(true);
+		this._availtemp = __rd.allocationRegisters(false);
 		
 		// Initialize register deque
 		__initDeque();

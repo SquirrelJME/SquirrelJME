@@ -18,6 +18,8 @@ package net.multiphasicapps.squirreljme.jit;
  * Implementations of this interface are not expected to be thread safe and it
  * is not required to be.
  *
+ * Implementations of cards should be immutable.
+ *
  * @see Deck
  * @see Card
  * @since 2017/04/01
