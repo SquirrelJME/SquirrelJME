@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
 import net.multiphasicapps.squirreljme.jit.JIT;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
 
 /**
@@ -70,13 +71,12 @@ class __ProjectAccessor__
 		try (FileDirectory fd = this.project.openFileDirectory();
 			InputStream is = fd.open(__name + ".class"))
 		{
-			return new JIT(is, interpreter.translationEngineProvider()).
-				compile();
+			throw new todo.TODO();
 		}
 		
 		// {@squirreljme.error AV04 Failed to read the given input class.
 		// (The name of the class)}
-		catch (IOException e)
+		catch (IOException|JITException e)
 		{
 			throw new ExecutableLoadException(String.format("AV04 %s", __name),
 				e);

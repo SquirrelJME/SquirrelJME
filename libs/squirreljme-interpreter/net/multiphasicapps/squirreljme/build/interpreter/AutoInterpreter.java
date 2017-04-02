@@ -17,13 +17,11 @@ import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
-import net.multiphasicapps.squirreljme.jit.mips.MIPSConfig;
-import net.multiphasicapps.squirreljme.jit.mips.MIPSEngineProvider;
-import net.multiphasicapps.squirreljme.jit.TranslationEngine;
-import net.multiphasicapps.squirreljme.jit.TranslationEngineProvider;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelBuilder;
 import net.multiphasicapps.squirreljme.kernel.KernelLaunchParameters;
@@ -42,8 +40,8 @@ public class AutoInterpreter
 	/** The project manager which is used to get APIs, midlets, and liblets. */
 	protected final ProjectManager projects;
 	
-	/** The translation engine used for the JIT. */
-	protected final TranslationEngineProvider engineprovider;
+	/** The provider for the interpreter. */
+	protected final InterpreterProvider provider;
 	
 	/** The kernel manager. */
 	private final InterpreterKernelManager _akm;
@@ -186,18 +184,18 @@ public class AutoInterpreter
 				sb.toString());
 		}
 		
+		// Setup interpreter (defaults to MIPS)
+		String arch = extraj.get("generic.arch");
+		if (arch == null)
+			extraj.put("generic.arch", (arch = "mips"));
+		this.provider = InterpreterProvider.of(extraj);
+		
 		// Finish building the parameters
 		KernelLaunchParameters klp = klpb.build();
 		
 		// Initialize the kernel manager
 		InterpreterKernelManager akm;
 		this._akm = akm = (new InterpreterKernelManager(this, klp));
-		
-		// Setup translation engine the JIT uses
-		this.engineprovider = new MIPSEngineProvider(new MIPSConfig(
-			"mips.cpu", "mips1",
-			"generic.endianess", "big",
-			"generic.bits", "32"));
 	}
 	
 	/**
@@ -223,6 +221,17 @@ public class AutoInterpreter
 	public final ProjectManager projectManager()
 	{
 		return this.projects;
+	}
+	
+	/**
+	 * Returns the provider for the interpreter.
+	 *
+	 * @return The interpreter provider.
+	 * @since 2017/04/02
+	 */
+	public final InterpreterProvider provider()
+	{
+		return this.provider;
 	}
 	
 	/**
@@ -257,18 +266,6 @@ public class AutoInterpreter
 			catch (InterruptedException e)
 			{
 			}
-	}
-	
-	/**
-	 * Returns the translation engine provider which the interpreter
-	 * understands when executing target code.
-	 *
-	 * @return The translation engine provider.
-	 * @since 2017/01/30
-	 */
-	public TranslationEngineProvider translationEngineProvider()
-	{
-		return this.engineprovider;
 	}
 }
 
