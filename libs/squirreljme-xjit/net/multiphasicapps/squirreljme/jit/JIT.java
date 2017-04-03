@@ -16,6 +16,7 @@ import java.io.IOException;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
+import net.multiphasicapps.squirreljme.linkage.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
 
 /**
@@ -105,6 +106,18 @@ public final class JIT
 		ClassExport thisexport;
 		linktable.export((thisexport = new ClassExport(thisname, flags)));
 		this._thisexport = thisexport;
+		
+		// {@squirreljme.error AQ0p A superclass was not specified and this
+		// class is not the Object class, or a superclass was specified and
+		// this is the object class.}
+		ClassNameSymbol supername = pool.get(input.readUnsignedShort()).
+			<ClassNameSymbol>optional(true, ClassNameSymbol.class);
+		if ((supername == null) !=
+			(thisname.equals(ClassNameSymbol.of("java/lang/Object"))))
+			throw new JITException("AQ0p");
+		
+		// Link that
+		linktable.link(new ClassExtendsLink(thisexport, supername));
 		
 		throw new todo.TODO();
 	}
