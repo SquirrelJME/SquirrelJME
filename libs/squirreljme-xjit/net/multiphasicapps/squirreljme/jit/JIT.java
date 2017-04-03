@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
+import net.multiphasicapps.squirreljme.linkage.ClassImplementsLink;
 
 /**
  * This is the part of the JIT which accepts a class file which is parsed and
@@ -118,6 +119,27 @@ public final class JIT
 		
 		// Link that
 		linktable.link(new ClassExtendsLink(thisexport, supername));
+		
+		// Handle interfaces
+		int n = input.readUnsignedShort();
+		for (int i = 0, hi = 0; i < n; i++)
+		{
+			// Read class name
+			ClassNameSymbol iname = pool.get(input.readUnsignedShort()).
+				<ClassNameSymbol>get(true, ClassNameSymbol.class);
+			
+			// {@squirreljme.error AQ0r Duplicate implementation of an
+			// interface. (The interface being linked)}
+			ClassImplementsLink link;
+			int lid = linktable.link(
+				(link = new ClassImplementsLink(thisexport, iname)));
+			if (lid <= hi)
+				throw new JITException(String.format("AQ0r %s", link));
+			
+			// Set higher value
+			if (lid > hi)
+				hi = lid;
+		}
 		
 		throw new todo.TODO();
 	}
