@@ -33,6 +33,10 @@ public final class JIT
 	/** The configuration for the JIT. */
 	protected final JITConfig config;
 	
+	/** Link table for the parsed class. */
+	protected final LinkTable linktable =
+		new LinkTable();
+	
 	/**
 	 * Initializes the JIT processor.
 	 *
