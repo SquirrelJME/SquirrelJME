@@ -14,6 +14,9 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassExport;
+import net.multiphasicapps.squirreljme.linkage.ClassFlags;
 
 /**
  * This is the part of the JIT which accepts a class file which is parsed and
@@ -36,6 +39,9 @@ public final class JIT
 	/** Link table for the parsed class. */
 	protected final LinkTable linktable =
 		new LinkTable();
+	
+	/** The export of this class. */
+	private volatile ClassExport _thisexport;
 	
 	/**
 	 * Initializes the JIT processor.
@@ -87,6 +93,18 @@ public final class JIT
 		
 		// Parse the constant pool
 		__Pool__ pool = new __Pool__(input);
+		
+		// Read class flags and the name
+		ClassFlags flags = __FlagDecoder__.__class(
+			input.readUnsignedShort());
+		ClassNameSymbol thisname = pool.get(input.readUnsignedShort()).
+			<ClassNameSymbol>get(true, ClassNameSymbol.class);
+		
+		// Create initial export
+		LinkTable linktable = this.linktable;
+		ClassExport thisexport;
+		linktable.export((thisexport = new ClassExport(thisname, flags)));
+		this._thisexport = thisexport;
 		
 		throw new todo.TODO();
 	}

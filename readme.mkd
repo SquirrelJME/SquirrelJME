@@ -12,7 +12,9 @@
 strange and many other devices. That is, you would be able to have a Java
 environment on a wide range of _Internet of Things_ devices, older computers
 (such as the _Amiga_), embedded devices, and mobile devices from old to new.
-It intends to be 99.9% compatible with Java ME 8 and older J2ME standards.
+It intends to be 99.9% compatible with Java ME 8 and older J2ME standards. It
+should be able to run a wide range of older J2ME software which would enable
+this software to be used for archival purposes.
 
 The source is written in pure Java and is designed to use small amounts of
 memory, where simplicity increases operation speed without sacrificing
