@@ -141,6 +141,25 @@ public final class JIT
 				hi = lid;
 		}
 		
+		// Read fields
+		n = input.readUnsignedShort();
+		for (int i = 0; i < n; i++)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Read methods
+		n = input.readUnsignedShort();
+		for (int i = 0; i < n; i++)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Ignore attributes
+		if (true)
+			throw new todo.TODO();
+		
+		// Generate final executable
 		throw new todo.TODO();
 	}
 }
