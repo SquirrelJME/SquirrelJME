@@ -19,6 +19,8 @@ import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
 import net.multiphasicapps.squirreljme.linkage.ClassImplementsLink;
+import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
  * This is the part of the JIT which accepts a class file which is parsed and
@@ -97,7 +99,7 @@ public final class JIT
 		__Pool__ pool = new __Pool__(input);
 		
 		// Read class flags and the name
-		ClassFlags flags = __FlagDecoder__.__class(
+		ClassFlags clflags = __FlagDecoder__.__class(
 			input.readUnsignedShort());
 		ClassNameSymbol thisname = pool.get(input.readUnsignedShort()).
 			<ClassNameSymbol>get(true, ClassNameSymbol.class);
@@ -105,7 +107,7 @@ public final class JIT
 		// Create initial export
 		LinkTable linktable = this.linktable;
 		ClassExport thisexport;
-		linktable.export((thisexport = new ClassExport(thisname, flags)));
+		linktable.export((thisexport = new ClassExport(thisname, clflags)));
 		this._thisexport = thisexport;
 		
 		// {@squirreljme.error AQ0p A superclass was not specified and this
@@ -145,6 +147,10 @@ public final class JIT
 		n = input.readUnsignedShort();
 		for (int i = 0; i < n; i++)
 		{
+			// Read flags
+			FieldFlags ff = __FlagDecoder__.__field(clflags,
+				input.readUnsignedShort());
+			
 			throw new todo.TODO();
 		}
 		
@@ -152,6 +158,10 @@ public final class JIT
 		n = input.readUnsignedShort();
 		for (int i = 0; i < n; i++)
 		{
+			// Read methods
+			MethodFlags mf = __FlagDecoder__.__method(clflags,
+				input.readUnsignedShort());
+			
 			throw new todo.TODO();
 		}
 		
