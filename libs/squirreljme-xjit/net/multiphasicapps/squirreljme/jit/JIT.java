@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
@@ -147,9 +150,13 @@ public final class JIT
 		n = input.readUnsignedShort();
 		for (int i = 0; i < n; i++)
 		{
-			// Read flags
+			// Read field information
 			FieldFlags ff = __FlagDecoder__.__field(clflags,
 				input.readUnsignedShort());
+			IdentifierSymbol name = IdentifierSymbol.of(pool.get(
+				input.readUnsignedShort()).<String>get(true, String.class));
+			FieldSymbol type = FieldSymbol.of(pool.get(
+				input.readUnsignedShort()).<String>get(true, String.class));
 			
 			throw new todo.TODO();
 		}
@@ -158,9 +165,13 @@ public final class JIT
 		n = input.readUnsignedShort();
 		for (int i = 0; i < n; i++)
 		{
-			// Read methods
+			// Read method information
 			MethodFlags mf = __FlagDecoder__.__method(clflags,
 				input.readUnsignedShort());
+			IdentifierSymbol name = IdentifierSymbol.of(pool.get(
+				input.readUnsignedShort()).<String>get(true, String.class));
+			MethodSymbol type = MethodSymbol.of(pool.get(
+				input.readUnsignedShort()).<String>get(true, String.class));
 			
 			throw new todo.TODO();
 		}
