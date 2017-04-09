@@ -10,13 +10,43 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.linkage.Export;
+import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+
 /**
  * This contains a field that is exported by a class.
  *
  * @since 2017/04/04
  */
-public class ExportedField
+public final class ExportedField
 	extends ExportedMember
 {
+	/**
+	 * Initializes the exported field.
+	 *
+	 * @param __flags The flags for the field.
+	 * @param __name The name of the field.
+	 * @param __type The type of the field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/09
+	 */
+	ExportedField(FieldFlags __flags, IdentifierSymbol __name,
+		FieldSymbol __type)
+		throws NullPointerException
+	{
+		super(__flags, __name, __type);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/01
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		return (__o instanceof ExportedField) && super.equals(__o);
+	}
 }
 

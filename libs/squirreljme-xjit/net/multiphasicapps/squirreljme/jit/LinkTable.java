@@ -47,21 +47,23 @@ public class LinkTable
 	 *
 	 * @param __e The export to add.
 	 * @return The export index in the link table.
+	 * @throws JITException If the export is not unique.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/02
 	 */
 	public int export(Export __e)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		// Only export once
+		// {@squirreljme.error AQ0s The specified export has been exported
+		// multiple times. (The export)}
 		Map<Export, Integer> exports = this._exports;
 		Integer rv = exports.get(__e);
 		if (rv != null)
-			return rv;
+			throw new JITException(String.format("AQ0s %s", __e));
 		
 		// Add to the table
 		exports.put(__e, (rv = exports.size()));
@@ -69,7 +71,8 @@ public class LinkTable
 	}
 	
 	/**
-	 * Adds the specified linkage to the link table.
+	 * Adds the specified linkage to the link table or if it is already linked
+	 * it returns the existing link.
 	 *
 	 * @param __l The linkage to add.
 	 * @return The link index in the link table.

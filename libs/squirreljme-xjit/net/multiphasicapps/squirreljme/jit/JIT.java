@@ -158,6 +158,11 @@ public final class JIT
 			FieldSymbol type = FieldSymbol.of(pool.get(
 				input.readUnsignedShort()).<String>get(true, String.class));
 			
+			// Create field
+			ExportedField field = new ExportedField(ff, name, type);
+			linktable.export(field);
+			
+			// Handle attributes
 			throw new todo.TODO();
 		}
 		
@@ -173,6 +178,11 @@ public final class JIT
 			MethodSymbol type = MethodSymbol.of(pool.get(
 				input.readUnsignedShort()).<String>get(true, String.class));
 			
+			// Create method
+			ExportedMethod method = new ExportedMethod(mf, name, type);
+			linktable.export(method);
+			
+			// Handle attributes
 			throw new todo.TODO();
 		}
 		
