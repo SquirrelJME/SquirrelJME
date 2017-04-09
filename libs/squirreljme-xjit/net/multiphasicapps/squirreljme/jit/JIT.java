@@ -173,7 +173,27 @@ public final class JIT
 					if (!aname[0].equals("ConstantValue"))
 						continue;
 					
-					throw new todo.TODO();
+					// {@squirreljme.error AQ0v The field already has a
+					// constant value assigned to it. (The field)}
+					if (field._value != null)
+						throw new JITException(String.format("AQ0v %s", field));
+					
+					// Read the constant value index
+					Object val = pool.get(as.readUnsignedShort()).
+						<Object>get(true, Object.class);
+					
+					// {@squirreljme.error AQ0w Illegal constant value type.
+					// (The class type)}
+					if (!(val instanceof String) &&
+						!(val instanceof Integer) &&
+						!(val instanceof Long) &&
+						!(val instanceof Float) &&
+						!(val instanceof Double))
+						throw new JITException(String.format("AQ0w %s",
+							val.getClass()));
+					
+					// Set
+					field._value = val;
 				}
 		}
 		

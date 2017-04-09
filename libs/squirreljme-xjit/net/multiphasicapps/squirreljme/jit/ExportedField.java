@@ -23,6 +23,9 @@ import net.multiphasicapps.squirreljme.linkage.FieldFlags;
 public final class ExportedField
 	extends ExportedMember
 {
+	/** The constant value of the field, {@code null} if not set. */
+	volatile Object _value;
+	
 	/**
 	 * Initializes the exported field.
 	 *
