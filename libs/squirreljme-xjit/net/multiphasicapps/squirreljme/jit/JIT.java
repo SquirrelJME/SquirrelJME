@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
@@ -163,7 +164,17 @@ public final class JIT
 			linktable.export(field);
 			
 			// Handle attributes
-			throw new todo.TODO();
+			int[] count = new int[]{input.readUnsignedShort()};
+			String[] aname = new String[1];
+			while ((count[0]--) > 0)
+				try (InputStream as = __nextAttribute(pool, aname))
+				{
+					// Only use constant values
+					if (!aname[0].equals("ConstantValue"))
+						continue;
+					
+					throw new todo.TODO();
+				}
 		}
 		
 		// Read methods
@@ -183,14 +194,53 @@ public final class JIT
 			linktable.export(method);
 			
 			// Handle attributes
-			throw new todo.TODO();
+			int[] count = new int[]{input.readUnsignedShort()};
+			String[] aname = new String[1];
+			while ((count[0]--) > 0)
+				try (InputStream as = __nextAttribute(pool, aname))
+				{
+					// Only code is handled
+					if (!aname[0].equals("Code"))
+						continue;
+					
+					throw new todo.TODO();
+				}
 		}
 		
-		// Ignore attributes
-		if (true)
-			throw new todo.TODO();
+		// Ignore attributes at the end of the class
+		int[] count = new int[]{input.readUnsignedShort()};
+		String[] aname = new String[1];
+		while ((count[0]--) > 0)
+			try (InputStream as = __nextAttribute(pool, aname))
+			{
+			}
+		
+		// {@squirreljme.error AQ0t Extra bytes at the end of the class file.}
+		if (input.read() >= 0)
+			throw new JITException("AQ0t");
 		
 		// Generate final executable
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Reads the next attribute from the class.
+	 *
+	 * @param __pool The constant pool.
+	 * @param __aname The output name of the attribute which was just read.
+	 * @return The stream to the attribute which just has been read.
+	 * @throws IOException On read errors.
+	 * @throws JITException If the attribute is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/09
+	 */
+	private InputStream __nextAttribute(__Pool__ __pool, String[] __aname)
+		throws IOException, JITException, NullPointerException
+	{
+		// Check
+		if (__aname == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }
