@@ -167,7 +167,7 @@ public final class JIT
 			int[] count = new int[]{input.readUnsignedShort()};
 			String[] aname = new String[1];
 			while ((count[0]--) > 0)
-				try (InputStream as = __nextAttribute(pool, aname))
+				try (DataInputStream as = __nextAttribute(input, pool, aname))
 				{
 					// Only use constant values
 					if (!aname[0].equals("ConstantValue"))
@@ -197,7 +197,7 @@ public final class JIT
 			int[] count = new int[]{input.readUnsignedShort()};
 			String[] aname = new String[1];
 			while ((count[0]--) > 0)
-				try (InputStream as = __nextAttribute(pool, aname))
+				try (DataInputStream as = __nextAttribute(input, pool, aname))
 				{
 					// Only code is handled
 					if (!aname[0].equals("Code"))
@@ -211,7 +211,7 @@ public final class JIT
 		int[] count = new int[]{input.readUnsignedShort()};
 		String[] aname = new String[1];
 		while ((count[0]--) > 0)
-			try (InputStream as = __nextAttribute(pool, aname))
+			try (DataInputStream as = __nextAttribute(input, pool, aname))
 			{
 			}
 		
@@ -226,6 +226,7 @@ public final class JIT
 	/**
 	 * Reads the next attribute from the class.
 	 *
+	 * @param __in The input stream where bytes come from.
 	 * @param __pool The constant pool.
 	 * @param __aname The output name of the attribute which was just read.
 	 * @return The stream to the attribute which just has been read.
@@ -234,14 +235,28 @@ public final class JIT
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
-	private InputStream __nextAttribute(__Pool__ __pool, String[] __aname)
+	private static DataInputStream __nextAttribute(DataInputStream __in,
+		__Pool__ __pool, String[] __aname)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
 		if (__aname == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// The name is not parsed here
+		__aname[0] = __pool.get(__in.readUnsignedShort()).
+			get(false, String.class);
+		
+		// {@squirreljme.error AQ0u Attribute exceeds 2GiB in length. (The
+		// size of the attribute)}
+		int len = __in.readInt();
+		if (len < 0)
+			throw new JITException(String.format("AQ0u %d",
+				len & 0xFFFFFFFFL));
+		
+		// Setup reader
+		return new DataInputStream(new SizeLimitedInputStream(__in, len, true,
+			false));
 	}
 }
 
