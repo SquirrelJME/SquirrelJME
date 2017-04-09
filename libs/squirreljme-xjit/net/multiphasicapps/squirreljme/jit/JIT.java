@@ -223,7 +223,8 @@ public final class JIT
 					if (!aname[0].equals("Code"))
 						continue;
 					
-					throw new todo.TODO();
+					// Setup decoder
+					new __Code__(method, as, pool, linktable).__run();
 				}
 		}
 		
