@@ -235,7 +235,7 @@ public final class JIT
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
-	private static DataInputStream __nextAttribute(DataInputStream __in,
+	static DataInputStream __nextAttribute(DataInputStream __in,
 		__Pool__ __pool, String[] __aname)
 		throws IOException, JITException, NullPointerException
 	{
