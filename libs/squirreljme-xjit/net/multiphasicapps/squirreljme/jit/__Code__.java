@@ -90,20 +90,23 @@ class __Code__
 		// Only handle the stack map information
 		int[] count = new int[]{__is.readUnsignedShort()};
 		String[] aname = new String[1];
+		boolean didsmt = false;
 		while ((count[0]--) > 0)
 			try (DataInputStream as = JIT.__nextAttribute(__is, __pool, aname))
 			{
-				// Old style stack map
-				if (aname[0].equals("StackMap"))
-					throw new todo.TODO();
-				
-				// New style stack map
-				else if (aname[0].equals("StackMapTable"))
-					throw new todo.TODO();
-				
-				// Unknown
-				else
+				// Only handle the stack map, ignore all other information
+				// such as debugging
+				boolean old = aname[0].equals("StackMap"),
+					modern = aname[0].equals("StackMapTable");
+				if (!old && !modern)
 					continue;
+				
+				// {@squirreljme.error AQ11 Already parsed the stack map
+				// table.}
+				if (didsmt)
+					throw new JITException("AQ11");
+				
+				throw new todo.TODO();
 			}
 		
 		// Process the byte code
