@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classformat;
+package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -44,22 +44,22 @@ public final class ExceptionHandler
 	 * @param __epc The end address.
 	 * @param __hpc The handler address.
 	 * @param __cn The class to be handled.
-	 * @throws ClassFormatException If the addresses are not valid.
+	 * @throws JITException If the addresses are not valid.
 	 * @since 2017/02/09
 	 */
 	ExceptionHandler(int __spc, int __epc, int __hpc, ClassNameSymbol __cn)
-		throws ClassFormatException
+		throws JITException
 	{
-		// {@squirreljme.error AY0l An address is negative. (The start address;
+		// {@squirreljme.error AQ0z An address is negative. (The start address;
 		// The end address; The handler address)}
 		if (__spc < 0 || __epc < 0 || __hpc < 0)
-			throw new ClassFormatException(String.format("AY0l %d %d %d",
+			throw new JITException(String.format("AQ0z %d %d %d",
 				__spc, __epc, __hpc));
 		
-		// {@squirreljme.error AY0o The end address is at or before the start
+		// {@squirreljme.error AQ10 The end address is at or before the start
 		// address. (The start address; The end address)}
 		if (__epc <= __spc)
-			throw new ClassFormatException(String.format("AY0o %d %d",
+			throw new JITException(String.format("AQ10 %d %d",
 				__spc, __epc));
 		
 		// Set

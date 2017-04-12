@@ -35,6 +35,9 @@ class __Code__
 	/** The link table for imports. */
 	protected final LinkTable linktable;
 	
+	/** The exception handler table for the current method. */
+	protected final ExceptionHandlerTable exceptions;
+	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
 	 * is needed for the decoder.
@@ -76,6 +79,9 @@ class __Code__
 		__is.readFully(code);
 		
 		// Read the exception table
+		ExceptionHandlerTable exceptions = new ExceptionHandlerTable(__is,
+			__pool, len);
+		this.exceptions = exceptions;
 		
 		throw new todo.TODO();
 	}
