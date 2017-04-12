@@ -22,6 +22,10 @@ import java.io.IOException;
  */
 class __Code__
 {
+	/** The maximum number of bytes the code attribute can be. */
+	private static final int _CODE_SIZE_LIMIT =
+		65535;
+	
 	/** The exported method. */
 	protected final ExportedMethod method;
 	
@@ -56,6 +60,22 @@ class __Code__
 		this.method = __em;
 		this.pool = __pool;
 		this.linktable = __lt;
+		
+		// Read local variable count
+		int maxstack = __is.readUnsignedShort(),
+			maxlocals = __is.readUnsignedShort();
+		
+		// {@squirreljme.error AQ0x Method has an invalid size for the length
+		// of its byte code. (The length of the code)}
+		int len = __is.readInt();
+		if (len <= 0 || len > _CODE_SIZE_LIMIT)
+			throw new JITException(String.format("AQ0x %d", len));
+		
+		// Read all of it
+		byte[] code = new byte[len];
+		__is.readFully(code);
+		
+		// Read the exception table
 		
 		throw new todo.TODO();
 	}
