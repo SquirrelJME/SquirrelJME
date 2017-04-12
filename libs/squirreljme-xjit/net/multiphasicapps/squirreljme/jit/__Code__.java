@@ -14,6 +14,9 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
  * This handles the code attribute for a method.
@@ -40,6 +43,9 @@ class __Code__
 	
 	/** The byte code for the method. */
 	private final byte[] _code;
+	
+	/** The stack map table state. */
+	private final Map<Integer, __JavaState__> _smt;
 	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
@@ -91,6 +97,7 @@ class __Code__
 		int[] count = new int[]{__is.readUnsignedShort()};
 		String[] aname = new String[1];
 		boolean didsmt = false;
+		MethodFlags flags = __em.methodFlags();
 		while ((count[0]--) > 0)
 			try (DataInputStream as = JIT.__nextAttribute(__is, __pool, aname))
 			{
@@ -108,6 +115,12 @@ class __Code__
 				
 				throw new todo.TODO();
 			}
+		
+		// Need to generate a blank state?
+		if (!didsmt)
+		{
+			throw new todo.TODO();
+		}
 		
 		// Process the byte code
 		throw new todo.TODO();

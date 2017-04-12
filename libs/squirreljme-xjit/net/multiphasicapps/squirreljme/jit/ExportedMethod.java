@@ -48,5 +48,16 @@ public final class ExportedMethod
 	{
 		return (__o instanceof ExportedMethod) && super.equals(__o);
 	}
+	
+	/**
+	 * Returns the flags for this exported method.
+	 *
+	 * @return The method flags.
+	 * @since 2017/04/11
+	 */
+	public MethodFlags methodFlags()
+	{
+		return (MethodFlags)this.flags;
+	}
 }
 
