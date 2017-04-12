@@ -38,6 +38,9 @@ class __Code__
 	/** The exception handler table for the current method. */
 	protected final ExceptionHandlerTable exceptions;
 	
+	/** The byte code for the method. */
+	private final byte[] _code;
+	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
 	 * is needed for the decoder.
@@ -77,12 +80,33 @@ class __Code__
 		// Read all of it
 		byte[] code = new byte[len];
 		__is.readFully(code);
+		this._code = code;
 		
 		// Read the exception table
 		ExceptionHandlerTable exceptions = new ExceptionHandlerTable(__is,
 			__pool, len);
 		this.exceptions = exceptions;
 		
+		// Only handle the stack map information
+		int[] count = new int[]{__is.readUnsignedShort()};
+		String[] aname = new String[1];
+		while ((count[0]--) > 0)
+			try (DataInputStream as = JIT.__nextAttribute(__is, __pool, aname))
+			{
+				// Old style stack map
+				if (aname[0].equals("StackMap"))
+					throw new todo.TODO();
+				
+				// New style stack map
+				else if (aname[0].equals("StackMapTable"))
+					throw new todo.TODO();
+				
+				// Unknown
+				else
+					continue;
+			}
+		
+		// Process the byte code
 		throw new todo.TODO();
 	}
 	

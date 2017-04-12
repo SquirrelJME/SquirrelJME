@@ -49,7 +49,6 @@ public final class ExceptionHandlerTable
 		// Read exception table count
 		int n = __is.readUnsignedShort();
 		ExceptionHandler[] table = new ExceptionHandler[n];
-		this._table = table;
 		for (int i = 0; i < n; i++)
 		{
 			// Read values
@@ -69,6 +68,7 @@ public final class ExceptionHandlerTable
 			// Setup exception
 			table[i] = new ExceptionHandler(spc, epc, hpc, type);
 		}
+		this._table = table;
 	}
 	
 	/**
