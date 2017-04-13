@@ -59,5 +59,16 @@ public final class ExportedMethod
 	{
 		return (MethodFlags)this.flags;
 	}
+	
+	/**
+	 * Returns the type of the method.
+	 *
+	 * @return The method type.
+	 * @since 2017/04/12
+	 */
+	public MethodSymbol methodType()
+	{
+		return (MethodSymbol)this.type;
+	}
 }
 

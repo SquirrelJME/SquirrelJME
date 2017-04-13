@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
@@ -45,7 +46,7 @@ class __Code__
 	private final byte[] _code;
 	
 	/** The stack map table state. */
-	private final Map<Integer, __JavaState__> _smt;
+	private final __JavaStates__ _smt;
 	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
@@ -96,8 +97,9 @@ class __Code__
 		// Only handle the stack map information
 		int[] count = new int[]{__is.readUnsignedShort()};
 		String[] aname = new String[1];
-		boolean didsmt = false;
 		MethodFlags flags = __em.methodFlags();
+		MethodSymbol type = __em.methodType();
+		__JavaStates__ smt = null;
 		while ((count[0]--) > 0)
 			try (DataInputStream as = JIT.__nextAttribute(__is, __pool, aname))
 			{
@@ -110,17 +112,20 @@ class __Code__
 				
 				// {@squirreljme.error AQ11 Already parsed the stack map
 				// table.}
-				if (didsmt)
+				if (smt != null)
 					throw new JITException("AQ11");
 				
-				throw new todo.TODO();
+				// Parse state
+				smt = new __JavaStates__(modern, as, flags, type, maxstack,
+					maxlocals);
 			}
 		
 		// Need to generate a blank state?
-		if (!didsmt)
-		{
-			throw new todo.TODO();
-		}
+		if (smt == null)
+			smt = new __JavaStates__(flags, type, maxstack, maxlocals);
+		
+		// Set
+		this._smt = smt;
 		
 		// Process the byte code
 		throw new todo.TODO();
