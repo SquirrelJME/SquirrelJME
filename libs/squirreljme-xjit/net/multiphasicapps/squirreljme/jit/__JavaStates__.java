@@ -75,7 +75,7 @@ class __JavaStates__
 		Map<Integer, __JavaState__> outputmap =
 			__initialState(__mf, __ms, __maxs, __maxl);
 		this._map = outputmap;
-		__Data__ data = new __Data__(maxstack, maxlocals, outputmap);
+		__Data__ data = new __Data__(__maxs, __maxl, outputmap);
 		
 		// Parsing the class stack map table
 		if (!__m)
@@ -163,16 +163,14 @@ class __JavaStates__
 		throws IOException
 	{
 		// Get the atom to use
-		DataInputStream das = in;
-		__JavaState__ next = __calculateNext(das.readUnsignedShort(),
-			false);
+		__JavaState__ next = __d.__next(__in.readUnsignedShort(), false);
 		
 		// Stack is cleared
 		next._stack.setStackTop(0);
 		
 		// Read in local variables
-		__SMTLocals__ locals = next._locals;
-		int n = maxlocals;
+		__JavaState__.Locals locals = next._locals;
+		int n = __d._maxlocals;
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
@@ -184,7 +182,7 @@ class __JavaStates__
 			
 			// Set it
 			JavaType aa;
-			locals.set(i, (aa = __loadInfo()));
+			locals.set(i, (aa = __loadInfo(__in)));
 			__addlocs--;
 			
 			// If a wide element was added, then the next one becomes TOP
@@ -197,38 +195,6 @@ class __JavaStates__
 		// however there is no room to place them. (The remaining local count)}
 		if (__addlocs != 0)
 			throw new JITException(String.format("AQ19 %d", __addlocs));
-	}
-	
-	/**
-	 * Calculates the next state to use.
-	 *
-	 * @param __d The data information.
-	 * @param __au The address offset.
-	 * @param __abs Absolute position?
-	 * @return The state for the next address.
-	 * @since 2016/03/26
-	 */
-	private __JavaState__ __calculateNext(__Data__ __d, int __au,
-		boolean __abs)
-	{
-		// The current placement
-		__JavaState__ now = this._next;
-		
-		// Setup new next
-		__JavaState__ next = new __JavaState__(now);
-		this._next = next;
-		
-		// Set new placement address
-		int naddr = this._placeaddr;
-		int pp = (__abs ? __au :
-			naddr + (__au + (naddr == 0 ? 0 : 1)));
-		this._placeaddr = pp;
-		
-		// Set the state
-		outputmap.put(pp, now);
-		
-		// The next state
-		return next;
 	}
 	
 	/**
@@ -245,16 +211,14 @@ class __JavaStates__
 		throws IOException
 	{
 		// Get the atom to use
-		DataInputStream das = in;
-		__JavaState__ next = __calculateNext(das.readUnsignedShort(),
-			false);
+		__JavaState__ next = __d.__next(__in.readUnsignedShort(), false);
 		
 		// No stack
 		next._stack.setStackTop(0);
 		
 		// Chop off some locals
-		__SMTLocals__ locals = next._locals;
-		int i, n = maxlocals;
+		__JavaState__.Locals locals = next._locals;
+		int i, n = __d._maxlocals;
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
@@ -289,34 +253,32 @@ class __JavaStates__
 		throws IOException
 	{
 		// Get the atom to use
-		DataInputStream das = in;
-		__JavaState__ next = __calculateNext(das.readUnsignedShort(),
-			false);
+		__JavaState__ next = __d.__next(__in.readUnsignedShort(), false);
 		
 		// Read in local variables
-		int nl = das.readUnsignedShort();
+		int nl = __in.readUnsignedShort();
 		
 		// {@squirreljme.error AQ1b The number of specified local variables in
 		// the full frame exceeds the maximum permitted local variable
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
-		int maxlocals = this.maxlocals,
-			maxstack = this.maxstack;
+		int maxlocals = __d._maxlocals,
+			maxstack = __d._maxstack;
 		if (nl > maxlocals)
 			throw new JITException(String.format("AQ1b %d %d", nl,
 				maxlocals));
 		int i;
-		__SMTLocals__ locals = next._locals;
+		__JavaState__.Locals locals = next._locals;
 		for (i = 0; i < nl; i++)
-			locals.set(i, __loadInfo());
+			locals.set(i, __loadInfo(__in));
 		for (;i < maxlocals; i++)
 			locals.set(i, JavaType.NOTHING);
 		
 		// Read in stack variables
-		__SMTStack__ stack = next._stack;
-		int ns = das.readUnsignedShort();
+		__JavaState__.Stack stack = next._stack;
+		int ns = __in.readUnsignedShort();
 		for (i = 0; i < ns; i++)
-			stack.set(i, __loadInfo());
+			stack.set(i, __loadInfo(__in));
 		stack.setStackTop(ns);
 	}
 	
@@ -332,8 +294,7 @@ class __JavaStates__
 		throws IOException
 	{
 		// Read the tag
-		DataInputStream das = in;
-		int tag = das.readUnsignedByte();
+		int tag = __in.readUnsignedByte();
 		
 		// Depends on the tag
 		switch (tag)
@@ -370,7 +331,7 @@ class __JavaStates__
 				// invokespecialed
 			case 7:
 			case 8:
-				das.readUnsignedShort();
+				__in.readUnsignedShort();
 				return JavaType.OBJECT;
 				
 				// Unknown
@@ -393,31 +354,30 @@ class __JavaStates__
 		throws IOException
 	{
 		// Get the atom to use
-		DataInputStream das = in;
-		__JavaState__ next = __calculateNext(das.readUnsignedShort(),
-			true);
+		__JavaState__ next = __d.__next(__in.readUnsignedShort(), true);
 		
 		// Read in local variables
-		int nl = das.readUnsignedShort();
+		int nl = __in.readUnsignedShort();
 		
 		// {@squirreljme.error AQ1d Old-style full frame specified more local
 		// variables than there are in the method. (The number of locals; The
 		// maximum number of locals)}
+		int maxlocals = __d._maxlocals;
 		if (nl > maxlocals)
 			throw new JITException(String.format("AQ1d %d %d", nl,
 				maxlocals));
-		__SMTLocals__ locals = next._locals;
+		__JavaState__.Locals locals = next._locals;
 		int i = 0;
 		for (i = 0; i < nl; i++)
-			locals.set(i, __loadInfo());
+			locals.set(i, __loadInfo(__in));
 		for (;i < maxlocals; i++)
 			locals.set(i, JavaType.NOTHING);
 		
 		// Read in stack variables
-		__SMTStack__ stack = next._stack;
-		int ns = maxlocals + das.readUnsignedShort();
+		__JavaState__.Stack stack = next._stack;
+		int ns = maxlocals + __in.readUnsignedShort();
 		for (i = maxlocals; i < ns; i++)
-			stack.set(i, __loadInfo());
+			stack.set(i, __loadInfo(__in));
 		stack.setStackTop(ns);
 	}
 	
@@ -431,7 +391,7 @@ class __JavaStates__
 	 */
 	private void __sameFrame(DataInputStream __in, __Data__ __d, int __delta)
 	{
-		__JavaState__ next = __calculateNext(__delta, false);
+		__JavaState__ next = __d.__next(__delta, false);
 	}
 	
 	/**
@@ -445,8 +405,7 @@ class __JavaStates__
 	private void __sameFrameDelta(DataInputStream __in, __Data__ __d)
 		throws IOException
 	{
-		__JavaState__ next = __calculateNext(in.readUnsignedShort(),
-			false);
+		__JavaState__ next = __d.__next(__in.readUnsignedShort(), false);
 	}
 	
 	/**
@@ -463,13 +422,12 @@ class __JavaStates__
 		throws IOException
 	{
 		// Get the atom to use
-		DataInputStream das = in;
-		__JavaState__ next = __calculateNext(__delta, false);
+		__JavaState__ next = __d.__next(__delta, false);
 		
 		// Set the single stack
-		__SMTStack__ stack = next._stack;
+		__JavaState__.Stack stack = next._stack;
 		stack.setStackTop(1);
-		stack.set(0, __loadInfo());
+		stack.set(0, __loadInfo(__in));
 	}
 	
 	/**
@@ -485,8 +443,7 @@ class __JavaStates__
 		__Data__ __d)
 		throws IOException
 	{
-		DataInputStream das = in;
-		__sameLocalsSingleStack(das.readUnsignedShort());
+		__sameLocalsSingleStack(__in, __d, __in.readUnsignedShort());
 	}
 	
 	/**
@@ -520,7 +477,7 @@ class __JavaStates__
 		boolean isstatic = __mf.isStatic();
 		
 		// Setup state
-		__SMTLocals__ loc = es._locals;
+		__JavaState__.Locals loc = es._locals;
 		int vat = 0;
 		try
 		{
@@ -600,6 +557,37 @@ class __JavaStates__
 			
 			// Initial next state is the first state
 			this._next = new __JavaState__(__out.get(0));
+		}
+		
+		/**
+		 * Calculates the next state to use.
+		 *
+		 * @param __d The data information.
+		 * @param __au The address offset.
+		 * @param __abs Absolute position?
+		 * @return The state for the next address.
+		 * @since 2016/03/26
+		 */
+		__JavaState__ __next(int __au, boolean __abs)
+		{
+			// The current placement
+			__JavaState__ now = this._next;
+		
+			// Setup new next
+			__JavaState__ next = new __JavaState__(now);
+			this._next = next;
+		
+			// Set new placement address
+			int naddr = this._placeaddr;
+			int pp = (__abs ? __au :
+				naddr + (__au + (naddr == 0 ? 0 : 1)));
+			this._placeaddr = pp;
+		
+			// Set the state
+			this._out.put(pp, now);
+		
+			// The next state
+			return next;
 		}
 	}
 }
