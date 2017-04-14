@@ -112,7 +112,15 @@ class __CountStream__
 		public int read()
 			throws IOException
 		{
-			throw new todo.TODO();
+			int rv = this.wrap.read();
+			
+			// EOF?
+			if (rv < 0)
+				return rv;
+			
+			// Count
+			this._read++;
+			return rv;
 		}
 		
 		/**
@@ -123,7 +131,15 @@ class __CountStream__
 		public int read(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			throw new todo.TODO();
+			int rv = this.wrap.read(__b, __o, __l);
+			
+			// EOF?
+			if (rv < 0)
+				return rv;
+			
+			// Count
+			this._read += rv;
+			return rv;
 		}
 	}
 }
