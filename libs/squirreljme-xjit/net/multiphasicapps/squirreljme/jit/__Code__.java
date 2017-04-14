@@ -126,9 +126,6 @@ class __Code__
 		
 		// Set
 		this._smt = smt;
-		
-		// Process the byte code
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -141,7 +138,12 @@ class __Code__
 	void __run()
 		throws IOException, JITException
 	{
-		throw new todo.TODO();
+		// Open stream to the code
+		try (__CountStream__ code = new __CountStream__(
+			new ByteArrayInputStream(this._code)))
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
