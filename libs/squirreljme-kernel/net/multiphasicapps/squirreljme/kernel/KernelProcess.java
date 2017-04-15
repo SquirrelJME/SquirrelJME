@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
+import net.multiphasicapps.squirreljme.executable.ExecutableMissingException;
 
 /**
  * This represents a single process within the kernel and is used to manage
@@ -240,6 +241,7 @@ public abstract class KernelProcess
 		
 		// May occur
 		ExecutableLoadException fail = null;
+		ExecutableMissingException missing = null;
 		
 		// Check the system class path, it has higher priority and its classes
 		// cannot be replaced
@@ -247,6 +249,13 @@ public abstract class KernelProcess
 			try
 			{
 				return sda.loadClass(__name);
+			}
+			
+			// Missing
+			catch (ExecutableMissingException e)
+			{
+				if (missing != null)
+					missing = e;
 			}
 		
 			// Failed
@@ -256,6 +265,7 @@ public abstract class KernelProcess
 				if (fail == null)
 					fail = new ExecutableLoadException(String.format("BH0b %s",
 						__name));
+				
 				fail.addSuppressed(e);
 			}
 		
@@ -264,6 +274,13 @@ public abstract class KernelProcess
 			try
 			{
 				return sda.loadClass(__name);
+			}
+			
+			// Missing
+			catch (ExecutableMissingException e)
+			{
+				if (missing != null)
+					missing = e;
 			}
 			
 			// Could not load, set last load failure
@@ -277,7 +294,9 @@ public abstract class KernelProcess
 			}
 		
 		// An exception would have been generated.
-		throw fail;
+		if (fail != null)
+			throw fail;
+		throw missing;
 	}
 	
 	/**

@@ -48,6 +48,9 @@ class __Code__
 	/** The stack map table state. */
 	private final __JavaStates__ _smt;
 	
+	/** The current address being parsed. */
+	private volatile int _atpc;
+	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
 	 * is needed for the decoder.
@@ -129,6 +132,33 @@ class __Code__
 	}
 	
 	/**
+	 * Decodes a single operation.
+	 *
+	 * @param __in The input code stream.
+	 * @throws IOException On read errors.
+	 * @throws JITException If the code decodes improperly.
+	 * @since 2017/04/15
+	 */
+	private void __decodeOp(__CountStream__ __in)
+		throws IOException, JITException
+	{
+		// Read operation
+		int op = __in.readUnsignedByte();
+		if (op == __OperandIndex__.WIDE)
+			op = (op << 8) | __in.readUnsignedByte();
+		
+		// Depends
+		switch (op)
+		{
+				// {@squirreljme.error AQ1e Invalid byte code operation index.
+				// (The operation index; The address of the operation)}
+			default:
+				throw new JITException(String.format("AQ1e %#02x %d", op,
+					this._atpc));
+		}
+	}
+	
+	/**
 	 * Runs the code decoder.
 	 *
 	 * @throws IOException On read errors.
@@ -142,6 +172,13 @@ class __Code__
 		try (__CountStream__ code = new __CountStream__(
 			new ByteArrayInputStream(this._code)))
 		{
+			// The address currently being handled
+			int atpc = code.count();
+			this._atpc = atpc;
+			
+			// Decode single operation
+			__decodeOp(code);
+			
 			throw new todo.TODO();
 		}
 	}

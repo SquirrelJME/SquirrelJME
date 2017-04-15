@@ -13,9 +13,11 @@ package net.multiphasicapps.squirreljme.build.interpreter;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.build.base.FileEntryNotFoundException;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
+import net.multiphasicapps.squirreljme.executable.ExecutableMissingException;
 import net.multiphasicapps.squirreljme.jit.JIT;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.kernel.SuiteDataAccessor;
@@ -72,6 +74,14 @@ class __ProjectAccessor__
 			InputStream is = fd.open(__name + ".class"))
 		{
 			return this.interpreter.provider().config().jit(is).run();
+		}
+		
+		// {@squirreljme.error AV06 Could not find the specified class.
+		// (The name of the class)}
+		catch (FileEntryNotFoundException e)
+		{
+			throw new ExecutableMissingException(
+				String.format("AV06 %s", __name), e);
 		}
 		
 		// {@squirreljme.error AV04 Failed to read the given input class.

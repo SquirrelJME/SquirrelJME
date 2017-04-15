@@ -11,19 +11,19 @@
 package net.multiphasicapps.squirreljme.executable;
 
 /**
- * This is thrown when there was an issue loading a class.
+ * This is thrown when the specified class could not be found.
  *
  * @since 2017/01/16
  */
-public class ExecutableLoadException
-	extends RuntimeException
+public class ExecutableMissingException
+	extends ExecutableLoadException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/01/16
+	 * @since 2017/04/15
 	 */
-	public ExecutableLoadException()
+	public ExecutableMissingException()
 	{
 	}
 	
@@ -31,9 +31,9 @@ public class ExecutableLoadException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/01/16
+	 * @since 2017/04/15
 	 */
-	public ExecutableLoadException(String __m)
+	public ExecutableMissingException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +43,9 @@ public class ExecutableLoadException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/01/16
+	 * @since 2017/04/15
 	 */
-	public ExecutableLoadException(String __m, Throwable __c)
+	public ExecutableMissingException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +54,9 @@ public class ExecutableLoadException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/01/16
+	 * @since 2017/04/15
 	 */
-	public ExecutableLoadException(Throwable __c)
+	public ExecutableMissingException(Throwable __c)
 	{
 		super(__c);
 	}

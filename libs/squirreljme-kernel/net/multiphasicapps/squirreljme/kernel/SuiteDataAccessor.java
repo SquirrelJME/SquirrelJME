@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel;
 import java.io.InputStream;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
 import net.multiphasicapps.squirreljme.executable.ExecutableLoadException;
+import net.multiphasicapps.squirreljme.executable.ExecutableMissingException;
 
 /**
  * This is an accessor for accessing a suite that exists within the kernel or
@@ -29,13 +30,14 @@ public abstract class SuiteDataAccessor
 	 *
 	 * @param __name The binary name of the class to load.
 	 * @return The loaded class.
-	 * @throws ExecutableLoadException If the class does not exist or failed
-	 * to load properly.
+	 * @throws ExecutableLoadException If the class is not valid.
+	 * @throws ExecutableMissingException If the class does not exist.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/16
 	 */
 	public abstract ExecutableClass loadClass(String __name)
-		throws ExecutableLoadException, NullPointerException;
+		throws ExecutableLoadException, ExecutableMissingException,
+			NullPointerException;
 	
 	/**
 	 * Loads the given resource from this suite.
