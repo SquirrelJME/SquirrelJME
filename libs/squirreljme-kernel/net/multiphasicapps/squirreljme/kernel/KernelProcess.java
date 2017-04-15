@@ -222,7 +222,9 @@ public abstract class KernelProcess
 	/**
 	 * Locates and loads the specified executable class with the given name.
 	 *
-	 * {@squirreljme.error BH0b Could not locate or load the specified class.
+	 * {@squirreljme.error BH0a Could not locate the specified class. (The
+	 * name of the class)}
+	 * {@squirreljme.error BH0b Could not load the specified class.
 	 * (The name of the class)}
 	 *
 	 * @param __name The name of the class to find.
@@ -240,7 +242,6 @@ public abstract class KernelProcess
 			throw new NullPointerException("NARG");
 		
 		// May occur
-		ExecutableLoadException fail = null;
 		ExecutableMissingException missing = null;
 		
 		// Check the system class path, it has higher priority and its classes
@@ -254,19 +255,18 @@ public abstract class KernelProcess
 			// Missing
 			catch (ExecutableMissingException e)
 			{
-				if (missing != null)
-					missing = e;
+				if (missing == null)
+					missing = new ExecutableMissingException(
+						String.format("BH0a %s", __name));
+				
+				missing.addSuppressed(e);
 			}
 		
 			// Failed
 			catch (ExecutableLoadException e)
 			{
-				// Generate
-				if (fail == null)
-					fail = new ExecutableLoadException(String.format("BH0b %s",
-						__name));
-				
-				fail.addSuppressed(e);
+				throw new ExecutableLoadException(String.format("BH0b %s",
+					__name), e);
 			}
 		
 		// Go through the class path to find the class
@@ -279,23 +279,21 @@ public abstract class KernelProcess
 			// Missing
 			catch (ExecutableMissingException e)
 			{
-				if (missing != null)
-					missing = e;
+				if (missing == null)
+					missing = new ExecutableMissingException(
+						String.format("BH0a %s", __name));
+				
+				missing.addSuppressed(e);
 			}
 			
 			// Could not load, set last load failure
 			catch (ExecutableLoadException e)
 			{
-				// Generate
-				if (fail == null)
-					fail = new ExecutableLoadException(String.format("BH0b %s",
-						__name));
-				fail.addSuppressed(e);
+				throw new ExecutableLoadException(String.format("BH0b %s",
+					__name), e);
 			}
 		
-		// An exception would have been generated.
-		if (fail != null)
-			throw fail;
+		// Missing class
 		throw missing;
 	}
 	
