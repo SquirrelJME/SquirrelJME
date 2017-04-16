@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.DataType;
+import net.multiphasicapps.squirreljme.jit.NativeType;
 import net.multiphasicapps.squirreljme.jit.CacheState;
 
 /**
@@ -117,7 +117,7 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/17
 	 */
-	public int assign(AreaType __a, int __i, DataType __t)
+	public int assign(AreaType __a, int __i, NativeType __t)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -176,7 +176,7 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/07
 	 */
-	public int get(AreaType __a, int __i, DataType __t)
+	public int get(AreaType __a, int __i, NativeType __t)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -210,7 +210,7 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/07
 	 */
-	public int get(CodeVariable __cv, DataType __t)
+	public int get(CodeVariable __cv, NativeType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -263,7 +263,7 @@ public class StackSlotOffsets
 	 * data type; If the position of the slot overlaps another slot.
 	 * @since 2017/03/20
 	 */
-	public void set(CodeVariable __cv, DataType __t, int __so)
+	public void set(CodeVariable __cv, NativeType __t, int __so)
 		throws JITException
 	{
 		// Check

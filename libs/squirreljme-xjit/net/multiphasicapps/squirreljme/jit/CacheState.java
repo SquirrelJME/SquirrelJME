@@ -200,7 +200,7 @@ public abstract class CacheState
 		 * @return The type of value to store.
 		 * @since 2017/03/03
 		 */
-		public abstract StackMapType thisType();
+		public abstract JavaType thisType();
 		
 		/**
 		 * Returns the slot which contains the value for this slot, if the
@@ -282,12 +282,12 @@ public abstract class CacheState
 		public ArgumentAllocation thisAllocation(boolean __a)
 		{
 			// Nothing has no allocation
-			StackMapType type = thisType();
-			if (type == null || type == StackMapType.NOTHING)
+			JavaType type = thisType();
+			if (type == null || type == JavaType.NOTHING)
 				return null;
 			
 			// Need data type, used by the allocation class
-			DataType dt = CacheState.this._codestream._engine.toDataType(type);
+			NativeType dt = CacheState.this._codestream._engine.toDataType(type);
 			
 			// Purely on the stack?
 			List<Register> registers = thisRegisters();
@@ -370,13 +370,13 @@ public abstract class CacheState
 		public final int thisStackOffset(boolean __a)
 		{
 			// If the type is nothing it will never have a stack offset
-			StackMapType type = thisType();
-			if (type == StackMapType.NOTHING)
+			JavaType type = thisType();
+			if (type == JavaType.NOTHING)
 				return Integer.MIN_VALUE;
 			
 			// Return the offset for the given entry
 			__JITCodeStream__ jcs = CacheState.this._codestream;
-			DataType dt = jcs._engine.toDataType(type);
+			NativeType dt = jcs._engine.toDataType(type);
 			AreaType iss = thisArea();
 			int idx = thisIndex();
 			if (__a)
@@ -525,7 +525,7 @@ public abstract class CacheState
 		 * @return The type of value to store.
 		 * @since 2017/03/11
 		 */
-		public final StackMapType valueType()
+		public final JavaType valueType()
 		{
 			return value().thisType();
 		}

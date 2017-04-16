@@ -310,8 +310,8 @@ public final class ActiveCacheState
 			new SortedTreeSet<>(_SLOT_COMPARATOR);
 		
 		/** The type of value stored here. */
-		private volatile StackMapType _type =
-			StackMapType.NOTHING;
+		private volatile JavaType _type =
+			JavaType.NOTHING;
 		
 		/** Aliased to the stack?. */
 		private volatile AreaType _atalias;
@@ -358,7 +358,7 @@ public final class ActiveCacheState
 		public void remove()
 		{
 			// Do nothing if there is no value here
-			if (thisType() == StackMapType.NOTHING)
+			if (thisType() == JavaType.NOTHING)
 				return;
 			
 			// Remove aliases to this slot
@@ -373,7 +373,7 @@ public final class ActiveCacheState
 				value()._aliasedby.remove(this);
 			
 			// Clear other info
-			this._type = StackMapType.NOTHING;
+			this._type = JavaType.NOTHING;
 			this._atalias = null;
 			this._idalias = -1;
 		}
@@ -430,7 +430,7 @@ public final class ActiveCacheState
 			// {@squirreljme.error ED0d Cannot alias the current slot to the
 			// target slot becuase the target has no set value. (This slot; The
 			// target slot)}
-			if (target.thisType() == StackMapType.NOTHING)
+			if (target.thisType() == JavaType.NOTHING)
 				throw new JITException(String.format("ED0d %s %s", this,
 					target));
 			
@@ -502,11 +502,11 @@ public final class ActiveCacheState
 		 * @param __t The type of value to store, if this slot is aliased and
 		 * the alias is not compatible it will be removed.
 		 * @return The old type.
-		 * @throws JITException If the type is {@link StackMapType#TOP} type.
+		 * @throws JITException If the type is {@link JavaType#TOP} type.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
-		public StackMapType setType(StackMapType __t)
+		public JavaType setType(JavaType __t)
 			throws JITException, NullPointerException
 		{
 			// Check
@@ -514,16 +514,16 @@ public final class ActiveCacheState
 				throw new NullPointerException("NARG");
 			
 			// {@squirreljme.error ED0b Cannot set the top type.}
-			if (__t == StackMapType.TOP)
+			if (__t == JavaType.TOP)
 				throw new JITException("ED0b");
 			
 			// {@squirreljme.error EB0p Cannot set the type to nothing, use
 			// remove for that.}
-			if (__t == StackMapType.NOTHING)
+			if (__t == JavaType.NOTHING)
 				throw new IllegalStateException("EB0p");
 			
 			// Remove the type information
-			StackMapType rv = this._type;
+			JavaType rv = this._type;
 			remove();
 			
 			// Allocate registers if possible
@@ -586,7 +586,7 @@ public final class ActiveCacheState
 		 * @since 2017/02/23
 		 */
 		@Override
-		public StackMapType thisType()
+		public JavaType thisType()
 		{
 			return this._type;
 		}

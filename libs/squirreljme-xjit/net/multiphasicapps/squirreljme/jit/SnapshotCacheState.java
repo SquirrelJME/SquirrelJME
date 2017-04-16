@@ -18,9 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.classformat.AreaType;
-import net.multiphasicapps.squirreljme.classformat.CodeVariable;
-import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -155,7 +152,7 @@ public final class SnapshotCacheState
 		extends CacheState.Slot
 	{
 		/** The type of value stored here. */
-		protected final StackMapType type;
+		protected final JavaType type;
 		
 		/** Aliased to the stack?. */
 		protected final AreaType areaalias;
@@ -292,7 +289,7 @@ public final class SnapshotCacheState
 		 * @since 2017/03/01
 		 */
 		@Override
-		public StackMapType thisType()
+		public JavaType thisType()
 		{
 			return this.type;
 		}

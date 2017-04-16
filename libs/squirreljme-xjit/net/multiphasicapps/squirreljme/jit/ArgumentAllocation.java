@@ -26,7 +26,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public final class ArgumentAllocation
 {
 	/** The type of data used for the allocation. */
-	protected final DataType type;
+	protected final NativeType type;
 	
 	/** The stack offset. */
 	protected final int stackoffset;
@@ -48,7 +48,7 @@ public final class ArgumentAllocation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(DataType __t, Register... __r)
+	public ArgumentAllocation(NativeType __t, Register... __r)
 		throws NullPointerException
 	{
 		// Check
@@ -76,7 +76,7 @@ public final class ArgumentAllocation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(DataType __t, int __so)
+	public ArgumentAllocation(NativeType __t, int __so)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -260,7 +260,7 @@ public final class ArgumentAllocation
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// On the stack?
-			DataType type = this.type;
+			NativeType type = this.type;
 			Register[] registers = this._registers;
 			if (registers == null)
 				rv = String.format("%s:s%d", type, this.stackoffset);
@@ -282,7 +282,7 @@ public final class ArgumentAllocation
 	 * @return The data type used.
 	 * @since 2017/03/20
 	 */
-	public DataType type()
+	public NativeType type()
 	{
 		return this.type;
 	}
