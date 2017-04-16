@@ -55,9 +55,6 @@ public final class ActiveCacheState
 			}
 		};
 	
-	/** The owning translation engine. */
-	protected final TranslationEngine engine;
-	
 	/** Stack code variables. */
 	protected final Tread stack;
 	
@@ -112,7 +109,7 @@ public final class ActiveCacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	ActiveCacheState(__JITCodeStream__ __cs, int __ms, int __ml, int __mw,
+	ActiveCacheState(__Code__ __cs, int __ms, int __ml, int __mw,
 		RegisterDictionary __rd, boolean __go)
 		throws NullPointerException
 	{
@@ -123,7 +120,6 @@ public final class ActiveCacheState
 			throw new NullPointerException("NARG");
 		
 		// Setup treads
-		this.engine = __cs._engine;
 		this.genops = __go;
 		this.stack = new Tread(AreaType.STACK, __ms);
 		this.locals = new Tread(AreaType.LOCAL, __ml);
@@ -302,6 +298,7 @@ public final class ActiveCacheState
 		extends CacheState.Slot
 	{
 		/** List of registers used. */
+		@Deprecated
 		private final List<Register> _registers =
 			new ArrayList<>();
 		
@@ -406,9 +403,12 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/01
 		 */
+		@Deprecated
 		public void setAlias(AreaType __a, int __id)
 			throws IllegalArgumentException, NullPointerException
 		{
+			throw new todo.TODO();
+			/*
 			// Check
 			if (__a == null)
 				throw new NullPointerException("NARG");
@@ -440,6 +440,7 @@ public final class ActiveCacheState
 			// Set
 			this._atalias = target.thisArea();
 			this._idalias = target.thisIndex();
+			*/
 		}
 		
 		/**
@@ -451,9 +452,13 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/11
 		 */
+		@Deprecated
 		public void setRegisters(Register... __r)
 			throws NullPointerException
 		{
+			throw new todo.TODO();
+			
+			/*
 			// Check
 			if (__r == null)
 				throw new NullPointerException("NARG");
@@ -467,6 +472,7 @@ public final class ActiveCacheState
 			__clearRegisters();
 			for (Register r : __r)
 				__addRegister(r);
+			*/
 		}
 		
 		/**
@@ -478,9 +484,13 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/11
 		 */
+		@Deprecated
 		public void setRegisters(Iterable<Register> __r)
 			throws NullPointerException
 		{
+			throw new todo.TODO();
+			
+			/*
 			// Check
 			if (__r == null)
 				throw new NullPointerException("NARG");
@@ -494,6 +504,7 @@ public final class ActiveCacheState
 			__clearRegisters();
 			for (Register r : __r)
 				__addRegister(r);
+			*/
 		}
 		
 		/**
@@ -506,9 +517,13 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/02/23
 		 */
+		@Deprecated
 		public JavaType setType(JavaType __t)
 			throws JITException, NullPointerException
 		{
+			throw new todo.TODO();
+			
+			/*
 			// Check
 			if (__t == null)
 				throw new NullPointerException("NARG");
@@ -532,6 +547,7 @@ public final class ActiveCacheState
 			// Set, return old
 			this._type = __t;
 			return rv;
+			*/
 		}
 		
 		/**
@@ -645,9 +661,13 @@ public final class ActiveCacheState
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/03/25
 		 */
+		@Deprecated
 		private void __addRegister(Register __r)
 			throws NullPointerException
 		{
+			throw new todo.TODO();
+			
+			/*
 			// Check
 			if (__r == null)
 				throw new NullPointerException("NARG");
@@ -663,6 +683,7 @@ public final class ActiveCacheState
 			
 			// Add to register list
 			this._registers.add(__r);
+			*/
 		}
 		
 		/**
@@ -670,15 +691,19 @@ public final class ActiveCacheState
 		 *
 		 * @since 2017/03/25
 		 */
+		@Deprecated
 		private void __clearRegisters()
 		{
+			throw new todo.TODO();
+			
+			/*
 			// {@squirreljme.error AQ1l Attempt to clear registers for a slot
 			// which is aliased. (This slot)}
 			if (isAliased())
 				throw new JITException(String.format("AQ1l %s", this));
 			
 			// Refill free register usage
-			TranslationEngine engine = ActiveCacheState.this.engine;
+			__Code__ engine = ActiveCacheState.this._code;
 			Deque<Register> savedint = ActiveCacheState.this.savedint,
 				savedfloat = ActiveCacheState.this.savedfloat,
 				tempint = ActiveCacheState.this.tempint,
@@ -709,6 +734,7 @@ public final class ActiveCacheState
 						savedfloat.offerFirst(r);
 				}
 			}
+			*/
 		}
 		
 		/**
@@ -716,8 +742,12 @@ public final class ActiveCacheState
 		 *
 		 * @since 2017/03/25
 		 */
+		@Deprecated
 		private void __deAliasFromThis()
 		{
+			throw new todo.TODO();
+			
+			/*
 			// Remove alias to this slot
 			boolean genops = ActiveCacheState.this.genops;
 			Set<Slot> aliasedby = this._aliasedby;
@@ -733,6 +763,7 @@ public final class ActiveCacheState
 			
 			// Clear it
 			aliasedby.clear();
+			*/
 		}
 		
 		/**

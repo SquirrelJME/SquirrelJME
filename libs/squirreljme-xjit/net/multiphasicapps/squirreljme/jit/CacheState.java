@@ -23,7 +23,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public abstract class CacheState
 {
 	/** The owning code stream. */
-	private final __JITCodeStream__ _codestream;
+	private final __Code__ _code;
 	
 	/**
 	 * Base initialization.
@@ -32,7 +32,7 @@ public abstract class CacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/11
 	 */
-	CacheState(__JITCodeStream__ __cs)
+	CacheState(__Code__ __cs)
 		throws NullPointerException
 	{
 		// Check
@@ -40,7 +40,7 @@ public abstract class CacheState
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._codestream = __cs;
+		this._code = __cs;
 	}
 	
 	/**
@@ -287,7 +287,7 @@ public abstract class CacheState
 				return null;
 			
 			// Need data type, used by the allocation class
-			NativeType dt = CacheState.this._codestream._engine.toDataType(type);
+			NativeType dt = CacheState.this._code.__toNative(type);
 			
 			// Purely on the stack?
 			List<Register> registers = thisRegisters();
@@ -374,8 +374,10 @@ public abstract class CacheState
 			if (type == JavaType.NOTHING)
 				return Integer.MIN_VALUE;
 			
+			throw new todo.TODO();
+			/*
 			// Return the offset for the given entry
-			__JITCodeStream__ jcs = CacheState.this._codestream;
+			__Code__ jcs = CacheState.this._code;
 			NativeType dt = jcs._engine.toDataType(type);
 			AreaType iss = thisArea();
 			int idx = thisIndex();
@@ -384,6 +386,7 @@ public abstract class CacheState
 				iss, idx, dt);
 			return ((JITStateAccessor)jcs).stackSlotOffsets().get(
 				iss, idx, dt);
+			*/
 		}
 		
 		/**

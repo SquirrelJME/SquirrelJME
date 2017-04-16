@@ -50,7 +50,7 @@ public final class SnapshotCacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	SnapshotCacheState(__JITCodeStream__ __cs, CacheState __a)
+	SnapshotCacheState(__Code__ __cs, CacheState __a)
 		throws NullPointerException
 	{
 		super(__cs);

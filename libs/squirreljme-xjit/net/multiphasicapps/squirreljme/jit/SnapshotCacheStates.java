@@ -28,7 +28,7 @@ import java.util.List;
 public final class SnapshotCacheStates
 {
 	/** The code stream being used. */
-	protected final __JITCodeStream__ _codestream;
+	final __Code__ _code;
 	
 	/** The address where the cache states are valid. */
 	private final List<Integer> _pos =
@@ -45,7 +45,7 @@ public final class SnapshotCacheStates
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/16
 	 */
-	SnapshotCacheStates(__JITCodeStream__ __cs)
+	SnapshotCacheStates(__Code__ __cs)
 		throws NullPointerException
 	{
 		// Check
@@ -53,7 +53,7 @@ public final class SnapshotCacheStates
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._codestream = __cs;
+		this._code = __cs;
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public final class SnapshotCacheStates
 		{
 			dx = (-(dx) - 1);
 			pos.add(dx, __i);
-			states.add(dx, new SnapshotCacheState(this._codestream, __v));
+			states.add(dx, new SnapshotCacheState(this._code, __v));
 		}
 		
 		// {@squirreljme.error AQ1r A cache state already exists at the

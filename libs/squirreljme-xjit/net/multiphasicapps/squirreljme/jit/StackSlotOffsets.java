@@ -28,14 +28,11 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
  */
 public class StackSlotOffsets
 {
-	/** The owning engine. */
-	protected final TranslationEngine engine;
-	
 	/** Total number of entries. */
 	protected final int total;
 	
-	/** The owning code stream. */
-	private final __JITCodeStream__ _codestream;
+	/** The owning engine. */
+	final __Code__ _code;
 	
 	/** The offset of each stack entry, 0 is 32-bit, 1 is 64-bit. */
 	private final int[][] _offsets;
@@ -59,7 +56,7 @@ public class StackSlotOffsets
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/06
 	 */
-	StackSlotOffsets(__JITCodeStream__ __e, int __ms, int __ml, int __mw)
+	StackSlotOffsets(__Code__ __e, int __ms, int __ml, int __mw)
 		throws NullPointerException
 	{
 		// Check
@@ -67,8 +64,7 @@ public class StackSlotOffsets
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._codestream = __e;
-		this.engine = __e._engine;
+		this._code = __e;
 		
 		// Setup counts and offsets
 		int z, total = 0;
@@ -239,7 +235,7 @@ public class StackSlotOffsets
 		
 		// Forward
 		return get(__s.valueArea(), __s.valueIndex(),
-			this.engine.toDataType(__s.valueType()));
+			this._code.__toNative(__s.valueType()));
 	}
 	
 	/**

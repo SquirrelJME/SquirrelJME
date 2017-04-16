@@ -239,5 +239,25 @@ class __Code__
 			throw new todo.TODO();
 		}
 	}
+	
+	/**
+	 * Converts the specified Java type to a native type.
+	 *
+	 * @param __t The Java type to convert to a native type.
+	 * @return The native type for the Java type.
+	 * @throws JITException If the type cannot be converted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/16
+	 */
+	NativeType __toNative(JavaType __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
 }
 
