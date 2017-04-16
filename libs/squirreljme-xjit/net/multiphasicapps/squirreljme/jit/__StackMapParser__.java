@@ -81,7 +81,9 @@ class __StackMapParser__
 		// And this is used to store the registers for the currently being
 		// parsed state for instructions
 		JITConfig config = __c._config;
-		this._nextstate = new ActiveCacheState(__c, __ms, __ml, config);
+		ActiveCacheState nextstate;
+		this._nextstate = (nextstate = new ActiveCacheState(__c, __ms, __ml,
+			config));
 		
 		// Initialize the starting state with one that matches the input for
 		// a method call
@@ -113,7 +115,12 @@ class __StackMapParser__
 		// Get the allocations to initialize with, these are always fixed
 		ArgumentAllocation[] allocs = config.entryAllocations(argmap);
 		
-		throw new todo.TODO();
+		// Fill in allocations to the initial state
+		if (true)
+			throw new todo.TODO();
+		
+		// Set the initial calculated state
+		result.set(0, nextstate);
 	}
 		
 	/**
