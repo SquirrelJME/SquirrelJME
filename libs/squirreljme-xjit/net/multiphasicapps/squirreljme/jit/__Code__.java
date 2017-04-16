@@ -42,6 +42,12 @@ class __Code__
 	/** The exception handler table for the current method. */
 	protected final ExceptionHandlerTable exceptions;
 	
+	/** The JIT configuration. */
+	final JITConfig _config;
+	
+	/** The register counts. */
+	final __RegisterCounts__ _registercounts;
+	
 	/** The byte code for the method. */
 	private final byte[] _code;
 	
@@ -65,18 +71,25 @@ class __Code__
 	 * @param __is The input stream for the code.
 	 * @param __pool The constant pool.
 	 * @param __lt The link table.
+	 * @param __conf The configuration for the JIT.
 	 * @throws IOException On read errors.
 	 * @throws JITException On initial parsing errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
 	__Code__(ExportedMethod __em, DataInputStream __is, __Pool__ __pool,
-		LinkTable __lt)
+		LinkTable __lt, JITConfig __conf)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
-		if (__em == null || __is == null || __pool == null || __lt == null)
+		if (__em == null || __is == null || __pool == null || __lt == null ||
+			__conf == null)
 			throw new NullPointerException("NARG");
+		
+		// These are needed by the JIT for code generation
+		JITConfig config = __conf;
+		this._config = config;
+		this._registercounts = new __RegisterCounts__(this);
 		
 		// Set
 		this.method = __em;
@@ -239,25 +252,5 @@ class __Code__
 			throw new todo.TODO();
 		}
 	}
-	
-	/**
-	 * Converts the specified Java type to a native type.
-	 *
-	 * @param __t The Java type to convert to a native type.
-	 * @return The native type for the Java type.
-	 * @throws JITException If the type cannot be converted.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/04/16
-	 */
-	NativeType __toNative(JavaType __t)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
 }
 

@@ -19,5 +19,25 @@ package net.multiphasicapps.squirreljme.jit;
  */
 class __RegisterCounts__
 {
+	/** The code handler for the method. */
+	final __Code__ _code;
+	
+	/**
+	 * Initializes the register counter.
+	 *
+	 * @param __c The owning code parser.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/16
+	 */
+	__RegisterCounts__(__Code__ __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._code = __c;
+	}
 }
 

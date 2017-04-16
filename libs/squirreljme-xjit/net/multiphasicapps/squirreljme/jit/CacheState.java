@@ -287,7 +287,7 @@ public abstract class CacheState
 				return null;
 			
 			// Need data type, used by the allocation class
-			NativeType dt = CacheState.this._code.__toNative(type);
+			NativeType dt = CacheState.this._code._config.toNativeType(type);
 			
 			// Purely on the stack?
 			List<Register> registers = thisRegisters();

@@ -102,6 +102,9 @@ public final class JIT
 		// Parse the constant pool
 		__Pool__ pool = new __Pool__(input);
 		
+		// The JIT configuration
+		JITConfig config = this.config;
+		
 		// Read class flags and the name
 		ClassFlags clflags = __FlagDecoder__.__class(
 			input.readUnsignedShort());
@@ -224,7 +227,7 @@ public final class JIT
 						continue;
 					
 					// Setup decoder
-					new __Code__(method, as, pool, linktable).__run();
+					new __Code__(method, as, pool, linktable, config).__run();
 				}
 		}
 		

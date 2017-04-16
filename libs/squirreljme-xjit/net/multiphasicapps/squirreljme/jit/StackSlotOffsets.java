@@ -235,7 +235,7 @@ public class StackSlotOffsets
 		
 		// Forward
 		return get(__s.valueArea(), __s.valueIndex(),
-			this._code.__toNative(__s.valueType()));
+			this._code._config.toNativeType(__s.valueType()));
 	}
 	
 	/**
