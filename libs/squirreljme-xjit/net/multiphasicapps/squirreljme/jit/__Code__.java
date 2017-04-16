@@ -154,7 +154,7 @@ class __Code__
 		// Need to generate a blank state?
 		if (smt == null)
 			smt = new __StackMapParser__(this, true, new DataInputStream(
-				new ByteArrayInputStream(new byte[0])), __em, maxstack,
+				new ByteArrayInputStream(new byte[]{0, 0})), __em, maxstack,
 				maxlocals).__get();
 		
 		// Set

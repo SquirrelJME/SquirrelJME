@@ -13,8 +13,11 @@ package net.multiphasicapps.squirreljme.jit.mips;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.ArgumentAllocation;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
+import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.NativeType;
 import net.multiphasicapps.squirreljme.jit.RegisterDictionary;
 
 /**
@@ -48,6 +51,21 @@ public class MIPSConfig
 	public MIPSConfig(Map<String, String> __kv)
 	{
 		super(__kv);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/16
+	 */
+	@Override
+	public ArgumentAllocation[] entryAllocations(NativeType... __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

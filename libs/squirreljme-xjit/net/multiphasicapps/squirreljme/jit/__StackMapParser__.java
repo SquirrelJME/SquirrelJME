@@ -12,6 +12,11 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
  * This class is used to parse the stack map and initialize the initial
@@ -30,6 +35,9 @@ class __StackMapParser__
 	/** The number of local entries. */
 	protected final int maxlocals;
 	
+	/** The resulting state. */
+	private final SnapshotCacheStates _result;
+	
 	/** The current cache state for the method. */
 	private final ActiveCacheState _nextstate;
 	
@@ -45,18 +53,18 @@ class __StackMapParser__
 	 * @param __c The owning code parser.
 	 * @param __modern Does this represent the modern stack map?
 	 * @param __in The stack map table information,
-	 * @param __method The current method being exported.
+	 * @param __m The current method being exported.
 	 * @param __ms The maximum number of stack entries.
 	 * @param __ml The maximum number of local entries.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/16
 	 */
 	__StackMapParser__(__Code__ __c, boolean __modern, DataInputStream __in,
-		ExportedMethod __method, int __ms, int __ml)
+		ExportedMethod __m, int __ms, int __ml)
 		throws NullPointerException
 	{
 		// Check
-		if (__in == null || __method == null)
+		if (__in == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -66,12 +74,40 @@ class __StackMapParser__
 		
 		// This is used to set which variables appear next before a state is
 		// constructed with them
-		this._nextstack = new JavaType[__ms];
-		this._nextlocals = new JavaType[__ml];
+		JavaType[] nextstack, nextlocals;
+		this._nextstack = (nextstack = new JavaType[__ms]);
+		this._nextlocals = (nextlocals = new JavaType[__ml]);
 		
 		// And this is used to store the registers for the currently being
 		// parsed state for instructions
-		this._nextstate = new ActiveCacheState(__c, __ms, __ml, __c._config);
+		JITConfig config = __c._config;
+		this._nextstate = new ActiveCacheState(__c, __ms, __ml, config);
+		
+		// Initialize the starting state with one that matches the input for
+		// a method call
+		SnapshotCacheStates result = new SnapshotCacheStates(__c);
+		this._result = result;
+		NativeType[] argmap = new NativeType[__ml];
+		int at = 0;
+		
+		// Non-static methods always have an implicit instance argument
+		if (!__m.methodFlags().isStatic())
+			argmap[at++] = config.toNativeType(JavaType.OBJECT);
+		
+		// Handle each argument
+		for (FieldSymbol f : __m.methodType().arguments())
+		{
+			// Map type
+			JavaType j = JavaType.bySymbol(f);
+			argmap[at++] = config.toNativeType(j);
+			
+			// Skip space for wide
+			if (j.isWide())
+				at++;
+		}
+		
+		// Get the allocations to initialize with, these are always fixed
+		ArgumentAllocation[] allocs = config.entryAllocations(argmap);
 		
 		throw new todo.TODO();
 	}
@@ -87,7 +123,16 @@ class __StackMapParser__
 	SnapshotCacheStates __get()
 		throws IOException, JITException
 	{
-		throw new todo.TODO();
+		// Parse the input
+		DataInputStream in = this.in;
+		int n = in.readUnsignedShort();
+		for (int i = 0; i < n; i++)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Use it
+		return this._result;
 	}
 }
 

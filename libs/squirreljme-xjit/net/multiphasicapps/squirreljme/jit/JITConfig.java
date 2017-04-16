@@ -16,6 +16,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
  * This is used to access the configuration which is needed by the JIT during
@@ -65,6 +68,28 @@ public abstract class JITConfig
 			to.put(__lower(e.getKey()), __lower(e.getValue()));
 		this._values = to;
 	}
+	
+	/**
+	 * Returns the allocations for arguments for a call to the specified method
+	 * with the given flags. Return values are not considered because their
+	 * allocations are universally determined.
+	 *
+	 * The resulting array will be the same length as the input array. Any
+	 * values which are {@code null} in the input array will be translated to
+	 * {@code null} in the output array. The {@code null}s are specified in the
+	 * JIT to indicate that no variable is assigned to that position. An
+	 * equivalent call with no {@code null}s should have the same result as
+	 * one with inplaced {@code null}s. Trailing {@code null}s should have no
+	 * effect.
+	 *
+	 * @param __t The types which are used for the method arguments.
+	 * @return The allocations for the given method call.
+	 * @throws JITException If they are not valid.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2017/04/16
+	 */
+	public abstract ArgumentAllocation[] entryAllocations(NativeType... __t)
+		throws JITException, NullPointerException;
 	
 	/**
 	 * Obtains the register dictionary which is used to provide registers that
@@ -271,6 +296,26 @@ public abstract class JITConfig
 			default:
 				throw new JITException(String.format("AQ08 %s", __t));
 		}
+	}
+	
+	/**
+	 * Returns the native type for the given field symbol.
+	 *
+	 * @param __f The field symbol to convert.
+	 * @return The native type.
+	 * @throws JITException If the type could not be mapped.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/16
+	 */
+	public final NativeType toNativeType(FieldSymbol __f)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Map
+		return toNativeType(JavaType.bySymbol(__f));
 	}
 	
 	/**

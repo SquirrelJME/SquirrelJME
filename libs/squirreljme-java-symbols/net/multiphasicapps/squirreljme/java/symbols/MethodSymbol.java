@@ -26,7 +26,6 @@ import java.util.RandomAccess;
  */
 public final class MethodSymbol
 	extends MemberTypeSymbol
-	implements RandomAccess
 {
 	/** The cache. */
 	static final __Cache__<MethodSymbol> _CACHE =
@@ -52,6 +51,9 @@ public final class MethodSymbol
 	
 	/** Cache for field values (last is return value). */
 	private final Reference<FieldSymbol>[] _symbols;
+	
+	/** Argument list cache. */
+	private volatile Reference<List<FieldSymbol>> _arglist;
 	
 	/**
 	 * Initializes the method symbol.
@@ -162,6 +164,24 @@ public final class MethodSymbol
 	public int argumentCount()
 	{
 		return _offsets.length - 1;
+	}
+	
+	/**
+	 * Returns the list of arguments.
+	 *
+	 * @return The list of arguments.
+	 * @since 2017/04/16
+	 */
+	public List<FieldSymbol> arguments()
+	{
+		Reference<List<FieldSymbol>> ref = this._arglist;
+		List<FieldSymbol> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._arglist = new WeakReference<>((rv = new __ArgList__()));
+		
+		return rv;
 	}
 	
 	/**
@@ -313,6 +333,45 @@ public final class MethodSymbol
 	private static Reference<FieldSymbol>[] __makeFieldRefArray(int __n)
 	{
 		return ((Reference<FieldSymbol>[])((Object)new Reference[__n]));
+	}
+	
+	/**
+	 * This is used to access the argument list as an actual list.
+	 *
+	 * @since 2017/04/16
+	 */
+	private final class __ArgList__
+		extends AbstractList<FieldSymbol>
+		implements RandomAccess
+	{
+		/**
+		 * Does nothing.
+		 *
+		 * @since 2017/04/16
+		 */
+		private __ArgList__()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/04/16
+		 */
+		@Override
+		public FieldSymbol get(int __i)
+		{
+			return MethodSymbol.this.get(__i);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/04/16
+		 */
+		@Override
+		public int size()
+		{
+			return MethodSymbol.this.argumentCount();
+		}
 	}
 }
 
