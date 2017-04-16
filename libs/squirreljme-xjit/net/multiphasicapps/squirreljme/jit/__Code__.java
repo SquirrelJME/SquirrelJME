@@ -48,6 +48,12 @@ class __Code__
 	/** The stack map table state. */
 	private final __JavaStates__ _smt;
 	
+	/** The input Java state. */
+	private final __JavaState__ _javain;
+	
+	/** The output Java state. */
+	private final __JavaState__ _javaout;
+	
 	/** The current address being parsed. */
 	private volatile int _atpc;
 	
@@ -80,6 +86,10 @@ class __Code__
 		// Read local variable count
 		int maxstack = __is.readUnsignedShort(),
 			maxlocals = __is.readUnsignedShort();
+		
+		// Initialize base input and output states
+		this._javain = new __JavaState__(maxstack, maxlocals);
+		this._javaout = new __JavaState__(maxstack, maxlocals);
 		
 		// {@squirreljme.error AQ0x Method has an invalid size for the length
 		// of its byte code. (The length of the code)}
@@ -183,10 +193,10 @@ class __Code__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED0q The specified type cannot be loaded from a
+		// {@squirreljme.error AQ1f The specified type cannot be loaded from a
 		// local variable. (The type to load)}
 		if (!__t.isValid())
-			throw new JITException(String.format("ED0q %s", __t));
+			throw new JITException(String.format("AQ1f %s", __t));
 		
 		throw new todo.TODO();
 	}
@@ -201,6 +211,10 @@ class __Code__
 	void __run()
 		throws IOException, JITException
 	{
+		__JavaStates__ smt = this._smt;
+		__JavaState__ javain = this._javain,
+			javaout = this._javaout;
+		
 		// Open stream to the code
 		try (__CountStream__ code = new __CountStream__(
 			new ByteArrayInputStream(this._code)))
@@ -208,6 +222,16 @@ class __Code__
 			// The address currently being handled
 			int atpc = code.count();
 			this._atpc = atpc;
+			
+			// {@squirreljme.error AQ1g No Java state exists for the specified
+			// instruction address. (The address)}
+			__JavaState__ existstate = smt.get(atpc);
+			if (existstate == null)
+				throw new JITException(String.format("AQ1g %d", atpc));
+			
+			// The input and base output state become the existing state
+			javain.from(existstate);
+			javaout.from(existstate);
 			
 			// Decode single operation
 			__decodeOp(code);
