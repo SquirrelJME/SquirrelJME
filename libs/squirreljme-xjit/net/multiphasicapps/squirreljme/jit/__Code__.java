@@ -147,13 +147,13 @@ class __Code__
 					throw new JITException("AQ11");
 				
 				// Parse state
-				smt = new __StackMapParser__(modern, as, __em, maxstack,
+				smt = new __StackMapParser__(this, modern, as, __em, maxstack,
 					maxlocals).__get();
 			}
 		
 		// Need to generate a blank state?
 		if (smt == null)
-			smt = new __StackMapParser__(true, new DataInputStream(
+			smt = new __StackMapParser__(this, true, new DataInputStream(
 				new ByteArrayInputStream(new byte[0])), __em, maxstack,
 				maxlocals).__get();
 		
