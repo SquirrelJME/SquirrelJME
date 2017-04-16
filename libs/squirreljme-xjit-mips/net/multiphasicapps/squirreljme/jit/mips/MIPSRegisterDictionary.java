@@ -27,6 +27,9 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 public class MIPSRegisterDictionary
 	extends RegisterDictionary
 {
+	/** The configuration. */
+	protected final MIPSConfig config;
+	
 	/** Saved allocated registers. */
 	private volatile Reference<Set<Register>> _asregs;
 	
@@ -41,6 +44,24 @@ public class MIPSRegisterDictionary
 	
 	/** Temporary registers. */
 	private volatile Reference<Set<Register>> _tempregs;
+	
+	/**
+	 * Initializes the dictionary.
+	 *
+	 * @param __conf The config that is used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/16
+	 */
+	public MIPSRegisterDictionary(MIPSConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+	}
 	
 	/**
 	 * {@inheritDoc}

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
@@ -23,6 +25,9 @@ import net.multiphasicapps.squirreljme.jit.RegisterDictionary;
 public class MIPSConfig
 	extends JITConfig
 {
+	/** The cached register dictionary. */
+	private volatile Reference<RegisterDictionary> _rdict;
+	
 	/**
 	 * Initializes the MIPS configuration.
 	 *
@@ -52,7 +57,15 @@ public class MIPSConfig
 	@Override
 	public RegisterDictionary registerDictionary()
 	{
-		throw new todo.TODO();
+		Reference<RegisterDictionary> ref = this._rdict;
+		RegisterDictionary rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._rdict = new WeakReference<>(
+				(rv = new MIPSRegisterDictionary(this)));
+		
+		return rv;
 	}
 	
 	/**
