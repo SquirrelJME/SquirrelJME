@@ -26,6 +26,10 @@ import net.multiphasicapps.squirreljme.linkage.MethodFlags;
  */
 class __Code__
 {
+	/** The number of working variable. */
+	static final int _WORK_COUNT =
+		4;
+	
 	/** The maximum number of bytes the code attribute can be. */
 	private static final int _CODE_SIZE_LIMIT =
 		65535;
@@ -52,13 +56,13 @@ class __Code__
 	private final byte[] _code;
 	
 	/** The stack map table state. */
-	private final __JavaStates__ _smt;
+	private final SnapshotCacheStates _smt;
 	
 	/** The input Java state. */
-	private final __JavaState__ _javain;
+	private final CacheState _javain;
 	
 	/** The output Java state. */
-	private final __JavaState__ _javaout;
+	private final ActiveCacheState _javaout;
 	
 	/** The current address being parsed. */
 	private volatile int _atpc;
@@ -101,8 +105,9 @@ class __Code__
 			maxlocals = __is.readUnsignedShort();
 		
 		// Initialize base input and output states
-		this._javain = new __JavaState__(maxstack, maxlocals);
-		this._javaout = new __JavaState__(maxstack, maxlocals);
+		this._javain = new ActiveCacheState(this, maxstack, maxlocals, config);
+		this._javaout = new ActiveCacheState(this, maxstack, maxlocals,
+			config);
 		
 		// {@squirreljme.error AQ0x Method has an invalid size for the length
 		// of its byte code. (The length of the code)}
@@ -125,7 +130,7 @@ class __Code__
 		String[] aname = new String[1];
 		MethodFlags flags = __em.methodFlags();
 		MethodSymbol type = __em.methodType();
-		__JavaStates__ smt = null;
+		SnapshotCacheStates smt = null;
 		while ((count[0]--) > 0)
 			try (DataInputStream as = JIT.__nextAttribute(__is, __pool, aname))
 			{
@@ -142,13 +147,15 @@ class __Code__
 					throw new JITException("AQ11");
 				
 				// Parse state
-				smt = new __JavaStates__(modern, as, flags, type, maxstack,
-					maxlocals);
+				smt = new __StackMapParser__(modern, as, __em, maxstack,
+					maxlocals).__get();
 			}
 		
 		// Need to generate a blank state?
 		if (smt == null)
-			smt = new __JavaStates__(flags, type, maxstack, maxlocals);
+			smt = new __StackMapParser__(true, new DataInputStream(
+				new ByteArrayInputStream(new byte[0])), __em, maxstack,
+				maxlocals).__get();
 		
 		// Set
 		this._smt = smt;
@@ -224,9 +231,9 @@ class __Code__
 	void __run()
 		throws IOException, JITException
 	{
-		__JavaStates__ smt = this._smt;
-		__JavaState__ javain = this._javain,
-			javaout = this._javaout;
+		SnapshotCacheStates smt = this._smt;
+		CacheState javain = this._javain;
+		ActiveCacheState javaout = this._javaout;
 		
 		// Open stream to the code
 		try (__CountStream__ code = new __CountStream__(
@@ -238,13 +245,13 @@ class __Code__
 			
 			// {@squirreljme.error AQ1g No Java state exists for the specified
 			// instruction address. (The address)}
-			__JavaState__ existstate = smt.get(atpc);
+			SnapshotCacheState existstate = smt.get(atpc);
 			if (existstate == null)
 				throw new JITException(String.format("AQ1g %d", atpc));
 			
 			// The input and base output state become the existing state
-			javain.from(existstate);
-			javaout.from(existstate);
+			((ActiveCacheState)javain).switchFrom(existstate);
+			javaout.switchFrom(existstate);
 			
 			// Decode single operation
 			__decodeOp(code);

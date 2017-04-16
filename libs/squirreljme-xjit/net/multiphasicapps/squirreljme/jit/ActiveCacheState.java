@@ -84,9 +84,6 @@ public final class ActiveCacheState
 	protected final Deque<Register> tempfloat =
 		this.foralloc.subDeque();
 	
-	/** Generate machine code operations? */
-	protected final boolean genops;
-	
 	/** The register dictionary. */
 	protected final RegisterDictionary rdict;
 	
@@ -103,32 +100,32 @@ public final class ActiveCacheState
 	 * @param __te The code stream
 	 * @param __ms The number of stack entries.
 	 * @param __ml The number of local entries.
-	 * @param __mw The number of work entries.
-	 * @param __rd The register dictionary.
-	 * @param __go Generate operations?
+	 * @param __conf The JIT configuration.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/23
 	 */
-	ActiveCacheState(__Code__ __cs, int __ms, int __ml, int __mw,
-		RegisterDictionary __rd, boolean __go)
+	ActiveCacheState(__Code__ __cs, int __ms, int __ml,
+		JITConfig __conf)
 		throws NullPointerException
 	{
 		super(__cs);
 		
 		// Check
-		if (__rd == null)
+		if (__conf == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup treads
-		this.genops = __go;
 		this.stack = new Tread(AreaType.STACK, __ms);
 		this.locals = new Tread(AreaType.LOCAL, __ml);
-		this.work = new Tread(AreaType.WORK, __mw);
-		this.rdict = __rd;
+		this.work = new Tread(AreaType.WORK, __Code__._WORK_COUNT);
+		
+		// Initialize dictionary
+		RegisterDictionary rdict = __conf.registerDictionary();
+		this.rdict = rdict;
 		
 		// Available register sets
-		this._availsaved = __rd.allocationRegisters(true);
-		this._availtemp = __rd.allocationRegisters(false);
+		this._availsaved = rdict.allocationRegisters(true);
+		this._availtemp = rdict.allocationRegisters(false);
 		
 		// Initialize register deque
 		__initDeque();
