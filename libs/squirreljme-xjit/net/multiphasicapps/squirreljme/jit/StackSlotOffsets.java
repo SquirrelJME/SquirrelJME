@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.classformat.AreaType;
-import net.multiphasicapps.squirreljme.classformat.CodeVariable;
 import net.multiphasicapps.squirreljme.jit.DataType;
 import net.multiphasicapps.squirreljme.jit.CacheState;
 
