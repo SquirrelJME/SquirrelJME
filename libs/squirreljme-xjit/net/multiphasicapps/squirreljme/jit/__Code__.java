@@ -150,12 +150,45 @@ class __Code__
 		// Depends
 		switch (op)
 		{
+			case __OperandIndex__.ALOAD_0:
+			case __OperandIndex__.ALOAD_1:
+			case __OperandIndex__.ALOAD_2:
+			case __OperandIndex__.ALOAD_3:
+				__executeLoad(JavaType.OBJECT, op - __OperandIndex__.ALOAD_0);
+				break;
+		
 				// {@squirreljme.error AQ1e Invalid byte code operation index.
 				// (The operation index; The address of the operation)}
 			default:
 				throw new JITException(String.format("AQ1e %#02x %d", op,
 					this._atpc));
 		}
+	}
+	
+	/**
+	 * Generates code for the load operation which potentially aliases and/or
+	 * copies the value from a local variable onto the stack.
+	 *
+	 * @param __t The type to copy.
+	 * @param __from The local variable slot to copy from.
+	 * @throws JITException If the type is not valid, the stack overflows, or
+	 * the specified local variable is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/18
+	 */
+	void __executeLoad(JavaType __t, int __from)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ED0q The specified type cannot be loaded from a
+		// local variable. (The type to load)}
+		if (!__t.isValid())
+			throw new JITException(String.format("ED0q %s", __t));
+		
+		throw new todo.TODO();
 	}
 	
 	/**
