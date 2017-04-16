@@ -48,10 +48,10 @@ public final class CodeVariable
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AY0j Code variable identifier cannot be
+		// {@squirreljme.error AQ1h Code variable identifier cannot be
 		// negative.}
 		if (__id < 0)
-			throw new IndexOutOfBoundsException("AY0j");
+			throw new IndexOutOfBoundsException("AQ1h");
 		
 		// Set
 		this.area = __t;

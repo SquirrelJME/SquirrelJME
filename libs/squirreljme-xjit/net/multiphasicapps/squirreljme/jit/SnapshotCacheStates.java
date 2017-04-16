@@ -121,10 +121,10 @@ public final class SnapshotCacheStates
 			states.add(dx, new SnapshotCacheState(this._codestream, __v));
 		}
 		
-		// {@squirreljme.error ED0a A cache state already exists at the
+		// {@squirreljme.error AQ1r A cache state already exists at the
 		// specified address. (The address)}
 		else
-			throw new JITException(String.format("ED0a %d", __i));
+			throw new JITException(String.format("AQ1r %d", __i));
 	}
 }
 

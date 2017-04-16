@@ -20,6 +20,7 @@ import java.util.RandomAccess;
  *
  * @since 2016/03/31
  */
+@Deprecated
 final class __JavaState__
 {
 	/** The state of the stack. */

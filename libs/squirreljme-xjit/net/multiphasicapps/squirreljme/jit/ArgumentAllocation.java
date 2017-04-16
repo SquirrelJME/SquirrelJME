@@ -83,9 +83,9 @@ public final class ArgumentAllocation
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED0j Invalid stack offset specified.}
+		// {@squirreljme.error AQ1t Invalid stack offset specified.}
 		if (__so == Integer.MIN_VALUE)
-			throw new IllegalArgumentException("ED0j");
+			throw new IllegalArgumentException("AQ1t");
 		
 		// Set
 		this.type = __t;

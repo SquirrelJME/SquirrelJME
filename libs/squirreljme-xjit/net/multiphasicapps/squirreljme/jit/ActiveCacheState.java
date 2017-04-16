@@ -416,22 +416,22 @@ public final class ActiveCacheState
 			// Do not have recursive aliases
 			Slot target = getSlot(__a, __id).value();
 			
-			// {@squirreljme.error ED0o Cannot alias slot to self. (This slot)}
+			// {@squirreljme.error AQ1m Cannot alias slot to self. (This slot)}
 			if (target == this)
-				throw new JITException(String.format("ED0o %s", this));
+				throw new JITException(String.format("AQ1m %s", this));
 			
-			// {@squirreljme.error ED0f Local or work variables cannot alias
+			// {@squirreljme.error AQ1n Local or work variables cannot alias
 			// other slots. (This slot; The target slot)}
 			AreaType myarea = thisArea();
 			if (myarea == AreaType.LOCAL || myarea == AreaType.WORK)
-				throw new IllegalArgumentException(String.format("ED0f %s %s",
+				throw new IllegalArgumentException(String.format("AQ1n %s %s",
 					this, __id));
 			
-			// {@squirreljme.error ED0d Cannot alias the current slot to the
+			// {@squirreljme.error AQ1o Cannot alias the current slot to the
 			// target slot becuase the target has no set value. (This slot; The
 			// target slot)}
 			if (target.thisType() == JavaType.NOTHING)
-				throw new JITException(String.format("ED0d %s %s", this,
+				throw new JITException(String.format("AQ1o %s %s", this,
 					target));
 			
 			// Remove any information in this slot
@@ -458,10 +458,10 @@ public final class ActiveCacheState
 			if (__r == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error ED0k Cannot set registers for aliased
+			// {@squirreljme.error AQ1p Cannot set registers for aliased
 			// slots.}
 			if (isAliased())
-				throw new JITException("ED0k");
+				throw new JITException("AQ1p");
 			
 			// Copy
 			__clearRegisters();
@@ -485,10 +485,10 @@ public final class ActiveCacheState
 			if (__r == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error ED0l Cannot set registers for aliased
+			// {@squirreljme.error AQ1q Cannot set registers for aliased
 			// slots.}
 			if (isAliased())
-				throw new JITException("ED0l");
+				throw new JITException("AQ1q");
 			
 			// Copy
 			__clearRegisters();
@@ -513,14 +513,14 @@ public final class ActiveCacheState
 			if (__t == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error ED0b Cannot set the top type.}
+			// {@squirreljme.error AQ1i Cannot set the top type.}
 			if (__t == JavaType.TOP)
-				throw new JITException("ED0b");
+				throw new JITException("AQ1i");
 			
-			// {@squirreljme.error EB0p Cannot set the type to nothing, use
+			// {@squirreljme.error AQ1j Cannot set the type to nothing, use
 			// remove for that.}
 			if (__t == JavaType.NOTHING)
-				throw new IllegalStateException("EB0p");
+				throw new IllegalStateException("AQ1j");
 			
 			// Remove the type information
 			JavaType rv = this._type;
@@ -652,13 +652,13 @@ public final class ActiveCacheState
 			if (__r == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error ED0m Add of a register which is not
+			// {@squirreljme.error AQ1k Add of a register which is not
 			// allocatable naturally to a slot or one which has already been
 			// consumed. (The register that was removed; This slot; The
 			// registers available for allocation)}
 			MultiSetDeque<Register> foralloc = ActiveCacheState.this.foralloc;
 			if (!foralloc.remove(__r))
-				throw new JITException(String.format("ED0m %s %s %s", __r,
+				throw new JITException(String.format("AQ1k %s %s %s", __r,
 					this, foralloc));
 			
 			// Add to register list
@@ -672,10 +672,10 @@ public final class ActiveCacheState
 		 */
 		private void __clearRegisters()
 		{
-			// {@squirreljme.error ED0n Attempt to clear registers for a slot
+			// {@squirreljme.error AQ1l Attempt to clear registers for a slot
 			// which is aliased. (This slot)}
 			if (isAliased())
-				throw new JITException(String.format("ED0n %s", this));
+				throw new JITException(String.format("AQ1l %s", this));
 			
 			// Refill free register usage
 			TranslationEngine engine = ActiveCacheState.this.engine;

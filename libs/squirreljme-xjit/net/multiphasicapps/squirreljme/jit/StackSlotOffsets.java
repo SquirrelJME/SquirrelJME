@@ -155,10 +155,10 @@ public class StackSlotOffsets
 	public void deepen(int __v)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AM05 The stack may only be deepened with
+		// {@squirreljme.error AQ1u The stack may only be deepened with
 		// negative values. (The amount to deepen by)}
 		if (__v >= 0)
-			throw new IllegalArgumentException(String.format("AM05 %d", __v));
+			throw new IllegalArgumentException(String.format("AQ1u %d", __v));
 		
 		// Modify
 		this._depth += __v;
@@ -183,10 +183,10 @@ public class StackSlotOffsets
 		if (__a == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AM09 Slot index outside bounds of the tread.
+		// {@squirreljme.error AQ1v Slot index outside bounds of the tread.
 		// (The index)}
 		if (__i < 0 || __i >= this._areacount[__a.ordinal()])
-			throw new IndexOutOfBoundsException(String.format("AM09 %d", __i));
+			throw new IndexOutOfBoundsException(String.format("AQ1v %d", __i));
 		
 		// If the item is greater than 32-bit then use the long offset first
 		int[][] offsets = this._offsets;

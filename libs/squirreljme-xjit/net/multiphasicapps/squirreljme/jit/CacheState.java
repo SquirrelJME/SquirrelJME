@@ -222,11 +222,11 @@ public abstract class CacheState
 					else
 						return at;
 			
-				// {@squirreljme.error ED0c Slot eventually references itself.
+				// {@squirreljme.error AQ1s Slot eventually references itself.
 				// (This slot)}
 				at = CacheState.this.getTread(idarea).get(idalias);
 				if (at == this)
-					throw new IllegalStateException(String.format("ED0c %s",
+					throw new IllegalStateException(String.format("AQ1s %s",
 						this));
 			}
 		}

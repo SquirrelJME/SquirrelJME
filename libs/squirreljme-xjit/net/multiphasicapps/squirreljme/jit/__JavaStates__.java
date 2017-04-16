@@ -27,6 +27,7 @@ import net.multiphasicapps.squirreljme.linkage.MethodFlags;
  *
  * @since 2016/03/25
  */
+@Deprecated
 class __JavaStates__
 {
 	/** The output verification map. */
