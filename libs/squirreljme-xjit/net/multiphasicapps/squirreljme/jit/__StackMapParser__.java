@@ -107,7 +107,7 @@ class __StackMapParser__
 			
 			// Skip space for wide
 			if (j.isWide())
-				at++;
+				nextlocals[at++] = JavaType.TOP;
 		}
 		
 		// Get the allocations to initialize with, these are always fixed
