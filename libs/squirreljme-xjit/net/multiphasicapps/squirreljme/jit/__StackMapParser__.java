@@ -92,13 +92,17 @@ class __StackMapParser__
 		
 		// Non-static methods always have an implicit instance argument
 		if (!__m.methodFlags().isStatic())
+		{
+			nextlocals[at] = JavaType.OBJECT;
 			argmap[at++] = config.toNativeType(JavaType.OBJECT);
+		}
 		
 		// Handle each argument
 		for (FieldSymbol f : __m.methodType().arguments())
 		{
 			// Map type
-			JavaType j = JavaType.bySymbol(f);
+			JavaType j;
+			nextlocals[at] = (j = JavaType.bySymbol(f));
 			argmap[at++] = config.toNativeType(j);
 			
 			// Skip space for wide
