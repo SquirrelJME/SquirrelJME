@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -32,13 +33,10 @@ public final class ArgumentAllocation
 	protected final int stackoffset;
 	
 	/** Registers available for usage. */
-	private final Register[] _registers;
+	protected final RegisterList registers;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
-	
-	/** List of registers. */
-	private volatile Reference<List<Register>> _lregs;
 	
 	/**
 	 * Initializes the argument allocation with the specified registers.
@@ -48,7 +46,7 @@ public final class ArgumentAllocation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(NativeType __t, Register... __r)
+	public ArgumentAllocation(NativeType __t, RegisterList __r)
 		throws NullPointerException
 	{
 		// Check
@@ -58,13 +56,7 @@ public final class ArgumentAllocation
 		// Set
 		this.type = __t;
 		this.stackoffset = Integer.MIN_VALUE;
-		
-		// Copy registers
-		__r = __r.clone();
-		this._registers = __r;
-		for (Register r : __r)
-			if (r == null)
-				throw new NullPointerException("NARG");
+		this.registers = __r;
 	}
 	
 	/**
@@ -90,7 +82,7 @@ public final class ArgumentAllocation
 		// Set
 		this.type = __t;
 		this.stackoffset = __so;
-		this._registers = null;
+		this.registers = null;
 	}
 	
 	/**
@@ -107,31 +99,7 @@ public final class ArgumentAllocation
 		ArgumentAllocation o = (ArgumentAllocation)__o;
 		return this.type == o.type &&
 			this.stackoffset == o.stackoffset &&
-			Arrays.equals(this._registers, o._registers);
-	}
-	
-	/**
-	 * Obtains the register at the given index.
-	 *
-	 * @param <R> The class to cast to.
-	 * @param __cl The class to cast to.
-	 * @param __i The register index to get.
-	 * @return The register at this index.
-	 * @throws ClassCastException If the class type is not valid.
-	 * @throws IndexOutOfBoundsException If the register is out of bounds.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/20
-	 */
-	public <R extends Register> R getRegister(Class<R> __cl, int __i)
-		throws ClassCastException, IndexOutOfBoundsException,
-			NullPointerException
-	{
-		// Check
-		if (__i < 0 || __i >= numRegisters())
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		Register[] registers = this._registers;
-		return __cl.cast(registers[__i]);
+			Objects.equals(this.registers, o.registers);
 	}
 	
 	/**
@@ -141,12 +109,8 @@ public final class ArgumentAllocation
 	@Override
 	public int hashCode()
 	{
-		int rv = this.type.hashCode() ^ (~this.stackoffset);
-		Register[] registers = this._registers;
-		if (registers != null)
-			for (Register r : registers)
-				rv ^= r.hashCode();
-		return rv;
+		return this.type.hashCode() ^ (~this.stackoffset) ^
+			Objects.hashCode(this.registers);
 	}
 	
 	/**
@@ -157,7 +121,7 @@ public final class ArgumentAllocation
 	 */
 	public boolean hasRegisters()
 	{
-		return 0 != numRegisters();
+		return null != this.registers;
 	}
 	
 	/**
@@ -175,39 +139,7 @@ public final class ArgumentAllocation
 			throw new NullPointerException("NARG");
 		
 		return this.type == __o.type &&
-			Arrays.equals(this._registers, __o._registers);
-	}
-	
-	/**
-	 * Returns the number of registers used.
-	 *
-	 * @return The register use count.
-	 * @since 2017/03/20
-	 */
-	public int numRegisters()
-	{
-		Register[] registers = this._registers;
-		return (registers == null ? 0 : registers.length);
-	}
-	
-	/**
-	 * Returns the list of registers that are available for usage.
-	 *
-	 * @return The list of registers, this list is not modifiable.
-	 * @since 2017/03/31
-	 */
-	public List<Register> registerList()
-	{
-		Reference<List<Register>> ref = this._lregs;
-		List<Register> rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			this._lregs = new WeakReference<>((rv =
-				UnmodifiableList.<Register>of(Arrays.<Register>asList(
-				this._registers))));
-		
-		return rv;
+			Objects.equals(this.registers, __o.registers);
 	}
 	
 	/**
@@ -216,10 +148,9 @@ public final class ArgumentAllocation
 	 * @return The allocated registers or {@code null} if there are none.
 	 * @since 2017/03/20
 	 */
-	public Register[] registers()
+	public RegisterList registers()
 	{
-		Register[] registers = this._registers;
-		return (registers == null ? null : registers.clone());
+		return this.registers;
 	}
 	
 	/**
@@ -261,14 +192,13 @@ public final class ArgumentAllocation
 		{
 			// On the stack?
 			NativeType type = this.type;
-			Register[] registers = this._registers;
+			RegisterList registers = this.registers;
 			if (registers == null)
 				rv = String.format("%s:s%d", type, this.stackoffset);
 			
 			// or in registers?
 			else
-				rv = String.format("%s:r%s", type,
-					Arrays.asList(registers).toString());
+				rv = String.format("%s:r%s", type, registers);
 			
 			this._string = new WeakReference<>(rv);
 		}

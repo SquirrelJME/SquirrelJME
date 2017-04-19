@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.ArgumentAllocation;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
@@ -66,7 +67,7 @@ public class MIPSConfig
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// 
+		// The dictionary is needed for the sets of registers
 		RegisterDictionary rdict = registerDictionary();
 		
 		throw new todo.TODO();

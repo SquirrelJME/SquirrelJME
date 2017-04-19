@@ -295,8 +295,9 @@ public abstract class CacheState
 				return new ArgumentAllocation(dt, thisStackOffset(__a));
 			
 			// In registers
-			return new ArgumentAllocation(dt, registers.<Register>toArray(
-				new Register[registers.size()]));
+			throw new todo.TODO();
+			/*return new ArgumentAllocation(dt, registers.<Register>toArray(
+				new Register[registers.size()]));*/
 		}
 		
 		/**
