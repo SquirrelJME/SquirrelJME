@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.Register;
 import net.multiphasicapps.squirreljme.jit.RegisterDictionary;
+import net.multiphasicapps.squirreljme.jit.RegisterList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
@@ -30,20 +31,47 @@ public class MIPSRegisterDictionary
 	/** The configuration. */
 	protected final MIPSConfig config;
 	
-	/** Saved allocated registers. */
-	private volatile Reference<Set<Register>> _asregs;
+	/** Saved allocated registers (int). */
+	private volatile Reference<Set<Register>> _iasregs;
 	
-	/** Temporary allocated registers. */
-	private volatile Reference<Set<Register>> _atregs;
+	/** Temporary allocated registers (int). */
+	private volatile Reference<Set<Register>> _iatregs;
 	
-	/** Argument registers. */
-	private volatile Reference<Set<Register>> _argregs;
+	/** Argument registers (int). */
+	private volatile Reference<Set<Register>> _iargregs;
 	
-	/** Saved registers. */
-	private volatile Reference<Set<Register>> _saveregs;
+	/** Saved registers (int). */
+	private volatile Reference<Set<Register>> _isaveregs;
 	
-	/** Temporary registers. */
-	private volatile Reference<Set<Register>> _tempregs;
+	/** Temporary registers (int). */
+	private volatile Reference<Set<Register>> _itempregs;
+	
+	/** Saved allocated registers (float). */
+	private volatile Reference<Set<Register>> _fasregs;
+	
+	/** Temporary allocated registers (float). */
+	private volatile Reference<Set<Register>> _fatregs;
+	
+	/** Argument registers (float). */
+	private volatile Reference<Set<Register>> _fargregs;
+	
+	/** Saved registers (float). */
+	private volatile Reference<Set<Register>> _fsaveregs;
+	
+	/** Temporary registers (float). */
+	private volatile Reference<Set<Register>> _ftempregs;
+	
+	/** The temporary assembler register. */
+	private volatile Reference<RegisterList> _regat;
+	
+	/** The frame pointer register. */
+	private volatile Reference<RegisterList> _regfp;
+	
+	/** The stack pointer. */
+	private volatile Reference<RegisterList> _regsp;
+	
+	/** The global table pointer. */
+	private volatile Reference<RegisterList> _reggp;
 	
 	/**
 	 * Initializes the dictionary.
@@ -68,24 +96,33 @@ public class MIPSRegisterDictionary
 	 * @since 2017/04/01
 	 */
 	@Override
-	public Set<Register> allocationRegisters(boolean __saved)
+	public Set<Register> allocationRegisters(boolean __float, boolean __saved)
 	{
-		Reference<Set<Register>> ref = (__saved ? this._asregs : this._atregs);
+		Reference<Set<Register>> ref = (__float ?
+			(__saved ? this._fasregs : this._fatregs) :
+			(__saved ? this._iasregs : this._iatregs));
 		Set<Register> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 		{
 			Set<Register> s = new LinkedHashSet<>();
-			for (Register r : NUBI.allocationRegisters(__saved))
-				s.add(r);
+			for (MIPSRegister r : NUBI.allocationRegisters(__saved))
+				if (__float == r.isFloat())
+					s.add(r);
 				
 			// Store
 			ref = new WeakReference<>((rv = UnmodifiableSet.<Register>of(s)));
-			if (__saved)
-				this._asregs = ref;
+			if (__float)
+				if (__saved)
+					this._fasregs = ref;
+				else
+					this._fatregs = ref;
 			else
-				this._atregs = ref;
+				if (__saved)
+					this._iasregs = ref;
+				else
+					this._iatregs = ref;
 		}
 		
 		return rv;
@@ -96,18 +133,24 @@ public class MIPSRegisterDictionary
 	 * @since 2017/04/01
 	 */
 	@Override
-	public Set<Register> argumentRegisters()
+	public Set<Register> argumentRegisters(boolean __float)
 	{
-		Reference<Set<Register>> ref = this._argregs;
+		Reference<Set<Register>> ref = (__float ? this._fargregs :
+			this._iargregs);
 		Set<Register> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._argregs = new WeakReference<>((rv = UnmodifiableSet.
-				<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
-					NUBI.A0, NUBI.A1, NUBI.A2, NUBI.A3, NUBI.A4, NUBI.A5,
-					NUBI.A6, NUBI.A7, NUBI.FA0, NUBI.FA1, NUBI.FA2, NUBI.FA3,
-					NUBI.FA4, NUBI.FA5, NUBI.FA6, NUBI.FA7)))));
+			if (__float)
+				this._iargregs = new WeakReference<>((rv = UnmodifiableSet.
+					<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
+						NUBI.FA0, NUBI.FA1, NUBI.FA2, NUBI.FA3,
+						NUBI.FA4, NUBI.FA5, NUBI.FA6, NUBI.FA7)))));
+			else
+				this._iargregs = new WeakReference<>((rv = UnmodifiableSet.
+					<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
+						NUBI.A0, NUBI.A1, NUBI.A2, NUBI.A3, NUBI.A4, NUBI.A5,
+						NUBI.A6, NUBI.A7)))));
 		
 		return rv;
 	}
@@ -117,50 +160,15 @@ public class MIPSRegisterDictionary
 	 * @since 2017/04/01
 	 */
 	@Override
-	public Register assemblerTemporaryRegister()
+	public RegisterList assemblerTemporaryRegister()
 	{
-		return NUBI.AT;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/04/01
-	 */
-	@Override
-	public Register framePointerRegister()
-	{
-		return NUBI.FP;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/04/01
-	 */
-	@Override
-	public Register globalTableRegister()
-	{
-		return NUBI.GP;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/04/01
-	 */
-	@Override
-	public Set<Register> savedRegisters()
-	{
-		Reference<Set<Register>> ref = this._saveregs;
-		Set<Register> rv;
+		Reference<RegisterList> ref = this._regat;
+		RegisterList rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._saveregs = new WeakReference<>((rv = UnmodifiableSet.
-				<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
-					NUBI.S0, NUBI.S1, NUBI.S2, NUBI.S3, NUBI.S4, NUBI.S5,
-					NUBI.S6, NUBI.S7, NUBI.S8, NUBI.S9, NUBI.S10, NUBI.S11,
-					NUBI.FS0, NUBI.FS1, NUBI.FS2, NUBI.FS3, NUBI.FS4, NUBI.FS5,
-					NUBI.FS6, NUBI.FS7, NUBI.FS8, NUBI.FS9, NUBI.FS10,
-					NUBI.FS11)))));
+			this._regat = new WeakReference<>(
+				(rv = new RegisterList(NUBI.AT)));
 		
 		return rv;
 	}
@@ -170,9 +178,17 @@ public class MIPSRegisterDictionary
 	 * @since 2017/04/01
 	 */
 	@Override
-	public Register stackPointerRegister()
+	public RegisterList framePointerRegister()
 	{
-		return NUBI.SP;
+		Reference<RegisterList> ref = this._regfp;
+		RegisterList rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._regfp = new WeakReference<>(
+				(rv = new RegisterList(NUBI.FP)));
+		
+		return rv;
 	}
 	
 	/**
@@ -180,18 +196,89 @@ public class MIPSRegisterDictionary
 	 * @since 2017/04/01
 	 */
 	@Override
-	public Set<Register> temporaryRegisters()
+	public RegisterList globalTableRegister()
 	{
-		Reference<Set<Register>> ref = this._tempregs;
+		Reference<RegisterList> ref = this._reggp;
+		RegisterList rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._reggp = new WeakReference<>(
+				(rv = new RegisterList(NUBI.GP)));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/01
+	 */
+	@Override
+	public Set<Register> savedRegisters(boolean __float)
+	{
+		Reference<Set<Register>> ref = (__float ? this._fsaveregs :
+			this._isaveregs);
 		Set<Register> rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._tempregs = new WeakReference<>((rv = UnmodifiableSet.
-				<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
-					NUBI.PF, NUBI.AT, NUBI.T1, NUBI.T2, NUBI.FT0, NUBI.FT1,
-					NUBI.FT2, NUBI.FT3, NUBI.FT4, NUBI.FT5, NUBI.FT6, NUBI.FT7,
-					NUBI.FT8, NUBI.FT9, NUBI.FT10, NUBI.FT11)))));
+			if (__float)
+				this._fsaveregs = new WeakReference<>((rv = UnmodifiableSet.
+					<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
+						NUBI.FS0, NUBI.FS1, NUBI.FS2, NUBI.FS3, NUBI.FS4,
+						NUBI.FS5, NUBI.FS6, NUBI.FS7, NUBI.FS8, NUBI.FS9,
+						NUBI.FS10, NUBI.FS11)))));
+			else
+				this._isaveregs = new WeakReference<>((rv = UnmodifiableSet.
+					<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
+						NUBI.S0, NUBI.S1, NUBI.S2, NUBI.S3, NUBI.S4, NUBI.S5,
+						NUBI.S6, NUBI.S7, NUBI.S8, NUBI.S9, NUBI.S10,
+						NUBI.S11)))));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/01
+	 */
+	@Override
+	public RegisterList stackPointerRegister()
+	{
+		Reference<RegisterList> ref = this._regsp;
+		RegisterList rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._regsp = new WeakReference<>(
+				(rv = new RegisterList(NUBI.SP)));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/01
+	 */
+	@Override
+	public Set<Register> temporaryRegisters(boolean __float)
+	{
+		Reference<Set<Register>> ref = (__float ? this._ftempregs :
+			this._itempregs);
+		Set<Register> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			if (__float)
+				this._ftempregs = new WeakReference<>((rv = UnmodifiableSet.
+					<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
+						NUBI.FT1, NUBI.FT2, NUBI.FT3, NUBI.FT4, NUBI.FT5,
+						NUBI.FT6, NUBI.FT7, NUBI.FT8, NUBI.FT9, NUBI.FT10,
+						NUBI.FT11)))));
+			else
+				this._itempregs = new WeakReference<>((rv = UnmodifiableSet.
+					<Register>of(new LinkedHashSet<>(Arrays.<Register>asList(
+						NUBI.PF, NUBI.AT, NUBI.T1, NUBI.T2)))));
 		
 		return rv;
 	}

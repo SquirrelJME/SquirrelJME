@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.AbstractCollection;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -28,6 +29,7 @@ import java.util.Objects;
  * @since 2017/04/16
  */
 public final class RegisterList
+	extends AbstractCollection<Register>
 {
 	/**
 	 * This initializes the register list using the given array for registers.
@@ -97,10 +99,20 @@ public final class RegisterList
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/04/16
+	 * @since 2017/04/19
 	 */
 	@Override
-	public String toString()
+	public Iterator<Register> iterator()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/19
+	 */
+	@Override
+	public int size()
 	{
 		throw new todo.TODO();
 	}

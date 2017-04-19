@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This register dictionary contains the registers that are available for
@@ -21,26 +25,38 @@ import java.util.Set;
  * {@link LinkedHashSet} for example) in that every iteration must return the
  * register in the sequence.
  *
+ * If a CPU uses registers that contain both floating point and integer
+ * values then the register sets should return the same set of registers.
+ *
  * @since 2017/04/01
  */
 public abstract class RegisterDictionary
 {
+	/** Both allocation saved. */
+	private volatile Reference<Set<Register>> _bas;
+	
+	/** Both allocation temporary. */
+	private volatile Reference<Set<Register>> _bat;
+	
 	/**
 	 * Returns the set of registers which are available for allocation.
 	 *
+	 * @param __float If {@code true} then use floating point registers.
 	 * @param __saved If {@code true} then request saved registers.
 	 * @return The registers available for allocation.
 	 * @since 2017/03/25
 	 */
-	public abstract Set<Register> allocationRegisters(boolean __saved);
+	public abstract Set<Register> allocationRegisters(boolean __float,
+		boolean __saved);
 	
 	/**
 	 * Returns the argument registers.
 	 *
+	 * @param __float If {@code true} then use floating point registers.
 	 * @return The argument registers.
 	 * @since 2017/04/01
 	 */
-	public abstract Set<Register> argumentRegisters();
+	public abstract Set<Register> argumentRegisters(boolean __float);
 	
 	/**
 	 * Returns the temporary assembler register.
@@ -48,7 +64,7 @@ public abstract class RegisterDictionary
 	 * @return The temporary assembler register.
 	 * @since 2017/03/24
 	 */
-	public abstract Register assemblerTemporaryRegister();
+	public abstract RegisterList assemblerTemporaryRegister();
 	
 	/**
 	 * Returns the frame pointer register.
@@ -56,7 +72,7 @@ public abstract class RegisterDictionary
 	 * @return The register at the base of the stack.
 	 * @since 2017/03/21
 	 */
-	public abstract Register framePointerRegister();
+	public abstract RegisterList framePointerRegister();
 	
 	/**
 	 * The register is contains the global table register.
@@ -64,15 +80,16 @@ public abstract class RegisterDictionary
 	 * @return The global table register.
 	 * @since 2017/03/24
 	 */
-	public abstract Register globalTableRegister();
+	public abstract RegisterList globalTableRegister();
 	
 	/**
 	 * Returns the set of every register which is saved.
 	 *
+	 * @param __float If {@code true} then use floating point registers.
 	 * @return The set of saved registers.
 	 * @since 2017/04/01
 	 */
-	public abstract Set<Register> savedRegisters();
+	public abstract Set<Register> savedRegisters(boolean __float);
 	
 	/**
 	 * Returns the stack pointer register.
@@ -80,15 +97,51 @@ public abstract class RegisterDictionary
 	 * @return The stack pointer register.
 	 * @since 2017/03/23
 	 */
-	public abstract Register stackPointerRegister();
+	public abstract RegisterList stackPointerRegister();
 	
 	/**
 	 * Returns the set of every register which is temporary.
 	 *
+	 * @param __float If {@code true} then use floating point registers.
 	 * @return The set of temporary registers.
 	 * @since 2017/04/01
 	 */
-	public abstract Set<Register> temporaryRegisters();
+	public abstract Set<Register> temporaryRegisters(boolean __float);
+	
+	/**
+	 * Returns the set of registers which are available for allocation, this
+	 * includes both integer and floating point registers.
+	 *
+	 * @param __saved If {@code true} then request saved registers.
+	 * @return The registers available for allocation.
+	 * @since 2017/04/19
+	 */
+	public final Set<Register> bothAllocationRegisters(boolean __saved)
+	{
+		Reference<Set<Register>> ref = (__saved ? this._bas : this._bat);
+		Set<Register> rv;
+		
+		// Check
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Target map
+			Set<Register> target = new LinkedHashSet<>();
+			
+			// Fill with both
+			target.addAll(allocationRegisters(false, __saved));
+			target.addAll(allocationRegisters(true, __saved));
+			
+			// Store them
+			rv = UnmodifiableSet.<Register>of(target);
+			ref = new WeakReference<>(rv);
+			if (__saved)
+				this._bas = ref;
+			else
+				this._bat = ref;
+		}
+		
+		return rv;
+	}
 	
 	/**
 	 * Checks if the specified register is an argument register.
@@ -105,7 +158,8 @@ public abstract class RegisterDictionary
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		return argumentRegisters().contains(__r);
+		return argumentRegisters(false).contains(__r) ||
+			argumentRegisters(true).contains(__r);
 	}
 	
 	/**
@@ -124,7 +178,8 @@ public abstract class RegisterDictionary
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		return savedRegisters().contains(__r);
+		return savedRegisters(false).contains(__r) ||
+			savedRegisters(true).contains(__r);
 	}
 	
 	/**
@@ -143,7 +198,8 @@ public abstract class RegisterDictionary
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		return temporaryRegisters().contains(__r);
+		return temporaryRegisters(false).contains(__r) ||
+			temporaryRegisters(true).contains(__r);
 	}
 }
 
