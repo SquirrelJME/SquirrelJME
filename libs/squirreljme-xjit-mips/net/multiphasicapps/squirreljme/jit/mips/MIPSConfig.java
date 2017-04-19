@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.NativeType;
 import net.multiphasicapps.squirreljme.jit.RegisterDictionary;
+import net.multiphasicapps.squirreljme.jit.RegisterList;
 
 /**
  * This is the configuration for the MIPS JIT.
@@ -64,6 +65,9 @@ public class MIPSConfig
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
+		
+		// 
+		RegisterDictionary rdict = registerDictionary();
 		
 		throw new todo.TODO();
 	}
