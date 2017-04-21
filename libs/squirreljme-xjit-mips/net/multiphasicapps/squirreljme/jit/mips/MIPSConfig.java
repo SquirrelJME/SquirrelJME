@@ -75,7 +75,53 @@ public class MIPSConfig
 		Deque<Register> ri = new ArrayDeque<>(rdict.argumentRegisters(false)),
 			rf = new ArrayDeque<>(rdict.argumentRegisters(true));
 		
-		throw new todo.TODO();
+		// Setup resulting lists
+		int n = __t.length;
+		ArgumentAllocation[] rv = new ArgumentAllocation[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Ignore null elements
+			NativeType t = __t[i];
+			if (t == null)
+				continue;
+			
+			// Depends on the type
+			switch (t)
+			{
+					// 32-bit int
+				case BYTE:
+				case SHORT:
+				case INTEGER:
+					if (!ri.isEmpty())
+					{
+						rv[i] = new ArgumentAllocation(t,
+							new RegisterList(ri.removeFirst()));
+						continue;
+					}
+					break;
+				
+					// 64-bit int
+				case LONG:
+					throw new todo.TODO();
+				
+					// 32-bit float
+				case FLOAT:
+					throw new todo.TODO();
+				
+					// 64-bit float
+				case DOUBLE:
+					throw new todo.TODO();
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// Allocate on the stack
+			throw new todo.TODO();
+		}
+		
+		return rv;
 	}
 	
 	/**

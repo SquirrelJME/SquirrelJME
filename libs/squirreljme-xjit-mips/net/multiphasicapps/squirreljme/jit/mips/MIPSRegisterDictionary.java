@@ -73,6 +73,9 @@ public class MIPSRegisterDictionary
 	/** The global table pointer. */
 	private volatile Reference<RegisterList> _reggp;
 	
+	/** The exception register. */
+	private volatile Reference<RegisterList> _regex;
+	
 	/**
 	 * Initializes the dictionary.
 	 *
@@ -169,6 +172,24 @@ public class MIPSRegisterDictionary
 		if (ref == null || null == (rv = ref.get()))
 			this._regat = new WeakReference<>(
 				(rv = new RegisterList(NUBI.AT)));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/04/21
+	 */
+	@Override
+	public RegisterList exceptionRegister()
+	{
+		Reference<RegisterList> ref = this._regex;
+		RegisterList rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._regex = new WeakReference<>(
+				(rv = new RegisterList(NUBI.A2)));
 		
 		return rv;
 	}

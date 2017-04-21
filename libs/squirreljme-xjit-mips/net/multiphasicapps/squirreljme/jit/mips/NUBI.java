@@ -327,7 +327,10 @@ public final class NUBI
 			return new MIPSRegister[]{S0, S1, S2, S3, S4, S5, S6, S7, S8, S9,
 				S10, S11, FS0, FS1, FS2, FS3, FS4, FS5, FS6, FS7, FS8, FS9,
 				FS10, FS11};
-		return new MIPSRegister[]{A0, A1, A2, A3, A4, A5, A6, A7, T1, T2,
+		
+		// Argument two is not included because it is register which stores
+		// the current exception
+		return new MIPSRegister[]{A0, A1, A3, A4, A5, A6, A7, T1, T2,
 			FA0, FA1, FA2, FA3, FA4, FA5, FA6, FA7, FT0, FT1, FT2, FT3, FT4,
 			FT5, FT6, FT7, FT8, FT9, FT10, FT11};
 	}
@@ -347,9 +350,10 @@ public final class NUBI
 		// Integer
 		if (__r == NUBI.A0)
 			return NUBI.A1;
+		
+		// Argument 2 is not included because it is the exception argument
+		// and return value
 		else if (__r == NUBI.A1)
-			return NUBI.A2;
-		else if (__r == NUBI.A2)
 			return NUBI.A3;
 		else if (__r == NUBI.A3)
 			return NUBI.A4;

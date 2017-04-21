@@ -67,6 +67,15 @@ public abstract class RegisterDictionary
 	public abstract RegisterList assemblerTemporaryRegister();
 	
 	/**
+	 * This is the register which stores the exception that is currently being
+	 * thrown.
+	 *
+	 * @return The exception register.
+	 * @since 2017/04/21
+	 */
+	public abstract RegisterList exceptionRegister();
+	
+	/**
 	 * Returns the frame pointer register.
 	 *
 	 * @return The register at the base of the stack.
