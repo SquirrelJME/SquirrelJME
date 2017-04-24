@@ -342,6 +342,38 @@ public final class ActiveCacheState
 		}
 		
 		/**
+		 * Forces the slot to have the given allocation and the given type.
+		 *
+		 * @param __aa The allocation to use for this slot. If the type is
+		 * {@link JavaType#TOP} then this must be {@code null}.
+		 * @param __t The Java type to store in this slot, this cannot be null.
+		 * would cause an invalid state to be set.
+		 * @throws JITException If the allocation cannot be set because it
+		 * would not be valid.
+		 * @throws NullPointerException The Java type to store in this slot.
+		 * @since 2017/04/24
+		 */
+		public void forceAllocation(ArgumentAllocation __aa, JavaType __t)
+			throws JITException, NullPointerException
+		{
+			// Check
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ1x The top type cannot have an allocation
+			// specified for it. (The allocation)}
+			if (__t == JavaType.TOP && __aa != null)
+				throw new JITException(String.format("AQ1x %s", __aa));
+			
+			// {@squirreljme.error AQ1y The specified type cannot be set on
+			// a slot. (The type)}
+			else if (!__t.isValid() && !(__t == JavaType.TOP && __aa == null))
+				throw new JITException(String.format("AQ1y %s", __t));
+			
+			throw new todo.TODO();
+		}
+		
+		/**
 		 * Removes the value contained within this slot.
 		 *
 		 * If other slots alias this slot then they will lose their value and

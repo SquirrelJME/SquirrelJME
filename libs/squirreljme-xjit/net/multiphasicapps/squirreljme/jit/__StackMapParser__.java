@@ -116,8 +116,17 @@ class __StackMapParser__
 		ArgumentAllocation[] allocs = config.entryAllocations(argmap);
 		
 		// Fill in allocations to the initial state
-		if (true)
-			throw new todo.TODO();
+		for (int i = 0; i < __ml; i++)
+		{
+			// Ignore missing variables
+			JavaType j;
+			if (null == (j = nextlocals[i]))
+				continue;
+			
+			// Force allocation for argument entry.
+			nextstate.getSlot(AreaType.STACK, i).forceAllocation(
+				allocs[i], nextlocals[i]);
+		}
 		
 		// Set the initial calculated state
 		result.set(0, nextstate);

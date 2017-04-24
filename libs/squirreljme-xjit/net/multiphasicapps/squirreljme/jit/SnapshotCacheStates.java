@@ -96,11 +96,12 @@ public final class SnapshotCacheStates
 	 * @param __i The address to set.
 	 * @param __v The state to set, all information is copied and made
 	 * immutable.
+	 * @return The resulting cache state.
 	 * @throws JITException If a state already exists for the given address.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/18
 	 */
-	public void set(int __i, CacheState __v)
+	public SnapshotCacheState set(int __i, CacheState __v)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -118,7 +119,13 @@ public final class SnapshotCacheStates
 		{
 			dx = (-(dx) - 1);
 			pos.add(dx, __i);
-			states.add(dx, new SnapshotCacheState(this._code, __v));
+			SnapshotCacheState rv;
+			states.add(dx, (rv = new SnapshotCacheState(this._code, __v)));
+			
+			// Debug
+			System.err.printf("DEBUG -- State %d: %s%n", __i, rv);
+			
+			return rv;
 		}
 		
 		// {@squirreljme.error AQ1r A cache state already exists at the
