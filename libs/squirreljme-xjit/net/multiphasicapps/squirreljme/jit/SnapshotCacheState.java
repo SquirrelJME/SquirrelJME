@@ -167,7 +167,7 @@ public final class SnapshotCacheState
 		private volatile Reference<List<Register>> _roregs;
 		
 		/** The allocation used. */
-		private volatile Reference<ArgumentAllocation> _alloc;
+		private volatile Reference<TypedAllocation> _alloc;
 		
 		/** String representation of this slot. */
 		private volatile Reference<String> _string;
@@ -242,10 +242,10 @@ public final class SnapshotCacheState
 		 * @since 2017/03/22
 		 */
 		@Override
-		public ArgumentAllocation thisAllocation(boolean __a)
+		public TypedAllocation thisAllocation(boolean __a)
 		{
-			Reference<ArgumentAllocation> ref = this._alloc;
-			ArgumentAllocation rv;
+			Reference<TypedAllocation> ref = this._alloc;
+			TypedAllocation rv;
 			
 			// Cache?
 			if (ref == null || null == (rv = ref.get()))

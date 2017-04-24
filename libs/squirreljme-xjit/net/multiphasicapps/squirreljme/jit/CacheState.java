@@ -265,7 +265,7 @@ public abstract class CacheState
 		 * none.
 		 * @since 2017/03/22
 		 */
-		public final ArgumentAllocation thisAllocation()
+		public final TypedAllocation thisAllocation()
 		{
 			return thisAllocation(true);
 		}
@@ -279,7 +279,7 @@ public abstract class CacheState
 		 * none.
 		 * @since 2017/03/22
 		 */
-		public ArgumentAllocation thisAllocation(boolean __a)
+		public TypedAllocation thisAllocation(boolean __a)
 		{
 			// Nothing has no allocation
 			JavaType type = thisType();
@@ -292,11 +292,11 @@ public abstract class CacheState
 			// Purely on the stack?
 			List<Register> registers = thisRegisters();
 			if (registers.isEmpty())
-				return new ArgumentAllocation(dt, thisStackOffset(__a));
+				return new TypedAllocation(dt, thisStackOffset(__a));
 			
 			// In registers
 			throw new todo.TODO();
-			/*return new ArgumentAllocation(dt, registers.<Register>toArray(
+			/*return new TypedAllocation(dt, registers.<Register>toArray(
 				new Register[registers.size()]));*/
 		}
 		
@@ -408,7 +408,7 @@ public abstract class CacheState
 		 * @return The allocation value, or {@code null} if there is none.
 		 * @since 2017/03/22
 		 */
-		public final ArgumentAllocation valueAllocation()
+		public final TypedAllocation valueAllocation()
 		{
 			return value().thisAllocation(true);
 		}
@@ -421,7 +421,7 @@ public abstract class CacheState
 		 * @return The allocation value, or {@code null} if there is none.
 		 * @since 2017/03/22
 		 */
-		public final ArgumentAllocation valueAllocation(boolean __a)
+		public final TypedAllocation valueAllocation(boolean __a)
 		{
 			return value().thisAllocation(__a);
 		}

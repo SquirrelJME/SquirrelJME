@@ -353,7 +353,7 @@ public final class ActiveCacheState
 		 * @throws NullPointerException The Java type to store in this slot.
 		 * @since 2017/04/24
 		 */
-		public void forceAllocation(ArgumentAllocation __aa, JavaType __t)
+		public void forceAllocation(TypedAllocation __aa, JavaType __t)
 			throws JITException, NullPointerException
 		{
 			// Check

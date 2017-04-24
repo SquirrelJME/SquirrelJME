@@ -16,7 +16,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.ArgumentAllocation;
+import net.multiphasicapps.squirreljme.jit.TypedAllocation;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigSerializer;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -63,7 +63,7 @@ public class MIPSConfig
 	 * @since 2017/04/16
 	 */
 	@Override
-	public ArgumentAllocation[] entryAllocations(NativeType... __t)
+	public TypedAllocation[] entryAllocations(NativeType... __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -77,7 +77,7 @@ public class MIPSConfig
 		
 		// Setup resulting lists
 		int n = __t.length;
-		ArgumentAllocation[] rv = new ArgumentAllocation[n];
+		TypedAllocation[] rv = new TypedAllocation[n];
 		for (int i = 0; i < n; i++)
 		{
 			// Ignore null elements
@@ -94,7 +94,7 @@ public class MIPSConfig
 				case INTEGER:
 					if (!ri.isEmpty())
 					{
-						rv[i] = new ArgumentAllocation(t,
+						rv[i] = new TypedAllocation(t,
 							new RegisterList(ri.removeFirst()));
 						continue;
 					}

@@ -88,7 +88,7 @@ public abstract class JITConfig
 	 * @throws NullPointerException If no array was specified.
 	 * @since 2017/04/16
 	 */
-	public abstract ArgumentAllocation[] entryAllocations(NativeType... __t)
+	public abstract TypedAllocation[] entryAllocations(NativeType... __t)
 		throws JITException, NullPointerException;
 	
 	/**

@@ -113,7 +113,7 @@ class __StackMapParser__
 		}
 		
 		// Get the allocations to initialize with, these are always fixed
-		ArgumentAllocation[] allocs = config.entryAllocations(argmap);
+		TypedAllocation[] allocs = config.entryAllocations(argmap);
 		
 		// Fill in allocations to the initial state
 		for (int i = 0; i < __ml; i++)

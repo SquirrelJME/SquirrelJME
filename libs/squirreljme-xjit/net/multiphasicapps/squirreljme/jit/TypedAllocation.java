@@ -24,7 +24,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  *
  * @since 2017/03/20
  */
-public final class ArgumentAllocation
+public final class TypedAllocation
 {
 	/** The type of data used for the allocation. */
 	protected final NativeType type;
@@ -46,7 +46,7 @@ public final class ArgumentAllocation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(NativeType __t, RegisterList __r)
+	public TypedAllocation(NativeType __t, RegisterList __r)
 		throws NullPointerException
 	{
 		// Check
@@ -68,7 +68,7 @@ public final class ArgumentAllocation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/20
 	 */
-	public ArgumentAllocation(NativeType __t, int __so)
+	public TypedAllocation(NativeType __t, int __so)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -93,10 +93,10 @@ public final class ArgumentAllocation
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof ArgumentAllocation))
+		if (!(__o instanceof TypedAllocation))
 			return false;
 		
-		ArgumentAllocation o = (ArgumentAllocation)__o;
+		TypedAllocation o = (TypedAllocation)__o;
 		return this.type == o.type &&
 			this.stackoffset == o.stackoffset &&
 			Objects.equals(this.registers, o.registers);
@@ -131,7 +131,7 @@ public final class ArgumentAllocation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/22
 	 */
-	public boolean isRegisterCompatible(ArgumentAllocation __o)
+	public boolean isRegisterCompatible(TypedAllocation __o)
 		throws NullPointerException
 	{
 		// Check
