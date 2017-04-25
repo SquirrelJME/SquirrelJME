@@ -440,6 +440,11 @@ public final class ActiveCacheState
 					throw new JITException(String.format("AQ22 %s %d", __t,
 						dx));
 			}
+			
+			// Remove the previous allocation (give back registers)
+			TypedAllocation was = this._alloc;
+			if (was != null)
+				throw new todo.TODO();
 				
 			// Is OK set it, also this is not aliased at all
 			this._type = __t;
