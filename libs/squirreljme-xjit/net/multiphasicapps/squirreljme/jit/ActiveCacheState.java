@@ -294,11 +294,6 @@ public final class ActiveCacheState
 	public final class Slot
 		extends CacheState.Slot
 	{
-		/** List of registers used. */
-		@Deprecated
-		private final List<Register> _registers =
-			new ArrayList<>();
-		
 		/** Slots which alias this slot. */
 		private final Set<Slot> _aliasedby =
 			new SortedTreeSet<>(_SLOT_COMPARATOR);
@@ -314,8 +309,8 @@ public final class ActiveCacheState
 		private volatile int _idalias =
 			-1;
 		
-		/** Unmodifiable registers. */
-		private volatile Reference<List<Register>> _umregs;
+		/** The allocation used for this slot. */
+		private volatile TypedAllocation _alloc;
 		
 		/**
 		 * Initializes the slot.
@@ -329,16 +324,6 @@ public final class ActiveCacheState
 			throws NullPointerException
 		{
 			super(__a, __i);
-		}
-		
-		/**
-		 * Clears the used registers.
-		 *
-		 * @since 2017/03/12
-		 */
-		public void clearRegisters()
-		{
-			this._registers.clear();
 		}
 		
 		/**
@@ -374,212 +359,6 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Removes the value contained within this slot.
-		 *
-		 * If other slots alias this slot then they will lose their value and
-		 * become copies.
-		 *
-		 * @since 2017/03/25
-		 */
-		public void remove()
-		{
-			// Do nothing if there is no value here
-			if (thisType() == JavaType.NOTHING)
-				return;
-			
-			// Remove aliases to this slot
-			__deAliasFromThis();
-			
-			// Clear registers if not aliased
-			if (!isAliased())
-				__clearRegisters();
-			
-			// Otherwise remove alias links for this slot
-			else
-				value()._aliasedby.remove(this);
-			
-			// Clear other info
-			this._type = JavaType.NOTHING;
-			this._atalias = null;
-			this._idalias = -1;
-		}
-		
-		/**
-		 * Aliases the value of this slot to another slot.
-		 *
-		 * @param __cv The slot to alias to.
-		 * @throws IllegalArgumentException If the slot is not valid.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/03/01
-		 */
-		public void setAlias(CodeVariable __cv)
-			throws IllegalArgumentException, NullPointerException
-		{
-			// Check
-			if (__cv == null)
-				throw new NullPointerException("NARG");
-			
-			// Set
-			setAlias(__cv.area(), __cv.id());
-		}
-		
-		/**
-		 * Aliases the value of this slot to another slot.
-		 *
-		 * @param __a The area to alias to.
-		 * @param __id The slot index this is aliased to.
-		 * @throws IllegalArgumentException If the slot is not valid.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/03/01
-		 */
-		@Deprecated
-		public void setAlias(AreaType __a, int __id)
-			throws IllegalArgumentException, NullPointerException
-		{
-			throw new todo.TODO();
-			/*
-			// Check
-			if (__a == null)
-				throw new NullPointerException("NARG");
-			
-			// Do not have recursive aliases
-			Slot target = getSlot(__a, __id).value();
-			
-			// {@squirreljme.error AQ1m Cannot alias slot to self. (This slot)}
-			if (target == this)
-				throw new JITException(String.format("AQ1m %s", this));
-			
-			// {@squirreljme.error AQ1n Local or work variables cannot alias
-			// other slots. (This slot; The target slot)}
-			AreaType myarea = thisArea();
-			if (myarea == AreaType.LOCAL || myarea == AreaType.WORK)
-				throw new IllegalArgumentException(String.format("AQ1n %s %s",
-					this, __id));
-			
-			// {@squirreljme.error AQ1o Cannot alias the current slot to the
-			// target slot becuase the target has no set value. (This slot; The
-			// target slot)}
-			if (target.thisType() == JavaType.NOTHING)
-				throw new JITException(String.format("AQ1o %s %s", this,
-					target));
-			
-			// Remove any information in this slot
-			remove();
-			
-			// Set
-			this._atalias = target.thisArea();
-			this._idalias = target.thisIndex();
-			*/
-		}
-		
-		/**
-		 * Sets the registers that the slot allocates to.
-		 *
-		 * Lower indexes are the least significant values.
-		 *
-		 * @param __r The registers to set the slot.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/03/11
-		 */
-		@Deprecated
-		public void setRegisters(Register... __r)
-			throws NullPointerException
-		{
-			throw new todo.TODO();
-			
-			/*
-			// Check
-			if (__r == null)
-				throw new NullPointerException("NARG");
-			
-			// {@squirreljme.error AQ1p Cannot set registers for aliased
-			// slots.}
-			if (isAliased())
-				throw new JITException("AQ1p");
-			
-			// Copy
-			__clearRegisters();
-			for (Register r : __r)
-				__addRegister(r);
-			*/
-		}
-		
-		/**
-		 * Sets the registers that the slot allocates to.
-		 *
-		 * Lower indexes are the least significant values.
-		 *
-		 * @param __r The registers to set the slot.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/03/11
-		 */
-		@Deprecated
-		public void setRegisters(Iterable<Register> __r)
-			throws NullPointerException
-		{
-			throw new todo.TODO();
-			
-			/*
-			// Check
-			if (__r == null)
-				throw new NullPointerException("NARG");
-			
-			// {@squirreljme.error AQ1q Cannot set registers for aliased
-			// slots.}
-			if (isAliased())
-				throw new JITException("AQ1q");
-			
-			// Copy
-			__clearRegisters();
-			for (Register r : __r)
-				__addRegister(r);
-			*/
-		}
-		
-		/**
-		 * Sets the type of value stored in this slot.
-		 *
-		 * @param __t The type of value to store, if this slot is aliased and
-		 * the alias is not compatible it will be removed.
-		 * @return The old type.
-		 * @throws JITException If the type is {@link JavaType#TOP} type.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/02/23
-		 */
-		@Deprecated
-		public JavaType setType(JavaType __t)
-			throws JITException, NullPointerException
-		{
-			throw new todo.TODO();
-			
-			/*
-			// Check
-			if (__t == null)
-				throw new NullPointerException("NARG");
-			
-			// {@squirreljme.error AQ1i Cannot set the top type.}
-			if (__t == JavaType.TOP)
-				throw new JITException("AQ1i");
-			
-			// {@squirreljme.error AQ1j Cannot set the type to nothing, use
-			// remove for that.}
-			if (__t == JavaType.NOTHING)
-				throw new IllegalStateException("AQ1j");
-			
-			// Remove the type information
-			JavaType rv = this._type;
-			remove();
-			
-			// Allocate registers if possible
-			System.err.println("TODO -- Allocate registers.");
-			
-			// Set, return old
-			this._type = __t;
-			return rv;
-			*/
-		}
-		
-		/**
 		 * {@inheritDoc}
 		 * @since 2017/03/31
 		 */
@@ -601,19 +380,12 @@ public final class ActiveCacheState
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2017/03/11
+		 * @since 2017/04/25
 		 */
 		@Override
-		public List<Register> thisRegisters()
+		protected TypedAllocation thisAllocation()
 		{
-			Reference<List<Register>> ref = this._umregs;
-			List<Register> rv;
-			
-			if (ref == null || null == (rv = ref.get()))
-				this._umregs = new WeakReference<>(
-					(rv = UnmodifiableList.<Register>of(this._registers)));
-			
-			return rv;
+			return this._alloc;
 		}
 		
 		/**
@@ -684,118 +456,6 @@ public final class ActiveCacheState
 		}
 		
 		/**
-		 * Adds a register to the used registers.
-		 *
-		 * @param __r The register to add.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/03/25
-		 */
-		@Deprecated
-		private void __addRegister(Register __r)
-			throws NullPointerException
-		{
-			throw new todo.TODO();
-			
-			/*
-			// Check
-			if (__r == null)
-				throw new NullPointerException("NARG");
-			
-			// {@squirreljme.error AQ1k Add of a register which is not
-			// allocatable naturally to a slot or one which has already been
-			// consumed. (The register that was removed; This slot; The
-			// registers available for allocation)}
-			MultiSetDeque<Register> foralloc = ActiveCacheState.this.foralloc;
-			if (!foralloc.remove(__r))
-				throw new JITException(String.format("AQ1k %s %s %s", __r,
-					this, foralloc));
-			
-			// Add to register list
-			this._registers.add(__r);
-			*/
-		}
-		
-		/**
-		 * Clears all registers.
-		 *
-		 * @since 2017/03/25
-		 */
-		@Deprecated
-		private void __clearRegisters()
-		{
-			throw new todo.TODO();
-			
-			/*
-			// {@squirreljme.error AQ1l Attempt to clear registers for a slot
-			// which is aliased. (This slot)}
-			if (isAliased())
-				throw new JITException(String.format("AQ1l %s", this));
-			
-			// Refill free register usage
-			__Code__ engine = ActiveCacheState.this._code;
-			Deque<Register> savedint = ActiveCacheState.this.savedint,
-				savedfloat = ActiveCacheState.this.savedfloat,
-				tempint = ActiveCacheState.this.tempint,
-				tempfloat = ActiveCacheState.this.tempfloat;
-			List<Register> registers = this._registers;
-			RegisterDictionary rdict = ActiveCacheState.this.rdict;
-			while (!registers.isEmpty())
-			{
-				// Remove the last registers
-				Register r = registers.remove(registers.size() - 1);
-				
-				// Temporary
-				if (rdict.isRegisterArgument(r) ||
-					rdict.isRegisterTemporary(r))
-				{
-					if (r.isInteger())
-						tempint.offerFirst(r);
-					if (r.isFloat())
-						tempfloat.offerFirst(r);
-				}
-				
-				// Saved
-				else
-				{
-					if (r.isInteger())
-						savedint.offerFirst(r);
-					if (r.isFloat())
-						savedfloat.offerFirst(r);
-				}
-			}
-			*/
-		}
-		
-		/**
-		 * De-alias any slots which are aliased by this slot.
-		 *
-		 * @since 2017/03/25
-		 */
-		@Deprecated
-		private void __deAliasFromThis()
-		{
-			throw new todo.TODO();
-			
-			/*
-			// Remove alias to this slot
-			boolean genops = ActiveCacheState.this.genops;
-			Set<Slot> aliasedby = this._aliasedby;
-			for (Slot by : aliasedby)
-			{
-				if (true)
-					throw new todo.TODO();
-				
-				// Generate operation?
-				if (genops)
-					throw new todo.TODO();
-			}
-			
-			// Clear it
-			aliasedby.clear();
-			*/
-		}
-		
-		/**
 		 * Switches to the specified state.
 		 *
 		 * @param __t The slot to copy from.
@@ -815,17 +475,13 @@ public final class ActiveCacheState
 			// Copy state
 			CacheState.Slot value = __s.value();
 			this._type = value.thisType();
+			this._alloc = __s.thisAllocation();
 			
 			// Aliased?
-			List<Register> registers = this._registers;
 			if (value != __s)
 			{
 				this._atalias = value.thisArea();
 				this._idalias = value.thisIndex();
-				
-				// Aliased entries do not use registers because their register
-				// usage is a purely virtual
-				registers.clear();
 			}
 			
 			// Not aliased
@@ -833,10 +489,6 @@ public final class ActiveCacheState
 			{
 				this._atalias = null;
 				this._idalias = -1;
-				
-				// Use all registers
-				registers.clear();
-				setRegisters(__s.thisRegisters());
 			}
 		}
 	}

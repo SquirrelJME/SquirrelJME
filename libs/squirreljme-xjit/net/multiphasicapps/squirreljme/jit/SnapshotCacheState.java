@@ -160,14 +160,8 @@ public final class SnapshotCacheState
 		/** Slot this is aliased to. */
 		protected final int idalias;
 		
-		/** Registers used */
-		private final Register[] _registers;
-		
-		/** Read-only registers. */
-		private volatile Reference<List<Register>> _roregs;
-		
 		/** The allocation used. */
-		private volatile Reference<TypedAllocation> _alloc;
+		protected final TypedAllocation alloc;
 		
 		/** String representation of this slot. */
 		private volatile Reference<String> _string;
@@ -192,14 +186,7 @@ public final class SnapshotCacheState
 			
 			// Copy fields
 			this.type = __from.thisType();
-			
-			// Copy Registers
-			List<Register> fromregisters = __from.thisRegisters();
-			int n = fromregisters.size();
-			Register[] registers = new Register[n];
-			for (int i = 0; i < n; i++)
-				registers[i] = fromregisters.get(i);
-			this._registers = registers;
+			this.alloc = __from.thisAllocation();
 			
 			// Copy alias
 			CacheState.Slot alias = __from.value();
@@ -242,36 +229,9 @@ public final class SnapshotCacheState
 		 * @since 2017/03/22
 		 */
 		@Override
-		public TypedAllocation thisAllocation(boolean __a)
+		public TypedAllocation thisAllocation()
 		{
-			Reference<TypedAllocation> ref = this._alloc;
-			TypedAllocation rv;
-			
-			// Cache?
-			if (ref == null || null == (rv = ref.get()))
-				this._alloc = new WeakReference<>(
-					(rv = super.thisAllocation(false)));
-			
-			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/03/11
-		 */
-		@Override
-		public List<Register> thisRegisters()
-		{
-			Reference<List<Register>> ref = this._roregs;
-			List<Register> rv;
-			
-			// Cache?
-			if (ref == null || null == (rv = ref.get()))
-				this._roregs = new WeakReference<>((rv =
-					UnmodifiableList.<Register>of(
-					Arrays.<Register>asList(this._registers))));
-			
-			return rv;
+			return this.alloc;
 		}
 		
 		/**
