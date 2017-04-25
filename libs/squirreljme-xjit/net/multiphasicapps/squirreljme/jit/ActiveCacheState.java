@@ -164,6 +164,52 @@ public final class ActiveCacheState
 	}
 	
 	/**
+	 * Checks whether the given register is free for allocation.
+	 *
+	 * @param __r The register to check if it is available.
+	 * @return {@code true} if the specified register is available for
+	 * allocation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/25
+	 */
+	public boolean isRegisterAvailable(Register __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// It can be in any queue
+		return this.foralloc.contains(__r);
+	}
+	
+	/**
+	 * Checks if the specified register list and all of its registers are
+	 * available for allocation.
+	 *
+	 * @param __r The register to check if it is fully available.
+	 * @return {@code true} if all registers in the register list are
+	 * available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/25
+	 */
+	public boolean isRegisterListAvailable(RegisterList __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through each register in the list
+		for (int i = 0, n = __r.size(); i < n; i++)
+			if (!isRegisterAvailable(__r.get(i)))
+				return false;
+		
+		// Is available
+		return true;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
@@ -344,18 +390,72 @@ public final class ActiveCacheState
 			// Check
 			if (__t == null)
 				throw new NullPointerException("NARG");
+				
+			RegisterList rl = null;
+			MultiSetDeque<Register> ms = ActiveCacheState.this.foralloc;
 			
-			// {@squirreljme.error AQ1x The top type cannot have an allocation
-			// specified for it. (The allocation)}
-			if (__t == JavaType.TOP && __aa != null)
-				throw new JITException(String.format("AQ1x %s", __aa));
+			// The top type has specific conditions
+			if (__t == JavaType.TOP)
+			{			
+				// {@squirreljme.error AQ1x The top type cannot have an
+				// allocation specified for it. (The allocation)}
+				if (__aa != null)
+					throw new JITException(String.format("AQ1x %s", __aa));
+				
+				// {@squirreljme.error AQ20 Cannot set the top type at the
+				// front of the tread. (This slot index)}
+				Tread t = thisTread();
+				int dx = super.index;
+				if (dx <= 0)
+					throw new JITException(String.format("AQ20 %d", dx));
+				
+				// {@squirreljme.error AQ21 Cannot set the top type because the
+				// previous entry is not wide. (The previous type)}
+				JavaType pt = t.get(dx - 1).thisType();
+				if (!pt.isWide())
+					throw new JITException(String.format("AQ21 %s", pt));
+			}
 			
 			// {@squirreljme.error AQ1y The specified type cannot be set on
 			// a slot. (The type)}
-			else if (!__t.isValid() && !(__t == JavaType.TOP && __aa == null))
+			else if (!__t.isValid())
 				throw new JITException(String.format("AQ1y %s", __t));
 			
-			throw new todo.TODO();
+			// {@squirreljme.error AQ1z Cannot force the slot to have the
+			// given allocation because the registers it uses are already
+			// allocated. (The allocation)}
+			else if (__aa != null && __aa.hasRegisters() &&
+				!isRegisterListAvailable((rl = __aa.registers())))
+				throw new JITException(String.format("AQ1z %s %s", __aa, ms));
+			
+			// Destroy the value following if this is wide
+			if (__t.isWide())
+			{
+				// {@squirreljme.error AQ22 Cannot set the specified type to
+				// wide because the top overflows the tread. (The type to set;
+				// The current slot index)}
+				Tread t = thisTread();
+				int dx = super.index;
+				if (dx + 1 >= t.size())
+					throw new JITException(String.format("AQ22 %s %d", __t,
+						dx));
+			}
+				
+			// Is OK set it, also this is not aliased at all
+			this._type = __t;
+			this._alloc = __aa;
+			this._atalias = null;
+			this._idalias = -1;
+			
+			// Actually do it
+			if (__t.isWide())
+				thisTread().get(super.index + 1).forceAllocation(null,
+					JavaType.TOP);
+			
+			// Remove all registers the allocation uses
+			if (rl == null)
+				for (int i = 0, n = rl.size(); i < n; i++)
+					ms.remove(rl.get(i));
 		}
 		
 		/**
