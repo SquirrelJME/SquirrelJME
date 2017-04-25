@@ -70,6 +70,18 @@ public class MultiSetDeque<V>
 	}
 	
 	/**
+	 * Checks if the any of the sub-deques contain the specified element.
+	 *
+	 * @param __v The element to check.
+	 * @return {@code true} if the element is any in deque.
+	 * @since 2017/04/25
+	 */
+	public final boolean contains(V __v)
+	{
+		return this._master.contains(__v);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/03/25
 	 */
