@@ -39,6 +39,9 @@ public final class SnapshotCacheState
 	/** Work variables. */
 	protected final Tread work;
 	
+	/** The size of the stack. */
+	protected final int stacksize;
+	
 	/** String representation of this state. */
 	private volatile Reference<String> _string;
 	
@@ -63,28 +66,41 @@ public final class SnapshotCacheState
 		this.locals = __snapTread(AreaType.LOCAL, __a.locals());
 		this.stack = __snapTread(AreaType.STACK, __a.stack());
 		this.work = __snapTread(AreaType.WORK, __a.work());
+		
+		// Needed for push/pop
+		this.stacksize = __a.stackSize();
 	}
 	
 	/**
-	 * Returns the cached local variable assignments.
-	 *
-	 * @return The cached local variables.
+	 * {@inheritDoc}
 	 * @since 2017/02/18
 	 */
+	@Override
 	public SnapshotCacheState.Tread locals()
 	{
 		return this.locals;
 	}
 	
 	/**
-	 * Returns the cached stack variable assignments.
-	 *
-	 * @return The cached stack variables.
+	 * {@inheritDoc}
 	 * @since 2017/02/18
 	 */
+	@Override
 	public SnapshotCacheState.Tread stack()
 	{
 		return this.stack;
+	}
+	
+	/**
+	 * Returns the current size of the stack.
+	 *
+	 * @return The current stack size.
+	 * @since 2017/04/26
+	 */
+	@Override
+	public int stackSize()
+	{
+		return this.stacksize;
 	}
 	
 	/**

@@ -60,6 +60,14 @@ public abstract class CacheState
 	public abstract Tread stack();
 	
 	/**
+	 * Returns the current size of the stack.
+	 *
+	 * @return The current stack size.
+	 * @since 2017/04/26
+	 */
+	public abstract int stackSize();
+	
+	/**
 	 * The working tread.
 	 *
 	 * @return The working tread of variables.

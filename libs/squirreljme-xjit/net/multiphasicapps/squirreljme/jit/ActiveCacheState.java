@@ -93,6 +93,9 @@ public final class ActiveCacheState
 	/** Temporary registers available for allocation. */
 	private final Set<Register> _availtemp;
 	
+	/** The size of the stack. */
+	private volatile int _stacksize;
+	
 	/**
 	 * Initializes the active cache state which stores the current state
 	 * information.
@@ -230,6 +233,18 @@ public final class ActiveCacheState
 	}
 	
 	/**
+	 * Returns the current size of the stack.
+	 *
+	 * @return The current stack size.
+	 * @since 2017/04/26
+	 */
+	@Override
+	public int stackSize()
+	{
+		return this._stacksize;
+	}
+	
+	/**
 	 * Switches to the specified cache state.
 	 *
 	 * @param __cs The state to set.
@@ -258,6 +273,9 @@ public final class ActiveCacheState
 		stack.__fixAliasedBy();
 		locals.__fixAliasedBy();
 		work.__fixAliasedBy();
+		
+		// Correct stack top
+		this._stacksize = __cs.stackSize();
 	}
 	
 	/**
