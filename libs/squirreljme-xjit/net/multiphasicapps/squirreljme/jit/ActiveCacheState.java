@@ -237,11 +237,31 @@ public final class ActiveCacheState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/30
 	 */
-	public ActiveCacheState.Slot pop(ActiveCacheState __base, JavaType __t)
+	public CacheState.Slot pop(CacheState __base, JavaType __t)
 		throws JITException, NullPointerException
 	{
 		// Check
 		if (__base == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Pushes a copy of another slot value onto the stack, it will become an
+	 * alias to that value.
+	 *
+	 * @param __s The slot to copy the value from.
+	 * @throws JITException If the stack overflows or the slot is not valid
+	 * (such as if the source is not a valid copy).
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/30
+	 */
+	public ActiveCacheState.Slot pushCopy(CacheState.Slot __s)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__s == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
