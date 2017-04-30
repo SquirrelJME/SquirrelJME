@@ -223,6 +223,31 @@ public final class ActiveCacheState
 	}
 	
 	/**
+	 * Pops the given type from this stack and returns the slot in the base
+	 * stack.
+	 *
+	 * @param __base The input state which is sourced for returning, the return
+	 * value will be a slot in this state
+	 * @param __t The type of value to pop.
+	 * @return The slot at the top of the base stack, the stack this method
+	 * is called on will be modified accordingly.
+	 * @throws JITException If the type is not at the top of the stack, the
+	 * stack underflows, or the base state does not match the current top
+	 * element.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/30
+	 */
+	public ActiveCacheState.Slot pop(ActiveCacheState __base, JavaType __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__base == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
