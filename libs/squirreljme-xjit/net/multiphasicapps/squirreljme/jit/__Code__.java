@@ -186,6 +186,34 @@ class __Code__
 			case __OperandIndex__.ALOAD_3:
 				__executeLoad(JavaType.OBJECT, op - __OperandIndex__.ALOAD_0);
 				break;
+				
+			case __OperandIndex__.ILOAD_0:
+			case __OperandIndex__.ILOAD_1:
+			case __OperandIndex__.ILOAD_2:
+			case __OperandIndex__.ILOAD_3:
+				__executeLoad(JavaType.INTEGER, op - __OperandIndex__.ILOAD_0);
+				break;
+				
+			case __OperandIndex__.LLOAD_0:
+			case __OperandIndex__.LLOAD_1:
+			case __OperandIndex__.LLOAD_2:
+			case __OperandIndex__.LLOAD_3:
+				__executeLoad(JavaType.LONG, op - __OperandIndex__.LLOAD_0);
+				break;
+				
+			case __OperandIndex__.FLOAD_0:
+			case __OperandIndex__.FLOAD_1:
+			case __OperandIndex__.FLOAD_2:
+			case __OperandIndex__.FLOAD_3:
+				__executeLoad(JavaType.FLOAT, op - __OperandIndex__.FLOAD_0);
+				break;
+				
+			case __OperandIndex__.DLOAD_0:
+			case __OperandIndex__.DLOAD_1:
+			case __OperandIndex__.DLOAD_2:
+			case __OperandIndex__.DLOAD_3:
+				__executeLoad(JavaType.DOUBLE, op - __OperandIndex__.DLOAD_0);
+				break;
 		
 				// {@squirreljme.error AQ1e Invalid byte code operation index.
 				// (The operation index; The address of the operation)}
@@ -217,6 +245,9 @@ class __Code__
 		// local variable. (The type to load)}
 		if (!__t.isValid())
 			throw new JITException(String.format("AQ1f %s", __t));
+		
+		// Debug
+		System.err.printf("DEBUG -- load: %s %d%n", __t, __from);
 		
 		throw new todo.TODO();
 	}
