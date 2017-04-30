@@ -248,6 +248,25 @@ public final class ActiveCacheState
 	}
 	
 	/**
+	 * Pushes a new value onto the stack which is not a copy.
+	 *
+	 * @param __t The type of value to push.
+	 * @return The slot for the newly pushed stack entry.
+	 * @throws JITException If the stack overflows or the type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/30
+	 */
+	public ActiveCacheState.Slot pushNew(JavaType __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/23
 	 */
