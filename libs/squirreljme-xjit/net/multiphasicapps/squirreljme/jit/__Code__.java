@@ -180,6 +180,14 @@ class __Code__
 		// Depends
 		switch (op)
 		{
+			case __OperandIndex__.ALOAD:
+				__executeLoad(JavaType.OBJECT, __in.readUnsignedByte());
+				break;
+			
+			case __OperandIndex__.WIDE_ALOAD:
+				__executeLoad(JavaType.OBJECT, __in.readUnsignedShort());
+				break;
+			
 			case __OperandIndex__.ALOAD_0:
 			case __OperandIndex__.ALOAD_1:
 			case __OperandIndex__.ALOAD_2:
@@ -187,11 +195,27 @@ class __Code__
 				__executeLoad(JavaType.OBJECT, op - __OperandIndex__.ALOAD_0);
 				break;
 				
+			case __OperandIndex__.ILOAD:
+				__executeLoad(JavaType.INTEGER, __in.readUnsignedByte());
+				break;
+			
+			case __OperandIndex__.WIDE_ILOAD:
+				__executeLoad(JavaType.INTEGER, __in.readUnsignedShort());
+				break;
+			
 			case __OperandIndex__.ILOAD_0:
 			case __OperandIndex__.ILOAD_1:
 			case __OperandIndex__.ILOAD_2:
 			case __OperandIndex__.ILOAD_3:
 				__executeLoad(JavaType.INTEGER, op - __OperandIndex__.ILOAD_0);
+				break;
+				
+			case __OperandIndex__.LLOAD:
+				__executeLoad(JavaType.LONG, __in.readUnsignedByte());
+				break;
+			
+			case __OperandIndex__.WIDE_LLOAD:
+				__executeLoad(JavaType.LONG, __in.readUnsignedShort());
 				break;
 				
 			case __OperandIndex__.LLOAD_0:
@@ -201,11 +225,27 @@ class __Code__
 				__executeLoad(JavaType.LONG, op - __OperandIndex__.LLOAD_0);
 				break;
 				
+			case __OperandIndex__.FLOAD:
+				__executeLoad(JavaType.FLOAT, __in.readUnsignedByte());
+				break;
+			
+			case __OperandIndex__.WIDE_FLOAD:
+				__executeLoad(JavaType.FLOAT, __in.readUnsignedShort());
+				break;
+				
 			case __OperandIndex__.FLOAD_0:
 			case __OperandIndex__.FLOAD_1:
 			case __OperandIndex__.FLOAD_2:
 			case __OperandIndex__.FLOAD_3:
 				__executeLoad(JavaType.FLOAT, op - __OperandIndex__.FLOAD_0);
+				break;
+				
+			case __OperandIndex__.DLOAD:
+				__executeLoad(JavaType.DOUBLE, __in.readUnsignedByte());
+				break;
+			
+			case __OperandIndex__.WIDE_DLOAD:
+				__executeLoad(JavaType.DOUBLE, __in.readUnsignedShort());
 				break;
 				
 			case __OperandIndex__.DLOAD_0:
