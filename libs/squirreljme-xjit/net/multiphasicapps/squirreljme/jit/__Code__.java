@@ -289,6 +289,15 @@ class __Code__
 		// Debug
 		System.err.printf("DEBUG -- load: %s %d%n", __t, __from);
 		
+		CacheState javain = this._javain;
+		ActiveCacheState javaout = this._javaout;
+		
+		// {@squirreljme.error AQ23 The incorrect type is in the local variable
+		// slot. (The desired type; The actual type)}
+		CacheState.Slot src = javain.getSlot(AreaType.LOCAL, __from);
+		if (src.valueType() != __t)
+			throw new JITException(String.format("AQ23 %s %s", __t, src));
+		
 		throw new todo.TODO();
 	}
 	
