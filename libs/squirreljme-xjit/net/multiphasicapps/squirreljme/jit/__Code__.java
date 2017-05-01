@@ -298,7 +298,8 @@ class __Code__
 		if (src.valueType() != __t)
 			throw new JITException(String.format("AQ23 %s %s", __t, src));
 		
-		throw new todo.TODO();
+		// Push a copy
+		javaout.pushCopy(src);
 	}
 	
 	/**
