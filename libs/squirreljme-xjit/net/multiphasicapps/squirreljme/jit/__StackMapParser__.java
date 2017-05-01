@@ -124,7 +124,7 @@ class __StackMapParser__
 				continue;
 			
 			// Force allocation for argument entry.
-			nextstate.getSlot(AreaType.STACK, i).forceAllocation(
+			nextstate.getSlot(AreaType.LOCAL, i).forceAllocation(
 				allocs[i], nextlocals[i]);
 		}
 		

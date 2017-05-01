@@ -333,6 +333,9 @@ class __Code__
 			((ActiveCacheState)javain).switchFrom(existstate);
 			javaout.switchFrom(existstate);
 			
+			// Debug
+			System.err.printf("DEBUG -- at %d: %s%n", atpc, javain);
+			
 			// Decode single operation
 			__decodeOp(code);
 			
