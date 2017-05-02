@@ -252,6 +252,7 @@ public final class ActiveCacheState
 	 * alias to that value.
 	 *
 	 * @param __s The slot to copy the value from.
+	 * @return The allocated element at the top of the stack.
 	 * @throws JITException If the stack overflows or the slot is not valid
 	 * (such as if the source is not a valid copy).
 	 * @throws NullPointerException On null arguments.
@@ -282,7 +283,12 @@ public final class ActiveCacheState
 			throw new JITException(String.format("AQ25 %s %d %d", __s,
 				nextsize, stacklimit));
 		
-		throw new todo.TODO();
+		// Alias this slot to the other
+		Slot rv;
+		(rv = stack.get(stacksize)).__aliasTo(__s);
+		
+		// Use that stack entry
+		return rv;
 	}
 	
 	/**
@@ -658,6 +664,54 @@ public final class ActiveCacheState
 		public Slot value()
 		{
 			return (Slot)super.value();
+		}
+		
+		/**
+		 * Aliases this slot to the specified slot.
+		 *
+		 * @param __s The slot to alias to.
+		 * @throws JITException If the alias is not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/05/02
+		 */
+		private void __aliasTo(CacheState.Slot __s)
+			throws JITException, NullPointerException
+		{
+			// Check
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			// Check for sanity
+			if (true)
+				throw new todo.TODO();
+			
+			// Return any used registers
+			__deallocate();
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * De-allocates this slot so that it no longer has an allocated
+		 * assignment.
+		 *
+		 * @since 2017/05/02
+		 */
+		private void __deallocate()
+		{
+			// Check if nothing needs to be done
+			if (true)
+				throw new todo.TODO();
+			
+			// Check if a de-alias operation has to be performed on these
+			if (true)
+				throw new todo.TODO();
+			
+			// Clear values/dealias and any TOP values for long/double
+			if (true)
+				throw new todo.TODO();
+			
+			throw new todo.TODO();
 		}
 		
 		/**
