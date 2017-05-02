@@ -264,6 +264,24 @@ public final class ActiveCacheState
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AQ24 Cannot push the specified slot to the
+		// stack because it is not a valid type. (The slot being copied)}
+		JavaType t = __s.valueType();
+		if (t == null || !t.isValid())
+			throw new JITException(String.format("AQ24 %s", __s));
+		
+		// {@squirreljme.error AQ25 Pushing the specified slot to the stack
+		// would cause it to overflow. (The slot being copied; The next stack
+		// size; The stack limit)}
+		Tread stack = this.stack;
+		int stacksize = this._stacksize,
+			stacklimit = stack.size(),
+			pushcount = (t.isWide() ? 2 : 1),
+			nextsize = stacksize + pushcount;
+		if (nextsize > stacklimit)
+			throw new JITException(String.format("AQ25 %s %d %d", __s,
+				nextsize, stacklimit));
+		
 		throw new todo.TODO();
 	}
 	
