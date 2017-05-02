@@ -140,8 +140,8 @@ public abstract class CacheState
 	@Override
 	public String toString()
 	{
-		return String.format("{stack(%d)=%s, locals=%s, work=%s}", stack(),
-			stackSize(), locals(), work());
+		return String.format("{stack(%d)=%s, locals=%s, work=%s}", stackSize(),
+			stack(), locals(), work());
 	}
 	
 	/**
