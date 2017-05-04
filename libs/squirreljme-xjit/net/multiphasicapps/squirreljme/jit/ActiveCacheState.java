@@ -683,25 +683,43 @@ public final class ActiveCacheState
 			
 			// Get the actual slot so that there are no aliases of aliases
 			__s = __s.value();
+			AreaType ta = __s.thisArea();
+			int ti = __s.thisIndex();
+			ActiveCacheState.Tread tt = thisTread();
 			
 			// {@squirreljme.error AQ26 Cannot alias to the target slot because
-			// it is not valid. (The target slot)}
+			// it is not valid. (The slot to alias)}
 			JavaType tojt = __s.thisType();
 			if (!tojt.isValid())
 				throw new JITException(String.format("AQ26 %s", __s));
 			
-			if (true)
-				throw new todo.TODO();
+			// {@squirreljme.error AQ27 Cannot alias to the target because it
+			// overflows the target tread. (The slot to alias; The target area;
+			// The target index)}
+			boolean wide;
+			if ((wide = tojt.isWide()))
+				if (ti + 1 >= tt.size())
+					throw new JITException(String.format("AQ27 %s %s %d", __s,
+						ta, ti));
 			
 			// Return any used registers for this slot
 			__deallocate();
 			
 			// Deallocate the following slot if this type is wide because this
 			// could be replacing for example: int int
-			if (tojt.isWide())
-				thisTread().get(thisIndex() + 1).__deallocate();
+			if (wide)
+				tt.get(thisIndex() + 1).__deallocate();
 			
-			throw new todo.TODO();
+			// Set target
+			this._type = tojt;
+			this._atalias = ta;
+			this._idalias = ti;
+			
+			// No allocation is used (the target is used)
+			this._alloc = null;
+			
+			// Add this slot to the aliased by to the target
+			getSlot(ta, ti)._aliasedby.add(this);
 		}
 		
 		/**
