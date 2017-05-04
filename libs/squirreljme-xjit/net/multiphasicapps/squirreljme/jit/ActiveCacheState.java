@@ -681,12 +681,25 @@ public final class ActiveCacheState
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			// Check for sanity
+			// Get the actual slot so that there are no aliases of aliases
+			__s = __s.value();
+			
+			// {@squirreljme.error AQ26 Cannot alias to the target slot because
+			// it is not valid. (The target slot)}
+			JavaType tojt = __s.thisType();
+			if (!tojt.isValid())
+				throw new JITException(String.format("AQ26 %s", __s));
+			
 			if (true)
 				throw new todo.TODO();
 			
-			// Return any used registers
+			// Return any used registers for this slot
 			__deallocate();
+			
+			// Deallocate the following slot if this type is wide because this
+			// could be replacing for example: int int
+			if (tojt.isWide())
+				thisTread().get(thisIndex() + 1).__deallocate();
 			
 			throw new todo.TODO();
 		}
