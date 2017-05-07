@@ -731,18 +731,44 @@ public final class ActiveCacheState
 		private void __deallocate()
 		{
 			// Check if nothing needs to be done
-			if (true)
-				throw new todo.TODO();
+			JavaType type = this._type;
+			int idalias = this._idalias;
+			if (type == JavaType.NOTHING)
+				return;
 			
-			// Check if a de-alias operation has to be performed on these
-			if (true)
-				throw new todo.TODO();
+			// {@squirreljme.error AQ28 Cannot deallocate the current slot
+			// because it is being aliased by other slots. The alias must be
+			// cleared and operations generated. (The current slot)}
+			if (!this._aliasedby.isEmpty())
+				throw new JITException(String.format("AQ28 %s", this));
 			
 			// Clear values/dealias and any TOP values for long/double
-			if (true)
+			if (type.isWide())
 				throw new todo.TODO();
 			
-			throw new todo.TODO();
+			// Remove alias to this slot
+			value()._aliasedby.remove(this);
+			
+			// Give back registers if there are any
+			TypedAllocation alloc = this._alloc;
+			if (alloc.hasRegisters())
+			{
+				Deque<Register> savedint = ActiveCacheState.this.savedint,
+					savedfloat = ActiveCacheState.this.savedfloat,
+					tempint = ActiveCacheState.this.tempint,
+					tempfloat = ActiveCacheState.this.tempfloat;
+				Set<Register> availsaved = ActiveCacheState.this._availsaved,
+					availtemp = ActiveCacheState.this._availtemp;
+			
+				if (true)
+					throw new todo.TODO();
+			}
+			
+			// Clear values
+			this._type = JavaType.NOTHING;
+			this._atalias = null;
+			this._idalias = -1;
+			this._alloc = null;
 		}
 		
 		/**

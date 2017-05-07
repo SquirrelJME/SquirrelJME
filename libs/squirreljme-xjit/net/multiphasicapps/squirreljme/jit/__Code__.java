@@ -335,10 +335,13 @@ class __Code__
 			javaout.switchFrom(existstate);
 			
 			// Debug
-			System.err.printf("DEBUG -- at %d: %s%n", atpc, javain);
+			System.err.printf("DEBUG -- IN at %d: %s%n", atpc, javain);
 			
 			// Decode single operation
 			__decodeOp(code);
+			
+			// Debug
+			System.err.printf("DEBUG -- OUT at %d: %s%n", atpc, javaout);
 			
 			throw new todo.TODO();
 		}
