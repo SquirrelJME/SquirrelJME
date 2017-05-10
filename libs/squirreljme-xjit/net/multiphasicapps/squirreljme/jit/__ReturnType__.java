@@ -18,11 +18,8 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public enum __ReturnType__
 {
-	/** Do not flow to the next instruction, jumps may be specified. */
-	NONE,
-	
-	/** Continue to the next instruction. */
-	NEXT,
+	/** Forward control flow to another instruction address. */
+	FORWARD,
 	
 	/** Return from the current method. */
 	RETURN,
