@@ -64,6 +64,10 @@ class __Code__
 	/** The output Java state. */
 	private final ActiveCacheState _javaout;
 	
+	/** The return state. */
+	private final __Return__ _return =
+		new __Return__();
+	
 	/** The current address being parsed. */
 	private volatile int _atpc;
 	
@@ -315,11 +319,15 @@ class __Code__
 		SnapshotCacheStates smt = this._smt;
 		CacheState javain = this._javain;
 		ActiveCacheState javaout = this._javaout;
+		__Return__ javaret = this._return;
 		
 		// Open stream to the code
 		try (__CountStream__ code = new __CountStream__(
 			new ByteArrayInputStream(this._code)))
 		{
+			// Reset the return state
+			javaret.reset();
+			
 			// The address currently being handled
 			int atpc = code.count();
 			this._atpc = atpc;
@@ -342,6 +350,9 @@ class __Code__
 			
 			// Debug
 			System.err.printf("DEBUG -- OUT at %d: %s%n", atpc, javaout);
+			
+			// Depends on the flow
+			__ExecutionFlow__ flow = javaret.flow();
 			
 			throw new todo.TODO();
 		}

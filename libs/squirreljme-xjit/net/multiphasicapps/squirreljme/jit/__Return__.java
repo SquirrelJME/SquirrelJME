@@ -18,6 +18,9 @@ package net.multiphasicapps.squirreljme.jit;
  */
 final class __Return__
 {
+	/** How execution continues when an instruction finishes. */
+	private volatile __ExecutionFlow__ _flow;
+	
 	/**
 	 * Initializes the return state.
 	 *
@@ -29,12 +32,31 @@ final class __Return__
 	}
 	
 	/**
+	 * Returns the flow which execution follows when the instruction finishes.
+	 *
+	 * @return The flow used.
+	 * @throws IllegalStateException If no flow was specified.
+	 * @since 2017/05/10
+	 */
+	public __ExecutionFlow__ flow()
+		throws JITException
+	{
+		// {@squirreljme.error AQ29 No instruction flow has been specified.}
+		__ExecutionFlow__ rv = this._flow;
+		if (rv == null)
+			throw new IllegalStateException("AQ29");
+		
+		return rv;
+	}
+	
+	/**
 	 * Clears the state and resets everything to their default values.
 	 *
 	 * @since 2017/05/09
 	 */
 	public void reset()
 	{
+		this._flow = null;
 	}
 }
 

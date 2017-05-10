@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/05/09
  */
-public enum __ReturnType__
+enum __ExecutionFlowType__
 {
 	/** Forward control flow to another instruction address. */
 	FORWARD,
