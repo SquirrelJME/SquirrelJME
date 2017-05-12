@@ -58,5 +58,28 @@ final class __Return__
 	{
 		this._flow = null;
 	}
+	
+	/**
+	 * Sets the flow that occurs when the instruction terminates.
+	 *
+	 * @param __f The flow to set.
+	 * @throws IllegalStateException If a flow was already set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/11
+	 */
+	public void setFlow(__ExecutionFlow__ __f)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ2a A flow was already specified.}
+		if (this._flow != null)
+			throw new IllegalStateException("AQ2a");
+		
+		// Set
+		this._flow = __f;
+	}
 }
 

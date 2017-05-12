@@ -304,6 +304,9 @@ class __Code__
 		
 		// Push a copy
 		javaout.pushCopy(src);
+		
+		// Normally flows to the next instruction
+		this._return.setFlow(__ExecutionFlow__.NEXT);
 	}
 	
 	/**
@@ -351,8 +354,10 @@ class __Code__
 			// Debug
 			System.err.printf("DEBUG -- OUT at %d: %s%n", atpc, javaout);
 			
-			// Depends on the flow
+			// Depends on the flow, always hide nexts
 			__ExecutionFlow__ flow = javaret.flow();
+			if (flow.equals(__ExecutionFlow__.NEXT))
+				flow = new __ExecutionFlow__(code.count());
 			
 			throw new todo.TODO();
 		}

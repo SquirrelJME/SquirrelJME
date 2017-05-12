@@ -18,6 +18,10 @@ package net.multiphasicapps.squirreljme.jit;
  */
 class __ExecutionFlow__
 {
+	/** The next instruction. */
+	public static final __ExecutionFlow__ NEXT =
+		new __ExecutionFlow__(__ExecutionFlowType__.NEXT);
+	
 	/** The method is returned from. */
 	public static final __ExecutionFlow__ RETURN =
 		new __ExecutionFlow__(__ExecutionFlowType__.RETURN);
@@ -48,6 +52,23 @@ class __ExecutionFlow__
 	}
 	
 	/**
+	 * Initializes execution flow with multiple address targets.
+	 *
+	 * @param __addr Address targets.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/11
+	 */
+	__ExecutionFlow__(int... __addr)
+		throws NullPointerException
+	{
+		// Check
+		if (__addr == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/10
 	 */
@@ -75,6 +96,17 @@ class __ExecutionFlow__
 	public String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the type of the execution flow.
+	 *
+	 * @return The type of flow used.
+	 * @since 2017/05/11
+	 */
+	public __ExecutionFlowType__ type()
+	{
+		return this.type;
 	}
 }
 

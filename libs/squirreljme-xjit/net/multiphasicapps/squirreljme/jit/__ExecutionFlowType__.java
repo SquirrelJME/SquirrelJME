@@ -18,6 +18,9 @@ package net.multiphasicapps.squirreljme.jit;
  */
 enum __ExecutionFlowType__
 {
+	/** The next instruction. */
+	NEXT,
+	
 	/** Forward control flow to another instruction address. */
 	FORWARD,
 	
