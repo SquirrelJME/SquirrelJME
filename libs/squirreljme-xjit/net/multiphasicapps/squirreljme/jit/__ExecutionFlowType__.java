@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/05/09
  */
+@Deprecated
 enum __ExecutionFlowType__
 {
 	/** The next instruction. */

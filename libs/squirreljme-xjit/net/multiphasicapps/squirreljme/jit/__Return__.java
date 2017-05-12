@@ -19,6 +19,7 @@ package net.multiphasicapps.squirreljme.jit;
 final class __Return__
 {
 	/** How execution continues when an instruction finishes. */
+	@Deprecated
 	private volatile __ExecutionFlow__ _flow;
 	
 	/**
@@ -38,6 +39,7 @@ final class __Return__
 	 * @throws IllegalStateException If no flow was specified.
 	 * @since 2017/05/10
 	 */
+	@Deprecated
 	public __ExecutionFlow__ flow()
 		throws JITException
 	{
@@ -67,6 +69,7 @@ final class __Return__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/11
 	 */
+	@Deprecated
 	public void setFlow(__ExecutionFlow__ __f)
 		throws IllegalStateException, NullPointerException
 	{

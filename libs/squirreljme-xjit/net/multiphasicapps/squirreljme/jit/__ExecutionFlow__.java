@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/05/10
  */
+@Deprecated
 class __ExecutionFlow__
 {
 	/** The next instruction. */
