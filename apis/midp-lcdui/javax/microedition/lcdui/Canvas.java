@@ -288,9 +288,16 @@ public abstract class Canvas
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This method always returns {@code true} because all implementations
+	 * must double buffer canvases.
+	 *
+	 * @return {@code true}.
+	 * @since 2017/05/13
+	 */
 	public boolean isDoubleBuffered()
 	{
-		throw new todo.TODO();
+		return true;
 	}
 	
 	/**
