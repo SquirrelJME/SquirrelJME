@@ -72,6 +72,20 @@ public final class SquirrelJME
 	}
 	
 	/**
+	 * This throws an index out of bounds exception.
+	 *
+	 * @param __i The out of bounds index.
+	 * @param __l The length of the array.
+	 * @throws ArrayIndexOutOfBoundsException Always.
+	 * @since 2017/05/13
+	 */
+	public static void arrayIndexOutOfBounds(int __i, int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new ArrayIndexOutOfBoundsException("ZZ0a " + __i + " " + __l);
+	}
+	
+	/**
 	 * Returns the class which called the method which called this method.
 	 *
 	 * With the following stack trace:
