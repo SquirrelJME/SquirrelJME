@@ -30,6 +30,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  *
  * @since 2017/02/23
  */
+@Deprecated
 public final class ActiveCacheState
 	extends CacheState
 {

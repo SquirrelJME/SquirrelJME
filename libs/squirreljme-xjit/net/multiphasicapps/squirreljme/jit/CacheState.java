@@ -20,6 +20,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  *
  * @since 2017/03/03
  */
+@Deprecated
 public abstract class CacheState
 {
 	/** The owning code stream. */

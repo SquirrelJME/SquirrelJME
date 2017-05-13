@@ -25,6 +25,7 @@ import java.util.List;
  * @see SnapshotCacheState
  * @since 2017/02/16
  */
+@Deprecated
 public final class SnapshotCacheStates
 {
 	/** The code stream being used. */

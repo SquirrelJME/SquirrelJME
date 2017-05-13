@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.jit.CacheState;
  *
  * @since 2017/03/06
  */
+@Deprecated
 public class StackSlotOffsets
 {
 	/** Total number of entries. */

@@ -27,6 +27,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  *
  * @since 2017/02/16
  */
+@Deprecated
 public final class SnapshotCacheState
 	extends CacheState
 {
