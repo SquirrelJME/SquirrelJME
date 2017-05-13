@@ -11,16 +11,14 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This contains the entire state of the program. The program consists of
- * multiple {@link BasicBlockZone}. Each basic block as an entry state and
- * encompasses a set of instructions. Control flows from one basic block to
- * another depending on the output and input alias state. The program is parsed
- * in a queue order generating virtual instructions as needed for each region
- * of basic blocks for differing aliasing types.
+ * This is a part of the program which contains {@link BasicBlock}s. The basic
+ * block zones encompass a region of the program in {@link ProgramState} and
+ * contains multiple basic blocks as needed for the correct input state.
  *
+ * @see BasicBlock
  * @since 2017/05/13
  */
-public class ProgramState
+public class BasicBlockZone
 {
 }
 
