@@ -11,26 +11,22 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This contains the entire state of the program. The program consists of
- * multiple {@link BasicBlockZone}. Each basic block as an entry state and
- * encompasses a set of instructions. Control flows from one basic block to
- * another depending on the output and input alias state. The program is parsed
- * in a queue order generating virtual instructions as needed for each region
- * of basic blocks for differing aliasing types.
+ * This represents the byte code for a given method.
  *
- * @since 2017/05/13
+ * @since 2017/05/14
  */
-public class ProgramState
+public class ByteCode
 {
-	/** This contains the basic block zones, sorted at zone start address. */
-	private final BasicBlockZone[] _zones;
-	
 	/**
-	 * Initializes the program state.
+	 * Represents the byte code.
 	 *
+	 * @param __ms The maximum number of stack entries.
+	 * @param __ml The maximum number of local entries.
+	 * @param __code The program's byte code.
+	 * @param __eht The exception handler table.
 	 * @since 2017/05/14
 	 */
-	ProgramState()
+	ByteCode(int __ms, int __ml, byte[] __code, ExceptionHandlerTable __eht)
 	{
 		throw new todo.TODO();
 	}
