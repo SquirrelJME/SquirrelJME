@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This represents the byte code for a given method.
+ * This represents the byte code for a given method. It contains the actual
+ * instructions, iterators over instructions, along with jump targets which
+ * are available for usage.
  *
  * @since 2017/05/14
  */
