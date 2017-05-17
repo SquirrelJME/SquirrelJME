@@ -32,15 +32,17 @@ public class ByteCode
 	 * @param __ml The maximum number of local entries.
 	 * @param __code The program's byte code, this is not copied.
 	 * @param __eht The exception handler table.
+	 * @param __pool The constant pool.
 	 * @throws JITException If the byte code is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/14
 	 */
-	ByteCode(int __ms, int __ml, byte[] __code, ExceptionHandlerTable __eht)
+	ByteCode(int __ms, int __ml, byte[] __code, ExceptionHandlerTable __eht,
+		__Pool__ __pool)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__code == null || __eht == null)
+		if (__code == null || __eht == null || __pool == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -68,8 +70,6 @@ public class ByteCode
 					codelen));
 		}
 		this._lengths = lengths;
-		
-		throw new todo.TODO();
 	}
 	
 	/**

@@ -130,7 +130,8 @@ class __Code__
 		this.exceptions = exceptions;
 		
 		// Initialize code
-		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions);
+		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions,
+			__pool);
 		
 		if (true)
 			throw new todo.TODO();

@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+
 /**
  * This contains the entire state of the program. The program consists of
  * multiple {@link BasicBlockZone}. Each basic block as an entry state and
@@ -28,10 +31,18 @@ public class ProgramState
 	/**
 	 * Initializes the program state.
 	 *
+	 * @param __code The method byte code.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/14
 	 */
-	ProgramState()
+	ProgramState(ByteCode __code)
+		throws IOException, NullPointerException
 	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }
