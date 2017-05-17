@@ -129,6 +129,12 @@ class __Code__
 			__pool, len);
 		this.exceptions = exceptions;
 		
+		// Initialize code
+		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions);
+		
+		if (true)
+			throw new todo.TODO();
+		
 		// Only handle the stack map information
 		int[] count = new int[]{__is.readUnsignedShort()};
 		String[] aname = new String[1];
