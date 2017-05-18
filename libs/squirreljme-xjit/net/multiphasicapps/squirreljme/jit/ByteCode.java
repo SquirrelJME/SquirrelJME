@@ -25,6 +25,9 @@ public class ByteCode
 	/** Instruction lengths at each position. */
 	private final int[] _lengths;
 	
+	/** The constant pool. */
+	private final __Pool__ _pool;
+	
 	/**
 	 * Represents the byte code.
 	 *
@@ -47,6 +50,7 @@ public class ByteCode
 		
 		// Set
 		this._code = __code;
+		this._pool = __pool;
 		int codelen = __code.length;
 		
 		// Set all lengths initially to invalid positions, this used as a quick
