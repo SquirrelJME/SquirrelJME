@@ -90,11 +90,11 @@ public class ByteCode
 			int oplen;
 			lengths[i] = (oplen = __opLength(__code, i));
 			
-			// {@squirreljme.error AQ2b The operation exceeds the bounds of
+			// {@squirreljme.error AQ15 The operation exceeds the bounds of
 			// the method byte code. (The operation pointer; The operation
 			// length; The code length)}
 			if ((i += oplen) > codelen)
-				throw new JITException(String.format("AQ2b %d %d %d", i, oplen,
+				throw new JITException(String.format("AQ15 %d %d %d", i, oplen,
 					codelen));
 		}
 		this._lengths = lengths;
@@ -122,7 +122,8 @@ public class ByteCode
 		// Handle for each instruction
 		for (int i = 0; i < codelen; i++)
 			if (isValidAddress(i))
-				jumpcount = __opJumpTargets(i, jumptargets, jumpcount);
+				for (int jt : get(i).jumpTargets())
+					jumpcount = __addSortedArray(jt, jumptargets, jumpcount);
 		
 		// Store jump targets
 		if (jumpcount == codelen)
@@ -140,6 +141,25 @@ public class ByteCode
 	}
 	
 	/**
+	 * Returns the instruction at the specified address.
+	 *
+	 * @param __a The address to get the instruction for.
+	 * @return The represented instruction for the given address.
+	 * @throws JITException If the address is not valid.
+	 * @since 2017/05/18
+	 */
+	public Instruction get(int __a)
+		throws JITException
+	{
+		// {@squirreljme.error AQ16 The instruction at the specified address is
+		// not valid. (The address)}
+		if (!isValidAddress(__a))
+			throw new JITException(String.format("AQ16 %d", __a));
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Checks whether the given address is a valid instruction address.
 	 *
 	 * @param __a The address to check.
@@ -154,21 +174,6 @@ public class ByteCode
 		
 		// Has to have a positive non-zero length
 		return (this._lengths[__a] > 0);
-	}
-	
-	/**
-	 * Adds the jump targets for the given instruction.
-	 *
-	 * @param __addr The base address.
-	 * @param __jta The jump target array.
-	 * @param __jtl The jump target count.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/05/18
-	 */
-	private int __opJumpTargets(int __addr, int[] __jta, int __jtl)
-		throws NullPointerException
-	{
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -221,7 +226,7 @@ public class ByteCode
 		// Depends on the operation
 		switch (op)
 		{
-				// {@squirreljme.error AQ2c Unsupported instruction specified
+				// {@squirreljme.error AQ12 Unsupported instruction specified
 				// in the method byte code. (The operation; The address)}
 			case __OperandIndex__.BREAKPOINT:
 			case __OperandIndex__.IMPDEP1:
@@ -230,12 +235,12 @@ public class ByteCode
 			case __OperandIndex__.JSR_W:
 			case __OperandIndex__.RET:
 			case __OperandIndex__.WIDE:
-				throw new JITException(String.format("AQ2c %d %d", op, __a));
+				throw new JITException(String.format("AQ12 %d %d", op, __a));
 			
-				// {@squirreljme.error AQ2d Invokedynamic is not supported in
+				// {@squirreljme.error AQ13 Invokedynamic is not supported in
 				// this virtual machine. (The address)}
 			case __OperandIndex__.INVOKEDYNAMIC:
-				throw new JITException(String.format("AQ2d %d", __a));
+				throw new JITException(String.format("AQ13 %d", __a));
 				
 				// Operands with no arguments
 			case __OperandIndex__.AALOAD:
@@ -470,14 +475,43 @@ public class ByteCode
 			case __OperandIndex__.LOOKUPSWITCH:
 				throw new todo.TODO();
 			
-				// {@squirreljme.error AQ2c Cannot get the length of the
+				// {@squirreljme.error AQ14 Cannot get the length of the
 				// specified operation because it is not valid. (The operation;
 				// The address)}
 			default:
-				throw new JITException(String.format("AQ2c %d %d", op, __a));
+				throw new JITException(String.format("AQ14 %d %d", op, __a));
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * This represents a single instruction within the byte code.
+	 *
+	 * @since 2017/05/18
+	 */
+	public final class Instruction
+	{
+		/**
+		 * Initializes the instruction information.
+		 *
+		 * @since 2017/05/18
+		 */
+		private Instruction()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Returns the jump targets for this instruction.
+		 *
+		 * @return The jump targets for this instruction.
+		 * @since 2017/05/18
+		 */
+		public int[] jumpTargets()
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
