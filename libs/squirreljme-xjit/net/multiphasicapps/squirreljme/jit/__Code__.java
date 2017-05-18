@@ -92,15 +92,6 @@ class __Code__
 		int maxstack = __is.readUnsignedShort(),
 			maxlocals = __is.readUnsignedShort();
 		
-		// Initialize base input and output states
-		if (true)
-			throw new todo.TODO();
-		/*
-		this._javain = new ActiveCacheState(this, maxstack, maxlocals, config);
-		this._javaout = new ActiveCacheState(this, maxstack, maxlocals,
-			config);
-		*/
-		
 		// {@squirreljme.error AQ0x Method has an invalid size for the length
 		// of its byte code. (The length of the code)}
 		int len = __is.readInt();
