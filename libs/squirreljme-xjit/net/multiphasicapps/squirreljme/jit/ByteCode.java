@@ -42,6 +42,9 @@ public class ByteCode
 	/** Jump targets. */
 	private final int[] _jumptargets;
 	
+	/** Instruction address region identifiers. */
+	private final int[] _regions;
+	
 	/** The constant pool. */
 	private final __Pool__ _pool;
 	
@@ -117,14 +120,23 @@ public class ByteCode
 				jumpcount);
 		
 		// Handle for each instruction
-		if (true)
-			throw new todo.TODO();
+		for (int i = 0; i < codelen; i++)
+			if (isValidAddress(i))
+				jumpcount = __opJumpTargets(i, jumptargets, jumpcount);
 		
 		// Store jump targets
 		if (jumpcount == codelen)
 			this._jumptargets = jumptargets;
 		else
 			this._jumptargets = Arrays.copyOf(jumptargets, jumpcount);
+		
+		// Calculate regions for each instruction address
+		int[] regions = new int[codelen];
+		
+		if (true)
+			throw new todo.TODO();
+		
+		this._regions = regions;
 	}
 	
 	/**
@@ -142,6 +154,21 @@ public class ByteCode
 		
 		// Has to have a positive non-zero length
 		return (this._lengths[__a] > 0);
+	}
+	
+	/**
+	 * Adds the jump targets for the given instruction.
+	 *
+	 * @param __addr The base address.
+	 * @param __jta The jump target array.
+	 * @param __jtl The jump target count.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/18
+	 */
+	private int __opJumpTargets(int __addr, int[] __jta, int __jtl)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
