@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 
 /**
@@ -26,19 +27,19 @@ public final class JavaType
 	
 	/** 32-bit Integer. */
 	public static final JavaType INTEGER =
-		new JavaType(FieldSymbol.INTEGER);
+		new JavaType(ClassNameSymbol.INTEGER.asField());
 	
 	/** 64-bit Integer. */
 	public static final JavaType LONG =
-		new JavaType(FieldSymbol.LONG);
+		new JavaType(ClassNameSymbol.LONG.asField());
 	
 	/** 32-bit Float. */
 	public static final JavaType FLOAT =
-		new JavaType(FieldSymbol.FLOAT);
+		new JavaType(ClassNameSymbol.FLOAT.asField());
 	
 	/** 64-bit Double. */
 	public static final JavaType DOUBLE =
-		new JavaType(FieldSymbol.DOUBLE);
+		new JavaType(ClassNameSymbol.DOUBLE.asField());
 	
 	/** The top of a long or double. */
 	public static final JavaType TOP =

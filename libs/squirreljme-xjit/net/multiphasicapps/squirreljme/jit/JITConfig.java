@@ -317,7 +317,7 @@ public abstract class JITConfig
 			throw new NullPointerException("NARG");
 		
 		// Map
-		return toNativeType(JavaType.bySymbol(__f));
+		return toNativeType(JavaType.of(__f));
 	}
 	
 	/**
