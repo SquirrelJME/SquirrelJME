@@ -281,6 +281,8 @@ public abstract class JITConfig
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// Depends
 		switch (__t)
 		{
@@ -295,7 +297,7 @@ public abstract class JITConfig
 				// be mapped to a data type. (The input stack type)}
 			default:
 				throw new JITException(String.format("AQ08 %s", __t));
-		}
+		}*/
 	}
 	
 	/**
