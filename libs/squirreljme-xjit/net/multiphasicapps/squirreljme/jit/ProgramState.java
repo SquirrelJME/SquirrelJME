@@ -32,15 +32,17 @@ public class ProgramState
 	 * Initializes the program state.
 	 *
 	 * @param __code The method byte code.
+	 * @param __smtdata The stack map data.
+	 * @param __smtmodern Is the stack map table a modern one?
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/14
 	 */
-	ProgramState(ByteCode __code)
+	ProgramState(ByteCode __code, byte[] __smtdata, boolean __smtmodern)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__code == null)
+		if (__code == null || __smtdata == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

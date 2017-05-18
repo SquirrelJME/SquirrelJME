@@ -50,11 +50,11 @@ class __Code__
 	/** The JIT configuration. */
 	final JITConfig _config;
 	
-	/** The register counts. */
-	final __RegisterCounts__ _registercounts;
-	
 	/** The byte code for the method. */
-	private final byte[] _code;
+	protected final ByteCode code;
+	
+	/** The program state. */
+	protected final ProgramState program;
 	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
@@ -82,7 +82,6 @@ class __Code__
 		// These are needed by the JIT for code generation
 		JITConfig config = __conf;
 		this._config = config;
-		this._registercounts = new __RegisterCounts__(this);
 		
 		// Set
 		this.method = __em;
@@ -111,7 +110,6 @@ class __Code__
 		// Read all of it
 		byte[] code = new byte[len];
 		__is.readFully(code);
-		this._code = code;
 		
 		// Read the exception table
 		ExceptionHandlerTable exceptions = new ExceptionHandlerTable(__is,
@@ -170,6 +168,11 @@ class __Code__
 		// Initialize code
 		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions,
 			__pool);
+		this.code = bc;
+		
+		// Initialize the program
+		ProgramState program = new ProgramState(bc, smtdata, smtmodern);
+		this.program = program;
 		
 		throw new todo.TODO();
 	}
