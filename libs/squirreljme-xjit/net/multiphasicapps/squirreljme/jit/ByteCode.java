@@ -19,6 +19,12 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class ByteCode
 {
+	/** The number of stack variables. */
+	protected final int maxstack;
+	
+	/** The number of local variables. */
+	protected final int maxlocals;
+	
 	/** The byte code for the method. */
 	private final byte[] _code;
 	
@@ -52,6 +58,8 @@ public class ByteCode
 		this._code = __code;
 		this._pool = __pool;
 		int codelen = __code.length;
+		this.maxstack = __ms;
+		this.maxlocals = __ml;
 		
 		// Set all lengths initially to invalid positions, this used as a quick
 		// marker to determine which positions have valid instructions
@@ -74,6 +82,16 @@ public class ByteCode
 					codelen));
 		}
 		this._lengths = lengths;
+		
+		// Debug
+		System.err.print("DEBUG -- Lengths: [");
+		for (int i = 0; i < codelen; i++)
+		{
+			if (i != 0)
+				System.err.print(", ");
+			System.err.print(lengths[i]);
+		}
+		System.err.println("]");
 	}
 	
 	/**

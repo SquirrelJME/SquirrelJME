@@ -15,7 +15,7 @@ import java.io.IOException;
 
 /**
  * This contains the entire state of the program. The program consists of
- * multiple {@link BasicBlockZone}. Each basic block as an entry state and
+ * multiple {@link BasicBlockZone}s. Each basic block as an entry state and
  * encompasses a set of instructions. Control flows from one basic block to
  * another depending on the output and input alias state. The program is parsed
  * in a queue order generating virtual instructions as needed for each region
@@ -44,6 +44,11 @@ public class ProgramState
 		// Check
 		if (__code == null || __smtdata == null)
 			throw new NullPointerException("NARG");
+		
+		// Initialize the basic block zones which determines which sections
+		// of the program will be parsed as a single unit
+		if (true)
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 	}
