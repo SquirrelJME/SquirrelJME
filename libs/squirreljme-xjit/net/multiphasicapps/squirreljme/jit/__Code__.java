@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -117,18 +118,11 @@ class __Code__
 			__pool, len);
 		this.exceptions = exceptions;
 		
-		// Initialize code
-		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions,
-			__pool);
-		
-		throw new todo.TODO();
-		/*
-		// Only handle the stack map information
+		// Locate the stack map table
+		boolean smtmodern = false;
+		byte[] smtdata = null;
 		int[] count = new int[]{__is.readUnsignedShort()};
 		String[] aname = new String[1];
-		MethodFlags flags = __em.methodFlags();
-		MethodSymbol type = __em.methodType();
-		SnapshotCacheStates smt = null;
 		while ((count[0]--) > 0)
 			try (DataInputStream as = JIT.__nextAttribute(__is, __pool, aname))
 			{
@@ -139,25 +133,45 @@ class __Code__
 				if (!old && !modern)
 					continue;
 				
-				// {@squirreljme.error AQ11 Already parsed the stack map
-				// table.}
-				if (smt != null)
+				// {@squirreljme.error AQ11 Methods may only have a single
+				// stack map table.}
+				if (smtdata != null)
 					throw new JITException("AQ11");
 				
-				// Parse state
-				smt = new __StackMapParser__(this, modern, as, __em, maxstack,
-					maxlocals).__get();
+				// Copy to target buffer for later parsing
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+				{
+					// Write to the buffer
+					byte[] buf = new byte[512];
+					for (;;)
+					{
+						int rc = as.read(buf);
+						
+						// EOF?
+						if (rc < 0)
+							break;
+						
+						baos.write(buf, 0, rc);
+					}
+					
+					// Store
+					smtmodern = modern;
+					smtdata = baos.toByteArray();
+				}
 			}
 		
-		// Need to generate a blank state?
-		if (smt == null)
-			smt = new __StackMapParser__(this, true, new DataInputStream(
-				new ByteArrayInputStream(new byte[]{0, 0})), __em, maxstack,
-				maxlocals).__get();
+		// Use a default stack map (one which is completely empty)
+		if (smtdata == null)
+		{
+			smtmodern = true;
+			smtdata = new byte[]{0, 0};
+		}
 		
-		// Set
-		this._smt = smt;
-		*/
+		// Initialize code
+		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions,
+			__pool);
+		
+		throw new todo.TODO();
 	}
 	
 	/**
