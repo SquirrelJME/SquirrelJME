@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.Arrays;
+
 /**
  * This represents the byte code for a given method. It contains the actual
  * instructions, iterators over instructions, along with jump targets which
@@ -25,11 +27,20 @@ public class ByteCode
 	/** The number of local variables. */
 	protected final int maxlocals;
 	
+	/** The exception handler table. */
+	protected final ExceptionHandlerTable exceptions;
+	
+	/** The length of the byte code. */
+	protected final int codelen;
+	
 	/** The byte code for the method. */
 	private final byte[] _code;
 	
 	/** Instruction lengths at each position. */
 	private final int[] _lengths;
+	
+	/** Jump targets. */
+	private final int[] _jumptargets;
 	
 	/** The constant pool. */
 	private final __Pool__ _pool;
@@ -56,10 +67,12 @@ public class ByteCode
 		
 		// Set
 		this._code = __code;
+		this.codelen = __code.length;
 		this._pool = __pool;
 		int codelen = __code.length;
 		this.maxstack = __ms;
 		this.maxlocals = __ml;
+		this.exceptions = __eht;
 		
 		// Set all lengths initially to invalid positions, this used as a quick
 		// marker to determine which positions have valid instructions
@@ -92,6 +105,63 @@ public class ByteCode
 			System.err.print(lengths[i]);
 		}
 		System.err.println("]");
+		
+		// Initialize basic jump targets with no actual targets
+		int[] jumptargets = new int[codelen];
+		jumptargets[0] = 0;
+		int jumpcount = 1;
+		
+		// Set jump targets for every exception to form basic block barriers
+		for (ExceptionHandler eh : __eht)
+			jumpcount = __addSortedArray(eh.handlerAddress(), jumptargets,
+				jumpcount);
+		
+		// Handle for each instruction
+		if (true)
+			throw new todo.TODO();
+		
+		// Store jump targets
+		if (jumpcount == codelen)
+			this._jumptargets = jumptargets;
+		else
+			this._jumptargets = Arrays.copyOf(jumptargets, jumpcount);
+	}
+	
+	/**
+	 * Checks whether the given address is a valid instruction address.
+	 *
+	 * @param __a The address to check.
+	 * @return {@code true} if the address is valid.
+	 * @since 2017/05/18
+	 */
+	public boolean isValidAddress(int __a)
+	{
+		// Out of range
+		if (__a < 0 || __a >= this.codelen)
+			return false;
+		
+		// Has to have a positive non-zero length
+		return (this._lengths[__a] > 0);
+	}
+	
+	/**
+	 * Adds the specified value to the sorted array.
+	 *
+	 * @param __v The value to add.
+	 * @param __a The array to add to.
+	 * @param __l The number of entries in the array.
+	 * @return The new entry count of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/18
+	 */
+	private static int __addSortedArray(int __v, int[] __a, int __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
