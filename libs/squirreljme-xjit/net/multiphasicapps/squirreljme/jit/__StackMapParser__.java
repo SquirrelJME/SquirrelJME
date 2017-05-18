@@ -35,12 +35,6 @@ class __StackMapParser__
 	/** The number of local entries. */
 	protected final int maxlocals;
 	
-	/** The resulting state. */
-	private final SnapshotCacheStates _result;
-	
-	/** The current cache state for the method. */
-	private final ActiveCacheState _nextstate;
-	
 	/** The next stack state. */
 	private final JavaType[] _nextstack;
 	
@@ -78,6 +72,8 @@ class __StackMapParser__
 		this._nextstack = (nextstack = new JavaType[__ms]);
 		this._nextlocals = (nextlocals = new JavaType[__ml]);
 		
+		throw new todo.TODO();
+		/*
 		// And this is used to store the registers for the currently being
 		// parsed state for instructions
 		JITConfig config = __c._config;
@@ -130,29 +126,7 @@ class __StackMapParser__
 		
 		// Set the initial calculated state
 		result.set(0, nextstate);
-	}
-		
-	/**
-	 * Obtains the resulting cache states.
-	 *
-	 * @throws IOException On read errors.
-	 * @throws JITException If the stack map is not parsed correctly.
-	 * @return The result of the parsed stack map table.
-	 * @since 2017/04/16
-	 */
-	SnapshotCacheStates __get()
-		throws IOException, JITException
-	{
-		// Parse the input
-		DataInputStream in = this.in;
-		int n = in.readUnsignedShort();
-		for (int i = 0; i < n; i++)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Use it
-		return this._result;
+		*/
 	}
 }
 

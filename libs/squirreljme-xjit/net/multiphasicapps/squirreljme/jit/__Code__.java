@@ -55,22 +55,6 @@ class __Code__
 	/** The byte code for the method. */
 	private final byte[] _code;
 	
-	/** The stack map table state. */
-	private final SnapshotCacheStates _smt;
-	
-	/** The input Java state. */
-	private final CacheState _javain;
-	
-	/** The output Java state. */
-	private final ActiveCacheState _javaout;
-	
-	/** The return state. */
-	private final __Return__ _return =
-		new __Return__();
-	
-	/** The current address being parsed. */
-	private volatile int _atpc;
-	
 	/**
 	 * Initializes the code decoder and perform some initial seeding work that
 	 * is needed for the decoder.
@@ -109,9 +93,13 @@ class __Code__
 			maxlocals = __is.readUnsignedShort();
 		
 		// Initialize base input and output states
+		if (true)
+			throw new todo.TODO();
+		/*
 		this._javain = new ActiveCacheState(this, maxstack, maxlocals, config);
 		this._javaout = new ActiveCacheState(this, maxstack, maxlocals,
 			config);
+		*/
 		
 		// {@squirreljme.error AQ0x Method has an invalid size for the length
 		// of its byte code. (The length of the code)}
@@ -133,9 +121,8 @@ class __Code__
 		ByteCode bc = new ByteCode(maxstack, maxlocals, code, exceptions,
 			__pool);
 		
-		if (true)
-			throw new todo.TODO();
-		
+		throw new todo.TODO();
+		/*
 		// Only handle the stack map information
 		int[] count = new int[]{__is.readUnsignedShort()};
 		String[] aname = new String[1];
@@ -170,6 +157,7 @@ class __Code__
 		
 		// Set
 		this._smt = smt;
+		*/
 	}
 	
 	/**
@@ -188,6 +176,8 @@ class __Code__
 		if (op == __OperandIndex__.WIDE)
 			op = (op << 8) | __in.readUnsignedByte();
 		
+		throw new todo.TODO();
+		/*
 		// Depends
 		switch (op)
 		{
@@ -272,6 +262,7 @@ class __Code__
 				throw new JITException(String.format("AQ1e %#02x %d", op,
 					this._atpc));
 		}
+		*/
 	}
 	
 	/**
@@ -297,6 +288,8 @@ class __Code__
 		if (!__t.isValid())
 			throw new JITException(String.format("AQ1f %s", __t));
 		
+		throw new todo.TODO();
+		/*
 		// Debug
 		System.err.printf("DEBUG -- load: %s %d%n", __t, __from);
 		
@@ -314,6 +307,7 @@ class __Code__
 		
 		// Normally flows to the next instruction
 		this._return.setFlow(__ExecutionFlow__.NEXT);
+		*/
 	}
 	
 	/**
@@ -326,6 +320,8 @@ class __Code__
 	void __run()
 		throws IOException, JITException
 	{
+		throw new todo.TODO();
+		/*
 		SnapshotCacheStates smt = this._smt;
 		CacheState javain = this._javain;
 		ActiveCacheState javaout = this._javaout;
@@ -368,6 +364,7 @@ class __Code__
 			
 			throw new todo.TODO();
 		}
+		*/
 	}
 }
 
