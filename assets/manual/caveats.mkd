@@ -1,0 +1,11 @@
+# Caveats
+
+These are caveats for SquirrelJME. Anything listed here is an intended design
+and is not a bug.
+
+# Garbage Collection
+
+For simplicity the garbage collector is a reference counter with sweeping when
+no more memory is available (or GC is called manually). As such, cyclic
+object references will not be freed unless one or both directions are
+weakly referenced (using `WeakReference`).
