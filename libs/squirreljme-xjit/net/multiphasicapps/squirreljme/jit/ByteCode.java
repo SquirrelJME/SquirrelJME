@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 /**
@@ -48,6 +50,9 @@ public class ByteCode
 	/** The constant pool. */
 	private final __Pool__ _pool;
 	
+	/** The cache of instructions in the byte code. */
+	private final Reference<Instruction>[] _icache;
+	
 	/**
 	 * Represents the byte code.
 	 *
@@ -76,6 +81,9 @@ public class ByteCode
 		this.maxstack = __ms;
 		this.maxlocals = __ml;
 		this.exceptions = __eht;
+		
+		// Cache instructions
+		this._icache = __newCache(codelen);
 		
 		// Set all lengths initially to invalid positions, this used as a quick
 		// marker to determine which positions have valid instructions
@@ -194,6 +202,19 @@ public class ByteCode
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes a new cache array.
+	 *
+	 * @param __l The length of the array.
+	 * @return The cache array.
+	 * @since 2017/05/18
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<Instruction>[] __newCache(int __l)
+	{
+		return (Reference<Instruction>[])((Object)new Reference[__l]);
 	}
 	
 	/**
