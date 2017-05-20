@@ -45,6 +45,15 @@ public final class JavaType
 	public static final JavaType TOP =
 		new JavaType(true);
 	
+	/** The associated field symbol. */
+	protected final FieldSymbol field;
+	
+	/** Is this top? */
+	protected final boolean istop;
+	
+	/** Is this wide? */
+	protected final boolean iswide;
+	
 	/**
 	 * Initializes a type based on the given field type.
 	 *
@@ -59,7 +68,13 @@ public final class JavaType
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.field = __f;
+		this.istop = false;
+		
+		// Is this wide?
+		String x = __f.toString();
+		this.iswide = (x.equals("J") || x.equals("D"));
 	}
 	
 	/**
@@ -70,7 +85,9 @@ public final class JavaType
 	 */
 	private JavaType(boolean __top)
 	{
-		throw new todo.TODO();
+		this.istop = __top;
+		this.iswide = false;
+		this.field = null;
 	}
 	
 	/**
@@ -80,7 +97,22 @@ public final class JavaType
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof JavaType))
+			return false;
+		
+		JavaType o = (JavaType)__o;
+		
+		// Has a field mismatch?
+		FieldSymbol tf = this.field,
+			of = o.field;
+		if ((tf == null) != (of == null))
+			return false;
+		
+		// Only the top is significant
+		if (tf == null)
+			return this.istop == o.istop;
+		return tf.equals(of);
 	}
 	
 	/**
@@ -92,7 +124,7 @@ public final class JavaType
 	 */
 	public FieldSymbol fieldSymbol()
 	{
-		throw new todo.TODO();
+		return this.field;
 	}
 	
 	/**
@@ -102,19 +134,15 @@ public final class JavaType
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * This returns {@code true} if the entry has a value. The tops of long
-	 * or double values do not have values.
-	 *
-	 * @return {@code true} if not {@link #TOP} and not {@link #NOTHING}.
-	 * @since 2017/02/08
-	 */
-	public final boolean hasValue()
-	{
-		throw new todo.TODO();
+		// Use field representation
+		FieldSymbol field = this.field;
+		if (field != null)
+			return field.hashCode();
+		
+		// Top or nothing?
+		if (this.istop)
+			return 0xFFFFFFFF;
+		return 0;
 	}
 	
 	/**
@@ -125,7 +153,7 @@ public final class JavaType
 	 */
 	public final boolean isValid()
 	{
-		throw new todo.TODO();
+		return this.field != null;
 	}
 	
 	/**
@@ -136,7 +164,7 @@ public final class JavaType
 	 */
 	public final boolean isWide()
 	{
-		throw new todo.TODO();
+		return this.iswide;
 	}
 	
 	/**
@@ -146,7 +174,15 @@ public final class JavaType
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		// Use field representation
+		FieldSymbol field = this.field;
+		if (field != null)
+			return field.toString();
+		
+		// Top or nothing?
+		if (this.istop)
+			return "TOP";
+		return "NOTHING";
 	}
 	
 	/**
@@ -165,35 +201,25 @@ public final class JavaType
 		if (__sym == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// If an array then it is always an object
-		if (__sym.isArray())
-			return OBJECT;
-		
-		// Depends on the first character otherwise
-		switch (__sym.charAt(0))
+		// Primitive types are used much so do not create them every time
+		switch (__sym.toString())
 		{
-			case 'L': return OBJECT;
-			case 'D': return DOUBLE;
-			case 'F': return FLOAT;
-			case 'J': return LONG;
+			case "D": return DOUBLE;
+			case "F": return FLOAT;
+			case "J": return LONG;
 				
 				// All of these map to integer (promotion)
-			case 'B':
-			case 'C':
-			case 'I':
-			case 'S':
-			case 'Z':
+			case "B":
+			case "C":
+			case "I":
+			case "S":
+			case "Z":
 				return INTEGER;
-				
-				// Unknown
+			
+				// Create
 			default:
-				// {@squirreljme.error AQ0a The specified field symbol
-				// cannot be mapped to a variable type. (The field symbol)}
-				throw new JITException(String.format("AQ0a %s", __sym));
+				return new JavaType(__sym);
 		}
-		*/
 	}
 }
 
