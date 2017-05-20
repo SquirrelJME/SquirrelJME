@@ -614,7 +614,7 @@ public class ByteCode
 				op = (op << 8) | (code[__a + 1] & 0xFF);
 				argbase++;
 			}
-			this.op = __a;
+			this.op = op;
 			this.address = __a;
 			
 			// Depends on the operation
