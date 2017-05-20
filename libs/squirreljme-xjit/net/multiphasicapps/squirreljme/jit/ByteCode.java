@@ -164,7 +164,14 @@ public class ByteCode
 		if (!isValidAddress(__a))
 			throw new JITException(String.format("AQ16 %d", __a));
 		
-		throw new todo.TODO();
+		Reference<Instruction>[] icache = this._icache;
+		Reference<Instruction> ref = icache[__a];
+		Instruction rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			icache[__a] = new WeakReference<>((rv = new Instruction(__a)));
+		
+		return rv;
 	}
 	
 	/**
@@ -516,9 +523,10 @@ public class ByteCode
 		/**
 		 * Initializes the instruction information.
 		 *
+		 * @param __a The instruction address.
 		 * @since 2017/05/18
 		 */
-		private Instruction()
+		private Instruction(int __a)
 		{
 			throw new todo.TODO();
 		}
