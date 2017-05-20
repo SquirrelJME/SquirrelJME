@@ -76,6 +76,10 @@ public final class BasicVerificationTarget
 			}
 		}
 		
+		// Clear anything at and above the top of the stack
+		for (int i = __top, n = __stack.length; i < n; i++)
+			__stack[i] = JavaType.NOTHING;
+		
 		// Set
 		this.stacktop = __top;
 		this._stack = __stack;

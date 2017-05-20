@@ -221,5 +221,22 @@ public final class JavaType
 				return new JavaType(__sym);
 		}
 	}
+	
+	/**
+	 * Returns the type associated with the given class name.
+	 *
+	 * @param __cn The name of the class to get the type for.
+	 * @return The type for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/20
+	 */
+	public static JavaType of(ClassNameSymbol __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		return of(__cn.asField());
+	}
 }
 

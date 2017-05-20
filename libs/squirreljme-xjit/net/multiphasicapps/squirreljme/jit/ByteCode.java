@@ -265,6 +265,17 @@ public class ByteCode
 	}
 	
 	/**
+	 * Returns the constant pool being used.
+	 *
+	 * @return The constant pool the method uses.
+	 * @since 2017/05/20
+	 */
+	public __Pool__ pool()
+	{
+		return this._pool;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/20
 	 */

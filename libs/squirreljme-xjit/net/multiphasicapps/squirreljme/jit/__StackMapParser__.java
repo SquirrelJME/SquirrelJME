@@ -39,6 +39,9 @@ class __StackMapParser__
 	/** The number of local entries. */
 	protected final int maxlocals;
 	
+	/** The method byte code. */
+	protected final ByteCode code;
+	
 	/** Verification targets. */
 	private final Map<Integer, BasicVerificationTarget> _targets;
 	
@@ -83,6 +86,7 @@ class __StackMapParser__
 			maxlocals = __code.maxLocals();
 		this.maxstack = maxstack;
 		this.maxlocals = maxlocals;
+		this.code = __code;
 		
 		// This is used to set which variables appear next before a state is
 		// constructed with them
@@ -117,7 +121,67 @@ class __StackMapParser__
 		// Parse the stack map table
 		try (DataInputStream in = xin)
 		{
-			throw new todo.TODO();
+			// Parsing the class stack map table
+			if (!__smtmodern)
+			{
+				// Read the number of entries in the table
+				int ne = xin.readUnsignedShort();
+			
+				// All entries in the table are full frames
+				for (int i = 0; i < ne; i++)
+					__next(__oldStyle(), true);
+			}
+		
+			// The modern stack map table
+			else
+			{
+				// Read the number of entries in the table
+				int ne = xin.readUnsignedShort();
+			
+				// Read them all
+				for (int i = 0; i < ne; i++)
+				{
+					// Read the frame type
+					int type = xin.readUnsignedByte();
+					int addr;
+				
+					// Full frame?
+					if (type == 255)
+						addr = __fullFrame();
+				
+					// Same frame?
+					else if (type >= 0 && type <= 63)
+						addr = __sameFrame(type);
+				
+					// Same locals but a single stack item
+					else if (type >= 64 && type <= 127)
+						addr = __sameLocalsSingleStack(type - 64);
+				
+					// Same locals, single stack item, explicit delta
+					else if (type == 247)
+						addr = __sameLocalsSingleStackExplicit();
+				
+					// Chopped frame
+					else if (type >= 248 && type <= 250)
+						addr = __choppedFrame(251 - type);
+				
+					// Same frame but with a supplied delta
+					else if (type == 251)
+						addr = __sameFrameDelta();
+				
+					// Appended frame
+					else if (type >= 252 && type <= 254)
+						addr = __appendFrame(type - 251);
+				
+					// {@squirreljme.error AQ1j Unknown StackMapTable
+					// verification type. (The verification type)}
+					else
+						throw new JITException(String.format("AQ1j %d", type));
+					
+					// Setup next
+					__next(addr, true);
+				}
+			}
 		}
 		
 		// {@squirreljme.error AQ1b Failed to parse the stack map table.}
@@ -125,61 +189,6 @@ class __StackMapParser__
 		{
 			throw new JITException("AQ1b", e);
 		}
-		
-		/*
-		// And this is used to store the registers for the currently being
-		// parsed state for instructions
-		JITConfig config = __c._config;
-		ActiveCacheState nextstate;
-		this._nextstate = (nextstate = new ActiveCacheState(__c, __ms, __ml,
-			config));
-		
-		// Initialize the starting state with one that matches the input for
-		// a method call
-		SnapshotCacheStates result = new SnapshotCacheStates(__c);
-		this._result = result;
-		NativeType[] argmap = new NativeType[__ml];
-		int at = 0;
-		
-		// Non-static methods always have an implicit instance argument
-		if (!__m.methodFlags().isStatic())
-		{
-			nextlocals[at] = JavaType.OBJECT;
-			argmap[at++] = config.toNativeType(JavaType.OBJECT);
-		}
-		
-		// Handle each argument
-		for (FieldSymbol f : __m.methodType().arguments())
-		{
-			// Map type
-			JavaType j;
-			nextlocals[at] = (j = JavaType.bySymbol(f));
-			argmap[at++] = config.toNativeType(j);
-			
-			// Skip space for wide
-			if (j.isWide())
-				nextlocals[at++] = JavaType.TOP;
-		}
-		
-		// Get the allocations to initialize with, these are always fixed
-		TypedAllocation[] allocs = config.entryAllocations(argmap);
-		
-		// Fill in allocations to the initial state
-		for (int i = 0; i < __ml; i++)
-		{
-			// Ignore missing variables
-			JavaType j;
-			if (null == (j = nextlocals[i]))
-				continue;
-			
-			// Force allocation for argument entry.
-			nextstate.getSlot(AreaType.LOCAL, i).forceAllocation(
-				allocs[i], nextlocals[i]);
-		}
-		
-		// Set the initial calculated state
-		result.set(0, nextstate);
-		*/
 	}
 	
 	/**
@@ -194,7 +203,210 @@ class __StackMapParser__
 	{
 		return this._targets.get(__a);
 	}
+	
+	/**
+	 * Append extra locals to the frame and clear the stack.
+	 *
+	 * @param __addlocs The number of local variables to add.
+	 * @return The address offset.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __appendFrame(int __addlocs)
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream in = this.in;
+		int rv = in.readUnsignedShort();
 		
+		// Stack is cleared
+		this._stacktop = 0;
+		
+		// Read in local variables
+		JavaType[] nextlocals = this._nextlocals;
+		int n = this.maxlocals;
+		for (int i = 0; __addlocs > 0 && i < n; i++)
+		{
+			// Get slot here
+			JavaType s = nextlocals[i];
+			
+			// If it is not empty, ignore it
+			if (!s.equals(JavaType.NOTHING))
+				continue;
+			
+			// Set it
+			JavaType aa;
+			nextlocals[i] = (aa = __loadInfo());
+			__addlocs--;
+			
+			// If a wide element was added, then the next one becomes TOP
+			if (aa.isWide())
+				nextlocals[++i] = JavaType.TOP;
+		}
+		
+		// Error if added stuff remains
+		// {@squirreljme.error AQ1m Appending local variables to the frame
+		// however there is no room to place them. (The remaining local count)}
+		if (__addlocs != 0)
+			throw new JITException(String.format("AQ1m %d", __addlocs));
+		
+		return rv;
+	}
+	
+	/**
+	 * Similar frame with no stack and the top few locals removed.
+	 *
+	 * @param __chops The number of variables which get chopped.
+	 * @return The address offset.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __choppedFrame(int __chops)
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream in = this.in;
+		int rv = in.readUnsignedShort();
+		
+		// No stack
+		this._stacktop = 0;
+		
+		// Chop off some locals
+		JavaType[] nextlocals = this._nextlocals;
+		int i, n = this.maxlocals;
+		for (i = n - 1; __chops > 0 && i >= 0; i--)
+		{
+			// Get slot here
+			JavaType s = nextlocals[i];
+			
+			// If it is empty, ignore it
+			if (s.equals(JavaType.NOTHING))
+				continue;
+			
+			// Clear it
+			nextlocals[i] = JavaType.NOTHING;
+			__chops--;
+		}
+		
+		// Still chops left?
+		// {@squirreljme.error AQ1l Could not chop off all local variables
+		// because there are no variables remaining to be chopped. (The
+		// remaining variables to remove)}
+		if (__chops != 0)
+			throw new JITException(String.format("AQ1l %d", __chops));
+		
+		return rv;
+	}
+	
+	/**
+	 * This reads and parses the full stack frame.
+	 *
+	 * @return The address offset.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __fullFrame()
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream in = this.in;
+		int rv = in.readUnsignedShort();
+		
+		// Read in local variables
+		int nl = in.readUnsignedShort();
+		
+		// {@squirreljme.error AQ1k The number of specified local variables in
+		// the full frame exceeds the maximum permitted local variable
+		// count. (The read local variable count; The number of locals the
+		// method uses)}
+		int maxlocals = this.maxlocals,
+			maxstack = this.maxstack;
+		if (nl > maxlocals)
+			throw new JITException(String.format("AQ1k %d %d", nl,
+				maxlocals));
+		int i;
+		JavaType[] nextlocals = this._nextlocals;
+		for (i = 0; i < nl; i++)
+			nextlocals[i] = __loadInfo();
+		for (;i < maxlocals; i++)
+			nextlocals[i] = JavaType.NOTHING;
+		
+		// Read in stack variables
+		JavaType[] nextstack = this._nextstack;
+		int ns = in.readUnsignedShort();
+		for (i = 0; i < ns; i++)
+			nextstack[i] = __loadInfo();
+		this._stacktop = ns;
+		
+		return rv;
+	}
+	
+	/**
+	 * Loads type information for the stack.
+	 *
+	 * @return The type which was parsed.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private JavaType __loadInfo()
+		throws IOException
+	{
+		// Read the tag
+		DataInputStream in = this.in;
+		int tag = in.readUnsignedByte();
+		
+		// Depends on the tag
+		switch (tag)
+		{
+				// Top
+			case 0:
+				return JavaType.TOP;
+				
+				// Integer
+			case 1:
+				return JavaType.INTEGER;
+				
+				// Float
+			case 2:
+				return JavaType.FLOAT;
+				
+				// Double
+			case 3:
+				return JavaType.DOUBLE;
+				
+				// Long
+			case 4:
+				return JavaType.LONG;
+				
+				// Nothing
+			case 5:
+				return JavaType.NOTHING;
+				
+				// Uninitialized this
+			case 6:
+				throw new todo.TODO();
+				
+				// Initialized object
+			case 7:
+				int id = in.readUnsignedShort();
+				throw new todo.TODO();
+				
+				// Uninitialized variable for a new instruction, the pc points
+				// to the new instruction so the class must be read from
+				// that instruction to determine the type of that actual
+				// object
+			case 8:
+				int pc = in.readUnsignedShort();
+				throw new todo.TODO();
+				
+				// Unknown
+			default:
+				// {@squirreljme.error AQ1i The verification tag in the
+				// StackMap/StackMapTable attribute is not valid. (The tag)}
+				throw new JITException(String.format("AQ1i %d", tag));
+		}
+	}
+	
 	/**
 	 * Initializes the next state.
 	 *
@@ -223,6 +435,104 @@ class __StackMapParser__
 	
 		// The stored state
 		return rv;
+	}
+	
+	/**
+	 * Reads in an old style full frame.
+	 *
+	 * @return The address information.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __oldStyle()
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream in = this.in;
+		int rv = in.readUnsignedShort();
+		
+		// Read in local variables
+		int nl = in.readUnsignedShort();
+		
+		// {@squirreljme.error AQ1d Old-style full frame specified more local
+		// variables than there are in the method. (The number of locals; The
+		// maximum number of locals)}
+		int maxlocals = this.maxlocals;
+		if (nl > maxlocals)
+			throw new JITException(String.format("AQ1d %d %d", nl,
+				maxlocals));
+		JavaType[] nextlocals = this._nextlocals;
+		int i = 0;
+		for (i = 0; i < nl; i++)
+			nextlocals[i] = __loadInfo();
+		for (;i < maxlocals; i++)
+			nextlocals[i] = JavaType.NOTHING;
+		
+		// Read in stack variables
+		JavaType[] nextstack = this._nextstack;
+		int ns = in.readUnsignedShort();
+		for (i = 0; i < ns; i++)
+			nextstack[i] = __loadInfo();
+		this._stacktop = ns;
+		
+		return rv;
+	}
+	
+	/**
+	 * The same frame is used with no changes.
+	 *
+	 * @param __delta The offset from the earlier offset.
+	 * @return The address information.
+	 * @since 2016/03/26
+	 */
+	private int __sameFrame(int __delta)
+	{
+		return __delta;
+	}
+	
+	/**
+	 * Same frame but with a supplied delta rather than using it with the type.
+	 *
+	 * @return The address information.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __sameFrameDelta()
+		throws IOException
+	{
+		return this.in.readUnsignedShort();
+	}
+	
+	/**
+	 * Same locals but the stack has only a single entry.
+	 *
+	 * @param __delta The delta offset.
+	 * @return The address information.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __sameLocalsSingleStack(int __delta)
+		throws IOException
+	{
+		// Set the single stack
+		this._stacktop = 1;
+		this._nextstack[0] = __loadInfo();
+		
+		return __delta;
+	}
+	
+	/**
+	 * Same locals but the stack has only a single entry, the delta offset
+	 * is specified.
+	 *
+	 * @return The address information.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private int __sameLocalsSingleStackExplicit()
+		throws IOException
+	{
+		return __sameLocalsSingleStack(this.in.readUnsignedShort());
 	}
 }
 
