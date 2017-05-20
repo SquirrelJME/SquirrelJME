@@ -22,6 +22,15 @@ import java.lang.ref.WeakReference;
  */
 public final class BasicVerificationTarget
 {
+	/** The top of the stack. */
+	protected final int stacktop;
+	
+	/** The stack. */
+	private final JavaType[] _stack;
+	
+	/** Local variables. */
+	private final JavaType[] _locals;
+	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -31,18 +40,46 @@ public final class BasicVerificationTarget
 	 * @param __stack The stack state.
 	 * @param __top The top of the stack.
 	 * @param __locals The local variables.
+	 * @throws JITException If the stack top is not valid or other state is
+	 * not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/20
 	 */
 	public BasicVerificationTarget(JavaType[] __stack, int __top,
 		JavaType[] __locals)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__stack == null || __locals == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AQ1c The top of the stack is at a negative or
+		// a position that is higher than the size of the stack. (The top of
+		// the stack)}
+		if (__top < 0 || __top > __stack.length)
+			throw new JITException(String.format("AQ1c %d", __top));
+		
+		// Defensive copy and proper initialization
+		__stack = __stack.clone();
+		__locals = __locals.clone();
+		for (int z = 0; z < 2; z++)
+		{
+			JavaType[] bap = (z == 0 ? __stack : __locals);
+			
+			for (int i = 0, n = bap.length; i < n; i++)
+			{
+				JavaType t = bap[i];
+				
+				// Normalize to nothing so there are no nulls
+				if (t == null)
+					bap[i] = JavaType.NOTHING;
+			}
+		}
+		
+		// Set
+		this.stacktop = __top;
+		this._stack = __stack;
+		this._locals = __locals;
 	}
 	
 	/**
@@ -72,7 +109,37 @@ public final class BasicVerificationTarget
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Add locals first
+			StringBuilder sb = new StringBuilder("{locals=[");
+			JavaType[] bap = this._locals;
+			for (int i = 0, n = bap.length; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(", ");
+				sb.append(bap[i]);
+			}
+			
+			// Then the stack
+			sb.append("], stack=[");
+			bap = this._stack;
+			for (int i = 0, n = this.stacktop; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(", ");
+				sb.append(bap[i]);
+			}
+			
+			// Finish off
+			sb.append("]}");
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 }
 
