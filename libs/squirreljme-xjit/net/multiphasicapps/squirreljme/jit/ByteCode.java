@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
 /**
@@ -196,7 +197,7 @@ public class ByteCode
 	@Override
 	public Iterator<ByteCode.Instruction> iterator()
 	{
-		throw new todo.TODO();
+		return new __Iterator__();
 	}
 	
 	/**
@@ -943,6 +944,66 @@ public class ByteCode
 			}
 			
 			return rv;
+		}
+	}
+	
+	/**
+	 * This iterates over each byte code instruction.
+	 *
+	 * @since 2017/05/20
+	 */
+	private final class __Iterator__
+		implements Iterator<Instruction>
+	{
+		/** The code length. */
+		protected final int codelen =
+			ByteCode.this.codelen;
+		
+		/** The read address. */
+		private volatile int _at =
+			0;
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/20
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this._at < this.codelen;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/20
+		 */
+		@Override
+		public Instruction next()
+			throws NoSuchElementException
+		{
+			// No more?
+			if (!hasNext())
+				throw new NoSuchElementException("NSEE");
+			
+			// Instruction at current pointer
+			int at = this._at;
+			Instruction rv = ByteCode.this.get(at);
+			
+			// Skip length of instruction
+			this._at += ByteCode.this._lengths[at];
+			
+			return rv;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/20
+		 */
+		@Override
+		public void remove()
+			throws UnsupportedOperationException
+		{
+			throw new UnsupportedOperationException("RORO");
 		}
 	}
 }
