@@ -168,7 +168,7 @@ class __Code__
 		System.err.println("DEBUG -- -----------");
 		
 		// Initialize the program
-		ProgramState program = new ProgramState(bc, smtdata, smtmodern);
+		ProgramState program = new ProgramState(bc, smtdata, smtmodern, __em);
 		this.program = program;
 		
 		throw new todo.TODO();

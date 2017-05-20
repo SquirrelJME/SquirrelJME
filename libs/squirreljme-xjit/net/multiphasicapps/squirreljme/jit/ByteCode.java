@@ -243,6 +243,28 @@ public class ByteCode
 	}
 	
 	/**
+	 * Returns the maximum number of locals.
+	 *
+	 * @return The maximum number of locals.
+	 * @since 2017/05/20
+	 */
+	public int maxLocals()
+	{
+		return this.maxlocals;
+	}
+	
+	/**
+	 * Returns the maximum size of the stack.
+	 *
+	 * @return The maximum stack size.
+	 * @since 2017/05/20
+	 */
+	public int maxStack()
+	{
+		return this.maxstack;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/20
 	 */

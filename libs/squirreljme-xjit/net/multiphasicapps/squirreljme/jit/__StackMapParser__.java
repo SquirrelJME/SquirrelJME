@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,27 +51,30 @@ class __StackMapParser__
 	 * @param __m The current method being exported.
 	 * @param __ms The maximum number of stack entries.
 	 * @param __ml The maximum number of local entries.
+	 * @throws JITException If the table is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/16
 	 */
-	__StackMapParser__(__Code__ __c, boolean __modern, DataInputStream __in,
-		ExportedMethod __m, int __ms, int __ml)
-		throws NullPointerException
+	__StackMapParser__(ByteCode __code, byte[] __smtdata, boolean __smtmodern,
+		ExportedMethod __em)
+		throws JITException, NullPointerException
 	{
 		// Check
-		if (__in == null || __m == null)
+		if (__code == null || __em == null || __smtdata == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.in = __in;
-		this.maxstack = __ms;
-		this.maxlocals = __ml;
+		this.in = new DataInputStream(new ByteArrayInputStream(__smtdata));
+		int maxstack = __code.maxStack(),
+			maxlocals = __code.maxLocals();
+		this.maxstack = maxstack;
+		this.maxlocals = maxlocals;
 		
 		// This is used to set which variables appear next before a state is
 		// constructed with them
 		JavaType[] nextstack, nextlocals;
-		this._nextstack = (nextstack = new JavaType[__ms]);
-		this._nextlocals = (nextlocals = new JavaType[__ml]);
+		this._nextstack = (nextstack = new JavaType[maxstack]);
+		this._nextlocals = (nextlocals = new JavaType[maxlocals]);
 		
 		throw new todo.TODO();
 		/*
@@ -127,6 +131,18 @@ class __StackMapParser__
 		// Set the initial calculated state
 		result.set(0, nextstate);
 		*/
+	}
+	
+	/**
+	 * Returns the basic verification state for the specified address.
+	 *
+	 * @param __a The address to get.
+	 * @return The verification target for the specified address.
+	 * @since 2017/05/20
+	 */
+	public BasicVerificationTarget get(int __a)
+	{
+		throw new todo.TODO();
 	}
 }
 

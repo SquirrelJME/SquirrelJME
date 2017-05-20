@@ -40,20 +40,27 @@ public class ProgramState
 	 * @param __code The method byte code.
 	 * @param __smtdata The stack map data.
 	 * @param __smtmodern Is the stack map table a modern one?
+	 * @param __em The method this program is for.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/14
 	 */
-	ProgramState(ByteCode __code, byte[] __smtdata, boolean __smtmodern)
+	ProgramState(ByteCode __code, byte[] __smtdata, boolean __smtmodern,
+		ExportedMethod __em)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__code == null || __smtdata == null)
+		if (__code == null || __smtdata == null || __em == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.code = __code;
 		int codelen = __code.length();
+		
+		// Parse the stack map to determine the starting state of each
+		// basic block zone
+		__StackMapParser__ smp = new __StackMapParser__(__code, __smtdata,
+			__smtmodern, __em);
 		
 		// Initialize the basic block zones which determines which sections
 		// of the program will be parsed as a single unit
@@ -71,7 +78,8 @@ public class ProgramState
 			System.err.printf("DEBUG -- BBZ %d - %d%n", baseat, jumpat);
 			
 			// Add new zone
-			zones.add(new BasicBlockZone(__code, baseat, jumpat));
+			zones.add(new BasicBlockZone(__code, baseat, jumpat,
+				smp.get(baseat)));
 			
 			// New base address
 			baseat = jumpat;

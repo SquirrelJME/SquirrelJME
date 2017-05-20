@@ -29,16 +29,23 @@ public class BasicBlockZone
 	/** The end address. */
 	protected final int endaddress;
 	
+	/** The verification target. */
+	private volatile BasicVerificationTarget _veriftarget;
+	
 	/**
 	 * Initializes the basic block zone.
 	 *
 	 * @param __code The code the block is in.
 	 * @param __base The base address of the zone.
 	 * @param __end The end address of the zone.
-	 * @throws NullPointerException On null arguments.
+	 * @param __bvt This represents the basic verification target that this
+	 * zone has on entry. May be {@code null} if it is not known before
+	 * instruction parse time.
+	 * @throws NullPointerException On null arguments except for {@code __bvt}.
 	 * @sine 2017/05/20
 	 */
-	BasicBlockZone(ByteCode __code, int __base, int __end)
+	BasicBlockZone(ByteCode __code, int __base, int __end,
+		BasicVerificationTarget __bvt)
 		throws NullPointerException
 	{
 		// Check
@@ -49,6 +56,7 @@ public class BasicBlockZone
 		this.code = __code;
 		this.baseaddress = __base;
 		this.endaddress = __end;
+		this._veriftarget = __bvt;
 	}
 }
 
