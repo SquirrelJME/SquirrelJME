@@ -27,8 +27,8 @@ Our open source community strives to:
      to another chemical, mass, ideological beliefs, tail length, editor
      preference, operating system preference, file-system preference, CPU
      architecture placement, preferred energy and nutrient choices,
-     transistor size, clock frequency, garbage collection algorithm, and legal
-     entity status.
+     transistor size, clock frequency, garbage collection algorithm, legal
+     entity status, preferred mate qualities, and gender representation.
  * **Be considerate.**
    * Your work may or may not be used by others and you may or may not depend
      on the work of others. Any decision you make may or may not affect others,
