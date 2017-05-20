@@ -922,7 +922,7 @@ public class ByteCode
 				
 				// Then the operation
 				sb.append('#');
-				sb.append(this.op);
+				sb.append(__Mnemonics__.__toString(this.op));
 				
 				// Add marker if it flows naturally
 				if (this.naturalflow)
