@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.Export;
 import net.multiphasicapps.squirreljme.linkage.MemberFlags;
 
@@ -25,6 +26,9 @@ import net.multiphasicapps.squirreljme.linkage.MemberFlags;
 public abstract class ExportedMember
 	implements Export
 {
+	/** The exported class. */
+	protected final ClassExport exportedclass;
+	
 	/** The member flags. */
 	protected final MemberFlags flags;
 	
@@ -40,21 +44,24 @@ public abstract class ExportedMember
 	/**
 	 * Initializes the base exported member.
 	 *
+	 * @param __ce The containing class.
 	 * @param __flags The flags for the member.
 	 * @param __name The name of the member.
 	 * @param __type The type of the member.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
-	ExportedMember(MemberFlags __flags, IdentifierSymbol __name,
-		MemberTypeSymbol __type)
+	ExportedMember(ClassExport __ce, MemberFlags __flags,
+		IdentifierSymbol __name, MemberTypeSymbol __type)
 		throws NullPointerException
 	{
 		// Check
-		if (__flags == null || __name == null || __type == null)
+		if (__ce == null || __flags == null || __name == null ||
+			__type == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.exportedclass = __ce;
 		this.flags = __flags;
 		this.name = __name;
 		this.type = __type;
@@ -75,6 +82,17 @@ public abstract class ExportedMember
 		return this.flags.equals(o.flags) &&
 			this.name.equals(o.name) &&
 			this.type.equals(o.type);
+	}
+	
+	/**
+	 * Returns the class that is exporting this member.
+	 *
+	 * @return The class this is being exported by.
+	 * @since 2017/05/20
+	 */
+	public final ClassExport exportedClass()
+	{
+		return this.exportedclass;
 	}
 	
 	/**

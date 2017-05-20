@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.linkage;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassExport;
 
 /**
  * This represents a class which is exported.

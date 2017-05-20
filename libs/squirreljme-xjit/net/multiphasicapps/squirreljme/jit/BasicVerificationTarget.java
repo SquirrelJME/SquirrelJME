@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents the basic verification target for a jump target which does
  * not have any associated allocation information. This is used to quickly
@@ -17,7 +20,59 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/05/20
  */
-public class BasicVerificationTarget
+public final class BasicVerificationTarget
 {
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
+	/**
+	 * Initializes the verification target state.
+	 *
+	 * @param __stack The stack state.
+	 * @param __top The top of the stack.
+	 * @param __locals The local variables.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/20
+	 */
+	public BasicVerificationTarget(JavaType[] __stack, int __top,
+		JavaType[] __locals)
+		throws NullPointerException
+	{
+		// Check
+		if (__stack == null || __locals == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/20
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/20
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/20
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 

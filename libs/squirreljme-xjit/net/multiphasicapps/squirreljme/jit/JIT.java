@@ -163,7 +163,8 @@ public final class JIT
 				input.readUnsignedShort()).<String>get(String.class));
 			
 			// Create field
-			ExportedField field = new ExportedField(ff, name, type);
+			ExportedField field = new ExportedField(thisexport,
+				ff, name, type);
 			linktable.export(field);
 			
 			// Handle attributes
@@ -213,7 +214,8 @@ public final class JIT
 				input.readUnsignedShort()).<String>get(String.class));
 			
 			// Create method
-			ExportedMethod method = new ExportedMethod(mf, name, type);
+			ExportedMethod method = new ExportedMethod(thisexport, mf, name,
+				type);
 			linktable.export(method);
 			
 			// Handle attributes

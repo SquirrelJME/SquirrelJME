@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.Export;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
@@ -26,17 +27,18 @@ public final class ExportedMethod
 	/**
 	 * Initializes the exported method.
 	 *
+	 * @param __ce The containing class.
 	 * @param __flags The flags for the method.
 	 * @param __name The name of the method.
 	 * @param __type The type of the method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
-	ExportedMethod(MethodFlags __flags, IdentifierSymbol __name,
-		MethodSymbol __type)
+	ExportedMethod(ClassExport __ce, MethodFlags __flags,
+		IdentifierSymbol __name, MethodSymbol __type)
 		throws NullPointerException
 	{
-		super(__flags, __name, __type);
+		super(__ce, __flags, __name, __type);
 	}
 	
 	/**

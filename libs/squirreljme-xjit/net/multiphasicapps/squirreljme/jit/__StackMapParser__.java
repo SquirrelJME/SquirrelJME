@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
@@ -41,6 +42,18 @@ class __StackMapParser__
 	/** Verification targets. */
 	private final Map<Integer, BasicVerificationTarget> _targets;
 	
+	/** The next stack state. */
+	private final JavaType[] _nextstack;
+	
+	/** The next local variable state. */
+	private final JavaType[] _nextlocals;
+	
+	/** The placement address. */
+	private volatile int _placeaddr;
+	
+	/** The top of the stack. */
+	private volatile int _stacktop;
+	
 	/**
 	 * Initializes the stack map parser.
 	 *
@@ -55,15 +68,17 @@ class __StackMapParser__
 	 * @since 2017/04/16
 	 */
 	__StackMapParser__(ByteCode __code, byte[] __smtdata, boolean __smtmodern,
-		ExportedMethod __em)
+		ExportedMethod __m)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__code == null || __em == null || __smtdata == null)
+		if (__code == null || __m == null || __smtdata == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.in = new DataInputStream(new ByteArrayInputStream(__smtdata));
+		DataInputStream xin;
+		this.in = (xin = new DataInputStream(
+			new ByteArrayInputStream(__smtdata)));
 		int maxstack = __code.maxStack(),
 			maxlocals = __code.maxLocals();
 		this.maxstack = maxstack;
@@ -72,16 +87,35 @@ class __StackMapParser__
 		// This is used to set which variables appear next before a state is
 		// constructed with them
 		JavaType[] nextstack, nextlocals;
-		nextstack = new JavaType[maxstack];
-		nextlocals = new JavaType[maxlocals];
+		this._nextstack = (nextstack = new JavaType[maxstack]);
+		this._nextlocals = (nextlocals = new JavaType[maxlocals]);
 		
-		// Setup initial entry state
-		if (true)
-			throw new todo.TODO();
+		// Non-static methods always have an implicit instance argument
+		int at = 0;
+		if (!__m.methodFlags().isStatic())
+			nextlocals[at] = JavaType.of(__m.exportedClass().name().asField());
+		
+		// Handle each argument
+		for (FieldSymbol f : __m.methodType().arguments())
+		{
+			// Map type
+			JavaType j;
+			nextlocals[at] = (j = JavaType.of(f));
+			
+			// Skip space for wide
+			if (j.isWide())
+				nextlocals[at++] = JavaType.TOP;
+		}
+		
+		// Where states go
+		Map<Integer, BasicVerificationTarget> targets = new LinkedHashMap<>();
+		this._targets = targets;
+		
+		// Record state
+		__next(0, true);
 		
 		// Parse the stack map table
-		Map<Integer, BasicVerificationTarget> targets = new LinkedHashMap<>();
-		try
+		try (DataInputStream in = xin)
 		{
 			throw new todo.TODO();
 		}
@@ -91,9 +125,6 @@ class __StackMapParser__
 		{
 			throw new JITException("AQ1b", e);
 		}
-		
-		// Store targets
-		this._targets = targets;
 		
 		/*
 		// And this is used to store the registers for the currently being
@@ -162,6 +193,36 @@ class __StackMapParser__
 	public BasicVerificationTarget get(int __a)
 	{
 		return this._targets.get(__a);
+	}
+		
+	/**
+	 * Initializes the next state.
+	 *
+	 * @param __au The address offset.
+	 * @param __abs Absolute position?
+	 * @return The state for the next address.
+	 * @since 2016/05/20
+	 */
+	BasicVerificationTarget __next(int __au, boolean __abs)
+	{
+		// Generate it
+		BasicVerificationTarget rv = new BasicVerificationTarget(
+			this._nextstack, this._stacktop, this._nextlocals);
+		
+		// Set new placement address
+		int naddr = this._placeaddr;
+		int pp = (__abs ? __au :
+			naddr + (__au + (naddr == 0 ? 0 : 1)));
+		this._placeaddr = pp;
+	
+		// Set the state
+		this._targets.put(pp, rv);
+		
+		// Debug
+		System.err.printf("DEBUG -- Read state @%d: %s%n", pp, rv);
+	
+		// The stored state
+		return rv;
 	}
 }
 
