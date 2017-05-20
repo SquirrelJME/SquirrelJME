@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This contains the entire state of the program. The program consists of
@@ -25,6 +28,9 @@ import java.io.IOException;
  */
 public class ProgramState
 {
+	/** The byte code for the method. */
+	protected final ByteCode code;
+	
 	/** This contains the basic block zones, sorted at zone start address. */
 	private final BasicBlockZone[] _zones;
 	
@@ -45,10 +51,33 @@ public class ProgramState
 		if (__code == null || __smtdata == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
+		this.code = __code;
+		int codelen = __code.length();
+		
 		// Initialize the basic block zones which determines which sections
 		// of the program will be parsed as a single unit
-		if (true)
-			throw new todo.TODO();
+		List<BasicBlockZone> zones = new ArrayList<>();
+		int baseat = 0;
+		JumpTarget[] jumptargets = __code.jumpTargets();
+		for (int i = 0, n = jumptargets.length; i <= n; i++)
+		{
+			// Ignore this address if it matches the jump target
+			int jumpat = (i == n ? codelen : jumptargets[i].address());
+			if (jumpat == baseat)
+				continue;
+			
+			// Debug
+			System.err.printf("DEBUG -- BBZ %d - %d%n", baseat, jumpat);
+			
+			// Add new zone
+			zones.add(new BasicBlockZone(__code, baseat, jumpat));
+			
+			// New base address
+			baseat = jumpat;
+		}
+		this._zones = zones.<BasicBlockZone>toArray(
+			new BasicBlockZone[zones.size()]);
 		
 		throw new todo.TODO();
 	}

@@ -20,5 +20,35 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class BasicBlockZone
 {
+	/** The byte code used. */
+	protected final ByteCode code;
+	
+	/** The base address. */
+	protected final int baseaddress;
+	
+	/** The end address. */
+	protected final int endaddress;
+	
+	/**
+	 * Initializes the basic block zone.
+	 *
+	 * @param __code The code the block is in.
+	 * @param __base The base address of the zone.
+	 * @param __end The end address of the zone.
+	 * @throws NullPointerException On null arguments.
+	 * @sine 2017/05/20
+	 */
+	BasicBlockZone(ByteCode __code, int __base, int __end)
+		throws NullPointerException
+	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.code = __code;
+		this.baseaddress = __base;
+		this.endaddress = __end;
+	}
 }
 

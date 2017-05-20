@@ -148,6 +148,26 @@ public class ByteCode
 	}
 	
 	/**
+	 * Returns the address of the instruction following the specified one.
+	 *
+	 * @param __a The following address.
+	 * @return The instruction address following the instruction at the
+	 * specified address.
+	 * @throws JITException If the specified address is not valid.
+	 * @since 2017/05/20
+	 */
+	public int addressFollowing(int __a)
+		throws JITException
+	{
+		// {@squirreljme.error AQ1a The instruction at the specified address is
+		// not valid. (The address)}
+		if (!isValidAddress(__a))
+			throw new JITException(String.format("AQ1a %d", __a));
+		
+		return __a + this._lengths[__a];
+	}
+	
+	/**
 	 * Returns the instruction at the specified address.
 	 *
 	 * @param __a The address to get the instruction for.
@@ -209,6 +229,17 @@ public class ByteCode
 	public JumpTarget[] jumpTargets()
 	{
 		return this._jumptargets.clone();
+	}
+	
+	/**
+	 * Returns the length of the byte code.
+	 *
+	 * @return The byte code length.
+	 * @since 2017/05/20
+	 */
+	public int length()
+	{
+		return this.codelen;
 	}
 	
 	/**
