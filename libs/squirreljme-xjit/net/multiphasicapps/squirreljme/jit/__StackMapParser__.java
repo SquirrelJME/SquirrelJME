@@ -14,7 +14,9 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
@@ -36,11 +38,8 @@ class __StackMapParser__
 	/** The number of local entries. */
 	protected final int maxlocals;
 	
-	/** The next stack state. */
-	private final JavaType[] _nextstack;
-	
-	/** The next local variable state. */
-	private final JavaType[] _nextlocals;
+	/** Verification targets. */
+	private final Map<Integer, BasicVerificationTarget> _targets;
 	
 	/**
 	 * Initializes the stack map parser.
@@ -73,10 +72,29 @@ class __StackMapParser__
 		// This is used to set which variables appear next before a state is
 		// constructed with them
 		JavaType[] nextstack, nextlocals;
-		this._nextstack = (nextstack = new JavaType[maxstack]);
-		this._nextlocals = (nextlocals = new JavaType[maxlocals]);
+		nextstack = new JavaType[maxstack];
+		nextlocals = new JavaType[maxlocals];
 		
-		throw new todo.TODO();
+		// Setup initial entry state
+		if (true)
+			throw new todo.TODO();
+		
+		// Parse the stack map table
+		Map<Integer, BasicVerificationTarget> targets = new LinkedHashMap<>();
+		try
+		{
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ1b Failed to parse the stack map table.}
+		catch (IOException e)
+		{
+			throw new JITException("AQ1b", e);
+		}
+		
+		// Store targets
+		this._targets = targets;
+		
 		/*
 		// And this is used to store the registers for the currently being
 		// parsed state for instructions
@@ -137,12 +155,13 @@ class __StackMapParser__
 	 * Returns the basic verification state for the specified address.
 	 *
 	 * @param __a The address to get.
-	 * @return The verification target for the specified address.
+	 * @return The verification target for the specified address or
+	 * {@code null} if none is available.
 	 * @since 2017/05/20
 	 */
 	public BasicVerificationTarget get(int __a)
 	{
-		throw new todo.TODO();
+		return this._targets.get(__a);
 	}
 }
 
