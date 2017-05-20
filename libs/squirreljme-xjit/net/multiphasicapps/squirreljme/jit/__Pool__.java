@@ -85,9 +85,6 @@ final class __Pool__
 	/** Internal entries. */
 	private final __PoolEntry__[] _entries;
 	
-	/** The next active index to use. */
-	volatile int _nextadx;
-	
 	/**
 	 * Decodes the constant pool of an input class file.
 	 *
@@ -193,17 +190,6 @@ final class __Pool__
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
 				entries[++i] = dup;
 		}
-	}
-	
-	/**
-	 * Returns the number of active entries.
-	 *
-	 * @return The active entry count.
-	 * @since 2016/08/17
-	 */
-	public int activeCount()
-	{
-		return this._nextadx;
 	}
 	
 	/**

@@ -37,10 +37,6 @@ final class __PoolEntry__
 	/** Intialized data. */
 	volatile Object _data;
 	
-	/** The activation index. */
-	volatile int _actdx =
-		-1;
-	
 	/**
 	 * Initializes the entry.
 	 *
@@ -69,18 +65,17 @@ final class __PoolEntry__
 	 * Obtains the index at the specified position as the given type.
 	 *
 	 * @param <R> The type of value to get.
-	 * @param __act Should the given constant pool entry be activated?
 	 * @param __cl The expected class type.
 	 * @return The value at the given location.
 	 * @throws JITException If the input is not of the expected type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public <R> R get(boolean __act, Class<R> __cl)
+	public <R> R get(Class<R> __cl)
 		throws JITException, NullPointerException
 	{
 		// Get
-		R rv = this.<R>optional(__act, __cl);
+		R rv = this.<R>optional(__cl);
 		
 		// {@squirreljme.error AQ0h No constant pool entry was defined at
 		// this position. (The index; The expected type)}
@@ -104,22 +99,10 @@ final class __PoolEntry__
 	}
 	
 	/**
-	 * Has this entry been activated?
-	 *
-	 * @return {@code true} if it has been activated.
-	 * @since 2016/08/17
-	 */
-	public boolean isActive()
-	{
-		return this._actdx >= 0;
-	}
-	
-	/**
 	 * Obtains the index at the specified position as the given type, if the
 	 * index is zero then {@code null} is returned.
 	 *
 	 * @param <R> The type of value to get.
-	 * @param __act Should the given constant pool entry be activated?
 	 * @param __cl The expected class type.
 	 * @return The value at the given location or {@code null} if zero was
 	 * requested.
@@ -127,7 +110,7 @@ final class __PoolEntry__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public <R> R optional(boolean __act, Class<R> __cl)
+	public <R> R optional(Class<R> __cl)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -162,22 +145,22 @@ final class __PoolEntry__
 			{
 					// Strings
 				case __Pool__.TAG_STRING:
-					raw = pool.get(fields[0]).<String>get(false, String.class);
+					raw = pool.get(fields[0]).<String>get(String.class);
 					break;
 					
 					// Class name
 				case __Pool__.TAG_CLASS:
 					raw = (ClassNameSymbol.of(
-						pool.get(fields[0]).<String>get(false, String.class)));
+						pool.get(fields[0]).<String>get(String.class)));
 					break;
 					
 					// Name and type
 				case __Pool__.TAG_NAMEANDTYPE:
 					raw = new __NameAndType__(
 						IdentifierSymbol.of(pool.get(fields[0]).<String>get(
-							false, String.class)),
+							String.class)),
 						MemberTypeSymbol.of(pool.get(fields[1]).<String>get(
-							false, String.class)));
+							String.class)));
 					break;
 					
 					// Field/method/interface reference
@@ -185,10 +168,10 @@ final class __PoolEntry__
 				case __Pool__.TAG_METHODREF:
 				case __Pool__.TAG_INTERFACEMETHODREF:
 					ClassNameSymbol rcl = (
-						pool.get(fields[0]).<ClassNameSymbol>get(false,
+						pool.get(fields[0]).<ClassNameSymbol>get(
 							ClassNameSymbol.class));
 					__NameAndType__ jna = pool.get(fields[1]).
-						<__NameAndType__>get(false, __NameAndType__.class);
+						<__NameAndType__>get(__NameAndType__.class);
 					
 					// Field?
 					if (tag == __Pool__.TAG_FIELDREF)
@@ -225,10 +208,6 @@ final class __PoolEntry__
 		if (!__cl.isInstance(raw))
 			throw new JITException(String.format("AQ0l %d %s", mydx,
 				__cl, raw.getClass()));
-		
-		// Activate?
-		if (__act && this._actdx < 0)
-			this._actdx = pool._nextadx++;
 		
 		// Cast
 		return __cl.cast(raw);

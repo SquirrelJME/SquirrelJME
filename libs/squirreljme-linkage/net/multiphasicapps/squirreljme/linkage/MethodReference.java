@@ -70,7 +70,7 @@ public final class MethodReference
 	 * @return {@code true} if this refers to an interface method.
 	 * @since 2016/08/14
 	 */
-	public final boolean isInterfaceMethod()
+	public final boolean isInterface()
 	{
 		return this.isinterface;
 	}

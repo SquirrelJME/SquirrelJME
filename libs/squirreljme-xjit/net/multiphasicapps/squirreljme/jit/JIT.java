@@ -109,7 +109,7 @@ public final class JIT
 		ClassFlags clflags = __FlagDecoder__.__class(
 			input.readUnsignedShort());
 		ClassNameSymbol thisname = pool.get(input.readUnsignedShort()).
-			<ClassNameSymbol>get(true, ClassNameSymbol.class);
+			<ClassNameSymbol>get(ClassNameSymbol.class);
 		
 		// Create initial export
 		LinkTable linktable = this.linktable;
@@ -121,7 +121,7 @@ public final class JIT
 		// class is not the Object class, or a superclass was specified and
 		// this is the object class.}
 		ClassNameSymbol supername = pool.get(input.readUnsignedShort()).
-			<ClassNameSymbol>optional(true, ClassNameSymbol.class);
+			<ClassNameSymbol>optional(ClassNameSymbol.class);
 		if ((supername == null) !=
 			(thisname.equals(ClassNameSymbol.of("java/lang/Object"))))
 			throw new JITException("AQ0p");
@@ -135,7 +135,7 @@ public final class JIT
 		{
 			// Read class name
 			ClassNameSymbol iname = pool.get(input.readUnsignedShort()).
-				<ClassNameSymbol>get(true, ClassNameSymbol.class);
+				<ClassNameSymbol>get(ClassNameSymbol.class);
 			
 			// {@squirreljme.error AQ0r Duplicate implementation of an
 			// interface. (The interface being linked)}
@@ -158,9 +158,9 @@ public final class JIT
 			FieldFlags ff = __FlagDecoder__.__field(clflags,
 				input.readUnsignedShort());
 			IdentifierSymbol name = IdentifierSymbol.of(pool.get(
-				input.readUnsignedShort()).<String>get(true, String.class));
+				input.readUnsignedShort()).<String>get(String.class));
 			FieldSymbol type = FieldSymbol.of(pool.get(
-				input.readUnsignedShort()).<String>get(true, String.class));
+				input.readUnsignedShort()).<String>get(String.class));
 			
 			// Create field
 			ExportedField field = new ExportedField(ff, name, type);
@@ -183,7 +183,7 @@ public final class JIT
 					
 					// Read the constant value index
 					Object val = pool.get(as.readUnsignedShort()).
-						<Object>get(true, Object.class);
+						<Object>get(Object.class);
 					
 					// {@squirreljme.error AQ0w Illegal constant value type.
 					// (The class type)}
@@ -208,9 +208,9 @@ public final class JIT
 			MethodFlags mf = __FlagDecoder__.__method(clflags,
 				input.readUnsignedShort());
 			IdentifierSymbol name = IdentifierSymbol.of(pool.get(
-				input.readUnsignedShort()).<String>get(true, String.class));
+				input.readUnsignedShort()).<String>get(String.class));
 			MethodSymbol type = MethodSymbol.of(pool.get(
-				input.readUnsignedShort()).<String>get(true, String.class));
+				input.readUnsignedShort()).<String>get(String.class));
 			
 			// Create method
 			ExportedMethod method = new ExportedMethod(mf, name, type);
@@ -268,8 +268,7 @@ public final class JIT
 			throw new NullPointerException("NARG");
 		
 		// The name is not parsed here
-		__aname[0] = __pool.get(__in.readUnsignedShort()).
-			get(false, String.class);
+		__aname[0] = __pool.get(__in.readUnsignedShort()).get(String.class);
 		
 		// {@squirreljme.error AQ0u Attribute exceeds 2GiB in length. (The
 		// size of the attribute)}

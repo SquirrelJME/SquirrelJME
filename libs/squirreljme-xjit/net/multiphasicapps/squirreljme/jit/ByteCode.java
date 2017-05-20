@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
 /**
  * This represents the byte code for a given method. It contains the actual
@@ -47,9 +48,6 @@ public class ByteCode
 	
 	/** Jump targets. */
 	private final JumpTarget[] _jumptargets;
-	
-	/** Instruction address region identifiers. */
-	private final int[] _regions;
 	
 	/** The constant pool. */
 	private final __Pool__ _pool;
@@ -146,14 +144,6 @@ public class ByteCode
 		else
 			this._jumptargets = Arrays.<JumpTarget>copyOf(jumptargets,
 				jumpcount);
-		
-		// Calculate regions for each instruction address
-		int[] regions = new int[codelen];
-		
-		if (true)
-			throw new todo.TODO();
-		
-		this._regions = regions;
 	}
 	
 	/**
@@ -207,6 +197,17 @@ public class ByteCode
 	public Iterator<ByteCode.Instruction> iterator()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the jump targets within the method.
+	 *
+	 * @return The jump targets in the method.
+	 * @since 2017/05/20
+	 */
+	public JumpTarget[] jumpTargets()
+	{
+		return this._jumptargets.clone();
 	}
 	
 	/**
@@ -605,15 +606,20 @@ public class ByteCode
 		{
 			// Read operation here
 			byte[] code = ByteCode.this._code;
-			int op = (code[__a] & 0xFF);
+			int op = (code[__a] & 0xFF),
+				argbase = __a + 1;
 			if (op == __OperandIndex__.WIDE)
+			{
 				op = (op << 8) | (code[__a + 1] & 0xFF);
+				argbase++;
+			}
 			this.op = __a;
 			this.address = __a;
 			
 			// Depends on the operation
 			Object[] args;
 			boolean naturalflow;
+			__Pool__ pool = ByteCode.this._pool;
 			switch (op)
 			{
 					// No arguments and does not flow naturally
@@ -771,6 +777,30 @@ public class ByteCode
 				case __OperandIndex__.SWAP:
 					args = new Object[0];
 					naturalflow = true;
+					break;
+					
+					// Method invocations
+				case __OperandIndex__.INVOKEINTERFACE:
+				case __OperandIndex__.INVOKESPECIAL:
+				case __OperandIndex__.INVOKESTATIC:
+				case __OperandIndex__.INVOKEVIRTUAL:
+					naturalflow = true;
+					
+					// Reference is in the constant pool
+					MethodReference mr = pool.get(
+						((code[argbase] & 0xFF) << 8) |
+						(code[argbase + 1] & 0xFF)).<MethodReference>get(
+						MethodReference.class);
+					
+					// {@squirreljme.error AQ19 Invocation of method did not
+					// have the matching interface/not-interface attribute.
+					// (The operation; The address; The method reference)}
+					if (mr.isInterface() !=
+						(op == __OperandIndex__.INVOKEINTERFACE))
+						throw new JITException(String.format("AQ19 %d %d %s",
+							op, __a, mr));
+					
+					args = new Object[]{mr};
 					break;
 					
 					// {@squirreljme.error AQ18 The operation at the specified

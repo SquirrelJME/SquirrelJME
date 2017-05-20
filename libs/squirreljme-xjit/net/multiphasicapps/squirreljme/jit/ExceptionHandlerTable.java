@@ -56,7 +56,7 @@ public final class ExceptionHandlerTable
 			int epc = __is.readUnsignedShort();
 			int hpc = __is.readUnsignedShort();
 			ClassNameSymbol type = __pool.get(__is.readUnsignedShort()).
-				<ClassNameSymbol>optional(true, ClassNameSymbol.class);
+				<ClassNameSymbol>optional(ClassNameSymbol.class);
 			
 			// {@squirreljme.error AQ0y Address is outside of the bounds of the
 			// method. (The start address; The end address; The handler
