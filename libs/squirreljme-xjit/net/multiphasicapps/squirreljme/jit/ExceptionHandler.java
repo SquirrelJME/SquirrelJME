@@ -29,7 +29,7 @@ public final class ExceptionHandler
 	protected final int endpc;
 	
 	/** The handler address. */
-	protected final int handlerpc;
+	protected final JumpTarget handlerpc;
 	
 	/** The class type to handle. */
 	protected final ClassNameSymbol type;
@@ -65,7 +65,7 @@ public final class ExceptionHandler
 		// Set
 		this.startpc = __spc;
 		this.endpc = __epc;
-		this.handlerpc = __hpc;
+		this.handlerpc = new JumpTarget(__hpc);
 		this.type = (__cn == null ? ClassNameSymbol.of("java/lang/Throwable") :
 			__cn);
 	}
@@ -96,7 +96,7 @@ public final class ExceptionHandler
 		ExceptionHandler o = (ExceptionHandler)__o;
 		return this.startpc == o.startpc &&
 			this.endpc == o.endpc &&
-			this.handlerpc == o.handlerpc &&
+			this.handlerpc.equals(o.handlerpc) &&
 			Objects.equals(this.type, o.type);
 	}
 	
@@ -106,7 +106,7 @@ public final class ExceptionHandler
 	 * @return The handler address.
 	 * @since 2017/02/09
 	 */
-	public int handlerAddress()
+	public JumpTarget handlerAddress()
 	{
 		return this.handlerpc;
 	}
@@ -118,7 +118,7 @@ public final class ExceptionHandler
 	@Override
 	public int hashCode()
 	{
-		return this.startpc ^ this.endpc ^ this.handlerpc ^
+		return this.startpc ^ this.endpc ^ this.handlerpc.hashCode() ^
 			Objects.hashCode(this.type);
 	}
 	
@@ -159,7 +159,7 @@ public final class ExceptionHandler
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"{%d-%d > %d (%s)}", this.startpc, this.endpc, this.handlerpc,
+				"{%d-%d > %s (%s)}", this.startpc, this.endpc, this.handlerpc,
 				this.type)));
 		
 		return rv;

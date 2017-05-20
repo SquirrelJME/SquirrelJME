@@ -161,6 +161,12 @@ class __Code__
 			__pool);
 		this.code = bc;
 		
+		// Debug
+		System.err.println("DEBUG -- Method Code");
+		for (ByteCode.Instruction i : bc)
+			System.err.printf("DEBUG -- %s%n", i);
+		System.err.println("DEBUG -- -----------");
+		
 		// Initialize the program
 		ProgramState program = new ProgramState(bc, smtdata, smtmodern);
 		this.program = program;
