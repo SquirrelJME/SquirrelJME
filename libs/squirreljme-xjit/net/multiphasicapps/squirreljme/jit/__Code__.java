@@ -187,7 +187,7 @@ class __Code__
 	{
 		// Run the program parse loop
 		ProgramState program = this.program;
-		program.run();
+		program.__run();
 		
 		// Export the program to native machine code
 		throw new todo.TODO();

@@ -30,7 +30,6 @@ import java.util.List;
  * @since 2017/05/13
  */
 public class ProgramState
-	implements Runnable
 {
 	/** The byte code for the method. */
 	protected final ByteCode code;
@@ -143,11 +142,11 @@ public class ProgramState
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Runs the program recompilation process.
+	 *
 	 * @since 2017/05/20
 	 */
-	@Override
-	public void run()
+	void __run()
 	{
 		BasicBlockZone entryzone = getZone(0);
 		
