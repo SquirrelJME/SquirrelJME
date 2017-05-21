@@ -58,5 +58,27 @@ public class BasicBlockZone
 		this.endaddress = __end;
 		this._veriftarget = __bvt;
 	}
+	
+	/**
+	 * Returns the base address.
+	 *
+	 * @param __a The address to check.
+	 * @return A {@link Comparable} compatible value for whether this zone
+	 * is in the given address.
+	 * @since 2017/05/20
+	 */
+	public int compareAddressRange(int __a)
+	{
+		// Before the base?
+		if (__a < this.baseaddress)
+			return -1;
+		
+		// After the end?
+		if (__a >= this.endaddress)
+			return 1;
+		
+		// In range
+		return 0;
+	}
 }
 

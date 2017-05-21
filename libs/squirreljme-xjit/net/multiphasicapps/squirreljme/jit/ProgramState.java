@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 
@@ -103,12 +104,53 @@ public class ProgramState
 	}
 	
 	/**
+	 * Returns the zone at the given address.
+	 *
+	 * @param __a The address to get the zone for.
+	 * @return The zone at the given address.
+	 * @throws IndexOutOfBoundsException If the address is a out of range.
+	 * @since 2017/05/20
+	 */
+	public BasicBlockZone getZone(int __a)
+		throws IndexOutOfBoundsException
+	{
+		// Out of range?
+		if (__a < 0 || __a >= this.code.length())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Binary search for the given zone
+		BasicBlockZone[] zones = this._zones;
+		for (int n = zones.length, l = 0, r = n, p = n >> 1;;)
+		{
+			BasicBlockZone zone = zones[p];
+			int cr = zone.compareAddressRange(__a);
+			
+			// Match?
+			if (cr == 0)
+				return zone;
+			
+			// Go left?
+			else if (cr < 0)
+				r = p;
+			
+			// Go right?
+			else
+				l = p;
+			
+			// Partition in the middle
+			p = l + ((r - l) >> 1);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/20
 	 */
 	@Override
 	public void run()
 	{
+		BasicBlockZone entryzone = getZone(0);
+		
 		throw new todo.TODO();
 	}
 }
