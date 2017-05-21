@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.lcdui;
  *
  * @since 2017/02/12
  */
+@Deprecated
 public interface KeyEventCapableConnector
 {
 	/**

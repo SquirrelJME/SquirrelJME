@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.lcdui;
  *
  * @since 2017/02/28
  */
+@Deprecated
 public interface DisplayAlertConnector
 	extends DisplayConnector
 {

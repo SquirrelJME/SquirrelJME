@@ -19,6 +19,7 @@ import javax.microedition.lcdui.DisplayCapabilityException;
  *
  * @since 2017/02/08
  */
+@Deprecated
 public interface DisplayEngine
 {
 	/**
