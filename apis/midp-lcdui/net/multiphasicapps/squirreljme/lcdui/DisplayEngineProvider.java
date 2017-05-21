@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.lcdui;
  *
  * @since 2017/02/08
  */
+@Deprecated
 public interface DisplayEngineProvider
 {
 	/**
