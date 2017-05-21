@@ -60,7 +60,7 @@ public class BasicBlockZone
 	}
 	
 	/**
-	 * Returns the base address.
+	 * Checks if the given address is in the specified range.
 	 *
 	 * @param __a The address to check.
 	 * @return A {@link Comparable} compatible value for whether this zone
