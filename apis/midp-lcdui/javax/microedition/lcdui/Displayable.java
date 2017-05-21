@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
+import net.multiphasicapps.squirreljme.lcdui.VirtualDisplayable;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -21,6 +22,7 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
  * @since 2016/10/08
  */
 public abstract class Displayable
+	extends VirtualDisplayable
 {
 	/** The lock on this displayable. */
 	final Object _lock =
