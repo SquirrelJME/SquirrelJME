@@ -12,8 +12,10 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -27,9 +29,16 @@ import java.util.List;
  * @since 2017/05/13
  */
 public class ProgramState
+	implements Runnable
 {
 	/** The byte code for the method. */
 	protected final ByteCode code;
+	
+	/** The JIT configuration. */
+	protected final JITConfig config;
+	
+	/** The link table for imports. */
+	protected final LinkTable linktable;
 	
 	/** This contains the basic block zones, sorted at zone start address. */
 	private final BasicBlockZone[] _zones;
@@ -41,20 +50,25 @@ public class ProgramState
 	 * @param __smtdata The stack map data.
 	 * @param __smtmodern Is the stack map table a modern one?
 	 * @param __em The method this program is for.
+	 * @param __conf The JIT configuration.
+	 * @param __lt The link table used for imports and exports.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/14
 	 */
 	ProgramState(ByteCode __code, byte[] __smtdata, boolean __smtmodern,
-		ExportedMethod __em)
+		ExportedMethod __em, JITConfig __conf, LinkTable __lt)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__code == null || __smtdata == null || __em == null)
+		if (__code == null || __smtdata == null || __em == null ||
+			__conf == null || __lt == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.config = __conf;
 		this.code = __code;
+		this.linktable = __lt;
 		int codelen = __code.length();
 		
 		// Parse the stack map to determine the starting state of each
@@ -86,7 +100,15 @@ public class ProgramState
 		}
 		this._zones = zones.<BasicBlockZone>toArray(
 			new BasicBlockZone[zones.size()]);
-		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/20
+	 */
+	@Override
+	public void run()
+	{
 		throw new todo.TODO();
 	}
 }

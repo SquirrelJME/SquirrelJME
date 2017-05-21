@@ -15,6 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
@@ -168,160 +170,9 @@ class __Code__
 		System.err.println("DEBUG -- -----------");
 		
 		// Initialize the program
-		ProgramState program = new ProgramState(bc, smtdata, smtmodern, __em);
+		ProgramState program = new ProgramState(bc, smtdata, smtmodern, __em,
+			__conf, linktable);
 		this.program = program;
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Decodes a single operation.
-	 *
-	 * @param __in The input code stream.
-	 * @throws IOException On read errors.
-	 * @throws JITException If the code decodes improperly.
-	 * @since 2017/04/15
-	 */
-	private void __decodeOp(__CountStream__ __in)
-		throws IOException, JITException
-	{
-		// Read operation
-		int op = __in.readUnsignedByte();
-		if (op == __OperandIndex__.WIDE)
-			op = (op << 8) | __in.readUnsignedByte();
-		
-		throw new todo.TODO();
-		/*
-		// Depends
-		switch (op)
-		{
-			case __OperandIndex__.ALOAD:
-				__executeLoad(JavaType.OBJECT, __in.readUnsignedByte());
-				break;
-			
-			case __OperandIndex__.WIDE_ALOAD:
-				__executeLoad(JavaType.OBJECT, __in.readUnsignedShort());
-				break;
-			
-			case __OperandIndex__.ALOAD_0:
-			case __OperandIndex__.ALOAD_1:
-			case __OperandIndex__.ALOAD_2:
-			case __OperandIndex__.ALOAD_3:
-				__executeLoad(JavaType.OBJECT, op - __OperandIndex__.ALOAD_0);
-				break;
-				
-			case __OperandIndex__.ILOAD:
-				__executeLoad(JavaType.INTEGER, __in.readUnsignedByte());
-				break;
-			
-			case __OperandIndex__.WIDE_ILOAD:
-				__executeLoad(JavaType.INTEGER, __in.readUnsignedShort());
-				break;
-			
-			case __OperandIndex__.ILOAD_0:
-			case __OperandIndex__.ILOAD_1:
-			case __OperandIndex__.ILOAD_2:
-			case __OperandIndex__.ILOAD_3:
-				__executeLoad(JavaType.INTEGER, op - __OperandIndex__.ILOAD_0);
-				break;
-				
-			case __OperandIndex__.LLOAD:
-				__executeLoad(JavaType.LONG, __in.readUnsignedByte());
-				break;
-			
-			case __OperandIndex__.WIDE_LLOAD:
-				__executeLoad(JavaType.LONG, __in.readUnsignedShort());
-				break;
-				
-			case __OperandIndex__.LLOAD_0:
-			case __OperandIndex__.LLOAD_1:
-			case __OperandIndex__.LLOAD_2:
-			case __OperandIndex__.LLOAD_3:
-				__executeLoad(JavaType.LONG, op - __OperandIndex__.LLOAD_0);
-				break;
-				
-			case __OperandIndex__.FLOAD:
-				__executeLoad(JavaType.FLOAT, __in.readUnsignedByte());
-				break;
-			
-			case __OperandIndex__.WIDE_FLOAD:
-				__executeLoad(JavaType.FLOAT, __in.readUnsignedShort());
-				break;
-				
-			case __OperandIndex__.FLOAD_0:
-			case __OperandIndex__.FLOAD_1:
-			case __OperandIndex__.FLOAD_2:
-			case __OperandIndex__.FLOAD_3:
-				__executeLoad(JavaType.FLOAT, op - __OperandIndex__.FLOAD_0);
-				break;
-				
-			case __OperandIndex__.DLOAD:
-				__executeLoad(JavaType.DOUBLE, __in.readUnsignedByte());
-				break;
-			
-			case __OperandIndex__.WIDE_DLOAD:
-				__executeLoad(JavaType.DOUBLE, __in.readUnsignedShort());
-				break;
-				
-			case __OperandIndex__.DLOAD_0:
-			case __OperandIndex__.DLOAD_1:
-			case __OperandIndex__.DLOAD_2:
-			case __OperandIndex__.DLOAD_3:
-				__executeLoad(JavaType.DOUBLE, op - __OperandIndex__.DLOAD_0);
-				break;
-		
-				// {@squirreljme.error AQ1e Invalid byte code operation index.
-				// (The operation index; The address of the operation)}
-			default:
-				throw new JITException(String.format("AQ1e %#02x %d", op,
-					this._atpc));
-		}
-		*/
-	}
-	
-	/**
-	 * Generates code for the load operation which potentially aliases and/or
-	 * copies the value from a local variable onto the stack.
-	 *
-	 * @param __t The type to copy.
-	 * @param __from The local variable slot to copy from.
-	 * @throws JITException If the type is not valid, the stack overflows, or
-	 * the specified local variable is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/04/18
-	 */
-	void __executeLoad(JavaType __t, int __from)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AQ1f The specified type cannot be loaded from a
-		// local variable. (The type to load)}
-		if (!__t.isValid())
-			throw new JITException(String.format("AQ1f %s", __t));
-		
-		throw new todo.TODO();
-		/*
-		// Debug
-		System.err.printf("DEBUG -- load: %s %d%n", __t, __from);
-		
-		CacheState javain = this._javain;
-		ActiveCacheState javaout = this._javaout;
-		
-		// {@squirreljme.error AQ23 The incorrect type is in the local variable
-		// slot. (The desired type; The actual type)}
-		CacheState.Slot src = javain.getSlot(AreaType.LOCAL, __from);
-		if (src.valueType() != __t)
-			throw new JITException(String.format("AQ23 %s %s", __t, src));
-		
-		// Push a copy
-		javaout.pushCopy(src);
-		
-		// Normally flows to the next instruction
-		this._return.setFlow(__ExecutionFlow__.NEXT);
-		*/
 	}
 	
 	/**
@@ -334,51 +185,12 @@ class __Code__
 	void __run()
 		throws IOException, JITException
 	{
-		throw new todo.TODO();
-		/*
-		SnapshotCacheStates smt = this._smt;
-		CacheState javain = this._javain;
-		ActiveCacheState javaout = this._javaout;
-		__Return__ javaret = this._return;
+		// Run the program parse loop
+		ProgramState program = this.program;
+		program.run();
 		
-		// Open stream to the code
-		try (__CountStream__ code = new __CountStream__(
-			new ByteArrayInputStream(this._code)))
-		{
-			// Reset the return state
-			javaret.reset();
-			
-			// The address currently being handled
-			int atpc = code.count();
-			this._atpc = atpc;
-			
-			// {@squirreljme.error AQ1g No Java state exists for the specified
-			// instruction address. (The address)}
-			SnapshotCacheState existstate = smt.get(atpc);
-			if (existstate == null)
-				throw new JITException(String.format("AQ1g %d", atpc));
-			
-			// The input and base output state become the existing state
-			((ActiveCacheState)javain).switchFrom(existstate);
-			javaout.switchFrom(existstate);
-			
-			// Debug
-			System.err.printf("DEBUG -- IN at %d: %s%n", atpc, javain);
-			
-			// Decode single operation
-			__decodeOp(code);
-			
-			// Debug
-			System.err.printf("DEBUG -- OUT at %d: %s%n", atpc, javaout);
-			
-			// Depends on the flow, always hide nexts
-			__ExecutionFlow__ flow = javaret.flow();
-			if (flow.equals(__ExecutionFlow__.NEXT))
-				flow = new __ExecutionFlow__(code.count());
-			
-			throw new todo.TODO();
-		}
-		*/
+		// Export the program to native machine code
+		throw new todo.TODO();
 	}
 }
 
