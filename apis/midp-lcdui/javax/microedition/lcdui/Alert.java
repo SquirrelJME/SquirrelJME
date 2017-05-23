@@ -10,9 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayAlertConnector;
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
-
 public class Alert
 	extends Screen
 {
@@ -29,9 +26,6 @@ public class Alert
 	
 	/** The title of the alert. */
 	private final String _title;
-	
-	/** The connector to this alert. */
-	private volatile DisplayAlertConnector _connector;
 	
 	/** The message to display. */
 	private volatile String _message;
@@ -189,39 +183,6 @@ public class Alert
 	public void setType(AlertType __t)
 	{
 		this._type = __t;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	DisplayConnector __connector()
-	{
-		// Use the same connector, create if missing
-		DisplayAlertConnector rv = this._connector;
-		if (rv == null)
-			this._connector = (rv = new __Connector__());
-		return rv;
-	}
-	
-	/**
-	 * The connector for alerts.
-	 *
-	 * @since 2017/02/28
-	 */
-	private final class __Connector__
-		implements DisplayAlertConnector
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/28
-		 */
-		@Override
-		public void sizeChanged(int __w, int __h)
-		{
-			throw new todo.TODO();
-		}
 	}
 }
 

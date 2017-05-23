@@ -11,9 +11,6 @@
 package javax.microedition.lcdui;
 
 import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
-import net.multiphasicapps.squirreljme.lcdui.DisplayCanvasConnector;
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
-import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
 import net.multiphasicapps.squirreljme.lcdui.KeyEventType;
 import net.multiphasicapps.squirreljme.lcdui.KeyNames;
 import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
@@ -147,9 +144,6 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
-	/** The connector to this canvas. */
-	private volatile DisplayCanvasConnector _connector;
-	
 	/** The key listener to use. */
 	private volatile KeyListener _keylistener;
 	
@@ -179,12 +173,14 @@ public abstract class Canvas
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
+		throw new todo.TODO();
+		/*
 		DisplayInstance instance = this._instance;
 		if (instance != null)
 			return instance.getActionForKey(__kc);
 		
 		// If no display is bound, treat as unknown
-		return 0;
+		return 0;*/
 	}
 	
 	/**
@@ -194,10 +190,12 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		DisplayInstance instance = this._instance;
 		if (instance != null)
 			return instance.getHeight();
-		return 1;
+		return 1;*/
 	}
 	
 	public int getKeyCode(int __a)
@@ -231,10 +229,12 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		DisplayInstance instance = this._instance;
 		if (instance != null)
 			return instance.getWidth();
-		return 1;
+		return 1;*/
 	}
 	
 	/**
@@ -247,11 +247,7 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerEvents()
 	{
-		Display d = getCurrentDisplay();
-		if (d == null)
-			d = Display.getDisplays(0)[0];
-		
-		return d.hasPointerEvents();
+		return getCurrentDisplay().hasPointerEvents();
 	}
 	
 	/**
@@ -264,11 +260,7 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerMotionEvents()
 	{
-		Display d = getCurrentDisplay();
-		if (d == null)
-			d = Display.getDisplays(0)[0];
-		
-		return d.hasPointerMotionEvents();
+		return getCurrentDisplay().hasPointerMotionEvents();
 	}
 	
 	/**
@@ -414,9 +406,11 @@ public abstract class Canvas
 			return;
 		
 		// Send repaint
+		throw new todo.TODO();
+		/*
 		DisplayInstance instance = this._instance;
 		if (instance != null)
-			instance.repaint(__x, __y, __w, __h);
+			instance.repaint(__x, __y, __w, __h); */
 	}
 	
 	public final void serviceRepaints()
@@ -435,9 +429,11 @@ public abstract class Canvas
 	 */
 	public void setFullScreenMode(boolean __f)
 	{
+		throw new todo.TODO();
+		/*
 		DisplayInstance instance = this._instance;
 		if (instance != null)
-			instance.setFullScreen(__f);
+			instance.setFullScreen(__f);*/
 	}
 	
 	/**
@@ -492,139 +488,6 @@ public abstract class Canvas
 	protected void sizeChanged(int __w, int __h)
 	{
 		super.sizeChanged(__w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	DisplayConnector __connector()
-	{
-		// Use the same connector, create if missing
-		DisplayCanvasConnector rv = this._connector;
-		if (rv == null)
-			this._connector = (rv = new __Connector__());
-		return rv;
-	}
-	
-	/**
-	 * This allows the display engine to communicate with this canvas class.
-	 *
-	 * @since 2017/02/08
-	 */
-	final class __Connector__
-		implements DisplayCanvasConnector
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/12
-		 */
-		@Override
-		public void keyEvent(KeyEventType __t, int __code, char __ch,
-			int __mods)
-		{
-			// The listener is optional
-			KeyListener kl = Canvas.this._keylistener;
-			
-			// Use the modfiied character for key listener events if possible
-			int klc = __code;
-			if (__ch != 0)
-				klc = __ch;
-			
-			// Depends
-			switch (__t)
-			{
-					// Pressed
-				case PRESSED:
-					Canvas.this.keyPressed(__code);
-					if (kl != null)
-						kl.keyPressed(klc, __mods);
-					break;
-				
-					// Released
-				case RELEASED:
-					Canvas.this.keyReleased(__code);
-					if (kl != null)
-						kl.keyReleased(klc, __mods);
-					break;
-					
-					// Repeated
-				case REPEATED:
-					Canvas.this.keyRepeated(__code);
-					if (kl != null)
-						kl.keyRepeated(klc, __mods);
-					break;
-					
-					// Unknown
-				default:
-					throw new RuntimeException("OOPS");
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/08
-		 */
-		@Override
-		public void paint(Graphics __g)
-		{
-			// If this is a basic graphics drawer, reset parameters except
-			// for the clip
-			if (__g instanceof BasicGraphics)
-				((BasicGraphics)__g).resetParameters(false);
-			
-			// If the canvas is transparent then just clear the background and
-			// set it to black
-			if (Canvas.this._transparent)
-				__g.fillRect(0, 0, __g.getClipWidth(), __g.getClipHeight());
-			
-			// Perform normal paint
-			Canvas.this.paint(__g);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/12
-		 */
-		@Override
-		public void pointerEvent(PointerEventType __t, int __x, int __y)
-			throws NullPointerException
-		{
-			// Check
-			if (__t == null)
-				throw new NullPointerException("NARG");
-			
-			// Depends
-			switch (__t)
-			{
-				case DRAGGED:
-					Canvas.this.pointerDragged(__x, __y);
-					return;
-				
-				case PRESSED:
-					Canvas.this.pointerPressed(__x, __y);
-					return;
-				
-				case RELEASED:
-					Canvas.this.pointerReleased(__x, __y);
-					return;
-				
-					// Should not happen
-				default:
-					throw new RuntimeException("OOPS");
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/10
-		 */
-		@Override
-		public void sizeChanged(int __w, int __h)
-		{
-			Canvas.this.sizeChanged(__w, __h);
-		}
 	}
 }
 

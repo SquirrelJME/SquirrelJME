@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
-
 public class List
 	extends Screen
 	implements Choice
@@ -135,16 +133,6 @@ public class List
 	}
 	
 	public int size()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	DisplayConnector __connector()
 	{
 		throw new todo.TODO();
 	}

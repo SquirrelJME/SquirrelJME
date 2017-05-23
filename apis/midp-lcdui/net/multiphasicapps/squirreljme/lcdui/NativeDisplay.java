@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import javax.microedition.lcdui.Display;
+
 /**
  * This is the base class for native display engines which also provides
  * native widgets and interfaces.
@@ -18,5 +20,37 @@ package net.multiphasicapps.squirreljme.lcdui;
  */
 public abstract class NativeDisplay
 {
+	/**
+	 * This is the head for a single display.
+	 *
+	 * @since 2017/05/23
+	 */
+	public abstract class Head
+	{
+		/**
+		 * Initializes the display head.
+		 *
+		 * @since 2017/05/24
+		 */
+		protected Head()
+		{
+		}
+	}
+	
+	/**
+	 * This interface is used to create displays.
+	 *
+	 * @since 2017/05/23
+	 */
+	public static interface DisplayConstructor
+	{
+		/**
+		 * This creates the native display using the given head.
+		 *
+		 * @param __h The native head which is used by the display.
+		 * @since 2017/05/23
+		 */
+		public abstract Display createDisplay(NativeDisplay.Head __h);
+	}
 }
 

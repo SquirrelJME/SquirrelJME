@@ -10,10 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
-import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
-import net.multiphasicapps.squirreljme.lcdui.VirtualDisplayable;
-
 /**
  * A displayable is a primary container such as a form or a canvas that can be
  * set on a display. A display may only have a single displayable associated
@@ -29,9 +25,6 @@ public abstract class Displayable
 	
 	/** The display that this is currently associated with. */
 	volatile Display _display;
-	
-	/** The instance that allows this to directly interact with the item. */
-	volatile DisplayInstance _instance;
 	
 	/** The title of this displayable. */
 	volatile String _title;
@@ -67,15 +60,6 @@ public abstract class Displayable
 	 * @since 2017/02/08
 	 */
 	public abstract int getWidth();
-	
-	/**
-	 * Creates a connector which can better interact with this displayable.
-	 *
-	 * @return The displayable for connecting to this object, it may be
-	 * cached.
-	 * @since 2017/02/08
-	 */
-	abstract DisplayConnector __connector();
 	
 	public void addCommand(Command __a)
 	{
@@ -186,9 +170,10 @@ public abstract class Displayable
 		this._title = __a;
 		
 		// Set the title to use
-		DisplayInstance instance = this._instance;
+		throw new todo.TODO();
+		/*DisplayInstance instance = this._instance;
 		if (instance != null)
-			instance.setTitle(__a);
+			instance.setTitle(__a);*/
 	}
 	
 	/**

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
+import net.multiphasicapps.squirreljme.lcdui.NullNativeDisplay;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
@@ -186,12 +187,14 @@ public class Display
 	/** This is the single native display instance which all displays use. */
 	static final NativeDisplay _NATIVE_DISPLAY;
 	
-	/** The lock for this display. */
-	final Object _lock =
-		new Object();
+	/** Display heads. */
+	private static final Display[] _HEADS;
+	
+	/** The head which is associated with this display. */
+	final NativeDisplay.Head _head;
 	
 	/**
-	 * 
+	 * This initializes the native display which provides sub-display views.
 	 *
 	 * @since 2017/05/23
 	 */
@@ -202,24 +205,32 @@ public class Display
 		if (nd == null)
 			nd = new NullNativeDisplay();
 		_NATIVE_DISPLAY = nd;
+		
+		if (true)
+			throw new todo.TODO();
+		// Initialize display heads
+		/*_HEADS = nd.initializeHeads(new DisplayConstructor()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2017/05/23
+				 */
+				/*@Override
+				public Display createDisplay(NativeDisplay.Head __h)
+				{
+					return new Display(__h);
+				}
+			});*/
 	}
 	
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __e The engine used for this display.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display(DisplayEngine __e)
-		throws NullPointerException
+	Display()
 	{
-		// Check
-		if (__e == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._engine = __e;
+		throw new todo.TODO();
 	}
 	
 	public void callSerially(Runnable __a)
@@ -412,11 +423,7 @@ public class Display
 	 */
 	public Displayable getCurrent()
 	{
-		// Lock
-		synchronized (this._lock)
-		{
-			return this._show;
-		}
+		throw new todo.TODO();
 	}
 	
 	public int getDisplayState()
@@ -499,7 +506,7 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		return this._engine.hasPointerEvents();
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -510,7 +517,7 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		return this._engine.hasPointerMotionEvents();
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -648,6 +655,8 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
+		throw new todo.TODO();
+		/*
 		// Enter the background state?
 		DisplayInstance instance = this._instance;
 		if (__show == null)
@@ -662,9 +671,9 @@ public class Display
 			((__show instanceof Alert) ? getCurrent() : null));
 		
 		// Enter foreground state
-		instance = this._instance;
+		/*instance = this._instance;
 		if (instance != null)
-			instance.setState(STATE_FOREGROUND);
+			instance.setState(STATE_FOREGROUND);*/
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -709,6 +718,8 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB0q");
 		
+		throw new todo.TODO();
+		/*
 		// Display is not attached, do not vibrate
 		DisplayInstance instance = this._instance;
 		if (instance == null)
@@ -719,7 +730,7 @@ public class Display
 			return false;
 		
 		// Otherwise vibrate
-		return instance.vibrate(__d);
+		return instance.vibrate(__d);*/
 	}
 	
 	/**
@@ -799,6 +810,8 @@ public class Display
 		if (__show == null)
 			__exit = null;
 		
+		throw new todo.TODO();
+		/*
 		// Lock on self
 		synchronized (this._lock)
 		{
@@ -809,93 +822,7 @@ public class Display
 			// Perform a massive four way synchronization
 			Object dummy = new Object();
 			__setCurrentB(dummy, oldshow, oldexit, __show, __exit);
-		}
-	}
-	
-	/**
-	 * Secondary call to lock all the displays being associated.
-	 *
-	 * @param __dummy Dummy locking object.
-	 * @param __oldshow The old showing display.
-	 * @param __oldexit The old exist display.
-	 * @param __show The next to show display.
-	 * @param __exit Shown when the current shown is cleared.
-	 * @since 2017/02/08
-	 */
-	private void __setCurrentB(Object __dummy, Displayable __oldshow,
-		Displayable __oldexit, Displayable __show, Displayable __exit)
-	{
-		// Lock
-		synchronized ((__oldshow != null ? __oldshow : __dummy))
-		{
-			synchronized ((__oldexit != null ? __oldshow : __dummy))
-			{
-				synchronized ((__show != null ? __show : __dummy))
-				{
-					synchronized ((__exit != null ? __exit : __dummy))
-					{
-						__setCurrentC(__oldshow, __oldexit, __show, __exit);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Thirs call which performs the actual display switching work.
-	 *
-	 * @param __dummy Dummy locking object.
-	 * @param __oldshow The old showing display.
-	 * @param __oldexit The old exist display.
-	 * @param __show The next to show display.
-	 * @param __exit Shown when the current shown is cleared.
-	 * @since 2017/02/08
-	 */
-	private void __setCurrentC(Displayable __oldshow,
-		Displayable __oldexit, Displayable __show, Displayable __exit)
-	{
-		// Keeping the same display?
-		if (__oldshow == __show)
-		{
-			// Do nothing
-			if (__oldexit == __exit)
-				return;
-			
-			// {@squirreljme.error EB04 The displayable to show on
-			// dismiss is already associated with a display.}
-			if (__exit._display != null)
-				throw new IllegalStateException("EB04");
-			
-			// Set the new exit display
-			this._ondismissed = __exit;
-		}
-		
-		// Changing the display
-		else
-		{
-			// {@squirreljme.error EB03 The displayable is already
-			// associated with a display.}
-			if (__show._display != null)
-				throw new IllegalStateException("EB03");
-			
-			// Re-associate ownership
-			if (__oldshow != null)
-				__oldshow._display = null;
-			__show._display = this;
-			
-			// Set new displays
-			this._show = __show;
-			this._ondismissed = __exit;
-			
-			// Set the displayable to this one and also connect
-			DisplayInstance instance = this._engine.setDisplayable(__show,
-				__show.__connector());
-			this._instance = instance;
-			__show._instance = instance;
-			
-			// Make sure some things are set
-			instance.setTitle(__show.getTitle());
-		}
+		}*/
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)
@@ -943,34 +870,16 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		// Lock to prevent race conditions
-		Display[] displays = null;
-		synchronized (_DISPLAY_LOCK)
-		{
-			displays = _DISPLAYS;
-			
-			// Need to initialize the displays?
-			if (displays == null)
-			{
-				// Load displays from engines
-				List<Display> to = new ArrayList<>();
-				for (DisplayEngine de : SquirrelJME.systemService(
-					DisplayEngineProvider.class).engines())
-					to.add(new Display(de));
-				
-				// Set
-				_DISPLAYS =
-					(displays = to.<Display>toArray(new Display[to.size()]));
-			}
-		}
+		// Go through all heads
+		Display[] heads = _HEADS;
 		
 		// {@squirreljme.error EB05 No displays are available.}
-		if (displays.length <= 0)
+		if (heads.length <= 0)
 			throw new IllegalStateException("EB05");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
-		for (Display d : displays)
+		for (Display d : heads)
 			if (__caps == 0 || (d.getCapabilities() & __caps) == __caps)
 				rv.add(d);
 		

@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
-
 public class TextBox
 	extends Screen
 {
@@ -109,16 +107,6 @@ public class TextBox
 	}
 	
 	public int size()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	DisplayConnector __connector()
 	{
 		throw new todo.TODO();
 	}

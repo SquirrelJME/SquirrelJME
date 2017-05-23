@@ -13,7 +13,6 @@ package javax.microedition.lcdui;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
 
 public class FileSelector
 	extends Screen
@@ -86,16 +85,6 @@ public class FileSelector
 	
 	public void setURL(String __u)
 		throws IOException
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/08
-	 */
-	@Override
-	DisplayConnector __connector()
 	{
 		throw new todo.TODO();
 	}
