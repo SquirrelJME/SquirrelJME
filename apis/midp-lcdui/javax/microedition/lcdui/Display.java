@@ -22,11 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.squirreljme.lcdui.DisplayConnector;
-import net.multiphasicapps.squirreljme.lcdui.DisplayEngine;
-import net.multiphasicapps.squirreljme.lcdui.DisplayEngineProvider;
-import net.multiphasicapps.squirreljme.lcdui.DisplayInstance;
-import net.multiphasicapps.squirreljme.lcdui.VirtualDisplay;
+import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
@@ -187,29 +183,26 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** Lock on the displays. */
-	private static final Object _DISPLAY_LOCK =
-		new Object();
-	
-	/** The displays that are available for usage. */
-	private static volatile Display[] _DISPLAYS =
-		null;
-	
-	/** The owning display engine. */
-	final DisplayEngine _engine;
+	/** This is the single native display instance which all displays use. */
+	static final NativeDisplay _NATIVE_DISPLAY;
 	
 	/** The lock for this display. */
 	final Object _lock =
 		new Object();
 	
-	/** The current displayable being shown. */
-	private volatile Displayable _show;
-	
-	/** The displayable to show when the old one is dismissed. */
-	private volatile Displayable _ondismissed;
-	
-	/** The current instance. */
-	private volatile DisplayInstance _instance;
+	/**
+	 * 
+	 *
+	 * @since 2017/05/23
+	 */
+	static
+	{
+		// Setup native display engine
+		NativeDisplay nd = SquirrelJME.systemService(NativeDisplay.class);
+		if (nd == null)
+			nd = new NullNativeDisplay();
+		_NATIVE_DISPLAY = nd;
+	}
 	
 	/**
 	 * Initializes the display instance.

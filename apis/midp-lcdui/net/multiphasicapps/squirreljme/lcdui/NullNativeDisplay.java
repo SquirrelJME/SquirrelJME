@@ -11,12 +11,13 @@
 package net.multiphasicapps.squirreljme.lcdui;
 
 /**
- * This is the base class for native display engines which also provides
- * native widgets and interfaces.
+ * This is a native display which does not provide any capable displays, all
+ * operations are essentially a no-operation..
  *
  * @since 2017/05/23
  */
-public abstract class NativeDisplay
+public class NullNativeDisplay
+	extends NativeDisplay
 {
 }
 
