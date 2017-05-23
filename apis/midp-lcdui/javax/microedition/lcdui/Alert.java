@@ -68,6 +68,8 @@ public class Alert
 		this._message = __message;
 		this._icon = __icon;
 		this._type = __type;
+		
+		throw new todo.TODO();
 	}
 	
 	@Override
