@@ -30,7 +30,6 @@ import net.multiphasicapps.squirreljme.lcdui.VirtualDisplay;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
-	extends VirtualDisplay
 {
 	public static final int ALERT =
 		3;

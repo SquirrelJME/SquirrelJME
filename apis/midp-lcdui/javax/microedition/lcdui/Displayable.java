@@ -22,7 +22,6 @@ import net.multiphasicapps.squirreljme.lcdui.VirtualDisplayable;
  * @since 2016/10/08
  */
 public abstract class Displayable
-	extends VirtualDisplayable
 {
 	/** The lock on this displayable. */
 	final Object _lock =

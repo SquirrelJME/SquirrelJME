@@ -10,17 +10,12 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
-import javax.microedition.lcdui.Displayable;
-
 /**
- * This is the base class for any {@link Displayable}s used within
- * SquirrelJME. This manages the bridge between the native widget system (if
- * any) to the one represented in the LCDUI interfaces.
+ * DESCRIBE THIS.
  *
- * @see Displayable
- * @since 2017/05/21
+ * @since 2017/05/23
  */
-public abstract class VirtualDisplayable
+public class NativeDisplay
 {
 }
 
