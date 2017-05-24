@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
@@ -23,6 +24,19 @@ import javax.microedition.lcdui.Displayable;
  */
 public abstract class NativeDisplay
 {
+	/**
+	 * Creates a native canvas which is used as the most direct means of
+	 * rendering graphics. If the native display does not support a native
+	 * set of widgets then it will be simulated using a canvas.
+	 *
+	 * @param __ref The reference to the canvas.
+	 * @return The native canvas.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/24
+	 */
+	public abstract NativeCanvas createCanvas(Reference<Displayable> __ref)
+		throws NullPointerException;
+	
 	/**
 	 * Returns the display heads which are available to be used to display
 	 * canvases and other widgets. Head initialization should only be performed
@@ -50,7 +64,17 @@ public abstract class NativeDisplay
 		if (__t == null || __ref == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Depends on the type
+		switch (__t)
+		{
+				// Canvases are never simulated
+			case CANVAS:
+				return createCanvas((Reference<Displayable>)__ref);
+			
+				// Should not happen
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**

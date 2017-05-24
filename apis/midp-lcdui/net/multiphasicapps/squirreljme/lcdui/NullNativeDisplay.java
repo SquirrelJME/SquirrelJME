@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import java.lang.ref.Reference;
+import javax.microedition.lcdui.Displayable;
+
 /**
  * This is a native display which does not provide any capable displays, all
  * operations are essentially a no-operation.
@@ -30,6 +33,21 @@ public class NullNativeDisplay
 	 */
 	public NullNativeDisplay()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
+	@Override
+	public NativeCanvas createCanvas(Reference<Displayable> __ref)
+		throws NullPointerException
+	{
+		// Check
+		if (__ref == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -22,5 +22,26 @@ import javax.microedition.lcdui.Displayable;
  */
 public abstract class NativeDisplayable
 {
+	/** Reference to the the LCDUI displayable. */
+	protected final Reference<Displayable> displayable;
+	
+	/**
+	 * Initializes the base native displayable which has a back reference to
+	 * the LCDUI displayable which created this native displayable.
+	 *
+	 * @param __ref The reference to the native displayable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/24
+	 */
+	public NativeDisplayable(Reference<Displayable> __ref)
+		throws NullPointerException
+	{
+		// Check
+		if (__ref == null)
+			throw new NullPointerException("NARG");
+		
+		//Set
+		this.displayable = __ref;
+	}
 }
 

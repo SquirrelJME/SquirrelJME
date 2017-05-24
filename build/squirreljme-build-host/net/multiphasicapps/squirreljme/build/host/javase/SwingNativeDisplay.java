@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.lang.ref.Reference;
+import javax.microedition.lcdui.Displayable;
+import net.multiphasicapps.squirreljme.lcdui.NativeCanvas;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 
 /**
@@ -24,6 +27,22 @@ public class SwingNativeDisplay
 	/** The single Swing display head instance, only one is needed. */
 	protected final SwingHead head =
 		new SwingHead();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
+	@Override
+	public NativeCanvas createCanvas(Reference<Displayable> __ref)
+		throws NullPointerException
+	{
+		// Check
+		if (__ref == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new SwingCanvas(__ref);
+	}
 	
 	/**
 	 * {@inheritDoc}
