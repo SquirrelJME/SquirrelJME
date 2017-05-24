@@ -57,10 +57,14 @@ public class Form
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return __getHeight();
 	}
 	
 	public FormLayoutPolicy getLayoutPolicy()
@@ -68,10 +72,14 @@ public class Form
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return __getWidth();
 	}
 	
 	public void insert(int __a, Item __b)

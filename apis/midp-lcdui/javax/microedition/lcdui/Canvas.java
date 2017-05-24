@@ -200,9 +200,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		Display d = getCurrentDisplay();
-		return (d != null ? this._canvas.getHeight() :
-			Display.getDisplays(0)[0].getHeight());
+		return __getHeight();
 	}
 	
 	public int getKeyCode(int __a)
@@ -236,9 +234,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		Display d = getCurrentDisplay();
-		return (d != null ? this._canvas.getWidth() :
-			Display.getDisplays(0)[0].getWidth());
+		return __getWidth();
 	}
 	
 	/**

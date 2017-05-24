@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 import java.awt.GraphicsEnvironment;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
+import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.NativeCanvas;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 
@@ -112,6 +113,21 @@ public class SwingNativeDisplay
 		public int getContentWidth()
 		{
 			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		public void setState(DisplayState __s)
+			throws NullPointerException
+		{
+			// Check
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			// This has no effect on swing because there is no foreground
+			// or background states
 		}
 	}
 }

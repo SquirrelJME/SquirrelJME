@@ -41,10 +41,14 @@ public class TextBox
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return __getHeight();
 	}
 	
 	public int getMaxSize()
@@ -57,10 +61,14 @@ public class TextBox
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return __getWidth();
 	}
 	
 	public void insert(char[] __a, int __b, int __c, int __d)

@@ -28,6 +28,9 @@ public abstract class Displayable
 	/** The native displayable associated with this display. */
 	final NativeDisplayable _displayable;
 	
+	/** The display this is currently associated with. */
+	volatile Display _current;
+	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -100,7 +103,7 @@ public abstract class Displayable
 	 */
 	public Display getCurrentDisplay()
 	{
-		throw new todo.TODO();
+		return this._current;
 	}
 	
 	public Menu getMenu(int __p)
@@ -196,6 +199,36 @@ public abstract class Displayable
 	 */
 	protected void sizeChanged(int __w, int __h)
 	{
+	}
+	
+	/**
+	 * Returns the height if the displayable or the maximum size of the
+	 * default display.
+	 *
+	 * @return The displayable height or the maximum height of the default
+	 * display.
+	 * @since 2017/05/24
+	 */
+	final int __getHeight()
+	{
+		Display d = getCurrentDisplay();
+		return (d != null ? d.getHeight() :
+			Display.getDisplays(0)[0].getHeight());
+	}
+	
+	/**
+	 * Returns the width if the displayable or the maximum size of the
+	 * default display.
+	 *
+	 * @return The displayable width or the maximum width of the default
+	 * display.
+	 * @since 2017/05/24
+	 */
+	final int __getWidth()
+	{
+		Display d = getCurrentDisplay();
+		return (d != null ? d.getWidth() :
+			Display.getDisplays(0)[0].getWidth());
 	}
 }
 

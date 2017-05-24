@@ -87,10 +87,14 @@ public class Alert
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return __getHeight();
 	}
 	
 	public Image getImage()
@@ -118,10 +122,14 @@ public class Alert
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return __getWidth();
 	}
 	
 	@Override

@@ -48,10 +48,14 @@ public class FileSelector
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return __getHeight();
 	}
 	
 	public int getMode()
@@ -64,10 +68,14 @@ public class FileSelector
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return __getWidth();
 	}
 	
 	public StreamConnection open(int __mode, boolean __to)

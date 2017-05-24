@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 import net.multiphasicapps.squirreljme.lcdui.NullNativeDisplay;
 import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
@@ -189,6 +190,9 @@ public class Display
 	
 	/** The head which is associated with this display. */
 	private final NativeDisplay.Head _head;
+	
+	/** The current displayable. */
+	private volatile Displayable _current;
 	
 	/**
 	 * This initializes the native display which provides sub-display views.
@@ -646,25 +650,19 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
-		throw new todo.TODO();
-		/*
-		// Enter the background state?
-		DisplayInstance instance = this._instance;
+		// Enter background state?
+		NativeDisplay.Head head = this._head;
 		if (__show == null)
 		{
-			if (instance != null)
-				instance.setState(STATE_BACKGROUND);
+			head.setState(DisplayState.BACKGROUND);
 			return;
 		}
 		
-		// Only use the old display if not an alert
-		__setCurrent(__show,
-			((__show instanceof Alert) ? getCurrent() : null));
+		// Forward
+		__setCurrent(__show, (__show instanceof Alert) ? getCurrent() : null);
 		
 		// Enter foreground state
-		/*instance = this._instance;
-		if (instance != null)
-			instance.setState(STATE_FOREGROUND);*/
+		head.setState(DisplayState.FOREGROUND);
 	}
 	
 	public void setCurrentItem(Item __a)

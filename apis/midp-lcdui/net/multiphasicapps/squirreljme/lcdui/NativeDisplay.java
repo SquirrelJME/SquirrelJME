@@ -165,6 +165,16 @@ public abstract class NativeDisplay
 		 * @since 2017/05/24
 		 */
 		public abstract int getContentWidth();
+		
+		/**
+		 * Sets the state of the display.
+		 *
+		 * @param __s The state to use.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/05/24
+		 */
+		public abstract void setState(DisplayState __s)
+			throws NullPointerException;
 	}
 }
 

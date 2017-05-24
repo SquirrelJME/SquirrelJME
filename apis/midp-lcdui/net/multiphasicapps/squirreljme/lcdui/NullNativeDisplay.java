@@ -68,6 +68,10 @@ public class NullNativeDisplay
 	public class NullHead
 		extends NativeDisplay.Head
 	{
+		/** The state of the display. */
+		protected volatile DisplayState _state =
+			DisplayState.BACKGROUND;
+		
 		/**
 		 * Initializes the null head.
 		 *
@@ -115,6 +119,20 @@ public class NullNativeDisplay
 		public int getContentWidth()
 		{
 			return 1;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		public void setState(DisplayState __s)
+			throws NullPointerException
+		{
+			// Check
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			this._state = __s;
 		}
 	}
 }
