@@ -188,10 +188,10 @@ public class Display
 	static final NativeDisplay _NATIVE_DISPLAY;
 	
 	/** Display heads. */
-	private static final Display[] _HEADS;
+	private static final Display[] _DISPLAYS;
 	
 	/** The head which is associated with this display. */
-	final NativeDisplay.Head _head;
+	private final NativeDisplay.Head _head;
 	
 	/**
 	 * This initializes the native display which provides sub-display views.
@@ -206,31 +206,31 @@ public class Display
 			nd = new NullNativeDisplay();
 		_NATIVE_DISPLAY = nd;
 		
-		if (true)
-			throw new todo.TODO();
-		// Initialize display heads
-		/*_HEADS = nd.initializeHeads(new DisplayConstructor()
-			{
-				/**
-				 * {@inheritDoc}
-				 * @since 2017/05/23
-				 */
-				/*@Override
-				public Display createDisplay(NativeDisplay.Head __h)
-				{
-					return new Display(__h);
-				}
-			});*/
+		// Initialize heads
+		NativeDisplay.Head[] heads = nd.heads();
+		int n = heads.length;
+		Display[] displays = new Display[n];
+		for (int i = 0; i < n; i++)
+			displays[i] = new Display(heads[i]);
+		_DISPLAYS = displays;
 	}
 	
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __h The head this display is associated with.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display()
+	Display(NativeDisplay.Head __h)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._head = __h;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -871,15 +871,15 @@ public class Display
 	public static Display[] getDisplays(int __caps)
 	{
 		// Go through all heads
-		Display[] heads = _HEADS;
+		Display[] displays = _DISPLAYS;
 		
 		// {@squirreljme.error EB05 No displays are available.}
-		if (heads.length <= 0)
+		if (displays.length <= 0)
 			throw new IllegalStateException("EB05");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
-		for (Display d : heads)
+		for (Display d : displays)
 			if (__caps == 0 || (d.getCapabilities() & __caps) == __caps)
 				rv.add(d);
 		

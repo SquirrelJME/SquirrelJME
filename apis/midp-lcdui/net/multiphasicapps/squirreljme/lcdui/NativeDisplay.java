@@ -24,6 +24,16 @@ import javax.microedition.lcdui.Displayable;
 public abstract class NativeDisplay
 {
 	/**
+	 * Returns the display heads which are available to be used to display
+	 * canvases and other widgets. Head initialization should only be performed
+	 * once.
+	 *
+	 * @return The display heads.
+	 * @since 2017/05/24
+	 */
+	public abstract NativeDisplay.Head[] heads();
+	
+	/**
 	 * Creates a new displayable of the given type.
 	 *
 	 * @param __t The type of displayable to create.
@@ -58,22 +68,6 @@ public abstract class NativeDisplay
 		protected Head()
 		{
 		}
-	}
-	
-	/**
-	 * This interface is used to create displays.
-	 *
-	 * @since 2017/05/23
-	 */
-	public static interface DisplayConstructor
-	{
-		/**
-		 * This creates the native display using the given head.
-		 *
-		 * @param __h The native head which is used by the display.
-		 * @since 2017/05/23
-		 */
-		public abstract Display createDisplay(NativeDisplay.Head __h);
 	}
 }
 

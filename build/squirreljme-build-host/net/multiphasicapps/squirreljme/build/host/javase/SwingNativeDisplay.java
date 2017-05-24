@@ -21,5 +21,36 @@ import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 public class SwingNativeDisplay
 	extends NativeDisplay
 {
+	/** The single Swing display head instance, only one is needed. */
+	protected final SwingHead head =
+		new SwingHead();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
+	@Override
+	public NativeDisplay.Head[] heads()
+	{
+		return new NativeDisplay.Head[]{this.head};
+	}
+	
+	/**
+	 * This is class used for Swing display heads.
+	 *
+	 * @since 2017/05/24
+	 */
+	public class SwingHead
+		extends NativeDisplay.Head
+	{
+		/**
+		 * Initializes the swing head.
+		 *
+		 * @since 2017/05/24
+		 */
+		protected SwingHead()
+		{
+		}
+	}
 }
 

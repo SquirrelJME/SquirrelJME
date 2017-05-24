@@ -12,12 +12,52 @@ package net.multiphasicapps.squirreljme.lcdui;
 
 /**
  * This is a native display which does not provide any capable displays, all
- * operations are essentially a no-operation..
+ * operations are essentially a no-operation.
  *
  * @since 2017/05/23
  */
 public class NullNativeDisplay
 	extends NativeDisplay
 {
+	/** The null head. */
+	protected final NativeDisplay.Head head =
+		new NullHead();
+
+	/**
+	 * Initializes the display which does nothing.
+	 *
+	 * @since 2017/05/24
+	 */
+	public NullNativeDisplay()
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/24
+	 */
+	@Override
+	public NativeDisplay.Head[] heads()
+	{
+		return new NativeDisplay.Head[]{this.head};
+	}
+	
+	/**
+	 * This is the null head which does not do anything.
+	 *
+	 * @since 2017/05/24
+	 */
+	public class NullHead
+		extends NativeDisplay.Head
+	{
+		/**
+		 * Initializes the null head.
+		 *
+		 * @since 2017/05/24
+		 */
+		protected NullHead()
+		{
+		}
+	}
 }
 

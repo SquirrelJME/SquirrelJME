@@ -535,9 +535,9 @@ public final class SquirrelJME
 			{
 					// Display engine for swing output
 				case "net.multiphasicapps.squirreljme.lcdui." +
-					"DisplayEngineProvider":
+					"NativeDisplay":
 					use ="net.multiphasicapps.squirreljme." +
-						"build.host.javase.SwingEngineProvider";
+						"build.host.javase.SwingNativeDisplay";
 					break;
 					
 					// Record store manager
