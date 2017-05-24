@@ -31,6 +31,10 @@ public abstract class Displayable
 	/**
 	 * Initializes the base displayable object.
 	 *
+	 * An enumeration is used because you cannot {@code this} in a super
+	 * constructor call so it is unknown which type of displayable needs to be
+	 * created.
+	 *
 	 * @param __t The type of displayable to create.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
@@ -42,7 +46,8 @@ public abstract class Displayable
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Create native displayable with weak back ref
+		// Native displayables only have back reference to LCDUI displayables
+		// so that they can detect and handle garbage collection.
 		NativeDisplay nd = Display._NATIVE_DISPLAY;
 		this._displayable = nd.create(__t, new WeakReference<>(this));
 	}
