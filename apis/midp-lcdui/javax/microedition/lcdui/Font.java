@@ -208,9 +208,15 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the default system font.
+	 *
+	 * @return The default system font.
+	 * @since 2017/05/24
+	 */
 	public static Font getDefaultFont()
 	{
-		throw new todo.TODO();
+		return getFont(0, 0, 0);
 	}
 	
 	public static Font getFont(int __a)
