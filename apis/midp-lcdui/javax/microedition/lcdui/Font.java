@@ -12,8 +12,10 @@ package javax.microedition.lcdui;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.lcdui.NativeFont;
 
 public final class Font
+	extends NativeFont
 {
 	public static final int FACE_MONOSPACE =
 		32;
