@@ -147,6 +147,9 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
+	/** The native canvas this uses internally. */
+	final NativeCanvas _canvas;
+	
 	/** The key listener to use. */
 	private volatile KeyListener _keylistener;
 	
@@ -162,7 +165,8 @@ public abstract class Canvas
 	{
 		super(DisplayableType.CANVAS);
 		
-		throw new todo.TODO();
+		// Set
+		this._canvas = (NativeCanvas)this._displayable;
 	}
 	
 	protected abstract void paint(Graphics __a);
@@ -196,12 +200,9 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		DisplayInstance instance = this._instance;
-		if (instance != null)
-			return instance.getHeight();
-		return 1;*/
+		Display d = getCurrentDisplay();
+		return (d != null ? this._canvas.getHeight() :
+			Display.getDisplays(0)[0].getHeight());
 	}
 	
 	public int getKeyCode(int __a)
@@ -235,12 +236,9 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		DisplayInstance instance = this._instance;
-		if (instance != null)
-			return instance.getWidth();
-		return 1;*/
+		Display d = getCurrentDisplay();
+		return (d != null ? this._canvas.getWidth() :
+			Display.getDisplays(0)[0].getWidth());
 	}
 	
 	/**
@@ -253,7 +251,8 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerEvents()
 	{
-		return getCurrentDisplay().hasPointerEvents();
+		Display d = getCurrentDisplay();
+		return (d != null ? d : Display.getDisplays(0)[0]).hasPointerEvents();
 	}
 	
 	/**
@@ -266,7 +265,9 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerMotionEvents()
 	{
-		return getCurrentDisplay().hasPointerMotionEvents();
+		Display d = getCurrentDisplay();
+		return (d != null ? d : Display.getDisplays(0)[0]).
+			hasPointerMotionEvents();
 	}
 	
 	/**

@@ -184,9 +184,6 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** This is the single native display instance which all displays use. */
-	static final NativeDisplay _NATIVE_DISPLAY;
-	
 	/** Display heads. */
 	private static final Display[] _DISPLAYS;
 	
@@ -200,14 +197,8 @@ public class Display
 	 */
 	static
 	{
-		// Setup native display engine
-		NativeDisplay nd = SquirrelJME.systemService(NativeDisplay.class);
-		if (nd == null)
-			nd = new NullNativeDisplay();
-		_NATIVE_DISPLAY = nd;
-		
 		// Initialize heads
-		NativeDisplay.Head[] heads = nd.heads();
+		NativeDisplay.Head[] heads = NativeDisplay.DISPLAY.heads();
 		int n = heads.length;
 		Display[] displays = new Display[n];
 		for (int i = 0; i < n; i++)
@@ -464,7 +455,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return this._head.getMaximumHeight();
 	}
 	
 	public IdleItem getIdleItem()
@@ -495,7 +486,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return this._head.getMaximumWidth();
 	}
 	
 	/**

@@ -48,7 +48,7 @@ public abstract class Displayable
 		
 		// Native displayables only have back reference to LCDUI displayables
 		// so that they can detect and handle garbage collection.
-		NativeDisplay nd = Display._NATIVE_DISPLAY;
+		NativeDisplay nd = NativeDisplay.DISPLAY;
 		this._displayable = nd.create(__t, new WeakReference<>(this));
 	}
 	

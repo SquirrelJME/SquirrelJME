@@ -76,6 +76,46 @@ public class NullNativeDisplay
 		protected NullHead()
 		{
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getContentHeight()
+		{
+			return 1;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getMaximumHeight()
+		{
+			return 1;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getMaximumWidth()
+		{
+			return 1;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getContentWidth()
+		{
+			return 1;
+		}
 	}
 }
 

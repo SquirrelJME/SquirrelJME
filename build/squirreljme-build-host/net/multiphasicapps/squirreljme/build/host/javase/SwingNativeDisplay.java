@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.GraphicsEnvironment;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.NativeCanvas;
@@ -69,6 +70,48 @@ public class SwingNativeDisplay
 		 */
 		protected SwingHead()
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getContentHeight()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getMaximumHeight()
+		{
+			return GraphicsEnvironment.getLocalGraphicsEnvironment().
+				getDefaultScreenDevice().getDisplayMode().getHeight();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getMaximumWidth()
+		{
+			return GraphicsEnvironment.getLocalGraphicsEnvironment().
+				getDefaultScreenDevice().getDisplayMode().getWidth();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/05/24
+		 */
+		@Override
+		public int getContentWidth()
+		{
+			throw new todo.TODO();
 		}
 	}
 }
