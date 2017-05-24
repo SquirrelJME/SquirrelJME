@@ -10,11 +10,15 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
+
 public class TabbedPane
 	extends Screen
 {
 	public TabbedPane(String __title, boolean __stringtab, boolean __suptitle)
 	{
+		super(DisplayableType.TABBED_PANE);
+		
 		throw new todo.TODO();
 	}
 	

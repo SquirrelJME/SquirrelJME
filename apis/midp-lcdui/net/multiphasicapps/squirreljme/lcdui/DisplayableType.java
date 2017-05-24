@@ -8,31 +8,39 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
-
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
+package net.multiphasicapps.squirreljme.lcdui;
 
 /**
- * This is the base class for all user interactable displays.
+ * This is used as a key which is used for creating back bounded native
+ * displayable by specifying a type since it is not really possible to use
+ * this references during construction.
  *
- * It is only recommended to change the screen contents when it is not being
- * displayed.
- *
- * @since 2017/02/28
+ * @since 2017/05/24
  */
-public abstract class Screen
-	extends Displayable
+public enum DisplayableType
 {
-	/**
-	 * Initializes the base screen.
-	 *
-	 * @param __t The type of displayable to create.
-	 * @since 2017/02/28
-	 */
-	Screen(DisplayableType __t)
-	{
-		super(__t);
-	}
+	/** Alert. */
+	ALERT,
+	
+	/** A canvas. */
+	CANVAS,
+	
+	/** Used to select files. */
+	FILE_SELECTOR,
+	
+	/** A form. */
+	FORM,
+	
+	/** A list. */
+	LIST,
+	
+	/** A tabbed pane. */
+	TABBED_PANE,
+	
+	/** A text box. */
+	TEXT_BOX,
+	
+	/** End. */
+	;
 }
-
 

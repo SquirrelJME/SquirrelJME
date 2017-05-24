@@ -10,6 +10,12 @@
 
 package javax.microedition.lcdui;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
+import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
+import net.multiphasicapps.squirreljme.lcdui.NativeDisplayable;
+
 /**
  * A displayable is a primary container such as a form or a canvas that can be
  * set on a display. A display may only have a single displayable associated
@@ -19,26 +25,26 @@ package javax.microedition.lcdui;
  */
 public abstract class Displayable
 {
-	/** The lock on this displayable. */
-	final Object _lock =
-		new Object();
-	
-	/** The display that this is currently associated with. */
-	volatile Display _display;
-	
-	/** The title of this displayable. */
-	volatile String _title;
-	
-	/** The image that backs this displayable. */
-	volatile Image _image;
+	/** The native displayable associated with this display. */
+	final NativeDisplayable _displayable;
 	
 	/**
 	 * Initializes the base displayable object.
 	 *
+	 * @param __t The type of displayable to create.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Displayable()
+	Displayable(DisplayableType __t)
+		throws NullPointerException
 	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Create native displayable with weak back ref
+		NativeDisplay nd = Display._NATIVE_DISPLAY;
+		this._displayable = nd.create(__t, new WeakReference<>(this));
 	}
 	
 	/**
@@ -89,7 +95,7 @@ public abstract class Displayable
 	 */
 	public Display getCurrentDisplay()
 	{
-		return this._display;
+		throw new todo.TODO();
 	}
 	
 	public Menu getMenu(int __p)
@@ -110,7 +116,7 @@ public abstract class Displayable
 	 */
 	public String getTitle()
 	{
-		return this._title;
+		throw new todo.TODO();
 	}
 	
 	public void invalidateCommandLayout()
@@ -166,12 +172,12 @@ public abstract class Displayable
 	 */
 	public void setTitle(String __a)
 	{
-		// Set
+		throw new todo.TODO();
+		/*// Set
 		this._title = __a;
 		
 		// Set the title to use
-		throw new todo.TODO();
-		/*DisplayInstance instance = this._instance;
+		DisplayInstance instance = this._instance;
 		if (instance != null)
 			instance.setTitle(__a);*/
 	}

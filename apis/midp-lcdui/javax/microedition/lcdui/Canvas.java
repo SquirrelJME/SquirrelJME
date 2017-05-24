@@ -11,8 +11,10 @@
 package javax.microedition.lcdui;
 
 import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
+import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
 import net.multiphasicapps.squirreljme.lcdui.KeyEventType;
 import net.multiphasicapps.squirreljme.lcdui.KeyNames;
+import net.multiphasicapps.squirreljme.lcdui.NativeCanvas;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
 
@@ -158,7 +160,7 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
-		NativeDisplay nd = Display._NATIVE_DISPLAY;
+		super(DisplayableType.CANVAS);
 		
 		throw new todo.TODO();
 	}

@@ -8,31 +8,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package net.multiphasicapps.squirreljme.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 /**
- * This is the base class for all user interactable displays.
+ * This is the base class for all native displayables.
  *
- * It is only recommended to change the screen contents when it is not being
- * displayed.
- *
- * @since 2017/02/28
+ * @since 2017/05/24
  */
-public abstract class Screen
-	extends Displayable
+public abstract class NativeDisplayable
 {
-	/**
-	 * Initializes the base screen.
-	 *
-	 * @param __t The type of displayable to create.
-	 * @since 2017/02/28
-	 */
-	Screen(DisplayableType __t)
-	{
-		super(__t);
-	}
 }
-
 

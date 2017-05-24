@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * This is the base class for native display engines which also provides
@@ -20,6 +23,26 @@ import javax.microedition.lcdui.Display;
  */
 public abstract class NativeDisplay
 {
+	/**
+	 * Creates a new displayable of the given type.
+	 *
+	 * @param __t The type of displayable to create.
+	 * @param __ref The back reference to the displayable object.
+	 * @return The native displayable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/24
+	 */
+	public NativeDisplayable create(DisplayableType __t,
+		Reference<Displayable> __ref)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null || __ref == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * This is the head for a single display.
 	 *

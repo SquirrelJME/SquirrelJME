@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
+
 public class Alert
 	extends Screen
 {
@@ -63,6 +65,8 @@ public class Alert
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
+		super(DisplayableType.ALERT);
+		
 		// Set
 		this._title = __title;
 		this._message = __message;
