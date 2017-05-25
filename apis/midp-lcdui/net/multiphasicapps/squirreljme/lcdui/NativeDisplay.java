@@ -59,6 +59,14 @@ public abstract class NativeDisplay
 		throws NullPointerException;
 	
 	/**
+	 * Returns all fonts which are available on the system.
+	 *
+	 * @return The fonts which are available on the system.
+	 * @since 2017/05/25
+	 */
+	public abstract NativeFont[] fonts();
+	
+	/**
 	 * Returns the display heads which are available to be used to display
 	 * canvases and other widgets. Head initialization should only be performed
 	 * once.

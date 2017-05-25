@@ -52,6 +52,16 @@ public class NullNativeDisplay
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/05/25
+	 */
+	@Override
+	public NativeFont[] fonts()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/05/24
 	 */
 	@Override

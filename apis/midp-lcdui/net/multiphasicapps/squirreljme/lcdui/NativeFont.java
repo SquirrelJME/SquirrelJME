@@ -10,8 +10,13 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import javax.microedition.lcdui.Font;
+
 /**
- * This class acts as the base for fonts in the LCDUI system.
+ * This class acts as the base for fonts in the LCDUI system. Native fonts
+ * only represent individual fonts and not their variants such as bold, italic,
+ * or underline and do not have sizes specified. Instances of a styled font
+ * will have a size and style set.
  *
  * @since 2017/05/24
  */

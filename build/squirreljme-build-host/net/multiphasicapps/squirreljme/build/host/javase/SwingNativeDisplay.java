@@ -16,6 +16,7 @@ import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.NativeCanvas;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
+import net.multiphasicapps.squirreljme.lcdui.NativeFont;
 
 /**
  * This is a display which implements the native display interface on top of
@@ -44,6 +45,16 @@ public class SwingNativeDisplay
 		
 		// Create
 		return new SwingCanvas(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/25
+	 */
+	@Override
+	public NativeFont[] fonts()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

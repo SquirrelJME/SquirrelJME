@@ -12,50 +12,72 @@ package javax.microedition.lcdui;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 import net.multiphasicapps.squirreljme.lcdui.NativeFont;
 
+/**
+ * This class represents a font which is a representation of the glyphs which
+ * are used to display text and pictographs.
+ *
+ * @since 2017/05/25
+ */
 public final class Font
-	extends NativeFont
 {
+	/** The monospace font. */
 	public static final int FACE_MONOSPACE =
 		32;
 	
+	/** Proportional fonts. */
 	public static final int FACE_PROPORTIONAL =
 		64;
 	
+	/** The system font. */
 	public static final int FACE_SYSTEM =
 		0;
 	
+	/** The font used for input text. */
 	public static final int FONT_INPUT_TEXT =
 		1;
 	
+	/** The text used to draw item and screen content, such as buttons. */
 	public static final int FONT_STATIC_TEXT =
 		0;
 	
+	/** The font used for unfocused text on the idle screen. */
 	public static final int FONT_IDLE_TEXT =
 		2;
 	
+	/** The font used for highlighted and focused text on the idle screen. */ 
 	public static final int FONT_IDLE_HIGHLIGHTED_TEXT =
 		3;
 	
+	/** Large font size. */
 	public static final int SIZE_LARGE =
 		16;
 	
+	/** Medium font size, this is the default. */
 	public static final int SIZE_MEDIUM =
 		0;
 	
+	/** Small font size. */
 	public static final int SIZE_SMALL =
 		8;
 	
+	/** Bold text. */
 	public static final int STYLE_BOLD =
 		1;
 	
+	/** Italic (slanted) text. */
 	public static final int STYLE_ITALIC =
 		2;
 	
+	/** Plain style text. */
 	public static final int STYLE_PLAIN =
 		0;
 	
+	/** Underlined text. */
 	public static final int STYLE_UNDERLINED =
 		4;
 	
@@ -198,6 +220,14 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns all of the fonts which are available on the system using the
+	 * standard font size.
+	 *
+	 * @param __style The style of the font, may be a combination of styles.
+	 * @return An array of matching font and styles.
+	 * @since 2017/05/25
+	 */
 	public static Font[] getAvailableFonts(int __style)
 	{
 		throw new todo.TODO();
@@ -224,8 +254,40 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
-	public static Font getFont(int __a, int __b, int __c)
+	/**
+	 * Locates a font which matches the specified parameters the closest.
+	 *
+	 * @param __face The font face, this is a single value.
+	 * @param __style The style of the font, this may be a combination of
+	 * values.
+	 * @param __size The size of the font, this is a single value.
+	 * @return The nearest font which matches the specified parameters.
+	 * @throws IllegalArgumentException If the input parameters are not valid.
+	 * @since 2017/05/25
+	 */
+	public static Font getFont(int __face, int __style, int __size)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB1a Invalid font face specified. (The face)}
+		if ((__face & ~(FACE_SYSTEM | FACE_MONOSPACE | FACE_PROPORTIONAL)) != 0
+			|| Integer.bitCount(__face) > 1)
+			throw new IllegalArgumentException(String.format("EB1a %d",
+				__face));
+		
+		// {@squirreljme.error EB1b Invalid font size specified. (The size)}
+		if ((__size & ~(SIZE_SMALL | SIZE_MEDIUM | SIZE_LARGE)) != 0
+			|| Integer.bitCount(__size) > 1)
+			throw new IllegalArgumentException(String.format("EB1b %d",
+				__size));
+		
+		// {@squirreljme.error EB1c Invalid font style specified. (The style)}
+		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD |
+			STYLE_ITALIC)) != 0)
+			throw new IllegalArgumentException(String.format("EB1c %d",
+				__style));
+		
+		// Go through every single system font that exists
+		
 		throw new todo.TODO();
 	}
 	
