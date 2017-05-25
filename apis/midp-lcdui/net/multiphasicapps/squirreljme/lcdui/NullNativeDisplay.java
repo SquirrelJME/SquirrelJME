@@ -55,6 +55,17 @@ public class NullNativeDisplay
 	 * @since 2017/05/25
 	 */
 	@Override
+	public int fontPixelSize(int __sz)
+	{
+		// Always a fixed size
+		return 8;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/25
+	 */
+	@Override
 	public NativeFont[] fonts()
 	{
 		throw new todo.TODO();

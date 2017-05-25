@@ -286,7 +286,9 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1c %d",
 				__style));
 		
-		// Go through every single system font that exists
+		// Find the best available font
+		for (NativeFont nf : NativeDisplay.DISPLAY.fonts())
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 	}

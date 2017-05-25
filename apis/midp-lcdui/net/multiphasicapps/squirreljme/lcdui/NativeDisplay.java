@@ -59,6 +59,16 @@ public abstract class NativeDisplay
 		throws NullPointerException;
 	
 	/**
+	 * Returns the pixel size of the given size specifier.
+	 *
+	 * @param __sz The size of the font to get the pixel size for, these would
+	 * be the {@code SIZE_} prefixed values in {@link Font}.
+	 * @return The pixel size of the virtual fonts.
+	 * @since 2017/05/25
+	 */
+	public abstract int fontPixelSize(int __sz);
+	
+	/**
 	 * Returns all fonts which are available on the system.
 	 *
 	 * @return The fonts which are available on the system.
@@ -104,6 +114,20 @@ public abstract class NativeDisplay
 			default:
 				throw new RuntimeException("OOPS");
 		}
+	}
+	
+	/**
+	 * Returns the default system font.
+	 *
+	 * If this is not overridden then this just returns the first font in
+	 * the array of availabel fonts.
+	 *
+	 * @return The default system font.
+	 * @since 2017/05/26
+	 */
+	public NativeFont defaultFont()
+	{
+		return fonts()[0];
 	}
 	
 	/**

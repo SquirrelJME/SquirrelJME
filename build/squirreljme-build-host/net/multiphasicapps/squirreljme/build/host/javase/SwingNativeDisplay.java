@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
@@ -45,6 +46,26 @@ public class SwingNativeDisplay
 		
 		// Create
 		return new SwingCanvas(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/25
+	 */
+	@Override
+	public int fontPixelSize(int __sz)
+	{
+		switch (__sz)
+		{
+			case javax.microedition.lcdui.Font.SIZE_LARGE:
+				throw new todo.TODO();
+				
+			case javax.microedition.lcdui.Font.SIZE_SMALL:
+				throw new todo.TODO();
+				
+			default:
+				throw new todo.TODO();
+		}
 	}
 	
 	/**
