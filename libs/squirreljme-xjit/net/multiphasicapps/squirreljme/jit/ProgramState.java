@@ -148,7 +148,25 @@ public class ProgramState
 	 */
 	void __run()
 	{
+		// Setup initial method allocation on entry, allocate registers and
+		// bind
+		if (true)
+			throw new todo.TODO();
+		
+		// Associate that state with the initial entry point
 		BasicBlockZone entryzone = getZone(0);
+		if (true)
+			throw new todo.TODO();
+		
+		// Push it to the queue
+		if (true)
+			throw new todo.TODO();
+		
+		// Process any blocks waiting in the queue
+		while (true)
+		{
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
