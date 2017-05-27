@@ -20,5 +20,23 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public abstract class VariableState
 {
+	/**
+	 * This represents single variables within treads, a slot represents a
+	 * single variable.
+	 *
+	 * @since 2017/05/26
+	 */
+	public abstract class BaseSlot
+	{
+	}
+	
+	/**
+	 * This represents a tread of variables which store slots within.
+	 *
+	 * @since 2017/05/26
+	 */
+	public abstract class BaseTread
+	{
+	}
 }
 
