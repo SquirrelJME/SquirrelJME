@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+
 /**
  * This is a basic block which contains an input state for variables and
  * aliases and contains instructions which perform work. Note that these blocks
@@ -19,5 +21,28 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class BasicBlock
 {
+	/** The zone this block is within. */
+	protected final Reference<BasicBlockZone> zone;
+	
+	/** The entry state for this basic block. */
+	protected final ImmutableVariableState entrystate;
+	
+	/**
+	 * Initializes the basic block.
+	 *
+	 * @param __zr The reference to the basic block used.
+	 * @param __es The entry state for this basic block.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/28
+	 */
+	BasicBlock(Reference<BasicBlockZone> __zr, ImmutableVariableState __es)
+		throws NullPointerException
+	{
+		// Check
+		if (__zr == null || __es == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

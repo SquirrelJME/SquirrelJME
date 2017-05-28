@@ -23,7 +23,7 @@ public enum AreaType
 	/** Stack veriables. */
 	STACK,
 	
-	/** Work variables which are destroyed at the end of each instruction. */
+	/** These are temporary variables which are used during processing. */
 	TEMPORARY,
 	
 	/** End. */

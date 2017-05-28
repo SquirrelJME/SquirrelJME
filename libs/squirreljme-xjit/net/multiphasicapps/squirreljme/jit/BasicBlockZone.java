@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a part of the program which contains {@link BasicBlock}s. The basic
  * block zones encompass a region of the program in {@link ProgramState} and
@@ -20,6 +24,9 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public class BasicBlockZone
 {
+	/** The program this is associated with. */
+	protected final Reference<ProgramState> program;
+	
 	/** The byte code used. */
 	protected final ByteCode code;
 	
@@ -28,6 +35,10 @@ public class BasicBlockZone
 	
 	/** The end address. */
 	protected final int endaddress;
+	
+	/** These are the basic blocks which exist within this zone. */
+	private final List<BasicBlock> _block =
+		new ArrayList<>();
 	
 	/** The verification target. */
 	private volatile BasicVerificationTarget _veriftarget;
@@ -41,18 +52,20 @@ public class BasicBlockZone
 	 * @param __bvt This represents the basic verification target that this
 	 * zone has on entry. May be {@code null} if it is not known before
 	 * instruction parse time.
+	 * @param __prs The program which owns this state.
 	 * @throws NullPointerException On null arguments except for {@code __bvt}.
 	 * @sine 2017/05/20
 	 */
 	BasicBlockZone(ByteCode __code, int __base, int __end,
-		BasicVerificationTarget __bvt)
+		BasicVerificationTarget __bvt, Reference<ProgramState> __prs)
 		throws NullPointerException
 	{
 		// Check
-		if (__code == null)
+		if (__code == null || __prs == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.program = __prs;
 		this.code = __code;
 		this.baseaddress = __base;
 		this.endaddress = __end;

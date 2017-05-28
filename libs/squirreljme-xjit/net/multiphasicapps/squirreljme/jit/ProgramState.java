@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -81,6 +83,7 @@ public class ProgramState
 		List<BasicBlockZone> zones = new ArrayList<>();
 		int baseat = 0;
 		JumpTarget[] jumptargets = __code.jumpTargets();
+		Reference<ProgramState> prs = new WeakReference<>(this);
 		for (int i = 0, n = jumptargets.length; i <= n; i++)
 		{
 			// Ignore this address if it matches the jump target
@@ -93,7 +96,7 @@ public class ProgramState
 			
 			// Add new zone
 			zones.add(new BasicBlockZone(__code, baseat, jumpat,
-				smp.get(baseat)));
+				smp.get(baseat), prs));
 			
 			// New base address
 			baseat = jumpat;
