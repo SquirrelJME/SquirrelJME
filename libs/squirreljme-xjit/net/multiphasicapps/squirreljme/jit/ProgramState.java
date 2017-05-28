@@ -42,6 +42,10 @@ public class ProgramState
 	/** The link table for imports. */
 	protected final LinkTable linktable;
 	
+	/** The queue of basic blocks to be processed. */
+	private final Deque<BasicBlock> _queue =
+		new ArrayDeque<>();
+	
 	/** This contains the basic block zones, sorted at zone start address. */
 	private final BasicBlockZone[] _zones;
 	
