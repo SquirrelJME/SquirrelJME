@@ -26,7 +26,7 @@ public abstract class VariableState
 	 *
 	 * @since 2017/05/26
 	 */
-	public abstract class BaseSlot
+	public abstract class Slot
 	{
 	}
 	
@@ -35,7 +35,7 @@ public abstract class VariableState
 	 *
 	 * @since 2017/05/26
 	 */
-	public abstract class BaseTread
+	public abstract class Tread
 	{
 	}
 }

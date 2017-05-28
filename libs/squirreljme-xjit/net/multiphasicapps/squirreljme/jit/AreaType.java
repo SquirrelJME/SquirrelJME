@@ -24,7 +24,7 @@ public enum AreaType
 	STACK,
 	
 	/** Work variables which are destroyed at the end of each instruction. */
-	WORK,
+	TEMPORARY,
 	
 	/** End. */
 	;

@@ -19,5 +19,24 @@ package net.multiphasicapps.squirreljme.jit;
 public final class MutableVariableState
 	extends VariableState
 {
+	/**
+	 * This represents a single mutable variable within a tread.
+	 *
+	 * @since 2017/05/27
+	 */
+	public final class MutableSlot
+		extends VariableState.Slot
+	{
+	}
+	
+	/**
+	 * This represents a mutable tread which contains mutable slots.
+	 *
+	 * @since 2017/05/27
+	 */
+	public final class MutableTread
+		extends VariableState.Tread
+	{
+	}
 }
 

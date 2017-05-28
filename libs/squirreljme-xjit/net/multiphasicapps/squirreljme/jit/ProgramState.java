@@ -163,7 +163,7 @@ public class ProgramState
 			throw new todo.TODO();
 		
 		// Process any blocks waiting in the queue
-		while (true)
+		if (true)/*while (something)*/
 		{
 			throw new todo.TODO();
 		}

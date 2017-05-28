@@ -19,5 +19,24 @@ package net.multiphasicapps.squirreljme.jit;
 public final class ImmutableVariableState
 	extends VariableState
 {
+	/**
+	 * This represents an immutable variable within a tread.
+	 *
+	 * @since 2017/05/27
+	 */
+	public final class ImmutableSlot
+		extends VariableState.Slot
+	{
+	}
+	
+	/**
+	 * This represents an immutable tread of slots.
+	 *
+	 * @since 2017/05/27
+	 */
+	public final class ImmutableTread
+		extends VariableState.Tread
+	{
+	}
 }
 
