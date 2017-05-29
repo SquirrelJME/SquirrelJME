@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.link.ClassExtendsLink;
@@ -108,10 +110,6 @@ public final class ClassRecompiler
 		ClassNameSymbol thisname = pool.get(input.readUnsignedShort()).
 			<ClassNameSymbol>get(ClassNameSymbol.class);
 		
-		// Setup class export
-		CompiledClass compiledclass = new CompiledClass(thisname, clflags);
-		this._compiledclass = compiledclass;
-		
 		// {@squirreljme.error AQ0p A superclass was not specified and this
 		// class is not the Object class, or a superclass was specified and
 		// this is the object class.}
@@ -121,12 +119,10 @@ public final class ClassRecompiler
 			(thisname.equals(ClassNameSymbol.of("java/lang/Object"))))
 			throw new JITException("AQ0p");
 		
-		// Link that
-		compiledclass.link(new ClassExtendsLink(thisexport, supername));
-		
 		// Handle interfaces
+		Set<ClassNameSymbol> interfacenames = new LinkedHashSet<>();
 		int n = input.readUnsignedShort();
-		for (int i = 0, hi = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			// Read class name
 			ClassNameSymbol iname = pool.get(input.readUnsignedShort()).
@@ -134,16 +130,15 @@ public final class ClassRecompiler
 			
 			// {@squirreljme.error AQ0r Duplicate implementation of an
 			// interface. (The interface being linked)}
-			ClassImplementsLink link;
-			int lid = compiledclass.link(
-				(link = new ClassImplementsLink(thisexport, iname)));
-			if (lid <= hi)
+			if (!interfnames.add(iname))
 				throw new JITException(String.format("AQ0r %s", link));
-			
-			// Set higher value
-			if (lid > hi)
-				hi = lid;
 		}
+		
+		// Setup class export
+		CompiledClass compiledclass = new CompiledClass(thisname, clflags,
+			supername, interfacenames.<ClassNameSymbol>toArray(
+			new ClassNameSymbol[interfacenames.size()]));
+		this._compiledclass = compiledclass;
 		
 		// Read fields
 		n = input.readUnsignedShort();
@@ -158,7 +153,7 @@ public final class ClassRecompiler
 				input.readUnsignedShort()).<String>get(String.class));
 			
 			// Create field
-			ExportedField field = new ExportedField(thisexport,
+			ExportedField field = new ExportedField(compiledclass,
 				ff, name, type);
 			compiledclass.export(field);
 			
@@ -210,7 +205,7 @@ public final class ClassRecompiler
 				input.readUnsignedShort()).<String>get(String.class));
 			
 			// Create method
-			ExportedMethod method = new ExportedMethod(thisexport, mf, name,
+			ExportedMethod method = new ExportedMethod(compiledclass, mf, name,
 				type);
 			compiledclass.export(method);
 			

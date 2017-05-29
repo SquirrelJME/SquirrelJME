@@ -13,7 +13,10 @@ package net.multiphasicapps.squirreljme.jit.link;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents a single compiled class which contains fields and methods
@@ -31,6 +34,13 @@ public class CompiledClass
 	/** The flags for the exported class. */
 	protected final ClassFlags flags;
 	
+	/** The class being extended. */
+	protected final ClassNameSymbol extending;
+	
+	/** The classes this class implements. */
+	private final Set<ClassNameSymbol> _implements =
+		new LinkedHashSet<>();
+	
 	/** Linkages (imports). */
 	private final Map<Linkage, Integer> _links =
 		new LinkedHashMap<>();
@@ -40,19 +50,38 @@ public class CompiledClass
 	 *
 	 * @param __n The name of the exported class.
 	 * @param __f The flags for the exported class.
-	 * @throws NullPointerException On null arguments.
+	 * @param __ext The class being extended.
+	 * @param __imp The classes this implements.
+	 * @throws JITException If an interface has been duplicated.
+	 * @throws NullPointerException On null arguments except for {@code __sn}.
 	 * @since 2017/04/02
 	 */
-	public CompiledClass(ClassNameSymbol __n, ClassFlags __f)
-		throws NullPointerException
+	public CompiledClass(ClassNameSymbol __n, ClassFlags __f,
+		ClassNameSymbol __ext, ClassNameSymbol... __imp)
+		throws JITException, NullPointerException
 	{
 		// Check
-		if (__n == null || __f == null)
+		if (__n == null || __f == null || __imp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.name = __n;
 		this.flags = __f;
+		this.extending = __ext;
+		
+		// Store implemented interfaces
+		Set<ClassNameSymbol> imps = this._implements;
+		for (ClassNameSymbol i : __imp)
+		{
+			// Check
+			if (i == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ0q An interface has been duplicated.
+			// (The duplicated interface)}
+			if (!imps.add(i))
+				throw new JITException(String.format("AQ0q %s", i));
+		}
 	}
 	
 	/**
