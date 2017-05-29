@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ import net.multiphasicapps.squirreljme.linkage.MethodFlags;
  *
  * @since 2017/04/02
  */
-public final class JIT
+public final class ClassRecompiler
 {
 	/** The magic number of the class file. */
 	private static final int _MAGIC_NUMBER =
@@ -180,7 +180,8 @@ public final class JIT
 					// {@squirreljme.error AQ0v The field already has a
 					// constant value assigned to it. (The field)}
 					if (field._value != null)
-						throw new JITException(String.format("AQ0v %s", field));
+						throw new JITException(
+							String.format("AQ0v %s", field));
 					
 					// Read the constant value index
 					Object val = pool.get(as.readUnsignedShort()).

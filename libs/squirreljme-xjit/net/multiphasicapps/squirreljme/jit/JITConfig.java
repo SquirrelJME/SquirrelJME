@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.java.ClassRecompiler;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**
@@ -233,7 +234,7 @@ public abstract class JITConfig
 	 * @return The JIT translator.
 	 * @since 2017/04/02
 	 */
-	public final JIT jit(InputStream __is)
+	public final ClassRecompiler jit(InputStream __is)
 		throws NullPointerException
 	{
 		// Check
@@ -241,7 +242,7 @@ public abstract class JITConfig
 			throw new NullPointerException("NARG");
 		
 		// Create
-		return new JIT(new DataInputStream(__is), this);
+		return new ClassRecompiler(new DataInputStream(__is), this);
 	}
 	
 	/**
