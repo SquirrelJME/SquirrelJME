@@ -50,7 +50,7 @@ public class ByteCode
 	private final JumpTarget[] _jumptargets;
 	
 	/** The constant pool. */
-	private final __Pool__ _pool;
+	private final Pool _pool;
 	
 	/** The cache of instructions in the byte code. */
 	private final Reference<Instruction>[] _icache;
@@ -71,7 +71,7 @@ public class ByteCode
 	 * @since 2017/05/14
 	 */
 	ByteCode(int __ms, int __ml, byte[] __code, ExceptionHandlerTable __eht,
-		__Pool__ __pool)
+		Pool __pool)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -271,7 +271,7 @@ public class ByteCode
 	 * @return The constant pool the method uses.
 	 * @since 2017/05/20
 	 */
-	public __Pool__ pool()
+	public Pool pool()
 	{
 		return this._pool;
 	}

@@ -100,7 +100,7 @@ public final class ClassRecompiler
 				cver >>> 16, (cver & 0xFFFF)));
 		
 		// Parse the constant pool
-		__Pool__ pool = new __Pool__(input);
+		Pool pool = new Pool(input);
 		
 		// The JIT configuration
 		JITConfig config = this.config;
@@ -263,7 +263,7 @@ public final class ClassRecompiler
 	 * @since 2017/04/09
 	 */
 	static DataInputStream __nextAttribute(DataInputStream __in,
-		__Pool__ __pool, String[] __aname)
+		Pool __pool, String[] __aname)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check

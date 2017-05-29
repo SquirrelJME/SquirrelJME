@@ -26,6 +26,22 @@ public final class FieldSymbol
 	public static final int MAX_ARRAY_DIMENSIONS =
 		255;
 	
+	/** Integer. */
+	public static final FieldSymbol INTEGER =
+		new FieldSymbol("I");
+	
+	/** Long. */
+	public static final FieldSymbol LONG =
+		new FieldSymbol("J");
+	
+	/** Float. */
+	public static final FieldSymbol FLOAT =
+		new FieldSymbol("F");
+	
+	/** Double. */
+	public static final FieldSymbol DOUBLE =
+		new FieldSymbol("D");
+	
 	/** Array dimensions, will be zero if not an array. */
 	protected final int dimensions;
 	

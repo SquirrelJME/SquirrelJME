@@ -58,7 +58,7 @@ public final class Instruction
 		// Depends on the operation
 		Object[] args;
 		boolean naturalflow;
-		__Pool__ pool = ByteCode.this._pool;
+		Pool pool = ByteCode.this._pool;
 		switch (op)
 		{
 				// No arguments and does not flow naturally

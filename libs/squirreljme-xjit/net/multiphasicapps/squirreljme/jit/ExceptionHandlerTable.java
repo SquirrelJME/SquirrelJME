@@ -39,7 +39,7 @@ public final class ExceptionHandlerTable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/09
 	 */
-	ExceptionHandlerTable(DataInputStream __is, __Pool__ __pool, int __len)
+	ExceptionHandlerTable(DataInputStream __is, Pool __pool, int __len)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check

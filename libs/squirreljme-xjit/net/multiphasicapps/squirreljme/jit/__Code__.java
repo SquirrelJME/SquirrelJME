@@ -41,7 +41,7 @@ class __Code__
 	protected final ExportedMethod method;
 	
 	/** The constant pool. */
-	protected final __Pool__ pool;
+	protected final Pool pool;
 	
 	/** The link table for imports. */
 	protected final LinkTable linktable;
@@ -72,7 +72,7 @@ class __Code__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
-	__Code__(ExportedMethod __em, DataInputStream __is, __Pool__ __pool,
+	__Code__(ExportedMethod __em, DataInputStream __is, Pool __pool,
 		LinkTable __lt, JITConfig __conf)
 		throws IOException, JITException, NullPointerException
 	{

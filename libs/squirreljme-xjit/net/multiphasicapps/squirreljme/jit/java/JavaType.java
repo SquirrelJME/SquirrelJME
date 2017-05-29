@@ -27,19 +27,19 @@ public final class JavaType
 	
 	/** 32-bit Integer. */
 	public static final JavaType INTEGER =
-		new JavaType(ClassNameSymbol.INTEGER.asField());
+		new JavaType(FieldSymbol.INTEGER);
 	
 	/** 64-bit Integer. */
 	public static final JavaType LONG =
-		new JavaType(ClassNameSymbol.LONG.asField());
+		new JavaType(FieldSymbol.LONG);
 	
 	/** 32-bit Float. */
 	public static final JavaType FLOAT =
-		new JavaType(ClassNameSymbol.FLOAT.asField());
+		new JavaType(FieldSymbol.FLOAT);
 	
 	/** 64-bit Double. */
 	public static final JavaType DOUBLE =
-		new JavaType(ClassNameSymbol.DOUBLE.asField());
+		new JavaType(FieldSymbol.DOUBLE);
 	
 	/** The top of a long or double. */
 	public static final JavaType TOP =
