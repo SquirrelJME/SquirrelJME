@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.link;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.link.Export;
-import net.multiphasicapps.squirreljme.jit.link.Linkage;
 
 /**
  * This represents a single compiled class which contains fields and methods
@@ -25,12 +25,11 @@ import net.multiphasicapps.squirreljme.jit.link.Linkage;
  */
 public class CompiledClass
 {
-	/** The class this exports. */
-	protected final ClassExport classexport;
+	/** The name of the exported class. */
+	protected final ClassNameSymbol name;
 	
-	/** Exports. */
-	private final Map<Export, Integer> _exports =
-		new LinkedHashMap<>();
+	/** The flags for the exported class. */
+	protected final ClassFlags flags;
 	
 	/** Linkages (imports). */
 	private final Map<Linkage, Integer> _links =
@@ -39,48 +38,32 @@ public class CompiledClass
 	/**
 	 * Initializes the compiled class which exports the given class.
 	 *
-	 * @param __c The class to export.
+	 * @param __n The name of the exported class.
+	 * @param __f The flags for the exported class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/02
 	 */
-	public CompiledClass(ClassExport __c)
+	public CompiledClass(ClassNameSymbol __n, ClassFlags __f)
 		throws NullPointerException
 	{
 		// Check
-		if (__c == null)
+		if (__n == null || __f == null)
 			throw new NullPointerException("NARG");
 		
-		// Export the class this exports
-		export(__c);
-		this.classexport = __c;
+		// Set
+		this.name = __n;
+		this.flags = __f;
 	}
 	
 	/**
-	 * Adds the specified export to the link table.
+	 * Returns the flags of the exported class.
 	 *
-	 * @param __e The export to add.
-	 * @return The export index in the link table.
-	 * @throws JITException If the export is not unique.
-	 * @throws NullPointerException On null arguments.
+	 * @return The exported class flags.
 	 * @since 2017/04/02
 	 */
-	public int export(Export __e)
-		throws JITException, NullPointerException
+	public ClassFlags flags()
 	{
-		// Check
-		if (__e == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AQ0s The specified export has been exported
-		// multiple times. (The export)}
-		Map<Export, Integer> exports = this._exports;
-		Integer rv = exports.get(__e);
-		if (rv != null)
-			throw new JITException(String.format("AQ0s %s", __e));
-		
-		// Add to the table
-		exports.put(__e, (rv = exports.size()));
-		return rv;
+		return this.flags;
 	}
 	
 	/**
@@ -108,6 +91,17 @@ public class CompiledClass
 		// Add to the table
 		links.put(__l, (rv = links.size()));
 		return rv;
+	}
+	
+	/**
+	 * Returns the name of the exported class.
+	 *
+	 * @return The exported class name.
+	 * @since 2017/04/02
+	 */
+	public ClassNameSymbol name()
+	{
+		return this.name;
 	}
 }
 

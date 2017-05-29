@@ -14,12 +14,12 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
-import net.multiphasicapps.squirreljme.jit.CompiledClass;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.link.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.jit.link.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.link.ClassImplementsLink;
 import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.link.CompiledClass;
 import net.multiphasicapps.squirreljme.jit.link.FieldFlags;
 import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
 import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
@@ -108,10 +108,9 @@ public final class ClassRecompiler
 		ClassNameSymbol thisname = pool.get(input.readUnsignedShort()).
 			<ClassNameSymbol>get(ClassNameSymbol.class);
 		
-		// Create initial export
-		ClassExport class
-		compiledclass.export((thisexport = new ClassExport(thisname, clflags)));
-		this._compiledclass = thisexport;
+		// Setup class export
+		CompiledClass compiledclass = new CompiledClass(thisname, clflags);
+		this._compiledclass = compiledclass;
 		
 		// {@squirreljme.error AQ0p A superclass was not specified and this
 		// class is not the Object class, or a superclass was specified and
