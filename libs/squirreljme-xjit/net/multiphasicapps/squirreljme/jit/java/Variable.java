@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -21,11 +21,11 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/09/15
  */
-public final class CodeVariable
-	implements Comparable<CodeVariable>
+public final class Variable
+	implements Comparable<Variable>
 {
 	/** Where is this variable stored? */
-	protected final AreaType area;
+	protected final VariableLocation area;
 	
 	/** The position of this variable. */
 	protected final int id;
@@ -41,7 +41,7 @@ public final class CodeVariable
 	 * @throws IndexOutOfBoundsException If the identifier is negative.
 	 * @since 2016/09/15
 	 */
-	private CodeVariable(AreaType __t, int __id)
+	public Variable(VariableLocation __t, int __id)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -64,7 +64,7 @@ public final class CodeVariable
 	 * @return The area storage type.
 	 * @since 2017/03/31
 	 */
-	public final AreaType area()
+	public final VariableLocation area()
 	{
 		return this.area;
 	}
@@ -74,7 +74,7 @@ public final class CodeVariable
 	 * @since 2016/09/15
 	 */
 	@Override
-	public int compareTo(CodeVariable __o)
+	public int compareTo(Variable __o)
 		throws NullPointerException
 	{
 		// Check
@@ -98,11 +98,11 @@ public final class CodeVariable
 	public final boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof CodeVariable))
+		if (!(__o instanceof Variable))
 			return false;
 		
 		// Cast and compare
-		CodeVariable o = (CodeVariable)__o;
+		Variable o = (Variable)__o;
 		return this.area == o.area && this.id == o.id;
 	}
 	
@@ -145,21 +145,6 @@ public final class CodeVariable
 		
 		// Return
 		return rv;
-	}
-	
-	/**
-	 * Initializes the variable of the given type and positioned identifier.
-	 *
-	 * @param __t Where this variable is stored.
-	 * @param __id The identifier of the variable.
-	 * @throws IndexOutOfBoundsException If the identifier is negative.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/15
-	 */
-	public static CodeVariable of(AreaType __t, int __id)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		return new CodeVariable(__t, __id);
 	}
 }
 
