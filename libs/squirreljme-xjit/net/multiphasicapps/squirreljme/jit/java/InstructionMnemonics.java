@@ -8,15 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 /**
  * This contains instruction mnemonics.
  *
  * @since 2017/05/20
  */
-final class __Mnemonics__
+public final class InstructionMnemonics
 {
+	/**
+	 * Not used.
+	 *
+	 * @since 2017/05/29
+	 */
+	private InstructionMnemonics()
+	{
+	}
+	
 	/**
 	 * Returns the instruction mnemonic.
 	 *
@@ -24,7 +33,7 @@ final class __Mnemonics__
 	 * @return The mnemonic for the instruction.
 	 * @since 2017/05/20
 	 */
-	static String __toString(int __op)
+	public static String toString(int __op)
 	{
 		switch (__op)
 		{
