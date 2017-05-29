@@ -15,10 +15,10 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.linkage.ClassFlags;
@@ -59,7 +59,7 @@ public final class ClassRecompiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/02
 	 */
-	JIT(DataInputStream __is, JITConfig __conf)
+	public ClassRecompiler(DataInputStream __is, JITConfig __conf)
 		throws NullPointerException
 	{
 		// Check

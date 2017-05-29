@@ -14,7 +14,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.AbstractList;
 import java.util.RandomAccess;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
 
 /**
  * This represents a every exception that exists within a method.

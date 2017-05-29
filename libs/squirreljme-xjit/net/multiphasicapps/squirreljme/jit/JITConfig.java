@@ -16,8 +16,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.java.ClassRecompiler;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 

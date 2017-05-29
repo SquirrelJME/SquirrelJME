@@ -19,7 +19,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 
 /**

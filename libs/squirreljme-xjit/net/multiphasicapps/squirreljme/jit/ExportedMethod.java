@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.Export;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;

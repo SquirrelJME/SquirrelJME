@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MemberTypeSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.Export;
 import net.multiphasicapps.squirreljme.linkage.MemberFlags;

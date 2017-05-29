@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.ClassExport;
 import net.multiphasicapps.squirreljme.linkage.MethodFlags;
 

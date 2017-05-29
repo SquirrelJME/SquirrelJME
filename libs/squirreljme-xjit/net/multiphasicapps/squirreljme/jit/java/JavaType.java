@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
 
 /**
  * This represents the type of value which is stored in a variable either on

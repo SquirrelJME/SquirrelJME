@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
 
 /**
  * This represents a single exception handler.

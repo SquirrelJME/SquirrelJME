@@ -10,11 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
 import net.multiphasicapps.squirreljme.linkage.FieldReference;
 import net.multiphasicapps.squirreljme.linkage.MethodReference;
 
