@@ -60,8 +60,6 @@ public class TargetBuilder
 		// Parse template files
 		Map<String, String> options = new HashMap<>();
 		__parse(options, __template);
-		
-		throw new todo.TODO();
 	}
 	
 	/**
