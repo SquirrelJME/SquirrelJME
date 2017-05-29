@@ -45,6 +45,13 @@ public abstract class ZoneKey
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/05/28
+	 */
+	@Override
+	public abstract int hashCode();
+	
+	/**
 	 * Compares this zone key to another zone key.
 	 *
 	 * Since zone keys can be compared to other potentially incompatible zone
@@ -68,14 +75,14 @@ public abstract class ZoneKey
 	 * @since 2017/05/28
 	 */
 	@Override
-	public abstract boolean equals(Object __o);
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/05/28
-	 */
-	@Override
-	public abstract int hashCode();
+	public final boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof ZoneKey))
+			return false;
+		
+		return 0 == compareTo((ZoneKey)__o);
+	}
 	
 	/**
 	 * Returns the program which is associated with this zone key.
