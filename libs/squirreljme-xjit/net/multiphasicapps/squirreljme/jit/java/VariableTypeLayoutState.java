@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/05/20
  */
-public final class BasicVerificationTarget
+public final class VariableTypeLayoutState
 {
 	/** The top of the stack. */
 	protected final int stacktop;
@@ -45,7 +45,7 @@ public final class BasicVerificationTarget
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/20
 	 */
-	public BasicVerificationTarget(JavaType[] __stack, int __top,
+	public VariableTypeLayoutState(JavaType[] __stack, int __top,
 		JavaType[] __locals)
 		throws JITException, NullPointerException
 	{
