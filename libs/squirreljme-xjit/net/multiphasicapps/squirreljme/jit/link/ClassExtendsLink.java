@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.jit.link;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
 
 /**
  * This is used to represent extending links from one class to another.

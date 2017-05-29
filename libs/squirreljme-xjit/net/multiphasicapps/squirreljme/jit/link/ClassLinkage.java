@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.link;
 
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
 
 /**
  * This represents a link to a class.
