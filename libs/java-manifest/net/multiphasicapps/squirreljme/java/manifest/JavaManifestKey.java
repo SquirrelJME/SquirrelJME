@@ -49,12 +49,8 @@ public final class JavaManifestKey
 	@Override
 	public boolean equals(Object __o)
 	{
-		// Is another string?
-		if (__o instanceof String)
-			return __equals((String)__o);
-		
 		// Is another key?
-		else if (__o instanceof JavaManifestKey)
+		if (__o instanceof JavaManifestKey)
 			return __equals(((JavaManifestKey)__o).string);
 		
 		// Not equals
