@@ -21,14 +21,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.build.interpreter.AutoInterpreter;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
 import net.multiphasicapps.squirreljme.build.system.target.TargetConfigBuilder;
-import net.multiphasicapps.squirreljme.build.system.target.webdemo.
-	WebDemoTarget;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -60,25 +57,6 @@ public class BuildSystem
 		// Initializes the build system
 		ProjectManager projects = new ProjectManager(__bin, __src);
 		this.projects = projects;
-	}
-	
-	/**
-	 * Creates and return an auto interpreter instance.
-	 *
-	 * @param __args Arguments to the interpreter.
-	 * @return The interpreter.
-	 * @throws IOException If it could not be created.
-	 * @since 2016/10/29
-	 */
-	public AutoInterpreter autoInterpreter(String... __args)
-		throws IOException
-	{
-		// Force to exist
-		if (__args == null)
-			__args = new String[0];
-		
-		// Create
-		return new AutoInterpreter(this.projects, __args);
 	}
 	
 	/**
@@ -133,81 +111,6 @@ public class BuildSystem
 					
 					// Just get the binary (which tries to compile it)
 					p.binary();
-				}
-				break;
-			
-				// Run the auto-interpreter
-			case "interpret":
-			case "interpreter":
-				{
-					// Create subset of arguments
-					String[] pargs = new String[na - 1];
-					for (int i = 0, j = 1; j < na; i++, j++)
-						pargs[i] = Objects.toString(__args[j], "");
-					
-					// Create interpreter and run it
-					try (AutoInterpreter ai = autoInterpreter(pargs))
-					{
-						ai.run();
-					}
-					
-					// {@squirreljme.error AO03 Read/write error while
-					// interpreting.}
-					catch (IOException e)
-					{
-						throw new RuntimeException("AO03");
-					}
-				}
-				break;
-				
-				// Builds the web demo and outputs it to the file specified
-				// on the command line
-			case "webdemo":
-				Path temp = null;
-				try
-				{
-					// {@squirreljme.error AO06 The web demo command requires
-					// a path to be specified for the output file.}
-					if (na < 2)
-						throw new IllegalArgumentException("AO06");
-					
-					// Output file
-					temp = Files.createTempFile("squirreljme", "targetbuild");
-					try (OutputStream os = Files.newOutputStream(temp,
-						StandardOpenOption.CREATE,
-						StandardOpenOption.TRUNCATE_EXISTING))
-					{
-						// Setup configuration
-						TargetConfigBuilder tcb = new TargetConfigBuilder();
-					
-						// Run the build sytstem
-						new WebDemoTarget(this.projects, tcb.build(), os).
-							run();
-					}
-					
-					// Built, move it out
-					Files.move(temp, Paths.get(__args[2]),
-						StandardCopyOption.REPLACE_EXISTING);
-				}
-					
-				// Oops
-				catch (IOException e)
-				{
-					// Delete temp if it exists
-					if (temp != null)
-						try
-						{
-							Files.delete(temp);
-						}
-						catch (IOException f)
-						{
-							// Ignore
-							f.printStackTrace();
-						}
-					
-					// {@squirreljme.error AO07 Failed to build the
-					// web demo.}
-					throw new RuntimeException("AO07", e);
 				}
 				break;
 				
