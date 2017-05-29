@@ -149,17 +149,13 @@ public class ProgramState
 	}
 	
 	/**
-	 * Runs the program recompilation process.
+	 * Initialize the initial basic block entry point.
 	 *
-	 * @since 2017/05/20
+	 * @return The initial entry basic block.
+	 * @since 2017/05/28
 	 */
-	void __run()
+	private BasicBlock __initialBlock()
 	{
-		// Setup initial method allocation on entry, allocate registers and
-		// bind
-		if (true)
-			throw new todo.TODO();
-		
 		// Associate that state with the initial entry point
 		BasicBlockZone entryzone = getZone(0);
 		if (true)
@@ -169,8 +165,25 @@ public class ProgramState
 		if (true)
 			throw new todo.TODO();
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Runs the program recompilation process.
+	 *
+	 * @since 2017/05/20
+	 */
+	void __run()
+	{
+		// Setup initial method allocation on entry, allocate registers and
+		// bind
+		Deque<BasicBlock> queue = this._queue;
+		queue.offerLast(__initialBlock());
+		if (true)
+			throw new todo.TODO();
+		
 		// Process any blocks waiting in the queue
-		if (true)/*while (something)*/
+		while (!queue.isEmpty())
 		{
 			throw new todo.TODO();
 		}
