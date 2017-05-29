@@ -60,6 +60,9 @@ public class TargetBuilder
 		// Parse template files
 		Map<String, String> options = new HashMap<>();
 		__parse(options, __template);
+		
+		// Debug
+		System.err.printf("DEBUG -- JIT Options: %s%n", options);
 	}
 	
 	/**
@@ -82,9 +85,39 @@ public class TargetBuilder
 	}
 	
 	/**
+	 * Lowercases the specified string.
 	 *
+	 * @param __s The string to lowercase.
+	 * @return Lowercase {@code __s} or {@code null} if {@__s} is null.
+	 * @since 2017/05/29
+	 */
+	private static String __lower(String __s)
+	{
+		// No work needed
+		if (__s == null)
+			return null;
+		
+		// Lowercase
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Lowercase
+			if (c >= 'A' && c <= 'Z')
+				c = (char)((c - 'A') + 'a');
+			
+			sb.append(c);
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Parses the specified template file and loads the manifest keys into
+	 * the option map.
 	 *
-	 * @param __opt The target options.
+	 * @param __opt The target options for the JIT.
 	 * @param __in The input file to parse.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
@@ -112,7 +145,12 @@ public class TargetBuilder
 				man.getMainAttributes().entrySet())
 			{
 				// Depends on the key
-				JavaManifestKey key = e.getKey();
+				String key = __lower(e.getKey().toString());
+				
+				// JIT option?
+				if (key.startsWith("jit-"))
+					__opt.put(key.substring(4).replace('-', '.'),
+						e.getValue());
 			}
 		}
 	}
