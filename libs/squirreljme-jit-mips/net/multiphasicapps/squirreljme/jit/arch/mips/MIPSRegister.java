@@ -233,36 +233,6 @@ public enum MIPSRegister
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/24
-	 */
-	@Override
-	public final int index()
-	{
-		return this.id;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/24
-	 */
-	@Override
-	public final boolean isFloat()
-	{
-		return this.isfloat;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/24
-	 */
-	@Override
-	public final boolean isInteger()
-	{
-		return !this.isfloat;
-	}
-	
-	/**
 	 * Returns an existing MIPS register.
 	 *
 	 * @param __float If {@code true} then a floating point register is used.
