@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
@@ -23,10 +23,10 @@ import net.multiphasicapps.squirreljme.linkage.MethodReference;
  *
  * @since 2016/08/17
  */
-final class __PoolEntry__
+public final class PoolEntry
 {
 	/** The owning pool. */
-	protected final __Pool__ pool;
+	protected final Pool pool;
 	
 	/** The index of this entry. */
 	protected final int index;
@@ -47,7 +47,7 @@ final class __PoolEntry__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/17
 	 */
-	__PoolEntry__(__Pool__ __pool, byte __tag, int __dx, Object __id)
+	PoolEntry(Pool __pool, byte __tag, int __dx, Object __id)
 		throws NullPointerException
 	{
 		// Check
@@ -132,7 +132,7 @@ final class __PoolEntry__
 			throw new JITException(String.format("AQ0i %d", mydx));
 		
 		// If an integer array, requires conversion
-		__Pool__ pool = this.pool;
+		Pool pool = this.pool;
 		if (raw instanceof int[])
 		{
 			// Get input fields
@@ -144,18 +144,18 @@ final class __PoolEntry__
 			switch (tag)
 			{
 					// Strings
-				case __Pool__.TAG_STRING:
+				case Pool.TAG_STRING:
 					raw = pool.get(fields[0]).<String>get(String.class);
 					break;
 					
 					// Class name
-				case __Pool__.TAG_CLASS:
+				case Pool.TAG_CLASS:
 					raw = (ClassNameSymbol.of(
 						pool.get(fields[0]).<String>get(String.class)));
 					break;
 					
 					// Name and type
-				case __Pool__.TAG_NAMEANDTYPE:
+				case Pool.TAG_NAMEANDTYPE:
 					raw = new __NameAndType__(
 						IdentifierSymbol.of(pool.get(fields[0]).<String>get(
 							String.class)),
@@ -164,9 +164,9 @@ final class __PoolEntry__
 					break;
 					
 					// Field/method/interface reference
-				case __Pool__.TAG_FIELDREF:
-				case __Pool__.TAG_METHODREF:
-				case __Pool__.TAG_INTERFACEMETHODREF:
+				case Pool.TAG_FIELDREF:
+				case Pool.TAG_METHODREF:
+				case Pool.TAG_INTERFACEMETHODREF:
 					ClassNameSymbol rcl = (
 						pool.get(fields[0]).<ClassNameSymbol>get(
 							ClassNameSymbol.class));
@@ -174,7 +174,7 @@ final class __PoolEntry__
 						<__NameAndType__>get(__NameAndType__.class);
 					
 					// Field?
-					if (tag == __Pool__.TAG_FIELDREF)
+					if (tag == Pool.TAG_FIELDREF)
 						raw = new FieldReference(rcl, jna.name(),
 							(FieldSymbol)jna.type());
 					
@@ -182,7 +182,7 @@ final class __PoolEntry__
 					else
 						raw = new MethodReference(rcl, jna.name(),
 							(MethodSymbol)jna.type(),
-							tag == __Pool__.TAG_INTERFACEMETHODREF);
+							tag == Pool.TAG_INTERFACEMETHODREF);
 					break;
 					
 					// {@squirreljme.error AQ0j Could not obtain the constant

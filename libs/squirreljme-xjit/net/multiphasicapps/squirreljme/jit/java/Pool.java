@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -23,8 +23,8 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  *
  * @since 2016/06/29
  */
-final class __Pool__
-	extends AbstractList<__PoolEntry__>
+public final class Pool
+	extends AbstractList<PoolEntry>
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
@@ -83,7 +83,7 @@ final class __Pool__
 		18;
 	
 	/** Internal entries. */
-	private final __PoolEntry__[] _entries;
+	private final PoolEntry[] _entries;
 	
 	/**
 	 * Decodes the constant pool of an input class file.
@@ -94,7 +94,7 @@ final class __Pool__
 	 * @throws JITException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
-	__Pool__(DataInputStream __dis)
+	Pool(DataInputStream __dis)
 		throws IOException, NullPointerException, JITException
 	{
 		// Check
@@ -108,11 +108,11 @@ final class __Pool__
 			throw new JITException("AQ0d");
 		
 		// Setup entries
-		__PoolEntry__[] entries = new __PoolEntry__[count];
+		PoolEntry[] entries = new PoolEntry[count];
 		this._entries = entries;
 		
 		// Always initialize the first (null entry)
-		entries[0] = new __PoolEntry__(this, (byte)0, 0, new int[0]);
+		entries[0] = new PoolEntry(this, (byte)0, 0, new int[0]);
 		
 		// Decode all entry data
 		for (int i = 1; i < count; i++)
@@ -182,9 +182,9 @@ final class __Pool__
 				throw new JITException(String.format("AQ0g %d", tag));
 		
 			// Create entry
-			__PoolEntry__ dup;
+			PoolEntry dup;
 			entries[i] =
-				(dup = new __PoolEntry__(this, (byte)tag, i, data));
+				(dup = new PoolEntry(this, (byte)tag, i, data));
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
@@ -197,7 +197,7 @@ final class __Pool__
 	 * @since 2016/08/17
 	 */
 	@Override
-	public __PoolEntry__ get(int __dx)
+	public PoolEntry get(int __dx)
 	{
 		return this._entries[__dx];
 	}
