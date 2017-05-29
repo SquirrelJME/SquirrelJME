@@ -11,11 +11,12 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This is the area in which variables are stored.
+ * This represents the location where a variable is stored, which may be in
+ * the local variables, on the stack, or within a temporary working area.
  *
  * @since 2017/03/31
  */
-public enum AreaType
+public enum VariableLocation
 {
 	/** Local variables. */
 	LOCAL,
