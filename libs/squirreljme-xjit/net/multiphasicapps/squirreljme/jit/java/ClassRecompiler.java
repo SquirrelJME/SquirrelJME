@@ -14,17 +14,18 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
-import net.multiphasicapps.squirreljme.executable.ExecutableClass;
-import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.CompiledClass;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.link.ClassExport;
 import net.multiphasicapps.squirreljme.jit.link.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.jit.link.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.link.ClassImplementsLink;
+import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.link.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.jit.link.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
 
 /**
  * This is the part of the JIT which accepts a class file which is parsed and
@@ -49,7 +50,7 @@ public final class ClassRecompiler
 		new LinkTable();
 	
 	/** The export of this class. */
-	private volatile ClassExport _thisexport;
+	private volatile CompiledClass _thisexport;
 	
 	/**
 	 * Initializes the JIT processor.
@@ -79,7 +80,7 @@ public final class ClassRecompiler
 	 * @throws JITException If compilation failed.
 	 * @since 2017/04/02
 	 */
-	public ExecutableClass run()
+	public CompiledClass run()
 		throws IOException, JITException
 	{
 		DataInputStream input = this.input;

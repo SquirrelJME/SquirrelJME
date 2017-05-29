@@ -16,10 +16,10 @@ import net.multiphasicapps.squirreljme.jit.link.Export;
 import net.multiphasicapps.squirreljme.jit.link.Linkage;
 
 /**
- * This is the internal linkage table which used to provide imports and exports
- * that classes use.
- *
- * This class is not thread safe.
+ * This represents a single compiled class which contains fields and methods
+ * for exporting to native executables or to active memory. This is the end
+ * result of all JIT operations for a single class. It also includes any
+ * needed imports.
  *
  * @since 2017/04/02
  */
