@@ -59,7 +59,7 @@ public abstract class ZoneKey
 	{
 		// Compare the class names for comparison so that they appear in
 		// a deterministic order
-		int rv = getClass().name().compareTo(__o.getClass().name());
+		int rv = getClass().getName().compareTo(__o.getClass().getName());
 		return rv;
 	}
 	
