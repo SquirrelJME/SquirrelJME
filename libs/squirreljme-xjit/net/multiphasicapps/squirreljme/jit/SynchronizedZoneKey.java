@@ -18,6 +18,7 @@ import java.lang.ref.Reference;
  *
  * @since 2017/05/29
  */
+@Deprecated
 public class SynchronizedZoneKey
 	extends ZoneKey
 {

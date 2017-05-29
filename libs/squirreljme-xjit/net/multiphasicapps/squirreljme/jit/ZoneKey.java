@@ -19,6 +19,7 @@ import java.lang.ref.Reference;
  *
  * @since 2017/05/28
  */
+@Deprecated
 public abstract class ZoneKey
 	implements Comparable<ZoneKey>
 {
