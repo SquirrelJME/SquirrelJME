@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.symbols;
+package net.multiphasicapps.squirreljme.jit.link;
 
 /**
  * This represents an identifier which is part of a binary name or is the name

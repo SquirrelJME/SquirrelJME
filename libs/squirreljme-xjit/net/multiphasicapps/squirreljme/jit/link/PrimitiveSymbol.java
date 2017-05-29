@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.symbols;
+package net.multiphasicapps.squirreljme.jit.link;
 
 /**
  * This represents the primitive type that a field symbol may be.

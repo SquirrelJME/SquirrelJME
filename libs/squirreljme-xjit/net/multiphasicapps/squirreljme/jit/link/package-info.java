@@ -8,15 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.symbols;
-
 /**
- * Flagging interface to indicate that the symbol type is compatible with class
- * names.
+ * This package contains support for encoding and decoding binary names,
+ * identifiers, method descriptors, and field descriptors which appear in the
+ * class file and any required compile-time/run-time linking.
  *
- * @since 2016/04/04
+ * @since 2017/05/29
  */
-interface __ClassNameCompatible__
-{
-}
+
+package net.multiphasicapps.squirreljme.jit.link;
 

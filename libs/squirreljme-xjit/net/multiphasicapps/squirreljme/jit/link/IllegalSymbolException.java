@@ -8,13 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.jit.link;
+
 /**
- * This package contains support for encoding and decoding binary names,
- * identifiers, method descriptors, and field descriptors which appear in the
- * class file and potential runtime reflection.
+ * This is thrown when an input symbol is not valid.
  *
  * @since 2016/03/14
  */
-
-package net.multiphasicapps.squirreljme.java.symbols;
+public class IllegalSymbolException
+	extends IllegalArgumentException
+{
+	/**
+	 * Initializes exception with the given message.
+	 *
+	 * @param __msg The exception message.
+	 * @since 2016/03/14
+	 */
+	public IllegalSymbolException(String __msg)
+	{
+		super(__msg);
+	}
+	
+	/**
+	 * Initializes exception with the given message and cause.
+	 *
+	 * @param __msg The exception message.
+	 * @param __c The cause.
+	 * @since 2016/03/14
+	 */
+	public IllegalSymbolException(String __msg, Throwable __c)
+	{
+		super(__msg, __c);
+	}
+}
 
