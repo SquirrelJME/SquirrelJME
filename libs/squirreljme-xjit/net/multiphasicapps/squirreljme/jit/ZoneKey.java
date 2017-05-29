@@ -23,7 +23,7 @@ public abstract class ZoneKey
 	implements Comparable<ZoneKey>
 {
 	/** Reference to the owning program. */
-	protected final Reference<ProgramState> program;
+	private final Reference<ProgramState> _program;
 	
 	/**
 	 * Initializes the zone key with the given program used as a reference
@@ -41,7 +41,7 @@ public abstract class ZoneKey
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.program = __r;
+		this._program = __r;
 	}
 	
 	/**
@@ -76,5 +76,23 @@ public abstract class ZoneKey
 	 */
 	@Override
 	public abstract int hashCode();
+	
+	/**
+	 * Returns the program which is associated with this zone key.
+	 *
+	 * @return The owning program.
+	 * @throws IllegalStateException If the zone key is no longer valid.
+	 * @since 2017/05/29
+	 */
+	public final ProgramState program()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error AQ1e Cannot use zone key because the associated
+		// program no longer exists.}
+		ProgramState rv = this._program.get();
+		if (rv == null)
+			throw new IllegalStateException("AQ1e");
+		return rv;
+	}
 }
 
