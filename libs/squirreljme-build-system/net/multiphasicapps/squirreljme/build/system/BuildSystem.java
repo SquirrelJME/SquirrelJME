@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
+import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
@@ -77,9 +78,8 @@ public class BuildSystem
 		
 		// {@squirreljme.error AO01 No arguments specified. The following are
 		// commands which are valid.
-		// ({@code interpret [interpreter arguments...]}: Runs the auto
-		// interpreter which is used to create simulated SquirrelJME
-		// environments.;
+		// ({@code target [template]}: Loads a pre-created target template and
+		// performs compilation of that target.;
 		// {@code build [project]}: Builds the specified project.)
 		// }
 		int na = __args.length;
@@ -111,6 +111,25 @@ public class BuildSystem
 					
 					// Just get the binary (which tries to compile it)
 					p.binary();
+				}
+				break;
+				
+				// Target a specific system
+			case "target":
+				{
+					// {@squirreljme.error AO03 The target command requires a
+					// template system to build.}
+					if (na < 2)
+						throw new IllegalArgumentException("AO03");
+					
+					// Setup target builder
+					TargetBuilder tb = new TargetBuilder(__args[1]);
+					
+					// Compile target to the given output stream
+					try (OutputStream os = new HexDumpOutputStream(System.out))
+					{
+						tb.run(os);
+					}
 				}
 				break;
 				
