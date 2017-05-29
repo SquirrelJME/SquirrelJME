@@ -23,8 +23,11 @@ import net.multiphasicapps.squirreljme.jit.link.Linkage;
  *
  * @since 2017/04/02
  */
-public class LinkTable
+public class CompiledClass
 {
+	/** The class this exports. */
+	protected final ClassExport classexport;
+	
 	/** Exports. */
 	private final Map<Export, Integer> _exports =
 		new LinkedHashMap<>();
@@ -34,12 +37,22 @@ public class LinkTable
 		new LinkedHashMap<>();
 	
 	/**
-	 * Initializes the link table.
+	 * Initializes the compiled class which exports the given class.
 	 *
+	 * @param __c The class to export.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/02
 	 */
-	LinkTable()
+	public CompiledClass(ClassExport __c)
+		throws NullPointerException
 	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Export the class this exports
+		export(__c);
+		this.classexport = __c;
 	}
 	
 	/**

@@ -16,7 +16,6 @@ import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.jit.CompiledClass;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
-import net.multiphasicapps.squirreljme.jit.link.ClassExport;
 import net.multiphasicapps.squirreljme.jit.link.ClassExtendsLink;
 import net.multiphasicapps.squirreljme.jit.link.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.link.ClassImplementsLink;
@@ -46,11 +45,8 @@ public final class ClassRecompiler
 	protected final JITConfig config;
 	
 	/** Link table for the parsed class. */
-	protected final LinkTable linktable =
-		new LinkTable();
-	
-	/** The export of this class. */
-	private volatile CompiledClass _thisexport;
+	private volatile CompiledClass _compiledclass =
+		new CompiledClass();
 	
 	/**
 	 * Initializes the JIT processor.
@@ -113,10 +109,9 @@ public final class ClassRecompiler
 			<ClassNameSymbol>get(ClassNameSymbol.class);
 		
 		// Create initial export
-		LinkTable linktable = this.linktable;
-		ClassExport thisexport;
-		linktable.export((thisexport = new ClassExport(thisname, clflags)));
-		this._thisexport = thisexport;
+		ClassExport class
+		compiledclass.export((thisexport = new ClassExport(thisname, clflags)));
+		this._compiledclass = thisexport;
 		
 		// {@squirreljme.error AQ0p A superclass was not specified and this
 		// class is not the Object class, or a superclass was specified and
@@ -128,7 +123,7 @@ public final class ClassRecompiler
 			throw new JITException("AQ0p");
 		
 		// Link that
-		linktable.link(new ClassExtendsLink(thisexport, supername));
+		compiledclass.link(new ClassExtendsLink(thisexport, supername));
 		
 		// Handle interfaces
 		int n = input.readUnsignedShort();
@@ -141,7 +136,7 @@ public final class ClassRecompiler
 			// {@squirreljme.error AQ0r Duplicate implementation of an
 			// interface. (The interface being linked)}
 			ClassImplementsLink link;
-			int lid = linktable.link(
+			int lid = compiledclass.link(
 				(link = new ClassImplementsLink(thisexport, iname)));
 			if (lid <= hi)
 				throw new JITException(String.format("AQ0r %s", link));
@@ -166,7 +161,7 @@ public final class ClassRecompiler
 			// Create field
 			ExportedField field = new ExportedField(thisexport,
 				ff, name, type);
-			linktable.export(field);
+			compiledclass.export(field);
 			
 			// Handle attributes
 			int[] count = new int[]{input.readUnsignedShort()};
@@ -218,7 +213,7 @@ public final class ClassRecompiler
 			// Create method
 			ExportedMethod method = new ExportedMethod(thisexport, mf, name,
 				type);
-			linktable.export(method);
+			compiledclass.export(method);
 			
 			// Handle attributes
 			int[] count = new int[]{input.readUnsignedShort()};
@@ -231,7 +226,8 @@ public final class ClassRecompiler
 						continue;
 					
 					// Setup decoder
-					new __Code__(method, as, pool, linktable, config).__run();
+					new __Code__(method, as, pool, compiledclass, config).
+						__run();
 				}
 		}
 		

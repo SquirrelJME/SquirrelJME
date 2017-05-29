@@ -42,7 +42,7 @@ public class ProgramState
 	protected final JITConfig config;
 	
 	/** The link table for imports. */
-	protected final LinkTable linktable;
+	protected final CompiledClass linktable;
 	
 	/** The queue of basic blocks to be processed. */
 	private final Deque<BasicBlock> _queue =
@@ -66,7 +66,7 @@ public class ProgramState
 	 * @since 2017/05/14
 	 */
 	ProgramState(ByteCode __code, byte[] __smtdata, boolean __smtmodern,
-		ExportedMethod __em, JITConfig __conf, LinkTable __lt)
+		ExportedMethod __em, JITConfig __conf, CompiledClass __lt)
 		throws IOException, NullPointerException
 	{
 		// Check

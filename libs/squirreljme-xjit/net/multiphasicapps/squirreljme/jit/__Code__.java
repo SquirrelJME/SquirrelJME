@@ -44,7 +44,7 @@ class __Code__
 	protected final Pool pool;
 	
 	/** The link table for imports. */
-	protected final LinkTable linktable;
+	protected final CompiledClass linktable;
 	
 	/** The exception handler table for the current method. */
 	protected final ExceptionHandlerTable exceptions;
@@ -73,7 +73,7 @@ class __Code__
 	 * @since 2017/04/09
 	 */
 	__Code__(ExportedMethod __em, DataInputStream __is, Pool __pool,
-		LinkTable __lt, JITConfig __conf)
+		CompiledClass __lt, JITConfig __conf)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
