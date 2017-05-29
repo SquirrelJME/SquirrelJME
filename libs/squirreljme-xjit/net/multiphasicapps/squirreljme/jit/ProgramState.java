@@ -49,7 +49,7 @@ public class ProgramState
 		new ArrayDeque<>();
 	
 	/** Mapping of zone keys to state maps for basic blocks. */
-	private final Map<ZoneKey, BasicBlockStateMap> zonestatemaps =
+	private final Map<ZoneKey, BasicBlockStateMap> _zonestatemaps =
 		new SortedTreeMap<>();
 	
 	/**
