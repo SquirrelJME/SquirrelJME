@@ -25,8 +25,6 @@ import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
-import net.multiphasicapps.squirreljme.build.system.target.TargetConfig;
-import net.multiphasicapps.squirreljme.build.system.target.TargetConfigBuilder;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -67,10 +65,11 @@ public class BuildSystem
 	 * @param __args Program arguments.
 	 * @throws IllegalArgumentException If the input arguments are not
 	 * correct.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/10/29
 	 */
 	public void main(String... __args)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, IOException
 	{
 		// Force to exist
 		if (__args == null)
@@ -88,6 +87,7 @@ public class BuildSystem
 		
 		// Depends on the input command
 		String command;
+		ProjectManager projects = this.projects;
 		switch ((command = Objects.toString(__args[0], "").trim().
 			toLowerCase()))
 		{
@@ -100,7 +100,6 @@ public class BuildSystem
 						throw new IllegalArgumentException("AO04");
 					
 					// Get project
-					ProjectManager projects = this.projects;
 					Project p = projects.get(new ProjectName(__args[1]));
 					
 					// {@squirreljme.error AO05 The specified project is not
@@ -123,7 +122,7 @@ public class BuildSystem
 						throw new IllegalArgumentException("AO03");
 					
 					// Setup target builder
-					TargetBuilder tb = new TargetBuilder(__args[1]);
+					TargetBuilder tb = new TargetBuilder(projects, __args[1]);
 					
 					// Compile target to the given output stream
 					try (OutputStream os = new HexDumpOutputStream(System.out))

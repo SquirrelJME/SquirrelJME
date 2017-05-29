@@ -17,6 +17,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.build.projects.Project;
+import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
@@ -28,6 +31,9 @@ import net.multiphasicapps.squirreljme.jit.LinkTable;
  */
 public class TargetBuilder
 {
+	/** The manager for projects. */
+	protected final ProjectManager manager;
+	
 	/** The target link table which contains the binary linkages. */
 	protected final LinkTable linktable =
 		new LinkTable();
@@ -35,17 +41,21 @@ public class TargetBuilder
 	/**
 	 * Initializes the target builder.
 	 *
+	 * @param __pm The project manager.
 	 * @param __template The template file to load.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
-	public TargetBuilder(String __template)
+	public TargetBuilder(ProjectManager __pm, String __template)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__template == null)
+		if (__pm == null || __template == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.manager = __pm;
 		
 		// Parse template files
 		Map<String, String> options = new HashMap<>();
@@ -90,7 +100,7 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Read input resource as a manifest
-		try (InputStream is = TargetClass.class.getResourceAsStream(
+		try (InputStream is = TargetBuilder.class.getResourceAsStream(
 			"template/" + __in))
 		{
 			// {@squirreljme.error AO06 The specified template does not
@@ -103,7 +113,8 @@ public class TargetBuilder
 			for (Map.Entry<JavaManifestKey, String> e :
 				man.getMainAttributes().entrySet())
 			{
-				throw new todo.TODO();
+				// Depends on the key
+				JavaManifestKey key = e.getKey();
 			}
 		}
 	}
