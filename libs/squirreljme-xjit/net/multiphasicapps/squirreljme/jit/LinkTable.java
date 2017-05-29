@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.linkage.Export;
-import net.multiphasicapps.squirreljme.linkage.Linkage;
+import net.multiphasicapps.squirreljme.jit.link.Export;
+import net.multiphasicapps.squirreljme.jit.link.Linkage;
 
 /**
  * This is the internal linkage table which used to provide imports and exports

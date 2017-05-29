@@ -10,13 +10,13 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
-import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
-import net.multiphasicapps.squirreljme.linkage.FieldReference;
-import net.multiphasicapps.squirreljme.linkage.MethodReference;
+import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.link.FieldReference;
+import net.multiphasicapps.squirreljme.jit.link.MethodReference;
 
 /**
  * This represents a single constant pool entry that may exist within a class.

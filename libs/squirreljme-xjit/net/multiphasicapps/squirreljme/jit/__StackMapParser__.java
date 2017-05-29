@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
-import net.multiphasicapps.squirreljme.linkage.ClassExport;
-import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassExport;
+import net.multiphasicapps.squirreljme.jit.link.MethodFlags;
 
 /**
  * This class is used to parse the stack map and initialize the initial

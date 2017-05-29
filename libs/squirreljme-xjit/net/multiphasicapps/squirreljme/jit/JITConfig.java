@@ -16,10 +16,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.java.ClassRecompiler;
-import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.link.MethodFlags;
 
 /**
  * This is used to access the configuration which is needed by the JIT during

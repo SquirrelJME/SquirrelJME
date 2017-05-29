@@ -12,11 +12,11 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.linkage.ClassExport;
-import net.multiphasicapps.squirreljme.linkage.Export;
-import net.multiphasicapps.squirreljme.linkage.MemberFlags;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassExport;
+import net.multiphasicapps.squirreljme.jit.link.Export;
+import net.multiphasicapps.squirreljme.jit.link.MemberFlags;
 
 /**
  * This represents a member that is exported.

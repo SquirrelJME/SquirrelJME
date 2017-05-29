@@ -15,16 +15,16 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.executable.ExecutableClass;
-import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
-import net.multiphasicapps.squirreljme.linkage.ClassExport;
-import net.multiphasicapps.squirreljme.linkage.ClassExtendsLink;
-import net.multiphasicapps.squirreljme.linkage.ClassFlags;
-import net.multiphasicapps.squirreljme.linkage.ClassImplementsLink;
-import net.multiphasicapps.squirreljme.linkage.FieldFlags;
-import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassExport;
+import net.multiphasicapps.squirreljme.jit.link.ClassExtendsLink;
+import net.multiphasicapps.squirreljme.jit.link.ClassFlags;
+import net.multiphasicapps.squirreljme.jit.link.ClassImplementsLink;
+import net.multiphasicapps.squirreljme.jit.link.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.link.MethodFlags;
 
 /**
  * This is the part of the JIT which accepts a class file which is parsed and

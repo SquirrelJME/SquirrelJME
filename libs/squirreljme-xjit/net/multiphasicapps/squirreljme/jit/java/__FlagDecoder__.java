@@ -12,13 +12,13 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.linkage.ClassFlag;
-import net.multiphasicapps.squirreljme.linkage.ClassFlags;
-import net.multiphasicapps.squirreljme.linkage.FieldFlag;
-import net.multiphasicapps.squirreljme.linkage.FieldFlags;
-import net.multiphasicapps.squirreljme.linkage.InvalidFlagsException;
-import net.multiphasicapps.squirreljme.linkage.MethodFlag;
-import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.link.ClassFlag;
+import net.multiphasicapps.squirreljme.jit.link.ClassFlags;
+import net.multiphasicapps.squirreljme.jit.link.FieldFlag;
+import net.multiphasicapps.squirreljme.jit.link.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.link.InvalidFlagsException;
+import net.multiphasicapps.squirreljme.jit.link.MethodFlag;
+import net.multiphasicapps.squirreljme.jit.link.MethodFlags;
 
 /**
  * This decodes class flags.

@@ -10,11 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
-import net.multiphasicapps.squirreljme.linkage.ClassExport;
-import net.multiphasicapps.squirreljme.linkage.Export;
-import net.multiphasicapps.squirreljme.linkage.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassExport;
+import net.multiphasicapps.squirreljme.jit.link.Export;
+import net.multiphasicapps.squirreljme.jit.link.MethodFlags;
 
 /**
  * This contains a method that is exported by a class.

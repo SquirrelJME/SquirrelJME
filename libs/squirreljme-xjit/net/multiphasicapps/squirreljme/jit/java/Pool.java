@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.UTFDataFormatException;
 import java.util.AbstractList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.jit.sym.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
 
 /**
  * This represents the constant pool of a class which has been read, this is

@@ -10,11 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.linkage.ClassExport;
-import net.multiphasicapps.squirreljme.linkage.Export;
-import net.multiphasicapps.squirreljme.linkage.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.link.ClassExport;
+import net.multiphasicapps.squirreljme.jit.link.Export;
+import net.multiphasicapps.squirreljme.jit.link.FieldFlags;
 
 /**
  * This contains a field that is exported by a class.

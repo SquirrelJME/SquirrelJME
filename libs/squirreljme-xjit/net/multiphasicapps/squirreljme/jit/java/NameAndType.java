@@ -12,10 +12,10 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.sym.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.jit.sym.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.link.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.link.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.jit.link.MethodSymbol;
 
 /**
  * This represents name and type information.

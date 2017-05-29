@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.linkage.MethodReference;
+import net.multiphasicapps.squirreljme.jit.link.MethodReference;
 
 /**
  * This represents the byte code for a given method. It contains the actual
