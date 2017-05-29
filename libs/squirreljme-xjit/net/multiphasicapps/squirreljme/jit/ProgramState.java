@@ -82,12 +82,14 @@ public class ProgramState
 		__StackMapParser__ smp = new __StackMapParser__(__code, __smtdata,
 			__smtmodern, __em);
 		
+		// The reference to self is used by the zone keys
+		Reference<ProgramState> prs = new WeakReference<>(this);
+		
 		// Initialize the basic block zones which determines which sections
 		// of the program will be parsed as a single unit
 		List<BasicBlockZone> zones = new ArrayList<>();
 		int baseat = 0;
 		JumpTarget[] jumptargets = __code.jumpTargets();
-		Reference<ProgramState> prs = new WeakReference<>(this);
 		for (int i = 0, n = jumptargets.length; i <= n; i++)
 		{
 			// Ignore this address if it matches the jump target
