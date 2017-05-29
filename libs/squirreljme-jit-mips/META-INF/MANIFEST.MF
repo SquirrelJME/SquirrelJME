@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: ff0b3724-03d2-4c3b-86cb-a1c65a6af1a8
+X-SquirrelJME-Error: AH
+X-SquirrelJME-Name: MIPS JIT Compiler
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Depends: squirreljme-jit
+X-SquirrelJME-Description: This contains the MIPS JIT Compiler.
+Microedition-Configuration: CLDC-1.8-Compact
+

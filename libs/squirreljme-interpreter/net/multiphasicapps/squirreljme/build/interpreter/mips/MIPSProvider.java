@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.build.interpreter.mips;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.mips.MIPSConfig;
+import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
 import net.multiphasicapps.squirreljme.build.interpreter.InterpreterProvider;
 
 /**
