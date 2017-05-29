@@ -27,22 +27,6 @@ import java.util.RandomAccess;
 public final class MethodSymbol
 	extends MemberTypeSymbol
 {
-	/** The cache. */
-	static final __Cache__<MethodSymbol> _CACHE =
-		new __Cache__<>(MethodSymbol.class,
-		new __Cache__.__Create__<MethodSymbol>()
-		{
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/05/18
-			 */
-			@Override
-			public MethodSymbol create(String __s)
-			{
-				return new MethodSymbol(__s);
-			}
-		});
-	
 	/** Offsets to arguments (last is return value). */
 	private final int[] _offsets;
 	
@@ -63,7 +47,7 @@ public final class MethodSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	private MethodSymbol(String __s)
+	public MethodSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -153,6 +137,23 @@ public final class MethodSymbol
 		// Cache all symbols to check them
 		for (int j = 0; j < count; j++)
 			__get(j);
+	}
+	
+	/**
+	 * Creates a method symbol using the specified return value and arguments
+	 * to the method.
+	 *
+	 * @param __rv The return value, if {@code null} then {@code void} is used.
+	 * @param __args The arguments to the method.
+	 * @return The method symbol using the return value specified and its
+	 * arguments.
+	 * @throws NullPointerException If an argument contains a null field.
+	 * @since 2016/06/21
+	 */
+	public MethodSymbol(FieldSymbol __rv, FieldSymbol... __args)
+		throws NullPointerException
+	{
+		this(__stringize(__rv, __args));
 	}
 	
 	/**
@@ -270,19 +271,16 @@ public final class MethodSymbol
 	}
 	
 	/**
-	 * Creates a symbol for the given string or returns a pre-cached variant
-	 * of the string.
+	 * Used to prevent {@link SuppressWarnings} where it is not needed.
 	 *
-	 * @param __s The string to create a symbol for.
-	 * @return The symbol.
-	 * @throws IllegalSymbolException If the symbol is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/18
+	 * @param __n The number of elements in the array.
+	 * @return The generic array.
+	 * @since 2016/03/20
 	 */
-	public static MethodSymbol of(String __s)
-		throws IllegalSymbolException, NullPointerException
+	@SuppressWarnings({"unchecked"})
+	private static Reference<FieldSymbol>[] __makeFieldRefArray(int __n)
 	{
-		return _CACHE.__of(__s);
+		return ((Reference<FieldSymbol>[])((Object)new Reference[__n]));
 	}
 	
 	/**
@@ -296,7 +294,7 @@ public final class MethodSymbol
 	 * @throws NullPointerException If an argument contains a null field.
 	 * @since 2016/06/21
 	 */
-	public static MethodSymbol of(FieldSymbol __rv, FieldSymbol... __args)
+	private static String __stringize(FieldSymbol __rv, FieldSymbol... __args)
 		throws NullPointerException
 	{
 		// Defensive copy
@@ -319,20 +317,7 @@ public final class MethodSymbol
 		sb.append((__rv != null ? __rv : "V"));
 		
 		// Build it
-		return of(sb.toString());
-	}
-	
-	/**
-	 * Used to prevent {@link SuppressWarnings} where it is not needed.
-	 *
-	 * @param __n The number of elements in the array.
-	 * @return The generic array.
-	 * @since 2016/03/20
-	 */
-	@SuppressWarnings({"unchecked"})
-	private static Reference<FieldSymbol>[] __makeFieldRefArray(int __n)
-	{
-		return ((Reference<FieldSymbol>[])((Object)new Reference[__n]));
+		return sb.toString();
 	}
 	
 	/**

@@ -22,22 +22,6 @@ public final class FieldSymbol
 	extends MemberTypeSymbol
 	implements __ClassNameCompatible__
 {
-	/** The cache. */
-	static final __Cache__<FieldSymbol> _CACHE =
-		new __Cache__<>(FieldSymbol.class,
-		new __Cache__.__Create__<FieldSymbol>()
-		{
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/05/18
-			 */
-			@Override
-			public FieldSymbol create(String __s)
-			{
-				return new FieldSymbol(__s);
-			}
-		});
-	
 	/** Maximum array size. */
 	public static final int MAX_ARRAY_DIMENSIONS =
 		255;
@@ -62,7 +46,7 @@ public final class FieldSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/04
 	 */
-	private FieldSymbol(String __s)
+	public FieldSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -313,22 +297,6 @@ public final class FieldSymbol
 		if (rv instanceof PrimitiveSymbol)
 			return (PrimitiveSymbol)rv;
 		return null;
-	}
-	
-	/**
-	 * Creates a symbol for the given string or returns a pre-cached variant
-	 * of the string.
-	 *
-	 * @param __s The string to create a symbol for.
-	 * @return The symbol.
-	 * @throws IllegalSymbolException If the symbol is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/18
-	 */
-	public static FieldSymbol of(String __s)
-		throws IllegalSymbolException, NullPointerException
-	{
-		return _CACHE.__of(__s);
 	}
 }
 

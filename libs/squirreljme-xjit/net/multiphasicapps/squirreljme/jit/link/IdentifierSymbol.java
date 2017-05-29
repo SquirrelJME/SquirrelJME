@@ -19,22 +19,6 @@ package net.multiphasicapps.squirreljme.jit.link;
 public final class IdentifierSymbol
 	extends __BaseSymbol__
 {
-	/** The cache. */
-	static final __Cache__<IdentifierSymbol> _CACHE =
-		new __Cache__<>(IdentifierSymbol.class,
-		new __Cache__.__Create__<IdentifierSymbol>()
-		{
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/05/18
-			 */
-			@Override
-			public IdentifierSymbol create(String __s)
-			{
-				return new IdentifierSymbol(__s);
-			}
-		});
-	
 	/** Is this a valid method name? */
 	protected final boolean validmethod;
 	
@@ -53,7 +37,7 @@ public final class IdentifierSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/14
 	 */
-	private IdentifierSymbol(String __s)
+	public IdentifierSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -122,22 +106,6 @@ public final class IdentifierSymbol
 	public boolean isValidMethod()
 	{
 		return validmethod;
-	}
-	
-	/**
-	 * Creates a symbol for the given string or returns a pre-cached variant
-	 * of the string.
-	 *
-	 * @param __s The string to create a symbol for.
-	 * @return The symbol.
-	 * @throws IllegalSymbolException If the symbol is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/18
-	 */
-	public static IdentifierSymbol of(String __s)
-		throws IllegalSymbolException, NullPointerException
-	{
-		return _CACHE.__of(__s);
 	}
 }
 

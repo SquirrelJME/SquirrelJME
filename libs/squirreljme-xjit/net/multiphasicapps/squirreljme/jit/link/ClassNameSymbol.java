@@ -23,58 +23,6 @@ import java.lang.ref.WeakReference;
 public final class ClassNameSymbol
 	extends __BaseSymbol__
 {
-	/** The cache. */
-	static final __Cache__<ClassNameSymbol> _CACHE =
-		new __Cache__<>(ClassNameSymbol.class,
-		new __Cache__.__Create__<ClassNameSymbol>()
-		{
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/05/18
-			 */
-			@Override
-			public ClassNameSymbol create(String __s)
-			{
-				return new ClassNameSymbol(__s);
-			}
-		});
-	
-	/** The class for object. */
-	public static final ClassNameSymbol BINARY_OBJECT =
-		of("java/lang/Object");
-	
-	/** Boolean. */
-	public static final ClassNameSymbol BOOLEAN =
-		new ClassNameSymbol("Z", true, null);
-	
-	/** Byte. */
-	public static final ClassNameSymbol BYTE =
-		new ClassNameSymbol("B", true, null);
-	
-	/** Short. */
-	public static final ClassNameSymbol SHORT =
-		new ClassNameSymbol("S", true, null);
-	
-	/** Character. */
-	public static final ClassNameSymbol CHARACTER =
-		new ClassNameSymbol("C", true, null);
-	
-	/** Integer. */
-	public static final ClassNameSymbol INTEGER =
-		new ClassNameSymbol("I", true, null);
-	
-	/** Long. */
-	public static final ClassNameSymbol LONG =
-		new ClassNameSymbol("J", true, null);
-	
-	/** Float. */
-	public static final ClassNameSymbol FLOAT =
-		new ClassNameSymbol("F", true, null);
-	
-	/** Double. */
-	public static final ClassNameSymbol DOUBLE =
-		new ClassNameSymbol("D", true, null);
-	
 	/** Is this an array? */
 	protected final boolean isarray;
 	
@@ -98,7 +46,7 @@ public final class ClassNameSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	private ClassNameSymbol(String __s)
+	public ClassNameSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		this(__s, false, null);
@@ -253,22 +201,6 @@ public final class ClassNameSymbol
 		
 		// Otherwise, this is already done by the binary name
 		return asBinaryName().parentPackage();
-	}
-	
-	/**
-	 * Creates a symbol for the given string or returns a pre-cached variant
-	 * of the string.
-	 *
-	 * @param __s The string to create a symbol for.
-	 * @return The symbol.
-	 * @throws IllegalSymbolException If the symbol is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/18
-	 */
-	public static ClassNameSymbol of(String __s)
-		throws IllegalSymbolException, NullPointerException
-	{
-		return _CACHE.__of(__s);
 	}
 }
 

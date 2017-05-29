@@ -10,13 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit.link;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This is thrown when an input symbol is not valid.
  *
  * @since 2016/03/14
  */
 public class IllegalSymbolException
-	extends IllegalArgumentException
+	extends JITException
 {
 	/**
 	 * Initializes exception with the given message.
