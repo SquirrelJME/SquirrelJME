@@ -22,6 +22,8 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
@@ -37,6 +39,9 @@ public class TargetBuilder
 	/** The target link table which contains the binary linkages. */
 	protected final LinkTable linktable =
 		new LinkTable();
+	
+	/** The JIT configuration (arch dependent). */
+	protected final JITConfig jitconfig;
 	
 	/**
 	 * Initializes the target builder.
@@ -63,6 +68,29 @@ public class TargetBuilder
 		
 		// Debug
 		System.err.printf("DEBUG -- JIT Options: %s%n", options);
+		
+		// {@squirreljme.error AO07 No CPU architecture has been specified,
+		// compilation cannot continue.}
+		String arch = options.get("cpu.arch");
+		if (arch == null)
+			throw new IllegalArgumentException("AO07");
+		
+		// Depends on the architecture
+		JITConfig jc;
+		switch (arch)
+		{
+				// MIPS
+			case "mips":
+				jc = new MIPSConfig(options);
+				break;
+			
+				// {@squirreljme.error AO08 Unknown architecture specified
+				// which is not supported. (The architecture)}
+			default:
+				throw new IllegalArgumentException(String.format("AO08 %s",
+					arch));
+		}
+		this.jitconfig = jc;
 	}
 	
 	/**
@@ -80,6 +108,8 @@ public class TargetBuilder
 		// Check
 		if (__os == null)
 			throw new NullPointerException("NARG");
+		
+		
 		
 		throw new todo.TODO();
 	}

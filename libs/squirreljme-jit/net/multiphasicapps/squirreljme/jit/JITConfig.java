@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
 
 /**
@@ -21,6 +22,24 @@ import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
  */
 public abstract class JITConfig
 {
+	/**
+	 * Initializes the JIT configuration using the given option set.
+	 *
+	 * @param __o The options used for the JIT.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/30
+	 */
+	protected JITConfig(Map<String, String> __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Parse options
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Creates an instance of the compiler for the given class file.
 	 *

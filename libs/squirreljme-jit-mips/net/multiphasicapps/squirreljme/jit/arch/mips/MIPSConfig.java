@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.arch.mips;
 
 import java.io.InputStream;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
@@ -23,6 +24,17 @@ import net.multiphasicapps.squirreljme.jit.LinkTable;
 public class MIPSConfig
 	extends JITConfig
 {
+	/**
+	 * Initializes the MIPS configuration.
+	 *
+	 * @param __o The input JITconfiguration.
+	 * @since 2017/05/30
+	 */
+	public MIPSConfig(Map<String, String> __o)
+	{
+		super(__o);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/29
