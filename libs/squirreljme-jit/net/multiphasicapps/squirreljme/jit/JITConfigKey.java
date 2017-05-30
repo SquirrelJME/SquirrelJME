@@ -49,6 +49,7 @@ public final class JITConfigKey
 		}
 		this.key = sb.toString();
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/30

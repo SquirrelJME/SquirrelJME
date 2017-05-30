@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is used to access the configuration which is needed by the JIT during
@@ -22,22 +23,44 @@ import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
  */
 public abstract class JITConfig
 {
+	/** Values stored within the configuration. */
+	private final Map<JITConfigKey, JITConfigValue> _values =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the JIT configuration using the given option set.
 	 *
 	 * @param __o The options used for the JIT.
-	 * @throws NullPointerException On null arguments.
+	 * @throws JITException If the options are not valid.
+	 * @throws NullPointerException On null arguments or if the option map
+	 * contains a null value.
 	 * @since 2017/05/30
 	 */
 	protected JITConfig(Map<JITConfigKey, JITConfigValue> __o)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// Parse options
-		throw new todo.TODO();
+		// Fill options into the value map
+		Map<JITConfigKey, JITConfigValue> values = this._values;
+		for (Map.Entry<JITConfigKey, JITConfigValue> e : __o.entrySet())
+		{
+			JITConfigKey k = e.getKey();
+			JITConfigValue v = e.getValue();
+			
+			// Check
+			if (k == null || v == null)
+				throw new NullPointerException("NARG");
+			
+			values.put(k, v);
+		}
+		
+		// {@squirreljme.error JI01 CPU architecture was not specified in the
+		// JIT configuration.}
+		if (values.get(new JITConfigKey("cpu.arch")) == null)
+			throw new JITException("JI01");
 	}
 	
 	/**
