@@ -19,6 +19,9 @@ package net.multiphasicapps.squirreljme.jit;
 public final class JITConfigKey
 	implements Comparable<JITConfigKey>
 {
+	/** The key name. */
+	protected final String key;
+	
 	/**
 	 * Initializes the key.
 	 *
@@ -33,7 +36,18 @@ public final class JITConfigKey
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Lowercase key
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			if (c >= 'A' && c <= 'Z')
+				c = (char)((c - 'A') + 'a');
+			
+			sb.append(c);
+		}
+		this.key = sb.toString();
 	}
 	/**
 	 * {@inheritDoc}
@@ -42,7 +56,7 @@ public final class JITConfigKey
 	@Override
 	public int compareTo(JITConfigKey __o)
 	{
-		throw new todo.TODO();
+		return this.key.compareTo(__o.key);
 	}
 	
 	/**
@@ -66,7 +80,7 @@ public final class JITConfigKey
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.key.hashCode();
 	}
 	
 	/**
@@ -76,7 +90,7 @@ public final class JITConfigKey
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.key;
 	}
 }
 

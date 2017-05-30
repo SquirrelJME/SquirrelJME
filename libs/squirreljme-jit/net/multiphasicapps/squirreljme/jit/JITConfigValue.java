@@ -17,6 +17,9 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public final class JITConfigValue
 {
+	/** The value of the option. */
+	protected final String value;
+	
 	/**
 	 * Initializes the value.
 	 *
@@ -31,7 +34,18 @@ public final class JITConfigValue
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Lowercase key
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			if (c >= 'A' && c <= 'Z')
+				c = (char)((c - 'A') + 'a');
+			
+			sb.append(c);
+		}
+		this.value = sb.toString();
 	}
 	
 	/**
@@ -41,7 +55,11 @@ public final class JITConfigValue
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof JITConfigValue))
+			return false;
+		
+		return this.value.equals(((JITConfigValue)__o).value);
 	}
 	
 	/**
@@ -51,7 +69,7 @@ public final class JITConfigValue
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.value.hashCode();
 	}
 	
 	/**
@@ -61,7 +79,7 @@ public final class JITConfigValue
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.value;
 	}
 }
 
