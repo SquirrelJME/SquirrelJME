@@ -24,6 +24,8 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfigKey;
+import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
@@ -63,25 +65,25 @@ public class TargetBuilder
 		this.manager = __pm;
 		
 		// Parse template files
-		Map<String, String> options = new HashMap<>();
-		__parse(options, __template);
+		Map<JITConfigKey, JITConfigValue> jitopts = new HashMap<>();
+		__parse(jitopts, __template);
 		
 		// Debug
-		System.err.printf("DEBUG -- JIT Options: %s%n", options);
+		System.err.printf("DEBUG -- JIT Options: %s%n", jitopts);
 		
 		// {@squirreljme.error AO07 No CPU architecture has been specified,
 		// compilation cannot continue.}
-		String arch = options.get("cpu.arch");
+		JITConfigValue arch = jitopts.get(new JITConfigKey("cpu.arch"));
 		if (arch == null)
 			throw new IllegalArgumentException("AO07");
 		
 		// Depends on the architecture
 		JITConfig jc;
-		switch (arch)
+		switch (arch.toString())
 		{
 				// MIPS
 			case "mips":
-				jc = new MIPSConfig(options);
+				jc = new MIPSConfig(jitopts);
 				break;
 			
 				// {@squirreljme.error AO08 Unknown architecture specified
@@ -115,35 +117,6 @@ public class TargetBuilder
 	}
 	
 	/**
-	 * Lowercases the specified string.
-	 *
-	 * @param __s The string to lowercase.
-	 * @return Lowercase {@code __s} or {@code null} if {@__s} is null.
-	 * @since 2017/05/29
-	 */
-	private static String __lower(String __s)
-	{
-		// No work needed
-		if (__s == null)
-			return null;
-		
-		// Lowercase
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0, n = __s.length(); i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			// Lowercase
-			if (c >= 'A' && c <= 'Z')
-				c = (char)((c - 'A') + 'a');
-			
-			sb.append(c);
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
 	 * Parses the specified template file and loads the manifest keys into
 	 * the option map.
 	 *
@@ -153,7 +126,8 @@ public class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
-	private static void __parse(Map<String, String> __opt, String __in)
+	private static void __parse(Map<JITConfigKey, JITConfigValue> __opt,
+		String __in)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -174,13 +148,14 @@ public class TargetBuilder
 			for (Map.Entry<JavaManifestKey, String> e :
 				man.getMainAttributes().entrySet())
 			{
-				// Depends on the key
-				String key = __lower(e.getKey().toString());
+				JITConfigKey jk = new JITConfigKey(e.getKey().toString());
+				String jks = jk.toString();
 				
 				// JIT option?
-				if (key.startsWith("jit-"))
-					__opt.put(key.substring(4).replace('-', '.'),
-						e.getValue());
+				if (jks.startsWith("jit-"))
+					__opt.put(
+						new JITConfigKey(jks.substring(4).replace('-', '.')),
+						new JITConfigValue(e.getValue()));
 			}
 		}
 	}

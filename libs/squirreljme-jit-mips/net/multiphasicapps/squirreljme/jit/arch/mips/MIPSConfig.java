@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfigKey;
+import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
@@ -30,7 +32,7 @@ public class MIPSConfig
 	 * @param __o The input JITconfiguration.
 	 * @since 2017/05/30
 	 */
-	public MIPSConfig(Map<String, String> __o)
+	public MIPSConfig(Map<JITConfigKey, JITConfigValue> __o)
 	{
 		super(__o);
 	}

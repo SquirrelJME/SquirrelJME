@@ -29,7 +29,7 @@ public abstract class JITConfig
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/30
 	 */
-	protected JITConfig(Map<String, String> __o)
+	protected JITConfig(Map<JITConfigKey, JITConfigValue> __o)
 		throws NullPointerException
 	{
 		// Check
