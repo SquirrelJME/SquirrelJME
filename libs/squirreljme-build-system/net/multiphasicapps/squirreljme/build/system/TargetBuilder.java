@@ -161,25 +161,19 @@ public class TargetBuilder
 			for (Map.Entry<JavaManifestKey, String> e :
 				man.getMainAttributes().entrySet())
 			{
-				JITConfigKey jk = new JITConfigKey(e.getKey().toString());
-				String jks = jk.toString(),
+				JavaManifestKey k = e.getKey();
+				String ks = k.toString(),
 					v = e.getValue();
 				
-				// Debug
-				System.err.printf("DEBUG -- Parse %s: %s (%s)%n", jk, v,
-					man.getMainAttributes().get(jk));
-				System.err.printf("DEBUG -- %s `%s` ?= `%s`%n",
-					jk.equals(_ADD_PROJECTS), jk, _ADD_PROJECTS);
-				
 				// JIT option?
-				if (jks.startsWith("jit-"))
+				if (ks.startsWith("jit-"))
 					__opt.put(
-						new JITConfigKey(jks.substring(4).replace('-', '.')),
+						new JITConfigKey(ks.substring(4).replace('-', '.')),
 						new JITConfigValue(v));
 				
 				// Add projects to set?
-				else if (jk.equals(_ADD_PROJECTS))
-				{System.err.println("DEBUG -- Adding projects!");
+				else if (k.equals(_ADD_PROJECTS))
+				{
 					// Projects appear in a space split list
 					for (int i = 0, n = v.length(); i < n; i++)
 					{
