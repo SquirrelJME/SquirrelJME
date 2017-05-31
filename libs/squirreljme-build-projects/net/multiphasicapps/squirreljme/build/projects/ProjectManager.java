@@ -170,6 +170,22 @@ public class ProjectManager
 	}
 	
 	/**
+	 * Obtains the binary project under the specified name.
+	 *
+	 * @param __s The project to get the binary for.
+	 * @return The binary project or {@code null} if not found.
+	 * @since 2017/05/31
+	 */
+	public final ProjectBinary getBinary(ProjectName __s)
+	{
+		Project p = get(__s);
+		if (p == null)
+			return null;
+		
+		return p.binary();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/12/17
 	 */

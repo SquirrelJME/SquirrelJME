@@ -163,7 +163,7 @@ public class TargetBuilder
 		Deque<ProjectBinary> fullq = new ArrayDeque<>();
 		Set<ProjectBinary> didq = new HashSet<>();
 		for (ProjectName p : __pn)
-			fullq.offerLast(manager.get(p).binary());
+			fullq.offerLast(manager.getBinary(p));
 		
 		// This is the count of every project which is used
 		Map<ProjectBinary, Integer> counts = new HashMap<>();
@@ -246,13 +246,27 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Read input resource as a manifest
+		ProjectManager manager = this.manager;
 		try (InputStream is = TargetBuilder.class.getResourceAsStream(
 			"template/" + __in))
 		{
-			// {@squirreljme.error AO06 The specified template does not
-			// exist.}
+			// Failed to find template, try looking for a project instead
 			if (is == null)
+			{
+				// If a binary exists with the specified name then add it to
+				// the list of projects to build
+				ProjectName pn = new ProjectName(__in);
+				ProjectBinary pb = manager.getBinary(pn);
+				if (pb != null)
+				{
+					__pn.add(pn);
+					return;
+				}
+				
+				// {@squirreljme.error AO06 The specified template or project
+				// does not exist.}
 				throw new IOException(String.format("AO06 %s", __in));
+			}
 			
 			// Parse the manifest
 			JavaManifest man = new JavaManifest(is);
