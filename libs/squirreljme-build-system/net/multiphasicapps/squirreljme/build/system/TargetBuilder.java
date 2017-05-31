@@ -16,7 +16,9 @@ import java.io.OutputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
@@ -35,6 +37,10 @@ import net.multiphasicapps.squirreljme.jit.LinkTable;
  */
 public class TargetBuilder
 {
+	/** Projects to be added to the project set for inclusion. */
+	private static final JavaManifestKey _ADD_PROJECTS =
+		new JavaManifestKey("add-projects");
+	
 	/** The manager for projects. */
 	protected final ProjectManager manager;
 	
@@ -66,14 +72,16 @@ public class TargetBuilder
 		
 		// Parse the minimal template which is always included
 		Map<JITConfigKey, JITConfigValue> jitopts = new HashMap<>();
-		__parse(jitopts, "minimal");
+		Set<ProjectName> extraproj = new HashSet<>();
+		__parse(jitopts, extraproj, "minimal");
 		
 		// Parse template files
 		for (String t : __templates)
-			__parse(jitopts, t);
+			__parse(jitopts, extraproj, t);
 		
 		// Debug
-		System.err.printf("DEBUG -- JIT Options: %s%n", jitopts);
+		System.err.printf("DEBUG -- JIT Options: %s, Proj: %s%n", jitopts,
+			extraproj);
 		
 		// {@squirreljme.error AO07 No CPU architecture has been specified,
 		// compilation cannot continue.}
@@ -125,17 +133,18 @@ public class TargetBuilder
 	 * the option map.
 	 *
 	 * @param __opt The target options for the JIT.
+	 * @param __pn The names of projects to use for compilation.
 	 * @param __in The input file to parse.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
-	private static void __parse(Map<JITConfigKey, JITConfigValue> __opt,
-		String __in)
+	private void __parse(Map<JITConfigKey, JITConfigValue> __opt,
+		Set<ProjectName> __pn, String __in)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__opt == null || __in == null)
+		if (__opt == null || __pn == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Read input resource as a manifest
@@ -153,13 +162,42 @@ public class TargetBuilder
 				man.getMainAttributes().entrySet())
 			{
 				JITConfigKey jk = new JITConfigKey(e.getKey().toString());
-				String jks = jk.toString();
+				String jks = jk.toString(),
+					v = e.getValue();
+				
+				// Debug
+				System.err.printf("DEBUG -- Parse %s: %s (%s)%n", jk, v,
+					man.getMainAttributes().get(jk));
+				System.err.printf("DEBUG -- %s `%s` ?= `%s`%n",
+					jk.equals(_ADD_PROJECTS), jk, _ADD_PROJECTS);
 				
 				// JIT option?
 				if (jks.startsWith("jit-"))
 					__opt.put(
 						new JITConfigKey(jks.substring(4).replace('-', '.')),
-						new JITConfigValue(e.getValue()));
+						new JITConfigValue(v));
+				
+				// Add projects to set?
+				else if (jk.equals(_ADD_PROJECTS))
+				{System.err.println("DEBUG -- Adding projects!");
+					// Projects appear in a space split list
+					for (int i = 0, n = v.length(); i < n; i++)
+					{
+						// Ignore spaces
+						char c = v.charAt(i);
+						if (c == ' ')
+							continue;
+						
+						// Find last space
+						int s = v.indexOf(' ', i);
+						if (s < 0)
+							s = n;
+						
+						// Add project
+						__pn.add(new ProjectName(v.substring(i, s)));
+						i = s;
+					}
+				}
 			}
 		}
 	}

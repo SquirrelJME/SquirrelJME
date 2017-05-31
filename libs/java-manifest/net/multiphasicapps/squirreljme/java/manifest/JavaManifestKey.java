@@ -124,7 +124,7 @@ public final class JavaManifestKey
 	 */
 	private static char __toLower(char __c)
 	{
-		if (__c <= 'Z' && __c >= 'A')
+		if (__c >= 'A' && __c <= 'Z')
 			return (char)('a' + (__c - 'A'));
 		return __c;
 	}
