@@ -138,6 +138,16 @@ public class TargetBuilder
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
+		// Go through all binary projects and compile them
+		for (ProjectBinary pb : this._binaries)
+		{
+			// {@squirreljme.error AO09 Compiling the specified project. (The
+			// project name)}
+			System.out.printf("AO09 %s%n", pb.name());
+			
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 	
