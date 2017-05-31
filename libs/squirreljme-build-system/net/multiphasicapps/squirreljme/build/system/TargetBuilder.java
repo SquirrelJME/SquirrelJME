@@ -157,6 +157,9 @@ public class TargetBuilder
 		for (ProjectName p : __pn)
 			fullq.offerLast(manager.get(p).binary());
 		
+		// This is the count of every project which is used
+		Map<ProjectBinary, Integer> counts = new HashMap<>();
+		
 		// Process any projects in the queue until it is empty
 		while (!fullq.isEmpty())
 		{
@@ -169,8 +172,28 @@ public class TargetBuilder
 			// Debug
 			System.err.printf("DEBUG -- Full %s%n", pb.name());
 			
-			throw new todo.TODO();
+			// Always make sure this project is always counted
+			if (!counts.containsKey(pb))
+				counts.put(pb, 0);
+			
+			// Go through all dependencies recursively
+			for (ProjectBinary dep : pb.binaryDependencies(true))
+			{
+				// Decrement so that projects that are used more are at a
+				// lower value (since sort is from lower to higher values)
+				Integer v = counts.get(dep);
+				if (v == null)
+					counts.put(dep, -1);
+				else
+					counts.put(dep, v - 1);
+				
+				// Add to processing queue
+				fullq.offerLast(dep);
+			}
 		}
+		
+		// List counts
+		System.err.printf("DEBUG -- Counts: %s%n", counts);
 		
 		throw new todo.TODO();
 	}
