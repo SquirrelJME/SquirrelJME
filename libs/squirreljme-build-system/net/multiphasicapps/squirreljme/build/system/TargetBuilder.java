@@ -49,24 +49,28 @@ public class TargetBuilder
 	 * Initializes the target builder.
 	 *
 	 * @param __pm The project manager.
-	 * @param __template The template file to load.
+	 * @param __templates The template file(s) to load.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
-	public TargetBuilder(ProjectManager __pm, String __template)
+	public TargetBuilder(ProjectManager __pm, String... __templates)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__pm == null || __template == null)
+		if (__pm == null || __templates == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.manager = __pm;
 		
-		// Parse template files
+		// Parse the minimal template which is always included
 		Map<JITConfigKey, JITConfigValue> jitopts = new HashMap<>();
-		__parse(jitopts, __template);
+		__parse(jitopts, "minimal");
+		
+		// Parse template files
+		for (String t : __templates)
+			__parse(jitopts, t);
 		
 		// Debug
 		System.err.printf("DEBUG -- JIT Options: %s%n", jitopts);
@@ -141,7 +145,7 @@ public class TargetBuilder
 			// {@squirreljme.error AO06 The specified template does not
 			// exist.}
 			if (is == null)
-				throw new IOException(String.format("AO06 %s"));
+				throw new IOException(String.format("AO06 %s", __in));
 			
 			// Parse the manifest
 			JavaManifest man = new JavaManifest(is);

@@ -20,6 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.build.projects.Project;
@@ -121,8 +123,15 @@ public class BuildSystem
 					if (na < 2)
 						throw new IllegalArgumentException("AO03");
 					
+					// Fill in arguments
+					List<String> templates = new ArrayList<>();
+					for (int i = 1; i < na; i++)
+						templates.add(__args[i]);
+					
 					// Setup target builder
-					TargetBuilder tb = new TargetBuilder(projects, __args[1]);
+					TargetBuilder tb = new TargetBuilder(projects,
+						templates.<String>toArray(
+							new String[templates.size()]));
 					
 					// Compile target to the given output stream
 					try (OutputStream os = new HexDumpOutputStream(System.out))
