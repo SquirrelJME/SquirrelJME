@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.Project;
+import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -50,6 +51,9 @@ public class TargetBuilder
 	
 	/** The JIT configuration (arch dependent). */
 	protected final JITConfig jitconfig;
+	
+	/** The projects to be compiled, in the specified array order. */
+	private final ProjectBinary[] _binaries;
 	
 	/**
 	 * Initializes the target builder.
@@ -105,6 +109,9 @@ public class TargetBuilder
 					arch));
 		}
 		this.jitconfig = jc;
+		
+		// Obtain set of projects to compile in a given order
+		this._binaries = __getBinaries(extraproj);
 	}
 	
 	/**
@@ -123,7 +130,47 @@ public class TargetBuilder
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains an array containing the compilation order of most dependend on
+	 * to least depended on.
+	 *
+	 * @param __pn The projects to be compiled.
+	 * @return The array of projects to be included in their compilation and
+	 * link order depending on how dependend upon they are.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/31
+	 */
+	private ProjectBinary[] __getBinaries(Set<ProjectName> __pn)
+		throws NullPointerException
+	{
+		// Check
+		if (__pn == null)
+			throw new NullPointerException("NARG");
 		
+		// Outer queue of projects which are used for complete processing
+		ProjectManager manager = this.manager;
+		Deque<ProjectBinary> fullq = new ArrayDeque<>();
+		Set<ProjectBinary> didq = new HashSet<>();
+		for (ProjectName p : __pn)
+			fullq.offerLast(manager.get(p).binary());
+		
+		// Process any projects in the queue until it is empty
+		while (!fullq.isEmpty())
+		{
+			// Only process binaries once
+			ProjectBinary pb = fullq.removeFirst();
+			if (didq.contains(pb))
+				continue;
+			didq.add(pb);
+			
+			// Debug
+			System.err.printf("DEBUG -- Full %s%n", pb.name());
+			
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
