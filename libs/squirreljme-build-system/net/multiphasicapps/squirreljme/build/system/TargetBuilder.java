@@ -14,9 +14,13 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.build.projects.Project;
@@ -112,6 +116,10 @@ public class TargetBuilder
 		
 		// Obtain set of projects to compile in a given order
 		this._binaries = __getBinaries(extraproj);
+		
+		// Debug
+		System.err.printf("DEBUG -- Build order: %s%n",
+			Arrays.asList(this._binaries));
 	}
 	
 	/**
@@ -195,7 +203,27 @@ public class TargetBuilder
 		// List counts
 		System.err.printf("DEBUG -- Counts: %s%n", counts);
 		
-		throw new todo.TODO();
+		// Place counts into sorted order
+		int n = counts.size();
+		List<ProjectBinary> rv = new ArrayList<>(n);
+		List<Integer> cc = new ArrayList<>(n);
+		for (Map.Entry<ProjectBinary, Integer> e : counts.entrySet())
+		{
+			ProjectBinary k = e.getKey();
+			Integer v = e.getValue();
+			
+			// Find the position where this goes
+			int id = Collections.<Integer>binarySearch(cc, v);
+			if (id < 0)
+				id = -(id) - 1;
+			
+			// Add to the lists
+			rv.add(id, k);
+			cc.add(id, v);
+		}
+		
+		// Use given project list
+		return rv.<ProjectBinary>toArray(new ProjectBinary[rv.size()]);
 	}
 	
 	/**
