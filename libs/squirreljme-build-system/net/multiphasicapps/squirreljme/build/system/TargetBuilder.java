@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
@@ -144,6 +145,24 @@ public class TargetBuilder
 			// {@squirreljme.error AO09 Compiling the specified project. (The
 			// project name)}
 			System.out.printf("AO09 %s%n", pb.name());
+			
+			// Process all classes and resources
+			try (FileDirectory fd = pb.openFileDirectory())
+			{
+				for (String fn : fd)
+				{
+					// Class file?
+					if (fn.endsWith(".java"))
+						throw new todo.TODO();
+					
+					// Otherwise a resource
+					else
+						throw new todo.TODO();
+				}
+				
+				if (true)
+					throw new todo.TODO();
+			}
 			
 			throw new todo.TODO();
 		}
