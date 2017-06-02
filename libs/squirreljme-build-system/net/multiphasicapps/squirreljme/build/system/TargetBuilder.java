@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
+import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
@@ -139,18 +140,33 @@ public class TargetBuilder
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
+		// Used for cluster counting and progress
+		ProjectBinary[] binaries = this._binaries;
+		int cluster = 0,
+			numclusters = binaries.length;
+		
 		// Go through all binary projects and compile them
-		for (ProjectBinary pb : this._binaries)
+		for (ProjectBinary pb : binaries)
 		{
 			// {@squirreljme.error AO09 Compiling the specified project. (The
-			// project name)}
-			System.out.printf("AO09 %s%n", pb.name());
+			// project name; The current cluster; The number of clusters)}
+			System.out.printf("AO09 %s %d %d%n", pb.name(), ++cluster,
+				numclusters);
+			
+			// Setup cluster
+			ClusterIdentifier ci = new ClusterIdentifier(cluster);
 			
 			// Process all classes and resources
 			try (FileDirectory fd = pb.openFileDirectory())
 			{
+				int didfiles = 1;
 				for (String fn : fd)
 				{
+					// {@squirreljme.error AO0a The specified class or resource
+					// is being compiled. (The current file; The number of
+					// processed files)}
+					System.out.printf("AO0a %s %d%n", fn, didfiles++);
+					
 					// Class file?
 					if (fn.endsWith(".java"))
 						throw new todo.TODO();
