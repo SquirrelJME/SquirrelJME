@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
+import net.multiphasicapps.squirreljme.jit.rc.ResourceCompiler;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -67,13 +68,29 @@ public abstract class JITConfig
 	 * Creates an instance of the compiler for the given class file.
 	 *
 	 * @param __is The stream containing the class data to compile.
+	 * @param __ci The cluster the class is in.
 	 * @param __lt The link table which is given the compiled class data.
 	 * @return The compilation task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
 	public abstract ClassCompiler compileClass(InputStream __is,
-		LinkTable __lt)
+		ClusterIdentifier __ci, LinkTable __lt)
+		throws NullPointerException;
+	
+	/**
+	 * Compiles the specified resource and places it into the given link table.
+	 *
+	 * @param __is The stream containing the resource data.
+	 * @param __n The name of the resource.
+	 * @param __ci The cluster the resource is in.
+	 * @param __lt The link table which is given the compiled resource data.
+	 * @return The resource compiler task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/02
+	 */
+	public abstract ResourceCompiler compileResource(InputStream __is,
+		String __n, ClusterIdentifier __ci, LinkTable __lt)
 		throws NullPointerException;
 }
 
