@@ -141,6 +141,8 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Used for cluster counting and progress
+		LinkTable linktable = this.linktable;
+		JITConfig jitconfig = this.jitconfig;
 		ProjectBinary[] binaries = this._binaries;
 		int cluster = 0,
 			numclusters = binaries.length;
@@ -167,17 +169,24 @@ public class TargetBuilder
 					// processed files)}
 					System.out.printf("AO0a %s %d%n", fn, didfiles++);
 					
-					// Class file?
-					if (fn.endsWith(".java"))
-						throw new todo.TODO();
+					// Open data stream
+					try (InputStream is = fd.open(fn))
+					{
+						Runnable t;
+						
+						// Class file?
+						if (fn.endsWith(".java"))
+							t = jitconfig.compileClass(is, ci, linktable);
 					
-					// Otherwise a resource
-					else
-						throw new todo.TODO();
+						// Otherwise a resource
+						else
+							t = jitconfig.compileResource(is, fn, ci,
+								linktable);
+						
+						// Run the task
+						t.run();
+					}
 				}
-				
-				if (true)
-					throw new todo.TODO();
 			}
 			
 			throw new todo.TODO();

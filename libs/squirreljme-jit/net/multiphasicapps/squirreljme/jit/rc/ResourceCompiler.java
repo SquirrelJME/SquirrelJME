@@ -20,6 +20,16 @@ import java.io.IOException;
  * @since 2017/06/02
  */
 public class ResourceCompiler
+	implements Runnable
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/06/02
+	 */
+	@Override
+	public void run()
+	{
+		throw new todo.TODO();
+	}
 }
 
