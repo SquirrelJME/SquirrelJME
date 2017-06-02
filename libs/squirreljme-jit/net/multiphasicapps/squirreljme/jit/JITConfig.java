@@ -82,7 +82,8 @@ public abstract class JITConfig
 		if (__is == null || __ci == null || __lt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Create the compiler
+		return new ClassCompiler(this, __is, __ci, __lt);
 	}
 	
 	/**
@@ -104,7 +105,7 @@ public abstract class JITConfig
 		if (__is == null || __n == null || __ci == null || __lt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return new ResourceCompiler(this, __is, __n, __ci, __lt);
 	}
 }
 
