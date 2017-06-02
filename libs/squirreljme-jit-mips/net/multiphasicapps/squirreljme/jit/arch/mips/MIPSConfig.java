@@ -38,37 +38,5 @@ public class MIPSConfig
 	{
 		super(__o);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/05/29
-	 */
-	@Override
-	public ClassCompiler compileClass(InputStream __is,
-		ClusterIdentifier __ci, LinkTable __lt)
-		throws NullPointerException
-	{
-		// Check
-		if (__is == null || __ci == null || __lt == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/06/02
-	 */
-	@Override
-	public ResourceCompiler compileResource(InputStream __is,
-		String __n, ClusterIdentifier __ci, LinkTable __lt)
-		throws NullPointerException
-	{
-		// Check
-		if (__is == null || __n == null || __ci == null || __lt == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
 }
 

@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/05/29
  */
-public class ClassCompiler
+public final class ClassCompiler
 	implements Runnable
 {
 	/**

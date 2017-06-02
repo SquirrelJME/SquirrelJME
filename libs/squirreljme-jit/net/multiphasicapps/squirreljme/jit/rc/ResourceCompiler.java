@@ -19,7 +19,7 @@ import java.io.IOException;
  *
  * @since 2017/06/02
  */
-public class ResourceCompiler
+public final class ResourceCompiler
 	implements Runnable
 {
 	/**

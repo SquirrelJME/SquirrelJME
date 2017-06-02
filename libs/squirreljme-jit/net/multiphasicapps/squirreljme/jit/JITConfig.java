@@ -74,9 +74,16 @@ public abstract class JITConfig
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
-	public abstract ClassCompiler compileClass(InputStream __is,
+	public final ClassCompiler compileClass(InputStream __is,
 		ClusterIdentifier __ci, LinkTable __lt)
-		throws NullPointerException;
+		throws NullPointerException
+	{
+		// Check
+		if (__is == null || __ci == null || __lt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Compiles the specified resource and places it into the given link table.
@@ -89,8 +96,15 @@ public abstract class JITConfig
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/02
 	 */
-	public abstract ResourceCompiler compileResource(InputStream __is,
+	public final ResourceCompiler compileResource(InputStream __is,
 		String __n, ClusterIdentifier __ci, LinkTable __lt)
-		throws NullPointerException;
+		throws NullPointerException
+	{
+		// Check
+		if (__is == null || __n == null || __ci == null || __lt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
