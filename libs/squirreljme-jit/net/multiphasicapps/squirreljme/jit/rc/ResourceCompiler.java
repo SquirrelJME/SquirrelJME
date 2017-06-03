@@ -25,6 +25,21 @@ import net.multiphasicapps.squirreljme.jit.LinkTable;
 public final class ResourceCompiler
 	implements Runnable
 {
+	/** The JIT configuration. */
+	protected final JITConfig config;
+	
+	/** The input data for the link table. */
+	protected final InputStream in;
+	
+	/** The name of the resource. */
+	protected final String name;
+	
+	/** The cluster the resource is in. */
+	protected final ClusterIdentifier cluster;
+	
+	/** The link table to place the resource in. */
+	protected final LinkTable linktable;
+	
 	/**
 	 * Initializes the resource compiler.
 	 *
@@ -46,7 +61,12 @@ public final class ResourceCompiler
 			__lt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.config = __jc;
+		this.in = __is;
+		this.name = __n;
+		this.cluster = __ci;
+		this.linktable = __lt;
 	}
 	
 	/**
