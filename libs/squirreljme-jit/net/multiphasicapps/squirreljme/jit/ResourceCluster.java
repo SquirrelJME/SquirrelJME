@@ -10,16 +10,22 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import java.util.Map;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-
 /**
- * This is the link table which contains every exported and imported class,
- * field, method, and resource.
+ * This class is associated with a link table and specifies resources which
+ * are part of a given cluster.
  *
- * @since 2017/05/29
+ * @since 2017/06/06
  */
-public class LinkTable
+public final class ResourceCluster
 {
+	/**
+	 * Initializes the resource cluster.
+	 *
+	 * @since 2017/06/06
+	 */
+	private ResourceCluster()
+	{
+		throw new todo.TODO();
+	}
 }
 
