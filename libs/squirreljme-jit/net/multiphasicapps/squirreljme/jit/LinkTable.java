@@ -17,9 +17,14 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * This is the link table which contains every exported and imported class,
  * field, method, and resource.
  *
+ * This class is not thread safe.
+ *
  * @since 2017/05/29
  */
 public class LinkTable
 {
+	/** Clusters which are available for resource usage. */
+	private final Map<ClusterIdentifier, ResourceCluster> _clusters =
+		new SortedTreeMap<>();
 }
 

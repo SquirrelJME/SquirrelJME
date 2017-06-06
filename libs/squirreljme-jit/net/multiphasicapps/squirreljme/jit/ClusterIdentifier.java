@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/01
  */
 public final class ClusterIdentifier
+	implements Comparable<ClusterIdentifier>
 {
 	/** The identifier for the cluster. */
 	protected final int id;
@@ -36,6 +37,16 @@ public final class ClusterIdentifier
 	public ClusterIdentifier(int __id)
 	{
 		this.id = __id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/06/06
+	 */
+	@Override
+	public int compareTo(ClusterIdentifier __o)
+	{
+		return this.id - __o.id;
 	}
 	
 	/**
