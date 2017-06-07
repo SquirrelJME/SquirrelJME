@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
@@ -26,5 +28,25 @@ public class LinkTable
 	/** Clusters which are available for resource usage. */
 	private final Map<ClusterIdentifier, ResourceCluster> _clusters =
 		new SortedTreeMap<>();
+	
+	/**
+	 * Creates the specified resource and returns the output stream used to
+	 * write the resource data.
+	 *
+	 * @param __ci The cluster the resource is in.
+	 * @param __n The name of the resource.
+	 * @throws JITException If the resource could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/07
+	 */
+	public OutputStream createResource(ClusterIdentifier __ci, String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__ci == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
