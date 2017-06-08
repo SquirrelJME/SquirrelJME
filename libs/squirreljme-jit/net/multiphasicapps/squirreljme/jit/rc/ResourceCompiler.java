@@ -12,8 +12,10 @@ package net.multiphasicapps.squirreljme.jit.rc;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
@@ -76,7 +78,26 @@ public final class ResourceCompiler
 	@Override
 	public void run()
 	{
-		throw new todo.TODO();
+		InputStream in = this.in;
+		try (OutputStream os = this.linktable.createResource(this.cluster,
+			this.name))
+		{
+			byte[] buf = new byte[512];
+			for (;;)
+			{
+				int rc = in.read(buf);
+				if (rc < 0)
+					break;
+				os.write(buf, 0, rc);
+			}
+		}
+		
+		// {@squirreljme.error JI02 Failed to write the resource data. (The
+		// name of this resource)}
+		catch (IOException e)
+		{
+			throw new JITException(String.format("JT02 %s", this.name), e);
+		}
 	}
 }
 
