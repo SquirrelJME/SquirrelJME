@@ -95,6 +95,9 @@ public final class ClassCompiler
 				throw new JITException(String.format("JI07 %d.%d",
 					cver >>> 16, (cver & 0xFFFF)));
 			
+			// Decode the class
+			Pool pool = new Pool(in);
+			
 			throw new todo.TODO();
 		}
 		
