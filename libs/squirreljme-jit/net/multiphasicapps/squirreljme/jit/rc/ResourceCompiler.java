@@ -33,14 +33,11 @@ public final class ResourceCompiler
 	/** The input data for the link table. */
 	protected final InputStream in;
 	
-	/** The name of the resource. */
+	/** The output stream to write to. */
+	protected final OutputStream out;
+	
+	/** The name of this resource. */
 	protected final String name;
-	
-	/** The cluster the resource is in. */
-	protected final ClusterIdentifier cluster;
-	
-	/** The link table to place the resource in. */
-	protected final LinkTable linktable;
 	
 	/**
 	 * Initializes the resource compiler.
@@ -67,8 +64,9 @@ public final class ResourceCompiler
 		this.config = __jc;
 		this.in = __is;
 		this.name = __n;
-		this.cluster = __ci;
-		this.linktable = __lt;
+		
+		// Create output
+		this.out = __lt.createResource(__ci, __n);
 	}
 	
 	/**
@@ -79,8 +77,7 @@ public final class ResourceCompiler
 	public void run()
 	{
 		InputStream in = this.in;
-		try (OutputStream os = this.linktable.createResource(this.cluster,
-			this.name))
+		try (OutputStream out = this.out)
 		{
 			byte[] buf = new byte[512];
 			for (;;)
@@ -88,7 +85,7 @@ public final class ResourceCompiler
 				int rc = in.read(buf);
 				if (rc < 0)
 					break;
-				os.write(buf, 0, rc);
+				out.write(buf, 0, rc);
 			}
 		}
 		

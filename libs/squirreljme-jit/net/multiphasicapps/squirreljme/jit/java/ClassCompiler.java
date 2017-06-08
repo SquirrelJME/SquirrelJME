@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
@@ -25,6 +26,12 @@ import net.multiphasicapps.squirreljme.jit.LinkTable;
 public final class ClassCompiler
 	implements Runnable
 {
+	/** The owning configuration. */
+	protected final JITConfig config;
+	
+	/** The input stream containing the class data. */
+	protected final DataInputStream in;
+	
 	/**
 	 * Creates an instance of the compiler for the given class file.
 	 *
