@@ -177,7 +177,7 @@ public class TargetBuilder
 						// Class file?
 						if (fn.endsWith(".class"))
 							t = jitconfig.compileClass(is, ci, linktable);
-					
+						
 						// Otherwise a resource
 						else
 							t = jitconfig.compileResource(is, fn, ci,

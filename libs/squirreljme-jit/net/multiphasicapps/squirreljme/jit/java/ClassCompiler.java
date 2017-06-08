@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
@@ -26,11 +27,21 @@ import net.multiphasicapps.squirreljme.jit.LinkTable;
 public final class ClassCompiler
 	implements Runnable
 {
+	/** The magic number of the class file. */
+	private static final int _MAGIC_NUMBER =
+		0xCAFEBABE;
+	
 	/** The owning configuration. */
 	protected final JITConfig config;
 	
 	/** The input stream containing the class data. */
 	protected final DataInputStream in;
+	
+	/** The cluster this class is within. */
+	protected final ClusterIdentifier cluster;
+	
+	/** The link table to link into. */
+	protected final LinkTable linktable;
 	
 	/**
 	 * Creates an instance of the compiler for the given class file.
@@ -51,7 +62,11 @@ public final class ClassCompiler
 		if (__jc == null || __is == null || __ci == null || __lt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.config = __jc;
+		this.in = new DataInputStream(__is);
+		this.cluster = __ci;
+		this.linktable = __lt;
 	}
 	
 	/**
@@ -61,7 +76,25 @@ public final class ClassCompiler
 	@Override
 	public void run()
 	{
-		throw new todo.TODO();
+		try
+		{
+			// {@squirreljme.error JI06 Invalid magic number read from the start
+			// of the class file. (The read magic number; The expected magic
+			// number)}
+			DataInputStream in = this.in;
+			int mnum;
+			if ((mnum = in.readInt()) != _MAGIC_NUMBER)
+				throw new JITException(String.format("JI06 %08x %08x", mnum,
+					_MAGIC_NUMBER));
+			
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error JI07 Read error reading the class.}
+		catch (IOException e)
+		{
+			throw new JITException("JI07", e);
+		}
 	}
 }
 
