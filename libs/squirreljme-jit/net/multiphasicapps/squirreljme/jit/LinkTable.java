@@ -46,7 +46,14 @@ public class LinkTable
 		if (__ci == null || __n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Obtain the resource cluster, create if missing
+		Map<ClusterIdentifier, ResourceCluster> clusters = this._clusters;
+		ResourceCluster rc = clusters.get(__ci);
+		if (rc == null)
+			clusters.put(__ci, (rc = new ResourceCluster(__ci)));
+		
+		// Add resource
+		return rc.__createResource(__n);
 	}
 }
 
