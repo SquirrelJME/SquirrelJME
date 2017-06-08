@@ -87,6 +87,14 @@ public final class ClassCompiler
 				throw new JITException(String.format("JI06 %08x %08x", mnum,
 					_MAGIC_NUMBER));
 			
+			// {@squirreljme.error JI07 The version number of the input class
+			// file is not valid. (The version number)}
+			int cver = in.readShort() | (in.readShort() << 16);
+			ClassVersion version = ClassVersion.findVersion(cver);
+			if (version == null)
+				throw new JITException(String.format("JI07 %d.%d",
+					cver >>> 16, (cver & 0xFFFF)));
+			
 			throw new todo.TODO();
 		}
 		
