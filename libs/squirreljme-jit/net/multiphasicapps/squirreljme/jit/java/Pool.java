@@ -22,6 +22,62 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public class Pool
 {
+	/** The UTF constant tag. */
+	private static final int _TAG_UTF8 =
+		1;
+	
+	/** Integer constant. */
+	private static final int _TAG_INTEGER =
+		3;
+	
+	/** Float constant. */
+	private static final int _TAG_FLOAT =
+		4;
+	
+	/** Long constant. */
+	private static final int _TAG_LONG =
+		5;
+	
+	/** Double constant. */
+	private static final int _TAG_DOUBLE =
+		6;
+	
+	/** Reference to another class. */
+	private static final int _TAG_CLASS =
+		7;
+	
+	/** String constant. */
+	private static final int _TAG_STRING =
+		8;
+	
+	/** Field reference. */
+	private static final int _TAG_FIELDREF =
+		9;
+	
+	/** Method reference. */
+	private static final int _TAG_METHODREF =
+		10;
+	
+	/** Interface method reference. */
+	private static final int _TAG_INTERFACEMETHODREF =
+		11;
+	
+	/** Name and type. */
+	private static final int _TAG_NAMEANDTYPE =
+		12;
+	
+	/** Method handle (illegal). */
+	private static final int _TAG_METHODHANDLE =
+		15;
+	
+	/** Method type (illegal). */
+	private static final int _TAG_METHODTYPE =
+		16;
+	
+	/** Invoke dynamic call site (illegal). */
+	private static final int _TAG_INVOKEDYNAMIC =
+		18;
+	
 	/**
 	 * Parses and initializes the constant pool structures.
 	 *
