@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.UTFDataFormatException;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -94,8 +95,89 @@ public class Pool
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Entries in the pool
+		// Read the raw constant pool contents first
 		int count = __in.readUnsignedShort();
+		int[] tags = new int[count];
+		Object[] rawdata = new Object[count];
+		for (int i = 1; i < count; i++)
+		{
+			// Read tag
+			int tag = __in.readUnsignedByte();
+			tags[i] = tag;
+			
+			// Parse tag data
+			Object data;
+			switch (tag)
+			{
+					// UTF-8 String
+				case _TAG_UTF8:
+					try
+					{
+						data = __in.readUTF();
+					}
+					
+					// {@squirreljme.error JI0b Modified UTF-8 data is not in
+					// the correct format.}
+					catch (UTFDataFormatException e)
+					{
+						throw new JITException("JI0b", e);
+					}
+					break;
+					
+					// Reference to two entries
+				case _TAG_FIELDREF:
+				case _TAG_METHODREF:
+				case _TAG_INTERFACEMETHODREF:
+				case _TAG_NAMEANDTYPE:
+					data = new int[]{__in.readUnsignedShort(),
+						__in.readUnsignedShort()};
+					break;
+					
+					// References to single entry
+				case _TAG_CLASS:
+				case _TAG_STRING:
+					data = new int[]{__in.readUnsignedShort()};
+					break;
+					
+					// Integer
+				case _TAG_INTEGER:
+					data = Integer.valueOf(__in.readInt());
+					break;
+					
+					// Long
+				case _TAG_LONG:
+					data = Long.valueOf(__in.readLong());
+					break;
+					
+					// Float
+				case _TAG_FLOAT:
+					data = Float.valueOf(__in.readFloat());
+					break;
+					
+					// Double
+				case _TAG_DOUBLE:
+					data = Double.valueOf(__in.readDouble());
+					break;
+					
+					// {@squirreljme.error JI09 Java ME does not support dynamic
+					// invocation (such as method handles or lambda
+					// expressions).}
+				case _TAG_METHODHANDLE:
+				case _TAG_METHODTYPE:
+				case _TAG_INVOKEDYNAMIC:
+					throw new JITException("JI09");
+				
+					// {@squirreljme.error JI0a Unknown tag type in the constant
+					// pool. (The constant pool tag)}
+				default:
+					throw new JITException(String.format("JI0a %d", tag));
+			}
+			rawdata[i] = data;
+			
+			// Skip long/double?
+			if (tag == _TAG_LONG || tag == _TAG_DOUBLE)
+				i++;
+		}
 		
 		throw new todo.TODO();
 	}
