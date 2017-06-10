@@ -249,7 +249,15 @@ public class Pool
 		if (__i < 0 || __i >= entries.length)
 			throw new JITException(String.format("JI0c %d", __i));
 		
-		throw new todo.TODO();
+		// {@squirreljme.error JI0d The specified entry's class is not of the
+		// expected class. (The index of the entry; The class the entry is; The
+		// expected class)}
+		Object val = entries[__i];
+		if (val != null && !__cl.isInstance(val))
+			throw new JITException(String.format("JI0d %d %s %s", __i,
+				val.getClass(), __cl));
+		
+		return __cl.cast(val);
 	}
 }
 
