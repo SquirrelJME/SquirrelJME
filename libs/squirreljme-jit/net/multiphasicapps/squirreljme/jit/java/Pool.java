@@ -79,6 +79,10 @@ public class Pool
 	private static final int _TAG_INVOKEDYNAMIC =
 		18;
 	
+	/** The top of a long/double. */
+	private static final int _TAG_WIDETOP =
+		-1;
+	
 	/** Entries within the constant pool. */
 	private final Object[] _entries;
 	
@@ -186,7 +190,7 @@ public class Pool
 			if (tag == _TAG_LONG || tag == _TAG_DOUBLE)
 			{
 				rawdata[++i] = new WideConstantTopEntry();
-				tags[i] = -1;
+				tags[i] = _TAG_WIDETOP;
 			}
 		}
 		
@@ -203,22 +207,41 @@ public class Pool
 			// Depends on the tag
 			Object val,
 				raw = rawdata[i];
-			switch (tag)
+			try
 			{
-					// Copied directly
-				case -1:	// Top of long/double
-				case _TAG_UTF8:
-				case _TAG_INTEGER:
-				case _TAG_LONG:
-				case _TAG_FLOAT:
-				case _TAG_DOUBLE:
-					val = raw;
-					break;
+				switch (tag)
+				{
+						// Copied directly
+					case _TAG_WIDETOP:	// Top of long/double
+					case _TAG_UTF8:
+					case _TAG_INTEGER:
+					case _TAG_LONG:
+					case _TAG_FLOAT:
+					case _TAG_DOUBLE:
+						val = raw;
+						break;
+					
+						// Method or interface method
+					case _TAG_METHODREF:
+					case _TAG_INTERFACEMETHODREF:
+						throw new todo.TODO();
 				
-					// Should not happen
-				default:
-					throw new RuntimeException(String.format("OOPS %d", tag));
+						// Should not happen
+					default:
+						throw new RuntimeException(String.format("OOPS %d",
+							tag));
+				}
 			}
+			
+			// {@squirreljme.error JI0e A constant pool entry of the specified
+			// tag type refers to another entry which is not of the correct
+			// entry type. (The tag type)}
+			catch (ClassCastException e)
+			{
+				throw new JITException(String.format("JI0e %d", tag), e);
+			}
+			
+			// Store
 			entries[i] = val;
 		}
 		this._entries = entries;
