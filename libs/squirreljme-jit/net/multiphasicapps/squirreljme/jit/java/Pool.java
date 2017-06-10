@@ -79,6 +79,9 @@ public class Pool
 	private static final int _TAG_INVOKEDYNAMIC =
 		18;
 	
+	/** Entries within the constant pool. */
+	private final Object[] _entries;
+	
 	/**
 	 * Parses and initializes the constant pool structures.
 	 *
@@ -110,10 +113,15 @@ public class Pool
 			switch (tag)
 			{
 					// UTF-8 String
+					// The string is wrapped in a wrapper class so that String
+					// constants are actual String references. It is illegal for
+					// UTF-8 constants to be directly used by the byte code so
+					// this prevents their usage from occuring by causing a
+					// class cast exception
 				case _TAG_UTF8:
 					try
 					{
-						data = __in.readUTF();
+						data = new UTFConstantEntry(__in.readUTF());
 					}
 					
 					// {@squirreljme.error JI0b Modified UTF-8 data is not in
@@ -176,10 +184,44 @@ public class Pool
 			
 			// Skip long/double?
 			if (tag == _TAG_LONG || tag == _TAG_DOUBLE)
-				i++;
+			{
+				rawdata[++i] = new WideConstantTopEntry();
+				tags[i] = -1;
+			}
 		}
 		
-		throw new todo.TODO();
+		// Go through tags again and initialize their raw data into type-safe
+		// classes
+		Object[] entries = new Object[count];
+		for (int i = 0; i < count; i++)
+		{
+			// Ignore null entries
+			int tag = tags[i];
+			if (tag == 0)
+				continue;
+			
+			// Depends on the tag
+			Object val,
+				raw = rawdata[i];
+			switch (tag)
+			{
+					// Copied directly
+				case -1:	// Top of long/double
+				case _TAG_UTF8:
+				case _TAG_INTEGER:
+				case _TAG_LONG:
+				case _TAG_FLOAT:
+				case _TAG_DOUBLE:
+					val = raw;
+					break;
+				
+					// Should not happen
+				default:
+					throw new RuntimeException(String.format("OOPS %d", tag));
+			}
+			entries[i] = val;
+		}
+		this._entries = entries;
 	}
 	
 	/**
@@ -200,6 +242,12 @@ public class Pool
 		// Check
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI0c The specified index is not within the bounds
+		// of the constant pool. (The index of the entry)}
+		Object[] entries = this._entries;
+		if (__i < 0 || __i >= entries.length)
+			throw new JITException(String.format("JI0c %d", __i));
 		
 		throw new todo.TODO();
 	}
