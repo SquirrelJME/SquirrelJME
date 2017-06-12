@@ -221,7 +221,12 @@ public class Pool
 						val = raw;
 						break;
 					
-						// Method or interface method
+						// Reference to a field
+					case _TAG_FIELDREF:
+						
+						throw new todo.TODO();
+						
+						// Reference to a method
 					case _TAG_METHODREF:
 					case _TAG_INTERFACEMETHODREF:
 						throw new todo.TODO();
@@ -233,10 +238,10 @@ public class Pool
 				}
 			}
 			
-			// {@squirreljme.error JI0e A constant pool entry of the specified
-			// tag type refers to another entry which is not of the correct
-			// entry type. (The tag type)}
-			catch (ClassCastException e)
+			// {@squirreljme.error JI0e The specified tag refers to another
+			// entry which is not valid. (The tag type)}
+			catch (ClassCastException|IndexOutOfBoundsException|
+				NullPointerException e)
 			{
 				throw new JITException(String.format("JI0e %d", tag), e);
 			}
