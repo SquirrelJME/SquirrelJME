@@ -352,6 +352,16 @@ public class Pool
 					out = ((UTFConstantEntry)__entries[((int[])in)[0]]).
 						toString();
 					break;
+					
+					// Name and type information
+				case _TAG_NAMEANDTYPE:
+					{
+						int[] ina = (int[])in;
+						out = new NameAndType(
+							((UTFConstantEntry)__entries[ina[0]]).toString(),
+							((UTFConstantEntry)__entries[ina[1]]).toString());
+					}
+					break;
 				
 					// Unhandled, should not happen
 				default:
