@@ -340,7 +340,20 @@ public class Pool
 				case _TAG_WIDETOP:
 					out = in;
 					break;
+					
+					// Name of a class
+				case _TAG_CLASS:
+					out = new ClassName(((UTFConstantEntry)
+						__entries[((int[])in)[0]]).toString());
+					break;
+					
+					// String constant
+				case _TAG_STRING:
+					out = ((UTFConstantEntry)__entries[((int[])in)[0]]).
+						toString();
+					break;
 				
+					// Unhandled, should not happen
 				default:
 					throw new RuntimeException(String.format("OOPS %d", tag));
 			}
