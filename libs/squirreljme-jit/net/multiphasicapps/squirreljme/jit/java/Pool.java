@@ -13,6 +13,9 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -195,60 +198,20 @@ public class Pool
 		}
 		
 		// Go through tags again and initialize their raw data into type-safe
-		// classes
+		// classes 
 		Object[] entries = new Object[count];
-		for (int i = 0; i < count; i++)
+		try
 		{
-			// Ignore null entries
-			int tag = tags[i];
-			if (tag == 0)
-				continue;
-			
-			// Depends on the tag
-			Object val,
-				raw = rawdata[i];
-			try
-			{
-				switch (tag)
-				{
-						// Copied directly
-					case _TAG_WIDETOP:	// Top of long/double
-					case _TAG_UTF8:
-					case _TAG_INTEGER:
-					case _TAG_LONG:
-					case _TAG_FLOAT:
-					case _TAG_DOUBLE:
-						val = raw;
-						break;
-					
-						// Reference to a field
-					case _TAG_FIELDREF:
-						
-						throw new todo.TODO();
-						
-						// Reference to a method
-					case _TAG_METHODREF:
-					case _TAG_INTERFACEMETHODREF:
-						throw new todo.TODO();
-				
-						// Should not happen
-					default:
-						throw new RuntimeException(String.format("OOPS %d",
-							tag));
-				}
-			}
-			
-			// {@squirreljme.error JI0e The specified tag refers to another
-			// entry which is not valid. (The tag type)}
-			catch (ClassCastException|IndexOutOfBoundsException|
-				NullPointerException e)
-			{
-				throw new JITException(String.format("JI0e %d", tag), e);
-			}
-			
-			// Store
-			entries[i] = val;
+			__initializeEntries(entries, tags, rawdata);
 		}
+		
+		// {@squirreljme.error JI0e The constant pool is not valid.}
+		catch (ClassCastException|IndexOutOfBoundsException|
+			NullPointerException e)
+		{
+			throw new JITException("JI0e", e);
+		}
+		
 		this._entries = entries;
 	}
 	
@@ -286,6 +249,76 @@ public class Pool
 				val.getClass(), __cl));
 		
 		return __cl.cast(val);
+	}
+	
+	/**
+	 * This initializes the entries in the constant pool.
+	 *
+	 * @param __entries Output pool entries.
+	 * @param __tags Constant pool tags for the entries.
+	 * @param __rawdata The raw pool data.
+	 * @throws JITException If the entries are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/12
+	 */
+	private final void __initializeEntries(Object[] __entries, int[] __tags,
+		Object[] __rawdata)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__entries == null || __tags == null || __rawdata == null)
+			throw new NullPointerException("NARG");
+		
+		// Instead of having a nested loop which goes through every entry
+		// multiple times, the sequence entries should be parsed in is very
+		// known with a direct line of dependencies. Entries with lower
+		// sequences are only depended on. This saves an extra loop and makes
+		// the code much cleaner for the most part.
+		int count = __entries.length;
+		int[] order = new int[count];
+		for (int i = 0; i < count; i++)
+		{
+			int tag = __tags[i],
+				sequence;
+			
+			// Determine the sequence based on the tag
+			switch (tag)
+			{
+				case 0:
+				case _TAG_UTF8:
+				case _TAG_INTEGER:
+				case _TAG_FLOAT:
+				case _TAG_LONG:
+				case _TAG_DOUBLE:
+				case _TAG_WIDETOP:
+					sequence = 0;
+					break;
+				
+				case _TAG_CLASS:
+				case _TAG_STRING:
+					sequence = 1;
+					break;
+				
+				case _TAG_NAMEANDTYPE:
+					sequence = 2;
+					break;
+				
+				case _TAG_FIELDREF:
+				case _TAG_METHODREF:
+				case _TAG_INTERFACEMETHODREF:
+					sequence = 3;
+					break;
+					
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// Add to order
+			order[i] = (sequence << 16) | i;
+		}
+		Arrays.sort(order);
+		
+		throw new todo.TODO();
 	}
 }
 
