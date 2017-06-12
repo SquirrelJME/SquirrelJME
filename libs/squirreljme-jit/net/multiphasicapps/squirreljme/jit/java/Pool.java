@@ -342,7 +342,7 @@ public class Pool
 					break;
 				
 				default:
-					throw new RuntimeException("OOPS");
+					throw new RuntimeException(String.format("OOPS %d", tag));
 			}
 			
 			__entries[i] = out;
