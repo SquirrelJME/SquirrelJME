@@ -318,7 +318,35 @@ public class Pool
 		}
 		Arrays.sort(order);
 		
-		throw new todo.TODO();
+		// Go through and process all of the entries now that their major
+		// sequence order is known.
+		for (int j = 0; j < count; j++)
+		{
+			int i = order[j] & 0xFFFF,
+				tag = __tags[i];
+			
+			// Process tags
+			Object in = __rawdata[i],
+				out;
+			switch (tag)
+			{
+					// These are copied directly
+				case 0:
+				case _TAG_UTF8:
+				case _TAG_INTEGER:
+				case _TAG_FLOAT:
+				case _TAG_LONG:
+				case _TAG_DOUBLE:
+				case _TAG_WIDETOP:
+					out = in;
+					break;
+				
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			__entries[i] = out;
+		}
 	}
 }
 
