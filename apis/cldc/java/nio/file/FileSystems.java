@@ -11,37 +11,32 @@
 package java.nio.file;
 
 /**
- * This class provides a single static method which is used to create instances
- * of {@link Path} which represent native filesystem paths.
+ * This contains a static method which is used to obtain the default filesystem
+ * which is used by SquirrelJME's native filesystem interface.
  *
  * @since 2017/06/12
  */
-public final class Paths
+public final class FileSystems
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/06/12
 	 */
-	private Paths()
+	private FileSystems
 	{
 	}
 	
 	/**
-	 * This creates a representation of a native filesystem path. It has the
-	 * same function and rules as {@link FileSystem#getPath(String, String)}.
+	 * This returns the default filesystem which is used by the system to
+	 * access the filesystem.
 	 *
-	 * @param __a The first path fragment.
-	 * @param __b The optional remaining path fragments.
-	 * @return The native representation of the native filesystem path.
-	 * @throws InvalidPathException If the specified path cannot be represented
-	 * on the native system.
+	 * @return The system's default filesystem.
 	 * @since 2017/06/12
 	 */
-	public static Path get(String __a, String... __b)
-		throws InvalidPathException
+	public static FileSystem getDefault()
 	{
-		return FileSystems.getDefault().getPath(__a, __b);
+		throw new todo.TODO();
 	}
 }
 
