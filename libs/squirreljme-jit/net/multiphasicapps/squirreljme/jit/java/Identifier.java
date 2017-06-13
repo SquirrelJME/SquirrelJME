@@ -20,6 +20,9 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class Identifier
 {
+	/** The string which makes up the identifier. */
+	protected final String string;
+	
 	/**
 	 * Initializes the identifier.
 	 *
@@ -35,7 +38,19 @@ public final class Identifier
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.string = __n;
+		
+		// Check characters
+		for (int i = 0, n = __n.length(); i < n; i++)
+		{
+			char c = __n.charAt(i);
+			
+			// {@squirreljme.error JI0i The specified identifier contains an
+			// invalid character. (The identifier)}
+			if (c == '.' || c == ';' || c == '[' || c == '/')
+				throw new JITException(String.format("JI0i %s", __n));
+		}
 	}
 	
 	/**
@@ -45,7 +60,11 @@ public final class Identifier
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof Identifier))
+			return false;
+		
+		return this.string.equals(((Identifier)__o).string);
 	}
 	
 	/**
@@ -55,7 +74,7 @@ public final class Identifier
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -65,7 +84,7 @@ public final class Identifier
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.string;
 	}
 }
 
