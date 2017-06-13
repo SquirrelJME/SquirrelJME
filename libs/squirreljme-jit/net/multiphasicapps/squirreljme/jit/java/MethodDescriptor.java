@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -19,6 +21,15 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class MethodDescriptor
 {
+	/** String representation of the descriptor. */
+	protected final String string;
+	
+	/** The return value, null is void. */
+	protected final FieldDescriptor rvalue;
+	
+	/** The arguments in the method. */
+	private final FieldDescriptor[] _args;
+	
 	/**
 	 * Initializes the method descriptor.
 	 *
@@ -34,7 +45,43 @@ public final class MethodDescriptor
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.string = __n;
+		
+		// {@squirreljme.error JI0j Method descriptors must start with an open
+		// parenthesis. (The method descriptor)}
+		if (!__n.startsWith("("))
+			throw new JITException(String.format("JI0j %s", __n));
+		
+		// Parse all input arguments
+		List<FieldDescriptor> args = new ArrayList<>();
+		int i = 1, n = __n.length();
+		for (; i < n; i++)
+		{
+			char c = __n.charAt(i);
+			
+			// End of descriptor arguments
+			if (c == ')')
+				break;
+			
+			throw new todo.TODO();
+		}
+		this._args = args.<FieldDescriptor>toArray(
+			new FieldDescriptor[args.size()]);
+		
+		// {@squirreljme.error JI0k The method descriptor has no return
+		// value. (The method descriptor)}
+		if (i >= n)
+			throw new JITException(String.format("JI0k %s", __n));
+		
+		// No return value?
+		char c = __n.charAt(i);
+		if (c == 'V' && (i + 1) == n)
+			this.rvalue = null;
+		
+		// Parse as a field
+		else
+			this.rvalue = new FieldDescriptor(__n.substring(i));
 	}
 	
 	/**
@@ -44,7 +91,11 @@ public final class MethodDescriptor
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof MethodDescriptor))
+			return false;
+		
+		return this.string.equals(((MethodDescriptor)__o).string);
 	}
 	
 	/**
@@ -54,7 +105,7 @@ public final class MethodDescriptor
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -64,7 +115,7 @@ public final class MethodDescriptor
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.string;
 	}
 }
 
