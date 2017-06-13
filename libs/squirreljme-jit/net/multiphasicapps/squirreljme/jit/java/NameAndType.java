@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This holds the name and type strings, the type descriptor is not checked.
  *
@@ -17,6 +20,15 @@ package net.multiphasicapps.squirreljme.jit.java;
  */
 public final class NameAndType
 {
+	/** Then name. */
+	protected final Identifier name;
+	
+	/** The type. */
+	protected final String type;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the name and type information.
 	 *
@@ -32,7 +44,9 @@ public final class NameAndType
 		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.name = __n;
+		this.type = __t;
 	}
 	
 	/**
@@ -42,7 +56,13 @@ public final class NameAndType
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof NameAndType))
+			return false;
+		
+		NameAndType o = (NameAndType)__o;
+		return this.name.equals(o.name) &&
+			this.type.equals(o.type);
 	}
 	
 	/**
@@ -52,7 +72,7 @@ public final class NameAndType
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode() ^ this.type.hashCode();
 	}
 	
 	/**
@@ -63,7 +83,7 @@ public final class NameAndType
 	 */
 	public Identifier name()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 	
 	/**
@@ -73,7 +93,15 @@ public final class NameAndType
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.name + "." +
+				this.type));
+		
+		return rv;
 	}
 	
 	/**
@@ -84,7 +112,7 @@ public final class NameAndType
 	 */
 	public String type()
 	{
-		throw new todo.TODO();
+		return this.type;
 	}
 }
 
