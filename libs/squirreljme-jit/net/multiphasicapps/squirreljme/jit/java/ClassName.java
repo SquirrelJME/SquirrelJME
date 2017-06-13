@@ -19,6 +19,15 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class ClassName
 {
+	/** String representation of the class name. */
+	protected final String string;
+	
+	/** The number of array dimensions. */
+	protected final int dimensions;
+	
+	/** The component type of the array, if it is one. */
+	protected final FieldDescriptor component;
+	
 	/**
 	 * Initializes the class name.
 	 *
@@ -34,7 +43,49 @@ public final class ClassName
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.string = __n;
+		
+		// Is this an array?
+		if (__n.startsWith("["))
+			throw new todo.TODO();
+		
+		// Not an array
+		else
+		{
+			this.dimensions = 0;
+			this.component = null;
+			
+			// Check characters
+			boolean ls = true;
+			for (int i = 0, n = __n.length(); i < n; i++)
+			{
+				char c = __n.charAt(i);
+				
+				// Slashes cannot be first and 
+				if (c == '/')
+				{
+					// {@squirreljme.error JI0h Class names cannot have an
+					// empty package or class name. (The class name)}
+					if (ls)
+						throw new JITException(String.format("JI0h %s", __n));
+					else
+						ls = true; 
+				}
+				else
+					ls = false;
+				
+				// {@squirreljme.error JI0f The specified class name contains an
+				// illegal character. (The class name)}
+				if (c == '.' || c == ';' || c == '[')
+					throw new JITException(String.format("JI0f %s", __n));
+			}
+			
+			// {@squirreljme.error JI0g Class names cannot end with a slash.
+			// (The class name)}
+			if (ls)
+				throw new JITException(String.format("JI0g %s", __n));
+		}
 	}
 	
 	/**
@@ -44,7 +95,11 @@ public final class ClassName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof ClassName))
+			return false;
+		
+		return this.string.equals(((ClassName)__o).string);
 	}
 	
 	/**
@@ -54,7 +109,7 @@ public final class ClassName
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -64,7 +119,7 @@ public final class ClassName
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.string;
 	}
 }
 
