@@ -20,6 +20,12 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public final class MethodReference
 	extends MemberReference
 {
+	/** The method descriptor. */
+	protected final MethodDescriptor descriptor;
+	
+	/** Is this an interface? */
+	protected final boolean isinterface;
+	
 	/**
 	 * Initializes the method reference.
 	 *
@@ -39,7 +45,9 @@ public final class MethodReference
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.descriptor = __t;
+		this.isinterface = __int;
 	}
 	
 	/**
@@ -49,7 +57,14 @@ public final class MethodReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (!(__o instanceof MethodReference))
+			return false;
+		
+		MethodReference o = (MethodReference)__o;
+		return this.classname.equals(o.classname) &&
+			this.identifier.equals(o.identifier) &&
+			this.descriptor.equals(o.descriptor) &&
+			this.isinterface == o.isinterface;
 	}
 	
 	/**
@@ -59,7 +74,8 @@ public final class MethodReference
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.classname.hashCode() ^ this.identifier.hashCode() ^
+			this.descriptor.hashCode() ^ (this.isinterface ? 1 : 0);
 	}
 	
 	/**

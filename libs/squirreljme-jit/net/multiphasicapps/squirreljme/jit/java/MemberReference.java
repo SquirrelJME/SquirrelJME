@@ -19,6 +19,12 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public abstract class MemberReference
 {
+	/** The class this refers to. */
+	protected final ClassName classname;
+	
+	/** The name of the member this refers to. */
+	protected final Identifier identifier;
+	
 	/**
 	 * Initializes the base member reference.
 	 *
@@ -34,7 +40,9 @@ public abstract class MemberReference
 		if (__c == null || __i == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.classname = __c;
+		this.identifier = __i;
 	}
 	
 	/**
@@ -66,7 +74,7 @@ public abstract class MemberReference
 	 */
 	public final ClassName className()
 	{
-		throw new todo.TODO();
+		return this.classname;
 	}
 	
 	/**
@@ -77,7 +85,7 @@ public abstract class MemberReference
 	 */
 	public final Identifier memberName()
 	{
-		throw new todo.TODO();
+		return this.identifier;
 	}
 }
 
