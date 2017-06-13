@@ -69,6 +69,9 @@ public final class MethodDescriptor
 		this._args = args.<FieldDescriptor>toArray(
 			new FieldDescriptor[args.size()]);
 		
+		// Skip the ending parenthesis
+		i++;
+		
 		// {@squirreljme.error JI0k The method descriptor has no return
 		// value. (The method descriptor)}
 		if (i >= n)

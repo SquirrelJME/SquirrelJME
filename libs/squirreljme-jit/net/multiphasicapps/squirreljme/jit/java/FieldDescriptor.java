@@ -19,6 +19,21 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class FieldDescriptor
 {
+	/** String representation. */
+	protected final String string;
+	
+	/** Is this a primitive type? */
+	protected final boolean primitive;
+	
+	/** Array dimensions. */
+	protected final int dimensions;
+	
+	/** The component type. */
+	protected final FieldDescriptor component;
+	
+	/** The class this refers to. */
+	protected final ClassName classname;
+	
 	/**
 	 * Initializes the field descriptor.
 	 *
@@ -34,7 +49,54 @@ public final class FieldDescriptor
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.string = __n;
+		
+		// {@squirreljme.error JI0l The field descriptor cannot be blank. (The
+		// field descriptor)}
+		int n = __n.length();
+		if (n <= 0)
+			throw new JITException(String.format("JI0l %s", __n));
+		
+		// Depends on the first character
+		char c = __n.charAt(0);
+		switch (c)
+		{
+				// Primitive
+			case 'B':
+			case 'C':
+			case 'D':
+			case 'F':
+			case 'I':
+			case 'J':
+			case 'S':
+			case 'Z':
+				this.primitive = true;
+				this.dimensions = 0;
+				this.component = null;
+				this.classname = null;
+				break;
+			
+				// Array
+			case '[':
+				this.primitive = false;
+				this.classname = null;
+				
+				throw new todo.TODO();
+				
+				// Class
+			case 'L':
+				this.primitive = false;
+				this.dimensions = 0;
+				this.component = null;
+				
+				throw new todo.TODO();
+				
+				// {@squirreljme.error JI0m The field descriptor is not valid.
+				// (The field descriptor)}
+			default:
+				throw new JITException(String.format("JI0m %s", __n));
+		}
 	}
 	
 	/**
@@ -44,7 +106,11 @@ public final class FieldDescriptor
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof FieldDescriptor))
+			return false;
+		
+		return this.string.equals(((FieldDescriptor)__o).string);
 	}
 	
 	/**
@@ -54,7 +120,7 @@ public final class FieldDescriptor
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -64,7 +130,7 @@ public final class FieldDescriptor
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.string;
 	}
 }
 
