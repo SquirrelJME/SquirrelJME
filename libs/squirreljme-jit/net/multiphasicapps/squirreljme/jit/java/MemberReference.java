@@ -10,26 +10,28 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
- * This holds the name and type strings, the type descriptor is not checked.
+ * This is the base class for field and method references.
  *
  * @since 2017/06/12
  */
-public final class NameAndType
+public abstract class MemberReference
 {
 	/**
-	 * Initializes the name and type information.
+	 * Initializes the base member reference.
 	 *
-	 * @param __n The name.
-	 * @param __t The type.
+	 * @param __c The class the member resides in.
+	 * @param __i The member which is being referenced.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	public NameAndType(Identifier __n, String __t)
+	MemberReference(ClassName __c, Identifier __i)
 		throws NullPointerException
 	{
 		// Check
-		if (__n == null || __t == null)
+		if (__c == null || __i == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -40,49 +42,40 @@ public final class NameAndType
 	 * @since 2017/06/12
 	 */
 	@Override
-	public boolean equals(Object __o)
-	{
-		throw new todo.TODO();
-	}
+	public abstract boolean equals(Object __o);
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
 	@Override
-	public int hashCode()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the identifier.
-	 *
-	 * @return The identifier.
-	 * @since 2017/06/12
-	 */
-	public Identifier name()
-	{
-		throw new todo.TODO();
-	}
+	public abstract int hashCode();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
 	@Override
-	public String toString()
+	public abstract String toString();
+	
+	/**
+	 * Returns the class the member exists within.
+	 *
+	 * @return The class containing the member.
+	 * @since 2017/06/12
+	 */
+	public final ClassName className()
 	{
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * Returns the type.
+	 * Returns the name of the member being referenced.
 	 *
-	 * @return The type.
+	 * @return The name of the referenced member.
 	 * @since 2017/06/12
 	 */
-	public String type()
+	public final Identifier memberName()
 	{
 		throw new todo.TODO();
 	}

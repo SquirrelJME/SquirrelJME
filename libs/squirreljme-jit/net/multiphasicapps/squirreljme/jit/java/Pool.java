@@ -358,8 +358,28 @@ public class Pool
 					{
 						int[] ina = (int[])in;
 						out = new NameAndType(
-							((UTFConstantEntry)__entries[ina[0]]).toString(),
+							new Identifier(((UTFConstantEntry)
+								__entries[ina[0]]).toString()),
 							((UTFConstantEntry)__entries[ina[1]]).toString());
+					}
+					break;
+					
+					// Field and method references
+				case _TAG_FIELDREF:
+				case _TAG_METHODREF:
+				case _TAG_INTERFACEMETHODREF:
+					{
+						int[] ina = (int[])in;
+						ClassName cn = (ClassName)__entries[ina[0]];
+						NameAndType nat = (NameAndType)__entries[ina[1]];
+						
+						if (tag == _TAG_FIELDREF)
+							out = new FieldReference(cn, nat.name(),
+								new FieldDescriptor(nat.type()));
+						else
+							out = new MethodReference(cn, nat.name(),
+								new MethodDescriptor(nat.type()),
+								tag == _TAG_INTERFACEMETHODREF);
 					}
 					break;
 				

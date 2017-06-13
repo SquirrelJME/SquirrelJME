@@ -10,26 +10,33 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
- * This holds the name and type strings, the type descriptor is not checked.
+ * This describes a reference to a method.
  *
  * @since 2017/06/12
  */
-public final class NameAndType
+public final class MethodReference
+	extends MemberReference
 {
 	/**
-	 * Initializes the name and type information.
+	 * Initializes the method reference.
 	 *
-	 * @param __n The name.
-	 * @param __t The type.
-	 * @throws NullPointerException On null arguments.
+	 * @param __c The class the member resides in.
+	 * @param __i The name of the member.
+	 * @param __t The descriptor of the member.
+	 * @param __int Does this refer to an interface method?
 	 * @since 2017/06/12
 	 */
-	public NameAndType(Identifier __n, String __t)
+	public MethodReference(ClassName __c, Identifier __i, MethodDescriptor __t,
+		boolean __int)
 		throws NullPointerException
 	{
+		super(__c, __i);
+		
 		// Check
-		if (__n == null || __t == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -56,33 +63,11 @@ public final class NameAndType
 	}
 	
 	/**
-	 * Returns the identifier.
-	 *
-	 * @return The identifier.
-	 * @since 2017/06/12
-	 */
-	public Identifier name()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
 	@Override
 	public String toString()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the type.
-	 *
-	 * @return The type.
-	 * @since 2017/06/12
-	 */
-	public String type()
 	{
 		throw new todo.TODO();
 	}

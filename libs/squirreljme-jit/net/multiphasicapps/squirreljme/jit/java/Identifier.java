@@ -10,26 +10,29 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
- * This holds the name and type strings, the type descriptor is not checked.
+ * This represents an identifier which acts as a name of a fragment of a class
+ * or a member of a class.
  *
  * @since 2017/06/12
  */
-public final class NameAndType
+public final class Identifier
 {
 	/**
-	 * Initializes the name and type information.
+	 * Initializes the identifier.
 	 *
-	 * @param __n The name.
-	 * @param __t The type.
+	 * @param __n The input identifier to decode.
+	 * @throws JITException If it is not a valid identifier.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	public NameAndType(Identifier __n, String __t)
-		throws NullPointerException
+	public Identifier(String __n)
+		throws JITException, NullPointerException
 	{
 		// Check
-		if (__n == null || __t == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -56,33 +59,11 @@ public final class NameAndType
 	}
 	
 	/**
-	 * Returns the identifier.
-	 *
-	 * @return The identifier.
-	 * @since 2017/06/12
-	 */
-	public Identifier name()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
 	@Override
 	public String toString()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the type.
-	 *
-	 * @return The type.
-	 * @since 2017/06/12
-	 */
-	public String type()
 	{
 		throw new todo.TODO();
 	}
