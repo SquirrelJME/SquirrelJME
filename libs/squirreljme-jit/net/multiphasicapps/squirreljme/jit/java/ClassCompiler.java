@@ -101,6 +101,22 @@ public final class ClassCompiler
 			// Decode flags
 			ClassFlags classflags = new ClassFlags(in.readUnsignedShort());
 			
+			// Name of the current class
+			ClassName thisname = pool.<ClassName>require(ClassName.class,
+				in.readUnsignedShort());
+			
+			// Super class name
+			ClassName supername = pool.<ClassName>get(ClassName.class,
+				in.readUnsignedShort());
+			
+			// {@squirreljme.error JI0s Either Object has a superclass which it
+			// cannot extend any class or any other class does not have a super
+			// class. (The current class name; The super class name)}
+			if (thisname.equals(new ClassName("java/lang/Object")) !=
+				(supername == null))
+				throw new JITException(String.format("JI0s %s %s", thisname,
+					supername));
+			
 			throw new todo.TODO();
 		}
 		

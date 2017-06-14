@@ -252,6 +252,30 @@ public class Pool
 	}
 	
 	/**
+	 * This is similar to {@link #get(Class, int)} except that it is not valid
+	 * if the entry is the {@code null} entry (the first one).
+	 *
+	 * @param <C> The type of class to get.
+	 * @param __cl The type of class to get.
+	 * @param __i The index of the entry to get.
+	 * @return The entry at the specified position as the given class.
+	 * @throws JITException If the class type does not match, the pool index
+	 * is out of range, or the entry is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/14
+	 */
+	public <C> C require(Class<C> __cl, int __i)
+		throws JITException, NullPointerException
+	{
+		// {@squirreljme.error JI0r Expected the specified constant pool entry
+		// to not be the null entry. (The index; The expected class)}
+		C rv = this.<C>get(__cl, __i);
+		if (rv == null)
+			throw new JITException(String.format("JI0r %d %s", __i, __cl));
+		return rv;
+	}
+	
+	/**
 	 * This initializes the entries in the constant pool.
 	 *
 	 * @param __entries Output pool entries.
