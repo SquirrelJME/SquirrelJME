@@ -98,6 +98,9 @@ public final class ClassCompiler
 			// Decode the class
 			Pool pool = new Pool(in);
 			
+			// Decode flags
+			ClassFlags classflags = new ClassFlags(in.readUnsignedShort());
+			
 			throw new todo.TODO();
 		}
 		

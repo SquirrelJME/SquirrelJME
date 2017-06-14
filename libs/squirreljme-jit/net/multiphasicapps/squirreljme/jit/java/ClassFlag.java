@@ -44,5 +44,28 @@ public enum ClassFlag
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the bit value of the given flag.
+	 *
+	 * @return The bit value of the given flag.
+	 * @since 2017/06/13
+	 */
+	public final int javaBitValue()
+	{
+		switch (this)
+		{
+			case PUBLIC:		return 0x0001;
+			case FINAL:			return 0x0010;
+			case SUPER:			return 0x0020;
+			case INTERFACE:		return 0x0200;
+			case ABSTRACT:		return 0x0400;
+			case SYNTHETIC:		return 0x1000;
+			case ANNOTATION:	return 0x2000;
+			case ENUM:			return 0x4000;
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 
