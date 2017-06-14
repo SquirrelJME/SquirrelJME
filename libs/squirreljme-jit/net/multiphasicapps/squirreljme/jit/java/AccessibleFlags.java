@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.link;
+package net.multiphasicapps.squirreljme.jit.java;
 
 /**
  * These are flags which are associated with accessible objects to determine

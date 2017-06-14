@@ -8,7 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.link;
+package net.multiphasicapps.squirreljme.jit.java;
+
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents the flags which a class may be.
@@ -156,39 +158,39 @@ public class ClassFlags
 	/**
 	 * Checks that the given flags are valid.
 	 *
-	 * @throws InvalidFlagsException If they are not valid.
+	 * @throws JITException If they are not valid.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags()
-		throws InvalidFlagsException
+		throws JITException
 	{
 		// Interface?
 		if (isInterface())
 		{
-			// {@squirreljme.error AH01 An interface must also be abstract.
+			// {@squirreljme.error JI0n An interface must also be abstract.
 			// (The class flags)}
 			if (!isAbstract())
-				throw new InvalidFlagsException(String.format("AH01 %s", this));
+				throw new JITException(String.format("JI0n %s", this));
 			
-			// {@squirreljme.error AH02 An interface cannot be {@code final} or
+			// {@squirreljme.error JI0o An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new InvalidFlagsException(String.format("AH02 %s", this));
+				throw new JITException(String.format("JI0o %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// {@squirreljme.error AH03 Annotations must be interfaces. (The
+			// {@squirreljme.error JI0p Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
-				throw new InvalidFlagsException(String.format("AH03 %s", this));
+				throw new JITException(String.format("JI0p %s", this));
 				
-			// {@squirreljme.error AH04 A class cannot be both {@code abstract}
+			// {@squirreljme.error JI0q A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
-				throw new InvalidFlagsException(String.format("AH04 %s", this));
+				throw new JITException(String.format("JI0q %s", this));
 		}
 	}
 }
