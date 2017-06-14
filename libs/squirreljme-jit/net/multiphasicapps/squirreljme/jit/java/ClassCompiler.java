@@ -117,6 +117,13 @@ public final class ClassCompiler
 				throw new JITException(String.format("JI0s %s %s", thisname,
 					supername));
 			
+			// Read interfaces
+			int icount = in.readUnsignedShort();
+			ClassName[] interfaces = new ClassName[icount];
+			for (int i = 0; i < icount; i++)
+				interfaces[i] = pool.<ClassName>require(ClassName.class,
+					in.readUnsignedShort());
+			
 			throw new todo.TODO();
 		}
 		
