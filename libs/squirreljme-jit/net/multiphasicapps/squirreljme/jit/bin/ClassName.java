@@ -19,6 +19,8 @@ import java.lang.ref.WeakReference;
  * string used is always a field descriptor so that native types an arrays can
  * be represented in a uniform fashion.
  *
+ * Primitive types and arrays are in the special package.
+ *
  * This class is immutable.
  *
  * @since 2017/06/15
@@ -42,8 +44,8 @@ public final class ClassName
 	/**
 	 * Returns the package that this class resides within.
 	 *
-	 * If this class name represents a primitive type then the special package
-	 * is returned.
+	 * If this class name represents a primitive type or an array then the
+	 * special package is returned.
 	 *
 	 * @return The package that this class is inside.
 	 * @since 2017/06/15
