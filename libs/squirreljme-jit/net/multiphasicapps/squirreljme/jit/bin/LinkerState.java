@@ -35,6 +35,10 @@ public class LinkerState
 	protected final Reference<LinkerState> selfref =
 		new WeakReference<>(this);
 	
+	/** The dynamic code generation reference table. */
+	protected final Dynamics dynamics =
+		new Dynamics(this.selfref);
+	
 	/** This contains the packages which exist to the linker. */
 	protected final PackageIdentifiers packages =
 		new PackageIdentifiers(this.selfref);
