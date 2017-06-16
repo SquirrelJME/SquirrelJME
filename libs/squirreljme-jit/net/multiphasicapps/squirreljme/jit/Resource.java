@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2017/06/08
  */
+@Deprecated
 public final class Resource
 {
 	/** The name of the resource. */

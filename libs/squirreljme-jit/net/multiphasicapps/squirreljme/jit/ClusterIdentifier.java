@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/06/01
  */
+@Deprecated
 public final class ClusterIdentifier
 	implements Comparable<ClusterIdentifier>
 {

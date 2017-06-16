@@ -23,6 +23,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/05/29
  */
+@Deprecated
 public class LinkTable
 {
 	/** Clusters which are available for resource usage. */

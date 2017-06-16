@@ -22,6 +22,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/06/06
  */
+@Deprecated
 public final class ResourceCluster
 {
 	/** The identifier for this cluster. */
