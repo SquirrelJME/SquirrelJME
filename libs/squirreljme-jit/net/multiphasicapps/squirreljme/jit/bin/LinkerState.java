@@ -35,6 +35,10 @@ public class LinkerState
 	protected final Reference<LinkerState> selfref =
 		new WeakReference<>(this);
 	
+	/** Accesses which are performed statically and must be checked. */
+	protected final Accesses accesses =
+		new Accesses(this.selfref);
+	
 	/** The dynamic code generation reference table. */
 	protected final Dynamics dynamics =
 		new Dynamics(this.selfref);
