@@ -21,10 +21,10 @@ package net.multiphasicapps.squirreljme.jit.bin;
  *
  * @since 2017/06/15
  */
-public final class PackageIdentifier
+public final class PackageKey
 {
 	/** The special package identifier which only special classes may be in. */
-	public static final PackageIdentifier SPECIAL =
-		new PackageIdentifier();
+	public static final PackageKey SPECIAL =
+		new PackageKey();
 }
 

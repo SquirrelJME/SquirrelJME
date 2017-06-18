@@ -83,5 +83,16 @@ public class LinkerState
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Returns the cluster manager.
+	 *
+	 * @return The cluster manager.
+	 * @since 2017/06/18 
+	 */
+	public final Clusters clusters()
+	{
+		return this.clusters;
+	}
 }
 

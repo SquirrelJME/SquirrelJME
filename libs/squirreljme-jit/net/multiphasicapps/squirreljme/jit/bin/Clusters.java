@@ -15,7 +15,10 @@ import java.lang.ref.WeakReference;
 
 /**
  * This manages {@link Cluster}s which provide an abstract representation
- * of JAR resources within the requirements of Java ME.
+ * of JAR resources within the requirements of Java ME. Classes exist within a
+ * single table ({@link Units}) but they have a weak association to clusters
+ * which is needed to simulate the effect of obtaining resources being limited
+ * to the input JAR files.
  *
  * @since 2017/06/17
  */
