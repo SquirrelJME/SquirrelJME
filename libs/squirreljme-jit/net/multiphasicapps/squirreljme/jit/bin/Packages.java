@@ -17,7 +17,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains the mapping of packages identifiers to packages and is able to
- * initialize new ones if needed. Packages contain sets of classes
+ * initialize new ones if needed.
  *
  * There is a special package which is used by specially generated classes such
  * as those for primitive types and arrays. This special package cannot be used
