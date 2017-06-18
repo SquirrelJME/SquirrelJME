@@ -52,6 +52,10 @@ public class LinkerState
 	protected final Sections sections =
 		new Sections(this.selfref);
 	
+	/** Class units. */
+	protected final Units units =
+		new Units(this.selfref);
+	
 	/** The JIT configuration used for the output. */
 	protected final JITConfig config;
 	
