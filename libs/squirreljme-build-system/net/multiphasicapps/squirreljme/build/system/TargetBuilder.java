@@ -31,11 +31,10 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
-import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
+import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
-import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
  * This is used to build a target executable for compilation.
