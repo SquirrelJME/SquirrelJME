@@ -48,6 +48,10 @@ public class LinkerState
 	protected final Packages packages =
 		new Packages(this.selfref);
 	
+	/** Resources which are available to the linker. */
+	protected final ResourceGroups resources =
+		new ResourceGroups(this.selfref);
+	
 	/** Sections which should exit in the output executable. */
 	protected final Sections sections =
 		new Sections(this.selfref);

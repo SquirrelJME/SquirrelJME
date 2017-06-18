@@ -10,38 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-
 /**
- * This contains all of the units (which are classes) which are associated with
- * the linker.
+ * This represents a group of resources which are referenced by classes, since
+ * {@link Class#getResourceAsStream(String)} for Java ME requires that classes
+ * only access resources from within their own JAR. This makes it so that
+ * behavior is duplicated as intended.
  *
  * @since 2017/06/17
  */
-public class Units
+public class ResourceGroup
 {
-	/** The reference state which these packages are a part of. */
-	protected final Reference<LinkerState> linkerstate;
-	
-	/**
-	 * Initializes the unit manager.
-	 *
-	 * @param __ls The owning linker state.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/06/17
-	 */
-	Units(Reference<LinkerState> __ls)
-		throws NullPointerException
-	{
-		// Check
-		if (__ls == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.linkerstate = __ls;
-		
-		throw new todo.TODO();
-	}
 }
 

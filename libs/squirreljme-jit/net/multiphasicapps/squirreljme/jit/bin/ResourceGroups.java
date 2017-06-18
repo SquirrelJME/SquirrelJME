@@ -14,24 +14,24 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This contains all of the units (which are classes) which are associated with
- * the linker.
+ * This manages {@link ResourceGroup}s which provide an abstract representation
+ * of JAR resources within the requirements of Java ME.
  *
  * @since 2017/06/17
  */
-public class Units
+public class ResourceGroups
 {
 	/** The reference state which these packages are a part of. */
 	protected final Reference<LinkerState> linkerstate;
 	
 	/**
-	 * Initializes the unit manager.
+	 * Initializes the resource group manager.
 	 *
 	 * @param __ls The owning linker state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/17
 	 */
-	Units(Reference<LinkerState> __ls)
+	ResourceGroups(Reference<LinkerState> __ls)
 		throws NullPointerException
 	{
 		// Check
