@@ -51,8 +51,7 @@ public class TargetBuilder
 	protected final ProjectManager manager;
 	
 	/** The target link table which contains the binary linkages. */
-	protected final LinkTable linktable =
-		new LinkTable();
+	protected final LinkerState linkerstate;
 	
 	/** The JIT configuration (arch dependent). */
 	protected final JITConfig jitconfig;
@@ -115,6 +114,9 @@ public class TargetBuilder
 		}
 		this.jitconfig = jc;
 		
+		// Initialize the link state
+		this.linkerstate = new LinkerState(jc);
+		
 		// Obtain set of projects to compile in a given order
 		this._binaries = __getBinaries(extraproj);
 		
@@ -140,7 +142,7 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Used for cluster counting and progress
-		LinkTable linktable = this.linktable;
+		LinkerState linkerstate = this.linkerstate;
 		JITConfig jitconfig = this.jitconfig;
 		ProjectBinary[] binaries = this._binaries;
 		int cluster = 0,

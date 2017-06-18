@@ -45,8 +45,8 @@ public class LinkerState
 		new Dynamics(this.selfref);
 	
 	/** This contains the packages which exist to the linker. */
-	protected final PackageIdentifiers packages =
-		new PackageIdentifiers(this.selfref);
+	protected final Packages packages =
+		new Packages(this.selfref);
 	
 	/** Sections which should exit in the output executable. */
 	protected final Sections sections =

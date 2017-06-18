@@ -16,8 +16,8 @@ import java.util.Map;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
- * This contains the mapping of packages to package identifiers and is able to
- * initialize new ones if needed.
+ * This contains the mapping of packages identifiers to packages and is able to
+ * initialize new ones if needed. Packages contain sets of classes
  *
  * There is a special package which is used by specially generated classes such
  * as those for primitive types and arrays. This special package cannot be used
@@ -25,19 +25,19 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/06/15
  */
-public class PackageIdentifiers
+public class Packages
 {
 	/** The reference state which these packages are a part of. */
 	protected final Reference<LinkerState> linkerstate;
 	
 	/**
-	 * Initializes the package identifiers.
+	 * Initializes the package manager.
 	 *
 	 * @param __ls The owning linker state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/15
 	 */
-	PackageIdentifiers(Reference<LinkerState> __ls)
+	Packages(Reference<LinkerState> __ls)
 		throws NullPointerException
 	{
 		// Check
