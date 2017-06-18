@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.lang.ref.Reference;
+
 /**
  * This represents information about a single resource in the output binary
  * which translates from a resource within the JAR.
@@ -17,6 +19,19 @@ package net.multiphasicapps.squirreljme.jit.bin;
  * @since 2017/06/17
  */
 public class Resource
+	extends __SubState__
 {
+	/**
+	 * Initializes the resource.
+	 *
+	 * @param __ls The owning linker state.
+	 * @since 2017/06/18
+	 */
+	Resource(Reference<LinkerState> __ls)
+	{
+		super(__ls);
+		
+		throw new todo.TODO();
+	}
 }
 

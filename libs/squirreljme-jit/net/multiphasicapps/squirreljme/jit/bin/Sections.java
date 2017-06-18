@@ -25,26 +25,18 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * @since 2017/06/15
  */
 public class Sections
+	extends __SubState__
 {
-	/** The reference state which these sections are a part of. */
-	protected final Reference<LinkerState> linkerstate;
-	
 	/**
 	 * Initializes the section handler.
 	 *
 	 * @param __ls The reference to the owning linker state.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/15
 	 */
 	Sections(Reference<LinkerState> __ls)
 		throws NullPointerException
 	{
-		// Check
-		if (__ls == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.linkerstate = __ls;
+		super(__ls);
 		
 		throw new todo.TODO();
 	}

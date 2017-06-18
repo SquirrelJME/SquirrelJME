@@ -21,26 +21,17 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/15
  */
 public class Dynamics
+	extends __SubState__
 {
-	/** The linker state which contains the dynamic table.  */
-	protected final Reference<LinkerState> linkerstate;
-	
 	/**
 	 * Initializes the dynamic table.
 	 *
 	 * @param __ls The reference to the owning linker state.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/15
 	 */
 	Dynamics(Reference<LinkerState> __ls)
-		throws NullPointerException
 	{
-		// Check
-		if (__ls == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.linkerstate = __ls;
+		super(__ls);
 		
 		throw new todo.TODO();
 	}

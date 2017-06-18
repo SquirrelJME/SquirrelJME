@@ -11,24 +11,33 @@
 package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
- * This represents a single class unit.
+ * This hold the back reference to the {@link LinkerState} class.
  *
- * @since 2017/06/17
+ * @since 2017/06/18
  */
-public class Unit
-	extends __SubState__
+abstract class __SubState__
 {
+	/** The reference to the owning linker state. */
+	protected final Reference<LinkerState> linkerstate;
+	
 	/**
-	 * Initializes the individual class unit.
+	 * Initializes the base sub-state with the back reference.
 	 *
-	 * @param __ls The owning linker state.
+	 * @param __r The reference to the linker state.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/18
 	 */
-	Unit(Reference<LinkerState> __ls)
+	__SubState__(Reference<LinkerState> __r)
+		throws NullPointerException
 	{
-		super(__ls);
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		this.linkerstate = __r;
 	}
 }
 

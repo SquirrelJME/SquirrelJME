@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/17
  */
 public class Units
+	extends __SubState__
 {
 	/** The reference state which these packages are a part of. */
 	protected final Reference<LinkerState> linkerstate;
@@ -28,18 +29,11 @@ public class Units
 	 * Initializes the unit manager.
 	 *
 	 * @param __ls The owning linker state.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/17
 	 */
 	Units(Reference<LinkerState> __ls)
-		throws NullPointerException
 	{
-		// Check
-		if (__ls == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.linkerstate = __ls;
+		super(__ls);
 		
 		throw new todo.TODO();
 	}

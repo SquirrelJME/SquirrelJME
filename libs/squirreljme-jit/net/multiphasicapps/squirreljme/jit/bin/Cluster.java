@@ -22,10 +22,8 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/17
  */
 public class Cluster
+	extends __SubState__
 {
-	/** The reference state which owns this cluster. */
-	protected final Reference<LinkerState> linkerstate;
-	
 	/** The key for this cluster. */
 	protected final ClusterKey key;
 	
@@ -40,12 +38,13 @@ public class Cluster
 	Cluster(Reference<LinkerState> __ls, ClusterKey __k)
 		throws NullPointerException
 	{
+		super(__ls);
+		
 		// Check
-		if (__ls == null || __k == null)
+		if (__k == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.linkerstate = __ls;
 		this.key = __k;
 	}
 }
