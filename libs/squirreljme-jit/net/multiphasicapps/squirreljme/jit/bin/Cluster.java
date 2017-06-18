@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents a group of resources which are referenced by classes, since
  * {@link Class#getResourceAsStream(String)} for Java ME requires that classes
@@ -20,5 +23,30 @@ package net.multiphasicapps.squirreljme.jit.bin;
  */
 public class Cluster
 {
+	/** The reference state which owns this cluster. */
+	protected final Reference<LinkerState> linkerstate;
+	
+	/** The key for this cluster. */
+	protected final ClusterKey key;
+	
+	/**
+	 * Initializes this individual cluster.
+	 *
+	 * @param __ls The owning linker state.
+	 * @param __k The key for the cluster.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/17
+	 */
+	Cluster(Reference<LinkerState> __ls, ClusterKey __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__ls == null || __k == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.linkerstate = __ls;
+		this.key = __k;
+	}
 }
 

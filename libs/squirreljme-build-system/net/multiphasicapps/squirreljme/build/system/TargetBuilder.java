@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
+import net.multiphasicapps.squirreljme.jit.bin.Cluster;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
@@ -143,21 +144,22 @@ public class TargetBuilder
 		
 		// Used for cluster counting and progress
 		LinkerState linkerstate = this.linkerstate;
+		Clusters clusters = linkerstate.clusters();
 		JITConfig jitconfig = this.jitconfig;
 		ProjectBinary[] binaries = this._binaries;
-		int cluster = 0,
-			numclusters = binaries.length;
+		int count = 0,
+			numbins = binaries.length;
 		
 		// Go through all binary projects and compile them
 		for (ProjectBinary pb : binaries)
 		{
 			// {@squirreljme.error AO09 Compiling the specified project. (The
-			// project name; The current cluster; The number of clusters)}
-			System.out.printf("AO09 %s %d %d%n", pb.name(), ++cluster,
-				numclusters);
+			// project name; The current binary; The number of binaries)}
+			String pbname = pb.name();
+			System.out.printf("AO09 %s %d %d%n", pbname, ++count, numbins);
 			
 			// Setup cluster
-			ClusterIdentifier ci = new ClusterIdentifier(cluster);
+			Cluster c = clusters.createCluster(pbname);
 			
 			// Process all classes and resources
 			try (FileDirectory fd = pb.openFileDirectory())
