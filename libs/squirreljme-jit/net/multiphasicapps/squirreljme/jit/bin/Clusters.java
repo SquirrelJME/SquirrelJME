@@ -14,12 +14,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This manages {@link ResourceGroup}s which provide an abstract representation
+ * This manages {@link Cluster}s which provide an abstract representation
  * of JAR resources within the requirements of Java ME.
  *
  * @since 2017/06/17
  */
-public class ResourceGroups
+public class Clusters
 {
 	/** The reference state which these packages are a part of. */
 	protected final Reference<LinkerState> linkerstate;
@@ -31,7 +31,7 @@ public class ResourceGroups
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/17
 	 */
-	ResourceGroups(Reference<LinkerState> __ls)
+	Clusters(Reference<LinkerState> __ls)
 		throws NullPointerException
 	{
 		// Check

@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.jit.bin;
  *
  * @since 2017/06/17
  */
-public class ResourceGroup
+public class Cluster
 {
 }
 
