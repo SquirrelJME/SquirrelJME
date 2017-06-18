@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.bin;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -50,5 +51,29 @@ public class LinkerState
 	/** Sections which should exit in the output executable. */
 	protected final Sections sections =
 		new Sections(this.selfref);
+	
+	/** The JIT configuration used for the output. */
+	protected final JITConfig config;
+	
+	/**
+	 * Initializes the linker state which holds everything which is needed to
+	 * generate output code and state needed for the static executables to run.
+	 *
+	 * @param __conf The configuration to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/17
+	 */
+	public LinkerState(JITConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+		
+		throw new todo.TODO();
+	}
 }
 
