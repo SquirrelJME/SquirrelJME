@@ -67,10 +67,10 @@ do
 done
 
 # Files changed?
-if [ "$__changed" -gt "0" ]
-then
-	fossil commit -m "Backup developer notes ($__changed)."
-fi
+#if [ "$__changed" -gt "0" ]
+#then
+	fossil commit -m "Backup developer notes."
+#fi
 
 # Clear temporary
 rm -f "/tmp/$$"
