@@ -1,0 +1,97 @@
+# 2017/02/10
+
+## 06:46
+
+I believe when it comes to the fog of war, I can have it simpler so that every
+part of the map is already explored, just not revealed what is there. That
+would save me a number of bytes in memory. Also, I can limit the game to 8
+players and fit that all into a byte.
+
+## 09:02
+
+I could use a generic graphics drawer that has abstract methods and such which
+has basic primitive operations. This way, I only need to implement stuff such
+as arc filling, triangles, and other things only once.
+
+## 09:07
+
+The Swing graphics can use them also so I can see how well it is implemented.
+Then drawing on canvases or mutable images can use this class. Then also a
+generic UI layer can use the same graphics routines also. Everything that is
+drawn will just be software for the most part.
+
+## 09:24
+
+I can also do my own font rendering, perhaps just have a simple set of bitmap
+fonts that are blitted on. They would not exactly match the system but it
+would be consistent. The only issue would be that I would need to know the
+display DPI of the destination so that fonts are not microscopic or too large.
+Really, the font size would be very dependent on the system.
+
+## 09:27
+
+However, reading the documentation on fonts, they are managed by the font and
+such. So I will need some kind of abstract font representation that can bridge
+between system fonts and virtual fonts. However, it appears that fonts are
+only measured by pixels, so this simplifies things for me. So this means that
+the `DisplayEngine` will need to handle fonts too. At least with pixel based
+sizes and such, I do not need to worry about point sizes and DPI. The only
+consideration is that the `DisplayEngine` will have to tell me the sizes for
+fonts depending on their size (small, medium, or large).
+
+## 09:30
+
+I am also guessing that it is like this because you can read an input font and
+then use it for rendering (reading an OpenType font file). I suppose that
+internally the previous implementations just read the curves and such then
+just treated it as a bitmap font. This is fast and most things would be
+simple. Alternatively with derivation, the original curves are likely kept
+around.
+
+## 09:58
+
+I will say that the `Graphics` class for MIDP is quite sane.
+
+## 10:15
+
+Having a method for putting pixels would be slow due to the massive amounts of
+overhead. So what would have to be done is that `drawArc` and `drawLine` will
+have to be primitive operations. This would duplicate things, but at least
+for Swing I can ignore writing a line drawing algorithm and just use the AWT
+operations. However, everything else would not be a primitive operation. Just
+one thing that has to be handled, will be alpha and such.
+
+## 10:59
+
+I am pretty sure that the clip operations are transformed.
+
+## 11:37
+
+The primitive horizontal line operation can just forward to the non-horizontal
+version. Then for optimization it can be implemented as needed.
+
+## 18:26
+
+Been thinking about an algorithm for drawing filled arcs. It needs to be fast.
+Using the horizontal line drawers will be efficient for filling. However one
+thing will be determining the edges of the circle then any sliced through line
+angles and such. Anything that is 180 degrees or lower is convex when it comes
+to a circle, there will not be any otherlap. So a filled arc would be done in
+two steps if the number of degrees exceeds 180. Since any arc past that point
+is concave. I would just need to devise an up to semi-circle drawing
+algorithm of sorts.
+
+## 21:34
+
+Bringing in the XPM reader was quite simple. I just now have to implement
+immutable images from RGB data.
+
+## 22:00
+
+Need to make it so the blend mode cannot become SRC if there is no alpha
+channel.
+
+## 22:16
+
+The next thing to implement here, would be drawing of images. But I have been
+programming all day and I am quite tired, so I shall sleep now.

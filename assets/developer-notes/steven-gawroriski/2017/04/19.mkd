@@ -1,0 +1,20 @@
+# 2017/04/19
+
+## 11:17
+
+Ok so basically what I need for the register sets are integer and floating
+point ones. They normally are combined, which can be troublesome in some
+cases.
+
+## 11:19
+
+Also, I believe `RegisterList` should be returned instead of `Set` I suppose.
+Also, it would be an error for `RegisterList` to contain copies of the same
+register. So I suppose what I should do is have a comparable for it. Then each
+register specified would be truly unique. It does not make sense at all for
+`RegisterList` to contain multiple copies of the same register. However, the
+order would still be significant.
+
+## 16:23
+
+Well, `AbstractCollection` has undefined `equals` and `hashCode`.

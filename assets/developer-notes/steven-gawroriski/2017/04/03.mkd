@@ -1,0 +1,153 @@
+# 2017/04/03
+
+## 08:39
+
+I believe I like this new class decoding code straight in the JIT much better.
+It just gets right to the point.
+
+## 11:11
+
+One thing I need to consider are virtual method calls. Due to the default by
+nature execution of methods. It would either be a read of a field or a double
+jump to the correct method area. So basically any call to a virtual method
+will read some kind of offset and then read the pointer at that offset which
+then points to a method that should be the one that is executed. That is a way
+to easily implement virtual calls. Static and special calls however can just
+directly execute methods.
+
+## 11:19
+
+Interfaces would require interface tables. But interface lookup should be
+fast. I want to completely avoid having linear checks for classes and
+interfaces. Just want it to be a simple jump.
+
+## 11:20
+
+Another thing that can exist in the cards is the check and comparison nature
+of values. So if a null pointer was checked then it does not have to be
+checked. But if there is a jump from an unchecked position to a checked one
+then the check will have to be performed or delayed at that point. That can
+lead to inconsistent exceptions around branches around code which should
+execute, so that is a no-go. Unless I have a potential alternative path.
+But actually I can generate all of those checks and then optimize them away
+for example. There can be a dependency detection of things and such to
+determine which checks could be potentially removed. This would then mean
+that I am definitely going for an IL. So then faces which implement IL
+operations should be abstract classes which are extended by the architecture
+specific code. So there is an addition face for example. Then the MIPS one
+just knows how to generate a machine code instruction from that. I could
+however take a hybrid approach. Have a default face set that utilizes
+registers and such. Then have faces that are architecture specific such as
+clearing interrupts or whatever. But it would probably be the simplest to
+just have standard cards which perform standard operations on registers. Then
+on output to machine code, just translate those cards to native operations
+as needed. That would make the JIT implementations simple as they would just
+translate the faces to machine code accordingly. The faces would be modeled
+after MIPS because that is the simplest. Other architectures would map well
+to it. The faces used for one target will not be compatible with another
+target however. This is because of the registers and data types. This would
+allow me to support many architectures more easily because I would only have
+to write the final stage. But for final stage reusing, the standard cards will
+be replaced by architecture specific cards. That way there can be a final
+architecture specific optimization pass. Then it would also enable me to use
+the card system like I plan to when generating internal use methods.
+
+## 11:33
+
+As for `invokeinterface`. I could do a large number of static references. For
+example say method `a` from class `A` invokes the method `z` in interface `Z`.
+This can be determined at linking time. Basically `a` would do something
+similar to the virtual invoke. But would link to a special dispatcher. But
+pretty much a dispatcher must be used. However every class would have
+interface tables which point to associated interfaces. Also since tons of
+objects will use the same virtual method links, they will be in the class
+export table for those classes. So class `B` replacing a method in `A`. For
+`A`'s class table that points to the code for that method, while for class `B`
+in that same index (in `A`'s part of the code) will point to the method it is
+replaced by. So every class would have unique export tables.
+
+## 11:49
+
+The deck should be completely type safe with known program control flow in the
+cards. This would mean that no cards can dangle. Future cards in the chain
+would morph based on the previous cards. This means for state though, there
+would be recursive state determination based on registers and such however. I
+would basically have basic blocks in a way. I would need backlinks, aliases,
+and some other things too. If state is stored then I would have to check if
+any dependency has changed before returning it, which would be insanely slow.
+And that would require lots of code and compution time to calculate. I will
+need multiple parts of methods. prolog, epilog, main body, exception jumpers.
+Then whenever a card is placed in the output it becomes fixed and cannot be
+changed. So once a card is placed it is immutable and has a purely fixed
+state that will never change. Forward jumps to undeclared cards define state
+while backward jumps to declared cards must forward state. So the exception
+jumpers would purely be state cycling. The state cyclers would have a given
+input set of registers and a given set of target registers.
+
+## 12:01
+
+If an existing transition from one state does not match another then a new
+one will be created. The prolog would require that the state of the input at
+the end of all of its execution matches the main body entry point. Jumps to
+the prolog and epilog would be illegal. The epilog may only be jumped to in
+the main body or the exception checks. I would need an exception check for
+instances. Then if no exceptions are handled it would just go straight into
+the epilog and return the exception for handling by the calling method. So
+once card is placed, it is immutable. The prolog state can be checked at the
+end to make sure it is valid. I then also continue the route of treating
+exceptions as just another variable to be checked along with the secondary
+return value.
+
+## 12:07
+
+Immutibility would be easier for states, less compicated.
+
+## 12:48
+
+Ok so for removing things such as bounds checks and null pointer checks, I can
+have potential byes.
+
+## 12:51
+
+Basically, when a variable is modified there can be a bye chain for each
+variable representation which has a source value. This means getting rid of
+aliases and having it completely being value based. So basically on entry of a
+method, variables are completely washed away and everything is just a value
+and where it is located. So you could for example copy a local variable to the
+stack then set the local variable to some other value, or duplicate it. That
+value is never actually lost. So arguments are called by value. Then each
+value at a specific position has flags which determine if the value as changed
+or similar. However, code generated has to be done in a way where byes do not
+exist. The removing of operations is only a final step optimization.
+
+## 12:58
+
+So if there is a jump back where the value is not compatible then it will
+perform those checks. This means that loops would have many many fewer checks
+if the inputs are correct. I would also need to make sure that variables get
+keyed with lengths also. So there would be branch conditions where a variable
+is always less than a given amount. Then if some values are associated, then
+the checks can be removed.
+
+## 13:01
+
+So this is much more complex now. There would still be weak bindings to
+variable slots because that is how Java operates, via the stack, rather than
+discreet values. Because jump backs can modify variables as they are placed.
+So unless the value is copied back, it would have to split and make it
+unknown.
+
+## 18:53
+
+So actually I do not have to worry about the slots in a way. Basically the
+slots are windows to values.
+
+## 19:03
+
+So basically the accessing of values is done via pointers and such in a way.
+
+## 21:38
+
+I believe for interfaces that calls should be treated as if they were
+virtual, but there would be virtualized methods for each method in the
+interface which dispatches them accordingly.

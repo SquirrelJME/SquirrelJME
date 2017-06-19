@@ -1,0 +1,12 @@
+# 2016/12/30
+
+## 11:46
+
+So 2016 is almost over, I will have to see if my blog generating script can
+correctly handle 2017 then I will also need to write 2017 everywhere.
+
+## 12:39
+
+I was wondering if the API documentation could just be the non-build stuff
+and only the APIs that exist within SquirrelJME. Because anything that is
+part of the external build system. Although I could include all of it.

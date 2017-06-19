@@ -1,0 +1,22 @@
+# 2016/10/21
+
+## 13:08
+
+So now I must decide on the layout of binary projects and such. I suppose in a
+quick burst of deprecation that I do not support projects with
+`X-SquirrelJME-Name` in them.
+
+## 20:45
+
+Correcting all of the manifests will take a bit, definitely since there are a
+hundred or so.
+
+## 20:46
+
+125 to be precise. Which is one reason I opted to split the code around.
+
+## 20:57
+
+For sanity purpose, doing this by hand will be very much insane, so I will
+write a script to convert all of the manifests. Otherwise it will take me
+an entire day to translate.

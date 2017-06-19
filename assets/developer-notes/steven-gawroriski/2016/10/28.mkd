@@ -1,0 +1,36 @@
+# 2016/10/28
+
+## 12:22
+
+Looks like GCJ is getting the axe in GCC 7. I do not use GCJ because
+it is a bit out of date (only supported Java 5), but the AOT compilation
+it could do is rather useful.
+
+## 13:02
+
+My new bootstrap system is much faster now though, because it will no longer
+recompile every module regardless if it changed or not. This will save me some
+time when I change things around in it. The things being changed around would
+essentially be the whole build system so to speak.
+
+## 13:11
+
+I believe what I can do is have a simple deterministic map/set that is sorted.
+I do already have `SortedTreeMap` and `SortedTreeSet` (which is very much
+faster), but this one would be made for simplicity.
+
+## 17:09
+
+So what I can do is symlink from support libraries right into the build
+directory and setup the manifest accordingly. This way I do not have to
+implement non-build namespaces in the bootstrap system.
+
+## 18:15
+
+Since I did the symlinking, I can just use the sorted collections I wrote
+before without duplicating the work.
+
+## 21:18
+
+So things are looking a bit cleaning some of the projects around due to the
+refactoring.

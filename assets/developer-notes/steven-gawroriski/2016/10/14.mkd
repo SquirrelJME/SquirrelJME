@@ -1,0 +1,102 @@
+# 2016/10/14
+
+## 09:44
+
+The display server is best agnostic to its type.
+
+## 10:41
+
+For some displays, I may have a temporary connection or even a longer term
+one. I suppose for that I need a method that gives me a wrapped closeable
+with the needed stream stuff for i/o. Basically this method will take a
+single argument, whether it should be a hold open operation. If it is false
+then the stream may be closed when `close` on the wrapper is called. If
+it is true, then `close` has no effect even if other instances are opened
+with false specified. When an item is associated with a display it will be
+held open. I would also need some kind of escaping system where if the
+server end closes the connection for some reason (perhaps I/O error) the
+wrapper could potentially detect such things and then terminate the display.
+
+## 12:05
+
+There is a JSR related to displays called JSR 258, the Mobile User Interface
+Customization API.
+
+## 12:18
+
+Essentially it allows custom theming of sorts.
+
+## 12:23
+
+There is also AGUI, JSR 209.
+
+## 12:24
+
+JSR 209 has AWT, Swing, and ImageIO. I do wonder which version of Java it
+best matches. From version 1.4.2 they came. Then there is also a mention
+of JSR 216. This is the personal profile which comes with many more
+classes.
+
+## 12:35
+
+Feels like feature creep. I suppose what I should do is rename any projects
+that are grahics related so that they are prefixed with something such
+as `gfx`.
+
+## 12:39
+
+I definitely need a project that defines scope of what will be in SquirrelJME
+and what will **NOT** be in it. For sanity purposes.
+
+## 16:37
+
+And now that is complete, so I essentially looked at what was needed and it
+really is not that much at all. It would be much work, but there is quite
+some duplicating in the JSRs, so effectively implement one can give me
+multiple ones. I also definitely do not want to implement AWT or Swing, since
+they are essentially dead APIs.
+
+## 16:39
+
+Otherwise, I thought about event handling in displays. Since IMC is
+asynchronous, I can essentially have two threads for a display. One thread
+would be active for each local display (on the client side) and pretty much
+would keep reading in packets and then peforming calls. So any events
+generated on a display can be pushed rather than polled. Also, whenever a
+request is made to the remote end, such as setting a title, there can just
+be a send. I should make it so that everything is for the most part send
+only or receive only. I also thought about something for capabilities. The
+capabilities of a display should not change at all, so when the display
+is initialized (the array that is), those capabilities can be specified as
+required. Since the call to `getDisplays` pretty much checks capabilities,
+that would be a pretty much waste of socket time making a new request just
+to waste such a thing. Then there can be other flags for the pointer events
+and pointer motion. So I should minimize that cross-talk and try to get that
+kind of static information all at once.
+
+## 16:59
+
+Also means I do not have to go too crazy with some things.
+
+## 17:01
+
+Well, effectively with these other JSRs, I would have to essentially
+redesign my display system to handle such things. However now that I actually
+went through them, I now know that I am on a good route.
+
+## 17:29
+
+Actually, having bit flags and fields for properties of a display would be a
+bit ugly. What I essentially need is a kind of get of a property so to speak.
+For example, this information could be variable, but essentially just a
+group of integers that contain values. The information could be sourced from
+enumerations with IDs. So when writing, they would all be written and
+obtained. This would then mean that I could add new properties to a display
+and I would not need to have a manual 30-or-so variable passing or strange
+structure types. The enumeration set could also be passed in to the display
+initialization.
+
+## 20:53
+
+Well my conversion from PPI to Dot Pitch (in microns) was spot on. Of course
+I verified it, which turned out I was correct.

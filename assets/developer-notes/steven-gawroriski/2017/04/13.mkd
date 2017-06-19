@@ -1,0 +1,12 @@
+# 2017/04/13
+
+## 20:06
+
+So I need byte code positions, I really just need a counted input stream.
+This is only needed to determine the positions of the current operation
+being decoded.
+
+## 21:13
+
+Ok so I made a basic class for this. I was hoping to get some more coding done
+but every little bit counts.

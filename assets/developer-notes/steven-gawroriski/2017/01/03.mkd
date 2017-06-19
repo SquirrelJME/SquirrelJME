@@ -1,0 +1,40 @@
+# 2017/01/03
+
+## 02:39
+
+Need to next setup a class for reading from the block accessor.
+
+## 03:18
+
+So I can read uncompressed entries in the ZIP for now. I can dodge
+reading deflated entries for a very short duration. However one thing that I
+need to fix is the out of date check.
+
+## 03:33
+
+System suites, if loaded, need to be mapped to suite accessors or just appear
+in any order.
+
+## 03:53
+
+So one thing I need to determine is the best way to represent processes in the
+real system and in the interpreter. I suppose what I need are pseudo
+processes. Basically there is just a virtual representation of a process. The
+interpreter uses this. The kernel itself when it is running on native code
+does the same thing with it also. Potentially interpretation can be used too
+but that I will not actually do. Effectively the process will be managed by
+the native thread code and such. So this basically means that control of
+processes is completely wrapped. Then the thread manager will handle actually
+running them as needed. So even if a process was initialized it may not have
+ran yet or have had any of its initializers ran.
+
+## 04:04
+
+So yes as before, it is purely virtualized and actual execution is hidden from
+the kernel.
+
+## 11:54
+
+So KernelThread and KernelProcess would probably best not be final or be
+virtually wrapped. They can just be directly created and returned. That would
+simplify things greatly for example.

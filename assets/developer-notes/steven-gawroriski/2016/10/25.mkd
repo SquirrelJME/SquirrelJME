@@ -1,0 +1,46 @@
+# 2016/10/25
+
+## 08:52
+
+Well this is definitely the cause of my project names not being found at all:
+
+	DEBUG -- Compare `games@squirrel-scavenger` -> `io-inflate?
+	DEBUG -- Compare `games@squirrel-scavenger` -> `projects?
+	DEBUG -- Compare `games@squirrel-scavenger` -> `native-code-powerpc?
+	DEBUG -- Compare `games@squirrel-scavenger` -> `wintercoat?
+	DEBUG -- Compare `games@squirrel-scavenger` -> `basic-assets?
+	DEBUG -- Compare `games@squirrel-scavenger` -> `doclet-markdown?
+	DEBUG -- Compare `games@squirrel-scavenger` -> `bootstrap-javase-bridge?
+
+It is not comparing the namespace at all.
+
+## 13:47
+
+Going to mirror PhoneME. PhoneME has a horrible repository layout however
+being that it is SVN and has multiple "sub-SVN" repositories in it.
+Essentially there are directories of branches, trunk, and tags throughout
+the repository. So converting it will be very fun indeed. I am thinking of
+having it where in Git, each of those. Well, technically I could do it with
+fossil, then export those to git, merge all of the branches and such
+together into a single repository, then convert it back to fossil as such.
+I suppose first I would do a flat conversion where everything is just
+trunk. This way I can load it in fossil and see which components need to
+exist. Fossil's SVN import does have branch renaming however, so that
+will work well. Git can do prefixes also though. However, the repository
+itself is 20,547 commit. Although it was last touched about 5 years ago.
+It would be good to have a backup of all the code for sanity purposes.
+But one thing I can do in fossil is view a union of everything and then
+essentially just see which parent directories contain trunk, branches,
+and tags. Then make repositories for each "component". Converting it will
+be pretty done entirely in script form, for sanity purposes.
+
+## 16:47
+
+This PhoneME repository is huge and will take quite awhile to process,
+perhaps the conversion process (even scripted) may take a few days to
+complete since it is so large.
+
+## 17:03
+
+The `ProjectDirectory` should be renamed so that I can have an abstract base
+class for the sources and binaries.

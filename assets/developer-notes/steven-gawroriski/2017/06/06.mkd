@@ -1,0 +1,7 @@
+# 2017/06/06
+
+## 17:52
+
+So classes will be linked into a global table and a cluster table for
+resources. However, really only resources only need to be in actual
+clusters. Classes just need to know which cluster they belong in.

@@ -1,0 +1,63 @@
+# 2017/03/05
+
+## 07:50
+
+It seems that EOF is never read in the Zlib stream.
+
+## 07:52
+
+Maybe because I exactly read the amount of bytes that I want to read.
+
+## 07:54
+
+PNG allows multiple IDAT chunks to be specified, so I need to handle that
+situation.
+
+## 08:15
+
+I just now need to implement the Adler32 checksum algorithm. I suppose the
+base class can be similar to the CRC class.
+
+## 08:17
+
+I can also have a common checksum interface along with a wrapped stream for
+handling that checksum since I have a number of classes which are just there
+for checksum checking.
+
+## 08:42
+
+So next thing to do is to implement the Adler32 checksum then PNGs should be
+readable. Of course I believe the next graphical thing to do is `drawRegion`
+which should not be too difficult.
+
+## 10:13
+
+The implementation of Adler32 looks really simple.
+
+## 11:12
+
+The read Adler32 checksum is a bit wrong. Not too sure on that.
+
+## 11:14
+
+The checksum is against the uncompressed data, not the compressed data.
+
+## 12:03
+
+The inflate decompressor definitely needs some speedup because it is really
+slow.
+
+## 15:03
+
+Probably the best way to test rendering is to write an image editing software
+that runs on the environment. It would be a basic image editor, nothing too
+complex. That way I can work on a few other MIDP 3 details rather than just
+canvases. I suppose it would support mouse events but allow the cursor to be
+moved using soft keys/keyboard because there might not be a mouse at all. I
+suppose it could be called __Squirrel Studio__, which sounds pretty cheesy.
+Or maybe just __Squirrel Paint__. Or perhaps __Squirrelbrush__.
+
+## 15:40
+
+In the interpreter itself I can have a profiler, at least for the MIPS
+instructions. I can count the number of cycles a method takes.

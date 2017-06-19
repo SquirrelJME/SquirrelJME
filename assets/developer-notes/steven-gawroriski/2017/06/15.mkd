@@ -1,0 +1,106 @@
+# 2017/06/15
+
+## 21:28
+
+Ok, so I have been thinking about my JIT. Essentially what I have is a
+gigantic static compiler. Right now my plan is to build a link table and have
+all these class bits in there linked in. But I have been thinking of changing
+things. Basically the linker needs to have everything in memory anyway, from
+the byte code to the generated machine code. The JIT requires a bunch of
+memory to load the program code. But the program code has to go into memory.
+So right now I have a tradeoff, do I want an easier JIT with more memory
+required to use it or one which is a bit more complicated and requires a bit
+less memory. Basically I can go both ways. But I could have a kind of hybrid
+approach to the JIT. Basically there is the text and data sections. However I
+am hitting feature creep as I have before for other odd targets. I was
+thinking of a C language target again. But I definitely do not want to get
+into that loop again. So I am purely just targetting traditional CPUs.
+
+## 21:32
+
+Basically most systems have a code and data section. I can have a best of
+both worlds kind of thing. Having everything loaded in does give me the
+benefit of having some optimizations. But I think for speed and simplicity of
+the JIT I will only be performing the most basic optimizations. I think I want
+to avoid having the basic block logic, but basically have it where I have it
+now but it is just generated machine code with a given mutated state. That way
+once the byte code is parsed, I can just get rid of it. So basically in the
+text section there would be special markers that indicate areas that need to
+be adjusted depending on a given condition. Basically, the hypothesized calls
+for checking casting, instead of a flag they can just be a method call. Of
+course I can just optimize some of those method calls to ones which always
+return whether the check passes or fails. It is not the best but it is simple
+and does not require any extra special handling. For things which are not
+known it can just use the default handler which does that determination.
+
+## 21:42
+
+So basically `LinkTable` instead becomes the output binary stream class which
+holds the direct object code. There also is an indexing table used to replace
+some method calls accordingly.
+
+## 21:43
+
+Then that class being used by whatever executable output there is just
+provides a raw byte array or output to an `OutputStream` (or both probably).
+Then it performs the magical replacement stuff as needed by the native system.
+
+## 21:53
+
+So since access checks are purely done at compile time (excpet for
+`Class.newInstance()`), this means that there just needs to be an access
+table. This is filled up with information which is then just check when
+everything is done to make sure accesses are valid. Also read of static fields
+can be made constant pointers for the most part. So everything is moved into
+the compiler. Then at run-time the only thing that needs to run are class
+initializers and such. So this stuff is going to make a number of classes so
+they should be placed in their own sub-package from the base of the JIT so it
+remains clean. So this is the basic hierachy:
+
+ * OutputBinary
+   * Clusters
+     * Resources in clusters
+       * Resources just link to regions in the data section but have tables
+         which are used to find actual resources.
+   * Map of ClassName to Classes
+     * Classes
+       * Dynamic Class.newInstance() support
+         * Pointer to default constructor, null means cannot be constructed
+         * A flag indicating the lowest visibility of the class and the
+           default constructor. So if the DC is `private` and the class is
+           `public` then this flag is `private`. This would mean that only
+           the current class can initialize.
+           It is unknown how `protected` goes into this, would need to
+           investigate this.
+         * A basic identifier of the package the class is in.
+   * All static access checks done by the code
+     * Class.newInstance() will just have special dynamic access checks.
+       The check would basically be, from Class A can this method create an
+       instance of Class B. This would mean that all classes have a package
+       identifier and default constructor availability. If there is no
+       default constructor then this method does not work.
+    * Package identifiers
+      * This is just used to that package identifiers are unique for quick
+        access checks.
+    * Binary sections
+      * text, all of the machine code that executes.
+      * data, everything else which is not executable.
+    * Linking table
+      * Basically these are special instruction modifier markers which are
+        used to generate some parts of the text/data sections later on as
+        required. For example a static call to a method is not known until
+        the compiler reaches it, as such that would have a special marker
+        in place to make sure it eventually does get replaced as needed
+        and the code pointing to it is generated.
+      * Static field reads use the linking table for most types so that it
+        is possible for a non-memory reading load to be performed and if not
+        then a memory reading load is done. So if there is a get of a static
+        int field, if the constant value is known at compile time then the
+        generated instruction will just be a load of that constant. However
+        if it is not known at compile time then it will be the actual read
+        instruction.
+
+## 23:03
+
+For inheritence I need to make sure that all of the interfaces that a class
+implements are visible and such.

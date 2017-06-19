@@ -1,0 +1,27 @@
+# 2017/06/17
+
+## 21:17
+
+Ok so, does `LinkerState` get `JITConfig`? It will be needed to get the
+pointer and link sizes and such.
+
+## 21:20
+
+Ok so, `PackageIdentifiers` is kind of bad. It really should just be
+instead be `Packages` and then `Package`. The two classes can still be
+managed the same without having a layer of indirection.
+
+## 21:21
+
+In this case then, the classes can be stored in the packages.
+
+## 21:23
+
+But, classes are unique and not to a set of packages. So the extra
+indirection does not really exist. I just need to make sure packages
+have a unique ID assigned to them. So I can just remove some notes.
+
+## 21:25
+
+So classes can be called `Unit` and be managed by `Units`. Classes will be
+in a package and will also be part of a cluster (for resources).

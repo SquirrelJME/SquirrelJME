@@ -1,0 +1,177 @@
+# 2016/10/12
+
+## 08:05
+
+One thing I can actually do with the display server is to implement it with
+the GCF classes. I could basically use it as inter-midlet communication for
+the most part essentially. However because the server socket cannot be
+unblocked (should have used `InterruptedException` or a timeout), once a
+connection to made to the display server it work create a new thread that
+runs the display sockets connection. If the socket disconnects then the
+display instance would be destroyed. Then this way, I do not need to have it
+where the display code uses internal socket code, that would be hidden
+away in GCF. This would allow me to change it if it turns out rather nasty.
+
+## 10:08
+
+I suppose `Connector` will always use kernel sockets. Special protocol
+handling would be performed by the kernel code. So if it is IMC it will
+send the data to another process, otherwise it will create network
+sockets potentially, or perhaps even open serial ports.
+
+## 10:16
+
+Ok, so I will need a new project which stores the socket options. It is
+a dependency for the `auto-interpreter` project and will be a co-depend
+of `cldc-compact`. This way duplicated of constants does not have to be
+done. The kernel sockets will operate in the given manner. There will
+basically just be a `socketOpen` which returns a socket descriptor.
+Each socket will have data input, data output, and configuration. The
+configuration would essentially be like an ioctl of sorts. There would
+also need to be properties. There would essentially be two streams of
+sort. However the non-data ones would be datagram based while the others
+would be stream based. However confiuration and properties is kind of
+bad naming. So I would instead have it be called "control". Since the
+kernel socket could would be very raw, essentially error values will
+have to be returned from the methods.
+
+## 10:26
+
+The ordering would have to be in order. So essentially this is what the GCF
+code will do when it goes to open a socket.
+
+ * `int fd = SquirrelJME.socketOpen();`
+ * ... any `ConnectionOptions` (using `socketConfigOut()`) ...
+ * `SquirrelJME.socketControlOut(CONTROL_URI, __toUTF8(__uri));`
+
+Once CONFIG_URI is passed, it will treat it as an open request to be
+performed. So then thinking about it there will have to also be an
+additional properties along with data and control. The properties would
+be used by the client to figure any extra stuff that may exist. So
+essentially it would be:
+
+ * `int SquirrelJME.socketProperty(PROPERTY_FOO, __out, __off, __len);`
+
+There are only a fixed number of socket types, so there really would not
+be a large set of values.
+
+## 10:37
+
+Although, all of this could potentially be done with just a single method,
+although two would be best for input and output. Basically it would be
+something such as:
+
+ * `int socketOut(int __d, int __c, long __t, byte[] __b, int __o, int __l);`
+ * `int socketIn(int __d, int[] __c, long __t, byte[] __b, int __o, int __l);`
+
+When a reader reads from `socketIn`, it could be a configuration setting
+or actual data. This means that the socket can have an enforced linear
+processing of data. So say if a read request was performed, if the
+implementation of the GCF classes while requesting data gets a non-data
+channel read, it will just handle the event as needed. The only thing
+would that I would need a special error which specifically states that a
+request size is too short. So for the control channels, there would need
+to be a return value such as `BUFFER_TOO_SMALL` for example. This would
+only happen for non-data connections however. Everything other than
+the data channel will be datagrams, while the data channel will be
+streamed. So this way it can operate in single bytes if it wanted to.
+The only thing I would need for the GCF implementations would be copied
+buffers because it is very possible for another thread to mess with the
+buffers if they are used for user input. So there would essentially be
+internal buffers for safety.
+
+## 10:46
+
+I could also probably add sub-channel data perhaps too. Or actually
+instead have: DATA, CONNECT, CONTROL, PROPERTY, and everything above those
+would be socket dependent. I would reserve a range for these channels in
+the event I need to add more.
+
+## 12:08
+
+I would have to make sure that the socket code handled by the kernel
+implementation of it is ordered.
+
+## 12:59
+
+When I write a web browser, I believe I would allow any URI provided by
+GCF to be accessed. Although this could sort of be nice in a way. There
+would need to be special handling for `file` though so that it opens in
+only a read mode.
+
+## 13:04
+
+Unless the read/write mode is really again just a hint. The only thing I know
+of where read/write makes sense would be files. Other than that, having
+other sockets you cannot write to when you need a read would be a bit
+pointless.
+
+## 15:42
+
+Need a URI library for this.
+
+## 15:57
+
+The IMC connection use colons to separate pieces of the host along with
+semi-colon. This means that MIDlets cannot have colons or semi-colons in
+their suite name.
+
+## 16:02
+
+Actually, I am going to need a midlet identification system and launch setup
+classes. `project` will have to depend on it along with `launcher`. The
+classes can be used to verify that midlet details are correct for example.
+The version has to be checked, the name for illegal characters, and other
+such things. However, the code can be shared by the launcher and the builder
+so it can correctly parse and output.
+
+## 16:46
+
+Also, the `auto-interpreter` could potentially share things such as basic
+kernel operation, so I should have a base class called `kernel` which manages
+such things.
+
+## 17:38
+
+So now that I have the name, version, and vendor stuff I can have it so the
+project manager uses those instead.
+
+## 17:42
+
+Oops, so the liblet is actually "Liblet-Name" and not "Liblet-Title", this is
+an easy fix.
+
+## 18:01
+
+I believe the auto interpreter will have to build every project anyway because
+the launcher will want to read the namespace manifest for binaries (to detect
+liblets and such).
+
+## 18:05
+
+So the launcher at start will go through all "raw" namespaces and build a
+mapping of liblets and midlets. Only midlets will be shown, since they have
+main entry points.
+
+## 18:20
+
+I wonder how hashable the midlet name, vendor, and versions are.
+
+## 21:00
+
+Thinking about it, IPC can be just datagrams since streams can be layered on
+top of them. They can just be ordered mailboxes for the most part. The only
+thing are replies and notifications.
+
+## 21:08
+
+Mailboxes would likely be the most sane, since they are asynchronous and do
+not have much overhead. For some connection types, there would just have to
+be special messages of sorts. I suppose for security there would be a mail
+stream connection that the kernel uses. Before two processes (including the
+kernel) will allow letters to be passed through, they must agree to a mail
+route. Messages will be waiting in the other's mailbox in the order they
+were sent. The letters would be colored with a simple 32-bit field which
+specifies the letter type. This way the other end know what to do with it
+without having to look in the passed byte array. Since byte oriented data is
+more sane for most things, the length should be enough.

@@ -1,0 +1,33 @@
+# 2017/01/21
+
+## 14:35
+
+The configuration is going to need the variant.
+
+## 15:23
+
+I NUL character in the ZIP is being read, which means it may be overflowing
+or starting the read too early.
+
+## 15:26
+
+The ZIP is fine though, so it is something else.
+
+## 16:05
+
+I do get this however:
+
+    java.io.IOException: CJ0n 95061021 c79001f2
+
+Which is the ZIP code, the CRC is mismatched.
+
+## 16:07
+
+And it looks like the ZIP reading code includes the name in the input data,
+which is not correct.
+
+## 17:15
+
+So basic dependency lookup works, however the dependencies do not seem to be
+included in the classpath when they are compiled. I would need to see why this
+happens.

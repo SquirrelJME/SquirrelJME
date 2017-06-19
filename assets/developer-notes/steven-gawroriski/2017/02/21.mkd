@@ -1,0 +1,21 @@
+# 2017/02/21
+
+## 06:55
+
+I suppose I can use a little bit more memory in the JIT since it only has to
+be around for a compilation of a single method. After that point everything is
+freed.
+
+## 17:15
+
+Really did nothing all day, perhaps I can work on the JavaDoc generator or
+similar.
+
+## 17:57
+
+Need to fix up the old `X-SquirrelJME-Dependency` to be much better.
+
+## 21:35
+
+Actually my dependencies need to be in binaries, which is why things are
+missing.

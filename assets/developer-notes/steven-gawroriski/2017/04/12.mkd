@@ -1,0 +1,11 @@
+# 2017/04/12
+
+## 19:35
+
+Actually, I can remove the map and switch it and `__SMTParser__` to its own
+`__SMTStates__`. But it would be called `__JavaStates__`.
+
+## 20:14
+
+So the new `__JavaStates__` is far superior to what I had before and much much
+cleaner too. This makes things much easier.

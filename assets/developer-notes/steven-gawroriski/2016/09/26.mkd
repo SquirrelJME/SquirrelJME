@@ -1,0 +1,101 @@
+# 2016/09/26
+
+## 13:51
+
+I setup an IRC channel on the Freenode network, for those that use IRC
+it should be easier to get support.
+
+## 15:41
+
+Getting closer on the method call:
+
+	.0:   afa4fffc        sw      a0,-4(sp)
+	.4:   afa5fff8        sw      a1,-8(sp)
+	.8:   afa6fff4        sw      a2,-12(sp)
+	.c:   afbdffec        sw      sp,-20(sp)
+	10:   27bdffec        addiu   sp,sp,-20
+	14:   8f810034        lw      at,52(gp)
+
+Since method calls are more often perform, it would be most efficient to
+have the stack pointer restoration on the callee since there are usually
+less return points.
+
+## 15:46
+
+Actually that is for the frame pointer.
+
+## 15:50
+
+But that is not truly needed.
+
+## 15:57
+
+Actually, I write above the stack and not below it. Although it really
+does not matter unless I correctly restore it.
+
+## 16:14
+
+So do I preforward the stack and potentially waste it, or use the
+frame pointer? The frame pointer should simplify things. But it still is not
+needed at all.
+
+## 16:22
+
+Well for PowerPC, the stack is increased to its needed size and the old size
+is stored just before the end.
+
+## 16:26
+
+So I suppose use it, since it would simplify things a bit.
+
+## 16:30
+
+The simplest but most wasteful route would be to preallocate all of the slots
+that are used and make it only use a stack register. However the preallocation
+would waste much space on 64-bit systems because object can be 64-bits. This
+would mean that long/double would cost 16 bytes to store a single value. So
+that would definitely be wasteful. I just need the calls to be natively
+compatible.
+
+## 16:32
+
+So essentially the stack pointer is accessed using the base and is incremented
+as needed.
+
+## 16:34
+
+So at the start of a method:
+
+ 1. Store the frame pointer.
+ 2. Copy the frame pointer value to the stack value.
+
+Before a return:
+
+ 1. Restore the old stack pointer.
+
+Before a method call:
+
+ 1. Store the frame pointer
+
+After a method call:
+
+ 1. Restore the frame pointer
+
+## 16:39
+
+So actually this will be quite complex to determine and to support multiple
+targets using the same logic. So I will essentially need a `NativeStackFrame`
+class along with a builder that can be set in the ABI. This class would
+contain the information needed for method calls, where arguments are placed
+and if frame pointers and such are used.
+
+## 16:43
+
+So yes, I will need a class which knows how to handle how stack frames are
+to be done for a given ABI. Then with this, I should be able to call native
+libraries without requiring that I setup a specific state before a call.
+
+## 17:04
+
+So I will definitely need a class to show the layout, since some architectures
+may require reserved space and such (such as PowerPC).

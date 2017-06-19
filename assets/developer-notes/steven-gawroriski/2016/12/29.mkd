@@ -1,0 +1,8 @@
+# 2016/12/29
+
+## 16:38
+
+I should get the JavaDoc generation working again so that I can look at the
+JavaDoc when I write more of it, so I can see what some code does instead of
+looking in the source code for it.
+

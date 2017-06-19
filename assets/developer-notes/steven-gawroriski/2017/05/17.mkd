@@ -1,0 +1,28 @@
+# 2017/05/17
+
+## 12:30
+
+So hopefully the JIT and such will be safer and easier to write this time
+around since I plan on using the types provided in the stack map table.
+
+## 13:18
+
+I think nops should be deprecated.
+
+## 21:05
+
+I am going to remove the old cache state code since it is deprecated anyway.
+I think I will do a code purge to remove the deprecated bits.
+
+## 21:07
+
+The stack slot offsets can be folded into a global state instead.
+
+## 21:25
+
+I believe I am going to remove the symbol cache.
+
+## 22:48
+
+I backed the ZX Spectrum Next, it would be very interesting to port
+SquirrelJME to it and actually is one of my goals with the project.

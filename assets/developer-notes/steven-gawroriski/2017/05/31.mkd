@@ -1,0 +1,33 @@
+# 2017/05/31
+
+## 09:58
+
+Ok so I know how to make the build system for projects deterministic.
+Basically I walk through every dependency of every project that is added and
+I have a counter for it. When a project is depended on its count goes up. Then
+when all the projects and dependencies are tallied up I can sort them where
+the projects with the most usage are first and the ones with least are lower.
+This will pretty much always mean that cldc-compact is the first project since
+everything depends on it so much. Of course it will be a bit recursive because
+I should not have projects that count things multiple times such as having a
+duplicate dependency specified.
+
+## 10:25
+
+I have an actual `!=` in the key comparison, I wonder where that came from.
+Actually no that is the length.
+
+## 11:09
+
+And instead of an actual sort, I can just substract instead of increment to go
+from most used to least used order. This saves creating a reverse binary
+search class.
+
+## 11:14
+
+And as expected, cldc-compact is the lowest valued dependency.
+
+## 11:55
+
+So not much programming on my working days, but so far I managed to code
+almost every day. Every little bit counts, which is a good thing.

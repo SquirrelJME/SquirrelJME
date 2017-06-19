@@ -1,0 +1,170 @@
+# 2017/03/31
+
+## 07:01
+
+So now that I have return values handled I...
+
+## 12:01
+
+Regarding exploitability of Java byte code and my wrapping of these operations
+to method calls:
+
+ * When I say _unsafe_ I mean the `net.multiphasicapps.squirreljme.unsafe`
+   package. Where the public unsafe code will be checked to make sure things
+   are right before doing the unsafe operation. So they are not truly unsafe
+   just partially unsafe (because they call unsafe methods via  wrapper).
+ * The name is really inspired from Sun's "Unsafe" class which you should
+   never use.
+ * It is specific to SquirrelJME so I can call it whatever I want.
+ * You should not call it anyway.
+ * They really are system calls, but in most cases SquirrelJME will be entirely
+   user space where system calls are not really possible (or add
+   complication to the implementation).
+ * `SquirrelJME` in unsafe will wrap `__Internal__` which is not publically
+   visible except to the `SquirrelJME` class. There is no reflection so unless
+   an access check fails or some other exploit makes the internal methods
+   accessible, it will never be called from anywhere else.
+ * Byte code operations such as new, athrow, etc. operate exactly like methods.
+ * Having duplicate code or wrappers to handle these situations adds potential
+   error proneness to the JIT and class decoder code, because that
+   functionality will just be boilerplated and/or duplicated.
+ * Although these are wrapped to static method calls, those static method calls
+   to the unsafe methods for those that are translated will perform the same
+   result as expected of the byte code.
+ * New cannot allocate arrays or primitive types.
+ * `allocateInstance` will return a blank object with all of its fields
+   initialized to zero. So at best code that relies on values not being zero
+   would likely either throw an exception or produce the wrong result.
+ * It is impossible to protect against memory bus attacks, side channel
+   attacks, memory corruption, under/over voltages, etc.
+ * Exception throwing uses the wrapped calls which performs magical stack
+   unwinding and never actually exits the method. Although if the exception
+   thrower wrapper throws an exception that would cause that to be wrapped but
+   it should not fail in that case (if it does then the VM is probably in a
+   state where it cannot continue execution, such as being completely out of
+   memory).
+ * Consider: Is a single instance of `OutOfMemoryError` created in the VM?
+   Because if memory is exhausted there might not be any memory to even
+   allocate that exception at all. I could reserve a space for it, but it
+   might not even be enough, so probably a static allocation would be best.
+ * I cannot spell exception.
+ * `CodeDescriptionStream` should have as few methods as possible.
+ * Translating calls to methods keeps the count low.
+ * For some operations it might not even be possible to utilize the stack.
+
+## 12:24
+
+Perhaps I can have a third tread apart from locals and stack. Since for some
+operations I only need them temporarily. Modifying an existing variable on
+the stack is a bit hacky and it is not really needed to be done. If I add a
+new working tread which can get code variables then I can completely avoid
+using the stack or growing it illegally. The working slots could basically
+only be valid for a single operation. So essentially all of it is flushed
+and never to be used again at the start of each instruction. I can use the
+working space as argument calls since my code essentially handles that case.
+Then the transition state does not need to set the output state from the
+input state, it only has to set the working variables. So this work area is
+hyper temporary.
+
+## 12:30
+
+So this means that at a slight increase to complexity that when the output
+state is stored into locked in states, that the working area must be dropped
+at the end of each instruction.
+
+## 12:39
+
+But the working area makes multianew array easier to implement. At least with
+that instead of having 255 method calls, I can just use the working area to
+make an array then fill that array with lengths.
+
+## 12:51
+
+Actually on the code description decoder side, the work variables do not need
+to be stored because they are extremely volatile. Once the instruction is done
+being handled those work variables are gone. So there is no need at all to do
+any storing of them. This reduces complexity in those cases.
+
+## 13:30
+
+Treads would probably be best not being lists, I never use them as lists and
+it just seems wrong to.
+
+## 13:41
+
+`ActiveCacheState.Slot._stackalias` might not be needed.
+
+## 13:42
+
+Actually no that needs to be changed to areas.
+
+## 15:46
+
+Going to snapshot the work area, but at the end of each instruction the
+allocations can just be removed so they are not actually stored at all.
+This would be the simplest.
+
+## 16:11
+
+So the next thing to do is to write some exception handlers. Well, to
+figure out the best way to handle those. It will have to be in the
+machine code for the most part.
+
+## 16:13
+
+Then also additionally implement allocation of registers for the slots and
+such so that not everything is just sitting on the stack.
+
+## 18:05
+
+So exception handling. For each different state I will need exception
+handlers along with on entry there being exception markers. Basically sub
+tables.
+
+## 18:08
+
+Since exception handling that I do is just a method call, I could just do
+the normal unwrapping and state restoration and such. With a potential jump
+to a jump table of handlers. So basically does the internal exception
+handling code just set a given register and return from the parent? Then if
+an exception is set in a given register I can just check to see if it was
+thrown. However, there is a problem with this. If I set the third return
+value then if I ever call some non-Java code, that value will end up getting
+a really funny looking value or address for returning. So the code will end
+up probably crashing because it will think some call generated an exception
+when it did not.
+
+## 18:16
+
+So what I could do is exploit a saved register and just violate it in a way
+which might not work returning into native code. I would basically not be
+allowed to do callbacks.
+
+## 19:13
+
+I could potentially take a page from JNI, and have explicit method checks
+but that would be a bit nasty. However, realistically I only have to worry
+about exceptions and such when I am calling native code or being called by
+native code. Those are really the only situations. Since all of my native
+calls would be wrapped anyway, I do not really need to worry about this
+much at all. However, I just thought of a native services thread. Basically
+I would have a thread which manages interacting with the OS and just using a
+message passing system back and forth for things. This native service would
+do everything without exceptions. There would be quite some overhead though.
+Especially if I want to check some operations to the native system. It would
+also mean that I would have to write this native service handling code. It
+would best be in Java for the most part. But, natives could be wrapped in a
+way where they never ever throw exceptions. Not even unchecked ones. But the
+native service stuff should specifically just exist within the kernel.
+
+## 19:22
+
+The kernel should be the one performing the native calls. I will just need to
+figure out in the future how I want to specifically handle translation to
+native code via calling convention bridges. Right now I really just want the
+interpreter to work which runs in its own self contained environment and such.
+But thinking about it native code calls can be structured in a way where boxed
+arguments are provided. The values would be unboxed and it would be treated as
+a method call (pointers and such). I can have it where only the kernel is
+permitted to actually perform such calls. This is really the only way to
+handle such things in a safe and secure manner.

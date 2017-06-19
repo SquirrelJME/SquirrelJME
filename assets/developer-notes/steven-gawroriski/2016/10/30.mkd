@@ -1,0 +1,17 @@
+# 2016/10/30
+
+## 19:39
+
+Not much was done this day.
+
+## 21:45
+
+Even though I did not do anything all day, I have an idea. I can create slides
+that explain _The Theory of SquirrelJME_. Even though I am right now
+refactoring the build system. Since I am rather shy and not that great at
+directly speaking, I will write a transcript and a set of slides. I just need
+to install LibreOffice. I can store the files in the repository so that they
+are publically available. Then once the slides are complete and the transcript
+is written, I can record a video and upload it to YouTube. I can also store
+the OGG in the repository (since it will just be audio along with slides). But
+as a note, I should say "next slide" so those can follow along.

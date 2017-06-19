@@ -1,0 +1,76 @@
+# 2016/10/15
+
+## 15:50
+
+One issue with the display server how I have it now is that there are quite a
+number of threads and IMC connections being created. And these are for
+potentially temporary connections. Although it could be a bit more performant
+if I had all these threads. But, all of these threads and connections is very
+error prone because there are tons of them. The simplest and easiest route to
+take would be to have a single connection for _all_ displays. Once a
+connection to a server is made, it can manage everything. Because otherwise it
+will be very complicated to juggle all of the connections properly. Also, this
+means there should be less locks. Basically the display server will use a one
+time connection that stays open all the time (even if there are no displays
+around) and manages it.
+
+## 16:00
+
+So basically I need to simplify it greatly. In most cases only a single
+display will ever be used, and when a display is open it will generally always
+be open whenever it is used. So effectively right now it is over engineered
+when there can be a simpler and faster solution to this. A display server will
+only manage a given set of display.
+
+## 16:05
+
+One for the auto-interpreter will just essentially perhaps be a set of tabs
+with canvases linked to sub-displays.
+
+## 17:25
+
+What I can do also, is make it where the display server is not required to be
+in the class path. Clients will generally never need to create a display
+server at all. So as such, the server can be kept separated.
+
+## 17:27
+
+I believe what I need to do first is perform some refactor of project layouts.
+Perhaps categorize them and such.
+
+## 17:28
+
+Well, that is not really needed though.
+
+## 18:07
+
+I am actually going to need a class that has a single thread managed that does
+the read commands and has a lock on the write commands. Everything would
+essentially be asynchronous. Of all the displays, only one will be able to
+send data at a time (due to the single thread and connection). However, the
+code will never listen for data, it will only send.
+
+## 19:42
+
+I suppose for simplicity, should I have one display per connection? If so then
+that means in the auto interpreter I can just forward display connections to
+the master display sort of, although that would break barriers and such. So
+I suppose in this case, limit it to whatever displays are available.
+
+## 19:47
+
+Thinking about it, there could be one display connection per client so to
+speak. This would essentially mean that to the server there would always only
+ever be a single client however. There would also just be a single thread.
+However, there will generally just be a single connection anyway. The auto
+interpreter will essentialy multiplex I suppose. However, each client will
+have a connection to a display server, despite using some of the same
+displays. If I want multiple applications running at the same time, they will
+all need displays. I definitely do not want to be limited to single
+applications at a time. So that means, for every client that is connected,
+they have their own display connection. So the `DisplayServer` is
+essentially dispatching work. For the swing display manager, there will just
+be a single display which represents each program running (in their own
+JFrame). So the auto-interpreter could forward it to its using display
+server, or host its own virtual one. The display server will have to manage
+which display is actually visible.

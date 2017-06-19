@@ -1,0 +1,30 @@
+# 2016/11/20
+
+## 14:08
+
+Been awhile. So I left off at `installedSuitesIDs`. Basically this is to go
+into the launcher/kernel and determine which suites have been installed. In
+the case of the interpreter, it will go to the project manager. So I suppose
+what the project manager needs is a binding of IDs to suites internally. It
+would probably be best if they were based on the hashcode so that if new
+siutes are visible to the interpreter, they do not cause reordering issues.
+
+## 14:11
+
+Dynamically installed suites can follow the same thing, so to speak.
+
+## 19:08
+
+So project wise there are APIs, MIDlets, and LIBlets. Only MIDles and LIBlets
+get suites associated with them.
+
+## 19:17
+
+I could in a way ignore binary projects and only handle source ones. Although
+I could not add more binaries. But it could work like that in a way.
+
+## 19:33
+
+Going to need to bring in midlet identities. I already have that code. So I
+suppose since the kernel does not have to really care for it, it goes into the
+launcher. But maybe just a base project.

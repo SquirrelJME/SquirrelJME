@@ -1,0 +1,17 @@
+# 2016/10/06
+
+## 09:53
+
+I can probably make it so the error parameters are in their own bullet points.
+
+## 11:44
+
+I have this idea for an extremely tinely SquirrelJME VM written in C which can
+be used to sort of bootstrap SquirrelJME when there is no existing virtual
+machine that exists for a system.
+
+## 13:09
+
+Well actually, that would be a bit of a waste because once I get the JIT far
+enough and where it can compile an actual binary, this bootstrap in C would be
+a bit pointless.

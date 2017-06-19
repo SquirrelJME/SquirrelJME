@@ -1,0 +1,35 @@
+# 2016/12/26
+
+## 12:09
+
+Going to setup the file manager at compile time so that locations do not need
+to be constant resetup for compilation each time.
+
+## 12:43
+
+Already wrote file manager code, so I can just import it.
+
+## 12:46
+
+Actually, having the `CompilerOutput` brought in would be handy.
+
+## 12:49
+
+Then I do not need a temporary directory at all.
+
+## 13:42
+
+Actually, it would be best if sources were limited to a single directory as
+that would simplify the implementation.
+
+## 14:27
+
+So the next thing to do, would be to take a walk. Then when I return I will
+have to write the output manifest which is translated from the input source
+manifest. So I would need to know API dependencies and such as the profile
+and configurations used.
+
+## 15:08
+
+The manifest writer should be split off because in a minimal runtime one
+will never need to actually write manifests at all.

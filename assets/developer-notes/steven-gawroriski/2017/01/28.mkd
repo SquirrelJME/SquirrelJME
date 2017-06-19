@@ -1,0 +1,70 @@
+# 2017/01/28
+
+## 13:45
+
+Thinking about it, the JIT code is essentially sort of a duplicated interface.
+Perhaps what I can do is move the byte code handling part of it to the class
+format. Then the JIT itself will just become some helpers and a bridge of
+sorts. Because right now, the JIT class output interfaces are just duplicated.
+This means that I should refactor up the class format code and the JIT code
+at the same time to simplify things. The class format dedcoder code is a bit
+ugly I believe in some areas.
+
+## 13:48
+
+Well, the class format code just spits out the code stream as normal and
+does not do any stack caching on it. The stack caching part can just be a
+normal part of the JIT, with jump targets as barriers as before. So this means
+getting rid of all of the `JITBoopWriter` interfaces which are closeable, but
+pretty much mark the end of something. So what I can do is make the
+description streams all closeable but remove the exception.
+
+## 13:53
+
+Then some classes such as `AccessibleFlags` can be split off because they will
+be needed by the Kernel's context initializer to link classes together and
+such.
+
+## 13:54
+
+One other thing that I thought about was porting SquirrelJME to systems such
+as turing complete machines (like the turing tape), but that would be very
+complex. Pretty much every modern computer architecture is the same. So I
+suppose for simplicity that I will only target these kinds of systems. The
+good thing is that this means I do not need to have the JIT split apart now
+because the machine area writers and such can be in a single place. So I can
+effectively take care of every architecture. I just need to take into
+consideration cases where variables are too big to fit into the system's
+native registers. However one way to handle that is to exploit the carry
+flag. It will not be as optimized, but it should work. But one thing I can
+do in the design is have it where values are limited so to speak. But not
+every case would be optimized. So SquirrelJME running on 16-bit CPUs will be
+a bit more bloated and slower due to more operations. Java integers are
+32-bit in size and in many cases, there is no way to tell how big an input
+value is on argument passing or return. Maybe there is some kind of method
+where I can condense all those operations together. Or maybe instead of
+generating all the instructions most of the time, the 32-bit add is in a
+microfunction of sorts, although that would have lots of overhead but it
+would decrease the code size.
+
+## 14:03
+
+So the `AccessibleFlags` and such can go into `Executable`. Executable will
+need to contain methods to return access flags and such for methods. Even
+when no JIT is compiled into SquirrelJME, this will still need to be known
+because suites can be linked as needed for running programs into contexts.
+
+## 14:19
+
+Actually, all of the flags and the linkage stuff could be moved into a linkage
+project. Since those are generally the same. This would mean that there are
+less classes in the class format. But also that the class format decoder
+does not have to depend on the executable project.
+
+## 14:50
+
+So `squirreljme-jit-basic` is now going to be folded into the standard JIT for
+the most part. Then the JIT is going to have less dynamic things, no
+configurations for the most part. Anything that is machine specific will be
+handled by classes on JIT initialization. Then those can handle configurations
+as needed, for example for specific CPUs.

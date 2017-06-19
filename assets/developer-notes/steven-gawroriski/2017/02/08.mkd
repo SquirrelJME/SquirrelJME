@@ -1,0 +1,139 @@
+# 2017/02/08
+
+## 08:22
+
+Well, my register caching strategy is simple and would not be difficult to
+implement at all. It would also produce slightly faster code also than the
+current planned naive implementation. It should also have less byte code which
+in the end would just be faster.
+
+## 08:40
+
+Sending an initial state to the decoder would be very useful, not sure why that
+does not exist. But I believe I used to have prime arguments except that it was
+handled by the JIT instead.
+
+## 08:56
+
+It should very much simplify things.
+
+## 08:59
+
+What I will need now is a register representation. Also since I plan on
+targetting 8-bit systems to, arguments will need to be spliced between
+registers and such. So I will need a call for a given state. When an
+invocation is done that state would have to be set for. Stack values or
+registers that are cared for are saved then execution goes to execute those
+called methods.
+
+## 12:54
+
+I kind of want an alternative project also, Squirrel Quarrel again. I can work
+on this along with the JIT so I have a basic sample program that is more
+exciting than a hello world. Also, it would allow me to get something done and
+not just be working on the JIT.
+
+## 12:56
+
+I can have a special target in the build system for runnin this game and such.
+I can then have a basic Swing interface that provides the backend for the
+needed `Display` class, have input and other things. Maybe perhaps sound too.
+I do have a sound library and that could help when playing.
+
+## 13:30
+
+This would mean that Squirrel Quarrel is part of the bootstrap JAR which would
+be interesting to say the least. However, it can be temporary for a bit.
+
+## 13:29
+
+I am missing the `Runtime` class.
+
+## 13:50
+
+I suppose what I can do is have a more direct approach to graphics instead of
+the planned stream based interface. In general that stream interface would be
+very slow and cause much overhead. So there is no real reason to have it. It
+would complicate some memory sharing, but that could be done a bit more
+easily. Alternatively, there can be a `pushScreen()` that pushes what should
+be shown on the system display. This could be a completely kernel based
+operation and such, or at least forwarded to something else.
+
+## 16:48
+
+I suppose LCDUI Displays can just for the most part be implemented via the
+service loader which manages displays. I can dodge how it is handled in the
+kernel by implementing it later on. Just initially it will just create an
+instance of an internal display manager. This way the backend for display
+engines could potentially change and would allow me to write easier to
+maintain code for example. Although I do wonder if I should just have straight
+framebuffers or actual widgets that could be drawn on top of. Natively
+speaking most systems would have widgets, font rendering, and other such
+things. So a widget system would be best, that way it can obtain the native
+feel of the system. When it comes to OS specific ports, they can via the
+interface use some kind of machine to access the host UI stuff.
+
+## 17:46
+
+I suppose that there would be logical orientations that are fully supported
+but I can also have physical orientations. However, the issue is that some
+native widget libraries do not have that information. I suppose for
+simplicity the logical orientations are the same as physical ones. However,
+a needed fully software UI library can support everything. So probably the
+best thing to do would be to have it where the `Display` matches the native
+widget system as much as possible.
+
+## 17:49
+
+I just need to handle the heights correctly, when it comes to maximization
+and such. However in some cases, that might not fully be known due to bound
+sizes and such.
+
+## 19:08
+
+Looks like my LCDUI implementation was very wrong.
+
+## 21:53
+
+Ok, so I am going to need some kind of back route. Basically when it comes to
+the Swing interface, I need to wrap paint for things like the canvas and then
+forward that to the Canvas itself. Since paint is protected, I need to make an
+implementation of Graphics that can call the Swing variant of it. Since the
+paint method is dispatched by the event handler and some other things
+serially anyway. So I need to handle this.
+
+## 21:57
+
+The best route is to have an instance returned by the displayable which can be
+passed to the Displayable in a private manner. Essentially I will need an
+event updater which can handle repaints and some other serialized events. This
+will make it much easier, otherwise I will essentially have a static
+interface.
+
+## 22:04
+
+Thinking about it, having that streaming interface would have been a nightmare
+to implement and maintain.
+
+## 22:20
+
+So the question is, do all the `Displayable`s fight over a single `JFrame`?
+Perhaps it would be best if they did not.
+
+## 22:56
+
+Well how inefficient, the `Graphics` in AWT that is sent to `paintComponent`
+changes every time it draws. So much for recycling, but in my code I can
+recycle freely by having a single class which forwards AWT to LCDUI.
+
+## 22:58
+
+So what I need is an `AWTGraphicsAdapter`. Sadly the two classes are called
+exactly the same.
+
+## 23:06
+
+Actually, I should check if `Graphics` between calls should keep the same
+state. So there is _Furthermore, applications may draw using this_
+_graphics object only for the duration of the paint() method._ which means
+that I actually do not have to worry about state.

@@ -1,0 +1,21 @@
+# 2017/04/25
+
+## 12:19
+
+So using `TypedAllocations` instead of maintaining a native type and registers
+would be much better in the long run. Slots can have stack positions and
+registers assigned to them without issue.
+
+## 12:27
+
+Using it is is less buggy. I do not need to copy registers or stack positions.
+So it is much easier to use.
+
+## 13:12
+
+So I would say the following. Basically
+
+## 13:19
+
+The cache state takes care of what the SMT tread did before. It has push, pop,
+and stack position information.

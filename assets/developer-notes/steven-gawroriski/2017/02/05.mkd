@@ -1,0 +1,19 @@
+# 2017/02/05
+
+## 09:14
+
+Going to need interfaces on representing fields that exist within the class
+`ExecutableClass`, since they need to be known for linkage and such. One thing
+I need to verify is accessing super-class protected fields. I believe that
+they are set by using the class of the superclass.
+
+## 09:18
+
+Ok, double checked. When this is used, it uses the name of the field in the
+current class (if the field does not exist in the current class then it will
+traverse super classes until it finds it). If `super` is used, then it will
+look in the super class only, which has a similar lookup.
+
+## 17:10
+
+Going to need to handle fields and methods nicely in the builder.

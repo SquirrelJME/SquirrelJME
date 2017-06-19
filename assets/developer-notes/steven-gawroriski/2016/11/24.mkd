@@ -1,0 +1,9 @@
+# 2016/11/24
+
+## 10:15
+
+So are applications mapped by their name or do they just have suite IDs. For
+one the suite IDs hashes will be mapped to something. Really just an array or
+set can be used. The set can be sorted using some kind of means to sort by the
+hash ID of the suite.
+

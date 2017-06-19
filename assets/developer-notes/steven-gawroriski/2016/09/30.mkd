@@ -1,0 +1,77 @@
+# 2016/09/30
+
+## 11:07
+
+The virtual project handler will need to in a number of cases wrap specific
+calls with virtualized methods. For example creating a new array will need
+to create an array type in the target form.
+
+## 11:31
+
+Actually one thing I should do is rename the virtualized project so that it
+could actually be considered a project that can be launched by the build
+system. Then I could even potentially virtualize the virtualized project
+which may be a bit interesting.
+
+## 12:37
+
+I will need to determine how classes are handled. I will need to actually
+generate `StackMap` and `StackMapTable`, but those are rather simple to
+generate. Well actually with this virtualizer, I can implement the code
+portion of the class decoder more since eventually all instructions
+needed will get generated. The virtualizer will be straight through for
+the most part.
+
+## 12:58
+
+I will need to virtualize array classes also.
+
+## 15:20
+
+Probably the only thing that will work and allow for throwing all of the
+objects would be if `VirtualObject` were to implement `Throwable`. This
+would mean that a stack trace would exist for every object that is
+created, so that is a bit slow. It would be great for debugging
+however. So to handle that, I will basically have it where each exception
+handler points to an area off the method which unboxes the thrown
+exception to an object and then jumps to the actual handler. Then this
+means that `athrow` becomes virtualized with a static. That is, it still
+generates a throw but it actually wraps it. One issue with that however
+is that I will need branching code to detect the exception type after it
+has been unboxed. So there will essentially be linear checks, but this
+could be handled by the unboxing code. I then only unbox when a class
+is found.
+
+## 15:26
+
+So the code would basically look like this:
+
+	VirtualThrowable t;
+	
+	if (t.isInstanceOf(SquirrelJME.classForName("java.lang.RuntimeException"))
+	{
+		unbox();
+		goto(handler);
+	}
+
+## 16:36
+
+Thinking about the test system, I need tests that just run with no pass or
+fail since I need to make sure behavior is duplicated. Since fossil now has
+unversioned space, I can store the expected results in the repository now.
+
+## 16:52
+
+I should make it so the executable namespace writer is far simpler than
+before.
+
+## 16:54
+
+One thing that can be done is I can have that future buffer class code in
+another project and have the executable code rely on that. That could form
+the base for sections. Basically the executable writer would work in sections
+similar to ELF, PE, and other formats (they use .text and such for example).
+Then for symbolic linking between sections since some things might not be
+known, such as addresses, there will be future references. So basically there
+would be built a table of relocations in the local executable namespace.
+

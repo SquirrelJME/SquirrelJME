@@ -1,0 +1,10 @@
+# 2016/06/10
+
+## 10:58
+
+Woke up a bit late today. The structure manager setup by the interpreter should
+be sufficient for the kernel to use. One thing to consider though is that the
+structure manager will need an allocator which provides memory addresses and
+such. Structure management can either be pooled or it can be given the
+required allocated chunks.
+

@@ -1,0 +1,68 @@
+# 2017/03/30
+
+## 10:14
+
+I am going to refactor the tree code a bit to make it easier to work with.
+
+## 10:17
+
+Thinking about it, if I keep a list of nodes in the tree I would not need
+parent links. Iteration would then just be through the sorted list of nodes.
+Of course I would need to maintain value links. That would probably simplify
+a few things.
+
+## 10:19
+
+Even if values are rotated the nodes should still be in the same order for
+the most part.
+
+## 10:21
+
+At least in the sample code the keys and values are re-assigned only on
+deletion. I would really just need to handle linked order on insertion and
+deletion, but it would work either way.
+
+## 10:22
+
+So a linked list would be the most efficient means of doing iteration because
+re-associating parents especially with rotations and moving around is complex
+and probably is not even needed.
+
+## 11:28
+
+Although the problem with that is if the node keys and values are removed then
+the order of the entries gets modified. Since keys and values can be swapped
+in nodes, this means that I need more classes. One acts as nodes in the tree
+which point to values in the value set. Then the `SortedTreeSet` can use these
+value nodes directly in a way when iterating, rather than using the entry set
+of the map and creating useless entries. So this makes the `Set` variant more
+optimized.
+
+## 14:02
+
+For some reason the node with the lower value is on the right side of the tree
+and the one with the higher value is on the left.
+
+## 14:10
+
+And that is caused by using the wrong order of arguments on insertion.
+
+## 16:37
+
+So this new tree code is far simpler and was easier to implement.
+
+## 17:25
+
+So one thing is that the input state has a code variable a given state but the
+input is not valid. So I suppose what I must do is check the output state.
+
+## 17:26
+
+But the output state is trashed. So I suppose what I need is a virtualized
+double-start of an instruction. Basically a state forwarding barrier of sorts
+where I can copy from the input state to the output state in a kind of
+transition mode.
+
+## 17:31
+
+So I am going to need a transition mark for the input state.

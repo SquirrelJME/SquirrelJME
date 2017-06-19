@@ -1,0 +1,20 @@
+# 2017/05/02
+
+## 09:04
+
+For pushing new values I can just force allocations.
+
+## 09:14
+
+So that there are no kludges and such, I can have a means where I can say to
+pop all these values and then just say generate this moving code because
+things will be destroyed. This way variables which alias other variables do
+not get destroyed at all. This would mean that the deallocate operation must
+fail if it is aliased by anything. This should be much safer.
+
+## 09:16
+
+However, I must consider swapping values. For example if an element on the
+stack is dupped, then if it gets swapped, any entries which alias that entry
+will have invalid aliases. So I need a special swap operation to be done where
+it can be checked and such.

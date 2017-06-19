@@ -1,0 +1,14 @@
+# 2017/06/14
+
+## 10:28
+
+Ok so for class validity and such I can have a checked thing I suppose in the
+link table which verifies that conditions are met. Basically I am going to
+need two tables an import table and an export table. When compilation
+completes the import table will be checked to make sure that all exports are
+met and they will be bound together.
+
+## 10:53
+
+So I need to figure out the best way to represent classes which are in the
+link table.

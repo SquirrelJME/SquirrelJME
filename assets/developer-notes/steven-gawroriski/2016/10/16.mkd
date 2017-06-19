@@ -1,0 +1,266 @@
+# 2016/10/16
+
+## 09:49
+
+My projects will need dependencies and other things such as inclusion. I
+have to have profiles and implemented standards for projects essentially.
+Some of this information can be shared with the launcher too, which does
+not need a complete view of information.
+
+## 10:15
+
+I am thinking of potentially refactoring the project dependency system
+so that some dependencies can be auto-selected based on the configuration
+or profile they require. So basically, all projects will need an
+optional profile set and then they will need a configuration. I can also
+use a set of determination for profiles and such. Basically I need to make
+profiles in SquirrelJME more apparent. I suppose also, I could perform a
+major restructoring of SquirrelJME I suppose. Maybe.
+
+## 10:21
+
+Although maybe I could just add an extra depth. For example src can contain
+directories such as "game". Essentially there would be package namespaces
+so to speak. Or maybe what I just need is an "extra" directory. Basically
+this directory would contain stuff such as Squirrel Scavanger. Then the
+src directory would contain the core set of projects. I already have the
+contrib directory, but having a new directory for non-core stuff would
+be nice.
+
+## 10:25
+
+In fact, I could have automatic namespacing with a `NAMESPACE.MF` file for
+each source directory.
+
+## 10:39
+
+I could also have it where I can remove dependencies and just have package
+level dependencies. Essentially, Squirrel Scavenger instead of depending on
+opengles, it will depend on javax.microedition.khronos.opengles. Then the
+opengles project will automatically be included for compilation.
+
+## 10:56
+
+A number of classes are also only used by the JIT too. Also, some are only
+used by the build system. Basically, I want to remove all of the cruft
+that exists in the single directory.
+
+## 11:32
+
+Also, one thing I should do is potentially greatly remove the number of
+projects that are used. That is, remove ones that are not needed at all and
+fold others into other projects. For example the image reader can be moved
+into the LCDUI code and anything that needs to handle images can just use
+LCDUI image code essentially.
+
+## 12:03
+
+When it comes to SquirrelJME and unsafe, I can just rewrite the entire package
+to use another one. This way I can split the static calls into multiple places
+in unsafe rather than having it just in one place.
+
+## 12:11
+
+Actually, I should keep dependencies. However for dependencies I should
+instead have a namespace prefix so that it is known which namespace the
+project should get dependencies from. Then on top of that, I could actually
+have namespace renaming. Since ':' is reserved, I would suppose I would use @.
+So one that relies on the manifest parser would be 'foo@manifest'. But one
+thing that can be ugly are the liblets and such. For example, Squirrel
+Scavanger has a dependency on OpenGL ES. So essentially, the system would
+depend on _opengles_. This is rather ugly. OpenGL ES will either be a part
+of the target or it will not be. I also should split Squirrel Scavenger into
+more parts based on the backing GUI implementation.
+
+## 12:40
+
+I believe I should get rid of the data sink, faucet, and pipe classes. The
+inflate compression code along with the CRC checking code could be much
+simpler.
+
+## 13:05
+
+So my code builds again. What I must do is make it so the project handling
+classes can handle namespaces.
+
+## 13:08
+
+I suppose I will have a `ProjectNamespaces` which contains every namespace
+and where `ProjectNamespace` is essentially `ProjectList` for a single
+namespace.
+
+## 13:42
+
+What I can do is have it where I can specify virtualized namespaces with the
+project manager. So for example I can construct a `ProjectList` which extra
+namespaces to source projects from. This would allow projects that are in
+other locations to be used.
+
+## 15:04
+
+Actually, instead of `ProjectList`, it can be `NamespaceDirectory` which
+contains `ProjectDirectory`.
+
+## 15:24
+
+Going to make it where dependencies use standard names, profiles, and
+configurations. Then my build system will determine which projects to
+actually pull in based on the namespace they reside in. So, I will
+essentially getting rid of the name based dependencies. However, since
+I want MIDlets to also be LIBlets (despite this being invalid) I suppose
+I can parse `LIBlet-Dependency-<n>`. For dependencies that existed before
+MIDP3 (such as OpenGL ES) I will make my own up that make sense. This way
+selection of projects to be included by the output SquirrelJME binary will
+be determined on what is available. So after this refactor I want it so you
+can build a Linux running SquirrelJME with virtually nothing in it to be
+as minimal as possible, or one that contains the entire set of things to be
+implemented. The former for example, I can use it on routers to run Java
+programs which would be useful for me potentially. This would be compared to
+using full sets or minimal sets where they are fixed to a target.
+
+## 15:40
+
+Seems the standard set of JARs has the following:
+
+ * `API` -- The API (JSR###).
+   * Could be CLDC, 
+ * `API-Name` -- The full "nice" name of the API.
+ * `API-Type` -- Configuration, Optional, Profile
+ * `API-Specification-Version` -- The API version.
+ * `API-Dependencies` -- Dependency groups that may be separated by commas
+   to represent multiple ones. Single groups may be separated by a pipe to
+   indicate multiple ones.
+
+This would be quite simple to use and means that standard libraries could
+use this. So I suppose that those that provide APIs can use this way of
+handling dependencies. These would be specific to APIs. So the APIs would not
+need to have dependencies setup. So this means a project would either be an
+API provider or something that uses API.
+
+## 15:57
+
+Java ME 8 uses the same stuff naturally, but I do not see any mentions of
+the dependency names used by liblets.
+
+## 16:02
+
+So MEEP is a profile, but stuff such as GCF and MEEP-IO are optional. So
+how are they even used?
+
+## 16:13
+
+Ok, so these are internally specified in the executable binary since the
+service names appear as strings in the binary. What is interesting is
+that the following strings appear:
+
+ * meep.microedition.concurrency
+ * meep.microedition.liblets
+ * meep.microedition.provisioning
+ * meep.microedition.securityframework
+ * meep.version
+ * microedition.event
+ * microedition.io
+ * microedition.io.file.FileConnection.version
+ * microedition.io.gcf
+ * microedition.key
+ * microedition.location.version
+ * microedition.lui
+ * microedition.power
+ * microedition.rms
+ * microedition.satsa.crypto.version
+ * microedition.security.policy
+ * microedition.smartcardslots
+ * microedition.swm
+ 
+
+These themselves are not specified at all. Some of these may be system
+properties. The ME docs say nothing about 'meep.version' for example.
+So they are likely system properties. Since the FileConnection.version
+one is a system property.
+
+## 16:19
+
+And these properties are likely defined directly in the binary.
+
+## 16:23
+
+Ok, so I believe I get it. MEEP is specified as 8.0, and the
+microedition-profile is MEEP-8. Then a similar thing is done for CLDC
+and other such things. So profile could sort of technically use
+MEEP-8.0.0 if it wanted to.
+
+## 16:25
+
+Thinking about it, perhaps I should merge CLDC and CLDC Compact and
+just make it full?
+
+## 16:29
+
+Well, I could just use my own magic. Have API dependencies use a
+sub-variant and the full one will just depend on the compact one.
+It will be a part of the version.
+
+## 16:34
+
+So JARs will be APIs, LIBlets, or MIDlets to match Java ME. Although it is a
+bit more limited compared to what I have before, it more closely matches how
+Java ME and the former J2ME operate.
+
+## 17:40
+
+For the projects and launcher, I should probably use the MEEP SWM classes.
+
+## 17:43
+
+Looks like IMCConnection in MEEP does not have authorization anymore.
+
+## 17:47
+
+Perhaps I should model the project manager on top of SWM. SWM uses interfaces
+and then I care share some of the code between the launcher and a few other
+things.
+
+## 17:50
+
+No because suites are internal. But I should model the project builder and
+such in a way where it can easily be mapped to it for the auto-interpreter.
+So it could easily be used.
+
+## 17:54
+
+The project handler would be a bit more powerful, so APIs would be part of
+the "System" suite rather than be a library or application.
+
+## 18:03
+
+Thinking about it, I have the launcher as a separate process. However should
+it be just part of the kernel process? It would be somewhat a bit more
+"secure" as a user process, however everything would essentially be bridged to
+the server anyway using IMC. So effectively the launcher and the kernel will
+have duplicate code managing everything.
+
+## 18:05
+
+Then MEEP's SWM can just be an IMC to the launcher system that manages the
+JARs that are installed in the system along with tasks.
+
+## 18:13
+
+I should probably normalize all the manifests that exist.
+
+## 19:43
+
+I wonder if you can SO inject dlopen. Basically I have idea to write a Java SE
+VM (like I have before) so I could potentially compile faster on PowerPC based
+systems (since I use one daily). However, one issue is I would want to use the
+standard OpenJDK classes on the system. Definitely feature creeping for a
+bonus library however. A problem with existing libraries is if they `dlopen`.
+Essentially I could not replace these. However, one feature I could use is
+dynamic library re-interpretation. Some programs running on PowerPC systems
+may hardcode a shared library. I essentially have to trap System.loadLibrary()
+and instead choose an alternative library instead potentially. However, likely
+the best choice reliably would be to implement the JIT first in my own
+SquirrelJME. If I can output to a ELF file that I can link with using a C
+program, I could essentially create my own `libjvm.so`. However a problem with
+that is SquirrelJME does not support reflection and I have no plans to have it
+supported.

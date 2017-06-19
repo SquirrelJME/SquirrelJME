@@ -1,0 +1,187 @@
+# 2017/02/12
+
+## 06:57
+
+So what I can do now is event handling, such as which keys and whether things 
+were tapped or similar.
+
+## 07:19
+
+What I need is class specific instances.
+
+## 07:21
+
+I mean of displayables, but that might not really be needed as much since it
+would complicate a few things but make some things a bit easier.
+
+## 07:34
+
+LCDUI only supports a single mouse button so at least when it comes to the
+game I will need to handle these situations to perform right click actions,
+along with dragging the selection box if possible. The game should be playable
+regardless of how capable ones device is.
+
+## 07:47
+
+I suppose the next thing I need before I can implement some part of a game
+would be key handling. Once I have that I can use stuff such as the keyboard
+to move the viewport around and such. One thing I also need to consider is
+that a device could be pointer only.
+
+## 07:51
+
+For such devices, the best thing to do in this case would be to have
+indicators for actions and such on the screen to allow the viewport to shift
+along with telling units to do things. The game should be fully playable with
+a mouse. However, with command buttons and such, when a unit is selected those
+can be used to provide a menu for those actions instead. So for example when a
+worker who can build stuff is selected, the command "Build" would become
+available. Then that command could be executed to place a building or similar.
+I would need one active command to always be the game's menu, while another
+command would be for the selected unit for example.
+
+## 07:56
+
+So I will be needing commands in the future, but for the most part only after
+units are implemented.
+
+## 09:22
+
+Must make pointer and key events their own interfaces because `CustomItem`
+also uses them.
+
+## 10:54
+
+AWT does not have a means of detecting repeated keys and is pretty different
+across platforms when it comes to keys. As such, I will need to wrap this
+into a more sane system that should work hopefully.
+
+## 11:16
+
+At least on Linux, repeated keys are just constant presses. I can probably
+ignore typed keys.
+
+## 11:57
+
+Looks like I will need non-standard keycodes. For example there are codes for
+many keys just do not have codes at all.
+
+## 12:02
+
+I will just pick a number and rely on name translation for them.
+
+## 12:20
+
+I should not grab tab though, because I will want to traverse things such as
+the command buttons for Swing or perhaps other interfaces. So what will be
+next is the translation of keys to key names via the keycode, this way I can
+handle unknown keys and such.
+
+## 12:57
+
+I wonder if it would be faster for me to draw to an image first rather than
+using AWT directly. Basically, instead of an `AWTGraphicsAdapter` it will
+just be a new class. Also considering that, I can move the code in image out
+into a generic class that can just draw to some kind of array. Then I can
+adapt that code for graphical displays without involving images. So for
+example there would be a graphics drawer that draws directly to a framebuffer
+to show what is on the screen.
+
+## 13:21
+
+Now I am going to see, if drawing to a `BufferedImage`'s `int[]` array is
+faster than using `AWTGraphicsAdapter`. If it is, then it will be a keeper.
+
+## 13:33
+
+Wow, drawing into the buffer, I get very fast speeds when rendering. So this
+is definitely much better.
+
+## 14:11
+
+So now that I have fast graphics, keyboard input, and pointer input I should
+be able to start working on getting the game up and running. Alternative I can
+poke the JIT for a bit perhaps, or eat some food.
+
+## 14:43
+
+Not too sure what to do for the JIT however.
+
+## 14:53
+
+I should have some very old images I drew a long time ago, which can be used
+rather than redrawing them.
+
+## 15:48
+
+I did find them. Also the RGB slice drawing must be changed into tiles. I am
+going to need tile drawing for the drawers that allow for sprite rotations and
+such. This means that I will need to draw a linear array of RGB data as a
+column for example.
+
+## 16:14
+
+Actually I need to handle the alpha color.
+
+## 16:21
+
+Now I wonder how blending on top of an image with no alpha would work. I would
+need it for sprites and it just does not make sense to not use alpha at all for
+drawing in `Graphics` to not have it. For example `SRC_OVER` is enforced for
+the most part and `SRC` is not permitted. So this must mean that everything is
+blended all the time, just that the destination never gets its alpha channel
+set at all.
+
+## 16:25
+
+The documentation says _The opacity of the destination pixel cannot be_
+_reduced using this blending mode, and thus it may be used on images and_
+_surfaces that do not support alpha channels as their pixels are already_
+_fully opaque._ So this is how it works. I just need a destination alpha
+OR which enforces this.
+
+## 16:40
+
+I wonder if there is a fast divide by 255.
+
+## 16:48
+
+But thinking about it, maybe I should just divide by 255 and let the JVM
+handle it. I can do some multiplication magic when it comes to division so
+that a multiply is used instead.
+
+## 16:57
+
+Does not seem that drawing some fog over pixels is that slow.
+
+## 16:58
+
+However, if the fog box is large enough then it slows down much.
+
+## 17:02
+
+Using dotted lines might be faster in the long run and provide the equivalent
+effect.
+
+## 17:07
+
+And dotted lines are much faster, not as nice looking but good enough at
+run-time.
+
+## 18:47
+
+During development, I could use a map in the corner of sorts to find my way
+around the game.
+
+## 19:04
+
+Currently would be a gimmick, but an automap would be useful right now. I can
+use it to navigate my way around the level so that I know where the viewport
+is. I could also allow it to instantly change the viewport to a new location
+when it is clicked, which is much faster than holding down keys.
+
+## 19:08
+
+Probably in the future, I will need a low-resolution mode for very small
+screens such as those that are really tiny. I can figure that out when I get
+to that point however.

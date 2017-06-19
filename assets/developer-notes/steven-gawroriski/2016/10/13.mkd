@@ -1,0 +1,44 @@
+# 2016/10/13
+
+## 09:03
+
+The SquirrelJME stuff can just throw exceptions, although I planned to use
+buggy error codes since those methods would be virtualized. However later in
+the course of development I just decided to do rewrites.
+
+## 11:42
+
+I was thinking of something. Something needed a wait().
+
+## 11:46
+
+mailboxListen needs one, for the very rare event that there are more
+Integer.MAX_VALUE mailboxes listening, there has to be a wait on the object
+for a later notification.
+
+## 21:42
+
+The mailboxes need an error state so to speak, if an `Error` is thrown then
+all other operations should fail for the most part. Well really, I just need
+to handle close. If a connection is closed during a read then it can just
+return -1 when a datagram is attempted to be read.
+
+## 23:05
+
+So I have closing now, but the TODO thrown by the server is not detected by
+the client at all.
+
+## 23:08
+
+I just need to implement sorted tree removal, or just switch to hashmap. Since
+now when the server closes the connection, the client goes to close it also
+now.
+
+## 23:16
+
+So right now if one side closes the connection, regardless of error or not,
+the other side just reads EOF. I do wonder if that is bad. It is however,
+simple. So now that I have IPC, at least in the same process, I can implement
+the rest of the display server and client now. I just made a simple message
+passing system which should be fast. All messages are sent locally and they
+are synchronized so they do not explode across threads.

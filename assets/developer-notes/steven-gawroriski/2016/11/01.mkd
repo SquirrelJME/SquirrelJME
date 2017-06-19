@@ -1,0 +1,17 @@
+# 2016/11/01
+
+## 07:09
+
+New month, I must select a color.
+
+## 16:11
+
+Was distracted a bit today. I do wonder though if the kernel should be
+directly associated with a project manager or JAR resources. There will
+be JARs which are internally included in the executable potentially.
+
+## 23:00
+
+It would probably be best to have an interface that provides methods which
+give interfaces rather than have a single interface used. Or `Kernel` can
+just be abstract.

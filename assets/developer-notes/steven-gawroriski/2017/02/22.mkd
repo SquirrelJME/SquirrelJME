@@ -1,0 +1,27 @@
+# 2017/02/22
+
+## 11:10
+
+I will need to change the constructor of the suite ID for the string parsing.
+
+## 11:19
+
+I will need to trim whitespace when parsing names, vendors, and versions.
+
+## 11:46
+
+The dependency parsing code is going to be duplicated, so make that common
+that way it can be used by the launcher also.
+
+## 16:00
+
+Copy and pasted code is bad, my vendor was checking if the other class were a
+name and not if it was a vendor.
+
+## 20:20
+
+Actually what could be useful is if `atInstruction` had the previous
+instruction. But the main thing would be restoring the active state on entry
+of each instruction. When when there is a jump target on an instruction I will
+need to store the cache state if it does not exist, this is at the end of each
+instruction. However, this could be done in `atInstruction` perhaps.

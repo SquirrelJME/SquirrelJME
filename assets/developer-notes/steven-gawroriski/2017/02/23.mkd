@@ -1,0 +1,40 @@
+# 2017/02/23
+
+## 07:24
+
+Actually what I can do is add an `endInstruction` method which is called at
+the end of every single instruction. That would make things a bit easier.
+
+## 09:23
+
+I believe the cache state system is a bit ugly and messy. There is
+`CacheStates` which holds every single state, but then there is active state
+which is mutable. `CacheStates` would best have immutable data so that there
+is not much chance for errors. This would then mean that there is an
+`ActiveCacheState` which is effectively final. Existing cache states are
+stored into it, they can be read but not modified. Otherwise there is
+potential for errors to occur where a cache state in the stored states is
+modified when it should never be modified once being placed in the
+`CacheStates` instance. So the best thing to do in this case would be to not
+make stored state mutable. Also bindings could potentially be automatically
+handled via the translation engine. Basically each code variable in use has a
+binding. If the JIT project can handle these things then it would simplify
+implementation of JITs because they would not need to have all these methods
+for moving bindings around. So creation of the bindings is best done in the
+JIT as an `ActiveBinding` which can be created by the translation engine. This
+way, no code variable will be missed.
+
+## 09:37
+
+In the end it should be far less messy, which will be good. So `CacheStates`
+will have a `snapshot` at the specified location rather than a get or a set.
+It will either snapshot or fail because it is already snapshotted. So there
+would also be a check if there is a snapshot and a get for an existing
+snapshot. Then `ActiveCacheState` will have a method for setting its state to
+that of an existing `CacheState`.
+
+## 13:44
+
+`CodeVariables` do not store a type, but are not completely needed, they are
+just virtualized registers and such that can be copied around and such. The
+(`Active`)`CacheState` does not even need a set which refers to the variables.

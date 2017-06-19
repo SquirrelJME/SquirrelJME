@@ -1,0 +1,13 @@
+# 2017/05/23
+
+## 13:25
+
+Ok so, I am going to work on the LCDUI since I am in a vehicle on a long trip
+and it would be very distracting, so nothing important related to the JIT.
+My current task is to setup the native display classes which would be much
+easier to implement. There is just only going to be a single native display
+which is used to derive elements from. Well, effectively there is just a
+display, but all widgets will be associated with the `Display`. This way
+there is no cross linking between classes. Basically there is a global
+`Display` field which has the native display used to create native widget
+things.

@@ -1,0 +1,57 @@
+# 2017/03/06
+
+## 00:26
+
+I believe the class decoder could use a marker for the next instruction to be
+executed, with say `endInstruction` for implicit nexts. However it there is no
+instruction then the value is illegal.
+
+## 01:59
+
+Actually I believe `__checkStoreState` is not needed. But it could be used
+anyway to double-verify that the resulting states are correct at least type
+wise even though it already is done by the class decoder.
+
+## 02:05
+
+Also snapshot states can now be set from any cache state compatible state.
+
+## 02:10
+
+For simplicity I would say that when it comes to the placement of items on the
+stack for MIPS and other architectures, that the slots for stored values are
+in the same locations. This way juggling values only has to be done for
+registers and not the stack. This would increase speed also. The only thing to
+consider are 64-bit values. I would not want to waste 32-bits of space to
+store `int` for example. So I suppose there would need to be slot positions
+for 32-bit and 64-bit values. Of course 64-bit values need to be 8-byte
+aligned for most architectures.
+
+## 02:15
+
+Then if a `long` is allocated on the stack before an `int` this means that the
+location of the shorter value can be set from the longer one, just with the
+correct offset (for byte order). So for big endian it would be _+4_ and little
+endian would be _0_.
+
+## 02:21
+
+I should make this an actual class so that way I can just have common code for
+later JITs because I will definitely be using the same thing.
+
+## 13:22
+
+Java 9 is going to remove `-source` and `-target`. This means after the
+initial bootstrap I am going to have to switch to an internal compiler to
+generate the byte code. Otherwise, my classes will have a version which is too
+high to use. But at least it would be self hosting for the most part. I really
+only need to support Java 7 output also. I suppose I can keep the Java
+compiler as simple as possible so it is short, simple, and fast. Means it
+would need the class decoder to read binary class files, but also would have
+to write the classes out. Probably what I can do initially is have a
+verification step which decodes the generated class to make sure it is
+actually valid. I would know when classes were not generated properly for one.
+I would also. I have until July 27th to write a working compiler. It would be
+really bad if SquirrelJME cannot build on Java 9's release. But this also
+means that I can have a self hosting Java environment for development
+however, so that works in a way.

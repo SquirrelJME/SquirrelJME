@@ -1,0 +1,87 @@
+# 2017/05/12
+
+## 12:29
+
+So as before, it would be much easier to handle aliasing on the stack and such
+if aliases did not cross barriers of jumps. Basically this would mean that for
+any target jump point, aliases must be removed and given allocations.
+
+## 12:43
+
+So get jump targets as I have done before.
+
+## 12:46
+
+Well, how about an alternative means. All operations for the most part take
+place on the stack if they do anything. Basically, what if I instead
+completely ignore the stack and locals. Basically instead those are
+virtualized as stored values somewhere that get loaded and stored as needed.
+Basically it would be a specific slot but it has a value history which can
+change over time. When an operation is performed it just uses those value
+inputs. Then for the most part, I completely ignore register allocations.
+Variables will be marked for the source of their value. Essentially there
+would be a timeline of values for each position. This would allow me to just
+instead of having local variable copies and forced deallocations to just
+use the timeline of values.
+
+## 12:53
+
+Basically, registers are allocated last. I basically just operate purely on
+these value timelines. This would require a bit more memory for each position
+but there would be marks to determine how things occur. So if there is a jump
+back it would check the states for where values originate from. If the value
+is different then it will split the timeline which forces an actual copy
+operation to be performed. The same can be done for exception handlers where
+there are no stack values except what was thrown. Then after all the splitting
+is known, registers are allocated and extra load/store operations are added
+as needed. This would require iterations into the past however to determine
+values. But there could be derivation and references to the actual value.
+Basically, I need to make splitting cheap. Exception handlers would
+essentially just be the same as jumps with conditional branches. So if there
+is an exception ready it will just check if it is not null then check where to
+go depending on the exception. This could generate a bunch of duplicate code
+however. But in this case, exceptions are the same as normal code. This means
+though that exception checks need to be performed after almost every operation
+for the most part. But only ones which can generate exceptions.
+
+## 13:02
+
+With the timeline I do not need to worry about jump backs. Jump forwards can
+be a problem though. However, the split point is in the future. Logically it
+is handled the same. So basically for every local and stack entry, I will need
+a timeline which encompasses the entire code. Initially the timeline would be
+blank and nothing would have values. However, with the stack map table and
+such there would be explicit no values and explcit some values. The stack map
+table is used for all future and exceptional jumps.
+
+## 13:12
+
+Or maybe I am just thinking too into this. I suppose what I can do is have a
+naive compiler which translates the byte code directly to machine code without
+optimization. That way I can get the interpreter working to execute the native
+code to see if things work. Basically it would be the ugliest and horribly
+optimized machine code ever. Methods would be gigantic and there would be lots
+of wasteful operations. But I can write it in a way where I can replace it
+with an optimizing variant. I suppose the initial thing would be to parse all
+of the operations and build some kind of execution graph then go through all
+of it to optimize it in a future pass. So I basically only have to write the
+code generator once, but future work is done in an optimization pass. So the
+first step is always naive. This is less efficient but it is easier to have a
+naive setup in the first place.
+
+## 13:16
+
+For saved and temporary, I would need save operations.
+
+## 13:20
+
+Maybe instead, I turn the byte code from stack based to be register based with
+expanded exception handling and checking. Basically I just change the
+interpretation of it. It becomes completely flat and there is aliasing of
+values. This would be the secondary intermediate code. Then I can turn that
+into actual machine code and perform allocations as needed. I think that route
+would be the easiest. A basic linear function. So morphing the byte code to
+another set of instructions. Then I do not need to worry about exceptional
+jumps because they are just branches as needed. This means that also variables
+will need extra meta data, such as the length of arrays when they are read.
+This way, some array length checks can be removed potentially.

@@ -1,0 +1,105 @@
+# 2016/12/14
+
+## 09:40
+
+Ok, so basically what the project manager will do is just handle API, MIDlets,
+and LIBlets. I will ignore the build system stuff for the most part.
+
+## 09:43
+
+The build system part will be ignored because there are some symlinks for
+duplication so that anything specific to the build is used. This is designed
+for separation, so that anything part of the build system is considered not
+to be part of the actual run-time. The only other thing to consider would be
+actual assets themselves. I would just have another class which handles the
+assets, which do not have any project structure at all. So effectively the
+APIs, MIDlets, and LIBlets are combined yet standalone. This does mean that
+I would have a larger number of classes however, but in most cases the
+sub-classes will handle most things.
+
+## 09:50
+
+So the bulk handling is just in the base classes, because most of them would
+be very much the same. So the outlying classes are not really an issue at
+all.
+
+## 09:51
+
+I can keep `ProjectManager` as the name since it handles everything now.
+
+## 12:04
+
+Before I had `ProjectGroup` but that does not make much sense. The class
+stores binaries and source projects where source may exist and binaries can
+dynamically be changed as needed. `Group` is a bad word for it. I was thinking
+of `Reference` or `Pointer`. Perhaps `State` maybe.
+
+## 12:08
+
+Multiple inheritence could work here though. Or maybe the inverse instead.
+Instead of having a group that points to sources and binaries, it is just
+the Project itself. Then these projects just have state of whether the binary
+or source exists. So instead, a bunch of the stuff exists within the actual
+`Project` itself. That becomes the state storage. Then that project has
+source and binary information as needed. At the basic level it is just going
+to be a manifest or similar.
+
+## 12:11
+
+The the distinction of API, MIDlet, and LIBlet will just be that project. The
+class will just handle representation of binaries and sources. It could also
+even be cached. Cached in a way where not all of the project information has
+to be loaded at once. This would lighten the memory load and not require
+everything to be loaded. There would be protected functionality.
+
+## 12:14
+
+The binary and source relationship can also just be handled by inner classes.
+Although inner classes are a bit ugly, it can work in this case. Effectively
+`Project` would have `Project.Source` and `Project.Binary`.
+
+## 12:15
+
+Actually, project can just be the base while the binary and source
+information are specific.
+
+## 13:30
+
+Actually, it would probably be best if the binary/source were in their own
+classes.
+
+## 14:09
+
+It would probably be best if the kernel managed suites and such, the launcher
+could just call into the kernel to get information. Otherwise there would
+just be duplicated state and such in the launcher.
+
+## 14:11
+
+Suite manager would be for liblets and midlets, while I need one for APIs
+explicitely.
+
+## 14:15
+
+This means that suite IDs are not associated with midlet name, type, and
+version. But perhaps just with the name of the project. Then the API just
+makes the system class path, what I need is something to manage the class
+path. Basically a kernel class path that is handled, by the kernel. The
+interface would be simple. Essentially there would be an interface, that
+represents a loaded class file whether it be binary or otherwise. Essentially
+it is just a class.
+
+## 16:33
+
+Was distracted. Anyway, APIs need to be represented by classes for the most
+part. They are either configurations, profiles, or APIs. So there can just be
+a common class for this.
+
+## 16:50
+
+Actually, profiles are used on an included basis. This means that say that a
+project implements something and that something is part of MIDP, instead of
+having some confusing depends or provides, it just basically says that it
+implements some part of it. Since everything is optional and it may indeed
+be missing. Then the other thing are just standards, such as the audio
+API and such.

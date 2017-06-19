@@ -1,0 +1,21 @@
+# 2016/12/16
+
+## 15:30
+
+Actually when it comes to the system class path I need to keep the JAR
+separation existing. Otherwise `resourceAsStream` will locate other resources
+incorrectly. Then implemented APIs can just be read from the API manifests.
+So effectively there will be system suites and such. One thing though is the
+classes that provide an interface to suites using simple arrays. It can be
+made so that it uses easier to write and use interfaces, since most of the
+code will be the same. It could be shared across multiple things. So there
+would be essentially an abstract class that provides access to JAR
+resources either as a class or resource files.
+
+## 15:33
+
+So instead of accessing suites by their resource number, they are instead
+accessed by a class which wraps everything potentially caching it also. This
+means that in the future it can just use the IPC interface that will exist to
+implement such things.
+

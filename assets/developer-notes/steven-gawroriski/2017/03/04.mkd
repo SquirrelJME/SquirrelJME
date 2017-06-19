@@ -1,0 +1,157 @@
+# 2017/03/04
+
+## 07:41
+
+What I need is an `unbind` in `ActiveBinding` but one where it has a cause.
+For example it could be unbound because the value is being destroyed or the
+type is changing (for example `INT_TO_FLOAT`). This would be used by the
+engine to determine if the registers should stay the same or if it should
+just re-allocate new values.
+
+## 07:43
+
+Actually not `unbind`, but `changeBinding`.
+
+## 08:53
+
+I do wonder that `__destroyStack` and `__deAliasStack` can be moved into
+the active binding slots and such. Also, I am going to need a global state in
+the cache state. I would not need to pass multiple things around at all. So
+the question is, does changing the active binding allocations and such cause
+machine code to be generated? I would say for simplicity that it does not
+because that way multiple active states can be juggled and such. I do however
+say that the sub-JIT should do such things. De-aliasing can be done by
+`setType` and such. However, whenever something is aliased, the type that it
+is the type of the alias.
+
+## 11:34
+
+I suppose I will need two copy operations. One that potentially aliases and
+one that does not, but where the active state is used. I would also need
+something perhaps for generating instructions also.
+
+## 14:03
+
+In the RFC 1951, `MAX_BITS` on page 8 is capitalized. I calculate the value
+each time. So this makes me wonder. And the code in ZLIB has the following:
+`deflate.h:48:#define MAX_BITS 15`.
+
+## 14:45
+
+So this is where the code fails to start decoding properly.
+
+	DEBUG -- 09 `eLength(code),??????distancetree.getValue(this.?`
+	at net.multiphasicapps.io.inflate.InflaterInputStream.
+	__decompressWindow(InflaterInputStream.java:598)
+	at net.multiphasicapps.io.inflate.InflaterInputStream.
+	__decompressDynamic(InflaterInputStream.java:398)
+	at net.multiphasicapps.io.inflate.InflaterInputStream.
+	__decompress(InflaterInputStream.java:329)
+                        
+## 15:03
+
+Actually looking at the code, it appears that the problem is with the distance
+perhaps. I believe the written sequence in that group is `\tint dhclen =` when
+it should be `__handleLength` which is 13 bytes. The assignment appears on
+line 348. The appearing `__handleLength` appears on line 375. So it is
+possible the distance tree for one value is read incorrectly. However, the
+incorrect file is 27 bytes longer. Since some other reads of compressed data
+fails on the complements, there is one value which is being read far too much.
+So there is probably a single length or distance which is read incorrectly
+probably by a few bits.
+
+## 15:13
+
+The else if is accurate though.
+
+## 15:16
+
+And the incorrect number of bytes read is correct. But the line is:
+
+	distancetree.getValue(this.	int dhclen = -1 :)
+
+The `-1 :` comes from the ternary operator on line 328. That also then has the
+right length. So really if the length were messed up the bytes that appear
+would be more or less. So these should be two separate windows. Then on the
+following line there is:
+
+	\t\t\telse if ere may only be at most5de. (The
+
+The starting tabs and the else if are correct. So not all distance codes are
+ruined. The distance code at that specific point however is. So I will need to
+debug writes of compressed windows. Since the length codes are correct, the
+only thing it would have to be is distance.
+
+## 15:41
+
+So this is the area when the window data is dumped:
+
+	DEBUG -- Window len= 285 max= 285 dist=3392 `????// Literal byte valu...
+	DEBUG -- Window len=  14 max=  14 dist=3392 `getValue(this.`
+	DEBUG -- Window len=  14 max=  14 dist=4180 `?int dhclen = `
+	DEBUG -- Window len=   4 max=   4 dist=4561 `-1 :`
+	DEBUG -- Window len=  12 max=  12 dist= 203 `????else if `
+
+The doc says `The extra bits should be interpreted as a machine integer stored
+with the most-significant bit first, e.g., bits 1110 represent the value 14.`
+This makes me wonder.
+
+## 16:14
+
+Distance 4180 means code `24   11   4097-6144`.
+
+## 16:18
+
+The first failed window is at 12602, offset by the window is 8422. Actually the
+`distancetree.getValue(this.` is incorrect it should be
+`__readBits(5, true));`. Which means the 285 above would be incorrect because
+that would include the `distancetree.getValue`. That sequence is:
+
+	????// Literal byte value????if (code >= 0 && code <= 255)?????__write(cod
+	e, 0xFF, false);???????// Stop processing????else if (code == 256)?????ret
+	urn;???????// Window based result????else if (code >= 257 && code <= 285)?
+	????__decompressWindow(__handleLength(code),??????distancetree
+
+So there are 18 extra lengths. So it is an incorrect length read.
+
+## 16:25
+
+Looking at the original file, there is a newline and 5 tabs. However the
+extra length of what should not be there is 12 (all of `distancetree`). So the
+length is off by 12. So since the length is 285 that means the code is invalid
+because the length will never exceed 258.
+
+## 16:38
+
+So the exception I put in does not trigger.
+
+## 16:39
+
+Actually, I found it
+
+	// If the code is 285 then the length will be that
+	if (__c == 285)
+		return 285;
+
+## 16:45
+
+The length is capped at 258, I blame similar numbers.
+
+## 17:06
+
+Ok, now I have to fix the issue reading the none block at the very start of a
+file.
+
+## 17:19
+
+Actually PNGs are not working properly because PNG uses Zlib and not raw
+deflate. So it would help to implement Zlib.
+
+## 20:31
+
+Actually the zlib stream is not regioned.
+
+## 21:13
+
+Well this one manifest has a BOM, did not believe I would have seen such a
+thing.

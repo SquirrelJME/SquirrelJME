@@ -1,0 +1,6 @@
+# 2017/03/17
+
+## 09:07
+
+So now that I have stack positions assigned, I just need to generate code to
+place instructions that perform the copy operations.

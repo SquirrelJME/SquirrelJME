@@ -1,0 +1,28 @@
+# 2016/10/29
+
+## 08:48
+
+So thinking about garbage collection, since it will pretty much be stop the
+world, I do wonder how I can optimize some of it. Well, basically it only has
+to be run if allocation of memory fails.
+
+## 08:59
+
+Well, basically I will need some kind of GC barrier that threads can wait on
+or just completely freeze potentially. Freezing might be the easiest although
+it could cause some odd state that could occur potentially. Another thing is
+that GC could sweep objects when safe points are reached in threads that
+are still running. But safe points can be anywhere.
+
+## 21:39
+
+For the launcher, I will need a way to determine which interface to use. I
+suppose what I can do is just have a class lookup which basically says that
+if LCDUI classes exist then use those interfaces. If those do not exist, then
+check for LUI. If there is no LUI support, then just run some kind of program
+and such if one was specified on the command line for example.
+
+## 21:42
+
+So I suppose what the auto-interpreter needs is a kind of configuration system
+of sorts, to determine which APIs, MIDlets, and LIBlets are available.

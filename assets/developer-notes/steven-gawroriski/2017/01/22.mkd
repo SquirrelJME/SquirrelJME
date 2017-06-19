@@ -1,0 +1,60 @@
+# 2017/01/22
+
+## 09:57
+
+So it seems that the file manager cannot find the unmodifiable class but when
+it comes to listing classes it requests `net.multiphasicapps.util`, but since
+the unmodifiable stuff is in another package that is not found. So perhaps
+the prefix is for sub packages to, but not too sure of that.
+
+## 09:59
+
+There actually is the recurse flag, and I bet I do not use it or use it
+incorrectly.
+
+## 10:00
+
+But, recursive is set to false. So it is possible that the guessed package
+name for a project is not correct which might be messing some things up?
+
+## 10:02
+
+And the unmodifiable collections seems correct.
+
+## 11:04
+
+So the unmodifiable map does appear in the list of classes which are available
+which means if it searched correctly it would be found.
+
+## 13:01
+
+Ok so with `DEBUG -- list(PLATFORM_CLASS_PATH, `
+`net.multiphasicapps.util.unmodifiable, [CLASS], false)` it appears that it is
+actually looking for the unmodifiable package, but only in the platform
+class path before giving up.
+
+## 13:02
+
+But it does not reach the end of execution, which means it returns at some
+point.
+
+## 13:05
+
+I do know that the Java compiler hides exceptions, so some kind of search
+or inclusion must be failing.
+
+## 13:06
+
+And I then get `java.io.IOException: CJ07 net/multiphasicapps/util/`
+`unmodifiable/UnmodifiableList$__ListIterator__.class`.
+
+## 13:07
+
+CJ07 is file not found in the ZIP. So I should have another class that
+is a ZipException, but is just not found.
+
+## 13:24
+
+Actually `contains` in the ZIP code was incorrect because the `get` in the
+ZIP class does not return null on failure, it throws an exception. So in
+this case I just catch and check.

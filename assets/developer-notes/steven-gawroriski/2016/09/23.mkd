@@ -1,0 +1,50 @@
+# 2016/09/23
+
+## 07:49
+
+Actually, I believe the register setup which I have planned would be a bit
+complex, when it comes to the stack. Perhaps what I need are value write
+sizes. Essentially these specify the number of bytes that are permitted to
+be written into memory. Basically for MIPS and PowerPC these would be 1, 2,
+4, and 8 (for PowerPC or 64-bit). This could be used by the allocation code
+to potentially determine the best way to allocate values. I suppose there
+can also be another flag for something called unaligned access. If that is
+true then alignment does not matter, however if it does then it will be
+based on the write size.
+
+## 08:03
+
+Actually, most of the complexities that I am currently running into are that
+allocations do not have to be pure. Basically, values are stored across
+registers and stack positions, but not both. It would be far simpler if
+values were allocated purely in registers. For values of a given type on
+system with lower register storages, if they cannot purely fit then they
+can go onto the stack. This way handling of allocations would be far easier
+and less complicated. This means however that on 8-bit systems with few
+registers that most values would be stored on the stack. So I propose for
+simplicity that allocations done by the basic code generator and such are
+pure.
+
+## 09:08
+
+So what I need are based methods for memory copy operations, basically
+load and stores into allocations.
+
+## 09:17
+
+Thinking about it, the `NativeAllocation` can be semi-hacked with when
+writing load/store. Essentially say one wants to store a byte into a given
+array, what can be done is essentially to create a new `NativeAllocation`
+with that given register but with a smaller value type such as byte.
+
+## 10:02
+
+Determining the best way to write this code. However, when it comes to the
+value copying the offsets for the source and the base are the same, they
+just have differing bases.
+
+## 16:07
+
+It would be best if the native code writer has a lower level register
+load/store so that operating on allocations is not required. One example of
+the register load/store would potentially be by other operations.

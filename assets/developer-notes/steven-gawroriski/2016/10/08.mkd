@@ -1,0 +1,87 @@
+# 2016/10/08
+
+## 07:32
+
+What I could use is a midlet system that is completely backed by Java SE for
+example. Basically, for terminal displays and GUI components for the most
+part. The display manager could be actual widgets implemented in Swing, or I
+can write the rendering bits manually. One consideration is that an out of
+Swing renderer would be able to be used on any system which lacks a widget
+system. So the LCDUI code on existing systems, if there are access to
+widgets, will use those if possible. Although for a unified and initial
+experience, I can have the graphical system use a kind of generic framebuffer
+of sorts.
+
+## 07:40
+
+Since the LCDUI and the LUI code both have pretty much duplicated displays,
+I could potentially commonize these into a single set of interfaces perhaps.
+
+## 07:49
+
+With the terminal and framebuffer relying on a single class, a single instance
+of a provider can provide both. For example on Windows opening a terminal
+could make a command prompt window appear (or DOS prompt) while the
+framebuffer will make a window appear. One thing that will be needed is
+detecting and handling resizing of framebuffers and terminals accordingly.
+Then for the JavaSE interface, I can provide both a framebuffer and a
+terminal. Although both would use Swing, all of the code could easily be
+shared. Then I will need basic stuff such as setting titles for these displays
+which can be shared.
+
+## 07:52
+
+I could actually have a unified coordinate system using just X/Y values even
+in the terminal code that uses rows and columns.
+
+## 07:55
+
+Also, there can be common sharing between the meep-lui and midp-lcdui code
+since they essentially have duplicated `Display` although with slightly
+different functionality.
+
+## 07:57
+
+Well really, the LUI one has `setText` and the LCDUI has commands,
+orientation, and vibration.
+
+## 08:03
+
+One thing I need to determine however is how J2ME's MIDP 2 handled things
+when it comes to Displays. Well it just got the Display for the current
+MIDlet. So I suppose that the display system for MEEP and MIDP would be
+on top of some kind of base class. Although the only thing that needs to
+be commonized would be the service loader and capabilities since
+essentially they both rely on services to exist. So I just need to
+commonize the services.
+
+## 09:53
+
+A bunch of the stuff in LUI is copy and pasted from LCDUI, but only from
+the MIDP 3 variant.
+
+## 12:35
+
+It appears as if my basic bootstrap build system is not considering some
+dependencies.
+
+## 13:10
+
+One thing I would have to consider is if for the Framebuffer code, if I can
+reuse `Image` and `Graphics`. I would keep the framebuffer very simple with
+no actual graphics drawing code, it would be purely a pixel buffer for the
+most part.
+
+## 17:54
+
+Actually, I can provide virtualized interface and custom items in forms
+and/or displayables by using virtual controls and canvases. For example if
+setting a `List` `Displayable` is not possible then there can be a virtual
+one that is a `List` but one where it extends `Canvas` internally. Doing it
+at the base LCD UI code means that the extra work does not have to be handled
+by LCDUI implementations. Technically they could, for theming purposes, but it
+would not be required.
+
+## 18:23
+
+In their copy and paste, they never used MODE_ACTIVE and MODE_NORMAL.

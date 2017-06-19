@@ -1,0 +1,13 @@
+# 2016/12/18
+
+## 20:46
+
+So I suppose for dependencies that they are a simple name based dependency
+system. Right now I have no optional dependencies, everything is a hard
+dependency. However, applications would also additionally depend on APIs
+without actually requiring their package names be used.
+
+## 20:50
+
+Actually I just need a base dependencies, both can be handled the same,
+however liblets/midlets need checking.

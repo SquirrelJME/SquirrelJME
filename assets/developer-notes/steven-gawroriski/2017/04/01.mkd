@@ -1,0 +1,244 @@
+# 2017/04/01
+
+## 11:36
+
+So it is a new month. And the first of the month is April Fools, but I do not
+do jokes.
+
+## 11:41
+
+The next instruction to handle is `ifnonnull`.
+
+## 11:53
+
+I can use the work areas for comparison against constants. Well comparing to
+some constants is a pretty common operation. I will need equality checks.
+
+## 12:01
+
+Only thing is that there are multiple comparison types. Two for objects,
+6 for integers, and 12 for floating point types. However, one set of
+comparisons uses the signed one or zero as the return value. dcmp, and fcmp.
+Then there if operations for each type. But all of the ifs just get turned
+into jumps somewhere else. They essentially just depend on the arguments. But
+I can reduce code for `ifnull` and `ifnonnull` by using a working constant
+with the null or not, then calling the standard object comparison between
+the two.
+
+## 12:12
+
+So far safety, just three classes for comparison. Since floating point uses
+two of them, that is what they get.
+
+## 15:51
+
+NaNs are not equal to each other.
+
+## 15:52
+
+I can probably move the software float code to the unsafe code.
+
+## 15:58
+
+Means the software math goes away.
+
+## 16:07
+
+If I am going to turn the float/double comparison to sign types then I do not
+need to have a result sign type.
+
+## 16:18
+
+I am going to have to unify comparisons and such. I know every byte code
+instruction that there is in the code of a method. So maybe I can read ahead
+for long, float, and double and see if a ifcmp follows. But that would mean
+handling the jump for potential differences in exceptions in jump targets. So
+I would have to complicate the decoder much to handle these cases. I could
+just cheat and drop the comparisons to software. Then the class decoder would
+need a new interface for a code description stream that supports hardware
+floating point and some other things.
+
+## 16:37
+
+Ok so the JIT I am writing now is not going to be very fast or efficient in
+long run. However I am going to disregard this completely and just have slow
+inefficient operations for some things, such as comparison between long, float,
+and double. When this JIT fully works and I have an actual working virtual
+machine which executes code, I will start work on an actual IL based one that
+can perform optimizations and is in general much easier to work with.
+
+## 16:45
+
+One thing that will be difficult is handling byte code instructions directly
+in the raw stream as I currently generate the codes. Basically what I need are
+cards that are created for each output instruction. Then I need a card manager
+where the cards can be inserted and removed based on the relation to other
+cards or directly. Then on the generation stage when machine code has to be
+generated, I can calculate the actual true positions of the cards and with
+their references to each other. Then this can be used to more safely generate
+the jump targets since with the method prolog and postlog. This would make it
+much easier to generate code and reduce the chances of screwing up
+implementing the JIT. Then for some instructions in MIPS, they require a PC
+relative offset to be known for jumps but with the raw byte array output it
+will be very difficult to implement, especially if instructions move. Since I
+do plan to replace the JIT with something more efficient in the future, the
+card generation system can just be reused and I will not really need to write
+it twice. It would also me to generate the internal instructions without
+needing to directly write the byte code or use some wrapping interface.
+Because for some operations I will need to write directly in assembly but I do
+not want to write an assembler when I can just use this card system to
+generate the raw machine code instructions.
+
+## 16:54
+
+So what I need to do create new package which has this card system for
+generating raw machine code instructions. Since the instructions are specific
+to the generated machine code and there are various instruction sets, the
+cards will just be holders for values similar to how I reimplemented the
+sorted tree map. So basically what I will do now is to setup these new
+projects which should make everything much easier.
+
+## 17:02
+
+Cards will be package private and will be unable to be directly manipulated
+on the deck like a `List`. The `Deck` will not be a `List` because that
+would it more difficult to use.
+
+## 17:03
+
+This means there can be constant and common faces. It also means that for
+some targets I can more easily generate mixed instruction types such as mini
+MIPS and some other things.
+
+## 17:07
+
+For the MIPS cards, I do not need to make a new project for the MIPS cards.
+But also the JIT is pretty much the only thing that will use the cards and for
+the internal implementation of methods the kernel builder will have access to
+the cards for this purpose. Then also potentially I can use the card output
+that exists in the JIT (the translation engine part) for the internal
+implementations because I will need to track registers, allocations, and other
+such things. So there would be an active cache state, which I could
+potentially modify things directly to perform some operations. For example
+when translating from a float to an int, I can just generate the cards to do
+those operations directly. And now generation of code is much easier to work
+with.
+
+## 17:14
+
+I can also take the hybrid approach to the class description stream in the
+JIT. I can still use the direct approach but I can handle some specific
+operations. Basically I believe I will need an exception that will be used if
+some operation is not supported so that it could be performed in software for
+example. Take for example 64-bit math, which is not supported on 32-bit
+systems. The translation engine code or pretty much also the class format code
+can have it where the operation is transformed. This means getting rid of some
+of my planned method overrides. But there would also be a route in the JIT to
+use those special SquirrelJME methods. I could have it where the class format
+code for as much as possible does not perform wrapped invokes. But that would
+simplify some operation handling and would allow me to directly inline some
+certain method calls. So basically keep doing it. For example if code calls
+`Double.doubleToRawLongBits()` instead of going the route of actually calling
+such a method that can be inlined and the call removed. Since only the JIT
+cares about things being pushed around and such. This means I would only need
+to handle these wrapping operations in a single location: the JIT. So I will
+do this for everything including those ugly long, float, and double
+comparisons. I can also treat the VM as a purely 32-bit machine too. Basically
+the class format code when it sees a long, float, or double it will translate
+those to a method call. But the JIT if it is targetting a 64-bit system it can
+translate those directly inlined machine code. However for 32-bit targets they
+will essentially be the method call.
+
+## 17:34
+
+The card system could also be used by the interpreter, but that would be a bit
+ugly probably.
+
+## 17:37
+
+Then this also means that the code fragment output stuff is gone. This means
+no more factory method just to create it.
+
+## 17:41
+
+This means that I can perform optimizations on the instruction level for some
+architectures.
+
+## 18:55
+
+Also the `TranslationEngine` has the direct register stuff. What could be done
+instead is to have a register dictionary instead. Then I can remove all of the
+register related stuff from the `TranslationEngine`. The only thing it would
+have is a get of the dictionary to use on initialization.
+
+## 19:18
+
+Also I was thinking of the method virtualization. For `MethodLinkage` I need a
+check target thing which can either check to a target or has a method for
+that. Because I will need a dictionary of the unsafe methods to check for
+potential tricks. Otherwise those trick fields will be all over the place and
+duplicated. Since the JIT handles method calls and the stack, the sub-JIT does
+not have to worry about any of that stuff. So that simplifies things greatly
+for me.
+
+## 22:27
+
+The next argument, saved, and temporary register could be commonized since
+right now it exists in the NUBI code. Since the sets have to be ordered. But I
+should definitely make it where the sets are ordered.
+
+## 22:32
+
+Ok, so I can commonize the GOT access and not require all this duplicated code
+to access such things. They can also be index too. The same thing can be done
+for the stack.
+
+## 23:47
+
+So tomorrow will be implementing the cards, simplifying some generation
+things, and getting machine code generated again. It should work out. So for
+generation, I am going to move as much stuff as possible into the base JIT,
+clean it up a bit, and do some other things. Handling of method invoke will
+need to change if I want to virtualize operations. Because right now in all
+cases it does the normal invocation logic. There potentially is a much
+cleaner way to do some of these things by moving it off to some other
+classes made specifically do handle these things.
+
+## 23:51
+
+Then if for GC I am going to do reference counting, I would need it where I
+must uncount objects before I get rid of them. That would have to been done
+on return, before objects are written to. And a few other things. However
+those reference counts can be virtualized for the most part. There would be
+a bunch of overhead from the reference counting though.
+
+## 23:53
+
+Just had this idea. The class decoder is very standalone. I made it seprate
+so that it could be reused for other things. I already decode much of the
+class format and it is quite complex. It would be annoying though, but I
+could merge it in with the JIT.
+
+## 23:55
+
+But, I could use the card system to handle the stream of byte code. Instead
+of having jump targets and exceptions everywhere, I can just load up all the
+byte code information into the card class I plan to use. Then each face on
+the card would be the byte code representation. So instead of a single
+linear pass, it would be capable of knowing the jump targets (which other
+cards the instructions jump to), their information, and other things.
+Basically I can load up the entire method to be parsed all at once. Then
+basically `CodeDescriptionStream` would go away and it would be more like a
+stream of face handling, depending on which face a card has. This could be
+translated to a register based machine like I already do.
+
+## 23:58
+
+For the class decoder, I essentially need all of it in order to function.
+The class format is complex and it does require much code to get things
+working properly. But the jump target and operation type code would
+essentially be erased because I would handle each instruction. The jump
+targets could just be lazily referenced later, which just points to other
+cards. So then this means that faces are perhaps abstract and instead can
+be bound to a card, but only a single card. That would be somewhat of a
+limitation though.

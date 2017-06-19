@@ -1,0 +1,22 @@
+# 2016/12/12
+
+## 16:56
+
+This refactor is taking awhile.
+
+## 17:04
+
+Well for all projects I need two managers for binaries and sources as I had
+before. Well, my previous system worked although it had some issues so do I
+revert back to my older code? Well reversion would be nasty, but rather I
+can drop in and fixup so to speak. It is quite ugly for some things since it
+was made for this purpose. It would also be quite a hack. However, the
+various groups should not depend on other namespaces (except for API and
+Applications). In reality there are only APIs and Applications. So the APIs
+and Libraries/Midlets will the same, except there will be slight differences
+between the areas. So what I must have in this case, is a base class that
+works the same for both things. This way I only design it once. The only
+thing I need to consider is binaries and sources. But I did that before with
+a group thing that can be used, that way things keep it simple. I can just in
+this case have a generic argument in the base class for these types.
+

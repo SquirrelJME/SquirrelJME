@@ -1,0 +1,32 @@
+# 2016/12/04
+
+## 08:58
+
+So what I can do for the suite manager and such is have an API manager so to
+speak. This only really has to be used by the kernel. I suppose it would be
+sorted by the API providing stuff or the suite ID. However some things would
+have to be lower in the class path (configurations).
+
+## 09:11
+
+So I was thinking, perhaps APIs can instead use instead of `MANIFEST.MF`, they
+can use perhaps say `SQUIRRELJME-API.MF` or so. Then this could also extend
+to other software. Then with a special manifest such as this I can remove the
+`X-SquirrelJME` prefixes in the manifess. This way on build, I could store the
+original manifest too. But if MANIFEST.MF exists it can just be merged and
+such, in case custom things in the manifest are required. I suppose this
+would make it slightly more complex but easier in the long run.
+
+## 09:17
+
+So then also, the library and application ones could use:
+`SQUIRRELJME-MIDLET.MF` and `SQUIRRELJME-LIBLET.MF`. Libraries and midlets
+would only be valid if they had these things. The build system however
+could then just have a simpler `SQUIRRELJME-BUILD.MF` which is used to
+specify which dependencies one thing has without requiring that descriptions
+and versions be parsed and such. So the build stuff would be very basic for
+the most part. Then I would just need to figure out how to best represent the
+various set of APIs and their dependencies along with application
+dependencies. Then I would also need another manifest for the build errors
+and such. Since right now I just look in the manifest for the build error
+prefixes.

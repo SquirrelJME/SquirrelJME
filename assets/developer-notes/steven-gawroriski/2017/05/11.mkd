@@ -1,0 +1,9 @@
+# 2017/05/11
+
+## 21:27
+
+So the execution flow control is actually really ugly. This information should
+be in the cards. I would say that instead of having the nexts and jump targets
+which is quite ugly, there are insertion points. The only thing is that
+aliases cannot alias if they are targets for a back jump. So I will need some
+kind of jump target barriers.

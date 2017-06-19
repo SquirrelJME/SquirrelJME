@@ -1,0 +1,6 @@
+# 2017/05/14
+
+## 09:38
+
+What I can use is a code representation class, rather than a basic
+`DataInputStream` for parsing.

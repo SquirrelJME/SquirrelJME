@@ -1,0 +1,110 @@
+# 2016/09/27
+
+## 07:34
+
+So I shall setup the base for a stack frame setup, one that will be easy to
+implement and easy to use.
+
+## 07:42
+
+I can put the stack direction, alignment, and the stack pointers used in the
+layout. Basically anything related to the stack would be placed in the layout.
+This way, all of that information is together. I suppose initially I should
+have it so the code can handle PowerPC's stack frame layout, which has a number
+of requirements.
+
+## 09:44
+
+So hopefully with the creation of the stack frame layout, I can very much more
+easily and more simply write the stack frame that is needed. My hope is that
+the current `invokeMethod()` method is much smaller. It starts from line 218
+and ends at 394 and as such is nearly 100 lines and I would guess that it
+would be about 20-40 lines more. However even with only 100 lines it is still
+quite complex.
+
+## 11:18
+
+Ok, so I had an idea. The code decoder stream needs flags. These flags will be
+stuff such as `NO_CODE` which disables code parsing and just states that only
+the layout of a class is to be parsed. Then another thought I had during my
+walk is that I really really like a fixed size stack where I can preallocate
+every variable as needed. What I can do with this new flagging system is have
+it where I can have a special flag which is used to go through all operations
+and then set in a bit field, all types which are assigned to a given location.
+
+## 11:34
+
+Then this way, I can determine how I want to allocate registers. When it comes
+to the stack, I will still need to select premade allocations although I do
+not have to worry about frame pointers or setting the stack pointer. Also the
+stack pointer can completely act as the base. So this means that the stack
+direction needs a `top` which is the opposite of `base`.
+
+## 17:41
+
+Actually I will do that regardless since it is difficult to forward JIT
+specific options currently.
+
+## 18:27
+
+I am considering making SquirrelJME a kind of hybrid Java/C program where the
+C program runs code, but has symbolic access to the byte code (which is
+compiled). That is, they can call each other and can execute each other. I
+would have to write my own C compiler, because the system one would be unable
+to handle access to Java and there would be a great difference in the target
+machine. I would want the C part to have the same size types for int and such
+regardless of the underlying system. Otherwise, the mass number of defines
+would not be maintainable.
+
+## 18:33
+
+A pure Java approach can work, but everything is a heap reference for the most
+part and there would be overhead of some calls for example. However, if the
+JIT is written partly in C then I would need a way to execute that C code in a
+way where it can be bridged with the JVM. Oracle's Java ME VM is written in C
+and is pretty much a pure C program. For hybrid programs, I would still need
+to recompile the byte code to native code. However, right now I output to 
+namespaces which are part of objects.
+
+## 18:41
+
+However, switching to C would be quite the scope creep. I believe what I need
+is to actually splice apart the JIT. Basically there will be _NO_ namespaces
+writen by the JIT. There would be a namespace target specific output (say to
+ELF or similar) and another which can generate machine code, similar to the
+native code generator.
+
+## 19:15
+
+So basically, the JIT for the class is going to splice the class handler. I
+would say it would be split into two parts: `Container` and `NativeCode`.
+Since `Container` is already is a class then `Binary` should be used instead.
+
+## 19:20
+
+Essentially the JIT on top of the class decoder will be split in where it
+handles things. There will be a basic output which writes to the container
+along with one that is attached to the native machine code generator. So
+the machine code generator would be for just generating machine code spit
+out by the JIT. Then I can perform a kind of optimization of sorts so that
+I can have two different binary containers: one that outputs to a native
+binary for usage for system execution (say an ELF with symbols) and another
+which is used by the JIT at runtime to execute JIT compiled code. One
+would be static while the other would be more dynamic. This would then make
+it where outputting to ELF or say PE at a later step is removed and is
+handled by the binary container code. This would essentially remove the
+link step along with needing a kind of cache for output. Basically it can
+write the ELF and such in a single go for the most part. Since it might not
+support linear output, I can use `FileChannel` to write ELFs and such and
+update it that so that it does not need to store anything in memory. So it
+would initialize it with unknowns and write the known information on close.
+
+## 20:22
+
+So basically this would be a splitting refactor that would remove the need
+to have the link stage to ELF and do that output directly, and potentially
+having symbols and other linkage information. This should actually make
+output generation be simpler and remove the potential need for namespaces.
+I just need a kind of descriptor for actually being able to use the
+namespaces at runtime. This could actually be separate and I could even
+support code and data completely alone.

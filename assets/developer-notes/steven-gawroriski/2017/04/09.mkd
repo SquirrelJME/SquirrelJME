@@ -1,0 +1,10 @@
+# 2017/04/09
+
+## 19:03
+
+So far this new code is much much simpler such as the handling attributes. I
+had the code previously all over the place. In reality only a single attribute
+is handled for fields and methods and that is how I handle that. I just need
+to get back into the parsing the byte code. So I then have to consider my
+previous plans. Having an intermediate language would be the best choice
+because it could be optimized along with generating the native machine code.

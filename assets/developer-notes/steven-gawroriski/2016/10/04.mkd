@@ -1,0 +1,15 @@
+# 2016/10/04
+
+## 17:20
+
+I would suppose that today is a very slow day.
+
+## 18:31
+
+I made the note index a bit more compact. Essentially I had days for each line
+and had a per-developer link (which right now is just me) for each note for
+a given day. So it was very spammy. However now, I used `cal` to essentially
+just show me what the month looks like and I print the days of the week
+accordingly. This is much more compact and also makes the actual days of the
+week visible so one can more easily tell the day of the week I wrote the notes
+on.

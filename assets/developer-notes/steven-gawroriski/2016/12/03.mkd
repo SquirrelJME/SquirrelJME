@@ -1,0 +1,7 @@
+# 2016/12/03
+
+## 16:59
+
+Took a break, was busy and some other such things. But hopefully I can
+continue on implementing SquirrelJME and such.
+

@@ -1,0 +1,30 @@
+# 2017/03/24
+
+## 08:44
+
+I am thinking that `net.multiphasicapps.squirreljme.unsafe.SquirrelJME` should
+be common code which is then branched off to architecture specific stuff. That
+way operations can be checked and shared accordingly. Otherwise I will have to
+implement checks for every single instance. I can also hide the internal stuff
+through the package system and such.
+
+## 09:02
+
+This will help reduce the duplicated code when the wrapping public interface
+changes. Easier to maintain this way since it can just be a symlink.
+
+## 09:04
+
+This is a good thing. Because the kernel's internal class will have to be
+different from sub-processes internal classes. So when a process is linked in
+and initialized, the __Internal__ will point to a completely different class
+implementation. Since some kind of message passing or system calls could be
+used in these cases. For example the creating of instances would need the
+kernel to initialize a new object for that processs but not in its own
+kernel.
+
+## 16:42
+
+One thing that can be done for table reads is I can commonize it. I would also
+need a temporary register. So two new methods. Then I can also commonize the
+invoke by having it where execution is jumped off the register.

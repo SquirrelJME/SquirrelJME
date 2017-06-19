@@ -1,0 +1,71 @@
+# 2017/02/20
+
+## 07:54
+
+`CacheState` will need some global state such as for the stack and such.
+
+## 10:59
+
+I believe a future goal would be to condense the build specific projects into
+the standard librares and such so that SquirrelJME is self hosting. Also I can
+have a replacement system for build system specific things so that libraries
+that purely depend on a SquirrelJME environment do not fail.
+
+## 11:00
+
+Another thing I need is a benchmark so I can gauge how the code operates. I
+suppose for now the benchmark would be a simple one that calculates some
+benchmark algorithm for the primitive types. Also, for the `SquirrelJME` class
+I was thinking again of the service specific method. Basically it would be as
+the following: `public static <C> C systemService(Class<C> __cl)` which would
+have only a singular set of system specific services. So for example for the
+LCDUI engine the class sent would be `DisplayEngineProvider`. The service
+loader could be used as is currently, however that would be unreliable and
+would require the classes implement some kind of priority or replacement
+system. At least the system specific services could be well defined.
+
+## 11:09
+
+Actually my idea on the build system could be done now, since it is quite
+simple. I am not performing a major rewrite at all. Having symlinks are nice
+but they are not as portable as they should be, so as such they should be
+removed and the build setup should not rely on them at all. Also, Fossil does
+not have support for them on non-UNIX platforms. Also symlinks would hurt
+self hosting because systems such as Mac OS Class or Palm OS do not support
+them. I do know these systems are old, but the major thing is Windows.
+
+## 11:11
+
+So essentially, this would also remove the build depends thing too. The
+lookup for a project will check the `build` directory first. If that directory
+lacks a project then it will fallback to the standard `apis`, `mids`, and
+`libs` and locate one. The fallback ones will be treated as a single namespace
+and the build as a single one also. Then for projects such as `cldc` and
+`cldc-compact`, they will just be bare minimum classes. I can also move the
+software floating point code out of unsafe and have it in a standard library.
+To the VM, as long as the class exists in the classpath it does not matter if
+it is in `cldc-compact` or not.
+
+## 11:35
+
+Ok so that makes things much easier now, I do not need to manage two sets of
+dependencies, which will be a good thing. I just now need to move the stuff
+from `build` to the appropriate places.
+
+## 12:07
+
+Maybe this means I can get the doclet generator working again perhaps.
+
+## 12:15
+
+Well wow, there was a dependency on SortedTreeMap but it was only in an
+import. Also the cldc-compact project depended on it (well what was previously
+the virtual unsafe support).
+
+## 12:17
+
+So now I have no symlinks.
+
+## 17:16
+
+So `MIPSRegister nextArgument(MIPSRegister __r)` should be simple to use.

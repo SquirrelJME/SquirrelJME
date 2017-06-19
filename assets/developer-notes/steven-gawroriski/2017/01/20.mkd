@@ -1,0 +1,6 @@
+# 2017/01/20
+
+## 16:47
+
+So I just need basic means of getting the binary manifest from a base project
+either through the source or the actual binary.

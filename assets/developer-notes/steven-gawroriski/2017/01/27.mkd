@@ -1,0 +1,41 @@
+# 2017/01/27
+
+## 08:59
+
+Cannot find a name for the sub-module I plan to write. This will contain stuff
+such as `ExecutableClass` and `ContextClass`. These will be used at compile
+and run time.
+
+## 09:12
+
+Thinking about it, the kernel contains the support for running classes so this
+means that _executable-runtime_ is not needed.
+
+## 14:39
+
+I wonder if I should rewrite the JIT. The way it was written was for the old
+code, but the iteration is still nice. But maybe what I need to do is cut it
+down a bit. There are triplets, outputs, and configurations. Perhaps that is
+just too much to have in it. Most of it is base work, and then there are the
+namespaces too. I suppose the JIT in this case would just be a helper bridge
+between the class format decoder and executable output code itself. Maybe not
+a complete rewrite but a large simplification. Also currently the class
+format code is generally pass to the JIT output and such. Maybe in this case
+I can do OO in layer it. This would allow me to rewrite the class format code
+or rely on other things instead. But that might not even be needed.
+
+## 14:44
+
+Definitely one thing that is convoluted and pretty messy to use is the triplet
+and configuration system. I know an alternative that is more rigid but would
+be simpler to implement and would potentially be less intensive to write. The
+output by the JIT would be more direct.
+
+## 14:55
+
+One thing though is stuff such as fields and such.
+
+## 15:01
+
+So I might just get rid of namespaces or similar, will need to think about
+how to proceed and make things better.

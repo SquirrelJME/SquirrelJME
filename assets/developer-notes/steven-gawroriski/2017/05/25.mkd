@@ -1,0 +1,32 @@
+# 2017/05/25
+
+## 18:36
+
+Actually for fonts, they should not extend NativeFont, but point to them. The
+fonts themselves will be weak references which are looked up by a reference
+handler when requested. Many fonts however can be the same font which points
+to multiple places.
+
+## 18:41
+
+I like how the lcdui Font does not use point sizes.
+
+## 21:42
+
+Actually I can use something similar to the `CacheState` for the storing and
+handling of variables and such. Essentially it is the same thing just a bit
+simplified, well mostly is the same thing. It has worked before, I just need
+to make it slightly a bit more sane.
+
+## 21:45
+
+Of course I need a name. Which can simply just be `VariableState`.
+
+## 21:52
+
+So pretty much the same thing as before.
+
+## 22:26
+
+The thing is that I need even less immutable states since all targets of jumps
+are to basic blocks.

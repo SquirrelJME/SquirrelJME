@@ -1,0 +1,25 @@
+# 2017/03/29
+
+## 07:59
+
+I had been missing `getSuperclass` in `Class`. Makes me wonder how many more
+classes have methods I never actually added.
+
+## 11:47
+
+I believe I have an idea on how to get this red black tree deletion working.
+It is similar to my issues I had when I was inserting nodes. Since the nodes
+are constant for a key and are unlinked on removal (instead of having their
+values copied and such) I need to account for this on return.
+
+## 11:49
+
+Actually the remove on iteration has to be done from the tree root and not
+the current node because of the root and parent links.
+
+## 21:47
+
+So node removal is a bit broken. I do have parent links but the original
+algorithm and sample code do not use parent links. I need these links for
+iteration through the map, otherwise it would be fun implementing that
+correctly.

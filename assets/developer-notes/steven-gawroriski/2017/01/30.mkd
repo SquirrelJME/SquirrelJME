@@ -1,0 +1,38 @@
+# 2017/01/30
+
+## 15:27
+
+Looking at the JIT, I pretty much have to completely strip it down into
+nothing because most of the classes in there, would be removed anyway. As
+such, the classes would be made simplified. Really the only thing to keep
+is the exceptions and the stack caching handler along with some other
+operations. The JIT itself would be given the entire class layout, and
+every system would use a similar space to represent the executable.
+
+## 16:39
+
+Perhaps for the auto-interpreter, it could either integrate with the JIT or it
+can become an emulator of sorts for a given target and emulate some hardware.
+However that would require a working JIT and such. But that is a good
+potential idea in the future, have the interpreter now be an intermediary that
+will in the future turn into the emulator that uses the Java SE Host or
+potentially Java ME. I suppose for simplicity that I can model the instruction
+format that the interpreter executes and have it use MIPS or an existing
+instruction set. This would allow me to write the JIT as it would be a normal
+system. Then whatever happens in the machine code will change what happens
+on the interpreted system. So this way, methods are just slices of some
+architecture which is then executed. Then once I have basic Hello World stuff,
+I can then work on a primitive systems emulator which I can use to run
+existing programs on (in a limited fashion) along with allowing a testable and
+somewhat hosted SquirrelJME environment.
+
+## 18:34
+
+Yes, this can work. Once an `ExecutableClass` I can then serialize it to an
+output stream for cache purposes. For most systems there will be just a single
+class that can hold machine code and other class details.
+
+## 18:37
+
+I learned that Java ME 8 does not have `StackOverflowException`, so this
+means if this occurs it will have to be something else.

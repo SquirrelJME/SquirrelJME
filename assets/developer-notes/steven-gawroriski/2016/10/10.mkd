@@ -1,0 +1,186 @@
+# 2016/10/10
+
+## 08:43
+
+One thing to consider is, how are the OpenGL ES APIs actually even used?
+Basically there are no displayable to use with the LCD UI, but there are
+contexts and displays. EGLDisplay and such are not Displayables.
+
+## 08:52
+
+Well for M3G you perform a `bindTarget` on `Graphics` provided by the
+`Canvas` or `CustomItem`. So this is rather simple. So the next thing is
+how to do this for OpenGL ES.
+
+## 08:57
+
+So I suppose then this is done with `EGLDisplay eglGetDisplay(Object __a)`
+since that is the only thing that makes sense. This means that I will need
+some kind of special binding system in the LCDUI code to handle cases where
+special cases are bound to. So somehow I will need to make publically
+available interfaces.
+
+## 08:59
+
+And the example uses:
+
+	Display display = Display.getDisplay(thisMIDlet);
+	display.setCurrent(this);
+
+Then there is a call to `eglCreateWindowSurface` which uses a `Graphics`
+object. So that is basically all there is, so I can really now start
+implementing OpenGL ES and potentially M3G. I just need to think of a good
+way to have the special handling of display things. The only thing that I
+will need is some way to get the display instance that is currently
+being used and perform magical binding to it. And since the M3G code I plan
+to have it use OpenGL ES, I only have to implement base 3D rendering code
+once.
+
+## 12:18
+
+So the EGL classes, apart from the interfaces, have package private
+constructors. This could complicate things if I want to have software
+rasterizer in another project/package. However, hopefully noone will mind
+if I make the constructors protected.
+
+## 12:20
+
+Although, I can always keep it internal. I can have the base classes handle
+stuff such as LCDUI and then have software rasterizers and others implement
+the actual GL interfaces. I can make it where EGL uses whatever it wants and
+where the rasterizers are agnostic to it. The EGL interfaces can be thought
+up of system specific interfaces though. So this way the package will manage
+the rasterizers. Then the rasterizers will just expose themselves over the
+service mechanism. I just will need priorities so that way if a software
+rasterizer exists and a hardware one also exists, that the hardware one is
+selected first. As long as the hardware rasterizers support rendering to an
+off screen buffer, they should not have any issues at all when they are
+implemented.
+
+## 12:32
+
+Actually, GUI can lose Game. This way I can just have a basic `drawGame` for
+the most part. Otherwise I will have to setup new UIs whenever a new game is
+created, which would be very complex.
+
+## 13:45
+
+Since the size of a canvas may change when it comes to graphic operations, I
+would suppose that `GameCanvas` and `Canvas` `getGraphics` will return a
+forwarding `Graphics` instance so that the backing image that has the contents
+of the canvas can change, since images cannot be resized.
+
+## 13:50
+
+Then for the renderer that the game uses, I will need to specify the width and
+the height of the game view because it could change and may not be known when
+a draw request is made.
+
+## 15:37
+
+The problem with that though, is that Graphics is private and/or package
+private. So really there is no way to really initialize such a thing, except
+from the base class using some kind of hidden API.
+
+## 15:59
+
+So lets see, how do I handle `GameCanvas` getGraphics? Looking at some of
+these classes, it makes it seem as if they never heard of interfaces. But
+I suppose J2ME was made at a time where interfaces were frowned upon and
+you really wanted abstract classes.
+
+## 16:02
+
+Well, I suppose `Graphics` can just implement the bulk of drawing operations
+and then just draw them somewhere. I could cheat though and have another
+class.
+
+## 16:05
+
+Actually I know a way I can cheat, I can have `Displayable` extend a class
+of mine that is public. Then instead, I can have an accessor that can access
+all the hidden stuff via a static. So this new base for displayable would
+allow me to hack it up and allow for what I want.
+
+## 16:15
+
+Well, I could in theory just break compability in some subtle ways. Well
+really, Canvas is double buffered for the most part, which essentially
+means that there is a backing image somewhere.
+
+## 16:26
+
+Well, MicroEmulator makes it public and everything in it just throws an
+exception. Personally, I am thinking of breaking compatibility for sanity
+purposes.
+
+## 16:31
+
+Yes, definitely for sanity I will break compatibility. J2ME is a dead
+platform and Java ME is not really going anywhere at all. I suppose
+99.9% compatibility will be good enough for the most part. As long as
+existing code can still run.
+
+## 17:59
+
+So, you cannot `invokevirtual` an interface. So I can just take the next
+alternative, and make all methods in the class abstract instead and make
+it public.
+
+## 18:58
+
+It is unspecified whether `EGLContext.getEGL()` returns the same instance
+or a new instance every time.
+
+## 18:59
+
+However, `eglGetDisplay` works on actual displays. However that can return
+the same instance every time essentially. However perhaps that should
+actually be unique. A configuration is chosen and a context is created. A
+surface is then created from the context. So yeah, the display can return
+the same one, but contexts are always different. Basically I can wrap
+anything that is done on displays. Well, actually not because displays
+can have their own pixel buffers and textures associated with them.
+
+## 19:04
+
+So EGL is shared, but displays and everything else are unique. Because if
+you wanted to get the pre-existing display you can get the current display,
+context, and surface.
+
+## 22:09
+
+I had an idea, I can have annotations and annotate compatbility breakages.
+This way it is documented in the source code and I can also potentially
+extract that information and automatically use it rather than keeping a
+single document.
+
+## 22:39
+
+Thinking that I may need a simplification of the BasicUI along with the LUI
+and LCDUI Display classes, providers, and instances.
+
+## 22:45
+
+Yes, I can essentially just remove the service lookup and just have basically
+a default service if a system property is not specified with a given class
+value. I also may need to infact fold the image reading code into the LCDUI
+image code, perhaps.
+
+## 22:49
+
+However, optional projects may be included and others may be missing. So a
+default specified handler for when nothing is around might not even work. I
+suppose then it can use `ServiceLoader`	to make sure it exists. Then I can
+also simplify the display system too. Right now I can have displays across
+multiple drivers so to speak. Although this can work, it will complicate
+things a bit for the most part. But I will need drivers for the following:
+
+ * LUI -- Will use terminal code.
+ * Terminal -- Will assume vt100 and use System.out in the default case.
+ * LCDUI -- Will use framebuffer by default.
+ * Framebuffer -- No implementation, but implemented by something.
+
+I see the only implementation of LUI using just the terminal code since the
+latter would be much easier to work with anyway. The LCDUI code would get a
+bit complicated since it may actually be able to use native widgets and such.

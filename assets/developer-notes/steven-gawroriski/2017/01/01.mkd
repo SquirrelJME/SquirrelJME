@@ -1,0 +1,43 @@
+# 2017/01/01
+
+## 00:02
+
+Now I do wonder if my script works.
+
+## 00:03
+
+And it does, exciting!
+
+## 00:24
+
+So do I use a mass script to update every single copyright to 2017?
+
+## 09:43
+
+I would be doing it every year, so perhaps instead just removing the date
+range and having a global copyright file. But, copyrights should be shown
+in the files with a date. But it does add clutter and every year I would
+be updating the values anyway.
+
+## 10:02
+
+So soon, I shall code review and such. Also hopefully with copyright
+statements and licensing in a file, it makes things much simpler to manage
+because I no longer need to touch thousands of files every year.
+
+## 10:45
+
+Ok, so code review time. Still refactoring my build system for the most part
+and I have not really touched anything else. I did clean up all of the
+namespaces and such. I would say that my code seems rather fine and I like
+the direction it is going in. Just one thing that could potentially be a bit
+bumpy is the binary/source dependency stuff. If I want to look in the binary
+for someting it has to be compiled. Well, things need to be compiled
+regardless for things to function properly so there is not much I can do. At
+least I have it where binaries will always be up to date for the most part.
+
+## 11:30
+
+So all I need to do now is read the compressed ZIP data and decompress it. I
+do wonder though if in the end my code will be far faster than before. That
+would be a nice thing though.

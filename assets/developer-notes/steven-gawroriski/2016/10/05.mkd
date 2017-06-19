@@ -1,0 +1,26 @@
+# 2016/10/05
+
+## 16:06
+
+The `desiredAssertionStatus()` should not just always return false but instead
+allow for assertions to be used. Since there may be no way to pass such
+arguments to the virtual machine I believe I will handle it via system
+properties for the most part. Assertion status will basically be static and
+not dynamically set at runtime (this is simplest). So when it is first used it
+will check if it has been detected and if it has the previously returned value
+is used. Otherwise it will determine if they are enabled.
+
+## 16:09
+
+Actually I force it to on, which I really like, however there could be code
+out there (especially ancient JAR files) which could have assertions in it
+that cause the program to fail, but where they normally appear to operate
+as normal. So for the sake of compatibility, this must be changed.
+
+## 16:16
+
+I suppose forcing on is rather evil, but it is a good evil.
+
+## 16:18
+
+Also, `Class` is missing `getName`, which is rather nasty.

@@ -1,0 +1,25 @@
+# 2017/03/08
+
+## 12:44
+
+Thinking about it, I do not really need to know the stack offsets for snapshot
+cache states if there is nothing there anyway.
+
+## 14:57
+
+For demonstration purposes I will need a target which compiles to Javascript
+and a simple HTML carrier. It would be really nice if I could show off
+SquirrelJME in a browser. I can use a canvas with tapping and such. I suppose
+it would generate a single HTML file with all the needed Javascript and such.
+The only thing is that the entire VM would be quite large, it should however
+work.
+
+## 15:21
+
+Using the web storage system.
+
+## 15:35
+
+Using the web storage system records stored in the RMS along with a basic file
+system can be used. One thing which would be handy though is a file manager
+system which can run on RMS. This really depends though.

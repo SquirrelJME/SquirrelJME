@@ -1,0 +1,46 @@
+# 2017/02/24
+
+## 12:11
+
+One thing I will need to consider is garbage collection. I want a good and
+simple garbage collector, but one which does not add complication and is not
+slow. I also want to potentially avoid having safe zones for threads to park
+when GC is happening. I want to avoid reference counting. I also want to
+avoid scanning the stack and register values for objects.
+
+## 17:03
+
+The non-bootstrap JARs in the target should be in their own directory. This
+would have far better results because I could potentially add third party
+JARs and such.
+
+## 17:49
+
+I do wonder how I will implement the `StreamProcessor` along with the
+supporting the helper classes needed for inflating compressed data.
+
+## 18:07
+
+I will need a simple but efficient stream processor.
+
+## 18:09
+
+I suppose a direct approach will work. Basically the `StreamProcessor` reads
+input bytes and stores them somewhere after they are processed. So the class
+then will just purely be for reading. The output stream can just be mapped
+similarly.
+
+## 18:21
+
+Actually, from `StreamProcessor` and `StreamProcessorInputStream` I am going
+to have the same code or just wrapped code. Read from some source and do stuff
+with it.
+
+## 19:01
+
+Ok so I have been thinking, `StreamProcessor` is a bad idea. It will just
+complicate things and right now only two classes will use it, for inflate and
+deflate. Also in the most common cases, one will never `OutputStream` inflate
+and `InputStream` deflate. So there is not much point in having these classes
+at all. The stream processing is just over engineered and will just complicate
+the implementation greatly.

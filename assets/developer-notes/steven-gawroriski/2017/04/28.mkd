@@ -1,0 +1,6 @@
+# 2017/04/28
+
+## 07:39
+
+Ok so, the stack does not have to be on the tread it just needs to be on the
+state. So the state gets the top position.

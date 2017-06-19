@@ -1,0 +1,11 @@
+# 2016/11/09
+
+## 17:21
+
+Hopefully now that world events are over, that I can continue work without
+much distraction as before. So one thing I will need to work on is the
+project manager. I right now have namespaces. Now I have this thought that
+the source/binary name of projects is pointless to have. It could be
+determined from the source directory or the binary file for example. So
+this way there is no redundency for example. So this could work out in a
+way and potentially allow for easier renames and such.

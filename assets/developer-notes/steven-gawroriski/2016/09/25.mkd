@@ -1,0 +1,79 @@
+# 2016/09/25
+
+## 09:18
+
+I will need to remember which allocations were saved to the stack so that
+when I invoke a method, if any are used/cached on the stack then their actual
+register values may be used insted of generating another copy.
+
+## 09:24
+
+I saw compilation fail and the JIT being launched anyway.
+
+## 09:27
+
+Actually that is because of the optional dependencies.
+
+## 09:43
+
+I suppose I should store the old stack pointer just before the address of the
+new stack pointer. Return can essentially restore this old value and then jump
+to the return address location. So this way, in the exception handler it knows
+where to restore the stack value since it is in a known location. The
+exception handler would have to have it so that it uses the actual method
+stack needing during its handling work.
+
+## 11:25
+
+Also, I can store the reference to the method also for stack trace purposes
+which would be needed for debugging. I can keep that information in a register
+so that it is always around. And when a method is returned it can be restored.
+
+## 13:17
+
+Actually the argument allocator will need a flag that specifies that
+allocations are not to be saved. Then I can use argumentAllocate for
+method calls.
+
+## 13:29
+
+Argument allocation handling along with methods is very tricky. I
+basically lose association of the original types and I would have to
+handle long/double in multiple ways. So I believe for arguments that
+I will add a new class for argument input and output keys. Basically
+it would be `NativeArgumentInput<X>`. When an argument
+gets an allocation it would be returned in a `NativeArgumentOutput<X>`. This
+way it will be much easier to determine which variables were actually
+allocated.
+
+## 14:12
+
+`invokeMethod` could probably use the stack map types for the method call
+potentially, although variables might be better.
+
+## 14:25
+
+Well this rewritten argument allocation code is much nicer.
+
+## 14:27
+
+The argument priming method definitely got much smaller, the same will be
+said of method invocations.
+
+## 15:16
+
+Actually, it may be easier if I continue doing something similar with the
+method arguments and storing it in a class. It can contain the method and
+the stack type rather than convoluting the structure information which
+would be very useful.
+
+## 19:09
+
+I am going to need some common interfaces for the native code output streams
+that actually write the machine code.
+
+## 19:50
+
+The common interface can use a new `RISCRegister` and an `ofInteger` and such
+placed there. The base interface I described earlier can be generic using
+the specific implementation of the register type.

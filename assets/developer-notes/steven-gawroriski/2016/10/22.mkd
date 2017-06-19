@@ -1,0 +1,7 @@
+# 2016/10/22
+
+## 11:00
+
+Writing the translator in POSIX shell would be a very insane thing to do, so
+I shall write it in Java instead. That would very much simplify things.
+

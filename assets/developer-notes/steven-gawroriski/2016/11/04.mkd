@@ -1,0 +1,43 @@
+# 2016/11/04
+
+## 16:23
+
+I am thinking that the deterministic kernel would best be run in a way where
+it is pretty much timeless. That is, the CPU runs at unlimited speed when it
+comes to Java instructions per second. Only specific situations such as
+sleeping, waiting on IO, locks, and a few other things will cause execution
+to stop.
+
+## 16:26
+
+That might work better when there are changes to the code, it can have a sort
+of replay compatibility despite some source changes (as long as the blocking
+points are the same).
+
+## 16:28
+
+This would also mean that benchmarks would be useless (which I suppose may be
+a good thing). I suppose that everything will be timed to nanoseconds for the
+most part, including thread slicing.
+
+## 16:32
+
+This would probably be the most sane because subtle changes in the library
+code, that is if things were timed to Java instructions, would be
+complexicated with any change. It also means that the code generator can
+change a bit without having it break everything. Really the only thing that
+would block would be thread sleeping and network operations. If a game is
+being played, as long as it yields or sleeps it should work fine. It should
+always time itself anyway. I do wonder though if some games will completely
+break if the same times are used. I will just have to see if this becomes
+the case.
+
+## 16:45
+
+A common launch parameters class can be done by a builder which can construct
+then return an immutable version of the parameters. At least with the launch
+parameters I would easily be able to handle the deterministic kernel since
+even though a replay could be launched with new parameters, it must be the
+parameters which are stored in the recording. So the launch parameters class
+is generally the only sane way to do such a thing. So the returned launch
+parameters would be abstract.

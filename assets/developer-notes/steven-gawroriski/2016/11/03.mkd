@@ -1,0 +1,8 @@
+# 2016/11/03
+
+## 08:46
+
+I can use the standard interrupt mechanism to see if the kernel interrupts.
+Basically to SquirrelJME if it does run the kernel, it will manage its own
+kernel thread (but would not time slice it as such though).
+

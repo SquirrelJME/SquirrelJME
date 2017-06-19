@@ -1,0 +1,318 @@
+# 2017/02/25
+
+## 07:41
+
+Decompression is going to be much faster than before, output will be direct
+into either the output byte array or the overflow buffer. This means much less
+indirection with swapping buffers and such. When the output array is filled it
+will start going into the overflow buffer. This means that when compressed
+packets are read they can be done in whole parts. This means that there will
+be no throwing or handling of exceptions such as `PipeStalledException`. As
+such this should be a very large speed boost. I do wonder though if I have
+that busy box ZIP file. I do not though, but I could make up another. It would
+also be much more efficient too.
+
+## 07:54
+
+For some reason the dependencies for `sliding-window` are not including the
+library needed for the datadeque.
+
+## 10:04
+
+Let me see. Do I read MSB then flip, or read LSB then flip? Well, at the byte
+level the order does not matter. But since values are generally MSB, I read a
+small chunk of bits in the input from the bytes then just shift them into
+place. LSB bit reads just reverse the bits.
+
+## 10:48
+
+Actually, I think it would be much more optimized if instead of the mini
+window being a bunch of bytes, it is really just two int values. One will be
+above, the other is below. Then reading values, I can simplify the loop and I
+do not have to have complex code.
+
+## 11:12
+
+I wonder what is a fast way to reverse the bits in a byte is.
+
+## 15:04
+
+Appears that my reading of the fixed huffman table is not correct.
+
+## 15:07
+
+I need to read `M`, but I read `c`.
+
+## 15:11
+
+I want to read 77 for `M`. Which means huffman wise: 01xxxxxx with a
+6 bit read. Since the base is 16 that means I want 61 or 0b111101. So the file
+stream should be as:
+
+ * 0b0  -- Not final block
+ * 0b01 -- Fixed huffman
+ * 0b01111101 -- Fixed literal code for M
+
+But instead I have
+
+ * 0b1 -- Final block
+ * 0b01 -- Fixed huffman
+ * 0b10010011 -- Fixed literal code for c
+
+## 15:18
+
+The first 3 bytes of the file:
+
+    4d 49 44
+
+or in bit read order:
+
+    0100 1101
+    
+    1011 0010
+
+So I see where it is going, the bytes from the input are being read
+incorrectly. So I suppose if I swap the values I read.
+
+## 15:26
+
+I should work with known input and output first.    
+
+## 15:52
+
+So this new test code is a class file, which means the first byte read must be
+0xCA.
+
+    DEBUG -- Fixed Code: 201 c9 0b11001001
+
+Close, but it is wrong.
+
+## 16:04
+
+So from my working code it is
+
+	DEBUG -- Read: rv=1 (0b1) msb=true bits=1
+	DEBUG -- Read: rv=2 (0b10) msb=false bits=2
+	DEBUG -- Read: rv=2 (0b10) msb=false bits=5
+
+## 16:06
+
+Means that my code for reading is flipping bits for values when it should not
+be flipping.
+
+## 16:56
+
+Ok so right now I have:
+
+	DEBUG -- Read: rv=1 (0b1) msb=false bits=1
+	DEBUG -- Read: rv=2 (0b10) msb=false bits=2
+	DEBUG -- Read: rv=15 (0b1111) msb=false bits=5
+
+and I need:
+
+	DEBUG -- Read: rv=1 (0b1) msb=true bits=1
+	DEBUG -- Read: rv=2 (0b10) msb=false bits=2
+	DEBUG -- Read: rv=2 (0b10) msb=false bits=5
+	DEBUG -- Read: rv=11 (0b1011) msb=false bits=5
+	DEBUG -- Read: rv=14 (0b1110) msb=false bits=4
+	DEBUG -- Read: rv=5 (0b101) msb=false bits=3
+
+Which means I am reading some bits wrong.
+
+## 17:09
+
+Or that the input is wrong also.
+
+## 17:36
+
+I get:
+
+	DEBUG -- Read: rv=15 (0b1111) msb=false bits=5
+	DEBUG -- mw=00000052 ms=8
+	DEBUG -- Read: rv=18 (0b10010) msb=false bits=5
+	DEBUG -- mw=000002ea ms=11
+	DEBUG -- Read: rv=10 (0b1010) msb=false bits=4
+
+filling the bytes I get `01010100111110` and the top sequence is...
+`00010010111110`. Putting them side by side:
+`01010100111110`. Probably an error, will retype:
+`01010100111110`. Some of those bits are shifted off. In normal order:
+`01111100101010`. But what should be read first is:
+`00010` for the 5 bit two value. So the values are read into the window in the
+not right order.
+
+## 17:42
+
+The bits are not reversed in the window however.
+
+## 17:59
+
+I have no idea at all what is wrong with this code and I have no idea why my
+other code reads the right values.
+
+## 18:12
+
+So the working code has a completely different input source.
+
+## 18:17
+
+Must figure out why.
+
+## 18:24
+
+The input is `7d525d4fd360147e5` but the actual read input is `15cb3b`. So
+where are these bytes coming from? And with my old code, trying to change the
+test code changes nothing.
+
+## 19:28
+
+Actually I was debugging the input for the wrong code.
+
+## 19:56
+
+Ok, now I have the right sequences.
+
+## 20:30
+
+Double increment made code lengths not decompress properly.
+
+## 21:03
+
+So the current thing is that written data appears to be garbage.
+
+## 21:19
+
+So now I have this:
+
+	DEBUG -- Length: 3, Distance: 5
+	DEBUG -- Write 0x00 (?)
+	DEBUG -- Write 0x1f (?)
+	DEBUG -- Write 0x0a (?)
+	DEBUG -- Length: 5, Distance: 12
+
+Should be:
+
+	DEBUG -- Length: 4, Distance: 8
+	DEBUG -- Write 00 (?)
+	DEBUG -- Write 1e (?)
+	DEBUG -- Write 07 (?)
+	DEBUG -- Write 00 (?)
+	DEBUG -- In: 39
+	DEBUG -- Write 20 ( )
+	DEBUG -- In: 15
+	DEBUG -- Write 0a (?)
+	DEBUG -- In: 12
+	DEBUG -- Write 00 (?)
+	DEBUG -- Write 04 (?)
+	DEBUG -- In: e6
+	DEBUG -- Write 00 (?)
+	DEBUG -- In: 39
+	DEBUG -- Write 21 (!)
+	DEBUG -- In: 58
+	DEBUG -- Length: 4, Distance: 13
+
+So the dyanmic distance or length is being read properly. Likely it is the
+length that is incorrectly read.
+
+## 21:32
+
+Off by one for lengths is likely due to the zero check.
+
+## 21:56
+
+So it looks like my file is missing some data:
+
+	000200220800230a000200240700250a000900260a000900270a000200280a000200290
+	9002a002b0a0014002c0a0014002d0a002e002f0800300800310700320700330100063c
+	696e69743e010003282956010004436f646501000568656c6c6f01001428294c6a61766
+	12f6c616e672f537472696e673b0100046d61696e010016285b4c6a6176612f6c616e67
+	2f537472696e673b2956010005776f726c640c001600170100176a6176612f6c616e672
+	f537472696e674275696c6465720100136a6176612f6c616e672f436861726163746572
+	0c001600340c00350036010003656c6c0c003500370100116a6176612f6c616e672f496
+	e74656765720c001600380c0039003a0c0035003b0c003c001a07003d0c003e003f0c00
+	19001a0c001d001a0700400c0041004201000157010003726c6401000a48656c6c6f576
+	f726c640100106a6176612f6c616e672f4f626a65637401000428432956010006617070
+	656e6401002d284c6a6176612f6c616e672f4f626a6563743b294c6a6176612f6c616e6
+	72f537472696e674275696c6465723b01002d284c6a6176612f6c616e672f537472696e
+	673b294c6a6176612f6c616e672f537472696e674275696c6465723b010004284929560
+	10008696e7456616c756501000328294901001c2843294c6a6176612f6c616e672f5374
+	72696e674275696c6465723b010008746f537472696e670100106a6176612f6c616e672
+	f53797374656d0100036f75740100154c6a6176612f696f2f5072696e7453747265616d
+	3b0100136a6176612f696f2f5072696e7453747265616d0100077072696e746c6e01001
+	5284c6a6176612f6c616e672f537472696e673b29560021001400150000000000040001
+	00160017000100180000001100010001000000052ab70001b10000000000090019001a0
+	001001800000038000400000000002cbb000259b70003bb0004591048b70005b6000612
+	07b60008bb000959106fb7000ab6000b92b6000cb6000db0000000000089001b001c000
+	100180000002e0003000100000022b2000ebb000259b70003b8000fb600081020b6000c
+	b80010b60008b6000db60011b1000000000009001d001a0001001800000031000400000
+	0000025bb000259b700031212b60008bb000959106fb7000ab6000b92b6000c1213b600
+	08b6000db0000000000000
+
+The `CAFEBABE` header on this class is missing.
+
+## 22:00
+
+But this is probably due to the read count not being read properly.
+
+## 22:01
+
+And now I have this:
+
+	cafebabe0000003400430a0015001e07001f0a0002001e0700200a000400210a0002002
+	20800230a000200240700250a000900260a000900270a000200280a0002002909002a00
+	2b0a0014002c0a0014002d0a002e002f0800300800310700320700330100063c696e697
+	43e010003282956010004436f646501000568656c6c6f01001428294c6a6176612f6c61
+	6e672f537472696e673b0100046d61696e010016285b4c6a6176612f6c616e672f53747
+	2696e673b2956010005776f726c640c001600170100176a6176612f6c616e672f537472
+	696e674275696c6465720100136a6176612f6c616e672f4368617261637465720c00160
+	0340c00350036010003656c6c0c003500370100116a6176612f6c616e672f496e746567
+	65720c001600380c0039003a0c0035003b0c003c001a07003d0c003e003f0c0019001a0
+	c001d001a0700400c0041004201000157010003726c6401000a48656c6c6f576f726c64
+	0100106a6176612f6c616e672f4f626a65637401000428432956010006617070656e640
+	1002d284c6a6176612f6c616e672f4f626a6563743b294c6a6176612f6c616e672f5374
+	72696e674275696c6465723b01002d284c6a6176612f6c616e672f537472696e673b294
+	c6a6176612f6c616e672f537472696e674275696c6465723b0100042849295601000869
+	6e7456616c756501000328294901001c2843294c6a6176612f6c616e672f537472696e6
+	74275696c6465723b010008746f537472696e670100106a6176612f6c616e672f537973
+	74656d0100036f75740100154c6a6176612f696f2f5072696e7453747265616d3b01001
+	36a6176612f696f2f5072696e7453747265616d0100077072696e746c6e010015284c6a
+	6176612f6c616e672f537472696e673b295600210014001500000000000400010016001
+	7000100180000001100010001000000052ab70001b10000000000090019001a00010018
+	00000038000400000000002cbb000259b70003bb0004591048b70005b600061207b6000
+	8bb000959106fb7000ab6000b92b6000cb6000db0000000000089001b001c0001001800
+	00002e0003000100000022b2000ebb000259b70003b8000fb600081020b6000cb80010b
+	60008b6000db60011b1000000000009001d001a00010018000000310004000000000025
+	bb000259b700031212b60008bb000959106fb7000ab6000b92b6000c1213b60008b6000
+	db0000000000000
+
+Now to check it against the output.
+
+## 22:03
+
+And it matches. Which means decompression works. Took many an hour, but it
+works in the end.
+
+## 22:06
+
+I wonder how much faster the code is, since it is more direct now.
+
+## 22:19
+
+I can probably optimize the sliding window read to not have a bunch of
+allocations of temporary byte arrays.
+
+## 23:07
+
+Decompressing busybox at least for PowerPC (~772KiB) works for about 15
+seconds before throwing an exception. But, this is better:
+
+	DEBUG -- nano=13258083193, msec=13258, read=447488
+
+This means the read speed is perhaps ~33KiB/s. I would have to search
+through the blogs to see what my old sped was. The note is on 2016/08/06.
+But I need a binary that is also 1899912 bytes in size. The PowerPC binary
+is much smaller, but it probably does not make much of a difference.
+
+## 23:16
+
+So if my old speed was ~22KiB/s, this is a good improvement.

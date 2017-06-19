@@ -1,0 +1,131 @@
+# 2016/09/28
+
+## 07:50
+
+So today will be splitting the code generation portion of the JIT and binary
+output portion of the JIT into two separated parts.
+
+## 09:18
+
+So what could be done is that `ExecutableOutput` can be modified to work in
+this new fashion, it would have an ELF output for UNIX-like systems. I can
+also do a kind of prelinking step for example. So I can make the core
+SquirrelJME binary as static as possible. If everything is prelinked and
+ready to go, the only thing that would be needed is to load or access that
+portion in memory.
+
+## 09:30
+
+Ok so, JITConfig could really go into the base of the JIT. The only thing that
+would have to be removed from it is the cache of `JITOutputFactory` but the
+way the code is, that would be a simple task.
+
+## 09:49
+
+So my goal would be so that the executable output is handled by the JIT
+itself. This means _jit_ depends on _exe_ (where _exe_ depends on _jit-base_).
+The EXE would be given the `JITConfig` so it knows how to work with it. There
+would be factories for specific formats. So the config would get the factory
+class which the JIT will use as a binary container. Then the existing basic
+code generating work will be spliced off. So `jit-basic` does not care much
+about the layout of namespaces or the constant pool, it will just handle the
+native code portion. Then this way, the actual code generator code will be
+far simpler with namespaces split off. It would more easily be reused.
+
+## 10:27
+
+I should rename `ExecutableOutput` so I can claim its class name.
+
+## 10:33
+
+So this means that for the namespace processor, it will need an executable
+output. There would have to be two kinds of things, a major output namespace
+and a minor one. The major one would construct the executable early while
+the minor one would create it later. This way it can output all namespaces
+to a single binary or multiple ones, depending on the situation.
+
+## 11:26
+
+Ok, so I thought about it. I will not do it at the _jit_ level but at the
+level of _jit-basic_. If I have a language target then it would be a bit
+pointless to have an executable ouput. So for traditional CPU targets
+_jit-basic_ handles it.
+
+## 11:29
+
+Also thought about merging `JIT` into `JITNamespaceProcessor` since it would
+make much more sense there for the most part.
+
+## 11:45
+
+Since I plan for shared executables, `JITOutput` can now be closed along with
+the namespace processor. This way any final things can be managed as needed.
+
+## 12:07
+
+I would say that `JITNamespaceBrowser` loses output and it is instead placed
+in another interface.
+
+## 12:12
+
+Actually since I made a new class called `JITNamespaceOutputSingle` I can
+remove the key for shared output and imply it based on the namespace
+processor.
+
+## 12:50
+
+Since I am going to output the distribution ZIP directly, I actually need to
+use a temporary output ZIP file, which I then move over.
+
+## 15:08
+
+So in reality I do not even need an executable or a linking step if it not
+needed for the native target. So this in general makes it much better than
+before.
+
+## 21:46
+
+Actually, I could keep `ELFOutput` since I already have all of it. I can
+undeprecate it then move the JIT part of it to `jit-basic-elf`.
+
+## 21:48
+
+Well actually, the executable output system is tied to the JIT for the most
+part. So for simplicity, I will just move the bulk of the code over.
+However for ELFs I will need three sections for the most part which would
+be referenced in memory. I would guess that the output support internal
+relocations where pointers are set on write for the most part. But the
+major thing I need to do is reorganization of the code generation. I still
+do have to handle the call stack management however.
+
+## 21:55
+
+The initial things that would need to be modified would be mostly the
+`BasicNamespaceWriter`. If the executable output can handle multiple streams
+then I can have data and other such things in their own self contained
+locations.
+
+## 22:00
+
+So the generic executable output interface would have the ability to create
+new output sections regardless of the output type. Then one thing I should
+do for the ELF code is decouple the part used by the JIT and the underlying
+ELF code. This way, the sections and such can more freely changed without
+being tied to a single class. The structures and such would mostly be the
+same for the most part and the executable output wrapper would handle such
+things. Then when it comes to machine code generation, it will write to
+another stream but be mostly based on the native code writer. However they
+both would be standalone so that there would be no intermixing of them. So
+the code description stream should purely operate for the most part via the
+native code writer. One consideration I have been thinking of is call stack
+setup. I am very much thinking of preallocated variable slot data. However
+that could potentially waste space. So I suppose what can be done for the
+code writer output would be the ability to have future data be able to be
+set. Then the code writer can eventually be output to a byte array or some
+type of stream. If I allow this rather than having a direct code output then
+I can allocate on the stack as I need from the base of it or similar (perhaps
+via the frame pointer). This future referencing of data would reduce some of
+the complexity required during code generation. So then this way, all
+management of the stack is seemingly static in the output code. For the most
+part generated methods would be small in size, so the instructions for the
+entire method would not have a high cost on memory usage.

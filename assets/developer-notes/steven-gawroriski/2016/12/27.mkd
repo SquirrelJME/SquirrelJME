@@ -1,0 +1,30 @@
+# 2016/12/27
+
+## 11:59
+
+My refactoring is going well, got back to compiling and such, soon it will
+be over and I can continue on with the interpreter. Now that I permit symlinks
+I can use those for the system specific stuff such as the `SquirrelJME` stuff.
+
+## 12:15
+
+The ZIP nextEntry could have just a name that uses the default compression.
+
+## 13:10
+
+Dependencies are the same for binary projects for the most part.
+
+## 13:15
+
+I need a manifest generation in sources.
+
+## 13:46
+
+Need to read data from binaries, which means I need to be able to read ZIP
+files now.
+
+## 19:17
+
+Had this idea for Squirrel Digger, change it around or have an extra game
+using the same engine but instead have it take place on Mars. Essentially
+everything would kill you and any mistakes can cost you dearly.

@@ -1,0 +1,42 @@
+# 2017/03/21
+
+## 11:10
+
+I can commonize the most of the invocation logic so where the only thing that
+has to be done is actually.
+
+## 11:17
+
+The moving logic can be done the same too. Then the save stack slot could be
+done the same too.
+
+## 11:19
+
+The register moving logic can be done the same also, becuase pretty much every
+architecture has registers.
+
+## 11:20
+
+So `slotCount` is pointless and not needed at all.
+
+## 12:18
+
+I believe for simplicity that the JIT will be treated as a kind of 32-bit or
+64-bit machine. Targets for 16-bit machines will be extrapolated from this.
+
+## 12:29
+
+This adjustment of the code requires a slight refactor with some methods. I
+have the allocate on entry which is good. I just need a commonized means of
+allocating registers otherwise in slots.
+
+## 12:35
+
+There is probably not a more elegant way to do this.
+
+## 12:57
+
+Ok, so instead of a single store, registers will be a multi-store operation.
+Since there can be no real known way to know how data is truly aligned or how
+many registers are needed to store values. So store register is given every
+single register. This means a list is used.

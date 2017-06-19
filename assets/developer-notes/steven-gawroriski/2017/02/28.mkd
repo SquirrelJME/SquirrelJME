@@ -1,0 +1,65 @@
+# 2017/02/28
+
+## 07:55
+
+I suppose for simplicity that records will for the most part will be within
+directories for the vendor and the midlet name. I suppose a vendor directory
+first followed by the name. All in lowercase naturally. However, some file
+systems do not support spaces in filenames such as DOS and have character
+limitations. So the file store will need to have a kind of manifest to
+specify the actual vendor and the name. Then I suppose the directory is just
+the hash code of the vendor/name. I suppose since there is a synchronization
+lock on open, I do not need to worry about multiple clusters being opened at
+the same time. I do however will need to handle cases where the filesystem is
+read-only and I cannot create new clusters. I should also potentially lazily
+create the clusters, but that could complicate things a bit. However, what I
+can do is store each record in its own individual file which means I do not
+have to handle my own database format. This would delay the need to have a
+block based hanlder for records, but a later implementation of that could be
+shared for example with discreet blocks of memory. It is also possible for me
+to model a filesystem on top of the record system in the event that none
+exists. It would basically be a record filesystem.
+
+## 08:06
+
+A record filesystem could be handy for some systems which lack a true
+filesystem, although it might not be capable of storing much data and it would
+only be accessible from SquirrelJME for the most part. This means that it
+would be best to write a utility that can be used to manage files, along with
+zipping and unzipping them. That would be a very useful utility to have.
+
+## 13:47
+
+I believe I need an actual TODO class, one which prints the stack trace then
+exits the SquirrelJME fatally. Otherwise when I am implementing support for
+some things such as third party applications or games, the exceptions that I
+need to figure what to implement are gone.
+
+## 13:53
+
+This will be the only means to know what the actually implement.
+
+## 19:14
+
+Ok for some reason, I read the data but the wanted CRC is incorrect.
+
+## 19:17
+
+So the length is 13 but the read count is actually 9.
+
+## 19:19
+
+Actually, I was reading the input data, I need to increase the length of 4
+because the type is included also.
+
+## 21:14
+
+An enumeration would be the best course for the color type perhaps, but that
+would be somewhat painful to have.
+
+## 23:23
+
+Reading the image data will be fun perhaps. I suppose the easiest thing to do
+would be to have a large number of input streams which just read pixel data
+for the most part. That would be the simplest. Then that way I do not need
+giant switch statements and such.

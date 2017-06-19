@@ -1,0 +1,14 @@
+# 2017/05/09
+
+## 08:15
+
+Ok so what I need to do is I would say is to create a class which represents
+branch target addresses for non-exceptions. Before I just had a basic integer
+array but I suppose this time I should have something a bit more complex. I
+would say to have a class which specifies what happens. I suppose a builder
+and another class. A builder can work because it can be a single class which
+holds this information. Basically I can just keep clearing it. But actually I
+do not need two classes, I just need one. This would be a private class which
+contains a bunch of state that can exist after each instruction is executed.
+It would be safer than having a bunch of globals. It would also be more self
+contained.

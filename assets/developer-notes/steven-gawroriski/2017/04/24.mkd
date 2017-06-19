@@ -1,0 +1,12 @@
+# 2017/04/24
+
+## 12:36
+
+Ok so `ArgumentAllocation`.
+
+## 12:39
+
+Ok so `ArgumentAllocation` is a bad name. it can be much better under another
+name since it contains more information. Basically is `RegisterList` or stack
+layout with a type associated with it. So I would say that it is better called
+`TypedAllocation`.

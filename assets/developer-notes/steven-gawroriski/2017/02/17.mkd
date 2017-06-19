@@ -1,0 +1,31 @@
+# 2017/02/17
+
+## 09:13
+
+So hopefully today I can get units created, in the game, and rendered. Then
+the game can start to get playable a bit.
+
+## 12:22
+
+Actually with translation, I do not need to translate the coordinates when
+drawing because the `Graphics` class handles it.
+
+## 17:26
+
+If I inline condition checks I get faster drawing on JamVM, this can be a bit
+useful since it is slight slow. Also it would mean the graphical drawing code
+is easier to optimize in SquirrelJME. So in the long run it works well.
+
+## 17:58
+
+I could optimize `drawImage()` by having it instead use as much of the slice
+as possible since I now have drawing as tiles. So I can draw an image and get
+the RGB data as a series of tiles rather than just single scanlines. This will
+mean that there would be less overhead in method calls in general along with
+potentially better caching.
+
+## 18:20
+
+I do not need a condition for `limitx` and `limity` because if the value goes
+negative it will never exceed it. However it will be of a large value so it
+has to have a condition to cap it anyway.

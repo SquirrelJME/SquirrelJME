@@ -1,0 +1,12 @@
+# 2016/12/05
+
+## 19:35
+
+Can simplify namespaces a bit.
+
+## 19:40
+
+Actually everything is going to be duplicated across all the project managers
+when it comes to reading and handling their manifests. So instead of doing it
+multiple times it will only be once.
+

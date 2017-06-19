@@ -1,0 +1,17 @@
+# 2017/04/11
+
+## 22:14
+
+So since I work I have less to work on SquirrelJME, but every little bit
+counts.
+
+## 22:18
+
+And it definitely counts. This new refactor of the code seems much easier
+and simpler to write and is not a giant complete mess. Hopefully it keeps
+being really nice.
+
+## 22:22
+
+Definitely much better this time around. Also I will just have exceptions
+always visible rather than not being visible.

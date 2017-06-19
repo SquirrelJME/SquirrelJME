@@ -1,0 +1,192 @@
+# 2016/10/11
+
+## 09:34
+
+I believe I will move the configuration bit stuff out of the method and into
+the constants.
+
+## 10:11
+
+Documenting the configuration choices took much work, however by doing so I
+have learned a tiny fraction of OpenGL ES and can decide how I want to
+continue.
+
+## 10:41
+
+I could get my own enumeration set and extensions, but I am not too sure I
+would even need such things. However the glGetString for versions and such
+will be unique.
+
+## 12:06
+
+Thinking about it, I should definitely actually implement an interpreter
+before writing the JIT which I cannot seem to find the will to work on. With
+an interpreter, everything would then be implemented for the most part. I can
+just keep it very much straight through Java.
+
+## 12:41
+
+The markdown writer for everything should be split off, otherwise I will have
+gigantic methods for writing the stuff.
+
+## 12:42
+
+I also need basically a type representation because essentially super classes
+and interfaces can be generic for the most part.
+
+## 13:11
+
+Actually for the interpreter, I can make it `auto-interpreter`. It can be
+linked into the project system and automatically compile projects as they
+are launched. Since I have the base for LCDUI I can setup interfaces in a way
+where their requests are forwarded to some kind of out-of-interpreter
+interface. The interpreter would then be able to run on SquirrelJME itself. I
+can use it as a test environment also. It could also be used to test things
+such as Squirrel Scavenger and perhaps other JARs that may exist somewhere (or
+be converted into projects).
+
+## 14:17
+
+Definitely I will switch the backend display stuff to use engines or similar
+instead of using service loaded stuff. The main "kernel" program will actually
+use a hardware display backend, but every program that runs will just use a
+virtualized one. The virtual one would be one that forwards.
+
+## 15:11
+
+I have made the JAR namespaces agnostic so that other ones could be
+dynamically loaded at the start or at run-time potentially.
+
+## 15:40
+
+One thing to consider is that I can have duplicated code essentially between
+the interpreter and the launcher. Effectively, the bootstrap to start the
+launcher only once. So the question is, should optional dependencies be loaded
+regardless in all cases?
+
+## 15:47
+
+Also, the media code I grabbed from MIDP and the MEEP media code will conflict
+each other since they share the same package and classes.
+
+## 15:51
+
+I suppose the initial bootstrap can just use the _Class-Path_ setting and just
+strip the JARs to get namespace names that are available. If a dependency is
+missing from that, it is just ignored. This is then used to build the class
+path as required.
+
+## 15:53
+
+Although, I could actually use a kind of _X-SquirrelJME-UserMode_ option.
+Basically, I would just essentially only use _X-SquirrelJME-Depends_ in the
+initial bootstrap mode (ignores optionals) and the user mode settings would
+be optional ones. The launcher is not going to need LCDUIs that implement
+framebuffers or native widgets at all (those calls would be forwarded up
+pretty much). So basically, **midp-lcdui** would have optional depends to
+everything, but it would have a UserMode dependency on the LCDUI for
+usermode. Then I suppose what is needed are external mode dependencies. The
+external mode dependencies would be used by the build-system to calculate
+dependencies.
+
+## 15:58
+
+So in short, the dependency types:
+
+ * Required -- Required regardless, outputs to MIDlet/LIBlet and Class-Path.
+ * Internal -- Required dependencies, outputs to MIDlet/LIBlet
+ * Optional -- Optional dependencies, outputs to MIDlet/LIBlet and Class-Path.
+ * External -- Optional dependencies, outputs to Class-Class only.
+
+I also need to implement standards so to speak and configuration providers so
+that my generated JARs to not depend on cldc-compact but rather say CLDC-8.
+
+## 16:11
+
+Looks like my version of `cal` outputs `5f 08` to underline previous
+characters, which I have never seen before.
+
+## 16:24
+
+So I then need to determine how building will handle such things. I can no
+longer user a simple boolean value for optionals. This also changes the
+recursive lookup mechanism also. So I suppose for optional lookup there is
+NONE, INTERNAL, and EXTERNAL.
+
+## 17:40
+
+I believe what I am going to do is remove the single export system if the
+interpreter pops up and is fully working. Perhaps though. Although I can
+remove the virtual engine stuff because the interpreter would replace
+such things.
+
+## 18:16
+
+So now I do wonder if I should just simplify the LUI/LCDUI system. Potentially
+remove terminal, framebuffer, and just have something right on top. The one
+that would be internal would be a system forwarded one that perhaps uses
+IMC to communicate with the kernel or the launcher. The only issue with using
+IMC for this would be that everything would be slow, including games, due to
+the overhead of the communication socket. Basically the client for the LUI and
+LCDUI system would use a buffer of sorts. Although, it could be a kind of
+mixed setup. I would need a cross-VM array for data passing, or at least a
+window to an array that exists in a global memory spot.
+
+## 18:22
+
+I would definitely need to encapsulate the buffer used by clients. Well,
+passing raw data could actually be done so to speak. I can essentially have
+LUI/LCDUI be a client implementation always. There would just be an
+implementation specific connection to the outside world. The client would
+essentially have the ability to request resources such as byte/short/int
+arrays for graphical buffers. Then another thing I must handle would be cases
+where there is a native widget system that can be used. However, I cannot have
+a single server that shares multiple instances at once because that can get
+really dodgy and they could cross talk perhaps. So that means that I will
+need a class that is perhaps called `ServerConnection`. The client would
+create instances of that class. Launched programs will use the class
+`ClientServerConnection` which uses some magical RPC to access the kernel.
+Each connection would be a single display so to speak. The client would just
+forward to the server via IMC or similar.
+
+## 19:36
+
+I am going to go with a kernel socket interface, package private in
+SquirrelJME, but with a class that manages the sockets and such. I will have
+it where socket data is sent as any type of array, except Object, so that
+mutliple types of data can be used. There would also be a packet descriptor
+also.
+
+## 19:55
+
+So I can easily do that, however I suppose the kernel socket class should be
+abstract and have it where there is a static connection open. There would
+also be a protected constructor. When SquirrelJME is not running the
+LCDUI/LUI code can detect this and spawn some kind of handler of sorts. But
+the UI code would essentially rely on the built-in classes. However, this
+means the build system has to include cldc-compact and cldc-full in the JAR
+otherwise it will never include the socket and reserved code at all.
+
+## 20:31
+
+So actually, I will need a feature that I have talked about for awhile, and
+that would be co-dependencies. I can have the SquirrelJME CLDC stuff, that
+is anything that is used internall in another project. Then using a
+co-dependency I can have it where it will be included in the source path
+and included as if it were part of the source code. I suppose it would be
+co-source of sorts.
+
+## 22:49
+
+So now the socket code will not be an issue at all for the most part, I will
+just have to implement it in a correct manner. I would suppose that it would
+be threaded in operation with synchronization locks. So this means that the
+display interface will create the server in a thread. However, the client
+connection would not use a thread at all. I just need to think of a socket
+interface now.
+
+## 22:51
+
+And this means for simplicity that the BUI code goes away now, and I suppose
+the terminal code also. Everything will just be a display socket connection
+for the most part along with servers.

@@ -1,0 +1,7 @@
+# 2017/04/15
+
+## 20:16
+
+So I still have the plan for the refactor using the deck system. I need to
+have a prologue, main, and epilogue. These would do the same thing as I have
+planned before. I can also have stack caching too at the same time.

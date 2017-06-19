@@ -1,0 +1,15 @@
+# 2017/02/14
+
+## 09:42
+
+I can probably ignore the `DataInputStream` constructors for now until I get a
+working game that I can save and restore.
+
+## 10:59
+
+The megatiles which are in view can be precalculated when the viewport changes
+and they do not have to be calculated each frame either.
+
+## 16:48
+
+19 more classes before I have 1000 classes.

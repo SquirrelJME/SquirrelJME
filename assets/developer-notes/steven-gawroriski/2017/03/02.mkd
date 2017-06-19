@@ -1,0 +1,40 @@
+# 2017/03/02
+
+## 07:35
+
+I need more linkage types.
+
+## 07:51
+
+I will need an efficient means of calling methods that can be overridden by
+subclasses.
+
+## 23:43
+
+Ok, so I sent cats through my inflate algorithm and I got cats back. In fact
+the files are exactly the same.
+
+## 23:45
+
+But the text file does not survive compression.
+
+## 23:49
+
+Ok so the text file is just this:
+
+	DEBUG -- NONE: 0
+	DEBUG -- FIXD: 0
+	DEBUG -- DYNA: 1
+
+And the cats:
+
+	DEBUG -- NONE: 0
+	DEBUG -- FIXD: 0
+	DEBUG -- DYNA: 53
+
+## 23:56
+
+No error occurs reading bits, so it is possible they are read correctly. The
+file sizes do differ, so perhaps it is a combination of both lengths and
+distances?
+

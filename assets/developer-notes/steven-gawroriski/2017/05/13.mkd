@@ -1,0 +1,124 @@
+# 2017/05/13
+
+## 15:34
+
+Ok so, I still need to think of a better way to do this. One which is not
+insanely complex to write like SSA, but not insanely unoptimized like a
+purely naive approach. I also want it to be single pass for the most part if
+when possible. I think at best there would be two passes.
+
+## 15:45
+
+Ok, so a compiler is very complex to write. Well it can be easy but there are
+many considerations when writing them. Actually I have an idea. I can do
+register allocation at the start, which would be faster. But I can have
+alternative execution points in methods. Basically, I run through the entire
+method and I perform stack caching and register reallocation and such.
+However for backward jumps instead of having some kind of anti-aliasing
+barrier I can instead just generate extra machine code that does not have the
+given aspects of aliasing. So basically for points which are targets of jumps
+I have a copy of the state of variables and their alias state. If the
+variables are not compatible alias wise then an alternative chunk is executed.
+This means that I need basic blocks which are at the start of every jump
+target. This way, I will never need to juggle aliases and such. Since jumps
+are always to the start of a basic block I do not need to worry about inter
+instructions. Exceptions also only need to be checked after exceptional
+conditions also. But they still all need instancing to determine which
+exceptions get to be handled. I think one of the potentially slowest things
+would be instanceof checks.
+
+## 16:02
+
+There is this Stack Overflow response:
+
+https://stackoverflow.com/questions/26335959/26337040#26337040
+
+So basically, there is an index for each class which specifies the number of
+classes that are supertypes in the class. There is a list of superclasses for
+each class. If the source class has a depth greater than or equal to the
+target class then the cast may succeed. If it does then the depth of the
+target class (which is lower) is compared with the two table positions. If
+they refer to the same classes then the cast is OK. The only thing then are
+interfaces.
+
+## 16:11
+
+I could put this stuff in methods, but it would probably be best to check
+things.
+
+## 16:12
+
+Ok, so at this point the following must happen: The stack map table must be
+read in a type specifying matter and checked that way. In order to make the
+generated code much easier to work with, I need to know the actual types
+which are used everywhere.
+
+## 16:14
+
+Basically there is `Object_variable_info` which contains the type of an
+`Object`.
+
+## 16:17
+
+Basically as execution continues, I need to know of all the types. This means
+that for the index table of imports can also have static cast and instance
+checks. It can only go in certain directions though. Basically for any type
+which is known I can have a static check whether a given cast is always
+invalid. So take for example there is an object of the type `Double` which is
+verified. The programmer wants to cast it to `Float`. Basically there would
+be a table entry which basically has a flag indicating if casting from
+`Double` to `Float` is valid. When the byte code performs the check it will
+see if the throw an exception flag is set. If it is then it will throw a cast
+class exception or say the `instanceof` fails. But I can also have a flag for
+a completely safe cast.
+
+## 16:29
+
+So if the cast is completely safe, it does not need to be checked. Otherwise
+it checks if it is not never safe, in which case it performs the expensive
+check. Then throws the exception or fails the instance.
+
+## 16:32
+
+So the code is basically:
+
+	if (A.isNotAnAlwaysSafeCastTo(B))
+	{
+		if (A.isAlwaysAFailingCastTo(B) || A.cannotBeCastedTo(B))
+			throw new ClassCastException(A + " -> " + B);
+	}
+
+## 16:45
+
+Also, I will need a check and flag for whether a given class is an interface
+or not. If a class is an interface then a more complex check is required for
+casting I believe.
+
+## 16:53
+
+So this actually makes things far easier. I just then need to layer this on
+top of the anti-aliasing code.
+
+## 17:00
+
+So essentially what I have are basic block queues with entry points. All
+blocks are pushed to a queue then compiled. Compilation is complete when all
+basic blocks have been compiled. I would potentially need natural control flow
+markers however to prevent potential falling into another block of code where
+it is not intended to flow into. So jump targets are important here along with
+the type information!
+
+## 17:53
+
+So I suppose what I need is a slight alternative to the cache and register
+states depending on the basic blocks. Since this is a new way to do things the
+old CacheStates system will not work at all. Something that manages the basic
+block queue and potential positions. Basically what I have is a chunk of byte
+code and I need a basic block queue with the aliasing information.
+
+## 18:82
+
+Actually to, a new `JavaType` could combine the normal types, objects, and
+have native type imformation (pointer stuff). That way there is just a single
+class instead of two. The class is going to become more complex due to the
+fact that classes will be specified in it.

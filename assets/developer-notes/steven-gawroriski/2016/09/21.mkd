@@ -1,0 +1,152 @@
+# 2016/09/21
+
+## 06:30
+
+Today is the last day of summer.
+
+## 06:58
+
+The resource accessor will need a specific means of obtaining a set of
+resources under a given name and returning a kind of reference to them. This
+would be used so that `ServiceLoader` operates correctly in launched programs.
+
+## 10:44
+
+This means the build system refactor has been completed. I just need to test
+it on Windows.
+
+## 12:27
+
+I am considering moving all of my developer notes to outside of the repository
+and into unversioned space. However, I would need an efficient means of editing
+them. For the most part, any notes that I do write remain the same and sort
+of bloat the repository. It would considerably cut down the number of revisions
+where I just type notes.
+
+## 12:39
+
+I would need to rewrite some of the blog scripts however. Although it should
+make things a bit easier and remove a project containing notes.
+
+## 13:42
+
+So now I moved my note system into the unversion space, and I am using nano
+right now to write them as needed. I suppose that would be much better when
+it comes to the future size of my repository and checkout since the notes
+take up quite a considerable amount of space.
+
+## 13:46
+
+Of course I have to wait a day to see if my script works the same still.
+
+## 14:03
+
+I am very much contemplating shunning all of the old blog files along
+with any commits which only contain note based changes. That would
+considerably cut the number of commits performed. To do this, I can
+download the manifests for every revision and extract the information
+to get the SHA-1 sums of the files to shun, the notes related stuff.
+But for a just in case, I suppose only if their size is at least 13
+bytes or perhaps even 12. This would be for the header and the hope
+would be that the SHA-1 is unique enough with these few bytes so
+that nothing else gets accidently shunned. What I can do is use the
+timeline command as:
+`fossil timeline -n 0 -p src/developer-notes/ -t ci -v -W 0`. Then
+I can read on DELETED, REMOVED
+
+## 14:14
+
+Although that would be a bit ugly. I can easily shun just the note
+files easily however. There is the fossil purge command however.
+
+## 14:28
+
+Well, shunning can completely break my repository especially since
+many of the changes were made long ago. So it would be best if I did
+not do such a thing. I could probably recreate the repository and
+rehost it, but that would be much work especially when it comes to
+tickets and such.
+
+## 15:56
+
+Not much programming today though, so I suppose that I can work on
+the JavaDoc generator potentially or continue on with the JIT.
+
+## 18:12
+
+I do have to get used to the new note system to prevent cases where I
+accidently remove notes and such. However, allocation of registers is
+seemingly rather simple.
+
+## 18:19
+
+Something that could be handy would be indirect dependencies, but that could
+get confusing to implement. Basically, if I change a base project it does not
+mean that all projects that depend on it have to be rebuilt. That could lead
+to strange issues and potentially bugs however.
+
+## 18:42
+
+One nice thing is that I can write notes out of band of actual code now,
+which is nice. I had always tried to keep any notes I have written if they
+were completely different in their own commits. One thing I need to actually
+work on is the launching system, I noticed a slight sluggish speed when it
+comes to launching. This is likely due to the single streamed ZIP opening and
+closing constantly, which requires the ZIP table to be parsed over and over
+again. However, what I can do is rewrite the ZIP code so that directory
+searches are not that costly. That is, the central directory entries are
+parsed as they are iterated. I could also potentially perform some caching
+of entries or resources.
+
+## 18:48
+
+One thing to consider in my native code writer factories is that I do not pass
+a stream at all, so there is actually no way to write the actual bytes needed
+for output. So the factory will need to be given an output stream where there
+can be some common instruction building `OutputStream` variant that is more
+friendly to the architecture being written. Then this way there can just be a
+base class which architecture specific code wraps accordingly. So in effect,
+there would be a `MIPSOutputStream` for the most part which has special
+methods for writing all varieties of instructions.
+
+## 19:09
+
+One thing to consider is that RISCs will be very similar when it comes to how
+they generate code. For example they do not have memory to memory operations
+for one. So in hindsight, there will be duplicated in the MIPS and PowerPC
+native code writer classes in some areas because they essentially will be
+doing the same exact thing.
+
+## 19:20
+
+Looks like the builder may be using the wrong set of dependencies. For the
+MIPS project I am trying to build it fails because it cannot find RISCWriter,
+so as such I believe it is potentially using the binary project's dependencies
+rather than the sources.
+
+## 19:25
+
+Also for the ZipFile code, when I refactor it. Due to the fact that I now have
+SortedTreeMap, I can lazily populate entry names for lookup. So say that for
+example an entry needs to be found. It will iterate through the contents of
+the ZIP and then it will fill the map accordingly. If the map already has the
+entry then that will be checked first and returned. If all entries have been
+read then there will be no linear search at all. So essentially this allows
+entries to be retrieved on an as-needed basis. One thing to consider is that
+this would increase the package manager speed because usually the manifest
+will be written first, so a request of the package information will be a
+`O(1)` operation. Also, if I can know the position of the start of the central
+directory then it would also be possible for the base positions to not be
+known until linear scan time. This way if a ZIP is opened and only the first
+few entries are used, it does not waste time calculating everything else.
+
+## 19:31
+
+The ABI will need scratch registers for copy operations to be effective. This
+will definitely be needed by the RISC code writer for stack to stack
+operations.
+
+## 19:35
+
+So I will definitely need to refactor the ZipFile code. However not working
+on the allocator much for some days has somewhat cleared my mind of it.

@@ -1,0 +1,56 @@
+# 2017/02/15
+
+## 03:21
+
+For some reason, the terrain does not draw in the automap in my moved over
+code. I have no idea why either. It should work, but it does not.
+
+## 03:23
+
+Yes that is why, I am using `graphics` and not `__g`.
+
+## 09:53
+
+I wonder if I should use a register for the stack base. Or instead of the
+allocator just have something else done for some things such as the stack. The
+ABI can change which allocators are used and for which purpose.
+
+## 09:57
+
+Actually I do not need register purposes at all, I just need to give registers
+for state that can be used.
+
+## 10:13
+
+Going to have to implement SVG Tiny, XML is horrible. But at least SVGTiny has
+a bunch of stuff missing.
+
+## 10:59
+
+I could omit the base pointer, but I am going to keep it in there to make my
+life easier debugging. I will need to match the calling convention of the host
+system so that foreign callbacks from some OS code into my own Java code works
+as it should.
+
+## 11:38
+
+Actually thinking about it, having a generic class for stack and register
+allocation could work but it would be rather generic and would have to be
+adjusted to support a range of systems that are different. For example it
+would have to work for MIPS then say something like x86 which is completely
+different. However, since I have translation engines this can handle the stack
+things.
+
+## 12:01
+
+This should simplify things greatly.
+
+## 14:41
+
+What can be done when it comes to arguments and such are bindings with JIT
+specific things. Basically for each variable in the Java stack and locals
+there is an allocation key that can be used by the JIT to manage it. The
+representitive JIT specific object will just be tagged with the data so it
+can be used by a JIT however it wants. The basic JIT will just perform stack
+caching and such. So `CodeVariable`s will just have a set of allocations and
+such.

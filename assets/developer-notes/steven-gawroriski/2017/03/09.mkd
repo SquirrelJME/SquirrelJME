@@ -1,0 +1,54 @@
+# 2017/03/09
+
+## 11:58
+
+I just thought about using only temporary values but moving clobbered argument
+register allocated slots to saved registers, then invoking the method. There
+are however far more saved registers than temporaries however. However seeing
+that the number of temporaries are so low, I will need to reserve some for
+operations I need to perform for example. So claiming temporaries is a rather
+bad idea. I believe what I need is a binding allocation manager of sorts, one
+which can have global state. For example there are some binding states which
+affect the entire method. For example if I use a saved register I need to
+store the value on the stack and restore it on return. If I use space on the
+stack, I need to increase the stack frame. Since my JIT is going to be
+designed for modern CPUs I have can have some common classes. In fact for the
+stack I do not need to have the code be CPU specific since for the most part
+all stacks are the same. I just need an engine specific stack initialization
+which can set some initial parameters and alignments.
+
+## 12:08
+
+This specific code would share the same stuff as the slots. This would then
+mean that bindings are register only. This means getting a register interface
+again just to associate with say `MIPSRegister`, but it would only know if
+two registers are the same.
+
+## 12:15
+
+I can definitely commonize anything related to registers and the stack with
+the base JIT code, but I do not need to go out of the way and actually
+support registers other than having interfaces.
+
+## 12:25
+
+And just having a binding with register information in it.
+
+## 14:47
+
+So I suppose that the architecture specific bindings are not needed at all.
+
+## 14:59
+
+Because pretty much every instance of them will be the same anyway because
+they will just store a set of registers. Then with the basic JIT design the
+set of registers will just be stored as such. Since with the MIPS code I made
+the registers just registers with no size information. So there are int and
+float registers but I do not associate a size with them because all registers
+of the same class are essentially the same size.
+
+## 15:06
+
+So I suppose what will follow is bringing in a bunch code code from the MIPS
+engine and making it common, becuase that code will just be duplicated for
+every supported architecture anyway.

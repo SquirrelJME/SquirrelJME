@@ -1,0 +1,66 @@
+# 2016/10/01
+
+## 08:09
+
+A new month is today.
+
+## 09:08
+
+I made 731 commits last month, but this total should drop down in the future
+because my note taking system is no longer part of the repository. I mostly
+just worked and refactored the JIT for the most part. I am slowly getting to
+the point where I will have native code. Hopefully this month I get to that
+point. One other thing I did was that I refactored the build system to be in
+SquirrelJME itself so that all of the related build code is internal. If I
+write a Java compiler then SquirrelJME would be truly self hosting and could
+very much build itself (provided there is enough memory and disk space to do
+so). Most of the code I wrote earlier this month has survived as there are
+really no issues with it at all. I added some new classes such as the
+multi-set Deque which is useful for register allocation where the same set of
+registers are in multiple queues. I also implemented a sorted map and set. But
+most of the work was mostly JIT, which is slow going but getting there. The
+JIT is the most important part of the code because it defines the future for
+the most part, so one must be very careful. I added the base for the LUI
+interfaces and the system used to implement display drivers. I added a bunch
+of utility scripts that would make things easier for me. I had the generic
+JIT but that has gone away for the basic JIT, but I am slowly reworking that
+JIT to be a bit better with this new executable system that I plan to use.
+
+## 09:18
+
+The executable system would hopefully be a way where I can keep code and data
+alone for the most part. I made some ZIP code fixes. The newly created build
+system is much nicer though and has removed a bunch of duplicate code.
+
+## 09:49
+
+I also constantly refactored the JIT much.
+
+## 09:54
+
+One thing is that my commit count should become more accurate rather than a
+bit inflated due to the note taking changes.
+
+## 09:59
+
+Removing all of those notes caused my file count to take a dip however. My
+line count also changed too.
+
+## 12:00
+
+Thinking about it, I can have the most recent test results stored in the
+unversioned space also. However, one issue with that is that markdown has
+no concept of tables or colorings. However, I can use emphasis and strong
+for fail/pass. I could always generate CSV or RTF, or perhaps find a text
+based rich formatting that is mostly just text data.
+
+## 17:13
+
+One thing is that the doclet API does not really have parent class handling.
+Basically everything is dot form as it appears in source code compared to
+the form used in class files.
+
+## 22:07
+
+One script that will be complex is the one that syncs changes into the
+unversioned space in the repository.

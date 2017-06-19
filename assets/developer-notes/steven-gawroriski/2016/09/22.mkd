@@ -1,0 +1,71 @@
+# 2016/09/22
+
+## 07:08
+
+So it appears my modifications to `blog.sh` do work. Except I have a script
+error.
+
+## 07:28
+
+So source register copying will essentially just be slightly complex. One
+thing I must consider is that the implementation of the RISC code will need a
+shifted store for the most part.
+
+## 07:33
+
+Also, today is the first day of fall.
+
+## 07:42
+
+But anyway, the RISC writer will need an abstract method for copying a value
+from a register to memory along with also a byte shift and byte count.
+
+## 07:48
+
+`RISCWriter` will need to handle endianess also as it cannot just copy the
+values as is. The copying logic in this case would be a bit complex however.
+
+## 09:55
+
+One thing though is that storing values onto the stack could get a bit ugly in
+some cases. For example, 64-bit values would have to be written in their correct
+byte order. So I suppose for the `RISCWriter` I can get the word size of the CPU.
+
+## 09:59
+
+So this means that the CPU endianess needs to go into the native code and not
+the base of the JIT.
+
+## 10:10
+
+Probably another thing to do would be to instead of for the ABI, having all of
+those arguments for passing, just have a common interface for such things. I
+can then have the `JITTriplet` implement that interface. This way I can have a
+somewhat common configuration system. Alternatively this new interface can be
+`final` (which it should be) and `JITTriplet` can just return the native code
+specific stuff (which may be better than an interface).
+
+## 10:14
+
+The question is, what do I call the new class? Perhaps `NativeCodeTarget` or
+the even shorter `NativeTarget`.
+
+## 10:17
+
+It can actually become the architecture portion of the triplet since I would
+be using that information for the most part. Then the triplet class can just
+use that code for the architecture portion. So there would be code moving
+over for the most part.
+
+## 10:27
+
+Also, JITTriplet should not equal against String.
+
+## 10:46
+
+So following this, when I return that is, I will need to make it so
+`NativeABI` and similar use the new `NativeTarget` for information such as
+floating point type, endianess, and the bit size. This way it is just set
+via the target and not needlessly duplicated. Then the ABI factory creation
+methods then just get NativeTarget instead. This will make adding new ABIs
+much simpler since only a single argument has to be passed.

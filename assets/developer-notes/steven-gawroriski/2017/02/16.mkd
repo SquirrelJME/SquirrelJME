@@ -1,0 +1,13 @@
+# 2017/02/16
+
+## 09:16
+
+I will need some initial state.
+
+## 09:17
+
+I could also use a kind of state machine accessor to the JIT that is initiated
+with the translation engine. That way there is a backwards bridge of sorts to
+the current code decoder, this will be very useful. It could either be in a
+new class, or the current class can implement an interface. However, using it
+as a `CodeDescriptionStream` could be as useful as it is dangerous.

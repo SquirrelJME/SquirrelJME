@@ -1,0 +1,24 @@
+# 2017/03/20
+
+## 08:37
+
+Need to commonize getting of the argument types for a method ebcause that code
+is shared with method invocation.
+
+## 08:49
+
+I can also probably just commonize the code I am writing and include stack
+elements in there also in the base JIT. Instead of say `Object` I can have a
+fancy class that says the stack position and such.
+
+## 08:50
+
+It will be the same for literally every other architecture too. The only
+slight difference is the register selection and stack positions. So this would
+be best commonized to reduce duplicate code everywhere.
+
+## 09:08
+
+This also removes the need to have the initialize arguments method in the
+sub-JIT because it can be handled all by the code that fills the argument
+allocation information.

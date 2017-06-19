@@ -1,0 +1,65 @@
+# 2017/03/01
+
+## 09:24
+
+I need to get the inflate decompressor working properly. Also it is a new
+month which can be nice.
+
+## 11:43
+
+I have locks on the ZIP stream reader.
+
+## 12:51
+
+Ok so I have two different inflation errors. One has it where the the output
+data results in more data than really should be read while another has errors
+on reading uncompressed data (which might not even be there). So I am guessing
+that the code lengths are being parsed incorrectly. The code lengths are the
+only thing that would modify how much data is output. And since one input has
+problems with an uncompressed area, it is very likely reading the incorrect
+number of input tree bits (which is correct in another stream).
+
+## 20:12
+
+The good thing about aliasing slots is that I can just refer to other slots
+by their tread and index.
+
+## 20:28
+
+Handling exceptions will be fun though. I will need to implement handlers and
+thunks for different states (if their bindings are not compatible).
+
+## 20:30
+
+And the first thing after a copy is method invocation, which I will need to
+handle. This means storing the state of a number of variables and setting up
+the stack and registers for calling another method. So this means for MIPS I
+will need to determine how exactly I want to handle exceptions. I could have
+an exceptional return pointer or I could check if an exception was thrown on
+return, perhaps after restoring arguments after the call. This means that
+there will never be spontaneous exceptions, so I do not have to worry about
+some middle state at all.
+
+## 20:34
+
+Exceptions do complicate things. Means if there are no exception handlers in
+the method that it just returns, without restoring any state. That rule is
+simple. Well, it recovers the stack and restores saved values after return.
+But one major problem with that is that when there are many method calls
+there will just be lots of state restoration. All exceptions though are done
+by `athrow` for the most part. However, some operations perform null pointer
+checks and such. If those checks fail then they throw exceptions. For some
+operations I will need this exception throwing logic in place as a
+condition of failed operations. Generally for C++ and such, exceptions are
+handled by a `setjmp`/`longjmp` like fashion. But I might not need to
+completely store the entire state.
+
+## 20:39
+
+But if you think about it, exception handling is like a non-local goto called
+from another method. Throwing an exception is the same as newing it and then
+just throwing it. The throw operation could just be a special call. So there
+would need to be an exceptional return address. Since I am going to use
+`ByteDeque`s for storing instructions this means that I can generate the
+exception handler areas as I go along. These areas really just have to set the
+source state to some target state.

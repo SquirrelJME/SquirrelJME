@@ -1,0 +1,7 @@
+# 2016/06/28
+
+## 10:07
+
+Ok, so what I need is a class streamer. Basically a class with an input stream
+of a class which handles the class file format.
+

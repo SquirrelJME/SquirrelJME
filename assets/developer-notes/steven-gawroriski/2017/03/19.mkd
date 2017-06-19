@@ -1,0 +1,45 @@
+# 2017/03/19
+
+## 08:08
+
+So I have my first generated instruction: `sw`. Joy!
+
+	0:   afc4fffc        sw      a0,-4(s8)
+
+## 10:01
+
+So what I need to do now is move and load arguments to/from registers and
+adjust them for invoking methods.
+
+## 10:06
+
+This reordering needs to be made simple and perhaps be reduplicatable and
+such. Every architecture is going to have something similar to say the
+least.
+
+## 10:11
+
+So what I need is basically an array of stack map types passed to the method
+invoke which indicates the types of data being stored. Then in the processing
+area I need basically an array of registers used for storing each argument.
+I go through these and the slots to determine which registers are used. When I
+want to copy a register to a candidate I go through this set of registers to
+see if any get clobbered. If they do get clobbered they are placed in a
+temporary register. Well really, all the arguments saved would be on the stack
+if they are clobbered. So I could just load them straight from memory again
+but that would be a bit inefficient. In most cases, the first argument which is
+a this call will remain the same for methods which call other this methods.
+
+## 15:00
+
+There are only three temporary MIPS registers. Maybe I am using them wrong.
+But as long as saved registers are not used there could be some speed
+increases potentially? I can probably reserve one temporary for my own use and
+not allow it to be claimed at all. Additionally I could just run through the
+stack for things.
+
+## 15:08
+
+I could just be worrying about optimizing things that are not really a
+problem. I just need to claim a temporary for my own usage that is not given
+to stack elements.

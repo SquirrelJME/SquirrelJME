@@ -1,0 +1,10 @@
+# 2016/12/06
+
+## 22:32
+
+Actually what I can do for namespaces is have a base class for namespaces
+which also handles the loading of project manifests as needed. Then this
+base namespace group can initialize the information needed for projects. I
+suppose what I could do instead is remerge the split off manifests which I
+have done and revert that to use single manifests again.
+

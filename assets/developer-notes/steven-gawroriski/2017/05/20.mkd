@@ -1,0 +1,40 @@
+# 2017/05/20
+
+## 11:04
+
+Having an actual object for instructions would be good because this way it is
+easier to use than just having raw integers everywhere.
+
+## 11:31
+
+Well the active counter in the constant pool is a bit old. This has been
+replaced by the link table.
+
+## 11:55
+
+I think initially the JIT could use some debug.
+
+## 19:00
+
+But using the type safe info should be far better because I will not need to
+check casts all the time since all input arguments in most cases would be
+correct.
+
+## 19:48
+
+Hopefully my parsing of the stack map table works.
+
+## 19:51
+
+Need to think about how the basic block queue is going to work and how it is
+going to flow into things. I suppose what it comes to are "jobs" that need to
+be done.
+
+## 22:56
+
+For `Graphics`, I could potentially implement some kind of accelerated
+`Graphics` that can draw graphics much faster than using the software
+framebuffer based approach. Although the drawing I currently have appears to
+be very fast, there must be alternative graphics backends for drawing
+faster images. So if some hardware has certain sprite engines and such, those
+could be used. The same could be said for stuff such as OpenGL engines too.

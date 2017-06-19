@@ -1,0 +1,27 @@
+# 2017/02/13
+
+## 07:01
+
+I woke up a bit early today, around 6:30.
+
+## 08:46
+
+Will need an effective means of representing registers for the cell allocator.
+Registers would be constant for the most part.
+
+## 11:10
+
+Looks like MIPS V was never actually implemented or released, so that means it
+can be ignored.
+
+## 11:50
+
+I suppose I can have a register gifting system in the allocator. The allocator
+starts out blank, but the constructor of the base class adds registers along
+with their purpose to the allocator.
+
+## 11:53
+
+However, some registers have multiple purposes. Some could be general purpose
+and be used for arguments or return values. So this would have to be
+supported. Although some conditions will have to be checked for example.

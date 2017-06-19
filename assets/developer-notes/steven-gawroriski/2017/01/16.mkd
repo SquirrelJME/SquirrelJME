@@ -1,0 +1,42 @@
+# 2017/01/16
+
+## 13:10
+
+Took a short break.
+
+## 13:10
+
+So I know how to represent processes. Essentially what I want is to make the
+execution part of it standalone and dependent on the implementation of the
+kernel stuff.
+
+## 13:16
+
+I could use a base kernel exception class.
+
+## 13:31
+
+It would be simpler if only boxed types could be sent to initial thread main
+method arguments so objects do not need to be considered at all.
+
+## 14:28
+
+So threads are created now, although nothing is really done with them yet. I
+need to implement getting classes for entry.
+
+## 14:37
+
+It might be best if no arguments are able to be passed to threads for
+simplicity, which means they must always be void.
+
+## 15:06
+
+So I suppose class initialization is done kernel side for the most part.
+
+## 15:07
+
+Will need to figure out how classes are initialized along with objects. Since
+I need the `Object` class to exist, but I also need the `Class` class to also
+be loaded. I could always use some bootstrap trickery. At least when it comes
+to `Object` it can have a method which returns the instance of the `Class`
+when it is requested potentially.

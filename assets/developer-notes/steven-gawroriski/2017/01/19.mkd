@@ -1,0 +1,7 @@
+# 2017/01/19
+
+## 12:24
+
+Actually with the exception suppressing system, I can pass all of the
+exceptions that happened during load failure.
+

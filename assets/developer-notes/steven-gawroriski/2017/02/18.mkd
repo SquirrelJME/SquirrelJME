@@ -1,0 +1,17 @@
+# 2017/02/18
+
+## 07:38
+
+I wonder if I should have a commit for the variables so I know which one sare
+associated with a given value. The cache state will only store cached
+variables. It would easier if it contained treads containing variable state.
+One thing though is when variables are moved there will be a common thing. So
+what will happen is the code variables will be set when operations are
+performed, but natively they will only operate on non-copied moves. When the
+instruction counter reaches a new zone for instruction handling, it will just
+generate the needed move instructions to restore the state. There would have
+to a clue for what to do with the target variable after it has been stored. So
+real moves will be sent to the translation engine. And then there will have to
+be a hint on how it is used. So the hint would for example be the that the
+variable should be made active and put in a register. Then another hint would
+be to store the variable in a secondary location.

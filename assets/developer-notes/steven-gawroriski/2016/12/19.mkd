@@ -1,0 +1,12 @@
+# 2016/12/19
+
+## 10:33
+
+Actually, I feel like going back to Squirrel Quarrel compared to Squirrel
+Digger. I can have the base game in a library and graphics on top.
+
+## 13:58
+
+I will need to bring in the ZIP handling code too along with the compression
+library. But I believe I am going to rewrite the decompressor so that it is
+much more simpler to work with (since right now it is pretty complex).

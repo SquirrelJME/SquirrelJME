@@ -1,0 +1,10 @@
+# 2017/03/14
+
+## 11:10
+
+Javascript lacks a 64-bit data type and integer operations can only reliably
+be performed on 32-bit integers. Since everything is a double.
+
+## 11:13
+
+Javascript is also very memory inefficient.

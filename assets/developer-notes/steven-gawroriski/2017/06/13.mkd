@@ -1,0 +1,7 @@
+# 2017/06/13
+
+## 09:09
+
+Well this new laptop is working out quite nicely. Working on the constant pool
+bits, I just need to implement the references and then they are all handled.
+

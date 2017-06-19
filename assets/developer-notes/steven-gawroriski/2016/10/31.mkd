@@ -1,0 +1,36 @@
+# 2016/10/31
+
+## 09:16
+
+So I am somewhat working on the theory presentation. I just need to
+determine what is the best thing to place in there.
+
+## 11:08
+
+So I do wonder though if the auto-interpreter should share part of the
+SquirrelJME kernel that would normally run programs, or if it would be
+stand-alone.
+
+## 11:16
+
+It could very well simplify things that are supposed to be part of
+the kernel so that there is no need to write it twice.
+
+## 21:07
+
+So I will need a good kernel interface. I will need to handle paging,
+interrupts, and other such things. I suppose there should be a base
+class that defines interface and then have those exposed with other
+ones. I suppose then what the kernel would do is use interfaces for
+memory management. However, some systems might not use memory as if it were a
+normal kind of CPU. But, thinking about Turing machines at this point is a
+kind of scope creep. Those machines are universal anyway, so virtual memory
+can be implemented by them.
+
+## 21:21
+
+The one thing though would be the kernel loop for the most part. Essentially
+from the interpreter, the locking and threading would be handled by the
+interface. Running on an OS would be the same. Now if SquirrelJME were the OS
+it would have to do context switching itself. So I essentially need a
+threading execution model.

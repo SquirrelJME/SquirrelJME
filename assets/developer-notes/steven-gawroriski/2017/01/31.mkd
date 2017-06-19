@@ -1,0 +1,41 @@
+# 2017/01/31
+
+## 09:58
+
+Today, hopefully work on the MIPS JIT will be done.
+
+## 12:00
+
+So I was thinking of a configuration system again. Each system will need stuff
+such as the endianess, the CPU flags, or other such things.
+
+## 12:03
+
+Then those settings will have to be re-initialized somehow via a kind of
+serialization of sorts. However, the problem with some things is that there is
+no reflection. So this means I cannot just see which values exist in an
+enumeration. I would need objects at run-time to have these configurations. So
+things would probably be best static. If a JIT needs initialization by the OS
+specific part, it can have the means to choose which JIT things should be
+initialized with.
+
+## 12:10
+
+However, I will need some kind of singular class which can be given options
+and such.
+
+## 12:14
+
+Along with a builder of sorts and deserializer from say a map. So a builder
+would make things a bit easier, because I would not want a constructor
+with a few thousand arguments. I would also not want to rewrite builders all
+the time also. I would suppose that for simplicity, I will violate the final
+constraints and such and have the potential for things to be modified. Because
+many CPUs are different and having fixed constraints in some cases would be
+messy. So for example the base would have stuff on the byte order for example,
+it would have a non-final byte order method. If a byte order was set by the
+initialization (say the `endian` option), then it will return that one.
+Otherwise it will throw an `IllegalArgumentException` saying that none was
+specified (or a similar exception). But, seeing that it is not final, for
+some CPUs such as the x86, the method can be overridden to only return a
+single value so it does not actually fail.

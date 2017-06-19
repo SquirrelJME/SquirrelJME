@@ -1,0 +1,42 @@
+# 2017/02/07
+
+## 12:17
+
+Thinking about it, `JITExecutableBuilder` can be merged into the class stream
+because the class stream just forwards everything to it anyway. This would
+reduce the number of classes and indirection.
+
+## 12:50
+
+I wonder if my stack allocation should be exact before-hand, or after the
+fact. It really does not matter, but I suppose it depends on the ABI. For
+example if I setup the stack beforehand then it is possible that the kernel
+can just plop a new stack right on top of the current stack. Maybe during the
+middle of execution of this code, it can _virtually_ enter a new method. If
+the stack of the current method is outside of the stack bounds then it is
+possible the kernel would clobber the stack and destroy it if such events
+occur. Also, programs like GDB possibly operate in this matter, by having it
+where a new stack is temporarily overlaid on the current one.
+
+## 13:21
+
+I suppose a first thing I can do is perform no initial stack caching at all
+and just do it in a completely naive way. When I do implement stack caching
+though it should not require a rewrite of the code generation parts of the
+JIT because the machine code parts would be standalone using simple move
+logic and such.
+
+## 15:38
+
+I wonder if I should have flattened pointers that are only limited to a
+32-bit address space. It would save some things when it comes to 64-bit for
+objects.
+
+## 15:42
+
+It would be too complicated, in most cases any system with a 64-bit address
+space will be using 64-bit registers. So I only need to consider the
+integer values of a smaller size. I would also have to make sure the OS only
+allocates in a given range so I can mask it in place. This would mean a single
+4GiB pool of memory. Using bit shifting can be used, but then there is the
+block alignment. So it is pretty pointless and complexicated.

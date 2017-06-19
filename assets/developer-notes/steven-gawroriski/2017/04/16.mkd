@@ -1,0 +1,114 @@
+# 2017/04/16
+
+## 06:40
+
+Actually waht I can do is have inactive and active java states. Like how
+before I had multiple states for the registers in the JIT, I can do the
+same for the java states. That is, entry and exit states. This way I can
+handle pushing and popping as such.
+
+## 07:31
+
+For simplicity I can reserve a register for the second return address and
+just never use it at all when passing, this way I do not have to shuffle
+anything at all. For the local ABI I need to shuffle if I call in or out
+of the method.
+
+## 10:04
+
+So `__JavaState__` and such could be merged with the register state
+information to combine both sets of registers at once.
+
+## 10:09
+
+I was planning on having two separate classes. But I can actually merge in
+what I have before and just use the register with the type information. So
+the `__JavaState__` really becomes the old JIT with the register thing.
+
+## 10:16
+
+So basically what I had before was just duplicated code.
+
+## 11:09
+
+The only thing is that the `SnapshotCacheState` is immutable. At least on
+entry the registers which are allocated to everything.
+
+## 11:12
+
+So basically what I have is something where I need to replace the immutable
+state with a state that has registers associated with it.
+
+## 11:17
+
+However, what I could do is preallocate the stack variables and such in the
+states. I basically need to have transition code for everything anyway. The
+only bad thing would be that I would lose stack caching for instructions which
+are the target of a jump. This could be bad for loops, however those loops
+generally will only operate via the stack. Knowing which registers are used
+would be handy. However one consideration is this. When jumping back to a
+state I will need to reassociate things anyway. This also means that backward
+jumps where there might be aliases do not need to be handled at all. So
+basically these points will act as a barrier. Unless the register is of the
+same allocation then it will not require a move, but in the event that it
+changes it will then get reallocated. For local and stack heavy code however
+there might be some useless store to stack to allocate a register followed by
+a load of that just to go back to the start of the loop. What I could do
+though is count the number of times a type is used in a given slot when the
+`StackMapTable` is parsed. The method arguments will always be the most
+important until that space runs out. Then it will fall onto stack allocations.
+
+## 11:25
+
+However, this means that `__JavaState__` and `__JavaStates__` are completely
+gone. Then any parsing code just handles it. Actually thinking about it, if
+there is no stack map table then it is impicitely treated as a blank one.
+
+## 11:35
+
+I believe it would be best if the following happened. There is no copy
+operation in the JIT and there is no aliasing operation in the stack state.
+Basically, in `ActiveCacheState` there are two operations: allocate and copy.
+An allocation will clear an existing allocation and allocate some registers to
+it, while a copy operation will either set an alias or allocation some
+registers if a given criteria is not met. In the event code has to be
+generated which does the actual copy it will tell the JIT to generate some of
+the code in the program. So this means that all of the cache states will need
+a reference to the `__Code__` class. The initial parsing of the stack map will
+use allocation only. Then I will also need to keep track of the number of
+registers I actually use as a heuristic. At least on initial stack map
+parsing it will just use it to choose registers which are less likely to be
+clobbered. This way, when a register to requested for use anymore it chooses
+one that will not need to needlessly be saved. However, if the method is
+really complex then nothing can be done about it anyway.
+
+## 11:44
+
+There was another class I was going to add besides the registrer count. I
+forgot what other class I was going to add.
+
+## 11:47
+
+Register lists. Basically what I have now are essentially just arrays or lists
+of registers. I can have a dedicated class for this.
+
+## 17:03
+
+This means the cache state will need a pointer to the top of the stack along
+with pushing and popping logic. It needs to be readable in `CacheState`, but
+settable in `ActiveCacheState`. The `ActiveCacheState` tread could have a
+specific one for stack elements.
+
+## 17:21
+
+One of the big Java design flaws is the long/double taking up two spaces.
+This was a really bad idea.
+
+## 17:24
+
+Means my cache states will need to handle this. But those spots will just act
+like dead slots not used by anything at all.
+
+## 17:31
+
+But, allowing nulls makes my life easier!

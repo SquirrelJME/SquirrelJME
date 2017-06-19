@@ -1,0 +1,13 @@
+# 2016/10/18
+
+## 13:26
+
+I upgraded my system to Debian Stretch, which currently has a non-functional
+JamVM, which means I am stuck using Zero for compilation and running (which
+is quite slow).
+
+## 14:43
+
+It would probably be best to just have my namespaces changes be a part of
+`ProjectList` for the most part. Then just rename that class to become
+`ProjectDirectory`.

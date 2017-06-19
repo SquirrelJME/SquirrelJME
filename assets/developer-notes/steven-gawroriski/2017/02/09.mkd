@@ -1,0 +1,53 @@
+# 2017/02/09
+
+## 13:12
+
+Looks like my code decoder never had exception decoding implemented. I will
+need to think of a way to make it so that the exception table is decoded and
+where jump targets are calculated. Makes me wonder how different exception
+handling is. Well, throwing has to be handled such as going out of the method
+and such. I would also probably need an exception register that specifies that
+an exception was thrown. After each method call, I might have to check for an
+exception, but that would be costly. Maybe what I can have is an exception
+return point. Say if an exception occurs, jump to an address in a given
+register. Well basically there would be the exception register then this
+address register. If the calling method cannot handle the exception in any way
+then it will just return and use the address of the exception return point
+rather than the normal return point. Luckily for me, the monitor stuff is
+handled by the class except for `synchronized`. So I will need to think about
+this. That would however very likely be the easiest way to go. Then for
+different exception handling regions, what can be done is that the exception
+return address can change accordingly to use different tables. These tables
+can be part of the method for the most part.
+
+## 18:51
+
+I keep thinking there is an `AbstractList` or similar that I did not attach
+`RandomAccess` to.
+
+## 19:54
+
+For the level tiles in Squirrel Quarrel, I wonder if I should use mega tiles
+or just have a gigantic single grid. Mega tiles would help in finding the
+location of objects though. But for an area effect, there could be a sorted
+tree map lookup of objects based on X or Y position. Also the smaller arrays
+in the mega tiles would be more cache friendly. Each mega tile can have a
+chain of units so to speak. But it depends, I can get away with just a single
+array. A single array would probably much simpler to code and have less
+objects for the most part. I do wonder though the minimum requirements of
+the original game. Even with its somewhat complex calculations it has a
+minimum of 90MHz which is pretty fast. So I can guess that my game will not
+have much of a requirement if I optimize some things in it. I suppose for
+simplicity there can just be two height levels and all collisions when it
+comes to terrain are on single tile sizes. I would still have to handle
+collision between objects however. I suppose I can use some tricks to
+optimize it because collision will be a big thing. The only thing however
+would be path finding. For example some units can squeeze between others and
+I would need to have it where units that can fit will walk through.
+
+## 20:08
+
+Perhaps though that units are limited to a 8x8 space, they may have differing
+positional offsets, but in the end they could just be limited to that region.
+So for each 8x8 cell, only a single unit can be inside it (except for say air
+units).

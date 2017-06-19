@@ -1,0 +1,37 @@
+# 2017/06/01
+
+## 08:46
+
+So slowly I will get into the base compilation logic which will shove
+everything into a single link table.
+
+## 11:01
+
+I will need resource handling in the JIT, basically it will be the same as
+classes except done a bit differently.
+
+## 11:08
+
+For `getResourceAsStream()` I need to group classes according to the group of
+JARs that they exist in. Basically it is a resource identifier.
+
+## 11:09
+
+But not really a resource identifier, it is more of a group of classes and
+resources. It essentially is I would suppose a cluster of them combined into
+one.
+
+## 11:18
+
+This month is LGBT Pride Month and I will say that I am proud to be who I am
+and that you should not be afraid of who you are. You do not have to be the
+same as everyone else to write software that you enjoy. They say that you
+should mix your sexual orientation or gender with the software that you write
+but to me that just makes it faceless. I am bisexual and genderfluid and I do
+not hide it.
+
+## 11:25
+
+Essentially the cluster identifier will group classes so the behavior is
+still matched where only JARs in the same resource are used. The identifiers
+in this case will just be a simple increment.

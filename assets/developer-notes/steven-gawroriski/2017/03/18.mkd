@@ -1,0 +1,7 @@
+# 2017/03/18
+
+## 16:21
+
+So what I need for the output at least when it comes to code generation is
+where to put the actual machine instructions. I will need a prefix, middle,
+and suffix for the code. Depends.

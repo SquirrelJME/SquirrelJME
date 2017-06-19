@@ -1,0 +1,28 @@
+# 2016/10/27
+
+## 08:45
+
+Access to ZIPs could be wrapped using a virtual provider of sorts so
+that way I do not have to initially support ZIP files. I am thinking
+of rewriting my ZIP code because the ZIP block reader is a bit nasty
+and the inflation algorithm is quite complex.
+
+## 09:05
+
+Actually, I can just build a JAR that I can launch with `java -jar`
+and basically just skip the bootstrap when it is to be launched.
+
+## 09:07
+
+I can do this now because the `host-javase` project will depend on
+Java SE classes such as the compiler, so it will no longer be needed
+for the most part. Since I am going to work on the bootstrap system,
+what I plan on doing with the project split would be to have it where
+instead of recompiling all of the source code every single time it
+changes, I will only recompile what has changed. Then in the end the
+JARs will be merged together as one. Then this way, changes to the
+build system will not be as slow to perform. Some of the project
+system will have to be duplicated though, but I aim to make the project system
+that the bootstrap uses to be as minimal as possible (just names and
+dependencies). It will not care about making well formed MIDlets and such so
+that it stays simplified.

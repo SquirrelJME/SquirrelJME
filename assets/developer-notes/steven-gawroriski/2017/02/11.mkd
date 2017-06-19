@@ -1,0 +1,83 @@
+# 2017/02/11
+
+## 07:34
+
+I need to clip against the surface bounds rather than somewhere off to the
+right. This way the drawing operations for the most part can be very direct
+which would be much faster.
+
+## 08:41
+
+If I go for a completely top/down view, I can have it where I only need to
+draw a single sprite and use rotations of that sprite for angles and such.
+Otherwise I will need to draw rotations of an oblique view. I believe for
+simplicity, I will draw just a single sprite and rotate that. That will
+reduce the work that is required to be done. In the long run, with the
+number of units and buildings available it will save me much time. Also all of
+the images will cost size where none may be available. I believe for sounds I
+will for 8-bit sounds at a low rate such as 11kHz. For music if I do add it
+will just be MIDI because that uses the least amount of space and should be
+simple to implement, no need to worry about decompression algorithms and
+such.
+
+## 09:55
+
+Images drawn off the left side remain their size, but become skewed and smear
+to their image sizes. Not sure why this happens.
+
+## 10:02
+
+It is the AWT code which smears, because it draws the whole slice each time.
+The smudgy parts are just pixels that are left over. So I just need to draw
+with the width of the limit.
+
+## 10:08
+
+Actually the AWT code is scaled.
+
+## 10:13
+
+At least on my current system, drawing all those tiles in the background is
+quite CPU intensive. It will need to be optimized so that the background tiles
+are drawn as fast as possible. Since the viewport might not actually change,
+except when the view is changed, I can draw to a secondary image. Then that
+image can be blitted to the display. Right now each tile is 32 scans, so a
+view width a width of 640 has 20 scans per row, with a height of 480 that
+means 9600 scans are drawn. The terrain is not going to change at all unless
+it needs to be redrawn due to position changes. It just uses lots of CPU time
+in general. Another optimization that can be performed would be tile groups.
+Essentially instead of drawing individual tiles of 32x32, I would cache images
+for a 64x64 pixel group of tiles, or 2x2 tiles.
+
+## 10:24
+
+This would mean less images to draw at the cost of extra memory. However, one
+other thing I can do is split the view window into 4 quadrants. Essentially
+what will happen is that when the view is shifted, two, three, or all four
+quadrants will be shifted off accordingly. However, something that would be a
+bit more optimized is if the screen were split into 9 rectangles. But, these
+might be overly complicated. What I really just need to do is cache the
+`MegaTile` tiles into a single image (where the caches can be cleared by the
+GC too). Then I can just blit the whole megatile at once. Since megatiles are
+8x8 groups this makes them 256x256 pixels. So in general, these blits would be
+more efficient in the long run. The only thing after this point would be fog.
+I would need some way of efficiently drawing fog without requiring that
+megatiles be redrawn whenever fog changes (which will be very often).
+
+## 14:31
+
+The XPM images have transparent areas in them, which means blending is
+possible.
+
+## 14:39
+
+I wonder if I can lookup table alpha blending.
+
+## 16:38
+
+AWT is rather slow when it comes to rendering it seems.
+
+## 18:35
+
+So the next thing will be keybinds. But for the JIT, base work on setting up
+the register allocator.

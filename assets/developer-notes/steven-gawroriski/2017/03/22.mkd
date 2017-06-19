@@ -1,0 +1,22 @@
+# 2017/03/22
+
+## 10:02
+
+I can use the same allocation code for handling the return value.
+
+## 10:56
+
+Oh neat, MIPSr6 has `LWPC` which is a PC relative load of memory, this would
+indeed be very useful for some constants and such.
+
+## 11:08
+
+I will be needing a test framework again.
+
+## 18:24
+
+Actually one thing that would be useful would be the interpreting environment
+capable of using other instruction sets. So instead of just MIPS, I can also
+have it test some other instruction sets too. That would help during
+generation and such. It would not be precisely the same machine but kind of a
+high level simulation of it.

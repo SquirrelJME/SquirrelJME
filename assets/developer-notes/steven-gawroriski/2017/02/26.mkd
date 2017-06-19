@@ -1,0 +1,109 @@
+# 2017/02/26
+
+## 13:40
+
+I will need a way to get the running MIDlet.
+
+## 13:52
+
+Starting with exceptions should be easy.
+
+## 14:30
+
+I have the following blank projects:
+
+ * meep-cellular
+ * meep-concurrency
+ * meep-event
+ * meep-io
+ * meep-liblets
+ * meep-power
+ * meep-provisioning
+ * meep-securityframework
+
+Just hope a bunch of those are simple.
+
+## 14:51
+
+One nasty thing is that record stores use checked exceptions.
+
+## 15:02
+
+The fun thing will be keeping the record database up to date with multiple
+processes being ran. SquirrelJME will need some way to synchronized one file
+with another even when multiple SquirrelJME processes are being ran.
+
+## 15:08
+
+Going to say that RMS sucks. The API is quite nasty, has a bunch of
+inefficiencies and just screams badly designed.
+
+## 15:17
+
+For sanity purposes, I am probably going to need some internal file locking on
+paths and file channels. Or I could just ignore multiple SquirrelJMEs running
+at once and just treat the database as if it were opened only by a single
+running program. This is since all processes running in SquirrelJME will be
+under the same process.
+
+## 16:22
+
+I only want to write the record handling code once, so that means I will want
+a generic block based representation of the database records that can persist
+within SquirrelJME.
+
+## 17:00
+
+Typing up all those classes took awhile, about 4 hours.
+
+## 17:22
+
+Also, I forgot that today was SquirrelJME's birthday! Happy birthday! I have
+worked on it for an entire year.
+
+## 17:49
+
+So I will need an efficient and nice API for records. There would be a single
+instance of the database. Which reminds me to check meep-io and see how much
+it differs from GCF.
+
+## 17:52
+
+So what does that give me then? I would have each record store that exists for
+an application be a single block of binary data where records are stored. So
+there would need to be a record store manager. Every suite stores its own
+records, so that would need some kind of lookup. Then there can be multiple
+stores for applications.
+
+## 18:07
+
+Probably would be best to roll my own format than use a pre-existing format
+because I am not even sure that they exist.
+
+## 18:21
+
+Dreamcast memory card blocks are 512 bytes in size and the Nintendo 64 has
+2048KiB pages about (supposidly). My database would be an ultra-compact
+database. Simple in concept and hopefully fast enough to not be really slow. I
+suppose it should be transactional.
+
+## 18:25
+
+So inventing such a format will be interesting to say the least, but it could
+potentially be done.
+
+## 18:58
+
+I do wonder if I can do obtuse and convoluted tricks to reduce the size
+representation of keys. I can swap bits and use huffman encoding for the id,
+tag, and the size of data stored. Most records would be stored in very small
+quantities so as long as the huffman table even for the data that will not fit
+where it only uses that amount of data to be stored. That would complicate
+things but potentially reduce the storage space.
+
+## 19:11
+
+That would probably reduce the required size, but that would complicate things
+a bit. So I do not want to overcomplicate things needlessly for a few bytes.
+If I do need to shave off bytes like this, I can always have a secondary
+format that treats this way.

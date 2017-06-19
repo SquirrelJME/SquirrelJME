@@ -1,0 +1,14 @@
+# 2016/12/21
+
+## 12:13
+
+For simplicity, opening directories should be very direct until they are
+closed rather than having reference counting and hoping that something
+does get closed. It would potentially increase memory usage, but in most
+cases the contents of projects will not need to be open all the time
+except when used by the interpreter. This makes the system a bit more
+sane and easier to implement (since I do not need to worry about
+references and keeping the cache active).
+
+
+

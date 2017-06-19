@@ -1,0 +1,6 @@
+# 2016/09/24
+
+## 16:30
+
+It seems my stack position jumps by 8 instead of just 4.
+

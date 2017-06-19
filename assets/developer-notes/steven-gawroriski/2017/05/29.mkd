@@ -1,0 +1,238 @@
+# 2017/05/29
+
+## 10:57
+
+Ok so, the actual key code could have the processing information which
+generates instructions needed for the target. So for example one which
+uses byte code instructions would read the byte code and handle those
+things as such and place them into basic blocks. A zone key which uses the
+exception table would generate instructions using another means.
+
+## 10:58
+
+This means that zone keys are comparable to each other too.
+
+## 14:12
+
+Thinking about it, I likely do not even need `BasicBlockStateMap` because
+the zone and entry state could be represented by a single object.
+
+## 14:14
+
+But it would probably be easier to use it if the state maps were not a map
+and it was just in the program state because then that means there is just
+a reference to a single class: `ProgramState`.
+
+## 14:15
+
+But this would mean that there would be zones which are not known about
+potentially and then there might not be easure.
+
+## 14:16
+
+However, there would be a `jumpTo(ZoneKey, ImmutableVariableState)` method
+which creates and returns a basic block to be queued. However, in reality the
+basic blocks could be mostly immutable. The queue would operate with block
+keys which have a zone key and an immutable variable state. Rather than
+operating purely in basic blocks.
+
+## 14:20
+
+The JIT is a really large package and I believe combining everything into a
+single package is a bit messy. Not everything needs to be directly connected
+to each other.
+
+## 14:26
+
+I could also probably make it so the information in a method is contained
+within a single class, perhaps `ByteCode` rather than having a large number of
+classes for having the raw method code and other such things.
+
+## 14:36
+
+Also thinking about it, the exported symbols and such might not need that
+strong handling they currently have at run-time. At run-time the linker really
+only needs class names, field name/type, and method name/type. So the
+`linkage` could very potentially be folded down into a much simpler form that
+has less information contained within it. The same could be said for method
+and field references too.
+
+## 14:49
+
+The regions of the program could be within `ByteCode` instead instead of
+having the code zones and such. I could also move the instruction out of
+`ByteCode` into its own class and use private means of accessing parts of the
+method.
+
+## 14:58
+
+`NativeType` and `Allocation` could be changed somewhat. Potentially even
+combined into one. For example some 8-bit targets or strange targets might
+have a clear mapping of how things are represented. For example, pointers to
+other regions of memory might not have a clear cut representation. So for
+example on the 286, pointers could be 24-bit in that they use a segment
+along and a 16-bit memory address. So they cannot really be represented using
+a single integer variable to be added and subtracted from normally. So I need
+a unique pointer native type. Also another example could be that some targets
+might not support registers containing shorter or longer values, just a
+fixed size. Since I definitely do plan to now target the ZX Spectrum Next
+which uses a Z80 I am going to need special pointers to refer to different
+banks of memory. So this plain treating pointers as integers would be really
+messy for these targets. I also do plan to support many wide targets so I
+would essentially have to rework everything just to handle pointers.
+
+## 15:03
+
+So basically there would be a "give me a native type which can store the
+specified type" and force objects to be pointers essentially.
+
+## 15:06
+
+The classes do need flags however such as for interfaces, if they are final,
+and a few other things. That is needed for linking. Members also need those
+too, so there is probably not much I can do at all. However what I could do
+is remove a bunch of the preloaded constants and make them not exist at all.
+They really have no reason to exist and were just for making less objects
+visible. Also that information is only needed during class recompilation
+and runtime linking. However, this is only needed if there is an actual JIT
+because otherwise for targets without a JIT, everything is already prelinked
+into a single executable where nothing has to actually be checked. So this
+means that the symbols go out of the symbol package and instead go straight
+into the JIT where they can be molded to be simplified. So anything
+related to linking will require the JIT.
+
+## 15:19
+
+So yeah, `ByteCode` is going to get the regions and such instead of the
+native generator part of it.
+
+## 16:46
+
+It would very likely be far easier to create a new JIT project and move all
+the old code into that rather than trying to fix up pre-existing JIT with
+all of its old code.
+
+## 16:51
+
+`ExecutableClass` could probably be removed or changed a bit. At least
+initially the interpreter could be ran as if there were no JIT installed at
+all, so it is really an interpreter for things.
+
+## 16:56
+
+So there really is just a pointer for the most part, then classes could
+potentially be installed to be executable and such.
+
+## 16:58
+
+So register dictionaries could be forked into two specific things, a fixed
+set of registers or a dynamically generated unlimited set of registers. Both
+could be used in many cases.
+
+## 17:02
+
+Instead of saved/temporary requiring to be requested that can be used in the
+register itself and associated with it. That is there is no
+`isRegisterTemporary()`, it is just `Register.isTemporary()`. Any and all
+registers have to be saved before method calls so the condition for argument
+registers could be avoided for example. However, alternatively there could be
+a mapping for which registers are available. Would have to think about this.
+There is stack caching, but it might not fully matter where registers are.
+
+## 17:06
+
+In reality though, the register handling could be done by the target specific
+JITs rather than the JIT itself. Basically there would be an allocation
+mutator which changes state according to the registers available and such. So
+this would mean that the `VariableState` and such is linked to this class.
+But with an infinite set of registers for some targets, all would have to be
+pushed to the queue for it to wait on registers for usage.
+
+## 17:08
+
+One thing though is that I seem to be going in circles finding the best
+solution to things. It has been a year of me writing the JIT over and over
+again to find something that works. Compilers are really messy, but the more I
+do it the more I learn.
+
+## 17:09
+
+Ok so if having a register dictionary does not work for a target and there be
+a variable state kind of thing in the native code, then I would say that it is
+similar to a dictionary but it pulls registers for usage.
+
+## 17:24
+
+I can however have a combined linking stage. My previous plan when creating
+combined executables would be to perform the linking step after all the
+individual binaries have been compiled. However one thing I can do is do
+something similar to what I have before and just have a single export/import
+table which the JIT will place things into. Basically there would be imports,
+exports, and it will maintain a list of unresolved imports. When an import
+is resolved it will not be in the unresolved list and will have a direct link
+to the export. This would work for the kernel itself and any built-in classes.
+Dynamically loading in new JARs would have to be done similarly, but the
+dynamically loaded classes would require the JIT itself. However one thing
+that changes in this case is the fact that some JARs could depend on a
+separate group of classes under the same name. Basically, there is a
+separation which could allow different versions of the same class to exist at
+any one time.
+
+## 17:30
+
+So the question is, can multiple versions of the same MIDlet exist at the same
+time? But, one consideration here is that right now I am talking about the
+kernel, in virtually every case there will only be a single version of any
+MIDlet installed. So effectively this is a non-problem. In the future when
+dynamically loading and linking JARs are supported, it could perform a similar
+means of having a duplicated link table that links into the kernel. Basically
+JIT the entire class, then for any unresolved imports just pull from the
+kernel. But the thing is, all classes pull from the kernel first when it comes
+to importing. So for system classes there can never be duplicate ones or
+JARs with different versions anyway. So this issue does not exist at all. So
+this means that the JIT has a global link table which is compiled into.
+
+## 17:47
+
+So this means that the interpreter changes to instead of loading and
+interpreting a single class at a time, it changes to instead be a compile
+of everything and then just running that thing. So I would say that the
+interpreter in this case just runs a single JAR under the interpreter
+potentially of course with modified runtime stuff as needed. Since the
+kernel and whatever is running will be prelinked.
+
+## 17:50
+
+So in this case, do I get rid of the interpreter and just have a native
+executable that is output? This would be similar to how I have done it
+in the past. This would handle the single link table, although testing the
+generation of code would be done after everything is compiled and linked
+together. I can remove the interpreter and instead of a very direct route
+to how code is ran. So basically I inspect the output machine code to make
+sure it is working. I for now drop the interpreter and treat the system and
+the JIT as if it were a one-shot output and link system.
+
+## 18:00
+
+You know, I am on PowerPC but my initial target is MIPS. I can run both
+natively (well the MIPS on other hardware), but PowerPC is the hardware I run.
+So I think I could implement a JIT which targets PowerPC first that way I
+can run it on my native Linux PowerPC system.
+
+## 18:08
+
+I could write something which runs directly on IEEE1275 which is bare metal on
+PowerMacs. It is really limited but I could use it as a base system where I
+can have a very close to the metal environment running. It would require a bit
+more work because there is no real file system (well there is one but it is
+read-only). But I think it would be best to get a Linux target working first.
+
+## 18:21
+
+But MIPS is the simplest.
+
+## 18:45
+
+Thinking about it, having the kernel just be a normal program works.
+For example it is possible for projects to be compiled and executed directly
+but I think I would want the kernel environment rather than something else.

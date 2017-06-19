@@ -1,0 +1,7 @@
+# 2016/11/02
+
+## 16:50
+
+Was distracted this day. Thought about redoing some of the kernel bits to have
+builders and other interfaces instead.
+

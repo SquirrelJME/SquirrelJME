@@ -1,0 +1,19 @@
+# 2017/06/09
+
+## 19:59
+
+UTF-8 constant entries would best be a specific class so that their values
+cannot be used as string values. Because string constants will be just
+`String`. It is actually illegal to push utf-8 constants to the stack for
+example.
+
+## 20:11
+
+Also removal of `ConstantEntry` would likely make things much simpler because
+in most cases it was just a get of a get and that was pretty much it. I also
+plan on simplifying the symbol information because it is mostly only needed
+during compilation. The link table and such would get its validity
+pre-determined by the JIT because the initial stage is the AOT. This would
+make SquirrelJME boot much faster because it would never need to actually
+check if exports/imports are correct. So essentially SquirrelJME is a
+statically linked virtual machine internally.

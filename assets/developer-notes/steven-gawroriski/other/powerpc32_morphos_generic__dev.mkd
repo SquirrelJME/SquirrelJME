@@ -1,0 +1,11 @@
+# PowerPC 32-bit: MorphOS
+
+This is an Amiga OS clone.
+
+# Time Limit
+
+The OS has an effective time limit of 30 minutes, which will make long
+debugging sessions difficult to work with. However, purchasing a license
+for around 200 USD will remove said time limit. As such, Amiga OS and PowerPC
+support would generally be before this.
+

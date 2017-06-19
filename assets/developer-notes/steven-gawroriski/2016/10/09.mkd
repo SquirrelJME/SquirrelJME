@@ -1,0 +1,117 @@
+# 2016/10/09
+
+## 11:58
+
+So entity positions are 32-bit. 32 / 3 is 10 and 64 / 3 is 21. Since the chunk
+index takes 10 bits, its shift is 11. This leaves 8 bits for sub positions.
+This allows entity positions to be serialized as a long.
+
+## 13:46
+
+I am thinking of making the surface world a bit larger and making the world
+not as tall.
+
+## 13:53
+
+So I can make it 1024x1024x1024, 2048x2048x256, 4096x4096x64. Since my chunk
+size is 8, this effectively means that the world is more wide than it is
+tall. However, I believe going for 4096 wide and long would be the best
+choice.
+
+## 14:02
+
+The surface would generally a bit more interesting, although underground
+could also be interesting too.
+
+## 14:10
+
+So for this I need a functional class that just handles positions.
+
+## 14:17
+
+Actually, I can use all of the 32-bit integer and treat it as unsigned. This
+would give me 13x13x6 bits, 8192x8192x64 chunks, 65536x65536x512 blocks.
+
+## 14:20
+
+But do I need to worry about coordinates for things being packed into a single
+long? Not really. The only thing is that with a maximal block size of 13, this
+means the sub-block divisions is lower. If I want to keep all values signed
+this leaves me with 31 bits. Remove 13 and I have 18 for the block and sub.
+Since 3 are used for the block, that leaves 15 for the sub.
+
+## 14:40
+
+If I got rid of mining blocks, I would only have to store items for the most
+part in save data for each chunk. This would be less intensive and would
+essentially allow me to target low memory systems which might not even have
+a disk. However, it would have to be interesting enough to not bore players.
+
+## 14:44
+
+Could be an interesting. Basically, you can create a character/avatar and
+instead of being stuck to a single world you can spawn in a different one.
+
+## 14:47
+
+However, that might be a bit tough. I suppose unless requested you can
+stay in the same world and stuff lying around would be saved for the most
+part. Since you would not be able to mine and say build bridges, that would
+instead be replaced by items that spawn bridges, and others that create
+ladders.
+
+## 14:51
+
+Since some resources could still be utilized, say leaves from trees, I can
+store a simple value that just defines a set of resources available in a
+chunk. So basically you would have a scavage function when you point to a
+block that has a resource. So rockey dirt for example would have rock
+resources. If you scavage rocks too much then that is remembered. So
+essentially even though you cannot mine or remove trees for example, you
+can still drain the resources that are available. Then this will mean much
+more limited systems will still get the same set of features for the most
+part. Since storing all those chunks would be quite expensive.
+
+## 15:47
+
+So the chunks will contain just the level data.
+
+## 15:50
+
+This also means that `ChunkManager` does not need a `ReferenceQueue` for
+chunks, it just needs `Chunk`. Then that `Chunk` really just needs all the
+data associated with it. Since I no longer have to store those to the disk.
+So this simplifies the chunk code. The one class where I need refences and
+data splitting would be resources that exist within chunks. Since resources
+only use a limited range of values, I can group them into large cubes. So
+the world chunk size is divided by some value to get the resource data size.
+Storing all of the values would not be costly at all. There would be
+initialized and uninitialized values. However, values for all chunks would
+essentially become initialized when the chunk exists.
+
+## 15:52
+
+So effectively, I would have to rethink how chunks are stored since I do
+want them to be allowed to be cleared from memory when not used. So
+essentially that means `Map<Integer, Reference<Chunk>>` where chunk is
+reference queued. If the queue detects that a chunk was collected it will
+be cleared from the index. So essentially I have the same as before,
+except that `ChunkData` is removed for the most part.
+
+## 16:42
+
+I do wonder what would be the best way to have a cache of chunks. I can use
+`WeakHashMap`, however that has keys. I would want there to really just be
+a set for the most part.
+
+## 16:45
+
+Well really, I just need a chunk specifier so I have
+`Map<ChunkIndex, Reference<Chunk>>`.
+
+## 18:51
+
+J2ME has two graphics libraries. One is called M3G and the other is your
+standard Open GL ES. I will have to take a peek at M3G. I would suppose for
+simplicity that M3G will be implemented on top of OpenGL ES. This way, only
+OpenGL ES rasterizers only need to be created.

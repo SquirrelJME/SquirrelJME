@@ -1,0 +1,7 @@
+# 2017/03/28
+
+## 18:23
+
+Most collections are the same, so I need an efficient way to handle those
+tests without having 1,000 duplicate classes. I have a single result per
+test, but that should be changed because things can get messy a bit.

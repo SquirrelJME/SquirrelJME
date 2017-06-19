@@ -1,0 +1,58 @@
+# 2017/03/25
+
+## 08:46
+
+Ok, so all of this value shuffling in `__JITCodeStream__` is going to be a
+complete mess. I would have to scan the entire tread to see which registers
+are available. I would best use the `MultiSetDeque` that I wrote for keeping
+registers in check. It would just be for any kind of register, although kept
+separate for float and int. There will be a constant initial pool of
+registers. When a state is derived it will full the queue with that initial
+register pool. Then for every register that is consumed it will remove those
+from the pool. Then allocating of values will be handled by the tread code
+with a link to the engine. I can also keep a mapping of what a slot is
+aliased by too. That way I do not have to go through everything all the time.
+This should make it much easier to code and remove all of the allocation
+smashing code in the tread code.
+
+## 10:04
+
+So argument registers are considered temporary. I do wonder about my strategy
+for allocation. Using saved registers for local variables would probably be
+the most efficient choice. Then use temporaries for registers on the stack.
+Since local variables are preserved in the method calls. So I would need two
+pools of registers.
+
+## 12:11
+
+So then `__removeSlot()` will become `remove` in `ActiveCacheState.Slot` and
+it will no longer be in the code stream handler.
+
+## 15:41
+
+I am going to need a test framework again like I did before. However the old
+framework was really complex and relied on services much. I suppose what I
+need is a general midlet that can be used for testing which contains all of
+the tests. I suppose it would be similar to before, but I will exploit
+packages and resources to locate tests rather than maintaining global lists.
+It should be a bit easier to maintain.
+
+## 15:46
+
+Since I would want the test system to run on existing Java ME systems (since
+I need to see how certain code runs) I would need a profile. However in some
+cases there might not be a profile to target for results. So what I would need
+in this case is a provider for a default profile set of expected values. So
+there is just a normal test which runs and outputs a result. If a profile is
+not being generated and no input profile was specified then the default
+profile is used to compare against. The testing system can be recursive also.
+I can use basic index files for tests which can recurse as needed. I would
+have the tests ordered so that they run the same. The same order would also
+mean that I would not need to load all the tests and sort them accordingly.
+The test indexes will just contain either directory references or class
+names. After they are read, they are sorted and executed.
+
+## 15:51
+
+Profile results should be diffable using the standard unified diff so that
+they may be compared by hand if needed.

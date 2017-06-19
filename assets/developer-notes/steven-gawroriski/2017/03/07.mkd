@@ -1,0 +1,48 @@
+# 2017/03/07
+
+## 10:02
+
+In change binding, I will have to go though and find unused registers so that
+means NUBI gets the next register for usage. Also means the binding will need
+a `usesRegister` method and such.
+
+## 14:45
+
+So are argument registers temporary or are they saved? Initially, do I
+allocate only to temporaries or to saved arguments?
+
+## 15:38
+
+Would be best as temporary.
+
+## 21:01
+
+I can definitely commonize the assignment of bindings when the type changes
+along with the initial register usage for arguments. At least when it comes to
+the stack and the initial entry state, the elements will be at a known fixed
+location. Of course for every type check in the call, there would need to be a
+scan of every single argument. But in most cases the efficiency loss will not
+be much because the average stack and local count would be small.
+
+## 21:10
+
+Or maybe not.
+
+## 21:15
+
+Going to need a list of saved registers get used, so that their values are
+stored and restored accordingly.
+
+## 21:23
+
+Actually since before I want to keep the slots at specific stack locations
+this means that they do not actually store the stack offset and such. The
+stack space is allocated at the start of the method.
+
+## 21:25
+
+Ok so I can just use a single stack state. If something is not using
+registers then it is using stack space if it has been set. If a change type
+or allocation was performed the the stack location becomes valid. In the
+case of method arguments which are at fixed positions, they can just be
+overridden if stuff needs to be stored there.

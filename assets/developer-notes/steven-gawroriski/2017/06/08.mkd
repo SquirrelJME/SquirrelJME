@@ -1,0 +1,11 @@
+# 2017/06/08
+
+## 11:31
+
+Ok so one thing I need is an output for a resource stream which creates a
+resource when closed, so this means a custom output stream and such.
+
+## 20:10
+
+Did not do much today, I could have done more things but I did not at all. Oh
+well. There are no deadlines for SquirrelJME just wishful projection points.

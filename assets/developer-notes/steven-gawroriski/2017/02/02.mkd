@@ -1,0 +1,38 @@
+# 2017/02/02
+
+## 11:47
+
+Maybe for the configuration, I will have a node of sorts that supplies
+options. Basically, there is an interface which exposes options that can be
+used.
+
+## 11:50
+
+Then these nodes would have serialization as such. Then for deserialization
+the nodes can refer to a class which can deserialize by just creating a new
+instance and passing it through. This is the only way within the current
+limitatons to have a more dynamic configuration system with a static base.
+The nodes can be layered also with their own configuration set. The only
+issue I need to think of is obtaining options. I would have to have a get node
+for the options. However, the base settings would always be in the
+configuration. So the node would have a `get(String __key, String __val)`
+which can parse the value to return the correct value.
+
+## 11:55
+
+To prevent magic from happening, it would just initialize the values on
+construction time.
+
+## 11:56
+
+That however, would complicate usage of the JIT configuration class though.
+
+## 11:57
+
+So how about just get rid of configurations then, at least the base class and
+stick with the nodes. There would still be the serializer and such.
+
+## 12:18
+
+The translation engine should provide the configuration rather than passing it
+to the JIT.

@@ -1,0 +1,33 @@
+# 2016/10/02
+
+## 00:18
+
+So I have JavaDoc generating now, I just need to setup a script on another
+system that constantly downloads the latest trunk (or tip) and then
+generates followed by a sync for the JavaDoc to my local repository. Then
+from there the JavaDoc will spread. I suppose I can do this daily for the
+most part. It would be much processing however, but a script does most of
+the work for the most part.
+
+## 10:02
+
+Actually my markdown writer needs more state, since right now I have to
+pretty much guess some of the content, I need essentially paragraphs
+where text goes so it can be nicely formatted as such.
+
+## 14:59
+
+It can be a bit more object oriented. I can make another class which
+handles stuff such as outputting the characters to the stream. So for header
+writing for example it will handle the output. Essentially everything will
+forward to these sub-form implementations so to speak. I could then very much
+potentially make the outputted markdown very clean.
+
+## 16:02
+
+For the super class and interface classes, I will need to handle generics.
+
+## 19:10
+
+One thing I could do is generate and store a ZIP of the JavaDoc but that
+would be costly synchronization wise.

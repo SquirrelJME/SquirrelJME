@@ -1,0 +1,15 @@
+# 2017/03/23
+
+## 08:59
+
+So I have the new instruction now. I suppose that can just be turned into an
+invoke of a special "unsafe" method rather than being treated as an actual
+new. That way it is just a standard method call. It would just be the same
+exact code I already have, which would greatly simplify things.
+
+## 09:42
+
+This can be done because `new` places an object on the stack. I can trick the
+code output so that it places a class constant at the top of the stack and
+then that is followed by an invoke of a special method. This way there is no
+`new` operation, it is just a method call.

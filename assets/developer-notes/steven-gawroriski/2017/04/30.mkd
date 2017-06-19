@@ -1,0 +1,18 @@
+# 2017/04/30
+
+## 11:10
+
+Ok, so push/pop will be in the state. Not in any tread to simplify things.
+Also it should make things much easier. I also will have a pushNew and a
+pushCopy. Basically push copy will have an input tread source and such
+derived from the slot.
+
+## 11:17
+
+I think it would be easiest if locals were never aliased. That would make
+exception handling a bit better.
+
+## 12:12
+
+Looks like I am putting variables which should be in locals on the stack
+instead.

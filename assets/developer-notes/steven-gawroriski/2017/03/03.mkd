@@ -1,0 +1,37 @@
+# 2017/03/03
+
+## 08:52
+
+Probably will not get much done today at all.
+
+## 09:04
+
+For aliases, I should recursively get aliases until I find something not
+aliased, but throw an exception if there is a recursive alias loop.
+
+## 12:04
+
+I was thinking, what if I disallow aliasing to stack entries? But the
+problem of that would be DUP and such.
+
+## 12:11
+
+Before method calls I am going to need an unlink which goes through every
+slot and if there is an alias to a stack element that is to be destroyed
+it will generate a move and de-alias.
+
+## 12:52
+
+Actually what I could do is have two active states which can copy from
+each other. I suppose there would be a slot based interface and the set
+from whatever would be based on the interface and such. That way there is
+only a single method for such things. So since those two classes are
+literally the same, interface them up. Then this would allow me to have
+two active states. Because for stuff such as method invocation, the resulting
+state can end up really complex when a single state is being juggled.
+
+## 20:52
+
+Actually for the method invoke, there can be a passed input state and output
+state. The get active state can be removed and the states can just be passed
+on each call.

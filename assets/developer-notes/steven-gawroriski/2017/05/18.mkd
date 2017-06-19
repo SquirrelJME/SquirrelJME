@@ -1,0 +1,20 @@
+# 2017/05/18
+
+## 10:43
+
+So working on handling some of the code bits. I think what I can do at the end
+of every basic block is have a virtual instruction which may be used as a jump
+if the block it naturally flows into is not the adjacent block.
+
+## 11:19
+
+I wonder if I should make the byte code more object based. Basically have just
+an array of references for each instruction information that is loaded as
+needed. It would be cached and initialized at construction time for that
+specific instruction.
+
+## 11:28
+
+Instructions can have checked parameters also. Then for table switch and
+lookup switch, instead of a parameter being a large number of parameters it
+can just be a special class representing the table.

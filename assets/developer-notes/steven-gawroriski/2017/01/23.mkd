@@ -1,0 +1,8 @@
+# 2017/01/23
+
+## 14:09
+
+So now I need to bring in the JIT which I have a bunch of code made for. I
+will need to figure out the best way to do this. The bulk of the code such as
+class decoding is already complete, so I do not have to touch that much.
+

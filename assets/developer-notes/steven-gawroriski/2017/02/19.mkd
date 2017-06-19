@@ -1,0 +1,28 @@
+# 2017/02/19
+
+## 07:23
+
+I suppose MIPSBindings cannot be actual registers because there could be cases
+where some values will stretch between registers and such. I suppose I could
+use an enumeration which is just a register, but have no 32-bit or 64-bit
+distinction since all registers are the same size.
+
+## 09:04
+
+The o32 calling convention for MIPS is pretty pathetic.
+
+## 09:08
+
+I am thinking that the MIPS code will purely be NUBI only. If I need to call
+the operating system, there will just be an OS service for the most part. Any
+callbacks from the OS to SquirrelJME will just adapt the calling convention
+and such. The goal is to keep the bridges between conventions to a minimum.
+
+## 09:12
+
+NUBI is stated to be compatible with o32 though.
+
+## 16:54
+
+I have been thinking of the JIT, I do not know how much simpler it can get. I
+believe I just have to implement it now for the most part.

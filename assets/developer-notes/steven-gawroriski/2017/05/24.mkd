@@ -1,0 +1,32 @@
+# 2017/05/24
+
+## 12:40
+
+So as a compromise since I cannot do this references, I have a displayable
+created by an enumeration. This should work and have it how I want to do but
+not be a completely unsafe or edgy thing to implement (like an abstract
+create whatever method).
+
+## 16:50
+
+And I just ran into the singular inheritance limitation. Likely the best way
+to handle this is to have a window which can be specified as a container for
+the native widget. So basically the Swing code creates a class which is
+just a JFrame and all the special handling logic in that. Then the native
+display will just say, use my container.
+
+## 17:46
+
+Actually the window can be handled by the display itself rather than the
+individual displays because only a single display maps to a single window.
+
+## 17:59
+
+So basically the head will have the maximum size and then the content size
+which might be smaller than the maximum size, it really depends.
+
+## 18:35
+
+Now that I got a new base for LCDUI I can get back to what I originally was
+going to do and that would be fonts. Fonts will just be images, but they
+will be linked to native displays and such.

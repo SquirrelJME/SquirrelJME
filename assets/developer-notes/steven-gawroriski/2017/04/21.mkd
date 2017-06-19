@@ -1,0 +1,6 @@
+# 2017/04/21
+
+## 07:48
+
+So for simplicity, argument register 3 is going to be removed because it will
+be treated as the exceptional return value and just store the exception.

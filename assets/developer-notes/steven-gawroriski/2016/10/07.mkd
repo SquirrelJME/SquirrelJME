@@ -1,0 +1,79 @@
+# 2016/10/07
+
+## 09:44
+
+Going to work on Squirrel Digger for a bit and take a break from the JIT
+compiler since I just cannot seem to continue it at this time. I suppose
+that it is burn out and Squirrel Digger is completely different.
+
+## 09:57
+
+One thing to consider is the limit to the world size. For chunk IDs I can
+use 32-bit or 64-bit values. However since 64-bit is quite large I can just
+limit it to 32-bit. This would be the most sane because this is only for
+chunk references. If I divide by 3 I can have 10-bits for the chunk
+position. This means 1024x1024x1024 chunks are possible.
+
+## 10:04
+
+The chunk size can then be derived from the 64-bit value. That divided by
+3 gives me 21-bits. Since 10 are used for the chunk, that leaves 11 for
+the chunk size and the sub-block precision. A chunk size of 8 gives me
+3-bits which means that the sub-lock is divided into 256 parts. If I
+increase the chunk size to 16 then it gets divided by 128 parts. Since I want
+to target some very small systems that may be rather constrained, keeping
+the chunk size of 8 could be quite easy when it comes to memory.
+
+## 12:17
+
+Must find a JAR with JSR271.
+
+## 12:18
+
+JSR271 is defined, however so far I can only find SDKs with MIDP 2.1 at the
+most. MIDP 3.0 is far better than 2.1.
+
+## 12:26
+
+The SDK has JSR 135, which is the sound API which MIDP 3 partially uses.
+
+## 12:51
+
+I suppose what I would have to do is take the base MIDP 2.1 and then just add
+anything that is defined by MIDP 3 manually.
+
+## 12:52
+
+So yes, this will have to be done. Take MIDP 2.1 and just add anything that
+is in MIDP 3 manually by hand from the documentation. It would not be
+completely from scratch at least.
+
+## 12:55
+
+I will start with the media protocol since MIDP 3 uses that and there is a
+JAR I can extract symbols from.
+
+## 14:06
+
+Soon I will see exactly what the difference between MIDP 2.1 and 3 is when
+it comes to LCDUI.
+
+## 14:10
+
+Probably the best thing to do would be to perform a graphical diff of the
+HTML JavaDoc rather than going by it one by one.
+
+## 15:26
+
+Cannot find any JARs and diffing HTML is a bit ugly. So I will have to go
+through it by hand.
+
+## 20:41
+
+Looks like that the file chooser uses `javax.microedition.io.StreamConnection`
+however it is not in the documentation or the JAR.
+
+## 21:21
+
+Actually, the I/O classes were moved into the GCF so I must handle that
+accordingly.

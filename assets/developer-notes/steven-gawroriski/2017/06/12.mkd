@@ -1,0 +1,18 @@
+# 2017/06/12
+
+## 16:29
+
+I can fold some of the native path stuff into cldc-full since a bunch of it
+will be handled via such means anyway. This makes things a bit simpler.
+
+## 16:41
+
+All I know is that for DOS, there is likely going to be many
+`InvalidPathException`s thrown due to DOS limitations.
+
+## 18:27
+
+So for DOS paths there will just be more failures for most paths if code
+makes assumptions about filesystem limits. In other parts of the code, the
+constant pool initialization can be done as a simple linear sequence of
+stages of initialization sorted in processing order.

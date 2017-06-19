@@ -1,0 +1,9 @@
+# 2017/05/28
+
+## 22:54
+
+So I had this idea of having special basic block zones which are not mapped
+to instruction ranges. This would be used for the synchronized enter and exit
+along with potential exception handler checkers. So this would mean that there
+is a class used as a specifier for the range. So `BasicBlockZone` does not use
+instructions, but rather a key which is used in the map.

@@ -1,0 +1,15 @@
+# 2017/03/11
+
+## 08:12
+
+This seems much simpler now.
+
+## 08:13
+
+This means that the `TranslationEngine` needs a translation for stack types to
+the `DataType` which is needed to allocate space on the stack for store the
+values.
+
+## 10:17
+
+I wonder if slots should return their actual values or their aliased values.

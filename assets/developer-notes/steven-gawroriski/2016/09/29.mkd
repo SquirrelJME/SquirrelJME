@@ -1,0 +1,72 @@
+# 2016/09/29
+
+## 07:24
+
+So `BasicNamespaceWriter` loses EDIS usage and does not use it at all, however
+for writing I can always wrap that in a proposed future value changing
+operation. So I would need to devise a new class where I can easily specify a
+kind of write callback to be performed before a write operation. I can use a
+growable/shrinkable byte array (not like `ByteDeque`) that implements
+`DataOutput` so I can easily write such things with the given interface.
+
+## 07:46
+
+`DataEndianess` is a duplicate, I knew this from the start because I did not
+want to import `cldc-full` for some classes when it was potentially not needed
+for operations. However, I am considering removing it. However a problem with
+this is that `ByteOrder` is not an enumeration, so that makes it more
+difficult to use for example. I cannot just make it an enumeration either.
+
+## 07:54
+
+I have an infinite recursion where a base project has an optional dependency
+which depends on the base project.
+
+## 17:22
+
+I need a means of facilitating an easy to distribute test system where I can
+package a single set of projects into a single JAR. For example, I would need
+to run tests on the reference implementation on a specific device type. I must
+have a script that can do this. In general, I will need a test suite where I
+can run CLDC tests and other such things on the environment. Since the
+reference implementation I am basing off does not support LIBlets, everything
+will need to be exported into a single JAR file, which is quite simple. One
+other thing I can do is take my existing class decoder and perform a simple
+pass which renames methods and class names using a prefix (method names are
+renamed due to Object). This would act in a way as a standalone mini virtual
+environment that I could potentially get running on existing VMs and ones
+such as J2ME VMs. These would be essentially standalone JARs with a kind of
+bridge to run single programs. This would allow me to develop the class
+library accordingly. Since I now have a package and building system that is
+standalone from the build system, this makes it easier. One considering is
+that `ProjectList` should be able to be assigned a static compiler and
+launcher, where if a null argument is passed it will attempt to use the
+statically provided one. So if I were to write a Java compiler that could
+be the default system. But if I do the translation layer as mentioned before
+and have a Java compiler, I could essentially get a standalone environment
+setup. Since as it stands right now, since the bulk of my library is just
+`TODO`, I would not be running much when it comes to code anyway. Since I
+have been stuck on the JIT for awhile, this could be an alternative where I
+can slowly work and refactor it along with implementing the main library.
+But the most important thing is being able to run tests on the reference
+implementation so I can gauge how things work.
+
+## 20:53
+
+Seems my global set is not working. I printed the identity hash code for the
+class and in both instances it is a different number. So class loader must
+either not be delegating or no parent was set.
+
+## 22:23
+
+So I have basic singular output, but some dependencies are missing so the
+JAR might not truly be standalone. The missing dependencies are mostly
+just optional ones.
+
+## 22:27
+
+Actually, that is because I do not include any optionals.
+
+## 22:29
+
+One thing I must handle are services.

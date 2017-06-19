@@ -1,0 +1,45 @@
+# 2017/05/30
+
+## 15:30
+
+Ok so the main part of the JIT initialization would be handling the options
+for it. One thing I can do is have normalization of options in the base class
+rather than via extended classes with map modifications and such.
+Alternatively the options can be treated the same like the manifest with
+actual key types and then value types. These would be normalized to lowercase
+and such so I do not have to worry about strings being messed up and such.
+There could also be sorting and categorization based on major and minor
+values at least for keys.
+
+## 20:24
+
+I purchased a new old laptop, a Dell Latitude E6400. Although it is a x86
+laptop with an Intel CPU, it appears to be very well supported by Linux. It
+is faster than my PowerBook G4, has more memory, and has two CPUs. Also, x86
+is a bit more compatible with things. Sad as me to say it but recently
+software has been having some difficulties with my PowerBook G4. Browsing the
+web is very slow because there is no JIT for Javascript in Firefox, QEMU
+stopped working and does not run anything (I need this to run things). The
+only draw back to a Core 2 Duo is that there is no virtualization, although I
+would like this, emulation would have to be good enough. In retrospect I am
+not really going to use virtualization daily so it is not too much of a
+problem. However QEMU has a JIT in it which recompiles the code to run on
+native x86 systems, so it is not really that slow. Also gives me access to
+Wine which I need to run Windows software. There are also emulators for
+systems even PowerPC ones which only run on x86. So really in order to help
+the development of SquirrelJME, I have to switch. The new laptop has about
+one and a half times the clock speed of this system. However with Linux I can
+always use LXC to create emulated containers for running system specific
+things or I can have dedicated virtual machines.
+
+## 20:51
+
+For the target builder I should allow multiple configurations to be passed so
+I can say something like `target linux-mips games` which includes the games
+that are available. Also potentially I can include project names or JARs which
+are injected into the runtime and their dependencies. Basically if it is not a
+template it will check the project list for inclusion. This way I can have a
+dynamic set of executables. However the basic default for all systems will be
+a bare minimum setup with nothing extra at all. There would be the full target
+which has for the most part every single available project which makes sense
+and is not platform dependent.

@@ -1,0 +1,31 @@
+# 2017/03/16
+
+## 14:54
+
+I think for the web demo it would be more sane to just compile to MIPS code
+like the simulator does and then just execute that code. It would probably be
+better than generating tons of horrible Javascript code. However, an issue
+with that is that the MIPS instructions cannot really fit well into JavaScript
+strings. I would need an ASCIIfied instruction set.
+
+## 15:05
+
+It would probably save a bunch of effort to not have a web demo due to the
+severe limitations of JavaScript. The language is really bad at doing what I
+want it to do.
+
+## 15:06
+
+It would be far too much of a hassle to cram this into JavaScript. It would
+also slow me down writing the JIT for MIPS because I would be writing two
+things. So it would be best to just ignore it for now and continue working
+on the MIPS JIT.
+
+## 17:49
+
+For method invocation I can probably commonize saving of temporary registers
+and values. Every target is going to have this.
+
+## 18:20
+
+No point having save logic code writte a few dozen times.

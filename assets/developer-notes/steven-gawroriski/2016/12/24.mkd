@@ -1,0 +1,10 @@
+# 2016/12/24
+
+## 14:15
+
+It is currently the holidays.
+
+## 14:34
+
+Can probably get the base for the compiler down, which would be a rather
+simple task.

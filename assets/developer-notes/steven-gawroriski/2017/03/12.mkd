@@ -1,0 +1,13 @@
+# 2017/03/12
+
+## 08:31
+
+Seems my allocated registers are not being stored.
+
+## 17:32
+
+So for method invocation, this means storing saved registers that are
+currently being used to stack positions. Temporaries are saved by
+the caller, while saved are saved by the callee. So the invoke has to
+go through the method and store any argument registers (I will treat
+them as temporary) and additionally save the argument registers.

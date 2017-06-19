@@ -1,0 +1,20 @@
+# 2017/03/13
+
+## 10:14
+
+I suppose what I should also have is a JIT called `squirreljme-jit-webdemo`
+which generates a single HTML page Javascript demo, using a canvas and some
+other things. It can output an HTML header, inject a gigantic script into it
+and then just spit out the HTML result of it.
+
+## 19:12
+
+I suppose all the build handling logic will be done with a basic config class
+for some settings, but anything else will just be in the build system. No
+other project needs to worry about outputting executable, linking resoures,
+or using assets. This will keep it a bit simplified.
+
+## 20:15
+
+Since JavaScript is really bad at binary data, I suppose I can treat it as
+some unspecified thing and have escaping for resources stored in strings.

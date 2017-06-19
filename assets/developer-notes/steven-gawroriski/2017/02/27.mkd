@@ -1,0 +1,72 @@
+# 2017/02/27
+
+## 07:24
+
+So the record store system is going to be simple in design for the most part.
+I am not going to do super complex huffman compression to shave some bytes off
+it will just be a simple database. I do however have to have it managed by
+blocks. So the thing is then, are records looked up in a map or are linear
+searches done. It could vary how they are used.
+
+## 08:56
+
+Ok so, there will need to be a connection to the record store manager of sorts
+and it must have a reference to the local suite that is currently running. So
+it makes me wonder, where is `MIDletIdentity` used? Only for IMC currently. So
+I suppose the system service to be created is `RecordStoreManagerConnection`
+or `RecordManagerConnection`. This will just be for the most part a class that
+manages the databases directly. Or better yet not a connection, but just a
+manager.
+
+## 09:05
+
+When it comes to `RecordManager` on the kernel side it will be as it is, but
+on the client side it would probably use IMC to communicate with the kernel
+or similar as another service. But the methods used would pretty much be the
+same for the most part.
+
+## 18:02
+
+So what I need to do is to have a kind of assigning. Basically I need to
+identify with the manager that this is a certain MIDlet. Basically there would
+just be a self identity. I suppose all method calls would require an
+identifier so to speak.
+
+## 18:19
+
+For the manager I could just not care about the local MIDlet. Or just use it
+implicitly from the `RecordStore` itself.
+
+## 22:36
+
+At the basic level, I am going to have it where everything is managed by the
+record store manager. Perhaps though. I do not want to write what modifies the
+records over and over again for each implementation. I want that basic block
+like interface that I described before where all records are stored. The only
+issue is then I will need a connection interface or class then. But that
+varies. So that means the following: I have a problem. Accessing the raw
+record store bytes should be left to the kernel and running processes should
+use an IMC interface to interact with records. But at the lowest levels I want
+every storage format to use a fixed binary interface. So this means that I have
+the connection interface that can be created by the implementation of the
+record store, but one where an actual binary backed one can be done. So this
+would essentially be an `openConnection(RecordStoreOwner)`. The file based one
+will for the most part just use a pre-existing (in the RMS package) class
+which does all the binary stuff using another given interface. Then on
+SquirrelJME, running processes will use an IMC based one. So I suppose then
+that the classes should be renamed. Instead of `RecordStoreManager` it is
+instead `RecordClusterManager` which opens connections to `RecordCluster`
+abstract class or interface.
+
+## 23:10
+
+This will be a slight problem. `Class.getResourceAsStream` in Java SE does not
+match how Java ME 8 looks up resoures. Basically, if I merge the classpath
+together as one then it will just look in the earlier JARs for the manifest.
+So what I will need to do is simple although it has a very high potential of
+not working or completely breaking things. I would have to juggle with
+classloaders which in most cases will not work at all (it is a very buggy
+system), or I can just set system properties which can specify application
+property overrides. The app property overrides would be the simplest to do
+because otherwise the simple hosted launch system may become overly complex
+while causing more issues than it fixes.

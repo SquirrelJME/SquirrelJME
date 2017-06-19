@@ -1,0 +1,7 @@
+# 2017/06/02
+
+## 14:50
+
+Actually I do not need the extended `JITConfig`s to create the compilers since
+that can be handled by the base JIT. The compilers are going to be final for
+the most part.

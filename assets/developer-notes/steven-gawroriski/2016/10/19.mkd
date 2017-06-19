@@ -1,0 +1,21 @@
+# 2016/10/19
+
+## 15:38
+
+I believe I will just make the project list handle namespaces based on
+directories and such.
+
+## 16:39
+
+For some reason, I cannot add the jni_md.h header file.
+
+## 22:43
+
+I must implement `JVM_FindClassFromBootLoader`, however nothing tells me what
+the bootstrap class loader is for the most part.
+
+## 22:49
+
+Appears that there is an internal method that OpenJDK's launcher provides that
+gives me methods I can use for linkage. So since this is VM specific I suppose
+I should make it so that I can have a special file and define for such things.

@@ -1,0 +1,27 @@
+# 2016/12/20
+
+## 17:59
+
+What if the processor for the stream such as the inflation and deflation were
+just an `InputStream`. Handling it and wrapping to an `OutputStream` would be
+simple in a way where it can just wrap the output from the input.
+
+## 18:05
+
+Actually in the case of incomplete data, that would be some complex work when
+dealing with an output stream and input stream.
+
+## 18:20
+
+Thinking about it, `BuildHostDepends` could just be depends but not really due
+to APIs and such.
+
+## 18:34
+
+Having the CRC calculator not used the data sink should definitely make it
+much faster.
+
+## 18:41
+
+The ZIP compression code would likely have less overhead now and be a bit
+faster hopefully.

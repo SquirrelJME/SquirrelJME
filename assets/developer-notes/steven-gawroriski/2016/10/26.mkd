@@ -1,0 +1,208 @@
+# 2016/10/26
+
+## 12:32
+
+Converting PhoneME definitely reassures me that the layout and size of
+SquirrelJME is definitely not really much of a problem. SVN is really
+quite horrid, especially if one had multiple sub-repositories within a
+single repository.
+
+## 13:00
+
+I have actually had to restart the process from the start about a few
+dozen times as I learn about something new and nasty in the
+repository.
+
+## 13:09
+
+I believe at this point, I will stick with what I have and ignore the
+rest for the most part. Most of the code would exist in there for the
+most part.
+
+## 17:40
+
+Actually, this is not going to work out well. Git takes forever and
+fossil does not support dumps in sub-directories which are outside of
+the tree. Also I always end up having a directory called trunk. Fossil
+can convert SVN the fastest however, while Git takes a very long time.
+I believe what I should do is to write my own SVN splitter, which for
+the most part takes an input dump and splices that into multiple SVN
+dumps where there is just a single source tree. So basically it would
+reverse the massive SVN inclusion that exists. I could also have it
+detect cases where a sub-directory called `trunk` is in the working
+checkout base (very much a mistake). It would likely use lots of memory
+however.
+
+## 17:46
+
+I can have it in my project system, but I should fix my project system
+first and make things compile and run again.
+
+## 18:14
+
+Actually, this is getting a bit complex when it comes to services, optional
+services, standards, optional standards, profiles, and configurations. Having
+this information in the manifest is going to be very complex. The thing is I
+am going to have to have a much more complex dependency system. Essentially,
+the dependency system that Java ME uses does not exactly scale at all. For the
+most part, the versioning and vendor system is a bit ugly, except for
+standards. Not all standards appear to have a standard string because they
+existed before MIDP 3 came around and were never updated for such things. So
+for stuff such as OpenGL ES, there is no standard dependency at all to choose
+from. It is just that right now the dependency system is a complete mess.
+
+## 18:22
+
+I need something that scales well but something that is not costly to
+determine at build time. Also the number based ordering in
+`X-SquirrelJME-Dependency` is prone to manual error if things are changed
+around.
+
+## 18:25
+
+I will need a provides API and an implements API so to speak.
+
+## 19:05
+
+I believe what I need is a kind of standards map too. Instead of saying
+specifying that _cldc-compact_ provides the configuration `cldc-1.8-compact`.
+I will instead have a file in the project system that states that
+`squirreljme.cldc-compact` maps to that configuration. It really depends
+though.
+
+## 19:16
+
+Or maybe I am just too attached to the project management system. Perhaps what
+I could do instead is have a `std` directory which is not a namespace but is
+the location where standards are defined. So basically `m3g` will just be in
+the standards as `microedition.m3g`.
+
+## 19:18
+
+This can work also. Also the dependency standards when it comes to system
+properties are the standards themselves. So essentially if a standard is
+provided the system property of the same name must be declared. Also there is
+an additional property appended called `.version` which contains the version
+number of the standard. So effectively, this works out. Each standard would
+then just be in the standard directory with a slightly modified format. The
+only thing would be standards which define multiple standards at the same
+time. I would have to write it in a way where this is not done at all. So
+really the only odd thing would be the GCF framework. I could use symlinks,
+but those are not really supported on all platforms (I do use them in the
+basic assets however). Ok, when it comes to IO and GCF. Here is the deal:
+
+ * IO is just IMC connections, which I already implement (and PushRegistry).
+ * GCF depends on PKI (includes that standard).
+   * GCF has everything other than IMC.
+
+So effectively I can sort by standards but have in the manifest an
+implementation of other standards. Because essentially GCF will implement
+FileConnection for the most part. Then for things which are not standards
+I can just do a `squirreljme.foo` for that. The ones using this would
+essentially just be configurations and SquirrelJME specific stuff.
+
+## 19:28
+
+But actually no. For the file standard, I could have configurations which
+do not have filesystem support. So essentially the `file` scheme will just
+internally use CLDC full classes. So I can split it off as another standard
+where the connection will just fail if it is not included.
+
+## 19:31
+
+When it comes to DIO, I can split off the power related classes from dio.
+
+## 19:56
+
+For OpenGL ES, I just need to see if it defines a system property. If it does
+then that will be used as the standard.
+
+## 20:00
+
+And there is none.
+
+## 20:04
+
+Actually I do not really have to move stuff around. I can just keep the
+existing project system in a way, but just have a provides and a depends when
+it comes to standards. I suppose I will need an alternative type beyond API.
+I will need `standard` but I will also then need `configuration`.
+
+## 20:07
+
+Actually the DIO power classes are mandatory.
+
+## 22:26
+
+Actually, what I can do is split configurations and standards as before that
+I thought about. Essentially the bootstrap to the build system can rely on
+these standards for implementation. That is, the bootstrap just takes every
+standard and uses it regardless.
+
+## 22:38
+
+I can probably merge all of the assets together into a single tree.
+
+## 22:55
+
+Merged assets feels much cleaner now. Also, I believe I am going to simplify
+things. Right now I have projects which are part of the build system and
+others which are not. I would want a self hosting SquirrelJME however.
+
+## 22:58
+
+Actually, I can still do that. But basically what I am thinking of is
+separation of concerns. Right now the build system is part of the project
+management system, and is used to build SquirrelJME. However, I want to
+simplify it where the build system is essentially alone. The build system can
+be modular however. Well, any changes to it could force a recompile which
+would not be very efficient. Basically, I would want it where I can use it
+in SquirrelJME (as a kind of super-MIDlet) without issues but also on standard
+Java SE systems. The dependency system in the builder can be simplified. It
+also can just depend on the full CLDC library. At least for the build system
+it will not depend on classes that exist within SquirrelJME. So I will
+basially remove the launch capability sort of. I can have it externally
+modular. Basically all of the classes within it are for the most part self
+contained. None of the standard midlets, liblets, and API details will depend
+on any of the build projects. The build projects will have much simpler
+dependencies.
+
+## 23:05
+
+Really the only thing it will depend upon library wise would be a ZIP liblet.
+Also Squirrel Scavenger will need to be split into midlet and liblets. If I
+want to follow the standard specification and for actual speed, I cannot
+launch a MIDlet that uses a missing class or API. So I will need separate
+ones that implement the required stuff as LCDUI or LUI. Also, I had the idea
+that I would render OpenGL ES into an image and use that for the LUI. However
+instead I can just use a flat view of the world. That would likely just be
+much easier, although it could be confusing at first. It would be difficult
+to see above and below you however. I would just have it be a top-down view
+with some indicators of what is above you. The controls would be adjusted
+accordingly as needed.
+
+## 23:09
+
+I believe I will retire Squirrel Quarrel and just use Squirrel Scavenger.
+Although I would like to clone Starcraft, effectively it would be to much
+work as I can use Squirrel Scavenger as a demo.
+
+## 23:10
+
+Also the current testing system is really really horrid and is not really
+that great. With all of this refactoring going on, pretty much all of the
+tests will be broken.
+
+## 23:15
+
+So for the building system, I must do some thinking. I do not really need
+bootstrap, I just need a main entry point. So effectively I will have a
+main for Java SE and a main for Java ME (also SquirrelJME). It would be
+really awesome if I could actually get SquirrelJME built on the reference
+implementation, despite all of the inherit limitations. So my initial
+base projects would be `host-javase` and `host-javame`.
+
+## 23:25
+
+I can also have instead of setting up a kind of hack with interfaces or
+proxies, I can setup a bridge interface so to speak in a way.

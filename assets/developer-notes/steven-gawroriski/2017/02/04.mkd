@@ -1,0 +1,20 @@
+# 2017/02/04
+
+## 10:30
+
+I suppose I will need a `JITExecutableBuilder` which can contain machine code
+and other details in the class. I suppose for JIT simplicity that it is just a
+normal object and such. This could be used by the interpreter or the kernel
+directly. The machine code for methods will just exist within byte arrays for
+the most part. So this means for machine code building, I would need the
+dynamic byte buffer. It should have the ability to change specific elements. I
+also have optimized it in the past to be rather fast.
+
+## 10:43
+
+`__getVia` in `ByteDeque` is going to need to be repurposed a bit to also
+allow for writing. This will simplify the machine code because the actual
+bytes and such for a program will be these. At least, this would allow the
+code generator to not worry about resulting sizes. I also would not need to
+duplicate set and insert operations at all. Essentially, when a method is to
+be recompiled, it will return `ByteDeque`.

@@ -1,0 +1,11 @@
+# 2017/01/24
+
+## 11:58
+
+I should have a more simplified triplet or machine identification system.
+Right now I have the JIT stuff and I also have the native code. I believe
+this has to be simplified a bit. Perhaps instead of indentifying some
+things in triplets, they can just be by class. On other hand, the targets
+can be hard coded or essentially share much of the code. Maybe it would be
+best to not have configuration files for some targets beyond a basic
+level.
