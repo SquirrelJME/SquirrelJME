@@ -1,0 +1,42 @@
+# 2016/12/13
+
+## 19:22
+
+Ok, so the new project layout is nice, but the project code is not going to
+work out well that much. Maybe just what I need is a single central source for
+projects regardless of their namespace. So instead of all the namespaces,
+there are only projects by their name and their type. This would be a bit
+convoluted in some situations, but generics could handle some things. There
+would just have to be a kind of common set of code. So essentially I would
+just have a single class that manages everything for the most part. Then
+depending on the project type, it will be of a certain base class for
+example. A bit ugly in a way, but it could work.
+
+## 19:43
+
+So it would essentially be a uniform space, just that depending on the
+namespace a different class will be used for storage. So this would be
+similar to the groups that I had before with sources and binaries. The
+only issue are MIDlet and LIBlet dependencies. Also APIs too. I suppose
+what I can do is have the dependency stuff included in the base, but have
+it abstracted as needed. Dependency information can be its own class which
+has a lookup, so they would only refer to groups and such. API, MIDlets,
+and LIBlets can then depend on just project names instead as I have it
+before. Not worry about versioning and stuff, just hide that for the
+most part. So this means the project management system is the same as
+before, just that some things would be auto-handled and such. In the
+binary manifest generation, the dependencies would be handled as needed.
+So then this means that for the most part, I can keep most of the code
+base the same. Just that on dependency resolution time, there will be
+checks to make sure dependency requires are not violated (such as
+depending on a MIDlet). For run-time capability, I will need binary
+only capability. So on output, I will need to store some SquirrelJME
+build specific stuff in the manifests so the project system can be used
+properly. So pretty much the same as before.
+
+## 19:50
+
+So sub-project types will just have specialization while the bulk would
+be in something simple. I should have classes for binaries and sources
+so that not everything is duplicated and such. However, both binaries
+and sources would extend a base class for the most part.
