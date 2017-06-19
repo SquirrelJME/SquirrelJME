@@ -22,9 +22,6 @@ import java.lang.ref.WeakReference;
 public class Units
 	extends __SubState__
 {
-	/** The reference state which these packages are a part of. */
-	protected final Reference<LinkerState> linkerstate;
-	
 	/**
 	 * Initializes the unit manager.
 	 *
@@ -34,8 +31,6 @@ public class Units
 	Units(Reference<LinkerState> __ls)
 	{
 		super(__ls);
-		
-		throw new todo.TODO();
 	}
 }
 

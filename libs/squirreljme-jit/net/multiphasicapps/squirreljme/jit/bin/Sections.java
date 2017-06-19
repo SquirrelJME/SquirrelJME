@@ -37,8 +37,6 @@ public class Sections
 		throws NullPointerException
 	{
 		super(__ls);
-		
-		throw new todo.TODO();
 	}
 }
 

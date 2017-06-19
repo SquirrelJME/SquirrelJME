@@ -34,8 +34,6 @@ public class Accesses
 	Accesses(Reference<LinkerState> __ls)
 	{
 		super(__ls);
-		
-		throw new todo.TODO();
 	}
 }
 

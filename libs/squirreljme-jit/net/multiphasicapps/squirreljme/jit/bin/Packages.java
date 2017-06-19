@@ -37,8 +37,6 @@ public class Packages
 	Packages(Reference<LinkerState> __ls)
 	{
 		super(__ls);
-		
-		throw new todo.TODO();
 	}
 }
 

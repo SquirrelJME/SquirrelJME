@@ -80,8 +80,6 @@ public class LinkerState
 		
 		// Set
 		this.config = __conf;
-		
-		throw new todo.TODO();
 	}
 	
 	/**
