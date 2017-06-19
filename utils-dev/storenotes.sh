@@ -39,7 +39,7 @@ do
 	__tardir="$(dirname -- "$__target")"
 	
 	# Calculate the sums of both files
-	__isum="$(fossil cat "$__line" | fossil sha1sum - |
+	__isum="$(fossil uv cat "$__line" | fossil sha1sum - |
 		tr '\t' ' ' | cut -d ' ' -f 1)"
 	__xsum="$(if [ -f "$__target" ];
 		then cat "$__target" | fossil sha1sum - | tr '\t' ' ' | cut -d ' ' -f 1;
