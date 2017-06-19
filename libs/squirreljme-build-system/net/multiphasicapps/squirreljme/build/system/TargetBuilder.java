@@ -32,6 +32,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
 import net.multiphasicapps.squirreljme.jit.bin.Cluster;
+import net.multiphasicapps.squirreljme.jit.bin.Clusters;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
@@ -155,7 +156,7 @@ public class TargetBuilder
 		{
 			// {@squirreljme.error AO09 Compiling the specified project. (The
 			// project name; The current binary; The number of binaries)}
-			String pbname = pb.name();
+			String pbname = pb.name().toString();
 			System.out.printf("AO09 %s %d %d%n", pbname, ++count, numbins);
 			
 			// Setup cluster
@@ -175,19 +176,13 @@ public class TargetBuilder
 					// Open data stream
 					try (InputStream is = fd.open(fn))
 					{
-						Runnable t;
-						
 						// Class file?
 						if (fn.endsWith(".class"))
-							t = jitconfig.compileClass(is, ci, linktable);
+							throw new todo.TODO();
 						
 						// Otherwise a resource
 						else
-							t = jitconfig.compileResource(is, fn, ci,
-								linktable);
-						
-						// Run the task
-						t.run();
+							throw new todo.TODO();
 					}
 				}
 			}
