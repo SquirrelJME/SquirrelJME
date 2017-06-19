@@ -10,8 +10,12 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents a group of resources which are referenced by classes, since
@@ -46,6 +50,45 @@ public class Cluster
 		
 		// Set
 		this.key = __k;
+	}
+	
+	/**
+	 * Processes the specified resource or class and adds it to this cluster.
+	 *
+	 * @param __n The name of the stream.
+	 * @param __is The input stream containing the data to process.
+	 * @throws JITException If the class or resource could not be processed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/19
+	 */
+	public final void processStream(String __n, InputStream __is)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__n == null || __is == null)
+			throw new NullPointerException("NARG");
+		
+		// Could fail
+		try
+		{
+			// Process as class file
+			if (__n.endsWith(".class"))
+				throw new todo.TODO();
+			
+			// Process as resource
+			else
+			{
+				if (false)
+					throw new IOException();
+				throw new todo.TODO();
+			}
+		}
+		
+		// {@squirreljme.error JI0v (The name of the stream)}
+		catch (IOException e)
+		{
+			throw new JITException(String.format("JI0v %s", __n), e);
+		}
 	}
 }
 

@@ -173,16 +173,10 @@ public class TargetBuilder
 					// processed files)}
 					System.out.printf("AO0a %s %d%n", fn, didfiles++);
 					
-					// Open data stream
+					// Process data stream
 					try (InputStream is = fd.open(fn))
 					{
-						// Class file?
-						if (fn.endsWith(".class"))
-							throw new todo.TODO();
-						
-						// Otherwise a resource
-						else
-							throw new todo.TODO();
+						c.processStream(fn, is);
 					}
 				}
 			}
