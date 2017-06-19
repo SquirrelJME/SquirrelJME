@@ -14,7 +14,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This hold the back reference to the {@link LinkerState} class.
+ * This hold the back reference to the {@link LinkerState} class. This allows
+ * the linker state to be garbage collected because SquirrelJME uses a reference
+ * counting garbage collector.
  *
  * @since 2017/06/18
  */
@@ -38,6 +40,28 @@ abstract class __SubState__
 			throw new NullPointerException("NARG");
 		
 		this.linkerstate = __r;
+	}
+	
+	/**
+	 * Returns the linker state and checks if it has been garbage collected, if
+	 * it has then an exception is thrown which makes using objects of this
+	 * class illegal.
+	 *
+	 * @return The linker state.
+	 * @throws IllegalStateException If the linker state has been garbage
+	 * collected.
+	 * @since 2017/06/17
+	 */
+	final LinkerState __linkerState()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error JI0u The linker state has been garbage collected
+		// and as such using this object is no longer valid.}
+		LinkerState rv = this.linkerstate.get();
+		if (rv == null)
+			throw new IllegalStateException("JI0u");
+		
+		return rv;
 	}
 }
 
