@@ -1,0 +1,24 @@
+# 2017/06/18
+
+## 14:55
+
+Ok so, there are resource groups but those are specific to resources. Classes
+would be associated with groups so they know where to get resources from. So
+basically what I still have are clusters. What I can do is just rename them
+to clusters and just have a list of class names which are part of the
+given cluster with an obvious back reference.
+
+## 15:24
+
+A base class which manages the linkback to the `LinkerState` to store the
+reference would be easier, then I can have a checked private call to get the
+owning linker state. This can be used to handle it internally.
+
+## 18:50
+
+I wonder if I should put the markdown files for my notes back into the
+repository automatically so that there is an actual backup of them since once
+the day is over they are done with. This would be just in case the documents
+are lost I can recover them easily. It would just generate a single commit
+of backing up the notes, then they would be available on GitHub and such or
+the local source snapshots. I do find them to be quite important though.
