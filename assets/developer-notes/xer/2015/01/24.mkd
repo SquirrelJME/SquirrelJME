@@ -1,0 +1,52 @@
+# 2015/01/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:13
+
+Decided to add the building of my entire runtime, and it seems that the
+compiler adds an unknown flag that is not in the specs: class flag 256. The
+class that gets hit is java/security/interfaces/ECPublicKey.class. Even though
+invalid flags are to be ignored, I wonder what the flag means. But I suppose
+the best thing to do would be to ignore them.
+
+## 12:31
+
+Could go for a slight optimization and restructure of the recompilation code
+to make it neater.
+
+## 12:39
+
+Actually, I am pretty sure the error relates to the long/double value since
+the failing class has a constant long field.
+
+## 13:02
+
+Definitely going to go for a rebuff of the kernel compilation system so that
+it is far better optimized and more dynamic.
+
+## 13:24
+
+One that can also handle stuff like compact profiles and error out if the
+kernel depends on any bad dependency stuff.
+
+## 13:56
+
+Also hairball is getting a bit crowded so I am going to split the kernel and
+package specific building stuff into subpackages to keep it better organized.
+The kernel builder is also more specific than the packager so it will vary on
+things. The only package the kernel needs is the dynamic recompiler, the rest
+of the classes are handled specially such as the kernel and the run-time. Do
+not wish to mess with my package compiler so that it can build the kernel
+also.
+
+## 14:10
+
+The ResourceBundle stuff can just use the class name rather than manually
+typing the location of things, will be far easier to move stuff although the
+slashes are a problem.
+

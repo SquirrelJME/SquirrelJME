@@ -1,0 +1,21 @@
+# 2013/12/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+I can easily grasp the concepts of using C and assembly to write a kernel,
+however Java and the JVM is a whole different machine. Java is byte code which
+could be translated to machine code or interpreted as is. However, there
+exists the Java Native Interface (JNI). The JNI functions are handled via
+"native" modifiers on the code being executed. Java is very class centered and
+requires that some kind of class system is setup for the VM state to be known.
+However, when the system boots there is none of that and it must be setup.
+Basically, one would have to write a loader and memory manager in assembly or
+C then load the Java classes. The only way I can see a class setup working is
+by not having a l.....? _2014/07/03 When I wrote this my thought was
+distracted and I could not remember what I was typing until two days later
+when I was able to figure it out._
+

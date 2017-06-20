@@ -1,0 +1,38 @@
+# 2015/01/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:52
+
+I have this idea for another idea game I can make as an example, titled "Infix
+Desolution" which would be an RPG. The plot centers around generic heroes
+characters going off to save their world which is being attacked by a powerful
+enemy force that bends the will of the world to his/her own pleasure. Halfway
+they spot a neutral optimistic who joins their party, speaking not and showing
+no interest in the turn of things whether for good or bad. That said person is
+the creator of the "world" and knows it is just a computer simulation that he
+has created. Since it is a purely virtual aspect he cares not for the actions
+as they have no bearing on his reality. However the simulated peoples of the
+world despite being purely virtual have the spark of conciousness so it is not
+as these are all scripted characters with no choice. This is how the big bad
+has come to destructive power since he also finds it as pointless and deems to
+end the simulation. However, the creator realizes the plea of the people
+inside of it and decides to take a more forward stance in taking action to
+clear things. However since the program has developed in unanticipated ways
+changing the source would change it forever, which is why he cannot cheat his
+way out of it.
+
+## 03:56
+
+I have this feeling right now, where the code I write flows out like an
+endless river. Seems like it costs it nothing to me.
+
+## 05:04
+
+I will need to make the fields and methods a map of name/desc keys and the
+actual assignment so requesting such things is faster.
+

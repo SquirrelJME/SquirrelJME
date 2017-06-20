@@ -1,0 +1,77 @@
+# 2014/08/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:01
+
+For AnnotatedEnumRover, I just need a map between the field and the enum entry
+so I may use AnnotatedElementGroup.
+
+## 01:24
+
+Had an idea for the testing framework, use a bunch of public static methods
+starting with "test$" that take a parameter that is some kind of test system
+feedback thing. It would have to be done so that all test may be run
+concurrent of each other and in any order (so it gets done faster).
+
+## 01:33
+
+Thinking about reflective issues since the enum members will be part of a
+private class in an inner class which might not be accessed from the outside
+using normal means. The VM probably would ignore it but I would want my VM to
+maintain the same limitation checks with reflection as with compilation. The
+thing is that I would have AnnotatedElementGroup and AnnotatedEnumRover (which
+would use the former class) be very similar to each other. So I may just be
+overcomplicating things, because I just create a AnnotatedElementGroup with
+the enum values, and the argument parser would just use those as normal.
+However, for enumerations the class does not have the annotations, the field
+of the holding class does, and that is what needs to be handled. So I have a
+rather reflecty problem since the common library is in its own package and the
+enum for option values would be a private enum in the class. I will have to
+think of the solution to this.
+
+## 01:54
+
+Using reflection makes things easy, but complicates things.
+
+## 04:41
+
+Actually, all I need is a list of enumeration values, I can then use
+getEnclosingClass(), provided that works for enumerations. Of which it does
+not, because it returns the class the enumeration itself resides in. So in
+such a case, I instead need to getClass() then perhaps the super class of
+that. Since you cannot get an object of the super-enum anyway. However,
+getSuperClass() returns Enum, while getClass() returns the anonymous class.
+getDeclaringClass() does the same. Actually, Enum has getDeclaringClass()
+which does what I need, so I must not use the class of getClass().
+
+## 05:05
+
+Forgot what I was thinking about how to proceed, thinking about food.
+
+## 05:21
+
+I remember, have a class for enumerations of which I can just slap together a
+bunch of arrays. However instead of EnumRover I will make an EnumGroup which
+just wraps AnnotatedElementGroup with Enum handling. I should just write
+something rather than think about it too much.
+
+## 09:03
+
+Did some work, had this idea to use "export LC_ALL=C" in my build scripts
+since that is probably faster, and I intend C locale anyway. Things may run a
+bit faster possible. I wonder.
+
+## 09:24
+
+No speed increase at all.
+
+## 23:11
+
+Figured it out (but I should eat first), I can just have AElG be a simple
+iterable for its own entries and such.
+

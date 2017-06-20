@@ -1,0 +1,27 @@
+# 2015/09/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:40
+
+Took two days off. I suppose for binary file representations I can use
+interfaces possibly.
+
+## 10:50
+
+I suppose an interface with basic sub-classes to represent class data would be
+good. I believe my class binary interface would just be read-only where there
+may be possible exporters as needed. Using an interface the class
+implementations could use any base class, so one could have one which extends
+some socket protocol or other thing. Some formats might take ByteBuffers,
+others might not (say virtual classes that I generate for invokedynamic and
+proxies).
+
+## 18:14
+
+I slept for many hours during this day.
+

@@ -1,0 +1,176 @@
+# 2015/06/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:03
+
+Of course to determine speed, I will have to choose a level that is long and
+does not have a train going back and forth. The brandenburg gate level is nice
+and long, however it has a tight terminal and obstacles. I suppose speed would
+best be measured on the long level with a train and then use that as a sort of
+starting point. Everything will have to be measured, including bullets and
+missiles to the best extent. Other things that will have to be done include
+stuff such as sizes and such. Although the game is 3D, it is very 2D oriented
+in many aspects. All shots shoot straight ahead and are just modified by your
+Z position. Not sure of ramps however, but there are few of those.
+
+## 02:08
+
+I suppose I should write the assembling of a basic entry point before I
+continue on with any NARF work, that way I know how it will work out at least
+when assembly code is written by hand. I can then design the assembly system
+to be nice and such. On another note, for FreeTanx I wonder if I should use a
+BSP (I understand the concept) or what I understand of Quadtrees. Surfaces
+will essentially be triangles though and collision will be done on those so
+that falling through the floor does not occur and running into walls happens.
+I suppose I will need a height the tanks can step up before running into a
+wall, so they can go up on curbs and such. I just need to figure out a simple
+way of how to orient a tank (angle it going up/down ramps) and if it is on the
+ground or not. The physics of the game it is based on is very non-realistic.
+Tanks can turn in the air, but they cannot change their momentum unless they
+are on the ground. But, realistic physics do not make a game. Another thing to
+consider is a navigation mesh that AI can use to move around the level to
+attack enemies. I would design the multiplayer aspect of the game first and
+then potentially add some kind of campaign. Ironic though, I do not really
+like war yet I make games with tanks and military strategy (Squirrel Quarrel).
+I suppose wars would be better fought in the virtual world instead of the real
+world. The virtual world only brings bruised egos instead of death.
+
+## 02:22
+
+I suppose FreeTanx will be a demonstration of 3D capabilities while Squirrel
+Quarrel would be of 2D. 3D would probably happen in years, but at least I
+would have something to play in the mean time. Although it is a side
+distraction, I do need to take breaks from my main work from time to time
+since I really pretty much work on it every day. Another thing I can do is
+actually use the sound library that I purchased. I paid a few hundred for it,
+it would be a shame to put it all to waste.
+
+## 02:27
+
+In the mean time, the instructions for a CPU may carry a special form but I
+should concentrate on the encoder and decoder of the instructions.
+
+## 02:44
+
+I know something that would be interesting, sort of. A way to determine
+(cheaply) if a package needs to be recompiled because some source code
+changed. This way, I no longer need to do lots of rm -f on some of my build
+JARs and force rebuilding the bulk of them on fewer changes. This should make
+it more efficient, although I have to store the information in the JAR itself.
+I do wonder though the most optimal way to store such information.
+
+## 02:48
+
+Such a system would not be truly perfect, but it should be good enough. I will
+only handle source directories and such because otherwise it will be quite
+complex loading Java class files to calculate dependencies and such when
+things are done. The PackageList will need some kind of temporary non-saved
+marker of sorts to indicate that the source has not changed so it is not
+checked over and over again.
+
+## 09:47
+
+Yknow, the JAR itself does not really need an entry in it which puts down the
+time it was built. It could be obtained from the filesystem although it might
+not be as accurate.
+
+## 10:10
+
+The list of files read will need to be handled however, to determine if any
+files were added or removed.
+
+## 11:37
+
+Well, time changes are detected and it is determined if something needs
+rebuilding, so that is good.
+
+## 11:45
+
+Ok, changing the package causes a rebuild to occur. Now I just need to see if
+a dependency forces a rebuild of all of the required packages as needed. I
+will test deleting a dependent built package, and then modifying the source.
+Deleting works. Now to change the dependent package. Changing the source, the
+dependent package is rebuilt and then any of its dependencies, so the code
+works.
+
+## 11:51
+
+Hairball launcher needs to include timing information now in the JARs that it
+builds. On another note, seems the Java compiler is generating header files
+for my source code. ` [INFO] ***
+/net_multiphasicapps_k8_kernel_ieee1275_ppc_Main.h *** ` Unintended but
+interesting.
+
+## 13:30
+
+Perhaps, such a thing could be used to my advantage in my assembly code. The
+file generated is pretty much only a header. Using a JNI interface could be
+handy however as I can use it in a C compiler. Although I have decided against
+a C compiler, perhaps I should re-evaluate it. I would have to study JNI some
+more. With my modified preprocessor, things have gotten better for the most
+part especially with it split from the source-compiler-c package. If the C
+compiler of mine could generate machine code, I could convert Java source code
+to C code which uses JNI. That would require the kernel have a C compiler in
+it however. It would also add an extra step as input code would have to be
+decompiled into an abstract form, compiled into C, then it would need to be
+preprocesed, followed by recompilation to some abstract form that likes C, and
+then that would have to be compiled to native code. Although at the core the
+language would be C, it would then be possible to switch C compilers so I
+could say use GCC or LLVM to generate machine code. I could also use my own C
+compiler. As for stuff from Java code I could just move optimizations away to
+the C compiler. The thing is I am going to need a C compiler anyway if I want
+to entice others to port their existing C code so it runs on the OS which is
+purely in Java. The C code must be object oriented where the functions are
+compiled into code banks. C lacks exceptions though. The JNI interface from C
+lacks garbage collection hints also.
+
+## 13:55
+
+One major thing C lacks though, is exception handling. It also needs to handle
+multiple types and potential garbage collection and such. Having the catch
+block after the try block will not work because catch could be anything and
+that may require funny loop stuff which is horrible. One alternative is to
+instead have the finally block first, followed by the catch block, then the
+actual try statement.
+
+## 14:16
+
+So yes, I believe I am going to convert classes to C first and then compile
+them with a C compiler. There is no reason to remove all of my other classes.
+However, if I want to interact with GCC then I will need to have a wrapper
+which can extract the binary objects and them place them into FormCodeBanks
+since that is what k8 will expect.
+
+## 14:46
+
+If I am going to include a C compiler into the kernel, then it has to be
+light. Thinking of GCC I cannot use it because that would mean I would have to
+embed GCC into my kernel, which is not exactly feasible to do.
+
+## 14:53
+
+I could have two sets of compilers though. Host compilers and target
+compilers. Host compilers can run on the system building it, while target
+compilers can only run on k8 itself. GCC would be a host compiler which can
+build the kernel. Although once my main compiler is finished I no longer need
+GCC because I have my own compiler. I can use the host compiler to conduct
+tests on a new target platform however, sort of. I could use it to cheat and
+to give be a bootable kernel without needing to write and test a full compiler
+at once. I will still need an assembler however so I must write that so that
+entry points could be used and such.
+
+## 15:05
+
+This means NARF will be deprecated and merged into the core-compiler stuff for
+general translation from Java to C.
+
+## 15:25
+
+I should probably split up the core-compiler stuff into separated packages so
+they are more modularized as needed.
+

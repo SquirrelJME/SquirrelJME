@@ -1,0 +1,25 @@
+# 2015/09/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:52
+
+Seems some smudges on my laptop screen just do not go away.
+
+## 14:42
+
+Appears that using interfaces for the binary class stuff was a good idea
+because it simplifies some defining operations without having to rely on a
+base class to do things.
+
+## 16:12
+
+Really hoping this new code I am writing is super speedy since that would be
+really nice. Using a lazy mechanism for class data should increase initial
+load speed for the most part. If a class is loaded where not much work is done
+with it, then doing a full load would just waste time for the most part.
+

@@ -1,0 +1,58 @@
+# 2015/12/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:26
+
+Going to have to add some severe TODOs in my code generator for volatile,
+atomic, etc. memory based reads. Will also need to handle long/double
+atomicity for 32-bit systems where high/low values are not atomic. This only
+has to be done via accessing memory anywhere that is not the stack.
+
+## 02:53
+
+I am just going by JAR and source code file times, right now I have the
+following:
+
+	Jar 1449127370000
+	Src 1446848209220
+
+This tells me that the JAR is newer than the source. This should be faster but
+slightly less reliable than the `.times` method while not having such a file
+in the JAR.
+
+## 02:57
+
+It is possible though that a file system does not support modification times
+and instead just uses creation time as a kind of fallback
+
+## 03:22
+
+I have a SLA battery which was around 8V or 9V, attaching the charger does
+nothing so I decided to jump the battery from a fully charged one and now the
+charger likes charging it. I shall let it alone for some hours then check the
+voltage to see if the battery has recovered. Right now I see the charger's
+capacity meter dropping and the charge light is solid where on nearly full
+batteries it just blinks rapidly. Hopefully there are no dead cells. This is
+a true sign inverter which I do not really use compared to my modified sine
+one. I would like to use it, but I am not sure that it will keep my battery
+topped off as I desire. It has a remote control protocol that I partially
+reverse engineered in the past, just the cables for it I have not really
+figured out since it uses serial but has a phone jack instead. I could
+alternatively just connect it to an Arduino since it pretty much uses only
+3 pins, TX, RX, and GND. I just hope my batteries are not dead.
+
+## 03:28
+
+On the otherhand, hopefully checking the creation time too will be a nice fall
+back. I wonder what to do if the system has no real concept of stored time such
+as when there is no RTC.
+
+## 23:55
+
+I should update the templates to 2016.
+

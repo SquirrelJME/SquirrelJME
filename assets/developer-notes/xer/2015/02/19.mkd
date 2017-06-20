@@ -1,0 +1,110 @@
+# 2015/02/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:32
+
+It would be best if CHECKCAST is synthetic when used in the code as it is
+essentially the following code:
+
+    
+    
+    if (foo != null && !(foo instanceof Bar))
+    	throw new ClassCastException();
+    
+
+This would also reduce the number of operations that is required to be
+implemented and would help optimization too.
+
+## 13:04
+
+Question though for conditionals, do I have a branch on equals or do I have a
+comparison instead. I could always do an any branch so that there is a
+comparison that places into a register and one that does a jump.
+
+## 13:15
+
+Making BranchTarget not be immutable and having the operand builder has made
+things simple as I can create a branch target and then set the target address
+after adding all the operations as needed, so no guess work is required.
+
+## 14:44
+
+I would say that so far with this code working with a register based virtual
+machine is must easier by hand than working with a stack based one. Also, my
+popping code does not check if the requested pop type matches what is on the
+top of the stack, whoops.
+
+## 15:22
+
+Only 155 operands left now.
+
+## 15:55
+
+There was a bug in matchPushPops() that only failed at this moment so it went
+undetected before, the wrong stuff was being popped off.
+
+## 16:04
+
+The stack only operations just do nothing at all, then after that is IFEQ
+which would be my first comparison operation.
+
+## 16:10
+
+IFEQ and friends will require a way to specify constants, since my comparison
+operator (no need to add tons more) only handles such cases. The constant
+operations (such as ICONST_0) would also be using it. Due to the nature of
+wrapper types, it will take a wrapper type where the output is of the specific
+kind. Another thing I am thinking of is the output register, I specify a type
+but in pretty much every case the output will just be overwritten by the
+specified value of whichever type it uses. Really only the input needs to be
+type checked.
+
+## 16:33
+
+Type can be obtained from the push list.
+
+## 17:37
+
+Now back to IFEQ and friends.
+
+## 18:21
+
+143 operations left, so in 3 hours (was 155) I implemented 12. Assuming I keep
+a steady 4 operations per hour, I will have them all implemented in 36 hours.
+Which is still a couple days long. However these operations now force the
+support base to be made for later operations.
+
+## 20:26
+
+I have been attempting to figure out this exception stuff, however I believe
+it is due to not reading the exception table. However they are read as I
+thought.
+
+## 20:40
+
+This code is a jump target of IFEQ. Which looking at the code I never set the
+jump target, I had set it before but I changed the code to optimize it but
+never actually added the result target jump.
+
+## 21:19
+
+Now only 111 operations remain. The JavaMethodDecoder is getting a bit kludgy.
+However the other classes outside of it remain clean. Decoding the class file
+and its method data is quite a complex task but it is getting there. 3 hours
+ago there were 143 operands and now with 111, that is a difference of 32\.
+Divide that by 3 and that is 10 operations an hour. So 11 hours at that rate
+of 10.
+
+## 23:43
+
+I am going to limit math operations to two operations, register+register and
+register+constant. Then the math op will have a specific special MathOp which
+does add, subtract, and the rest. Doing it this way will reduce needless
+duplication of code since all of the math operations are virtuall the same
+anyway.
+

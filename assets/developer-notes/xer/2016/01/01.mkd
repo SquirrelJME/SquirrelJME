@@ -1,0 +1,83 @@
+# 2016/01/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:47
+
+Happy New Year!
+
+## 00:49
+
+Currently resetting up one of my laptops. I am going to install FreeBSD on it
+along with Java 8 so I have an additional way to test building my operating
+system and such. Right now I have only really worked with Windows (which I have
+yet to test with the refactored code) and Linux (which I currently use and it
+works). I am also switching to btrfs instead of ext4 on it. Hopefully I do not
+have the same experience I had 4 years ago when I used it. That experience
+being major filesystem corruption on a bad power off.
+
+## 04:47
+
+Caveats with plan. ZFS is not supported in FreeBSD for PowerPC systems and
+some software I used on Linux does not work with btrfs. The major thing with
+FreeBSD however is that I have to build everything from scratch. There is the
+`ports.txz` archive, however it contains all of the code just merged into
+an entire archive. So for example there are utilties, servers, games, and more
+combined all into one. So say if there is a port called _foo_, you would
+essentially have to extract the entire archive when you might not use all of
+it. For Foobarniux however, all packages can essentially be prebuilt. The
+sources and such are separate also. Thinking of that, it would be possible for
+hairball to support ZIP files containing source code. So thinking about it, I
+can write my own file manager which uses `PackageContents` instead of the file
+system. That would then mean that having the sources extracted to the disk
+would not be required at all. So this by itself would be very handy. The
+thing though is that there would essentially be a source directory and a source
+extraction so to speak. I could see a point where one is trying to build
+Foobarniux and they have extra source ZIP files perhaps for say 8-bit Z80 CPUs.
+Hairball would have to choose which one to install for example.
+
+## 04:54
+
+On the FreeBSD system, I hope the OpenJDK in the ports is old enough because
+otherwise I would not be able to use JamVM due to incompatible changes made in
+more recent versions.
+
+	openjdk version "1.8.0_40-internal"
+	OpenJDK Runtime Environment (build 1.8.0_40-internal-b04)
+	JamVM (build 2.0.0, inline-threaded interpreter with stack-caching)
+
+My release is quite old but it is supported, which is why I use it.
+
+## 05:02
+
+Also using the file managers, I can completely remove the need for temporary
+files, even though it will use up memory rather than disk space. So for memory
+constrained systems (perhaps say the N64 or Dreamcast) building might be
+troublesome. I could also have a system property and a basic check for the
+amount of free memory the JVM has. The intermediary files could also even be
+compressed with GZip in memory.
+
+## 05:09
+
+Definitely must get used to the new year, was typing out **2015/12...**.
+
+## 05:17
+
+Also, a purely in memory system would be agnostic to the disk and how files are
+stored on it. Foobarniux might be being built on DOS or similar.
+
+## 11:59
+
+The OpenJDK in ports is from March 3, 2014. This is 15 days before the first
+release, so it is quite old. However despite it being that old it will work
+because it does not change the VM stuff. Plus Foobarniux should be able to be
+built by any Java 8 version of the JDK.
+
+## 12:26
+
+JamVM would be far superior to the very slow but precise Zero VM.
+

@@ -1,0 +1,129 @@
+# 2016/01/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:38
+
+## 01:54
+
+Naming units for the most part.
+
+## 02:29
+
+I believe for images, instead of creating a few thousand sprites with various
+rotations I will use voxels instead. Would require creation of a text based
+voxel format and editor of the data. This would probably be the simplest route
+at a slight cost of complexity. The rotations of the voxel data could even
+be rendered at run-time when a frame is needed.
+
+## 02:34
+
+I suppose editing voxel images will be cube stacking (attaching a cube to
+another cube with a specific color) and specific splices. The other alternative
+to voxels is to actually use 3D models. Using 3D models would at least have it
+where I could have skeletons. However creation of models is a bit complex when
+it comes to editing them. Voxels would be easier to draw, however 3D models
+would be more universal. Pre-existing 3D editing tools are a pain to use though
+due to the varying differences and explicit requirement of things.
+
+## 15:33
+
+It appears my desktop SSD is failing, thus I am going to resume work on my
+laptops. There is a laptop in plans by a group to make a PowerPC laptop. This
+would be rather interesting.
+
+## 17:51
+
+I can probably also split the first Java library, but before I do that I must
+determine the interdependencies of the stuff to figure out how to split the
+packages. So I suppose I should generate a DOT of the imports declared in
+packages and such.
+
+## 18:16
+
+Looking at the graph, I can split out...
+
+ * javax.sscript - Nothing depends on this.
+ * java.util.function - This is only depended on.
+
+## 18:26
+
+Well actually, I can explot the boot-built stuff. Since the host will have to
+be a Java 8 system, I can just move function into its own project and then have
+it not be boot built. However, the compiler detects when there is a name
+collision between stuff that is compiled and stuff that is in the classpath.
+Actually forget that, I had just forgotten `package` in my small class. So yes
+I can exploit this fact.
+
+## 18:47
+
+Figured out how the `javax.security.auth.login` is used. That code is basically
+just an authenticator. It does not actually do any authentic work. What it can
+be used for though is say a login screen to start a shell. It can basically run
+a user authentication setup to determine if a password is valid or not (or
+request a password) before a login is actually made.
+
+## 18:59
+
+The compact2 profile can also be split around. Although the compact2 will be
+easier to split, it is essentially in 3 pieces: RMI, SQL, and XML/W3C.
+
+## 19:20
+
+I can also continue the split on compact3. I can also work on splitting the
+complete remaining API (compact4).
+
+## 19:24
+
+I believe I will start with compact4 first since that contains stuff such as
+Swing and AWT.
+
+## 19:29
+
+ImageIO depends on AWT. However, for Swing, these three are a concern:
+
+	java__awt -> javax__swing__text;
+	java__awt__im__spi -> javax__swing;
+	javax__accessibility -> javax__swing__text;
+
+So I should see how dependent `javax.swing.text` is. And that depends on
+everything. So far then, awt, swing, accessibility, and print must be together
+in a gui subpackage.
+
+ * `javax.sound` is alone _sound_.
+ * `java.beans` is alone as _beans_.
+ * `javax.activation` depends on _gui_, called _activation_.
+ * `javax.xml` depends on _activation_, called _xml_.
+ * `javax.activity` is alone as _activity_.
+ * `javax.annotation` is alone as _annotation_.
+ * `javax.jws` is alone as _jws_, it only contains annotations.
+ * `javax.print` goes with _gui_.
+ * `javax.rmi` is alone as _rmi_.
+ * `javax.rmi.corba` goes with _omg_ and depends on _rmi_.
+ * `org.omg` is alone as _omg_.
+
+So this is much more complex.
+
+## 22:46
+
+Actually beans are part of the GUI system.
+
+## 22:51
+
+The default provided PLAFs can also go into their own packages also.
+
+## 23:28
+
+And now to finally split compact3.
+
+## 23:49
+
+The preferences API looks rather interesting and I will most likely use that
+for my operating system. To think of it, due to the splits I have made of the
+code I can have other programs use it without requiring the entire compact3
+profile to be pulled in. This is exceptionally nice.
+

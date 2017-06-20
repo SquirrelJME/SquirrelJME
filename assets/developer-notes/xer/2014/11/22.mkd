@@ -1,0 +1,23 @@
+# 2014/11/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:03
+
+The day is still long.
+
+## 16:38
+
+New build script looks much better.
+
+## 23:55
+
+I am going to go for the live image setup, where the OS runs "live" from a
+live CD or an existing disk then you can install it from there, though one
+could copy the live data to a disk and then just clear out live mode. A system
+property could determine whether the installer should be run or cleared away.
+

@@ -1,0 +1,146 @@
+# 2016/01/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:02
+
+I am going to have to fix POIT because that few hundred errors appearing
+everytime I use NARF can get bothersome and makes it harder to see if NARF
+works. However, I can always just not call if a config is supported unless a
+compiler is chosen.
+
+## 00:19
+
+Well it was actually caused by my addition to have `foo@arch`, the supported
+only checked if the base `foo` supported it and not any potential architecture
+specific addition. I should also probably add a `foo@arch@extra` so that there
+may be multiple variant support for architectures. There could be two different
+supports by the same compiler for the given architecture, perhaps a dynamic
+recompiler separates 32-bit and 64-bit code for example. That would actually be
+rather handy as it could complicate things less. However the NARF dynamic
+recompilers should be rather generic and support everything.
+
+## 00:23
+
+However, the extra field would be very vendor specific and there would be no
+way to know how it is used. One compiler could use one extra format and another
+compiler can use it completely differently, while hairball would be unable to
+tell the difference. So due to that, it would be best not used.
+
+## 10:17
+
+The first part of the NARF dynarec will transform the Java byte code into that
+abstract-ish program for basic optimization and assignment work. It will not
+be SSA.
+
+## 10:23
+
+One thing I do not want, is a gigantic mega-class or a hundred classes for
+handling byte code operations. I could perhaps move them into separated classes
+and sort them by functional group.
+
+## 11:35
+
+I have this idea for the disassembler, I have instruction guessing in the
+`ArchitectureData` class, instead of having it there I can have a sub-class
+that can be cached which can cache the guessed instructions.
+
+## 11:42
+
+Today is a leap year. This means I can get a commit and log on the 29th and it
+will be very special.
+
+## 11:48
+
+I have figured out a way to sanitize the fossil export so I can eventually it
+run it in gitstats to give repository statistics which I have not done in
+awhile. Two years of project time is coming up however. Lots of dedication to
+get this far despite not having a true dynamic recompiler yet.
+
+## 11:58
+
+I wonder if I should rename Foobarniux to say something such as Squirrex or
+Squirrelex. However "Squirrelex" is a meme that I know not of, basically
+something called "Skrillex Squirrel" which I do not know. There may be negative
+attachments to it and such, so it would best be avoided.
+
+## 12:08
+
+I could try "Squirrnix" or "Squirrnex". Google says nothing for "Squirrnix" and
+suggests other searches. "Squir" appears to be a word, meaning to throw with
+a jerk, to throw with edge foremost. So is this throwing something slightly
+different or is someone throwing something with a jerk (as in person). So I
+suppose Squirrnix will work, it is potentially easier to say and faster than
+"Foobarniux". Two instead of four. So I suppose a rename is in order again.
+
+## 12:17
+
+The new name is also one character shorter too.
+
+	foobarniux
+	squirrnix
+
+## 15:37
+
+I wonder if I would be able to base AWT on top of JavaFX so then Swing which
+is based on AWT could also be based on JavaFX. Supposidly Swing is on its way
+out in the future so having AWT/Swing on JavaFX would work for compatibility
+while potentially having a common look between all three of them.
+
+## 15:43
+
+However, JavaFX does not support image format operations for what ImageIO is
+used for.
+
+## 15:47
+
+Ok, so the JavaFX source I grabbed is OpenJFX 8, Update 40. So this means that
+there is printing, because otherwise not having printing support would be
+rather bad.
+
+## 15:51
+
+When it comes to the GUI, JavaFX might be simpler to implement because it is a
+bit more modern, although it might be complex.
+
+## 15:56
+
+The biggest part of the fourth part of the library though is the AWT/Swing
+stuff, so figuring out a way to modularize that more will be a bit complex.
+Also if hardware accelerated graphics come into play, then I am going to just
+support Vulkan.
+
+## 16:38
+
+I should probably fix POIT so I can run it if needed and also not have to watch
+it fail to compile everytime NARF fails to compile.
+
+## 17:27
+
+Looking at the stats for the repository. The least popular day of the week I
+have made commits on is Thursday, then followed by Friday. I still follow a
+sine wave pattern across the weeks. In 2015 I made 5000 commits and so far
+for 2016 I am halfway there. Actually read that incorrectly. 2014 was almost
+3000 commits, this year there are only 270 so far. It seems that fossil export
+to git handles edits that have been made to commits (their author) since I no
+longer have giant vertical jumps in a bunch of locations. I currently just have
+one large jump.
+
+## 23:40
+
+I must work on the new `ArchitectureData` stuff. Thinking about JavaFX it may
+be possible for me to implement as a framebuffer (for the console) on top of
+JavaFX. So there would essentially be a kind of kernel provided window manager.
+However JavaFX is a bit large for a kernel so that might be a bad idea.
+
+## 23:58
+
+JavaFX does not compile for me, most likely due to my PowerPC. So if I were to
+add test and such my own JavaFX implementation it would have to be rather
+independent for it to work properly. I can at least install the source so I
+can run code stripping through it.
+

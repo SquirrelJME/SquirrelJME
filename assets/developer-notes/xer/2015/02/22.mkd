@@ -1,0 +1,105 @@
+# 2015/02/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:13
+
+Changing the append logic gives me `FCFCACACFS1`, which is the same as the old
+one that it stops on. The location is 550 to 501. And the old one has the same
+location also. So the appending of frames is correct it would seem. I should
+probably check out the javap to see what it should look like.
+
+## 01:23
+
+The stack map table based on the class file format is correct as it is
+intended. The state of the virtual machine however is not. The current failing
+state is the result of a stack table however. I may need double stacks, one
+that is the result of normal executional flow, and one that is set by the
+stack map table. Though I wonder how that would work in reality. Not the code
+aspect of it but the security aspect. Suppose it would be best to try it out
+anyway just to mark that off, or potentially fix it.
+
+## 01:46
+
+Actually the StackMapTable is only used during jumps so perhaps that is what I
+need then, use normal execution flow unless a jump has been performed.
+Although the stuff still has to narrow as needed.
+
+## 01:55
+
+One thing is how to solve this issue. The right logic that is required for it
+to work.
+
+## 02:05
+
+Ok, I did that and the stack state is now more strict. However I land at the
+same point, the same 550 to 501 with the same two references missing.
+
+## 02:08
+
+However the stack flag specifiers has changed. Forget that as they did not. I
+am not too sure why this occurs, the stack handling and stuff should all be
+correct. Now I am tempted to just set those invalid local bits as a special
+state as to not be used. That way they are flagged and then. Kind of think of
+it though. The target has more locals while the current source has less of
+them (in this case two). In this case it is a back jump. The prioity of my
+stack grabbing is normal first, then SMT. Perhaps if I swap it around. And the
+result of that even if I make the SMT stack higher (use if it exists) it still
+fails in the same case. Perhaps the uninitialized values could shed some light
+on things potentially since I currently ignore those in the SMT. Still no
+effect.
+
+## 02:20
+
+Added new time note. It appears to only affect exception handler jumps. So I
+suppose I should perhaps ignore it until it bites me later on. However there
+will be rather verbose warnings whenever it is encountered however. Perhaps
+one day I will solve this issue.
+
+## 02:52
+
+Now I have an entire class recompiled albiet with some setbacks and a bunch of
+operations which are not even implemented. Just right now want to keep going
+and handling the decoding of byte code so I can decode all of the instructions
+before I do actual recompilation and run testing as such.
+
+## 03:32
+
+Now the next instruction after the set of some of these is MONITORENTER which
+will mean that a MONITOREXIT follows.
+
+## 04:08
+
+Did not change anything but 93 operands remain.
+
+## 14:06
+
+Ok, the class type for operands must be a Field because it is possible to
+check instances against arrays and such. Another thing is that in this case
+OpClassPointer is pointless as OpConst can be used instead.
+
+## 15:10
+
+Values being pushed in and out will need to have their types remembered so
+that strict operations are known.
+
+## 16:17
+
+Now I am at my first math operation, and it is IADD, joy!
+
+## 16:31
+
+Only 79 operations are left.
+
+## 16:52
+
+Now 55 remain.
+
+## 17:03
+
+I believe for ARRAYLENGTH I will just read a field from the type.
+

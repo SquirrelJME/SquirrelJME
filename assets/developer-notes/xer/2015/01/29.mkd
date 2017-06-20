@@ -1,0 +1,32 @@
+# 2015/01/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:22
+
+Time for sleep.
+
+## 16:47
+
+It would seem that repeatable annotations either do not appear, appear alone
+with their actual annotation type, or appear in a container. Since the
+annotations I placed alone do not appear in the groups.
+
+## 16:50
+
+And that would be the case.
+
+## 18:09
+
+Need to make unit references stick more since they are used much, along with
+add an equals for comparison if I never added it yet.
+
+## 20:32
+
+Implemented orders and the ability to move for units, and curently their
+moving is quite cheap so it looks a bit funny.
+

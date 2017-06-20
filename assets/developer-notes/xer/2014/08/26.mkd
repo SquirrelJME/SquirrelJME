@@ -1,0 +1,63 @@
+# 2014/08/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:12
+
+Looks like I never said anything yesterday. Working on the handling of files
+in a project. Also documenting the project JSON files because it should be
+done now before anything is forgotten.
+
+## 13:42
+
+Wrote a bunch of the build package and plugin code and it is getting a bit
+ugly. Building of a package is complex work and the javac tool is starting to
+get a bit messy. However, I do not believe I can avoid it becoming a mess
+because these are complex parts of the code. I would suppose the best thing to
+do is to keep it as neat as possible but not a requirement to be pure.
+However, I must keep the actual language translation matrix clean because that
+is very important to the compiler.
+
+## 15:27
+
+I need a better map type, one that can handle inner lists and maps and treat
+them like a normal map of sorts. However, such a data structure is a tree
+rather than being a map. Storing and creating maps inside of maps is tricky
+because the inner map or list could be modified on the outside, and messed
+around with. This would be a class that makes it so get returns a different
+value than what was put in with put. So putting in a List or a Map would just
+add all the entries inside of it. Getting an inner map or list would then just
+be a view. I can also cheat the major map and just use \0 to access inner list
+entries and map entries by encoding the key as a string. However, that would
+not work because the key could be of any value. So the resulting map would
+then be a multi-dimensional key map of sorts.
+
+## 15:51
+
+I could exploit generics some more, it can be a map of multiple whatever key
+and value. So it still looks like a map, but could have multiple values.
+
+## 16:10
+
+I believe I am just over complicating the build process with maps of maps and
+lists, inputs and outputs to the map. The tasks will always have input files
+and output files, along with a UnitLocator. I could make that part of the
+toolbox plugin. It would at least simplify things greatly. I could also remove
+the innerclass nature of the ToolBoxPlugin.Task and instead just make a big
+class for it, there is plenty of room in the package for that.
+
+## 16:25
+
+What I need to do is setup a new base class for toolbox tasks and use common
+stuff there, the map could be used for extra options. In fact the task COULD
+be a map itself which permits string values.
+
+## 16:32
+
+I can see that Task with an inner class of Result is a good idea, because they
+are coupled together yet generic enough for good usage.
+

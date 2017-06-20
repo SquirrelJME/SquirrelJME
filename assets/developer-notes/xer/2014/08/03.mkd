@@ -1,0 +1,34 @@
+# 2014/08/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:45
+
+For my JSON parsing code it appears that I am writing it twice to speak, the
+core code in ImplParser, the code using that in ImplReader. Though for less
+sanity I can make it so that ImplReader has less reduced code. Both of these
+should be sharing code not have them be mirrors of each other. I clearly need
+a better way to handle parsing as it could be far simpler than this. There is
+input parsing for text streams and one also exists for object streams. Perhaps
+a simple decoder would work out, a base class that could be extended to
+perform a specific extrapolation of input similar to parser. Then Parser and
+Reader could just assume it is correct.
+
+## 01:35
+
+This new way of parsing data is much easier, from what I can determine of the
+future. Less code bloat and simplifies many things, since once the stuff
+reaches ImplReader or ImplParser it would already have been checked of context
+so it could just be added. Simplification is better.
+
+## 05:26
+
+Did no real work at all yet (suppose still taking a break), however I have
+been thinking of my future IDE. I can have a split view which is able to see
+translation between source code, abstract code, byte code, and machine code.
+This way debugging output and what happens when would be easier and such.
+

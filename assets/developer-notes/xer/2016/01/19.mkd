@@ -1,0 +1,145 @@
+# 2016/01/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:40
+
+Still very cold.
+
+## 10:08
+
+Actually having a dedicated class for instructions for the ArchitectureData
+and one for registers can have it more easily cached. I can then just reference
+that instead. They can be a type of map however.
+
+## 10:21
+
+What I can do is modify the Disassembler, Assembler, and MutableOpCode to use
+a future moved DataAccessor (I would have to move it out of kernel-bin) and
+then use that for placing instructions and decoding them. So for example
+instead of having MutableOpCode return a byte array to later be placed in, it
+could just write it directly so to speak.
+
+## 10:26
+
+Then from the `InstructionMap` class I can have disassembler ready information
+such as images and mappings so that they can be decoded as required a bit
+faster and having it cached so it can be collected when it is no longer
+referenced. So I believe the first thing to do is move and cleanup (split off
+the DataStream) `DataAccessor`. Then I can engineer the Assembler/Disassembler
+around that along with MutableOpCode. I also wonder if I can have a
+disassembler view of an operating similar to `MutableOpCode` but is derived
+from the DataAccessor. When disassembling, if an operation is mutable might
+not matter, there also is a full copy which is required when changing it. I
+can also potentially handle something similar in the assembler. However
+thinking about this, it is possible to have a single stream for both the
+assembler and disassembler. So it would essentially combine both and allow it
+to be modified (if it can be written to). It could be a moving window view so
+that stuff can be shared.
+
+## 11:26
+
+Ok, so the first thing to do would be to move the `DataAccessor` out and into
+its own project. Then I can also have a `GrowableByteArrayAccessor` which is
+essentially a byte array backed accessor which can increase linearly in size
+as instructions are output via the assembler.
+
+## 13:12
+
+Figured out a name, I can just have it be `BinaryBlob` since that fits well
+as a better name than `DataAccessor`.
+
+## 13:48
+
+Right now `BinaryBlob` like `DataAccessor` is limited to 2GiB, I should perhaps
+remove that limit so that there is more utility to the classes.
+
+## 17:08
+
+ArchitectureData can probably go best without guessInstruction and instead make
+that part of the disassembler so that it only contains data and does not have
+any actual decoding logic.
+
+## 17:12
+
+I wonder if there is a type of hash sum for very small potential values. I can
+do a linear search through the instruction table when disassembling, however
+that would be a bit costly. I can architecture specific lookups however there
+can be on the order of tons of instructions in how they are handled for each
+architecture. So what I can do is instead in the architecture manifest is to
+have a major op specifier of sorts which identifies the mask of the input
+bytes which define the instruction image in general.
+
+## 17:21
+
+Well, I can have a merged assembler and disassembler (which would be quite
+powerful) so that there would instead just be a single class which does both.
+
+## 17:23
+
+The class would essentially edit programs, so perhaps `ProgramEditor`. I would
+have to potentially support going back and forth between it or have unified
+positions and such. Also the `MutableOpCode.Value` could be wholly cached and
+such so that once the instruction is determined it can create values as they
+are needed rather than all the time. So the instruction could be guessed
+without the creation of any value fields in the map. Then if the fields of
+the instruction are cared about then they can be stored in a kind of reference
+map which can share the field mapping values. So essentially the value for
+field #3 in an instruction, if the instruction is changed then that field
+association (which bits it maps to and how) will be different. So storing the
+values as a kind of cache would be invalid. However, in short, the fields
+would likely be sorted by shift order so that way only a handful of fields are
+needed at once in memory. Essentially, the new `Value` for a field would end
+up being mapped to the field number. Any interaction with field values can
+just do something similar to `MutableOpCode` where they directly modify the
+bits of the program. The assembler could also support a re-interpret which
+forces the fields to be interpreted as another operation when it really is not
+that operation. What this means is that the _op_ field for **aaload** for
+example when the instruction is reinterpreted to **aastore** will still use the
+_op_ value as it would be for **aaload**. However for some instructions such
+as the wide variants, the fields are mapped to shift values so that the narrow
+version will probably start at byte 1, the wide value field will then be mapped
+to byte 2.
+
+## 17:31
+
+Then MutableOpCode could still be used, but it would essentially just be a
+`ProgramEditor` with a semi-fixed position. However thinking about it, some
+architectures (such as Java byte code) may have specific alignment requirements
+for instructtions depending on the position of the instruction in the program.
+So these special instructions would appear wider and narrower depending on
+their position. There are also variable sized instructions. Fields could be
+generated based on this. The only use of `MutableOpCode` outside of the
+assembler and disassembler is to store a working operation before it is passed
+to the assembler. The disassembler loads into it, but the editor could just
+then have a nextInstruction(). I could have something similar to a queue where
+having `putInstruction` writes an instruction and then moves past it, while
+having an `offerInstruction` being similar to a put but without moving. The
+same could be said for disassembling where there are `poll` and `peek`.
+Going backwards in a program would be tricky however because previous bytes of
+a program may have changed. But when implementing it I shall figure out the
+true and better names to use than the ones named similar to queue.
+
+## 21:13
+
+Was attacked by a dog today, it was biting my right wrist. Luckily for me due
+to the cold weather I was wearing a thick coat so my skin was undamaged. I
+would suppose that this drives me more to never want any pets at all. Was a
+rather horrifying experience. If my wrist were to be badly damaged then I
+would be unable to type as fast as I do and would probably have to do it one
+handed which would severely cut my speed while programming. However I would
+probably adept by switching to an editor where I can use lots of macros.
+
+## 21:16
+
+However, I will calm myself by writing the `ProgramEditor` and watching some
+videos since I rarely watch videos.
+
+## 22:02
+
+Just tired and out of mind, cannot really think about programming.
+

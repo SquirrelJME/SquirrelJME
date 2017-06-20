@@ -1,0 +1,77 @@
+# 2015/10/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:05
+
+Moving the loads of constants into interfaces should make things a bit
+cleaner.
+
+## 00:57
+
+Will need an actual debug view so I can see what is going on in the game
+without resorting to modifying the renderer.
+
+## 02:42
+
+It seems impossible to make GridBagLayout have a 3x3 layout. GridLayout works
+but it is highly space inefficient.
+
+## 02:56
+
+Deprived of sleep and I have been trying to figure this damn layout stuff for
+an hour and a half.
+
+## 13:57
+
+I added color stuff and it is insanely slow to update all of the given blocks
+for a chunk. When it finally goes to appear on the screen it looks like a
+Jeopardy board flashing in.
+
+## 14:03
+
+Appears the massive slowness is due to HTML, since I use a line break. I
+suppose I can just not print the position and instead just show the data
+there.
+
+## 19:21
+
+My flood fill algorithm works, but it takes a rather long time to calculate
+through all the blocks. I suppose a simple visit check on the face iteration
+side will help lots.
+
+## 20:20
+
+Debug view needs a grid of sorts to determine positions and such.
+
+## 22:00
+
+About 5 years ago I wrote a test game called Gamma, supposed to be a space
+combat thing. I wrote the renderer but I did not do much for it. The renderer
+is light and it is quite possible I could port it over to Squirrel Digger
+since it already has working projection matrixes and such. Uses 16 point 16
+fixed point so it looks a bit distorted in some places. It works however. Some
+positions look like jello.
+
+## 22:51
+
+To increase render speed, I can also use a kind of display list of triangle
+meshes for each chunk. The triangles would still need to be projected to the
+screen however, but they would not need figuring out. Assuming 16x16x16 chunk
+and 6 faces where there are 2 triangles per face. That means there is a
+maximum of 49152 triangles per chunk. However, some faces are shared between
+blocks and some are not visible at all. The fill code can determine which
+faces to draw for the chunk. However for air blocks at the edge of a chunk, I
+will need a new mapping for solids based on the side of the block. Right now I
+just give all solids a fill of zero, which is nothing. I will need a unique
+fill for each corner of the cube and the faces of them. This is so when the
+other chunk is drawn, a complete wall is made instead for it when it is
+renderer. So basically there will be a triangle set for edges of a chunk. The
+triangle mesh can just be calculated when the renderer is called so chunks
+which are not rendered by the renderer will never get the faces setup and
+such. Depends though as it can be done by the flood filler so to speak.
+

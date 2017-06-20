@@ -1,0 +1,38 @@
+# 2015/11/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:18
+
+It is possible that a scratch register needs to be used if any values are
+kludged when performing a dual int register to a pair.
+
+## 13:36
+
+The wind is extreme this day.
+
+## 15:28
+
+Having both known and unknown constants is a bit better.
+
+## 16:46
+
+Before even integer addition, long addition will be first.
+
+## 18:05
+
+Had this idea that I can split off my StandardRISCTranslator into a
+StandardRISCMachine. Much of the code I have in there does not really use
+any slot based stuff at all. Doing it this way, I can then re-use the native
+generation code in NARF by not doing much at all.
+
+## 18:56
+
+Just need to update the PowerPC native generation code, the end result of this
+is that it should be easier to support NARF in the future because the RISC
+enabled generator can be used instead, which saves a bunch of time.
+

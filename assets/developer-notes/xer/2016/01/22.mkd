@@ -1,0 +1,55 @@
+# 2016/01/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:45
+
+Lots of snow outside.
+
+## 16:06
+
+Looks like I will need to handle `list` in `JavaFileManager` so it can find
+`java.lang` and such.
+
+## 16:09
+
+I will also need to fallback on the potentially system provided packages or
+just use my own.
+
+## 16:52
+
+The snow depth outside is six inches for the most part and there will be much
+much more because the radar show a dark cyan over the entire state for the most
+part.
+
+## 21:27
+
+The snow depth is about 1 foot and 2 to 3 inches. Tomorrow I shall go sledding
+since I have not done such things for about a decade. The amount of snow that
+there is, is immense.
+
+## 21:39
+
+I do wonder if I should handle cases where Squirrnix can be built on systems
+which are not capable of preserving case for example.
+
+## 21:48
+
+I get a `ClassNotFoundException` for the delete comparator. I do wonder though
+if my `ClassLoader` has to call the parent if it cannot find any class.
+
+## 21:50
+
+Actually looks like the methods I have overidden, at least in their
+documentation, state that the parent is to be searched first then the child.
+This makes sense because say if the parent lacks a compiler, the classes can
+exist and be implemented by my own package code.
+
+## 22:26
+
+Not sure what causes this, it just cannot find the DeletePathComparator class.
+

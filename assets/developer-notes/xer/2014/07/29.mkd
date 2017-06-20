@@ -1,0 +1,64 @@
+# 2014/07/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 05:03
+
+Had this idea for the C compiler, execution profiles. People write some nasty
+non-portable code which is bad. With this I could say simulate the stuff
+similar to PowerPC or x86, big endian, little endian, size of the pointer,
+etc. Not a true fix, as it does not fix broken programmers, but it would ease
+portability much.
+
+## 05:12
+
+ArgumentParsing does not work for how I plan my package manager to work, so I
+will modify it to make it a bit more iterable, then switch parse to perform
+the same behavior.
+
+## 05:22
+
+Rather than twist it one way, I will twist it another way and break
+compatibility with existing code using it since very little uses it now.
+
+## 05:48
+
+Actually I just realized how odd it would be having an iterator return the
+next of itself, so need a slight redesign and simplification. I have to use
+Iterable on that one.
+
+## 06:00
+
+Actually, I should eat before I do all this work so I can concentrate on it
+more.
+
+## 20:23
+
+New ArgumentParser now will be able to handle the split character when
+searching for arguments.
+
+## 21:07
+
+Slight problem with the ServiceLoader, it does not exist in Java 5 so I cannot
+use it for plugins at least on GCJ/GIJ. So I will need a wrapper class to
+handle Java 5, Java 6's ServiceLoader, and I could also make it able to handle
+my own service loading library.
+
+## 21:21
+
+I was also writing the plugin lookup outside the PMAPI, but that will change
+because I dislike duplicate code everywhere.
+
+## 21:46
+
+For a filesystem I am going to go tag based, then I can add image properties
+and other file metadata. I have tons of files and actually using the tags to
+locate things would be far better. Tags for resolution, colors in an image,
+whether faces are on them or not. Same can be said for other file types like
+programs, classes, etc. I can do advanced searches for say images that have a
+width of at most 128.
+

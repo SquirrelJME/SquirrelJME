@@ -1,0 +1,28 @@
+# 2015/08/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:20
+
+Now to do the split of architecture and dynamic recompiler stuff.
+
+## 11:49
+
+Splitting this code up should make recompiles much faster as I only have to
+recompile the dynamic recompiler stuff when supported as needed.
+
+## 12:10
+
+Now I need to add compiler support since support for specific architectures
+could vary across compiler packages (they could be in more than one).
+
+## 12:41
+
+Ok, so the refactor is complete and the NARF code has been split from the
+architecture stuff. At least developing the recompiler should be much faster
+now as less recompiles are needed unless I change PowerPC operations.
+

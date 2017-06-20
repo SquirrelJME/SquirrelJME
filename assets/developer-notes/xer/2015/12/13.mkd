@@ -1,0 +1,175 @@
+# 2015/12/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+Ok, the day changed now. I feel strange hah.
+
+## 00:17
+
+I am going to try listening to Trance even though I actually do not like
+Trance. This current song is another tracker called _trance machine_ with
+a copyright of **1994 july/mdf/mtf**.
+
+## 00:51
+
+For classes I might not need to have a writable version of it, however not
+to sure. By default my class writing will just lead to dumping.
+
+## 01:05
+
+Been searching for a song to change. Potentially found a new song called
+_Endless Dream_ and it seems rather happy and up beat. Made by _Aberration_.
+Might need some more coffee.
+
+## 01:08
+
+It has been about an hour since I last drank some coffee so I suppose some
+more.
+
+## 02:07
+
+The bad part of that song is it had a voice saying "Yeah!!!" and "Dream", I
+just removed those instruments and the song sounds much better.
+
+## 02:31
+
+Have not coded at all though, but I should grab some more coffee.
+
+## 03:59
+
+Went back to _Trance Machine_. However I should actually do some programming
+rather than look for a song, since I have been doing that for about 4 hours.
+Wow does time fly. But I just ate some food and drank more coffee.
+
+## 04:24
+
+I do not believe the caffeine is working, I really just want to fall asleep
+and I feel the weight on me. I do not seem concentrated at all. I do not
+feel very awake at all. Feels like I am just slowing down.
+
+## 04:45
+
+I suppose I am not going to get much stuff done because I have to fight
+falling asleep until sunset. Sunset is at 17:00. It is currenly 4:46. So that
+is essentially 12 hours from now.
+
+## 04:52
+
+I am just insanely tired.
+
+## 04:56
+
+I might just attempt a short powernap, set a bunch of alarms 45 minutes from
+now and just close my eyes.
+
+## 06:36
+
+And I did, I set my alarm 45 minutes and fell asleep or similar. When the
+alarm woke me up, I set it again for 45 minutes in the future and did it again.
+Thus now I am. So essentially an hour and thirty minutes of sleep, I do feel
+a bit better now. I believe the sun is starting to rise because I see brighter
+clouds where the sun pops up. I suppose I will go back to programming since I
+got a nap done.
+
+## 06:49
+
+Oh neat, a planet is visible through the clouds. Most likely _Venus_.
+
+## 06:59
+
+I should make sure that when the constant pool stuff is written, the global
+one that is, that the null entry is skipped and is not an actual constant.
+
+## 07:04
+
+It is getting much brighter outside now.
+
+## 07:18
+
+Pretty cool how the rising sun makes all the clouds a bright pink/orange color.
+I can notice it getting brighter from the light reflection off my hands.
+
+## 07:22
+
+Now the sky is blue.
+
+## 07:45
+
+I must now implement reading of interfaces in Java classes, however due to the
+new DataAccessor addition I can refactor a slight bit to use that instead of
+a ByteBuffer.
+
+## 07:47
+
+The nice thing I can do is easily switch computers and have a different thread
+of thought. Just step over to my laptop to the left from the desktop and open
+up all the Java binary code for a small refactor to DataAccessor. Then once I
+am done I can resume work on the desktop.
+
+## 08:07
+
+`DataAccessor` could use a byte stream kind of thing since that is how I
+handle most of the Java class data since it is very linear. I wonder what I
+should call it though. I suppose what it should support is DataInput, however
+that class throws IOExceptions everywhere. However it does handle EOFException
+though. So do I use it or instead have a kind of buffer under/overflow
+exception instead.
+
+## 08:28
+
+Well `DataAccessor` was an interface, now it is a class.
+
+
+## 10:04
+
+Well now the Java class file stuff uses `DataAccessor` however I do not know
+how correct it is since it is not tested.
+
+## 10:15
+
+The Disassembler should for example take a `SeekableByteChannel` for reading
+input data.
+
+## 12:47
+
+Was doing some outside work, I am completely blasted. However only 4 hours and
+15 minutes until sunset. Hopefully I can stay awake until then, and hopefully
+my sleep is normal. One thing I hope for is that there will not be any wake
+up forces. Some people might just start blasting music at night or revving
+engines much.
+
+## 15:33
+
+I could actually have a generic cache manager of sorts, either field based or
+key based. Using a static system, it might be able to save on the method
+references and such. I can use `MethodHandles` for the stuff. Then that cache
+stuff can be combined with the base binary code stuff. The cached data would
+be stored in the instance of a class and the `MethodHandle` would have a getter
+and setter for the field if not cached. That would remove the lambdas to read
+and write for example as the class could handle it.
+
+## 16:04
+
+The sun should be setting in an hour or so, which means sleep as I have been
+up all night resetting sleep hopefully.
+
+## 16:44
+
+I need some kind of infinite loop end of method guard just in case the end is
+reached when it should not be.
+
+## 16:51
+
+It is getting darker, the Sun is starting to set.
+
+## 16:58
+
+Still a bit bright but street lights are turning on now. I suppose this is
+where I call it a long day and continue tommorrow.
+

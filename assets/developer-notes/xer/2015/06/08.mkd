@@ -1,0 +1,41 @@
+# 2015/06/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:40
+
+Up early.
+
+## 11:54
+
+Looking at GCC's preprocessor, #defines do not do any processing or
+translating when defined, so they are straight through for the most part. This
+simplifies things for me greatly. The only thing I have to handle is when the
+defined macros are actually used.
+
+## 14:01
+
+I do not believe the Java3D is rootable into a specific interfaces package
+similar to how java-jsr353-interfaces is. So for Java3D I should have a base
+class which then has plugin providers to give a 3D surface. This way for
+varying platforms I can have a software renderer, or use existing hardware.
+
+## 14:14
+
+So basically there will be my JSR926 implementation which will use dynamic
+providers. There will be basic multiple interfaces for example a software
+renderer, one which uses Vulkan, and another for say the Nintendo 64's
+graphical hardware. If there is modern shader hardware such as the Radeon 9800
+then it should use a common interface similar to Gallium and the Java3D code I
+have uses that. For older fixed function hardware which is not as capable as
+newer hardware, there would be specific things for it. I would say that Java3D
+would be the core 3D graphics interface available.
+
+## 18:23
+
+Using lambdas will greatly simplify how my resequencing is done.
+

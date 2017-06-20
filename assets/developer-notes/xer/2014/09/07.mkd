@@ -1,0 +1,60 @@
+# 2014/09/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+Very early in the morning or very late at night now. I did get much work done
+yesterday and the day before. I should clean up those classes a bit of unused
+imports since they are rather done now.
+
+## 00:40
+
+I am at the point where I can start working on the compiler, although I still
+need to implement the CompilePool and NamespaceSeeker classes which are used
+for lookup and concurrency looks when compiling some code. They are used in
+the sense that you need to know what an import is and such. NamespaceSeeker is
+special that it must be capable of compiling code in other classpath
+directories when it needs to be done. Although it does not have to do it,
+provided it is told to generate those. But there is a javac option for
+implicit generation of class files from classpath stuff. Although not
+supporting such a thing would break javac because it is expected behavior to
+sort of put code all over the place.
+
+## 12:30
+
+In my compiler code, I could support older versions of Java as a source
+version, however Java is backwards compatible. Any code that is legal in 1.5
+would be legal in 1.8, however a source version of 1.5 would disable any new
+features which were added. Supporting ancient versions by disabling new stuff
+complicates the compiler.
+
+## 13:14
+
+A stack based compiler would work best since I can expect certain things.
+
+## 18:21
+
+Perhaps a demo game of Advance Wars would be better, since it could work on a
+console without a graphical server. It is very simple for the most part.
+
+## 18:57
+
+Actually before I can continue the compiler work, I must implement building of
+any dependent packages which are possibly used by the compiler. That would
+also mean adding a ZipBeacon to read from JAR files.
+
+## 22:12
+
+Just realized that for recursive action I always use the word "recourse" when
+I know it is incorrect.
+
+## 23:34
+
+Now that I have that recursion stuff, I can continue work on the compiler
+since that is all I can pretty do at this point.
+

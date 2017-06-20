@@ -1,0 +1,113 @@
+# 2015/07/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:57
+
+I may be able to determine variables and their initial state by running
+through all possible branches on the first pass.
+
+## 10:04
+
+I need a simpler SSA processor that is light and rather fast. The main thing
+is figuring out the state of variables at the start and where programs end.
+Calculation of such things would be complex. I suppose I need a state for each
+register, whether it has been read in a segment or written to. It will have to
+know if it has been read before write or written before a read. Once that is
+determined for a segment it will run that for dependencies to determine the
+potential state of registers at the start of an insertion point.
+
+## 10:32
+
+Ok, so SSA is rather complex and I am not currently sure how to make it work
+out well. I suppose what I should do so I can write a new SSA processing code
+is have SSAFlower be a kind of wrapper over some other class which processes a
+program. This way my first program runner is just a completely non-optimized
+SSA flow so I can work on code generation much sooner. Then once all of the
+compiler bits are written and working I can then in the future work on
+optimizations and such.
+
+## 11:47
+
+In my KernelBuilder, recompiled KBFs will have to be cached so that on
+differing compilation runs they are only recompiled if there is no native
+package or the recompiled package is older than the package to recompile.
+
+## 17:48
+
+I wonder if I should make it so variables in SSA programs are either non-
+reference types or reference types. Well, they currently are that. What I mean
+is that they cannot be used over each other. Say if a reference type is used
+in one slot, it cannot be of a non-reference type. Ideally the same thing
+could be said for all types. Keeping a single register to a specific type will
+allow for some optimizations and such. This however would mean that
+SSARegister is to be removed and operation outputs go into variables.
+SSARegister would instead become a slot of the specified type instead.
+Register could remain the same but it would become a slot instead. This would
+simplify register allocations and some optimization work. It might be best to
+go all the way and have each have its own slot for a specific type. Because
+then this way there could be SIMD operations done for example. All programs
+before being processed however would need a correctness check done on them.
+The thing is, I do not really know if my SSAProgram is really SSA. However, as
+to before: if I take references and keep them in their own section then
+cleaning them up is easier as I can just... well my methods will need
+finalization for garbage collection marking. Basically the finalization would
+be as if the entire method was in a try-finally block, where the finally block
+goes through all the allocation references and does some kind of clearing on
+them as needed.
+
+## 18:18
+
+Perhaps for my SSAProgram I need a double rover of sorts. An active entry
+point which starts at segments ready to be turned into machine code and a
+processing end which may depend on dependencies and such. Or SSAFlower takes
+an input program and processes it to be turned into machine code.
+
+## 18:21
+
+So I believe the best thing to do then would be for SSAFlower in its
+constructor to parse an entire program and then which uses a kind of consumer
+of sorts to generate code. Using the constructor would be dangerous because
+protected calls would be initialized in some places. So not too sure.
+
+## 18:30
+
+Another option is to remove SSAProgram.Node::insertBefore and have a strict
+next based program. However that would weak the functionality a bit. So
+perhaps instead of SSAProgram it should be called AbstractProgram.
+
+## 20:10
+
+Perhaps I am going about this the wrong way. In my SSAProgram I only have
+nodes which use operations. I just peeked at the LLVM exception handler
+documentation and it mentions basic blocks. I do not know what a basic block
+is but it sounds similar to my segments in SSAFlower. There is also a landing
+pad instruction which is similar to my InsertionPoint operation except LLVM
+only does it on exceptions. However in Java there are a bunch of variables
+which are cleared when an exception handler is caught. In my previous NARF
+stuff I handled such cases where this occurs. I had temporaries and non-
+temporaries. Now in my new run it is completely different, there are just
+variables. So I suppose it was bad to not design that into the new system.
+However LLVM has terminators, which are essentially branches that go to other
+basic blocks. So thinking of that, that is a good idea since I can simplify
+segments. The same happens with invoke which is quite handy, although the
+invoke has two which is either intro to another basic block or an exception
+block. Obviously for me I would not do a 1:1 situation. Another thing that was
+somewhat bothering me was branches back into the entry block. LLVM's entry
+block cannot be branched into, which solves that issue. I thought about this
+myself. So what I need is a partial rewrite of SSAProgram so that Segments of
+SSAFlower are part of the program and segments are written to and created
+instead. Also phi instructions are only legal when there is a block that comes
+before a block. That makes sense though, logically. So I need to bring back my
+temporary and permanent, along with bringing segments into the main part of
+the program.
+
+## 21:15
+
+Although compared to LLVM, my version of SSA would be more type safe and more
+Java oriented.
+

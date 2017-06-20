@@ -1,0 +1,192 @@
+# 2015/03/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:11
+
+Need to work on Allocation/Allocator changes today. One easy trick I can do to
+support simpler code is to... well having current thoughts about register
+saving. Do I caller save or callee save? I can callee save the registers which
+are used, but that would complicate exception handling. I can caller save but
+that may cause slower leaf calls and such (if the leaf does not use any of
+those registers which were saved).
+
+  * Caller 
+    * Safer for the current method, the callee might be malicious and trash
+      known registers.
+    * Can save only the registers which are used, does not have to save all of
+      them.
+    * The callee does not have to save any registers before being used.
+  * Callee 
+    * Faster for leaf-methods if they do not modify many registers.
+    * Must save all registers that are used regardless if a method higher up on
+      the call-stack even uses them.
+
+I could always use both though, however it would complicate both forms.
+Regardless though when it comes to exceptions, both will have to get registers
+restored. The thing is though about restoring registers when an exception is
+called in a sub-method. That would require a double "throw" or a double run of
+the handler finding code however. That would be easier at the cost of
+exception handling speed. Or better yet, the exception handler knows the
+location of the registers that need restoring so it can be implicit. This
+means the stack has to be specially shaped before a method is called so the
+handler can find the registers that need restoring when a handler is called.
+There are two cases: where the handler exists in the method, and one where it
+does not exist. If there is no handler in the current method then no registers
+need to be restored if caller saved and it can drop out of the method to the
+one that called it and repeat. If there is a handler in the current method,
+then the bootstrapper can restore the registers that were set and then execute
+the handler. I can have a sort of red-zone that is where the current call
+before a method is done is set and a restore before an exception handler is
+jumped into. This area can always exist in the method before a method is
+called. The other values can be just set to zero (unused registers) or some
+other funny value (0xDEADBEEF?). And that area would just be for all of the
+caller saved registers that need to be saved before a method is invoked.
+
+## 08:57
+
+I will call the saved register area, the green zone. I can also remove the
+stack top variable and gain an extra register.
+
+## 10:33
+
+My assembler is also a bit weak, I am going to need fragments which may be
+resized as such when the final code is generated. For example, for simpler
+code generation I will not know which native registers are used (and must be
+saved before invoking a method) until I reach the end of the method. So the
+assembler base needs a way to have sub-fragments which may have bits in them.
+It must also be possible to select sub-fragments and write differing values
+into each of them. Then in the end when the code is generated, the sub-
+fragments are used as such and injected when needed. This also means that I
+will need relocation info for relative stuff. So an address for an instruction
+must point to another fragment and the offset of entry into that fragment.
+This way at finalization time the fragments are linked together and addressed
+correctly.
+
+## 12:43
+
+Fell asleep for two hours.
+
+## 13:03
+
+One thing I could do is keep assembly code as fragments, although that would
+destroy the ROM nature of things. I can delay linking fragments to when they
+are actually used. Fragments can then be associated with say methods. For
+example if there is a loop such as:
+
+    
+    
+    for (int i = 0; i != str.length(); i++)
+        System.err.println(str.charAt(i));
+    
+
+The call to `str.length()` would be a fragment calling that method. If at the
+run-time the length method is indicated that it is a very simple method (that
+just returns an internal final int value) then code that obtains the value
+from that field can be used instead. The same could be done for fields when
+they are volatile or not volatile.
+
+## 13:19
+
+This means the DynaRec will still remain a good portion of the running system
+to be JIT-like when a fragment is turned into real code at load time. However
+for some systems (say the Nintendo 64) it might be best to keep some stuff in
+ROM since RAM is rather limited.
+
+## 13:26
+
+One thing I would like is if there were middle ground where I can have both.
+Ahead of Time is a bit better, but I can still do a JIT with this. But,
+caching is best as it reduces waste. Forcing a class to recompile because
+another class had a field that changed volatile state is a bit ugly if the
+class refering to it has not changed. So fragments that are linked in when the
+code runs would be the best solution. That would be the slowest load time and
+would waste memory.
+
+## 13:33
+
+I could actually just have two things, a pre-linked where there are no
+fragments. This would be used for ROM based systems, so that would never
+inline and would always assume variable are volatile. The kernel would
+initially use fragments, but then would be linked to remove such fragments.
+
+## 13:41
+
+One thing I can do for inline capable methods is to save a macro list so that
+it may be modified slightly for handling of inline methods. That would require
+a slight rework in my idea for code compilation though. The macro language
+bits of it.
+
+## 13:48
+
+So, I believe I am heading now twords hybrid-JIT, where most of the work is
+AOT (like the kernel and the class library). When the system sees a new class
+(or a change class), it performs a recompilation on it and stores the result.
+That result is then loaded by the run-time and checked for areas that need JIT
+work done. If the class contains methods that need macros still to be run then
+they are run, then the final result is linked into a binary. That binary is
+then cached with dependency information (that it uses inlined macros from
+another class) and then it is loaded and linked into the core run-time where
+others may link into it. However, the class path may be different each time so
+there would be tons of caches for every single variation of the classpath. So
+depending on how long it takes in general, it might not be to bad to do it all
+the time, although that is very wasteful. My main goal is to reduce waste but
+also have it fast too.
+
+## 14:17
+
+Inlining would increase speed, but having this secondary JIT-like stuff going
+on would reduce speed. I can code it in a way where I can switch out or easily
+add this JIT-like system if the AOT system is deemed too slow. I do know that
+when I get graphics in the future however (I would implement the newly
+released Vulkan as it is simpler, then layer other graphical bits on top of
+that), for a software renderer I can compile the SPIR-V code into Java
+bytecode and then compile that code to native code, or do other similar
+things.
+
+## 16:13
+
+With the saved/unsaved stuff that I plan for, I do not have to have complex
+allocation code now. I could just go the simple route and allocation positions
+for all of the used registers instead. Then doing that, there is no need to
+swizzle operands, which means the dynamic recompiler is faster at the cost of
+the code being compiled being slightly larger in stack usage. However I still
+need to load values which are on the stack into volatile registers and that
+requires some swizzling, but only for those that are completely on the stack.
+That only applies to volatile registers though.
+
+## 21:32
+
+Instead of setting unknown local variables to null, it would have been better
+to use a method call of the specified class and type which throws the
+exception when the object is attempted to be created. Currently 200 classes
+have such instances. Grep tells me that there are 1,896 cases of this across
+200 files so changing them all by hand is out of the question. I will need a
+script that reads the type before hand to calculate the change to be made. A
+simple slow-ish shell script could work. Read an input file line by line, then
+determine if such things need to be wrapped or not. Since I have the value it
+is supposed to be on the next line, things could be simpler.
+
+## 21:50
+
+Then I can also change all the standard markers for those classes also so that
+their respective changes appear in the same commit rather than spreading them
+out. Although it would probably be best to have a separated script for that
+which performs a simpler sed. I could slowly change any files that have the
+old meta information in them on each commit that I make, although there would
+be the resulting unrelated changes (which would be a bit bad). There are 4166
+files in the vmjrt directory, where 3948 end in java. When it comes to
+implementing, it might be best to document interfaces only when needed. The
+first goal would be to implement compact1 first, then everything else after
+that.
+
+## 21:56
+
+The output of the completion program could be an ASCII art table with rows and
+columns. Columns for classes, interfaces, annotations, and total. Rows for the
+profile identities.
+

@@ -1,0 +1,63 @@
+# 2014/11/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:13
+
+Things are OK so far, however they are a bit clunky and still a bit
+convoluted, but not as bad as before. The main pain is managing multiple
+stacks due to the long and double sizes on them.
+
+## 04:03
+
+I might change comet around a bit to make it tougher and to handle the quirks
+an architecture has when decoding, so as such I can have a Quirk class that
+manages such things. Then I can have stack management there with stack plugins
+and such and reduce the complexity of the code in JavaByteLang.
+
+## 04:24
+
+I also need to make it truly SSA rather than what I currently have, but that
+can be fixed easily with this Quirk system.
+
+## 05:33
+
+Maybe instead of all this, I can just make a converter that translates the
+stack based nature of Java purely in a register based form. Well that is what
+I am currently doing anyway. Something is wrong with the solar system I just
+need to fix the bad bits of it.
+
+## 20:12
+
+I must write a new better leaner TypeInfo that is not a gigantic mess,
+hopefully one that is not 1600 lines of mess. Then after that I will go back
+to the compilation system and devise a leaner means of representing code, I
+think I will break from SSA and instead two something like three address code
+or similar with jumps and such back and forth. Translate the stack based Java
+to a purely register based one.
+
+## 21:40
+
+There are essentialy 3 main signature types, class signatures, field
+signatures, and method signatures. Fields could be a super class signature if
+they meet the correct criteria, that is being a single specifier. I could
+recycle the types, but I could also split them and use them at specific times
+so when a class, field, or method specifier is requested. On another note I
+should probably squash the Logical class and instead directly translate the
+ClassFiles using a mutator of sorts to native code. The Logical is pretty much
+a container of native codes during retranslation, but I feel that it is not
+needed at all and just adds another level of indirection. The solar system
+stuff is OK but it is far too sparse, I have it thread safe but in most cases
+generation of code would only pertain to a single thread. Locks complicates
+the thing also. So if I were to then merge the solar system and logical system
+and make them leaner and less bulky, I can do compilation rather quickly. The
+only real thing that is needed is the caching of constant pool entries. Since
+the grabbing of entries is very complex, it would be best to cache their state
+entirely at once depending on what they are as needed rather than
+dereferencing them all at once, this way it could be checked at the beginning
+rather than when they are actually used.
+

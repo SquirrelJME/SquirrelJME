@@ -1,0 +1,83 @@
+# 2016/01/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:20
+
+Up early today I suppose. I had accidently shut my laptop off last night so I
+decided to just sleep.
+
+## 09:25
+
+Water lines are still frozen. Hopefully the highs the next few days are reached
+and are enough to thaw the lines, since running water would be nice. If not the
+next few days then Monday it should thaw.
+
+## 10:27
+
+It would be better if the `FileChannelBinaryBlob` were to become a
+`SeekableByteChannelBinaryBlob`. `FileChannel` implements said interface and
+this would allow it to be used with such things, even though there is really
+only a single implementing class. However, `SeekableByteChannel` needs
+seeking to be performed first before reading and writing, which would require
+synchronization on the channel to prevent other threads from changing the
+positiong during a read. So in light of this, it should remian the same.
+
+## 10:33
+
+Due to the rename and split into the _binary-blob_ package and my restart the
+other packages were forced to rebuild. However, last night they were not being
+rebuilt when they should, I suppose it was due to the dependency evaluation
+order which is not exactly ordered each time but is good enough where it
+handles the correct order. I believe it uses a `HashMap` or similar so the
+order is not always exactly the same and a clean slate resets the state for
+the most part. However the recent _hairball_ fixups with rebuilding and
+dependencies makes it less of an issue because it can much better handle
+changes in binaries and sources. The only thing though, is that hairball's
+compiler I believe still has to handle building from ZIP files because right
+now I believe it only handles things if the source is a directory.
+
+## 11:20
+
+Will need to change `HairballClassLoader` so that instead of using URLs to JARs
+I can then give it `PackageContents` and such, which then would defer to the
+internally stored URLClassLoader and such.
+
+## 11:25
+
+So much for having closeable `PackageContents`, but it happens. If done
+correctly then they can still be closed.
+
+## 14:19
+
+Seems that with using `PackageContents` for building I am hacking my existing
+package manager build system to not be file based to the package contents
+based instead. So it seems very hackish because the old system is meant for
+being used with files. However, with the `PackageContents` systems I do not
+need path sanitization at all really at least on the real filesystem because
+it will be virtualized by `PackageContents`, so it makes things slightly
+easier when used. I just need an alternative file manager to handle the
+contents while reworking the other bits. One useful thing though I can add is
+the ability to get the date of a file in `PackageContents` because I can use
+that during the build for example.
+
+## 14:37
+
+Actually made `__walkForLatestDate` two lines instead of 10 since there is
+no more file tree walking since it would be handled by `PackageContents` now.
+Also there is a strange artifact of it where the contents of the packages are
+considered instead of the actual package itself (so the ZIP is treated as a
+directory). This may actually be useful in the future, say for incremental
+builds against classes in a package. I could also support different package
+formats in the future potentially also.
+
+## 14:52
+
+Only a single file and any sub-files used needs to be updated however, and that
+would be `SingleBuilder`, `__CompilerInstance__`, `__Packager__`, and
+`__HairballFileManager__`.
+

@@ -1,0 +1,60 @@
+# 2015/10/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:19
+
+Found this nice animation, looks like a moving staircase. I have different
+animations to choose a color depending on the block type and I stumbled upon
+this one, so I will need to figure out what something to give to it.
+
+## 12:00
+
+I can calculate the face offset coordinates using the face direction code I
+have written.
+
+## 12:11
+
+Or I can just use precalculated coordinates. I have a tissue box next to me so
+I can quickly determine the values visually rather than mathematically. I
+suppose this is cheating however.
+
+## 12:27
+
+It is possible to simulate a Z buffer sort of using the framebuffer graphics.
+I just have to use a byte based mode say grayscale.
+
+## 13:20
+
+However Z buffers could potentially be slow because of the per pixel stuff
+going on. That is also a ton of array bound checks.
+
+## 13:29
+
+I can determine which areas of a chunk are visible by using the mapping stuff
+and a simple set of flags for each block in a chunk which indicate the faces
+which are visible from that block. The flood fill algorithm can calculate that
+information as needed. This requires recalculation whenever a block is changed
+however, but for chunks which are static (such as those consisting entirely of
+air or terrain the player walks over to ignore) then it only has to be
+calculated once.
+
+## 14:45
+
+Believe I need to change the way the loop is called, because with the locking
+and such, the game becomes very sluggish. I could most likely split the
+framebuffer and a few other things out so that they are controlled by the main
+loop rather than having the code rely on Swing doing things. Then this way it
+will hopefully be a smooth experience rather than missing locks and such. If I
+remove all of the locks I will have the game run only in a single thread with
+swing stuff in other threads.
+
+## 19:39
+
+After changing the render stuff but before removing the synchronization stuff,
+the frame time is rather horrible.
+

@@ -1,0 +1,71 @@
+# 2015/04/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+So after this diversion I am now back at the the recompilation of the meta
+macros and such. But first, allocator must be written. The assembler has to
+also be modified to use fragments instead.
+
+## 00:20
+
+I kind of have this feeling that I just want to hold that off and do some
+other code moving. Such as clipping out vmjrt into vmjar with compact profile
+classes and such.
+
+## 00:31
+
+Due to the nature of realmv, I will have to spread out moving the code around.
+But I wonder what I should call the runtime packages. Perhaps something simple
+like: java-library-profile1 and such. That can work. That way when I build the
+kernel I can just build that without requiring tons and tons of stuff.
+
+## 01:08
+
+Using simple sort and such, this will the most deep directories first then
+after that will follow the shallower ones.
+
+## 01:11
+
+Instead of profile I might just call it level, although that sounds cooler it
+does not exactly match Java per se since profile is used. I believe I will add
+an extra dash between profile and the number.
+
+## 01:15
+
+Perhaps just library then the number, since it is rather obvious as to what
+the number after it is (the profile). Although I should add a mark for Java 8
+in the case that I ever want to up to Java 9, the names will not be in the
+way. Although that could prove troublesome in the future as I would basically
+have a fork of the entire class library and such. So just java-library in this
+case.
+
+## 02:19
+
+Now that everything is moved, now to do the final touches.
+
+## 12:38
+
+Completion needs to be changed to handle the new library layout.
+
+## 12:50
+
+Completion will also no longer need a source path at all also.
+
+## 13:06
+
+What I need now for completion is some kind of progress meter that uses
+forwarding objects that wrap the stream methods.
+
+## 13:41
+
+It appears as if the Java compiler loads all the input files before hand and
+then does annotation processing on them all at once. This means lots of memory
+usage although it is faster in the long run provided swap is not used when
+there is not enough memory.
+

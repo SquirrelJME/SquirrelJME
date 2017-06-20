@@ -1,0 +1,46 @@
+# 2015/05/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:39
+
+Real like stuff today and yesterday so that breaks my 5 day streak for the
+most part.
+
+## 05:42
+
+Ah, the joys of painting your room over night a nice right in the middle shade
+of gray. I personally believe it is slate gray, since it is the only gray I
+could find which was right there in the middle 50/50. Not too light and not
+too dark.
+
+## 05:44
+
+I have been thinking about the k8-debug-gui package. Although a swing
+interface is nice and user friendly. It would take some time to develop
+when...
+
+## 05:58
+
+Jumped to something else but, It would take time to develop such a GUI when
+the main usage of it will be the console. If anything, I should develop last
+and perhaps if I ever make an IDE of sorts to make development friendly. The
+GUI would also probably lag behind the console version as the console version
+has to be written and then the GUI has to use whatever the console version
+uses. So the interface is specialized and has to be done twice. At the very
+start of my OS development there will be no Swing as I intend to start with
+the basic profile first. This would mean command line. However I do not intend
+the OS to be command line oriented in the long run. Although there will be one
+and if your system is lacking GUI stuff (lighter build perhaps) it can still
+be used. I will need some kind of service configuration GUI specially for k8
+since Java has none of that stuff. It would have to be like Control Panel or
+Preferences (in Palm OS). Then those preferences would also have to easily be
+changed on the command line and be just as powerful. That way if you are on a
+system (say a server) with no video output you can still configure everything
+just as you would with a GUI. Then with some common configuration system new
+interfaces such as JavaFX could be used for example.
+

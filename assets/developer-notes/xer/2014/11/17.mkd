@@ -1,0 +1,92 @@
+# 2014/11/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:06
+
+Well I have opcodes loading (Java byte code that is), but I seem to be stuck
+on tableswitch and lookup switch. The read values should be 1 to 12, however
+the count is read wrong.
+
+## 15:16
+
+Actually it would be the padding, because I was doing it based on the start of
+the Code attribute where the padding is just done from the start of the actual
+byte code. And now it all works. Yipee.
+
+## 17:46
+
+Arguments being their own type of zone will simplify things because although
+Java has a mistakingly long and double taking up two local slots, mine is
+fully logical and they take up one slot no matter how much memory is to be
+represented. So the stuff is quite literally just variables. However, at the
+start of the SSA form of the method the arguments will be copied to locals so
+the later conversion handler correctly sees the initial results as needed. The
+generator from raw op codes to SSA op sets will need information passed to it
+from the language form information, otherwise some important information may
+be lost.
+
+## 20:24
+
+I need an efficient way to represent operations in a sort of immutable sense.
+Would require duplication but immutibility has some proofs in that it can be
+accessed by many things at once. Well MethodPrograms see the stuff as being
+immutable (since they use unmodifiable lists).
+
+## 20:30
+
+Actually the MethodProgram taking the lists and setting up an internally non-
+modifiable bit is rather bad. The MethodProgram also has the language form
+specified but SSA is not language specific. Perhaps something that would be
+better and faster is instead of running through getting all the raw opcodes
+first and then generating SSAs from them would be to do it all at once in a
+single pass rather than 3. Because currently the order is this: decode raw
+operations to a raw list, go through list and generate SSA operations, (then
+eventually) optimize the SSA to a generic form. However, using a builder with
+just an add operation, the MethodProgram can handle parrallelization of
+programs rather simply. If the next operand does not rely on the state of a
+register at the current level it is attached to, however if not it is then
+added to a new level. Then forking can be done, a state can be saved and a
+path taken based on a specific condition (comparison of a register to another
+or a constant). Then this ProgramBuilder takes care of the optimization and
+generalization of things. So while the SSA operations are being added it can
+just prune stuff as needed. So if something sets the same value to a known
+value twice (and it is not a (volatile) field access) then it can just remove
+the operation as it is pointless anyway. However for clarity, when there are
+exceptional bounds they cannot be parrallel because if an add operation and
+another operation can normally be parallelized but one is in an exception
+block then it cannot be parallelized. So there would need to be
+synchronization and exception subzones. And doing it this way (with a builder)
+will make it so simple first stage optimization may be performed. Another
+thing that can be done is semi-conditionals. For each set, only act on it if a
+specific operation is a success. Although that may be a bit complex to work
+out. Rather than that it might be better to just fork as needed. Although the
+byte code interpreter would have to be capable of handling forks as needed.
+
+## 23:00
+
+I know one important thing I will need in the kernel, all of the recompilation
+stuff done through the code I am doing now must be part of another process.
+That way when compilation is done it can just be trashed completely so that
+memory is not wasted, however that might not even be needed at all. Depends on
+the memory situation. Going to try out NetBeans, maybe it will work better
+than IntelliJ and not be completely messed up on my super strange JamVM
+PowerPC OpenJDK 8 system. We shall see about that though.
+
+## 23:13
+
+Quite a bit sluggish at least first time in the options dialog, but I am using
+an interpreter. I do like the stylish Metal UI, better than that InteliJ theme
+junk. I dislike the connect to internet start page, which hopefully can be
+disabled. Spams "jmm_DumpThreads" to the console though. It is using up all of
+the CPU currently doing something unknown. This might be why it is slow, it
+was launched with "-client" and that is the by default super slow JVM.
+
+## 23:52
+
+Have my settings configured now, hopefully it does not trash my files.
+

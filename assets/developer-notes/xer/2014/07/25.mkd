@@ -1,0 +1,58 @@
+# 2014/07/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:39
+
+I thought about writing a JSON parser in shell, but that would be rather
+complex. I plan it to initialize the base for hairball so it may be used, but
+instead I am going to settle for copying the directories as it is far simpler.
+
+## 03:11
+
+At least for some things, I can just pull over the classes from the old class
+directory and save some time.
+
+## 05:53
+
+Implementing these fragments of JSR353 that I have right now is a bunch of
+work. Eventually when the real class libraries come I will hopefully have a
+something. Rather tired right now and cannot think of it. Would be a doclet. A
+doclet would save me tons of time slapping down all of the interfaces,
+methods, and stubs and such. Hopefully I can implement the entire package set
+in a single day, provided there are no distractions. There are only 25 classes
+and I have 1 stubbed and 1 fully implemented, so 23 to go. If each one takes
+me 30 minutes to write It will take 690 minutes or 11.5 hours. Though actually
+implementing the functionality on top of that would take a bit longer. It does
+feel like I am going in circles since I have still yet to write a compiler for
+Java, but each loop around gets better and better. At least now I will not
+have to worry about super complex dependency graphic just to build stuff with
+hairball, so that became far far simpler. I could add dependency graphing
+output for the compilation phase to determine which objects rely on which so
+that things could be improved or pruned. Using JSON for hairball also means I
+no longer need a parser for Java source code (since I used to parse tons of
+tags for dependency information). JSON could be used for other things also as
+it is more sane to edit and parse than XML. Plus, one it is fully implemented
+it would be the first supported JSR.
+
+## 06:04
+
+For the build system and packages I could do something similar to Debian and
+have a suggest or recommends kind of thing. I can make the JSON stuff I am
+working on now be "jsr353-spec" and have another package which implements it
+and provides a "jsr353-impl". That way, new implementations could be added at
+will and they could be auto selected. Although that might complicate things, I
+can just put the implementation with the jsr since there would really only be
+a single implementation anyway. All I know is that after all this work, I will
+be using JSON much.
+
+## 22:29
+
+Implementing just these interfaces is quite a task, I should avoid
+implementing other things that are standardized until I get something which
+can extract the API declarations from existing code.
+

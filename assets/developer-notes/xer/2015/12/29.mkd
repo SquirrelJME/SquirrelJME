@@ -1,0 +1,42 @@
+# 2015/12/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:58
+
+I believe for KBF I can have a basic table of contents based structure with
+enumerations and such. Then I can use that for reading and writing for example.
+
+## 11:02
+
+I believe I will also rename POIT. Right now it stands for **Parallel Original
+Instruction Translator**. Instead the first word can become **Program** or
+instead **Portable**.
+
+## 11:18
+
+Going to add a `patch` package for the binary stuff so that classes could
+essentially be built and modified while having the ability to base off another
+class.
+
+## 12:13
+
+Thinking about it, the patch stuff can replace the mutable stuff for the most
+part. The dynamic recompilers can then just return `PatchPrimary`s instead
+of giving methods and codes. That should make things a bit easier because then
+no mutable code stuff has to be instantiated.
+
+## 12:15
+
+I could actually move the patch stuff into its own project. That would help
+for faster testing times and would also make the patch code alone.
+
+## 12:58
+
+Removing `Acceptor` and having the stuff write to a patch would be much better
+and probably much more powerful when it comes to a dynamic recompiler.
+

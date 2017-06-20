@@ -1,0 +1,27 @@
+# 2014/08/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:07
+
+A new month means a new subsection in my blog.
+
+## 03:26
+
+Just made a new call called RFC4627InputStreamReader, which is quite a mouth
+full. This is for the stream autodetection for JSON decoding. Perhaps a
+shorter class called RFCJsonISR, easier to say.
+
+## 23:02
+
+For ImplReader (despite not yet implementing ImplParser) I thought about doing
+recursion based on the inputs, however I cannot recycle the input stream to be
+used as a parser. That was what I originally planned on. Recycling the input
+would be very hacky and most likely very error prone. So I might just go for a
+more advanced stack based approach similar to what I plan on doing for the
+parser (since that needs to know context as well).
+

@@ -1,0 +1,44 @@
+# 2015/04/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:22
+
+Slower progress these past few days.
+
+## 14:51
+
+At the initialization stage I can do four things at once. Move the input
+register to generate operations that adjust for input arguments, loading of
+the StackMapTable if any exists, decoding instructions into byte ops, and
+initializing the state of locals and the stack. If a SMT exists then it can be
+assigned post work.
+
+## 15:03
+
+However there may be concurrency issues as memory will need to be synchronized
+afterwards. But I can just have the worker threads return the value they
+expect rather than whatever.
+
+## 19:54
+
+I have this idea on the String class. Since Strings are a bunch of UTF-16
+characters, some languages might go crazy and others might not. One thing I
+can do to reduce String memory usage in the case of English language or ones
+that are all below 255 in value is to have two byte arrays where one part is
+least significant and the other part is most significant. So if there is at
+least one value above 255 then both arrays will be used. This will cause a
+slowdown in some general usages of the String class as checks will need to be
+done to see if there is a higher buffer around. Although there are many other
+languages, English and by extension Latin is the most commonly used. So it
+depends if a speed decrease is desired over less memory being used. In general
+many strings will be very short rather than very long. And also there would be
+an extra array that needs to be handled by the garbage collector. Having
+persistent strings is bad since they would just be wasted away. So it would be
+in general best to use just char arrays as using bytes would complicate
+matters.
+

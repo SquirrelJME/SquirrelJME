@@ -1,0 +1,30 @@
+# 2014/09/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:12
+
+Need to get to work on actual outlining of source code.
+
+## 19:31
+
+I need to actually add a second tokenizer which handles generic brackets in a
+very generic scope based way.
+
+## 22:48
+
+In NoSuchReplaceIterator, if the replacement value is null then do not require
+a class for checking.
+
+## 23:01
+
+My readSingleType reading all forms of types simplifies things because then I
+can just constantly keep calling it, of course it would know a known stacked
+type as needed. So I would need some kind of a visibility scope of sorts. Then
+import statements become part of that visibility too. So I will need a top
+level scope which is used in all descriptions when parsing.
+

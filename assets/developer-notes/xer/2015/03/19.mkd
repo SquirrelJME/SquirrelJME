@@ -1,0 +1,43 @@
+# 2015/03/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:44
+
+Instead of having OpAllocObject and the method invocation translators (the
+macro creators), I can just have a generic method obtaining and creating the
+macro information for those operations. This way, the way calls are done is
+less duplicated among all of the architectures and is more cleanly placed.
+Doing as such should reduce bloat and copied code among all implemented
+architectures.
+
+## 10:31
+
+Swizzle meta must become an actual sub, since it could be embedded.
+
+## 10:38
+
+Swizzle would also probably be best manually specified rather than having it
+auto as it makes macro usage easier.
+
+## 10:56
+
+An added type enumeration would be extra handy for step handling as I can use
+a switch rather than a complex set of if on class instance types.
+
+## 11:11
+
+So what I need now is to determine how the actual calls are going to be done.
+I will need some way to access the table for an object so that a method may be
+invoked. Perhaps I can have two areas. The static class area which contains
+the method data and such (can be in ROM). Then there will be the dynamic
+linkage area which points to the base of that data and then consists of linked
+table entries for all the needed addresses. The classes which objects will
+will the point to that data. The table will need classes and interfaces
+however, and it needs to be stacked in a way where superclasses can have their
+methods called as needed.
+

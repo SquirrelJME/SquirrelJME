@@ -1,0 +1,30 @@
+# 2014/10/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:39
+
+Busy day today. An idea I have is to split the rt jar into two bits, the other
+bit being an uncompressed sup jar. The supplement JAR will have all of the
+special my own stuff in there, which will be loaded by the virtual machine.
+The stuff in there would be decompression for deflate support along with
+generators for native code. This way, most of the stuff can remain being in
+Java while the very few front end bits are in C. This would then make later
+transition to pure Java for my own kernel much easier. After the C VM is
+compiled I can use it to generate native kernels when needed, which are
+designed to run on itself. The deflate stuff would be very minimal, but once
+it is loaded and able to be ran it can then be used to decompress the runtime
+JAR and start execution of standard code. Then that decompression could be
+later then be used by the internal library's decompression code. In fact I
+have this idea where the C virtual machine will just be a basic bootstrap
+where a state is initialized then it becomes fully Java. So generated code
+would either be static for kernels (or programs) or it can be linked into the
+C runtime. In general I would always use recompilation and native code
+execution rather than byte code stuff, there would be an initial speed penalty
+before everything is cached but once that is done things will speed up
+greatly.
+

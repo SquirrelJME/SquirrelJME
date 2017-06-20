@@ -1,0 +1,134 @@
+# 2015/12/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:30
+
+There is a hostile bug stuck between the window panes. It is black, has a
+red colored thorax with a large black stinger sticking out the back of it. Has
+six legs too.
+
+## 11:42
+
+Cannot determine what this bug is.
+
+## 15:35
+
+The `Cache<Foo>` instance is not needed once the `One` or `Many` are obtained
+so I can instead get the stuff through a static initializer.
+
+## 16:12
+
+Having specific interfaces for member, field, and method flags will be a bit
+easier since unchecked casts would not be required.
+
+## 17:09
+
+Solving this flag stuff is rather complex.
+
+## 18:59
+
+But I figured it out.
+
+## 20:43
+
+Looking at AArch64 it is basically a MIPS64 clone.
+
+## 21:14
+
+I wonder how I am going to handle bootstrap methods. I suppose the best thing
+to do would for them to be actual references which may be used by code areas
+and such. They would be bound on load for example.
+
+## 21:18
+
+Kind of thinking about it, I could implement a base class in the binary code
+which is essentially a serializer of sorts for writing class files. Then
+class formats (currently just the KBF format) will be told the data to write
+and such and it can do what it desires for example. This way if I ever write a
+new format output (A Java compiler will need to output class files) I can then
+just still use that class and still make things simpler. Then doing this I can
+simplify the code by having less duplicate code. I can also use the
+`DataAccessor` in write mode too.
+
+## 21:22
+
+Yes, that would be much better. Currently my output references the KBF writer
+directly. This can instead be done through the binary interface. This also
+solves future problems where stuff is added to the base `Bin*` interfaces. It
+will need an additional handler in the base writer class. Having each binary
+format on its own would make that more difficult because changes could be
+missed for example. The thing is though is designing this interface to not
+be bad at all. Another possible thing to do is have it also on the read of
+data too. So the stuff such as JavaClass no longer has tons of interfaces sort
+of but relies on a standard reader support for classes. Then it would be
+possible to offload and share reading code between stuff such as KBFs and
+Java class files. The Java class file is a rather linear format where the
+future depends on the past, KBF is directly indexable. So the reader and
+writer would have to handle such things. The way to code it would be so that
+there is more stuff shared and where it is not a complete mess to implement
+support for class files and KBFs. The interfaces should also be simple.
+
+## 21:31
+
+I suppose the basis would be a payload which contains classes. The payload
+would have to be loaded with classes which would then essentially write out
+the file depending on the input. There would have to be support for regions.
+
+All of my `Bin*` stuff is good and clean. Right now the ugly parts are reading
+and writing the files. The `Cache` class made reading Java class files a bit
+better. However the whole thing could be done better anyway.
+
+## 21:36
+
+I could however take a `BFD` approach to things. Basically there is only a
+single read/write class and stuff such as KBF and Java instead just implement
+a `BFD`-like thing for various parts of the file for decoding. Then with a
+standard possible way of having read/write of structures and such there would
+be the potential of not even needing a KBF package. Depends on my creativity
+though. I could parse a text based format to describe everything about a binary
+at which point the support for class data will essentially be only in a single
+file. That would require the text file to be parsed however. That would also
+mean that adding support for new formats or changing them would just need a new
+text file.
+
+## 21:40
+
+An alternative from text though and would probably be faster and easier to do
+would be to have a class which describes the format. At least then I would
+not have to write a text parser and a text based format for loading. So a
+class would probably be the simplest route. Then with shared data I can
+essentially support reading and writing with the same code which saves time
+writing later readers and writers.
+
+## 22:57
+
+I should be sleeping. However, the BDF (**B**inary **D**ata **F**ormat) will
+have to have a kind of sectioning. I must determine the best way to do such
+things.
+
+Actually I had this rather crazy idea. I can use Proxies. Basically the BDF
+describes the format, however a proxy over the basic Bin interfaces will handle
+stuff such as reading. However that might not even be needed at all. However,
+the proxies can directly use the data when reading for example. That way there
+will not be any requirement for generated code.
+
+## 23:02
+
+The `Proxy` could be wrapped with help from `MethodHandles` and such to support
+truly dynamic generation of classes at runtime for reading class data. At least
+using a `InvocationHandler` there would be no need to create a bunch of wrapper
+classes for read/write. There may be a speed impact though, but there would
+essentially only need to be a few classes rather than a whole slew of
+implemented interfaces for read/write.
+
+## 23:08
+
+`InvocationHandler` also has a single method which makes it a functional
+interface, which means using lambdas to create proxies is easy and there is
+no need for a new class just to have a handler.
+

@@ -1,0 +1,93 @@
+# 2015/07/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:30
+
+Today is my birthday, Happy Birthday Me!
+
+## 08:59
+
+I wonder if it is better to write directly over the stack with temporaries.
+However I just thought now that if things are only being pushed or just popped
+then no temporaries are used. However if both are used then temporaries will
+be used on output.
+
+## 09:09
+
+In fact it only needs to be done for variables that are directly ontop of
+input values. So if an argument pops in 2 from the stack and pushes 4 onto the
+stack then only two temporaries are required. I could go through all the
+opcodes and figure the most optimal set, however using temporaries on output
+would be easier as pops could just read stuff directly.
+
+## 09:22
+
+Instead of pure SSAVariables I will need some kind of instance that sets the
+type of the variable to some field type or otherwise. Then this way the SSA
+will be somewhat typesafe as the kinds of values which are contained will be
+safe that way. A SSA runner will be able to check if all the types are valid
+and of the desired types when read.
+
+## 09:48
+
+Compared to NARF before this, the number of copy operations when it comes to
+the Java stack will be much less so the output code should be faster and a bit
+more efficient. After I get my first method decoded (which is an enum
+values()), I will work on native code generation. I will need to figure out an
+ABI. However, the KBF format is much better than my FormClass before as it is
+more easily accessible in assembly.
+
+## 14:18
+
+My main idea for the system interface is that the user interacts at a
+Terminal. Every k8 system is a terminal and can connect to other systems that
+run k8 (say over SSH) and provide graphical and/or command line support. Like
+Palm OS there will be a command bar that is over everything which is the main
+interaction with the local terminal. Connecting to remote systems has the
+ability to bind terminal interfaces so that the local terminal control the
+remote terminal. Each user session would be their own terminal. All terminals
+will support restore of sessions and such. However for compatibility with say
+SSH and such, explicit commands will have to be required to initiate the
+interface to provide a view of a remote terminal that is k8. One major thing
+though would be security. Local terminals should never be exploitable in a way
+where the remote end can do bad things locally. So say you login to a k8
+system from another system. On both systems they would both normally be just a
+command line interface. However if a remote command is typed it will take over
+the current terminal and provide a wrapped stream of stuff. Basically the
+remote program will send a sequence of undefined escape sequences and if the
+transport layer picks up on them it will request entering super terminal mode.
+Super terminal mode would then use the interface and act as a sort of massive
+typing on the remote terminal. There would have to be escaping however and
+compression to reduce the bandwidth required however. In super terminal mode
+sound and graphics could be passed back and forth. I would design it so any
+7-bit clean system could use it. This means serial cables, telnet, and SSH.
+Obviously however the local system would use a more effective interface which
+references memory directory rather than through a stream. Then for other
+systems (Linux, Windows, etc.) a Java program can be used to provide an
+interface with a remote system (that program could call SSH, telnet, or bind
+to a serial port) and then provide the remote super terminal interface. A
+super terminal is essentially a desktop which either provides a command line
+interface or a graphical interface. The super terminal on any system would
+handle stuff such as a clipboard and the possibility of printing back and
+forth. So essentially a local system would be a client to itself. This means
+stuff such as graphical configuration or printing would need to be handled by
+the local terminal. However the local terminal could forward everything as
+needed. So say if you SSH to a remote system and activate super terminal mode
+and the remote system has a printer attached (one you can use). If you were to
+try printing in another super terminal instance of yours then the remote
+printers would be visible. However the local super terminal would need
+permissions to say deny this from happening in some cases. Authentication
+could be taken care of by the local terminal. Any programs running on k8 which
+require authentication will have it be done through the local terminal in most
+cases. Quite complex however. However, the base is that sessions can be
+resumed so a local log out takes you back to the login screen where you can
+log back in to a session controller. The main thing I want though is to
+control multiple workspaces as if they were their own session so to speak. So
+each workspace would essentially be a session while there can be sub-
+workspaces within those sessions.
+

@@ -1,0 +1,30 @@
+# 2015/11/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:38
+
+On this Intel Atom which does the whole run in 3 minutes and 8 seconds. This
+system is about the same speed as my otherone (just very slightly faster due
+to smaller technology). However this system has a JIT while the other does not,
+so that is where most of the speed boost comes from. Re-running after a build
+from nothing would be slightly better timed to determine how much faster things
+are in general. In general the translation times are about 2-3 times faster.
+So in total, the speed gain is not that much. The total time to reach where
+I am at now (IFEQ not implemented) gives one minute 23 seconds.
+
+## 16:34
+
+Messed up in my blog script by making a horribly named user, going to shun
+that commit.
+
+## 17:17
+
+Had to do some shunning and delete a few commits, luckily they only contained
+notes. I also had to rebuild and upload those new builds to my backup
+locations so the commits I previously made are gone forever. Lots of work.
+

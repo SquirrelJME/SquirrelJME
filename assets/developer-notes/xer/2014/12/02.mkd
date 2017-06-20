@@ -1,0 +1,55 @@
+# 2014/12/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:42
+
+What I can do with flow control is visualize it with dot graphs and then use
+vigraph to see how it looks.
+
+## 05:30
+
+And I made those graphviz dots so I can determine how the flow happens through
+a method, would be handy for generation so I can confirm whether the
+translation to a register based virtual machine is valid by looking at some
+graphs.
+
+## 05:51
+
+Some of these graphs are gigantic and I cannot render them as PNGs because
+they are so large for some methods. I could probably reduce the graph size if
+I remove lots of arguments.
+
+## 08:10
+
+Looking at some of the generated graphs there are gotos right after
+comparisons but that is most likely just the lack of some information in the
+graphs.
+
+## 08:27
+
+I can reuse the stack op stuff, but I need something better for storage when
+it is actually used.
+
+## 12:47
+
+I might be able to make better graphs by grouping exceptions together in
+blocks rather than having single lines spit out of all the exception zones.
+Could work as clusters possibly.
+
+## 13:56
+
+Except that nodes cannot exist in multiple clusters at the same time which is
+rather a let down. I would have to specially handle this by making new
+subgraphs where there are shared nodes with exceptions.
+
+## 14:31
+
+Might be best to have a single graph generating API so that I do not duplicate
+code when I need to generate graphs of sorts. This would also be handy when I
+generate graphs of the register form too.
+

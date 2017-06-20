@@ -1,0 +1,56 @@
+# 2015/11/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:25
+
+Currently at:
+
+	[INFO] +++ java/lang/reflect/AccessibleObject (42 remain, 83 of 126).
+
+Must handle ARRAYLENGTH now, this should be rather easy.
+
+## 00:31
+
+At:
+
+	[INFO] +++ java/util/Locale$FilteringMode (53 remain, 102 of 156).
+
+I get a NPE.
+
+## 00:36
+
+And with the stuff I have so far, while most of it is TODO. I have this:
+
+	[INFO] +++ java/text/AttributedCharacterIterator$Attribute (0 remain, 288
+	of 289).
+	[INFO] Build took 225,200ms.
+
+4 minutes to compile mostly blank methods.
+
+Since lots of stuff is being compiled where it might not even be needed I
+should implement a dependency system which uses called methods and such. That
+is only compile methods which are used. However that would require some actual
+processing of code because there could be casts and such.
+
+## 00:40
+
+Alternatively I can subset profile zero and have a minimum set of classes, but
+I would need to calculate the dependencies of those. The classes could
+eventually end up just requiring all the others anyway.
+
+## 10:02
+
+There are 1224 source files in profile 1 however. So only a small fraction of
+the classes are used. 4 minutes does beat 4 hours compiling the Linux kernel
+though. So the next thing to do is write out the KBF format and initialization
+code so the kernel can boot and such.
+
+## 16:17
+
+Busy outside day today.
+

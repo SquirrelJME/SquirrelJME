@@ -1,0 +1,50 @@
+# 2015/07/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:56
+
+I will need to split the binary type stuff off so SSAProgram can use them
+without requiring a massive rebuild of everything changing the SSA code. This
+also means that SSAType will no longer be required. Actually it would still be
+required because the Java types cannot understand stuff such as unsigned
+values outside of char. However, signed types could still be treated as
+unsigned due to two's complement. So it could be removed.
+
+## 10:12
+
+The operations for SSA should be normal classes rather than enumerations. This
+would be similar to NARF. Right now there is a semi-mixed state of it. The SSA
+stuff should be cleaned up before it gets too messy. There will also need to
+be links and such which are references to stuff in Java that the code uses.
+
+## 12:29
+
+Adding an Apache ant script although it is not going to do much except build
+the launcher and then build the kernel. Although there are some issues that I
+have missed with my launcher script which work when ran from the shell
+scripts.
+
+## 13:29
+
+Appears that ant uses ECJ, which appears to be a bit slower than the compiler
+Sun and now Oracle provides. It however is a JavaCompiler which is provided by
+the runtime to dynamically compile things.
+
+## 18:58
+
+Feels like I am going insane, like my mind is working differently.
+
+## 20:24
+
+Tomorrow however is my birthday. I will be 26. I know not the exact second but
+it is close enough.
+
+## 22:11
+
+Definitely I am going insane.
+

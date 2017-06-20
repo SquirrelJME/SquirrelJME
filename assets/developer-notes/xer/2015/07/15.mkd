@@ -1,0 +1,91 @@
+# 2015/07/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:34
+
+I should be spitting out machine code very soon. My current only instruction
+to be spit out is lwsync. Which current appears that it gets assembled as:
+[FINEST] ASM: 0 0 0 0.
+
+## 10:46
+
+Some more fixing and lwsync is [FINEST] ASM: 0 4a c0 2. Although it should be
+0: 7c 20 04 ac lwsync according to binutils.
+
+## 10:52
+
+The assembler wants to assemble AsmOp: (inst=SYNC addr=-1 len=4
+args=[OPCD[[(0-6)]]:31, X_XO[[(21-10)]]:598, SYNC_L[[(9-2)]]:1,
+SYNC_E[[(12-4)]]:0]). And 31 | (598 &lt;&lt; 21) | (1 &lt;&lt; 9) is
+1254097439 or 0x4A C0 02 1F.
+
+## 10:36
+
+I desire `0b01111100 00100000 00000100 10101100` But I get instead `0b01001010
+11000000 00000010 00011111` Which if you look at it appears rather swapped,
+sort of.
+
+## 11:08
+
+Printing the fields gives me stuff such as 0b111110.
+
+## 11:17
+
+That is printing in the incorrect order. The printed field order is [FINEST]
+0b011111 [FINEST] 0b01 [FINEST] 0b0000 [FINEST] 0b1001010110.
+
+## 11:29
+
+My reverse bit ordering gives me `0b-------- 11111000 01000000 00110000` which
+is not correct.
+
+## 12:00
+
+Seems like one of my fields it not being printed.
+
+## 12:10
+
+Ok, now my instruction is:
+
+    
+    
+    [FINEST] ASM: f8 40 03 52 0b11111000 01000000 00000011 01010010
+                         need 0b01111100 00100000 00000100 10101100
+    
+
+## 12:19
+
+Yipee! I believe I have it now!
+
+    
+    
+    [FINEST] ASM: 7c 20 04 ac 0b01111100 00100000 00000100 10101100
+                         need 0b01111100 00100000 00000100 10101100
+                  7c 20 04 ac lwsync according to binutils.
+    
+
+So for PowerPC I needed to swap the instruction bits AND the field bits.
+Normally big endian is on the byte level so it looks like: [8 9 10 11 12 13 14
+15] [0 1 2 3 4 5 6 7], however PowerPC instructions are [15 14 13 12 11 10 9
+8] [7 6 5 4 3 2 1 0].
+
+## 15:58
+
+Going to need to work on variable flowthrough (which gets what) and register
+allocation.
+
+## 18:14
+
+One thing I can do though is that when it comes time to write a Java compiler
+I can reuse the compiler system I am writing right now.
+
+## 22:09
+
+The SSA processing will be quite simple, it is just moving around of variables
+and such to determine how good they are and such.
+

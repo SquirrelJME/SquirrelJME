@@ -1,0 +1,48 @@
+# 2015/12/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:38
+
+The Creator CI40 KickStarter is almost over, few days remain. I do not believe
+the stretch goal that I desire (the free case) will be reached.
+
+## 10:40
+
+The weather forecasts rain all week, joy.
+
+## 14:06
+
+Poison ivy, poison oak, or friends on my skin looks like a large volcano chain
+where the lava is instead blood. And other parts it is like a bubble on a
+pizza. Some people are not even allergic to this stuff. However it seems that
+my skin cells and such are just suffering death en masse. Luckily it does not
+spread.
+
+## 16:13
+
+There is a difference between `replace` and `replaceAll`.
+
+## 21:26
+
+Serialization in Java is messy, the language would have been best without it
+at all.
+
+## 21:28
+
+I actually kind of have to go through my entire library. I should at least
+for all of my classes use `transient` for fields. I should get into the habit
+of doing that now. This way I do not serialize things which should not be
+serialized.
+
+## 23:04
+
+The new project builder interface is really nice to use and so far my new code
+(although it is being written slowly) is nice also. Before things got a bit
+messy but refactoring helps. Of course during the kernel building refactor I
+will need to _2015/12/21: I never finished typing this in_.
+

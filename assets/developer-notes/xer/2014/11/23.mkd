@@ -1,0 +1,52 @@
+# 2014/11/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:02
+
+Well this new building code is much lighter, instead of 355 lines across 5
+files and having stuff in util, this consists of a single file now. This is
+for at least what I did before.
+
+## 20:29
+
+Limiting planet creation to before comets exist is a rather poor idea because
+that complicates things. And splitting fields and memory into both volatile
+and optimized form makes things a bit better because it adds multiple ways the
+code generator can work with fields or memory addresses. Volatile is a never
+cache as usual while optimized caches the result so while sets are truly set
+the gets are from the cache. The optimized version has concurrency issues in
+that if another thread or a submethod messes with the value of the field then
+it will not be seen by the current method, it is a local optimization only. I
+am only pretty much going to use volatile only where the optimized version
+will be in rare use cases and in protected code cases.
+
+## 23:17
+
+OK, the SSA is going well but the Java byte code decoder is very ugly and
+messy currently. Well the main thing is that I do not know how it works based
+on never running it before, there are the specs which I do know but not the
+feel. So it might be better to just hold off the stuff for now and write an
+interpreter so that it can run on the existing virtual machine abliet slowly.
+Then once I get a feel for that I can then write the native compiler and will
+know how the code acts as such.
+
+## 23:35
+
+I believe the main thing is that I am having doubts about the Java compiler
+code. So the best thing I should do is to clean up my language transformer and
+make it actually better than it currently is. Right now it is a singleton
+which means I need a special and junk like that, quite ugly. So the best
+result would be to switch to a factory sort of setup which generates private
+classes for usage. Ever since I started writing that code I have been uneasy
+about it being a singleton, but it would be better as a factory.
+
+## 23:43
+
+This should also then be capable of removing MachineCodec as translation can
+be a bit more direct now.
+

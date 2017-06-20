@@ -1,0 +1,52 @@
+# 2014/12/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:08
+
+Wrote down to say stuff yesterday but I never did, was busy day doing things
+in real life.
+
+## 05:32
+
+Need to turn all these stack operations from annotations into a giant array
+since that would be a bit more effective, but since converting those
+annotations to arrays would be a bit complex, I am just going to write a main
+entry and then call that, which translates everything for me instead. That
+would be a mostly fast copy and paste work.
+
+## 05:56
+
+Now I printed out replacements for all of the 213 opcodes, now I need to
+replace them all.
+
+## 06:16
+
+Using a spreadsheet, sed, and copy replace made it a very quick job to change
+all of the enumeration values.
+
+## 06:42
+
+These lists of lists should be good for quickly handling multiple possible
+stack operations and such.
+
+## 06:51
+
+Maybe instead of a verification and a register translation phase, I can
+combine the two since they are both performing the same kind of work for the
+most part. I could actually merge the jump stuff stage and the verification
+and register creation phase too.
+
+## 07:00
+
+I can move the stuff to other classes to simplify things, I can do what I
+planned before by having an evaluation thing to do. That is start execution
+with a known state and then push any jumps conditional or otherwise for future
+evaluation. So basically the translation code will be executing Java byte code
+as it transforms it. Checking for validity is performed and then as that
+happens, register based operations are being generated at the same time.
+

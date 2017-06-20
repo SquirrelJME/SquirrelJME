@@ -1,0 +1,64 @@
+# 2015/05/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:11
+
+Using FileSystemView is going to be too convoluted, so I am just going to add
+another menu entry which would be capable of loading an entry from an already
+loaded JAR files.
+
+## 05:41
+
+My code so far runs fine still in Windows (at least in Wine) with zero
+changes, the joys of Java.
+
+## 05:52
+
+Adding support for reading field signatures was easier than I thought.
+
+## 06:13
+
+TypeArgument::__readFragment() has some kind of issue where
+TypeArguments::__readFragment() causes an infinite loop when there are actual
+arguments.
+
+    
+    
+    FormSignature$TypeArguments.__readFragment(FormSignature.java:1150)
+    FormSignature$ClassType.__readFragment(FormSignature.java:366)
+    FormSignature$ReferenceType.__readFragment(FormSignature.java:859)
+    FormSignature$ReferenceType.lambda$of$6(FormSignature.java:830)
+    FormSignature$ReferenceType$$Lambda$75/2564543696.apply(Unknown Source)
+    FormJavaType$YMap.of(FormJavaType.java:948)
+    FormSignature$ReferenceType.of(FormSignature.java:827)
+    FormSignature$Field.(FormSignature.java:406)
+    FormSignature$Field$$Lambda$74/2564469288.apply(Unknown Source)
+    
+
+## 06:25
+
+Was caused by `__cb.get(0);` which should be instead `__cb.get();`.
+
+## 06:26
+
+I am rather tired now though, but reading of the exceptions attribute has to
+be handled to at least load HairballLauncher.
+
+## 16:39
+
+I believe I will need a much nicer way to show class data with fancy controls
+and such. Perhaps with headers and then specific data based on the kind
+something is, inside of a giant scroll pane that goes vertical. That will at
+least enable me add more graphical stuff to represent how classes are. The
+JTable works for mass information but it lacks the power I need for displaying
+the data.
+
+## 21:57
+
+Need to handle reading in TypeParameters now for the ConstantPool class.
+

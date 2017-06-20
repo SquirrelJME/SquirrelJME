@@ -1,0 +1,26 @@
+# 2015/07/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:33
+
+A new month.
+
+## 08:38
+
+Using fields for instruction data would be good as some architecture such as
+PowerPC many of the field types are at fixed locations in each instruction.
+
+## 19:45
+
+Suppose today is a break day since I have been coding much this past week and
+such.
+
+## 22:33
+
+Suppose some code writing was done before I will be sleeping now.
+

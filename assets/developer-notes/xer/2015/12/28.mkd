@@ -1,0 +1,62 @@
+# 2015/12/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:43
+
+Need to think of a good layout for the class. The class called `ReadBDFBinary`
+which contains a based and used implementation of the specification. I could
+use a standard constructor of sorts. Perhaps have a class and then a
+`DataAccessor` in an `Object` array for specific data zones and such. So then
+the specifier would essentially be a zone for a sub-specifier or contains
+actual getting of data. The `Read*` will have an owner read binary unless
+primary is used (which has no owner).
+
+## 06:58
+
+Glad that I split off my cache code so that I could more easily use it as
+such. It does save writing a bunch of duplicate caching code though.
+
+## 07:09
+
+The sun is starting to rise.
+
+## 07:58
+
+Thinking about it, zoning is not a good thing to have in the specifier
+interface because the stream stuff can handle that.
+
+## 15:03
+
+I wonder how I can cleanly handle the reading and writing of variable fields
+with shared code.
+
+## 15:12
+
+Although some stream stuff will be common, I will have to have a fork of sorts
+when it comes to reading and writing data. Otherwise the resulting stream code
+may be extremely complicated.
+
+## 16:23
+
+The creation of the generic BDF interfaces could be done by the base reader
+and writer.
+
+## 17:53
+
+This new BDF stuff is partially simple yet also complex. I already have support
+for Java class files which I am essentially rewriting. The BDF interface would
+convolute said things. The main thing for BDFs was for the KBF format to
+support reading and writing using a single set of code. However that
+complicates things a bit. I believe I just need simpler writers for KBFs
+instead. Something similar to BDFs but just far simpler. There would be
+increased code but having read and write support combined would complicate
+things quite a bit. So I believe I am going to revert and just keep my
+existing Java code. The only thing that really needs redoing is the support for
+writing KBFs and then reading them. It should be simpler for KBFs because it is
+essentially a table of contents format.
+

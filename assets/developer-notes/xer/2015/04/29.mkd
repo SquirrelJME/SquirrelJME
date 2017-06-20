@@ -1,0 +1,76 @@
+# 2015/04/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:07
+
+I am going to require some kind of relative system for class files in their
+native KBF form. One main thing is I will need to have a relative addressed
+based on an absolute location. This way it is easier to share loaded KBFs and
+classes among multiple processes in the system. So rather than requiring
+multiple base class initialized forms, it can just use solely just the one
+instance which is mapped somewhere. This is so memory usage is reduced as much
+as possible and so unused classes may be removed from memory or from a
+process. If addressable and executable ROM space exists then there will never
+be a need to swap out since it would be rather pointless to begin with.
+Although the more classes in active memory, the less heap space is available
+for programs to use. So a major thing to think on is the object format in
+memory and in KBF. I will want them to be both the same so they can be
+directly mapped as needed, provided the architecture it targets is the same.
+So the main KBF will include a binary serialization of the FormClass type
+which exactly matches that of the running system. Then all objects are just
+mappings of that. This however would mean that the cache must be wiped when a
+new FormClass is used or if there are any architectural changes. However, such
+classes are compiled ahead of time cached results. Users should not be running
+around with KBF distribution as it is a volatile format that changes to suit
+the architecture it runs on. So the main importance of the KBF format will be
+directly accessible as an object class types and such. One main difficulty of
+this is how the class types and such will map in their BinaryName forms when
+they refer to types. I could use a String based hashmap but that would be very
+collidy depending on the classes used. Since KBFs are raw binaries which might
+be executed directly in ROM, the format and run-time in memory format of
+objects will need to handle such things. So perhaps the KBFs will instead
+contain a hopefully unique identifier of sort (hash) which maps to a table of
+information. There is another alternative. The FormClass information is a
+built raw set of information which points to other things. I can have a
+primitive set of objects used to refer to things. I must figure out a good
+system that is fast enough and is simple to use by the recompilation system.
+So I should write a utility which goes through a class file and determines the
+Java hash sums to see how viable things are collision wise with many many
+classes.
+
+## 00:28
+
+I wonder if direct buffers would apply to me since everything is in Java. I am
+thinking of arrays just being a size point, component type, and a pointer to
+the data of the array (which may be anywhere). The code I write could just
+treat direct and indirect buffers the same way, and they both can use a
+backing array since internally they look the same. The one main thing in my
+code however is detection for stuff such as loops which copy everything. That
+will need to be folded into a single instruction when it is found and
+generated with the correct bounds checking for the range. That it, if it is a
+simplistic copy operation. However, I can just skip detecting optimizations
+like that in the early stage. Why? Because it would be premature optimization.
+I have no idea how the dynarec will work since it is only partially complete
+in a way. So the first generation of native code generators will be a bit
+slow. Then in the future, me or someone else with a more advanced knowledge of
+compilers than my current self can write up a better system. And that is the
+point of all these code moves in recent times, so in the event such a thing
+would occur it can easily be planted in and used instead.
+
+## 00:35
+
+So for optimization, do not ruin my own code and just keep it in pure Java.
+The recompiler can handle optimization so that non-portable magical constructs
+are not required to be used.
+
+## 16:24
+
+Ok, so every class including inner classes will always refer to outer classes.
+The specified class is called C (may be this), and the outer class is zero
+then it is top level, an interface, a local, or an anonymous class.
+

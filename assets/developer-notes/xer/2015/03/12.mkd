@@ -1,0 +1,34 @@
+# 2015/03/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:18
+
+Today will be a busy real life day.
+
+## 09:17
+
+The main thing when I reach it will be exception handlers, need to preserve
+that state.
+
+## 09:23
+
+Another main thing will be garbage collection, a thread safe and fast way to
+indicate that objects are no longer being used.
+
+## 09:41
+
+Well, exception states are always known. However for some virtual machine
+thrown exceptions like say NullPointerException or other errors like out of
+memory, such states will not be known. I believe for normal exceptions the
+state of execution is known while for random VM errors it is not guaranteed
+that values will have certain values since it could happen anywhere. I would
+have to look that up. Perhaps for object garbage collection I can have a
+method cleanup which cleans up any assigned register sets at the end of a
+method call although that could be an issue on long loops. I could collect on
+object set when it is done in a register.
+

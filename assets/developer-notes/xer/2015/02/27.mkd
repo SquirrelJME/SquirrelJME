@@ -1,0 +1,51 @@
+# 2015/02/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:25
+
+Thought about using a trick for handling long values on 32-bit systems as
+splitting them up in register form, however that would be a bit ugly. What I
+need is a way to have a growable buffer where I can still access it as a
+buffer directly, rather than just say being an output stream. Well, I suppose
+IntBuffer works, I can go back as needed, but if it ever needs resizing I will
+have to reallocate and recopy the data. I will need an Assembler base class in
+NARF that will be extended to by the DynaRec assembler, it can act on a base
+buffer. Say for PowerPC the instructions are all 32-bit in length while on x86
+they would not be so much like that. Sadly Buffer cannot be extended so I
+cannot write a 24-bit integer or oddly sized buffers at all. I could always
+just write my own extendable thing that uses a ByteBuffer, if the result gets
+too large I can re-allocate them as needed.
+
+## 01:26
+
+I am going to need a key I can use in a map to specify an operation, although
+I can just use the class of operands.
+
+## 02:20
+
+And using a MethodHandle should simplify things.
+
+## 22:54
+
+Had this idea that the base assembler could create the CodeBank that is used
+for target of code execution.
+
+## 23:09
+
+Perhaps I can write my own simulated system of sorts so I can make sure the
+logic of my operands is correct as desired. But that would duplicate effort
+sort of. Perhaps instead of PowerPC I should target MIPS first instead since
+that is far simpler. I have written a MIPS instruction simulator before, which
+was quite easy.
+
+## 23:27
+
+However, MIPSr6 is a complete game changer as I will actually need two code
+generators. One for r5 and older and one for r6 and newer since so much has
+changed.
+

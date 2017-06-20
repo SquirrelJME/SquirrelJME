@@ -1,0 +1,54 @@
+# 2014/09/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+For proxies the best thing to do would be to return a proxy which has a
+specific interface which is capable of getting the bridge and stuff and is
+directly useable, that it, it uses a known interface for specific types. But
+will otherwise be automatic. However, this would mean the proxy consists of
+three objects.
+
+## 00:20
+
+Proxies will actually be more handy with default in interfaces.
+
+## 00:40
+
+However, I may only just use proxies in this instance due to the dynamic
+requirements of the code. When I get to the actual kernel and such, things
+will be available for usage and I will not need tricks to access them.
+
+## 03:46
+
+To make building everything faster so it is not wiped over and over again, I
+will need a date checking system to see if a package needs recompilation.
+
+## 06:19
+
+The domain stuff along with the DomainManager is getting quite messy, what I
+need is a very simple tree which hides the subdomain implementations and
+instead acts like a mini filesystem with mountpoints. Then for memory
+operation there can be a arbitrator which determines how files are output,
+whether to pass them to the mount handler or just keep them in memory. This
+would then be able to hide actual Domains from the implementation stuff and
+only require simple mount strings. Will need a new name for it all however.
+
+## 07:39
+
+The new class shall be called MountTree which contains mounted abstractations
+of the file tree for usage by the compiler.
+
+## 08:50
+
+The random filenames produce interesting results, such as "wenr1x".
+
+## 23:35
+
+My compiler will need a way to check mutability of keys and such.
+

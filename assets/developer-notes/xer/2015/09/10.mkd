@@ -1,0 +1,29 @@
+# 2015/09/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:23
+
+This morning was a busy morning.
+
+## 13:10
+
+Typing on a mechanical keyboard is much nicer.
+
+## 21:38
+
+Going fully dynamic gives me: [INFO] Asm -> SSA: 708ms.
+
+## 21:43
+
+Removing cache on the field reference constant data speeds it up a bunch. Now
+it is about [INFO] Asm -> SSA: 693ms.
+
+## 21:47
+
+Then doing classname, along with name and type drops it to 667ms.
+

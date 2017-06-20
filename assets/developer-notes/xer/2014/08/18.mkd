@@ -1,0 +1,106 @@
+# 2014/08/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:23
+
+Just woke up, now to get some work doen hopefully. As noted previously I need
+to work on RFCJsonISR.
+
+## 02:53
+
+And now that such class is done (was simple to implement), the next piece of
+work to move into I am not sure of yet. I suppose continuation of the build
+plugin and package management stuff so that I can get an eventual build of
+packages.
+
+## 03:29
+
+Now I am able to start work into my compiler, I thought about using the host
+compiler in BuildPackage (with -host) but I changed that to use the host
+libraries instead. Now begins the long trek to work on a compiler. Then at
+least with that I can compiler Java 1.8 code and target 1.5 or whichever
+version the host is running. I will need a clean compiler, most likely plugin
+based like how I have my package manager (it works well for what it is). Will
+need to have my shell scripts handle services.
+
+## 03:59
+
+Appears GIJ/GCJ supports ServiceLoader, I knew the class existed before but in
+this case it actually works.
+
+## 06:06
+
+I will need a good programmatic API to the compiler, which would be used by
+the command line version and the javax.tools stuff. The main part will be
+translated to and from abstract tree format.
+
+## 06:25
+
+Will need a good intermediate language also. Based on Wikipedia the three
+address code type format seems nice and simple to use. It is mostly just
+operative math and such. However, I need something a bit more complex in
+regards to memory operations and such.
+
+## 07:21
+
+Thought about having a ZipBeacon which would allow me to at least read from
+ZIP files to support for the possible decompilation of class files.
+
+## 07:36
+
+I am very much excited, however I cannot code because of it and I feel a bit
+sick from it.
+
+## 08:28
+
+I need a type of flow for compilation, to determine what is put in and what is
+put out, with the compiler. A pipeline of sorts, where there are specific
+stages of translation.
+
+## 09:06
+
+I am going to need an list of files contained within a beacon so that it would
+be easier to determine which files need compiling and which files are to be
+put in the output jar file.
+
+## 09:24
+
+Ok, my beacon code works and I do know it works. However perhaps instead I
+should do something more elaborate and implement an actual filesystem of sorts
+so that way I can use the same code later for my kernel file systems. Then
+that would mean I would only have to write things very few times. It would be
+like FUSE in a way except a bit better and more advanced. My utilties would
+then be capable of using all of the filesystem code to check, create, and do
+all kinds of stuff with them. Since the compiler would use the host filesystem
+I could then write a wrapper filesystem which uses actual Java APIs to access
+files on the disk. Then with all of the filesystem code I can just compile to
+and from the filesystem directory, whether it is synthetic or exists as a
+partition of sorts. For disk images, I would have to use a sort of random
+access for the base file and to overwrite bits on the inside of it, otherwise
+using block based imagry I would have to read the entire filesystem and write
+the entire filesystem in one go, which is not feasable. I have never used such
+a portion of the Java library however in terms of this kind of file usage, has
+mostly been file streams and such (InputStream and OutputStream). Now if Java
+is capable of overwriting the middle of the file then good things will occur
+since that is expected behavior. Seems RandomAccessFile would do what I need
+to do such as it acting like a buffer. It does use 64-bit pointers which is a
+good thing, because being limited to 4GiB is nasty. Intead of using basic
+stuff I can use the NIO channels instead, since they would be simply been seen
+as channels, and using the new NIO code would be a bit leaner. Although I
+would have to limit part of my code to stuff only available in Java 1.5. 1.7
+has the FileSystem class however, so I would not want to write duplicate code
+in multiple places. At least the filesystems stuff is in the compact1 profile.
+However, there is SeekableByteChannel but that only appears in 1.7 and up.
+Perhaps I am worrying about such things a bit prematurely, as this is just a
+compiler and such result would end up be insanely complex. I would not want to
+shelve off the compiler to write this filesystem stuff. Now that I think of it
+the beacon stuff is nice, but it kind of complicates things sort of. I can
+store files temporarily in memory with MemoryBeacon and read files with
+FileBeacon, but it kind of gets complicated. The compiler would probably work
+best using RandomAccessFiles for everything.
+

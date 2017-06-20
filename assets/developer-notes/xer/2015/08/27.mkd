@@ -1,0 +1,57 @@
+# 2015/08/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:46
+
+I am awake. Hmm, this is an idea for code blocks. Instead of having code in
+the method be full of architecture stuff I can have individual code blocks
+that match the correct architecture so that there is only a single code entry.
+It may be easier to manipulate KBFs that way. However it may complicate meta-
+data such as debug lines, exceptions, etc. Might be best to keep the Code
+stuff how it is.
+
+## 15:21
+
+The best thing to do would perhaps be to make multiple table of contents in a
+KBF but with shared constant data. At least this way merging KBFs is simpler
+sort of. There would not be any hacks needed for the kernel for there to be
+multiple KBFs sharing the same stuff.
+
+## 15:40
+
+Can also simplify all of the KBF classes too, so instead of having twenty or
+so classes they are combined into one since some functionality is very
+similar.
+
+## 16:15
+
+Would be best to have it not be a map, the KBF file that is. It is not purely
+a Map and cannot really be used as a general one.
+
+## 17:08
+
+Going to avoid collections until later on that way the stuff is easier to
+implement as is. Hopefully the stuff ends up being faster in the long run. I
+shall see though, I can build a before all these changes and compare it to new
+times in the future. If load and generation times are cut in half that will be
+great, if they are even faster it will be really nice. This KBF code will be
+at the core of the OS binary recompiler stuff, so it must be fast. Also for
+stuff like mutable entry types, I am going to just directly modify the input
+buffer rather than have an expensive call to generic entry code.
+
+## 18:15
+
+The idea of the KBF constant pool is to remove the idea of having individual
+entries for strings and some integer/float values. The code generator for
+Mutable and such will handle adding/removing from the constant pool as needed
+when a value changes and such.
+
+## 18:36
+
+KBF will also be shorter than KBFFile.
+

@@ -1,0 +1,29 @@
+# 2015/07/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:49
+
+I believe I will place my blog in my its own package and then split them all
+by date.
+
+## 11:33
+
+Appears to be much more organized.
+
+## 12:20
+
+Appears that enum values() in Java uses invokedynamic, which is interesting.
+
+## 12:38
+
+Actually it just uses INVOKEVIRTUAL, not INVOKEDYNAMIC so I read this wrong.
+
+## 12:51
+
+The KBF format needs to handle enumeration values.
+

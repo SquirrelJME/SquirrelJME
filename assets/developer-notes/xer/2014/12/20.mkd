@@ -1,0 +1,39 @@
+# 2014/12/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:52
+
+I believe I will switch to HTML for my blog format and then have each day be
+in its own HTML file. A bit more bloated for documentation with HTML compared
+to LaTeX, but HTML is painful but more common to parse compared to some
+archiac LaTeX stuff. Also for my documentation groups I am probably going to
+use Compiled HTML Help files, a format by Microsoft but it condenses all the
+files and provides searching and indexing in the format so it has its
+benefits. Being a single file means it will be easier to copy the entire set
+of documentation as it would not be exploded on the disk storage area. The
+standard format is LZX compressed similar to CAB files and I do not know how
+good it is compared to GZip/Deflate. I can also include all the API
+documentation in the CHM also so that has an added bonus.
+
+## 14:12
+
+Also the blog being many different files will probably be better for finding
+what belongs to what rather than going through a gigantic file and such to see
+what was on my mind.
+
+## 14:47
+
+Also things were getting insane, eventually I would have a 10,000 line LaTeX
+file.
+
+## 19:17
+
+Seeing that properties in a device tree are just names and byte values I can
+just skip using that class and just use DeviceNode directly to represent the
+tree.
+

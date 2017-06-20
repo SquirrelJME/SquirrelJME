@@ -1,0 +1,76 @@
+# 2014/07/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:28
+
+Played video games for many hours, was not planning on it though. Luckily I
+managed to get to work coding. Now dependency recursion after working on it
+seems to be working. Now the good thing (sort of) is that using GCJ which is
+Java 5 causes my current stuff to fail because there is no javax.tools package
+and thus no classes in it. However when I switch to Java 7 there is one and it
+works as intended.
+
+## 04:27
+
+The next goal would be to setup the boot strap directory then build hairball
+and the compiler at the same time. Copying files with Java is not hard at all.
+
+## 04:56
+
+Before I fall asleep I am going to note down that I can have a callback in
+MetaSearch whenever some dependency is added to the output list. With this I
+could copy source files and packages as I go along while setting up a
+bootstrap directory. Although the best would be to enqueue actions so that
+there is no wasted effort copying files needlessly if it is going to fail
+anyway.
+
+## 13:41
+
+Now I can support callbacks and I also have a list of dependencies and whether
+they are soft or not. I will have to make the interfaces for javax.tools in my
+own classpath now. This is so that things compile on Java 5. Something is off
+with my soft and hard dependency code. Actually after thinking about it, I
+know what it is. Essentially for soft dependencies I fall back onto the same
+FileChecker which was also passed to the soft list, so I just need to remove
+that. If soft checking fails it will go to the hard one anyway. Actually, it
+is the getInfo() method in MetaSearch which falls back to the hard
+dependencies if a soft one is not found, this needs to be changed. And now it
+is fixed. A thought lingers on my mind whether or not this system will work on
+a self hosted k8 since the classpath will be providing all the k8 classes. I
+will have to figure that out when I get to that point. So switching between
+GCJ and OpenJDK, JavaCompiler is hard in GCJ but soft in OpenJDK. This is the
+intended effect.
+
+## 14:33
+
+I had this idea, that my standard POSIX utilities (which will be written in
+Java) can use the Tool interface so that they may be run at run-time. The main
+entry points can just then invoke the tool itself. In fact, main could be said
+tool. There is getSourceVersions() however, but I could just return an empty
+set for that.
+
+## 15:08
+
+I decided on moving the annotations for hairball down to just k8.a instead of
+k8.s.hb.a. This means instead of 9 base characters, there are only 4 now. Five
+bytes may be small but it does add up. Also means I have to type less if I
+refer to it by the full name.
+
+## 17:48
+
+Going to need a Reader and Iterator for code point support so that way I can
+support internationalization a bit easier. Also means I need a CodePointWriter
+also. Now a large storm is passing by which means thunder will be quite
+distracting.
+
+## 20:33
+
+CodePointReader is not going to work, I will have to figure out another way
+around that. I should perhaps just make a LongReader class use a Reader but is
+itself not a Reader at all.
+

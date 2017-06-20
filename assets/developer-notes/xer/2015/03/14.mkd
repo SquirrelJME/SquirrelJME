@@ -1,0 +1,53 @@
+# 2015/03/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:15
+
+I will need a callback, and I can use lamdas for that to determine the
+location of where to put registers and such. I will need a double back and
+forth reference for free registers based on their usage states. However such a
+structure would be complex. However since the Native register knows its own
+usages, it can determine it as such.
+
+## 14:50
+
+The ASMRegister.Usage is terrible, it should have no integer and float
+specifics and instead just have type storage to specificy which values can go
+where. That would be much cleaner also. I can also remove the volatile sense
+since the calling convention is caller saved when used. Mid-operand temporary
+work can be system defined as needed although with a special note.
+
+## 15:02
+
+I am also thinking of removing the library arguments also, since those can
+just use the preexisting calling convention, although that means saving a
+bunch of registers to call an internal allocation method.
+
+## 16:13
+
+Thought my register word multiplier was going to be trouble between float and
+integer, but I remember that I have separated floating and integer bits.
+
+## 17:51
+
+I have enhanced concentration now, just hope I can put it to work.
+
+## 18:29
+
+Register usages must be a set.
+
+## 19:44
+
+Got basic register allocation work going however, but it is time for sleep.
+
+## 19:46
+
+This silly logical error of getting registers allocated multiple times was due
+to not setting the place where the entry (register) is allocated to. So that
+is fixed.
+

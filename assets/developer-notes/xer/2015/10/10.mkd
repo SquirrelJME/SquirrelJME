@@ -1,0 +1,112 @@
+# 2015/10/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:43
+
+One main thing when moving around references is garbage collection. I do have
+to mark things up and such.
+
+## 11:50
+
+The main thing is flagging based on usage. References to objects are strong
+when they are in fields. I may need stack depth too. Say an object is
+allocated in the VM. It initially starts out by being a local-only reference.
+The constructor of said object can potentially make it so the local-only
+reference becomes global. That is if the new object gives itself to a field or
+array, however that is handled the same anyway. My previous garbage collection
+idea is basically this, so this is more of a rehash. Calling a method with a
+reference still only makes it local usage. However once it gets assigned to an
+array or a field in a class, it becomes global usage. I will need markers for
+both situations. I suppose for an optimization I can have a stack depth for a
+local. However, that might not always work out too well because a bunch of
+objects could be allocated and then the stack depth would just jump out
+anyway. I suppose I may need handles for objects which potentially means
+double de-references. However when it comes to the handles I can just link
+through them all. There can also be some magic to check whether something is a
+handle when a garbage collection is passed through. I suppose for general
+stuff I will need a pool for each thread. Something being assigned to a field
+or array becoming global can be exposed to other threads. However anything
+just passed via methods does not escape the current thread. This means that
+when a thread terminates a garbage collection pass can be done on those
+objects in the thread's memory pool. I suppose for efficiency I can have
+generations so that if say a volatile field or final field in a class is
+collected because the object is collected it can be freed up.
+
+## 16:35
+
+One problem with reference counting however is that when exceptions are thrown
+things can get funny. However alternatively I can just have a local variable
+tread copy which is a copy of the locals and stack which only contains
+reference types. Then the garbage collector can scan the stack to determine
+objects referenced by locals and such. Alternatively, I can have a dynamically
+growing area after this for stack and locals and then just have a copy of all
+reference types placed on the stack. If a method for example uses 1000 locals
+and stack slots but only a handful are actual references then that would waste
+allocation if slots were needlessly duplicated. So with the slots kind of
+slapped on after the fact, they can instead just have a "last reference" in
+the slot whenever its value is changed when it is a reference. Then if its
+type is changed or removed, then that reference is removed from the reference
+list of the current method. This would then allow me to skip reference
+counting for local variables and instead use them for say fields and array
+stuff. Fields are more likely to be changed less often so that reference
+counting will not be too slow on it. Fields will pretty much always cause a
+positive reference count to be placed on an object it points to. So a kind of
+mark and sweep will have to clean up referenced but very indirectly. That is,
+if there are 3 objects: A, B, and C. B points to C and C points to B, then B
+and C can be cleared because nothing points to them. This means that classes
+could eventually be collected once they are no longer referenced by the run-
+time.
+
+## 17:25
+
+POIT JavaStorage.Slots needs bindings to determine which part of the stack or
+which local register contains the specified value. There also of course needs
+to be backup bindings where all values are saved when a method call is
+performed.
+
+## 18:01
+
+At the start of each method, I will need to have a copy of the instance and
+any reference arguments copied to the reference copy table. However the input
+arguments are technically part of the calling method's reference copy table,
+except for fresh stacks for new threads. So is this needed?
+
+## 18:53
+
+This Minecraft game seems interesting, however it is not open source and it
+also requires a 3D renderer to play. After seeing some gameplay it should be
+simple to clone the bits with unique-ish gameplay. It would be software
+rasterized since I would have no idea when I would get 3D rendering support.
+Since it would be software rasterized it would have to be very fast. Some
+Graphics2D stuff is accelerated however, so I would basically just affine
+transform everything when needed, etc.
+
+## 19:20
+
+Not sure which is simpler though, making a Minecraft clone or a Starcraft
+clone. Well Squirrel Quarrel will require lots of logic writing along with
+navigation meshes and AI. I suppose a clone would be called Squirrel Digger as
+a kind of pun. It would have to be simple, I suppose a low framerate logically
+and such to increase execution efficiency.
+
+## 19:50
+
+I suppose the player would have claws and such. This distracts me from my main
+recompiler work, but I suppose I need a break once in awhile to do something
+else.
+
+## 19:59
+
+Would say in this game that you are the squirrel.
+
+## 23:32
+
+I should have dimensions above worlds that way there can be tons of them for
+example. Not named as such however because of AWT, so I suppose Multiverse. Or
+maybe just a SolarSystem since these are Worlds.
+

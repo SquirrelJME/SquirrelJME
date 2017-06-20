@@ -1,0 +1,49 @@
+# 2015/01/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:15
+
+May have failed writing up the unit circle math code.
+
+## 00:38
+
+My unit circle, which uses a flawed sine lookup looks like an angry face.
+
+_Removed inine image, see 30.xpm_.
+
+## 01:01
+
+I believe my fixed point multiplication is correct now, just need fixed sine
+values.
+
+## 02:13
+
+Currently not able to solve this at all.
+
+## 03:12
+
+After some hardcore trail and error, pen and paper I have finally solved it,
+which is a good thing as now I can get on with things.
+
+## 04:35
+
+I have a solution to my current problem, but it is on a file server that died.
+
+## 05:20
+
+But I managed to find it on another system of mine, luckily the code easily
+copies over to Java, so there should be no real issues with it.
+
+## 05:39
+
+Code needs a few more changes however.
+
+## 17:12
+
+Annotations in classes and fields just need simple null pointer checks.
+

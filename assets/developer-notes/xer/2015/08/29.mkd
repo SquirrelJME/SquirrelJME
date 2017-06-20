@@ -1,0 +1,60 @@
+# 2015/08/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:20
+
+The code is getting there but I need sleep now.
+
+## 11:26
+
+When it comes to the Java loader, the only thing I have left is handling the
+chunk of byte code used by methods.
+
+## 12:06
+
+My splitting up of everything before is working out quite well currently.
+
+## 12:14
+
+So far with this new KBF code, the only real stuff I had to change is the Java
+loader. The other things are rather trivial in usage. Although I will have to
+update the Java byte code decompiler to adjust for the changes, but that is
+mostly constant pool and a few invokes.
+
+## 13:14
+
+The code using the KBF has pretty much be fixed so that it compiles again. Now
+I will soon have to write the KBF creation and entry code that all of it uses.
+
+## 13:32
+
+Now I just have to write the Mutable KBF related code, but first I should eat
+breakfast.
+
+## 14:28
+
+Class recompiling could either get targetted into a KBF or a fresh one.
+Although stacking KBFs will cost lots of memory.
+
+## 18:24
+
+I thought about making everything thread safe, but I believe the best thing to
+do would be to just have entries not be thread safe. If they were thread safe
+then they would require either a lock or a bunch of Atomic objects.
+
+## 19:41
+
+The slow thing though is that a full rebuild is required when I change the
+base KBF code or its generators. It takes two minutes to run from a test.
+
+## 22:39
+
+KBFArray using boxed names for the sub-types makes it very cumbersome to use,
+so for simplication I will instead just prefix the array types with Of. Doing
+that will far simplify things.
+

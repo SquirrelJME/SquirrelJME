@@ -1,0 +1,28 @@
+# 2015/10/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:45
+
+I am going to need a common binding system for PowerPC if I want to easily
+support method calls and such. It can also be common to the POIT package since
+very much every architecture (except a select few) will use them as one.
+
+## 16:19
+
+It would have to optimal and permit differing pool setups.
+
+## 19:50
+
+Copying tops and such would be a bit bad idea, they should be ignored when
+doing slot copies and such when generating code. Sort of ignored, still
+checked to make sure they are valid. Otherwise it can get confusing
+determining high and low values. There is also the difference of pointer types
+containing long values. Since references are contained within a single slot,
+they must then occupy more space on the stack since any value can contain a
+reference.
+

@@ -1,0 +1,57 @@
+# 2014/09/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:41
+
+Short break.
+
+## 16:13
+
+Moved the descriptions so that LexerDescription contains the stage two
+generation part. When generating stage two, the generated file will need to
+setup requirements for code to compile. So it should create a list of implicit
+dependencies. Compiler should then search through them to see if they are
+provided and if not, attempt providing them. If they are in an uncompiled form
+then they are to be implicitly generated (if enabled, which it is by default).
+If they are not to be compiled then they are at least outlined for usage by
+what they are needed by.
+
+## 16:22
+
+With new implicit method, generation of stage two will have to go through the
+actual method source code to find other implicit files. So genStageTwo() will
+have to minorly parse the bodies of methods and fields. The only big trick
+will be shadowing. However that can be done by lazy realization after
+something is entirely parsed. So the actual fully qualified class name of any
+implicit requirement must be done last during generation while keeping object
+specificity and scope visibility information.
+
+## 17:06
+
+The description will handle the base opening of the file and the tokenizer
+engine will handle tokenization of some input language, then that will be
+piped to a PushbackIterator in an implementation of of a description for stage
+two generation.
+
+## 22:21
+
+An operator that returns the old value and then sets the variable to a new
+value would be quite useful, would remove any temporaries involved.
+
+## 22:55
+
+Had this idea for the static compiler and optimization stuff, when compiling
+the kernel create potential C++ template like instances of objects using a
+specific base class for optimization purposes. This would require compiler
+support however, and would not break type erasure and such.
+
+## 23:17
+
+The first bit I need to do in regards to the tokenization is to extract the
+supported comment forms placed in the language definition.
+

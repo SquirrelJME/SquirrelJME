@@ -1,0 +1,48 @@
+# 2015/01/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:46
+
+I know something strange I can do, remove the Map from the PackageManager and
+make it set. Then have PackageInfo extend PackagePair and implement a map for
+property values. Then the packages could be maintained in a bit different way.
+However the Set does not have a get based on the key value. I could always
+just make a map that contains the value as the same key.
+
+## 01:58
+
+My quite ugly CallCheckedCollections now looks much better in Java 8,
+especially with lambdas and functions now.
+
+## 02:13
+
+Also means less magic as the CallCheckedCollections can handle all of the
+needed checking with just a lambda.
+
+## 02:21
+
+Changing the maps and such to that has made the code much cleaner and nicer,
+also reduced a bunch of code too.
+
+## 04:19
+
+Instead of a dependency list in the PackageManager, it would best be in the
+PackageInfo since it only refers to them by name and such.
+
+## 06:09
+
+I should use a DiagnosticListener for package manager stuff especially when it
+is to be built.
+
+## 06:42
+
+Actually what I was going for is bad, instead I know a better way. The manager
+will not have building just installing and PackageInfo will not have it
+either. There will be a separate builder class which handles everything that
+way the information and the manager are kept cleaner.
+

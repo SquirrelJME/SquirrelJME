@@ -1,0 +1,54 @@
+# 2015/07/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:13
+
+PowerPC has 1,141 operation instructions. So adding all of these by hand would
+take quite some time. Since there are so many operations I will need some kind
+of helper program to clean things up and output the operation table.
+
+## 14:30
+
+Good thing for scripts because otherwise adding all of these instructions will
+take days to type out. However, the operations will need parameters and such
+added to them.
+
+## 19:39
+
+All of the operations should be generated with enough information now.
+
+## 19:48
+
+Looks like the list of PowerPC operations will be 20,000 lines long. It
+happens. That will be a gigantic pain however, because that would be a huge
+file to commit and one small change would require a new file to exist. It
+would also be very hard to find any instructions in it quickly. I suppose the
+best way to go is through the hairball generation which can just put the code
+in where it is expected to go in.
+
+## 21:01
+
+Only two things use the hairball generator currently, but so far those two
+uses are very handy.
+
+## 21:19
+
+Running the generator causes a shimmering effect in wmforkplop. I must be
+calling sed and grep many times over. I was hoping that today I would be
+generating instructions for PowerPC, I suppose not.
+
+## 21:31
+
+Appears the generation code works. And the class file for the instructions is
+768,394 bytes. Almost nearly a memory of dynamically generating code. The good
+thing is that no extra objects are used at all and it is all handled by method
+handles so to speak. In fact the class is the first class that is looked at is
+the PowerPCInstruction. It fails with a NPE in the constant pool handler. The
+class kind of pushes the limits. Now x86 will probably be much much more
+intense. But at least with this code I can test my Java class loading code.
+

@@ -1,0 +1,93 @@
+# 2015/12/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:41
+
+I had this _Star Trek: Voyager_ dream. The plot was basically, the away team
+with the captain beam down to surface in a wooded area and walk to a place
+because it has shielding. Seven of Nine picks up things there which have a
+material to do things to Borg drones, but they do not know it yet. They beam up
+to the ship and Seven of Nine does not go up with them, she instead gets beamed
+to an alternate reality alone into a different Voyager. This one a bit more
+depressing and with more alien crew members. The previous alliance attempt
+with the Borg failed which caused lots of damage to the ship and a loss of
+a portion of the crew. In the alternate Voyager the doctor was never killed at
+the start so the holographic doctor was never activated. Was interesting.
+
+## 11:33
+
+Going to have the configuration system have the ability to check if the actual
+dynamic recompiler is supported for a given CPU configuration. This way there
+can be multiple dynamic recompilers with varying levels of support. So for
+example, say there are two recompilers for PowerPC. POIT supports many
+configurations as a base system while another only supports for example
+64-bit. On top of that I should have a support level enumeration instead of
+just a plain boolean value.
+
+## 14:57
+
+POIT fails to build because of a code change, however in the configuring system
+it tries to build POIT so far about three times. The many calls are made
+because since the binary is not built, it has to build it to see if it is
+compatible. However the multiple build attempts are a bit bad. So what I must
+do is have a failed build flag set in the package status so that it does not
+constantly try building failed packages.
+
+## 15:26
+
+I must when checking to see if something is supported is to load the helper
+package too for the compiler. POIT just exists in a base package with nothing
+at all, so checking if it supports PowerPC will fail.
+
+## 21:20
+
+I might just not have to use a forked setup for the building and instead just
+have it be a part of the hairball default one.
+
+## 21:25
+
+Going to need to move the dyna rec configuration instead to the machine and
+then just have a base for a CPU.
+
+## 21:28
+
+I wonder if the G4 actually supports little endian. There is an option in the
+boot loader but I would not want to risk the potential to brick my laptop by
+setting the flag.
+
+## 21:50
+
+Going to need a potential base config inherit handler and such for extra
+things which may be inherited for example.
+
+## 21:53
+
+However, it is not known whether or not an inherited set is to be removed or
+added. So the current replacement policy works best for this case, although it
+can remove previously set values.
+
+## 22:08
+
+Virtual configurations will be very useful.
+
+## 22:10
+
+I believe the base configuration is mostly complete now, just now need to go
+into building the actual kernel and such with it.
+
+## 22:28
+
+I am refactoring a bunch of my stuff but the stuff I am refactoring so far
+was added before the build system was actually really around (sort of), but now
+that I know what to do best I can do it. So I suppose this is another rewrite
+of sorts. However what I have now is very clean and I really like it compared
+to before. Using this new stuff will be far easier than before however and it
+will not be a huge mess either. The hairball refactor was long overdue though
+since parts of it I sort of rewrote as a tack on. The refactored code is also
+much much smaller too.
+

@@ -1,0 +1,44 @@
+# 2014/09/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:00
+
+Played many games.
+
+## 18:11
+
+Have this idea for a generic compiler, I just describe what the Java language
+is like, and the generic compiler decodes the input language and does magical
+stuff and code generation. Probably could not handle stuff like preprocessed C
+code.
+
+## 19:22
+
+So the analyzing of input source code will build a structure based on the
+input tokens and streams and such, then using normal means it will determine
+what is meant by it. However there is potential for there to be ambiguity, and
+the code reader will have a method used to sort out any ambiguity before it is
+passed to the compiler. One ambiguity that can be thought of is default, it is
+used to set the default value of an annotation value, used in interfaces for
+default methods, and used as the miss-all case in a switch.
+
+## 21:49
+
+Have this idea for a hex editor that is able to show certain binary formats
+and calculate stuff, could be useful for debugging and general messing around
+with whatever is supported.
+
+## 22:42
+
+Using regular expressions for tokens is going to be slow, however it gets it
+done easier.
+
+## 23:42
+
+And the regular expression for floating point values is quite complex.
+

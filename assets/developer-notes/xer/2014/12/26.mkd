@@ -1,0 +1,28 @@
+# 2014/12/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:03
+
+Yesterday was a holiday where people take breaks from things and spend time
+with family.
+
+## 01:31
+
+I have this idea that entire packages could get summed so when something is in
+a package it can be determined if it requires recompilation but that might be
+a bit too grouped. Too grouped because a single class change will require
+recompilation of that and everything that depends on it. I will need to have
+dependency levels of sorts just as fields and methods. Possibly make it
+possible so that massive recompilation is not needed but that would complicate
+things a bit so it would probably be better off being much simpler.
+
+## 12:12
+
+It might be good to have a generic tokenizer that I can use while reading
+input, something that is much nicer than StreamTokenizer/StringTokenizer.
+

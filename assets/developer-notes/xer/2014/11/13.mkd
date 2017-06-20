@@ -1,0 +1,51 @@
+# 2014/11/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:10
+
+Did not code earlier today, was helping out family, but I suppose it is good
+to get a break.
+
+## 16:34
+
+Thinking about it, I have the ClassFile and all the associated info classes
+and such. However, right now what I have is taking the ClassFile and turning
+it into a Logical with MethodLogicals (and eventually FieldLogicals) of which
+are all the same thing. Well, the logicals would store a more descriptive form
+of a ClassFile. The normal ClassFile just contains a straight up
+representation of a class file as found on the disk. Although there are some
+doubts, I believe the logical stuff is the way to go. It might be simpler to
+make the class and methods that exist from the ClassFile (the snapClass)
+should be immutable. The ClassFile itself is not immutable, but if you take a
+logical class and mess around with it bad things can occur. So I suppose that
+every part of it should be immutable while the methods could be assigned new
+programs used during retranslation. It would also massivly simplify locks and
+such as I would not need to add locks all over the Logical stuff like I do
+with the ClassFile stuff. The ClassFile is meant for loading and generating of
+class files at runtime, while the logical is meant for compilation. The
+logical has to copy some of the class information so it becomes useful
+however, but it locks every aspect of it. So perhaps instead, I can have a
+MachineReader which reads some kind of input form (like Java byte code) and
+turns it into abstract language with trees and such. Then there will be a
+MachineWriter which then turns that abstract language into machine code (or
+byte code again). This way there is no real need to handle operands in Java
+byte code as much because they will be in a fully generic form (the abstract
+tree). My previous idea was to load the byte code (or some other machine code)
+and translate it into a representation of the native form. However that would
+add an extra step although it might not be fully easier. The abstract tree
+nodes could always have the original opcodes that they consist of. Then with
+the abstract tree it can be optimized then translated so that it best matches
+the target system. So the initial load of the Java byte code will result in
+very ugly abstract tree (since Java is pretty stack heavy, although local
+variables can be seen as registers). So the abstract form will consist of
+stack operations and "register" operations. The optimizer would then remove
+all stack based operations and have it be performed completely in registers
+(since those are the best), while solving other issues like math and such.
+Other translations such as removing method calls to certain classes (such as
+Math, String, Atomic classes, Locks, and some others).
+

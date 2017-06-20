@@ -1,0 +1,18 @@
+# 2015/09/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:06
+
+For building on ancient systems I can have a translator compiler which
+translates source code from Java 8 down to Java 5 for compilation. Java 6
+however would be easier to support, however GCJ is at the Java 5 level. What I
+could do instead in the future is just when I have an actual Java 8 compiler
+written in Java 8, I can use a source translation to translate the Java 8
+compiler down to Java 5 and then bootstrap everything including a simple (and
+slow) VM written purely in Java.
+

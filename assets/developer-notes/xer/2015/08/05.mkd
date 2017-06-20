@@ -1,0 +1,20 @@
+# 2015/08/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:24
+
+I need a faster way to compile the PowerPC assembly operations. Having all of
+them in a method works, however I could store the operations directly in the
+ZIP of the JAR so that they are in for reading when they are required by just
+doing a getResourceAsStream(). I suppose I can use the Manifest format to
+store operation information, the alternative is JSON.
+
+## 15:35
+
+If I made an instruction set, EVILHOUSEPLANT would be a good instruction name.
+

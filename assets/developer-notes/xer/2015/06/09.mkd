@@ -1,0 +1,28 @@
+# 2015/06/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:41
+
+Playing some BattleTanx, thinking of cloning it as another example game for 3D
+support and such. Appears it may use BSP of sorts because the starting area
+has an area where I can make it so the ground does not render looking at a
+specific angle in a doorway.
+
+## 20:28
+
+Adding more base JSR stuff. It might seem too early now, however the JSRs that
+I place will be useful for the future because I can plan for them.
+
+## 22:38
+
+ReSequencer is a better step, but the queing and the way tokens are handled is
+a bit messy in a way. I want a kind of queue, but perhaps instead of granting
+the resequencer the macro, I will have the resequencer pull the macros itself.
+So the resequencer will need to pull instead of be given. That would be the
+easiest. Then the resequencer will run the proprocessed state.
+

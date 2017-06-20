@@ -1,0 +1,100 @@
+# 2014/07/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+In an utter sense of failure I just realized my clock was 40 minutes behind,
+ouch. So the next paragraph was written today rather than yesterday so I moved
+it up here.
+
+Oh wow, I should have used ArrayList sooner since it has get(), although
+Vector has the same. Supposed I am used to my old ways when it comes to
+Vector. None of my code should break synchronization wise since I use my own
+synchronization since I just cannot seem to trust those synchronized wrapper
+implementations. Good thing I am on Linux and I have access to sed otherwise
+changing all of this would be rather trivial. Before I commit, my repository
+size is "3571712 bytes" with an artifact size of "7135 bytes average, 61034
+bytes max, 13528411 bytes total". Also elementAt() is only used in Vector so I
+can sed that change too. There is also removeElementAt() too which is only
+used in that one. I will also need to verify that I have no broken my 79
+column width limit either.
+
+Since my clock was 40 minutes behind, I just decided to change the dates of my
+edge commits to today by 40 minutes. My uptime and date at the near exact same
+time is: "00:44:08 up 2 days, 6:28, 11 users, load average: 0.94, 0.95, 0.90"
+"Fri Jul 4 00:44:08 EDT 2014". I can fix all the commits by pushing them up,
+but that is alot of commits, so I just pushed the times of ones which would
+result in cross days up some. So one may notice a giant skew of time but it is
+close enough.
+
+Also, Happy 4th of July and 500 or so commits! Yipee!! Also my birthday is in
+two which is also very cool. And I went through my diff to make sure I did not
+violate 79 characters or so.
+
+Repository size went to "3698688 bytes" with an artifact size of "7089 bytes
+average, 61034 bytes max, 13874312 bytes total". So that huge diff cost me
+345901 bytes that matter.
+
+In my Type code (aka the bits echelon package) I should remove IE and instead
+use EchelonError with Code.TYPEINFO instead of that shortened exception.
+
+Tokenizer also needs a contextual next for usage with generics since they are
+preceeded by identifiers. Currently anything using said symbols are treated as
+operators by the tokenizer. Adding a contextual next would not be hard at all
+since it would only be for the case of those few operators. Another thing that
+may be improved with it is that limited rewinding could be supported and the
+count of the number of tokens since some mark or start of statement. I already
+count curly brace depth.
+
+The context sensitive stuff should be in another class since I do not want to
+complicate the existing tokenizer. I also already translated the type stuff to
+EchelonError some time ago but I should probably remove the IE. The contextual
+tokenizer would not need full knowledge of the class layout but it can guess
+certain things, such as what is a field, a method, or variable. Although it
+will get tricky when it comes to actual methods.
+
+A thread safe annotation would be good so I can quickly note whether a
+specific class is thread safe or not, most are not.
+
+What I need to do is use the Compiler API that was added in Java 6 then have
+my javac use that instead of doing the compilation stuff manually. Though for
+compilation on Java 5 it would have to be supplanted by my own classes in my
+own class path.
+
+Project is getting complex, I feel as if I made some errors in placement of my
+compiler and basic class layout. Normally one would choose net.multiphasicapps
+but that is rather gigantic and lots to type, k8 is much shorter. But I will
+not let that worry me. I believe the big mistake is putting a bunch of stuff
+such as the echelon system in k8.x, it should go in another package. The
+echelon system is not really meant to be in x which is for generic language
+stuff. The same goes for the compiler. This is the reason I have k8.t for
+command line version of tools. "k" contains the kernel, "t" is for command
+line tools, "x" is for extra language additions. Using the echelon stuff is
+not exactly stuff for additional things like new collections. I just need to
+figure out a new letter. Perhaps "s" for support classes that do not belong in
+s but are bridges between t. Also said classes do not belong in the kernel. It
+would be better to place stuff like echelon in there, or a future adapted form
+of echelon (like what is slowly occuring already) and other things. Similar to
+the com.sun internal packages, the stuff in k8.s would not really be meant to
+be used by general users. Also I seem to be going back to where I came from. I
+split echelon so that is contains only parsing stuff such as class information
+while compilation is elsewhere. I believe the main thing would be to do is to
+blur the lines a bit.
+
+Deleted a bunch of empty x packages and merged cmdline into util, looks much
+leaner even before I do much bigger moves. Thought about making hairball its
+own super package, but it belongs in s now.
+
+Sadly, moving stuff around loses annotations but oh well, I still do have the
+since stuff and the history is still there before said points anyway. The size
+of the repository bloats a little, but better for it to be done now than much
+later when it is huge.
+
+k8.s.ci will replace k8.x.echelon and will be coded so that it is much leaner
+and more streamlined like the newer echelon code I have been writing up.
+However, I also should not put tokenizer and such in ci so that should go in a
+sp package for source processing.
+

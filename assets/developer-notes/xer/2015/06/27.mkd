@@ -1,0 +1,63 @@
+# 2015/06/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:03
+
+Today is a lazy rainy day.
+
+## 10:44
+
+At least for one class I have everything loaded enough to do recompilation of
+it.
+
+## 10:57
+
+LoaderFrontEnd should not do any recompiler because that is just nasty and
+will require more dependency loops and such.
+
+## 11:03
+
+I believe it is time to remove the debugging of the structure read and writes
+since that requires lots and lots of printing. Current run is 32 seconds with
+the logging. Then for a rebuild it is 1 minute 16 seconds. Then a re-run after
+it has built results int 19 seconds. So printing all of that text literally
+takes 10 seconds to do. But I no longer need it (it gets commented out) since
+my structure writing seems to work currently. Now I just need to work on a
+recompiler interface. I will need some kind of abstract instruction handling
+with a kind of emulation system so a generic compiler to C can figure out how
+to generate machine code or a generic intermediary code.
+
+## 13:54
+
+Going to need some kind of generic representation of code such as SSA which
+all of my compiler stuff can use. One complex thing to handle though is
+branching all over the place. Java 8 bytecode is much simpler however as jumps
+related to exceptions are in less places and there is no double state
+deviation where one operation has differing values from another. Essentially
+what I will need is some kind of timeline based system which marks which
+variables are used and such and all of that.
+
+## 18:15
+
+To simplify things my assembler front end is just going to provide the
+instruction set. The projects which extend the front end just need to provide
+said instructions, the assembler and disassembler will be internal to it along
+with the assembly to SSA decompiler and SSA to assembly compiler.
+
+## 18:32
+
+Actually I do not need to convert Java to C and then compile that C code, I
+can just go from SSA to assembly. I will however have helper C programs which
+do things.
+
+## 19:41
+
+I am going to drop my complex property stuff and move that into annotations
+which are attached to front ends instead then CPUDesign is to be removed and
+instead just becomes a set of annotations and desired values based on those.
+

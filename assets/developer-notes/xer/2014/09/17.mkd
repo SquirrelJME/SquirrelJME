@@ -1,0 +1,37 @@
+# 2014/09/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:26
+
+Using regular expressions for identifier start and part will end up having a
+14K character regular expression, which is far too much for my needs. So I
+will have to have an alternative way to decode tokens and such.
+
+## 00:51
+
+Using regular expressions and annotations to describe a language has turned
+the definition part of the compiler from something not simple, however the
+actual logic which takes all of it in will be simple. I need to do some
+renaming and regrouping of the annotations and base clases to clean things up
+a bit.
+
+## 01:30
+
+I will split the lex package into a "tok" package for tokenization and pre-
+source setup reading stuff. Then there will be "an" which reads those input
+tokens and builds a structure. Then after that will be "comp" which will
+perform the actual compilation of code.
+
+## 03:22
+
+Language definitions and such will be thrown in "def" adjacent to "lex".
+
+## 15:22
+
+The big thing is naming the classes, what should they be called.
+

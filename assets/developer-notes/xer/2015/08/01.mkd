@@ -1,0 +1,132 @@
+# 2015/08/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:11
+
+New month now. I wonder if my diff counter is meaningful. I stopped using it
+long ago. Actually the script no longer exists so I must have removed it.
+Actually had it reversed, it still exists. There were lots of changes so
+overall it will appear a bit funny. Subtractions: 96031, Additions: 102994.
+sloccount gives me:
+
+    
+    
+    SLOC	Directory	SLOC-by-Language (Sorted)
+    129469  java-library-4  java=129469
+    76540   java-library-1  java=76540
+    41351   java-jsr231     java=41351
+    25629   java-library-3  java=25629
+    13574   java-library-2  java=13574
+    12770   java-jsr926     java=12770
+    7984    java-jsr926-sun-compat java=7984
+    5910    java-jsr148     java=5910
+    3762    narf-decompiler-java java=3762
+    3443    java-jsr353     java=3443
+    3179    script-forth    java=3179
+    3167    kernel-binary-base java=2725,pascal=394,ansic=48
+    2787    c-preprocessor  java=2748,ansic=39
+    2706    squirrel-quarrel java=2706
+    2639    hairball        java=2639
+    2239    ssa-compiler    java=2239
+    1813    kernel-binary-asm java=1813
+    1759    doclet-java     java=1759
+    1709    java-jsr080     java=1709
+    1560    kernel-binary-asm-java java=1560
+    1399    kernel-binary-type java=1399
+    1350    hairball-os-construct java=1350
+    1100    kernel-binary-load-java java=1100
+    616     c-compatibility-posix ansic=412,sh=201,java=3
+    519     sun-doclet-api  java=519
+    425     image-decoder-xpm java=425
+    415     kernel-binary-asm-ppc java=415
+    293     kernel-k8       java=273,ansic=20
+    172     c-compiler      ansic=123,java=30,sh=19
+    93      std-compliance  java=93
+    70      freetanx        java=70
+    58      x11-on-swing    java=58
+    52      kernel-platform-base java=52
+    50      k8-tests        java=50
+    27      kernel-platform-ieee1275-ppc asm=15,java=12
+    19      hairball-os-construct-gui java=19
+    6       script-ecmascript java=6
+    1       kernel-interface java=1
+    1       kernel-platform-ieee1275 java=1
+    0       debug-protocol  (none)
+    0       debug-protocol-gdb (none)
+    0       debug-protocol-jdwp (none)
+    0       developer-blog  (none)
+    0       k8-gui-resources (none)
+    0       kernel-binary   (none)
+    0       kernel-binary-asm-mips (none)
+    0       kernel-binary-asm-sparc (none)
+    0       kernel-platform-ieee1275-sparc (none)
+    0       top_dir         (none)
+    
+
+## 21:41
+
+The always zero register in MIPS is a good idea. Even though there is one less
+register, it is a common and the same way for all operations to be a bit
+bucket and a common source of zero without XOR with self.
+
+## 23:01
+
+Ok, I have a general idea how garbage collection and exception handling will
+work. There will need to be a register which is a dedicated sequence point
+which determines which exception handling to jump into and to copy which
+variables to where. The start of an exception zone will just be a
+try/catch/finally as normal. That will be settled/initialized by a lookup
+table which knows the sequence number and the type to handle. Now to detect
+exceptions happening in the middle of a sequence set, even numbers would be
+valid sequences while odd would be in the middle of. So say if one is thrown
+while the values are being restored into their correct locations for the
+exception handler, the sequence number will identify it. Another thing is that
+the stack will need to store all registers which are not explosive. When a
+method is called, an exception is thrown (via throw), or the process manager
+thing throws an exception for a thread; the registers will be saved to a
+specific location on the stack. The temporary registers will not be saved. On
+RISC based platforms where there are lots of registers where only work can be
+done in the registers themselves, some registers will be set to temporaries
+which will just not be saved/restored when exceptions are caught. Now for this
+to work, all the registers must be saved before a call to a method since an
+exception can be thrown in a called method which propogates to the caller and
+so on. So in all of these cases, the registers needed for restore are saved as
+required. When it comes to sequence points, some complex methods will require
+a ton of them for entire exception blocks. So larger methods are worse because
+they complicate things. At least with sequence points, I should be able to
+shuffle register assignments to variables as needed. At the change of a
+variable assignment spot the sequence point will be incremented, then the
+values will be stored and restored as needed, then the sequence point will be
+incremented again.
+
+## 23:12
+
+Rather tired though currently, but that is how exception handling will work in
+the code. Now as for garbage collection, that is a bit complicated. I suppose
+it would be best to do some kind of simple reference usage flagging and mark
+and sweep for more detailed stuff. When an object is allocation it just gets
+an automatic implied, was used in a method mark. Now when that object is set
+to a field or inside an array of an object, it is... on another note. If a
+field is set to an object then that object gets marked with either a static or
+(forgot the word, but something with an i) flag. The word would be instance.
+The main thing though is actual classes, they will get all the marks. For
+arrays however, that will require another flag too since those are
+independent. There will also be another method flag, one associated with
+invoked as an argument. Say for example that the code generator knows that an
+object is only referenced locally and never set to any fields, it can just
+free those objects at the end if the only thing they exist as is being in the
+method and nothing was ever called with them on. That can only be done if the
+object flags remain at the method level however. The invoke flag works because
+if an object is passed in from a calling method but not set anywhere else it
+will just have the invoke flag.
+
+## 23:26
+
+At the end of methods, such inner handlers will have to be used to check the
+flags for a quick free.
+

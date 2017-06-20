@@ -1,0 +1,67 @@
+# 2014/08/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:54
+
+Played a bunch of Puyo Puyo Sun 64.
+
+## 01:05
+
+I believe when it comes to GUI time to demo something like a game, I will do
+Puyo Puyo since it is a rather nice game. I will not be making a game where
+there are four blocks in a specific pattern which fall from the top, since
+they no longer deserve any credit (due to their insanely litigious behavior).
+
+## 01:55
+
+ImplGenerator should be complete now. So the source database is created so I
+can somewhat start on the generation of packages as needed and implementing
+all of those execution paths. I still need to fully implement the parser
+however so that I can read more JSON data (non string literals are not
+implemented currently).
+
+## 08:29
+
+Before my JSR353 implementation is complete all I need is to implement the
+remaining bits of ImplParser, ImplReader, ValueInput (for parsing actual
+objects), and BaseDecoder.
+
+## 09:01
+
+Actually, what I need is an engine that can go to/from specified data formats
+for importing and exporting of JSON data in PackageInfo. Right now it is all
+very manual, extracting the name, version, and dependency information. With an
+enumeration similar to argument handling, this would make things much easier
+to maintain and will allow and easy to/from format when needed.
+
+## 09:04
+
+Because the way I am currently heading, I will be writing saving and loading
+in two places, multiple times over, which is a huge mess.
+
+## 20:43
+
+I slept much, I should get to work on the enumeration thing. This would be
+similar to ArgumentParsing. Although since it depends on the JSON code it
+should not be in common, otherwise common would pull in JSON support which
+does not need to occur.
+
+## 21:12
+
+I have a base class down, but before I should proceed I should remove a bunch
+of warnings that I have lying around.
+
+## 22:29
+
+Before I do that, I am going to have three classes that are very similar:
+ArgumentParsing, MapOptionParser, and JsonHandler. Of which ArgumentParsing is
+the most implemented and MapOptionParser is just a stub. Since they all use
+enumerations with annotations, I need to create a base class that they extend
+off which provides all of the functionality needed to promote their
+interfaces.
+

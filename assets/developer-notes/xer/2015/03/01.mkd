@@ -1,0 +1,138 @@
+# 2015/03/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:06
+
+A new month starts now. Near the end of last month I wrote a very large chunk
+of the Java byte code reading code, and now I am onto native compilation of
+the result of that. The Java code decoder is not fully implemented however as
+some of the exception handling and a few remaining byte operations are not
+implemented. However, if I ever reach those remaining operations they will be
+implemented later on. I will go back to the exception handling after writing
+of the native code when it requires such things. As for the reducing passes I
+can do those later after I get the feel of native assembly and how the
+operations are to be used.
+
+## 00:32
+
+Having bits which are not zero-based would be rather confusing, although I
+know how I can remedy such things so they are easier to use.
+
+## 01:20
+
+The fact that Java has binary constants is really nice as the CPU
+documentation uses plenty of binary, so no conversion to hex or octal is
+needed when instructions are being placed.
+
+## 02:25
+
+Would be best for software floating point and math to just have a pass which
+turns floating point (and long) math into actual method calls if any of them
+are enabled. That is it would translate any MathOp on floating point to a call
+which just returns the values as required.
+
+## 06:54
+
+Need to move the subclasses out of Assembler since they are quite large.
+
+## 07:28
+
+Having separate subclasses for operations appears to have been a good idea as
+for swizzling of register allocations I can just look through the list of
+inputs and outputs and act accordingly.
+
+## 17:15
+
+I could delegate allocation of objects to a method instead of having it being
+a primitive operation. It would simplify some things a bit, although it cannot
+use variadic arguments because that would be rather conflicting.
+
+## 17:31
+
+That would however cause a security exploit and to prevent that I would need
+to add multiple call levels just to handle things. So that should be best
+avoided.
+
+## 17:42
+
+The one major thing is garbage collection. I believe one way to do it would be
+to use reference counting for both object pointing states and also method
+pointing states. So that would require two stacks, one for primitives and one
+for objects. However that would be slower. I may need a stronger DecodedMethod
+which contains more information. The decoded stuff will have to handle garbage
+collection and so all the major work. That way, the native code assemblers
+from such operations would be as simple as possible, just allocation of
+registers and such. However for exception handling, at one point a variable
+could be in a register but it could also be in the stack for the same handler
+so there is no real way to tell. So yes a stronger DecodedMethod is required.
+For each method I will need to create zones to determine which registers are
+used along with other things. For clarity I will need the reducing pass which
+turns the stack emulation into a more clean register layout.
+
+## 17:53
+
+So yes, I need to work more on the passes, then once they are all done I can
+create a more dynamic map of the method so the native compiler is easier to
+write as it would just be native allocation and such. One thing that I will
+have to do is make the PC address of an operand changeable which means
+changing how the map works. Then if any branch targets point to an address of
+an operand they also get changed. Depends, the passes can just generate a new
+decoded method with all the changed details and that would probably be the
+easiest to do.
+
+## 18:12
+
+Perhaps drop PC addresses since those will just be in the way, when I run
+through all of the passes I will just have to reassign and reorder them all
+anyway. So this means a LinkedList of all the operations combined which may be
+in any order, where they may have jump sites and jump targets. Having such
+sites and targets will allow an operation to be removed and the jump addresses
+folded accordingly. Some operations however will usually just jump to the next
+instruction. However, unless I force control flow, or I add sections. Although
+sections would complicate things earlier. However I could add both, where
+sections start at places that jump to it. Though that would be a bit funny. If
+I add explicit jumps to targets in operations, then I can add jump targets if
+a specific condition is met rather than have a special jump targets and
+conditional jump targets.
+
+## 18:24
+
+Right now it is a hybrid of both. There are explicit next operations and then
+there are jumps over bits and jump backs to lower addresses. I could either
+make them all jumps with conditions or change the way my stuff is layout and
+remove PC addresses and use unique specifiers instead. So the operations will
+just be a giant linked list. It would look more like traditional assembly.
+Then I can remove PC indicators completely. And instead of jumping to
+instructions themselves I can branch into insertion points. Which would also
+act as a meta form. So I can keep the linear nature and any moving around of
+instructions and such would act in accordance to the barriers of insertion
+points. Insertion points could also have a state just like operands, so
+basically the insertion points are just NOPs however specially named as such.
+Insertion points would be marked by a unique ID for branches forward and back.
+I could also potentially remove registers also and instead use variables. And
+then that would be essentially single static assignment. However that would
+require rewriting a huge chunk of the Java decoder to handle such things. So
+perhaps it would be best to have the reduction pass do such things potentially
+based on the operation. So first it would reduce pointless operations that are
+the result of stack based emulation. Although moving register assignments
+around may complicate things. Logically registers are just variables anyway.
+So I can SSA them anyway so to speak. So the target I should aim for in the
+code is to use jump sites instead as a form of virtual NOP but not truly being
+a NOP in the code (it could be removed). Then make it illegal for a branch to
+jump to anything that is not a jump target.
+
+## 18:45
+
+So the purpose of this is to remove the PC address because that would require
+massive moving around just so that they stay the same. To clarify say an
+instruction needs to be added by a pass, when it gets added the entire method
+will need to be decoded just so that it can be placed inside because there
+might not even be any room for it. So LinkedList and ListIterator will be used
+for operand traversal since that is how the operand stream will be able to be
+modified easily.
+

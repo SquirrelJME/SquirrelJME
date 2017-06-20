@@ -1,0 +1,51 @@
+# 2015/06/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:39
+
+Now to continue work on my new KBF code, which the format uses a table of
+contents to describe data.
+
+## 09:46
+
+In the normal loader at least, using a seeking capability I can have the KBF
+header be at a specific offset. I would say every 512 bytes a KBF could be
+checked. This could be done up to 8 times or more in the future. This would
+permit extra bits to be at the start of a KBF file. That would say be needed
+for the kernel where the KBF could be slapped onto an ELF or PE payload.
+
+## 10:36
+
+One thing I am not going to remove is my FormJavaType stuff, along with the
+generic signature things. I worked hard on that and it reads descriptors
+rather nicely.
+
+## 11:43
+
+Decided on using sshfs so I can develop with two laptops at the same time as I
+write this code. I wonder if it will speed me up or slow me down.
+
+## 15:00
+
+Does not make much of a difference, have to move over physically to reach.
+
+## 15:41
+
+The flags for fields and methods, do not need to have table of content entries
+for them since they are really simple. However the flags differ based on the
+type of thing it is.
+
+## 20:38
+
+Feels like I am rewriting the class loading code over and over again. I would
+have to say that the Java constant pool is terrible.
+
+## 23:05
+
+For the constant pool I can have entries be just that.
+

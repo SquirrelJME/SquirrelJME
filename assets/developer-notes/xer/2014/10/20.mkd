@@ -1,0 +1,57 @@
+# 2014/10/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:30
+
+Need to figure out a good algorithm for output of characters on separate lines
+when they are too long. Perhaps a simple two variable loop through the input
+string would work.
+
+## 13:28
+
+Building a partition map of the line would in fact be the best thing to do as
+I can then just split it based on partitions and such.
+
+## 15:00
+
+What I wrote does not work it seems.
+
+## 15:04
+
+Nothing was being printed as such because I was not even using the neat
+writer, but I did find a few errors which are hopefully fixed now.
+
+## 15:18
+
+My write was never being called, but I overloaded the incorrect method so now
+that I have the right stuff it works now.
+
+## 17:52
+
+Now that I have a gigantic class library, I need to get it compiled now.
+
+## 19:27
+
+Fixing up the base classes I have extracted (prototypes only), and right now
+only a single error shows up. Most likely it is a hoax and it just stops on
+that error before other things are done.
+
+## 19:45
+
+Changed the genrtjar script to compile each package alone so things go a bit
+faster. That is faster failure but slower in total.
+
+## 21:17
+
+Now my repository it bloated with all of these new classes, but I decided on
+one commit per package to keep things separate for a bit.
+
+## 21:17
+
+219 commits in 7 minutes, must be a new record.
+

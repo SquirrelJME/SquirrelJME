@@ -1,0 +1,27 @@
+# 2015/06/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:04
+
+Soon I will be assembling, hopefully. I decided that the core compiler's
+assembler will be very basic. The one that takes human readable assembly is in
+hairball. I can write a new tokenizer, but I am just going to use
+StreamTokenzer to simplify things.
+
+## 19:42
+
+I thought about how things are to be placed in memory, but it will be very
+simple. Everything is essentially an object, including definitions that
+describe how a class is laid out. Every object will have a pointer which
+points to an instance of FormClass which describes a class. Then that would be
+followed by the identity hash code, and then all the required object
+information based on superclasses and such. So when it comes to superclasses,
+all subclasses can be aliased to a super class. Interfaces complicate things
+however, but I will have to figure that out also. Linking will have to be
+performed when code is loading, unless I have a double dereference.
+

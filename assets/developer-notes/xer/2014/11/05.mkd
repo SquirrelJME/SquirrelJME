@@ -1,0 +1,66 @@
+# 2014/11/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:32
+
+The main thing is determining the best way to represent structure data. A
+recursive linked hash map would work well, or rather a tree.
+
+## 03:11
+
+The best thing to do, is have individual classes for each attribute (since
+they are not really going to change much). However, class generation is
+complex so I will instead take the language structures which will generate
+Java code which can read an input structure (or rather "memory map" over it)
+and provide structure information from it. However, it would also have to be
+capable of recursiven natures, so that would mean that each struct is a
+specially named class with specific members inside of it. I would like the
+structures able to be modified as needed. So I should go through the attribute
+markups that I have and do some renaming to make things a bit better Java
+class name wise.
+
+## 04:35
+
+A base class which represents a view of a structure (with no getters and
+setters, but starts with a ByteBuffer, offset, and range). Then the actual
+attribute classes extend off that one for each individual attribute. Since
+there are so many attributes, for pollution reduction I will have the base
+class in file but will place all the attributes in respective subpackages.
+
+## 07:41
+
+I could always just ignore attributes and handle them specifically when needed
+during any code translation. Loading all of the class related structures and
+parsing languages would be slow anyway, as the class loading needs to be very
+fast.
+
+## 11:15
+
+Loading a class file, then running the stuff through a translator to better
+represent the class, then after that running a compiler translation on it will
+be a bit slow. Would be best to one shot it efficiently, and remove any
+dependence on the constant pool. However, it would be best to have it load
+into a generic byte code information syntax layout first, then have
+compilation run through that. But that information would have no constant pool
+stuff and can have the class fully verified and ready to go. Keeping it in an
+abstract format would help for any potential inlining and optimization.
+
+## 11:32
+
+In fact, the class information should be able to be used like a factory so
+that things are made easier. In the future, I will have to dynamically create
+classes at run-time like proxy classes and such. In that case, I can just
+create a blank ClassFormat that implements all the desired interfaces, add a
+bunch of methods that execute the proxy object, then perform native
+compilation on it. So the ClassFormat class will require a factory-like
+builder from a stream of bytes.
+
+## 20:17
+
+Well, the class file is very dependent on the constant pool.
+

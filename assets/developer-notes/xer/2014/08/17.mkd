@@ -1,0 +1,90 @@
+# 2014/08/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:18
+
+Did a bunch of work, I need a LockedCollections which is similar to
+Collections, but one where the access is locked to a specific object. Since
+PackageInfo returns the actual used lists, they are internally synchronized.
+However, the returned list would not be using the locking object. Therefor a
+LockedCollection is required so that they cannot be modified. However, it
+might be best to use LockedCollections internally. There is the Lock interface
+in the concurrent lock package, however using synchronized should be enough in
+this case.
+
+## 01:28
+
+Another class that would be handy is a checked collections class which similar
+to collections has a callback which verifies whether the associated element is
+legal for addition into the List, Map, or Set. There is already the checked
+stuff in Collections, however it is slightly weak so I instead will need one
+that operates using a callback rather than a static type. So perhaps a
+CallCheckedCollections.
+
+## 04:10
+
+All of this package code seems a bit rather paranoid, but that is a good thing
+because then values are expected to be sane usually.
+
+## 06:06
+
+To simplify operation and not constantly implement new classes, for the
+toJson() method I cheat and add it to an array, then extract that singular
+array value. It works and saves me from implementing more classes or depending
+on my only implementation.
+
+## 06:19
+
+I should add a special TODO exception that when thrown, in the constructor it
+just prints the current stack and calls a fatal System.exit(), this way they
+will never be caught and it will always be fatal. This can work to my
+advantage to implement code in the event certain exceptions are caught
+magically. This would be much safer, because currently I use InternalError, of
+which is catchable.
+
+## 07:04
+
+Code feels a bit nicer with that exception now, provided it builds OK.
+
+## 07:13
+
+Required some minor fixing, and it looks like GIJ does not support getting the
+stack trace for the current thread. That seems a bit poor however, I could
+always attempt doing it from a Throwable instead.
+
+## 08:32
+
+I will be able to start work on my compiler soon, I will need a good API
+however so that way it works well and it is not really ugly.
+
+## 12:13
+
+Made a bunch of changes today, need to figure out tomorrow the best way to
+implement RFCJsonISR (for auto-detected encoding when reading). Also feels
+like I did not change much at all. Also just beefed up the mkfossil.sh script
+to be a bit more verbose, to see which stage it is at.
+
+## 12:17
+
+Before I forget, I will need to split off the package building code so that
+automatic dependency generation could be used.
+
+## 12:34
+
+Oh wow, Hairball's Main does not even use TemplateMain.
+
+## 13:29
+
+Been cleaning and beefing up the fossil script to make more friendly and safer
+repository files (such as crippling the ability of anonymous to create tickets
+and such). I thought about setting an image for the top of the repository
+page, but I would rather not have a PNG, therefor I will instead opt for the
+data URI, it is supported on most newer browsers. Now I just need to make an
+icon of sorts. I can probably make an icon later, as I doubt I can draw one
+right now. Thought about a pixelated cat of sorts.
+

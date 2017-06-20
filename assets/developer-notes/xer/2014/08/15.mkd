@@ -1,0 +1,60 @@
+# 2014/08/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:52
+
+Appears my annotation group stuff works, I have not exactly been able to test
+it until now.
+
+## 03:43
+
+Before I forget in the future, I should also have the annotations that are
+associated with the enumeration value also attached because they could be used
+in the future.
+
+## 04:48
+
+Just realized that most of the stuff that I use such as Arrays, has been added
+in 1.6 which is not available in 1.5 at all. I could always increase the
+requirement to 1.6 however.
+
+## 05:14
+
+Need a script to use for debugging GIJ/GCJ.
+
+## 05:24
+
+Of which does not work when remote attaching at all.
+
+## 08:26
+
+Now I am back at the point I was before, a Json enum handling thing similar to
+ArgumentParsing. Of which is called JsonHandler.
+
+## 09:09
+
+No more changes to ArgumentParsing are to be required, so I shaved off about
+300 lines of code during this refactoring. It also easier to use and much less
+buggy so in the end it worked out quite well.
+
+## 12:23
+
+Need to flatten my other laptop's keyboard because it keeps popping out, so I
+have switched to my recently fixed PowerPC laptop, although it is a bit
+sluggish compared to the other laptop.
+
+## 23:19
+
+Going to change the project.json tags a bit that way it is easier to parse and
+to make it more dense. Going to turn the massive depends, suggests, etc.
+arrays into a singlular "interfaces" where that is an array with that stuff in
+it. Then I am going to "x-" prefix the unimportant stuff that is not critical
+to the core operation. That way, the JSON files are a bit cleaner than being
+messy, I will have to modify the parsing scripts though but it should be much
+easier then.
+

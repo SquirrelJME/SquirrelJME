@@ -1,0 +1,93 @@
+# 2014/07/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:11
+
+Having an enumeration outside of the JavaParser class complicates things to
+much, as there will have to be a storage class in between. Although there
+cannot be per instance enumerations, the private visibility of the outer class
+makes things much easier to perform when setting parser options. The faux
+Control class would no longer be required, simple and easier is better. This
+will work.
+
+## 03:29
+
+Basically option parsing will go through the map of options as specified
+before using the private access into the class which contains what to do
+during compilation. In this effect, I can then unify the specifics of the code
+and start work on my parser. The parser would bring me one step closer to
+actually stepping into kernel land.
+
+## 16:49
+
+I had this idea of splitting some things off the class library into packages
+that would be placed in jars and put in the ext directory, rather than
+polluting the system class path. That would also enable the classpath to be a
+bit lighter than usual. This would mean splitting off everything however, but
+I would need a build system capable of handling such things.
+
+## 17:14
+
+Doing a major move would complicate things currently, but would be more sorted
+in the end. For example there is J2ME, J2SE, J2EE. J2EE extends off J2SE and
+has all of its packages and classes. J2ME is crippled so it is not worth doing
+that. I could use the ext directory to provide standard classes already split
+up based on the package they begin in. I can also add ones for development.
+The extensions may either be turned into JARs and put into the ext directory,
+or included directly into the system class path used by the system itself.
+
+## 17:26
+
+Otherwise without this, I would get a crowded class directory and would
+require more complex annotation processing (stripping the Hairball parameters)
+and it might be harder than usual to make sure things do not use illegal
+classes and packages (such as profile1 using profile3 stuff). This would also
+make it much more modular. I can then use package descriptions which would far
+better support what something is. This will slow down my compiler work for a
+bit, but I believe it is for the better, despite the added complexities.
+Conformation would be a bit easier and I could target more systems and
+different classes of systems. Say the Nintendo 64 could get a limited form of
+the libraries and such. There are 3 profiles then there is Java EE, so there
+will be 4 directories. Actually there are 4 profiles, the 4th being the UI
+stuff that is not in compact1, compact2, or compact3. When I develop the UI
+packages, I should not entirely depend on compact2 or compact3 so that way
+they can be used. I will have to figure that out when I get to it. The kernel
+and my own development tools could actually be their own packages also. I
+could also make an app directory, which is for top level applications that are
+not intended to be part of the class library.
+
+## 18:31
+
+I need to go into this correctly before a gigantic mess is made.
+
+## 19:13
+
+Putting everything in one single top level directory is going to be a bit
+messy when there are thousands of packages possibly, so I will need to
+categorize them.
+
+## 19:34
+
+The base root package names that I will use so far will match similar standard
+names within the system.
+
+## 20:50
+
+Actually splitting all of this up into packages, just solved my future problem
+of having architecture dependent classes, since now they can be in their own
+package. Also solves service handling issues since the stuff could be packed
+in JAR files. Also, things will now be easier to build because I do not need
+complex dependency grabbing, I just need tree grafting.
+
+## 23:46
+
+I believe instead of using Java files to do projects and such, I will instead
+use JSON, which means I will have to implement JSR353 completely and make
+hairball rely on it. At least JSON is easier to read than XML, and since it is
+in its own package, it can be included or excluded if ever needed.
+

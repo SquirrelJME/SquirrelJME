@@ -1,0 +1,40 @@
+# 2015/04/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:22
+
+I can probably use MethodHandles for the constant pool reader rather than
+enumerations. Although as a result of the metadata, the class format is going
+to be a bit more relaxed. Generally though it might not cause any issues, as
+for malicious class files if the class file is incorrect it would fail to load
+anyway.
+
+## 18:09
+
+I could probably also split apart squirrel quarrel so it also benefits from
+the compilation stuff too. Then I could have just the engine and then have an
+interface to the engine. Then the run-time tests could use the game without
+requiring any AWT or Swing stuff. Then perhaps in the future it could be
+ported to JavaFX and such. When it comes to the GUI of k8, I am kind of
+thinking of putting AWT and Swing on top of JavaFX so all three look and act
+the same for the most part.
+
+## 19:52
+
+BitSet's stream() method is quite handy as before I had a specific method for
+flag mapping, but I can just use that simply without issues.
+
+## 22:00
+
+Just for the bootstrap table, I am going to pre-read members and then skip to
+the end to reach attributes for the class itself. This way I can construct the
+members so that their constant pool information has the correct specifications
+and no magical reference supplier stuff would be needed. Note that only
+methods require the constant pool stuff to be set as nothing in the fields
+needs it at all.
+

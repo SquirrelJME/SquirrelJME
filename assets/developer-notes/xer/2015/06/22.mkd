@@ -1,0 +1,55 @@
+# 2015/06/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:47
+
+Awake, hopefully some coding can get done.
+
+## 09:00
+
+For internal structures I suppose I should use class types and such, so to
+speak.
+
+## 09:30
+
+However, I am not too sure how I should declare sub structure types in Java
+code. My code is all auto-matically generated for the most part anyway so
+there is no real difference in things much.
+
+## 10:21
+
+It would be handy if hairball were to generate Java doc for packages, and
+perhaps put the class data in ZIP files and such. That would increase build
+times however. I should perhaps wait on that until I have some kind of help
+system and such.
+
+## 12:55
+
+I currently have partial code and so far I really like it. Writing to the
+structures is type safe, which is great.
+
+## 13:14
+
+Now to do busy busy real life stuff, hopefully when I return I can come back
+to writing this massive KBF code stuff.
+
+## 15:33
+
+Short break, cannot sleep so I shall code instead.
+
+## 20:07
+
+The struct processor code printing is getting a bit ugly. The stuff needs to
+be split off and made nicer to handle the structure, mutable, and immutable
+forms along with the C header stuff.
+
+## 20:50
+
+I can also probably use the annotation processor to generate an assembler
+which is argument/type safe from instructions.
+

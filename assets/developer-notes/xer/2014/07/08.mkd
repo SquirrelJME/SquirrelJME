@@ -1,0 +1,67 @@
+# 2014/07/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+I did not actually sleep, just played video games.
+
+Before I continue further I am going to make the compiler able to be
+internationalized, but I will only have the default English language as the
+only locale I write. I only speak English. For my international files, I
+originally was thinking about doing something to the lines of having it be
+"key=value" through the entire file. However that would be slow, so I would
+much prefer an actual database then use a program to inspect or add strings.
+However most databases are binary, I would prefer one to be text based in that
+there are no control characters or binary bytes except for newline. I also
+want it so keys are instantly seekable based on their hashes. The file will
+look really ugly text wise but it may work. I'd need some kind of recovery
+method in case one decides to change the layout of the file so it breaks. I
+would have to use newlines otherwise diffs would be insane when there are
+gigantic lines of text. Looks like to reduce code bloat a bit I could make my
+database accessible via the SQL interfaces, however those are in compact2 and
+the locationalization stuff is in compact1. I could just create a class which
+handles my textual database, then just port it to the JDBC system later on.
+
+Thought about a URL based file system, instead of using just files, URLs are
+used instead. Though I also want to make a tag based filesystem so I would
+have to write my own API to access such data in there. Actually, a very cool
+feature I just thought of, is compiling direct and outputting into a
+filesystem via URLs. I had previously thought of an API and server to access
+file system data so I can create filesystems from my build system to boot
+from. Now if say the compiler can directly write into it, that would be a
+bonus. Although the standard Java compiler lacks support for such a thing I
+can use a FileManager to enable that ability. For my filesystem drivers I can
+just use the Java 7 NIO file systems code and I will not even have to write my
+own ABI for accessing everything.
+
+Well services in Java are brain dead and not exactly modular, you can only
+define services in JAR files. And those jar files must be in the ext
+directory. This complicates things.
+
+As for previous for bridging file to URI based stuff I could do that with a
+custom file manager and just have the compiler take in stuff in the form of
+"//uri/(actual URI is here)". Then this way, the standard compiler could in
+fact use the URI based stuff. Personally I am thinking of just saying screw it
+with Java 5 support and just require 7 and up to build. However that would
+mean you could not build it on older implementations.
+
+I can actually support older compilers, but I need a more complex setup for
+shell scripts and such. So will need to write a hairball boot strapper of
+sorts which can build hairball, which builds everything else. So I need
+complex scripts that can handle the most broken and partially implemented
+runtimes, including my own. My own would be older versions and more compact
+versions. For this I made a new annotation called HbStandardClassDep. This
+annotation defines standard class libraries that are required in order to
+compile this. The rough builder will first check if they truly exist.
+
+So this rough builder will make it so that is horrible rather than crippling
+my build system to support older class libraries. There is a saying that goes
+something similar to "Do not break your code for a broken compiler".
+
+I am still working on the rough builder (slowly with distractions) and I am
+already getting hit by problems in GCJ. The problem passing a charset to an
+InputStreamReader to decode specific bytes it may use.
+

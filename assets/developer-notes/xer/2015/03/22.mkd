@@ -1,0 +1,98 @@
+# 2015/03/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:35
+
+And last night was not really that great, in terms of sleep. Oh well.
+
+## 10:31
+
+Due to the variadic nature of Assembler's put, referencing that will be easy,
+however the specific actual instruction bits will be a bit more tricky.
+
+## 10:37
+
+The generic code should be just saveToCall then a down step into the native
+macro set. Since even with a method it will vary how an architecture will
+reference said reference.
+
+## 11:43
+
+The DecodedMethod argument list should contain the first instance object if
+the method itself is not static. This also makes the allocator be correct if
+the method being modified is static or not, since the first register set is
+included as needed.
+
+## 12:09
+
+It might be easier if I were to have saved registers (local variables) and
+volatile ones in the register set. That way when I do exception handling in
+the future, only the local variables are saved and I do not need to worry
+about the volatile temporary ones at all. It would make it a bit easier to
+handle as a bunch of registers can be ignored as they are not truly important.
+
+## 12:21
+
+And then I have to add checking to make sure that the temporary IDs do not
+clash with non-temporaries. Although that is not that strict of a requirement.
+
+## 12:30
+
+The temporary stuff is only for exception handlers though, so it should
+probably be called unsaved instead or similar.
+
+## 12:39
+
+Then with the saved and unsaved, at least for PowerPC I can keep the saved
+registers in the same location so that I do not have to do magical stack
+reworking whenever I call an exception. However, saved values that exceed the
+register count and that are placed on the stack will cause some slow down when
+there are many of them in use. However, the optimizer can reduce that
+possibility by shuffling the values when needed. Shuffling as in a register
+that would be on the stack is instead swapped with another if in case it is
+never used at all. Or alternatively, the most lively ones could be re-ordered
+so they are in actual registers rather than the stack. Unsaved values for
+exceptions can just end up being in the "volatile" register usage set and
+ignored when an exception handler is used.
+
+## 12:44
+
+Was thinking of having the first register return value be the same as the
+first argument register, but that might be a bit nasty when used.
+
+## 12:55
+
+This means that Allocation/Allocator need to be changed so that saved
+registers are more important and stick to a single location.
+
+## 13:00
+
+I put a note for that. Another thing that I am thinking about is the return
+register and the initial register map for Java locals. The return register is
+an output register however. I notice that the getFirstUnusedRegister() I made
+specifically to use the first possible correct register for a method is a bit
+toasted. The initial state of a Java method call does not exactly match by
+genericized register state with the kind of locals Java uses. So at the start
+of a Java method I am going to have to do some decoding and moving around so
+that the input types (for long/double) are correctly mapped to the working set
+of values.
+
+## 13:07
+
+Actually, for the return register it would kind of be simpler to share the
+first argument since it will just get trashed when the calling method is
+restored anyway so there is no point in dedicating an entire register to it
+when it is only used once.
+
+## 14:25
+
+Allocator and thus Allocation need changing to support the saved and unsaved
+states as needed. But having the saved and unsaved just made handling
+exceptions much much easier. Since before I would have had to have super
+complex state moving around and that may just have been slower.
+

@@ -1,0 +1,28 @@
+# 2015/07/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:39
+
+It might be best to remove the need for SSAOptimized and instead just use
+SSAProgram to do such things. SSAOptimized would end up being exactly like
+SSAProgram except with stuff that could be useful for optimizations and such.
+
+## 13:14
+
+Will need to figure out register allocation and such.
+
+## 20:29
+
+Going to need a better way to handle all of the instructions for CPUs and all
+of the options that may vary for them. Perhaps a kind of CPU definition thing
+which is read from a file rather than stored in Java classes as a giant
+enumeration and such. Or alternatively I can have operation tables which are
+done with META-HAIRBALL which generates the giant enumeration from the encoded
+data. Doing it that way will result in it getting more static information
+rather than dynamic stuff.
+

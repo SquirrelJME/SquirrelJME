@@ -1,0 +1,41 @@
+# 2015/03/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:18
+
+It might be time to write improved JSON reading code.
+
+## 06:07
+
+Obtaining the callstack may be slow depending on the method, one thing I could
+do is create a callstack variable which contains simple information as to
+which method. It will essentially be a stack that gets pushed and popped from
+as the calls proceed. So it would contain a simple reference to a String and
+an integer for the line used. Though a line mapping would be needed for that.
+However, instead of a line mapping it can just be the internal PC location. If
+the stack trace is obtained then it can just determine the PC address based on
+said information. Although I could completely disregard line numbers. That
+would make debugging harder however. Using the PC address may be best, and if
+the stack trace is ever requested the PC address could be unmapped then. For
+the call stack, the current method would always be a bad address (-1?) and
+only filled in during jumps away. If an exception is thrown during the middle
+of a method it can be obtained anyway. Although setting to a bad address might
+not be needed at all since if it is at the top of the stack then it is known
+that it is currently being executed. One important thing to handle correctly
+is exiting of a method in a way where it acts like finally in all cases.
+
+## 14:11
+
+Clock skews mess with your sleep.
+
+## 14:13
+
+I might need a better register setup, perhaps just a map of lists. That would
+simplify the choice sets for the most part. Pretty much all of the stuff is
+duplicate code in RegisterChoices. So that might be the better plan.
+

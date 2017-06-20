@@ -1,0 +1,100 @@
+# 2015/05/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:18
+
+Most of the code brought in just requires trivial changes as identifiers and
+such has changed.
+
+## 00:29
+
+So after just fixing up the relative jump code, the only things remaining
+would be the PC landing code and the pool related stuff.
+
+## 00:39
+
+So I pretty much have gone full circle in a way. I stopped at the native code
+recompilation stuff (to actual native code in a way) and decided on cleaning
+up everything. Soon I will again reach that point with a cleaned up code base.
+
+## 00:46
+
+So of all my code bringin, there is only a single change remaining. That is
+DUP2, although I am not sure how to translate that specified code. I started
+the mass bring in an hour ago, so it took about an hour to complete. I suppose
+bringing everything in at once has resulted it this being completed faster as
+I can change many things at the same time.
+
+## 00:52
+
+I decided on using the out and in regs, and checking them for size sanity.
+
+## 00:53
+
+Now I need to handle the virtual push/pop types for stack operations.
+
+## 01:20
+
+Although I still have some TODOs, I am back at poit.
+
+## 01:22
+
+I should be able to now remove the old decompiler code.
+
+## 01:25
+
+So now I am back to register mappings, it has been awhile. I started it on the
+17th of April, so almost a month ago.
+
+## 14:08
+
+Did some more cleaning up of the vmjar tree.
+
+## 18:26
+
+I am going to require a visual program so I can see the result of
+recompilation on various input classes. Without this, I will be seeing the
+result of recompilation blind.
+
+## 18:35
+
+I would code it in swing for now since that I what know the most, and I do not
+want to learn JavaFX to write a complex utility. Eventually my plan as
+previously stated when it comes to the GUI is to have AWT, Swing, and JavaFX
+all use common code so it is reduced and so they look the same. Most likely
+AWT and Swing would be layered on top of JavaFX.
+
+## 18:59
+
+The GUI would add mappings for showing me Java source code (if it is found)
+and then showing me what the class looks like, which lines belong to which
+Java operations. Then that would flow along with native code and potential
+intermediary code that is generated from it. It would use the hairball system
+and the core compiler support system to do this. One thing that can work is
+just taking a pre-existing JAR file and then seeing how it maps out during
+code translation. Since generating correct code will be crucial and it must be
+checked for correctness. Then a remote debugging system could be attached to
+the program to determine the state of things and such. Not writing this
+debugging system would be foolish as it would be much harder to develop this
+OS as it would be guesswork and Logger debugging. It would also be best to
+have a command line version and a GUI based version. Since if I did just a GUI
+then I could not use it on my own OS until I got a GUI.
+
+## 19:10
+
+The debugger could probably do other things related to development also. So
+this would also probably mean that I will have to adjust hairball and the
+common compilation backend a bit to support using it in the way the debugger
+would like to. The debugger would also require hairball to exist so it can
+look at sources.
+
+## 19:33
+
+The debugger would also be handy if it were capable of building the kernel
+distribution then say launching it in QEMU, or attaching to another system.
+

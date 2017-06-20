@@ -1,0 +1,65 @@
+# 2015/06/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:15
+
+I would say that this new swing interface on SQ is really really nice and much
+cleaner than before. Hopefully the game logic that I write soon ends up being
+better also.
+
+## 10:20
+
+Once I can get to the attributes contained within a method I can do some
+recompilation and such. The in the middle C code will use structure data and
+such so things could be reduced a bit. However, there will have to be a
+dynamically initialized area even for ROM based system which contains some
+addressing information to describe a class. That would just be the jclass
+object inner bits however. A jclass can be initialized from a KBF and then
+Java constructor for Class be called.
+
+## 18:08
+
+Going to need some better handling of some byte related data. I am going to
+add support for internal structures which are referenced via dots and such. I
+will also need a dynamically sized window view kind of thing on ByteBuffers
+and then perhaps rewrite some structure data. One thing that would be handy
+though is automatically generating Java code from my kstructs.h file. I may
+have to change hairball to make it capable of generation though. But if I do
+that then I will not need to have a DescribedStruct creator in Java code. The
+alternative however is to use annotations and then have some kind of
+annotation processor on the data to create structure forms. Then I just need
+to generate kstructs.h when I need to use it. Putting the information in
+annotations might be easier Java wise that is and might not need much changes
+in hairball. The Java compiler already has an annotation processor though.
+With it this way, the structure information can be kept in Java and I do not
+need magical parsing or using StreamTokenizer on a header file.
+
+## 18:19
+
+As long as I can create any new number of files, I will be good. I will need
+to modify hairball to handle such things however so to speak. It will also
+definitely be much easier to build everything then. So basically this will be
+the first time I am using annotation processing. However with it, I can
+generate every single C header that is required for operation. Thinking of it
+I can do that in mpa-posix and have all of the POSIX headers be declared in
+Java source code while headers are defined for everything. That itself would
+be very interesting. If a C program is compiled and linked it will just use
+the auto-generated headers from Java code. Then there would be easier interop
+between C and Java with C code running on the JVM. So yes, this can work out
+quite well.
+
+## 18:35
+
+Also the structure stuff I define can be type safe also too.
+
+## 23:40
+
+Hairball needs to be changed so that classes and sources are differentiated
+from and that any generated sources from annotation processing are not placed
+in the JAR file.
+

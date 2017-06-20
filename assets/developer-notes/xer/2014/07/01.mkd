@@ -1,0 +1,48 @@
+# 2014/07/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+Previously for WormStore I used the class type of an enumeration instead of
+using the actual Enum values so that they are not duplicated many in memory.
+However this complicates and probably does not save much although the
+enumeration list of valid elements is only stored for each unique VClass. So
+the little loss of memory is not a grave concern since it is only used in the
+echelon system. In the real kernel classes will not use the echelon system to
+represent class information as that said information exists in the binary
+format of the converted class.
+
+Seems my WormStore code will need to be rethinked, I wish I really had access
+to default interface methods because I cannot invoke public methods that exist
+only in specific enumerations.
+
+After not thinking about it and playing Zelda instead, while I was preparing
+to make food I realized that I am over complicating things. Instead of calling
+methods in the seemingly package private inner classes, I will instead invoke
+a static class or a protected inherited class member of WormStore. I will then
+pass the RWStruct along with the Enum and the expected value. The sub
+implementation can then do whatever such as invoking hidden members of the
+enumerations. I can either do protected abstract or a public static. Protected
+abstract could work although RWStruct is not classed off the sub class so that
+cannot work. Therefor public static must be done (cannot be private or
+protected because it is invisible), the class will be checked for that method
+and use that instead for verification purposes. I will have to start each
+static method with "ws" so that calls are avoided. If a read-only WormStore is
+passed to it and it tries modifying it anyway, it will fail. _2014/07/21 --
+The following was moved from the k8 LaTeX file and placed here instead._
+_Belayed String intern()_
+
+Normally in the implementation of the virtual machine there will be a string
+pool. This string pool contains many strings, however the string pool is only
+used to reduce string usage, and in most loading cases is not used much except
+by the class loader and such. Rather than adding unique strings to the pool
+when they are created, unique values will only be done at the time of
+intern(). This means that the first intern of a string value will return the
+same reference and latern intern() of those strings will return future
+references of the first call to intern. The string pool will then contain only
+soft references of intern strings. This way they are collected if nothing ever
+references them again.
+

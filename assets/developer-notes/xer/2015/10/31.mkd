@@ -1,0 +1,49 @@
+# 2015/10/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:12
+
+Documenting my KBF file format, markdown is pretty nice. I have tended to
+avoid it because older versions of fossils which I have used do not support
+it. However, I suppose k8 will have to support displaying it and such. Perhaps
+when a web browser comes via the Swing HTML widget or JavaFX HTML widget if it
+determines that the file being displayed is markdown it can just display it
+rather than attempting to download it (unless octet-stream is specified).
+
+## 14:56
+
+I have that feeling where I want to switch my entire set of blogs to markdown
+so that they are a bit easier reading so to speak. It should be rather
+straight forward for the most part. Also I should probably document the class
+file format just so it is in the repository.
+
+## 16:46
+
+I have translated all of my blog entries into Markdown, so the file size is a
+bit smaller and my blog entries are a bit easier to read. There is however
+some lack of syntax highlighting though.
+
+## 17:30
+
+I wonder if ~~striking out~~ is supported. Appears it is not supported in
+fossil, but that does not matter much at all.
+
+## 21:42
+
+No candy at all this holiday. One thing I only which is major is that the
+markdown files are much lighter compared to HTML.
+
+## 22:09
+
+A little bit more than 400 commits this month, so I suppose not that bad.
+
+## 23:15
+
+The DynaRecConfig could use CPU features and bugs. The question is though, do
+I call it CPUFeatureBug or CPUBugFeature?
+

@@ -1,0 +1,26 @@
+# 2015/07/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:48
+
+The following code: ` super(__mi.toString(),
+Optional.<DescriptorField>ofNullable(
+__mt.getReturnValue()).<Type>map(Type::of).get(), __mt.getArguments().
+stream().<Type>map(Type::of).toArray(Type[]::new)); ` Crashes the Java
+compiler. Will need to work around it.
+
+## 14:04
+
+Well that code snippet has an error in it, but the compiler could not detect
+such things. I suppose because the super class at the time only had its
+default constructor.
+
+## 22:59
+
+Very soon assembly bits will be generated.
+

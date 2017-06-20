@@ -1,0 +1,41 @@
+# 2014/08/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:33
+
+Now begins work on the compiler hopefully.
+
+## 08:34
+
+The closing of filtered channels and such is a bit complex and I am over
+complicating things. UnitChannel can just wrap some inner channel which could
+be anything.
+
+## 13:09
+
+By keeping the cache of "fauxinfo" project file information around, I should
+be capable of building much faster because I do not need to regenerate the
+JSONs every single time, only when they actually change.
+
+## 13:17
+
+I will have to beef up my scripts some to handle this better, and make
+building a bit easier.
+
+## 13:33
+
+Now I can build with the following command:
+
+    
+    
+    ~/k8/other/qbuild.sh -clearbootjars -clearhost | less
+    
+
+And it is much faster too, no more rebuilding all of those JSON files just to
+recompile a bunch of code.
+

@@ -1,0 +1,126 @@
+# 2014/07/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:17
+
+I had this idea for my compiler to machine code (which would also work
+decompiling). I will have a map of core instructions and what they mean in my
+abstract language which is used by compilation. When generating machine code
+the language will be matched depending on the functions. It will have to
+handle purely stack based and purely register based instruction sets along
+with those in the middle. It would be quite effective, yes. It might be a bit
+slow with brute forcing but a sort of map could be utilized with this
+information. However, it would be very possible to just describe how an
+instruction set works and have the code target that than writing specialized
+optimizers for the specific sets, or rewriting the parsing encoder stuff to be
+highly abstract and generic. Rather than write the outputter multiple times, I
+would then only have to write it once. Doing it once would save me much time
+in the future. I could theoretically support a new instruction with minor
+testing, by writing in all that logic in place. Of course writing in that
+logic will take quite some time as some instruction sets are very complex. I
+may need to write different "understanders" for each instruction set. However,
+I could see this being done with varying systems.
+
+## 02:55
+
+Looking at my location code, my existing Tuple is not going to work because it
+lacks the needed stuff in values, what there needs to be is an alternative key
+that is the type and the file, and have the value side be the mode and units.
+
+## 03:25
+
+Another flaw in my previous design, open modes should be handled by the Unit
+and not the UnitLocator. Which means the UnitLocator loses the open mode and
+just returns any old unit. Input would fall through, but output would be first
+shot.
+
+## 03:30
+
+Actually what UnitLocator needs is not a mode but one that specifies what to
+do with all the beacons. And that should really go in Beacon since that does
+most of the dirty work while UnitLocator just groups up all the beacons into a
+single group.
+
+## 06:18
+
+After some thinking, the Unit mode is pretty pointless because Units may just
+open direct input and output streams, where the output stream has the
+overwrite mode and such.
+
+## 06:58
+
+For assembled machine output, the compiler will have magical tables of
+mappings between abstract logic and machine code instructions. So it can
+operate in any direction. Initially the abstract language will be translated
+to an infinite register machine, then profiled down to the target. So if the
+target only has 2 registers, then it would move much of that work to the
+stack.
+
+## 07:37
+
+My Java parser is going to need checkers for the printf formatting to make
+sure those strings are sane.
+
+## 08:24
+
+I am rather tired, for my Unit to correctly handle semi-abstract stages and
+for knowing whether something is in input or output, Unit will have to have
+protected inner classes for InputStream and OutputStream. Then the subclassed
+Units which are implemented in the Beacon will need to have the specified
+streams also set.
+
+## 16:17
+
+Instead of extended subclasses, I could just use the filter streams to handle
+everything, then things may remain private and such. There would be no need to
+extend a subclass, so this would be the better result.
+
+## 17:49
+
+Realized that there would be a strange contention between using multiple
+beacons in a locator and using EXISTS or MISSING for output. Prevent this
+could be rather complex, but I should probably not bother with it much. Seems
+I am stuck on how to implement the ALWAYS, EXISTS, and MISSING for the memory
+beacon although this should be quite simple.
+
+## 18:21
+
+I came to a realization that the initial memory beacon is entirely blank, so
+if internalGet() is called ever then it does not exist. Therefor any attempt
+to use EXISTS will fail anyway.
+
+## 18:49
+
+My MemoryBeacon implementation is complete and appears to work well. I should
+make Units able to be closed so that memory may be regained if ever needed.
+
+## 19:16
+
+Beacons and Units are very intertwined. Currently the super classes exist as
+separate classes while extended classes have the Units as an inner class.
+Perhaps Beacon should make Unit an inner class instead that requires
+extending.
+
+## 20:54
+
+The hacks to the hairball gunk that I have now currently does not work and
+breaks other things, I will need to revert that. However, once my compiler is
+done I can get rid of it and use something far greater to run project files
+with.
+
+## 21:09
+
+Now that I have at least a base for reading and writing in a memory based file
+structure (the MemoryBeacon code), I can start the initial parsing of Java
+source code.
+
+## 22:50
+
+What I need to do now is work on an option parser class which handles the map
+of options.
+

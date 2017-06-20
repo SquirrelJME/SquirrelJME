@@ -1,0 +1,49 @@
+# 2015/05/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:19
+
+Been busy.
+
+## 09:44
+
+For some reason the decompiler has not been called and now it is building the
+kernel and the class library.
+
+## 10:01
+
+Appears that the MergeJar files are a bit missing when it comes to things.
+Also, my build failed as I accidently ejected a CD-ROM so there must be some
+kind of timing bug with regards to filesystems.
+
+## 10:05
+
+Looks like my old profile check is in there when there were merged trees (the
+filter that exists in KernelBuilder). So that cannot exist because every
+profile is pretty much built. In fact the include and exclude system is
+pointless now that everything has been split apart and modularized.
+
+## 10:56
+
+So back to reworking the decompiler code, need to add in the handling stuff
+and such. I did most of it, so it is not needed as much.
+
+## 13:51
+
+I should cover the Java 8 limited license grant of the specification in coded
+form and such.
+
+## 15:28
+
+And I have, licenses always take the most time to handle when it comes to
+programming.
+
+## 17:12
+
+Need to get back to handling byte codes.
+

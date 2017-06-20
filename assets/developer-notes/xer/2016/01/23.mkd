@@ -1,0 +1,91 @@
+# 2016/01/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:25
+
+I wake up this morning and there is about 2 or more feet of snow. There is just
+tons of it. When this all melts that will be tons and tons of water. I just
+hope the roof does not collapse with all of this snow, that would be bad.
+
+## 11:03
+
+Not sure about the URLClassLoader failing. I do know that it can fail if the
+file is changed (hairball.ja_) but I do not believe it is. If I make it
+read-only then it oddly triggers an out of date message. And even if it is
+read-only it still cannot find DeletePathComparator. This class does exist in
+the JAR so I do not see how it is failing. Going to see if this occurs with
+my second laptop, which it should. And it does. Going to try it in Wine now.
+
+## 11:09
+
+This happened after my switch from URLClassLoader to my own custom class loader
+using PackageContents. However hairball is loaded from the third stage which
+uses a URLClassLoader and then sets the thread context classloader to that
+URLClassLoader. However, running in Windows, the URI scheme I use for building
+things does not work because it believes there is a relative path used. I
+believe for the file URI I should derive it from the path. So instead of having
+a package name, I instead have a URI.
+
+## 14:27
+
+Slight change to the URIs make them work in Wine.
+
+	package+path:/Z:/home/steven/k8/vmjar/kernel-drconf/#net/multiphasicapps/k8
+	/drconf/CPUBugFeature.java
+
+which is good.
+
+## 14:44
+
+Still not sure what is causing this classpath problem though.
+
+## 14:46
+
+Using strace and it appears that stat is being called for every single file in
+my source repository. This may be why start time takes quite awhile.
+
+## 14:49
+
+I believe I know the cause and should have fixed it. I was checking the dates
+of all the packages regardless if there were collisions or not. I only want to
+check the dates if there are multiple of the same binary/source.
+
+## 15:08
+
+Actually, I believe it may be caused by the walk of file contents for Path
+based packages because it visits the entire tree. I can actually instead have
+a semi-lazy on request going through everything which should hopefully help
+some things, potentially.
+
+## 15:21
+
+Completely frozen on this, and I have no idea why it does not work.
+
+## 18:44
+
+Ok so, if I were to try loading the class is not working and load it earlier it
+loads perfectly fine.
+
+## 18:47
+
+Ok so it definitely stops working AFTER I set a new ContextClassLoader. I need
+to do some more reading on the full thing of this. Does this class loader
+become the "system" class loader? Based on some short reading, they provide
+a "back-door" of sorts. So setting the class loader might not be needed at all.
+
+## 18:50
+
+So I am going to see how this works when NOT setting it. And not setting it
+still causes the same issues.
+
+## 18:57
+
+I was actually using `ClassLoader.loadClass()` in my class loader and not
+`Class.forName()`. This might fix it, I hope. I also `if false`d out the
+setting of context class loaders too. And even then it still fails.
+

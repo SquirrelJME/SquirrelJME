@@ -1,0 +1,30 @@
+# 2015/01/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 05:20
+
+Going to be much work for a small script.
+
+## 07:19
+
+I could always just use a WINE install on another system since that must have
+a working matching CMD interpreter for compatibility reasons.
+
+## 09:20
+
+Windows CMD scripts are horrendous compared to UNIX shell scripts.
+
+## 13:01
+
+Not sure if the FauxClassLoader family will be worth it, it will just add
+another level of indirection the loading of classes and such.
+
+## 13:11
+
+I believe I will take a streams based approach to SSA translation.
+

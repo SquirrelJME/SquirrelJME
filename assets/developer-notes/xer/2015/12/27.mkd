@@ -1,0 +1,33 @@
+# 2015/12/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:06
+
+Chinese is tonal, which means the way you say it affect what you mean. The
+second tone which a forward tick (think of , above the letter) is like the tone
+for questions. The third tone, which is a 'v' shape is kind of like a surprise
+kind of thing, like how some could say "what?" but starting low and such.
+
+## 01:25
+
+So the tonal bits completely change the meaning. I may have mentioned this
+but I also got a book on reading and writing. I suppose first I should learn to
+speak it because the read/write is just most of the character set, a few
+thousand characters.
+
+## 01:36
+
+The good thing though is the order is subject-verb-object, compared to others
+such as Japanese which is subject-object-verb. This means I will have an easier
+time translating because I do not have to flip words around.
+
+## 10:28
+
+I can use annotations and such to show the order of inheritence of specifiers
+and such.
+

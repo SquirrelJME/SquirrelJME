@@ -1,0 +1,45 @@
+# 2015/01/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:05
+
+I should make the PackageManager synchronized using special lists and such.
+
+## 04:46
+
+Using JsonValue would be a bit cumbersome, most string values are all strings
+anyway for the most part. In the future numbers can be handled by just
+converting them when needed.
+
+## 18:45
+
+I will need to handle existing but uninstalled JAR files in the binary area,
+so I would have to assume do something such as renaming to determine if it is
+installed or not. Perhaps "jar" for installed and "not" for not installed
+since that way binary packages can be toggled rather than redownloaded from
+some place. And on another point, I can move onto the building of packages if
+they are not installed and dynamically load new JARs at run-time. The kernel
+will build and install the k8-dynarec package so it may be used. Perhaps a
+better name would be "ja_" for uninstalled packages.
+
+## 20:23
+
+A Result class would be better package find results rather than returning the
+map that is directly used, then at least more information can be stored.
+
+## 23:26
+
+Although possibly handy, having multiple package lists and binaries able to be
+specified complicates things. Sources are fine however. Although having
+multiple of binaries and sources would allow for read-only change ups the
+package list could be modified in a way and changed globally so it uses
+another list instead which is on a writeable medium. There are already user
+packages which may be installed, and the user storage would most likely be on
+an area that can be written to. So if a user desires a specific piece of
+software they can just do it that way.
+

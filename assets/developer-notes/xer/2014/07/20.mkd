@@ -1,0 +1,57 @@
+# 2014/07/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:33
+
+Had a bunch of sleep, hopefully I can get back to work. What I need is
+something that can generate jobs which create compile tasks or build tasks,
+rather than having all of this possibly duplicate code for parsing options and
+such. Original plan was to use Taskline and friends to create specialized
+subtasks for the builder or compiler, but that is rather complicated, I will
+use something far simpler for the running of tasks. With Tasklets it will be
+possible to bridge completely different systems to depend on each other and
+unify them.
+
+## 12:06
+
+I have this feeling that all the task code I am writing is far too complex
+than it should be and there is a much simpler solution to do what I need.
+
+## 12:28
+
+What I need instead is instead of classes such as CoreCompiler and
+CoreHairball being task masters, I need to have them be individual tasks which
+may be intertwined with others. I will also need a common state set for those
+task sets. Then I can have a single task manager that runs all of the
+specified tasks and which may perform threaded operation between them. If a
+task being executed requires another object to exist, it can wait until that
+object is obtained. Work can then go on in other threads while the wait is
+happening. Bridging of specific subtasks could still be done if needed, but in
+my case it may never be needed.
+
+## 17:25
+
+For generation of tasks I will keep it simple, for specific compilation or
+building there will be easy generators or complex generators. The easy
+generators will use command line options while the complex ones will require
+purely manual task building.
+
+## 21:54
+
+Need to figure out the best way to get into the tasks for hairball to work.
+
+## 23:02
+
+For compilation tasks, some files will require other classes to exist on the
+file manager first. However, that might not be possible because those files
+could be missing or not compiled yet. So I will need some kind of tasked
+dependency thing to handle the potential cases of such files not being
+compiled yet. It could go through the UnitLocator but I would rather have it
+go through the TaskManager. When a compiler task is created it could set a peg
+for the specified file.
+

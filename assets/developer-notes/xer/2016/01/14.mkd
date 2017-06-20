@@ -1,0 +1,106 @@
+# 2016/01/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:48
+
+Time to do the refactor. First thing to do I say would be to cache the binary
+and source contents based on dates.
+
+## 09:00
+
+Ok, so using a cache for PackageContents did not take very long.
+
+## 09:01
+
+I can also probably change how PackageInfo is done and lazily cache that too
+because package information might only be used once before it is redone. The
+information on the actual information stored in the packages does not need to
+be in memory at all times and with the build process is only used a few times.
+
+## 09:05
+
+However, that would have to wait until after PackageContents is refactored
+because I can then use that instead.
+
+## 09:15
+
+I can also remove the hardcoded requirement of forcing the source to always
+be in a directory, so that now it can be in a ZIP so to speak, at least for
+getting package contents. If it is a file then it is treated as a ZIP,
+otherwise it is treated as a directory.
+
+## 12:32
+
+I can also make PackageInfo cached so that the JSON data does not have to
+be loaded at all times. Then after this I suppose I will streamline KBF
+writing. Then once KBFs are written- well I suppose I should make the CPU
+and machine configurations cached and then move onto removing the need for
+inherited `ArchitectureData` with services and instead just have it all in a
+base architecture data package where the packages using it (for example
+PowerPC) will just contain the manifests which I already have. I would however
+have to dump the Java stuff, however I must prepare to eat now.
+
+## 13:11
+
+And I ate. So I will continue refactoring. Now I will make PackageInfo cached.
+However since PackageStatus uses it, I will need a kind of bind or similar on
+the package contents.
+
+## 13:18
+
+Then using these changes I can support source code in the source path in the
+form of ZIP files.
+
+## 13:27
+
+This will also reduce duplicate code and such.
+
+## 13:29
+
+This also removes the need for binary and source directories, however the
+source directory may be read only so cannot remove that. However searching can
+be done in both locations.
+
+## 14:02
+
+The code looks much better and easier to read too.
+
+## 14:06
+
+And now that refactor is done, just going to build every package to get to
+where I am at to make sure it is correct and it works. Then I have to check it
+in Wine to make sure it works also. These new changes are much better because
+there is potential for less memory to be used now because the `PackageInfo` is
+now on demand. The unification of having sources and binaries in the same
+potential locations also makes things easier to use.
+
+## 14:14
+
+And it works.
+
+## 15:50
+
+I actually need reference counting for the package contents so that I do not
+accidently close it while it is being read since the contents are shared
+between multiple threads potentially.
+
+## 16:37
+
+So now to move into streamlined KBF file output, then after that removing
+the gigantic instruction enumerations so only databases are used instead.
+
+## 16:47
+
+Using `AutoCloseable` on the KBF to write data and then finish with the table
+of contents at the end can work out nicely. The table of contents must always
+be written last so this can help ensure that it is actually written.
+
+## 17:55
+
+Well my refactor still works in Wine.
+

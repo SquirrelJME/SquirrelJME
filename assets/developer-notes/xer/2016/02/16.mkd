@@ -1,0 +1,40 @@
+# 2016/02/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:21
+
+I can have ninjas that can climb walls and throw daggers at you in the later
+level. Then as a joke they can scream "Sodoku!" and throw a book at you which
+does much damage but does not go very far at all.
+
+## 10:28
+
+Looks like Vulkan was finally released today, this will be nice.
+
+## 13:15
+
+I need an efficient means for reading and writing field bit data.
+
+## 17:28
+
+Actually what I can have is a bit based `BinaryBlob` which handles the
+positioning and program stuff via actual bits rather than bytes. Then I can
+remove the restriction on instruction information being limited to byte sizes.
+If there are any 4-bit instruction sets for example, they could then be
+supported due to the potential of it being at the bit level. Then handling
+FieldValue will be a bit easier since I can use `BitRange` get with potential
+mutation.
+
+## 19:25
+
+Appears ReactOS 0.4.0 has been released, I shall investigate it.
+
+## 19:53
+
+Sadly it BSODs in QEMU.
+

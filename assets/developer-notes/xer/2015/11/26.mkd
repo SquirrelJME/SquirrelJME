@@ -1,0 +1,219 @@
+# 2015/11/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:33
+
+Going to attempt drawing again.
+
+## 07:21
+
+Somehow I am awake early, but I might just sleep again.
+
+## 07:44
+
+Squirrel Quarrel could probably use some refactoring.
+
+## 09:26
+
+Thinking about it, I wonder if method TOCs work with methods. For static it
+works, however for instance methods probably not so much. For that I would
+have to do something similar then to what I do with instance fields which
+is relative from the object base. So for instance fields I must load the
+pointer first from memory before it is invoked.
+
+## 09:46
+
+One thing is the efficent handling of interface methods.
+
+## 11:00
+
+I would need some kind of hash lookup table that is simple to use. I can
+probably used a fixed size hash table and then on collision just use a kind
+of dispatch kind of thing. Since implementation of interfaces is very static
+each object can just point to a table of interface data for a specific class,
+the class that it is. So this means an extra field in the object data info.
+
+## 11:19
+
+So I am going to need a new reference type, one which when given an interface
+gives the offset its interface table will be at in the Class object for a
+given instance.
+
+## 11:24
+
+I will need to do a kind of class birthday thing based on all the classes in
+the entire library to determine the number of collisions that exist. Then take
+that to only include interfaces.
+
+## 11:39
+
+And the results are in:
+
+	Of 3912, 0 are shared, 3912 are unique.
+
+So even with all classes they are unique.
+
+## 11:47
+
+Then with all classes in my library:
+
+	Of 4847, 0 are shared, 4847 are unique.
+
+So with more with potential sharing they are still unique. So what if I mask
+the set of input hashcodes, I wonder then how many matches there will be. This
+is to determine an optimal mask so to speak. Perhaps just an AND of the hash
+code. So this means there would potentially be more collisions because of this.
+
+## 11:57
+
+And the results are in:
+
+	Mask        0x0 ( 0): s 4847 + u    0 = t 4847
+	Mask        0x1 ( 1): s 4847 + u    0 = t 4847
+	Mask        0x3 ( 2): s 4847 + u    0 = t 4847
+	Mask        0x7 ( 3): s 4847 + u    0 = t 4847
+	Mask        0xf ( 4): s 4847 + u    0 = t 4847
+	Mask       0x1f ( 5): s 4847 + u    0 = t 4847
+	Mask       0x3f ( 6): s 4847 + u    0 = t 4847
+	Mask       0x7f ( 7): s 4847 + u    0 = t 4847
+	Mask       0xff ( 8): s 4847 + u    0 = t 4847
+	Mask      0x1ff ( 9): s 4846 + u    1 = t 4847
+	Mask      0x3ff (10): s 4800 + u   47 = t 4847
+	Mask      0x7ff (11): s 4381 + u  466 = t 4847
+	Mask      0xfff (12): s 3411 + u 1436 = t 4847
+	Mask     0x1fff (13): s 2226 + u 2621 = t 4847
+	Mask     0x3fff (14): s 1304 + u 3543 = t 4847
+	Mask     0x7fff (15): s  684 + u 4163 = t 4847
+	Mask     0xffff (16): s  370 + u 4477 = t 4847
+	Mask    0x1ffff (17): s  181 + u 4666 = t 4847
+	Mask    0x3ffff (18): s   84 + u 4763 = t 4847
+	Mask    0x7ffff (19): s   48 + u 4799 = t 4847
+	Mask    0xfffff (20): s   20 + u 4827 = t 4847
+	Mask   0x1fffff (21): s   12 + u 4835 = t 4847
+	Mask   0x3fffff (22): s    4 + u 4843 = t 4847
+	Mask   0x7fffff (23): s    4 + u 4843 = t 4847
+	Mask   0xffffff (24): s    4 + u 4843 = t 4847
+	Mask  0x1ffffff (25): s    0 + u 4847 = t 4847
+	Mask  0x3ffffff (26): s    0 + u 4847 = t 4847
+	Mask  0x7ffffff (27): s    0 + u 4847 = t 4847
+	Mask  0xfffffff (28): s    0 + u 4847 = t 4847
+	Mask 0x1fffffff (29): s    0 + u 4847 = t 4847
+	Mask 0x3fffffff (30): s    0 + u 4847 = t 4847
+	Mask 0x7fffffff (31): s    0 + u 4847 = t 4847
+
+So this means with every single class that is around, I would need an area that
+is 25-bits long to reduce lots of collisions. And that would be a very large
+lookup table.
+
+Note that these are just by the class names.
+
+## 12:19
+
+I believe just 64 should be good enough. I suppose I shall also use a shift
+down by a bit so the next character is included.
+
+## 12:33
+
+That might not matter much though.
+
+## 12:58
+
+Not doing the shift and using a mask of 64 gives:
+
+	Mask       0x3f ( 6,         63): s 4847 + u    0 = t 4847
+	0x00000000: *******************************.........   80
+	0x00000001: *************************...............   64
+	0x00000002: ********************************........   82
+	0x00000003: **********************************......   87
+	0x00000004: ****************************............   72
+	0x00000005: *****************************...........   75
+	0x00000006: ***********************.................   59
+	0x00000007: ******************************..........   77
+	0x00000008: ***************************.............   70
+	0x00000009: **************************..............   67
+	0x0000000a: *******************************.........   80
+	0x0000000b: ************************................   62
+	0x0000000c: ****************************............   73
+	0x0000000d: ***************************.............   70
+	0x0000000e: ******************************..........   79
+	0x0000000f: *****************************...........   75
+	0x00000010: ****************************............   73
+	0x00000011: *******************************.........   80
+	0x00000012: ********************************........   84
+	0x00000013: ***************************.............   71
+	0x00000014: **********************************......   88
+	0x00000015: *****************************...........   75
+	0x00000016: ***********************************.....   91
+	0x00000017: ******************************..........   79
+	0x00000018: *********************************.......   86
+	0x00000019: ***************************.............   71
+	0x0000001a: *************************...............   65
+	0x0000001b: ***********************************.....   90
+	0x0000001c: **************************..............   68
+	0x0000001d: ***********************.................   59
+	0x0000001e: ***************************.............   69
+	0x0000001f: *********************...................   55
+	0x00000020: *****************************...........   75
+	0x00000021: ***********************.................   61
+	0x00000022: ************************................   62
+	0x00000023: ******************************..........   78
+	0x00000024: *******************************.........   80
+	0x00000025: **************************..............   67
+	0x00000026: *********************************.......   86
+	0x00000027: ******************************..........   78
+	0x00000028: ******************************..........   78
+	0x00000029: *****************************...........   74
+	0x0000002a: ****************************............   72
+	0x0000002b: ***************************.............   69
+	0x0000002c: ************************................   63
+	0x0000002d: **********************************......   87
+	0x0000002e: ******************************..........   77
+	0x0000002f: *****************************...........   74
+	0x00000030: ********************************........   82
+	0x00000031: ********************************........   84
+	0x00000032: ********************************........   84
+	0x00000033: *************************...............   65
+	0x00000034: ***********************************.....   91
+	0x00000035: ********************************........   82
+	0x00000036: ****************************************  102
+	0x00000037: *****************************...........   74
+	0x00000038: *****************************...........   74
+	0x00000039: **********************************......   87
+	0x0000003a: *************************...............   66
+	0x0000003b: *******************************.........   80
+	0x0000003c: ***********************************.....   91
+	0x0000003d: ****************************............   73
+	0x0000003e: ********************************........   84
+	0x0000003f: ***************************.............   71
+
+The collisions seem rather small with the entire class library set and quite
+even. In the general case there will probably be very few collisions at runtime
+when it comes to interfaces. Most classes would generally be unique.
+
+If there are any collisions then there would just have to be a bridge which
+calls the right method.
+
+## 17:38
+
+Thanksgiving was rather delicious. There was the following:
+
+ * Turkey
+ * Gravy
+ * Au Gratin Potatoes
+ * Mashed Potatoes
+ * Carrots
+ * Peas
+ * Corn
+ * Bread
+
+And now I am satiated.
+
+## 21:02
+
+Was very tired so I went to sleep.
+

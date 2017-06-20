@@ -1,0 +1,31 @@
+# 2015/10/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:16
+
+POIT is going to much simpler to code, however less optimized. I suppose at a
+minimum I can do a sort of mini stack caching thing so a few pointless move
+operations are removed. Depends though.
+
+## 15:19
+
+Somehow my recompilation threads have potentially dead-locked. Using two POIT
+threads, the JVM just sits there using no CPU.
+
+## 15:27
+
+Looks like a dead-lock in bm.getFlags().
+
+## 15:48
+
+Appears that the deadlock is in net.multiphasicapps.jdd.__YMap__.of
+(__YMap__.java:98). I especially make a note of it saying "Might be deadlock
+prone, during long calculations". Turns out I was correct in my assumption.
+The type descriptor decode code is a bit ugly however. I could make a better
+cache system that is not so deadlocky.
+

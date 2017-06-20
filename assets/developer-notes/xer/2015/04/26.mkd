@@ -1,0 +1,103 @@
+# 2015/04/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:15
+
+Project's birthday today, but I am feeling a bit tired still from all the
+stuff I did yesterday. So might not be able to work on this today at all. I
+can run gitstats on this though so see how it looks after a year. That will
+take awhile, to convert and then run the program on it. In the mean time I can
+write down some notes. After a year I still do not have a bootable OS, however
+I have a partial compilation system and such. If I did not do any major
+cleaning I would probably have been generating machine code by now. So the
+stat generation will take a bit. The one major thing I like in recent times is
+the fixing of the code and moving it around to be more modular and cleaner.
+Although I thought I would be rewriting the bulk of NARF I ended up not really
+doing it, just patching out the bad things. I got rid of vmjrt which I really
+disliked. The new way of doing things is much better. In reality I have the
+k8.pro files. Kind of think of it, the only reason I had them was so I can
+tell which parts of the runtime in vmjrt are under each profile. However the
+completion stuff counts of the files to exist and contain valid JSON. I could
+really just infer the package level based on the contents of the run-time and
+such. So if it is java-library-3 then the class count is known and such.
+
+## 01:30
+
+Stat generation completed. Like I have noticed before my activity per week
+rises and then dips. The last moving of vmjrt to vmjar stuff has considerably
+cause a large spike in commits. I believe the hour of day totals completely
+shows my sporadic sleep cyckle. But those automatic commits really increase
+the totals so that information is a bit lost. However in retrospect it does
+not matter much as it is activity. Splitting up between 200 commits is much
+better than doing it in one giant commit since it is in smaller portions so it
+is easier to update and patch. I did not make much commits during December and
+the upcoming month of May. May was the start of the project but December was a
+slow time. So far my commit total is 37% for 2015 compared to 63% for 2014.
+2014 had more months so far but for the most part has only 7 months of work.
+2015 should bring more commits. If I were to make the same amount of commits
+as so far this year and as last year, then I should land on about 4400 commits
+during 2015. Doing the vmjrt moving as completely increase the total number of
+lines since the moves are considered single files. It would have been better
+(but slower) if it were done on unique files based on their sums. My mass
+commits do cause large spikes in the data. With my total commits and their
+massive jumps, I commit less than the linear average. Removing mass commits
+and drawing a linear line from start to the end. I exceeds my average commit
+level line for 5 months. Then about 3 months of below average (start of 2015).
+March to April was above. April to present is below. So not too bad.
+
+## 17:17
+
+I can remove the k8.pro files which are not in the library sources though.
+
+## 17:33
+
+I believe for SQ instead of doing stuff like BAMs, I will use floating point
+values as that can simplify things albiet it will be slightly slower on
+systems without an FPU. Since this is a game and ulps will matter, StrictMath
+must be used. I would probably also split it to have an engine and a front end
+which plays the game along with separated game data. The existing data that is
+stored in the enumeration of unit information could just instead be placed
+into JSON files instead. That way it will be easier to make mods which use
+different information on units for example.
+
+## 20:58
+
+My register moving stuff is incorrect, I need to actually move the registers
+to local positions rather than just on long/double but to do that I only need
+to change very little.
+
+## 21:58
+
+Just yanking in the old code with all of the global changes would just be very
+ugly so I am going to go through it and rework most of it so it is more easily
+handled and not as messy.
+
+## 22:12
+
+Although I wanted to avoid rewriting the bulk of the Java decompilation code,
+the technical debt would have haunted me because I knew it was very bad.
+
+## 22:28
+
+Although the run-time and class format can handle private interface methods
+which are not static, the compiler fails on them. Java 9 will enable such
+things.
+
+## 23:44
+
+The difference between this time and last time I had signature is that this
+time there is differentiation between the differing signature types. Before I
+had some random guess what it is which was horrible, now it is either just
+class, field, or method signatures.
+
+## 23:52
+
+Oops, I named my class signature "Class", that will cause some trouble. I
+suppose Type will work instead. Well that will not since there are type
+arguments and such. Maybe just ClassType will work.
+

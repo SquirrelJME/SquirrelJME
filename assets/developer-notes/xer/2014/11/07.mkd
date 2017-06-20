@@ -1,0 +1,184 @@
+# 2014/11/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:27
+
+Thinking about it, I will do this. First the classes will be translated to a
+nice form that is easier to translate (class metrics and such). After that
+they can either be dumped directly to KBF or other things for special kernel
+usage. For the special usage, magical stuff will be activated and made so that
+it works. I figure for my kernel design there will be a core hypervisor and
+the kernel will just be another hypervisor. The core hypervisor will do
+whatever it wants so when a sub-process such as the kernel requests some
+memory it will give it freely. However the core hypervisor will be quite
+limited in that it will lack support for filesystems and such, but it will
+permit access to whatever runs below it to system resources. So the core
+hypervisor will have less system calls in the IPC, very basic stuff. The
+kernel will handle threading and can control the CPU via the core hypervisor.
+The core hypervisor will need process and thread management in it however, so
+it knows where to direct IPC calls made between userspace processes and
+kernels. So when a kernel spawns a new subprocess it will own that. A
+subkernel running on the core will not have the capability to kill another
+kernel on the same level, but could kill any subprocess or thread that it owns
+(the kernel is a process). The core will have simple process management and
+can slice kernels time wise, where the kernel will have to schedule itself to
+run or other tasks. So multiple kernels can schedule their tasks at once.
+However a kernel running below a kernel (in a virtual machine) would be
+incapable of forcing scheduling of tasks so that it has less control (it could
+kill them and change their properties but it could not force a subprocess to
+be run ahead of a parent or sibling process). However, the kernel can just
+allocate slices based on what is runnable. So say if two threads need to be
+run and another is sleeping, the kernel can just requst that a slice be given
+to those two threads.
+
+## 03:37
+
+But back to the magic, the magic stuff allows stranger and more dangerous
+transformations of Java code such as enabling direct register access and such.
+Only the core hypervisor will be compiled with this in mind, the kernel will
+not be and will instead rely on the core hypervisor to manage maps and such.
+So when the kernel wants to map some memory for a process (perhaps for a
+memory mapped file) it can just request from the hypervisor to allocate (but
+not to fill) a virtual page for the specified process. Then when a page fault
+is performed on it, things happen. This means that creation of direct
+ByteBuffers will be handled by the core hypervisor (if it allows making one)
+and the objects will be gifted or made visible to a process that requested it.
+If the process dies or garbage collects the direct byte buffer then it is
+removed. Normal non-direct ByteBuffers are always backed by an array anyway so
+when those are created it is just a new byte array. Direct byte buffers are a
+window (managed by the core hypervisor, it creates this object) to real
+memory. Direct byte buffers are required to be initialized to zero however a
+kernel could request a direct buffer that does not clear its contents. If any
+clearing is specified it will not be done until the buffer is actually
+accessed (that is it page faults), and a direct byte buffer might be split on
+page boundaries of which they might be allocated and others might not be. The
+direct byte buffer would then need an owner which manages its contents and
+paging status and which thread/process triggered it. So if it is mapped to a
+file, then the process(es) accessing it will block until the kernel signals a
+ready. Data from a file will be read somewhere into that memory region then
+the page will be activated to that freshly allocated region for the subprocess
+and it will be resumed.
+
+## 04:55
+
+What I need to do is figure out the format of KBF files, I did make a giant
+map before but that would be insufficient to handle all the new stuff in the
+class file and everything in it (I did not know about a bunch of the stuff I
+know now then). I will need it to contain annotations, but the main thing
+would be methods and the ABI, both of those need to work. My main goal is so
+that a class only need to be loaded in memory once for every process, this
+means that if one process loads the class SocketChannel it gets loaded once in
+memory. All processes on the same kernel will share the same boot classpath
+and cannot override it. Then later on, another process decides to load
+SocketChannel, since it is already in memory the process just needs to
+initialize the class static stuff and linkage information. So this means that
+every class will need linkage zones that are used by the method code.
+Basically a per-class import and export table for that class (the table being
+static) that is basically a function pointer elsewhere in memory to that
+specific class code. However the one complex thing to handle would be
+interfaces. Interfaces could be in any order and have varying descriptors
+associated with them. It is not possible to statically bind where something
+points to in an interface. However, it could be done statically. When a class
+is initialized it may have implemented interfaces. In this case the class has
+an interface table with the expected exports for that type for each interface.
+So lets say that there are three classes: A, B, C, and an interface I. B and C
+both implement I, and A wants to call something in the interface I. Due to the
+varying order of methods A cannot know where the method lies in B and C. B and
+C will both have a table that is common for the interface which maps where the
+imports and exports go for the interface type. So A would obtain the interface
+table pointer for the specific B and C objects for the interface, then do a
+normal jump with the function pointer. Now the main issue is determining the
+actual interface specifier for a random class. I could do a linear search but
+that would be insanely slow as that would have to be done for all interfaces.
+On a sub note, subclasses that extend parent classes of which are not static
+will need to just stack on all of their fields, so that something similar to
+struct magic like in C will work where you can have fake object orientation
+with multiple structs that both have another but the same struct as the first
+member. You could cast both structs to that same member struct, type.
+Interfaces only have public static final fields so that is a non-issue.
+Anyway, I will need to think about this. The struct stuff mentioned before is
+called aliasing.
+
+## 05:31
+
+Thought about a least common denominator table for interfaces. Meaning that
+each class that is an interface gets an index which is static which points to
+an interface map for each class, where the interface table is located so it
+can execute methods and such. However, that would not work because if multiple
+interfaces get loaded they may get placed in the same slot. The only
+alternative that would be safe would be to have each interface have its own
+index, where then a class would have all of the interfaces mapped in. So say
+if 2000 interfaces are loaded on a 32-bit system, that would add an overhead
+of 8000 bytes to every loaded class so it can store the entire gigantic table
+for every interface that is possible. It would be fast as the classes could
+just index into it by the interface index offset. It would dereference the
+table then jump to the specified pointer in the table. It can work but that is
+not memory efficient. I do know one thing I can do regardless, is that I can
+always optimize the known stuff. The wrapped integer and float stuff and the
+Math and StrictMath classes. That is, instead of actually calling Math.pow()
+on a number, the compiler will just optimize the value at compile time. Since
+these are very well known classes that it would be horribly unoptimized to
+just call the method anyway. However, the method itself in the class will
+still be implemented (Math being as fast as possible while StrictMath being as
+accurate as possible). The same can go for the primitive wrapper types too, so
+stuff like Long.divideUnsigned() is never really called but optimized by the
+compiler to have the expected effect. Another thing that could be optimized is
+native type boxing. There would be a difference between stuff like `Object o =
+2` compared to `foo("%d%n", 2)`. The compiler will have to detect if a boxed
+type is even wanted to be in an object. Although calling another method with a
+boxed type will require it to be created. So how would it be possible to make
+it so that it never does get created but is passed by value. Then if the
+method being invoked never makes the passed integer visible anywhere it does
+not have to create an object for it. I suppose for those objects, they can
+retain a very basic form. Still have a class identity but have a flat class
+type so that they are basically just the class identifier and the value they
+contain. Thus they would have no large overhead in memory but will still
+require that they are allocated. So there will need to be a way to determine
+stack locality. If an object is located on the stack in one method and it
+becomes exposed to outside objects, the sub method should be able to move the
+object from the stack and make it visible while filling the former stack area
+with a special inidicator that it got removed from the stack and placed at a
+specific region in memory. The stack would have to able to be grown similar to
+alloca in C, and new could either just add to the stack or create an object in
+the heap. So new would need some hints, if the object is just going to be set
+to a field then it can be allocated on the heap, if it is never exposed then
+it could be placed on the stack. So each allocation hint will have two states,
+ONSTACK and INHEAP. The calling class on new will not have any idea if the
+object violates something, so if it hints with ONSTACK and it turns out the
+object exposes itself everywhere then it will allocate on the heap instead as
+if INHEAP were called. So code will have to handle in the event that an object
+needs to be moved from the stack to the heap. Then if circumstances permit, it
+may be possible to move the object from the heap into the stack but that would
+mean that it has no references elsewhere so that would be limited. So object
+handling would have to handle cases where it is on the stack and in the heap.
+
+## 05:59
+
+Having interfaces hashing to a slot would be good, but the hash would need to
+be really good to not collide. However, the main thing that would be an issue
+is if a class decides to implement 65,535 interfaces, that would be very bad
+for hashing.
+
+## 09:18
+
+Another thing the compiler can optimize is the Atomic boxed classes which
+provide atomic interfaces. This would be so that two different CPUs which
+might see different memory can correctly read and write values in that they
+are truly atomic as per CPU.
+
+## 10:39
+
+Need to go into describing stack operations on the byte code ops.
+
+## 13:01
+
+After much typing, only 18 more opcodes to describe. Then once that is done I
+can start implementing a byte code reader so that methods are read and
+described. From there I can make super generic optimization and translation to
+reduce the number of rewrites for every architecture.
+

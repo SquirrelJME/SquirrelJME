@@ -1,0 +1,68 @@
+# 2015/04/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:06
+
+I should have enough code right now to start work on the Allocator again as I
+have improved information about the CPU and such. So it could work out well. I
+do know that I need to have preserved (saved) and volatile registers for
+exception handling.
+
+## 00:12
+
+I do know for the past month or so my codebase has improved much in general.
+Bits of it are mature now.
+
+## 15:28
+
+I can assign registers myself, such as which ones become the stack and which
+become the thread storage area (system control). Only two are really required,
+the rest of the set of registers can be used freely.
+
+## 19:32
+
+Wrote some Allocator code, but I am going to have to handle stuff such as
+general purpose and the main usage of a register. The only ones to be
+allocated would be general purpose for the most part.
+
+## 20:15
+
+Thinking that to increase my build times, I can move some of the NARF code
+related to JAR files away into their own package. That way when I clear the
+dynarec I do not have to recompile that stuff every time.
+
+## 20:34
+
+Now doing it that way, compilation is now much faster on this bit sluggish
+system. I shaved off about 30 to 40 seconds, which is good. Perhaps something
+else I can split off is the Form code, although that most likely depends on
+dyna-rec bits and there would be an ugly cross-dependency issue. Looking at
+grep the only two classes are FormCodeProfile and FormCodeBank which reference
+stuff in the narf package. It may be possible to change the code around a bit
+so that I can have the dynarec depend on a base form code.
+
+## 20:51
+
+No, the form stuff is too intertwined with narf so it cannot be done.
+
+## 20:56
+
+Well at least I cut the time it takes in half, so that is a good thing.
+
+## 21:12
+
+Another possibility is to split off some things and have a core dynarec and a
+one where all the translation code goes.
+
+## 22:01
+
+So now with the dynarec split between narf and poit, it is much faster to
+compile the bits that I want to compile now. On a fresh hairball build it took
+28 seconds. But using a pre-cached one it took 15 seconds. So now that I split
+the stuff up, I went from a minute down to 15 seconds.
+

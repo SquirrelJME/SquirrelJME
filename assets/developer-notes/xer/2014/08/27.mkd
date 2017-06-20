@@ -1,0 +1,57 @@
+# 2014/08/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:20
+
+Now that I am awake, I shall begin work.
+
+## 18:05
+
+A message that can be thrown would be useful as it would reduce complications
+especially if errors are fatal anyway.
+
+## 18:15
+
+Being an exception it is possible for it to get a stack trace which could be
+very handly in compiler dev. That is, if stack traces on new exceptions are
+valid.
+
+## 18:28
+
+I am going to need a locator for symbols because much of the compilation stuff
+is going to rely on the information that may be in external objects and such.
+
+## 18:42
+
+For the language translation matrix I can do something very similar to the
+toolbox tasks except oriented for language translation. Also the throwing of
+error messages rather than just throwing is quite lean.
+
+## 18:52
+
+Had this idea of how I can break the rules of Java class files to save some
+potential space in the event that I would want to make the kernel as small as
+possible to say fit on a Z8 Encore. I could mark some classes and strings to
+not be included, or automatically determine things. Anything to make the code
+run the same but at a slight verbosity cost. Stuff like localization would be
+stripped down and that message system I currently have (although on such a
+microcontroller it is doubtful the compiler would be included) would just
+print the 8 letter codes that I currently use.
+
+## 19:27
+
+Actually, for my beacon code I should just make a class which represents an
+abstract path of sorts, being just an array. The FileBeacon and MemoryBeacon
+code will just be throwing the pathparts away anyway. This would save code
+space and remove duplicate path extraction stuff.
+
+## 19:54
+
+Using PathForm will actually make implementing WrapBeacon easier if I ever do
+get to such things.
+

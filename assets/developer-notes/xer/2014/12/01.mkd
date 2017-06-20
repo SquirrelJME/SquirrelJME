@@ -1,0 +1,65 @@
+# 2014/12/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:44
+
+New month, lets see the changes I made.
+
+    
+    
+    [x-date-201411 --] x-date-201412]
+    Subtractions: 5244, Additions: 14946
+    
+
+Suppose, not that many changes. Made about 333 commits or so. Mostly class
+reading work was performed.
+
+## 08:54
+
+I think I may have implemented reading of LOOKUPSWITCH incorrectly.
+
+    
+    
+    1: LOOKUPSWITCH [69, 7, 46, 67, 47, 67, 58, 67, 59]
+    40: NOP
+    41: NOP
+    42: NOP
+    43: FSTORE_0
+    44: NOP
+    45: NOP
+    46: NOP
+    47: ISTORE_1
+    48: NOP
+    49: NOP
+    50: NOP
+    51: FSTORE_0
+    52: NOP
+    53: NOP
+    54: NOP
+    55: ISTORE_3
+    56: NOP
+    57: NOP
+    58: NOP
+    59: FSTORE_0
+    60: NOP
+    61: NOP
+    62: NOP
+    63: DUP_X2
+    64: NOP
+    65: NOP
+    66: NOP
+    67: FSTORE_0
+    68: ICONST_0
+    69: IRETURN
+    70: ICONST_1
+    71: IRETURN
+    
+
+Which is not correct at all. So, the key and values must be both 4 byte
+entities and such.
+

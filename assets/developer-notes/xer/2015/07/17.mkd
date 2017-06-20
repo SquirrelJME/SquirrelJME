@@ -1,0 +1,25 @@
+# 2015/07/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:37
+
+Perhaps instead of having a list of optimized nodes in a segment, I instead
+have a kind of linked list structure or list of combined operations. It would
+be very similar to what I have now anyway though.
+
+## 14:32
+
+Optimized program bits should be in another class instead so SSAProgram is not
+packed with more stuff. Program refreshing would not be needed either.
+
+## 17:56
+
+I believe the default interface I will use in k8 when attached to a console
+(this is before a bitmapped GUI) will be a file manager like commander. One
+could then execute a shell to run commands though.
+

@@ -1,0 +1,72 @@
+# 2015/02/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:06
+
+I could have micro operations which are part of operations, since the Java
+byte code is in CISC nature, having a map of instructions where multiple
+operands share the same address is a bit ugly, therefor they will instead just
+contain operations on the inside. These micro operations will stay together as
+a group and may be optimized in and out. Their bounds will be known so that
+changing the micro operations will affect the outer program still. One example
+is that many Java byte codes will contain micro operations working with the
+stack before the primary work is done, so there can be a self contained
+optimization strategy for this that only thinks about a single group of micro
+operations.
+
+## 10:11
+
+I am wondering about type safe registers, that is they are assigned a specific
+type and are never changed based on the type that they are. This would be more
+strict but it would permit optimizations and would simplify a few other
+operations such as type checking random variables between code. However this
+is how I can do single static assignment. Each register is assigned once in a
+program and cannot be assigned elsewhere, said registers will also have the
+type information that they are. Then each register can also have timeline
+information, so effectively I can have SSA without making it a pain to place.
+The only thing I have to work around is the Java stack to handle how SSA would
+work.
+
+## 14:24
+
+For SQ I will need to create an editor so I can make simple terrain maps as
+such for testing, along with having it so I can work on path finding and
+navigation meshes at the same time.
+
+## 16:06
+
+I bug which exists in SQ made the units go down and to the right, I thought it
+was due to a certain angle since it always occurred for one, now I find that
+if I order a unit to move on itself it does that. This means that the unit is
+attempting to follow itself?
+
+## 16:30
+
+However, even after clearing orders that are done on itself it still moves in
+a downright position.
+
+## 17:21
+
+Do not really know. As per map usage, I should probably split the random
+generator code out of the Scene stuff and make Scene rather basic so instead
+it can also load user created maps instead of being purely random. I will need
+an editor to provide my own maps as the default along with to test isometry
+and such. Once I get things solved I can then work on the generators to make
+some more playable maps, then work more on unit based actions such as path
+finding and such.
+
+## 18:52
+
+Added in the comments the base units that SQ bases its units off of for that
+particular unit. Legality wise, it is just a phone book. Another thing I will
+do is remove all of the non-multiplayer units since they are not really needed
+at all, along with all of their specific weapons. That will reduce the amount
+of structure pieces that exist. Special units that if ever in the future are
+to be added can be made part of the unit rather than creating a special unit
+for each unit that exists.
+

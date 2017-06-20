@@ -1,0 +1,37 @@
+# 2016/02/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:52
+
+It would be better if the instruction and register stuff had URLs for their
+resources instead of just manifests, so they can lazily be read.
+
+## 17:33
+
+So do I want to keep my structured `InstructionInfo`? I believe yes. I can
+however instead of `InstructionInfoBuilder`, just have `InstructionInfo`
+generated from the Manifest instead of requiring the builder perhaps. That
+might work out so that everything is initialized at once. However that would
+mean that custom instructions can longer be built as they would require a
+manifest.
+
+## 22:09
+
+I would need a good way to represent the instruction image mapping table which
+the disassembler would use to determine the used instruction. The only major
+issue would be handling CISC in the future due to potentially very odd layouts
+for instructions.
+
+## 22:11
+
+I suppose I can use a small hashtable of the likely set bits. Basically count
+every bit that is on for the constant and value mask. Then once that is done
+the instructions will be placed for I suppose a linear search. Not the best
+but it would cut down for example the original algorithm which searched through
+every single instruction for a match for the most part.
+

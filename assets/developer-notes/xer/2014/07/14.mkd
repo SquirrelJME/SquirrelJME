@@ -1,0 +1,81 @@
+# 2014/07/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:51
+
+Soon once I invoke the compiler to build hairball and the compiler, it will
+then be time to work on both of them. My Java compiler could be neatened up a
+bit by using shorter class names and such. The build system will use the
+compiler for build scripts by either implementing an interface or extended an
+abstract class. An abstract class may be the way to go. So the scripts will be
+compiled against the current VM and executed. I thought about having a host
+compiler setup, but it really is not needed at all. I could reflect from the
+run-time which class stuff is available. Another alternative is that I could
+try and figure out the current VM boot classpath.
+
+Had this idea for a package manager, I can use the ext dir for installed
+packages that do other things, like in the classpath. Similar to Debian sort
+of but for Java instead. Packages could be simple JAR or PACK200 files.
+Another idea is a standard configuration system for storing settings that k8
+programs use. Using a standard programmatic interface (say with enums) is much
+easier than writing up parsers for all of them.
+
+But yes, my compiler will have to be rethought a bit to be more extensible
+than I previously planned. Also the current code set is rather a bit ugly for
+now. At least with the build system using the compiler time will be saved as
+writing a separate interpreter for scripts is not needed. Do it once. Once the
+compiler is complete the next step after is writing the actual kernel parts of
+the system. Then it being all Java 8 would make things easier. So the current
+goal set appears to be: initialize bootstrapped build of Hairball/Compiler,
+work on Hairball/Compiler to make it complete, move into kernel land.
+
+Minor note for the build system, I can use enum for rules and default in
+interfaces since Java 8 would be available for compilation.
+
+## 17:24
+
+I cut my hairs.
+
+## 18:26
+
+Seems redirecting the input or output of a sub process in Java became a
+feature in 1.7, so right now things are rather blind. However, for the shell
+script I will just make a wrapper script which calls javac and pipes output to
+errors or whatnot. But a wrapper script works really well just requires an
+extra step.
+
+## 18:58
+
+HbProgramMain being a String rather than Class[?] seems a bit better. And the
+result of my shell script (which can now invoke the compiler) is that it is
+extremely hacky. But I would rather have hacky shell scripts than hacky code
+in my main build system. Rough build is hacky code. Now the next thing is to
+make the build system work, which will be fun.
+
+## 21:16
+
+I should make it so my stuff from this point on is possible to be
+internationalized. However, I want to do a keyword based approach. Editing
+strings which are completely separate would complicate things. So I believe
+the best approach would provide the key and the text to be internationalized.
+Then that could handle printf and such, etc. I should also use codes for all
+the exceptions so in the event that there are no symbols or even source
+locations, I can determine which exception fired. However having tons of
+strings for the exception codes would be quite long. I could use a randomly
+generated random number and keep a table of numbers I have yet to use. Would
+make it easier to not run out. I could also make an exception code
+registration system which could go through the entire source and strip
+exception IDs as needed when the kernel builds. Though for
+internationalization in the random strings that exist, I should provide the
+locale also. The internationalization class should be really minimal though.
+Should use a static import in this case. Perhaps the method should be called
+l10n, since that is rather short. Perhaps l10nf for printf, l10ns for string.
+Although there are some cases where I do not want to get it as a String, so
+there should be a "o" for actual object where toString() could be used with
+the current locale or otherwise.
+

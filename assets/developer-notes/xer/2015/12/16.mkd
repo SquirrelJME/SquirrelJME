@@ -1,0 +1,87 @@
+# 2015/12/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:19
+
+It is foggy outside. So the thing to do would be to figure a nice way to
+represent parts of a file which can be used by a class generator.
+
+## 08:05
+
+Thinking about it, the BDF stuff would be a bit complicated.
+
+## 08:29
+
+So it would have to be done carefully.
+
+## 10:32
+
+Ok, the BDF will be in certain sections. The uppermost sections are primary,
+then to secondary, and such. Or similar wording. The primary will just contain
+the global constant pool, references, and the set of classes. For Java class
+files this will just contain a single class for the most part. The primary
+then contains individual class information which has stuff such as flags,
+fields, methods, and such. So my binary format will need to have a `BinPrimary`
+and a `BinClasses` for the most part. For the Java class format these will
+just contain single entries. This way that code which permits multiple class
+files and such would be simplified. If another format for binaries is added
+then they can potentially use it.
+
+## 10:38
+
+The light reflecting off my hand is like a diffuse watch reflection.
+
+## 15:46
+
+Did some outside work since it is going to snow soon.
+
+## 17:44
+
+What I can do is have a kind of stream like descriptor thing when loading data.
+That would keep it semi-simple and I would be able to reverse the operation
+and have write support along with that.
+
+## 18:12
+
+Yes I believe a stream-like approach would be best. When reading and writing
+files I can just do the whole thing at once, although it will be a bit slower
+there would be no need for a cache. However, I could still support caching for
+reading since it would be faster to not load everything at once if it is never
+needed at all.
+
+## 18:24
+
+This refactor will need the `KernelBuilder` to be partly rewritten, but that
+stuff needs to be split anyway because the OS builder is a bit messy.
+
+## 18:30
+
+Probably about time I do that planned refactor of redoing the configuration
+system for the OS. New plan is to have CPUs and machine in JSONs with potential
+"base-off" fields. This cuts into my plan of having an actual running kernel
+by the end of the month. However belaying this will cause a much larger mess
+in the future. However there is code that is already refactored such as the
+standard RISC translators so that does not need to be touched at all. And the
+`Bin*` classes are fine also.
+
+## 19:26
+
+This new configuration system should be simpler to use and less messy when it
+comes to things for example. I can also support stuff such as searching for
+target hardware based on the manufacturer or the name of a board, perhaps with
+regular expressions and such.
+
+## 20:19
+
+With a `PackageContents` class having `MergeJar` is no longer needed to build
+the OS since the contents would be handled in a map of sorts. This can also
+handle the odd case where some files are the same between JARs. `MergeJar`
+would just replace entries which might end up confusing things. If I keep up
+the programming work though, I should get back to where I was before if I keep
+at it all day. However, distractions are tough.
+

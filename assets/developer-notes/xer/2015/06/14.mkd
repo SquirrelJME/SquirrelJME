@@ -1,0 +1,73 @@
+# 2015/06/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:48
+
+Need to figure out how to name classes in regards to the cache, they need a
+checksum to determine if their registered base has changed. Class files are
+usually in JAR files, so the cache information will have to store said
+information on that because multiple differing classpaths may have the same
+names for classes and packages. Such a thing would be problematic. So the
+cache area will need to have sourcing information. The kernel when given a
+classpath will need to keep each group completely separated linked within its
+own cache. Each class that gets recompiled into C code must be independent and
+not rely on the state of other classes. So there will have to be a way to
+identify say a JAR in the classpath uniquely. I could use the Aha-1 sum of the
+JAR and then keep an index managed and such. The manager also needs to be
+separated so that it could be used by the recompilation system. That way the
+recompilation system can just run through all the classes and just cache
+everything on the disk like the operating system would do itself.
+
+## 14:13
+
+I suppose for clarity, dynamically generated classes or ones that pop up out
+of nowhere with no defined classpath (say with ClassLoader.define()), will
+probably not be cached at all.
+
+## 14:18
+
+Well, the classes could be cached and they would obviously have a one time use
+set for them. The main thing everything will use is the ClassLoader, which has
+a define class. defineClass would obviously be native. And that would interact
+directly with the class manager system. Since each class file is itself a
+class file, I could just read the defined bytes and then calculate a hashsum
+(such as sha-1) on the class then look at the disc to see if such a file
+exists. That would be the bulk of the operations. So in reality, there is no
+such thing as a classpath. The classpath is just a faux concept in Java which
+is managed by the ClassLoader and such. The "system" classloader could just
+may as well be a URLClassLoader. This simplifies the cache system however. I
+have to choose a good hash algorithm otherwise collisions will occur, but so
+far for sha-1 no collisions are known. Of course I will need a keying system
+to determine when a class was last used and such and how "important" it is.
+
+## 14:31
+
+Ok so repository view and master repository are not required a single bit.
+This leaves just one class then which provides a repository interface. Since
+it is used by the kernel and the build system, but more the kernel, it should
+perhaps just be in the kernel and then I can just depend on it in the build
+system. Main kernel classes cannot really be called however due to the fact
+that there would be native methods and k8 specific things inside of it. The
+cache manager would at least be abstract and use NIO to do things at least.
+The cache manager as I would run it, would be a sub-process anyway that
+interacts deeply with the kernel anyway.
+
+## 16:47
+
+Actually, I cannot use base64 for my cache filenames because the cache could
+be on a case-insensitive filesystem such as Windows, which means there is an
+extra chance of collision and building the kernel may fail on such systems.
+The same applies to ISOs also, which would make having root be an ISO very
+bad.
+
+## 17:09
+
+I decided on base16, although it will result in longer names. Or I could just
+use BigInteger, however that needs padding but that is not much of an issue.
+And with that, I can use base36 which is even more compact.
+

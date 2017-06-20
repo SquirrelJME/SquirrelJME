@@ -1,0 +1,38 @@
+# 2015/04/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:10
+
+I just hope this does not turn into one of those story endings. "And all he
+ever did was kept rewriting his class code".
+
+## 13:25
+
+Well, I do not believe so. The new class loading code is much leaner and
+simpler than the old one. And the new Java decompiler is slowly being worked
+on when the class loader does not throw a TODO.
+
+## 14:00
+
+However, today is a real life day and I must do that.
+
+## 20:01
+
+One idea I have for testing things and figuring out how to better support
+hardware is to create an emulator which can run another OS on a target. Then
+by working on the emulator I can figure out how the hardware works with the OS
+so that systems are better supported. It would not be a super fast thing with
+recompilation, just interpretive emulation only. Although it is slower it is a
+bit more precise as there is no compiler in the middle. I could also make a
+cycle accurate emulator with replays and recording so a session can still be
+run based on input events. Well possibly not cycle accurate but enough so a
+run through can be replayed where it works every time assuming the same
+inputs. It might be best to use it on more exotic hardware. But the main thing
+is to know how the instructions are executed so that the dynamic recompiler
+code is able to be fixed and such.
+

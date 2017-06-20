@@ -1,0 +1,55 @@
+# 2014/10/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 17:32
+
+I believe I am going to go back to the old source extractor, it was a bit ugly
+but it works, I just need a new way to name things, classes based on locality
+and such.
+
+## 18:02
+
+Rewrote then name stuff to be a bit more specific so to speak. I will have to
+redo the imports slightly and perform some abiguity detection so stuff like
+SQL Date and util Date does not collide.
+
+## 22:08
+
+The name based references may work, I just need to process all of the source
+code to see if it actually does. I have not fixed the constructor issues
+however. I believe what I need to do for that, is have a private and a package
+private level. That is if there are no public or protected constructors, count
+the number of private and package privates ones. If there is at least one
+package private one create the implicit lone constructor as package private.
+However, if there are no constructors then nothing is to be done at all
+(because then it can just be new out of nowhere). There has to be some
+bridging though, for constructors so I will have to store class stuff when I
+need it, a map of classes to solve the constructor fun. Would also work for
+the constructor and throw blank argument stuff, as that could refer to some
+missing constructor.
+
+## 22:35
+
+All of these classes take up tons of space, incomplete stripping and it is
+already 3,387KiB. Makes me wonder about the blank documentation that is there,
+perhaps instead of including it I can just not include it. Anything that is
+not documented would be indicated in missing JavaDoc stuff. Another thing I
+need to do is, if a class implements a package private class then drop it. If
+it extends off one, then use that ones super class until it is no longer
+package private. Also need to fix imports of inner classes it seems (it tries
+to import an inner class which is static).
+
+## 23:24
+
+The SQL date stuff works fine.
+
+## 23:49
+
+The generated code is much lighter when the JavaDoc stuff has been stripped
+from it.
+

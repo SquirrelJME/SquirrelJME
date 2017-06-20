@@ -1,0 +1,82 @@
+# 2014/07/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:27
+
+I have my JSON parser working with a basic setup of building the compiler
+systems and such. However gcj-wrapper has some issues with classpath and I am
+not sure if there is a debug output like sh -x for perl.
+
+## 00:28
+
+Ctrl+V is a terrible key combination especially if you use it alot, not
+ergonomic at all. A key dedicated to pasting would be far superior in massive
+paste jobs. But I moved all of my option code from the compiler stuff over to
+the new place.
+
+## 03:48
+
+My JAR building seems to be going well, need to handle recursive dependency
+cases and where JARs are already built.
+
+## 04:15
+
+Well, it appears that it fully works as expected so far. So what I need is the
+building of packages and whatnot along with starting work on the compiler.
+
+## 07:04
+
+I should just make a package program, which can build and uses base plugin
+stuff. Basically a single command called "package" with sub-commands similar
+to apt-get and also the ones that go with dpkg-*. So if the build plugin is
+enabled, you could do say "package build java-compiler". Then building the OS
+can just be tons of packages, etc. Then later on for the kernel and sub-
+architectures, I can make a JAR merge to merge the kernel and architecture
+specific classes. Then I can make a JAR to executable compiler which AOTs
+everything at once. So my next task is to forget the compiler a bit and make
+the extensible package management system with plugin support. Then compiling
+would be easy, just let the build system do the work. It can manage
+dependencies and check if there are any quirks at all. The package stuff right
+now makes boot strapping a bit easier since I would no longer need a bootstrap
+class path and such. So the package manager will need a host-build and an in
+target build. This is so I do not rely on those shell scripts deep into the
+system. Though to do a target build, I need the class library to exist of
+which it currently does not. So I will have to rely on the host built packages
+when bootstrapping the OS or performing any build. I also need to remember to
+split the Java input and outputs into two separate packages and possibly clean
+up some of the virtual package mess I have been making. At least with packages
+I can create lighter systems. I will need special virtual packages and version
+checking, such as which profile packages need. Then with a GUI system target
+configuratior, I can do something similar to "make menuconfig" and choose
+which packages to support. Another possibility is meta-sub-packages for
+internal transclusion, so rather than a gigantic single package, sub-packages
+inside of them can be canceled out.
+
+## 07:23
+
+Using plugins for the package manager means I can keep the compiler stuff
+separate. So the package manager is just there which only depends on my common
+library and the JSON stuff. Then a plugin could support target compilers for
+cross targeting. This way, the shell scripts rely on the least amount of
+packages possible then I can boot the initial package manager and build
+packages. Once the package manager is booted, things should go fine. Less
+stuff to do in the shell scripts that way, could make porting it Windows batch
+scripts much less painful.
+
+## 07:29
+
+I just thought that I would no longer need hairball, but in fact I do need it.
+There will need to be some way to dispatch which packages to build, doing
+stuff like generating ISO files. Putting all of that stuff into the JSON files
+will be a nightmare.
+
+## 19:26
+
+Moving a bunch of things around before it gets too messy, clearing out my own
+package namespace and organizing it a bit.
+

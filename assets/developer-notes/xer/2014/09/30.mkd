@@ -1,0 +1,82 @@
+# 2014/09/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:19
+
+Binary names are handled, but it still cannot find packages related to
+"java.lang" for some reason.
+
+## 01:35
+
+inferBinaryName operates on dot based names not slashes, despite the binary
+name of a class uses slashes and not dots. Oh well.
+
+## 04:49
+
+BAFC is the first place where I use a pure try-finally block.
+
+## 07:42
+
+Seems illegal data is read from the byte buffer, it dies at the same point on
+String where it reads IllegalSignature.
+
+## 09:34
+
+After writing my interface logger, I will have to handle closing and such.
+
+## 09:51
+
+I believe I know what the issue is, although I did not notice it at first the
+read on the logger shows that it requested 18843 bytes. This could mean that
+across specific bounds the destination buffer is not being used or similar on
+read.
+
+## 11:20
+
+After this point reading the String class file, there are just blanks as in
+the entire file is full if zeros.
+
+    
+    
+    "[129]   1ff0:  02 B1 00 00  00 02 00 AA  00 00 00 1A  00 06 00 00 "
+    
+
+## 11:28
+
+Seems the ZIP file stuff have areas where the read is short, such as the file
+being shorter than it really is.
+
+## 11:59
+
+At this rate, I should just use a byte array output stream so I can write to
+some byte buffer while reading giant ZIP chunks, then I can just not use size
+at all.
+
+## 12:04
+
+So all my trouble and all day spent due to the broken nature of the ZipFile
+interface, I will have to be sure to note that in own implementation and note
+that the standard is broken in said regards so always be sure.
+
+## 12:06
+
+Now the compiler code wants to output code, yipee. I will probably fall asleep
+very soon. When I awake, I will implement the shadowing arbitrator for output
+files so they do not poison input locations (in the MountTree and on the
+disk). This is so I can just put the output directory into memory and into a
+ZIP file from there. I just hope that the ZIP writer is not as broken as the
+input.
+
+## 21:21
+
+Now I am awake, sort of.
+
+## 23:50
+
+Soon it will be next month.
+

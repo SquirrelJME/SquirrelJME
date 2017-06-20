@@ -1,0 +1,39 @@
+# 2015/08/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+Looks like I will need to create a program header in the ELF for it to be
+loaded by something. I suppose program headers are shortcuts so to speak so
+the ELF loader is simpler and does not have to worry about 10,000 sections.
+
+## 09:51
+
+Now to write the program header.
+
+## 10:14
+
+And now I have a kernel bootloader which is loaded by QEMU, which increments
+and decrements two registers.
+
+## 10:22
+
+The bootstrap also works (the 32-bit code) in the PowerPC 64-bit QEMU emulator
+also (as it should).
+
+## 10:57
+
+I suppose now that I have a bootable bootstrap, time to get back to generated
+machine code from Java code. My build configuration stup is rather nice since
+I added the ability to skip KBF compile.
+
+## 22:42
+
+This Star Trek Continues is rather interesting, too bad there are only four
+episodes.
+

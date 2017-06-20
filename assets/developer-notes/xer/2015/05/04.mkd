@@ -1,0 +1,29 @@
+# 2015/05/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:15
+
+I can probably have the code which finds the push pop stuff be able to handle
+cases where it varies (such as fields and method calls).
+
+## 16:52
+
+Determining which push pop set to use will be handled better this time as I
+will take advantage of the giant enumeration. This means that synthetic
+entries in the push pop table will now fail instead of silently passing
+through for later devirtualization.
+
+## 22:21
+
+The code here is much more concise compared to the older code.
+
+## 22:51
+
+I would have to say that my new code is much much cleaner than before. The old
+code was a complete mess that was glued and taped together.
+

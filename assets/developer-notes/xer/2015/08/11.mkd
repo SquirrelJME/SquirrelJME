@@ -1,0 +1,26 @@
+# 2015/08/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:30
+
+My structure stuff needs to be Comparable along with having equals and
+hashcode, I will need this stuff if desire to have a set version of an array
+rather than just a plain array.
+
+## 12:45
+
+Making them comparable has failed, so I will just have to settle for equals
+and hashCode.
+
+## 20:12
+
+The register allocation stuff could actually be a part of the SSA code in
+terms of variables and such. However, some things are not needed at all and
+the layout differs between many different integer types and floating point
+types especially when they can alias each other.
+

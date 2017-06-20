@@ -1,0 +1,31 @@
+# 2014/10/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:13
+
+Checking out gradle to see if it can suit my needs. And I hate the curly brace
+at the end of the line, very ugly.
+
+## 15:50
+
+A bit too complex and splayed out, although it has a GUI of sorts. However
+everything runs a bit slowly. I suppose what I should do in this case now is
+write my own build time checker thing to see if any files changes, although
+that will be complex.
+
+## 17:26
+
+Appears that Gradle does not suit my needs, seems I would have to do some
+major restructuring just to make it happy. Probably stems from the "Every
+other Java developer does it this way so you must too".
+
+## 17:46
+
+Also seems you cannot do an out of tree build, so you must pollute your source
+tree and waste SSD cycles.
+

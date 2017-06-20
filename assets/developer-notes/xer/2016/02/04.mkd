@@ -1,0 +1,54 @@
+# 2016/02/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:07
+
+I want a nice way to handle instructions during making them visible. Something
+that will be done in a safe manner.
+
+## 17:38
+
+Suppose today I am taking a break and attempting to clean my room instead.
+
+## 19:53
+
+Here is an idea for the bootstrap environment. Instead of having byte code
+which is of course fast and efficient, the bootstrap can just be quite
+literally a source based interpreter of Java which performs no actual
+compilation into byte code. There could however be a kind of intermediate
+code but not exactly as byte code. It could be used with my own implementation
+of the class library.
+
+## 19:58
+
+The result would then be a kind of compile on demand sort of with source code.
+If it understands Java 8 source code it can then act as a Java 8 virtual
+machine of sorts. There would however be a speed penalty though.
+
+## 20:00
+
+It would be interesting, however the most likely choice that would be more
+efficient would be to write an actual compiler and virtual machine. However for
+a bootstrap environment which might be run-only (with no compiler part of it)
+, well maybe not. In either case, the bootstrap virtual machine could handle
+Java source code to compile the compiler (written in Java) and then use that
+compiled code to run the bootstrap to build the OS. However, really the only
+thing that would need a bootstrap is the VM and the compiler. A standalone
+bootstrapped compiler would compile the code that is required for running. The
+VM would run class files as normal Java does. So essentially they would be one
+bit because the bootstrap VM will need a compiler anyway. Then my own compiler
+could for example target C instead of Java byte code so that Squirrnix can be
+compiled and built without needing a Java run-time or compiler at all, it
+would just need a C compiler which would have to be somewhere. So you would
+need either a C compiler or a Java run-time with a compiler.
+
+## 20:19
+
+I believe I need to make the `ProgramInstruction` a bit simpler by splitting
+off the field stuff so that it is independent from it.
+

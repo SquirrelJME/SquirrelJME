@@ -1,0 +1,105 @@
+# 2014/09/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:47
+
+Need to determine when a token ends, I have the validity list which is known
+between old and new states. So there have to be boundary characters which are
+used to separate some form of tokens. I can also make every operators a token
+of a specific string. Although it may look like multiple operators such as +
+which are connected to each other might be deemed as separate, the actual
+token would be determine based on the validity of the token before any extra
+characters are added.
+
+## 02:03
+
+Even though my code does not do much, it appears there are always valid tokens
+and I realize this is because of the floating point digits probably. Since
+quite literally any of it is optional and it can include nothing.
+
+## 02:10
+
+However for hexafloats, it is not needed because the exponent marker must
+always be there for that case.
+
+## 02:13
+
+Actually one of my integer regex is working because for the StringBuilder I am
+appending an integer and not a character sot he sequences are quite literally
+always valid.
+
+## 02:28
+
+However some token forms that do not follow normal non-line boundaries such as
+strings or character sequences. So if at least one token is valid and a
+boundary is met, then any other token where boundaries are not ignored are
+then tossed away as invalid.
+
+## 05:42
+
+Actually for strings that is not required because the token would still be
+valid even if there is a separation character in the middle of it. The
+separation characters are only used then in this case when there are no more
+valid tokens. If a token ends just before a separation sequence then it is
+stopped and it is considered valid.
+
+## 06:37
+
+I need to remember to include line and column information in the tokenizer
+code.
+
+## 06:45
+
+Need to handle ending multi-line comments.
+
+## 07:12
+
+Multi-lines are all implement and I added a bunch of operators but now it
+seems my hexadecimal regex is not correct. I also need to remember to do stuff
+that I cannot remember due to being tired. Yes, when I get a token I need to
+apply to the type information any extra annotations attached to a token
+because that would be very useful. Annotations are a way to peg extra data
+without needing to mess up the enumeration or interfaces or have some kind of
+ugly lookup table. Regex actually needs a potential increase in complexity
+because by the time that "0x" is read it does not comprise a valid hexadecimal
+number so I will need a partial regex which is valid enough. So a partial
+regex match would then become virtually valid, but not fully valid. A partial
+match would never be used for the type of a token but can contain enough
+information to wildly stay attached to the regex. This means that it will
+share a similar regex but where every part is optional so that it remains in
+the valid list.
+
+## 08:06
+
+May need to recreate my floating point regexes because they might be wrong.
+
+## 19:44
+
+Added all the annotations to the token, made separation tokens possible, and
+now working on string literals. And as I predicted my floating point regex are
+not correct because the tokenizer stops on ".fo" in "String.format".
+
+## 20:22
+
+Cannot seem to solve floating point literals with regex without making a
+gigantic mess, so I am going to stick to method parsing of it.
+
+## 21:01
+
+Floating points getting stuck on "e" in ".err" is due to the exponent.
+
+## 21:21
+
+Now that tokens are pretty much all parsed (although I need to rewrite the hex
+floating point), I can begin work on the stage two generator so I must outline
+the specified classes which are compiled.
+
+## 23:22
+
+Will need to do actual handling of tokens and parsing them all.
+

@@ -1,0 +1,61 @@
+# 2015/10/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:25
+
+Hopefully using the refactored descriptor and signature code is easier due to
+the splitting of classes. However there are tons of files now instead of just
+a handful. However, TypeDescriptor was near 1000 lines and TypeSignature even
+more.
+
+## 08:45
+
+And hopefully when I write the descriptor/signature String cache, it will not
+deadlock much.
+
+## 09:02
+
+No deadlocks from what I can tell, and the code seems a bit faster also.
+
+## 22:13
+
+Looking through font formats, since I will be needing them. Metafont looks
+nice and is defined geometrically rather than outlines and such. I would of
+course need a metafont editor. One good thing about metafonts is that they are
+text based rather than binary, which goes well with my repository structure
+and such. However it might be tied to LaTeX since it might just carry glyphs
+and such. It might not even have stuff such as kerning.
+
+## 22:54
+
+I might go for just BDFs, easier for me to draw bitmap fonts. As a start I
+will just draw the first 255 unicode characters.
+
+## 23:21
+
+My air purifier was pushing my ceiling fan, which changed the sound dynamics
+of my room constantly. So there was a swish swish swish sound as the air
+bounces off of it at various angles. Ceiling fan is broken anyway, thus I
+removed the blade. Now said problem no longer exists.
+
+BDFs are kind of ugly and rather require a gigantic single file. What I need
+is an ASCII format for glyphs stored in single files which is directly
+referenceable via files for each glyph in a JAR. So the Serif, Sans Serif, and
+Monospaced fonts will just be a ton of individual files in the repostory.
+Bitmap is easier to create though, however it is limited. Some kind of simple
+vectored font would be better. Do not need to go crazy with programming
+languages, but the font data could just be data encoded as ASCII which
+provides instructions on how to draw a font. Then these instructions can be
+kept in individual files which are human readable, sort of. I can actually
+cheat and use a ASCII coded decimal of sorts. Zero is 0x30 and nine is 0x39.
+This means I can have absolute positions for the file and encode them as
+ASCII. I could just grab the lowest bits. At least if I do drawing
+instructions I can have dynamically sized fonts. However for my framebuffer I
+will need to draw the fonts into a cache for them to be placed on the screen
+efficiently.
+

@@ -1,0 +1,53 @@
+# 2014/11/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 21:15
+
+I took the day off coding, needed a break.
+
+## 21:28
+
+I believe I was over complicating things before, I planned for this giant SSA
+based system where I could use it to write my compiler in the future but that
+would be much work, lots of work. I might now just translate the stack based
+machine to a register one, optimize it a bit, then just turn that into machine
+code and such. Although later I could just use the existing code since I will
+be compiling Java code anyway, so it does not really matter then. I would not
+have fancy encoders and decoders to translate back and forth from other
+machine languages, but oh well. This solution should be far simpler and easier
+to implement, although translating the stack based Java to a purely register
+based one may be a bit tricky, it should be easier than recreating a new SSA
+language to do something similar. Also going to cache the entire cache pool
+when work is done on that, to make things much easier when referencing
+everything in it.
+
+## 22:05
+
+Now when linking, I can easily handle both classes and interfaces. Invoke of
+class methods is easy as I can just request a direct pointer to the method in
+it when linking is performed (it gets placed on the table). However interfaces
+get a bit more complex. So I think rather than having the code depend
+completely on whether something is an interface, the linker will create code
+that acts as an interface callsite, similar to invokedynamic I guess. So
+initially a reference to another method (if it has not been determined yet)
+would be a lazy call area anyway. That is the introductary linking area if the
+symbols are not currently available will link to a bridge method. And that
+bridge method will find the specified classes and then link them into all the
+other classes and replace their call sites. That might be too much work
+though, so if something is lazilly bound I can just keep calling the lazy
+execute and then when anything is called it just gets linked as it is called
+rather than sweeping through every loaded class everytime a class loads.
+However, when an interface is linked in since its location is unknown for any
+object that gets called that must determined at runtime. And since that would
+pollute the actual method. Actually, there is invokeinterface so I really do
+not have to worry about such things and in the invokeinterface case I can just
+have the interface handling code right there. To handle synchronized, I can
+just have it so the call site remains and it does a monitor wrap as needed
+without cluttering up the native code. If an interface implements another
+interface then it will just have those additional methods on its table.
+

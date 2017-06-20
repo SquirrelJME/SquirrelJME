@@ -1,0 +1,23 @@
+# 2014/12/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:22
+
+Sleepy sleepy.
+
+## 12:01
+
+The C preprocessor is line based while C itself along with Java are both token
+based.
+
+## 19:28
+
+So I have reading of preprocessor lines so what I need now is actual parsing
+of them, and since I made it CharSequence I can support extended Unicode code
+points.
+

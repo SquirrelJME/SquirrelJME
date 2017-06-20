@@ -1,0 +1,52 @@
+# 2014/09/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:10
+
+Numbers are the most complex to decode.
+
+## 09:40
+
+Hopefully errors will be easier to locate now that file, line, and column
+information is dumped in generated messages.
+
+## 09:47
+
+I just need to tokenize floating point literals then all types of tokens would
+be tokenized.
+
+## 12:55
+
+I need to perform a two pass operation, first I need to obtain the structure
+of any classes declared in the source code, then after that I can compile any
+fields and method operations.
+
+## 19:25
+
+I believe I am going to move all the packages into a single directory because
+all of these directories elsewhere makes it rather confusing to find all of
+the stuff. The organization is nice but it complicates things.
+
+## 20:33
+
+Messed up the repository, spent an hour trying to delete the revision by
+manually messing with the SQL database. However, I can just shun the SHA-1 sum
+of the revision, so that simplifies things.
+
+## 21:27
+
+Luckily for me, no changes were required for my build system to continue
+operating, however I did modify it since I no longer needed to specify the
+root of the project directory. Using the sub directory for packages should
+speed things up by a tiny fraction of an amount.
+
+## 21:49
+
+The packages reorganized looks quite nice and simplifies locating everything,
+it might look "bad" at the end but it over complicates things.
+

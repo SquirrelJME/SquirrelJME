@@ -1,0 +1,56 @@
+# 2015/04/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:04
+
+This eventual signature stuff should be better handled with this Form stuff.
+
+## 16:25
+
+Class can work for signatures because it is an inner class of another class
+and not one of an outer class.
+
+## 16:29
+
+Since many of the signature things are partial and very much is inter
+dependent when it comes to things, I will need simplified and complex things.
+Perhaps CharBuffers rather than stuff like StringBuilder or special iterators
+as those can be rewound easily. Something I did not know before is that
+CharBuffers are CharSequence which means that they are more friendly when it
+comes to strings, so those could be deemed like an advanced StringBuilder. The
+CharBuffer can even wrap CharSequence which means I can easily handle stuff
+like Strings. However the CharBuffer wrap of a CharSequence is read only but
+that does not matter to me since I do not change input strings.
+
+## 17:49
+
+Learning of CharBuffer I can optimize usage by using that instead of just
+using a wrapped StringBuilder for things such as reading Field fragments. I
+will have to go through all of my sources to see my usages of StringBuilder in
+the sense of things.
+
+## 20:22
+
+Well there are Class signatures for classes and then there are ClassType
+signatures which are used with L;.
+
+## 22:15
+
+Almost mixed up TypeParameters and TypeArguments.
+
+## 22:29
+
+Since the cache for FormJavaType and FormSignature uses a WeakHashMap, the
+code has to be changed around since the input String might not be the string
+which gets used by the object.
+
+## 23:59
+
+Now after a bunch of type signature work, I am back to class work. Need to
+handle the inner classes attribute.
+

@@ -1,0 +1,36 @@
+# 2014/07/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:29
+
+Made some cleanups to the LaTeX files a bit, now it looks much nicer and is
+easier to note some things due to some newly added macros.
+
+## 17:25
+
+I decided on using a map for input and output options of the compile method
+because it seems to be stronger. I will have to pass them anyway so I may as
+well do so, then I can fold the languages in it. Then with that I can instead
+use annotations similar to command options for handling specific properties of
+whichever option set. The option sets should remain immutable to simplify
+things greatly.
+
+## 18:51
+
+And instead of two classes for input and output, I should rather instead have
+a single class for either input, output, or both. This way I reduce duplicate
+code at the cost of some complexity. Actually having subclasses which are
+input and output languages would be better while having a primary class which
+permits language selection.
+
+## 19:10
+
+This new merged stuff is much better and cleaner, duplicate functionality has
+thus been cleared away, which is a good thing. This also makes it easier to
+add new inputs and outputs as needed.
+

@@ -1,0 +1,65 @@
+# 2015/06/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:10
+
+Now that I have preprocessed lines, I must actually handle them all.
+
+## 14:08
+
+An error in my command line parsing, related to switch statements, was causing
+every command to act as a switch so a file say called "conftest.c" would be
+treated as -o.
+
+## 15:32
+
+Appears that macro expansion is done after expansion as defining stuff in the
+middle of function-like macros has the effect as if it did not occur.
+
+## 17:54
+
+A recursive class for macro expansion might help.
+
+## 18:00
+
+The hash symbol is context sensitive. In a function like macro it turns it
+into a string while in an object like one it does not process the identifier.
+
+## 18:20
+
+Actually I figured out a way to do expansion without getting messy, sort of. I
+can use a recursive method. When the method encounters a valid identifier it
+checks to see if it is a macro. If it is then it is expanded and replaced. On
+any of the replacement results, it does it again until nothing else can be
+expanded.
+
+## 19:57
+
+The state of preprocessor ifs is simple, it either is true or was or never was
+true in the past.
+
+## 20:28
+
+I should probably not depend on C for native code generation. Such a thing
+could be done with Java code itself with special annotations and such. The
+NARF decompiler code is a bit weak for it though and does not say everything
+about the input code. I will have to do some kind of SSA or similar. I will
+need to take NARF to the next level for the most part.
+
+## 20:46
+
+Well, what I really need is a high level assembly that can work on multiple
+architectures and can use memory effectively, access wise that is. But not The
+HLA.
+
+## 22:53
+
+The HLA does not even have to be a real language, just heavy macros on top of
+an existing assembler. Then common code I have just uses those macros in and
+out between things.
+

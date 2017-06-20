@@ -1,0 +1,37 @@
+# 2014/11/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:45
+
+Before I continue on to the solar stuff I have been writing I am going to make
+it so I can have the build stuff entirely in Java for the kernel at least
+similar to what I had before for all those packages (hairball). So hairball
+shall return and it shall just build the kernel and such. Going to code the
+kernel in a way where you can just run hairball on the JAR file of everything
+on its own JAR file (java -cp rt.jar net.multiphasicapps.k8.hb.Main rt.jar)
+and a kernel gets spit out to match the system you desire to target. Then that
+build code can leverage the filesystem code via the FileSystemProvider in the
+fs package and subpackages, so the build system could write out a k8fs without
+requiring the host to even support it. I could have a special writer class
+that can make the hybrid ISO and HFS bootable CD-ROM so that the OS can boot
+on anything. Also, this moving around stuff will make it easier to invoke the
+build system from my eventual Jenkins setup so it will be much easier on
+everything. The hairball system could also invoke existing emulators such as
+QEMU or GXEmul for example (if they exist) and run test suites on the stuff,
+and that could be done on Jenkins also.
+
+## 01:07
+
+These will be the Builder and Tester classes for making and testing things,
+that way no matter which OS is run (including my own) there is only a single
+way to actually do the things.
+
+## 23:01
+
+Suppose today is a day I take a major break, a day off. Should clear the mind.
+

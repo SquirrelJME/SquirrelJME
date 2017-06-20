@@ -1,0 +1,56 @@
+# 2014/08/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:05
+
+I decided in my JSON parsing script, I was previously using \\# and delimating
+that to split the reserved text for later, but I just decided to instead use a
+character that would rarely be used, that being vertical tab. I would not have
+to worry about it being used since it would be quite rare.
+
+## 06:52
+
+Working on my code, PackageInfo had gotten a sort of a dual purpose with
+taking a Reader and a JsonObject. Now it just takes a JsonObject since that is
+simpler to work with and makes the PackageInfo code much less messy.
+
+## 08:02
+
+Worked on a bunch of code this morning, which is rather nice. I just need to
+work on parsing the JSON data and setting up the package database a bit more
+for the eventual building of packages.
+
+## 11:45
+
+Tagging the start of each month makes getting a unified diff of the entire
+month so I can see what I worked on.
+
+## 12:37
+
+Going to make the interface dependency stuff its own class called Interaction
+so that PackageInfo does not get super bloated with classes and such.
+
+## 12:42
+
+Had this idea for my compiler, have supplanted checking system. What I mean by
+this is I can attach an annotation to some method and have the compiler run a
+kind of check based on the input arguments (assuming it is a valid call with
+the right arguments). Then I could tag printf taking methods and such so that
+they have their format specifiers checked by the compiler and such.
+
+## 13:19
+
+I should sleep soon, wrote a little bit of code and now I am at a strange
+exception 'Illegal mismatch of JSON type, did not want ARRAY for "x-tags".' of
+which I do not know why it occurs.
+
+## 13:25
+
+Before I go, I should note that I need to add handling of services and main-
+entry.
+

@@ -1,0 +1,33 @@
+# 2015/08/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:00
+
+All of my `throw new RuntimeException("TODO");` should be `throw new
+Error("TODO");` since Error should never be caught.
+
+## 20:32
+
+UnknownError might be a better choice, or perhaps InternalError.
+
+## 20:57
+
+I decided on UnknownError, now there is the long rebuild since I touched many
+packages. Which took 3 minutes and 18 seconds.
+
+## 22:46
+
+PreprocessorTask and AssemblerTask reporting should best be done with URIs
+insted of PreprocessorTask.Files. Also each token will now have the file the
+token originated in also.
+
+## 23:43
+
+Unwrapping InvocationTargetException makes the stack trace much easier to read
+when uncaught exceptions are thrown.
+

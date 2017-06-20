@@ -1,0 +1,27 @@
+# 2015/09/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:52
+
+A fully on-demand constant pool would be a bit slow.
+
+## 16:53
+
+Yknow, the class file string size is limited to 65k, I wonder how the compiler
+treats really long string constants. Would it be an error or would it just
+StringBuilder them on initialization? This does limit the number of packages a
+class can be in however. This means the maximum number of sub-packages a class
+can be in is 32,767. The package depth that is.
+
+## 20:53
+
+Pulled out my desktop, which has two CPUs and a mechanical keyboard so a bit
+of an upgrade from my laptop. However the screen resolution is smaller at
+1024x768. This means that in my text editor at least the 80 columns fit just
+enough for the most part.
+

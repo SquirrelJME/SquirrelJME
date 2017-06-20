@@ -1,0 +1,96 @@
+# 2014/11/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:53
+
+So when I add a new operand, do I manually setup new values or let the SSA do
+all the work. Perhaps having SSA do the work would be better as it would save
+duplication and some time. Well, the SSA would not have it but the
+ProgramBuilder would, so there could be more complex code that is generated
+and such.
+
+## 15:12
+
+Going at this the wrong way, the current stuff it too complex and convoluted.
+I can make the SSA generation code be smart and change the way some things are
+done and perhaps split the stuff back out to external classes (since cramming
+it all in a single class gets big). I can just have SSA become the tail and
+have all operations be performed on that along with it handling forking. I
+would essentially just be moving tail to that class and then removing the need
+for there to be a ProgramBuilder. Then SSA can get the tail trunk, branch, and
+leaves. Or I can just forget about SSA and perform dumb regeneration of byte
+code into specific machine code and such. However, SSA would be very handy but
+I need a good API to access it and such. Because the thing is, when an SSA
+branch forks so do all of the values.
+
+## 16:23
+
+So I will have a SSA package with all the SSA stuff together so it can freely
+live together. The Tail will become Comet in its own class which creates Tails
+that contain operations and such.
+
+## 17:24
+
+I really do not need to worry about verification much because StackMapTable
+makes it really simple now. There are some large complaints of people saying
+that StackMapTable is bad and that it hurts everyone including JVM developers.
+However, it makes the JVM developer's job of implementing a verifier much
+easier because the local and stack values must match the specified information
+at the indexes.
+
+## 22:18
+
+I have this idea where you can take the JAR and execute it to create a kernel
+from it. Since every k8 system will come with said JAR you can do something
+like "java -cp rt.jar net.multiphasicapps.k8.Compiler blah blah", though one
+could have a stripped down compact profile JAR. However Java 9 will supposidly
+use a modified file format. Java 9 states that "The class and resource files
+previously stored in lib/rt.jar, lib/tools.jar, and various other internal jar
+files will now be stored in a more efficient format in implementation-specific
+files in the lib directory.". However for my OS I might not want the entire
+rt.jar being a JAR file but maybe some kind of compressed image that the
+bootloader can boot from and have it act as the classpath. I would also like
+to make my own thing modular also. There are modules for Java 9 but I can use
+package level annotations in building of my own proprietary runtime image
+which may be stripped down. Though running k8 on an embedded system you would
+most likely not have the entire classpath in class file format if there are
+space constraints. However, I am going to need my own format so the kernel can
+boot since you cannot really just eat up a JAR file and boot it. However, the
+nice thing about ZIP files is that they can be attached to anything. So what I
+could do (since I still want compression optionally) is to make my own
+proprietary kernel image a ZIP and bootable disk image hybrid for the location
+of my classes. Then there could be classes and kbfs in there, possibly even
+sources. But, the image would essentially be the root filesystem. So the image
+file can be unzipped to view all of its contents, but it could also be mounted
+by the kernel (because it would also be a read-only disk image) and accessed
+that way. Upgrading the kernel and the entire runtime would just mean
+overwriting the boot root file. So then this would mean the following, if the
+file contains ONLY binary files then they cannot be recompiled to the host
+system if the image has bad for the current CPU things. However if they
+contain class files (and potentially ONLY) they can be recompiled and cached
+somewhere on a writeable disk where that cache could be used.
+
+## 22:34
+
+So the image would be in two parts, the primary bootable sector which contains
+the core bootloader for the selected OS, and then the image of an actual disk.
+So if the file is together and loaded into the kernel then it can directly
+reference it by memory, otherwise it will need to look it up on the disk to
+load it. However, there will need to be multiple forms of the code because
+there is the boot loader and the main kernel system, so it would always have
+to be at most two files. The boot loader bits can never be separated as they
+are dependent. The class files could be split out and recompiled as needed.
+
+## 22:50
+
+Also perhaps making it an ISO image also would be good, so it is a hybrid
+ISO/ZIP/K8J file. Then perhaps slap on HFS too for PowerPC Mac systems also.
+There could also be extra stuff in the ISO for other architectures so the
+image can be bootable by anything. Although for some targets like the N64 it
+would just be a ROM image with the specified stuff on it.
+

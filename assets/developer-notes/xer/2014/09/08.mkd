@@ -1,0 +1,65 @@
+# 2014/09/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:10
+
+Shunning and removing the DO NOT USE THIS branch saved me about 34KB in the
+database. And removing lines containing only whitespace caused the compressed
+archived checkout to go up slightly for the tb2 archive, although the others
+remained the same. Doing it also did bloat the resulting repository though by
+about a tenth of a MiB. Shunning is considered bad, but that revision was a
+mistake and there is no sense in it existing for the most part.
+
+## 08:20
+
+I will need to simplify the compiler because right now even in its very
+minimal state looks rather ugly.
+
+## 10:53
+
+I need a PushbackIterator and a NoSuchReplaceIterator for the tokenizer. The
+pushback is self explanatory (puts stuff back into the iterator for next). and
+the replace is for catching NoSuchElementException and just returning a
+prespecified value instead (hasNext() would still return false).
+
+## 11:17
+
+The good thing about object orientation is that it makes implementing things a
+bit easier.
+
+## 16:19
+
+Seems this super tokenizer will be a bit better and stronger for my needs and
+it can hide some things in the compilation stuff.
+
+## 17:43
+
+My kernel will need a recompiler for Java byte code, so I need to have a
+separate class loader and a intermediary support ring, otherwise I will have
+to include a very bulky compiler with the kernel which would not be lean.
+Another thing I can do at least with the pre-compiler is branch limited
+optimizations. That is, say a CPU assembler supports tons of different CPUs,
+the compiler when making native code could in essence just optimize out
+certain values. So say if the target system is the Nintendo 64. The compiler
+in general would support multiple different MIPS systems, but on the N64 the
+resulting code path would be useless so it could be glitched out.
+
+## 18:31
+
+I believe the compiler is going to end up being way more complex than it needs
+to be. All I need something that can turn Java or C code into an intermediate
+form which could then be turned into something else. And I need to code it in
+a way so that there is no duplicate code so that it could be reused by the
+kernel for JIT compilation when needed.
+
+## 18:38
+
+With new simpler binary code, I can remove the binary format stuff. Then on
+top of that I can add class file support. Right now my normal compiler which
+does not do much, stands at about 3400 lines of code.
+

@@ -1,0 +1,32 @@
+# 2015/03/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:58
+
+I believe the initialization with the method is finished. I allocate the
+exception register and all of the input arguments, I do not believe there is
+anything else to do.
+
+## 10:20
+
+Register entries need to be locked, because they could be allocated and then
+dumped onto the stack screwing with the order of everything. Also before a
+method call, a bunch of registers will need to be saved onto the stack so that
+the correct register and stack state is used when the method is called.
+Although that is optional. It would probably be best to do that in the native
+handler as it could save and restore register states as needed since it could
+vary on each call.
+
+## 11:14
+
+I should research how some other operating systems perform system calls.
+
+## 11:21
+
+Well it might not matter much.
+

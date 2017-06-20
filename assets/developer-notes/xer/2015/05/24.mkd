@@ -1,0 +1,98 @@
+# 2015/05/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 16:24
+
+Thinking about it, the way my kernel is built currently is a mess. I have
+"build-kernel" which is essentially this gigantic method. One thing that is a
+problem is that I will need to build "distributions" such as installer ISOs or
+ROMs for specific systems. Some parts need the native compiler, other parts do
+not. There would also have to be a way to share those bits to reduce duplicate
+code and junk all in one place.
+
+## 17:07
+
+I will need to figure out a name for such a system though. However there are
+more things to do in real life that must be completed also. The built
+distributions must all be live systems which can be installed onto a system,
+since that way they are easier to test and they are in essence their own
+installers. It would also be the intended way to install things also. The only
+major problem is also including source code. Currently in a ZIP my code is
+5.4MiB, whereas a tgz is only 1.4MiB, and txz is 1,016KiB. I would suppose
+that keeping the source in a tgz would be best as it is the smallest. My hope
+would be that such a live system with complete native binaries for a specific
+system so that recompilation is not required initially, that is remains under
+64MiB. ROMs for say the N64 will need to include a root filesystem on the ROM
+itself along with boot code, so for say a filesystem design compression will
+be required to maximize space since 64MiB is the limit. So then for the live
+setup I should perhaps have a menu. One that says "Live System" and
+"Installer" which respectively does as such. However, internationalization
+wise I will need some kind of localization JAR stuff which can create
+properties files which may be added on to base installations as needed without
+requiring it be in the class path or otherwise. Another thing for the N64 ROM
+is that the native compiled code could be executed directly from the ROM so it
+cannot be compressed.
+
+## 18:58
+
+I believe the best thing to do kernel wise as per communication with itself
+and userspace would be to have an RMI interface so that only interfaces are
+exposed and other services can be provided through it. Stuff such as process
+management, creating sub-vms, hardware virtual machines, joysticks, etc. will
+all be done through it. Then with such things using said interface it would be
+possible to then permit testing of the primary library and such in a
+interpretive only VM in a sense.
+
+## 19:23
+
+The current hairball system for the kernel is not going to work because due
+the modular nature and dependencies it is possible for some things to be
+excluded. So I will need something that is like "make menuconfig" for Linux
+which looks at all of the packages and determines which are plugins for what.
+There would also need to be a provides based system to, so that packages can
+give virtual names of what they have available. So in respect, vmjar is going
+to get somewhat crowded.
+
+## 19:30
+
+So for such a system, I would also need a type of section similar to Debian
+such as "required" or "optional". Perhaps it can be "select-mode".
+
+## 19:36
+
+Although I still lack an actual compilation for the past few months, as I keep
+changing my other code to be better. I will have to change hairball enough so
+that it is better. Must be done because not fixing the mess I have now would
+be very difficult to change in the future. I need to lighten up the package
+versions and stuff also. Right now I have a rather complex version scheme, so
+it should perhaps be simplified. Perhaps I will go for a basic dot only
+notation. There could be many sub-dots and letters would be higher than
+numbers but it would be simplified to a point where there is no very complex
+class or formula determination used.
+
+## 19:44
+
+HairballLauncher can also be simplified so that it no longer needs all these
+other packages to be boot built.
+
+## 20:04
+
+Hairball existed back to when I was programming for Java 5 which means it has
+not benefited much from the way Java 8 code is written. I also made some bad
+design choices in hairball which are hitting me now, the code is rather ugly
+and difficult to maintain.
+
+## 23:00
+
+This package management code is going to end up being much nicer than before
+and much much simpler to use too.
+
+## 23:51
+
+So far, much much better. In fact it was rather overdue this fixing up.
+

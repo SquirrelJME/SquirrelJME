@@ -1,0 +1,23 @@
+# 2016/01/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:00 ?
+
+Ok, so looking for `DeletePathComparator`, the runtime calls
+ClassLoader.loadClass(). That checks if the class is already loaded and if it
+is not, then it is loaded. Then it calls findClass in `URLClassLoader`.
+However, I do not know which URLClassLoader it is using. I actually have a
+large number of them for each stage of the bootstrap.
+
+## 20:17
+
+Today was a quite busy day and tomorrow will also be quite busy, so less likely
+that I will get programming done. However, luckily for me the water has thawed
+out so I have a fresh supply of water now. Also have just taken a shower which
+is quite nice.
+

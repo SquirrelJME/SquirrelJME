@@ -1,0 +1,32 @@
+# 2015/08/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:40
+
+After splitting the parts of the code, recompilation does seem much faster as
+less dependencies and less code is compiled in two independent packages. I
+figure for the SSA register allocation that it is segment (basic block) local
+so it is easier to generate code for (live and not live, etc.).
+
+## 11:45
+
+In another note, LLVM's basic blocks have it so invoke of external functions
+is at the end of a basic block. Currently for me I have it so the invoke of
+methods is not on a terminating block. Based on reading GCC does what I do in
+that function calls do not mean the end of a block. Also Wikipedia states that
+any instruction that can throw an exception is the end of a block, but that
+would mean (in terms of Java) that anything can throw an exception for the
+most part, which would mean very small blocks.
+
+## 18:21
+
+I suppose register allocation is the hardest part of SSA, since it is NP-
+complete. Means it can take decades to find the optimal solution with current
+algorithms. I could go for sub-optimal and remove the NP-complete taking
+forever nature of it however.
+

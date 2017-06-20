@@ -1,0 +1,23 @@
+# 2015/09/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:57
+
+My phone has CLDC-1.1 and MIDP-2.1, however J2ME/JavaME does not support
+ClassLoader so I cannot make my own loader. I am thinking about writing a MIPS
+Malta emulator so I can run eventually k8 on my phone. In the mean time I can
+use Linux on it. I also must implement
+net.multiphasicapps.narf.ppc.SSAToPowerPC.readFromField eventually.
+
+## 13:35
+
+For my SSAToPowerPC (and everything else), I am definitely going to need
+separated generators for 32-bit and 64-bit since combining the two in one is a
+bit messy. However, I should be able to use the option set to determine which
+one to generate without requiring messive code changes elsewhere.
+

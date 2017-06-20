@@ -1,0 +1,70 @@
+# 2014/07/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+Day roll over, it is now dark and since the light was on bugs get rather
+attracted to the room. So I set my screen brightness really low and increased
+the font size to make things easier to read since it is a bit blurry. I get
+blinded switching to a screen that is white, so a dark text editor helps at
+night although the sidebar is rather bright. Will most likely cause tons of
+eye strain just trying to read the text I type.
+
+Side note: will need to do my own URL handling extra stuff along with the
+standard URL management, same goes for localization since the standard library
+sucks at this.
+
+Not sure if I should handle annotations in annotations, though I might not
+ever actually use them. If they ever are used then the parser could be updated
+anyway.
+
+Had this idea for a BSOD or Panic, show the moon from Seseme Street for the
+NES whenever it happens just going no. Would be rather nostalgic. Perhaps when
+I get far enough my BSODs could be references to 8-bit games from the NES that
+I played alot as a kid.
+
+This code although a bit complex is going rather nicely for token parsing,
+serves the purpose so far.
+
+I was going to do some complex structure with manual labor to throw data in
+for the placing of actual argument data. However, instead I am going to make a
+tree that could be navigated and entries placed at. That would at least save
+me time, then I can make a toArray which turns the tree into a giant array.
+
+I should write the tree structure up first before using it so I do not run
+into any TODOs. Actually, I do not really need this crippled tree setup as I
+am overcomplicating the issue. So far the new setup is much better and much
+simpler. It appears Java 5 does not support multiple annotation values being
+called like a method and instead requires equal sign to be used. So I must
+modify the parser to handle said cases. The equal sign complicates things
+slightly for array and currently multiple key=value pairs.
+
+And now that equal signs are handled everywhere, I just need to change array
+inner key values to be numbers instead for verbosity. I also must fix stuff
+such as foo={"hello", "world"}. It becomes [value=[0=hello, [1=world]],
+value=foo] which must be fixed. At least my sanity checks are not firing so
+far after the end of an array. With a whole assortment of debug printfs, I now
+have it working as expected.
+
+Now that it is done, I realize that my dependency scheme is rather poor in
+that I use URLs instead of URIs. They are not really URLs, so I will switch to
+opaque URIs since it is better suited. I actually did the URLs wrong to begin
+with because they lacked a third / so it was quite literally referencing the
+"k8" host with the rest being paths.
+
+On a side note, GCJ is dumb in an instanceof: "warning: ArrayList is a raw
+type. References to generic type ArrayList[E] should be parameterized",
+however doing such a thing is illegal because it creates "Cannot perform
+instanceof check against parameterized type ArrayList[HairballParser.Pair].
+Use the form ArrayList[?] instead since further generic type information will
+be erased at runtime". So that is fun. For my parser, I can do something that
+could also parse class file import statements (since they are always on the
+top) to then determine if I have all the dependencies of the specified class.
+At least all my current code works as expected in OpenJDK.
+
+Will need to start writing dependency walkers, but since that will be
+duplicated in hairball and sort of roughbld, I will make some nice interfaces.
+

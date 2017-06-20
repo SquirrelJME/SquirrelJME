@@ -1,0 +1,29 @@
+# 2014/08/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:33
+
+Now I am awake, and work begins.
+
+## 03:53
+
+Ok my beacon work can be modified and improved to use Channels instead of
+input and output streams, since native IO is much nicer looking. I could call
+it a pseudo file system of sorts, minimal. Then for the input of files I can
+just capture the entire root of said filesystem.
+
+## 04:07
+
+Or I am over complicating things, I can just make a pseudo storage area and
+access mechanism which is capable of being placed in memory and such, I can
+use URIs and URLs to determine the placement of files and such. Then when used
+by the code, it is able to read and write files on the disk along with having
+an in memory cache when needed. All of the stages could share this and such.
+This appears to be the best way to do it, keep it minimal and simple but
+flexible enough to work well.
+

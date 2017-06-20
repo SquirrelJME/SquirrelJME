@@ -1,0 +1,65 @@
+# 2015/02/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:58
+
+Appears that the code might end up being convoluted with all of these classes
+everywhere.
+
+## 09:22
+
+What would work is a generic mutator which any dynarec can use to modify the
+input byte stream as needed which handles much of things such as the stack.
+This would help reduce duplicate code that would eventually be placed in all
+of the dynarecs that would ever be written. Said mutator can be mutable and
+have capabilities such as managing the stack so operands streams are a bit
+easier to make. Probably would be best to place it inside of its own package
+so it can sort of stay out of the way of "narf".
+
+## 09:28
+
+Methods are also a bit more complex than just being a stream of operands. And
+the various assembly languages are also the same. So there perhaps should be a
+class which is mutable which describes all of the operations together as a
+whole. Then passes could operate on the same method bits rather than going
+through streams, where some passes would require putting it together into a
+whole bunch of operations anyway. So instead of the stream a huge chunk is
+returned by the code banks. The current code bank the JavaCodeBank would just
+be quite literally fill all the operations up first, then walk through them
+all and figure out the state the method may be in at specific instructions.
+This could get complex when there are forks (branches around with differing
+states) so the decoded method would need to handle where states may differ. On
+large methods with lots of branches all of the information can take up a bunch
+of memory, so there will need to be some kind of immutable state that can be
+shared when the state of things is exactly the same. So in this decoded method
+there would be operations with a possibly unlimited amount of entry states.
+When a branch is made (the next instruction would be the same branch), states
+get added and then placed in the decoded method data. If a state was already
+determined then it is skipped. All local and stack information would be kept
+variable and unknown and all branches evaluated so that stuff like known
+constants can be kept from creating tons of states (a for loop with 1,000,000)
+iterations would proceed to create 1,000,000 different entry states for the
+loop which is quite too much. The method data can keep track of where it is
+entered by and the states, so an optimization pass could determine if there is
+a loop which may be unrolled. Variable maps could also be used to show which
+variables are modified by each operation.
+
+## 09:41
+
+So to recap, a DecodedMethod which describes all the operations that are
+performed. The JavaCodeBank will create one and initially seed all the
+required information as needed. Since the DecodedMethod will be highly RISC it
+will need to have helper bits that can transform CISC into this RISC.
+
+## 13:02
+
+For SQ, I need a higher level unit information structure that contains the
+constant unit information as needed so instead of doing complex property data
+checks it can just grab the annotations semi-directly and make an initial
+structure based on that.
+

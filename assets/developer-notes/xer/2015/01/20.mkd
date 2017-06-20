@@ -1,0 +1,87 @@
+# 2015/01/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:00
+
+After writing XPM image support I am going to have to write code to check if
+JARs need to regenerated based on file times (if any). The thing I do wonder
+though is if for system that have no real known clock, such as one that would
+be uptime based or some kind of timer base, is if the NIO stuff can handle
+dates like that. Well FileTime can be converted to an instant or to another
+time unit. Well, all of the time stuff assumes Earth based dates so it is
+going to suck for Mars people. One thing I can do is if a bunch of files are
+created when the clock is invalid, the true times can be set when the clock is
+set so any old files are corrected for.
+
+## 14:05
+
+I wonder if forcing gray and 4-level gray values in XPMs is good. Although I
+have yet to see HSV XPMs (since I have only seen RGB ones so far), I will
+support it anyway since Java has a simple HSV (called HSB) conversion. Now
+that the color table is done I will need to actually draw into the buffer.
+
+## 14:24
+
+Well, XPMs are loaded but the transparent areas are black and all of the
+colors are transparent.
+
+## 14:45
+
+Well, it appears that Java uses 0xFF for opaque and 0x00 for transparent
+instead of the opposite. So it is not alpha as in Alpha it is opacity.
+Actually my code is wrong since I use 0xFF000000 for a special value so yes it
+is correct as it should be.
+
+## 14:54
+
+Now I can really use some kind of date comparison between source and binaries
+to determine if a package has been changed (or one of its dependencies) so I
+can instead just pass a non-clean build to hairball. However the shell script
+cannot handle such things but some packages are not going to change much at
+all. The package manager part is mostly stable and only when it changes will a
+rebuild be required.
+
+## 16:54
+
+I wonder how a BoxLayout can fill the width of the buttons I add.
+
+## 18:57
+
+For SQ, getting a bit ugly will need to move some things around and make it
+much leaner and efficient.
+
+## 19:28
+
+Going to do a partial redesign of the logic so it is handled like a network
+program from the start, but previously this was just a map view hack and such
+so now it gets more serious. There will be a central game arbitrator which is
+the hub for events, this class controls the game. Arbitrators get impulses
+from players, computers, or replays. The arbitrator can also save a replay of
+a game that has been played.
+
+## 23:25
+
+It would be best to have a player chart on the left and then the connected
+clients on the right, because otherwise having a mixed player and client chart
+in one would be very confusing.
+
+## 23:42
+
+With the colors that were chosen for players, in regard to color blind players
+in regards to telling the player colors apart:
+
+  * Red -- Protonopia: OK
+  * Green -- Deuteranopia: OK
+  * Blue -- Tritanopia: OK
+  * All -- Achromatopsia: 0 and 10, 1 and 11, 4 and 14, 5 and 9, 7 and 8; so
+    this would be the worst.
+  * Blue Cone Monochromacy: OK
+
+These are fully bright colors though, so when I make units I should make the
+player colors as bright as possible and the surrounding terrain a bit darke.
+

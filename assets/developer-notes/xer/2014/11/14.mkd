@@ -1,0 +1,49 @@
+# 2014/11/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:35
+
+So now that I am on it, time to remove mutability from Logical and friends.
+
+## 14:28
+
+I will have a class recursion issue, because when I generate information on a
+class I need to know the identity of the original class which is associated to
+the logical. So I will need to export the class back to a standard class file
+and then perform some kind of algorithm on the input. So after a class file is
+loaded it must be translated back into a class file to get the identifier (the
+hash sum) of the class. So that way if the sum of the class changes on the
+disk when it is loaded it can be regenerated, but this will mean that there
+will be two hashes to represent the input class. I seem to be worried about
+security where the stuff can be changed at run-time, but the kernel would be
+protected along with its class recompiler so I will just need a snapshot of
+the associated class sum.
+
+## 15:57
+
+Perhaps the best thing to do would be to make ClassFile immutable so I do not
+need all these locks like crazy and instead use a builder which can make
+ClassFiles.
+
+## 18:37
+
+The builder stuff looks much better so far. Currently stuff on members. Fields
+and methods are both members where the only difference is their set of flags
+they are associated with. So they are very much alike. So perhaps instead of
+having their builders in another class I can just make them be part of the
+class file. However, they are distinct in that they are both fields and
+methods rather than just plain members.
+
+## 20:29
+
+Have not thougt much about this, perhaps I should. My main worry is the early
+visible of the class file through the members, however the class file is
+immutable. Also, if you use the class file before it is built then that is
+your problem for using it in such a way. However, building a member should
+automatically add it to the containing class.
+

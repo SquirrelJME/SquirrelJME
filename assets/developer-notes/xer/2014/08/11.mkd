@@ -1,0 +1,55 @@
+# 2014/08/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:19
+
+Hopefully soon I will have a PowerPC laptop to perform some work on. I also
+got very distracted with life events 2 days ago, hopefully I can resume coding
+soon. But I must clear my mind, hopefully fixing my PowerPC laptop will free
+my mind a bit. I also could then code on both of my laptops at the same time
+which may increase or decrease productivity. That laptop is a bit slower than
+this one, but every little bit is handy. I am not too sure on how I can code
+using both codebases at once, that is so changes on one system are affected on
+the other. I can use sshfs, however that has a bit of a speed problem in
+certain cases.
+
+## 05:15
+
+And now it is fully operational, k8 has not been updated on it since the
+fourth of July.
+
+## 05:45
+
+The prepdir.sh script is rather sluggish on the PowerBook G4 since it uses
+recursive invocation of the script to find more projects to parse. Switching
+this to a normal find would produce better results.
+
+## 06:04
+
+Rather hungry right now, just need to think about the solution what I
+currently need to use.
+
+## 11:16
+
+The changes increase speed very slightly but the bulk of slowness is in the
+JSON parsing shell script.
+
+## 11:29
+
+Using cut instead of sed is much faster, cannot believe I forgot about cut.
+Suppose sed is so powerful that you forget the simpler tools. There is also tr
+to change tabs into spaces, so simple. Removing those usages of sed seems to
+be a bit faster too.
+
+## 11:54
+
+I made the dojson.sh script batch the commands to be run so they can be run
+later than executing them all as they appear. Doubt it will make any
+difference in terms of speed however and might actually slow things down,
+however there is no need for a fork mid-execution.
+

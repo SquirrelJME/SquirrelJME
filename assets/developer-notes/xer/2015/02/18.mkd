@@ -1,0 +1,83 @@
+# 2015/02/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:16
+
+Now RETURN must be handled and I would have my first constructor, cool.
+
+## 12:44
+
+For the C recompiler to work I am going to need vtables for classes and such.
+I am also going to need decoration for output code also. Another thing is that
+the language specific dynamic recompiler or boot code will have to add
+executable formats, since my current recompiler just works on single methods.
+That will have to be the way it will work. Code gets translated then once all
+the methods for a class are generated the binary output for say C will create
+the source file for the class and its header file. So still at this point I
+will need to implement the entirity of the virtual machine byte operation
+decoding to even reach stage two. Reaching stage 3 will be about fixing issues
+which exist in stage 2 caused by further down stage 1 issues. However once the
+3 stages successfully compile and run I would have a primitive virtual
+machine. One thing to note is I would have to write a Java compiler but I can
+sidestep that by using pre-existing packages as input to hairball (it will not
+build packages that exist on the disk) so I can at least side-step that issue.
+That would mean that I would need to lazy get the Java compiler so that if it
+does not exist it can then build.
+
+## 12:57
+
+I can use lots of gotos in my C code to simplify branch handling and such.
+
+## 17:33
+
+The C code will be quite literally the virtual machine op codes acting on
+pointers and such, so this way it is more of a graphical representation of how
+things are done. I can then hide stuff like garbage exception in the operation
+implementation.
+
+## 17:38
+
+Not sure how I will handle stuff like exception handlers however.
+
+## 17:44
+
+If code does cause an exception I could use a return status so that the
+exception handler is jumped to as needed. That could work, then have say it
+return an exception type. May be something as `((toss = opFoo()) != null) goto
+handlerfor_1234;`.
+
+## 21:40
+
+I could use setjmp/longjmp and figure out a way where I can do stuff such as
+catch and finally as needed.
+
+## 23:39
+
+I require checks to be performed for the various operations. That is when they
+are created the inputs and outputs are validated so they are correct. If say a
+method has 20 arguments then the passed in types must be correct. However they
+may be correct and it will never be known, in the case of classes which depend
+on others.
+
+## 23:43
+
+That would probably be best be done when all the operand states are known. In
+any case the outputs will always be overwritten based on their type so really
+only the inputs require checking. It is quite possible for the code to be
+normalized as needed however. As for operand implementation, only 159 left to
+implement, which is quite a bunch. I could probably write a cache for the
+input and output registers, but I need a nice expandable cache map for values.
+Using lambdas and such would vastly make it not as big as it is needed
+however.
+
+## 23:50
+
+I suppose the code to concentrate on is the handling of byte code operations,
+then once those are handled I can better output specific code (the current C
+test code) once all of it is inside and handled correctly.
+

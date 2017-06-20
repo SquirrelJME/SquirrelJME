@@ -1,0 +1,47 @@
+# 2014/10/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:15
+
+Need to read members of classes and get all of that information decoded.
+
+## 05:06
+
+The version of JamVM that I had with Debian did not work so I was forced to
+use an interpreter on this system, so I just luckily found an older version of
+the package still in my cache. Now I can feel the speed of a cached
+interpreter.
+
+## 17:00
+
+I need a more modular approach to loading of class files for later
+translation, what I currently have is getting a bit messy, quite messy.
+
+## 17:12
+
+How about a dyanmic like system where instead of everything being read it is
+just referenced. When the byte buffer is first passed it builds a map of the
+entire class in memory then when stuff is actually requested it is obtained
+from the buffers.
+
+## 17:18
+
+Well that might be a bit ugly, so perhaps something like a consumer of sorts
+would work better.
+
+## 17:56
+
+Perhaps something that would be good is if the class is decoupled from the
+loader, so that way a loader just injects stuff into a class. Then that way
+the actual class that describes the class does not contain any loading code in
+it. Then that way, any new loader engines could be attached and separated.
+Virtually all of my previous class loaders coupled together the class
+information and the loading, and that gets rather messy. Or it previously has
+been something as to abstract classes for different class formats filling in
+information.
+

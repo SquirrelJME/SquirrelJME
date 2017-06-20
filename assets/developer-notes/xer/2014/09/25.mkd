@@ -1,0 +1,42 @@
+# 2014/09/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:58
+
+I will need the best interface for the wrapped compiler, otherwise things will
+get ugly. It should be kept as simple as possible also.
+
+## 05:20
+
+Need to think of the interface to the compiler, just the invokation and front
+ends bits.
+
+## 05:27
+
+The interface may interact with the actual command line which contains a bunch
+of stuff. So it would be if the compilation acts very similar to the actual
+Java compiler just as using real paths. Although it possible for an
+unspecified compiler to be able to use a special storage area like my simple
+compiler. But that is beside the point.
+
+## 20:21
+
+An exit code check will be handy to determine whether a specified javac is
+k8's compiler wrapper. Since other compilers do not know that extended command
+they will fail with some unknown exit code or simply ignore it. However, the
+compiler wrapper returns the specified exit code used by the program and that
+is known by the script. Simply checking the value three times with odd values
+should work just in case the normal exit code for an illegal argument matches
+one of the three numbers.
+
+## 21:26
+
+Going to merge the package-manager and package-api packages into one because
+there is no need to have a separate API and a separate command line like
+program.
+

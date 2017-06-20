@@ -1,0 +1,43 @@
+# 2015/01/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:27
+
+Perhaps I should make start game do something even if it is incomplete.
+
+## 10:49
+
+The client front end piece is looking much better.
+
+## 11:03
+
+I believe I am going to have players in the game only be controlled by single
+clients at a time, this simplifies the entire game system although it would
+then be impossible for two clients to control the same player.
+
+## 20:06
+
+Today was a busy real life day, but it was good.
+
+## 21:07
+
+With current SQ design save games are not possible, but I could always have
+the save games be actual replays which are then continued where they left off
+where players inside get new players IDs as such. Well the generation for
+random maps is based on the initial map seed so after that there will never be
+nothing really random at all much.
+
+## 21:47
+
+SQ needs a random seed to be set now.
+
+## 22:56
+
+Because the same old seed zero generic test map is rather boring every time it
+happens.
+

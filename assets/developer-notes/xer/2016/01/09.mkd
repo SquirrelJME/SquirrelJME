@@ -1,0 +1,88 @@
+# 2016/01/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:38
+
+So for KBFs I need the ability to both read and write with simple code.
+
+## 09:48
+
+I could use ELFs instead of KBFs. However ELF does not support some Java stuff
+natively so it will have to be virtualized within sections.
+
+## 10:08
+
+Many systems do support ELFs and can boot them directly.
+
+## 10:24
+
+With ELF, I can then do objdump or even native compilation of code (provided
+there is an abstraction layer which is required for system calls to operate).
+
+## 10:31
+
+Then I can test the programs on Linux and FreeBSD assuming I do not need to
+set an interpreter.
+
+## 10:49
+
+The main thing would be mapping the `Bin` classes to the ELF format which can
+be done. The main thing that the KBFs would have would be that it can store
+stuff such as the constant pool. The format in ELFs could contain everything
+the KBF can have also. The main thing though is that by using ELF I can reuse
+part of the ELF library code for reading and writing compiled classes. ELF does
+have `SHF_LINK_ORDER` which I will use because that simplifies things. By
+using that I can have it where I do not have to perform any relocation of code
+or symbol lookup and do things rather directly. The only thing that requires
+initialization on load would be the reference table.
+
+## 10:54
+
+So other linking utilties know that it is Foobarniux I will need to obtain an
+OS ABI number from whoever organizes such things. Appears it is
+`registry@sco.com`. So once I have a drafted way of how I am going to use the
+ELF I can mail them and request a number. Using ELF at least (before I decided
+against it) should permit me to keep things simpler, and may help for testing
+on host systems by linking in my recompiled code so that it runs in a simulated
+userspace Linux or FreeBSD process.
+
+## 11:00
+
+On another note, I should add a type of field for the compiler that Foobarniux
+would provide. When building Foobarniux on Foobarniux itself it is possible
+that a bug in the compiler or partial implementation will cause it to not
+build properly so that then a bootstrap compiler would have to be used.
+
+## 17:51
+
+For system commands, I can have one command per package, since packages can
+depend on each other anyway.
+
+## 19:29
+
+The C library will essentially be in Java, except for the headers. The headers
+will use special attributes similar to GCC ones which specify a binding call
+point for execution.
+
+## 23:02
+
+For C compilation, instead of writing byte code myself I can instead source
+code translation from C to Java. Then I can just take that code and then
+compile it with the built in Java compiler.
+
+## 23:10
+
+Of course I need to work on ELF support though so I can get a bootable kernel.
+A C compiler can come later on when needed.
+
+## 23:20
+
+Going to actually need a method which can set the specific byte order of the
+data accessor (that is make a new one). An ELF may be read opened as big endian
+but it might just end up being little endian formatted.
+

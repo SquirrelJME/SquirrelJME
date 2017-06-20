@@ -1,0 +1,35 @@
+# 2015/07/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 16:24
+
+Was a busy real life day earlier.
+
+## 18:31
+
+My glasses snapped in half earlier today also, which was not really a good
+thing. However I repaired them myself after two attempts of which the second
+succeeding. The center bridge between the lens was split in the middle, so my
+successful attempt was taking copy wire and wrapping it around the hooks that
+make part of the nose rest and then looping it around the branch. I did that
+once and then placed a cut piece of paper clip and wrapped the copper wire
+around that. I repeated until the center then brought in the other side (with
+some help as the other held both sides of the glasses). Once I wrapped around
+the bar on the right side too I then finished it with a loop around the nose
+rest thing. Continued with a small loop back and then cut the wire. I then
+soldered a whole bunch around it until it was soldered and one solid piece. My
+first try soldering it ended up in the lens being shifted so a bit wrong. So
+luckily once the solder melted again I could adjust the bits as needed. Once I
+got it good enough I let it solidify. Luckily for me it felt as if the glasses
+are a single piece. I suppose the solder bound between the copper, the
+paperclip, and the frame of the glasses to take up a good solid shape. After
+that ordeal, I wrapped some electrical tape around the solder job so solder
+and copper bits do not contact my skin. So a good thing is that I always go
+for metal glasses. And after this, the glasses do not fall off my head as they
+did before.
+

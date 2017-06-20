@@ -1,0 +1,21 @@
+# 2014/10/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:48
+
+I actually put a note down to say something yesterday but I never did.
+
+## 15:18
+
+I thought about making a server based approach for the virtual machine as that
+would be a bit cleaner and such, however I would then have to handle all of
+the special permissions and security cases for every OS that I port it to. The
+virtual machine in C is just a test so I can get a working kernel eventually,
+so I will stick to a "client" only single instance virtual machine where
+everything is just a single process, but multiple threads.
+

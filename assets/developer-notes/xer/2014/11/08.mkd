@@ -1,0 +1,64 @@
+# 2014/11/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:07
+
+Now that I am awake, work continues. Must annotate and informationize the
+remaining opcodes so that I can begin writing descriptor information along
+with actual byte code parsing.
+
+## 06:10
+
+I need a better design on my LogicalClass and LogicalMethod code. Byte code
+descriptions of a method just rely on the descriptor.
+
+## 06:26
+
+I need to actually recreate any classes which are enums to not sort those
+constants because if enumerations are switched around then static code that
+relies on the ordinal order (such as switch) will break completely between
+virtual machines, ouch. There are only 93 enumerated types in the standard
+library however.
+
+## 06:41
+
+Actually I do not have to worry about that, because using an enum switch
+creates a new class which handles potential out of orders by statically
+referring to the elements there.
+
+## 07:02
+
+My logical class work needs to change to a factory like system and the
+ClassFile locks need to change to the self object rather than an internal lock
+because ClassFiles are operated on. The class cannot change while the logical
+information is being constructed.
+
+## 09:51
+
+I also do not like the LogicalClass, LogicalMethod, and LogicalField classes,
+they should just be a single LogicalClass. Thought about reflection permission
+checking, but all that is would be a simple access modifier check based on the
+source call performing invoke. I do know that in my method tables I will need
+to handle reflective call site stuff. Basically each class has its own method
+tables which are mostly static, but the last entries will be when static
+methods use reflection on a class or similar. Non static methods in classes
+doing such things will then add it to the local field table in a hidden
+manner. One thing my code generator must do it make it so the classes inside
+reflect the same as initialization time as they do during run-time. This means
+that calls such as Class.forName() or Method.invoke() will just be transformed
+into call sites with potential cache (if applicable). So similar to my plan
+for boxed types being simple, stuff like Method and Fields will be very basic
+pointer-ish types. So if any code is detected which appears to just do the
+invoke call on a Method will use a special bridge-like method that is only
+internally visible at static compilation time which checks access control and
+then invokes. The only real access control there is is the normal private,
+package private, protected, and public. There would be two tiers though, one
+for in same package and one outside of same package. But I need to work on
+merging the Logicals into a single class, and make it a factory that locks on
+a ClassFile instead of going crazy.
+

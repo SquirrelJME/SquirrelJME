@@ -1,0 +1,80 @@
+# 2015/05/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:18
+
+CompilerFrontEnd should not be spitting out byte[] containing compiled into
+binaries. It should instead apply the input FormClass and recompile a bunch of
+classes and place them in the FormClass. However, a FormWriter could turn said
+things into the required bits as needed.
+
+## 00:38
+
+Seems I am getting a ServiceConfigurationError, that SimpleCompiler is not a
+sub type of CompilerFrontEnd. However it is a sub-type, it is extended off it.
+
+## 00:44
+
+Actually, the URLClassLoader does not have a parent, which might be why. And
+it works now. However the file format fails to work now though.
+
+## 00:55
+
+Having slight ServiceLoader woes, however I can avert that by making the
+binary format loading stuff able to be told to look in a ClassLoader for extra
+binary formats.
+
+## 01:28
+
+Ok, now that I fixed some things related to hairball builder it is time to
+change the recompiler still a bit so that there is also a linker used with is
+separated from the compiler.
+
+## 01:31
+
+The linker could be added later however so I know what to expect after
+compiling things.
+
+## 02:43
+
+"run-package" is going to need an -a/-A option to add extra packages to be
+included as dependencies when things run, otherwise k8-debug will be required
+to have hairball in it and be a bit more complicated.
+
+## 13:28
+
+Now that basic set of commands is around, time for a GUI.
+
+## 13:32
+
+An interfaces that uses tabs would be nice.
+
+## 14:38
+
+Using lambdas for Swing actions would be handy and make things a bit easier in
+SQ.
+
+## 18:34
+
+Will need to implement field signatures.
+
+## 22:00
+
+To handle JARs which have been loaded by the debugger system I can create a
+FileSystemView which creates a filter and layer over the system provided one
+so that classes within JAR files are visible. The files naturally would not
+truly exist, however their usage is limited and should not cause trouble with
+regards to native usage.
+
+## 22:11
+
+Well, I have two choices, or can possibly do both. Load a JAR and provide a
+tab which shows the contents of the JAR for later opening, or do the
+FileSystemView thing. The FileSystemView would probably be much more concise
+as I can easily share code and such.
+

@@ -1,0 +1,47 @@
+# 2014/10/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:04
+
+Decided to give gradle another go, although it takes a minute to start when I
+want to build something. Managed to get a config to work sort of but it does
+not actually build anything.
+
+## 01:48
+
+Gradle just does not work, so I am not going to deal with it anymore. The main
+problem is projects, it seems you must have projects in some funky source
+location. You can override the compilation stuff supposidly but none of the
+stuff builds at all.
+
+## 01:56
+
+Suppose there is one true build system, shell scripts.
+
+## 02:15
+
+Looks like I am back to building a build system, hairball was nice but it was
+far too complex and messy. It was also written in a way where it could be run
+on versions of Java before 8. However 8 is just too nice to cripple the code.
+Hairball was just too elaborate and gigantic and used all these shell scripts
+which did JSON first, then switched to a simpler format. Just a mess. Although
+it did work well. I just need something very specific to compiling the kernel
+and all of the stuff in it.
+
+## 08:15
+
+I believe I will take a hint from gradle and have the make codes get compiled
+by the virtual machine so that then they could run and such. This would
+simplify operation as a project will just be a bunch of commands.
+
+## 08:43
+
+Something that would work for the C virtual machine to replace makefiles would
+be simple task sets which can progress and potentially be threaded as needed.
+So a runnable execution set of sorts, possibly in a giant group too.
+

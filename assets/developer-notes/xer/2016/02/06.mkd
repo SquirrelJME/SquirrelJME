@@ -1,0 +1,54 @@
+# 2016/02/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:24
+
+I really have to clean my room.
+
+## 19:22
+
+Need to fix issues where hairball is used completely relative. And there is
+also another trace that will need some fixing so that hairball start time is
+faster.
+
+	at net.multiphasicapps.hairball.__ContentViewer__.getTime(
+		__ContentViewer__.java:162)
+	at net.multiphasicapps.hairball.PackageStatus.getSourceTime(
+		PackageStatus.java:389)
+	at net.multiphasicapps.hairball.PackageStatus.getContents(
+		PackageStatus.java:263)
+	at net.multiphasicapps.hairball.PackageInfo.__getJson(PackageInfo.java:211)
+	at net.multiphasicapps.hairball.PackageInfo.entrySet(PackageInfo.java:113)
+	at java.util.AbstractMap.get(AbstractMap.java:176)
+	at net.multiphasicapps.hairball.PackageList.<init>(PackageList.java:146)
+	at net.multiphasicapps.hairball.Main.obtainPackageList(Main.java:265)
+	at net.multiphasicapps.hairball.Main.main(Main.java:132)
+
+Potentially anyway.
+
+## 19:30
+
+Odd, a file starting with `.goutputstream` landed itself in hairball then went
+away.
+
+## 19:34
+
+On the XServe G5, compilation seems to be speedy using the ppc64 OpenJDK 8
+although I am not too sure if it is hotspot accelerated or just fast itself.
+It takes 2 minutes to run. The only other comparison I have is Zero since it
+appears JamVM is not available.
+
+## 19:40
+
+1 minute and 55 seconds for the server VM.
+
+## 19:44
+
+The latest JDK just runs out of memory immedietly so there is no way to really
+test it when running on the standard 32-bit PowerPC.
+

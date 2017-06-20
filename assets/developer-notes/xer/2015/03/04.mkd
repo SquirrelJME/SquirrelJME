@@ -1,0 +1,122 @@
+# 2015/03/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:17
+
+I wonder what the best way to represent the current allocation state is.
+
+## 01:27
+
+Need to make these things more memory efficient so k8 and the recompiler will
+complete faster and use less resources on more constrained systems. Though I
+need to actually measure this usage and such.
+
+## 01:35
+
+I should wait on that to see if it can be optimized in the future when I get
+to actually running it, but the Java decoder could probably use it.
+
+## 02:05
+
+The register assignments, the ones which are available currently get
+regenerated every time a method needs to be recompiled. Although dynamic in
+standard usage it will be a waste really. Also allowing compiler settings to
+be changed (anything) would lead to a bunch of exploits if one can just change
+a setting producing an incompatible binary. So I will need a structure that is
+capable of storing compilation settings, the CPU used and other things. The
+one thing that may be changed without issue are the optimization passes and
+not the settings that directly affect the CPU specific compiler. Also an
+assembler does not always need an allocator either so that has to be decoupled
+from that. The DynaRec however, requires an allocator to be used.
+
+## 02:12
+
+So yes, that Option map is going to have to go and be replaced by something
+else that is more effective and can be stored into the recompiled output as
+needed. So the DynaRec and such will use this new CompilerProfile which states
+common CPU setting information. DynaRec is also getting a ton of generic
+parameters slapped onto it also. So I need some kind of clean system where I
+can do dynamic recompilation for various systems without producing tons of
+duplicated state.
+
+## 02:48
+
+Actually what I can do is move stuff in NARF around so that I take advantage
+of the asmfmt factory. I can code it in a way so that the narf packages loses
+the dynarec stuff so things will be a bit more lean and such. So do away with
+the DynaRec sort of and just make it leaner and more generic. Then also add
+support in FormCodeBank for compiler settings used to "compile" the resulting
+method code (if any). I do wonder though if I could change FormClass to be an
+representitive interface for input and output code. Well the main thing is
+just methods. The Form stuff does work as is however. I just am currently
+disliking how some of the dynamic recompiler stuff is done. Not going to clear
+away much code, just will be a refactor. The BinaryFormatFactory is for
+loading FormClasses (so future stuff like ELF could be supported), although
+what I would like is some way to change things back or patch over it rather
+than it just being purely immutable. Would have to figure that out.
+
+## 03:15
+
+Thought about a mutable FormClass, but that would reduce speed of the running
+system as it would have to check for changes. Adding and removing methods
+should be illegal. So what I really need is a type of window into a binary
+stream for code implementations of methods. Essentially just a byte buffer
+over the native code and such.
+
+## 03:20
+
+I know one thing though, FormCodeBank is really ugly.
+
+## 03:34
+
+FormCodeBank could benefit from making more of it immutable and having
+property sets for exceptions and such defined in the bank area, and perhaps
+make it final and not have every class that supports it extend off of it. Then
+remove the FormExecutableCodeBank and just have FormCodeBank be alone. So the
+first thing to do then is to move DynaFactory into asmformat into a classes
+which provide directionality information as to what they do and how they do it
+rather than using a by name and other sort of ugly thing.
+
+## 03:45
+
+As I write this Transcompiler class, something hit me, I can also merge passes
+into it also.
+
+## 05:29
+
+Hmm a question, do I make FormCodeBank immutable?
+
+  * YES 
+    * Could exist in ROM which means it may be possible to directly execute it.
+    * Executable code does not change much.
+  * NO 
+    * Could change the dynamics of the bank whenever it is needed -- however
+      that would be a rare use case.
+Would need a builder but it could work out. And speaking of ROM I wonder if
+the N64 can execute from ROM or requires it to be copied to main memory first.
+
+## 08:51
+
+After I get this MIPS code redone I am just going to drop it for now and
+instead work on PowerPC. The main reason being is that I can actually debug
+PowerPC and I know enough of the firmware interface in IEEE1275 to make it
+work, as I have done it before. Or I can just drop it now and work on PowerPC
+at this moment.
+
+## 23:20
+
+I wonder if it is a bad idea to have a map of FormCodeBanks assigned by
+language in the method. So perhaps it would be best to do it so that it
+requires iteration when requested. This way I can have many code banks with
+the same architecture but perhaps with different recompilation settings.
+
+## 23:34
+
+Bootstrap methods must also be part of forms as they are used for
+invokedynamic everywhere.
+

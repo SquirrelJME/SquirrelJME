@@ -1,0 +1,48 @@
+# 2014/09/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:31
+
+A new month. According to statdiff, I made 4024 subtractions and 19,195
+additions.
+
+## 09:28
+
+Shunning the class lists of which are in XZ+ASCII85 format saved me some
+space, about 55KB. Although the lists could be useful, they are not needed at
+this current time so I backed thme up for future usage. They also do not
+really belong in the repository, as it would just bloat it.
+
+## 10:22
+
+Forgot about mark() and reset() in LineColumnReader, and since that is
+ultimately a BufferedReader I do not have to worry about wrapping it in
+another one to get mark() and reset() support. So that class is highly
+reliable as long as reset() can handle end of file.
+
+## 14:02
+
+Hopefully this month, I will have a complete compiler which can handle Java
+source code.
+
+## 17:20
+
+I disabled warnings on the package build, but it appears gcj-wrapper ignores
+the -nowarn option so warnings are emitted anyway.
+
+## 22:09
+
+Some happiness is in order, learned how to sort of play the Bunnie song from
+Zelda. After attempting two handed play (never did before), I feel as if my
+typing on the keyboard has changed and I need to sort of relearn or at least
+adapt.
+
+## 22:18
+
+A large spider jumped on my laptop screen, I murdered it.
+

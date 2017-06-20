@@ -1,0 +1,26 @@
+# 2015/03/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:20
+
+Refactor going well, need to change the Java class loader a bit to use the new
+way to do things.
+
+## 07:16
+
+I hope I made the TransCompiler use DecodedMethod.
+
+## 08:19
+
+Moving everything around should make some things more standalone and cleaner.
+
+## 23:34
+
+Checking of input code banks to be added should prevent nasty issues where one
+can set a bank for a method which does not match the method itself.
+

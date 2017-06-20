@@ -1,0 +1,52 @@
+# 2014/10/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:26
+
+Will have to change hairball to use the compiler wrapper system, use a mount
+tree for the k8 source tree and a temporary storage location. Then it will
+have to be capable of creating a package database in the kpkg directory and be
+able to execute into some of those packages (notably primary-call). Then I can
+switch to a basic pre-made configuration type system which contains machine
+definitions and such (and allow configurations to be patched as needed by a
+user).
+
+## 06:32
+
+I will need to change the MountTree stuff so that there is a source for files
+and such can be another mount tree, however JAR files cannot be handled in
+this case. So MountTrees cannot truly be stacked.
+
+## 06:50
+
+Using MountTrees and such in hairball makes things slightly easier but a bit
+more complicated. It can just act relative to specific directories and the
+only thing it will ever use is the file based mounts and never really any JAR
+files. Keeping it simply files would simplify things also.
+
+## 09:20
+
+The one thing I am stuck on is target system definitions, what constitutes a
+system and how should they be grouped together? I would like everything in a
+single package and just filter things out, however that can get messy. But if
+I put everything in its own package that will also be messy.
+
+## 09:36
+
+Actually what I can do, is just have all of the kernel sources and such in a
+single location, the kernel source tree. There will be no packages because
+they do not make sense for the kernel. I can just have hairball go through
+every package and read their package-info's and normal source files and strip
+out any annotations from them.
+
+## 10:46
+
+Taking that and directly using a package called k8kernel in the root solves
+massive directories and such. Now I need a good way to sort internal stuff
+based on what things are.
+

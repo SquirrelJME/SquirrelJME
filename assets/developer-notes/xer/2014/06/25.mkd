@@ -1,0 +1,35 @@
+# 2014/06/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+I decided to start writing a programming blog of sorts to put down random
+ideas for future reference and possibly some historical research. My current
+plan is to rework the sort of existing (since I deleted some of it) class
+loading code into a nice fancy new class loading code which is smaller and
+more modular, with tons of less boilerplate. I realized that I was mostly
+writing up ugly boilerplate code so this should reduce that. Although I spent
+the past two months pretty much writing all of this up, it should hopefully
+take less time than that now.
+
+Not only do I want to reduce code, but I want to make it much more leaner and
+future proof. Since I am the only one working on this, I would rather not
+waste much time and let my code do the stuff for me. Also the loading of
+classes should be a bit more verbose in terms of errors rather than what I
+currently have. So rather than say "Invalid magic number" when loading a
+class, it should say "Expected 0xCAFEBABE but got 0xBLEEBLEE instead." that
+way when loading some random class files from somewhere you can actually
+determine who is at fault, and if I am it can be fixed with a nice exception
+like that rather than guessing.
+
+Some of the currently existing echelong code just need refactoring along with
+the class dumper which could be much better, and I decided to also make it so
+the class dumper could output in other formats like JSON or XML. Also, if the
+new output format on the console gets ugly, another output can be made and
+switched to instead of a whole new rewrite. Being modular counts.
+
+The sun has set, so I should get to sleeping now.
+

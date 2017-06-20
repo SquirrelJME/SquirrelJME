@@ -1,0 +1,67 @@
+# 2014/11/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:15
+
+New month, time to see the work that was hopefully done. I do know that I have
+a gigantic class library now so the diff is going to be insane.
+
+    
+    
+    [x-date-201410 --] x-date-201411]
+    Subtractions: 14859, Additions: 364509
+    
+
+Quite a ton of code changes, not to mention an insane commit count from the
+added library. Appears to be in the range of 530 commits. The month of October
+did not bring much at all, apart from the class library. But with the entire
+class library in the code, when I get compilation done it should be good.
+Appears yet another month goes by of which I lack a compiler, however my most
+recent work on my current loader is far superior to previous ones, I just need
+to finish it and hopefully I will have recompilation done by the end of the
+month, perhaps a working kernel hopefully.
+
+## 00:21
+
+So the main thing I have to do is finding the best way to store and set the
+current, super, and interface class names in the class file. They all use the
+constant pool so perhaps that should be used instead.
+
+## 02:51
+
+Will need to write descriptor parsing.
+
+## 03:58
+
+Still will need to write it.
+
+## 20:27
+
+Realized a problem with my descriptor code, in cases where a type is a valid
+binary name and a valid type name the situations would fail as the type takes
+higher priority. The two types are not really unique so I will have to split
+the naming code up a bit. That is so something is always of the expected type,
+so to speak.
+
+## 20:35
+
+This would fail for classes which consist of only a single letter, such as V
+which represents the void type.
+
+## 23:08
+
+What I need is reading of attributes. Attributes can be attached to anything
+and may have limitations, but are still limited to class files and their
+constant pools. Therefor I should go with my original plan to make them class
+bound like my existing consant pool and such.
+
+## 23:22
+
+These attribute readings have to be done right without causing major screwings
+with reading and such.
+

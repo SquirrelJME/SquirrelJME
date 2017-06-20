@@ -1,0 +1,53 @@
+# 2015/05/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:20
+
+The configuration system should not be elaborate but simple. As I have stated
+yesterday, there are no true constants in Java as they are all dynamically
+calculated. Also static stuff just does not make sense in Java (such as a
+limit on the number of maximum CPUs, of which on Linux is probably a #define
+constant). On another topic, the Java RMI code is part of profile1 and my OS
+defined RMI interfaces must work with profile1. For calls and such I will
+probably use a memory based system for calls back and forth between userspace
+and the kernel, possibly for some other processes also. There would also not
+be a need for a restrictive limitation such as extending Remote and requiring
+everything throw an annoying checked RemoteException.
+
+## 05:16
+
+Seems my project builder does not include dependencies of things which are
+already built.
+
+## 06:19
+
+Package builder had some dependency logic issues.
+
+## 15:33
+
+The value class will not serve much purpose because I can use immutable
+translation systems so to speak.
+
+## 21:19
+
+CPU options in the template I was thinking it could use the real options used
+for them, however that would recompiler compiling the architecture definitions
+and then obtaining the options for them. Therefor, they would best be kept as
+strings.
+
+## 21:52
+
+I should probably change mass imports to a new user that is not me, so that my
+own results as the sole author are not skewed when a script does virtually all
+of the writing.
+
+## 22:57
+
+Before, I was messing with colors and that screwed everything up, however I am
+just going to use usernames only.
+

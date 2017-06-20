@@ -1,0 +1,76 @@
+# 2015/09/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 16:07
+
+I seem unable to size my scrollbars properly.
+
+## 20:14
+
+With NARF, one thing I can do is make a downgrader so I can compile any Java 8
+application using a bootstrap from my class library for my J2ME phone. Some
+features such as reflection and such do not work and lambdas would require
+some processing too. For reflection to work, I would need pseudo reflection.
+Basically a giant class which stores the needed data for reflection. Another
+possibility is to write VM in the VM when reflection is used and use some kind
+of wrapper magic for it. However for certain class implementations that might
+not work. Or I could write a mini JVM which supports Java 8 for said devices.
+When it comes to lack of memory (my phone at least has 7MiB) I can use a swap
+device like interface via JSR75. However JAR files are ZIPs which are
+compressed. J2ME lacks compression for some reason. So I would need a VM and a
+downgrader to support the target. It would be interesting however, I could
+compile my OS on the device. This bootstrap engine could also be used for
+bootstrapping a Java 8 compiler and such for systems which lack Java 8 and
+have some kind of JVM at least. If I retain my bootstrap target to say Java
+1.3 level then it could work on J2ME and very limited and incomplete virtual
+machines so to speak.
+
+## 20:29
+
+As an alternative due to collisions, I can change references to all classes to
+have a prefix. So every class would just be a duplicated interface of a
+different name. So instead of say "java.lang.Object" it would be instead
+"net.multiphasicapps.bootstrap.java.lang.Object". Could also go for something
+smaller such as "__bs__.java.lang.Object". My goal for my standard library at
+least is to keep native methods to a minimum. Anything which requires stuff
+such as filesystems will just delegate that to a system call class rather than
+use natives. Maintaining the bootstrap stuff as a binary would be a bit messy
+though, so I suppose I would need to keep a bootstrap collection as source
+code which can be compiled by stuff such as GCJ and what-not.
+
+## 20:35
+
+I suppose to support cleaner building of my code, I should split my
+HairballLauncher up a bit. A higher level bootstrap which calls differing code
+routes which eventually converge. I would need to make the bootstrap able to
+be compiled on really ancient versions of Java without requiring major things
+such as reflection and such. Well my build system uses reflection. At least
+with a split hairball I would be able to have it where I do not need to
+reflect in JavaCompiler APIs.
+
+## 20:41
+
+So there will be 3 versions. HairballSecondStage345, HairballSecondStage67,
+and HairballThirdState. The HairballFirstStage will be quite simple as it will
+just determine which other stage to call. I do wonder though if I can find
+myself Java before 1.2, which is where 1.2 got all of the collections and
+such. Might have to setup a Linux VM for that using an ancient version of
+Debian.
+
+## 20:47
+
+Actually 5 will have to be alone, since that has been given overhauls of
+things, so that leaves 234 together as one. Otherwise I would have to write
+more crippled code for 5.
+
+## 21:48
+
+I can call the javac command from Java, then use defineClass to load the
+compiled class into the current run-time. That way I will not have to worry
+about executing by calling the Java command. Or just use URLClassLoader.
+

@@ -1,0 +1,79 @@
+# 2016/01/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:44
+
+Looks like the time has passed. So later today after sleep will be both of
+KBF writing and de-enumerating `ArchitectureData`.
+
+## 09:44
+
+And I am awake, too bad I missed my alarm.
+
+## 11:08
+
+For the new ArchitectureData, there will most likely only be a handful of
+architectures in memory at one time. So for memory efficiency I will write up
+an ArrayMap which is a map backed by an array.
+
+## 14:42
+
+My recent changes to hairball have broken dependency resolution sort of. If a
+binary package exists and the source package changes the contents of the
+project then old package information is used. To fix this I can just make it so
+that sources are first. However, on the alternative I can just have an
+alternative source (or rather multiple) sources for project information. Using
+source directories as higher priority would be the simpler solution at a slight
+dodge of the issue. The code previously operating in this fashion anyway. I
+suppose a better solution when multiple package definitions exist instead of
+just keeping the first used one, I can check the dates and use the latest
+version instead. That at least would prevent ambiguity because say if
+directories take higher priority and on a running system there are older
+sources (with the same version number), although increasing the version
+number would also solve this, it would require versions to be updated many
+times. I would suppose that using the project information that is the most
+up to date would be better.
+
+## 14:50
+
+Thinking about the timing code, the same code could be used regardless. If
+one were to walk on a single file then only that file would be visited, if it
+were on a directory then all files inside would be visited. So I can split off
+the code and instead just have both source and binary times using that.
+
+## 14:58
+
+Also if there are multiple binaries and sources, I can use the latest one.
+
+## 15:32
+
+Issue not fixed yet, however if multiple binaries and sources are detected
+then only the latest will be used.
+
+## 15:33
+
+Now to move on to the issue. I need to use the information which is the
+most up to date. Since package information is bound to the contents, the
+dependencies if I have not done so already will have to be late bound on the
+information.
+
+## 16:03
+
+And the actual solution to PackageInfo's issue was to just clear the cache when
+bound. However these other changes to hairball will be very useful and safer
+especially when it comes to an actual running system.
+
+## 16:46
+
+Time for a short-lived fork so that I can dump the Java instruction information
+to a manifest based format without performing the work myself.
+
+## 18:47
+
+The main issue is the best way to handle variable length fields.
+

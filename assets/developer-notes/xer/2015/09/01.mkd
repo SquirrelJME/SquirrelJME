@@ -1,0 +1,82 @@
+# 2015/09/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:36
+
+New month.
+
+## 13:03
+
+The loaders should take a KBF or provide one, depending now how it is used.
+
+## 13:08
+
+I do wonder though if I should have an abstract binary format handler like
+that of binutils which I can load and save classes from. They could be read-
+only and could also be read-write if needed. The handling stuff like Java
+classes would be much simpler then I can just recompile those into native
+combined binaries as needed. Right now much processing is done to load the
+class files, but I could really just map the classes directly in some binary
+format and work on that in a much cheaper way. Loading the data into Mutable
+KBFs takes a bit of time. Going for a straight ByteBuffer mapping and handling
+would be the fastes however. So that would probably be the most efficient
+route to take. The recompilers can just dump their data into the target format
+via wrapper APIs in nice common form. The OS itself will in most cases only
+use two formats: The Java class file, and some kind of my own format. I could
+also perform some package moving too.
+
+## 13:36
+
+For all of the architecture based stuff I can just also use ServiceLoader with
+base classes, however there is some duplicated code however.
+
+## 14:04
+
+The kernel building part of hairball has gotten a bit ugly a bit also. The
+first thing to do is have the generic binary handle Java byte code simply by
+wrapping much of its data.
+
+## 14:36
+
+For the binary format, an adapter would be good. Have a generic base class but
+then have a loader/saver of sorts which is external or where information is
+grabbed from. I can avoid builders which require a copy of everything. Doing
+it this way then grants me the ability to have lazy stuff and then adding
+where the adapter does not care what is added for example.
+
+## 15:16
+
+The options for recompilation could be moved into something related to the
+dynarec since that is where it is used rather than on the definition of an
+architecture. Partially anyway.
+
+## 15:24
+
+Calling it config or option is a bit bland and does not seem right. The
+options are related to the code generation in which all of them should use.
+The basic stuff I am going to do is have it just be an enum map with specific
+set entries (still a map but checked, value wise anyway). In other parts I am
+quite liking the new KernelBuilder, seems very lean. Will need to make sure
+that the methods I write do not get super bloated as before. However, the
+options are for compilation. There could also be a variance based on the
+architecture and there may even be per-object things too. For example, if a
+system has two CPUs (such as Dreamcast having a main SH4 CPU and an ARM CPU
+for its sound card), then there will have to be separate configurations if
+needed. However in most cases such a thing would not be needed because the
+sound card would most likely not be executing any code to be run by the user.
+
+## 16:43
+
+This code may be better than before since it will, well almost, be split in
+more ways that do not depend on each other.
+
+## 20:10
+
+Using an interface like that may complicate things if it is not designed
+correctly.
+

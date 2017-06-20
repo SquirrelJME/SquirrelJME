@@ -1,0 +1,52 @@
+# 2015/12/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:02
+
+It is almost a new year.
+
+## 13:53
+
+Got the vertical grid lines drawing correctly on the first try, joy. However
+using the dashed lines and scrollbar causes some trouble though so the grid
+may best be used solid.
+
+## 13:56
+
+The grid is disconnected however, due to the stopping short.
+
+## 16:10
+
+Just going to go very easy on the tile types, they are either fully walkable
+or not. This simplifies things and requires less graphical arts to be created.
+
+## 16:35
+
+These simplified tile graphics will definitely reduce the required graphical
+work.
+
+## 17:13
+
+I can see the light reflecting off the sky turning red and orange, which is
+rather interesting. This means the sun is setting and night is coming.
+
+## 20:13
+
+Permitting CTRL to be used for right click will make things easier for me
+since I only have a single mouse button on this laptop.
+
+## 23:17
+
+The most complex thing now when placing tiles is to handle heights. Well the
+handling of heights is easy, what I mean is recursively handling adjusting all
+the surrounding tiles and such.
+
+## 23:23
+
+I suppose 4 heights would be good enough.
+

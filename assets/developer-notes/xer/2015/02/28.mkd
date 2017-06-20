@@ -1,0 +1,39 @@
+# 2015/02/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:22
+
+This blog creation script should be handy as before I manually copied and
+added for each new day.
+
+## 00:23
+
+I will need to figure out register allocation and such during the generation
+of native from my compiled form.
+
+## 01:39
+
+I need some way to specify bit sets, as in values such as 1..32. However there
+are tons of conversions to do such a thing, and I would rather much want a
+type safe way of doing so. I suppose instead I should do stuff such as
+BitNumber and BitLength, where they contain 64 enumeration values. Then the
+length would and initial position would be kept minimal and a bit safe.
+
+## 04:46
+
+My filesystem and GUI based user interfaces will need support for files that
+are multiple MIME types. That is say a file that is both an AU sound file and
+a ZIP file. When launched the user would be asked which program they want to
+use as it is many things, although in some cases (such as HTMLs and text) it
+might not be desired. Perhaps it can be done in a confidence like way.
+
+## 18:26
+
+Forgot about floating point values. I will also need to send the option map to
+the assemblers and the allocator so they can use them (for say soft float).
+

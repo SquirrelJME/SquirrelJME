@@ -1,0 +1,35 @@
+# 2015/06/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:29
+
+Luckily for me in Windows, I can reference illegal directories and .. back out
+of them. So to get the executing directory a short hack is performed using
+that. Works on Windows 98 with notepad and explorer. This batch script is
+intended not for NT based systems.
+
+## 00:54
+
+Ok, my BAT which runs on Windows 98 is slightly successful. The launcher is
+compiled and hairball is ran.
+
+## 15:47
+
+My special provider is incorrect as it takes a URI whereas instead it should
+take a String because it is implementation defined how it is formed.
+
+## 16:42
+
+There was this odd forward slash bug, but I found that it is caused by the
+comment stripper adding the incorrect character to the output.
+
+## 16:58
+
+Actually, my comment stripper is unable to handle string literals, and thus
+that is where the breaking is.
+

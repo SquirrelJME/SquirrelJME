@@ -1,0 +1,63 @@
+# 2014/07/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+I made command line handling its own class, default and static in interfaces
+would work well here, oh well.
+
+Making the help printing stuff also common is a good idea as it reduces
+duplicate code since everything is very much the same.
+
+I realized that in my Java source tokenizer I can handle generics in certain
+situations rather than forcing them to be operators. However, I might just
+need to have a context sensitive retokenizer instead.
+
+Another thing I will have to do to be self hosting besides writing my own
+compiler (and thus the run-time) is that I will need a SQLite implementation
+to be used by a fossil implementation. I could write my own version control
+but that would be beating the bush rather too much, plus I would have to
+design it first. One might say to just port it over or use git instead, but
+I'd have to port it to Java first, at least before a C compiler comes into the
+picture. Also, any C compiler running on my OS to be ran by the Java virtual
+machine would be slow due to certain nature of C code that most programs
+follow.
+
+Reading yesterday's post, checking for class validity so to speak at the last
+moment is not too bad although you may end up loading a large file only for it
+to fail at the end. It is wasted effort but it simplifies the operation. The
+other alternative is to check first but that complicates things as fields will
+depend on specific values in other fields. Such a thing would be messy and it
+all must get checked at the end anyway. So there is potential loss, it is much
+rather simpler to just do it at the end. I would rather check once at the end
+than check two or more times when values are set and changed and at the end.
+Another thing I notice is that as I work on this, my repository size increases
+more and more as the dates roll by.
+
+I decided to add some of my old notes that I wrote, mostly for k5 which is an
+earlier iteration of this kernel. The code I wrote earlier this year is much
+worse than the code I write now.
+
+Since I like the echelon error system better, I changed CompileError to be a
+Throwable so that it may be used in the cause of EchelonError instead. Then
+there is just Code.COMPILER for said errors anyway.
+
+What I should also do is make a common class for EchelonError since I like it
+so much.
+
+After switching CompileError stuff to EchelonError I should change all my
+Vector usages to ArrayList since ArrayList does not synchronize. I perform my
+own synchronization anyway. If a collection ever does get exposed and requires
+synchronization then it can be wrapped in a class which does list wrapping.
+Another thought I had was making curly brace related depth errors more verbose
+in the compiler but that would complicate things a bit, I should keep the
+compiler simple for now.
+
+I also need to switch javac to use the new command handling system since that
+is far superior and easier to work with. There is much to do in optimizing but
+it is for the better. Better to do it now when I have 138 mentions of Vector
+rather than later when I could have 1380.
+

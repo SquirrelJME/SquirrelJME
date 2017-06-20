@@ -1,0 +1,58 @@
+# 2015/04/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:09
+
+The CPU data and register option subinterfaces can essentially be extended off
+a super interface since they will share many things.
+
+## 12:32
+
+CPUData and CPURegister are also turning very alike each other, so change that
+up also.
+
+## 13:41
+
+And the isRequired() in the interface works correctly as it should.
+
+## 18:58
+
+Ok, now I have register information placed at least some basic information of
+which I have now. I believe for the Allocator and the choice of native
+registers it chooses will be automatic.
+
+## 19:19
+
+The cool thing about PowerPC is that it has 64-bit floating point registers
+even on 32-bit systems.
+
+## 21:25
+
+Need to include the built package information name and version fields in the
+JAR file when they are built.
+
+## 21:36
+
+Some minor changes, although uses slighly some more memory will also allow me
+to sort all of the JAR entries when they are added. Cosmetic but it could be
+useful in the future.
+
+## 22:21
+
+For some reason the Manifest gets wiped when placed, so I am not too sure on
+the usage of Manifest itself. However with Manifest I can change run-package
+to use that insted of opening and decoding the stuff myself, if desired.
+
+## 22:31
+
+Cannot seem to figure out why the Manifest.write() does not work.
+
+## 22:43
+
+`Attributes.Name.MANIFEST_VERSION` needed to be set.
+

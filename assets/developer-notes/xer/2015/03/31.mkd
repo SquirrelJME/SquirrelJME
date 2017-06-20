@@ -1,0 +1,48 @@
+# 2015/03/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:45
+
+Had this idea about my packages. Right now I have a whole mess of drivers in
+the k8 kernel stuff and whatnot. Instead of that, I can just have packages
+which contain the individual drivers for a set of hardware (i.e. all OHCI PCI
+devices and such). I can then do the same for image encoders/decoders, along
+with encryption algorithms and such. This way such a system is more modular
+than normal.
+
+  * mpa-security -- crypto-digest-* (md5, sha1, etc.).
+  * mpa-imagelib -- image-[de|en]coder-* (xpm).
+  * k8-kernel (k8drv, driver interfaces) -- device-interface-*.
+  * k8-kernel (k8drv, driver implements) -- device-implement-*.
+  * k8-kernel-boot -- kernel-platform-*.
+  * k8-kernel -- kernel-core, only k8ker.
+
+Although there currently exists depends, I can have a reverse of that. Say I
+have a dummy package k8-full-desktop which depends on no packages. However,
+there will be a depend-by key for say image-codec-xpm which says that k8-full-
+desktop should be depended by that package. I will also need a meta tag system
+which the packages will use, that will make things easier rather than having
+guesses and such. I can then move the booting system building code and such to
+individual packages and use meta information as needed. Although there will be
+tons of extra packages, it will be a bit more organized. Perhaps for one
+system you will not need USB drivers because there is no way to get USB (say
+for a Nintendo 64).
+
+## 11:08
+
+So the packages for platforms will indicate that they support specific types
+of devices. However some platforms are generic and would share code. So I
+might have a kernel-platform-ieee1275-ppc which depends on a kernel-platform-
+ieee1275 (which defines no machines).
+
+## 16:20
+
+I also need to change the package building system to determine if any files
+were changed before a package is rebuilt. That way it remains automatic,
+however dependencies may become problematic.
+

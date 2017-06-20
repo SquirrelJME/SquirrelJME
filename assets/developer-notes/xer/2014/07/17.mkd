@@ -1,0 +1,67 @@
+# 2014/07/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:42
+
+Currently stuck on the best way to represent the language parser and the
+compiler tool. Tokenization and parsing of the source code files is very
+specific and does require access to the beacons I wrote.
+
+## 07:40
+
+I am in the zone, so stay with me. I have a plan for a highly parallelized
+optimizing compiler which performs the semi-threaded execution flow across
+multiple threads of a CPU or individual cores. Parameters would be tagged so
+that variables may be collected at will if they are not used or not even
+calculated at all or passed to the execution context. The return type would
+also be tagged as such. I would say that this is a poly-dynamic semi-threaded
+inline interlacing optimizing compiler. What I mean by inline interlacing is
+that execution flow is similar to the expansion so that a single context is
+interlaced across multiple execution systems. The difference is that it may
+branch outside and possibly into the kernel. There would be mostly static
+analysis while the tagging will add a slight dynamic taste to it. I thought
+about using a bit flagged jump to jump to specific tagged variants of methods.
+However CPUs lack an instruction for that and I would instead have to use a
+slow jump table which is made up of either a dereference and a jump, or a
+modified addition and multiplier, a bunch of branch checks for equality (a
+giant switch block).
+
+Strange feeling is that I wrote that entire paragraph in six minutes but it
+only felt like ten seconds to myself. I feel really good right now, although I
+have not touched any code. I am at the edge of tiredness. So I must type this
+quickly, although I still have most of my concentration remaining. Well, most
+of it.
+
+## 07:54
+
+And before I forget, I have for my compiler setup. Language processor depends
+on the file manager, and the compiler invokation code depends on both of them,
+but more on the syntax handler at the early stage. Then after the initial
+stage the file manager is used more directly. I will also need another class
+for language processing such as generation of IL and output to other various
+forms of binary executables.
+
+## 17:38
+
+Woke up now to get to work.
+
+## 21:50
+
+Took awhile, but I figured what I need for my compiler is a pipeline for
+decoding of command tasks just so I know what is being done and such.
+
+## 22:17
+
+Before I make all this duplicate code, I need to make a common abstract class
+first. And now that I did that and changed a few other things it now looks
+tons better than previously before.
+
+## 23:01
+
+I just need to move my command option parsing over from s into v.
+

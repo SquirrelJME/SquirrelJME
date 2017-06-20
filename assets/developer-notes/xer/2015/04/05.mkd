@@ -1,0 +1,17 @@
+# 2015/04/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:28
+
+I might for code, start adding the hungarian notation-ish in/out stuff on
+identifiers. Instead of my normal __foo, it will be __i_foo, __o_foo, or
+__io_foo. Would increase identifier size and usage though. I will see how it
+would work out. But eh, that would be a bit overkill. Everything is passed by
+value (references are pointers) and the arguments of a method are just local
+variables anyway.
+

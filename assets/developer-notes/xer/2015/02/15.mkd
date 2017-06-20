@@ -1,0 +1,39 @@
+# 2015/02/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:04
+
+Accidently put everything I wrote under the wrong day. Yesterdays blog is
+important so I need to note that down.
+
+## 01:45
+
+Going to need good operations. Will also need pointer operations, that is
+referencing another register by a register and such.
+
+## 15:11
+
+Going to move the method decoder out into another class since it is getting a
+bit convoluted, it would also clear up a few other things also.
+
+## 15:35
+
+Moving the code to another class was rather straight forward as the class is
+rather self dependent, also forgot to sort those imports. Also managed to
+remove some old unused imports, 4 of them.
+
+## 17:56
+
+For argument decoding, just allocating a single LongBuffer will be more
+efficient than creating an array of long arrays or an List of Long. I should
+look for usages of the wrapper types in bad locations.
+
+## 18:04
+
+Not only that but I can just allocate one and clear as needed.
+

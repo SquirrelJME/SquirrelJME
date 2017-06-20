@@ -1,0 +1,53 @@
+# 2015/10/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:30
+
+I should make the generators for levels nicer, along with changing the
+VoxelIterator to a ChunkIterator and WorldIterator. They are similar except
+that the ChunkIterator would be limited to a single chunk (a bit faster I
+suppose) and would make random generation easier without walking off another
+chunk.
+
+## 01:07
+
+Trying to sleep, but I realized why my radar seems a bit odd at the zero axis.
+Well, I expect the internal ID (which consists of X/Y/Z as a 21-bit int) to be
+signed, however my reverse operation gives unsigned results. So that needs
+fixing.
+
+## 17:24
+
+My new WorldIterator and VoxelIterator appear to work better because the radar
+is not messed up currently. Time will tell if it is wrong though when testing
+the game more. Splitting these up will make operations simpler with regards to
+modifying single chunks.
+
+## 20:10
+
+Bit operations may be faster.
+
+## 20:53
+
+Thinking of not doing texture mapping, just having it very flat shaded. I will
+need color dipping for light levels and distance determination however. I can
+use normal sounds though, since I happen to have an entire sound library I
+purchased and have never used. But the sprites could be NES style and such.
+
+## 23:22
+
+Thought I messed up the position stuff again since the radar was blank.
+However the generator is at fault as it never generated blocks with the new
+code. Before blocks in a chunk were just masked which meant that negatives
+would be in the opposite direction. Now they are capped and always between the
+specific dimension for the block. This is both cleaner and allows for
+potential sharing of data between multiple chunks. It also makes negative and
+positive positions the same. The generator is just given the inner tile
+position, now it must be given the world tile position too. And after fixing
+that, there is random block data in the radar again.
+

@@ -1,0 +1,38 @@
+# 2014/09/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:12
+
+Figured out how the label statements work, the labels only are visible within
+the following statement, and that can be any statement. However, since labels
+are only able to be used by break and continue they are not as useful outside
+of loops except for declaring some blocks of code or similar.
+
+## 23:23
+
+Throwing all of the tokenization stuff in a single file is going to be very
+messy.
+
+## 23:33
+
+However, writing a compiler and a tokenizer in one will just needlessly
+duplicate the work I am doing. Some of the language stuff is the same, perhaps
+I can create a kind of syntactic like thing that can read a file. Something
+that can be described with annotations and such, and then that is used to
+parse the file and such. I believe what I should do first is after having
+basic tokenization words is to build a tree-like structure of the source code
+with bounds and such, ignoring any keywords. Basically this will be something
+on the level of using only scope, generic brackets, array brackets, and
+parenthesis. So it would essentially become a tree-like structure of
+statements where some known structure is easier to parse. So basically each
+statement would be on its own line. There would need to be special handling
+for stuff such as fields and default values in annotations. However, that
+would just duplicate it as I would have the tree building then a parser for
+that tree. So what I really need is a smarter and cleaner Tokenizer that will
+not be a gigantic mess.
+

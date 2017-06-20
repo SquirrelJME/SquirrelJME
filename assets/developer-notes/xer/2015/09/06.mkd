@@ -1,0 +1,22 @@
+# 2015/09/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:07
+
+Fell asleep and now I am up early.
+
+## 06:48
+
+I believe I want an alternative name for the binary stuff. Perhaps Binary
+would work instead of class.
+
+## 16:54
+
+The new package layout is a bit short than all of the kernel-binary-foo and
+net.multiphasicapps.k8.foo.bar.baz.
+

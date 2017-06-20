@@ -1,0 +1,107 @@
+# 2014/07/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:41
+
+Instead of using what I currently have which is KToolService, I should instead
+have a global enumeration service which can locate stuff. The kernel could use
+it for drivers, and user space could use it for services.
+
+## 01:13
+
+Need to move some of this hairball stuff over, perhaps use the package I set
+aside for source processing. I should be using a single class, not two of
+them. Processing of package and classes are really the same. But I feel that
+k8.s.sp is not the right place for them, but neither is k8.x. Perhaps a v
+super package for development. Although s is the same purpose it is rather too
+split apart into bits. All the development tools are very intertwined into
+each other. The compiler and the build system should use the same stuff, and
+the compiler requires stronger utilities. Though when reading such information
+I do not want to really require a crazy WormStore structure. Something that is
+key based and can be verified. It would be simpler to keep it attached to the
+compiler instead. The kernel would internally only use KBF, but could spawn a
+recompiler to KBF. Using a WormStore for the kernel would be rather painful
+when loading objects. KBFs are meant to be mapped directly to memory and
+executed in place. They would also permit for merging so multiple classes can
+coexist in a single location. So an uncompressed pack200 that can be loaded
+and executed once it is in memory fully. I just hope I can start working on a
+kernel soon. I really need to start writing things once and making it good so
+I do not have to restart so much.
+
+## 01:39
+
+Actually what I can do now, is a front end and back end. Instead of cramming
+as much as possible into s or v, s will be the API front end while v will be
+the core implementation backend. And t is the front end for s. There would be
+an extra level of indirection, however the backend would not require
+(something, lost thought).
+
+## 02:18
+
+The v backend could be directly used by t and s, this way t does not use s at
+all. s contains the compiler API to access the stuff, which does not exist in
+Java 5 at all. Also Java 8 has DocumentationTool which does not exist in 6 and
+7. It is also illegal to just add new classes into the standard library at
+will. So a deeper layer which is used by both of the frontends would be the
+best option.
+
+## 02:36
+
+The question that remains though is the best way for language processing. As
+stated before I could use an enumeration set rather than the WormStore. But I
+will go with what I previously stated before. What I do want to avoid though
+is a ton of classes for each class, method, field, and annotation. An
+enumeration can indicate that the thing is, then have specific validators for
+sub arguments and such.
+
+## 02:48
+
+I decided to right align the time indexes and it looks so much better now and
+much more readable without those cramped in between.
+
+## 15:38
+
+For the translation phase, I will need some kind of file access, since files
+for example would be needed during the translation step to figure out what
+everything is and such. This would then mean that the translation phase is a
+single step. It is not truly needed for any language however. Although for
+Java there would have to be a way to figure out whether something is generic
+or if it is just a comparison operator. Actually what I can do for Java is to
+load the entire source file and build a table of classes, fields, and methods
+in it. Comparison operators will never be used in these declaration areas.
+Then on a later pass, go through the methods and fields and convert that into
+code, if it is even desired. So I will know whether or not something is
+generic at least on the outside.
+
+## 16:04
+
+I can build a basic context on what needs what on the initial pass, only the
+compiler would need stuff in the methods. However, I am going to take the day
+off programming wise and relax a bit.
+
+## 19:41
+
+Or maybe just a few hours of relaxing. I need a file operation system as
+mentioned previously, so I should make that first. Question that remains is
+where to place the file handler. It is part of language processing but may
+also be part of the compiler backends. It is also possible that a file could
+exist solely in memory. I will have to be agnostic as to where the sources
+originate and where their destined conversions will be. Perhaps a modular plug
+like system will work. Naming is half of everything. UnitLocator is a good
+name as it is for locating files, which might not be on the disk and such.
+
+## 21:02
+
+I like this beacon code much better than the standard file managers used in
+the standard Java APIs.
+
+## 21:50
+
+This locating code looks rather nice despite being all skeleton code so far,
+but it looks like it will work very well.
+

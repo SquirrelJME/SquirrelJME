@@ -1,0 +1,20 @@
+# 2015/07/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:17
+
+Something that will simplify Java when it comes to SSA programs, due to the
+varying sizes and requirements for integer conversion. Java arguments must be
+promoted on the integer size because otherwise the local variables will be
+"stuck" as lower sized types. That would cause issues. The same would have to
+be done for fields also. Luckily for me I separated the storage types when it
+comes to Java. Alternatively, the type of a Java type could just auto promote
+to integer regardless. However that would cause issues because in normal code
+passes variable information would be lost (so checking if writing an int to a
+char would be gone).
+

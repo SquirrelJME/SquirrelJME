@@ -1,0 +1,79 @@
+# 2015/10/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:39
+
+Was quite tired, awoke some time ago. The heater dries up the air so a
+humidifier is required.
+
+## 04:00
+
+Yknow, I can base NARF's SSA based stuff off POIT. Basically NARF depends on
+POIT but instead uses POIT via an output to SSA-like CL program form and such.
+That removes a ton of duplicate code in NARF and uses all the safe checking
+done in POIT. The parts of the code generally do the same thing. However POIT
+outputs to machine code, although there can be a way to represent POIT
+generation calls into NARF's SSA form. So while POIT will be very basic, NARF
+would just be an upgrade of it for optimization. This also safes the time of
+writing a new decompiler from Java for NARF. The bootstrap VM could also
+exploit POIT and be a basic MIPS emulator instead of one which interprets the
+byte code. It would still be a bit slow, but everything would be in registers
+and such. Also due to the way POIT works, using the same input for a class
+should result in the same output binary (except for stuff such as timestamps).
+
+## 04:20
+
+Well this is interesting, I decided on catching the exception then returning
+it on failure. Can be used to give a more detailed reason why without throwing
+an exception during the call.
+
+## 05:28
+
+It is a cold 28F outside, which means first frost. The stars outside are
+really great too. There is a bit solid light which I believe is probably Venus
+since it is closer to the horizon and it is morning a bit. Deer are also
+creeping around outside also, which was creepy.
+
+## 07:13
+
+It is getting brighter outside. That bright "star" is the sky is still there
+and is very likely Venus. There is also bright star down and to the left of
+Venus which can be seen, however it is more dim. Those are the only two
+"visible" stars however. It is possible that is is Mars or Jupiter since it
+appears there is a slight tinge to it. Looking at a night sky map, it is
+Jupiter. So this is interesting. If I had a telescope I could attempt looking
+at it.
+
+## 07:18
+
+Now Jupiter cannot be seen as there is either no reflected light or it is too
+dim to beat the sky. The sun has not risen yet however.
+
+## 07:25
+
+And Venus gets dimmer and dimmer.
+
+## 11:55
+
+Fell asleep for a bit however for the new allocation I can just do a method
+call based on the method reference table. This would mean that there would be
+an allocation method for each class, but it could work out or go somewhere
+generic.
+
+## 13:09
+
+Static equality and hashcode methods for the code reference will help out when
+there are multiple implementations which need something easily consistent.
+
+## 22:28
+
+The more stuff on the internet, the less chance you will find what you need.
+Thus for Squirrel Digger it is time to delve into my library of books. I
+suppose the book ISBN-10 1-55622-911-9 can help me out with my renderer and
+such in it.
+

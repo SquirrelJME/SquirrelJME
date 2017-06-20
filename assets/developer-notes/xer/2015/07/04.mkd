@@ -1,0 +1,35 @@
+# 2015/07/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:40
+
+Today is a holiday, a BBQ would be nice.
+
+## 01:15
+
+Neat, my inclusion code works, it currently fails trying to compile my
+gibberish.
+
+## 01:39
+
+I should probably be sleeping now instead of programming and watching Stargate
+Atlantis, but it feels more natural to code in the light of the night.
+
+## 09:15
+
+Variables in SSA will just be Strings but they will have their own class since
+having a bunch of Strings around would be confusing.
+
+## 17:24
+
+Thinking about it, strings could work but integers would be easier to
+reference and they would be known better such as argument inputs and such.
+Using integers would also make register allocation a bit easier although there
+would be a limit of 2 billion registers, however if one needs that many then
+that is one complex method.
+

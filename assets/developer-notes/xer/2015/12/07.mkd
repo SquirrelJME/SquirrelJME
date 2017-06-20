@@ -1,0 +1,38 @@
+# 2015/12/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:18
+
+I should probably write the difference to the Java coding style guideline.
+
+## 02:20
+
+I could also put documentation in a more standard spot.
+
+## 21:40
+
+Was doing real life stuff today, but I just before woke up from a dream. I met
+a bunch of people I have never seen again, Also the sea water level rose about
+3mm. There are forests, but although still foresty as not every tree gets
+remove, they get changed to windy forests. These windy forests are basically
+kind of like parks because there are less trees and leaves to block the wind,
+thus why they are "windy". Then near the end of a dream there was this bat
+which always happens to bite me in my dreams. Was brown, with red eyes and
+bright white teeth. Suppose the bats body was the size of my hand. It tried
+to block it but it bit my left index finger. After it bit me it flew away.
+
+Another part of the dream was finding a bunch of old NES stuff, so there was
+stuff such as CastleVania and Mario. However the levels were laid out a bit
+different.
+
+Hmm, maybe for a logo I can have a vampire bat squirrel. Well, looks like the
+internet says that Vampire Squirrels actually exist, however a bunch of other
+places debunk it.
+
+Perhaps this bat keeps attacking me in my dreams because it wants to be a logo.
+

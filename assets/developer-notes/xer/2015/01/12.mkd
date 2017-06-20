@@ -1,0 +1,35 @@
+# 2015/01/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:47
+
+I need to cleanup after the builds in the main hairball script.
+
+## 06:56
+
+Also the SERVICES file is not needed because I can just have a services dir in
+META-INF which would be added to the JAR anyway. On other things, I will have
+to write up the FauxClassLoader and such to obtain binaries used for later
+recompilation.
+
+## 17:30
+
+Was setting up a ReactOS system all day, although it usually BSODs much I was
+able to install the official JDK on it. Although I cannot directly use SSH I
+will have to do a commit then pull to develop the cmd script for building the
+OS.
+
+## 18:20
+
+Appears the NT based command is not as weak as the DOS COMMAND.
+
+## 18:32
+
+The hairball script being called "hairball" breaks on ReactOS at least because
+it tries to execute the shell script is seems and fails miserably.
+

@@ -1,0 +1,19 @@
+# 2015/03/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:10
+
+I need a common class that is better than DynaRec for common compilation code.
+Most of it will be copy and paste from DynaRec. However, I believe I will use
+a sub-class as a form of public data container so that the class bits can be
+more specificly together along with some casting magic. That way I can get
+away with specified subfields. Essentially the generic will be the subclass
+type which points to itself cast as itself. So while the normal stuff is of an
+unknown class, the code using it when it is known will be able to read the
+right members and such.
+

@@ -1,0 +1,30 @@
+# 2015/05/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:03
+
+Soon I should have packages compiled and then built, so that they may later
+run.
+
+## 22:59
+
+My JAR delete needs to be placed on an outer loop. Also I was thinking of how
+my relative base work is incorrect. A filesystem could be case insensitive so
+my cheap parent matching using URI is not very portable. in k8, the volume is
+case insensitive while filesystems could vary in case sensitivity. So stuff
+such as FAT will be case insensitive on k8, while my native FS will be case
+sensitive.
+
+## 23:18
+
+Now that I have JARs built, just need to refine and fix a few things.
+
+## 23:59
+
+For some reason the main class is not found.
+

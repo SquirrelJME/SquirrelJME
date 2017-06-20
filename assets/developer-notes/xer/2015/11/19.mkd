@@ -1,0 +1,43 @@
+# 2015/11/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:27
+
+I will need to make virtual UTF8 entries in the pool for reference string
+types, otherwise references which use said entries will not include them.
+
+## 11:32
+
+This will cause the constant pool to not map 1:1, however it does not matter
+much.
+
+## 12:02
+
+When I get to class definitions, I can ignore the constant pool for the most
+part because they would be merged and everything would be using references.
+
+This means however that Java byte code cannot be encoded as it would be missing
+the constant pool.
+
+However, I could still write that information out anyway despite it having the
+potential of not being used. This would almost allow for a mapping back to
+class files from KBFs.
+
+## 12:15
+
+Now I must write out class information, but I should eat before that.
+
+## 13:34
+
+On my PowerPC laptop with its single core and JamVM interpreter, what I have
+now takes 35 minutes.
+
+## 19:08
+
+The power failed.
+

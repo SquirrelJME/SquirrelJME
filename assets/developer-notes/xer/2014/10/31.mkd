@@ -1,0 +1,49 @@
+# 2014/10/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:05
+
+Hopefully.
+
+## 05:57
+
+Reflectively reading the constant based data could reduce code bloat while
+increasing constant definition bloat, but could be well worth it.
+
+## 06:04
+
+Using this annotation based system can simplify class readers as I can keep
+the constant specific code out of the stuff and potentially support future
+constant types if they are added.
+
+## 06:24
+
+My dynamic constant loading stuff works and throws a NullPointerException as
+expected (because nothing is actually read properly yet).
+
+## 06:31
+
+This dynamic approach is rather nice, although a bit large it is good and it
+works nicely because I can unify constant creation code in one single bit.
+
+## 07:38
+
+Did about two hours of coding, a bit tired now but at least some constants are
+read. When more constants are added later it should not be difficult to code
+in support for the reader. So far the separated reader and class file
+information works nicely, no polluted reading interface. Also designing it in
+a way so that it could be possible for the class format to change to
+potentially support other formats. Although the only supported formats would
+probably be my own KBF type (a natively compiled class).
+
+## 20:33
+
+Need a good way to set the this, super, and interfaces of the current class
+without making it ugly. In the class file they are all references to class
+constants in the constant pool. So perhaps that would be the way to go.
+

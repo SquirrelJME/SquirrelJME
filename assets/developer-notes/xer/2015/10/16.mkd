@@ -1,0 +1,94 @@
+# 2015/10/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:04
+
+Appears that there are some internet searches with fillPolygon being slow
+after a few polygons are rendered.
+
+## 00:33
+
+I could also just use float and keep just bring in my raw triangle drawer
+instead.
+
+## 01:44
+
+Now I have some stuff rendered, need to fix turning and offsets since it is
+sort of mathematical, sort of screen, and otherwise not.
+
+## 01:52
+
+The graphical drawer is right handed. My chunk layout is reverse some other
+hand. Walking forward moves the cubes up, walking backwards moves the cubes
+down. Strafe left goes left, strafe right goes right. Falling brings cubes
+closer, rising moves them further away. Appears that I may be looking straight
+down. I need to put a marker to determine which block I am actually looking
+at.
+
+## 02:25
+
+Traversing to draw faces takes quite awhile when there are gigantic areas to
+draw and such.
+
+## 13:56
+
+Trying to fix the renderer, I have discovered the origin in good view at
+(-15.1, 3.1, -20.3). The axis and the small unit cube appear drawn correctly
+while the chunk cube is a bit distorted.
+
+## 14:03
+
+Found another view at (-18.9, 12.5, -21).
+
+## 18:13
+
+Appears with the renderer right now, I am missing parts of the rectangle which
+make up the coordinates of the faces. One of the points ends up being really
+low on the chunk edge. The Z axis is also flipped.
+
+## 18:55
+
+Appears that positioning is a bit off. When I should be in a liquid block it
+appears that I am in a solid one.
+
+## 19:50
+
+I could use longs for positional data everywhere. Since there are 21 bits of
+chunk identities for each axis that means 2,097,152 chunks in one direction.
+Multiply that by 16 and you have 33,554,432 blocks in each direction. This
+gives you 37,778,931,862,957,161,709,568 blocks to work with in the world. If
+I use 32-bit ints for positional data in objects, this means I can have 64 sub
+positions in a tile for less than zero movement. So this means a 6-bit
+fraction followed by a 25/26 bit integral value. This means the lowest
+representable unit would be 0.015625. I would need a dedicated class for this
+representation of position. Everything else about the world such as the
+offsets of vertex faces would be based off of this. It would be faster for
+systems which lack floating point however. So rather than just longs, I could
+instead go for integers since the world is not explorable outside of the
+bounds anyway. If I do it just right, it would be possible to walk to the
+other side of the world from the other side, essentially just looping around.
+That could work though.
+
+## 20:38
+
+I can have positions and stuff be very absolute with just a single shift set
+for each coordinate.
+
+## 21:17
+
+The math I calculated before is not correct, there is more sub block precision
+than 6 bits, I believe so anyway.
+
+## 22:58
+
+When more than one world is in place, I can have a dark world. It can take the
+map data from the normal world and modify it a bit. So if someone has been
+toying around in the nature world but finds a portal to the dark world, then
+they will see their crafty work sort of. It will be mostly similar except with
+some changes based on the world layout.
+

@@ -1,0 +1,101 @@
+# 2014/10/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:30
+
+Packages are built, however for some reason the host package manager returns
+with an exit status of 1.
+
+    
+    
+    -rw-r--r-- 1 steven steven  36780 Oct  2 00:23 k8-package-manager.jar
+    -rw-r--r-- 1 steven steven   3423 Oct  2 00:22 k8-progress.jar
+    -rw-r--r-- 1 steven steven 106435 Oct  2 00:23 mpa-common.jar
+    -rw-r--r-- 1 steven steven   7546 Oct  2 00:23 mpa-jsonextra.jar
+    -rw-r--r-- 1 steven steven  53427 Oct  2 00:23 mpa-jsr353.jar
+    -rw-r--r-- 1 steven steven    952 Oct  2 00:22 mpa-safety.jar
+    -rw-r--r-- 1 steven steven   5900 Oct  2 00:23 mpa-services.jar
+    -rw-r--r-- 1 steven steven  11268 Oct  2 00:23 source.db
+    
+
+This is caused by postArgs returning CONTINUE (which gets eventually modified
+by the exit C system call and turns into 1). Now if CONTINUE is returned in
+postArgs, 0 is returned (1 for STOPARGS).
+
+## 02:08
+
+Using a new buffer strategy on stream close, I am able to then reduce JAR file
+sizes and not have class files me a multiple of the internal buffer size of
+BAFC. Extra junk after a class file is illegal anyway. What I need to do now
+is generate the JAR manifest file.
+
+## 04:20
+
+I have everything available and built now, however I am running into the much
+dreaded "java.lang.NoClassDefFoundError: safety/Unchecked". And it does exist
+on the classpath.
+
+## 04:23
+
+Actually the cause is the function in my shell script, I use echo and not
+return to return the much needed information. Actually, shell script functions
+are not like that, return takes a value. I have never really used functions
+much at all. But perhaps a subshell would work better in this case.
+
+## 05:12
+
+Cannot solve it, do not know why the classes do exist in the classpath and in
+their JARs.
+
+## 05:20
+
+The only other problem I can think of is that some other JAR I have on my
+system has a package called safety which conflicts with my own. I think I will
+just combine it into common.
+
+## 05:36
+
+Merging works, but it was a very lonely package anyway, I should perhaps merge
+k8-progress packages into a k8.progress too.
+
+## 06:49
+
+The language for hairball scripts should be simple and not strictly Java, but
+I could use my preexisting tokenizer for Java that I made.
+
+## 07:55
+
+I am going to drop support for GNU classpath, because it is far too incomplete
+with at least Java 5 support. And limiting myself to it would be crippling,
+however if a sufficient class library is available then GCJ may still be used.
+
+## 08:29
+
+In its current state, everything compiles from OpenJDK 6 through 8. Support
+for GNU classpath in the future can be supported by a run-time patching
+mechanism which is capable of adding extra code in random packages to
+implement needed functionality as required. Now the major thing to do right
+now is to get hairball working and building stuff such as my own runtime and
+kernel packages. Another bonus is that I no longer need to use -clear and
+friends, I can just rm the hairball JAR to force a rebuild.
+
+## 11:55
+
+Moving the basics of my compiler to the new compiler wrapper system was quite
+simple. I also did a bit of a redesign in the main compiler loop to simplify
+things a bit.
+
+## 13:21
+
+I should split k8.tex into a user guide and a developer guide, where the
+developer guide is extended off the user guide (so you hopefully know how to
+use the system already). The user guide could contain extra stuff and such on
+how to actually do things, although keeping it up to date will be fun. I could
+always just add inlined latex comments in my source code and strip them all
+out, so if anything changes code wise it gets updated.
+

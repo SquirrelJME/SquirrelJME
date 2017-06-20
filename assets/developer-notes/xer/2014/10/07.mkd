@@ -1,0 +1,33 @@
+# 2014/10/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 05:13
+
+I just need to setup the source trees and the annotations so that they can
+easily be processed the hairball system.
+
+## 11:25
+
+Have not progressed much in recent times, I need to figure out what to do with
+my code. I need a code generator for one thing. I also need a loader for
+classes. That is my current point. However they need to be placed in such a
+way in that they are not messy at all, can work with the userspace stuff and
+be able to be used by the kernel as needed. This is the next step for the most
+part. Perhaps a "binfmt" package which handles class files, then I can have a
+"codegen" package is capable of generating code and such. For binary formats,
+I need a format that can just reference a chunk of bytes in memory and
+reference them as needed. The binfmt stuff will be directly used by the kernel
+so it will have to have some mechanism to where I can jump into a byte array
+and start executing it and such. So what describes a binary format? The binary
+descriptions can be just what follows normal class files than other binaries
+by other systems such as ELF, PE, and Mach-O. Although it should be possible
+to permit exporting to other binary formats. Although the only useful export
+would be my own KBF performed by the in-kernel dynamic recompiler, hairball
+can just ignore other code anyway since I am designing it in a way where it
+can be just skipped without consideration.
+

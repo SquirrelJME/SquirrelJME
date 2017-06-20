@@ -1,0 +1,33 @@
+# 2015/02/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:33
+
+Using a base structure to pass data back and forth for operations simplifies
+things and reduces the allocation costs as such.
+
+## 06:44
+
+One thing that I must do also is the verification pass, but then I can just
+use the StackMapTable and not really worry about it. However for older Java
+code I will need to generate a StackMapTable anyway.
+
+## 19:56
+
+I should add standard optimization enumerations so that way optimizers can be
+programmatically checked if they support "known" optimization settings. Custom
+optimizations can also be supported if they are not listed in the standard set
+at all.
+
+## 20:10
+
+I can cheat with my optimizers and use them for soft float, but then they
+would not be purely for optimizers. So perhaps they would be better named as a
+regenerator or a something else. Perhaps something shorter than Regenerator
+and Optimizer. A short Pass works.
+

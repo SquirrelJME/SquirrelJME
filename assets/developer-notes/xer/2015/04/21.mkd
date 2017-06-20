@@ -1,0 +1,23 @@
+# 2015/04/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:16
+
+Well my FormCodeBank contract exception is a bit vague.
+
+## 16:45
+
+I wonder if I can make my decompiler faster by perhaps performing multiple
+work within multiple threads. It will mostly just be an evolution and a much
+cleaner one on top of my previous work until it replaces it completely.
+
+## 21:36
+
+The MMIX CPU would be an interesting CPU to port NARF to (and by extension my
+OS).
+

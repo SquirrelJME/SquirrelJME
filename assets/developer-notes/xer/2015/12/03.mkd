@@ -1,0 +1,112 @@
+# 2015/12/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:21
+
+Suppose a short break is in order, still have yet to reorganize my room
+however.
+
+## 01:31
+
+Decided to write the dependency walker to use a tree for traversal and such,
+makes things a bit simpler.
+
+## 02:10
+
+Currently my dependency walker code does not use recursion at all.
+
+## 02:22
+
+So the big test of my new dependency walker would be to see if the current
+package building stuff reaches the current state on a clean slate so to speak.
+
+## 02:24
+
+Compiling an empty set on my atom system gives me
+
+	real 1m34.288s
+	user 4m24.936s
+	sys  0m5.808s
+
+So even though this is a complete from scratch build it seems slightly faster.
+I am about to see the results on my PowerPC laptop however. Since it is a clean
+build and the interpreter is used it takes a bit longer. The resulting real
+time is
+
+	3m17.796
+
+So slightly faster it seems. Hard to tell however as there are no true
+benchmarks being done.
+
+I do however have to rework the PackageBuilder eventually to make it not a
+complete mess and use the new DependencyWalker code when finding packages to
+build. The PackageBuilder is nearly 1700 lines of code and a bunch of merged
+classes together. Most of the code is from 2015/05/25, and seeing that it is
+about 6 months later I write much better code now.
+
+## 10:45
+
+Had a dream that I switched to Java 9 (since it was released). However if
+Java 9 does come out, I may just translate my code to it and such provided
+I can build it and it is available in OpenJDK. In my dream though Java 9
+changed a bunch of stuff.
+
+## 11:10
+
+They added unsigned types and new constants for 128-bit, 256-bit, and 512-bit
+integers while removing the normal constants since the first version, was a
+nightmare.
+
+## 13:12
+
+Well the CI40 board has been funded, now it just has to remain funded.
+
+## 15:14
+
+I can probably remove the ".times" file and instead use the time given inside
+of the ZIP file. The ZipEntry API since 1.8 supports getting the modification
+time of a ZIP which is handy. This can be used by hairball to detect itself
+being changed (so it recompiles self for example), very meta.
+
+## 16:14
+
+Actually, I could devise a system where I can incrementally build if source
+code is available and the binary package exists. It will result in slightly
+slower checking if packages are already rebuilt but it may produce faster
+recompiles. So basically if a JAR exists it can source from few locations in
+that JAR rather than doing completely clean rebuilds. This would be handy for
+large projects such as the class library. However the more classes that exist
+the slower the checking of dependencies is because class files must be loaded.
+However most of my changes are rather small so in the end it may prove a bit
+faster for very large projects with few changes. I suppose for speed I should
+only consider dependencies in the self package level rather than projects the
+project being built depends on. However for that, there could just be an
+incremental build database but that would add complexity. So I suppose if a
+dependency gets updated there will be a forced normal build similar to how it
+is now, but if all dependencies are untouched then incremental mode will be
+attempted.
+
+## 17:17
+
+Well, I can do it for all dependencies but I would need a incremental database
+to be built alongside the JAR so that the incremental data does not infect
+the JAR file with data that is only used during build.
+
+## 22:20
+
+Using all 2K of the space, the Arduino Uno can emulate a MMIX system with
+256 64-bit registers. The system specific registers would lose out however and
+there might not be enough free memory for having an attached SD card for
+example to be the main memory along with filesystem. However due to the memory
+limitation, emulating a MIPS64 system would probably be better.
+
+## 22:30
+
+So as before, I am deciding to not have a incremental mode because that would
+add complexity although it could actually work out.
+
