@@ -97,9 +97,11 @@ public class Cluster
 				Resource rc = new Resource(lsref, __n,
 					new WeakReference<>(this));
 				
-				if (false)
-					throw new IOException();
-				throw new todo.TODO();
+				// Parse resource
+				rc.__parse(__is);
+				
+				// Store it
+				resources.put(__n, rc);
 			}
 		}
 		
