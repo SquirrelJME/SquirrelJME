@@ -1,0 +1,146 @@
+# 2014/07/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:08
+
+Now that the main code has been commonized, things look much simpler and nicer
+now.
+
+## 05:30
+
+A variadic list of localized strings would be interesting for specific cases
+such as help usage.
+
+## 06:26
+
+For parsing the project file JSON, I will be using it much so I should have a
+standard class in the API package for handling project packages and whatnot,
+then I can also use that for the currently installed database of packages and
+such. Another advantage of JAR files (despite the slight compression speed
+loss) is that they do not require unpacking and are easier to manage compared
+to traditional setups where everything must be extracted before it is used.
+
+## 06:33
+
+Despite ServiceLoader not being part of Java 5, it appears GNU Classpath may
+include it. It may just be partial Java 6 class support. The main thing I need
+to implement now is the JSON code and directory sweeping code for building
+source package databases for the specified root tree so that host packages may
+be built.
+
+## 16:55
+
+I bought a replacement laptop keyboard.
+
+## 18:13
+
+In my common API I will need package information and directory information to
+exist there so that functionality is not duplicated all over the place.
+
+## 18:39
+
+Time to do some math, there are 4,240 classes in the main library. One class
+per day would take almost 12 years to implement. To implement the entire
+library in a single year, I would have to implement 11 classes per day. To
+implement the entire library in 3 months, I would have to implement at a rate
+of 50 classes per day. Quite a long run. I obviously would have to streamline
+things to make implementing things faster. You may be thinking about
+interfaces being just rather bland, however they still need to be documented
+and Java 8 does add concrete methods in interfaces. I will have to figure that
+all out when I get to that point. The first goal should obviously implement
+compact1 first then once that is complete, move to compact2, then to compact3,
+then finally all the UI stuff.
+
+## 20:05
+
+Results of class analyzing: compact1 has 1,247 classes; compact2 has 319
+classes; compact3 has 541 classes; the rest has 2,134 classes.
+
+    
+    
+    c/d || c1      | c2      | c3      | rs      | all    |
+    (t) || (1,247) | (__319) | (__541) | (2,134) | (4241) |
+    ====++=========+=========+=========+=========+========+
+    1 ||   3.4 y |  45.6 w |   1.5 y |   5.8 y | 11.6 y |
+    2 ||   1.7 y |  22.8 w |  38.6 w |   2.9 y |  5.8 y |
+    3 ||   1.1 y |  15.2 w |  25.8 w |   1.9 y |  3.9 y |
+    5 ||  35.6 w |   9.1 w |  15.5 w |   1.2 y |  2.3 y |
+    10 ||  17.8 w |   4.6 w |   7.7 w |  30.5 w |  1.2 y |
+    20 ||   8.9 w |   2.3 w |   3.9 w |  15.2 w | 30.3 w |
+    30 ||   5.9 w |   1.5 w |   2.6 w |  10.2 w | 20.2 w |
+    40 ||   4.5 w |   1.1 w |   1.9 w |   7.6 w | 15.1 w |
+    50 ||   3.6 w |   6.4 d |   1.5 w |   6.1 w | 12.1 w |
+    75 ||   2.4 w |   4.3 d |   1.0 w |   4.1 w |  8.1 w |
+    100 ||   1.8 w |   3.2 d |   5.4 d |   3.0 w |  6.0 w |
+    ====++=========+=========+=========+=========+========+
+
+This assumes no distraction and just implementing everything in the standard
+library. So statistically, this will take quite some time to implement so I
+will need to write some sort of IDE later for development to speed up
+development time since I currently use just a standard text editor. That way I
+can have auto formatting, auto documenting, referencing and such, to simplify
+all of the work I need to do. Perhaps documentation stealing could be done in
+that when I extend off a base class I can "see" the super class stuff and
+cherry pick things.
+
+## 21:53
+
+I will need to develop a very efficient IDE designed to save me time
+implementing things, tab completion for example would save me many key
+strokes, an internal debugger would quickly find errors and such. The IDE's
+code itself would have to be sufficient also. Possibly when GUI time comes, I
+can have a RAD design tool for graphical interfaces, that would be neat. Maybe
+some advanced features like multiple insertion points would be handy,
+automatic insertion, adaptive coding, and more. Would need context sensitive
+based on what is being typed, so say if the return type was String it can
+suggest any method that returns a String. IntelliJ IDEA looks like a nice IDE,
+however it costs and it does not support fossil at all and is quite a hefty
+price, I can buy a new laptop with the cost of a license, at least the
+commercial version. With the cost of the individual version I could buy a new
+PowerBook G4 used.
+
+## 22:32
+
+Writing an IDE would be much work, however it would improve efficiency greatly
+which would negate the undesirable loss of time at this current state.
+However, since it would be in Swing I would not be able to use it on my own
+operating system until I implemented GUI support.
+
+## 22:37
+
+However, I could always add a minimal set of classes just to get the IDE
+working on my own OS however. I should work on the IDE after I write my
+initial package manager so that way I do not have to use hacky shell scripts
+to build the IDE itself. Then I can add support for the package manager in the
+actual IDE to manage every single project rather than randomly jumbling around
+project files. Then I can use the IDE to develop the compiler so that language
+based feature stuff could be used, such as error checking. So writing an IDE
+would be quite helpful. Then later on of course when I get to an actual run-
+time running on real hardware I can have a debugger integrated into it to
+simplify those operations, provided the system being debugged does not go
+berserk.
+
+## 22:47
+
+At least now everything will be using JSON stuff to store data so I do not
+have to worry about my JSON implementation going rarely used.
+
+## 23:24
+
+The problem with JsonObject and JsonArray are that they are immutable which
+mean I cannot fully mess around with the objects without recreating
+everything, so the best choice will be to keep it as a builder sort of. Or I
+can just have a top level builder. What I really need is an Immutable JSON
+representation.
+
+## 23:35
+
+Perhaps I can just use a translation layer from an immutable object to a map
+that I could freely modify for my own needs. JsonObject is a Map and there are
+map copying things.
+

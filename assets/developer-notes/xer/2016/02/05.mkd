@@ -1,0 +1,111 @@
+# 2016/02/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:35
+
+Using a separate `FieldValue` with indices should make it easier and cleaner to
+implement as `FieldValue` will just get things by their index.
+
+## 11:23
+
+Well my breakfast was rather nice.
+
+## 12:18
+
+I have this idea of creating a JavaME 8 virtual machine (the VM part in C)
+and then having a basic library implementation. I could target Palm OS, DOS,
+and a few other ancient no longer used systems.
+
+## 12:20
+
+Actually the VM environment for JavaME has been brought closer to JavaSE and
+it can be thought up of being a very stripped down version of JavaSE. I can
+actually run a diff to see which classes are new and which classes are not
+new.
+
+## 12:32
+
+Looks like the ME base classes in the CLDC profile has a bunch of classes
+missing. So I desired to do this I would have to split "-core" into one for
+"-cldc" and "-core" for the remaining stuff and then solve any potential
+dependencies that they might rely on. So really my library is just Java SE
+8 Embedded. Well supporting that will be the first goal.
+
+## 12:40
+
+I could probably go ME, but that would not be as useful for me since I do not
+have many extremely low memory devices. One I do have is Arduinos and a Zilog
+development board. The arduinos have extremely tiny amounts of flash and RAM so
+a virtual machine would probably be too hefty to run on it. The Zilog I have
+is a bit better but not by much. However my own compact1 support would have the
+possibility of running on hardware such as the Nintendo 64 and Dreamcast which
+are very memory limited. The Playstation is even more limited with 2MiB of RAM,
+very ouch.
+
+## 12:59
+
+It could however help me to understand the byte code better and how it
+executes though.
+
+## 13:06
+
+The question is though, do I make it compatible with existing virtual machines
+so it can become a JVM library (jvm.dll/libjvm.so)?
+
+## 15:16
+
+Well I have been doing that right now, but it appears it would be more work in
+the end. The one thing I dislike about C is the lack of namespaces, everything
+is essentially just a global symbol.
+
+## 16:26
+
+Actually, forget that, not going to write a C virtual machine interface.
+However what I will do is move the jvm.h and jni.h to system-command-cc since
+users might want to compile pre-existing JNI code to run in Squirrnix which is
+pure Java (and if their native code is C instead of Java then they would have
+to rewrite everything in Java using Squirrnix specific interfaces).
+
+## 20:07
+
+My XServe G5 is quite loud but also quite fast. Hotspot does have PowerPC
+64-bit support so I wonder if OpenJDK 8 on Debian's PPC64 sid port has it
+enabled. If it does then it will be super fast.
+
+## 20:15
+
+Well this method that is essentially just
+
+	[FINE] @0 aload_0
+	[FINE] @1 invokespecial
+	[FINE] @4 return
+
+Disassembles correctly. This is the method
+`net.multiphasicapps.k8.kernel.platform.ieee1275.powerpc.Main`.
+
+## 20:19
+
+On that PowerPC 64-bit machine, JamVM at least goes by speedily.
+
+## 20:58
+
+So far the stuff seems much simpler and more concise compared to the previously
+mixed assembler and disassembler. Also without MutableOpCode the values can be
+directly read from the program without having a buffer in the middle.
+
+## 21:36
+
+Upgrading the Linux kernel on it makes it not sound like a jet anymore, I
+suppose power management was figured out. Nice however since I no longer need
+hearing protection from the sound because it is quite low currently rather than
+just blasting all fans to maximum. I hear a beat though so some fans are
+resonating differently most likely. This is good though for Squirrnix however
+as this means the fans or the temperature related stuff is software controlled
+rather than having it pure hardware. Sometimes the fans speed up (their pitch
+increases) but then eventually it gets lower.
+

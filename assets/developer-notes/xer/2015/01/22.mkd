@@ -1,0 +1,77 @@
+# 2015/01/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:31
+
+In regards to networking this spinner likes to change its value back and
+forth, so I need a new way to specify the seed. So I will use a textfield
+instead.
+
+## 11:37
+
+A bit of a hack for seed, but it works.
+
+## 11:56
+
+Going to use primitive varargs for impulses, assuming it is valid. Also, using
+raw integers for the source is a bad idea because it is too prone to errors,
+so I am using an interface instead for that.
+
+## 12:47
+
+Going to need actual physics to play this and such. So next comes the
+collision detection stuff. But I also need tiles for the terrain also so that
+I may work on collision detection while that is going on also. I have a choice
+for tiles though, I can remove cliffs and just have it as merges where the
+cliffs just exist. The ground would appear very flat though and may lack
+perspective.
+
+## 13:16
+
+But that would not look good at all.
+
+## 13:41
+
+Although more feature reduction at the cost of simplification, going to make
+clients only able to control single players at a time rather than multiple
+ones.
+
+## 13:47
+
+Well, not too sure of that. Perhaps if a local player controls multiple
+players it will just result in a splitscreen where they can move the mouse
+around any of those windows. That itself would simplify testing two players at
+the same time, although it would not really be intended for splitscreen play
+at all.
+
+## 14:32
+
+So with this you can have 15 players on a single window, which makes the game
+windows quite small in size.
+
+## 15:21
+
+Attempting to figure out how I can get keybindings to switch to specific
+JPanels, perhaps I can just create a hack of sorts on the parent frame and
+propogate downwards based on the focused item. But setFocusable to permit and
+deny the focus based on the mouse works.
+
+## 18:51
+
+Having the panels for drawing and event handling complicates things so I am
+going to split up the SwingDrawer even more.
+
+## 19:40
+
+Despite being incomplete this code moving around looks very nice.
+
+## 19:53
+
+I do wonder if I can use SoftReference in a way for units so that when it is
+no longer used it gets placed in a re-use cache of sorts.
+

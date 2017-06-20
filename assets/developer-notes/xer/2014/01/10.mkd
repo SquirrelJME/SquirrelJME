@@ -1,0 +1,48 @@
+# 2014/01/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+_On class directories (the -classpath)_
+
+The virtual machine as on other systems has a class path argument which
+enables using other classes to use instead of the default class library. The
+kernel will easily use the basic system class path that exists in the user
+directory. However, user processes and drivers might have an alternative class
+path along with default packages. The search order for classes may be
+completely different and the boot strap class path could be different also.
+
+To handle this situation, the directory of the class path must be stored in
+the virtual machine to search for already loaded classes which exist in that
+path. However, storing the path name will lead to timing attacks as one could
+delete the directory and replace it with another, or modify class files inside
+the directories to wreak havoc with the virtual machine. Thus, class path
+directories must be locked and must always be referenced in the event that
+they are deleted, renamed, or the files inside are modified. If a class file
+is being used by the virtual machine as information on a class, then that
+class file cannot be modified and if it is, it is hidden from the virtual
+machine.
+
+With network, host, virtual, and removable file systems, it will not be
+possible to maintain a lock forever as either the local or remote end could
+modify the file or delete it (media removal would act as deletion). If the
+class file is not fully loaded by the virtual machine then it will cause a
+fatal uncatchable runtime exception which cannot be caught. Crashing the
+program because a network store went out for a few seconds is a rather bad
+idea. Therefor, information about the class file will be placed with the
+loaded class info to detect any changes in the class file such as the size and
+the checksum of the file. A good checksum algorithm must be used to prevent
+potential hash collisions of the specified file.
+
+On a normal desktop, each program is run under its own virtual machine rather
+than a shared one all applications. Doing this however uses more memory than
+needed and increases load times as information on the same classes must be
+loaded again and again. Perhaps for speed and security, there can be a class
+storage cookie which is used instead of the classpath which affects all user
+programs being run. Such a cookie cannot be changed by any user and may only
+be set once. It also is owned by a user which means it cannot be modified nor
+used by other users.
+

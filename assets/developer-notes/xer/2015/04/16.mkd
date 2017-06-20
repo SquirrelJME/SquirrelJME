@@ -1,0 +1,37 @@
+# 2015/04/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:53
+
+Only 4 days before the project's birthday occurs, then it would have been one
+year I have worked on this single repository. However, I am fast approaching
+native code generation. My current work is the Allocator. All the other bits
+of code have been cleaned up for the most part, packages split apart to
+increase my build test speed. For the Allocator, the local variables and
+registers are fixed to a single location. However if any saved values end up
+being on the stack then they are to be accessed using slower means.
+
+## 13:25
+
+Actually the initial checkin is on the 26th, not the 20th. So 10 days.
+Although I must keep thinking the 20th because that is likely when I thought
+of dropping k5 and going for k8. But regardless, it has been quite a ride. I
+will have to run gitstats after a year. Maybe even add yearly tags, but that
+might not even be needed at all. The one good thing recently is being able to
+test my actual recompiler work faster than before. My general code base has
+changed much.
+
+## 21:58
+
+My CPU mapping by type stuff could be changed so that instead caches based on
+the CPUData say using a SoftReference. Since the dynamic recompiler will be
+called much, this information will be recalculated every single time when the
+CPUData is not even changed. Therefor that would improve performance. If
+memory does get low enough then it could be freed as needed by the garbage
+collector and being a soft reference would make it easier to cache.
+

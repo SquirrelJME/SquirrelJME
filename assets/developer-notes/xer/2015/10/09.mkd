@@ -1,0 +1,68 @@
+# 2015/10/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:27
+
+Had a dream about the user interface in k8. Looked kind of like motif and very
+simplified. Gray menu bars on the top and bottom, an orange desktop.
+
+## 18:32
+
+The single and double vertical pipe notation in the PowerPC manual can get a
+bit confusing. One means to shift to the left by adding more zeroes, and the
+other is an OR for an alternative selection. To quote "The symbol || is used
+to describe the concatenation of two values. For example, 010 || 111 is the
+same as 010111.". (RA|0) or similar means that if zero is specified then it is
+zero and not the value of a register.
+
+## 18:38
+
+One thing though is my binding level. When do I want stuff to bind? Immedietly
+or when it is used? Well actually I can have method level binding. For example
+a method can refer to a static field in a class. I can have there be a pointer
+function which is executed to bind the stuff. However that would be slow
+because it would be called everytime just to read a value from memory.
+Instead, anything that requires loading and such could be done at the start of
+a method if it has no yet been initialized. Method references can just be lazy
+initialized and linked at run-time. Then that method can load another class
+which is initialized and it just continued on and on until everything has been
+bound. This would at least be the in between of either binding everything at
+once when it might not be used, or being very lazy and always doing late
+binding. Not going to use self rewriting code at all because that is ugly.
+Executable code is expected to be read-only but executable like in ROM. This
+would reduce exploits and would also allow for emulators to cache along with
+the CPU doing something similar.
+
+## 18:59
+
+I suppose what I can do for long/double similar to Java is that it takes up to
+slots in the stack and register set. I can exploit this for 32-bit
+architectures to make things a bit easier. I do need to store the upper
+32-bits somewhere. With POIT I just take the Java byte-code as is for the most
+part and perform operations on it.
+
+## 19:06
+
+Any classes I generate will need to be tested however to determime if they
+will work. I could most likely write a program which compiles on a host system
+via C which provides a mini-testing environment for executing things. This
+would be a simple call to mprotect after loading the recompiled binary into
+target memory.
+
+## 19:17
+
+For security purposes, I will have to put a ban on linking to anything that is
+in the kernel namespace area. Otherwise it may be possible to exploit
+userspace applications by calling kernel-only methods a specific way.
+
+## 19:26
+
+I will also have to determine how garbage collection is to be handled and how
+to tag objects which are used in generated code. I might just have a call be
+made when reference types change.
+

@@ -1,0 +1,59 @@
+# 2015/10/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:46
+
+I can see the appear of matrices to 3D programmers. Although my single
+function call may be a bit simpler, it is easier to represent matrices and
+such in code. 4D matrices can also do translation. So I suppose this book was
+handy.
+
+## 02:45
+
+Test projecting points, before I only saw one, now I see more. I should
+perhaps use a multiplier pattern of sorts.
+
+## 03:07
+
+Movement appears to be very fast, either that or the scale is low. Well that
+was caused by a very high shift amount. The player turning rate is also
+extremely high.
+
+## 03:38
+
+Have cubes drawing now but they do not rotate around the viewpoint.
+
+## 12:12
+
+It is probably the near/far plane. Basically I am perspective projection but
+my distance from the "eye" from the projection plane is just way back which
+makes no difference at all.
+
+## 12:21
+
+I figured it out, I was dividing by the wrong value. I was diving by W instead
+Z. W in this case is 1.
+
+## 13:02
+
+Feels like it may be best to remove the side pane since it does get in the way
+a bit of the game. Or at least figure out a good way to show information on it
+without it being very cramped. I could also just place the information in a
+debug dialog of sorts.
+
+## 13:53
+
+I believe the BLR instruction is a kind of macro since I see it nowhere in the
+documentation for the CPU.
+
+## 14:36
+
+The next address check is most likely best an object with details of the
+target such as its address and the condition for it. That would at least make
+things a bit easier.
+

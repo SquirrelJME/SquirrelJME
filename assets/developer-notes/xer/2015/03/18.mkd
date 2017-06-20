@@ -1,0 +1,28 @@
+# 2015/03/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:09
+
+I do not have to send the MetaCache to the extended compiler task classes,
+only the operand (for cases where it does many things, like math).
+
+## 11:49
+
+Right now I have a list of MetaMacro, but I believe it would be best if it
+were just a plain MetaMacro which contains sub elements (is itself a list) but
+with extra needed meta data (such as if swizzling should be done).
+
+## 16:16
+
+Another busy real life day. I believe MetaCache is done as there is no real
+need to do anything else at all with it.
+
+## 17:32
+
+It would also be possible to add conditional senses to meta macros.
+

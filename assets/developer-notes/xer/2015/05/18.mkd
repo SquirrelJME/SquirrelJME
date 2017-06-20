@@ -1,0 +1,51 @@
+# 2015/05/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:45
+
+In SQ, I had a thought that instead of square terrain like the game I am
+cloning, I will have a logical grid but have convex polygons make up the game
+world and such. Navigation meshes could then just be built from those polygons
+and then I would have complex geometry to work with. So the world would be
+entirely in 2D for the most part (it is already). This would be a deviation,
+but I am not aiming to be 100% compatible, just gameplay clone-ish compatible.
+I found an algorithm called Field D* which may be what I need for pathing for
+units in the game. It would not be the same as the original game's A*-like
+algorithm but it would work out well enough.
+
+## 20:09
+
+I can move FormReader down to the front end and call it FormInputFrontEnd so
+that it can common front end code. The same can be done with the FormWriter
+which is currently unimplemented by anything. Then I can do a global
+ClassLoader registering which affects the entire state of every front end so
+any can be called and any can result in services being registered.
+
+## 21:34
+
+When it comes to FrontEnds now, I have at least a common service between all
+of them to reduce code duplication. NARF for its native stuff could use it
+also.
+
+## 21:41
+
+After I changed the code the classes were not loading, but I just missed the
+actual service definitions.
+
+## 23:24
+
+Switching NARF to use the FrontEnd system makes for much shared code.
+
+## 23:36
+
+I can also probably remove the CPUData specific stuff from NARF too and make
+it generic so that it can be used across wider systems. Otherwise tools such
+as the debugger to the builder may have to reinvent some wheels. Also in the
+future, if a new compilation backend is created then it can be recycled
+without duplicating work needlessly in that backend.
+

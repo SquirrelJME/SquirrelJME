@@ -1,0 +1,109 @@
+# 2015/11/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:08
+
+Had this interesting dream. World took place in a very cubical place, so it
+was kind of like how Minecraft is. However, there was no mining invovled
+really. Parts of the world were city with apartments and businesses, some
+parts were highway, while others were outside areas, there were some mines.
+However digging in mines the wrong way can cause the mine to collapse which
+would kill you. The main part was that this normal guy was taking all of this
+special water. Once he took it all, he figured out how he can become powerful
+from it. So it is a rather tough boss fight. However, the problem with the
+water is that is evaporates quickly if it is not contained well. There are
+some creatures such as skeletons and such which spawn near the water, but if
+the water source dries up the skeletons just die. So the final boss would be
+breaking the water containers while this super powerful boss is attacking you.
+
+Other than that, I suppose I should get IFEQ going.
+
+## 10:40
+
+Just thought of something, NARF can use the stuff in StandardRISCTranslator
+and by extension the architecture specific code generators when it generates
+code. It may have to alter some things however but it might work. This would
+reduce re-adding support for target architecture although NARF would be
+unable to take advantage of specific architecture features unless it were
+added in the StandardRISCTranslator as extra operations. Specific features
+such as vectorization and such. So NARF would basically run POIT to have
+operations generated for a generic program, then that program gets optimized,
+then it runs through an architecture specific generator. By this layering of
+NARF on POIT I can save time and code.
+
+## 12:40
+
+Middle click paste is a bad idea, especially since there are two clipboards
+in X.
+
+## 13:20
+
+For the testing framework I believe I am going to go for a testing which is
+based on results rather than actual tests to so speak. So instead of saying
+pass/fail, the result should match. This would remove the binary nature of it
+and also allow for better debugging because one can see the actual result
+rather than just having it say yes or no.
+
+## 13:27
+
+Another thing to determine how to actually find the tests to make and have it
+done automatically, rather than being manual. I could leverage hairball for
+that. If I could get annotation processing done it would work, but I have had
+some trouble with it in the past when it refused to actually process classes.
+Another alternative I can have every class able to be instantiated, which
+then a test is performed on it. It would implement a tester and would contain
+a single test method which does all the required tests and such. That would
+simplify searching for methods to invoke.
+
+Also with the result based system, I can store the result of the reference
+implementation in this project which must be matched to.
+
+The testing framework would hopefully help remove some bugs and prevent
+regressions of things. It can also test to see how compatible a code generator
+is when it has compiled code and such.
+
+## 13:39
+
+I could also use an option to include the test framework in the kernel to make
+some things a bit easier for example. I suppose for now it should be enabled
+by default then once things get stable enough, it can be disabled by default.
+At the start, code is going to be run kernel space so I will need some tests
+at least to see if things are valid. The results can just be printed to the
+screen. Tests could be both kernel and userspace (with the userspace using the
+kernel stuff). Since execution of code will vary slightly when in kernel mode
+it should be tested also. A unified set of tests also makes things simpler too.
+
+## 14:24
+
+My unit testing code actually was pretty horrible because I had written it
+without actually compiling it.
+
+## 14:30
+
+I should check in MutableOpCode if input values which are negative get sign
+extended when getting the `longValue()` of it. And luckily I already do that,
+but it is always good to double check.
+
+## 17:48
+
+One thing though, is how volatile fields will be handled. On single CPU
+systems it is not that big of a problem due to shared caches. However when it
+comes to multiple CPUs, there will need to be some kind of a memory clear. So
+I suppose what I need is a reference which tells me that a field is volatile.
+If it is then a branch is taken which does volatile work (force memory flush)
+before the field is read from. Then for writing the field there will have to be
+the same check for memory flushing also. Some CPUs will not need any of this,
+while some will just need only read or the write, and others will need both
+to exist. Depends on the memory ordering of the CPU. Although branches would
+slow it down a bit, that is a safe way to do it since it would work. Speed
+would suffer from a double read and a branch for every field though. However
+POIT is not aimed for super speed and is for stability and simplicity. NARF
+which will be based on POIT will end up having the same generators, however
+it optimizes everything else and it is possible that reading/writing a field
+would be pointless to exist because code is never reached.
+

@@ -1,0 +1,64 @@
+# 2015/03/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:36
+
+Today will be a busy real life day.
+
+## 18:57
+
+Perhaps instead of transforming operands at the generic operand level using
+generators at the generic level. Perhaps have a low level generation subset
+that allows for a more lower way for code to generate. So this would perhaps
+be an instructional set that is cached once when needed. The NARF system can
+then turn those instructional variants into machine code. So basically instead
+of translateOpFoo doing the assembling work, it instead returns instructions
+on how to generate the native code. Then that is used by the assembler. So it
+is just a bit higher up of assembly, a bit smarter but does not require exact
+work.
+
+## 19:01
+
+It would still use the assembler, but it would be a bit higher level and using
+reflection as such. So the code generator would not need to put in the
+expected shuffling when needed. The PowerPC code would look something like
+
+    
+    
+    public List translateOpArrayLength(MetaHolder __mh)
+    {
+    	return __mh.lookup("OpArrayLength", () -> MetaMake.construct(
+    			MetaMacro.Type.ASM, "lwz",
+    				MetaMake.dest_int(MetaMake.From.OPARG, 1),
+    				MetaMake.src_int(MetaMake.lookupOffset(dynlinkA)),
+    				MetaMake.src_ptr(MetaMake.lookupBase(dynlinkA))
+    		));
+    }
+    
+
+It would also need to support instructions that do many things like Math. But
+it would look something like that, though perhaps in the morning I can make it
+work.
+
+## 19:22
+
+When the macro information is obtained the NARF system can determine how to
+handle stuff. This would have much less code duplication. Although the meta
+code would look odd at first, it should work out. Rather than doing all of the
+stuff manually, I can just describe how it should work out. Then for stuff
+like library calls and whatnot it can be modified to work. At least with this
+meta stuff, say if I want to change the convention I would only need to change
+one thing in the macro language decoder and runner. What I mean by that, is if
+I have code that does one thing, I do not have to hardcode the behavior in the
+assembler portion of the NARF dynarec. Although the instructions are hardcoded
+the stuff like the lookups would not be. Though I would need to change the
+assembler a bit to extra the specified information on an instructional level.
+This is required so that when a method is loaded, these symbols can be looked
+at. However, I could also just have a symbol lookup table for unique positions
+as needed for each method, depends.
+

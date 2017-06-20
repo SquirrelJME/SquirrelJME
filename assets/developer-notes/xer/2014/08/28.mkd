@@ -1,0 +1,65 @@
+# 2014/08/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:09
+
+Awake, now to get back to work.
+
+## 07:27
+
+Need to remember in any future sorting code that List set() returns the old
+value which makes sorting a bit easier to implement.
+
+## 07:45
+
+Using the pathform really does simplify things. Soon I should be able to start
+work on the actual compile and get compilation work done.
+
+## 08:09
+
+The LanguagePlugin getPlugin() needs to be stronger so that it is capable of
+using more bounds. There could be multiple plugins which support input of Java
+but they might not output to intermediate language. This has to be checked
+otherwise strange things will occur.
+
+## 12:32
+
+Thought about writing a TTY library that I can use to handle xterm sequences
+and provide a terminal for later usage by the OS. Also thought about writing
+an interface to telnet. Also thought about writing a NetHack bot as some
+sample code for the terminal and telnet libraries. Writing those would be
+handy because then I could have a full TTY by the time I get my OS operational
+and I would not have to worry about the terminal stuff at all. However, I
+should worry about that after I got a bit more of my compiler and package
+system setup. I need to think about how to go about putting input and output,
+do I read from a FileChannel and output a class? I would need a wrapper class
+which exposes a specific kind of object, which could be a FileChannel or could
+be a class which represents the abstract syntax of compiled code. However,
+that abstract syntax could also be input so that is why it must work both
+ways.
+
+## 13:01
+
+The bot would only work when tiledata is enabled however.
+
+## 18:30
+
+I am going to need a class which can handle realization of object types based
+on varying identities that are possible. The class must be able to handle
+class files, JAR files, source files, and even source files that are currently
+being compiled. So I will have to read a source file first then perform any
+realization at the end to make it very worthwhile. If there are any unknown
+identities then the file fails to compile due to invalid symbols being used. I
+will have to perform structure analyzation along with reading the actual code.
+
+## 21:16
+
+I added some color to the build script so I could see what goes on better.
+Quite colorful, but if the terminal supports color it would be easier to
+distinguish a few things.
+

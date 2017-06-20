@@ -1,0 +1,48 @@
+# 2016/01/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:38
+
+I should look at the XPM decoder code and make sure that it is more safe than
+usual.
+
+## 00:48
+
+The code is about a year old and is rather ugly compared to how I write code
+now. Although currently only Squirrel Quarrel uses it my OS will rely on XPMs
+and such so it should be better handled.
+
+## 11:48
+
+Time to continue work on my XPM decoder/encoder.
+
+## 12:29
+
+I wonder if I can split off some AWT stuff such as shapes and images into their
+own package.
+
+## 16:28
+
+So far this new XPM reading code looks much better. I believe for my voxel data
+I am going to have a group of XPMs be the image data for the voxel. Then for
+Squirrel Quarrel all voxels will be 16x16x16 so that they remain simple. The
+sprites would be scaled as needed for larger units (such as buildings).
+
+## 19:52
+
+The sample XPM at [http://www.fileformat.info/format/xpm/egff.htm] is not
+readable by GIMP and looks very oddly formed. ImageMagick fails on it, however
+the image viewer I use can read it. So I suppose I will have to guess how it is
+to be viewed.
+
+## 22:03
+
+Despite the sample plaid.xpm not loading in GIMP and looking wrong in my image
+viewer, it actually looks mostly nice in my decoder. I just need a fallback
+for short rows.
+

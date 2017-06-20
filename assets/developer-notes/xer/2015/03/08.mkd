@@ -1,0 +1,19 @@
+# 2015/03/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:30
+
+Operand needs a name for an operation, although the class could still work.
+Although anonymous ones would be broken.
+
+## 13:22
+
+Need to move the allocator stuff to a constant class so that it is not
+recreated every time a method is compiled. Not only is it faster but it is
+easier on the garbage collection.
+

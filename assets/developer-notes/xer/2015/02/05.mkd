@@ -1,0 +1,21 @@
+# 2015/02/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:55
+
+Lots of ice and snow as I awaken.
+
+## 08:13
+
+Not sure of the best way to represent operations where it is not a complete
+mess of things. Perhaps I can use method handles in the giant byte ops
+enumeration pointing to stuff hidden inside of the code bank. This way the
+enumeration callback stuff will be capable of referencing the local
+translation code and keeping it in the same place as much. Although I can just
+method handle the stuff manually as a kind of static.
+

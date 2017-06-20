@@ -1,0 +1,20 @@
+# 2016/02/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:20
+
+Spent the past few days cleaning my room (partially done) and taking part in
+HackSummit 2016. The conference was really great. I believe what I am going to
+do is go back to SquirrnixME but instead call it SquirrelJME and then do some
+rework of it. As for identifiers I am not going to keep myself limited to
+six characters since that is just insane. That will make writing things easier
+and such. Also if a compiler cannot handle super long identifiers for externals
+then I can use preprocessor macros to change everything. I just cannot exceed
+31 characters for anything, however 31 characters is plenty except when it
+comes to the primary library and such as some methods are extremely long.
+

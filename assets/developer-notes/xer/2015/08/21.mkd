@@ -1,0 +1,157 @@
+# 2015/08/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:45
+
+I have a bit complex sorting for fields in the TreeSet for MOC. However it is
+very odd.
+
+## 01:07
+
+Might be best to just sort by String case insensitive, although I really would
+like special sub-ordering.
+
+## 01:20
+
+Actually I can cheat in a way and make it still work. The string can have the
+bit location of the value (the lowest bit) with an appended @# for the name of
+the field in the map. However, the Comparator would ignore such fields.
+
+## 01:37
+
+Not going to bother, will just sort by case insensitive name.
+
+## 10:30
+
+For some reason in MutableOpCode, getting aa works but AA does not.
+
+## 11:32
+
+I have no idea why this is not working when it should.
+
+## 11:42
+
+Actually it is AbstractMap, the way it looks up entries. It uses the entry
+set's iterator and performs equal on the key. So in short it will never work
+the way as intended. I should add this as a test case.
+
+## 16:51
+
+Hexadecimal floating point values should be simple to parse.
+
+## 17:19
+
+No wonder what seems to be correct happens badly. My tokenizer is not putting
+the x in 0x or 0X for the token.
+
+## 17:30
+
+The input value 0xDE.EADP+17 should result in plainly: 29218208, however my
+decoder gets 22291723632812500000.
+
+## 17:37
+
+Ok my guess is 222.917236328125E+17, which is actually correct sort of.
+
+    
+    
+    0x0.EADP+0 = 0.917236328125
+    0xDE.EADP+0 = 222.917236328125
+    0xDE.EADP+17 = 29218208
+    
+
+At the magnitude of zero my value is correct, but with 17 mine is really
+wrong.
+
+## 17:41
+
+Ah yes, the magnitude of hexfloats is power of two and not base 10, which
+would explain why it is off. What I need to do then is to convert from the
+base 2 exponent to a base 10 exponent. Well really the P is *2^n, where the E
+is *10^n. I need to convert the 2^n to 10^n
+
+## 18:29
+
+Well, BigDecimal does not support log/ln, or supports scale with fractional
+values so I will need a new way to parse into a BigDecimal.
+
+## 18:39
+
+Going to rework it so the parsing does not create any temporary Strings or
+StringBuilders, would be best to make it operate entirely on CharSequences.
+Not only would that be more efficient, but it would be much better too. Due to
+the lack of log in values though, to support the binary bases of hex floats I
+will just have to multiply by [2, 10]^n.
+
+## 19:34
+
+I virtually just use String when it comes to parsing since it is quite simple
+(with substring). The one thing I must check is if the values are converted
+good. 0xDEADBEEF = 3735928559 is correct.
+
+## 19:42
+
+Appears the computation of the power side of the big decimal is taking quite
+some time. Perhaps it would be best to have it be done with a BigDecimal
+instead.
+
+## 20:02
+
+Actually the add operation was taking forever because the scale was really
+small, the scale was virtual the minimum value since I forgot to set the value
+accordingly to zero. The value I want is 29218208, however the value I get is
+492466601984\.
+
+    
+    
+    [FINE] Building!
+    [FINE] Made constants.
+    [FINE] Add 222 + 3757000
+    [FINE] == 3757222
+    [FINE] Multiply 3757222 * 131072
+    [FINE] Done!
+    [FINE] 0xDE.EADP+17 = 492466601984
+    
+
+Looks like the fractional part has a bad scale to it.
+
+## 20:14
+
+Looks like scale is negated to the power, hard to tell that because the font
+on the documentation is microscopic. So that results in a closer 0xDE.EADP+17
+= 29590421.504.
+
+## 20:17
+
+Now fixing a scale off by one, I get: 29147227.7504. Closer but still off. The
+resulting before the scale multiplier is 222.3757 wheras the correct values
+are 0x0.EADP+0 = 0.917236328125 and 0xDE.EADP+0 = 222.917236328125.
+
+## 20:27
+
+The correct way to add the fractions together is to add the inverse of them
+together.
+
+## 20:55
+
+Neat! I saw the International Space Station before! It moves very fast and is
+bright like Venus. There appears to be a 3 day window where it can be seen
+from where I am for a few minutes, tomorrow at 9:16PM and the following day at
+8:37PM. It was distracting from my current coding, but it is rather neat since
+it may be a rare sight.
+
+## 21:01
+
+Doing a slower add multiply for the fraction gives me 29218208.000000000000.
+That is the same number as 29218208, so it is correct now. I can go back to
+the Assembler and setting fields from BigIntegers.
+
+## 22:03
+
+And now MutableOpCode.Value can be set with BigIntegers.
+

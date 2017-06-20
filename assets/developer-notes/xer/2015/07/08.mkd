@@ -1,0 +1,36 @@
+# 2015/07/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:40
+
+Debug text is good for debugging.
+
+## 12:06
+
+Before I did all this work for CHECKCAST. I could do it again as that
+operation is simple enough in SSA to do, however it requires some branching
+and usage of INSTANCEOF. CHECKCAST is basically just if (!(o instanceof
+class)) throw new ClassCastException("" + class); else co = (class)o;. Doing
+it this way however could allow for SSA optimizations and such. However if the
+input object is null then it stays as is. The Java decoder does not exactly
+know the types of variables on the stack. I should add some type safety to the
+stack operations and such.
+
+## 12:19
+
+Well that could be done, however that would complicate the Java stack
+handling. Although it would be more type safe the actual encoder from SSA
+could handle stronger values being set for objects. In fact, that could be
+done on operation creation.
+
+## 16:52
+
+Now that I have a single method translated so far I can translate it into
+native code before I work on other methods. Doing it this will I will have the
+bulk of SSA operations to handle.
+

@@ -1,0 +1,50 @@
+# 2015/06/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:42
+
+It is meta time.
+
+## 08:28
+
+Thought about a fancy compiling class loader, but it would probably be much
+simpler to just compile everything at once and then execute the meta
+generation code in a self contained class loader.
+
+## 09:29
+
+Now my generator is called, I just need an interface which can create files to
+compile and such.
+
+## 10:05
+
+Took about 3 hours to write but I believe it will work out. Well my code fails
+to compile but that is due to bad interface errors. Looking at the log output
+now. And the files are generated since their deletions are printed. So now I
+have meta generation of code in the same package. I can use this system
+instead of the annotation processor for when mpa-posix comes along.
+
+## 10:23
+
+Yay, now my code compiles although I still have some more work to do with
+regards to handling things and such. Well almost compiles, just need to fixup
+some packages to use the new system rather than the old.
+
+## 11:39
+
+If I put the main scrolling area into the split directly rather than a sub
+panel, I get it stretched how I want it.
+
+## 15:27
+
+This tile picture I drew reminds me of The Legend of Zelda: Link's Awakening.
+
+## 20:07
+
+Will need to implement the mutable KBF Toc and such.
+

@@ -1,0 +1,46 @@
+# 2015/03/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:51
+
+I need information about both things, used registers and other register based
+allocations as required.
+
+## 05:27
+
+The one thing though is how exception handling would work, with registers
+going back and forth between the stack at various operations the stuff in the
+handlers would not be so stable. Some kind of analysis would be needed to
+prevent that. Say if the path of an exception depends on the state of a
+register before flow leaves the handler.
+
+## 07:20
+
+Actually exception handling in Java just has all of the stack variables get
+junked and instead only the locals remain. Due to that, some registers may
+never be set. So I need to perform flow control stuff on the decoded method to
+determine which registers are used when an exception handler is called. So I
+suppose the best thing to do is have local volatile registers which will never
+be permanent registers. Said stack based registers would consist of volatile
+ones. I can either do code analysis or have the method decoder write this
+information. Analysis of the code would be best as zones could be determined
+as needed. After decoding a reduction pass would remove pointless operations
+and jump targets that are never jumped to. Then other optimization passes
+would run as needed. After that before it is sent to the native recompiler
+there will be register volatility and zone checking. If a jump target is
+caused by an exception handler then any registers which are written to are
+replaced and do not count all. Then that information can be used to determine
+which registers should stick when an exception handler is called.
+
+## 08:42
+
+For some reason my branch target mapping is not working. And I just realized
+why as Operands extend AbstractList, which changes equals(). Since some of
+these operands have no registes, the result is null. So I need to change
+equals to just end up being a check against this rather than being a list.
+

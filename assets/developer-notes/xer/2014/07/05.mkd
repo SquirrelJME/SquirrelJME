@@ -1,0 +1,22 @@
+# 2014/07/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+My PowerPC laptop died, so I moved to an x86 one, oh well. Setting this laptop
+up so there might not be much done change wise.
+
+Yes, no real changes today but my birthday is tommorrow also.
+
+Mostly just minor compiler stuff.
+
+KEightStandardFileManager shows just how useful TODO exceptions are. The
+compiler API is really cool though. My rather small javac script can invoke
+any Java compiler so to speak. However, unless I add more command stuff to it,
+it will by default use my own, although I do have -Xtryhost which will use the
+implementation default compiler if there is any. In the event there is none,
+then I use my own.
+

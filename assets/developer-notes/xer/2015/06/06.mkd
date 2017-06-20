@@ -1,0 +1,52 @@
+# 2015/06/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:12
+
+Actually what I can do is split off my C preprocessor and then finish it since
+not much left is done. I can modify the interfaces a bit and improve it so
+that preprocessor handling is much neater. This way, my work during the past
+week is not wasted. Which is a good thing. I just need to split it off from
+the C compiler bit. Then I can use the C preprocessor as a sort of high-level
+assembly kind of thing. After the preprocessor is finished and working I can
+then work on the assembler itself. The C preprocessor has some power to it so
+my code reduction can work out without needing to invent a new language for
+high level assembly.
+
+## 17:54
+
+The preprocessor probably does not need JavaFileObjects since a file manager
+is not used.
+
+## 18:07
+
+It would probably be more efficient to attempt translating an entire file at
+once rather than iterating through it token by token as it comes along. The
+possibility of failure requires the streams to be closed.
+
+## 19:32
+
+Phase four is really really complex. It is also very much munged into a single
+class also. What I need to do is move the preprocessing state out of that
+class into a sort of POJO struct. Then for stuff like preprocessor directives
+I can have an enumeration instead.
+
+## 19:39
+
+I can also have a special #pragma callback handler, if needed.
+
+## 19:51
+
+Phase four would probably be best rewritten from scratch and done better. The
+only real trouble I would have to introduce some more changes with would be
+_Pragma, but I can just run that through the upper stages which go up to phase
+3. Another thing is tokens in #include statements for replacement. That means
+for tokenization of header names I have to include the rest also. It would
+probably be best then to make it so that the special include directive is only
+detected rather than strings also.
+

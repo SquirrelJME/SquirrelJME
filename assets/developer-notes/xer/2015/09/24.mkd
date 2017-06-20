@@ -1,0 +1,21 @@
+# 2015/09/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:01
+
+Need a slight refactor of the C code.
+
+## 16:37
+
+Actually for the PalmOS Code I can have ARM native code since that has access
+to the kernel (can make threads and mutexes), however since the compiler on
+the device only creates 68k code it can be wrapped back. However, I can always
+make a bridge to ARM code to gain access to these. Or the other thing I can do
+is just have it ARM native which bridges to m68k code output by the compiler
+on the device.
+

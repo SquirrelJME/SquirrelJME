@@ -1,0 +1,42 @@
+# 2015/06/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:02
+
+I am awake.
+
+## 10:23
+
+Although slightly "bad", I will not go through and check the times for a
+package over and over again. They will only be done once, so sources should
+not be changed during a build. Right now my build time is 24 seconds with
+nothing changed. Rebuilding hairball causes hairball-os-construct to rebuild
+which gives me 25 seconds to reach a TODO. And getting to the same spot gives
+me about 10 seconds to 12 seconds. So about twice as fast when the disk is not
+checked over and over.
+
+## 16:47
+
+Was doing real life stuff for many hours. Anyway, thought about how
+instructions will be encoded and decoded. Each instruction set will have
+fields that instructions use (like aa or i). Those fields will be an
+enumeration then there will be a stream-like way of initializing how
+instructions are encoded with bit fields and bit ranges and such. For
+instruction forms (such as on PowerPC and MIPS) there can just be macros which
+are predefined placement of said fields so they can just be set. I suppose a
+Function would work in the constructor so that there is not much of a body for
+instructions to use. Then there will be a generic opcode thing that can encode
+an instruction using arguments and such (EnumMap for that). I would like to
+keep the instruction list clean. So I can use method handles and use names and
+such for an emulator backend which can run any instruction and create SSA
+operations from that. At least for Java I can bring in a bunch of my NARF
+stuff to handle that. Each architecture however will require an encoder which
+takes SSA and turns it into binary code. Decoders and encoders would be
+optional but I would need a Java decoder and native CPU encoder. Later on I
+can reuse the system for a Java compiler and write a Java encoder.
+

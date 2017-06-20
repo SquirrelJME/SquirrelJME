@@ -1,0 +1,36 @@
+# 2014/08/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 05:04
+
+I believe rather than having complex stuff pertaining to management of
+pipelines and segments of pipelines, I will instead have API based front-ends
+which act as simple compiler interfaces for example with javac and c99. This
+is not an actual program, but rather just an invocation interface. The
+internal API could still be used, but the front end plugin would manage most
+of it simply.
+
+## 07:14
+
+Just thought that having an output class format, is rather dumb because class
+files are just binary containers of sorts. Not an actual language, so this
+simplifies things and I need a binary format container of sorts.
+
+## 07:34
+
+I believe I am just over complicating thing still. I will just have
+translation of languages which could be output into binary formats possibly. A
+raw translation interface for converting between languages.
+
+## 16:02
+
+Had an idea of how I can solve this. I must keep the plugins for language
+translation as simple as possible. Translation must take a single map argument
+which contains the input file to read and such, which creates another map or
+list. So input translations are simply translated to output.
+

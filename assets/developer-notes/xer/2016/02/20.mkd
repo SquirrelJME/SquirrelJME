@@ -1,0 +1,22 @@
+# 2016/02/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:01
+
+I believe what I need is some kind of layout for code.
+
+## 12:13
+
+That is, when a field is first acted upon it loads layout information (if it
+needs to be updated) which determines the alignment of the field, its position,
+and if there is any required variable information in it.
+
+## 18:14
+
+Currently cleaning my room and making some good progress so far.
+

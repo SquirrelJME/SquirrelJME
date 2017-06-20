@@ -1,0 +1,35 @@
+# 2015/01/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:54
+
+I should probably switch to a center based view offset, that way it is easy to
+center on objects as I can just set the view to their coordinates.
+
+## 15:25
+
+Got a base for unit selection going (packets are made and sent), but I see
+that when I send a bunch of packets at once they are in reverse order so that
+needs fixing.
+
+## 22:41
+
+Using JSON for some of the stuff simplifies things when it will come to
+building the kernel. One thing I do know that using Java 8 and its features
+has vastly simplified things. Although through many a rewrite I have learned
+much more on how to make things efficient and easy to maintain.
+
+## 23:09
+
+The kernel will be strictly compact1.
+
+## 23:32
+
+This new code in KernelBuilder is much much cleaner than the stuff that was in
+FarBuilder.
+

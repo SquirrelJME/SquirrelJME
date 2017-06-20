@@ -1,0 +1,23 @@
+# 2015/08/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:44
+
+For method calls I can just create a new SSAAllocator for the method to be
+called (SSAToMachine will handle that) then I can just place the registers in
+the correct location.
+
+## 23:32
+
+BigInteger based on Wolfram Alpha... Estimated max value:
+8.808065258419816766037465748959201428335557790940673... * 10^646456992;
+646456993 decimal digits. That is one large number. Wolfram Alpha also knows
+the escape velocity of Kepler-22 b, which is 97000 mph. Suppose you will need
+lots to fuel to get out of that place. A CPU with 32 2GiB general purpose
+registers may be worse than one with lots of smaller ones.
+

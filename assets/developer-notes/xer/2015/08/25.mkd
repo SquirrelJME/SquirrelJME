@@ -1,0 +1,69 @@
+# 2015/08/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:35
+
+I am doing the initial allocation in the wrong order, I should do it by
+argument rather than by native.
+
+## 12:36
+
+I realized that the KBF format has a vulnerability in that the data and
+executable sections are together. This would also be a problem for the kernel
+binary KBF (which contains many KBFs in a KBF). There in essence must be a
+code specified block part of the KBF that way if there is exploitable code
+that is generated, a user cannot execute an arbitrary string they explicitely
+stated. Mega-KBFs would also need stuff such as string merging and such too
+since many KBFs could share similar strings.
+
+## 13:40
+
+I need a better representation of the KBF structure types instead of them
+being a gigantic set of enumerations with annotations attached. Perhaps a
+custom format or JSON would be better. JSON would not require writing a parser
+so I will go for that instead. I also no longer require the C code but
+assembly compatible stuff, so to speak.
+
+## 13:45
+
+I am not going to do a complete rewrite of the KBF code since it is rather
+good, just going to change how it is generated and allow for String and code
+tables. I might be able to extend it to any constant however and have constant
+tables, but not too sure on that yet.
+
+## 14:10
+
+I suppose having a collection of constants would be good since in the super
+binary when the kernel KBFs are merged together, that means less space usage
+as far as some constants are concerned. Also that would mean less entries in
+the table of contents which may result in faster KBF loading and such, maybe.
+Right now the kernel loader takes about 900ms to load despite being quite an
+empty class. Initial decompilation from SSA takes awhile too.
+
+## 14:41
+
+Kung Pao Chicken is rather delicious.
+
+## 14:53
+
+I can also remove the "DELETE" and in the Mutable stuff have indexes by
+references so things are easier kept in sync as needed.
+
+## 16:23
+
+I will need my JSON Parsing errors to be a bit more verbose so it is easier to
+tell where things occur.
+
+## 16:28
+
+Actually my JsonLocation which is given by the exception works.
+
+## 21:54
+
+Was doing real life things for a bit.
+

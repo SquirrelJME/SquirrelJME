@@ -1,0 +1,139 @@
+# 2016/02/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:44
+
+As a side-project I can write a toy Java 8 ME implementation for extremely
+crippled devices which I doubt Oracle would ever support, or anyone at all.
+JavaME lacks strong reflection which is a bonus. Essentially what I can do is
+have it written completely in C or assembly. I would just need class and
+reference lookups for built-in static classes. It could actually work too. I
+do wonder though how light it can be however. The thing is though that internal
+classes will be purely native, while loaded classes would be interpreted or at
+least some kind of stack caching (similar to JamVM). I could quite possibly
+target devices such as GameBoys, the N64, TI-83+, ancient Palm PDAs. I can then
+derive using that and use it as a sort of microsized bootstrap environment
+for Squirrnix to build on. I could also even support that Zilog eZ80 board I
+have. Well, The TI-83 I have has 512KiB of flash ROM, 32KiB of RAM, and a
+6MHz CPU. So these are extremely very low bottom end of the line in terms of
+today (since these are just basic calculators).
+
+## 00:52
+
+The JavaME 8 data sheet says optimized for devices starting at 128KiB of RAM
+and 1MiB of ROM. Java Card starts from 18KiB ROM and 8KiB RAM, however Java
+Card does not really do much and is just intended for smart cards. So the
+question is, which tricks could I use to make this as tiny as possible? Since
+embedded devices are so embedded, only C should be used in most cases and use
+assembly where appropriate. I will need to write a super tiny deflate
+decompression algorithm code though to handle JAR files however. There are 216
+classes in Java ME 8. The very nice thing about Java ME 8 is that it has NIO
+and stuff such as FileChannel. This means no more going back to the start of an
+input stream to get old data.
+
+## 01:02
+
+I can actually use a blanketed approach. For example, for all of the exceptions
+they can be constructed exactly the same and they for the most part have the
+same exact constructors. Thus all that code is not duplicated due to the fact
+that they are all virtually the same. I may however have to code for old and
+potentially broken C compilers though, stuff that is not at least at C99
+levels. However, I can sort of avoid that. Another thing is the target CPUs
+would be 8-bit and 16-bit too potentially. I could also support DOS and
+some other ancient systems too. I suppose for minimum string usage, I will have
+to have a dedicated pool for strings and then reference them by their constants
+based on which index they are at. For minimal memory usage, although char is
+16-bits, the strings should be stored as UTF-8 with some kind of length
+attached. A string table builder with a processor thing can handle that though,
+at least deciding which string to use. It would be done where the table is
+indexed directly rather than having an actual table. When it comes to Strings
+though, the object would need a direct memory reference. This means that
+the code will need memory models. There would either be a 16-bit or 32-bit
+memory model. However, I do wonder if I can have a kind of compressed pointer
+of sorts by using only a 8-bit value. That would be very limited however. The
+VM could be multi-threaded but with locks on objects and other flags for
+objects to determine what it is for example.
+
+## 01:14
+
+I could also target stuff such as OpenFirmware on PowerPC and the BIOS while
+still having some kind of Java in it. So for example in GRUB for the x86, you
+can just have a JAR module which is loaded also and it runs right from it.
+This could be an actually interesting project. I do know that Palm PDAs are
+good enough (even the very ancient ones such as the IIIxe) are juicy enough to
+actually have a decent setup.
+
+## 01:15
+
+The one thing I will have to do though is premature optimization, I MUST
+optimize for the smallest code size possible. Targetting more advanced Game
+Boys and such should be possible also. The only real limitation is ROM size
+limitations, assuming ROM is executable. The SNES for example has 128KiB of
+RAM which is at the JavaME 8 supposed limit.
+
+## 01:27
+
+Actually I like JavaME 8 already, it has `String.format`! No need to roll my
+own at all! Well, the thing with C is that I have to be careful with memory
+but I can easily just use the stack without issue.
+
+## 01:34
+
+Means for exception handling and such I am going to need setjmp and longjmp so
+things work out.
+
+## 01:42
+
+The most important thing though with C is source organization, I need to find
+the best way to organize.
+
+## 02:00
+
+I also need to avoid using 64-bit types since that is a rather new concept
+since 1995.
+
+## 02:40
+
+I believe I will move my code off to another repository and keep it separated
+from this. Although I really do like this single set of repository however. I
+believe I will not do this and just keep it here.
+
+## 02:58
+
+Well if it ever gets super popular I can just split if off then, which will
+work.
+
+## 03:00
+
+Actually I can sort of see this as becoming my operating system sort of,
+although I would have preferred it purely in Java.
+
+## 03:12
+
+Actually this might get ugly due to namespace lackings.
+
+## 03:12
+
+Yes, I believe I am going to fork things off so it can be standalone and a bit
+cleaner. Even though I have worked on my OS for two years almost I seem to not
+be getting anywhere. Perhaps after writing this SquirrnixME I can gain the
+required experience to come back to this. If I ever get stumped I can always
+just come back to this too for example.
+
+## 14:26
+
+Writing code for SquirrnixME instead, however I just came by to say that during
+my dump writer work (since I already wrote a bunch of the supporting code) I
+found that DescriptorField does not have equals(). Actually forget that, it is
+handled by the super class.
+
+## 16:54
+
+Had to implement handling of field value constants so that information could
+be dumped.
+

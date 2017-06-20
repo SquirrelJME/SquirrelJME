@@ -1,0 +1,56 @@
+# 2015/12/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:25
+
+Appears during meta compilation in the filemanager somewhere, the classpath to
+be used during compilation get nuked.
+
+## 01:28
+
+Well, the given `FileManager` is not a `StandardJavaFileManager`, it is a
+`FileShower`. So the usedclasspath can probably just be stripped out.
+
+## 01:32
+
+A small change results in the fixed assembler with the PowerPC archdef extra
+dependency working.
+
+## 05:03
+
+A single unified hardware accelerated graphics stack (along with software
+stuff) under Vulkan would be nice. Java3D and OpenGL graphics could be
+implemented on top of that. Since OpenGL is really complex along with Java3D
+it should reduce work that is needed.
+
+## 13:38
+
+BinConstantEntry needs equals and hashCode.
+
+## 14:04
+
+For some reason nothing is found in the string map.
+
+## 14:06
+
+Looks like null entries are written.
+
+## 14:15
+
+I believe I have it, I was updating the string map before the data was stored
+in the cache thus before then all entries are null. Moving the update to
+outside of the call in the pool writer should fix it.
+
+## 14:17
+
+And that fixes it.
+
+## 19:43
+
+Was a busy real life day today.
+

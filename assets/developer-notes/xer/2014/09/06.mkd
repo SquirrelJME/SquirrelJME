@@ -1,0 +1,85 @@
+# 2014/09/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:54
+
+Ok, the input and output language plugins should convert to or from
+intermediary namespaces. So when a Java source file is read it is translated.
+However, language plugins could just be used to bridge together file formats
+such as source files into namespaces (and optionally output them). So the
+language plugins can be seen as end points whereas CodeRouter can connect one
+end to another.
+
+## 02:12
+
+Actually, CodeRouters need to be a bit more complex, they need to support an
+input format type and an output format type, this way it can be used for
+direct source to source compilation. Then it could also be used for namespaces
+also.
+
+## 10:46
+
+I changed the routers to take a locator directorly so that they are treated as
+the compilation space. The unit locators passed in the NamespaceSeeker are to
+be used in a classpath searching way.
+
+## 12:47
+
+The plugin requires a bit more advanced input for it to work well with the
+code and binfmt routers. However this makes language plugins a bit easier to
+use and more powerful.
+
+## 13:13
+
+And using a class just to carry argument passing data to plugins simplifies
+things as more things could be added in the future potentially, also removes
+the need to specify all those arguments when creating a new task. And there is
+no real need to pass all those extra arguments directly when they are all
+going to be passed through untouched anyway. Less work when I want to support
+a new type of language.
+
+## 13:18
+
+I am not sure if I should add a intermediary compiler which turns that code
+into machine code (and possibly back into intermediary code). LanguagePlugins
+interact directly with files and either load or save namespaces. Those
+namespaces can contain machine code, java byte code, or other kinds of code.
+It might be best to have an intermediary chain support of sorts for internal
+language compilation. That can provide a directionless river of code. When
+writing output binary files or raw code (maybe to/from assembly) if the
+namespace lacks a compiled language it can just be compiled as needed.
+
+## 22:27
+
+I can actually commonize the JavaTask stuff (at least the intro stuff) because
+most source code related stuff will end up doing the same thing all the time.
+That is: open unit, open file channel, creating a line and column reader, then
+performing some specific compilation work. Then in the future when I add more
+input languages I have less work to do implementing them. Saving time in the
+future is always a good idea and a goal.
+
+## 22:39
+
+I need to have two levels, one for raw binary input, which is then used by one
+that does text based handling. Adds an extra layer but it could be very handy
+when the input is potentially a raw binary file (which could contain very raw
+code).
+
+## 22:55
+
+In fact, I do not even need language plugins to return a task because most
+likely all they use for the most part is output of a file or namespace duplex.
+Although I will make it possible for it to be overriden if ever needed but in
+most cases that will probably only rarely ever be used.
+
+## 23:59
+
+Commonizing all of this code has resulted in major simplification and
+reduction of code in the JavaTask so now it is quite lean, just need to fix
+the compiler errors mostly related to unknown things.
+

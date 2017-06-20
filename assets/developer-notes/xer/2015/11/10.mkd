@@ -1,0 +1,60 @@
+# 2015/11/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:17
+
+Array access using methods is easy.
+
+## 12:32
+
+Going to invirtualize the stack stuff, i.e. component 1 and 2 for some things.
+However, for that a script can be used!
+
+## 17:03
+
+I will need some common code for long/double handling on 32-bit systems.
+
+## 18:56
+
+The virtualization stuff is getting a bit complex, need something simpler.
+
+## 18:48
+
+Actually that is how it goes.
+
+## 19:03
+
+Well, currently right now I have complex binding stuff which allows longs to
+be spliced between being in registers and being on the stack. This has the
+consequence of being a bit complex when it comes to such values. I have to
+make sure to handle this everywhere the virtual stuff is used. So alternatively
+I can just make it simpler and have simple binding checks to see if it is
+truly in registers or exists in the stack.
+
+So I will need to think about it.
+
+I could though have in StandardBinding a paired set which is just the next
+binding afterwards. The paired binding can handle if it is fully in memory
+or not.
+
+Another alternative is that I could just code for 64-bit systems and skip
+32-bit for now, however I only have a single 64-bit PowerPC system which is
+as loud as a jet.
+
+## 19:11
+
+Paired bindings might just be the easier way to go. That may at least produce
+simpler code at a slight cost of speed when longs are spliced between
+register and memory space. In those cases they would drop to memory space. On
+64-bit systems the pairing can pretty much be ignored as not needed. Pair
+bindings should always just be the next binding for the same group. That way
+the last local does not have a pair binding with the first stack entry. That
+would be really bad. So I believe this pair binding would be the best solution.
+It should not require new native operations provided integers can be worked
+with.
+

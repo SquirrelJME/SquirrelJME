@@ -1,0 +1,47 @@
+# 2015/09/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:51
+
+I believe the SSAOps are way to CISCy and too abstract. This could get a bit
+confusing at times. Primarily because each operation has specific flags which
+do many things. For example: Read can read from an external field reference as
+seen in Java, or one as seen in C, or just a random memory address. They can
+vary from volatility also, but that is not that much of an issue. Also the
+cramming of all of it into a single class is a bit messy also. I should split
+some of the storage types and operations so that they are not casted to each
+other for the most part (or are package private so they are not exposed). Then
+if one operation does one thing, it will be more RISC like and simpler to
+implement. The single operation also works because if there is anything extra
+added to an operation there could be strange code generated for specific cases
+and such. Also, using the instanceof stuff to determine the type of source to
+read from is ugly because a new class could be added which extends off the
+base of an existing thing but requires special handling to work correctly. So
+I suppose for external references, they just never extend each other for the
+most part. So there should be for external references just one base class. I
+could also move the SSAStore stuff to things outside of the class so they are
+not all crammed into a single class. Expanding things to multiple classes will
+at least make some things easier to find and such.
+
+## 10:41
+
+Another thing I can do is move most of the SSA handling stuff into
+SSAToMachine and then have very basic assembly generation done in the sub-
+class which is specific to each architecture. Doing it this way at least will
+have adding support for new architectures be minimal instead of everything.
+Although this would result in slow code, the NARF system should be basic and
+easy to understand for the most part at least when it comes to adding suport
+for new architectures.
+
+## 21:28
+
+Ok so OpLoadViaExternal will basically just find the status of a target
+register to copy some value in. However the main thing will vary is whether
+memory to memory copies can be done depending on the type. I can get the
+status to see if something is allocated in memory or is in a register.
+

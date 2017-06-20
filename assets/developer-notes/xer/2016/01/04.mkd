@@ -1,0 +1,49 @@
+# 2016/01/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+Now everything is split. Now I must determine if everything compiles OK.
+
+## 00:38
+
+So far the split code is going well after a few compact3 fixes. Surprisingly
+most of the Java library is not really dependent on other parts of it. And now
+everything is completely built. So far all the **TODO** throwing totals 3.6MiB
+which means it would take up about half the space on a 512Mb Nintendo 64
+cartridge. This is with compression and such.
+
+## 01:13
+
+Calculated that value wrong, there would be about 58MiB of spare space.
+
+## 06:17
+
+I actually do not need to share a single lock but can have many in the patch
+code. This would be faster and would allow more threads to work with singular
+sets of codes without fighting a single primary lock.
+
+## 06:40
+
+I already do this however.
+
+## 07:11
+
+The sun is appearing, and it is very cold.
+
+## 12:44
+
+So what I need to do is have a way to create new elements at earlier locations.
+
+## 13:03
+
+This is where lambdas and default methods will be useful. Say I want to create
+a new entry in a primary and want to replace a specific class at a location, I
+can then have a custom placer used for that. So this way I can just have a
+single method used to create things and multiple placement possibilities.
+

@@ -1,0 +1,77 @@
+# 2015/09/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:38
+
+For some operations I could extend to others of sorts, that could simplify
+some things. One thing I have to determine though is the best way to store
+external references that are built up for classes and to not have it be a huge
+mess and duplicated across architectures. I will need an agreed upon register
+in memory and some kind of structure in the base class. At run-time there
+could be some base class changes which are hidden when changed so the depth of
+inheritence is unknown at compile time. One thing I can do though is have the
+current class to use for a method which points to a loaded ClassBinary for the
+constant pool to reference data from. I suppose something like a `
+InternalSystem.getClassBinary(Class)`. That would be a bit slow though for
+reads though. So I suppose what I can instead have is a local method index
+table. Each method gets one and it points to externals that the method uses.
+The method index table could be stored in the code data so that when it is
+loaded it is read and links are done once during class loading time.
+References to classes, methods, fields, and other things will use this simple
+link table. Then when it comes time to calling some other method, the link
+table is used to determine which actual method to call in the target class. A
+method call will require that the target method table gets loaded otherwise
+things will break for example. The method table could also have the current
+class it is defined for. One thing to consider though is calling methods that
+are defined in super classes with said super class object (for example
+`Object::toString()`) where a sub-class changes the behavior. The method will
+have the reference to the Object class and the toString method of it. It would
+also know the Object it is calling the method on. So then I need a correct
+method lookup table for the object. Each class will need said lookup table for
+fields and such. Calling through Object or say CharSequence will need to have
+the same effect. So I suppose what every object needs is a table which points
+to a class which contains a table of correct methods. That table would be
+looked at everytime a method is invoked so it must be a speedy operation. I
+suppose the best thing would be to have a kind of hashing mechanism to quickly
+find a method. The table will need to have a maximum limit so that modulo
+operations (or and) are done. And the hash algorithm will have to be good
+enough to not have any collisions. For each class I can have separated field
+and method hash tables to reduce collisions when they are named the same. The
+other thing to consider is method arguments. The varying arguments and return
+values will have to influence the hash code. The has would also need to be
+fast to execute and not be collision heavy. I suppose in the event of a
+collision it will need a little extra code to solve. A bridge so to speak.
+
+## 19:05
+
+I suppose the table would be best a power of two because then I can just use a
+mask. The first piece of the table can just be a count to determine how to
+mask the values. Well at run-time that count can be ignored, so to speak.
+Well, the table is only used for that one method and nothing else so there
+would be no need for a complex algorithm. Actually forget most of that. The
+called methods are always static, so there will just be direct method table
+references. The class binary will have a key for each method to determine
+which externals should go in specific locations. As for bridge methods, I
+believe interface classes when loaded by the VM will consist entirely of
+those. So interfaces will have code, but their methods only divert execution
+to another class implementing the interface. Doing it that way means that
+everything is pretty much a class and I do not need to handle interfaces
+specially in the calling convention. For the implemented interfaces and their
+respective tables per class, there will have to be a kind of hash table
+because linear lookup of interface methods would be really slow. Another thing
+bridges will need to know is the actual desired method to call. The method
+table will need to, well it will just need to say which index the origin
+calling point came from. So say that in method main there is a call to foo. In
+that main method the foo's reference is at the table index of 7. Now when main
+calls foo, main will need to put down the reference (maybe a pointer to a
+structure or raw id) which will be read by the target method. A special spot
+will be used for table indexes. However the indexes only need to be used for
+bridges (such as in interfaces). Using an opaque number would be bad because I
+would need a handle to the calling method (which I might have anyway), so a
+pointer to some kind of structure would have to be done.
+

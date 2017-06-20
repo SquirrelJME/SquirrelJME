@@ -1,0 +1,55 @@
+# 2015/09/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:36
+
+Now to work on NARF being switched over to the slightly different compiler
+logic code.
+
+## 09:55
+
+This new compiler-logic code does seem much better, splitting the SSA stuff up
+feels nicer as it is not all crunched together and needlessly complex.
+
+## 10:08
+
+Now the Java translator is converted, next to do is the PowerPC one.
+
+## 10:26
+
+Now the PowerPC compiler has been converted (that was rather fast to do).
+However I must consume nutrients and then do some real life things. When I
+return I just need to go back and handle some TODOs such as method invocation
+generation in the code. Then after that I will be returning to code generation
+where I was before with register allocation. However this time it should be
+easier to code because of the potential for a better API and such.
+
+## 20:46
+
+One thing I cannot do is when creating registers for usage is to cache them
+for one. Another thing is that I do not want to give all the native registers
+to the allocator because some are special purpose usage and such.
+
+## 21:00
+
+Looks like I already did the native register bits, not using the reserved ones
+that is.
+
+## 21:47
+
+This new code I am writing is inspired by my Java Stack tread, which I named
+my VRA stuff after it, hence VRATread. However it is more split than the
+JavaStack class and is a Map instead of a List since the slots are not exactly
+in a linear sequence at all, although they be.
+
+## 22:01
+
+Another thing I need along with allocate is spill, so that registers and such
+can be spilled when needed. Of course the spill method will be called by the
+allocator to simplify things too.
+

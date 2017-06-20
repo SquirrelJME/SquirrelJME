@@ -1,0 +1,76 @@
+# 2014/07/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:10
+
+And the day changes, modifying all of the dependencies to use strings is much
+better as the pair stuff is not needed at all since the values are all URIs
+anyway. The only real part left of the dependency walking that is left is
+handling of soft dependencies. Slight snag is that soft dependencies of a
+package are not possible and will only work with packages.
+
+## 00:48
+
+Actually my current setup is very weak because the system would conflict when
+building independent of the run-time code against dependent on the run-time
+code. When compiling the kernel target it must use internal only dependencies
+rather than the current one being run. So I will need to change MetaSearch to
+be an abstract class instead then have this contain core info on packages and
+classes. So this will be a slight moving around of things. Luckily BaseInfo
+does not depend on any parser. The new MetaSearch will have to instead only
+use parsers internally to grab info when applicable while keeping its own
+cache map of them. This way the two systems can intermix so that utilities
+that are meant to be run on the host can be compiled with usage of the host
+class path while stuff remotely is bootstrapped instead. Had this idea of
+where I can use different plugin systems to a very generic MetaSearch so I can
+specify files or check the current run-time. Basically a plugin will locate a
+package or a class in some manner, usually on the disk. However for soft
+dependencies the order has to be different. So a searcher will need to be
+setup to handle hard and soft searching. Then those plugins would be
+responsible for loading whatever into PackageInfo or ClassInfo.
+
+## 02:02
+
+Before I take on this task, I should hopefully get the remainder of the night
+and most of the morning in rest. Then I should be very wide awake to perform
+all of this. Maybe. However I should heed my own advice because I am already
+starting to feel tired.
+
+## 14:14
+
+I stayed up playing video games until about 06:00 so now I have just woke up.
+
+## 17:05
+
+Going through all of this code again to make it as I planned earlier today is
+turning out well for the code. Much more simpler and more abstract. So by the
+time I get to the actual build system, I might not need to write much at all
+pertaining to this. Must purge BaseInfo of Depend and make it more general.
+
+## 19:26
+
+I do not feel very well, I am going to attempt resting.
+
+## 20:56
+
+I feel much better now.
+
+## 21:39
+
+After working on this, my code is much leaner and simpler now, I would
+estimate that maybe around half of the lines were shaved away. I removed my
+DontCareClose and instead used one that returns any caught exceptions since
+ignoring them completely is just bad practice anyway. So now I am back to
+where I was yesterday so to speak.
+
+## 22:51
+
+With URI base for info grabbing with dependencies, it should be much easier to
+implement recursive dependency generation especially with the much thinner
+classes that exist now.
+

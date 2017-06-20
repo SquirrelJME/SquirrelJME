@@ -1,0 +1,88 @@
+# 2015/03/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:12
+
+Could work on the completion program or other things for a short bit.
+
+## 09:50
+
+Going to need to add package-infos which are missing.
+
+## 10:51
+
+I now have a table printed, but it feels like I am missing a bunch of classes
+in the tally since there should be way more than 2326 classes (about twice as
+many). I should also remove the -1 category since that is implementation
+detail. And remove anything that is also zero.
+
+    
+    
+         : DONE DONE DONE DONE DONE  # ALL ALL ALL ALL ALL ALL  
+     CAT : CLAS | ANNT | INTF > TOTL # CLAS | ANNT | INTF > TOTL
+    ============================================================
+    P#-1 :    0 |    0 |    0 >    0 #   11 |    0 |    1 >   12
+     P#1 :    3 |    6 |    2 >   11 #  804 |   11 |  258 > 1073
+     P#2 :    0 |    0 |    0 >    0 #   93 |    0 |   73 >  166
+     P#3 :    0 |    0 |    0 >    0 #  314 |    5 |  181 >  500
+     P#4 :    0 |    0 |    0 >    0 #  493 |    2 |   80 >  575
+    ------------------------------------------------------------
+     ALL :    3 |    6 |    2 >   11 # 1715 |   18 |  593 > 2326
+    
+
+## 10:56
+
+My class library does have 4391 files in it which is about right for some
+overhead of packages and such. 2401 classes contain k8jrt.meta.JavaVersion and
+260 contain compliance.Standard. 1772 files have no version information
+attached at all.
+
+## 11:05
+
+I will need to write a script that adds the associated Standard bits with an
+unknown version field into the files at the correct location.
+
+## 11:47
+
+Right now my "addstdan.sh" script is running on all of the files which
+currently lack standard version stuff. Although I am adding an unknown version
+of "1.?" that may be fixed later on. And it just finished as I was typing
+this. Just hope that it compiles correctly. And I am missing some k8.pro for
+some packages.
+
+    
+    
+         : DONE DONE DONE DONE DONE  # ALL ALL ALL ALL ALL ALL  
+     CAT : CLAS | ANNT | INTF > TOTL # CLAS | ANNT | INTF > TOTL
+    ============================================================
+     P#1 :    3 |    6 |    2 >   11 #  892 |   11 |  283 > 1186
+     P#2 :    0 |    0 |    0 >    0 #  136 |    0 |  146 >  282
+     P#3 :    0 |    0 |    0 >    0 #  329 |    5 |  199 >  533
+     P#4 :    0 |    0 |    0 >    0 # 1282 |   65 |  490 > 1837
+    ------------------------------------------------------------
+     ALL :    3 |    6 |    2 >   11 # 2639 |   81 | 1118 > 3838
+    
+
+Suppose that is rather close, 4240 classes are said to exist within the
+standard library. So 400 appear to be unaccounted for. However, all of the
+stuff should already exist. The number of Java files is 3940 however. But this
+information is only for top level classes, not inner classes.
+
+## 11:55
+
+I was going to run a script on other things also, but not too sure of that
+yet. But the completion total should be good enough for now, I can figure out
+the number matches in the future. However the 4240 count is by the JavaDoc
+counting the number of class links in the "All Classes" page.
+
+## 12:00
+
+Reading yesterday's blog, that is changing all of the field null assignments
+to a a method that just throws an exception. I could delay that for a bit
+however, but I still need to do it.
+

@@ -1,0 +1,36 @@
+# 2015/06/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:48
+
+Constant pool TOC entries might not really be needed at all.
+
+## 12:09
+
+With special IDs, I do not need nested tables at all, so KBFs would be much
+simpler and with a single directory of entries "compression" works better. I
+can also turn that reserved byte into some kind of sub-index of sorts.
+
+## 12:48
+
+Every constant pool entry can point to a reference and each entry can be its
+own data type.
+
+## 17:53
+
+There are going to be a ton of mutable types. I just had this idea of having
+my sc.h header contain all of the structured information as needed which
+provides view into the data of specific kinds. So basically instead of having
+a StructClass for everything my header is parsed using simple tokenization and
+then structures are built that define specific entries. The mutable versions
+of those fields will just be a bit more dynamic. With it this way, I can just
+have StructEntry and MutableEntry which provide a "C"-like view to the data,
+with some checking. Then with it this way, there is only a single StructEntry
+and MutableEntry instead of a whole bunch of them. This should also reduce
+repeat code since much of the structure information is the same.
+

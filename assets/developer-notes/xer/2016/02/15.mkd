@@ -1,0 +1,45 @@
+# 2016/02/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:55
+
+Actually what I can do with NARF is actually have it so that SquirrnixME is
+written in **PURE** Java which is then compiled to native code. Well actually
+JavaME code should be able to be ran on a standard VM provided it gets some
+missing methods. However a full SE environment in the end would be far more
+useful.
+
+## 12:01
+
+Ok, so what is the best way to parse a field value?
+
+## 12:31
+
+I wonder if I should also generate documentation along with the packages when
+they are compiled also. This would cut the speed though, however I would have
+documentation to look at and explore. The current thing which I do though is
+just go through the source code to look up what a method does.
+
+## 18:20
+
+`Objects` looks very interesting, I can check for null equality and with
+values too, so that saves some typing.
+
+## 21:52
+
+There is this challenge on reddit to make a procedurally generated side
+scrolling game, I believe it would be an interesting diversion. I believe I
+will go in the fashion of CastleVania but call it SquirrelVania. Could be on
+the level of difficult. I believe for a monster I will have one called a VAT
+which is a rat which flaps green dollar wings and drops money bags as another
+attack. Would be funny. I would suppose that the graphical style should match
+the NES due to simplicity and I am bad at graphics. I have about a month to
+complete it. For even more simplicity I should probably match Castlevania 1
+style as it is a rather nice classic. Since I only have Swing available this
+shall be for Swing with aspect corrected graphics and such.
+

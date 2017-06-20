@@ -1,0 +1,29 @@
+# 2014/08/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 06:47
+
+I am sure of the argument to passed to the translator, but not the return type
+of it. Perhaps I should return a map which contains output, which may be in
+multiple forms and such. And I believe for simplicity that the build plugin
+should just invoke my own Java compiler as that would simplify things to a
+certain extent. Or perhaps some kind of grouped front end would be better.
+
+## 07:15
+
+A toolbox API would work with interacting with the very basic compiler. I
+should just keep the locator code that I wrote (all the beacon stuff) as there
+is no real need to rewrite it. However, I am going to modify it to use
+channels instead of streams because that is just stronger. Using a FileChannel
+will simplify things because I do not need to maintain separate inputs and
+outputs, they are just combined.
+
+## 07:50
+
+Using FileChannel has considerably reduced the line count in the Beacon class.
+

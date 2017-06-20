@@ -1,0 +1,53 @@
+# 2015/09/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:59
+
+I decided to upgrade my OpenJDK 8 installation on Debian, compiling the
+package took 16.2 hours. Quite a delay. I also upgraded my local QEMU to 2.4
+and I decided I could use the i386 Java VMs also so I installed that. The i386
+VMs could be used for testing, even though they are emulated on this PowerPC
+system. Now I have 1.8, build 66 and I just need to test building k8 with it
+to see how it is.
+
+## 04:11
+
+And it does not work, which means 16 hours wasted. Zero works but it is rather
+slow, JamVM is much better.
+
+## 04:24
+
+Perhaps I may be able to patch the shared library and add the symbol that I
+need. The error being `javac: relocation error: /usr/lib/jvm/java-8-openjdk-
+powerpc/jre/lib/ppc/libjava.so: symbol JVM_GetResourceLookupCacheURLs, version
+SUNWprivate_1.1 not defined in file libjvm.so with link time reference`. Seems
+JamVM lacks that symbol and I am not exactly sure how it would handle it if I
+changed the way it is patched and such. A short patch could probably
+LD_PRELOAD, but that might mess up under some environments that depend on it
+and such.
+
+## 04:35
+
+An alternative would be to compile my own JamVM with said library and use that
+instead.
+
+## 17:01
+
+Cannot get this to work, so I am going to take the knowledge that I have
+working on k8 and write my own libjvm.so which just translates the bytecode to
+C, passes it to the GCC, and then dlopens the generated class library. The
+good thing is that adding support for a new VM is simple as I just need to
+change the configuration and add an extra libjvm.so.
+
+## 21:52
+
+PalmOS does have a C compiler for it called OnBoard C, however compared to say
+GCC it is a bit crippled. It would be interesting though to generate C source
+code from Java classes and then use the compiler on it to generate code.
+OnBoard C only generated m68k code however.
+

@@ -1,0 +1,32 @@
+# 2014/09/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:37
+
+Should get to work on the compiler.
+
+## 08:59
+
+The compiler is too splayed out, going to end up having tons of toolboxes to
+just handle inputs for each language when it is not really required. I must
+keep it simple and not use these "toolboxes" at all because that complicates
+things greatly. I just need a single front end to the internal compiler and a
+single API. Then that single API can handle all of the differnet inputs and
+outputs and an keep the language plugins very simple.
+
+## 09:08
+
+Then I can do what I planned before, a sort of a router which can build a path
+from an input and create an output to it.
+
+## 14:00
+
+This new CodeRouter will handle all the translation to the output format,
+hopefully it ends up working well and simplifies things greatly. I will have
+to figure out the best way to build a route between formats.
+

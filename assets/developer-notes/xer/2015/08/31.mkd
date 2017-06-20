@@ -1,0 +1,117 @@
+# 2015/08/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:05
+
+Appears locking is not an issue because it makes no difference in how long the
+code takes to execute.
+
+## 11:59
+
+So far at least when it comes to exceptions, it appears that my code is only
+slightly faster than before.
+
+## 12:10
+
+Comparison of before and afters...
+
+## 12:28
+
+    
+    
+        Before          After
+        (KBF)   (24)    (KBF)   (24)
+        495     58      457     70
+        409     52      411     78
+        414     51      413     69
+        413     51      413     62
+        649     89      408     67
+        497     78      405     65
+        397     53      651     110
+        416     56      406     68
+        411     54      413     64
+        400     49      507     64
+        ----------------------------
+    min 397     49      405     62
+    avg 450.1   59.1    448.4   71.7
+    max 649     89      651     110
+    
+
+So on average my code in total is about the same speed but slightly faster,
+however the constant pool reading is a definite 20ms slower. So while other
+sections sped up, the constant pool slowed down. The class I am testing is
+very minimal however so it is possible that it may speed up in general for all
+classes compared to before. So the class I am testing is a rather bad test
+class for the most part. Suppose the class I should test instead is the
+PowerPC operand table which (or the Java byte code table) has a few thousand
+enum elements and such. Well I cannot test that because my KBF code is
+incomplete so I will have to go back to it. In the future I need to set the
+project main class to
+net.multiphasicapps.k8.binary.asm.ppc.PowerPCInstruction:main and the previous
+"before" revision I used was 9b791606e18e8c2a94c28467feac4df2c2df709b. Seeing
+that the constant pool code is a bit slow I can determine how it is best to
+speed it up so it is as fast as it was before. The giant enumeration is
+constant heavy 8,241 entries. What I can do before hand is determine the speed
+of the before right now and then just come back to it.
+
+## 13:15
+
+    
+    
+        Before          After
+        (KBF)   (8241)  (KBF)   (?)
+        3072    741     
+        2911    739     
+        3961    846     
+        2868    682     
+        2866    705     
+        2933    691     
+        3001    696     
+        2878    725     
+        3667    1080        
+        2933    696     
+        -------------------------------
+    min 2866    682 0   0
+    avg 3109    760.1   #DIV/0! #DIV/0!
+    max 3961    1080    0       0
+    
+
+Since the Mutable KBF code is incomplete I no after code to compare with. If
+it is slower then I may possibly know how to optimize the code.
+
+## 15:37
+
+Seems my newly rewritten code is slower, but I have a few optimization tricks
+up my sleeves.
+
+## 22:19
+
+Suppose I wasted these few days rewriting code just to make it slower although
+it appears much more efficient. The constant stuff might be what is causing
+the major slowdown however. Had to make the local variable table use JavaType
+because that includes ReferenceType and primitives.
+
+## 22:29
+
+Well, my old code used ByteBuffers for containing class data and contained
+lots of assumptions as to what is stored in structures. I suppose those
+assumptions made it a bit speedy. However I like the new more type-safe-ness
+and the possibility of multiple TOCs. In order to go back to buffer I only
+need to change a single class. One thing though is that arrays are seen as
+objects themselves. Right now structures are always created for every element,
+wheras before they were sort of on-demand. Oh well, so the rewrite was a
+partial failure.
+
+## 23:38
+
+Using buffers will simplify allocations. Perhaps there is also a way where I
+can cheat when it comes to constants. The constants can use a set and then
+just iterate though all of the entries and structures grabbing them all. But
+that is only needed during iteration. I suppose constant lookup can then be
+lazy where it is only generated when it is asked for.
+

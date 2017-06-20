@@ -1,0 +1,33 @@
+# 2015/06/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:04
+
+The C compiler's object and library files are just going to be JAR files which
+are included in the executable JAR file.
+
+## 02:24
+
+I am going to need a CFileManager which does not extend off any file manager
+to provide CFileObjects. Any input code and objects will be purely URI based.
+
+## 02:31
+
+Actually, a CFileObject is not required as SimpleJavaFileObject is enough. As
+long as the implementing file manager provides the required interfaces for
+input.
+
+## 03:19
+
+Actually, for my CFileManager I have a way to specify outputs, however the way
+the compiler works, only inputs are possible.
+
+## 20:26
+
+I will need a comment stripper just before phase 3.
+

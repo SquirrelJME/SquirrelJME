@@ -1,0 +1,33 @@
+# 2014/08/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:49
+
+In mkfossil.sh, using a shorter name of "k8" rather than the default revision
+and such, produces a ZIP with a space saving of 20K.
+
+## 02:11
+
+After a bit more writing, I believe I have the annotated groupings in a
+possibly working state for usage. The thing that remains is implementing
+ArgumentParsing in a neat way to use it, perhaps using iterators for simple
+for walking over options. Rather than make that an Iterable, it can just be an
+Iterator (which means no for loop) as that simplifies the operation. Mostly
+because the command line arguments could be modified during an iteration run
+so that would have to be supported, for changing that is.
+
+## 05:49
+
+Made a bunch of progress, I cannot use a private inner enum as the argument of
+a generic, however I may use a protected inner enum.
+
+## 07:09
+
+No more errors are generated, only TODO exceptions are hit which means I must
+implement things now.
+

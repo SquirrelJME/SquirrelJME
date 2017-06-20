@@ -1,0 +1,41 @@
+# 2015/07/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:54
+
+CPU features and such are complex, I cannot figure out a good way to describe
+all of the features a CPU has.
+
+## 15:36
+
+I suppose what I need is a GUI for designing CPU information, all of their
+instructions and the bits for the assembler which are needed for it. Then I
+can save that information and use it to generate the needed classes and
+enumerations for an assembler.
+
+## 15:45
+
+Or a better way to set instruction information from the enumeration to make it
+easier to design CPUs and such.
+
+## 16:55
+
+The best way I figure to get the instructions is to take it from the PDF
+directly. Atril has trouble, however xpdf copies the instruction table data
+perfectly how I want it.
+
+## 17:10
+
+Copying and pasting all the tables was easy, however parsing them will be a
+bit more complicated.
+
+## 17:39
+
+I am going to need a more complicated instruction information builder thing
+that is more safe.
+

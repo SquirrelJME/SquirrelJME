@@ -1,0 +1,46 @@
+# 2015/06/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:20
+
+A new month. Now let us see what was done this month. I do know that dynamic
+recompilation into machine code has not been done. Near the end of this month
+I completely rewrote hairball, now it is much cleaner and much leaner. It is
+still incomplete however. At the start of the month I was finishing up the
+rewrite of the Java NARF decoder and such. Then I started writing a Forth
+interpreter for about two days, but decided to not write or use it for certain
+things. Made a base debugger interface which required some implementation of
+things and a few fixes. I added an incomplete common assembler intrerface for
+assembling assembly. Then my hairball rewrite persisted for about a week. I
+also changed some of my major mass commits to their own individual user
+despite fossil export not using those changes. Then the kernel building system
+was switched to configurations since those are easier to manage and to change.
+
+## 12:32
+
+The next thing to move onto is the compiler templates so the configuration may
+select the compiler to use.
+
+## 14:33
+
+So now that I have a conifgurable setting to choose the target machine and the
+compiler to use, I can get back to native code generation. I just need to
+setup the steps to do that correctly.
+
+## 18:26
+
+I am going to require a dialect of C if I want interface with the main machine
+without requiring pure assembly. The base bootstrapper would then require C,
+but with my own compiler it can compile it to native code as needed. No C
+library is required however and would not make much sense.
+
+## 21:20
+
+A generic C compiler interface would be best, one that could easilty be
+changed to support differing aspects.
+

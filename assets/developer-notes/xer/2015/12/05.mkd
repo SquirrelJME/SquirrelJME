@@ -1,0 +1,39 @@
+# 2015/12/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:15
+
+Well so far this refactored building code is much cleaner. Having it not be
+a giant mess is a good thing.
+
+## 00:24
+
+Funnily enough hairball could recompile itself. This is usually not a problem
+because the old hairball JAR will still exist on the filesystem if it is opened
+so it would be hidden for the most part. However, not sure how this would be
+handled in Windows since it might cause access violations because the file is
+open. I should up the hairball version number to indicate the rewrite.
+
+## 00:30
+
+I wonder if Markdown can do div-like relative links in the current page. That
+would be handy for JavaDoc generation. Also with this new builder I could
+easily add JavaDoc generation for source code so that said documentation
+exists.
+
+## 00:57
+
+Looks like JEP 222 also called jshell is a Java shell which is planned to be
+supported in Java 9. Oddly enough though, the code is located in "jdk.shell"
+so I suppose they are moving away from the "java" and "javax" stuff.
+
+## 23:04
+
+Kind of want to work on Squirrel Quarrel however my build system is in a
+rewrite currently.
+

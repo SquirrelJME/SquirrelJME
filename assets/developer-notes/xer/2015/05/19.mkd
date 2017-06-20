@@ -1,0 +1,94 @@
+# 2015/05/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:56
+
+I do wonder if CPUDesigner would even be needed as the front end for the
+assembler could handle all of the creation of things based on existing
+properties. Most if not everything, will essentially be a property. Well
+properties are user-set and may have default values possibly.
+
+## 03:34
+
+Testing hello world assembly with -kernel in QEMU. However I have no idea
+where the kernel has been placed. So a bunch of 0xDEADBEEF and a memory search
+should find it. Setting the system to only 16MiB causes it to crash when it
+tries to read 0x01000000. memsave also appears to not do anything.
+
+## 03:41
+
+Seems I found my code, which is at 0x01000050.
+
+    
+    
+    00000050  00 00 00 00 de ad be ef  de ad be ef de ad be ef
+    
+
+Appears my current set of instructions proceeds to overwrite every single
+memory address with 0x60.
+
+## 03:59
+
+Actually that setting of every address to 0x60 is performed by the firmware
+itself for some reason (not my code). Perhaps it is trying to cause some kind
+of hardware fault so the real CPU resets on system that did not boot
+correctly. I will need to dig up my old code that does have an actual working
+PowerPC booting, for an old project when I had a simple C kernel.
+
+## 04:23
+
+Found my code, which just sets the start address to 0x0, thus causing it to
+work correctly. So basically the initial boot objects I make are going to be
+modeled after this since it works for the most part.
+
+## 15:08
+
+I believe I will remove CPUDesigner as the assembler front end can handle
+abstract creation of CPUDesigns.
+
+## 15:12
+
+Another thing I can have is a CPUInstruction interface that way I can
+programatically without resorting to Strings, use that on the representation
+of input and output assembly code.
+
+## 15:14
+
+Another thing I can add to instructions is an optional emulation layer, or
+rather simulation so that I can determine if I understand the register enough
+to see if it works correctly. Such code would also be handy for when code is
+run which uses illegal opcodes that are defined in a future CPU, that is
+assuming they throw an illegal opcode condition. Although it would be
+interpretive only it would form the basis for a simple emulator. Another thing
+it would be useful for is in the debugger, I can simulate the execution of a
+method and see if it works as intended. If that method does call other methods
+they will have to be loaded and emulated also, and it might not be possible to
+know where they even are.
+
+## 15:22
+
+The instruction enumeration could also greatly simplify assembly and
+disassembly of code, as I can remove gigantic switch statements and such.
+
+## 16:45
+
+So an analogue of the CPUData and such in NARF has now been placed in the core
+compiler and on top of that it is more generic and so everything can use it.
+With both asm and disasm rewriting code or doing nasty dependencies can be
+averted. So now I can start to work on the new CPUDesign and such and then
+have the assembler and NARF itself use that information. I disliked the
+CPUData because it was a bit crimped and ugly in usage. When I write CPUDesign
+it must not be ugly. Using the property enumeration and such should make it
+easier.
+
+## 19:22
+
+With the way my CPUDesign is, getting the asembler or disassembler from it
+will not work out as each machine will have varying things when it comes to
+insutruction encoding and decoding. Thus, AFE gets the creation.
+

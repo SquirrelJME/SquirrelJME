@@ -1,0 +1,106 @@
+# 2015/02/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:08
+
+I was going to have two math operations one for register and the other for a
+constant, but I figured that is pointless as they can just be combined into
+one and checked accordingly.
+
+## 12:32
+
+I do wonder about GETSTATIC and GETFIELD, right now my plan is to pass an
+input register with a null value. But that would not work too well. I can just
+have the op have two constructors so that one is static and the other is not.
+
+## 12:38
+
+One bit of code has more than 512 exception handlers, ouch. Actually that is
+due to this buffer clearing code not doing what as is intended. Well, the
+clear is correct so there must really be tons of exception handlers.
+
+## 12:44
+
+Now the next instruction I must decode is INVOKEDYNAMIC. Requires decoding of
+the CONSTANT_InvokeDynamic_info structure in the constant pool. Which
+references a structure in the class file, which is very external to the
+method. So I suppose a way to do such a thing would be to defer handling of
+fields and methods and handle class attributes first. That can easily be done
+by flipping some buffers and such around. Then the class attributes can be
+given to the field and method handlers so they can use it as required. It
+might be best to make the bootstrap information be a part of a method rather
+than a class so that such things can be recompiled at will without requiring
+the FormClass to be specified.
+
+## 13:12
+
+I could always just get the obtiained information and then just figure out how
+invokedynamic truly works at the time of class recompilation, although that is
+the next step it would allow me to finish off writing the byte code decoding
+code as needed.
+
+## 13:17
+
+The constant used by invokedynamic contains the descriptor of the method that
+is called, so the arguments which are used can be known as needed. Each
+invokedynamic instruction gets its own bootstrap method.
+
+## 15:52
+
+The invoke dynamic stuff can be simplified to just being contained within a
+specific set of classes one initializes. That being the DynamicLink.Dynamic so
+that must contain the correct stuff.
+
+## 16:54
+
+Looking at the decoded form of BootstrapMethods in javap and it all is
+starting to come together now.
+
+## 19:01
+
+Writing this bit of the handle code gave me a dejavu feeling for an odd
+reason.
+
+## 19:35
+
+Well, implementing INVOKEDYNAMIC decoding took 7 hours. Well at least it is
+done now.
+
+## 21:19
+
+Thinking about it, I might go straight to PowerPC generation rather than C
+since I have been waiting a year. Writing an unneeded at this time C output
+would slow things down. Running k8 on existing operating systems is not the
+intended result. The sooner this is self hosting, the better. Although I would
+need to write a Java compiler to be able to be self hosting however.
+
+## 21:26
+
+Probably will need to implement StackMapTable now so that some exception
+states will work. Also my local reduction is incorrect, I assume that the
+order of locals is linear so I treat it like a stack. I must check ALL of the
+local types and only the later may be null as needed.
+
+## 22:32
+
+Based on some reading elsewhere, the StackMapTable only lists the state of
+things for jump targets. Which makes sense because normal running through the
+program handles such cases in between where operations are not part of jumps.
+My current stopage at running is that the target jump to an exception handler
+has a single difference of a local. Hopefully the StackMapTable for that
+contains a rule where the locals can be trimmed to fit as needed.
+
+## 23:55
+
+May have to end up rewriting all of the JavaCodeBank stuff as it is rather
+messy, however I can do that later (if ever) due to the modularity of the
+dynamic recompilation system. It would probably also be best to write this one
+first so I know how all of the class reading stuff works. Then I can use such
+knowledge to write a newer better version since I know stuff now that I did
+not know before.
+

@@ -1,0 +1,99 @@
+# 2015/02/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:04
+
+Thought about including type information, but also thought about it being
+included in the StackMapTable. It would probably be best to include such
+information about types and also include it in the micro operations so that
+such operations can be checked and such.
+
+## 11:12
+
+It must be type safe, but I also must eat.
+
+## 11:48
+
+JStack::pushAll and JStack::popAll are very similar so they will need to be
+merged as one to simplify things.
+
+## 17:05
+
+I do not believe that micro-operations in operations would be efficient. The
+only reason I had thought of it was to group RISC operations together to
+represent singular operations. However, I can just set an extremely high PC
+address (shifted) and use that instead. I could either shift it left by 16 or
+use a smaller number. Most operations should not take up much space. Removing
+the need for micro operations would simplify things also since there would be
+no extra work needed to operate them in clusters.
+
+## 17:09
+
+I also would not need the OperandBuilder much, that can be squashed down a
+bit. Well it can be used where I can have methods that create operands that do
+something. So rather than have a next() as I currently have, I can have a
+copy() with inputs and outputs. Then that copy() will create the right operand
+as needed. There would also be meta things such as exception handlers that can
+be set and other things such as state information (for debugging).
+
+## 17:36
+
+The Operand class can just be an abstract class with a bunch of inner
+operations init. So rather than an enum things can be a bit more checked since
+an enum would complicate things a bit.
+
+## 20:55
+
+OK, so I have basic byte code operation decoding, what do I do next? There is
+the StackMapTable that needs decoding, but what about exceptions. The locals
+will be very different and it is quite possible that things would be different
+for every operand that gets executed (for locals). However, the StackMapTable
+might just choose a most common set of operations for each byte operation. So
+even though there may be 20 different variations of local values across all of
+the operations being executed the state of the locals for the exceptional jump
+may be just 2.
+
+## 21:22
+
+Now I am currently at INVOKESPECIAL, which is either a construction of an
+object or a super call.
+
+## 22:36
+
+The Java byte code decoder is complex because the Java class file format and
+its resulting byte codes is complex. But any complex mess should be contained
+within it with no real trouble. Provided the code generation is correct and
+works without issues. The later generation code where a pure register state
+machine would be exposed (after conversion from Java stack) will hopefully
+keep the later bits simple.
+
+## 22:39
+
+The JBOPPB I made for JavaByteOp for push and pop lists has just simplified
+handling of method invocations since they are dynamic according to the virtual
+machine. I will also need a new type of input for operands, that being a
+dynamic reference to another class. Those dynamic references would need to be
+added to the linker table for the class file when they are loaded.
+
+## 22:58
+
+Now I need to handle the various difference in the pop types based on the
+input, right now being that INVOKESPECIAL. This is just simple checking if the
+end of the array matches the required types.
+
+## 23:18
+
+Stack was not being set properly between operations but I believe the cause of
+that was just a lacking a set of a variable when I copy the stacks.
+
+## 23:51
+
+So after this I will need to finish off the DynamicLink and the creation of
+the special invokation operations. Then I believe after that I have this
+entire very basic constructor.
+

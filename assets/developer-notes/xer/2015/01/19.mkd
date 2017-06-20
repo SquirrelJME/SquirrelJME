@@ -1,0 +1,61 @@
+# 2015/01/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:01
+
+Actually, using a default interface makes things better because certain units
+can override the data they return and only have to replace the method that is
+needed. However such tricks might not be needed at all.
+
+## 04:18
+
+I dislike it when I mismark the date.
+
+## 11:39
+
+Since my images will be all in XPM (so they remain as text).
+
+## 12:13
+
+Splitting the compiler code which builds then loads the package now comes in
+the same method, but split off into another one that does building but not
+loading. This is going to be used for dependency compilation.
+
+## 12:40
+
+Dependent packages are compiled and turned into packages, however they are not
+yet loaded with the class loader for opening packages.
+
+## 13:51
+
+And now dependencies are handled and compiled as such. Run-package handles it
+and so should the kernel build too whenever it comes to the ready. Also, the
+super constructor for the ImageReaderSpi is quite a long one.
+
+## 14:36
+
+Need to specifically scan for new image plugins for them to be used. It seems
+my image loader for XPM is being used but since it does not actually have any
+reading support it fails.
+
+## 16:26
+
+Figuring out how this image loading stuff works is a bit tricky but I believe
+I have it now.
+
+## 18:07
+
+Now I have a bare minimum image loader which does not crash at all. However no
+actual data is read so the XPM images are quite blank. I will have to delve
+into loading the string data tomorrow, or tonight if I am unable to sleep.
+
+## 21:00
+
+Using a StreamTokenizer should make things easy as I would not need to write
+another tokenizer.
+

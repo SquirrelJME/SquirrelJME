@@ -1,0 +1,43 @@
+# 2014/07/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:53
+
+Currently with ServiceManager I would be eventually be rewriting ServiceLoader
+twice which is not what I want to do. Instead, I can have it wrap
+ServiceLoader (if it exists) and then use a property to define extra services.
+This way on Java 5 I can use -D while on Java 6 and above ServiceLoader would
+be used. This way I can cheat the plugin-manager in a bit while still using
+ServiceLoader.
+
+## 05:07
+
+My freshly written IteratorChain should help me with the chaining of the class
+loader iterators.
+
+## 06:52
+
+I will need to remember to place information on the available services later
+on somehow in the faux package building scripts.
+
+## 19:40
+
+The property based loader works.
+
+## 20:43
+
+What I need to use now is write the actual plugins, I made build-source-db
+take an input and an output. I also need to write -help for ArgumentParsing.
+
+## 23:55
+
+I decided to build a template class to reduce all the duplicate code in all of
+the Mains, since they do the same argument parsing loop, have similar
+enumerations, so merging them all has simplified things. One change in the
+TemplateMain will change all the Mains.
+

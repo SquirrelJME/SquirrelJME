@@ -1,0 +1,157 @@
+# 2015/12/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:01
+
+I am going to have to fix DependencyWalker. Say if a package depends on a
+package and a dependency also depends on that dependency. So the tree looks
+like
+
+	.        A
+	.      /   \
+	.     B     C
+	.    / \
+	.   C   D
+
+The current code outputs this given tree:
+
+	.        A
+	.      /   \
+	.     B     C
+	.    /
+	.   D
+
+When it should output instead
+
+	.        A
+	.      /
+	.     B
+	.    / \
+	.   C   D
+
+Seeing that this is a tree structure, this should not be hard to correct as I
+can find the existing node above the point and put it to the left of tree at
+dthe current level.
+
+## 00:50
+
+I know how I can quickly determine the child position like place of a node.
+I can have a range of values between `0` and `Integer.MAX_VALUE`. The root node
+will start with a full range. Each child will then get a slice of that range.
+
+One thing though is that children values need to be unique, so the parent node
+must be +n of the child index node if there are child nodes. So a recursive
+solution so to speak.
+
+I could also use Long and probably never have to worry about an insane amount
+of dependencies if a 32-bit value is ever exceeded.
+
+Given the above tree, this will be as followed (note that I am using 256
+because it is good enough for this small tree):
+
+	.        A
+	. (1-127) (128-256)
+	.      /   \
+	.     B     C1
+	.    / \
+	.(0-63) (64-127)
+	.   C2   D
+
+So this results in:
+
+ * **A**: Root
+ * **B**: 1
+ * **C1**: 256
+ * **C2**: 128
+ * **D**: 64
+
+## 01:51
+
+This might be just over-engineering things. I just need a compare to determine
+if one node is to the left of, is the same, or to the right of another node.
+Note that parent nodes are always to the right of child nodes.
+
+## 02:09
+
+So what I have is this:
+
+	[SEVERE] TODO -- Handle node repeat.
+	[SEVERE] [ kernel-drconf@1.8.0.20150901 (kernel-bin@1.8.0.20150901)
+	,  kernel-drconf@1.8.0.20150901 (kernel-bin-kbf@1.8.0.20151030)
+	]
+	[FINE]  kernel-bin-kbf@1.8.0.20151030
+	+ kernel-bin@1.8.0.20150901 (kernel-bin-kbf@1.8.0.20151030)
+	++ java-descriptor-decoder@1.8.0.20150905 (kernel-bin@1.8.0.20150901)
+	++ cached-service@1.8.0.20150906 (kernel-bin@1.8.0.20150901)
+	+ kernel-drconf@1.8.0.20150901 (kernel-bin-kbf@1.8.0.20151030)
+
+No fixing up is done yet however.
+
+## 02:11
+
+Since left most dependencies are added depth first, that is the tree builds
+like so:
+
+	.        A
+	.      /   \
+	.     B     C
+
+Then the next step:
+
+	.        A
+	.      /   \
+	.     B     C
+	.    / \
+	.   C   D
+
+Then followed by:
+
+	.        A
+	.      /   \
+	.     B     C
+	.    / \   / \
+	.   C   D E   F
+
+I can just unlink the node elsewhere which should work.
+
+## 12:21
+
+It is possible for packages in the package manager to depend on older versions
+of themselves. Say if I support Java 9, I can have `java-library-1@1.9` depend
+on `java-library-1@1.8`. I would however have to slightly modify the version
+stuff so it can detect such major versions or have just a higher version
+number match of sorts. That is accept `1.8.20151208` and say `1.8.20150706`.
+
+## 12:55
+
+Seems after refactoring, the hairball building code is much easier used.
+
+## 13:49
+
+Implemented running of packages again. Now I must handle the meta hairball
+construction which is needed by the PowerPC architecture definition code.
+
+## 15:02
+
+I must implement the short circuit check so dates for packages are not checked
+over and over again.
+
+## 17:32
+
+Looks like NetHack 3.6.0 is out since yesterday, rather interesting. Eventually
+though I will have to try to get nethack running on my OS once it gets far
+enough. Note that such a thing will require a C compiler.
+
+## 20:05
+
+I am going to need a memory access type for fields to determine if their
+volatile nature is known at compile time or not. Alternatively, if it is not
+known then it can just default to volatile (say for fields in another class).
+That would probably be best.
+
+

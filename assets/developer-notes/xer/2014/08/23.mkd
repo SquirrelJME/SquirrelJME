@@ -1,0 +1,19 @@
+# 2014/08/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:06
+
+For my notification system, I need something simpler that is not a huge pain
+to type, perhaps a helper which provides many methods for such things.
+
+## 11:45
+
+Perhaps I should split the diagnostic stuff around a bit, instead of a single
+class I could separate it into multiple ones of sort. Some may have bits of a
+file, others might not.
+

@@ -1,0 +1,169 @@
+# 2015/11/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:34
+
+Awake now.
+
+## 13:10
+
+I believe I am going to remove the boolean return type for the generation
+arguments.
+
+## 13:49
+
+Also splitting the translator away from POITDynaRec into a new class makes it
+much better also.
+
+## 14:01
+
+I dislike it when the last commit I want to make does not get committed so it
+is delayed until I commit next. However, the refactoring of the base class is
+much nicer now and there were massive import cleanups too. POITDynaRec is also
+much simpler and easier to read with all of the translation stuff in another
+class.
+
+## 18:01
+
+Found a bug in StandardBindings, was using int registers instead of float ones.
+And I only found that out after a refactor because the new code is much more
+strict.
+
+## 21:05
+
+Need stack map table handling for `synchronized (this)`.
+
+## 21:59
+
+RISC-V looks interesting. I do wonder though how I will handle synchronization
+since I have never done that before. I can just setup a bunch of code that is
+rather simple and then just look at the javap result of it.
+
+Can see that the inner static does monitorenter on class Bar.
+
+	public static void staticInner();
+	descriptor: ()V
+	flags: ACC_PUBLIC, ACC_STATIC
+	Code:
+	stack=3, locals=2, args_size=0
+	0: ldc           #2      // class Bar
+	2: dup
+	3: astore_0
+	4: monitorenter
+	5: getstatic     #3      // Field java/lang/System.out:Ljava/io/PrintS
+	8: ldc           #4      // String Static inner.
+	10: invokevirtual #5      // Method java/io/PrintStream.println:(Ljava
+	13: new           #6      // class java/lang/UnknownError
+	16: dup
+	17: ldc           #7      // String TODO
+	19: invokespecial #8      // Method java/lang/UnknownError."<init>":(L
+	22: athrow
+	23: astore_1
+	24: aload_0
+	25: monitorexit
+	26: aload_1
+	27: athrow
+	Exception table:
+	from    to  target type
+	5    26    23   any
+	LineNumberTable:
+	line 5: 0
+	line 7: 5
+	line 8: 13
+	line 9: 23
+	StackMapTable: number_of_entries = 1
+	frame_type = 255 /* full_frame */
+	offset_delta = 23
+	locals = [ class java/lang/Object ]
+	stack = [ class java/lang/Throwable ]
+
+While the outer code has no monitor code at all.
+
+	public static synchronized void staticOuter();
+	descriptor: ()V
+	flags: ACC_PUBLIC, ACC_STATIC, ACC_SYNCHRONIZED
+	Code:
+	stack=3, locals=0, args_size=0
+	0: getstatic     #3      // Field java/lang/System.out:Ljava/io/PrintS
+	3: ldc           #9      // String Static outer.
+	5: invokevirtual #5      // Method java/io/PrintStream.println:(Ljava/
+	8: new           #6      // class java/lang/UnknownError
+	11: dup
+	12: ldc           #7      // String TODO
+	14: invokespecial #8      // Method java/lang/UnknownError."<init>":(L
+	17: athrow
+	LineNumberTable:
+	line 14: 0
+	line 15: 8
+
+The outer lacks a stack map table also.
+
+	public void instanceInner();
+	descriptor: ()V
+	flags: ACC_PUBLIC
+	Code:
+	stack=3, locals=3, args_size=1
+	0: aload_0
+	1: dup
+	2: astore_1
+	3: monitorenter
+	4: getstatic     #3      // Field java/lang/System.out:Ljava/io/PrintS
+	7: ldc           #10     // String Instance inner.
+	9: invokevirtual #5      // Method java/io/PrintStream.println:(Ljava/
+	12: new           #6      // class java/lang/UnknownError
+	15: dup
+	16: ldc           #7      // String TODO
+	18: invokespecial #8      // Method java/lang/UnknownError."<init>":(L
+	21: athrow
+	22: astore_2
+	23: aload_1
+	24: monitorexit
+	25: aload_2
+	26: athrow
+	Exception table:
+	from    to  target type
+	4    25    22   any
+	LineNumberTable:
+	line 20: 0
+	line 22: 4
+	line 23: 12
+	line 24: 22
+	StackMapTable: number_of_entries = 1
+	frame_type = 255 /* full_frame */
+	offset_delta = 22
+	locals = [ class Bar, class java/lang/Object ]
+	stack = [ class java/lang/Throwable ]
+
+So the same is seen here also.
+
+	public synchronized void instanceOuter();
+	descriptor: ()V
+	flags: ACC_PUBLIC, ACC_SYNCHRONIZED
+	Code:
+	stack=3, locals=1, args_size=1
+	0: getstatic     #3      // Field java/lang/System.out:Ljava/io/PrintS
+	3: ldc           #11     // String Instance outer.
+	5: invokevirtual #5      // Method java/io/PrintStream.println:(Ljava/
+	8: new           #6      // class java/lang/UnknownError
+	11: dup
+	12: ldc           #7      // String TODO
+	14: invokespecial #8      // Method java/lang/UnknownError."<init>":(L
+	17: athrow
+	LineNumberTable:
+	line 29: 0
+	line 30: 8
+
+I can either wrap it at run-time or I can just generate it as it. If I do have
+it then I will need a global exception handler so monitorexit is called at
+the very end of a method.
+
+## 22:14
+
+Would have been better if the language standard just had synchronized compiled
+the same as `synchronized (this)`.
+

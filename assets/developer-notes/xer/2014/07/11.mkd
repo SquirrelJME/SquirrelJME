@@ -1,0 +1,123 @@
+# 2014/07/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+On a minor realization note, I realize that I will need to protect access to
+stuff based on class inheritance in a very reflective manner. I just thought
+that it could be abused by using lambdas and such, but an object method would
+be in the context of the original location it came from. That is the normal
+way things are accessed in Java. Reflective invocation will always be slower
+because it delves outside of the pre-compilation bounds and is done at runtime
+so it must be secure. Although, after the first lookup since all reflective
+calls are known, there can be a cache called in the context of. The initial
+setup will be slower however calls following would be fast. I would have to
+manage this stuff specially for each class instance, but not the object
+instance. This is because reflective property stuff (such as permitting calls)
+is done based on class access and not the actual instance of the object. So
+the class would get an attached "in the context of" which identifies the
+source class automatically (it is known by its own table), then of various
+remote targets. So this is essentially just a cache of remote calls being
+cached. It would have to be done correctly so that exploits using reflection
+could not be performed.
+
+I made a class that just flags any IOException on a close(), I know it is a
+bad idea though. After cleaning up the hairball script which invokes roughbld
+to make hairball (eventually when I get to it) was using my old tool temporary
+directory that existed in other, so it should be rather out of tree now. I
+also thought of another idea as I write this blog for timeline purposes, if I
+even keep this up. build target instead of the old in-tree other temporary
+directory.}
+
+Actually, that is the most descriptive commit message in recent times and the
+most longest. Will be writing the CacheHashMap now, although I really wish
+there were auto boxing and unboxing for SoftReferences. User supplied boxing,
+although possibly abusive could be very handy. Also will be making a bunch of
+changes to the main documentation. than previously before.}
+
+Have not touched the new hash map code, just still touching up the
+documentation. Personally I will not do the commit line on every single commit
+just ones of real work done for them. I make many small commits since that is
+better than one giant commit.
+
+## 02:10
+
+Actually, I will use something I call an estimated time index or sorts to
+imply an estimate of the current time. Using commits would be neat but after
+only doing two, I can tell it will be rather difficult and mess with my work
+flow. So mostly just a small tag to show the estimated start time that I
+actually started writing. However it could extend for hours and hours, but it
+is all relative anyway.
+
+## 03:43
+
+I realized that it is actually a good idea to have unsynchronized collections
+and synchronized wrapper collections. There is added indirection, however a
+good enough compiler can remove that. The thoughts of how I am going to
+support extending off classes and interfaces in an implementation independent
+manner lingers in my mind. I could do some sort of hash based lookup when
+doing stuff with a random object.
+
+## 13:34
+
+Before I was going crazy and implementing all of Map but now I am only
+extending AbstractMap, just hope that it works out well enough. For now most
+of the SoftValueHashMap will remain in TODO until further work is needed for
+it.
+
+## 16:03
+
+Currently working on dependency walking so that package and class dependencies
+may be resolved. I also shortened HbStandardClassDep down to HbClassPathDep
+and matches the usage better.
+
+## 17:35
+
+Still working on it, will have to note to handle infinite recursion later to
+prevent it from happening by simply checking if it is already in the output
+list before going through the dependencies.
+
+## 17:49
+
+A thought has been lingering on my mind and that thought is that I must handle
+escaped Unicode characters in the source, luckily I have already written that
+for my older tokenizer I wrote.
+
+## 18:06
+
+Although others might not like it, using an Object oriented language so far
+has made things much easier. Mostly because it relies heavily on re-use of
+existing code to make things easier.
+
+## 19:41
+
+Thought about not supporting annotations in class files when decoding them but
+having annotations would be very helpful. I would have to split off the
+package parsing code, since that is virtually just annotations. Luckily the
+way I wrote it will only be slightly trivial to split off.
+
+## 20:31
+
+All of the annotation stuff is now moved over to TagParser which was nice, so
+now classes may use annotations just like packages. Also going to shorten the
+annotation keys to their shortest form to remove all the prefixed dots so that
+packages and classes are treated the same. There may be some conflict but the
+ones I am interested in are rather unique. This means that classes can now
+have build dependencies not specified in imports and such. This could be used
+to force a dependency in the case of reflection.
+
+## 20:59
+
+Since I added a base class for the parsers I can now have a simple method
+which handles dependency handling of both of these. Now also the info classes
+have it since dependency walking between the both of them is exactly the same.
+
+## 23:31
+
+Been fooling around for a bit rather than coding. What I need to do is work on
+the class parsing, but now I also realize that I've been using the pair for
+the dependency info. I can just use String here.
+

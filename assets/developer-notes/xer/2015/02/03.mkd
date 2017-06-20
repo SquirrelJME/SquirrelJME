@@ -1,0 +1,52 @@
+# 2015/02/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:40
+
+Going to try to compile fossil with my C library as I develop it so that when
+it comes time to running my OS native in Java, I can use the built fossil as a
+bootstrap while I reimplement it in Java. At least for implementing the stuff
+required by miniz (shortcuting there) I will need to implement the following C
+library functions assert, fclose, fflush, fopen, fread, free, freopen, fseeko,
+ftello, fwrite, localtime, malloc, memcmp, memcpy, memset, mktime, realloc,
+remove, stat, strlen, time, and utime.
+
+## 03:12
+
+OK, so what would be the best way to describe execution of code as a stream so
+that it is simple and includes all of the annotations on local variables and
+such. Perhaps a single logical operation which may be used multiple times for
+a single instruction at an address. That would be the best I can think of.
+
+## 07:00
+
+This dynamic recompiler stuff so far looks like it will be good compared to
+the code I previously had, appears to be much cleaner too.
+
+## 07:09
+
+Right now it cannot find the dynamic recompiler for powerpc32 so either the
+service listing is incorrect or it is using the wrong classloader since I load
+the stuff dynamically when needed. And the class was the issue.
+
+## 08:27
+
+At least merge conflicts are very visible.
+
+` <<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<<<<<  
+======= COMMON ANCESTOR content follows ============================  
+======= MERGED IN content follows ==================================  
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>> >>>  
+`
+
+## 08:31
+
+I do wonder though if the conflict in this file has been solved. It would seem
+that fossil checks the contents of the file for that special conflict line
+above so I had to HTML entity it away!
+

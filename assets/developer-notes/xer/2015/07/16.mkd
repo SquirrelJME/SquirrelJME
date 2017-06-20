@@ -1,0 +1,51 @@
+# 2015/07/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:15
+
+Will need to figure out garbage collection and stuff on the locals and stack.
+I will need some kind of information on the stack which indicates which
+locations contain references to objects. During garbage collection the stack
+will be run and done first. I suppose that the stack is the most important as
+all objects are only directly reachable from it.
+
+## 10:06
+
+My MutableOpCode needs to handle varying architecture inputs if I want to
+permit multiple architectures to be used at the same time in the same chunk of
+code.
+
+## 10:29
+
+MachineToSSA needs to be more generic along with decodeOp stuff.
+
+## 11:30
+
+Next thing to do is have that field bit manipulation stuff be in a base class
+so that both the Assembler and Disassembler can use it.
+
+## 11:57
+
+I will also need to modify MutableOpCode and also perhaps have a sliding
+Disassembler view which uses a common interface between MutableOpCode and the
+sliding one. MutableOpCode would also have to handle situations where multiple
+operations could occur at the same time perhaps such as that in ia64.
+
+## 13:00
+
+ia64 is complex however and handling such things in my SSAProgram would be
+complex. It would be best if the refreshing code in SSAProgram handled such
+things as parallelism and such. That would probably be the best way to go. To
+have stacked operations which do not depend on others. The handler could in a
+way reorder things if it can be done.
+
+## 13:42
+
+I can at least have optimizer that can run on the segment, which currently
+there is the NONE optimizer which does nothing useful.
+

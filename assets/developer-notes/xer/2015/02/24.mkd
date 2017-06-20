@@ -1,0 +1,214 @@
+# 2015/02/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:07
+
+Fixed a bunch of stack trouble with the SMT. Now I have to implement the LCMP
+instruction. I will do this by just adding another math operation which does
+the -1, 0, and 1 result.
+
+## 00:23
+
+Only 8 operands remain now.
+
+    
+    
+    [FINER] No handler method runDUP_X2.
+    [FINER] No handler method runDUP2.
+    [FINER] No handler method runDUP2_X1.
+    [FINER] No handler method runDUP2_X2.
+    [FINER] No handler method runSWAP.
+    [FINER] No handler method runMULTIANEWARRAY.
+    [FINER] No handler method runJSR_W.
+    [FINER] No handler method runWIDE_RET.
+    
+
+## 00:27
+
+My current hit is a stack mismatch, one has a LONG TOP while the target lacks
+the TOP. So the SMT is still a bit messed up. The current SMT trace is
+`SF~8rrjjjiii~0S1rArjjSS1j`. So the same 1-frame item stuff will have to have
+the top bit set if so, rather simple to do.
+
+## 00:31
+
+And now with that, I have hit DUP2 which is where stack operations get a bit
+crazy.
+
+## 00:39
+
+And now with DUP2 out of the way, now I have to do MULTIANEWARRAY which is one
+complex dimensional instruction. Means 7 left now. And MULTIANEWARRAY is a
+rather complex operation.
+
+## 01:15
+
+JSR, JSR_W, RET, and WIDE_RET were removed in Java class version 51, which
+equates to version 7. So only 5 operands remain now. I am almost done, except
+for the few remaining stack operations and MULTIANEWARRAY. I am thinking of
+just not creating a new instruction for that and using something similar to a
+loop or a virtualized method call. I could really just call a magical method
+say that is called that, but then I would need to allocate an array and store
+the values there. It should not be too hard to translate it into unrolled code
+as it should be a simple loop and lots of moving around.
+
+## 01:37
+
+Running what I can do now on my PowerPC desktop using JamVM's stack caching
+interpreter.
+
+    
+    
+    openjdk version "1.8.0_40-internal"
+    OpenJDK Runtime Environment (build 1.8.0_40-internal-b04)
+    JamVM (build 2.0.0, inline-threaded interpreter with stack-caching)
+    
+    two of these:
+    cpu        : 7447A, altivec supported
+    clock        : 1599.999996MHz
+    
+    real    3m17.346s
+    user    3m7.490s
+    sys    0m5.023s
+    
+
+Vs my Core i3 laptop:
+
+    
+    
+    openjdk version "1.8.0_40-internal"
+    OpenJDK Runtime Environment (build 1.8.0_40-internal-b04)
+    OpenJDK 64-Bit Server VM (build 25.40-b08, mixed mode)
+    
+    two of these:
+    model name    : Intel(R) Core(TM) i3-2310M CPU @ 2.10GHz
+    
+    real    0m18.004s
+    user    0m48.596s
+    sys    0m0.868s
+    
+
+Although not really a comparison, Debian's JVM on my i3 setup is 11 times
+faster than a stack cached interpreter. If I can force JamVM to be used on the
+i3 then I could gauge it better.
+
+    
+    
+    openjdk version "1.8.0_40-internal"
+    OpenJDK Runtime Environment (build 1.8.0_40-internal-b04)
+    JamVM (build 2.0.0, inline-threaded interpreter)
+    
+    real    0m59.459s
+    user    0m58.804s
+    sys    0m0.656s
+    
+
+Then against the Zero VM:
+
+    
+    
+    openjdk version "1.8.0_40-internal"
+    OpenJDK Runtime Environment (build 1.8.0_40-internal-b04)
+    OpenJDK 64-Bit Zero VM (build 25.40-b08, interpreted mode)
+    
+    real    2m49.970s
+    user    2m49.524s
+    sys    0m0.640s
+    
+
+And against Oracle's with -Xint if that even does anything or setting it even
+worked.
+
+    
+    
+    real    1m41.200s
+    user    1m41.088s
+    sys    0m0.660s
+    
+
+## 01:58
+
+So putting all the values together (NOTE THIS IS NOT A TRUE BENCHMARK):
+From / Against -&gt; | **PPC JamVM** | **EM64T Oracle JIT** | **EM64T Oracle
+INT** | **EM64T JamVM** | **EM64T Zero**  
+---|---|---|---|---|---  
+**PPC JamVM** (197s) | \--- | 10.94 | 1.95 | 3.34 | 1.17  
+**EM64T Oracle JIT** (18s) | 0.09 | \--- | 0.18 | 0.31 | 0.11  
+**EM64T Oracle INT** (101s) | 0.51 | 5.6 | \--- | 1.71 | 0.60  
+**EM64T JamVM** (59s) | 0.30 | 3.28 | 0.58 | \--- | 0.35  
+**EM64T Zero** (169s) | 0.86 | 9.39 | 1.67 | 2.86 | \---  
+  
+## 02:20
+
+So assuming that I do a bad job writing a dynamic recompiler and having badly
+optimized code (which I hopefully will not do), I would gather that running a
+native system at this current rate (revision
+3ee130db9664ec573f61ce04dee71e10626173f4 or so) would be 50-70 seconds with no
+cache ahead of time work. While once the code is cached it could probably do
+the step at 30 seconds. When I actually get a running workable and self hosted
+system I can run this revision where I type stuff so see how well I guessed
+the result would run, at least on this Dual PowerPC 1.6GHz desktop. Which
+hopefully when I get to that point is still around (it should be since it is a
+rather reliable machine, except for the random memory corruption). So those
+times are from pessimistic to optimistic.
+
+## 14:34
+
+When it comes to MULTIANEWARRAY I use a helper method to simplify things since
+doing by hand writing of the code could be rather error prone.
+
+## 14:53
+
+Now the Java runtime starts to get decoded.
+
+## 14:57
+
+Would seem that the initial pushes when pushing long/double get treated
+incorrectly.
+
+## 15:01
+
+And now the entire library can be decoded, so the next step is compiling to
+native code and producing binaries that can be used to boot a system.
+
+## 15:08
+
+I am going to need a dedicated register for the exception handler object, then
+detect if an entry point operation is an exception handler because if it is
+then that register will need to be copied to the Java stack. There are also
+only 10 potential security warning messages that print which is not too bad.
+
+## 20:20
+
+Since the Java stack could jump to an exception handler outside of the cause
+of an exception I will need secondary exception jump handling. This means the
+exception handler will point to elsewhere in code that copies the exception
+register to the first item in the Java stack, then it will jump without
+condition to the handler. This would be the best way without complicating
+normal and exceptional jumps.
+
+## 22:10
+
+I am going to change the PowerPC 32 to just PowerPC and have it handle both
+32-bit and 64-bit PowerPC variants to simplify things.
+
+## 22:17
+
+I need a better way to specify platforms along with all of their needed
+information. Perhaps a reverse dot notation of JSON files located somewhere,
+perhaps in the dynarec that identifies a machine to use.
+
+## 22:27
+
+In fact I could probably just nuke the boot packages all together and have all
+the bootloaders munged together. Although I would still have dynarecs which
+are separate so those stay clean. Anything that is not included could just be
+stripped, and if a new boot loader is to be supported by a user then it can be
+patched in. So both can exist in the kernel package. One in a bootloader
+subpackage while the big kernel is in its own package.
+

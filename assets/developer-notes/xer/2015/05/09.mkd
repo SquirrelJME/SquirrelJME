@@ -1,0 +1,320 @@
+# 2015/05/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:21
+
+It is early morning and I have not slept yet.
+
+## 02:22
+
+The first priority for the debugger is accessing the hairball system so that I
+can diff the recompiled result and see which code turns into which other code.
+It also needs to done in a way so that it can be used regardless of the
+recompilation core backend. This means that the debugger itself would
+entertain that the compilation system become more modularized in individual
+methods.
+
+## 02:54
+
+My debug command will need an end of sequence which is alone and is unused by
+Java and is also not a shell funny. So one can type out an initial sequence
+when a program starts. I cannot use the following characters.
+
+  * ; -- /bin/sh, separates commands. Java sequence sep
+  * ^ -- COMMAND, continuation on next line??
+
+Thinking about it, maybe just ---. Cannot use -- because it is a Java
+operator. Would also need something that is a minimum ISO charset thing also
+so I can type it on criply systems. I believe it is ISO8859. Probably not that
+one. Forgot the name of it. However it is used with digraphs which are all
+standardized but everyone such as Vi extended because they were lacking for
+today. Those are RFC digraphs. RFC1345. And by extension since I know that doc
+references an ISO standard, that is ISO 646.
+
+## 03:03
+
+I am also about to have a cup of coffee. I have not drank coffee in years. I
+do not know if it is a good thing, but I am yawning a bit now. I must fix my
+sleep so that it is correct and when the sun shines, for social requirement.
+
+## 03:10
+
+And this coffee is nasty, but I keep drinking it. --- is a bit long to type as
+I would rather type less, but one where it does not require holding down
+shift. How about //. That is used as a comment in Java however, but it does
+not require shift being held. I also know of no command interpreters which
+will cut out such usage of it.
+
+## 03:18
+
+The command handler also probably just needs an input source to grab text from
+and just an output sync as needed.
+
+## 03:26
+
+Actually, what would benefit the command handler would be a forth like system.
+Although the reverse polish notation might be a bit tricky at first, some
+funny stack work could be provided. Also RPN is a very simple thing to parse
+and parenthesis are not required, sort of. I could skip handling of
+parenthesis just to keep things simple. Words could be added in a dictionary
+or just predefined method that may exist in the current code.
+
+## 03:43
+
+And using Forth-like stuff would make it strong and I would then use "bye" to
+terminate things as needed.
+
+## 03:49
+
+It also probably would be best to write all this forth stuff in a standard
+class which can interpret and run the code. Then supply it in its own package
+so I can use it elsewhere as needed. Using the dynamic nature of Java it could
+even call into Java routines or create new objects as needed, all depends. So
+although writing the 1994 ANS Forth standard would be a slight distraction it
+could help since it would be good to have a powerful syntax language that
+already exists for my debugger to use. One that is simple to implement and
+operates cleanly. For example the forth engine could be used for the
+interpreting of FCode (which is binary Forth essentially) so then I can use
+generic drivers for say PCI USB cards without having actual USB drivers for
+the card. Although the end result would be limited based on the standard basic
+drivers provided by the card, there would at least be some driver available.
+Also since Open Firmware is very Forth centric it could help out with it also.
+
+## 04:09
+
+I just hope the standard Java scripting mechanism allows me to write callbacks
+in a way, like a virtual call, where I can execute normal Java code without
+requiring the direct usage of using the ForthEngine class to define new words
+that map to Java methods to call.
+
+## 05:01
+
+I believe the ScriptingContext reader is for actual program input and not for
+script input. Say for example the input to sed whereas eval() would be the
+regular expression.
+
+## 05:05
+
+The DebugCore can just initialize the ScriptEngine to add extra stuff that
+would be needed in a forth based system so the debugger can be better utilized
+with custom words and such.
+
+## 05:13
+
+Now my code hits my TODO in eval, so I will have to start implementing
+evaluation of Forth.
+
+## 05:18
+
+Looking around at the competition, it appears that no other Forth
+implementation in Java uses the javax.script facilities. So I suppose I will
+be the first, yet unknown since only very few know of my project currently.
+
+## 05:52
+
+Forth uses 3 stacks, the data stack, the control stack, and the return stack.
+I only thought it ever used a single stack.
+
+## 06:26
+
+If I am going to implement Forth then I may as well use the latest rc they
+have on their website. That PDF has table of contents, so it will be easier to
+navigate. It also uses hyperlinks which will make it more easier than before.
+
+## 06:36
+
+The information on the parser is a bit ambigious as to which characters make
+up names and how strings are parsed. So I will just have to assume the way
+things are parsed. I can always run portable Forth programs to see how well my
+work compares to others.
+
+## 06:41
+
+Actually, I just realized something. There has always been a space at the
+start of strings right after the quote. This would mean that the quote itself
+is actually a word which just changes how the input code is to be interpreted.
+dot quote itself just displays the string it spits out anyway. So this means
+that my current forth engine is incorrect in the way I planned on parsing. I
+need actual separated modes for things. However lambdas can help out here.
+
+## 07:03
+
+I just realized that I have a PowerPC system right next to me which has Open
+Firmware, which uses Forth. I can actually see how some things work. This
+would make it much simpler to figure out what is going on
+
+## 07:45
+
+The command line version of the debugger has an "ok" prompt.
+
+## 07:51
+
+Since I need a dictionary and I would very much like to use a separate class
+and just have a ForthState. I am going to go for case insensitive forth since
+it is just easier to work with, in just an ASCII sense. One thing I can do to
+allow for complex words like ." would be to use punycode to represent those
+names. Since such names are illegal in domain names, the IDN class supposidly
+has a flag which disables strict character checking permitting any character
+to be used. The only problem is that dash cannot be used in Java identifiers,
+however instead they can be converted to underscores and vice versa. So in
+short, I will have a basic ForthDictionary which is rather static.
+
+## 07:59
+
+IDN is off the table because for my legal Forth ." it spews an exception which
+is not a nice thing. But I suppose it is an illegal domain name as such. So I
+will need some kind of text encoding system that an match to the names of
+methods. It also needs to be simple enough where I can just write it out.
+Perhaps I can use the RFC digraph system. Except that uses illegal characters.
+However the set of forth ASCII names are quite limited in themselves though.
+Translation has to be fast, but will usually only be one way.
+
+## 08:10
+
+Well I do not fully need a, well it would be best to have a separated
+ForthState since it would be easier to manage.
+
+## 08:21
+
+Forgot how to declare inner classes in another file which extend off a base
+class. The compiler complains, and internet searches fail. The main answer to
+the question is that "you have to refactor!!". However, there is no code here
+to refactor and code being written in this way would be better otherwise I
+will end up having a mega class that has a few thousand methods in it.
+
+## 08:40
+
+Figured that out, just needed __arg.super(). I had a feeling I was missing
+something with the super call.
+
+## 09:48
+
+I suppose the first natural thing to support is the comment. Why? Because it
+is just reading words until the ending ) is reached. Quite simple indeed.
+
+## 10:08
+
+Ok, now I have comments. However my word reading is incorrect as the `( ."
+hi") ." bye"` should print bye. But in my case the ) is not seen and it is
+ignored.
+
+## 10:15
+
+The " and ) deliminating will be a bit complex to figure out at first.
+
+## 10:19
+
+I might have it now. Next thing I should work on are strings.
+
+## 10:29
+
+Got up for a few minutes, I figured out how I must do it. I will implement it
+after I eat however. But, there must be a latch. __readWord shall just assume
+everything is a word so stuff such as `(foo)` is really a word called that and
+not a comment. Only once EOL or space is reached is a word read. String then
+would be very easy as it stops at any and all double quote. Parenthesis will
+require some more trickery.
+
+## 10:43
+
+Although outdated, it is nice to have a full 1994 ANS Forth implementation on
+Open Firmware.
+
+## 11:05
+
+I suppose the thing to do would be to decode as much as possible as a single
+word. If a space or EOL is reached, then it will be checked if the last
+character is a quote or ). Actually the specs say name (also a word) is a
+token that is delimated by space, or end of line. Quoted text is then easy to
+handle as it is just reading the input. However the end of comment is a word
+itself sort of. but maybe not really. The syntax itself is reading ever word
+and just dropping it.
+
+## 11:17
+
+One thing I dislike about being up all night is feeling completely miserable
+and tired.
+
+## 15:30
+
+Had fallen asleep for some hours, got tired.
+
+## 15:41
+
+And I figured it out, the comments are just like strings except terminated by
+). So I must read a word then stop at a space, control, or EOL.
+
+## 15:57
+
+The one thing Forth lacks is a garbage collector, so overtime it will just
+keep on eating memory. This is really only a problem if one defines many
+strings to be used. If I use this for my in kernel debugger on a running
+system, then real memory will need to be mapped for this to be useful at all.
+I also would need to drop the dependency on hairball also. However, using the
+core compilation system I do not fully need hairball. I suppose for real
+memory mapping it would be best to just provide an interface into actual real
+memory rather than using it directly. So there would say be a debug transfer
+of memory from the real kernel which is copied into internal Java code. So
+since memory may be 32-bit or 64-bit I will need a native interface that
+operates with 64-bit address to grab the address space of the process. So I
+will need say a TreeMap of sorts of a virtual address space that is just a
+huge mass of ByteBuffers which act as memory. So a malicious script could say
+allocate all of it when it wants to write. So I essentially am going to need a
+write through cache of sorts. If say multiple memory addresses are next to
+each other they can merge to use less key space for example. Since addresses
+are only single cells, this means Forth scripts are limited to 4GiB of memory.
+Oh well. But stack wise when it comes to forth, everything will just
+essentially be an Integer. I can use IntBuffer instead of say a Deque for the
+stack since it would probably be easier to manager and I can grow it as
+needed. There would also be less objects to worry about. I would just need a
+stack view for eval.
+
+## 16:21
+
+I could simplify things and make the stack directly addressable by Forth code,
+although the instruction and custom words would not be visible in the memory
+seen by Forth.
+
+## 16:25
+
+Having the Forth system have its own memory system would mean that it would be
+more stable so one does not accidently corrupt kernel memory by using it or
+consuming all of the internal memory since once it is mapped it cannot be
+readily unmapped.
+
+## 16:38
+
+For my debug interface commands I can probably use tilde to do things. The
+main engine will handle custom work handling and stack stuff.
+
+## 17:16
+
+Although I only have two words defined (comment and print input text), so far
+this is rather neat.
+
+## 18:23
+
+Not sure of the BASE variable. On my PowerBook it is always 10 and cannot be
+changed. However it still eats in hex such as say "fee".
+
+## 19:10
+
+Was not sure about declaring new words, constants, or variable. However, the
+last definition of something replaces the previous usage of it. So that means
+that all words are essentially created very equal except some would be
+commands or otherwise. So hopefully I can figure out how the bindings in the
+scripting stuff works as those bindings appear to be variable stuff. Since
+everything in Forth is essentially a variable this will be where tons of stuff
+will be. It also needs to be case insensitive as to the bindings, so a
+modified TreeMap is to be used.
+
+## 20:21
+
+Hopefully the way I plan to kludge getMethodCallSyntax() to work with Forth
+will work so Forth code can callback into Java code.
+

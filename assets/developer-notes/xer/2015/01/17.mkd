@@ -1,0 +1,70 @@
+# 2015/01/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:40
+
+I should have a binary name type for JavaType since that could be handy for
+things.
+
+## 08:35
+
+Having that and an identifier type simplifies checking of things and makes
+things a bit more powerful.
+
+## 13:28
+
+After writing a class loader so much, it only gets better everytime I rewrite
+it. Though fields and methods are mostly the same, I wonder how I should
+handle them. Perhaps have a base member read then have a lambda for each which
+was read that does further processing as needed.
+
+## 14:15
+
+When I write a web browser, supporting images will be easy as I can just write
+image reader classes and use those directly.
+
+## 17:14
+
+Hopefully I got these cardinal offsets correct.
+
+## 18:22
+
+Added scrolling with the arrow keys but my grid does not draw correctly when I
+project onto higher view offsets.
+
+## 19:00
+
+For some reason the maps are ending up very small in size.
+
+## 19:21
+
+Drawing calculate errors is the cause, need to figure out what is wrong with
+my megatile choice code for drawing.
+
+## 20:19
+
+I just do not understand why this is not working, this shouldnot be taking
+hours to solve. Most likely it is something very dumb.
+
+## 20:24
+
+Brute forcing the entire map works.
+
+## 20:40
+
+Was dumb, when getting the map pixels of the top left and bottom right
+corners, instead of projecting (0, 0) and (w, h), I was projecting the view
+offset.
+
+## 21:18
+
+Now to do a massive database bringin as I parse these tables from an online
+site. The joys of clean room design, with an ancient game everyone else has
+already picked apart the logic and such. The long part will be naming
+everything.
+

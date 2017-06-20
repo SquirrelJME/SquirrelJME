@@ -1,0 +1,85 @@
+# 2014/07/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:49
+
+Actually that plan would be insanely verbose and overcomplex, I am not going
+to want to use it myself. I am just going to go with a simple _L, _S, and _T.
+Which is sort of self explainable within previous context. I am also going to
+strip the locale setting and instead use the specified strings as emergency
+fallback, being locale-less. Also, all of them are going to be format capable
+since there is no reason to have multiple ones when the call signature is
+virtually the same anyway. If there are no arguments passed then a standard
+print could be used instead of Formatter, called branching yes.
+
+## 03:50
+
+Rather dazed, did not really do anything at all.
+
+## 04:21
+
+Localized options, copying and pasting really hurts on a QWERTY stretching my
+fingers over just to hit V. What I need is basically a tool provider which is
+similar to ToolProvider but for my own stuff instead. I just need a good name
+that is compatible and makes sense. Short too.
+
+## 14:48
+
+Awake for the most part.
+
+## 18:05
+
+Worked on a bunch of things, my goal today is to get all of this stuff
+compiling at least, regardless of any crashes that may occur running it. Right
+now I need to figure out inclusion of tagged dependencies that exist in a
+class file so that they become extra dependencies. Rough build might need some
+dependency pruning to keep things super simple. Seems there is a case where
+packages are not getting their dependencies recoursed into possibly. If I add
+a manual dependency in k8.x.tools for KToolService it works as expected.
+However, without it everything fails. I believe it has to do with the fact
+that packages are marked but their members are not. Making FileLoader add
+package depends will mean that I can remove that from TreePlacer and just
+doing only classes.
+
+## 19:20
+
+After changing how dependencies work, hairball now builds and runs, it hits a
+TODO in the localization code however.
+
+## 20:08
+
+Now that I have gotten to it, I need a better way to localize exceptions. It
+may be worth it, it might not be. While laying down thinking about it, I can
+use generics in the call to _T. The parameter would cast the return type but I
+would also have to pass the class of the exception. Although would increase
+pain slightly, it is the best way to go. Many of the exceptions have mixed and
+matched causes, some have causes later on. So figuring out which call to use
+is quite painful. I can reflect the exceptions instead and initialize them
+based on common arguments, while I just have a single argument set.
+
+## 20:34
+
+I decided to take an easier route for localized exceptions, there is increased
+typing bloat a bit however. Generic cannot be used with static imports. And
+since the name would have to be specified twice it would not be worth it
+adding "Localized." before it. So I just force a cast which seems to not emit
+any warnings. All I know is that GCJ emits too many warnings. What I need to
+do now is go through all my thrown exceptions and make it so that they are
+localizable.
+
+## 22:19
+
+Well, I would never have though I would be using reflection to throw
+exceptions. Very fun stuff here.
+
+## 22:43
+
+With this stack trace stuff, I could include the stack trace of RPC and system
+calls. So I could have a part of the trace saying "--- ENTER KERNEL ---" and
+"--- LEAVE KERNEL ---".
+

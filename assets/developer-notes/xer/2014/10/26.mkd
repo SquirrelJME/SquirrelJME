@@ -1,0 +1,73 @@
+# 2014/10/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:08
+
+Language wise, writing a kernel completely in Java is pretty much the easiest
+to obtain with Java 8 alone (and newer versions). Earlier versions of the
+language and compilers just do not store enough information into the class
+file. The main thing however, are annotations and those will be extremely
+important.
+
+## 00:41
+
+I wonder what would be a name of a value-less type. Since the one problem that
+I will have is when I have values such as... Well, I can just make a volatile
+field in the magic class where I can obtain values from and set values to,
+since volatiles are never cached by the compiler. I will need this for some
+local variables where I need to tell the compiler that the value should not be
+set. Since declaring a register value type then doing = 0 on it to init it
+will just make the register be equal to zero. So a special volatile field will
+be used which contains a fake value so the compiler cannot optimize for the
+value.
+
+## 01:17
+
+This means that my ClassTranslator layout is not going to work, I decided on a
+potential one shot pass through, but in reality I need to describe an entire
+class completely before it can be recompiled to anything useful. There would
+be a large difference however, this would only be for recompiling classes
+while only native classes are able to be read. That is, the normal KBF format
+will be tossed into memory and executed from after setup linking is performed.
+So the slower translation phase is only required on class objects. Since I am
+aiming for an intrepreter free implementation (because interpreters are rather
+slow).
+
+## 05:26
+
+Garbage collection will be an interesting bit to solve. I do wonder if some
+CPUs have an interrupt on memory access that is fast. There are page faults
+but those could be slow. Yeah page faults would be painfully super slow to be
+of any practical use.
+
+## 05:42
+
+So can I have a super fast garbage collection system without reference
+counting, have it not stop the world (for other threads), and making it really
+fast? I will have to split it between the compiler, but I will also need the
+compiler be able to place in injection points. Well basically when I load a
+binary I need to link in a bunch of stuff. Some things might only be known at
+runtime, say reference escaping. If something never escapes and does not
+escape itself then it can be placed on the stack with no issues. So garbage
+collection will need to be both compile and runtime. I could have a straight
+list of objects which could be garbage collected elsewhere potentially. Or
+some kind of inverted complex map.
+
+## 22:12
+
+Working on class loading code, now I am the point where I need to load the
+constant pool. However the constant pool can get a bit ugly. In all of the
+previous constant pool loaders some were sort of lean and others were very
+messy. Individual later realizing classes is ugly, enumerations are bad. I
+need something elegant and something that works well. It is possible that a
+constant pool entry references something in the future (which is ugly in
+itself). Maybe an enumeration that lists all of them, then a bunch of
+individual constant pool implementations in their own classes. I will need a
+class in the middle which is capable of bridging the constant pool stuff with
+the class loader.
+

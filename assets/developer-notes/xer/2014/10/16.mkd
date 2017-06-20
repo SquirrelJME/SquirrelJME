@@ -1,0 +1,55 @@
+# 2014/10/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:02
+
+Woke up, constructor work now.
+
+## 11:07
+
+For the pretty stuff, I can just run it post indentation, that is on the final
+file. It only needs to break long lines in specific cases so it does not have
+to be super complex.
+
+## 11:50
+
+Constructors should be done, now must do import statements. Will need to
+recursively go through everything for the most part, which will be fun.
+
+## 13:30
+
+I believe I have pretty much all of it complete, also doing compilation tests
+and they seem to work sort of, although there are some issues. Just need to
+block out those internal imports and delve deeper into annotations.
+
+## 14:26
+
+Now that util compiles, I should have everything working, so now I just need
+to do is test if all of it compiles as a whole.
+
+## 14:42
+
+Need to fix: Classes which extend off the same named class (SQL Date extends
+Date and also imports Date); throwing throwables which are abstract; Super
+seems to not be diregarding privates or publics?. Making implicit private
+constructors package private should alleviate a few troubles.
+
+## 15:05
+
+This is too much of a hack on a hack, I will need to rewrite the doclet code
+to be much cleaner. So, I will have to rewrite it, but I will keep the old one
+around. At least now I know how all of the doclet stuff work and what to
+expect. What I need to do for this new method is to build a giant tree of
+usages and classes with all of the stuff it contains. Use the full context of
+things, then when it comes to printing time nothing is ambiguous.
+
+## 23:53
+
+A map of a map is a bit eh, would be best to have a map of some kind of
+storage thing that is nicer and more generic.
+

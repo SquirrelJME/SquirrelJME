@@ -1,0 +1,41 @@
+# 2014/08/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:28
+
+I did a bunch of thinking yesterday, but I also was resetting up my network to
+be a bit more efficient, so I did not code much. I still have to set it up.
+
+## 08:04
+
+I should work on this rather than watch Star Trek all morning.
+
+## 08:17
+
+Figured out how I can do the pipeline stuff, basically it can be done
+automatically to an extent. I will have to have it be capable of multiple
+architectures though for example. Anyway, each plugin can specify inputs and
+outputs which are supported. Then a builder can construct a path to get to the
+end result, either compiling or decompiling things to get to said points. In
+the future to make sure code is compiled correctly for the JVM, I can always
+use class files as the intermediary format. Then take any class inputs to
+create binaries and such.
+
+## 08:29
+
+I still think with all this pipeline stuff that the compiler rule setting is
+far more complex than it needs to be. Perhaps the compiler should just be a
+compiler and offer code translation rather than setting up rules for all of
+that. In the end, the front ends would be using such rules anyway.
+
+## 08:33
+
+The class output plugin should not take intermediate language and instead
+should take Java byte code, this way it can be separate from an architectural
+translation matrix of sorts.
+

@@ -1,0 +1,165 @@
+# 2016/01/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 16:09
+
+Well, providing entrySet for PatchCodes would be rather difficult if I wanted
+it to be exactly like a map.
+
+## 18:45
+
+Thinking about it, I can have the KBF writing stuff more streamlined to write
+everything as it is needed. The entry table can be stored at the end because
+I can just have a pointer to it as I do already.
+
+## 18:47
+
+I can streamline it because I have IndexedSet, which I can just fill with
+entries assuming that what I place in it has unique hashCodes and equality
+with references and constant pool entries. However that should be statisfied.
+Doing it this way will allow KBFs to be written faster. It would however seem
+that KBFs are just a mashup of disorganized entries however. However, this
+would be rather straight forward and would require a minimal amount of memory
+since Foobarniux may be running on memory constrained systems.
+
+## 18:56
+
+Also thinking about it, I can remove the gigantic enumeration used in the
+PowerPC instructions and instead just have an instruction lookup mechanism. I
+can do the same with Java byte code. Then I would not need architecture data
+at all for the most part as it could be described in resources.
+
+## 18:50
+
+Currently experimenting with small heap sizes. I can run the build process with
+only 8MiB of heap, however it appears I need at least 16MiB to build packages.
+With such low amounts of memory everything is much slower. However optimizing
+for low memory usage would be rather good because then I can run on constrained
+systems, provided the kernel can be in ROM or similar. Actually, I get out of
+memory building kernel-asm with a 12MiB heap size. But one thing I assume what
+will occur is that I will run out of heap size trying to compile the PowerPC
+instruction table, since that is essentially a gigantic enumeration.
+
+## 19:03
+
+Looks like 16MiB is enough to build things such as the architecture definitions
+and such. However this idea of not having a gigantic enumeration for each
+instruction would probably be more optimized. The instructions are only needed
+when they are actually needed. Looks like however that compilation fails with
+no memory when trying to compile `java-library-1-core`. So I will try 24MiB
+now. I would very much like to be able to build a full Foobarniux setup on
+systems with as little as 8MiB of RAM. Doing so would make it very useful. The
+programs in general should use as little memory as possible. Also most of the
+instruction generation stuff is just cache work and basic detail initialization
+so that could be easily split out to not become an enumeration. The instruction
+itself can just be SoftReferenced so it can be collected when not used. There
+would just have to be a lookup for an instruction.
+
+## 19:09
+
+Cannot build with 24MiB, trying 32MiB. 32MiB fails, trying 48MiB. However since
+I have two laptops I can write the KBF write streamlining and the new way to
+write architecture stuff on the other.
+
+## 19:13
+
+Thinking about it, due to the way I plan on defining classes. The kernel can
+include the entire library compiled into a single kernel binary. The references
+and constants would then be shared. Thinking of this, I would need actual
+projects which declare with classes are part of it and any files. However the
+different code could still reference the same data. This mega kernel could be
+used for ROM based systems such as Nintendo 64 which may be able to directly
+execute from ROM so that not much memory is required to run class code. The
+build process completes with 48MiB heap size. However thinking of these two
+things, this should go a long way to reduce memory usage. Another thing though
+for running systems is to actually compress pages so they take up less memory
+as a sort of virtual memory system when things are very constrained. The
+compression might not have much effect however.
+
+## 21:46
+
+It would be best to first work on the streamlined KBF writing and then redo
+the architecture definitions so that they are a bit smoother.
+
+## 22:30
+
+My portable solar AA battery charger has been damaged. I decided to open it up
+and I find a pair of broken wires. The wires are very thin, but I believe I can
+fix it. This would make my battery charger useful again. The wires however
+are the coated aluminum wires I believe. That is they have no rubber coating
+and instead have this very thing layer which gives the wires a red coloring.
+Only the broken tips of the wires conduct. I will have to do some fancy
+soldering work. I suppose the solder can bridge the very edges of the tips so
+they all conduct together. I could use some very fine sandpaper which I do have
+to hopefully increase the surface area a bit. I would need to find my file
+which is lost somewhere, I do hope however that I can find it.
+
+## 22:41
+
+For memory savings, what I can do is for the configuration system if I have not
+done so already is to lazily load the JSON data. And currently I do not. I can
+also make PackageContents more memory efficient and cacheable by just checking
+the binary/source date to see if they have changed when they are requested. So
+the main things to do to reduce memory usage:
+
+ * Lazily initialize PackageContents and split the code between directory based
+   and archive based. This way if only a few files are ever needed they do not
+   all have to be in memory at the same time. Currently both source and ZIP
+   based contents are handled in a single class where it could instead be an
+   abstract class, this splits the slightly different variations of them.
+ * Cache the PackageContents for binaries and sources based on the last time
+   of the files. Instead of using new on both of these, the cache in general
+   would be better because binary packages would rarely change unless rebuilt.
+ * Remove the gigantic enumerations for instructions and instead have that
+   information lazily read from manifest in the classpath for instructions.
+   This would remove the need for using meta-hairball to generate PowerPC
+   instructions for example. There would also be the potential to completely
+   remove the need for sub-provided `ArchitectureData`. The root data would
+   just have to be a bit more powerful to handle decoding of various
+   instruction sets and how they are to be encoded. This would reduce the
+   boilerplate code in the sub-architecture definitions and makes instruction
+   handling essentially just a bunch of files.
+ * For the machine and CPU configurations, do not load the Json data until it
+   is needed and then cache it. If a memory constrained system is performing a
+   build, once one has been selected there is really no need to force the other
+   configuration settings to be in memory.
+ * Streamline the KBFWriter so that writing is faster and in a single step at
+   the cost of a disorganized entry table.
+
+## 22:52
+
+The PatchCode stuff is generally good, I just need to make it so more than what
+there currently is created when it is needed. Parts of it are only as needed
+while others do much recursive work to create things. The good thing at least
+is that DataAccessor works with FileChannel and ByteBuffer so that handling
+these are agnostic. On memory constrained systems though, some large classes
+might require lots of space to be utilized properly. However the Java class
+file support is heavily cached to begin with.
+
+## 22:56
+
+POIT code generation will create very size inefficient output code however so
+that will definitely push the limits of memory constrained systems. However I
+will not worry about this due to the required simplicity of POIT. I could
+however but I am fighting against it, to have a basic optimization system.
+Right now POIT uses abstract methods which are then called to do things. I do
+wonder if this is a bad thing to do. However the `StandardRISCMachine` is fine
+because it is more to the metal. This would have to wait until after these
+things are done however, the 5 refactors I plan on listed above.
+
+## 23:00
+
+Thinking about it, I could change POIT slightly so that the way code generation
+works similar to how the translator works would be to have it be like
+`StandardRISCMachine`. The base code would be the same for the most part,
+however specific handling stuff would be moved off rather than be a direct part
+of the translator. The translator stuff as it is, is quite integrated into it
+as it was previously an inner class and for the most part still is. This would
+most likely make it easier to use and to debug.
+
+

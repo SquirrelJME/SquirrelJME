@@ -1,0 +1,162 @@
+# 2016/01/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:29
+
+Not sure if I need to output anything else for the Java instruction dump to
+the manifests.
+
+## 11:48
+
+And now to redump the PowerPC manifests so that it matches the newer format
+and has the image const and value set (which is for decoding).
+
+## 13:20
+
+Well the new field layout is much more compact and probably easier to
+understand.
+
+## 14:58
+
+The joys of distributed version control where you have the entire history.
+Going back in time has been quite helpful too. Now I have the new stuff for the
+instructions so I can continue on the refactor of `ArchitectureData`. I do
+wonder though if it would be possible for me to keep a map which bases the key
+on the value. I could make a special map type for that, it would require
+loading of the manifest to determine the name of the instruction however. But
+before I do that I will need to cleanout the Java and PowerPC code.
+
+## 15:16
+
+I wonder if I can split off `java.net` or at least have two new packages to
+make the jump lighter. Appears I will need to split off URI/URL. Then I can
+have the socket based stuff in `java.nio` go into the net package. There would
+be a splice between them, however it would split them even further apart. I
+need to look at InetAddress though since the SecurityManager uses that.
+
+## 15:26
+
+I can actually split off `java.math`. Actually no I cannot due to a few
+imports due to Java 8's streams.
+
+## 16:33
+
+I believe I will have to fork POIT to fixup for these new changes.
+
+## 16:46
+
+I could attempt writing up NARF with some of the stuff I learned from POIT.
+POIT will generate very bloated code for the most part even for the simplest
+of methods. However, SSA is insanely complex.
+
+## 16:57
+
+Perhaps I can use a threading approach. Basically the entire layout of the
+method will be placed and operands and their register usages will be determined
+and stored. Instructions will have a flow back (dependency) and used local and
+stack variables would have a usage and liveness so to speak.
+
+## 17:05
+
+Actually for thrown exceptions, the only odd time they are thrown is during
+potentially very fatal virtual machine failures. However for speed, my virtual
+machine should just read from null pointers and such (except if there is no
+MMU available, it must check them) so that a trap in the CPU is triggered and
+then where an exception is generated, rather than just checking for null
+pointers. A check against a null pointer can just be a dereference of the
+pointer, I do not really have to do anything with it. Of course though, the
+first page of memory must not be writable, however if a system needs it it is
+possible to have a null pointer which is NOT zero.
+
+## 17:20
+
+Actually instead of having register shuffling to that their numbers are dynamic
+to the code running, there could instead be virtual registers which map to real
+registers and stack locations. So basically something such as this:
+
+	The stack
+	-------------------------
+	sjl1 Save area for Java local variables on the CPU stack.
+	sjl* ...
+	sjs1 Save area for Java stack variables on the CPU stack.
+	sjs* ...
+
+So essentially, a Java operation which performs on stack entries will have a
+modifiable (if needed) link to a Java local/stack. The code in POIT already
+has a fixed location for locals and stack items however it is very fixed in
+that temporaries are needed if the stack/local is really large. However, using
+a kind of pointer system, registers would be saved into their local/stack
+positions so that if an exception is thrown or a method call is returned from,
+it can just load from the saved position as needed. The only thing though is
+that having the registers caller save would be better, however the positions
+of entries on the stack/locals might not be known to methods being called (they
+would be unable to know the size of the stack/locals). There are the method
+table of contents however. But my point is that if a method is called and it
+wants to save `r17` because it overwrites the value, it would have no idea
+where to store that value before the method call is done. So to simplify the
+handling of this, before all methods (or null pointers are dereferenced) the
+registers which are active will have to be saved and restored. Otherwise if
+they are not saved, then on the handling of an exception values of locals will
+have incorrect values.
+
+## 17:31
+
+Now say if there is a jump back from a later instruction to an earlier
+instruction. SSA would demand using `phi` and require more complex parsing to
+be done. However for simplicity I can generate code which performs a jump call
+back to reload the required registers to the correct locations for the target
+block before jumping to it. This way, when the code is first entered that is
+not done because things are normal. Essentially it would be like this as an
+example:
+
+	// Block of code is entered at this point
+	_entry1:
+	
+	instruction 1
+	instruction 2
+	instruction 3
+	
+	if foo, jump to _prejumpentry1
+	
+	instruction 4
+	instruction 5
+	
+	return
+	
+	_prejumpentry1:
+	
+	move around links before the jump is made
+	
+	jump to _entry1
+
+Exceptions would be sort of similar if they jump, however the dispatcher which
+determines the exception for handling will determine the point in the code to
+jump at. Then the entry of the exception handler would setup the required state
+needed to run the code properly.
+
+## 17:57
+
+For complex methods that are gigantic this might produce some bad code, but the
+general Java practice is to make smaller methods rather than gigantic ones.
+Most of Foobarniux so far just consists of simple methods except for few
+methods that may be quite large since they have not been refactored. I suppose
+the first step would be to load all the instructions so that I know what they
+are, then assign native operations and registers to them as required.
+
+## 23:06
+
+Tried to sleep after eating a bunch of food, but really could not before so now
+I am more awake again.
+
+## 23:34
+
+To simplify dynamic recompiler service lookup, I can just have a `foo@arch`
+which can simplify things. If one is not found or does not support a config
+then it will fallback to another class. This will remove the need of setting
+up sub-services and such, which can get bothersome and boilerplated.
+

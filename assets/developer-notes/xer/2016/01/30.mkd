@@ -1,0 +1,31 @@
+# 2016/01/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 17:44
+
+Almost the end of the month. Since I have two laptops, I believe I am going to
+fork directions. I will do the assembly/disassembly work in one. Then on the
+other I will potentially checkout and see if I can fix hairball's class loader
+issues since it has not happened before the refactor.
+
+## 17:47
+
+For the instruction decoder though I can have an actual sub-class in another
+place to keep ProgramEditor a bit more clean.
+
+## 18:30
+
+Thinking of `HairballClassLoader`, I previously used `URLClassLoader` which
+worked perfectly fine. However with my alternative classloader things got a
+bit ugly. Luckily I have a tag to quickly visit.
+
+## 20:12
+
+Seems I had some errors in my package building code, hopefully those have been
+fixed when it comes to dependencies and them being out of date.
+

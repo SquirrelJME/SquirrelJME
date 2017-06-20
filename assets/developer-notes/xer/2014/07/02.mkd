@@ -1,0 +1,36 @@
+# 2014/07/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+Slight changes, I renamed wsConfirm to wsFinal which will be in finish()
+rather than set(). This may mean late checking for errors, because everything
+inside will be checked first.
+
+My changes so far seem to be working well, it is not that boilerplatey and not
+that ugly.
+
+I believe what I will need to do instead of kclassdump is to make a javadoc
+which can do more than Java source files by using an extended option to
+represent similar input to kclassdump. To just print class information then
+can use a standard doclet which outputs a specific format similar to
+kclassdump. This way I will not be writing my own javadoc and kclassdump which
+do very similar things.
+
+I will do the same thing for the intended kclasscompile in that anything I
+would have added there will end up in javac instead.
+
+I should also just write the build system first so that compiling things is
+much simpler rather than continuing to hack my build scripts.
+
+Hairball scripts will be very similar to Java in that they look nearly the
+same except for a few minor differences. One major difference is that they
+will be highly interpretive similar to make files but hopefully not as ugly.
+It will not have all the features of Java and will be very specific to the
+purpose of compiling the kernel. It will use my existing tokenizer to simplify
+the operation of executing the scripts. It will also not support generics as
+there is no need for the build system to use such a thing.
+

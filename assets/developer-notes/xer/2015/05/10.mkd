@@ -1,0 +1,78 @@
+# 2015/05/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:47
+
+I was really hoping to sleep for a bit longer.
+
+## 01:05
+
+I really do not like the bindings stuff in javax.script since it could permit
+for some security exploits in the case of some variables and such. Also
+getMethodSyntax call might not make much sense in Forth. One thing I do not
+want to do is give the Forth interpreter free reign over the Java system
+unless it is given such permission.
+
+## 01:16
+
+My OS will require JEP 102 which is to exist in Java 9. Otherwise, there will
+not be a way to nicely manage processes and virtual machines. Although
+dragging it in would violate some things, oh well. I already bring in the
+javax.isolate API so both will be nice when used. JSR 121.
+
+## 01:27
+
+Actually I will worry about access to native Java things when the whole engine
+has been completed so I can better determine where it can fit.
+
+## 21:37
+
+I believe I will write part of the core debugger backend stuff before I resume
+writing the Forth interpreter. Although, I could use invokedynamic and such
+and then have native recompilation of Forth code into Java objects. That would
+result in much faster Forth code running although there would be the
+compilation step. The language is rather dynamic however when it comes to
+words. Also the language is similar to C and assembly in that it can access
+memory directory and is able to modify it. So even if it were dynamically
+recompiled, it would have to have a large chunk reserved for dyanmic memory
+that a program could use for any reason. However security exploits could
+probably be done easier.
+
+## 21:44
+
+One thing I would like though is to make it so I can the OS on memory
+constrained systems. Needing only 4MiB of RAM for example. Although provided
+there is also ROM or some other storage device, this makes it easier. Perhaps
+instead of my debugger using Forth, it can instead use a more simpler Java
+shell which has access to its own virtual machine in a way. Basically it would
+be Java statements that get parsed and then executed in a linear fashion.
+Using the debugger would mean that you have wide access to the system anyway.
+So such a thing would be like typing in Java code then executing it and that
+is what will happen. However that would be more prone to errors. Using Forth
+would also make a powerful debugger however. Forth would also remove the need
+for a domain specific language, which can get messy. So perhaps it would be
+best to just stick with Forth itself and make my current work in it a bit
+better. The standard is rather vague in some aspects however.
+
+## 21:49
+
+So, I should probably instead write the GUI version of the debugger first and
+the core backends then implement the Forth based frontend for the command line
+version. The Swing version will not really be needing Forth at all for it to
+work. Also all of the Forth stuff would be bindings into true code anyway.
+
+## 22:01
+
+Thinking about it, perhaps having a Forth or Java-interpreter backend would be
+overkill for the debugger. The debugger is also going to be directly attached
+to the kernel which means a Forth interpreter would also need to be attached
+also. That would add to some bloat. Although I would dislike a domain specific
+language, in the interest of remaining light would be best. Having a Forth
+interpreter could also make the debugging system a bit unstable if the system
+is having issues with some things.
+

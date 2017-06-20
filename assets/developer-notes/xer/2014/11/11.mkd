@@ -1,0 +1,416 @@
+# 2014/11/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:20
+
+Work begins, first need to handle class files and such.
+
+## 11:57
+
+I believe my file system design will be tag based, allow for multiple root
+filesystems, and some other things. Since ! is the really only safe URI
+character that does not change much in UNIX and their shells (except for the
+broken bash), that will work. The first path component will always be ! which
+designates the tag file pool to use. So for example, there might be a tag
+pool. Perhaps at for the pool might be better.
+
+## 12:12
+
+I know a better scheme, the selected tag pool is an absolute (mostly) path
+which starts with "@/", while the normal UNIX-compatible root is just "/". In
+the global tag directory of "@/", the potential "directories" will be all of
+the visible tag pools the current user is permitted to access as determined by
+ACLs. UNIX compatibility has to be important since so many things just depend
+on it to work. Anyway, the "@/" contains all the major visible directories of
+tags. Anything that starts with a + after such point is a query. So there may
+be two ways to interact with the tag based filesystem. It should be noted that
+the tag pool uses the filesystem as a whole rather than individual paths. I
+personally dislike everything being exposed through the filesystem but it must
+be done for simplicity (sort of) and URI work. I personally find the single
+root a flawed design. However, POSIX does define double slash at start but I
+need to determine if URL correcting (making it absolute) trashes the starting
+double slashes. I will have to figure that one. One major thing is that there
+are different case sensitivity domains, the tag domain will be insensitive
+while the UNIX domain will be. It also looks like any extra slashes in the URI
+path component of a file will be trashed.
+
+## 12:39
+
+Well clearing all of that. I will note some points.
+
+  * **Tag Domain** The tag domain shall start with "@/" and anything on the
+    system that goes into "@/" (say cd "@/") will enter the tag domain. The
+    POSIX special "//" is not used because it will be destroyed by URI/URL
+    normalization.
+  * **POSIX Domain** Provides a usual flat view of the file system where the
+    root begins with a slash.
+  * **getRootDirectories()** Will list both the tag domain "@/" and the normal
+    UNIX domain, where the tag domain uses special stuff to access the
+    contents.
+  * **Directory case InSeNtItIvE bit** A directory could have an extended case
+    insensitive bit set to handle that case.
+
+But for the tag interface, the root "@/" will list all of the tag pools. A tag
+pool could be defined or separate.
+
+## 13:08
+
+Actually, I do not need POSIX compliance so I can just have all the root
+directories be named pools like "@foo/" which interacts with all the tag stuff
+as needed (so individual files can appear in many places). If a program
+requires POSIX-compatibility say for a shell and whatnot then it can be
+enabled per process and a simulated root for a set of tags could be managed in
+a tree where file views are part of a tree. The tag based filesystem could
+consist of both directories and subsirectories while being splayed apart. When
+I get to the filesystem part, I will figure that out. Since I do need to get
+back to byte code parsing.
+
+## 19:53
+
+Some more filesystem notes. Have volumes and sub volume pools which are all
+tagged.
+
+    
+    
+    Volume description
+    @L=LabelOfPartitionOrStorage
+    @U=751be413-118f-a3aa-a0f8-0964095f076a
+    @A=VolumeAlias
+    
+
+The volume description identifies a unique volume using either the disk label,
+the UUID, or a user defined alias (which could link to a subpool which I will
+describe later). Perhaps for ambiguity, I will need an alternative name system
+of sorts.
+
+    
+    
+    Volume subpool
+    @X=BlahBlah+poola
+    @X=BlahBlah+poolb
+    @X=BlahBlah+there+are+too+many+subpools
+    
+    Assume an alias named Foo which points to a subpool, so:
+    @A=Foo
+    is the same as requesting
+    @L=MyFlashDrive+games+nethack
+    
+
+The subpool is optional, but is a place where a semi-combined state but in a
+storage domain can be achieved. What this means is that if the sub volume
+shares the same data as another volume it will be reduced (less duplicate
+info) but the file will be invisible. Sub pools can have sub pools which
+further divide things. There can also be a named alias to a sub pool. When
+root directories are requested in the virtual machine it will list all the
+known pools the user can actually list (there may be hidden root tag pools).
+Some of these might lead to the same point despite being the same (imagine if
+C: has the same exact contents of D: in DOS). However, correctly written code
+could detect this as both would have the same exact pools. Also sub pools
+would be able to inherit from other pools to create layers and views of other
+data. So say there is a read-only pool on a Live CD, that provides the base
+pool. A read/write pool could image that existing pool and provide changes
+while existing on another storage medium that can be written to.
+
+    
+    
+    Tag field forms:
+    major:/
+    major:field/
+    major:/:field/
+    
+    Examples:
+    date:/
+    image:width/
+    sound:nanos/
+    sound:/:nanos/
+    
+    Note that
+    
+
+The tag field form consists of file system based on their meta tag type. There
+are major categories which describe the intended usage of the content and then
+there are fields in the categories which are rather specific. A hash for a
+file might be called "hash:" while a specific hash algorithm would be
+"hash:crc32". If you were to list the contents of the directory "hash:" you
+would get all the field types that are defined for that filesystem for the
+specified major group. As an extended example, there is the "owner:" group and
+lets say that there are three users: "lex", "link", and "luigi". If you were
+to cd into the "owner:" directory you would see three sub directories named
+":lex", ":link", and ":luigi". If you were to cd inside to one of those then
+you would see all of the files associated to the specified user. In the main
+pool view, such sublinks are not visible although they may be used. So you
+would not see "owner:link" but could still cd into it. If you were to request
+if "owner:link/" and "owner:/:link" were the same directory then it would
+result in true. Note that the sameness is only for the pool, so if another
+pool which has no borrowing from another pool performs the same check it would
+fail. Note that multiple directories can contain the same files based on their
+name. However with future thinking this will not work out, so it would be
+better to visualize something like "acl:" and "acl:owner" which could have a
+value of one of those names for example. Such ACLs would match the Java ACL
+view and support multiple users and such. However reflecting on this, perhaps
+"acl:name" would be much better because acls would be either attached to
+single users or groups of users.
+
+    
+    
+    Examples for the hypothetical acl: major.
+    
+    acl:owner -- Owner access of file (individual user)
+    acl:!group -- Group access of file (bunch of users together)
+    
+    ACLs for the users from before:
+    
+    acl:lex
+    acl:link
+    acl:luigi
+    
+    And an example group:
+    
+    acl:!chars
+    
+    Then there would be sub values for the ACL but that will be described
+    later.
+    
+
+Group resolution would be performed and could encapsulate a ton of users as
+previously stated.
+
+    
+    
+    Example ls of certain directories:
+    
+    "acl:"
+    ":lex"
+    ":link"
+    ":luigi"
+    ":!chars"
+    
+
+Now the one major important thing is the value of tags which associate
+directly with metadata. If you were to ls the contents of "acl:lex" you would
+end up getting every type of value that is associated with the "acl:lex" key.
+Inside of those value directories would be files that match the specified
+values. Meta data can be very different for varying types. An ACL would have a
+flag set of permission maps such as read, write, list contents, and execute.
+The tag handler would be built into the system which provides a file based
+context on how to represent the system. So ACLs will end up being a bit field
+where various flags are possible.
+
+    
+    
+    ACL bit flags
+    
+    a = APPEND_DATA (files, ADD_SUBDIRECTORY for dirs)
+    D = DELETE
+    C = DELETE_CHILD
+    x = EXECUTE
+    R = READ_ACL
+    b = READ_ATTRIBUTES
+    r = READ_DATA (files, LIST_DIRECTORY for dirs)
+    n = READ_NAMED_ATTRS
+    y = SYNCHRONIZE
+    W = WRITE_ACL
+    B = WRITE_ATTRIBUTES
+    w = WRITE_DATA (files, ADD_FILE for dirs)
+    N = WRITE_NAMED_ATTRS
+    O = WRITE_OWNER
+    
+
+When listing and this information is known, the bit flags will only print
+individual flag types. Otherwise for the number of flags here there are about
+16K combinations, if a flag were larger for say a 64-bit value then the
+directory would be trashed with so many entries the system would run out. So
+the represented data is context sensitive. There will be APIs to access the
+internal tagging system to determine how data is being shown and how to browse
+it. Value directories would start with the equals sign. In the sense of bit
+flags, if the contents of "acl:lex/=w" were requested, it would treat it as a
+binary AND which would mean that any file with the WRITE_DATA bit set would be
+visible.
+
+    
+    
+    ls "acl:lex"
+    "=r"
+    "=w"
+    "=x"
+    "=W"
+    
+
+With such a system it would not be possible to represent files in directories,
+but that can be simulated in a tag based system anyway (say a "unix:path"
+component where the value is the directory it is contained in). Browsing
+through this would be fun however and complex. Say in swing when there is an
+open file dialog, you would be splashed with all these tags so there would
+have to be a path specified view of a root. So say while the root will end up
+being "@X=BlahBlah+poola" and will be listed in the list of roots as such, to
+access the files in a path like nature where there are no tag lookups (since a
+purely tag based system would be rather explosive) there will be a directory
+called "$" in the root directory that just goes by the path form. So your
+classic subdirectory view will be seen as something like
+"@X=BlahBlah+poola/$/etc/somefiles". The dollar segment would just be doing
+special tag based translation to have something familiar. There could also be
+extended segments that just end in the dollar sign which have special meaning
+so those will be reserved for later. So in short, ones ending in ':' are major
+tag indexes while those ending in '$' have special path meanings after the
+specified string. I believe the special names that should be reserved would be
+anything that does not start with "x-". Then I can use a special thing like
+"stat$" which contains information on the current pool, and the unique volume
+IDs to determine if a pool is in the same volume or not. In POSIX mode to run
+normal POSIX programs the default view will be the default pool root
+directory. POSIX does not define mounts and such because it is very system
+specific, in the POSIX sense the root of the filesystem it seems will be the
+bland '$' handler it is bound to.
+
+## 21:14
+
+However, despite this file like view of everything I will not go crazy and
+have a dev filesystem or a proc filesystem, you can use system APIs to access
+that stuff. Special character devices and block devices are ugly because you
+either make a protocol 1000 times over or use 1000 ioctls and fctls. But to
+describe the bit flag value type, flags could be combined. This would mean
+that doing "=rw" will only list files that are both readable and writeable.
+Now the main problem is that this is currently at a single level, so you could
+not add more tag types to refine searches (say you want all images that are
+mostly red and were created on a Tuesday). You would then need to perform an
+advanced query of tag data.
+
+## 21:22
+
+Thinking about all of that I know something better. The major:field stuff as
+before, all the of the equals stuff will be literal tag values which are set
+and those directories will contain every file that has the specified tag set
+based on their directory locality. So the "unix:path" will be used in that
+where it would be a simple system.
+
+    
+    
+    @X=BlahBlah+poola/acl:/:link/=rwx/my/program.sh
+    @X=BlahBlah+poola/acl:/:link/=rwx/some/other/script.sh
+    @X=BlahBlah+poola/acl:/:link/=rwx/yay.sh
+    @X=BlahBlah+poola/acl:/:link/=rw/important_text.txt
+    @X=BlahBlah+poola/acl:/:link/=/cannot_touch_this
+    @X=BlahBlah+poola/acl:link/=rwx/yay.sh
+    @X=BlahBlah+poola/acl:link/=/cannot_touch_this
+    
+
+This provides a simple one dimensional view and could be useful for bulk
+operations to see everything. However the one major thing that would be used
+now is a query system to do advanced searches. And that will be the special
+"lex$" specifier. This still has to make valid URI path components so the
+useful characters is limited, and the POSIX shell has special characters
+already. Although : is used in the path component and = are in variables, they
+can just be escaped. A single dollar sign is also never expanded if it is
+followed by a / so that is a non-issue. In the query form, each directory will
+consist of a single path component after the point to specificy a lexer
+pattern for searching. One hintful thing is that "q$" should be an alias as it
+is shorter and probably easier to remember. When a query is terminated it
+provides the search results that match the "unix:path" so they are similar to
+the global forms used. Queries in the special handler will always start with
++. If a file or directory in the result starts with a + then it will be
+escaped so you will see an ugly "\\\\+" in the name of the file, that way you
+do not end up starting a new search at all. So anything not starting with + is
+not a tag search request. All search forms must then consist of normal URI
+characters and other characters that would not cause handling to explode. They
+will still take full forms but escaped forms would be completely acceptable.
+The special handling character in this case will be +. It should be noted that
+something to the lines of "+acl:link=rwx/+image:color=red" means to use only
+files that are read/write/executable and are red images.
+
+    
+    
+    A (set) consists of:
+    
+    Value match
+    "+(mod)(major):(field)=(value)"
+    
+    This handles major:field specific handler data in plain English so that is
+    is easier to determine what the typed information means.
+    
+    Literal exact value match, no special translation:
+    "+(mod)(major):(field)==(value)"
+    
+    This is a literal match, all forms must exactly match the data in the
+    specified way. This would be the same as if you read the attribute in
+    (the eventual) Java code and requested the raw information.
+    
+    Result modifiers (always at the start), these may be stacked
+    "~"      : NOT match, anything that would not match becomes matched.
+    "gleh!"  : Force numerical value match, where value is a number or a type
+    of unit.
+    
+    g = greater than
+    l = less than
+    e = equal to.
+    h = Use "human-readable" amounts (B K M G etc.)
+    
+    In the sense of a size
+    B = 1 byte (8 bits)
+    K = 1024 bytes (8192 bits)
+    M = 1048576 bytes (8388608 bits)
+    ... and so on
+    b = 1 bit (---)
+    k = 1000 bits (125 bytes)
+    m = 1000000 bits (125000 bytes)
+    ... and so on
+    
+    Since these are extrapolated readable values, there may be
+    prefixes such as:
+    Time:
+    s = Seconds
+    m = Minutes
+    h = Hours
+    ms = milliseconds
+    ns = nanoseconds
+    ... and so on
+    
+    So "lex$/+ge!file:size=16K" would match all files which are
+    greater than or equal to 16 * 1024 bytes.
+    
+    And "lex$/+l!sound:length=3m" would match all sounds files which
+    are shorter than 3 minutes in length.
+    
+    Otherwise, (major), (field), and (value) have the following potential.
+    "+x##"
+    Literal single byte hex value, "+x00" would be the NUL byte.
+    "+u####"
+    16-bit Unicode literal, same as \U in Java.
+    "+U######"
+    24-bit Unicode literal, for higher numerical pairs.
+    "+p"
+    A literal plus sign (becomes +).
+    "+f"
+    A literal forward slash (becomes /).
+    "+b"
+    A literal backwards slash (becomes \).
+    "+d"
+    A literal dollar sign (becomes $).
+    "++"
+    Stop parsing special
+    "+g"
+    Start matching group set, ends at "+e".
+    "+o"
+    Internal OR to group match set (akin to perl: "(foo|bar)").
+    "+e"
+    End matching group set, starts at "+g".
+    "+n##++"
+    Match character/group exactly ## times (count).
+    "+n##,++"
+    Match character/group exactly ## times or more (count).
+    "+n,##++"
+    Match character/group exactly ## times or less (count).
+    "+n##,##++"
+    Match character/group exactly either ## or in between those values (count).
+    "+n##~##++"
+    Match character/group outside of the specified ranges (count).
+    "+w"
+    Wildcard, can be any character.
+    
+
+Major and field would be best forced to lower case always, but value could be
+any case.
+

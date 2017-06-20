@@ -1,0 +1,32 @@
+# 2014/07/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+I modified the hairball shell script to force out of tree builds since that is
+better for the directory state, easier to clean and less chance of trashing
+it. I believe the current plan I am going to go for is to have roughbuild
+build a cross compiler, then build hairball with it. This way most of hairball
+and whatever else may be in Java 8 rather than Java 5. The compiler could
+cross compile to an older version of Java. The most important thing needed is
+the compiler anyway, once that is compiled I am free. Or rather, perhaps build
+hairball and the compiler on older stuff. The remainder of everything else
+will be specifically for the target, however some utilties will need to stay
+behind to support some things on the host VM. Although another alternative
+would be to build the compiler, then make a micro vm which can run Java 8 byte
+code on versions before it (if the current version is not 8). Another
+alternative is to make a class downgrader, but the compiler could do that
+already. So at the minimum and I should stay minimum, just make the compiler
+and hairball then be done with that.
+
+Need to switch PackageParser to use a Reader instead along with making the
+finder classes I talked about the other day.
+
+I should also make a CacheMap class which I use like a Map but wraps put and
+get in a SoftReference. However, I would need to make a layered map
+implementation because of extensions due to the actual element value kind
+being wrapped in a SoftReference always.
+

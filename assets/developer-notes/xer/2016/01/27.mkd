@@ -1,0 +1,63 @@
+# 2016/01/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:23
+
+I can probably make PackageContents faster by having the cache and entry set
+generation handled by the base class and then have a key based initialization
+so that keys are known while entries are only created when they are requested.
+That should be faster and lighter on memory. However I should get packages
+building first.
+
+## 19:18
+
+Had fallen asleep, running into that classpath stuff again where it cannot
+find classes.
+
+## 19:20
+
+Well this is odd, in my first stage I have this:
+
+	new URL[]{new URL("file:secclname")},
+
+And this does not look right at all. I doubt this would be the cause of the
+issue however, however it is possible because the code does fail here. And
+now everything is building. So this was essentially what appears what the
+problem was.
+
+## 19:42
+
+The class not found stuff still occurs however.
+
+## 19:55
+
+Well it still happens, however if I were to re-run the code it works fine so
+I am not too sure why that occurs.
+
+## 20:09
+
+Appears the output JAR files get lots and lots of contents when they should
+not be getting them. I suppose the temporary output is messing up.
+
+## 20:33
+
+I wonder what is with this, everything seems to be just wrong.
+
+## 21:40
+
+This might be why it cannot find anything.
+
+	loadClass(net.multiphasicapps.hairball.build.BuildFailedException, false)
+
+Hairball is never loaded into a HairballClassLoader, so there seems that there
+is no actual delegation of sorts done.
+
+## 23:07
+
+It is as if there is no delegation being performed at all.
+

@@ -1,0 +1,41 @@
+# 2016/01/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:19
+
+Did not code at all yesterday.
+
+## 11:30
+
+I should probably add a distinct null constant entry type.
+
+## 12:45
+
+Instead of having the entry creation stuff in the pool, I can have it in the
+entry.
+
+## 12:50
+
+That will be much better, because the information will essentially be
+duplicated anyway. And on top of that, I can just have a PatchConstantEntry
+with a direct set for initialization from an existing pool.
+
+## 13:00
+
+This is currently much cleaner than handling it in the pool stuff.
+
+## 16:27
+
+I can swap the default for the constant values around. Instead of getValue()
+being the default, the native variant is default instead.
+
+## 20:54
+
+I can make the constant and reference stuff actually patched rather than it
+being copies.
+

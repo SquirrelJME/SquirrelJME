@@ -1,0 +1,29 @@
+# 2015/06/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:00
+
+I just realized that try with resources, where there are nested files which
+are open which may fail (such as new SomeReader(new Reader())), that the inner
+Readers would be opened yet the top would fail. This is only really a problem
+with resources that can fail if the upper most resource does fail.
+
+## 18:21
+
+Actually for macro replacement such as when a file is #included or otherwise,
+I really only have to handle preprocessor define stuff while the main output
+of it will be recursively handled for macros. All macro replacement is done as
+much as is possible for translation before it is truly finished. However, I
+will need a translator for a sequence which works with #define before it is
+pasted in.
+
+## 18:40
+
+Going to move the interfaces of javax.json into their own package and then
+have my implementation of them depend on them.
+

@@ -1,0 +1,14 @@
+# 2013/12/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+The only way I can see a class setup working is by not having a loader and
+having the initial VM state hard coded into the kernel as a constant. There
+would be enough of a setup to setup physical memory and initialize a garbage
+collector. The first system setup must be statically initialized, with a stack
+somewhere.
+

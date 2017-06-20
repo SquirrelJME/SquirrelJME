@@ -1,0 +1,54 @@
+# 2015/06/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:41
+
+I have awaken, and it rains.
+
+## 08:59
+
+Class information can store annotations, fields and methods can be structures
+themselves which declare things.
+
+## 15:07
+
+Using a filesystem view for maps is going to be bad. That view is highly tied
+into File which is not very extendable.
+
+## 17:44
+
+However, if there were a way to have say a tab which shows either the files on
+the disk or internal files in the JAR. Well, JFileChooser can be embedded into
+a panel, so I could carve out a custom dialog of sorts.
+
+## 18:34
+
+Aha! With this new dialog I can have internal maps, ones on the disk, and
+random maps. So all of the expected map types can work out.
+
+## 20:29
+
+For random map generation, the only major things affecting the major layout of
+the map will be player positions and the random seed. Those mentioned will
+affect the terrain that is placed. Each map will be divided into segments
+which represent a "base". Expansions value will change how many of those non-
+main bases will have resources in them. Islands will determine how those
+segments connect to each other (none being no connections, thus no islands)
+while lots will enforce that mains are never connected. Resources will just
+modify the amount of resources available to mains and expansions. Setting
+resources to none will result in no resources being available.
+
+## 20:58
+
+I have not tested my stuff in Wine in awhile, I wonder if it all still works
+good.
+
+## 21:18
+
+And it works the same as it does on Linux, and that makes Java awesome.
+

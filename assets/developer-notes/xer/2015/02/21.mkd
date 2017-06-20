@@ -1,0 +1,130 @@
+# 2015/02/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:50
+
+Might be rewriting a huge chunk of the JavaCodeBank and the Decoder. I need a
+normal FormCodeBank and then an FormCodeBankExecutable which can be used by
+the run-time to actually execute banks which are loaded. That would reduce the
+need to write tons of loaders as I can just have on (past the bootstrap). Part
+of the decoder code is clean while other bits are nasty. The stack handler
+will definitely need recleaning and anything using that to be changed. Also
+with possible better type verifications. There are also two different stack
+modes and more restrictive stacks in Java 8. The Java 8 stack forces single
+instances and gapless local variables. Gapless as in local 12 cannot be set
+before local 11 is set and such in any state.
+
+## 01:06
+
+Well, it is not going to be a complete rewrite, just a major code clean up and
+optimization. One part that is going to be rewritten is the stack code as it
+is a bit ugly. I can also move all the code over as needed also to a new
+package rather than putting it in the form.ld package which is rather ugly. A
+new asmfmt package will keep the nasty bits out. Another thing is the asmfmts
+get their own package. Also the dynarec for PowerPC and other things will have
+their own asmformats in their respective JARs. Their factories can either be
+an encoder of a DecodedMethod or a decoder into them. Although for most of the
+languages it will be a one-way encoding trip. I will also have to move the
+stuff around for the Java byte code handling so that it may be reused later by
+the compiler to output standard class files. For many of the operations that
+are the same for the decoder, I can create some fancy lambda references
+instead of just having a giant MethodHandle table. Although I will be
+initializing that stuff. All the byte code operations will just be placed into
+another class, so just a move over and a cleanup. Then perhaps another class
+for simplified operations. I will have to determine how that would work. Some
+operations are really complex, some are just duplicates of others, while
+others just call a standard helper method.
+
+## 01:21
+
+Not going to do a rewrite of the core decoder stuff, just the stack stuff
+along with major cleanup. The stuff like the Java class loader works and I
+have no reason to actually touch it, but it could be cleaned up a bit. Well no
+reason to trash it completely. Moving the stuff from form.ld into both binfmt
+and asmfmt. Probably would be best to get to work cleaning stuff up after I
+sleep. So to reiterate:
+
+  * Move binary related Java (class file) to binfmt.
+  * Move code related Java byte code stuff to asmfmt.
+  * Separate and rewrite the JavaMethodDecoder.JStack into its own separate
+    class file, also handle return addresses and stuff such as uninitialized
+    and null values along with more type availability.
+  * That would go for Spot too, make it better.
+  * Take all of the operation run handlers in JavaMethodDecoder and make it a
+    bit nicer, some ops are the same so they can be mapped similarly. Might be
+    best to have a separate class which handles all of the varying opcodes and
+    their similarity. Perhaps with lambdas with arguments for specific cases
+    that are very similar.
+  * Add base code path for the possibility of encoding Java byte code and
+    writing of class files, so that it may later be used by the future written
+    Java compiler.
+  * Commonize some structures to allow for reading and writing of them so
+    that they may be used by both encoders and decoders of code and binary
+    files (structures such as StackMapTable).
+
+## 14:45
+
+So far the refactor goes well.
+
+## 14:57
+
+Now everything is moved over to the new packages and compiles and runs without
+issues, however the refactor is only just beginning.
+
+## 16:42
+
+Currently rewriting my stack code and it looks much better than before, also a
+bit more object oriented.
+
+## 19:56
+
+Will need to move pushpop code to the new JavaStack and such.
+
+## 21:05
+
+Ported over everything to the new code althougn the current matchPushPop does
+not operate as intended it seems.
+
+## 21:12
+
+Probably due to a missing pivot being copied.
+
+## 21:32
+
+Appears that there are extra top bits set in the target stack.
+
+## 21:54
+
+And this time it is not my code that is incorrect, but the StackMapTable truly
+does have three consecutive top values inside specified. Now I wonder how that
+works.
+
+## 22:41
+
+Some kind of bug somewhere causes the stack states to not match properly. It
+is most likely the StackMapTable related read. So instead of avoiding the
+issue I should fix it before I proceed.
+
+## 22:48
+
+And as I suspected it is stack map table related.
+
+## 22:53
+
+And with little flag hints I have `FCFCACACFS1`. Perhaps the problem is with
+the same frame and the same frame with one thing. Although the append frame
+could also be the problem, however the full frame after it nullifies it. So it
+is one of these: full, same, or same1. However those types are really simple
+as they just represent a single thing.
+
+## 22:59
+
+The full frame however, the local values can be lower than the actual number
+of stack items. However I clear the upper bits. Not clearing it causes other
+things to occur elsewhere.
+

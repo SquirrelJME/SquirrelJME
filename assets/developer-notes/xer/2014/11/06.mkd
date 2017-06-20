@@ -1,0 +1,58 @@
+# 2014/11/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:29
+
+Actually instead of rewriting all of this, I am just going to fix what I do
+not like about my existing code.
+
+## 04:08
+
+Made the attributes for classes and methods just be an individual list, that
+works better.
+
+## 05:23
+
+The one thing I do not like is the ConstantPool class, the entries
+specifically. I made the pool better by allowing it to be grown and having one
+permanently attached to a class (no new junk). The bad remaining part is the
+entries, I need a way to dynamically create the entry classes to my
+specifications. There are annotation processors but I have never used that
+stuff yet, and I am not too sure if it suits my needs.
+
+## 06:49
+
+Figured out a benefit of Java, in the case of NUMA systems and clusters where
+there are potentially many different systems, they can all act as CPUs to
+compute the same stuff even if they vary in architecture. Provided that all of
+the implementations are correct and act the same on each architecture there
+would not be any problems much.
+
+## 13:35
+
+Need to figure out some things, I figure the best thing to do would be to have
+classes in individual files and translate them on the go. The kernel can be
+kept minimal in binary size by just loading class stuff as needed. Drivers for
+things would just be another set of class files. Although the grouping becomes
+vague, what is the kernel and what is loaded from the disk? In essence
+everything can be on the disk, and the kernel could be a level one hypervisor
+setup by the bootloader which loads the initial classes. There will need to be
+at least one hypervisor which manages the system threads and such, but where
+does that start and where does it end? If I have the kernel just be a giant
+glob of precompiled classes, I could end up having the entire classpath be in
+the binary because of the way dependencies work. So I will need some kind of
+vmstrap system. Either something in assembly, or C, that sets up the kernel
+state and loads it. Could probably do it Java however. So I will need a bare
+minimum setup. Then that bare minimum can load classes from the disk and
+compile them as needed (say if one decided to delete the cache for the kernel
+which would force it to recompile). Anything that exists as part of the boot
+strap would have to be very minimal. So that would include the bootloader and
+the class recompiler. This means that I will have to modify some of the class
+loading stuff to remove some dependencies that it requires (such as
+PrintWriter for my current debugging).
+

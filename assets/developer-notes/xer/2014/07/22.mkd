@@ -1,0 +1,37 @@
+# 2014/07/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:47
+
+Seems all this time I forgot the wrapper script which is invoked by my
+roughbld which is required to build my OS, good thing I checked extras.
+
+## 02:10
+
+Deprecated a bunch of stuff, including the venerable WormStore. WormStore
+actually sucks, is too complex and is like building a gigantic machine and
+tons of time to seal a single envelope when you can just use a wet paper towel
+on the glue.
+
+## 02:21
+
+Seems I am very fond of LaTeX documents as of late, now I have a donot.tex
+which list things to not do so I do not end up coming back to the same issues
+I smashed down before.
+
+## 02:51
+
+And now it is full of suggestions on what to do and what not to do.
+
+## 03:36
+
+My build system, the existing bits of hairball and roughbld are starting to
+flake and show strain. Feels like adding implicit dependency support is a
+hack, so I deprecated everything. Once my build stuff is done and the new
+hairball is in place I can use that instead.
+

@@ -1,0 +1,26 @@
+# 2015/08/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 21:25
+
+For the kernel compilation stage, instead of opening a single JAR at a time I
+can open up all of them at once and then proceed through all the contained
+files in them. I will need to handle assembly bits for classes that require
+native interfaces and such.
+
+## 21:32
+
+The code will be changed so that it only compiles what is needed by the
+kernel, that way no time is wasted compiling classes which do not need to be
+compiled to be linked into the kernel, unless said classes are explicitley
+selected. The way this will work is that the kernel main entry class will be
+compiled and any classes it depends on will also be compiled for inclusion.
+Anything which is statically referenced will be included so that the kernel is
+a pre-compiled virtual machine so to speak. If say the kernel is loadable but
+the filesystem is gone, a base system could still be worked with so to speak.
+

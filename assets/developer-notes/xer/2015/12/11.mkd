@@ -1,0 +1,126 @@
+# 2015/12/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:29
+
+Hopefully I can get classes written today.
+
+## 12:33
+
+DataAccessor could be made generic since it could be reused by sub-classes and
+such. That could actually be useful for sharing classes.
+
+## 13:01
+
+My lazy data setter is incorrect in the Assembler, it uses the wrong operand
+thus the values that are intended to be placed are never actually placed. The
+massive if block is a bit messy though however so that could use some cleaning.
+
+## 13:11
+
+Another thing I can do with lambdas and magic is to make it so the machine
+stuff is not completely backed by `LongSupplier`. By doing that it should be
+a bit faster somewhat as no later calculation step has to be done if the
+values are actually known.
+
+## 13:29
+
+I suppose the best thing to do would to have value suppliers that one of
+the `assemble` Supplier types or similar. Basically if something was passed it
+an just directly use the value. So it will essentially be `Supplier<Object>`
+which is some kind of numerical type. I have to have some kind of checking
+though. Something such as a later or a now. Perhaps `LaterOrNow` which either
+returns the explicitely given value or otherwise. The other alternative is to
+have in `Assembler`'s package is have a `Supplier` extended class except it
+instead has a `NowSupplier`. The `LaterOrNow` might just be simpler when it
+comes to values.
+
+## 15:38
+
+I can also move the mass of abstract and simple wrapper methods to subclasses
+so that it is elsewhere and the standard machine is a bit simpler.
+
+## 15:40
+
+Well StandardRISCMachine is essentially just a base wrapper class anyway.
+However I can still split out the abstracts.
+
+## 15:52
+
+Actually I could do it for int, long, double, float, link, and pointer values.
+
+## 16:01
+
+Having two variants for everything which takes a primitive type and a
+`Supplier` is getting to be ugly. I essentially have mirrors of multiple
+values for the most part. So, I suppose as an alternative I should have a new
+set of classes which exist in `Assembler`'s package which can either have a
+value right now or later on. I suppose it would be a set of interfaces which
+then implement default values. That would require a large allocation of objects
+however. However it would make the code much simpler than having lots of
+duplicating wrapper methods.
+
+## 16:11
+
+Actually with this I can have the ability to set a value unknown at one time to
+a value which is present.
+
+## 16:29
+
+I can also simplify the assembler by having an accept anything method.
+
+## 16:45
+
+And with a generic value set translation thing I can have simpler value setting
+in the assembler which handles various types of ways to set a value (capped,
+masked, or exact).
+
+## 17:45
+
+I have a headache.
+
+## 20:38
+
+Looks like there is a Device I/O that is used in **JavaME 8.0**. This could
+be useful for me since I am planning on having something similar.
+
+## 21:24
+
+Neat thing is that this includes modems and GPIOs. So essentially since this is
+standard I do not have to think of my own API much and instead just create
+interfaces for these devices. I suppose the base of my device handling will be
+the Device I/O stuff. Devices however are byte channels.
+
+## 21:27
+
+Actually that is not correct, `Channel` just has two methods: `close` and
+`isOpen`. However, all of my devices will instead just be planted on the device
+API when some stuff is not standard.
+
+## 21:29
+
+There could also potentially be virtual devices which are only implemented in
+software rather than hardware. Perhaps say a SPI over TCP/IP for example.
+
+## 21:32
+
+Actually, my present/future stuff needs a variant so to speak. Say I pass a
+`FutureOrPresentLong` to a method. That method relies on the value for example
+to write 64-bit values on 32-bit CPUs. A value must be added to calculate the
+high and low values, thus need an additional method which essentially just
+returns a future or present with a new value with the same value kind.
+
+## 21:52
+
+Actually an awesome thing about this that I can have a mix of future or present
+values for stuff such as memory to memory operations. I have wanted this before
+but decided against it because I would have tons of long/LongSupplier variants
+for each combination. Right now a bunch of simple wrappers are going away an
+in place only single methods are used. So this is actually making things a
+bit lean.
+

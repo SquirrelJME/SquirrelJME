@@ -1,0 +1,51 @@
+# 2015/11/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:10
+
+I believe I am going to go for an ending index which contains the tables and
+such as that may be a bit easier. Well, I am just going to do my split class
+stuff to make read/write a bit easier and cleaner rather than have it all in
+a single class.
+
+## 12:07
+
+This new code is much cleaner than before.
+
+## 16:06
+
+The PowerPC int instruction does not work because the value it writes is
+wrapped as a specific value. I need a set of raw data value instructions.
+
+## 16:23
+
+Storing the instruction used, I can save by not having a decode operation when
+handling unknown. I was doing it before but changed to the disassembler, now
+I revert this.
+
+## 16:47
+
+Oddly for the byte buffer instead of using disassembler, I get the
+exception:
+
+	[SEVERE] Threw exception during recompile of "<init>" (()V):
+	"java.lang.IllegalStateException: Missed position 28, currently at 20 with
+	a limit of 24.".
+
+And I am not to sure why it occurs.
+
+## 16:49
+
+Actually, reading the docs the position is limited to the limit, so the old
+limit causes a failure when setting a new one, so just set the new limit first
+before setting the position.
+
+## 20:19
+
+A comment could be handy in the KBF, such as when it was generated.
+

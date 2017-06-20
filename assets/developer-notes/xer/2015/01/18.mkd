@@ -1,0 +1,57 @@
+# 2015/01/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:00
+
+A new day dawns, now to strip lots of HTML.
+
+## 12:34
+
+And now I have completely turned the HTML data tables into annotation based
+enumerations. Now for the massive import.
+
+## 13:20
+
+Actually I still have to do the weapons data.
+
+## 14:07
+
+Now to make all the constant tables compile.
+
+## 15:00
+
+If making all those tables with automatic tools took 5 hours, I wonder how
+long it would take if I copied them from scratch. The joys of scripts.
+
+## 19:14
+
+Having a class called Map is rather conflicting.
+
+## 19:42
+
+Having createUnit have a location is a bad idea since some units could be
+created and be deployed, or remain hidden for a bit, depends.
+
+## 20:52
+
+I have a cache class there, but it is really ugly so there must be a nicer way
+to setup a good cache. Perhaps when a UnitType is requested it can just use a
+straight map where values are translated as required into lists and such.
+Since going into the data tables will be a bit convoluted and such. However,
+the enumerations could in fact reference themselves and it may be possible to
+have a single class act as the static cache. That would require messing with
+interfaces however. However interfaces still lack fields, but to reference
+static globals without exposing them another class could be used for storage.
+Then the default methods could use those instead. Another thing with the
+defaults is that they could have all the getSize() and such needed for types
+of things.
+
+## 23:57
+
+Having two megenta-ish colors does not seem it will end up nice at all.
+

@@ -1,0 +1,24 @@
+# 2016/02/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 22:11
+
+If I actually wrote that C compiler based virtual machine I could potentially
+have a rather fast virtual machine, even if the output C code is rather poor.
+Although C++ would possibly be easier to generate for.
+
+## 22:22
+
+However C++ lacks stuff such as `finally` which would be rather a pain to
+implement.
+
+## 22:42
+
+Would probably not do anything at all and would distract me from my current
+work.
+

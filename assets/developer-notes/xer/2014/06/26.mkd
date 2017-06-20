@@ -1,0 +1,42 @@
+# 2014/06/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+Actually instead of sleeping I read about exoplanets and that satellite on a
+one way trip to Pluto, then played Majora's Mask.
+
+Wrote a tiny bit of code, but since it is dark outside and bright inside bugs
+are rather attracted and there are many bugs, so I will just finish off this
+small filter getting code.
+
+I decied to use C-style printf in my EchelonError exception and it comes out
+quite nicely when I want to format characters a specific way. No locale is
+chosen because it may mess with the error messages which should not be in any
+locale.
+
+Reworking the class reading code, I need a better way to deal with constants
+because the constant code always ends up a huge mess with about a dozen or so
+of individual classes and duplicate code. Currently there exists
+CONSTANT_Class.java CONSTANT_Double.java CONSTANT_Fieldref.java
+CONSTANT_Float.java CONSTANT_Integer.java CONSTANT_InterfaceMethodref.java
+CONSTANT_InvokeDynamic.java CONSTANT_Long.java CONSTANT_MethodHandle.java
+CONSTANT_Methodref.java CONSTANT_MethodType.java CONSTANT_NameAndType.java
+CONSTANT_String.java CONSTANT_Utf.java and most of it is boilerplate. Most of
+the constants are rather the same, mostly just containing references to other
+constants. So to reduce boilerplate, a single class that contains a constant
+with a subenum to handle multiple cases of specific contents, then just use a
+single get with a checker for class type to legality.
+
+So the question remains, without making things very ugly how can this be done.
+Reading of binary data can be done in the constructor.
+
+I just realized that it may be possible to exploit private access into classes
+if they use bridge methods (since nested classes have access to private class
+data), so when I create the linker and recompiler checks must be done to
+prevent these exploits. It might break some language compatibility, but I
+would rather it be secure.
+

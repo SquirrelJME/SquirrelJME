@@ -1,0 +1,36 @@
+# 2014/10/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:11
+
+Need to move my tokenizer stuff around to handle cases where it is not used by
+a LexerDescription task.
+
+## 01:29
+
+Actually I just realized something writing my hairball code, at this point it
+is expected that it will be Java 8, so this close finally mess I can replace
+with try with resources, since hairball can use Java 8 features. If the host
+lacks support for Java 8 then my simple compiler would have taken care of
+that. And this marks the first time I have used try-with-resources statement.
+
+## 03:01
+
+Been removing some hasNext() Iterator usage to reduce race condition
+potentials, and I find that IteratorChain is quite broken in this sense.
+
+## 03:19
+
+Rewrote IteratorChain, shaved off about 25 lines of code and now it looks much
+safer and much leaner and cleaner.
+
+## 05:01
+
+I figure my hairball script will just be a Java inspired system and syntax but
+be very simple and easy to parse.
+

@@ -1,0 +1,32 @@
+# 2014/07/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+Today is my birthday, happy birthday me!
+
+Will probably end up spending today on option parsing for the most part.
+
+With this generic code I implement both my own compiler and the run-time
+interface to interact with it at the same time, thus saving time. I should
+look through the class library more often to determine the shortest and most
+efficient way to do things.
+
+I wonder if it would be possible to automatically generate documentation from
+the help command into man pages by using an annotation processor or actual
+run-time extraction.
+
+Added a bland readme for the home page in the fossil repository, does not say
+much since I have all my documentation in LaTeX. Had this idea pop into my
+head about filesystems. Since everything is already a class, I can do a
+guesting of sorts. Have a simple command that can internally interact with
+filesystems for k8 generation. I could have an interactive process which
+mounts a filesystem then uses some kind of interface then turns into a daemon.
+This way I only have to write the filesystem once (sort of) and files can just
+be placed in there at will. That would be real nice, I can test the file
+system and implement it at the same time. And when images come to be needing
+to be written, they can just use the fslayer to do that.
+

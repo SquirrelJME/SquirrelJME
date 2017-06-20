@@ -1,0 +1,71 @@
+# 2014/07/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+Working on compiler front end stuff. Making FrontEndTask use the same
+interface as JavaCompiler's getTask is a bad idea and is rather plain. I
+should parse options first then pass an immutable-ish set of options.
+
+I will go with Launcher instead to do all of this, shorter and easier to say
+than FrontEndTask. The Launcher will have a settings thing which handles the
+stuff from KEJC and will use a very simple class which contains all the
+specified objects rather than handling all of it within the Launcher itself.
+Access to files would have to be locked and done by only one thread since the
+internal compiler made by Sun/Oracle only works with a single thread. Most
+chances the diagnostic listener would support multiple threads calling it in
+the middle two. Also, if that were to happened you might get "ABABABABB"
+patterns in your message output which would then be very difficult to get the
+real information out of. Actually I was thinking about making a whole new
+class to handle the settings, but I can just use a WormStore since I made it
+do what I designed it to do. Although right now WormStore is not fully
+implemented functionally speaking I can implement more of it. I think instead
+of Launcher or FrontEndTask, I will just call it BigTask since it manages the
+whole thing. Yes WormStore WILL work, because then it can just use the Options
+enum which can have the WormStore handling stuff similar to VClass in echelon.
+Note that to handle encoding, the StandardFileManager creation if null must be
+belayed otherwise things may get a bit confusing. Too tired to stay up,
+eyelids are very heavy. But before I fall asleep on my laptop I will note that
+-encoding must be done in run() or whatever since that makes the file manager
+which is passed to getTask().
+
+For my current laptop my keyboard broke and there seems to be a defect in the
+lower memory slot so I have a non functional keyboard and very little memory
+now. I can still code but it will take a bit longer as it is more keyboard
+oriented rather than using the trackpad on the laptop.
+
+Using a WormStore would be over engineering the problem, I just need a simple
+EnumSet that contains option values and not so checked values inside of them.
+The option set would stay within the compiler anyway. Simpler is better.
+However for concurrency I will go a bit more complex. If one uses multiple
+CPUs they should be utilized when needed, so that there is never really any
+blocking being done except in the most dire of circumstances. Actually instead
+of making things complex, the CompilationTask in BigTask could implement some
+thread control things. Then hairball can use that for extra concurrency sub
+control jobs, neat. There appears to be no real class in the existing library
+that does what I want, there is ThreadPool but that appears to be rather
+complex and over the top for this.
+
+The hairball build system will never call a sub process but create new threads
+to do work with. When there are many complex compilation tasks and translation
+tasks going on at once, there will need to be major synchronization so that
+effort is not wasted. Hairball will probably need its own file manager to
+handle locating classes. The files can all operate on the root of the system
+and requests will be based on files. Since the stuff is concurrent it can do
+file locking itself so to speak. So say if the compiler attempts to open a
+class file to convert into binary code, and another compiler task attempts to
+do the same thing. There would need to be some kind of locking to that both
+tasks do not do the same work twice. This can be done and hopefully
+compatibility with the standard stuff can also work out at the same time. The
+compiler will need specific support to determine what other jobs are doing, so
+as such anything like this would be only in my implementation of it. However,
+running two compilation jobs in the same directory can result in timing
+attacks regardless due to the slight wait before a request. So hairball will
+have to be specially coded to prevent such things. Another possibility is that
+I am overcomplicating the issue since I seem to be getting a headache now
+along with thinking stuff related to this. Or I can just keep it simple, use
+the controller. Race conditions would be quite some work to solve however.
+

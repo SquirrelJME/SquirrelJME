@@ -1,0 +1,57 @@
+# 2015/08/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:31
+
+With InstructionInfoDecoder I can have Manifests store all the instruction
+information and share it among any architecture.
+
+## 15:36
+
+PowerPC instruction encoding is incorrect.
+
+    
+    
+    [FINEST] AsmOp: or:[opcd=31, rs=1, ra=0, rb=1, xo=444, rc=0]
+    [FINEST] AsmEn: 3e 04 d0 1e
+    [FINEST] AsmOp: stwu:[opcd=37, rs=1, ra=1, d=0]
+    [FINEST] AsmEn: 29 84 00 00
+    
+
+Results in:
+
+    
+    
+       0:	3e 04 d0 1e 	mulli   r22,r16,1086
+       4:	29 84 00 00 	.long 0x8429
+    
+
+## 15:42
+
+The desired code is as followed:
+
+    
+    
+       0:	7c 20 0b 78 	mr      r0,r1
+       4:	94 21 00 00 	stwu    r1,0(r1)
+    
+
+## 19:03
+
+Now instruction generation is complete. I could quite possibly split the
+assembler from the asm package since it is just a tool for the most part.
+Although I do not believe I can move the MutableOpCode out of it. Well
+actually I believe it is possible to move that also out of there.
+
+## 19:45
+
+At least when I work on the Assembler and the MutableOpCode stuff, less
+recompilation is needed. I no longer have to regenerate PowerPC opcodes for
+example when I change something in the assembler. However I do end up having
+to recompile the bulk of the NARF code however. But every little bit counts.
+

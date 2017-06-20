@@ -1,0 +1,31 @@
+# 2015/12/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:12
+
+I wonder how positional and non-positional printf is handled.
+
+## 01:07
+
+Been thinking about a situation where I would be in the middle of nowhere with
+an unknown position. If I had a radio broadcaster I could still pinpoint my
+location. If I have a clock or if I can measure time, I can either give the
+time when the sun rises and when it sets or the duration of daytime. The
+duration of daytime is less accurate. The rise and set time, when in a time
+zone such as UTC, will permit the longitude calculation of my position. This
+assumes I know the date however. The length of day can be used to calculate
+the latitude position.
+
+## 01:17
+
+The same could be done for stars also.
+
+## 19:23
+
+Was working on something else today for a bit.
+

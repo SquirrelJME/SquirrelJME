@@ -1,0 +1,45 @@
+# 2016/02/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:27
+
+The MIPS Creator CI40 board is looking pretty cool, hopefully by the time I
+get it I will have an actual booting kernel that runs somewhat. I hope so.
+There have been many refactors as I slowly inch forward. However even after
+these refactors the code looks much much nicer.
+
+## 20:04
+
+Ok, so I am going to go for a number of set bits hash table for the image maps.
+
+## 20:11
+
+Actually no that cannot work because I have no idea which bits are going to
+be set for an instruction.
+
+## 20:35
+
+Ok so the instruction information manifests should be completely decoded now
+for the most part. I just have to continue on with the decoding of operations
+before I can process them. Then once they are decoded I have to setup a basic
+assembler with `ProgramEditor` and then fix POIT again so it compiles and
+potentially runs.
+
+## 21:01
+
+POIT is deprecated though, but I could at least use it as a reference for a
+bit. I believe after this new `ProgramEditor` bit I am rather done with some
+refactors and can continue code generation and such. I hope so, so I can
+hopefully get a native kernel running by the end of the month.
+
+## 23:45
+
+Ok so instructions are guessed now, what I need to do tomorrow is to setup the
+field information in `ProgramInstruction` so it can be properly handled and
+the actual instruction fields can be used.
+

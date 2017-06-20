@@ -1,0 +1,53 @@
+# 2014/06/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+I was out doing stuff all day and as such, could not get any coding time down.
+_2014/07/21 -- The following was moved from the k8 LaTeX file and placed here
+instead._ _Deviations_
+
+Since this is my own implementation, I will make my own decisions for certain
+aspects. _Crimped SecurityManager_
+
+The SecurityManager is flawed in that it is essentially a user based check
+mechanism in the library. It complicates writing of code and failing to
+implement checks for it correctly may result in security vulnerabilities. I
+plan to rely on the kernel to perform such checks, so from the aspect of the
+program being run it thinks it is able to do whatever it wants. The kernel
+will be much better at setting specific limits to the program such as file or
+device access. Programs depend on the kernel to access resources anyway, so if
+it says no it will be a no rather than a kind no with a smile.
+
+Programmers do make mistakes and it would be foolish if one believes they do
+not. A single method not checking the SecurityManager when it should could
+result in dangerous losses.
+
+For compatibility reasons, if a process is spawned with a SecurityManager
+present then the kernel will emulate it and the permissions it gives. So
+rather than being done entirely on the user side it is done on the kernel
+side. This also means that either SecurityExceptions could be thrown at any
+time or system calls return different values. The kernel will create a new
+process which contains no threads so that secured checkPermission calls can be
+performed by it. It also permits stacking of SecurityManagers so that if a
+process is started by another who has a SecurityManager then that will also be
+checked. _Tighter Checks Related to Inner Classes_
+
+Normally, classes outside of a specific class are not permitted to access
+specific fields or methods based on their protection status. With the addition
+of inner classes in the language, they are essentially outer classes with a
+bit of magic to wrap them up. Inner classes and outer classes can obtain
+access to their private or protected parts without discretion. To permit this
+in the language the compiler adds bridge methods used to access such pieces or
+methods. However, those pieces may at least be package private and they might
+even be public. So any methods that are marked as bridge or synthetic will
+need to have additional and a bit more complex checks to handle inner classes.
+_Avoid System Threads_
+
+System threads are essentially extra threads that do stuff such as garbage
+collection or checking the time in a for loop. Since the kernel is the virtual
+machine it can just do this directly and requires no user space intervention.
+

@@ -1,0 +1,40 @@
+# 2016/01/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:03
+
+So let us see, I must make sure the relative stuff, may be in a package or from
+it. That is, is it relative first and then the package, or package first, then
+relative? It appears that the package is done first, then the relative. I
+suppose I can use the URI form to build the path information.
+
+## 16:37
+
+For networking, my plan is to have per process networking where each process
+sees virtual interfaces. This would essentially act as sort of a primitive
+firewall and would permit all processes to essentially be hidden behind a
+proxy (HTTP, SOCKS, Tor, SSH, PPP, etc.) without even having support for
+proxies or requiring dynamic injection. This can also be used when connecting
+to random wireless networks. Pretty much every OS lacks this capability. When
+joining a network you might want to quickly use PPP or another technology to
+connect to your home network. However, until your connection is established
+then usually all processes will be exposed and broadcasting themselves. With
+processes behind virtual interfaces and such, packets could either be delayed
+or dropped. Then all packets and such could be routed through to PPP or a
+similar proxy and if it cannot support certain types (say UDP over Tor) then
+it could reply with an ICMP error. I do wonder though if there are ICMP
+errors such as "Packet type not supported" or similar.
+
+## 19:56
+
+PackageContentsFileManager might just be overly complicated, I could just
+instead have a forwarding one with modified behavior for input source and class
+files which are derived from package contents. Then outputs would use the
+preexisting system file manager since it might manage every system better for
+the most part.
+

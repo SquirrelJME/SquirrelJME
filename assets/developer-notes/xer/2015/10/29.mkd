@@ -1,0 +1,41 @@
+# 2015/10/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:25
+
+I can write a k8 simulator which runs on host systems such as Linux by loading
+the recompiled class code, setting up a few things and then calling into the
+loaded code. Requires memory protection changing however, but it may work.
+Doing it this way, I could sort of use gdb in assembly mode to debug programs
+and possibly run stuff as needed. Due to the way code is generated (at least
+for PowerPC) it is a very dynamic structure which does not generate any
+internal system calls. So it may be a bit slower in a few cases when not using
+those, but this allows the eventual k8 OS to do better native binding and even
+potential replacement methods which essentially just rewrite pre-existing
+functionality (which may be useful for certain situations).
+
+## 15:47
+
+Will have to remember to clear slot values at the start of a method, otherwise
+old illegal values could be used and such.
+
+## 17:16
+
+sloccount gives me the following (in vmjar):
+
+    
+    
+    java:        299908 (99.44%)
+    ansic:         1268 (0.42%)
+    sh:             414 (0.14%)
+    asm:             18 (0.01%)
+    
+
+Some of that is code I wrote, the bulk of it is auto-generated class library
+code.
+

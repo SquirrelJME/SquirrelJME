@@ -1,0 +1,119 @@
+# 2014/11/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:31
+
+Annotations are complex and there are tons of them, so I need to figure out
+the best way to handle all of them, without going completely insane. I can do
+something similar to the constant pool type stuff. I could probably use
+annotations and such to describe the contents of an attribute. Doing it this
+way I could treat it like a simple structure of sorts. Luckily though,
+unhandled attributes can be skipped. I could create individual classes for
+each annotation and have it a form of data type. That is, the AnnotationInfo
+would have the basic what the thing is, the size, and the data. But then it
+could generate data information from input data if needed. There are 24
+attributes currently defined in the class file format. I believe an annotation
+which describes the form of the type would be best as it would simplify
+loading all of the information. Some of it could be used, some other parts of
+it might not be. Access to the attributes would be a bit slow, however they
+can be nicely created with their needed information in the KBF format or the
+intermediate linker form layout (before it gets written to KBF or some other
+format). Never really done something complex as this before, however I believe
+one can use annotations in annotations, although I do wonder if you can use
+them in arrays and if they retain their correct order. In the AttributeInfo
+class I should keep it to enumerations while having the struct stuff based off
+it as annotation enum elements. At least with a recursive structure form I can
+have it so I can nest very deeply when needed. Another thing that I must
+consider is unions vs structures. I need to see how deep the annotation stuff
+can go because it can be a structure or a union. Perhaps the best thing to do
+is have multiple arguments and a type specifier. There will also need a way of
+using forward and backward specifiers (array lengths followed by arrays).
+
+## 04:54
+
+And suddenly looking at the apparent complexity of the StackMapTable
+attribute, this is going to be a gigantic mess. So it might be just better to
+use an enumeration and define a structure that is C-like then perform parsing
+of it based on the input text. It does not have to be anything super complex
+like C, just a sort of copy and paste from the class format document.
+
+## 05:23
+
+Very expressive but it can work once it is all parsed, and this will allow me
+to read attribute structures without writing reading code for every single
+kind of attribute there is. Representing StackMapTable with annotations like I
+had planned before would have been completely horrible.
+
+## 06:25
+
+Compared to the attribute StackMapTable, both RuntimeVisibleTypeAnnotations
+and RuntimeInvisibleTypeAnnotations are super complex and make StackMapTable
+look really easy to parse.
+
+## 06:48
+
+Now that all of the attributes are defined, they must now be compiled into
+some structure form which could be used by the class loading code to determine
+the layout and how to actually read these.
+
+## 09:09
+
+Had this idea for IPC and system calls, make all of it a UDP-ish SocketImpl
+where one can do unicasts and multicasts to other things. So each process has
+its own communication socket which it can use to communicate with something
+else. So to send the kernel a message saying to map a byte array in memory or
+to load a class, it can send a unicast message to the kernel from the process
+socket. It would all act on datagrams. Although the IPC may seem like
+overkill, it will ease porting between systems because they could vary greatly
+when it comes to system call capability. This would hide that very much, while
+potentially permitting virtualized containers where a userspace process can
+control a bunch of other processes and provide a fake feeling of power.
+
+## 09:16
+
+Actually, using Channels which were added in Java 7 would be more efficient
+means of communication as there would be no split input output stream, as
+channels are usually combined. It also looks like the NetworkChannel stuff is
+not very assuming of IP networking. Looks like all of the network channel
+stuff is far superior and not dead locked to IP. This means when I do
+implement networking, all that stuff will be using the channel stuff at the
+core. So all of the IPC stuff, talking to the kernel will be a
+DatagramChannel. It might be simplest to just have a single thread
+communicating with the kernel, where each thread has its own channel. Doing it
+that way would simplify threads because they would not need to lock on system
+calls. A bonus which per-thread kernel communication channels, is each thread
+is unique in their communication. So if two threads are opening a file at the
+same time, and the kernel determines that they are truly two separate files,
+it can handle both requests at the same time that they are made. The channel
+being datagrams is efficient compared to streams as the stream would need
+lengths and such. One could connect the socket though to get a stream as
+needed, but that would end up being buggy as there would be strange ways of
+communicating to the kernel in a stream form. At least with reliable
+datagrams, in a virtualized environment, processes can go up to their
+controller (hypervisor?) which can mess around with system calls as needed. It
+could either forward the stuff or emulate a bunch of stuff. The one thing
+needed for that is sub process controlling. Since I am not going to do the
+clunky fork a new process, it could work. That is I am doing something like
+spawning a new thread, like Win32's CreateProcess or POSIX's posix_spawn.
+
+## 09:30
+
+But, I need to write my struct handling code to manage reading input classes,
+but it is good sometimes to think ahead to the future once in awhile and plan
+ahead.
+
+## 10:05
+
+Text editor crashed, but I need to mark internal use only classes and perhaps
+document a bit morethings.
+
+## 20:27
+
+Added checks for member flags, however I must get into reading of struct forms
+now.
+

@@ -1,0 +1,65 @@
+# 2015/06/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:24
+
+My compiler code will have to be multi-threaded so that multiple things can
+compile at once, since many threads could be calling the class definition
+interface in the kernel. Having it do a single class as any one time will just
+be slow.
+
+## 12:16
+
+Going to need it where debugging information sticks during tokenization and
+retranslation of input code and such.
+
+## 13:24
+
+Working on the C output, at least decoration currently.
+
+## 13:44
+
+The decoration is quite long also, ` net/multiphasicapps/cpp/CommentStripper
+getCurrentFile ()Lnet/multiphasicapps/cpp/PreprocessorTask$File;` becomes
+`b39_net_1b_multiphasicapps_1b_cpp_1b_CommentStripperi14_getCurrentFil
+em49__14__15_Lnet_1b_multiphasicapps_1b_cpp_1b_PreprocessorTask_10_File_1n_ `.
+So I am going to need shorter sequences for certain characters. I can use
+uppercase followed by an underscore, that can work out well. Just wonder if I
+will land in the same spot due to using HashMap. After shortening the result
+becomes `b39_net_Smultiphasicapps_Scpp_SCommentStripperi14_getC
+urrentFilem49__X_YLnet_Smultiphasicapps_Scpp_SPreprocessorTask_DFile_M`. Then
+using base36 for the length of things, I can probably save 1 to 2 characters.
+Although if I want to save the most space, I could just gzip the class info.
+However padding might force them to be really long.
+
+## 13:57
+
+I can go even further and shorten "java." and "net.multiphasicapps."
+sequences.
+
+## 14:27
+
+And doing that I now have ` b13__Lcpp_BCommentStripperie_getCurrentFilem1d__E_
+FL_Lcpp_BPreprocessorTask_DFi le_C`. So that is much smaller than before.
+
+## 19:21
+
+I believe for FreeTanx, I am going to use a very low version of OpenGL
+instead. Nobody uses immediate mode anymore, but is rather simple to use. My
+game also does not need super fancy graphics either. Although if I code it a
+certain way, I could also write a Java3D backend so FreeTanx could test that
+also.
+
+## 21:34
+
+Actually, appears that I am using an outdated copy of the OpenGL interfaces in
+my copy of JSR 231. Well, I should use the newer interfaces which can support
+3.0 and embedded rather than just plain old 1.0. JSR231 has a 2.0 version
+which is beta since 2011 (dead?). Therefor I should use that instead because
+it is much newer.
+

@@ -1,0 +1,112 @@
+# 2016/01/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:07
+
+Snowed some more. The new hairball boot code looks much cleaner for the most
+part and is far simpler also.
+
+## 09:17
+
+Seems even with my newer and still even lighter hairball bootstrap code, I
+still get the issue of the class stuff.
+
+## 11:36
+
+Porting it to Windows was not too troubling. However I suppose the last thing
+that I must do is just cheat. That is, just load all of the classes in hairball
+(or at least reference them) and keep them in memory during the compilation
+process.
+
+## 11:49
+
+I will also have to include all of the dependencies of hairball also because it
+cannot find the JSON library either.
+
+## 16:47
+
+I believe I know why it occurs AFTER the compiler is called. The compiler might
+be looking at the system class loader to provide classes for the compiler.
+
+## 17:04
+
+Actually, the JavaCompiler provided by Oracle just uses tons and tons of
+classes.
+
+## 17:01
+
+I could just use Hairball's class loader as the system class loader which may
+work to do what I want to do. However, HairballClassLoader cannot use resource
+bundles becuase there is a recursive invocation involved.
+
+## 17:12
+
+However, that still causes the issue.
+
+## 17:20
+
+I suppose as an alternative which probably might not work is to make a special
+class loader which loads system based classes itself and potentially delegates
+them. Basically when a class is requested, it just getResourceAsStream(class)
+and then just loads the class data even if it would be derived from the main
+class loader. I could then also just hide the parent. There might be issues,
+well maybe not, when it comes to finding dependencies for classes. I could
+always just try it out and see how it works. Then if a class is not found in
+the system class loader it just then delegates to a default package list with
+one for hairball.
+
+## 18:27
+
+And it appears my `SystemClassLoader` fixes said issues so to speak.
+
+## 18:42
+
+So although my kludge is really really ugly, it may only be needed for
+bootstrapping hairball on Java 8. I will have to see if I can avoid this
+issue in bootstrap environments for older virtual machines so it can still
+build it.
+
+## 18:44
+
+I just have to make sure my kludge also works on Windows/Wine. I shall see
+about that however. I really hope it does work without issue. There is
+definitely a drop in speed slightly due to the way I programmed the kludge so
+that it would work reliably. Sadly this is pretty much the first time I had to
+do something such as this in Java. And it appears that it works in Wine also.
+
+## 18:46
+
+So now I can continue what I was doing, it has quite literally been a week
+since I last touched the code I was working on due to this Hairball refactor.
+I currently also do not have the meta code generation implemented but so far
+nothing uses it. The PowerPC code I have written no longer uses it. I just now
+have to go back to rewriting the assembler/disassembler to be much cleaner than
+how it was before. I still know my notes for it however.
+
+## 18:48
+
+I do wonder if stuff such as Squirrel Quarrel still runs. I shall check this
+out also and provide any fixes if that is needed.
+
+## 19:23
+
+Appears services are not being added to the bootstrap JARs it seems.
+
+## 19:47
+
+Might be just `findResources()` not removing the leading slash, since
+everything I use for the most part is absolutely references rather than just
+local. This may fix it.
+
+## 21:55
+
+Believe I need to perform my planned speed increase of `PackageContents` by
+making it use soft references for entries and general management of the map
+interface rather than just always iterating over every single entry every
+single time.
+

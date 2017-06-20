@@ -1,0 +1,50 @@
+# 2015/04/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:02
+
+Project birthday is in a week, by then it would have been a year since I
+initialized the repository. I would have to say that lots of code has been
+written over the course of the project. Although I have not reached actual
+code translation yet I am getting closer and closer. It seems that I have been
+cleaning up technical debt lately which will be important before I move onto
+actual code generation work. That way I only have to concentrate on that for
+the most part. Many of these new changes I have been making are rather nice
+like the great speed increase in building. The CPUData/CPUProvider stuff I am
+implementing right now, which is going to provide stronger information to the
+general code generation routines.
+
+## 15:07
+
+Need to move the CPUProvider out of the SPI or move CPUData to there because
+CPUProvider needs access to CPUData's constructor.
+
+## 15:16
+
+Now to move the register information stuff to the CPUProvider, although I
+wonder will be the best way to do it. The registers may change depending on
+the CPU data itself. However, depending on the information it will vary. So
+the CPUProvider will provide register information when it is requested and it
+can be cached so it can be freed when not used.
+
+## 15:27
+
+Allocator could be changed too because more information would be placed in
+CPUData, so per architecture allocation would not exactly be needed.
+
+## 16:41
+
+So what is the best way to provide an interface to registers. There would have
+to be an enumeration that can be enumerated, but there would also need to be
+data specific classes such as getting information about a register and its bit
+size, usage, etc.
+
+## 23:39
+
+Registers would be best if they were their own class.
+

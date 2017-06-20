@@ -1,0 +1,57 @@
+# 2015/02/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:09
+
+In my class recompiler code, the dynarec factory class can wrap optimizations
+while it gets the stream so that is wraps to anything as needed. This way if a
+new optimizer wants to be supported it can easily be as such.
+
+## 02:36
+
+A pluggable optimizer should be handy in the future.
+
+## 02:48
+
+Now the thing to work on is decoding of instructions, I will keep the decoded
+output rather bad in optimization terms since the optimizater can do all the
+dirty work as needed. So Java byte code will really be quite bloated being
+represented in a common register based form. So without even a basic optimizer
+it will quite literally be if a stack were simulated with registers without
+doing any reording and such. Another interesting thing I can do is allow for
+stacking optimizers, although it might be wasteful as the optimizers can
+optimize anything.
+
+## 02:57
+
+So two incompatible optimizers that change what was previously optimized could
+just end up wasting CPU power, but stackable optimizers makes it possible to
+append optimizers when needed rather than chunking all of the optimization
+code in a single optimizer. So ends up resulting in cleaner future code, but
+an all-in-one could be made anyway. But in general, if the standard
+optimizations are not enough and a user creates a better one then they can
+easily switch optimizers, or if a new optimization technique is created after
+release they can easily use it without requiring the rebuild of a compiler. In
+light of that, my kernel builder needs to be able to specificy extra map
+options so that can be used.
+
+## 03:20
+
+In the long run this pluggable optimization stuff will be handy, since it is
+at the root of the dynarec system, you could quite literally change the
+optimizer on a running system and clear the cache of precompiled classes, and
+you just got a system that is using that optimizer. Programs which are already
+running cannot be recompiled as their classes are already loaded however. The
+core kernel classes would have to be recompiled and repackaged in order for
+that to work for the kernel however. So there could be a non-default "crazy"
+optimizer that produces fast code but takes a bit to perform all the magic, so
+if you sacrifice the initial start time you could make up for it at runtime.
+Once a class is cached, it does not need recompilation. Although cache of a
+class could fail if there is no storage area to place the classes (say on a CD
+or a ROM based system).
+

@@ -1,0 +1,67 @@
+# 2014/07/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:14
+
+What I need is a better way of managing tags used for internationalization so
+that they are not insanely long nor complex. A preprocessor like directive
+such as __FILE__ would be nice, but that is not possible nor that portable. I
+could use a wrapped enclosing class but that would be rather cheap and use up
+more space than I need, while also littering my code with empty anonymous
+classes which is not fun. The names could get incredibly long and that would
+just take up so much room. I can a value is the key but that is not a solution
+that I would prefer as it is also ugly. I could use UUIDs but then I would
+have to manage a UUID table. Also UUIDs are rather long like this one
+4207c10e-8866-45ad-b581-f806d1217a07. Thirty two hex digits, or 128-bit. Using
+base32 that would be only 16 digits. I could also use a 24-bit number which
+takes up 6 hex digits or 3 base32 digits. A 32-bit number uses 8 hex digits or
+4 base32 digits. The 24-bit number could be a modified slightly hash sum of
+the FQCN with the upper most 8-bits XORing other bits in a sort of split
+pattern. I would have to maintain that list, which would be annoying. Using
+the value as the key would be simpler to support but if two strings ever hash
+collide or are changed the translation could be lost and would require manual
+redo. However if the string value changes the meaning of it would change
+anyway so the modified value might not even match at all. Thinking about it I
+will go for value is the key, due to simplicity. Not the solution that I would
+have hoped for but may work. However, that would mean that the translations
+are not categorized at all. I will have gigantic blobs of strings just lying
+there. Although what I can do is have a basic module which describes
+something. That just takes me back to my current problem although now I do not
+need to think about a subkey. The key can just be which database to look
+inside for a string. I could add a transient private which contains said
+information at the top of each class. I could always just use the uppermost
+package or the class name instead. But those could have conflicts.
+
+## 02:01
+
+I could just use a dynamic thing, either use the current class name or this
+for non statics. getClass() could be optimized away by my future compiler
+anyway since it always returns the expected value.
+
+## 02:17
+
+Big problem with _Z and this, is that subclasses will need to get translated
+also, so I'll just use the static instances from now on.
+
+## 02:40
+
+I figured for my option handling, previously I have this complex set of
+interfaces just to obtain option values, but perhaps I should just use
+annotations instead. Annotations would be easier for option parsing and would
+be more concise in that I would not require a ton of interface fields. They
+could also be in any order too.
+
+## 04:07
+
+Distracted by Star Trek: Voyager, however this annotation stuff would be
+great.
+
+## 21:10
+
+Have not done much today.
+

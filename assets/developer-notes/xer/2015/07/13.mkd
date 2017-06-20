@@ -1,0 +1,23 @@
+# 2015/07/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:21
+
+For SSAProgram settings I have EXTERN_INT_PROMOTE and EXTERN_FLOAT_PROMOTE
+which take would auto promote lower integer values to higher types. However
+that can just be done automatically (say if a byte is copied into an integer
+register). As I thought of before, integers, floating point, and references
+could be in their groups. On another note, I can merge SSAVariable and
+SSARegister together as a subclass of some other class. I also need a stronger
+type system which can use unsigned values and such of arbitrary size.
+
+## 21:26
+
+Not too sure how I would want to handle program arguments. I suppose there
+would just be an implicit set of variables which exist.
+

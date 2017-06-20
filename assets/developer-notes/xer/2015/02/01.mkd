@@ -1,0 +1,50 @@
+# 2015/02/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:02
+
+A new month starts.
+
+## 04:42
+
+My code bank stuff in the method was needlessly complexicated with ` public
+FormCodeBank bank(FormCodeBank.Language __l, boolean __replace,
+BiFunction<FormMethod, FormCodeBank.Language, FormCodeBank> __gen)` being how
+they are looked at and removed.
+
+## 05:34
+
+I like this bit of code `Optional.<ConstantPool.Entry>ofNullable
+(pool.get(Short.toUnsignedInt(bb.getShort()))).<JavaType.BinaryName>map ((__c)
+-> __c.toClassBinaryName()).orElse(null)`, basically get a constant pool entry
+that might not exist, if it does exist then get the binary name from the value
+of it, if it ended up being null regardless then just return null.
+
+## 07:54
+
+I know a way I can develop the test systems that check to see if another
+hardware set conforms (in emualators mostly), would be to compile the kernel
+for the target. Then once in the target emulation system, build the kernel
+again. Then once that kernel is built the tests are performed on the test
+framework. Doubly slow, but it may help to weed out implementation issues
+across architectures. Might not be applicable for certain hardware targets,
+but the normal distribution that normal users would use should contain the
+test system just in a possibly hidden spot. That way there is a single build
+for that system and no need to separated release/debug stuff.
+
+## 07:57
+
+Another thing that can work is a debug framework at code generation type so
+that code can be more easily debugged, such as which values appeared where and
+other things. Obviously slower but possibly more robust. Say if a test
+framework task fails for a certain thing, it can be restarted in a debug mode
+with a trace in it to possibly show why. Previous tests can be saved and
+compared to so that differences may be spotted. Since I would probably going
+at this very alone, I will need a framework that can test for me without
+watching every test that runs by.
+

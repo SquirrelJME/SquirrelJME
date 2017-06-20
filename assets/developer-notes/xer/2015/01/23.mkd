@@ -1,0 +1,48 @@
+# 2015/01/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:28
+
+Using Java 8 my byte code translator code just got much much simple because I
+can use method references for the decoding of opcodes so I do not need a
+gigantic switch, just a gigantic map.
+
+## 11:49
+
+In JavaByteOp instead of all of these Vas I can use smarter lambdas to inject
+the stuff as needed.
+
+## 12:06
+
+Such a thing would also remove the massive and confusing push/pop null padded
+tables, which is really confusing to look at manuall and to even read.
+
+## 15:46
+
+Using secondary tracers will make tracing while tracing work.
+
+## 20:28
+
+When I wrote the megatile adjacency code I put in the cardinal directions so I
+really just need NORTH, SOUTH, EAST, and WEST.
+
+## 21:44
+
+Code looks good, but I get a NullPointerException where a lambda is and it
+should not be occuring.
+
+## 21:46
+
+I know why, I expect a return value of boolean but I return null instead so it
+cannot be cast to a boolean.
+
+## 22:51
+
+Brute forcing massive spawning at the start locations, just make it crammed
+full of units.
+

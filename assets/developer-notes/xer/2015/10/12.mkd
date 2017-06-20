@@ -1,0 +1,36 @@
+# 2015/10/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:12
+
+I seem to move things in my sleep.
+
+## 16:48
+
+With this cache manager I am going lock crazy to prevent re-allocations. I can
+just exploit the garbage collector and finalizers. When say a chunk is
+finalized it can just be stored to the disk. There also can always just be
+soft references on everything too.
+
+## 17:13
+
+I can also probably use synchronized instead of re-entrant lock so things are
+less bug prone in case I miss any locks. The game state cannot be drawn until
+the loop has finished.
+
+## 17:53
+
+Appears that Java byte code lacks a modulos operation. However, it is not
+difficult to recreate said operation as it is just a divide and a subtract.
+However a bonus on top of C is that Java permits modulo operations on floating
+point types. This removes the need for a fmod() call.
+
+## 21:26
+
+Never did 3D data in a flat array much before.
+

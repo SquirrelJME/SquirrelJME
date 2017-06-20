@@ -1,0 +1,103 @@
+# 2016/01/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:26
+
+Today I woke up early before the sun rise, which has yet to appear above the
+mountains and leafless trees for me. The clouds reflecting off the top are
+an interesting red. But a bright beam will be very noticable when it starts
+moving down on my walls.
+
+## 07:41
+
+Thinking about this, I currently operate with a patch. I believe what I should
+do instead is have a from which is any binary type and then a to which is a
+patch type.
+
+## 07:55
+
+That may result in faster getting a kernel compiled because I may not have to
+implment all of the patch stuff yet. Although on writing I will have to
+implement it all, so this is just a defer. However by not using a patch as
+a basis and having a target I can instead make processing a bit faster because
+then the constant pool and reference table will not require copying and such.
+
+## 08:28
+
+I can also have a single class which contains input and output along with the
+configuration used for dynamic recompilation.
+
+## 08:30
+
+The thing however, is what to call this new class.
+
+## 08:33
+
+It is not a configuration, but it stores one and has input and output. It is
+a result but it is also input. Perhaps a State could work, then I could also
+have a kind of flag indicating what the recompiler is doing if possible, or
+a progress meter (if supported). Then classes which call the dynamic recompiler
+code can be told how far along recompilation is.
+
+## 08:50
+
+Primaries might be a bad choice, but individual classes would be best.
+
+## 15:53
+
+Forgot about equals and hash code for all the references.
+
+## 16:12
+
+And for the constant pool entries also. Also realized that using a special
+tag type for null references I can now have references to null entries despite
+that probably not being very useful.
+
+## 16:24
+
+Also in the constant stuff, not using `DescriptorClassName` and instead using
+the derived `DescriptorField` will result in potentially less bugs because
+`DescriptorBinaryName` and `DescriptorField` do not compare.
+
+## 17:20
+
+This will be a problem with the way my patch stuff is setup:
+
+	net.multiphasicapps.k8.bin.patch.PatchCodeRef.getSlot
+	net.multiphasicapps.poit.std.StandardRISCTranslator.loadCodeRefPointer
+
+I should probably just remove the getSlot because that can be tricky to
+implement.
+
+## 17:27
+
+I can use a cache of code references, assuming one does not modify a class
+while it is being recompiled, but that is undefined anyway.
+
+## 17:32
+
+I wonder if I should make a distinction with the native CPU size and the size
+of a pointer. That could complicate memory models and such however it would
+mean that for 64-bit systems I can use less memory because pointers would
+be 32-bit. 64-bit arithmetic would see a boost, however it would affect all
+software because it uses the same dynamic recompiler. For system calls however
+I would have to be able to handle that although there is a bunch of base stuff
+in Object's code that uses long regardless.
+
+## 17:51
+
+So right now I have two choices, I can keep all the compiled classes in memory
+or I can just store them to the disk and never reference them (so they
+eventually get garbage collected).
+
+## 22:16
+
+The KBF handling is going to have to be refactored because right now the code
+is really ugly. It may be possible for the data to be shared between the
+reader and the writer.
+

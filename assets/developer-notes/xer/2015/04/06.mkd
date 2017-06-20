@@ -1,0 +1,76 @@
+# 2015/04/06
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:40
+
+Have not programmed much in the past week or so. The Windows command shell is
+very different though in that it uses ^ for continuation on the next line
+(instead of \\) and also & for extra commands (instead of ;). However, so far
+the shell stub I have written while moving the bulk of the code into Java
+makes it so it can be built on Windows no issues.
+
+## 12:20
+
+My double recursive building works so far, despite the JARs not getting any
+actual files in them.
+
+## 12:36
+
+The one good thing is I am glad I do not have to write everything else in Java
+5, since Java 8 is far superior.
+
+## 13:26
+
+I can actually optimize the code so that it does not build the basic bootstrap
+classes twice when say compiling the kernel or running a simple package. This
+would greatly simplify things.
+
+## 13:30
+
+And now I no longer have double building of some of the basic JARs. Now I need
+to check if I can compile the stuff in Wine.
+
+## 13:35
+
+Seems that the Java compiler classes on Windows does not like the back slashes
+being specified as it throws an exception with an invalid relative name.
+
+## 13:48
+
+And the code reaches the same point as it does on my Debian development
+system, so the joys of write once run anywhere.
+
+## 13:51
+
+And Oracle Java's Swing on Windows uses DirectX, and since I am on a PowerPC
+system with buggy video drivers, the colors are swapped incorrectly. However,
+using GLX over a network connection is quite slow even if it is over a local
+network.
+
+## 14:02
+
+My code also compiles with GCJ and did not require any fixing, although it
+pops up some warnings for unused things.
+
+## 14:11
+
+What I need to do next is change the kernel building system to use the
+previously written about (in an earlier blog post) new way of doing the
+platforms with their own individual packages. The kernel builder can also be
+optimized to not require building a gigantic massive class library until the
+end so if the dynamic recompiler or the bootstrapping code fails it does not
+waste time building it. It would be pointless to build the class library if
+the dynamic recompiler cannot even recompile itself. So this would increase
+testing speed from a straight "-c" being passed to the launch code (which
+clears all of the JARs due it being a clean nature).
+
+## 17:02
+
+And with these new Json information in PackageInfo, the last remnants of the
+POSIX shell JSON decoder limitations has been gone away with completely.
+

@@ -1,0 +1,67 @@
+# 2016/02/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:29
+
+I have decided to come back to Squirrnix from SquirrnixME, although a ME
+environment for many systems would be very interesting. However having not
+worked on this for almost a week, I may be more clear minded. I would really
+like a compact environment though. I may be suffering from dependency creep.
+My first thing that must be done is to recompile my code to native machine
+code before it can be worked with. However, I believe the possible best
+solution would be to first write an interpreter like I was going to do with
+SquirrnixME and then build on top of that.
+
+## 10:34
+
+I wonder if java-device-io as an associated JSR.
+
+## 10:36
+
+Does not.
+
+## 10:37
+
+What I need with all my packages is to clean things out and reorganize them
+so that they are not in the same directory `vmjar`. Otherwise things are a bit
+crowded and convoluted. Which packages are part of the core class library and
+which libraries are optional games?
+
+## 10:40
+
+Yes, splitting these packages apart to places would help with the organization
+much.
+
+## 10:41
+
+I suppose these directories would work:
+
+ * `java` - The Java library, the core of it all.
+ * `jsrs` - Optional Java "enhancements".
+ * `unix` - UNIX related commands and such.
+ * `game` - Games.
+ * `kern` - Kernel related stuff.
+ * `user` - User mode stuff.
+ * `misc` - Misc. stuff that does not belong elsewhere.
+ * `libs` - Libraries of sorts.
+ * `test` - Test framework stuff and such.
+
+# 11:03
+
+Could also use a `docs` for documentation related stuff.
+
+## 11:18
+
+Thinking about the `k8` namespace, I could strip it away and move things down
+a bit. And the moving of the core library over just finished.
+
+## 14:15
+
+Actually forget about splitting everything up it will just complicate the
+package manager and such.
+

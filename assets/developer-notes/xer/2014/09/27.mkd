@@ -1,0 +1,110 @@
+# 2014/09/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:00
+
+For clarity all of the wrapped compilation work should be placed in memory,
+although this will not be possible for command line wrapped compilers. It is
+only possible for my simple compiler in the future and the built in compiler
+in the runtime.
+
+## 02:07
+
+Doing all of this dynamic reflection of the compiler invocation code is rather
+ugly. What I can do instead is embed a class directly in InvokerAPIJC which
+contains precompiled Java 6 code. I dislike having binary code already
+existing but it would produce far cleaner code as I can use the tool interface
+directly.
+
+## 02:23
+
+For the compiler wrapper, the command line version will need to operate on
+files, however I would like it to be able to operate entirely in memory, so
+that must be the case which is used. OK, so what I will do is model the
+wrapper like the existing JavaCompiler class and just keep it very very
+simple, inputs and outputs are either absolute files or a stream of bytes in
+memory. For the command line based compilation wrapping (of say gcj and ecj)
+it will instead create temporary directory to simulate compilation operations
+(since there is no way to portably have it use a filesystem completely in
+memory).
+
+## 02:45
+
+What I need to determine is how the JavaCompiler files are input and output
+and where they are placed.
+
+## 03:07
+
+So I essentially will need to make my own JavaFileManager with file objects
+for my wrapper.
+
+## 05:10
+
+InternalDoBuild is too complex for its own good. Going to instead use domains
+which are like beacons in almost every way but are a bit more friendlier and
+simpler to use. But first, I need to cleanup InternalDoBuild so that it is
+easier to use it to compile dependencies and such, since it pretty much is
+currently a singleton class which is rather ugly.
+
+## 05:18
+
+The problem with beacons was that it is too specific to the compiler,
+essentially it would make the compiler happy but only once.
+
+## 06:04
+
+This cleanup is still only partial, but InternalDoBuild looks much nicer and
+is much easier to modify now. Not to mention shorter currently.
+
+## 06:08
+
+For the DomainManager to be used very efficiently with the package builder and
+such, I need much more than the base string, I need a complete table mapped
+thing and a way to search for existing domains that were added.
+
+## 07:14
+
+The toStrings() for the domains will need to be a special unique prefix so
+they can be recycled.
+
+## 09:08
+
+Instead of including byte code, I just stumbled upon a reflection class called
+Proxy which can implement interfaces. Now one thing I do wonder if it would be
+possible to dynamically create the classes that implement unknown interfaces
+of unknown classes. And it is quite possible, I can easily determine stuff and
+wrap it, although it will be a bit strewn out, it could work. This would
+probably be the only dynamic means to support API management in the compiler
+wrapper without embedding class files or forcing Java 6 support. And another
+thing is I could use proxy classes for my future testing code, so that could
+work out well.
+
+## 09:26
+
+I am very excited and happy, this is the breakthrough that I need for my
+compiler wrapper.
+
+## 09:36
+
+I only need to use the proxy classes to use for the JavaCompiler newTask where
+it requires FileManagers and such, so I do not need to completely replace an
+existing JavaCompiler. Although it would be handy to wrap.
+
+## 10:17
+
+It has been a long morning and I must be getting to sleep very soon, when I am
+fully awake when I wake up I can continue making progress.
+
+## 17:41
+
+Actually have not slept at all, do not feel well. With all of this proxy stuff
+I am going to need a reflective dynamic call thing. A base class which can
+spit out proxies of a desired type and perform call wrapping on existing
+objects when needed. With a type of wilcard system for unknown arguments and
+such.
+

@@ -1,0 +1,17 @@
+# 2014/12/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:20
+
+Going to write a simpler translation system that is just as it gets the
+instructions. I am also going to code interfaces in a way so that I do not
+have to worry about the constant pool and I can just get class information as
+it is needed by the recompiler. That way, I have no need of referencing any of
+the class file stuff except for the generic TypeInfo, BinaryName, and
+UnqualifiedName.
+

@@ -1,0 +1,46 @@
+# 2015/10/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:56
+
+The generated code which I make I am not really able to test at all. I will
+have to make some kind of emulator to test running operations and such to make
+sure that things are somewhat correct. I would also have to verify that the
+emulator executes correctly however. An automated test suite can do that
+however. This could find flaws in the Java dynarec, the emulator, and the
+class library. PowerPC is a bit complex however. Suppose I will just have to
+trod through it. A testing emulator does not have to be fast however, just
+instructionally accurate. Might need some cache emulation also possibly
+although that can get messy. The only real way to reduce errors being
+encountered is very defensive programming.
+
+## 01:04
+
+Well right now I am just translating a single very blank method. It is
+essentially just new and invokespecial for the most part. After that the
+methods should end. I can just build up from that and such. Defensive coding
+can work out and prevent some things (think of asserts except not toggled
+off).
+
+## 01:13
+
+Actually it appears defensive programming is the wrong term than what I mean
+it for. It appears defensive programming is hide as many errors and handle bad
+situations as much as possible. Which is rather horrible. I suppose that I am
+instead Fail Fast, since if something is wrong it is considered failure.
+
+## 14:55
+
+The later bootstraps are lacking main, they will need main so they can be
+started directly.
+
+## 22:59
+
+I see setAccessible() as one giant security flaw. Also file sees my GPLv3
+license text as Pascal source code.
+

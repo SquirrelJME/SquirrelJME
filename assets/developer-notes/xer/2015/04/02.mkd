@@ -1,0 +1,28 @@
+# 2015/04/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:58
+
+Yes, this new way of doing things should cause less craming in the way code is
+to be done.
+
+## 16:28
+
+What I can do to simplify hairball is I can move more bits into Java then I
+can easily solve building and running hairball on Windows and other systems as
+I can leverage Java instead of putting lots of work into shell scripts and
+porting them to other systems. Could also solve the difference of the command
+intrepreter being different on ReactOS compared to WINE. Then if there is
+another type of shell system that Java runs on, that can be abstracted also.
+
+## 18:11
+
+Using this launcher script, I can now have actual compilation in Windows since
+Java will handle the bulk of building and such. I currently have it tested in
+WINE and it works there.
+

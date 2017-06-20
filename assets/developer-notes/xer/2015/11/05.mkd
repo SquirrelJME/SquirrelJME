@@ -1,0 +1,60 @@
+# 2015/11/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:20
+
+Still setting up the new system, was hoping to do a long compile job
+overnight but that failed.
+
+## 15:24
+
+The Java VM documentation does not directly state the type of constant pool
+entry to use for a field descriptor.
+
+	#2 = Class              #15            // java/lang/Object
+	2: anewarray     #2                  // class java/lang/Object
+
+So I suppose that is for that combination.
+
+	#2 = Class              #16            // "[I"	
+	2: anewarray     #2                  // class "[I"
+
+So that works out.
+
+## 15:36
+
+I wonder why the new array types start out at 4 instead of zero and appear in
+a random order. I suppose those are the stack types defined in the compiler
+of the JVM, the lower values may be TOPs or return values.
+
+## 15:58
+
+I most likely do not need to use funny calls for things when using the special
+stuff. This would also make it easier to implement stuff using normal assembly
+calls without requiring lots of black magic.
+
+## 17:48
+
+I can greatly simplify throwing of NullPointerException by just having a call
+which is essentially just `vmThrowNullPointerException`.
+
+## 17:57
+
+I could also use an AutoCloseable scratch slot too (in temporary).
+
+## 18:59
+
+Next instruction to handle is IFEQ. I did not do much today while setting up
+the other system.
+
+## 23:24
+
+Joy! OpenJDK 8 compile on this AMD64 system (which is an Intel Atom), it only
+took 758 minutes because I have it use the Zero VM just in case any other
+VM decides to crash and burn.
+

@@ -1,0 +1,82 @@
+# 2015/04/07
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:46
+
+I believe for my multi-root system, for compatibility with POSIX that I will
+have a PWR (process working root, like PWD) and use // for selecting other
+roots. So say if one were to change the working directory to one in //, it
+would select that volume as the new root. However, that may be a problem for
+scripts that jump to a directory then jump back because it is assumed that
+there is a single root. So the PWR would have to be just one of those roots
+and then you would have to do a chroot to change the default root that you
+have selected. Although I could still use my existing setup that I plan since
+I do like that better. The POSIX compatibility library will just extrapolate
+roots and such much like the compatibility layers on Windows.
+
+## 14:21
+
+Now I am back to recompiling of the code, with this revamped code and the new
+order of things I can more quickly build and test specific bits. One thing I
+will have to do in the future is split off vmjrt and put it in vmjar with the
+4 separated profile bits. That is, I can compile profile1 first, then continue
+on as needed. Then with that in the future I can explicitely state which
+profile is to be included when the system is built. So if one desires a
+lighter runtime say for an embedded system things do not have to get insane
+with building a giant library for no reason, although it could still be built.
+Internally, the kernel itself should only depend on anything from profile1 and
+not everything else. So this can be handy to prevent the kernel from say using
+something from AWT accidently. It would also prevent compilation of the entire
+class library when it is not needed for the kernel.
+
+## 14:35
+
+I had previously made some timing stuff in the past. Current on a single core
+PowerBook G4 the steps run in 50 seconds. On my i3 laptop they take only 10
+seconds. And despite doing a little bit more, the total run-time for
+incomplete work is much less as less stuff is duplicated and fails before hand
+rather than after the fact. Using the Java bootstrap code makes it much more
+efficient as it is no longer being interpreted in a fork heavy shell script.
+And my desktop takes only 40s with its Dual PowerPC CPUs. Before it took 3
+minutes and 17 seconds. So about 20% original time take or in other words,
+five times faster. So these huge savings will considerably help in the speed
+of testing things.
+
+## 15:13
+
+My Kindle takes 2 minutes 14 seconds.
+
+## 15:33
+
+My Atom 1.8GHz takes 38 seconds. Compared to my desktop, the atom has the
+advantage in memory speed but my desktop has an SSD in it. I should also note
+that the code is compiling in Oracle's VM on Wine. Anything non x86 however is
+using JamVM with its cached intrepreter so it is not as bad as a pure
+interpreter. So to measure it correctly on my i3, I should switch to JamVM.
+And that takes 12 seconds on first run, and 12 on the next. So the JIT is only
+slightly faster since it could just be running everything in an interpreter of
+sorts to profile the code. Although going back to it, it takes 7 seconds on
+average. So JamVM is only about 5 seconds slower or 1.7x slower.
+
+## 16:48
+
+OK, so I am back to where I was before. I was rewriting the allocator to be
+better. My plans then were to take saved and unsaved states. The saved spots
+are in the same registers and stack locations, wheras unsaved locals can be
+put anywhere and cycled around because they are dropped when exceptions are
+called. So I do not currently see anything wrong with this. I do however will
+need to have volatile register sets. I have something called the green zone,
+which are registers to be saved when a method is called for example.
+
+## 18:16
+
+One handy thing my OS will really need, is JAR injection. Like DLL and SO
+injection on other systems, except that existing methods may be replaced when
+the virtual machine creates a process. This could be used for general hacking,
+patching, and some other things.
+

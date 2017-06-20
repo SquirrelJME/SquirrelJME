@@ -1,0 +1,19 @@
+# 2014/10/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:16
+
+Yesterday was quite a busy physical labor day. Anyway, I wonder if Message
+should change into an IOException of sorts.
+
+## 01:36
+
+I summize that if I make FileMessage able to take a token, I can remove some
+gent usages optionally in a way. Also FileMessage can take enumerations and
+arguments in which can be used to generate messages also.
+

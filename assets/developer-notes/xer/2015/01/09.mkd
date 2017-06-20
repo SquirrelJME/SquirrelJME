@@ -1,0 +1,21 @@
+# 2015/01/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:21
+
+Looks like not much was said today, but I am working on compilation of things,
+generating of JAR packages. Adding a basic Java file to compile I do wonder if
+it will work. And it just packages the Java source files and not the class
+files.
+
+## 15:23
+
+The PathMatcher is quite exact as it takes the input string as it is
+represented in the input and performs the magical globbing or regex on it. I
+will note that for future implementation. Glad I solved that though.
+

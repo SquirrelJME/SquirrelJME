@@ -1,0 +1,24 @@
+# 2015/06/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:19
+
+Using JSON for the SQ data tables should result in modifications being easier
+(along with a smaller repo size).
+
+## 18:42
+
+Using the JSON stuff along with lambdas is going to make SQ much much nicer.
+
+## 20:52
+
+I believe I will have a simple main panel interface in SQ. Before I had some
+complex mess, but I did like the general idea. I know how I can do it better.
+Instead of just purely buttons, there will be a "join" button on the left and
+any needed details on the right, possibly other options also.
+

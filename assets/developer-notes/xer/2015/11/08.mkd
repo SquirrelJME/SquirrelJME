@@ -1,0 +1,123 @@
+# 2015/11/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 19:39
+
+Did not do much this day.
+
+Brain feels a bit fizzly today.
+
+## 20:10
+
+Making the static and instance field read/write code virtually the same since
+they do the same thing for the most part. So must handle division of that
+code from the static stuff correctly.
+
+## 20:16
+
+Seems implementing instance field read/write was not too bad, common code
+was involved.
+
+## 20:37
+
+Now to handle comparison of two integers in multiple fashions depending on
+the comparison operator used. Never really compared integers in PowerPC before,
+has all of those condition registers.
+
+## 23:40
+
+I can simplify the branch condition family by having mnemonics for them.
+
+	7c000000 41820000 40820000 40810000 41800000 40800000 41810000
+
+	cmp 0, 0, 0, 0
+	beq 0, 0
+	bne 0, 0
+	ble 0, 0
+	blt 0, 0
+	bge 0, 0
+	bgt 0, 0
+	
+Results in:
+
+	#0000: cmp:{opcd=31!, bf=0, l=0, ra=0, rb=0, xo=0!}
+	#0004: bc:{opcd=16!, bo=12, bi=2, bd=0, aa=0!, lk=0!}
+	#0008: bc:{opcd=16!, bo=4, bi=2, bd=0, aa=0!, lk=0!}
+	#000c: bc:{opcd=16!, bo=4, bi=1, bd=0, aa=0!, lk=0!}
+	#0010: bc:{opcd=16!, bo=12, bi=0, bd=0, aa=0!, lk=0!}
+	#0014: bc:{opcd=16!, bo=4, bi=0, bd=0, aa=0!, lk=0!}
+	#0018: bc:{opcd=16!, bo=12, bi=1, bd=0, aa=0!, lk=0!}
+
+Then by setting the highest condition register, but there are also `a`, `l`,
+and `la` endings for those extra things also. However by using a higher
+condition register...
+
+	7f800000 419e0000 409e0000 409d0000 419c0000 409c0000 419d0000
+
+Results in:
+
+	#0000: cmp:{opcd=31!, bf=7, l=0, ra=0, rb=0, xo=0!}
+	#0004: bc:{opcd=16!, bo=12, bi=30, bd=0, aa=0!, lk=0!}
+	#0008: bc:{opcd=16!, bo=4, bi=30, bd=0, aa=0!, lk=0!}
+	#000c: bc:{opcd=16!, bo=4, bi=29, bd=0, aa=0!, lk=0!}
+	#0010: bc:{opcd=16!, bo=12, bi=28, bd=0, aa=0!, lk=0!}
+	#0014: bc:{opcd=16!, bo=4, bi=28, bd=0, aa=0!, lk=0!}
+	#0018: bc:{opcd=16!, bo=12, bi=29, bd=0, aa=0!, lk=0!}
+
+So there is quite a difference so to speak. I should also do a set for 6:
+
+	7f000000 419a0000 409a0000 40990000 41980000 40980000 41990000
+
+Results in:
+
+	#0000: cmp:{opcd=31!, bf=6, l=0, ra=0, rb=0, xo=0!}
+	#0004: bc:{opcd=16!, bo=12, bi=26, bd=0, aa=0!, lk=0!}
+	#0008: bc:{opcd=16!, bo=4, bi=26, bd=0, aa=0!, lk=0!}
+	#000c: bc:{opcd=16!, bo=4, bi=25, bd=0, aa=0!, lk=0!}
+	#0010: bc:{opcd=16!, bo=12, bi=24, bd=0, aa=0!, lk=0!}
+	#0014: bc:{opcd=16!, bo=4, bi=24, bd=0, aa=0!, lk=0!}
+	#0018: bc:{opcd=16!, bo=12, bi=25, bd=0, aa=0!, lk=0!}
+
+And for 1:
+
+	7c800000 41860000 40860000 40850000 41840000 40840000 41850000
+
+Results in:
+
+	#0000: cmp:{opcd=31!, bf=1, l=0, ra=0, rb=0, xo=0!}
+	#0004: bc:{opcd=16!, bo=12, bi=6, bd=0, aa=0!, lk=0!}
+	#0008: bc:{opcd=16!, bo=4, bi=6, bd=0, aa=0!, lk=0!}
+	#000c: bc:{opcd=16!, bo=4, bi=5, bd=0, aa=0!, lk=0!}
+	#0010: bc:{opcd=16!, bo=12, bi=4, bd=0, aa=0!, lk=0!}
+	#0014: bc:{opcd=16!, bo=4, bi=4, bd=0, aa=0!, lk=0!}
+	#0018: bc:{opcd=16!, bo=12, bi=5, bd=0, aa=0!, lk=0!}
+
+## 23:48
+
+So the common end result is `4 * cr`. So for example, `(4 * 7) + 2 = 30`
+which matches. So I need 6 * 4 (for all combinations of link and absolute
+address). I suppose the condition register test will be just above the lower
+bits. So the lower 2 bits (because the multiple of 4) of the value `bi` is the
+type of branch, while the upper 3 are the condition registers. So this will
+result in many new instructions, but luckily I can create a table of sorts and
+a shell script to simplify generation.
+
+## 23:53
+
+Then after generation I can test the disassembler to see if it sees them
+differently (as `beq` instead of `bc` for example).
+
+On an unrelated note, markdown is rather nice.
+
+## 23:57
+
+One of the odd things though is the bits of `bo`, these are used for some
+checks and also the branch predictiveness (likely or unlikely). I suppose I can
+ignore that and just add the likely/unlikely variants as other instructions so
+that the base branches do not specify behavior.
+

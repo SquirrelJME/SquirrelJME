@@ -1,0 +1,82 @@
+# 2015/11/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:59
+
+The wind is still extreme this morning.
+
+## 15:04
+
+Was a busy day with lots of wind. Anyway for LADD on 32-bit systems it is
+quite simple, adding two values together in a simple manner. Essentially just
+have to add the lower and higher bits and check for overflow. At least
+based on reading. I will have to programtically confirm it.
+
+## 17:04
+
+I suppose for long values for 32-bit in POIT I will delagate to a method. For
+the potential values which need to be loading into memory, 6 scratch registers
+may be needed and basic POIT does not have the means to determine availability.
+Should simplify it at the cost of slower long arithmetic.
+
+## 17:10
+
+Doing it this way, the translators extended from the base cannot call methods,
+now they can. I suppose this is the cheap way to do it. However when NARF comes
+around it should be able to handle dynamic usage of scratch registers along
+with other things.
+
+## 17:23
+
+Next instruction type to handle is FCONST_0. I do wonder however if this will
+lead to floating point addition still before integer addition. So far the total
+class count at this point is 108, just so the kernel can be compiled with all
+of its dependencies. Still 108 classes is still much less than other larger
+operating system kernels most likely. One alternative is that I can do some
+pruning so that unused methods which are never invoked are left out. That would
+limit some things however. The kernel itself would provide a very basic subset
+of the classes.
+
+## 22:33
+
+PowerPC appears to use the same format that Java uses for floating point values
+like most other architectures.
+
+## 22:35
+
+One thing I am not sure about is the PowerPC instruction `lfsx`. Does it
+use the raw integer bits from an integer register or does it translate it so
+that it is exactly precise. Only one way to find out though.
+
+## 22:40
+
+Actually `lfsx` is from memory so it is the wrong instruction. I would be
+pretty hopeful that PowerPC does have a raw int register to float instruction.
+
+## 22:49
+
+And it does not. Which means I am going to need to store the raw float value
+in the bit of code and determine the PC address and do a short jump past the
+raw constant data. This will require some scratch registers to store the old
+link register and to restore it after that small jump.
+
+## 22:55
+
+Fun stuff.
+
+## 23:24
+
+Adding a integer value instruction revealed a bug in my mask calculation code
+when the value was negative.
+
+## 23:25
+
+Appears Java 8 lacks FloatSupplier for some reason, although IntSupplier is
+available.
+
+

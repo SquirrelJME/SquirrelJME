@@ -1,0 +1,137 @@
+# 2016/01/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:04
+
+Actually with a command line switch I can better toggle it to see how things
+work with it disabled and such without really requiring two branches at once.
+It should also make things simpler because if I find more bugs they can be
+fixed rather than requiring cherry pickings.
+
+## 10:58
+
+On my netbook I get this:
+
+	Exception in thread "main" java.lang.LinkageError: loader constraint
+	violation: loader (instance of net/multiphasicapps/hairball
+	/HairballClassLoader) previously initiated loading for a different
+	type with name "net/multiphasicapps/k8/drconf/DynaRecConfig"
+
+I suppose what this means is that I have hairball and its dependencies added.
+However thinking of it, this cannot be it as it seems to be way off.
+
+## 11:03
+
+Based on internet searches it is due to multiple archives being available. The
+searches online probably use URLClassLoader whileI have my own. However the
+same situation most likely applies.
+
+## 11:06
+
+Reading it, I suppose the following: DynaRecConfig is loaded as a dependency
+as a forked class loader. However...
+
+## 11:09
+
+Actually it may be due to how there is configuration checking, that is that I
+have a compile for NARF/POIT to actually see if it supports said classes. Then
+instead it loads it in another HCL and then tries to load it from another. So
+perhaps for HairballClassLoader, if the parent is one then it should not add
+a package status that a parent has. That might work.
+
+## 11:19
+
+Actually, I believe I get it. My one HCL is trying to load DynaRecConfig,
+however another one is also trying to load it. So basically there is a stop on
+a kind of "is class loading" sort of check.
+
+## 11:26
+
+Ok yes, enabling the debug switch and then having the print out tells me this
+near the top:
+
+	Lookup class: net.multiphasicapps.k8.drconf.DynaRecConfig
+	Find resource: net/multiphasicapps/k8/drconf/DynaRecConfig.class
+	Found URL: null
+	Lookup class: net.multiphasicapps.k8.drconf.DynaRecConfig
+	Find resource: net/multiphasicapps/k8/drconf/DynaRecConfig.class
+	Found URL: hairball:/tmp/kx/./bsjars/kernel-drconf__1.8.0.20150901.ja_#
+		net/multiphasicapps/k8/drconf/DynaRecConfig.class
+
+And then again at the bottom before the exception occurs.
+
+	Lookup class: net.multiphasicapps.k8.drconf.DynaRecConfig
+	Find resource: net/multiphasicapps/k8/drconf/DynaRecConfig.class
+	Found URL: hairball:/tmp/kx/./bsjars/kernel-drconf__1.8.0.20150901.ja_#
+		net/multiphasicapps/k8/drconf/DynaRecConfig.class
+
+So I must determine if these are the same objects or not.
+
+## 11:29
+
+Ok, so I never replaced toString so the hashCode has the identity hash code.
+The final instance is `7382f612` and the first one is `7382f612`. So this is
+the same. So that means my findClass() will have to cache the resultant class
+and if a duplicate is detected then it should be returned.
+
+## 11:37
+
+So I use a `SoftReference`, however it appears that it is not there. I am
+debugging further to figure it out. Supposidly classes can be garbage collected
+now in Java 8. However perhaps the VM itself does not like the SoftReferences.
+However based on the running code, perhaps the hashCode() for the class loader
+is some fixed form. It is not replaced though based on the JavaDocs.
+
+## 11:44
+
+Ok, so now I use identityHashCode. The second instance is `w1t9g2`. And I
+believe I see it now. Previously the search in `w1t9g2` fails. However then it
+finds one in `5dp13v`. And then it finds it in `w1t9g2`. So I believe the issue
+may be caused if the configuration checking (to see if it is even valid) is
+not using a forked class loader, but of another.
+
+## 11:47
+
+And those classes I use `getClassLoader`. So it should be fixed if I were to
+switch to `forkedClassLoader` instead.
+
+## 11:49
+
+So hopefully this fixes that issue using that.
+
+## 11:56
+
+Oddly, `DynaRecFrontEnd` is supposidly not a parent class of
+`NARFPowerPCProvider`.
+
+## 11:57
+
+Actually I believe it is due to the various forks of the ClassLoader.
+Technically the class is loaded. However it seems classes that are part of
+another offshoot of classloaders finds the wrong things. So it appears the
+tree may be as follows:
+
+	.                        HCL
+	.                   /           \
+	.               /                    \
+	.           Branch A              Branch B
+
+A has a `DynaRecFrontEnd` and B also has its own `DynaRecFrontEnd`.
+
+## 12:01
+
+So it seems that there is no delegation of sorts, so instead of using the
+parent (which in this case would have `DRFE`) it instead just loads it itself.
+Actually I know what it is. I am forking off the main class loader, not the
+current one that the class uses. So instead of a base fork, cannot do that.
+
+## 16:17
+
+Ok, so forking I will remove and instead just `new HairballClassLoader()` with
+my own class or class loader.
+

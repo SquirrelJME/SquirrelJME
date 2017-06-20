@@ -1,0 +1,47 @@
+# 2015/10/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:31
+
+I believe for a file system I will use btrfs rather than inventing my own. It
+supports the features I would like. The only issue is NFSv4 ACLs, btrfs uses
+POSIX which is not as good.
+
+## 16:22
+
+I have code assembled into a huge chunk of code now. However it does not
+appear that it is correct at all.
+
+## 16:27
+
+Most likely it is my chunk printing code not handling values below 16 by
+adding an extra zero.
+
+## 16:32
+
+	90210000904100007f6802a693610000836200007f6803a680420004382100004e80002183
+	61fff47f6803a68041fff88021fffc7c631b787fdef27893c1ffc47c631b787c641b787c63
+	1b78836200087f65db7890a1ffc09061ffe09081ffdc90a1ffd89061ffd490210000904100
+	007f6802a6936100008061ffd88081ffdc8362000c7f6803a680420010382100004e800021
+	8361fff47f6803a68041fff88021fffc8061ffe08081ffdc80a1ffd88061ffd49061ffe090
+	81ffdc90a1ffd89061ffd490210000904100007f6802a6936100008061ffe0836200147f68
+	03a680420018382100004e8000218361fff47f6803a68041fff88021fffc8061ffe08081ff
+	dc80a1ffd88061ffd47c631b78
+
+I suppose it also starts with a cultural reference to 90210 which is some ZIP
+code. As an optimization I currently have values being returned when a call
+from throw completes, that could potentially be removed.
+
+## 21:19
+
+I could add stack caching, but that would complicate things for now. An idea I
+have for KBF is to have a multi-part KBF which contains many classes which
+share a global constant pool, code references, and potentially code bytes.
+This would at least make it so the kernel is not hyper-bloated when it is all
+linked together.
+

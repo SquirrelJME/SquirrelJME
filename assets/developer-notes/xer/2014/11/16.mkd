@@ -1,0 +1,55 @@
+# 2014/11/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:33
+
+Going to need an option map for decoding and encoding because there could be
+CPU features and such.
+
+## 11:56
+
+I am going to need a sane description for opcodes, so I should perhaps see
+what the competition (GCC and friends) use for their intermediate
+representation of machine code and such. This would be just to get an idea and
+their best practice so that I do not jump into any pits they crawled out of.
+
+## 12:27
+
+Perhaps something like single static assignment would work, however it would
+need type safety and must have annotations (for annotated locals and
+parameters and such).
+
+## 18:14
+
+I am going to need a form of SSA information which can be represented after
+reading machine code. I want the byte code compiler to be generic so that it
+could work with any set of byte code or machine code and translate it into
+another machine code. It must also take advantage of parallel execution by
+determining if something can be executed at the same time with no real danger.
+
+## 21:32
+
+Added reading of class type bounds in the TypeInfo class, which is very
+complex. Too bad it cannot be split up. It is very massive at close to 2000
+lines of code.
+
+## 22:05
+
+What I need to do is determine how to store type values within locals and
+such.
+
+## 22:46
+
+My primitive and type descriptor stuff, along with my currently being written
+SSA code could benefit from value types. So that if they are added in a future
+version of the language I can easily handle them without must effort, just
+would need to add new byte code support. However, stuff like long and double
+value type primitives would need to take up multiple local and stack sizes.
+However, a value type can have a breadth of storage to determine how much
+space it takes up.
+

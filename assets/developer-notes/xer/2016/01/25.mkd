@@ -1,0 +1,132 @@
+# 2016/01/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:16
+
+Currently at the hospital. In either case, must solve the classpath issue
+when using `URLClassLoader`. I am on my oftly used netbook which is lacking
+in some departments such as a lack of free graphics acceleration. Right now
+I am working offline completely, there are wireless access points but I am
+not sure of which one would be the most secure. At least with fossil I still
+have access to all of my commits, which is good.
+
+## 11:22
+
+So the initialization of my HairballClassLoader does not trigger it.
+
+## 11:41
+
+Probably the best thing to do would be to just load the classes as I can and
+just avoid the issue without actually fixing the issue.
+
+## 11:44
+
+I should perhaps just instead add a compliance.FIXME as some kind of note of
+sorts for issues I am stuck on and just have to avoid. Although thinking
+about it, it is possible that the initialization of the compiler is chaning
+the context class loader perhaps so that after compiling my URLClassLoader
+which did work just gets wiped away.
+
+## 11:47
+
+So to figure this out, I will have to just **NOT** call the compiler.
+
+## 11:49
+
+Ok that is not it.
+
+## 11:50
+
+Actually forget that, I never rebuilt. Ok, so it may be linked to the compiler
+which may be messing with the stuff. So I was right on that so far by throwing
+an Error before the compiler is initialized.
+
+## 11:54
+
+Ok, so before I call "build" on the compiler it works and deletes. So how
+about just BEFORE the compiler task is initialized? And for safety it works
+before the task is initialized. Now to check after initialize but before the
+actual compilation.
+
+## 11:57
+
+Ok, so initialization is fine, I am now going to drop it AFTER the running
+of it, and it should trigger then. It should hit then, if not I have a very
+odd heisenbug. And I got failure as expected. So I need to determine what the
+compiler is doing before and after. It is possible it is changing the system
+class loader or similar.
+
+## 12:02
+
+Ok, so the class loaders I can easily know about work the same. It is possible
+that my JARs are being removed by the compiler. I am going to check that.
+
+## 12:08
+
+Ok so, my URLs are the same, the compiler is just doing something it should not
+be doing so that it causes the classes to not be found.
+
+## 12:10
+
+So the main issue is to either see the cause of it, guess, or try a work around
+by perhaps seeing if launching another thread does not cause said issue.
+
+## 12:20
+
+The irony of portals. The WAP at the hospital asks whether to agree or to
+decline the terms and conditions before using it, however selecting the
+terms and conditions ends up going back to the portal page.
+
+## 12:33
+
+Ok so running it in another thread does cause the issue. So the JavaCompiler
+does something which changes things. The JavaCompiler would be initialized by
+the class loader used by the system, while the one for hairball is used for it
+lower in the chain. So this has never happened before, I have changed my
+classes around. It also is possible that this has always existed. It is also
+possible that this has been fixed in a future version. However later versions
+do not run on my PowerPC systems at least. Also if it is fixed anyway, it
+would not be fixed anyway.
+
+## 12:39
+
+So it is quite possible that there is a kind of cross class loader with
+exceptions.
+
+## 12:44
+
+The code is in a finally block, so an exception was thrown, it just has not
+been logged because it is lost, it is most likely however a TODO.
+
+## 12:48
+
+It is possible that the exception wrapping my exception thrown by the Java
+compiler causes the issue.
+
+	at com.sun.tools.javac.main.Main.compile(Main.java:559)
+
+So if I implement the code in the file manager which causes the unrolling
+may just fix it.
+
+## 20:05
+
+I believe I know the cause. I just need to check if it happens with zero.
+Anyway, basically `UnknownError` which is part of the system classloader is
+being used. Also, the `JavaCompiler` is also part of the system classloader.
+Hairball being run though is in its own `URLClassLoader` initialized by the
+bootstrap. And the DPC is part of the URLCL. So JamVM at least appears to run
+the exception handlers in the method that threw the exception and using its
+class loader, when it should be using the classloader of the class the handling
+method is in. So I will see what Zero does. If it has this issue too, then I
+will probably want to avoid duplicating this behavior since it seems like a
+rather bad bug. And Zero does it too. I just hope fixing the exceptions due
+to the incomplete JavaFileManager using PackageContents can fix such things.
+So hopefully by implementing the stuff I can avoid it, this will be a rather
+big gotcha. I could make a test case for this actually, a small set of code
+which can duplicate the behavior.
+

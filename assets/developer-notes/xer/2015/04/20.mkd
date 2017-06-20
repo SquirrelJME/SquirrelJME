@@ -1,0 +1,56 @@
+# 2015/04/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:25
+
+Some kind of STM could be handy in some areas of the garbage collector.
+However the memory cost can be high, so this would have to remain minimal.
+
+## 11:54
+
+I am going to need to decode generic type signatures and such, none of the
+Form stuff has it. But instead of infecting FormJavaType I am just going to
+make a new class, along with stuff that can get a generic signature.
+
+## 18:25
+
+Fell asleep, just kind of want to go back to sleep.
+
+## 21:32
+
+I believe the mascot for k8 will be a squirrel. However I am rather bad at
+grahical drawing but I do have a graphics tablet somewhere which might work
+with inkscape potentially.
+
+## 22:21
+
+Bootstrap method confusion. FormBootstrapMethod is generated from the
+attribute BootstrapMethods. It points to a method handle constant pool
+reference which is a FormDynamicLink.Handle. The invoke dynamic constant then
+points to this FormBootstrapMethod with a specified name and type. So the one
+from the constant pool is the exact type, while the one it points to is the
+calling bootstrap. So there is a double reference. So this means that
+FormDynamicLink.Dynamic how it currently is, is incorrect as it must just
+steadily point to the FormBootstrapMethod. So the FormDynamicLink.Dynamic is
+the invoke dynamic constant with its specified name and type, and it just
+points to a FormBootstrap method which is the bootstrap for it. The handle for
+the FormBootstrapMethod is the bootstrap method itself which contains a link
+to something. So modify Dynamic so that it uses FormBootstrapMethod instead of
+directly passed arguments.
+
+## 23:20
+
+I changed FormDynamicLink.Dynamic.Handle down to FormDynamicLink.Handle and I
+thought I would be fixing compile errors but I was confused when I was not.
+Since FormDynamicLink.Dynamic extends FormDynamicLink, the inner class Handle
+is easily found.
+
+## 23:22
+
+So far my rewritten class loading code is much much nicer than it was before.
+

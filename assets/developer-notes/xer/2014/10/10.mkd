@@ -1,0 +1,32 @@
+# 2014/10/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:02
+
+Moved the code away from JSON, but now I hit a bug where it does not read the
+package database fully.
+
+## 07:26
+
+I just used a more sane method, the PackageInfo would stop on any null or
+asterisk and the PackageDB inject would expect that, however I just instead
+add special grouping characters to avoid this. It is much easier then to parse
+as it just parses together segments and such.
+
+## 10:12
+
+Perhaps instead of writing my own processor of annotations, I can use the one
+that the compiler uses instead. Hopefully it is possible, because that would
+actually save me time. I can just find every source file and just process it.
+I just hope it can handle bad class files, I would have to see about that. I
+may have to implement whatever I use just to make annotation processing pass.
+
+## 10:22
+
+After some looking, does not appear so.
+

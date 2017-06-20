@@ -1,0 +1,100 @@
+# 2015/06/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:15
+
+Awake, sort of. Now to rewrite the processor code so generation of source
+files is much cleaner.
+
+## 08:29
+
+I could probably use a file which automatically creates files as I desire with
+my create script when it comes to Java and properties files.
+
+## 11:32
+
+Was doing real life stuff, but this better create script should save me some
+time from copying and pasting since I do create many files. Should have
+thought of it months ago.
+
+## 14:13
+
+For SQ my plan was to make things isometric, but I am going to stick to tiles
+and then have everything like of like a cliff side view of things. So
+essentially the cliffs of edges are on the bottom of tiles and all tiles will
+be square and can be walked on top of or not. It would be much simpler to draw
+and require less graphics too.
+
+## 17:57
+
+Using a special interface I can make my char arrays be CharSequence and have
+them actually be Appendable too.
+
+## 20:12
+
+Looks like hairball with annotation processing does not run the processor if
+the parent package has already been built.
+
+## 20:22
+
+In fact, it seems as if the processor is no longer called despite being called
+before all the time.
+
+## 20:54
+
+Changed the code to load from the package list, but still the processor is not
+called at all. Maybe it is an optimization. No, because I use annotations in
+my code. The only one I really use is @Override however. As for the order,
+before annotation processing has always run before compiling everything else.
+
+## 21:11
+
+From what I understand of the processing code it only does processing if there
+are annotations present, so even with a fake annotation it does not appear to
+run still when there are definitely annotation present.
+
+## 21:39
+
+Checking revisions:
+
+  * 5a1922da8b0beba23f8efeaa4532655755161ed4 -- Generates
+  * b727c60c82625fda23b06b41906fc3930f9567b5 -- Failed
+One a side note, looks like I get an exception with relative hairball
+execution.
+
+## 21:45
+
+The only thing I did between those revisions is fix the constant pool and
+other such errors. However I have removed all instances and usages of
+EntryType in the ConstantPool class. Maybe that is why.
+
+## 22:02
+
+No.
+
+## 22:13
+
+Instead of an annotation processor I am just going to modify hairball so that
+instead of a processor there is a source generation mechanism which I can use
+to generate source code with and such. Then I would know if code is called.
+That would slightly complicate the build process however, but it could work.
+That would have to wait until tomorrow though since I am tired, fizzled, and
+somewhat angry about this. However my code does not really use any annotation
+bits at all so moving the code over will be very simple. I just need to write
+a generator interface that can be used for file output and adding extra files
+to the Java source input.
+
+## 22:28
+
+Suppose I will make a META-HAIRBALL directory in the packages (which is not
+included in the JAR), if classes exist there they will be compiled and loaded.
+Then a hairball specific generation pass will be used which can modify inputs,
+add source files, remove them, etc. Then with this, the generation stuff can
+be stored in the same package and ran without doing much magical dependency
+stuff that may exist.
+

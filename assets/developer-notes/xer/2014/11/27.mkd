@@ -1,0 +1,33 @@
+# 2014/11/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:36
+
+Currently stuck on some corruption, the Moon class is read from the ZIP file
+correctly but eventually some of the bits transform into 0x53706C69 at the
+start. That number is always the same however. Should not occur but it does,
+however I will ignore it for now as the Moon class will just be deleted in the
+future anyway. Once I have class translation done I will determine the actual
+cause of it.
+
+## 05:45
+
+Since the mutator was going to end up being the same as Logical, I am just
+going to fix logical and use a better system instead.
+
+## 05:59
+
+Going to split the logical stuff to other classes in the same package and then
+simplify them greatly since they all just contain duplicate information
+anyway.
+
+## 07:42
+
+Actually figured out the bug, it appears that it attempted to load by blank
+font data as a class file.
+

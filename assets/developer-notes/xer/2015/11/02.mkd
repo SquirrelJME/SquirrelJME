@@ -1,0 +1,98 @@
+# 2015/11/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:55
+
+Took a break playing some Doom 3.
+
+## 11:12
+
+Had a nightmare but nothing related to Doom 3. I got hacked.
+
+## 11:20
+
+One thing I can do is allow the stack offsets and such to use long instead of
+int, in case for those really gigantic methods.
+
+## 14:14
+
+Compiled MMIX and MMIXX (a very basic display of running programs that write
+to memory addresses but still print to the console). The MMIX instruction set
+is rather interesting with 256 registers. However, the simulator is for
+userland processes only. This means that there are more limitations has to
+how programs are run. There is GIMMIX which does have a kernel mode and some
+basic devices, will need to investigate that. It is reported that:
+
+> By now, the simulator is finished and provides basic devices necessary for
+> an operating system. These have been ported from the ECO32 project and
+> include a disk, terminals, a timer, a ROM, a display and keyboard and an
+> output device for debugging.
+
+So using GIMMIX might be a better choice, if I manage to get it running. The
+code is from 2011, I just hope it works on Big Endian systems such as my
+PowerPC. Compiling it now it assumes that I am running x86 and passes the
+command line argument to say to use a 387 FPU. And it appears it might just not
+work at all. I could always compile it on a 386 and just use QEMU to emulate it
+on this system.
+
+## 14:36
+
+There is also something called ECO32.
+
+## 19:11
+
+Want to add the operations for SPARC, however there is currently no easy to
+parse table format (other than typing it manually). I e-mailed SPARC
+International to see if they have something that is easy to parse. If I do not
+get a response or they do not have such table, I will have to write a script
+(in Java) that calls the SPARC disassembler much for many operations. Would
+be slower as it is essentially just a brute force. I can probably run the
+code on a fast system or multiple systems at once as needed.
+
+Apart from that, the disparity between 32-bit and 64-bit when it comes to Java
+can get slightly confusing.
+
+I should probably get PowerPC working before I start doing other architectures
+however.
+
+## 21:42
+
+I can most likely use the standard RISC generator for x86 although it would be
+quite horrible due to the very limited nature of x86. You have the following:
+
+ * EAX
+ * EBX
+ * ECX
+ * EDX
+ * ESI
+ * EDI
+ * EBP
+ * EIP
+ * ESP
+
+Depends on if x86 supports instruction relative store/load as every other
+RISC does.
+
+## 21:58
+
+Thinking about that, that would be very horrible. I would need to make a CISC
+based version which can handle the very small amount of registers.
+
+## 23:10
+
+They are making a new Star Trek TV Series. One thing I would hope for that it
+is the classic universe and not the rebooted movie stuff. The writers of the
+new series made both of the new movies however. So there is a possibility that
+it is the new universe.
+
+## 23:50
+
+Star Trek Continues is rather nice though. Watching Episode 5 I see that
+technology has regressed a bit, the Enterprise computers have PCI and ISA
+slots in the motherboards for their systems.
+

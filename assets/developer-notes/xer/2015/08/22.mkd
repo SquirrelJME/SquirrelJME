@@ -1,0 +1,74 @@
+# 2015/08/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:24
+
+I have the base code for writing payloads, I just need to write the payload
+output for the ELF format then I can pass it to QEMU via -kernel or load it up
+on a CD-RW/DVD-RW. I am rather sleepy now so I can write the ELF writing code
+later today. At least with a bootstrap I can run something minimal. Although
+it is not much however. It should help to motivate me to work on the compiler
+bits so I can actually have Java code being run natively as the kernel.
+
+## 10:52
+
+Now that I am awake after reading some things it is time to write out the
+payload with a KBF into an ELF file.
+
+## 12:52
+
+Using OutputStream to write the file is too weak, I need a seekable byte
+channel since that will be much better. A FileChannel should do as it could be
+resized as needed during generation since there may be some going back and
+forth between objects.
+
+## 21:27
+
+Saw the International Space Station again, it was not as bright as it was
+yesterday (it was brighter than Venus (how it usually is)). It was also lower
+in the sky, only 11 degrees which is not much.
+
+## 21:31
+
+Now I have a basic ELF print out, which is readable by objdump! joy!
+
+    
+    
+    k8-powerpc-generic_ieee1275_powerpc-narf.elf: ELF 32-bit MSB executable,
+    PowerPC or cisco 4500, version 1 (SYSV)
+    
+    k8-powerpc-generic_ieee1275_powerpc-narf.elf:     file format elf32-powerpc
+    k8-powerpc-generic_ieee1275_powerpc-narf.elf
+    architecture: powerpc:common, flags 0x00000002:
+    EXEC_P
+    start address 0x00000000
+    
+    Sections:
+    Idx Name          Size      VMA       LMA       File off  Algn
+    SYMBOL TABLE:
+    no symbols
+    
+
+## 23:02
+
+Somehow my ELF is malformed. I added a new section since it appeared that
+having the strings in the first section would cause trouble because it would
+mean there would be a NULL shared string index (possibly). However now it
+appears that sections are not being placed properly.
+
+## 23:19
+
+Actually I figured it out, I was using the section header names string as the
+data buffer for every single section. This is why it appeared as data for the
+first NULL section and why all other sections had no remaining data to be
+written.
+
+## 23:24
+
+Did it twice actually.
+

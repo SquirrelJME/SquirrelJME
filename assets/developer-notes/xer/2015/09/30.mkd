@@ -1,0 +1,46 @@
+# 2015/09/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:10
+
+It is possible that the Java compiler in a bootstrap environment does not have
+to be run in the VM, but rather be external. However this might not work with
+some code so it would probably be best contained.
+
+## 12:03
+
+Cleared out the chm/ directory, it no longer exists.
+
+## 12:44
+
+Also cleaned up other, since it has gotten a bit messy.
+
+## 14:10
+
+Appears the only thing I did this month was refactor code. The new 3 stage
+hairball system is rather neat. I have not continued work on the split PowerPC
+code however.
+
+## 15:52
+
+I have this feeling that I want to write a simpler recompiler that is lighter
+and faster, but does not have any optimizations. It would just take input Java
+code and translate it quite literally in a rather single stage. It will
+generate slow code, however it will be fast and will permit me knowledge on
+how to make NARF and a good speedy NARF. I will not be deleting NARF however
+as that is not needed. I would just need to name it. I suppose another Pinky
+and the Brain reference is in line. Currently I use NARF for Neutral
+Architecture Recompilation Factories. So that leaves Zort, Poit, Troz, and a
+few others. I do not know what to do with Z, so I suppose that leaves Poit. I
+suppose something such as: Parallel Original Instruction Translator would work
+as a name. Parallel being left to right (and not many at once), original being
+the byte-code (literally), instruction also being the byte-code, and
+translator being it taking Java byte-code into native code. Sounds good. The
+compiler logic stuff is complex though but I can avoid it due to the way I
+designed the compilation system.
+

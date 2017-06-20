@@ -1,0 +1,28 @@
+# 2014/09/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:54
+
+For the context tokenizer, I should make it easier for the compiler.
+
+## 13:04
+
+Everything from the tokenizer will just be an enumeration so that equals on a
+String will never be the case. I will need to rename the old tokenizer to make
+room for the new one.
+
+## 16:14
+
+The hasNext for tokenizer should just add any tokens which are added.
+
+## 21:10
+
+Having the checks for syntax validity in the second level tokenizer makes
+parsing the code much easier because everything is as to be expected when it
+is read.
+

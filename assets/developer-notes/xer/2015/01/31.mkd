@@ -1,0 +1,40 @@
+# 2015/01/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:16
+
+The current annotation stuff I have is not going to work since the value of an
+annotation can be quite complex.
+
+## 03:05
+
+New annotation code is nice, however now I need to name annotations that get
+added to actual classes and members via the FormAnnotated interface. Perhaps
+FormAnnotations which is a list of FormAnnotation. However some annotations
+are visible, others are invisible, and then there are annotations on type
+parameters and all that. I would much rather have a single class that contains
+all of that such information so code is not duplicated across all of those
+classes. However, the type based annotations are extended off of normal
+annotations, so I will be unable to keep FormAnnotation not abstract. Or I can
+just include the target information which would be optional anyway. But that
+would be messy.
+
+## 05:54
+
+If English had another plural form. Naming classes is always the hard part of
+things. Said class will only contain the visible and invisible annotations.
+Since the type annotations are now an extension of regular annotations it
+simplifies things greatly when it comes to classes and such. This also means
+that the FormCodeBank stuff I had a base for is also annotated. Maybe just
+group will work.
+
+## 17:34
+
+Going to need beefier type annotation stuff as the target type has more
+representations based on the thing that is being targetted.
+

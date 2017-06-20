@@ -1,0 +1,82 @@
+# 2015/09/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:17
+
+This expanded bootstrap system feels much nicer than before. No messy massive
+reflective stuff so far.
+
+## 00:19
+
+Appears that Throwables have no causes back in 1.2, now that is something.
+
+## 00:25
+
+And now I have at least an exception on Java 2.
+
+    
+    
+    VE: 1.2
+    VM: Classic VM (1.2.2)
+    RT: Sun Microsystems Inc. (1.2.2)
+    OS: Linux (2.4.27-3-386, i386)
+    RD: .
+    JA: /usr/jdk1.2.2/bin/java
+    JC: /usr/jdk1.2.2/bin/javac
+    SH: unix
+    
+
+This being a Debian sarge system, which is quite dated (2005).
+
+## 00:29
+
+Works in GCJ (after not extending 234), despite a bunch of warnings about
+missing generics. GCJ gives the following:
+
+    
+    
+    VE: 1.5
+    VM: GNU libgcj (4.7.2)
+    RT: Free Software Foundation, Inc. (1.5.0)
+    OS: Linux (3.14.52.15263.1, ppc)
+    RD: /home/steven/k8
+    JA: gij
+    JC: gcj-wrapper
+    SH: unix
+    
+
+## 10:41
+
+Well, at least with this three stage setup I can have a clean third stage
+which is not messily written with reflection just to compile hairball.
+
+## 10:48
+
+Now that the second stage is complete, onto the third which should end up
+being much cleaner than the previous launcher. I will have to test these in
+Wine/ReactOS however.
+
+## 18:32
+
+Hairball has been missing Main-Class this whole time.
+
+## 18:39
+
+So now it appears that my three stage bootstrap is finished. I just need to
+test it on Windows and such now due to the changes I have made.
+
+## 23:38
+
+Testing it in Wine right now for NT targets. Appears that it works without
+requiring any changes by me. The only remaining thing to check is if the BAT
+file works (for Windows 9x targets).
+
+## 23:46
+
+Well the batch file works in WINE.
+

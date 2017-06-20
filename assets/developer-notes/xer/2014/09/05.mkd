@@ -1,0 +1,73 @@
+# 2014/09/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:13
+
+Going to attempt routing today.
+
+## 10:37
+
+What I currently have which is a list of inputs which get turned into outputs
+in the routing stuff is not going to work because inputs could be files or
+they could be abstract representation of code. Also CodeRouter should not be
+using binary formats at all and should only handle compilation of code. Having
+it handle binary formats complicates things greatly.
+
+## 11:13
+
+Having binary formats directly read and write namespaces sounds like a good
+plan because it simplifies the plugin operation once the needed data is loaded
+and such.
+
+## 11:47
+
+Many of these warnings, especially with GCJ are really annoying, there are
+just tons of them. I need to clear them out.
+
+## 12:25
+
+Another thing I have to do is make it so projects do not need to needlessly
+duplicate dependencies when individually built. That is, all projects get
+their dependencies determined after simplistic generation so that way it is
+not required to include them multiple times in every single package.
+
+## 13:03
+
+Less warnings about unchecked stuff is much nicer and much faster.
+
+## 15:12
+
+Recursing into dependencies in the shell scripts should make handling of them
+easier as not everything has to include the stuff now. Now for my unchecked
+stuff, I need an instanceof so that GCJ shuts up about that too.
+
+## 16:22
+
+So far the normal stuff with GCJ takes 88 seconds to build, and OpenJDK 6
+takes 153 seconds. So compared to GIJ/GCJ, OpenJDK 6 is about two times
+slower.
+
+## 16:53
+
+Linux TTYs and PTYs are sycnhronous, so if your terminal emulator is slow then
+everything being piped to the console is also slowed down.
+
+## 22:15
+
+Based on what I wrote in BinFormatRouter, I might not even need the CodeRouter
+that I created.
+
+## 23:39
+
+I currently cannot know of the redundency between BinFormatRouter and
+CodeRouter, I can still use a CodeRouter to translate between the internal
+code representations of of code within Namespaces. Since I will have to
+convert code from the intermediary format, various machine languages, and Java
+byte code. I do not want to duplicate some functionality but it would be more
+specialized.
+

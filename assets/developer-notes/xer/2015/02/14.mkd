@@ -1,0 +1,123 @@
+# 2015/02/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:10
+
+I was going to write something.
+
+## 01:32
+
+Noticed that except for the new year, I have made many new month commits that
+say exactly that since 2014/08. I also should have done this HTML stuff
+sooner, though LaTeX is nice that file got way too packed.
+
+## 01:44
+
+Fixing up the SQ icon brings the joy of a text based uncompressed image
+format, although I did not use a text editor to modify the image. Changing
+only certain rows of the image however, does not need an entire file to be
+diffed.
+
+## 12:05
+
+I believe to for the tiling, I will use computer generated textures which
+consist of a basic pattern with some color attached. That would reduce the
+amount of work needed to draw the actual textures.
+
+## 19:05
+
+I need an efficient map for aliases for byte code ops, the ones where stuff
+such as ALOAD_0 can be turned into ALOAD with the right push.
+
+## 22:44
+
+Seems I am stuck on seeing why my method is not seen. The method being
+searched for is `protected void runWIDE_ALOAD(JOp __jop)` and I use the
+following MethodType of `void.class, JavaMethodDecoder.JOp.class` which should
+be correct. The descriptor is
+`(Lnet/multiphasicapps/k8dr/form/ld/JavaCodeBank$JavaMethodDecoder$JOp;)V `
+and the javap description of it is `protected void runWIDE_ALOAD
+(net.multiphasicapps.k8dr.form.ld.JavaCodeBank$JavaMethodDecoder$JOp);`. Going
+to look at the byte code now to see which class is passed.
+
+## 23:01
+
+Looking at the disassembly I know what the code does. The code calls the
+methodType with void, JavaCodeBank$JavaMethodDecoder, and
+JavaCodeBank$JavaMethodDecoder$JOp. Since JOp is a non-static inner class of
+the inner class JavaMethodDecoder.
+
+    
+    
+     44: getstatic     #100 // Field java/lang/Void.TYPE:Ljava/lang/Class;
+     47: ldc   #66 // class
+        net/multiphasicapps/k8dr/form/ld/JavaCodeBank$JavaMethodDecoder
+     49: iconst_1
+     50: anewarray     #101 // class java/lang/Class
+     53: dup
+     54: iconst_0
+     55: ldc   #102 // class
+       net/multiphasicapps/k8dr/form/ld/JavaCodeBank$JavaMethodDecoder$JOp
+     57: aastore
+     58: invokestatic  #103// Method java/lang/invoke/MethodType.methodType:
+        (Ljava/lang/Class;Ljava/lang/Class;[Ljava/lang/Class;)
+        Ljava/lang/invoke/MethodType;
+    
+
+That code, pushes Void.TYPE (class of void) onto the stack. Then it pushes the
+JMD class onto the stack. Then it pushes 1. Creates a new array of of size 1.
+Duplicates the array. Pushes 0 onto the stack. Puts the class value of JOp
+into the array. It then calls the static method `MethodType
+MethodType.methodType(Class, Class, Class...)` which results in a true call of
+`(Void.TYPE, JavaMethodDecoder, JavaMethodDecoder$JOp) `.
+
+## 23:20
+
+Changing the protected to package-private works, but I would suppose that an
+accessor is needed for it to truly access the protected field. So not too much
+of a worry.
+
+## 23:49
+
+Sadly I will never know if my translated operations are correct until I can
+run them, so essentially I have a compiler which generates code for a system
+which cannot be tested until said system is created. Also the systems vary
+based on the CPU. So my decompiler will need lots of defensive coding just to
+be sure that sanity checks are performed on valid class code and that it does
+not cause some other code to get passed through OK. Since the dynamic compiler
+will have stuff like garbage collection put into it among other things, it
+will essentially be a part of it. One way to test it is on the host system by
+outputting to C code and then running that. At least C code output has
+virtually unlimited registers so I do not need to do a reducing pass (whereas
+for my first intended targets being RISC they are limited to 32, where it gets
+limited even futher due to ABI). Another thing with testing is that I cannot
+test it until I have a class library that can at least run, even with C
+output. So before I get a runnable system I will need to implement some of it
+at least. When I do that I will unit test it much so that many aspects of it
+are tested to make sure they operate correctly. A testing framework will be
+required since I probably will never get a TCK, so I need to gauge
+compatibility against something. Then once I get enough classes setup I can
+continue to write the PowerPC or MIPS compiler to run it on those respective
+systems. Probably PowerPC first due to there being QEMU which works reasonably
+enough. So this test framework will need to store results and have the ability
+to output to many locations like the logging framework. Then pretty much when
+I first start running the system, after the kernel does some base
+initialization I will then be running tests many times. But luckily the tests
+can be automated so I will have to have Jenkins around to do that, and
+e-mail/message me when stuff goes astray. I can probably get a base system up
+without implementing too many classes, although a base kernel that can run
+other classes at run-time will require the dynarec to be able to build itself
+and run itself without issues. I will need to target multiple CPUs earlier so
+that I can determine if an issue is with the architecture specific dynamic
+recompilation code or with the general code and any of its passes. So probably
+the first thing to do after the dynamic recompiler is good enough to recompile
+a bunch of methods without issues, I can work on the C output. Then with that
+C output try to compile the dynamic recompiler again, and do a loop around. If
+the C output manages to write another working C output (could iterate many
+times) without any failures or glitches then it should be good.
+

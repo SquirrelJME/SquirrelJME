@@ -1,0 +1,20 @@
+# 2014/10/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:54
+
+Did not say much. I should handle all classes first, then prune out any
+classes which should be avoided such as private ones.
+
+## 20:17
+
+Thing can handle annotations too to reduce any bloat as they are all things
+anyway. They can also print them all based on the current scope class as
+desired. I should probably remove any annotations on arguments and keep them
+only on the normal stuff, since TYPE_USE ones are very specific.
+

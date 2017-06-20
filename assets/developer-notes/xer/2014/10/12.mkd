@@ -1,0 +1,111 @@
+# 2014/10/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:42
+
+I just cannot think and I lack the will to do things, all I need to do is
+write a StreamToken class in common io which takes a StreamTokenizer and makes
+it a bit nicer.
+
+## 16:18
+
+I really want to go back to a unified tree, but instead of everything being in
+"class" or "tree" it is just in the source root. I need to scroll very far
+back into this blog to see my reasoning for leaving class.
+
+## 16:23
+
+As per what I said back around 2014/07/24, I talked about a solved
+"architecture dependent classes", i.e. where multiple architectures can share
+a package while being completely incompatible. That is a bad idea because that
+would make multi-arch impossible (because they conflict) without some magic. I
+also made note of running annotation processing on all classes that exist to
+be super slow and not worth it. However, instead of manually prepared packages
+I can just have them all combined into one. The tree would be simplified, no
+tons of directories everywhere with the same base tree in it.
+
+## 16:32
+
+With the stuff that I know which I did not know then, doing it this way will
+be very magical in processing. I could always designate packages and do
+automatic dependency grabbing as needed.
+
+## 16:41
+
+Although it would be a bit slow, I could always just basic annotate every
+single class file, then compile every single one of them as a combined boot
+classpath (since they are all are of the same bootclasspath anyway). It would
+somewhat reduce processing time, although if I can annotate everything and
+compile at the same time using a capable compiler I can build a sort of
+database about all the files that exist. Packages are nice but, with a merged
+tree I can make it all automatic. One thing though that would be needed is a
+Java 8 compiler, since all of the code would require that. I could just write
+my own Java 8 compiler (as I have tried before) which can do Java 8. The
+compiler can be in the tree, and if the host does not have a Java 8 compiler
+it can be extracted and compiled as needed. I can keep the package manager for
+separate packages, the package code works quite well already so I am not going
+to trash that (I hope). This would then mean that all of my code (except for
+the compiler) can use Java 8 features. Of course, I would also need a virtual
+machine written in Java for older versions of the language. My compiler could
+compile to Java 8 reading Java 8 code, however if the host uses an older VM
+then it would be unable to run that code properly. The virtual machine does
+not have to be anything super serious as I could just be used during build. So
+I will need to read up on annotation processors and perhaps perform a few
+tests to see if they can operate in this matter that I need. I am not
+generating any source code, just mapping all of it.
+
+## 16:58
+
+So for annotation processors, it will have to be a universal one, one that
+claims everything including stuff that has no annotations.
+
+## 17:31
+
+Does not appear that the compiler API would be able to handle such situation.
+So I will have to run through the source code with my own code and generate
+all the class information. Then when a file has been output I can gather any
+dependencies of it and such.
+
+## 17:38
+
+The problem with a virtual machine is chicken and the egg, if the host lacks a
+Java 8 VM I will need to use my own provided one. But, thinking about it there
+is no problem. I will have to run some of the Java 8 compiled code in the tree
+because it would have stuff like the native compiler. However my own compiler
+could be built with old Java versions, my own Java 8 vm would have to be done
+the same way also. However the VM needs all of those classes, but they would
+all have been compiled already. So the order would be, if the host does not
+have a Java 8 compiler, extract it out and built it using the host javac. Then
+compile through the entire source tree and generate class files for everything
+(including the stuff that would not be used, say MIPS code but a PowerPC
+target is wanted). Then if the host lacks a Java 8 VM, compile one and use the
+entire compiled class tree as the gigantic boot classpath. Then perform any
+compilation steps. One optimal scenario with all this massive building is that
+once the classes are all compiled, they can be recompiled into binaries as
+needed. So after that, you can generate stuff for every architecture only
+requiring targetted recompilation. The only question is the placement of the
+processing for source only annotations (for package designations). That would
+best probably be done before the major compilation is performed, although the
+target tree would have to be walked again to handle class files (to map them
+to potential source files). Although the only major processing that might have
+to be done is just the package stuff. I suppose for speed and simplicity that
+entire source tree grabbing is done at the package level, then all of it is
+compiled as one gigantic shared tree. Then other stuff can follow after that.
+
+## 17:56
+
+So to clarify.
+
+  * Check host for Java 8 compiler, compile one if missing.
+  * Go through the source tree and locate every package and map some
+    information on any annotations it has.
+  * Compile all of the source code.
+  * If the host lacks a Java 8 VM, compile one.
+  * Invoke any internal building stuff (examples: compiling to native
+  * files, making kernels, making distribution CDs and installers, and more).
+

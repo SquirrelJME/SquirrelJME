@@ -1,0 +1,60 @@
+# 2015/04/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:00
+
+It took much work to write the decompiler though. However I wrote one before
+and it works. I will just be moving the stuff around so it is much cleaner and
+nicer as such. Maybe what I can do is remove the need for JavaByteOp and
+instead use the current method instead. So like I had before, with all the
+runFoo, I can instead use annotations to indicate the byte operation that is
+used. That could work. It would reduce the number of files that are around and
+pretty much the only thing that needs the giant operation enum is the
+decompiler itself. But I will have to wait and see once I rewrite the class
+loader. A possibly smarter system for handling operations which is a bit more
+automatic could be handy. But the main this is that I know what to expect, and
+I have previous experience so there should be no issue rewriting it to be
+better and faster. So far I have been refactoring before the project's
+birthday. I was hoping to have a bootable kernel by then however. But the
+major cleanups going on are really important. The only last remaining bit is
+the dynamic recompiler and such. Before I am back at Allocator (again) I will
+have to finish the class loader and byte code decompiler. But the major
+pruning has helped. Removing FormCodeBank and just having a NARF specific
+CPUData is handy and more powerful. The build flag information will have to be
+placed in the binary's metadata.
+
+## 20:35
+
+Real life task day.
+
+## 23:34
+
+Writing the class reader should be easier and faster now due to all of the
+fragmentation changes that have increased my partial build speed (only work on
+one thing so compile that). Modularity does have benefits.
+
+## 23:54
+
+Another thing that makes this easier is that all of the Form stuff already
+exists, so the code I am writing just has to replace that as needed. And then
+for the decompilation part (which some parts tookn awhile) should also be
+quicker since the NARF system already exists in place. So basically the older
+loaders are bootstrappers for the Form and NARF classes. Since the Form and
+NARF stuff will not be changed much now and I know how it will work out (for
+the most part), I can just target it. The way the classes were made as
+intended is to permit different binary formats to be used, perhaps if a newer
+Java adds a new class file format that is radically different it can be
+supported with no issues. However in regards to Java, I would most likely be
+staying on Java 8 for awhile. Once Java 8 is fully supported I could then move
+to 9. Although it might be quite awhile, making sure 8 is right before going
+to 9 will make things easier for compatibility in the long run. Since right
+now, compatibilty for anything before 8 is going to be luck based. But in most
+cases it should work down to 6 with no issues. The only main issues are the
+unsupported byte codes, so not all classes would be loaded. One could always
+get some kind of upgrader or just upgrade their class files anyway.
+

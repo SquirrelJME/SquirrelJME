@@ -1,0 +1,34 @@
+# 2015/11/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:27
+
+Appears the SPIR-V 1.0 specification was released not too long ago. When I do
+eventually get to 3D graphics, it is just going to be SPIR-V and Vulkan at the
+core with an initial software renderer. Everything else such as OpenGL or
+Java3D can be based on that core so that there is a common OpenGL code set
+which does not have to be rewritten every single time for new hardware.
+
+## 18:51
+
+Having the stuff merged as this is now will most likely reduce the work needed
+in the future to add read support for KBFs since most of it will be done at
+least in the raw format.
+
+## 19:52
+
+I had this idea of using a 64-bit pre-link table but that is not really needed
+as the KBF is essentially a 32-bit format. The values are only valid the KBF
+is loaded at a base of zero and the pre-link table is loaded at a very large
+address. Making it 32-bit would simplify things a bit. However for the case of
+pre-link referenced datas that would be complicated. I suppose as a solution to
+that, those values will instead be referenced by cells which is a multiple of
+the pointer index as required. This way the pre-link references while in the
+KBF are 32-bit can be loaded into 64-bit form without requiring magical stuff
+to happen.
+

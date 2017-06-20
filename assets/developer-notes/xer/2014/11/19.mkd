@@ -1,0 +1,88 @@
+# 2014/11/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:06
+
+Had this idea, the ClassBus and ClassIdentity (or whatever) is a bad idea.
+What I need is a single class in the logical area with a sub interface. The
+class can be called WhichClass and provides the means for potentially looking
+for classes that are dependencies of compilation. Since the call table for
+other classes must be determined before any native code is generated for them.
+This is why the classes will have a checksum based dependency system. No,
+forget that. The dependencies of methods can be determined at link time so the
+class will just have an import and export table, super class stuff would also
+be determined then also (if a class calls a non-static method in its far down
+superclass it will pretty much be a link back to self if it is not final or if
+it does not have such method it will correctly point to the superclass one).
+When first compiling a class, due to field volatile potential it would be
+unknown if a getfield or putfield should synchronize memory. So perhaps using
+some nop hacks I can instead have it so there is a potential for it to be
+volatile and if it really is not volatile then to just wipe out the machine
+code that synchronizes memory. However, one thing though is that it might only
+have to be done on volatile putfields. Because if other CPUs have a changed
+value in their cache for that field then a memory sync after a put would be
+enough before other CPUs read the value. That should statisfy the order
+whatever. That is, happens before something else. Although I would have to
+read up more on the CPU to determine this as it could vary. So I will need a
+possible sync before a field read or one after a field set and it could vary
+on the CPU. Though I could add code destroyers if the field is not volatile at
+all so when the native class is loaded it gets NOPed away. That would be the
+simplest solution as I would no longer need to load all of these classes just
+to figure out how to access a field, so that saves time so I no longer need to
+potentially load the entire class library at once.
+
+## 13:43
+
+Ok, so I need a good way to initialize SSA operations as I construct the code
+from the byte code.
+
+## 19:37
+
+All methods will have an intro and an endtro, the intro does basic stuff if
+needed (such as synchronized methods) and the endtro also frees the lock on
+exit. The endtro would also clean up any final references to things. I will
+want to have a new (for objects) that is capable of spawning objects in the
+heap or on the stack (depending on visibility and such) and then in the final
+cleanup for a method it can lower the reference count if it is in the heap or
+destroy the object completely if it resides on the stack. Introductions to
+areas that are capable of being exception handled will have to have their own
+endtros also to lower the count of any references that were lost when the
+exception was thrown.
+
+## 20:17
+
+Perhaps on the leave of a method there can be a method object reference table
+that is ran through to clear up any old references.
+
+## 20:37
+
+Actually, I can have two stacks, the normal method stack and the referenced
+object stack. When the method ends it goes through the object stack and lowers
+the reference count and if it is zero it clears it. The only objects that get
+added there are ones that are on the heap and not the stack. Also for optimize
+of new, each method will need a hint as to what it does with the argument (if
+it is an object). That hint could propagate to callers of the method when they
+perform the actual new. The hints would be simple such as Stack or Heap. A
+heap can never get downgraded to a stack but a stack could be upgraded to a
+heap. At linking time it is determined how an object should act based on its
+exposure status. It would completely depend on stuff like the super class so
+when I design all of my classes I must avoid this references being set to
+fields and such. So a method could allocate an object which it never sets to a
+field and never externally exposes. Now it all depends on the object, whether
+it exposes itself (or potentially can do it). Exposure is pretty much getting
+assigned to a field or an array. However the array can vary because if the
+array itself is not exposed then all of its members do not get upgraded,
+however if the array is exposed then all the members that are added to it must
+get their exposure set. The byte code compiler would perform basic work while
+the SSA optimization system would determine object exposures and such.
+
+## 23:25
+
+Currently going to setup Jenkins for automated building and testing so that
+way I can test a bunch of things.
+

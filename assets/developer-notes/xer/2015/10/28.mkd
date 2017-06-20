@@ -1,0 +1,26 @@
+# 2015/10/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 21:13
+
+Lots of rain.
+
+## 22:24
+
+When calling another method I can just save what is used by the method being
+called rather than forcing a save of everything. However, doing so would be a
+bit complicated as the entry and exit of a method will need to do the same
+thing for anything it uses that is not of its standard based bindings. So to
+keep it simple, I shall just continue to save everything.
+
+## 22:39
+
+I can simplify the invoke allocator code by just having it call a method. This
+means the invoke allocator reference becomes invokable. Doing it this way
+allows me to reduce duplicate code doing virtually the same thing (less bugs).
+

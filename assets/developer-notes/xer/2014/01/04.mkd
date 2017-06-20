@@ -1,0 +1,64 @@
+# 2014/01/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+_On security_
+
+Existing virtual machines use a security manager which is built into the
+virtual machine to form a sort of self checked control of whether methods do
+what they normally do or fail. However, the security model is completely user
+space and it is possible to break out of the security restrictions, which has
+been done before with dire consequences. Such security mechanism in the
+virtual machine equates to an unlocked door which is closed, and the only
+thing stopping you from opening the door is because the owner told you not to.
+Current security which most operating systems perform are splits between the
+kernel and the user space. Common exploits to gain access to the kernel itself
+are done usually via buffer attacks, timing attacks, and general mishaps in
+system calls. Other exploits are possible if one were to gain access to the
+root account or physical medium to which they then can modify the kernel or
+inject modules to do their bidding.
+
+The primary issue is the implementation of the virtual machine itself, the
+kernel requires one as does the user space. Both user space and kernel byte
+code (or native recompiled code) will run on the same virtual machine, however
+they must have separation. The kernel will run the virtual machine in
+supervisor mode while the user space will run that same virtual machine in
+user mode. In user mode, you would use a system call using whichever means is
+supported by the architecture to communicate with the kernel. The main issue
+of this is code sharing, such as user space which decides to start executing
+kernel code in user space as is or if the kernel decides to start executing
+user space methods. Both the kernel and user space will have access to the
+same classpath so the class data must not be exploited, otherwise the system
+becomes vulnerable to exploitation. The root user must be able to modify the
+kernel for system updates, and if someone has physical access to unencrypted
+storage then the kernel may be modified. Signing may work to a degree but that
+requires secure storage of the signing key to verify the kernel against itself
+with. _On code verification_
+
+A major step which will have to be performed to prevent malicious activity by
+hand crafted byte code and native code classes, would be to run a verification
+step on the produced native and interpreted code. Verification of native code
+can be extremely complex as there are many different architectures with
+varying aspects. There will have to be a speed reduction to create safe native
+code which passes the verification stage.
+
+If the code is native for a specific architecture then a verification and
+potential rewrite of the code may be performed. Rewriting could be done to
+optimize the code slightly or to set defined behavior, such as linking of ELF
+binaries in memory to run a program. The native code would have to be layout a
+specific way so that it can be easily verified while being fast and secure
+enough for operation.
+
+In the event that the system has no capability of separation of memory pages
+or hardware managed privilege levels then the verification step will have to
+go further as everything will essentially be running in kernel mode. Since
+everything is in kernel mode, specially crafted code could modify the kernel
+and do nasty things to it. An option would be to prevent native code from
+running at all, however this would be slow on such systems. This way with
+verification before execution, the code will be able to handle being run on
+such a system without issue.
+

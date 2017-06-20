@@ -1,0 +1,36 @@
+# 2015/02/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 13:42
+
+Using ByteBuffer magic my impulse reading code from client/server remains
+quite simple.
+
+## 16:34
+
+For micro operations and registers I will need some kind of smart chaining so
+that all of the micro operations and their registers are still valid. I could
+still do SSA or opt not to. I can however see the optimization benefits that
+doing SSA would bring. The DecodedMethod would have to handle register
+chaining for micro operations. Perhaps the best thing to do would have it so
+registers are very bland in the micro operations, then when they are added the
+decoded method builds the chain as required. So while the micro ops would not
+be SSA (they would say read/write to register N), the DecodedMethod chains it
+all and performs all the checking as required. So an added microop will mess
+with the chaining and branch structure. Doing it this way would keep the
+DecodedMethod smart so that operations can be moved around at will without
+worry about much. So the raw operand table with their micro ops would mostly
+just be attached to PC addresses while DecodedMethod creates a trail or wrap
+thing that goes around things (like popcorn on a string on pine trees). And
+that structure will bend and warp as needed based on the underlying structure.
+
+## 23:27
+
+Graphics::drawImage does scaling and is not used for clipping, which makes
+rendering the game view in SQ's editor quite odd.
+

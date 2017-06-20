@@ -1,0 +1,49 @@
+# 2016/01/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 19:49
+
+Today was a very busy real life day today. It is also extremely cold too, which
+is the reason why I was busy all day with no coding much at all. Not sure I
+will be able to code in these few hours that remain in the day. Currently I
+am typing this from under many covers and it is still cold.
+
+## 20:12
+
+Hopefully I can get something done. My supply of water is frozen, which means
+it will most likely come back later in the week hopefully when it potentially
+gets warm enough. As for the instructions and registers, I will need to store
+them in a kind of cache map. However, I might not need every instruction or
+register to be known. So what I could do is have a kind of multi-map where I
+can store multiple maps which provide a view of a single map. I also could use
+a kind of map where the key is derived from the value and can be cached. There
+is `WeakHashMap` however it might not work as much. At least with a value
+derived key map I can lazily initialize entries. However, the main issue is
+that a value derived map will need a way to determine how to find what the
+value is. So there would still need a kind of key.
+
+## 20:35
+
+I would want all the instructions to be cachable without truly being known
+(since you cannot iterate classpath contents in a fully defined manner).
+
+## 21:49
+
+Well, some achitectures (such as PowerPC) can have on the order of a thousand
+or so instructions (PowerPC has more than 1000 counting AltiVec, SIMD, etc.).
+I would want the lookups to be fast but it can cost lots of memory. I believe
+the best way to look for instructions is to potentially have a class which is
+essentially backed by a map for instruction lookup which then has reference
+based values. So there would have to be a large set of strings in memory for
+each instruction which exists. However, I could have a kind of bucket map of
+sorts. Basically a map which associates a key grouping with other maps, however
+the Java collections most likely already performs this function. I could
+however be overengineering a solution where all I need is a reference backed
+map. I could potentially be using this map elsewhere so I can add it to my
+data structures package.
+

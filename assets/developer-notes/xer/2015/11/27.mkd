@@ -1,0 +1,58 @@
+# 2015/11/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:30
+
+Was a busy real life day today.
+
+## 19:30
+
+Pledged for the CI40 on KickStarter so that I can eventually port this OS to
+said device, it will ship in April of 2016 however so that is many months
+from now. Hopefully by then I have an actual working system since by the time
+I have right now I am getting closer. Just need to write out binary file
+formats. The nice thing about it is that it is going to be very open which is
+a good thing. The device should prove easily hackable and simple to port to.
+I should eat right now, then attempt to continue outputting KBF files so I can
+eventually boot something.
+
+## 20:12
+
+The MikroBUS looks very interesting. They have shields and capes for the
+arduino along with the BeagleBone Black and Raspberry Pi (which I have). There
+is most likely no auto-detection stuff however so it might just be a manual
+tell it that it is being used kind of thing. However, due to the fact that the
+set of required GPIO pins and such are of a standard set (SPI, I2C, etc.) I
+can set up a driver interface which is a MikroBUS slot. Then a driver which
+supports various boards for it could just rely on a MikroBUS slot interface.
+The same could be done for PCI devices however the MikroBUS is much simpler
+despite the lack of potential detection of attached devices. So it is kind of
+like PCI or USB but just based on a port rather than negotiation and such. For
+the CI40 however I just got two base boards so I would need to purchase any
+extra click devices. With a microSD and a click board that offers memory I
+could write a MIPS emulator for the arduino. Alternatively one that can do
+microSD and store a bunch of memory in one card would then have the possibility
+to have extra expansion. There is even an ethernet click board.
+
+## 20:30
+
+There is even a PS/2 click board. So this stuff seems pretty versatile.
+
+## 20:43
+
+Personally I thought about having a fake PCI port made entirely of GPIO pins.
+A PCI click board would be interesting, but most likely insanely slow. There
+is also a RS232 click board which is nice. So having many easy to use
+prefabricated expansions is quite nice for board development as you no longer
+have to guess with chips and instead just prototype much faster.
+
+## 20:50
+
+A am a bit away from drivers right now however, but it does not hurt to dream
+at all.
+

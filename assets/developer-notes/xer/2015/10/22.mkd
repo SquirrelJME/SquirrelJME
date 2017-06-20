@@ -1,0 +1,60 @@
+# 2015/10/22
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:34
+
+I can use the temporary stuff and permit having temporary slots which are not
+assigned to any stack slot position. Doing this I can simplify code to grant
+me to use existing generation code as some operations act as a sort of pseudo
+operation.
+
+## 11:05
+
+The __unsafeCopyXtoY() stuff is rather messy, I will need a slot/binding based
+system which is easier to use and is a bit safer. Some of the stuff can exist
+in the base class also since it will virtually be the same for both 32-bit and
+64-bit PowerPC.
+
+## 13:47
+
+I can also use scratch register sets with auto-closeable and such for register
+references and such. This would enable me to shuffle such registers without
+worrying about which ones are mixed together with what others.
+
+## 14:35
+
+This definitely looks much cleaner and safer than before.
+
+## 16:43
+
+My goal for generation is no system calls so that things can be more easily
+replaced. The index table manages all of that stuff which means that the
+generated code could technically be run on other systems provided there is a
+correct ABI layer.
+
+## 17:03
+
+The mtspr swapping can get a bit confusing.
+
+## 18:42
+
+I need an assembler main of sorts to test my code with.
+
+## 22:06
+
+My disassembler should also probably work with InputStream.
+
+## 22:47
+
+Made InputStream based disassembler which replaces the ByteBuffer based one
+but has compatibility things.
+
+## 23:28
+
+The disassembler has buffering issues however.
+

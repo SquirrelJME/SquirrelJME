@@ -1,0 +1,41 @@
+# 2015/06/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:21
+
+My OS could target Palm OS devices and enable itself to be booted from Palm OS
+without requiring flashing hardware, would be stuck in a dual boot however.
+
+## 14:45
+
+This new KBF stuff is so far much nicer to code for. It also seems more
+efficient also.
+
+## 15:03
+
+This mutable KBF stuff is rather neat too.
+
+## 15:51
+
+Some bits take awhile to build, I should perhaps fragment the kernel-binary
+package to speed things up as needed. So far however, all of my stuff works
+which is rather nice, or at least it seems so. This is based on the debug log.
+
+## 15:27
+
+My normal run is one minute and 40 seconds. A full build from nothing nets me
+after my moving changes (which includes the massive Java library) at... I
+should get some food and eat while it builds, although it takes a few minutes
+to build.
+
+## 21:40
+
+Went to do real life things, but it took 6 minutes and 38 seconds. A fully
+same state gives me 31 seconds. Upping the mod time of a Java loader gives me
+52 seconds.
+

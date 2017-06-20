@@ -1,0 +1,56 @@
+# 2014/11/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:13
+
+Making it not a singleton makes it just so better designed and less hacky as
+you do not need a struct for storage.
+
+## 00:48
+
+Migrating my old code to this new better transformer system was quite easy,
+now I am back to where I was before and now it will be much easier to work
+with because I no longer need a public bridge. Although I disabled the opcode
+decoding since I need to rework that a bit better anyway. Now for the
+StackMapTable stuff, it seems the only place it gets generated is for code
+that uses goto, subroutines, and branches. I would have to see this in actual
+decompilation sets. However simple methods that do not branch and such are
+simple to verify as they cause no complex behavior much. I need to eat
+however, but I will need a simple stack pusher and popper and local
+verification between solar and byte code.
+
+## 05:45
+
+What I need is a simple stack manager, the bad things is the state of the
+stack where longs and doubles consist of two bits. That complicates things a
+bit.
+
+## 06:04
+
+To limit exposure, placement of the gigantic instruction enumeration could be
+moved to the decoder class, but then adding the Encoder would require the same
+stuff also, so the code is just going to get very large.
+
+## 06:28
+
+I figured out the stack stuff, I will just have another special class which is
+capable of handling the Java Stack with pushing and popping correctly. Well I
+do not need a class, just a bunch of methods that can check things.
+
+## 17:36
+
+I need storage for every PC address for potential jumps back to older code and
+such.
+
+## 20:39
+
+Have basic loading for references and pushing of null references. Moons used
+to be associated with planets, but not anymore because that makes the values
+easier to move around rather than just being snatched to one thing. In the
+future though, values could be intersections of planets.
+

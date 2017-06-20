@@ -1,0 +1,385 @@
+# 2015/12/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:49
+
+I require food, making some MSG loaded ramen noodles, very tasty.
+
+## 00:51
+
+I wonder if I can make up something shorter than `FutureAndPresent`.
+
+ * `FutureAndPresent`
+ * `FuturePresent`
+ * `Futpre`
+ * `FPFactory`
+ * `FPUtility`
+
+I suppose `FPUtility` would work.
+
+## 01:23
+
+Also ate an older orange, but citrus should last for awhile.
+
+## 01:41
+
+It might be a bad idea to have the futures take constant values because that
+could hide potential errors when they are used when it is desired that they be
+actually not known at call time.
+
+## 02:15
+
+There is much banging under where I live, on the cold nights animals like to
+just cram themselves into wherever.
+
+## 03:07
+
+It would be best to make `opRegisterIntAddImmediate` not be final because it is
+possible that a machine might have it or not. If it is not overridden then a
+constant set and then add is used instead (slower).
+
+## 03:48
+
+I suppose I made a bunch of commits today by doing a refactor of the assembler
+and some of the generation code. Although I made no progress writing class
+data for the most part. However, the new assembler and future stuff will be
+handy in the future, pun intended.
+
+## 03:50
+
+Right now I have a block on a TODO, but the following assembly code was
+generated:
+
+	3f600000637b00589361001c7c2004ac80c2000490c1ffb490c1ffc49021ffa4
+	9041ffa09041ffec7f8802a69381ffe88061ffc47c2004ac836200007c2004ac
+	804200083f800000639c00587c21e2147f6803a64e8000218021fffc8041ffec
+	8381ffe87f8803a67c631b7880c1ffc49061ffb07c661b787c641b787cc33378
+	7c2004ac80a2000c90a1ffac2c040000408200649061ffd09081ffcc90a1ffc8
+	9021ffa49041ffa09041ffec7f8802a69381ffe87c2004ac836200147c2004ac
+	804200183f800000639c00587c21e2147f6803a64e8000218021fffc8041ffec
+	8381ffe87f8803a68061ffd08081ffcc80a1ffc89061ffd09081ffcc90a1ffc8
+	9021ffa49041ffa09041ffec7f8802a69381ffe88061ffcc8081ffc87c2004ac
+	836200107c2004ac8042001c3f800000639c00587c21e2147f6803a64e800021
+	8021fffc8041ffec8381ffe87f8803a68061ffd08081ffcc80a1ffc89061ffd0
+	9021ffa49041ffa09041ffec7f8802a69381ffe88061ffd07c2004ac83620020
+	7c2004ac804200243f800000639c00587c21e2147f6803a64e8000218021fffc
+	8041ffec8381ffe87f8803a68061ffd0
+
+Which disassembles to:
+
+	   0:   3f 60 00 00     lis     r27,0
+	   4:   63 7b 00 58     ori     r27,r27,88
+	   8:   93 61 00 1c     stw     r27,28(r1)
+	   c:   7c 20 04 ac     lwsync
+	  10:   80 c2 00 04     lwz     r6,4(r2)
+	  14:   90 c1 ff b4     stw     r6,-76(r1)
+	  18:   90 c1 ff c4     stw     r6,-60(r1)
+	  1c:   90 21 ff a4     stw     r1,-92(r1)
+	  20:   90 41 ff a0     stw     r2,-96(r1)
+	  24:   90 41 ff ec     stw     r2,-20(r1)
+	  28:   7f 88 02 a6     mflr    r28
+	  2c:   93 81 ff e8     stw     r28,-24(r1)
+	  30:   80 61 ff c4     lwz     r3,-60(r1)
+	  34:   7c 20 04 ac     lwsync
+	  38:   83 62 00 00     lwz     r27,0(r2)
+	  3c:   7c 20 04 ac     lwsync
+	  40:   80 42 00 08     lwz     r2,8(r2)
+	  44:   3f 80 00 00     lis     r28,0
+	  48:   63 9c 00 58     ori     r28,r28,88
+	  4c:   7c 21 e2 14     add     r1,r1,r28
+	  50:   7f 68 03 a6     mtlr    r27
+	  54:   4e 80 00 21     blrl
+	  58:   80 21 ff fc     lwz     r1,-4(r1)
+	  5c:   80 41 ff ec     lwz     r2,-20(r1)
+	  60:   83 81 ff e8     lwz     r28,-24(r1)
+	  64:   7f 88 03 a6     mtlr    r28
+	  68:   7c 63 1b 78     mr      r3,r3
+	  6c:   80 c1 ff c4     lwz     r6,-60(r1)
+	  70:   90 61 ff b0     stw     r3,-80(r1)
+	  74:   7c 66 1b 78     mr      r6,r3
+	  78:   7c 64 1b 78     mr      r4,r3
+	  7c:   7c c3 33 78     mr      r3,r6
+	  80:   7c 20 04 ac     lwsync
+	  84:   80 a2 00 0c     lwz     r5,12(r2)
+	  88:   90 a1 ff ac     stw     r5,-84(r1)
+	  8c:   2c 04 00 00     cmpwi   r4,0
+	  90:   40 82 00 64     bne     f4 <_binary__tmp_25162_start+0xf4>
+	  94:   90 61 ff d0     stw     r3,-48(r1)
+	  98:   90 81 ff cc     stw     r4,-52(r1)
+	  9c:   90 a1 ff c8     stw     r5,-56(r1)
+	  a0:   90 21 ff a4     stw     r1,-92(r1)
+	  a4:   90 41 ff a0     stw     r2,-96(r1)
+	  a8:   90 41 ff ec     stw     r2,-20(r1)
+	  ac:   7f 88 02 a6     mflr    r28
+	  b0:   93 81 ff e8     stw     r28,-24(r1)
+	  b4:   7c 20 04 ac     lwsync
+	  b8:   83 62 00 14     lwz     r27,20(r2)
+	  bc:   7c 20 04 ac     lwsync
+	  c0:   80 42 00 18     lwz     r2,24(r2)
+	  c4:   3f 80 00 00     lis     r28,0
+	  c8:   63 9c 00 58     ori     r28,r28,88
+	  cc:   7c 21 e2 14     add     r1,r1,r28
+	  d0:   7f 68 03 a6     mtlr    r27
+	  d4:   4e 80 00 21     blrl
+	  d8:   80 21 ff fc     lwz     r1,-4(r1)
+	  dc:   80 41 ff ec     lwz     r2,-20(r1)
+	  e0:   83 81 ff e8     lwz     r28,-24(r1)
+	  e4:   7f 88 03 a6     mtlr    r28
+	  e8:   80 61 ff d0     lwz     r3,-48(r1)
+	  ec:   80 81 ff cc     lwz     r4,-52(r1)
+	  f0:   80 a1 ff c8     lwz     r5,-56(r1)
+	  f4:   90 61 ff d0     stw     r3,-48(r1)
+	  f8:   90 81 ff cc     stw     r4,-52(r1)
+	  fc:   90 a1 ff c8     stw     r5,-56(r1)
+	 100:   90 21 ff a4     stw     r1,-92(r1)
+	 104:   90 41 ff a0     stw     r2,-96(r1)
+	 108:   90 41 ff ec     stw     r2,-20(r1)
+	 10c:   7f 88 02 a6     mflr    r28
+	 110:   93 81 ff e8     stw     r28,-24(r1)
+	 114:   80 61 ff cc     lwz     r3,-52(r1)
+	 118:   80 81 ff c8     lwz     r4,-56(r1)
+	 11c:   7c 20 04 ac     lwsync
+	 120:   83 62 00 10     lwz     r27,16(r2)
+	 124:   7c 20 04 ac     lwsync
+	 128:   80 42 00 1c     lwz     r2,28(r2)
+	 12c:   3f 80 00 00     lis     r28,0
+	 130:   63 9c 00 58     ori     r28,r28,88
+	 134:   7c 21 e2 14     add     r1,r1,r28
+	 138:   7f 68 03 a6     mtlr    r27
+	 13c:   4e 80 00 21     blrl
+	 140:   80 21 ff fc     lwz     r1,-4(r1)
+	 144:   80 41 ff ec     lwz     r2,-20(r1)
+	 148:   83 81 ff e8     lwz     r28,-24(r1)
+	 14c:   7f 88 03 a6     mtlr    r28
+	 150:   80 61 ff d0     lwz     r3,-48(r1)
+	 154:   80 81 ff cc     lwz     r4,-52(r1)
+	 158:   80 a1 ff c8     lwz     r5,-56(r1)
+	 15c:   90 61 ff d0     stw     r3,-48(r1)
+	 160:   90 21 ff a4     stw     r1,-92(r1)
+	 164:   90 41 ff a0     stw     r2,-96(r1)
+	 168:   90 41 ff ec     stw     r2,-20(r1)
+	 16c:   7f 88 02 a6     mflr    r28
+	 170:   93 81 ff e8     stw     r28,-24(r1)
+	 174:   80 61 ff d0     lwz     r3,-48(r1)
+	 178:   7c 20 04 ac     lwsync
+	 17c:   83 62 00 20     lwz     r27,32(r2)
+	 180:   7c 20 04 ac     lwsync
+	 184:   80 42 00 24     lwz     r2,36(r2)
+	 188:   3f 80 00 00     lis     r28,0
+	 18c:   63 9c 00 58     ori     r28,r28,88
+	 190:   7c 21 e2 14     add     r1,r1,r28
+	 194:   7f 68 03 a6     mtlr    r27
+	 198:   4e 80 00 21     blrl
+	 19c:   80 21 ff fc     lwz     r1,-4(r1)
+	 1a0:   80 41 ff ec     lwz     r2,-20(r1)
+	 1a4:   83 81 ff e8     lwz     r28,-24(r1)
+	 1a8:   7f 88 03 a6     mtlr    r28
+	 1ac:   80 61 ff d0     lwz     r3,-48(r1)
+
+And the other being:
+
+	3f600000637b004c9361001c2c030000408200549061ffd09021ffb09041ffac
+	9041ffec7f8802a69381ffe87c2004ac836200007c2004ac804200043f800000
+	639c004c7c21e2147f6803a64e8000218021fffc8041ffec8381ffe87f8803a6
+	8061ffd07c641b789081ffb82c0400004082005c9061ffd09081ffcc9021ffb0
+	9041ffac9041ffec7f8802a69381ffe87c2004ac836200007c2004ac80420004
+	3f800000639c004c7c21e2147f6803a64e8000218021fffc8041ffec8381ffe8
+	7f8803a68061ffd08081ffcc9061ffd09081ffcc9021ffb09041ffac9041ffec
+	7f8802a69381ffe88061ffcc7c2004ac836200087c2004ac8042000c3f800000
+	639c004c7c21e2147f6803a64e8000218021fffc8041ffec8381ffe87f8803a6
+	8061ffd08081ffcc4e800020
+
+Not going to bother with running this through objdump.
+
+Looking at the disassembly one will find pointless operations. Since POIT is
+a literal translation of the Java byte code, this is essentially how it looks
+as if it were byte code. Obviously when I get to NARF there will be lots of
+room for improvement.
+
+## 13:36
+
+I suppose I should continue outputting class information now that the assembler
+stuff has been refactored a bit. There was also the hairball refactor. The
+added Device I/O should be very useful in the future.
+
+## 14:38
+
+I believe for a bootstrap VM I will take a hybrid approach. Since I want to
+support ancient Java versions and cripply devices such as J2ME phones to
+build and compile k8 with, I can recompile part of my class library with a
+potential extension stub. So basically, the bootstrap VM will be written in
+Java 8 naturally, however it will rely on the recompiler (POIT) to translate
+some of the code to a lower Java version. Then support for specific subsystems
+whether it be Java SE or J2ME will be in an extra package with the required
+implemented interfaces and such.
+
+## 14:52
+
+I suppose the helper code would be what is needed for the VM to run so it would
+be very minimal and hopefully not require class loader or reflection magic. One
+thing though is translating lambdas to an older Java version. J2ME devices for
+example lack `ClassLoader` so they have only static classes available. A bunch
+of my Java 8 code uses lambdas, so I would have to figure out a solution for
+it. I suppose what I can do is have a kind of lambda or reflection farm which
+knows how to call every single method in a static form. So essentially I could
+fake reflection with static classes by using static proxies.
+
+## 14:57
+
+Actually that is incorrect. J2ME does have reflection however there is only a
+single call and that is being `Class.forName(String)`. So this simplifies
+things a bit. There is also luckily `newInstance()` too. So although very
+limited doing such a bootstrap would be much easier. I had code previously
+also which I wrote when I did not know about these two important methods. I
+must have glossed over them when looking around the limited class library.
+
+## 15:03
+
+J2ME does not support adding parameters to constructors, so basically if I want
+constructor alikes I will need to then make factory classes which contain
+methods for construction.
+
+So in short, these two methods completely change things and make things easier.
+This means I will not have to create a hybrid-like emulator so to speak.
+However I will have to figure out about exceptions and such and control flow
+in Java programs.
+
+## 17:18
+
+For C compatibility I suppose I should just merge the entire set and instead
+have a POSIX compatibility package which contains everything POSIX.
+
+## 17:49
+
+I should probably codename the POSIX environment instead so I can provide
+non-POSIX stuff also. I will have to do that for stuff such as the `java`
+command for example. Suppose I will take a break from the KBF writing and
+write this POSIX stuff for a bit.
+
+## 17:57
+
+One thing though is, I cannot support `fork` at all so that leaves only
+`posix_pspawn`. Supporting `fork` in Java would probably be a huge undertaking
+and would be rather difficult in Java. Actually it is called `posix_spawnp`.
+
+## 19:33
+
+For multi-process there will need to be some kind of lock shared between
+processes. As such, instead of using `synchronized` the only choice is to use
+standard locks. However with `try`/`finally` it will not be a horrible mess at
+all.
+
+## 20:34
+
+Output Java code actually could work with a loop where each operation changes
+the next execution pointer. So basically it would look something such as:
+
+	while (addr >= 0)
+		switch (addr)
+		{
+			case 0:
+				addr = __add(a, b);
+				break;
+			
+			case 2:
+				addr = __return(a);
+				break;
+		};
+
+And that would essentially be the whole thing. Would be slow though but it
+would work without worrying about how special jumps and such are handled.
+
+## 21:14
+
+The only problem when it comes to the code is signals and throwing exceptions
+in the middle of code. However, most normal commands will not handle signals
+at all. However they will have to handle stuff such as SIGKILL so that they
+stop execution.
+
+## 21:33
+
+Hopefully I can coding the POSIX stuff in a way where when it is to be used in
+my operating system as a native non-simulated thing it does not cause chaos to
+happen. Thinking about it, the kernel could run the code in a loop and that
+would be the userspace for the most part.
+
+## 21:50
+
+Yknow, I could name my OS **Foobarniux**. It is an odd name however.
+
+However, I can use the process and thread stuff and then just generalize it so
+to speak so that what I am writing is part of the kernel so to speak.
+
+As for the name **k8** is still shorter though but probably not as unique.
+
+So what I should probably do then is split some of the POSIXProcess and
+POSIXThread stuff into a kernel specific control setup of sorts. Then this
+way iot can be reused by the kernel itself without writing anything twice.
+
+## 21:53
+
+Looking online it does not appear the name has been taken at all.
+
+However most of my documentation for the most part and all my sources use
+"k8" everywhere. So some stuff would be out of date while others would not be.
+
+## 22:02
+
+Freaky!
+
+## 22:11
+
+It might be easier for the bootstrap to be Foobarniux to be a basic MIPS
+system so to speak. So basically if the Java version is say 1.2 then the
+bootstrap system will be built which is essentially a MIPS emulator which
+then runs the kernel and anything else using the host filesystem for the most
+part. This might be the simplest thing to do when it comes to the bootstrap
+environment. However this gets complex. I am divided on this. The bootstrap
+stuff can be in ugly old Java code and it would work then for the most part
+except for some gotchas.
+
+So I suppose having a MIPS emulation system would complicate things so to
+speak as it would require a double bootstrap or keeping binaries in the source.
+So I will go with ugly Java loop code to handle it all. Then that way if the
+VM has a JIT or similar it can just run it at a slightly faster speed despite
+the code probably being the worst when it comes to optimization and speed as
+it would be layered right on top of POIT.
+
+## 22:21
+
+As for the POSIX/UNIX stuff I can instead have a base package which provides
+basic utility support so to speak.
+
+## 22:22
+
+I do wonder though if POSIX stuff can go fine without `raise()` and signals
+because Java does not really have such things.
+
+## 22:28
+
+For the POSIX stuff I can make it easier and use `ThreadLocal`. When I need to
+do something such as in a compiled C program.
+
+## 23:51
+
+I had a strong cup of coffee possibly, quite nasty. I need to reset my sleep
+so that I wake up at 5:00 instead of 12:00 and then sleep when it gets near
+dark. So hopefully I make it through the night. I feel all shaky eyed though
+currently and everything seems a bit green. I have not drank coffee in awhile
+though. So yeah my vision feels like when you just stare and everything just
+starts to fade away. I suppose I am starting to feel the effects of the
+caffeine. So I suppose I could use some motivation music and then get to work
+by not feature creeping with the POSIX code. I am just going to set a note that
+it is going to go away in the future with new stuff once I get further.
+
+## 23:55
+
+The clock nears a new day. The song I am currently listening to is called
+_Path To Nowhere_. I believe this is the last tracker module this person made,
+however it is a really nice song. Trackers are awesome.
+

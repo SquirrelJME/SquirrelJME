@@ -1,0 +1,15 @@
+# 2014/12/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:01
+
+Kind of changed my mind, splitting everything up into subpackages to make code
+splitup a bit easier although there are tons of packages now. Going to relax
+the non-clutter rule on the runtime and instead split the kernel and support
+packages into separate subpackages so that things are a bit cleaner.
+

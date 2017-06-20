@@ -1,0 +1,30 @@
+# 2015/12/14
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 05:58
+
+Well I woke up at 05:45, when my alarm was set for 06:00 so I hope that reset
+of my sleep worked out. I do hope so. I did wake up to use the bathroom
+overnight though. Just need to brush my teeth and eat breakfast.
+
+## 06:00
+
+So the thing to do today (have some outside work later on) would be to write
+a new cache manager using `MethodHandle`s. Move the Java class code to use that
+instead because it will probably be much cleaner. Then continue writing class
+data.
+
+## 06:40
+
+Ate breakfast and such, so now it is programming time.
+
+## 16:12
+
+A bunch of outside work and such. Suppose no programming much today at all. I
+have a headache currently however.
+

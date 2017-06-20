@@ -1,0 +1,125 @@
+# 2014/11/18
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:09
+
+A rather nice IDE, however it is really sluggish when it comes to typing as
+the words I type appear about as second later. Oh well. Maybe when my OS gets
+far enough I can use NetBeans on that instead. In general though for my code,
+my TypeInfo class is far too complex and does everything for all types of
+input. Perhaps the best thing to do would be to subclass TypeInfo and have
+inner classes be TypeInfos so to speak. This way they have specific
+information and do not share some global state (where some of them are null).
+The only main problem are poly types that mean multiple things, such as class
+bounds which could also be an exact type bound. Perhaps interfaces could be
+leveraged for this.
+
+## 00:20
+
+Actually for TypeInfo bounds, the exact stuff can be exactly what something is
+so that there is no exact bound. So I would at most need an interface that
+indicates the specific sub type can be a part of a bound list. So right now
+TypeInfo is 1680 lines long (and I do not have type parameters implemented).
+It contains a bunch of convoluted code for various cases and decoder loops, so
+I need to simplify that greatly. Another thing that will need to be done is
+switching to a ProgramBuilder for generation of SSA codes, that way it can be
+done efficiently.
+
+## 12:02
+
+So now work begins on moving the TypeInfo stuff over to a new and improved
+system.
+
+## 12:21
+
+How about rather than decoding it when it is passed, I do a lazy encode and
+just partition it based on the characters inside of it. Since descriptors are
+full of unqualified names and those special unqualified characters are used
+for the generic bits and such. But that would not work because method
+indicators are legal in class names.
+
+## 20:38
+
+The main unknown thing byte code wise is volatiles and getfield/putfield. Are
+these volatiles handled at the byte code level or at the language level?
+Because if they were at the bytecode level then the local variables or stack
+would have to be mapped to the volatile variable.
+
+## 21:11
+
+Appears that it is virtual machine level as volatile and non-volatile byte
+code is exactly the same in my tests.
+
+## 21:19
+
+Due to the volatiles and such, I will need to depend on other clases being
+available at runtime and using their information, so I will need a system to
+keep track and load them as needed. However, loading everything could be very
+slow because the entire library will end up being loaded, so the only thing
+that will request loading of other classes is the class compiler. This has to
+be written so that it can work for the kernel also. So there would need to be
+separate commit levels and such. And since classes rely on TypeInfo, they must
+be decoded. So for the fastest speed possible there must be a lazy decode of
+type information. A type could be loaded by a class and stuff might have
+already been cached when another class was processed. And the bus stuff has to
+be done so that it does not require a load of normal class files if the stuff
+is already compiled, and if it has not changed.
+
+## 22:03
+
+This class bus system will be the bulk of the kernel classpath searches and
+such, the kernel will have the boot classpath while userspace processes (that
+share the same classpath) will have sub-busses, if the parent level ClassBus
+lacks a class, it is then searched for in the sub-bus. Then the ClassBus
+system can replace most of the link stuff because it would handle the
+searching of classes when needed, although it will still need something that
+looks at a JAR or directory for class files. A parent class path will have to
+protect packages from getting new stuff added (so client classpaths cannot
+mess around with java.lang stuff and such), this sealing would be always on.
+
+## 23:39
+
+I think right now it is mostly guess work on how everything will operate,
+since I lack a kernel. I need to really guess how the kernel will operate
+before I even write it, which can be difficult. One incorrect move and things
+get invalidated. Perhaps I will have to implement my previously dismissed idea
+of writing the kernel in Java and having an actual system running on an
+existing JVM. Then once I get the compilation system setup and all of that I
+can then port it over to real hardware and such. However such a kernel would
+have to be setup so that it is efficient and does not run like garbage or
+break on real hardware. So the main important thing would be handling Java
+being like a CPU without an MMU. Then there would need to be recompilation to
+run code on the actual machine, but this can be done by recompiler that take
+byte code and turn it into byte code. Although the byte code to run on the JVM
+will be very magical. Thread.suspend() and Thread.resume() give me multi-
+threaded control although those methods are deprecated because they are
+deadlock-prone, so if I were to avoid using those I would have all the threads
+running at once or make a cooperative type system in the code.
+
+## 23:03
+
+I believe completely avoiding the use of assembly is suicidal as I need some
+kind of initialization system, however the assembly could just be used to jump
+into a giant precompiled Java blob of the bootloader after initializing some
+native callbacks to do somethings which are very special.
+
+## 23:16
+
+At least permitting assembly relaxes the need to make super special compilers
+that do magical stuff (like I planned on doing).
+
+## 25:35
+
+I believe my main problem is being too complex too soon, although doing it the
+semi-complex work will save time and implementation future work without any
+headaches hopefully. If I did a straight Java byte code to machine code then I
+would have to write byte code recompilers over and over again so what I am
+currently doing is good. MIPS will probably end up being the first supported
+thing because it is so simple to code for and a nice instruction set, there is
+also QEMU's support of it also.
+

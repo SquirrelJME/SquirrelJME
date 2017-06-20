@@ -1,0 +1,40 @@
+# 2016/01/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:34
+
+`java-library-3` will actually have to be split either now or in the future
+so it can become a bit modular (for example the compiler would be in separated
+bits).
+
+## 13:47
+
+Going to need a patch manager similar to the cache manager.
+
+## 17:58
+
+Probably time to add units into Squirrel Quarrel.
+
+## 18:55
+
+Game wise, the race and/or species is rather pointless except for the initial
+selection.
+
+## 19:10
+
+I suppose there will be three species initially and probably a fourth in the
+future:
+
+ 1. Squirrel (s)
+ 2. Plants (p)
+ 3. Trolls (t)
+
+## 20:33
+
+So now the units and such use original names, joy.
+

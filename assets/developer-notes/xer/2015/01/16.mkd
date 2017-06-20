@@ -1,0 +1,42 @@
+# 2015/01/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:24
+
+I can use lambdas to write the constant pool writing code.
+
+## 16:33
+
+Hairball needs a package runner so I can build and run arbitrary packages for
+testing, that is calling main of sorts on the build system.
+
+## 17:02
+
+And that class is forming now, so I can easily test any package on the host
+system. In fact, this system could end up being called by the test framework.
+
+## 17:22
+
+The JARs being built, require main methods though and such. So that explictely
+stating the main class is not required.
+
+## 18:00
+
+I was going to write something but I forgot. On another note, when I look at
+my HTML blog posts I can preview what they say when I look at them in the user
+interface which is quite neat. Moving to single HTML pages was also a good
+idea for my blog, although I need to fixup some lists I generated since they
+are broken and still in LaTeX.
+
+## 18:30
+
+Using an array in ConstantPool and making Entry be non-static can work out
+well for simplifying things. In the past I would have to be painful casts, but
+here I can just have the entry stuff return what I expect and it can do all of
+the checking. This should reduce the mess and simplify the loading code a bit.
+

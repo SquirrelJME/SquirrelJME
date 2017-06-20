@@ -1,0 +1,69 @@
+# 2015/12/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:22
+
+Ok, so I need to solve a generic read/write format for handling binary data
+and such. Due to the potential drop down nature of things, I suppose I should
+have a tierd approach. That is, the start is at `BinPrimary` then the format
+specifier gives the sub-class types which are available from this point. So
+basically the reader/writer builds a tree of sorts. So that will require some
+changes from my current design. The main thing being that my current one just
+has the class, I need to have actual parents and such. So essentially the root
+specifier will always be the primary. And thus, the binary interface will
+always return a primary. In most cases the stuff will not change, so it can be
+cached related to the binary interface in the outer class. That would at least
+reduce the memory strain because once a binary interface is loaded it can be
+reused over and over.
+
+## 12:40
+
+Then using a tree-like structure I can define a way to know of where things are
+in the tree along with having it so I can determine if something is actually
+even read or not. Due to the inheritive nature of the specifiers it would
+normally require a brute force approach to data. However by using a tree which
+knows the root and the positions of all other specifiers it can keep things in
+common on how to actually get them.
+
+## 12:45
+
+This also means that the primary stuff in the reader would have to just depend
+on the tree itself rather than just have multiple readers for types. The values
+could essentially be shared and cached in very common classes.
+
+## 13:12
+
+Leftovers are delicious.
+
+## 14:50
+
+The sky is a nice gray.
+
+## 16:00
+
+I suppose I require some kind of data range of sorts or an obtain from the
+specified range. However I still am going to use a stream based interface for
+data access. It will be a kind of action. I want a stream which is constant
+so it is only used once when it comes to methods. However I also want to be
+able to give results to the sub-methods that are streamed to do things. I
+suppose instead that `BDFStream` will be new for the required data where it is
+then acted by the specifier interfaces which take a `BDFStream` and perform
+calls on it.
+
+## 16:06
+
+For reading and writing, the data to be written will always be precomposed so
+that stuff such as sizes and such are already known.
+
+## 23:05
+
+I decided to learn a new language during my programing breaks. I decided on
+Chinese, the official langauge of China anyway which is Mandarin. I bought two
+books on the language. One book is for speaking it, the other is for reading
+and writing it. So I am going to practice it in my off time.
+

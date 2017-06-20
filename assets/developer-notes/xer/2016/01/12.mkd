@@ -1,0 +1,108 @@
+# 2016/01/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:03
+
+It is snowing.
+
+## 10:12
+
+The tricky part of ELF is representing the potentially very dynamic program
+headers and section headers which may change interpretation if the ELF is
+modified. So I suppose instead I should have adapters which are used by the
+capacity where then they perform no actual storage, but only reading. Then
+this way the ELF can be modified without requiring some magic. However,
+modification of ELF files will rely on many bytes being moved within the file
+to make room for things (if the stuff being added is in the center). Since
+pretty much everything in the ELF usually appears in order. For Foobarniux
+this file order will be important because the ELF will be memory mapped and
+then directly executed. One key thing however is how sections are pretty
+much always mapped to program headers. In retrospect, instead of modifying an
+existing ELF I can always have an export which writes the actual changes to
+a given DataAccessor (which is not itself, since that would corrupt the input
+while writing to the output unless a separate image is created and then once
+it has been written it is placed over it).
+
+## 10:21
+
+Well, actually thinking about it, the program and section stuff does not have
+to appear in order in the file for Foobarniux to work. The only thing it has
+to know about is where methods and reference indices are. These would be
+pointers from the base of the ELF.
+
+## 10:29
+
+Another alternative is to just have ELFBinary be read only, and then have a
+ELF writer of sorts.
+
+## 10:31
+
+Or I could go for a very plain binary format, one which is essentially just an
+index of contents (so it would be like a ZIP file). Would seem a bit strange
+but I could have executable classes and such be stored in ZIP files with all
+of their code and reference tables. Using a ZIP would actually be rather
+easy to do. The only problem would be finding the end of the central index, but
+the size of the executable would be known. ZIP seems like a cop out but it does
+work and for what I need it can be rather simple (just code blobs).
+
+## 10:37
+
+I can still keep my existing ELF library code later because I will need it to
+load the kernel and such for bootstraps. Also using ZIP files means I do not
+need to perform section magic and I can have resources that can be used by the
+kernel (manifests, resources, images, etc.).
+
+## 11:12
+
+On the other hand, ZIP may be a bit too complex. All I need is a simple format
+which can store code and point to it. KBF is rather complex as it has multiple
+depth usage of classes and such. What I mean is that is required lots and lots
+of structures for storing data. However, this alternative format I can create
+can just be a flat formatted file which can store the desired information as
+needed. I can have it be rather relative. I can have a start of class
+file, followed by method code (as needed), any fields or annotations in it.
+Then end it with an end of class. Then having a simple table of contents
+format will make it simple without requiring potential massive work needing
+to handle sub-tables and such.
+
+## 11:24
+
+The main consideration is storage of the global constant pool, reference table,
+and the string table.
+
+## 11:28
+
+This information can be stored at the start which is then followed by the
+class data and then its code areas and such.
+
+## 13:44
+
+Lots and lots of snow. Also the radar shows mesocyclones in the middle of the
+large light blue areaas. I have not seen that before. The snow passing where
+I am right now is about 35dBZ.
+
+## 13:47
+
+I must concentrate and write this code.
+
+## 14:05
+
+The `IndexedSetStrings` class can handle situations where constants and
+references use strings.
+
+## 15:40
+
+It is extremely windy outside, cannot see much at all. I suppose this makes it
+a blizzard.
+
+## 20:57
+
+I suppose for the KBF, it will generally be just a large set of entries in
+a large table. That would keep things rather simple since most of the data
+would be shared between tables.
+

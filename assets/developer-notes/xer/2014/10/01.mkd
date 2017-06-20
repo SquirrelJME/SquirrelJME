@@ -1,0 +1,72 @@
+# 2014/10/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:00
+
+New month, this means statistic generation time. Made a bunch of removals and
+a bunch of additions, but very even scaled. I spent most of the month
+attempting to get my compiler to compile (two iterations, the last one is
+final). However I stopped doing that to work on the compiler-wrapper which
+works quite well so far. I need to get into kernel land soon with actual
+booting of my own code, and leveraging a preexisting compiler will work
+despite not being able to self host when I get to that point before the
+compiler is written. For this month of October I will have to get the
+compiler-wrapper working, have some kind of compilation system to native code
+and hopefully have booting done. I will also need a testing system where I can
+produce and reproduce results, I can perhaps use compiler-wrapper, but the
+test system will help in conformity and bug searching.
+
+    
+    
+    [x-date-201409 --] x-date-201410]
+    Subtractions: 27013, Additions: 38953
+    
+    Totals grouped by language (dominant language first):
+    java:         16013 (93.00%)
+    sh:            1206 (7.00%)
+    
+
+## 02:39
+
+Now output files are generated, but after output it appears it is trying to
+delete a file, and I wonder which.
+
+## 03:34
+
+ByteArrayFileChannel's write was very broken but now that is fixed and works
+now. Also the compiler invokes fully and compiles code at least for the
+k8-progress package. I also need to change the writing stuff for the shadowing
+a bit so I can access the stuff easier, and where the shadow reflects modified
+changes of the source.
+
+## 07:00
+
+I have all of that code and the shadow cache stuff now (except for writing JAR
+files), and it appears that the shadow cache stuff is never called.
+
+## 07:14
+
+Actually, implCloseChannel() must be called on said objects otherwise the
+normal close in the channel will just call the same method. And now it works.
+So the only thing to do at this point, is to actually generate JAR files. Then
+once those are generated, go up to another dependency and build that and use
+the JAR file and such.
+
+## 22:42
+
+Naming the JAR is easy, however I have colons in the version number which
+complicates things a bit. I need to switch to a new character, perhaps "--"
+instead of just ":", that would complicate parsing version numbers a bit but
+not too much hopefully.
+
+## 23:54
+
+JAR files are created, now they just to be put in the classpath for the
+compiler to use. One thing that needs fixing is sharing of InternalDoBuilds
+because otherwise tons are created needlessly for the same package.
+

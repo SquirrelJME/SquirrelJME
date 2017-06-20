@@ -1,0 +1,69 @@
+# 2014/10/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:28
+
+Dumping all of the classes in a nice format is going to be quite complex, I
+will need a WordWrapIndentWriter of sorts when lines extend beyond the max,
+this way all the output code will be neat and I do not have to worry about how
+to print wrapping stuff myself. I can do it afterwards, after writing all of
+the class information because a PrintWriter can wrap it.
+
+## 11:36
+
+Seems static inner classes are not part of any outer class, although
+technically they are not of any class (they are really outer level classes
+with access to some other class they reside inside of).
+
+## 13:13
+
+Actually, innerClasses() includes static and non-static ones, just that static
+ones are added to the top level list.
+
+## 14:01
+
+Seems with a missing LanguageVersion, the javadoc tool assumes ancient non-
+generic Java and strips generic information from sources.
+
+## 14:46
+
+Base class stuff and annotations are handled, for the most part. After
+finishing off the remaining bits of it, will need to move to fields and
+methods.
+
+## 17:46
+
+That pretty printer will be specifically for source code, and should be able
+to extend JavaDoc comments, and do a bunch of other things.
+
+## 18:57
+
+Kind of feels like I am missing something I do not know about. What I need to
+handle are constructors and annotation specific stuff. Also need to do
+imports. The actual import stuff is going to be fun though.
+
+## 22:08
+
+Most of it is complete, just need to do constructors then import statements.
+Those import statements will be a bit complex though. Also another thing is
+that I will have to write that special writer for output cleaner source code
+to fit within my 79 line limit. It has to be smart, but it would not require
+insane processing. Methods for example, arguments use commas to split and they
+are not used anywhere else. That is just a small hint. One major thing I
+forgot was variable arguments, how could I forget that.
+
+## 23:21
+
+Well, I programmed this all day. Still need to do constructors and imports,
+but I did clean up a few things (like primitive values and such).
+
+## 23:48
+
+Seems defaults are before abstracts in interfaces, cannot seem to fix it but I
+suppose it is a good order so to speak.
+

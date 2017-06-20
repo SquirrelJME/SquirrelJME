@@ -1,0 +1,132 @@
+# 2015/04/17
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:51
+
+I will need something to keep an eye on the values and types a register will
+be. And that will be what Mapping is for.
+
+## 13:29
+
+A build environment would be nice on my outdated Palm OS PDA. I could write a
+very basic Linux user mode emulation environment that emulates Linux MIPS
+systems. Linux because it is the simplest and a usermode interface would
+simplify things as I would not need to write PCI/USB handlers and such. There
+would be no sound though. But if I could run OpenJDK albiet very slowly it
+could work out when it is needed. It would be insanely slow but I would have
+at least a bit more capable bootstrap environment for my OS.
+
+## 14:02
+
+At the minimum I would need a basic Java 8 run-time.
+
+## 14:21
+
+I need to create a compiler front end, sort of like SimpleCompiler but a bit
+different. It will use the ServiceLoader and be optionally specified a
+ClassLoader. I could code it in a way where it can be used by hairball and the
+kernel itself so that if I want a completely different compiler backend it can
+be chosen instead. Then when building the kernel and such, I could specify
+that a backend could be specified as needed.
+
+## 14:43
+
+It would be best if I decoupled the dynarec, that way I can easily change it
+as needed. Then also possible add the ability to use different recompilers if
+I ever need to change it in the future. The the kernel-platform packages will
+need a requirement of not depending on the dynarec for anything. Then I can
+modify hairball to support multiple backends.
+
+## 15:40
+
+The form stuff is fine, but their dependencies on the existing dynarec needs
+to go.
+
+## 16:17
+
+Going to also remove FormCodeProfile as it is extra unneeded gunk.
+
+## 16:29
+
+FormCodeProfile is just going to have meta data, which the translated code
+that is read from a class file will use. That way when the decoder is run on
+the Java class file it uses that instead of a direct constant pool reference
+which gets ugly, so it will be preconverted although it might not be
+completely perfect.
+
+## 16:31
+
+I am going to need new names for the existing narf and poit dynarec stuff. No
+forget that. I just need to cleanup some things in it, such as splitting off
+the Java register creation code.
+
+## 17:41
+
+Now that everything has been moved it is all broken. So now comes the fixing
+part.
+
+## 18:12
+
+I believe the best thing so that the kernel building does not mess with the
+package manager, seeing as they are both hairball would be to split the kernel
+building stuff off. So there would be k8-hairball and k8-hairball-os. Hairball
+could still keep some other stuff, but it would not have to depend on the
+core-compiler-support library. And like before splitting things up, I can make
+changes to the kernel builder and other things without messing with the
+package manager stuff since that is virtually staying the same regardless.
+
+## 18:55
+
+Transcompiler.Lang can just become String to keep it simple, since all it
+contains is a single string.
+
+## 19:09
+
+Now onto narf-compiler as narf-core now can be compiled.
+
+## 19:16
+
+CPUData completely removed the need for FormCodeProfile.
+
+## 19:49
+
+Now onto the PowerPC NARF backend.
+
+## 20:01
+
+PPC Compiler done, now onto the class file loader which will require more work
+than the others since most of the work as been simple renaming.
+
+## 20:07
+
+I shall return to it after I eat.
+
+## 20:19
+
+Or rather, while my food cooks.
+
+## 20:28
+
+Looks like it might be best to just rewrite it and bring in any goodies. Some
+of the stuff in the binary loader is itself ugly and I have been planning to
+rewrite the class file loader, so perhaps that is to be done now.
+
+## 23:42
+
+Well the old Java decoder to NARF DecodedMethod is quite ugly itself, and it
+depends heavily on the old Java binary loader. So I will have to rewrite that
+also. However
+
+## 23:56
+
+Day almost up. My code is split up even more. Right now I have a TODO in the
+Java class loader. Fails in about 6 to 9 seconds on this laptop. The main
+thing is since I am currently only rewriting the class loader, everything else
+can remain cached. But the class loader and the the decompiler are very bad
+technical debt lying around.
+

@@ -1,0 +1,84 @@
+# 2014/10/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:47
+
+Abstract classes got private constructors, so the only thing I can determine
+which causes that is that the isPrivate() goes true for package private and
+normal private. So moving package private ahead and then forcing a private
+constructor to become package private if it would noinit when abstract. The
+next thing to do is, if a superclass was package private and it got bumped to
+a higher supertype, borrow all the methods from the supertype if they do not
+already exist in the class.
+
+## 03:00
+
+I also need to recurse generic stuff because that is used.
+
+## 03:19
+
+Also for the newline and tab adding code when I get to it, I know how it will
+be done. Each line will be read with a base indentation level from the number
+of tabs at the start. If the line is longer than 78 columns or so then it will
+be split at a comma. If there is no comma but a string is there, it will be
+sliced to fit as needed. However if there is a comma and a string then the
+string will be split. If there are no strings eligible to be split and no
+commas, then it is on consecutive joins where whitespace is not counted.
+Commas will always be before the newline. Any new lines which are created will
+have an addition indentation level. Another thing I have to solve is where a
+class extends a private (including package) class which implements something
+but is missing from an interface implementation. This means I will have to go
+through interfaces to see if everything that is abstract is implemented in the
+current class if it is not abstract itself. Then if the method is missing in
+definition it would be declared. However, generics complicate things a bit.
+The only classes which give me this problem so far are the two StringBuilder
+and StringBuffer classes. Although I only see the error for StringBuilder.
+Everything in StringBuffer is synchronized though so that would have to
+override.
+
+## 11:59
+
+All the classes were generated, need fixes. Perhaps I should remove @Override.
+
+## 13:29
+
+The StringBuilder and StringBuffer classes require manual fixing. There needs
+to be a package private class "javax.naming.NameImpl" as that is used and is
+part of a protected field.
+
+## 13:46
+
+Never knew Java had an authentication system that could do logins and such.
+Although, I do wonder if it can be faked.
+
+## 13:54
+
+Well you can trick anything. Although if the other end of the auth system is
+the kernel and the kernel asks you about authentication to open a server
+socket then the following may occur. If you faked it your program might
+proceed then just fail when the socket is opened. Or do something else such as
+a virtual local only socket. So the classpath would have to contain core
+modules for stuff such as password logins and such. So this would mean that
+the kernel handles the login of users. The kernel can probably do a better job
+than userspace when it comes to passwords, because some userspace app could
+inject a key logger. So the kernel would have to make it so key logging and
+such is not possible. Although, if you were to debug the raw inputs (say with
+USB snooping) then such protections would fail. So some actions such as that
+may require a login to work. So this way, authentication could be quite nice.
+There could be a captcha of sorts or a password request.
+
+## 14:36
+
+The class library at least in the later parts is rather interdependent.
+
+## 16:04
+
+What will happen next is writing my neat code writer, then merge in the
+classes and compile the runtime fixing any compilation issues (while keeping
+it mostly blank).
+

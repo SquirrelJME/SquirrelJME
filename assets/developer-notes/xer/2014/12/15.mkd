@@ -1,0 +1,35 @@
+# 2014/12/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 04:58
+
+Had a nose bleed, but my visit is almost over. Was writing generators but I
+believe if I can pass my own FileChannel I can potentially combine multiple
+generators, so a PowerPC generator could be directly attached to a MIPS one
+for example, or perhaps one for MicroMIPS. This way generators for the tiny
+form of things can be done in separate classes.
+
+## 08:07
+
+Going to use device trees (ePAPR) since it is a nice format and could possibly
+help portability between OSes as a standard definition. Since I already like
+Open Firmware's way of doing things with the device tree it is a plus. Also
+for my OS, I planned to use it for everything even before learning that the
+Linux kernel switched to it.
+
+## 15:18
+
+Going to simplify builder once again since it I can just use the standard file
+manager provided by the compiler as it must be able to handle JAR files.
+
+## 20:53
+
+I believe the best thing to do for the bootloaders is to keep them as minimal
+assembly as required that way less work is duplicated. They will just setup a
+basic interface and jump to Java code.
+

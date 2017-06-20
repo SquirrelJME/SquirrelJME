@@ -1,0 +1,23 @@
+# 2015/07/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:53
+
+I should parse the enumerations and then generate methods from them rather
+than having sub enumerations. That would be slower generation but much faster
+compilation.
+
+## 11:03
+
+That was simple to implement although yesterday it was impossible.
+
+## 13:14
+
+For Copy, I should put alias into another operation type since having that in
+copy complicates the operation greatly.
+

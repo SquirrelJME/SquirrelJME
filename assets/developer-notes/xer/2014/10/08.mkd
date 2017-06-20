@@ -1,0 +1,56 @@
+# 2014/10/08
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:??
+
+I believe my simple compiler is not simple enough, it should probably just
+handle Java for the most part. Although in the future I will need C support. I
+should perhaps keep it a simple single-pass code generation engine of sorts
+that runs through a file, obtains a bunch of information, then generates code
+from it. There can then be a common code generator of sorts.
+
+## 06:03
+
+Have this idea for filesystem stuff, in the event that there is no real time
+clock, use some other time system if possible. Perhaps a time since uptime
+past a certain mount count. On a mount of a filesystem increase the mount
+number by one, this will be the master time clock. Then, the number of clock
+pulses that have passed will be known by a CPU (even if by a simple loop which
+if that is the only way it will be the number of loop runs). So if a system
+has been up for 123,456 seconds (about 34 hours) and the current mount number
+on the file system is 789, then the file time will be 789:123,456 and a file
+created at an even higher uptime of 234,567 on a previous mount of say 788
+will be older.
+
+## 06:22
+
+For that to work though, time since last mount would be used instead of
+uptime, although both would be atomic. I wonder how most code that relies on
+time would handle cases where wall time that we use is undefined.
+
+## 15:47
+
+Have not been able to code much these days, just cannot concentrate on
+programming.
+
+## 16:45
+
+Marble Madness has some nice music, I just cannot concentrate on writing this
+parser for tokens, thoughts too much on the native class loader and the class
+compiler. Thoughts outside around in the real world. Have not played the piano
+in awhile, perhaps for a few months.
+
+## 17:01
+
+Looking at my since dates, not much from June exists in the current source
+tree after prunes of old code and such. June was echelon month where I worked
+on pretty much all of echelon, and now none of it exists. But, I learned from
+that experience and now I have compiler-wrapper. However I can sort of dip
+back into my old code writing the class format handler since I did have
+loadable classes then.
+

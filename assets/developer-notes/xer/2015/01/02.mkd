@@ -1,0 +1,30 @@
+# 2015/01/02
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 21:30
+
+Thinking about the package manager stuff, the singular set of paths would make
+my current plans not possible. My plan is to have user-only packages, then
+packages for the local system, then remotely managed packages. In a live CD
+sense, the remote area will just be the CD mounted at that specified point
+while local will either be on a disk somewhere or existing in memory.
+Installing the system is as simple as copying files and setting up a boot
+loader to load the system.
+
+## 21:59
+
+The addition of a special cross zone makes things easier as I can setup a
+cross system without magical chroot magic.
+
+## 23:14
+
+Another thing I can do is require a date code for the k8 help snippets so that
+say if they get translated in the future (this is the help documentation) if
+the source stuff has been changed then the newest information is always shown.
+So this would be sort of a mini version control thing of sorts.
+

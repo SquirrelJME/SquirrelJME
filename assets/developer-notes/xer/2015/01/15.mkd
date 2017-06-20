@@ -1,0 +1,33 @@
+# 2015/01/15
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:54
+
+One thing classes must lack is a constant pool since that complicates things
+slightly when loading and gets rather messy when a table must be looked up.
+
+## 08:15
+
+Need to make all the logging stuff package private instead of private so it
+may be reused when needed.
+
+## 09:58
+
+Whoops, accidently forked my main tree, no big deal.
+
+## 10:07
+
+Going to need a better ConstantPool class than last time around.
+
+## 14:25
+
+I have this plan to write a StarCraft clone, perhaps I can make it part of my
+OS for demonstration purposes, and to have a game being included in it since
+it is a game itself. It could also help with testing the runtime on various
+systems to see how well it performs and if it performs correctly.
+

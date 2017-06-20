@@ -1,0 +1,41 @@
+# 2015/10/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:40
+
+Instead of the MutableTable stuff returning longs, it should just return the
+index of the entries instead.
+
+## 14:46
+
+Feels like my binary stuff is going to get a bit bloaty with a bunch of inner
+classes and such. I could also shorten the "Binary" in front to just "Bin" and
+separate the constant pool stuff along with entries.
+
+## 17:16
+
+I can also probably make the class file format support code much better also
+since right now it is really ugly.
+
+## 17:29
+
+Can also use more exceptions and use those for the DynaRec rather than using
+plain exceptions. This will make code specific exceptions easier to catch
+rather than have them as code problems (such as NullPointerException).
+
+## 18:06
+
+Now to fixup the NARF dynarec before I move on to a new class loading code.
+
+## 22:29
+
+The new loader should be more concise than previously. Before I went cache
+crazy. Now I am still going to cache but not go crazy as before. The
+constructor in the binary format will initialize basic known information and
+the layout of the class (where things are).
+

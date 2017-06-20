@@ -1,0 +1,41 @@
+# 2015/02/11
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:30
+
+SQ needs multiplayer for testing things, so will need a basic multicast thing
+on the network.
+
+## 13:14
+
+Going to need a slight re-enginerring of the Executor code. I will move the
+multicasting and the network related stuff into the client code so that way it
+is a bit better.
+
+## 17:48
+
+Now I have networking going on, I just need to synchronize the game state for
+clients which means it will essentially be a giant replay that is sent to
+clients.
+
+## 19:25
+
+Replay sending works except for the missing clients that the joining players
+do not know about, so I know a simple solution of how to fix that issue by
+having the master allocate a "replay" player before it is added, or maybe just
+have ADD_CLIENT make a fake player as needed.
+
+## 20:59
+
+Networking works now but either the client or the server likes to burn through
+all of the CPU at once.
+
+## 21:45
+
+Assigning remote players to multiple clients works out.
+

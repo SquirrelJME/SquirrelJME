@@ -1,0 +1,98 @@
+# 2016/01/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:36
+
+Looks like classes might not be read properly (their buffers) in the class
+loader. I was never increasing `at`. I also decided to just add hairball to
+the default primary `HairballClassLoader`.
+
+## 07:48
+
+The class for `BuildFailedException` is being loaded however and the
+`ClassLoader` returns it but it seems it wants to check a `URLClassLoader`
+instead after it.
+
+## 09:15
+
+It is possible that the `getBinaryContents()` for `PackageStatus` may be
+incorrect by using old and bad package contents. I should actually check the
+file date to see if it has changed, if it has then a new contents should be
+initialized.
+
+## 09:23
+
+When a package is freshly built, trying to use it in the class loader fails
+with being unable to find any classes.
+
+## 09:33
+
+When it comes to `PackageContents`, there is duplicated code with times and
+such. I can really just have another class which can handle such things for me
+and to reduce said duplicate code. There can also be the potential for
+better efficiency and stability.
+
+## 09:59
+
+Having `HairballClassLoader` use package statuses instead, might be better.
+That way the binaries can change and it could still find them.
+
+## 12:55
+
+Did not know that Debian comes with a netbeans package. However I need to
+upgrade I believe to support Java 8 anyway. I can use JDB but using a GUI
+debugger might be a bit easier.
+
+## 13:29
+
+i might just have to revert all these changes because I have no idea why this
+is happening and I am in a situation where it is difficult to use a debugger.
+
+## 13:41
+
+It is as if after compilation URLClassLoader just decides to die and be
+worthless.
+
+## 15:43
+
+For `HairballClassLoader` I can modify it so everything is based on resources
+instead of just names of classes. Then those references to resources can be
+cached for the most part.
+
+## 15:47
+
+Actually `HairballClassLoader` might not even have to cache anything at all
+when I use the ready and might not even need the ready. It is up to the
+`loadClass()` method to check if a class is already loaded. So having my
+own cache is kind of pointless. The only thing that is needed is there has to
+be a lock on the name. There is `getClassLoadingLock(String)` which goes by
+the name of a class.
+
+## 16:42
+
+So the classloader is much simpler now and I still get the class not found
+issues. I believe online searches have shown these problems also. I suppose
+the only remaining alternative is to actually check if the system class loader
+is a URLClassLoader and then just plop on all the JARs. That may work.
+
+## 17:58
+
+That might actually be a bit hacky. It might be best to just modify the
+bootstrap setup system so that it just does consecutive calls rather than
+having hairball itself just be launched directly rather than have a large
+`URLClassLoader` bridge. That would require the execution scripts to do more
+work though.
+
+## 18:09
+
+I will need a script in Java which checks the version and if it is old then a
+bootstrap is used, otherwise if Java 8 is available just invoke the bootstrap
+directly. I would need three scripts still though, for UNIX, DOS, and NT. This
+new hairball would probably not have the class loading issues. It would also
+probably be much easier to maintain without requiring tons of ugly code.
+

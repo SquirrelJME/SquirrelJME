@@ -1,0 +1,37 @@
+# 2014/09/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:47
+
+Ok, for the simplified compiler I need to keep things simple. Before I had
+very nice and powerful, but rather cumbersome beacon and unit locators. For
+compilation, the only thing that matters it the classpath. Any input source
+file along with other class files and source files in other directories are
+included. This could also include ZIP files and such. However lookup of
+objects is the same for all of them regardless. So all I need is handling of
+whatever a class path could be, either a real directory, a JAR, or maybe
+temporary stuff in memory possibly. If I keep that simple then lookup of
+objects remains simple. Then compilation of languages could be directly
+referenced. Java would be treated as normal while C would require pragmas to
+set class and package information, possibly even annotations and such. There
+is decoration so that C functions can call Java code and vice versa.
+
+## 01:02
+
+For loading actual objects I can do the BinaryClass and BinaryKBF stuff,
+implement those so they can be used by the compiler to get symbols and to make
+new binaries, and so it can be used by the kernel JIT. If I keep the JIT stuff
+in one place, I could at least write it once as it would all use a common
+intermediate interface anyway. Not sure of the intermediate language yet but
+maybe something CISC or VLIW like, but not overly complex. The byte code would
+need forward and backward referencing so that it could be recompiled better
+since the more information the better. Previously with my previous compiler I
+would have to had written everything twice, a fat one for userspace stuff and
+a newer lean for usage in the kernel. I could just write the lean one and use
+that for both, it would save considerable time.
+

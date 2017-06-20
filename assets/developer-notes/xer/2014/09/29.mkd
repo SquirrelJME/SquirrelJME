@@ -1,0 +1,116 @@
+# 2014/09/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:33
+
+I decided to put the open for a file through the stat class because that
+contains a bunch of file information.
+
+## 03:09
+
+Files are read by Oracle's Java compiler, however they just contain NUL
+characters so the getCharSequence is incorrect.
+
+## 03:13
+
+Would seem that CharBuffer is not the thing that I want.
+
+## 03:35
+
+The compiler appears to compile files, but it does not seem to output them
+anywhere at all. If I change the code so that it fails to compile (by changing
+all a to e), that results in failure. So there is more to the puzzle to have
+it actually write files. Unless it is related to the ClassLoader possibly.
+
+## 03:41
+
+Actually I figured it out, I perform an ls on the directory I am in and the
+class files all popped up there, so it must be where the ClassLoader
+determines the files should be placed. Possibly not.
+
+## 03:59
+
+I believe it is the hasLocation in JFM, because right now I only say that a
+location is valid if the configuration has a path for it. However, the
+compiler might see the false for CLASS_OUTPUT as "Cannot output class files,
+so use a default mechanism".
+
+## 04:05
+
+Does not appear to be the case at all, the compiler still places them in the
+current directory. I will see if StandardJavaFileManager causes a difference
+compared to a normal JavaFileManager, I would not need to change any code
+because that interface extends the one I am replacing.
+
+## 04:16
+
+Using StandardJavaFileManager makes no difference at all.
+
+## 06:21
+
+I am completely stuck, before it was using list but now it does not. I added
+list in d025550fa05972bdede00fdd008553915f20a450. That was when I still had
+domains, but that would now make much of a difference.
+
+## 06:47
+
+I believe I may have figured it out, the base file manager being used could be
+null, and if a null is passed to the compiler then it uses the standard file
+manager instead. Forcing the value of null in the call pass, causes the same
+result, class files in current dir.
+
+## 07:31
+
+Had to eat but this is the case. I also forgot to write a throw in
+ProxyJavaFileManager to check the configuration so the base was never set,
+however the null pointer checks in other places make it more robust. Will need
+to write an arbitrator so that files are written to memory rather than the
+disk for where the API is used by the build package. This way, the source
+directory stays pristine.
+
+## 08:06
+
+I will need to implement list which means more manager work for stats and
+such.
+
+## 09:32
+
+Before I proceed I will need to implement access into JAR files so I can list
+the contents of the bootclasspath JARs on the host.
+
+## 09:55
+
+The compiler has a massive call stack along with my stuff totalling 40.
+Another thing I can tell is that the ZIP interface is really ancient, uses
+Enumeration for one.
+
+## 11:33
+
+I believe I have a working ls for JarHandler, now I just need to implement
+list in JFM: "PLATFORM_CLASS_PATH" "progress" "[CLASS]" "false".
+
+## 21:03
+
+Doing the actual ls appears to be simple.
+
+## 21:22
+
+And my ls was actually complicating things by adding an exploded string array
+(from the path) to the ls in StatControl. That of which, in SC already knows
+the current location because it is cached, so the implementation gets much
+simpler after that.
+
+## 22:21
+
+Actually I am overcomplicating ls in stat, I do all this fancy explosion but
+the path is already known and just ls in stat (at least for JAR) works.
+
+## 22:40
+
+MountTree ls works now.
+

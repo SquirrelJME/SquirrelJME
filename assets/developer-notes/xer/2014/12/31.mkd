@@ -1,0 +1,32 @@
+# 2014/12/31
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:58
+
+The new year approaches.
+
+## 19:58
+
+The good thing is POSIX wise is that only two directories are required in
+root, and those are "dev" and "tmp". Because in Linux and BSD there are tons
+of directories in /, and stuff like /opt/ and /usr/. Very messy. In k8 there
+will only be 4 directories above the standard (since it is all Java) and those
+will be /local/ (This computer only), /network/ (Based on possibly a remote
+network location if this were a thin client using something like NFS, network
+would be that, otherwise /network/ is just the same as /local/), /user/ (the
+current user which is visible to the process), and /cards/ (sub directories
+inside of this contain individual users, if the user named "foo" exists they
+will own the subdirectory "/cards/foo", if a process is logged in as that user
+then /user/ will point to that directory.
+
+## 20:03
+
+Actually cards would be a bad idea, users would exist in their subdirectories
+as a users directory in /local/ or /network/. So there can be global network
+users which are visible.
+

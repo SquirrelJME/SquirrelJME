@@ -1,0 +1,36 @@
+# 2015/10/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 01:41
+
+With...
+
+` VER: 1.8 JVM: OpenJDK Server VM (25.40-b08) JRT: Oracle Corporation
+(1.8.0_40-internal) OS : Linux (3.2.0-4-686-pae, i386) SHL: unix `
+
+Results in the given times...
+
+` real 3m6.814s user 2m57.243s sys 0m8.061s `
+
+## 01:51
+
+Even though this is a 700MHz Pentium 3 Coppermine, the JIT just makes it much
+faster.
+
+## 16:38
+
+Appears that sorting the PowerPC operations is much much nicer than previously
+having them jumbled up. I should also add an untouched field which can
+indicate instructions which are being data requested but have not be
+normalized and confirmed yet.
+
+## 19:47
+
+Made a script to count words. I say the much. and the HTML tags appear very
+often. The tags are quite literally at the top.
+

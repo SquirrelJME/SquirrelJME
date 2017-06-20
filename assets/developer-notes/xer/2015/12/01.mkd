@@ -1,0 +1,43 @@
+# 2015/12/01
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:25
+
+New month, my work has slowed down these days. On another note I noticed that
+PowerPC's AltiVec has a Java mode. That may be useful. Decided to install
+pdfgrep and searching for something unrelated I saw a reference to Java and it
+was that. MIPS r5 also has a NAN signalling which disables the stuff if a bit
+is enabled, for Java compatibility. I wonder if SPARC's floating point rules
+completely match Java seeing that Sun created SPARC and Java.
+
+## 11:21
+
+May as well rewrite some of the architecture stuff and perhaps allow the
+package manager access to the contents of packages to read data files from.
+That would at least allow for some things. The base hairball packaging system
+is slightly a bit ugly however. It does need cleaning up.
+
+## 12:28
+
+A dependency walker would be useful, one which can handle some traversal
+flags and such.
+
+## 15:46
+
+Actually, I believe I am going to refactor my room because I have not done so
+in awhile. I may also be able to get some more space and have it a bit
+organized. It may also permit me to create room for my server rack so it can be
+reinstated. However, due to the type of structure I live in, the rack will have
+to be limited in weight so the floor does not collapse. I could however get
+a large piece of wood so that the weight can get distributed more on a big
+piece of wood.
+
+## 22:12
+
+Have not exactly moved anything at all in my room so far.
+

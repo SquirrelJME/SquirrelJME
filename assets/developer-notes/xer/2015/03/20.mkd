@@ -1,0 +1,27 @@
+# 2015/03/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:55
+
+Busy busy, will most likely not get any coding done today.
+
+## 12:59
+
+Coming up on one year since k8 started. I wonder if there is a way I can
+colorize all the commits I have made. Would probably have to export to git,
+then run a git stat program on it.
+
+## 13:20
+
+Ran gitstats on the code. So far I am rather active "329 days, 301 active days
+(91.49%)".
+
+## 13:34
+
+Average commits per tag (about every month) is 295.
+

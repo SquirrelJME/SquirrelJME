@@ -1,0 +1,118 @@
+# 2014/08/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:46
+
+I just cannot think of how I should proceed for AnnotatedEnumThunk. I have the
+idea to use a protected class to be used with the sub-search mechanism.
+
+## 04:00
+
+I would use that rather than a method which takes tens of arguments.
+
+## 05:02
+
+Actually, what I can do is rather than storing the enumeration class and
+anything it contains, is to instead cache it at the start then I can run
+through it whenever some request is made with all of them.
+
+## 06:33
+
+My ArgumentParsing is far too complex, it currently is about just under 700
+lines.
+
+## 06:48
+
+I broke my code stripping the class, that way it can be rewritten better. I
+solved a problem that has been on my mind coding all of this, extending off an
+enumeration and a handler. What I can do is pass an enumeration and some class
+that handles the specific data (at least for the argument parser). This way I
+do not have to have super complex enumerations extending off some handler and
+the Enum class.
+
+## 06:55
+
+I will have to figure out something because this is turning into a generic
+mess with type parameters thrown everywhere. A AnnotatedEnumThunk is wrong
+because that is for enumerations, I need some kind of super generic annotation
+handling thing that can run through anything that is annotated.
+
+## 07:06
+
+A class which iterates through annotations at runtime would be handy,
+especially if it were an Iterator of sorts or an Iterable.
+
+## 07:39
+
+A class which can take in AnnotatedElement (an array) and can iterate through
+it multiple times if needed, that could be done with an ArrayIterable which is
+similar to ArrayIterator except it creates Iterators instead.
+
+## 07:48
+
+Now with that I can use the iterable to assist in the annotation handler
+class. Then the annotation processor thing could also be used in my compiler
+and not just handling a bunch of command line options.
+
+## 08:22
+
+For fun I decided on appending a ZIP file of a source checkout to the actual
+repository when other/mkfossil.sh is executed. Bloats the space a bit, but it
+could be handy in extracting and building a source database while having the
+original repository on hand.
+
+## 08:39
+
+Luckily for me, my fancy upgraded fossil is backwards compatible with my more
+out of date fossil installations on my other systems. So I do not have to
+worry about that much at all. The appended ZIP file could also make a static
+repository on say a CD-ROM distribution a bit more sane so to speak.
+
+## 08:45
+
+But, enough distractions sort of, I wonder what the best way it would be to
+use something that iterates over AnnotatedElement. Perhaps a class which is
+constructed by an Iterable of them, of which that class itself (not the one
+passed to the constructor) is Iterable with a handler of sorts for each entry.
+Then with that, a "new" syntax for loop could be used "for (foo x : bar)". The
+handler will be called on every invocation (if wanted to handle). This way it
+is rather generic and can be done on anything. Then I can squash
+AnnotatedEnumThunk and replace it with that, in which ArgumentParsing uses
+that class instead of this giant mess I have now.
+
+## 09:32
+
+Perhaps an Iterable of Iterables that handle Annotations, although it could be
+very handy for a very singular annotation processor which is just an iterable
+of some handler type. Then stack a grouped version of that on top or perhaps a
+very generic class which can work on any set of iterable and run a callback of
+sorts. So an Iterable which takes an AnnotatedElement and emits Iterators for
+annotations. Then another class that does stuff on top of that. That could
+work. Now I need to figure out what to call it, and that could take a few
+hours. Something short. Perhaps something to the point, such as
+IterableAnnotatedElement, but that is a bit long at 25 characters. Suppose 25
+is not that bad.
+
+## 10:02
+
+Not sure if I mentioned this, but in either case I can add a new part that
+exists above the AnnotatedElement that Iterates through those, but that would
+be rather complex and would be a specialized class when it can be done in a
+singular way. So perhaps a Factory class (despite being supposedly bad) which
+creates inner iterables for iteration handling and such.
+
+## 10:34
+
+My blog is quite long now, around about 2600 lines of LaTeX. I am currently
+tired so I am not sure if I will be capable of writing the factory or other
+classes. Suppose I will watch Star Trek Voyager and fall asleep somehow.
+
+## 19:04
+
+Awake now, sort of. I will have to resume work.
+

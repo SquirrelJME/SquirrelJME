@@ -1,0 +1,45 @@
+# 2016/02/21
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:39
+
+Actually cleaned part of my room today.
+
+## 10:43
+
+Ok, so would the best thing to do would be a kind of updated interface? I
+suppose what I should do is make the editors thread safe and such, that will
+make things easier to use and such.
+
+## 10:58
+
+At least with it being thread safe I can be sure of values which are stale in
+case a single thread is used for multiple instructions.
+
+## 11:08
+
+Ok, so very complex this alignment potential for fields. I suppose I go through
+all fields, if there is no alignment then the total bits used and the current
+bit position is taken. Then if a field has an alignment, it will get a bonus
+to its position after the instruction.
+
+## 11:13
+
+I also have to handle cases where fields are aliased over each other (such as
+in PowerPC, for the MSR I have the total bit set and the high/low for the same
+location). Otherwise for certain instructions things will just run off. However
+this is easier for me because all fields which I define are in the order of
+their base shift.
+
+## 11:41
+
+Ok so this is rather complex when it comes to this code. Essentially what can
+happen is that fields can be rather jumpy. However I suppose I should only
+worry about minimal fields. I can also just skip aligned instructions for now
+and then add it later when required.
+

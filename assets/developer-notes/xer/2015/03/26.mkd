@@ -1,0 +1,21 @@
+# 2015/03/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:28
+
+I am just going to wipe the Allocation/Allocator and just stick with
+Allocator. If I need the stuff in them, I can just look at history since it is
+there for a reason.
+
+## 15:34
+
+Allocator is going to act for both of them now. Any registers spaces which are
+saved will be placed in entries of sorts. Another thing I need to do is fix up
+the assembler so fragments are possible. Basically the assembler is split so
+where most of the previous code ends up being in fragments instead.
+

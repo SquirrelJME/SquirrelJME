@@ -1,0 +1,77 @@
+# 2015/04/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:18
+
+My XPM decoder is a bit messy and could be optimized much better. I am also
+missing support for X11 color names as color input.
+
+## 15:42
+
+The XPM decoder could also use the progress indicators for those that may need
+it when an image is loaded. I can most likely optimize the XPM reader and use
+strips of input from a giant character array of sorts and then decode lines
+based on that instead and perhaps save on the tokenization phase with the
+simple tokenizer included in Java.
+
+## 17:37
+
+I believe I need a better class which describes the target CPU rather than
+using JSON architecture information since that can be messy. Right now the
+only thing I have which describes an architecture is the set of registers and
+then I rely on JSON architecture information to provide for the size of
+registers and such. However not all registers are created equal, and this
+becomes a problem when there are various mixes of register setups. So my
+current information set does not work and needs to be replaced. I can provide
+a manager which is able to be used by ServiceLoader to find CPU definition and
+any assembler bits as needed. Then FormCodeProfile can be modified so that it
+uses said definition sets rather than defining all of it itself. This would
+simplify and make it more powerful. Then using the CPU information I can then
+create generators which can handle more instruction sets and CPU types without
+much trouble.
+
+## 18:47
+
+This new CPU data stuff appears that it will be very efficient and help make
+things easier to use.
+
+## 19:41
+
+Big thunderstorm arrived, so I quickly shut my laptop off.
+
+## 20:03
+
+I can also deprecate AssemblyLanguage since the CPUData essentially replaces
+it.
+
+## 20:12
+
+Well, I cannot deprecate it exactly because then I would need lots of CPU
+definitions for stuff that might not even exist. So it would be best to move
+it into the transcompiler since it is used there for the most part.
+
+## 21:39
+
+Since CPUData is rather static and I would like to cache it, CPUProvider
+should not have their own but instead use lambda for new creation and such so
+that the parent classes take care of all the caching and such.
+
+## 21:42
+
+So then the question remains, is CPUData to be even abstract or just final. If
+CPUProvider is going to handle caching and validity of bits then there might
+not even be a need for extended CPUData classes. Right now there is nothing
+abstract in CPUData at all. But doing everthing through the provider will be
+much cleaner. There is really no need to recreate thousands of CPUData classes
+when all of them will be the same anyway. Generally in most cases only a
+single one will exist at a time, unless another object which was compiled by
+something else was obtained. So yes, CPUProvider will do all the heavy lifting
+and CPUData will become final and immutable to be cached by CPUProvider. Then
+I can perform more complex handling of registers based on input flags and
+such.
+

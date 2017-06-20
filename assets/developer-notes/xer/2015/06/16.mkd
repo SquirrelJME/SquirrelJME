@@ -1,0 +1,130 @@
+# 2015/06/16
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:04
+
+Stepping away from DiagnosticListener and going for my own so I do not need
+the compact3 profile.
+
+## 12:15
+
+Thought about KBFs also being FormClass, however that might be a bit iffy.
+FormClass is a great extrapolation but it is a bit bloated in terms of binary
+due to the very object oriented nature of it. I can represent all the needed
+runtime information, including stuff such as annotation in C structures. The
+structures can just be of a very defined format. Everything could be described
+as a raw C binary/structure for the most part. This way I can have a more
+clean layout, and so everything will not be described by a FormClass. Each
+class however will require C level initialization. That initialization will do
+stuff such as binding objects together and resolving names. Since super
+classes and their types are unknown, each structure type will need a base form
+that points to an offset of class local data.
+
+## 15:30
+
+I do wonder though if my thought about jclass is really truly the
+java.lang.Class object. And looking at the specs for JNI, they are. This means
+that most of the stuff in Object, Class, and String are mostly native.
+
+## 18:47
+
+The way CacheRepository works right now, will not work because using FormClass
+to represent class information is a bit ugly. FormClass is a very nice
+abstract representation of class information and such. I need a streamlined
+and nice way, but an abstract way to have it so I can have class information
+that is both a FormClass and a binary object which can be loaded into memory.
+It also has to be abstract enough to support views into the data it
+represents. FormClass is great for representing class data, but it is very
+high level and would not work well for a binary interface. This new binary
+format will essentially have a view into the data as respected types. So it
+becomes a giant blob of data for the most part, where C compiled bits can be
+plastered on top of. Now for abstract data, it can either be directly access
+or through a representing class interface. So the data basically acts as both
+in a way. One where it is a liked abstraction like FormClass, but also one
+that the kernel can use directly to link and execute. Basically, all of the
+data will be a ByteBuffer and there will be a FormClass like view into it. I
+would have to modify my class loader so that I can do it similarly the same
+with a builder. The FormClass stuff is already read-only, and for execution to
+work it will also have to be read only in the new code also. I suppose a
+FormClass would work better in a mutable manner, but I designed it as
+immutable. So there could be a better flat format, which is what I have talked
+about previously. As for reading Java class files directly into this flat
+format, that I would have to think about. Instead of loading everything at
+once I can essentially just streamline conversion from a class file into a KBF
+all at once. That way there is no intermediate Java code objects to work with
+at all. So some kind of linear object format that is fully tables. My obvious
+limitations would be the read/write order. Obviously fields and methods are to
+be done first while some class processing information needs to be done later
+such as bootstrap methods.
+
+## 20:21
+
+There would also need to be debugging information like file and line layouts.
+But I would suppose that a straight through conversion of the files will work
+out to be faster and less memory intensive in the long run. I can still keep
+my FormClass in a new more efficient way...
+
+## 20:54
+
+Then this would mean that all of my core-compiler packages are going to
+essentially be merged, and some of the ASM stuff moved off elsewhere. With C
+translation and compilation, this means NARF is on its last threads. NARF and
+the core-compiler system will live on in a new "kernel-binary" package which
+will have the new ByteBuffer based class information.
+
+## 22:26
+
+The basic KBF format, will essentially be a table of contents since that is
+the only way I can think of how I can effectively represent dynamic data.
+Basically offsets from the base of the data and the size of them. The TOC
+allows for more data to be represented and as such it would be easier to read
+information from it. TOC types would be much simpler also to parse as there
+would be no need to do complex things when it comes to them. TOCs could also
+be embedded within TOCs. The TOCs should also be small since once the class is
+linked in they are not really needed anymore. Any required header a
+information could also be auto generated as needed too, sort of. Even in ROM
+based system some initialization information which points to areas referenced
+by the TOC will be needed. However although there would be a semi-double
+reference in some areas, the true jclass object will just point already to
+said information.
+
+## 22:35
+
+Kind of think of it, KBF objects are essentially going to be very similar to
+Palm databases which are very similar yet are directly executable in memory.
+And as for StructClass, information such as the name of something does not
+require everything to exist at once in Java. I can also use CharSequence to
+look inside bits of the buffer for certain things too.
+
+## 23:22
+
+The table of contents bears a resemblence to the constant pool except that its
+size is known and the entries can be directly referenced. I am going to use
+UTF-16 Strings the same as Java however since they can be directly linked with
+String objects, which means they point to there. As for the table of contents
+I can have a major one and then smaller ones. That would vary however. A table
+of table of contents. That could work for methods and annotations although it
+could get rather deep in representation. I believe only fields and methods
+then should have table of contents, all of the others should use more known
+structured data. Fields and methods will share a base, but their inner TOC
+will describe stuff such as debug info or native code.
+
+## 23:33
+
+With a TOC, KBFs could embed other KBFs too. Well it would be best if it
+supported arbitrary files also. Basically a KBF is similar to a JAR. Funny how
+something that was done in an old OS that I really enjoyed helped me out. So
+the resulting kernel binary is going to be a KBF which contains other KBFs.
+Since KBFs would naturally be directly executable there is no such problem.
+
+## 23:49
+
+About to fall asleep however, so it would be best if I do so. Watch some
+Stargate SG-1 while I fall asleep. Moebius. I can do work when I am fully
+awake and sane.
+

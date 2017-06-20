@@ -1,0 +1,29 @@
+# 2015/09/12
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:26
+
+For handling OpLoadViaExternal, I will need to do things.
+
+## 17:31
+
+The SSA register allocator may be best within its own package since I can have
+tons of classes for it and such when needed.
+
+## 18:19
+
+Decided to change the SSA stuff to just CL for compiler logic. My stuff might
+break SSA rules potentially so it would be badly named. Also naming it SSA is
+just getting me down. Will also remove the SSAStore which is a bit ugly to
+begin with.
+
+## 19:38
+
+Feels like going from Super Mario World to Super Mario 64, except blue
+colored.
+

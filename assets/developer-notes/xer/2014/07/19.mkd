@@ -1,0 +1,43 @@
+# 2014/07/19
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:48
+
+This annotation tagging for enumeration command line argument appears it is
+going to be good as I write up the stuff. I can just keep stacking more and
+more as needed. I also realized that this could be used for storing static
+data instead of initializing a gigantic array of set data in the init code, it
+could exist in the annotation since it is loaded by the virtual machine,
+although density might be a huge issue. Actually that would be a bad idea.
+Storing 1024 bytes of data would bloat it by all the wrapping being done even
+if it were done.
+
+## 03:15
+
+Annotation stuff is much cleaner than before and there is no more boilerplate
+code implementing an interface.
+
+## 03:44
+
+Cannot think of a name for the class which will handle handling of command
+line options and the annotated enumeration values.
+
+## 04:06
+
+Just stuck on thinking of a name.
+
+## 16:01
+
+Raining today and tired, not making much progress.
+
+## 16:20
+
+Need to make a CommandControl or something that allows me to send and receive
+debugging text, console output, and other things. I probably should not be so
+strict when it comes to the Taskline.
+

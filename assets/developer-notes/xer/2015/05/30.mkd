@@ -1,0 +1,36 @@
+# 2015/05/30
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 15:06
+
+I will need to know the package a template resides in so there are enforced
+dependencies on packages.
+
+## 19:52
+
+A modified URLClassLoader with an exposed addURL works well in hairball as I
+can just not worry about duplicate URLs (since internally it is a set) and it
+keeps it to one object so there is no complex dependency parent stuff to worry
+about.
+
+## 19:55
+
+Going to add a configuration setting for compiler selection so that different
+compilers may be chosen depending on the architecture level support. If an
+architecture has only a single compiler then that is the only choice
+available, but due to the more dynamic nature it is possible for an
+architecture to have more than one. Since I do not plan on NARF to support
+more advanced optimizations such as SIMD support (I want to keep the first
+compiler I write simple), a newer compiler in the future may be a better
+choice.
+
+## 20:10
+
+I would say that my remade hairball is quite nice and much better and simpler
+than the complex mess before.
+

@@ -1,0 +1,22 @@
+# 2014/09/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 07:49
+
+It feels great to get some progress done, avoiding walls is nice.
+
+## 22:41
+
+Had this idea for the native compiler optimization, optimize out certain
+aspects of the library. Say if checkedList in Collections is used and the
+compiler determines that the specific argument is never violated and it is
+known to be impossible to violate, then it could optimize out the static
+method call and make it a plain list. However it can only be safely done if
+the list is local and always remains local (never becomes visible to the
+outside).
+

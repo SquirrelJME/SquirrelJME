@@ -1,0 +1,47 @@
+# 2015/10/26
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:06
+
+For the bindings it would be quite a mess to not have the binding factory not
+be able to handle stuff for method descriptors. I need an available set which
+is used to show which registers are available for each pool and such.
+
+## 13:58
+
+I will have to fixup some of the PowerPC generation code for this new binding
+stuff. I can keep slots to their fixed size of 32-bits for example and have a
+dynamically growing stack location set.
+
+## 14:08
+
+This new standard binding code will at least unify various architectures and
+reduce duplicate code when they need to refer to registers and stack
+locations. On another note, I could add types to field information in the
+information decoder and then have MutableOpCode show that specific
+information. This way I can have stuff such as register selections and memory
+addresses. So then if the architecture definition contains registers again I
+can add extra information to the information decoder to include that
+information in fields. As previously stated this would make MutableOpCode
+printing much easier and could allow for setting of values based on register
+contents. I could then adapat the StandardBindings to use these real registers
+also. To be smart and type safe I would need to have the type of value to be
+placed be a bit more dynamic since some architectures might specify a specific
+range or set of bit for registers.
+
+## 14:16
+
+I can also include special alias groups and such, a mnemonic of sort for
+specific fields in instructions. So for PowerPC's mfspr, I can instead use for
+example "lr" instead of giving an integral amount.
+
+## 17:34
+
+I should split the builder for instruction information off to a separated
+class so it does not clutter the pimary info class.
+

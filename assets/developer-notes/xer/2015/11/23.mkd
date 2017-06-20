@@ -1,0 +1,42 @@
+# 2015/11/23
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:25
+
+I can keep my specific writing code, just need to refactor it a bit.
+
+## 18:32
+
+FileChannel being a bit loose with regards of growing the file without having
+an explicit size or truncation makes it easy. FileChannel can be used as say
+an external block device quite easily. As for not commiting much today I had
+to do much real life stuff.
+
+## 18:40
+
+I also need a way to return the position of a given allocation which is
+optional. It can just go into an array of long.
+
+## 18:52
+
+Potential cache issues. The PrimaryKBF can cache the constant pool which does
+not change, however the writable version may. However if the WPKBF is used
+and since calls are virtual then the easy-cacheable read-only one is not
+a big problem because then just the writable one can be used, which is a bit
+separated. So I suppose I will need some kind of interface for them that shares
+the specific stuff. The base read-only one will provide a class of that
+interface while the writable one will give the actual writable one. This
+would at least allow the writable one to be more dynamic for modifiable KBFs
+while having the read-only easy-cache speed for ones which are not modified
+(such as ones loaded into memory).
+
+## 20:41
+
+I say that this new way of writing things is so much better than it was before.
+There is much better structure now.
+

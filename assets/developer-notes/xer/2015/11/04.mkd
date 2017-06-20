@@ -1,0 +1,100 @@
+# 2015/11/04
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 11:53
+
+Found a `.properties` syntax file for gedit so it makes property files easier
+to read with all the colors. Just need to fine one for nano. However the
+highlight stuff is incorrect as it assumes keys only take up single lines.
+
+## 12:55
+
+Now to implement MONITORENTER and MONITOREXIT, but I suppose for that I will
+just have them be method calls similar to how throw is. Another I must do is
+load pre-existing stack states if one is defined for an address.
+
+## 14:06
+
+Suppose it is cheating but it makes thing simpler at the cost of a method
+invocation overhead. Also permits me to run the stuff in user-space more and
+have dynamically changing interfaces without breaking everything hopefully.
+
+## 14:14
+
+I must sort my properties files so that keys are easier to find. Though finding
+keys is much easier than before with syntax highlighting.
+
+## 14:29
+
+One thing I believe I remember is that the stack map stuff can be glitched.
+Basically the current stack state can be `REF REF REF REF` but it could be
+attempted to be dropped onto `REF REF REF null`. I remember this got me last
+time around.
+
+## 14:37
+
+The part I am now at is mostly watching text scroll by. Each method takes about
+800ms-1000ms to be recompiled by POIT on this system. I should note that this
+system uses JamVM which is just a stack-cached interpreter. If I used an actual
+JIT it would probably be much faster. There is a JIT being worked on, however
+that is for PowerPC 64-bit only, which the only one of that I have is my
+Jet-like XServe.
+
+## 15:21
+
+Should be about time I normalize the entire set of standard stuff to use
+`UnknownError("TODO")` and not the kjrt stuff so I can finally remove that
+along with not having a thousand deprecated warnings.
+
+## 15:24
+
+I wonder how long with normalization will take. Regardless, I am kind of doing
+it to avoid implementing some Java byte code instructions until later on. So
+I suppose that is cheating also. However the new stuff is easier and better
+than before so it works out since I am going to do it eventually anyway.
+It is taking quite some time however so I should perhaps bring out a faster
+system which can do it in probably a minute. I could also just let it run and
+wait it out, consider this a short break for example.
+
+## 16:02
+
+Had some forks in the stuff.
+
+## 16:17
+
+Need a pivot array with a single value for stack map table.
+
+## 18:20
+
+There are so many classes to compile when converting them to native code.
+
+## 18:37
+
+Appears now I need to support allocation of array types. For that I am just
+going to repeat using method calls for the stuff as with throwing and monitors
+since it is the simplest way to generate code.
+
+	real 6m45.422s
+	user 8m24.160s
+	sys  0m25.430s
+
+That is how long it took to reach that point however so even the basic kernel
+would take a bit to compile. What I am working on now is setting up an AMD64
+system (with an AMD64 CPU) to compile and develop on. This PowerPC system I
+am on now though is just about the same speed (slightly slower) than that
+system, which was released a couple years ago compared to a decade plus for
+this PowerPC. Using a JIT should make compilation easier though.
+
+For array allocation however, the only thing I need is a single class where
+the input argument is the type of array to allocate. This would just be a
+field descriptor so I do not need a whole bunch of different allocator
+references for the same thing.
+
+The main thing when setting up a new system is getting all of the software
+compiled and online, that usually takes a day to do.
+

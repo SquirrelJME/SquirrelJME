@@ -1,0 +1,39 @@
+# 2015/11/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 18:47
+
+Did not do much today. I wonder with IntelliJ Idea and NetBeans are able to
+be used with k8. That is if they will not explode due to the "odd" directory
+structure that k8 uses. We shall see however.
+
+## 19:06
+
+NetBeans does not work out well either.
+
+## 19:46
+
+I should make the single entry a bit better with a common class to make
+reading/writing a bit easier. This should reduce future duplicate code.
+
+## 19:53
+
+I could abstract the code a bit.
+
+## 20:08
+
+Abstract by for example making it so the header stuff and the structures for
+each type are easily used in class interfaces.
+
+## 20:14
+
+However, alternatively for reading/writing I can have a sort of sliding
+window thing. I can either use a view of a ByteBuffer or have a FileChannel
+absolute read/write setup. Then there will be a basic "plug-in" view of either
+a ByteBuffer or a FileChannel.
+

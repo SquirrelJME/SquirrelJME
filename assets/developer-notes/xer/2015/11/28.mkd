@@ -1,0 +1,70 @@
+# 2015/11/28
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 14:29
+
+I wonder if I can write a groovysh script (which uses groovy) to execute the
+build system from various VMs and such.
+
+## 14:48
+
+Seems it can be done, I just have to make sure I avoid some newer features in
+case an older groovy is used for example.
+
+## 14:50
+
+I could potentially for the command line write a copy of Groovy and have that
+act as the primary interpreter shell for stuff such as file handling. Depends
+on how shell friendly the language is with simple loops. It would be more
+fitting with Java and would also be more powerful than say shell scripts. Could
+also be merged into the kernel so that there is a pre-existing interface that
+could be used in rescue mode for example. Groovy is Java code so it lacks
+stuff such as "ls".
+
+## 15:06
+
+Actually I can have a POSIX compatible system and still have my multiple
+root planned structure. POSIX has `//` as a root component which is system
+specific. This means I can fill `/` with the minimum of
+
+ * `/dev/console`
+ * `/dev/tty`
+ * `/dev/null`
+ * `/tmp/`
+
+Everything else including system configurations and such will basically be
+based in `//@system/`. All of the volumes which are available would then be
+under `//`.
+
+## 16:09
+
+The problem with Groovy is figuring out the path of the script I just executed.
+
+## 16:15
+
+It may be possible to do this by looking at the classpath potentially. However
+this gives `/usr/share/groovy/lib/groovy-1.8.6.jar` which is not useful at all.
+Looking online it may be possible that
+`getClass().protectionDomain.codeSource.location.path` does this. That does
+work as it gives `/home/steven/k8/hairball.gsh`. For safety I should probably
+verify it and then request a system property for example.
+
+## 18:56
+
+I have a bit of a headache this day.
+
+## 23:34
+
+For some reason I cannot execute the first stage. The exit value is just
+`First stage exited with status 1.`.
+
+## 23:51
+
+Forgot about the Process I/O streams, I have a dumper for that now. And the
+result is the lack of the exedir.
+

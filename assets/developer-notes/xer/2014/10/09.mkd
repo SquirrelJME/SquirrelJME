@@ -1,0 +1,34 @@
+# 2014/10/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 03:41
+
+Awake. Last night I was thinking about JSON, my project files are in JSON and
+I even have a JSON reader written purely in shell scripts, however that is a
+bit messy. It really does not have to be in JSON. I can remove the dependency
+on it and keep the JSR353 library since that is nearly completely written (I
+just have to implement one more thing). Most of the code does not exactly rely
+on the JSON nature of the project files. So I only really need to change the
+database input and output files. Then I need to adjust the shell scripts to
+the new syntax. Moving away from JSON would be far simpler, and faster.
+
+## 06:19
+
+Rather than convert by hand, I should use my pre-existing shell scripts to
+handle the conversion for me.
+
+## 07:18
+
+The new PKI files are much simpler to parse and require no complex loops and
+such, so on this sluggish laptop the packages are generated much faster than
+before.
+
+## 15:31
+
+Suppose I need a break of sorts anyway.
+

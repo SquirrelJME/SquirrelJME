@@ -1,0 +1,121 @@
+# 2015/07/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:54
+
+I have an infinite loop somewhere.
+
+## 01:08
+
+Actually the constant pool size of 29197 is taking quite awhile to calculate.
+It would probably be best to split off the builders then to another class
+instead of having all of them together in one gigantic enumeration. Good thing
+I split things up and used hairball to make things easier. I should however
+eat and then sleep before I do all this however. Also potentially means that
+MutableKBFEntry is not super speedy in generation of itself. However such a
+giant class is really a beating.
+
+## 01:16
+
+1024 entries takes more than a second to calculate.
+
+    
+    
+    [WARNING] Read 1024 of 29197, 2820ms
+    [WARNING] Read 2048 of 29197, 3156ms
+    [WARNING] Read 3072 of 29197, 4046ms
+    [WARNING] Read 4096 of 29197, 5844ms
+    [WARNING] Read 5120 of 29197, 8420ms
+    
+
+The time in ms is difference, which means there is a bottleneck for new
+entries which are added to the MutableKBFFile. An entry or list segment is
+created for each entry, so this means that the more entries there are the
+worse it gets. And this is exponential. 7168 took almost 40 seconds and the
+next up took nearly 50 seconds.
+
+## 01:20
+
+Looks like I see what it is. I use indexOf in a reference to another entry and
+when I did debugging before it stopped on that. So when the KBF entry gets put
+in the TOC it will need its position stored. A strange turn occured however.
+
+` [WARNING] Read 1024 of 29197, 2820ms [WARNING] Read 2048 of 29197, 3156ms
+[WARNING] Read 3072 of 29197, 4046ms [WARNING] Read 4096 of 29197, 5844ms
+[WARNING] Read 5120 of 29197, 8420ms [WARNING] Read 6144 of 29197, 13509ms
+[WARNING] Read 7168 of 29197, 39734ms [WARNING] Read 8192 of 29197, 48637ms
+[WARNING] Read 9216 of 29197, 62116ms [WARNING] Read 10240 of 29197, 54484ms
+[WARNING] Read 11264 of 29197, 25999ms [WARNING] Read 12288 of 29197, 89ms
+[WARNING] Read 13312 of 29197, 149ms [WARNING] Read 14336 of 29197, 190ms
+[WARNING] Read 15360 of 29197, 2012ms `
+
+A bunch of constants which did not reference other KBF entries appears to have
+been used.
+
+## 01:32
+
+Remembering an index is faster, but still slow. First read is 708 and the
+second is 1505. However now the KBF load completes in a minute.
+
+## 02:27
+
+Currently at:
+
+` [FINE] Read 29197entries in 53818ms [INFO] KBF load was 116,814ms. `
+
+Then with a little work, hopefully it gets better.
+
+## 02:31
+
+Much improved!
+
+` [FINE] Read 29197 entries in 3780ms [INFO] KBF load was 33,789ms. `
+
+A 50 second improvement from 54 down to 4 is 13.5x faster. However loading
+still takes 34 seconds, but it is much better than the 117 seconds. The good
+thing about this is that this change will follow through on other things.
+
+## 02:38
+
+I know how I can increase some speed at the cost of some memory usage, is to
+have a kind of cache manager for identifiers, strings, and such. I create and
+set references all the time for them, however they can easily be shared
+between many entries. Reusing things for quick things should help increase
+speed a bit. Need to work on reducing the loading time for the members and
+such of the Java class. I also then need to split up the PowerPC operation
+code perhaps into separated classes which contain the builders. Perhaps 127
+operations per class, which PowerPCInstruction points to.
+
+## 11:27
+
+The slowdown is most likely in the MutableKBFArray types.
+
+## 11:54
+
+My direct buffer writing does not appear to have much effect.
+
+## 12:17
+
+Only about perhaps a second of improvement when loading KBFs. I suppose the
+thing now to do is to split off the instruction stuff into other classes where
+they become methods. I do wonder though what the split should be. 100 per
+class or 50 per class. There are a great many instructions however. With 100
+there would be 12 class files containing builder methods. However, the
+instruction enum will not need any bootstrap methods at all really. Well they
+could still exist. One thing to do is just have a class reference which then
+looks up a method in that class perhaps using a MethodHandle. The operations I
+have however need to be parsed because they are printed like enumerations. I
+suppose StreamTokenizer will help some in this.
+
+## 23:13
+
+I decided on splitting the enumerations into other classes. It was a fast way
+of doing things, in the future it would most likely be better to modify it so
+that it parses the enumeration itself and just calls methods rather than still
+using UnaryOperators.
+

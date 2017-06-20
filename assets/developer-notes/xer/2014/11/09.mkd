@@ -1,0 +1,50 @@
+# 2014/11/09
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 05:06
+
+Having everything lock on ClassFile is bad for concurrency.
+
+## 08:12
+
+And since this code will be in the kernel where it may be executed by tons of
+things at once, I need better locking than the current synchronized. A
+read/write lock will be good so that classes as needed can access the stuff,
+then their locks can be grabbed depending on the situation.
+
+## 09:58
+
+I could expand the locks rather than have global locks and use stuff for
+individual members and such, if that is ever needed.
+
+## 15:24
+
+Need a better way to specify how architecture and compilation works, the
+current MethodCompiler is rather weak and the sorting is a bit bad. I will
+need a sub-package containing all the good meta annotations attached to a
+compiler so that things can get a bit easier as the generic code generators
+could just snatch to a specific target with specific feature sets. However,
+some CPU feature sets might have stuff like floating point support, a division
+instruction, more registers, or a larger address space. So stuff pertaining to
+this cannot readily be put into annotations at all.
+
+## 19:06
+
+I figured out a name for the future JavaScript engine I have to write, I shall
+call it "catpuke" since it seems only a fitting name for terrible language.
+However, despite the name I would still make the engine awesome and well
+coded, along with possible recompilation with the current compilation system I
+am using right now.
+
+## 19:19
+
+One idea would be something like the shebang of files being the file
+interpreter, which executes the script engine. And speaking of script engines,
+if there can be a JavaScript one then I am making a UNIX shell script one
+since shell is rather nice.
+

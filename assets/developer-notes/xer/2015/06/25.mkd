@@ -1,0 +1,63 @@
+# 2015/06/25
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 08:07
+
+It be morning, was suppsed to wake up earlier by I kind of snoozed.
+
+## 10:42
+
+Welp, back to handling code and such, enough of the KBF stuff is done for that
+to happen.
+
+## 17:17
+
+Thinking about it, the mutable KBF stuff I have right now is very ugly. Not
+the interfaces but the hidden interface (MutableKBFEntry). Right now I use
+Array and Object and work with many of the values that way, along with
+volatile field values. This means that there are tons and tons of members. KBF
+structs are made up of statically sized bits and dynamical array bits. I need
+to calculate the offset sizes and then just have a MutableKBFEntry be a
+statically sized ByteBuffer for the start of contents then a dynamically
+growing one which represents the endign variadic array. After that, conversion
+to the ByteBuffer to be placed in a binary KBF would be very easy.
+
+## 17:21
+
+Said new system should be easier and faster also. The only main thing that
+will need to be handled more specially are lists and structures of stuff. I am
+thinking of having a WeakHashMap of "active" references of sorts. So if say
+the value at index 11 was obtained there will be a "visible" object view of
+that section. If the array is resized or entries are added or removed then it
+will become invalid and just IOOBE. Each index of an array or struct member
+would just be a reference. So rather than purely a List, I will need something
+such as a MutableList which allows me to use it like a list and such. However
+just adding things to the list could auto-setup new members as needed and
+perform needed casting. However, the main problem with that would be structure
+types since they are referenced by an object (which in my new way will be a
+viewer) which points to an index.
+
+## 17:43
+
+EntryInfo in my generator needs to be rewritten because it is really really
+ugly along with some of the output stuff too.
+
+## 21:49
+
+Yknow, I do not really need lists for the return type of read values when they
+are arrays. As long as they implement a bunch of classes that can work, but I
+do need a stronger class which can handle KBF especially when it is mutable.
+
+## 22:02
+
+Also for stuff like char arrays, instead of having write directly in the class
+I can instead have it settable from the returned type. So arrays will appear
+to have only readers, where the said readers will allow writing and a bunch of
+other things also. Then that also means that the writeable stuff is not needed
+as I can just use the read type.
+

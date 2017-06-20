@@ -1,0 +1,55 @@
+# 2014/10/05
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:08
+
+Hairball could be useful if it is a script based system where I can write my
+own complicated scripts that are similar to the language itself. However,
+there should just be platform definitions and such, where hairball just does
+all of that automatically as needed. It can also perform specific runtime
+compilation also through the runtime system that I will write. The major thing
+is I have to code the runtime system right and once. So what will be the scope
+of the runtime system then? Does it just do compilation of code as needed?
+Does it execute and interpret code at all? I believe the runtime should just
+perform compilation of code and such, while I can have separated kernel stuff
+as needed. For the kernel I can have tons of packages for separate
+architectures or I can combine them as one. Multiple architectures simplifies
+things and the package builder can just set some subpackages like they do not
+exist at all.
+
+## 12:25
+
+However, keeping all of the code in one singular package for every
+architecture and such will complicate the build process because that would
+need to handled. Putting all of the kernel packages in the standard pkg
+directory will be messy, so I will put them all in a new directory, kpkg. I
+know previously I have merged these, but pkg will be userspace and kpkg will
+be kernel space, and that is a huge difference in function. Putting them all
+in the same directory will make it difficult to determine what is a kernel
+package and what is a userspace package.
+
+## 12:30
+
+Now I need an execution system. How will binaries be loaded and handled? I
+want the execution system to act as if it were on the end of a compiler, so if
+there is a method call to somewhere it will act as if it were an actual method
+call of sorts. So when a class is loaded, it will just be recompiled into some
+native form by running through it and such. Then once it exists in memory it
+can be directly jumped into. So I will need some kind of system where I can
+wrap native execution via some virtualized native call and such.
+
+## 13:42
+
+I will need a good ahead of time compiler that can be used when the kernel is
+being compiled and while the kernel is executing (for user code), so it must
+be efficient although it does not have to be super fast (since compilation is
+done once and cached, ignoring anything that changes which would require
+recompilation). It also must have toggleable code generation so the primary
+package is not used in a special way, that is normal userspace code being
+recompiled cannot access the very special stuff in that package.
+

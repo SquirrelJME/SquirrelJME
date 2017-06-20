@@ -1,0 +1,112 @@
+# 2014/10/13
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:55
+
+Perhaps I can come back to this OS in the future, not going to give up.
+However, I should perhaps write a virtual machine in C and implement an entire
+class library first. Then once that is done and I KNOW how the things work in
+the language. I have spent half a year on this and it will not go to waste,
+once the stuff is fully implemented I would have a friendlier and an exact
+base. I will code the library so that it remains very portable and so that
+when it gets plugged into my OS it works. Well, I would essentially be writing
+the OS at the same time, although it would not be using all the userspace
+stuff I wrote right now. In essence, what I would be writing would be core
+language stuff, no real extras except for perhaps an internal compiler. So I
+am pretty sure that none of my work here would be lost, once the other virtual
+machine library and such matures enough and I gain more experience I can
+resume work and write an actual kernel with my own filesystems and such. My OS
+would not be using any C bits however. I believe the best way to do it would
+be to keep it as little C as possible and perhaps have the code generators be
+in Java (but in a separate execution branch for security purposes). The C
+would just be a very light on an existing userspace k8 kernel. But perhaps
+that is the direction in which I should go. No need to fork, just move some
+existing stuff over and have it mixed C and Java, that would simplify things.
+Then I can develop a VM that runs on pre-existing systems and on real
+hardware. I can still have stuff like code generators run in Java and such. So
+write the initial C kernel which has a basic interpreter or class loader of
+sorts, which is then capable of calling Java recompilation cores (to native
+code) and then executing that. The recompiler core can pretty much just
+compile itself (it IS a valid Java program). I only have to write generators
+once, and they could be slightly modified to support various systems (real
+hardware and userspaces alike).
+
+## 08:30
+
+The recompiler will make native libraries so that they may be loaded by the OS
+and linked in as needed. UNIX has dlopen and dlclose; Windows has LoadLibrary
+and FreeLibrary; PalmOS has SysLibFind, SysLibInstall, SysLibLoad, and
+SysLibRemove.
+
+## 12:22
+
+There will have to be cores to the virtual machine: memory, files, networking,
+processes/threads, and graphics. Probably a whole bunch more. It would be best
+if files were kept memory mapped for simplicity. Then there are also
+client/server considerations. Now being the default, a server VM is loaded
+once rather than a client where it is loaded every single time. A server VM is
+more efficient and would map better to my operating system in the future as
+this would be how it is designed. Since there is one class per file, it would
+be best to just memory map a file and if it fails it might not be readable or
+does not exist, this would remove any race conditions as such.
+
+## 12:32
+
+So the JVM would be a single executable where the processes in the machine
+would be multiple threads which are grouped together. So it would be a very
+closed system so to speak, although the varying bits of the VM could optimize
+interaction with each other, they would not cross process bounds. This would
+probably be best as it also allows for easy cooperative based multi-threading.
+Say the VM is run on a system where such a threading model is not possible,
+one can then use setjmp and longjmp (those fun C calls), so the VM would have
+to be designed for cases where this must be done. Note that if this is done
+then the VM is inheritely single threaded but most likely a system lacking
+such support for threads is mostly likely a system with only a single CPU.
+
+## 12:43
+
+Threads and memory is easy (although memory will need to handle shared cases),
+files get complex. There are more than just memory maps, there are entire
+filesystems with locks, permissions, attributes, and many other things. I
+suppose the best thing to do VM wise is implement the file based code as if it
+were the nio FileSystem (which appeared in 1.7). Would also have to include
+Path, FileStore, and permissions. So FileSystem has a getPath() which returns
+a path object, where Path has all the magical stuff in it. On Windows,
+FileSystem:getRootDirectories() returns all of the drive letter forms, while
+on UNIX it probably just returns the single usual "/". The file systems are
+URI based and allow for multiple ones (the default can even be changed),
+however the only thing that has to be purely part of the VM is the default
+"file" scheme filesystem which provides access to the file systems as seen by
+the virtual machine. So really what it comes down to, is implementing in
+native code the stuff that would be provided by FileSystemProvider as that
+does everything filesystem wise.
+
+## 13:03
+
+It may seem confusing at first, but it is not. But if the default filesystem
+is replaced by changing a setting, instead of a no-arg constructor the class
+takes a single FileSystemProvider argument. This is so that the replacing
+default filesystem can implement said filesystem code (if it wants to) without
+writing a bunch of system dependent code. That is, it can forward calls at
+will when needed.
+
+## 14:08
+
+Locks on files done via FileLock will require that separate process (threads)
+in the server virtual machine honor those locks, otherwise strange things may
+occur. Despite locks being held for the entire virtual machine, having stuff
+just locked by the VM and not having any inter process locking stuff would be
+rather poor.
+
+## 18:25
+
+Writing the class library stuff is much work, I am going to have to create the
+doclet which is capable of generating tons of class files so that I may
+implement them at my leisure while having them throw something similar to
+TODOFIXME when they are invoked.
+

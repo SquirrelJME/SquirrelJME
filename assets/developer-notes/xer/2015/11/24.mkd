@@ -1,0 +1,39 @@
+# 2015/11/24
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 12:45
+
+I must clear the allocated space as it is intended to be zero filled.
+
+## 12:51
+
+Setting of constant data will essentially just be using set on the pool
+data for the most part. The global constant writer can handle encoding of the
+various pool types and such.
+
+## 23:28
+
+A map is bad for WritableStringMap sort of because it implements a map
+structure in an odd way. So I suppose it will just be a collection.
+
+## 23:34
+
+Well a Collection does not work also.
+
+## 23:39
+
+Well actually it is really a list of hash code values which are mapped directly
+to constant pool entries. So it is not a map. The list would just contain the
+hash code data but then there would be the ability to get the associated
+constant if it is a valid one.
+
+## 23:42
+
+I suppose it really would just be a list of BinConstantInfoUTF with a quick
+string based lookup mechanism.
+

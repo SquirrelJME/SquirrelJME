@@ -1,0 +1,41 @@
+# 2015/07/03
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:38
+
+The field list cannot be a cache unless I increase the complexity up a bit. No
+forget that, I thought of it yesterday that fields could be the same but have
+varying positions per opcode.
+
+## 14:14
+
+I suppose for SSA representation I will need of store of variables and such.
+
+## 19:42
+
+Hopefully tomorrow I can concentrate with all the sky based explosives.
+
+## 22:10
+
+Another thing I could do with the recompilation system is write a dynamic
+recompiling NES and GB emulator. Said emulator could also support other
+systems in the future such as PowerPC and x86. I would code the emulator so
+that it can repeat and replay earlier sessions (for debugging and TAS).
+
+## 22:23
+
+I should fork off DecodeToSSA and have a more base SSADecoder helper which
+that class is based on. DecodeToSSA handles KBF while my about to exist
+BaseSSADecoder does generic handling of things.
+
+## 23:51
+
+I could use some helpers in the Struct base interfaces for stuff such as
+methods. For class, fields, and methods I can have helpers that do stuff such
+as isStatic() or similar.
+

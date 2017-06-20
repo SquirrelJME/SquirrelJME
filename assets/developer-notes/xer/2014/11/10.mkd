@@ -1,0 +1,35 @@
+# 2014/11/10
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 09:45
+
+The thing is, do descriptors contain subdescriptors that are just single
+fields and such? They should, and perhaps I should use a local cache map of
+descriptors because they will be very common. I will have to check the hash
+code for SoftReference, although Strings are very static I might not have to
+worry about such things. Appears not that they do not use the inside hashCode.
+
+## 13:44
+
+Descriptors and Signatures are a mess. A descriptor is a Signature but a
+Signature is not always a Descriptor. So I cannot easily use the same stuff
+and perform potential code reduction in this case. So perhaps instead of two
+classes I will have one type class which can be turned into a signature or
+erased. Creation of the class will extend from either descriptor strings or
+signature strings. Descriptors will just reference themselves so to speak but
+signatures would have potential erasure (they need a map for variable types).
+Then this way if fromSignature is done on a class that has no generic
+information at all then it is just a plain descriptor. So that would mean that
+fromDescriptor uses fromSignature always but adds a check to make sure that it
+has no generic bits in it.
+
+## 20:41
+
+Did a bunch of descriptor work today, this TypeInfo appears to be much better
+than what I had before.
+

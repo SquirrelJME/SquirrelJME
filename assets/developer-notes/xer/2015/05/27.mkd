@@ -1,0 +1,121 @@
+# 2015/05/27
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 00:32
+
+Actually I know why now, loadClass uses the binary name of a class which uses
+slashes.
+
+## 00:56
+
+Actually it is the method not being found.
+
+## 01:11
+
+My method is declared as "public static void
+net.multiphasicapps.hairball.os.Main.main(
+net.multiphasicapps.hairball.PackageList,java.lang.String[])", the error
+states "net.multiphasicapps.hairball.os.Main.main(
+net.multiphasicapps.hairball.PackageList, [Ljava.lang.String;)". javap has
+"(Lnet/multiphasicapps/hairball/PackageList;[Ljava/lang/String;)V". So why is
+this failing?
+
+## 01:53
+
+Stuck on this for awhile, why does this happen, it has to be dumb.
+
+## 15:16
+
+OK, the main without PackageList works.
+
+## 15:20
+
+Caused by a ClassLoader mishap. I would assume since the parent class loader
+was not set it was causing issues because the sub-called code uses a different
+class loader. After bootstrapping hairball itself the classloader for hairball
+is created and then main is executed.
+
+## 18:22
+
+With this new hairball build system I can remove the old k8-platform stuff and
+then just toss all of that information into the project.pki files.
+
+## 19:07
+
+I believe my JSON parser is... nevermind. Right now I am trying to use an
+array of objects, but they cannot have keys. So instead I am just going to
+turn them into objects.
+
+## 19:26
+
+Need to determine the best way to manage kernel configuration, is it just a
+simple set of options or is it more complex?
+
+## 19:43
+
+It does not have to be complex like the Linux kernel. In Java there are no
+#defines and any fields that exist even when final are determined at run-time.
+So virtually all options for the most part will not require recompilation at
+all. Everything could be managed by the kernel command line and any systems
+options that exist. The basis of the configuration will be selecting a CPU to
+target, and then selecting the machine to target. After that is optional CPU
+settings and other packages to include or exclude from the system along with
+default command line arguments and such. Another thing I will need is a
+selection of payloads to use (such as ISO, or ROM).
+
+## 20:27
+
+One thing I am stuck thinking about is self dependency problems. If my
+bootloader is in Java, it will have to load the classes on the disk which
+could be inside of any filesystem first, while being itself written in Java
+and using the associated filesystem libraries before they are available for
+being read. I could have some kind of hibernation system which is a pre-
+existing state of memory of all the code. However while that would work,
+things would be a bit complex and it may waste memory needlessly.
+
+## 20:35
+
+What I would need to do is have a bootstrap class loader and a static run of
+the execution path to determine what is used and what is not used. With that
+run I will need to modify the FormClass loader for Java class files and then
+include the Java assembly to list the "imports" used by a specific method.
+Then I would essentially follow the trail of imports. Such import listing
+would have to handle constructors also. Constructors when it comes to stuff
+such as calling another constructor with some arguments will need to be
+handled also. This trial will only need to be done up to a certain point.
+Static fields will be the most problematic however as they could pull many
+things in. Java is a very dynamic language and machine, there is no such thing
+as static.
+
+## 20:57
+
+I suppose the simplest thing to do is have built-in and external classes.
+Similar to Linux with built-in and modules. The kerenl would be bound to a set
+of JAR files on the disk that must be there and not be modified (at least
+class wise). Then with such a system, I could have built-in support for
+specific filesystems or load external JARs. Stuff such as JARs would be
+handled by user space layers so that malicious filesystem drivers do not deal
+much damage. Well for filesystems, access would be layered. Users could mount
+any supporting filesystem but they might not have the ability to access raw
+devices. As such, the filesystems would be rather isolated and require
+specific permissions. So in short, filesystems are just another process being
+ran. But anyway, some classes will exist inside the kernel as a giant blob.
+The Linux kernel at least on my system is a hefty 11MiB with all of its
+included stuff. I just hope mine stays below 1MiB. The classes that are built-
+in to my kernel though can be reused by non-virtualized (those using the
+system provided classes) classloader so they do not need to be reloaded many
+times, just initialized for each process. Non-virtualized because I plan on
+permiting userspace processes to spawn virtual machines for emulation or
+running other systems. In these cases, such processes (the VMs) would be
+userspace processes that do not use the kernel and execute on their own. They
+may however use hypercalls and such. There may also be a need for para-virtual
+(pure userspace) with a custom kernel being used where core classes existing
+in the kernel are not used. So, having classes which are built-in would
+simplify things for the most part. Doing that then, I would only need to
+initialize a base system to actually use the things.
+

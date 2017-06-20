@@ -1,0 +1,32 @@
+# 2015/09/20
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 10:35
+
+The question is, are method tables per instance or per class? Per class would
+be the fastest though.
+
+## 10:47
+
+I need to change some things around to handle instances and checking them for
+null pointers and such. Also to make sure they are the correct class before
+reading fields or executing methods. Otherwise without this, one could make a
+malformed class which reads the wrong field or executes a bad method which may
+lead to exploits. For simplicity, albiet at a loss of speed, NARF can just
+check null/instanceof every time a field is attempted to be accessed and a
+method is invoked, except for statics. I would also need to handle the case
+where static fields/methods are used on an instance of an object. But for
+instance fields and methods, I will need to do a instanceof check before every
+usage of those. It will be slow but it will be safe. It might be faster than
+the current interpreter that I use still.
+
+## 11:48
+
+I can also move the NARFBinaryCode into the binary stuff and make a mutable
+version of it that every dynarec can use.
+

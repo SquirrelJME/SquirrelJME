@@ -1,0 +1,39 @@
+# 2015/05/29
+
+***DISCLAIMER***: _These notes are from the defunct k8 project which_
+_precedes SquirrelJME. The notes for SquirrelJME start on 2016/02/26!_
+_The k8 project was effectively a Java SE 8 operating system and as such_
+_all of the notes are in the context of that scope. That project is no_
+_longer my goal as SquirrelJME is the spiritual successor to it._
+
+## 02:19
+
+I should implement running of packages again, this time however it will be
+much simpler than the mess I had before.
+
+## 03:00
+
+Java 8's lambdas are great, they reduce so much bloat from the code and allow
+easy reusing. The slight overhead in using them is worth it.
+
+## 04:18
+
+Spaces between manifest keys are illegal.
+
+## 14:51
+
+I should really be saying newline is illegal between keys. But, I am going to
+work on part of SQ a bit on the laptop to my right while writing notes here,
+so a fork shall be made! I wonder if my JSON code supports output of JSON
+data, it should.
+
+## 16:26
+
+I do not really have the will to work on SQ currently.
+
+## 17:14
+
+Yknow, having a GUI switch means that it would be required to have swing to
+actually build the kernel builder. However due to the nature of the hairball
+system it can just be in another package.
+
