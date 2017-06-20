@@ -106,7 +106,7 @@ __primary()
 			fi
 			
 			# Print title
-			echo "# $(__upperauth "$__y_auth")"
+			echo "# $("$__exedir/mapauthor.sh" "$__y_auth")"
 			
 			# Set author
 			__oldauth="$__y_auth"
@@ -258,7 +258,7 @@ __secondary()
 		if [ "$__la" != "$__auth" ]
 		then
 			echo ""
-			echo "## $(__upperauth "$__auth")"
+			echo "## $("$__exedir/mapauthor.sh" "$__auth")"
 			echo ""
 			
 			__la="$__auth"
