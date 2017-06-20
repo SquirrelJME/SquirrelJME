@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 
 /**
@@ -49,6 +51,25 @@ public class Resource
 		// Set
 		this.name = __n;
 		this.cluster = __cr;
+	}
+	
+	/**
+	 * Parses the specified input stream as the data for the given resource and
+	 * stores it within the binary section.
+	 *
+	 * @param __is The stream containing the binary data.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/20
+	 */
+	final void __parse(InputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
