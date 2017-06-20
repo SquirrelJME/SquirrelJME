@@ -1,0 +1,15 @@
+# 2017/06/19
+
+## 18:30
+
+Did not get much programming done today at all. I did however upgrade my
+laptop with some fancy new hardware which brings it up to mostly modern
+standards which are good enough for me. I did have an idea though that
+`Cluster` can be given an input stream of data for class processing and
+a name which automatically determines what to do with it.
+
+## 22:13
+
+Switched the name I commit under to Xer as it is more fitting to me
+personally. Will probably want to slowly change the e-mails over also
+eventually.
