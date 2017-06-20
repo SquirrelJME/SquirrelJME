@@ -70,7 +70,7 @@ public class Clusters
 		ClusterKey key = new ClusterKey(this._next++);
 		
 		// Create cluster
-		Cluster rv = new Cluster(this.linkerstate, key);
+		Cluster rv = new Cluster(__linkerState().__reference(), key);
 		
 		// Store new cluster
 		this._clusters.put(key, rv);

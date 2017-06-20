@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This represents a group of resources which are referenced by classes, since
@@ -30,6 +32,10 @@ public class Cluster
 {
 	/** The key for this cluster. */
 	protected final ClusterKey key;
+	
+	/** Resources within the cluster. */
+	private final Map<String, Resource> _resources =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes this individual cluster.
@@ -69,6 +75,8 @@ public class Cluster
 			throw new NullPointerException("NARG");
 		
 		// Could fail
+		LinkerState ls = __linkerState();
+		Reference<LinkerState> lsref = ls.__reference();
 		try
 		{
 			// Process as class file
@@ -78,6 +86,17 @@ public class Cluster
 			// Process as resource
 			else
 			{
+				// {@squirreljme.error JI0w A resource is duplicated within this
+				// cluster. (The cluster ID; The name of the resource)}
+				Map<String, Resource> resources = this._resources;
+				if (resources.containsKey(__n))
+					throw new JITException(String.format("JI0w %s", this.key,
+						__n));
+				
+				// Create resource
+				Resource rc = new Resource(lsref, __n,
+					new WeakReference<>(this));
+				
 				if (false)
 					throw new IOException();
 				throw new todo.TODO();

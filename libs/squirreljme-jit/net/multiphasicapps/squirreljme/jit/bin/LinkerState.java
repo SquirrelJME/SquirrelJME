@@ -92,5 +92,16 @@ public class LinkerState
 	{
 		return this.clusters;
 	}
+	
+	/**
+	 * Returns the reference to this linker state.
+	 *
+	 * @return The linker state reference.
+	 * @since 2017/06/20
+	 */
+	final Reference<LinkerState> __reference()
+	{
+		return this.selfref;
+	}
 }
 

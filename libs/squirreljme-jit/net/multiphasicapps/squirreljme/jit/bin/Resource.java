@@ -21,17 +21,34 @@ import java.lang.ref.Reference;
 public class Resource
 	extends __SubState__
 {
+	/** The reference to the owning cluster. */
+	protected final Reference<Cluster> cluster;
+	
+	/** The name of this resource. */
+	protected final String name;
+	
 	/**
 	 * Initializes the resource.
 	 *
 	 * @param __ls The owning linker state.
+	 * @param __n The name of this resource.
+	 * @param __cr The reference to the owning cluster.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/18
 	 */
-	Resource(Reference<LinkerState> __ls)
+	Resource(Reference<LinkerState> __ls, String __n,
+		Reference<Cluster> __cr)
+		throws NullPointerException
 	{
 		super(__ls);
 		
-		throw new todo.TODO();
+		// Check
+		if (__n == null || __cr == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+		this.cluster = __cr;
 	}
 }
 
