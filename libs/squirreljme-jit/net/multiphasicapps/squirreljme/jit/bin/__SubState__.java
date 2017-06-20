@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference;
 abstract class __SubState__
 {
 	/** The reference to the owning linker state. */
-	protected final Reference<LinkerState> linkerstate;
+	private final Reference<LinkerState> _linkerstate;
 	
 	/**
 	 * Initializes the base sub-state with the back reference.
@@ -39,7 +39,7 @@ abstract class __SubState__
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		this.linkerstate = __r;
+		this._linkerstate = __r;
 	}
 	
 	/**
@@ -57,7 +57,7 @@ abstract class __SubState__
 	{
 		// {@squirreljme.error JI0u The linker state has been garbage collected
 		// and as such using this object is no longer valid.}
-		LinkerState rv = this.linkerstate.get();
+		LinkerState rv = this._linkerstate.get();
 		if (rv == null)
 			throw new IllegalStateException("JI0u");
 		
