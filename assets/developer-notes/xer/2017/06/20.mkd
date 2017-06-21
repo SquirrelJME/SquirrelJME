@@ -1,0 +1,16 @@
+# 2017/06/20
+
+## 09:44
+
+I believe I lost a blog, but luckily I had backed them all up!
+
+## 09:59
+
+Thinking about bringing all my notes from k8 to this project. Many files but
+I did do much writing for my old project, would be sad to see it wasted to be
+honest. Even if the project went nowhere.
+
+## 14:25
+
+So the `LinkerState` set of classes should be a bit more organized for the
+most part.
