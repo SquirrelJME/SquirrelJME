@@ -120,8 +120,8 @@ __findpkname()
 		if [ "$__want" -eq "0" ]
 		then
 			# Has repository file right above this path
-			if [ -f "$__indir/../steven-gawroriski.gpg" ] || \
-				[ -f "$__indir/../../steven-gawroriski.gpg" ]
+			if [ -f "$__indir/../public-key.gpg" ] || \
+				[ -f "$__indir/../../public-key.gpg" ]
 			then
 				__pkout="$__chop"
 				break
@@ -131,8 +131,8 @@ __findpkname()
 		elif [ "$__want" -eq "1" ]
 		then
 			# If repository file in same dir
-			if [ -f "$__indir/../steven-gawroriski.gpg" ] ||
-				[ -f "$__indir/steven-gawroriski.gpg" ]
+			if [ -f "$__indir/../public-key.gpg" ] ||
+				[ -f "$__indir/public-key.gpg" ]
 			then
 				echo "$__chop" | \
 					sed 's/^\([a-zA-Z0-9-]\{1,\}\)[^a-zA-Z0-9-]*.*/\1/'
@@ -142,7 +142,7 @@ __findpkname()
 		# Want the namespace
 		elif [ "$__want" -eq "2" ]
 		then
-			if [ -f "$__indir/../steven-gawroriski.gpg" ]
+			if [ -f "$__indir/../public-key.gpg" ]
 			then
 				echo "$__indir" | \
 					sed 's/^.*\/\([a-zA-Z0-9_]*\)$/\1/' | \
