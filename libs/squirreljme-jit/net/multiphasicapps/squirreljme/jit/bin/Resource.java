@@ -69,6 +69,8 @@ public class Resource
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
+		// Need to declare a new section
+		
 		throw new todo.TODO();
 	}
 }
