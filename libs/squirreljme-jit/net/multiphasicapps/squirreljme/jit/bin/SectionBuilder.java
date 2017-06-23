@@ -10,13 +10,27 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.lang.ref.Reference;
+
 /**
- * DESCRIBE THIS.
+ * This class is used to build sections which are placed in the section table.
+ * Since {@link Section} data should be as immutable as possible, this allows
+ * such sections to be dynamically created.
  *
  * @since 2017/06/23
  */
 public class SectionBuilder
 	extends __SubState__
 {
+	/**
+	 * Initializes the section builder.
+	 *
+	 * @param __ls The owning linker state.
+	 * @since 2017/06/23
+	 */
+	SectionBuilder(Reference<LinkerState> __ls)
+	{
+		super(__ls);
+	}
 }
 

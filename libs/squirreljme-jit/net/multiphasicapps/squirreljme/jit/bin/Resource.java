@@ -70,6 +70,8 @@ public class Resource
 			throw new NullPointerException("NARG");
 		
 		// Need to declare a new section
+		SectionBuilder sb = new SectionBuilder(
+			this.__linkerState().__reference());
 		
 		throw new todo.TODO();
 	}
