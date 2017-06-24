@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This class is used to build sections which are placed in the section table.
@@ -22,6 +23,10 @@ import java.lang.ref.Reference;
 public class SectionBuilder
 	extends __SubState__
 {
+	/** Deque for the bytes within the section. */
+	protected final ByteDeque bytes =
+		new ByteDeque();
+	
 	/**
 	 * Initializes the section builder.
 	 *
