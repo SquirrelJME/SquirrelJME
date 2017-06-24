@@ -1,0 +1,19 @@
+# 2017/06/23
+
+## 11:11
+
+So what I need to do is basically have a section builder which just builds a
+bunch of bytes together with replacements then when that is done, it is placed
+in a section. It would be best if sections were immutable.
+
+## 11:34
+
+Actually this means that I need destructors for objects since everything is
+reference counted. Basically it would just be a method which unassociates
+field values (if applicable, regardless of constantness) then calls the
+super destructor.
+
+## 11:53
+
+In the future resources contained within executables can be compressed and I
+can just use the decompressor I wrote.
