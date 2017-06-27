@@ -27,6 +27,10 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 public class Sections
 	extends __SubState__
 {
+	/** The sections which exist. */
+	private final Map<SectionType, Section> _sections =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the section handler.
 	 *

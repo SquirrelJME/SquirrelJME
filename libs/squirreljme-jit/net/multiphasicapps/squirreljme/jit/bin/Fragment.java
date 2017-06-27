@@ -1,7 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
-//     Copyright (C) Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) Steven Gawroriski <xer@multiphasicapps.net>
 //     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -11,26 +11,23 @@
 package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
- * This represents and stores the binary data and code which makes up a section.
- * Sections may have some regions of their output be determined in a later stage
- * of the linker on output such as the address where a method is located.
- * A section contains multiple fragments which make up the entire section.
+ * This is a fragment which exists within a section which holds a bunch of
+ * data with potential dynamic areas.
  *
- * @since 2017/06/15
+ * @since 2017/06/27
  */
-public class Section
+public class Fragment
 	extends __SubState__
 {
 	/**
-	 * Initializes the section.
+	 * Initializes the fragment.
 	 *
-	 * @param __ls The reference to the owning linker state.
-	 * @since 2017/06/15
+	 * @param __ls The owning linker state.
+	 * @since 2017/06/27
 	 */
-	Section(Reference<LinkerState> __ls)
+	public Fragment(Reference<LinkerState> __ls)
 	{
 		super(__ls);
 	}

@@ -29,6 +29,12 @@ public class Resource
 	/** The name of this resource. */
 	protected final String name;
 	
+	/** The fragment this resource is associated with. */
+	private volatile Reference<Fragment> _fragment;
+	
+	/** Has the resource already been parsed? */
+	private volatile boolean _parsed;
+	
 	/**
 	 * Initializes the resource.
 	 *
@@ -58,19 +64,25 @@ public class Resource
 	 * stores it within the binary section.
 	 *
 	 * @param __is The stream containing the binary data.
+	 * @throws IllegalStateException If the resource has already been parsed.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/20
 	 */
 	final void __parse(InputStream __is)
-		throws IOException, NullPointerException
+		throws IllegalStateException, IOException, NullPointerException
 	{
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error JI10 The resource has already been parsed.}
+		if (this._parsed)
+			throw new IllegalStateException("JI10");
+		this._parsed = true;
+		
 		// Need to declare a new section
-		SectionBuilder sb = new SectionBuilder(
+		FragmentBuilder sb = new FragmentBuilder(
 			this.__linkerState().__reference());
 		
 		// Copy all bytes to the output
@@ -85,7 +97,8 @@ public class Resource
 			sb.append(buf, 0, rc);
 		}
 		
-		throw new todo.TODO();
+		// Set fragment
+		this._fragment = sb.__build(SectionType.DATA);
 	}
 }
 
