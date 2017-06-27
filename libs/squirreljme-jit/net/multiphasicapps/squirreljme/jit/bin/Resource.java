@@ -73,6 +73,18 @@ public class Resource
 		SectionBuilder sb = new SectionBuilder(
 			this.__linkerState().__reference());
 		
+		// Copy all bytes to the output
+		byte[] buf = new byte[512];
+		for (;;)
+		{
+			int rc = __is.read(buf);
+			
+			if (rc < 0)
+				break;
+			
+			sb.append(buf, 0, rc);
+		}
+		
 		throw new todo.TODO();
 	}
 }
