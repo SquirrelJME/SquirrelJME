@@ -15,15 +15,73 @@ package net.multiphasicapps.squirreljme.jit.bin;
  *
  * @since 2017/06/27
  */
-public enum SectionType
+public final class SectionType
+	implements Comparable<SectionType>
 {
 	/** The text section. */
-	TEXT,
+	public static final SectionType TEXT =
+		new SectionType("text", 0);
 	
 	/** The data section. */
-	DATA,
+	public static final SectionType DATA =
+		new SectionType("data", 0);
 	
-	/** End. */
-	;
+	/**
+	 * Initializes the section type.
+	 *
+	 * @param __s The section name.
+	 * @param __i The index of the section.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/28
+	 */
+	public SectionType(String __s, int __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/06/28
+	 */
+	@Override
+	public int compareTo(SectionType __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/06/28
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/06/28
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/06/28
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 
