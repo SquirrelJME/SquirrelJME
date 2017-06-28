@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This represents and stores the binary data and code which makes up a section.
@@ -33,6 +35,18 @@ public class Section
 	Section(Reference<LinkerState> __ls)
 	{
 		super(__ls);
+	}
+	
+	/**
+	 * Appends a fragment to this section.
+	 *
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/28
+	 */
+	void __appendFragment()
+		throws NullPointerException
+	{
+		throw new todo.TODO();
 	}
 }
 

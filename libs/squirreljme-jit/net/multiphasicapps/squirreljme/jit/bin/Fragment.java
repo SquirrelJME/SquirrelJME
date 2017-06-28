@@ -21,15 +21,28 @@ import java.lang.ref.Reference;
 public class Fragment
 	extends __SubState__
 {
+	/** The fragment byte data. */
+	private final byte[] _data;
+	
 	/**
 	 * Initializes the fragment.
 	 *
 	 * @param __ls The owning linker state.
+	 * @param __b The data which makes up the fragment, this is not copied.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/27
 	 */
-	public Fragment(Reference<LinkerState> __ls)
+	public Fragment(Reference<LinkerState> __ls, byte[] __b)
+		throws NullPointerException
 	{
 		super(__ls);
+		
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._data = __b;
 	}
 }
 

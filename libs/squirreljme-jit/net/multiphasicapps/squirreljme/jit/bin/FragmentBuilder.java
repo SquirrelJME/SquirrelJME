@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
@@ -111,6 +112,7 @@ public class FragmentBuilder
 			throw new IllegalStateException("JI0x");
 		this._finished = true;
 		
+		// Build fragment
 		throw new todo.TODO();
 	}
 }
