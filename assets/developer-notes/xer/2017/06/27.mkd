@@ -1,0 +1,8 @@
+# 2017/06/27
+
+## 14:59
+
+One thing I can do is have the section builder just be limited to small
+segments of bytes when adding things. For example I can just append a
+single byte or group of bytes under a replacement system for the most
+part.

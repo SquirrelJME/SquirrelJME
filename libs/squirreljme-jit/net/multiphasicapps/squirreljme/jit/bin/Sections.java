@@ -42,5 +42,23 @@ public class Sections
 	{
 		super(__ls);
 	}
+	
+	/**
+	 * Obtains the specified section.
+	 *
+	 * @param __t The section to get.
+	 * @return The section or {@code null} if it is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/28
+	 */
+	public final Section get(SectionType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		return this._sections.get(__t);
+	}
 }
 
