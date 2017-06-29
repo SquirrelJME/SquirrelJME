@@ -60,6 +60,9 @@ public class LinkerState
 	protected final Units units =
 		new Units(this.selfref);
 	
+	/** The section counter which is used to count new sections. */
+	protected final SectionCounter sectioncounter;
+	
 	/** The JIT configuration used for the output. */
 	protected final JITConfig config;
 	
@@ -80,6 +83,7 @@ public class LinkerState
 		
 		// Set
 		this.config = __conf;
+		this.sectioncounter = __conf.createSectionCounter();
 	}
 	
 	/**
