@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
+import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
 import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
 import net.multiphasicapps.squirreljme.jit.rc.ResourceCompiler;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
@@ -65,47 +67,18 @@ public abstract class JITConfig
 	}
 	
 	/**
-	 * Creates an instance of the compiler for the given class file.
+	 * This creates a new section counter which is used to count text and data
+	 * sections for placement in an output linked executable.
 	 *
-	 * @param __is The stream containing the class data to compile.
-	 * @param __ci The cluster the class is in.
-	 * @param __lt The link table which is given the compiled class data.
-	 * @return The compilation task.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/05/29
-	 */
-	public final ClassCompiler compileClass(InputStream __is,
-		ClusterIdentifier __ci, LinkTable __lt)
-		throws NullPointerException
-	{
-		// Check
-		if (__is == null || __ci == null || __lt == null)
-			throw new NullPointerException("NARG");
-		
-		// Create the compiler
-		return new ClassCompiler(this, __is, __ci, __lt);
-	}
-	
-	/**
-	 * Compiles the specified resource and places it into the given link table.
+	 * By default a {@link FlatSectionCounter} is used, if an alternative is
+	 * required then this may be replaced accordingly.
 	 *
-	 * @param __is The stream containing the resource data.
-	 * @param __n The name of the resource.
-	 * @param __ci The cluster the resource is in.
-	 * @param __lt The link table which is given the compiled resource data.
-	 * @return The resource compiler task.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/06/02
+	 * @return The section counter for placing code and resources.
+	 * @since 2017/06/28
 	 */
-	public final ResourceCompiler compileResource(InputStream __is,
-		String __n, ClusterIdentifier __ci, LinkTable __lt)
-		throws NullPointerException
+	public SectionCounter createSectionCounter()
 	{
-		// Check
-		if (__is == null || __n == null || __ci == null || __lt == null)
-			throw new NullPointerException("NARG");
-		
-		return new ResourceCompiler(this, __is, __n, __ci, __lt);
+		return new FlatSectionCounter();
 	}
 }
 
