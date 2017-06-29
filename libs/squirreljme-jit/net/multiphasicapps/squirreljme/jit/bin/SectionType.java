@@ -23,11 +23,11 @@ public final class SectionType
 {
 	/** The text section. */
 	public static final SectionType TEXT =
-		new SectionType("text", 0);
+		new SectionType(".text", 0);
 	
 	/** The data section. */
 	public static final SectionType DATA =
-		new SectionType("data", 0);
+		new SectionType(".data", 0);
 	
 	/** The section name. */
 	protected final String name;
