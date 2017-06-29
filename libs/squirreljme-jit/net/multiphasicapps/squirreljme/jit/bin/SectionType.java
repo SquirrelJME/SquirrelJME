@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents the type of sections which exist.
  *
@@ -26,6 +29,15 @@ public final class SectionType
 	public static final SectionType DATA =
 		new SectionType("data", 0);
 	
+	/** The section name. */
+	protected final String name;
+	
+	/** The section index. */
+	protected final int index;
+	
+	/** The string representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the section type.
 	 *
@@ -41,7 +53,9 @@ public final class SectionType
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.name = __s;
+		this.index = __i;
 	}
 	
 	/**
@@ -71,7 +85,29 @@ public final class SectionType
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode() ^ this.index;
+	}
+	
+	/**
+	 * Returns the index of this section.
+	 *
+	 * @return The section index.
+	 * @since 2017/06/28
+	 */
+	public int index()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * Returns the name of this section.
+	 *
+	 * @return The section name.
+	 * @since 2017/06/28
+	 */
+	public String name()
+	{
+		return this.name;
 	}
 	
 	/**
@@ -81,7 +117,15 @@ public final class SectionType
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format("%s:%d",
+				this.name, this.index)));
+		
+		return rv;
 	}
 }
 
