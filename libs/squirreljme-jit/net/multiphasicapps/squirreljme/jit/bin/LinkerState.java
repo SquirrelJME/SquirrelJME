@@ -94,6 +94,17 @@ public class LinkerState
 	}
 	
 	/**
+	 * Returns the JIT configuration currently being used.
+	 *
+	 * @return The JIT configuration being used.
+	 * @since 2017/06/28
+	 */
+	public final JITConfig config()
+	{
+		return this.config;
+	}
+	
+	/**
 	 * Returns the reference to this linker state.
 	 *
 	 * @return The linker state reference.
