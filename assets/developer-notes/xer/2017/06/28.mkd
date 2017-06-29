@@ -1,0 +1,29 @@
+# 2017/06/28
+
+## 09:32
+
+So `Sections` will get a create if missing. Also since many executable formats
+can have various different sections, I need a way to have something really
+more powerful than an enum. There for example would be the windows resource
+section, then for PalmOS there could be actual resource sections and such.
+
+## 09:34
+
+Also, static fields can just be allocated into one given area. Pure constants
+can go into the data section and be marked as such, while non-pure constant
+ones are initialized at run-time via the static initializers sometime.
+
+## 09:38
+
+This means that there will be a somewhat different way to lookup resources
+based on the target system. For example on flat binary systems it can just use
+a pointer to the resource data. But on say Palm OS it will instead generate
+a bunch of calls which loads the resource and such in a managed input stream.
+Well specifically, the `getResourceAsStream()` call is system specific. It
+will handle the cases correctly.
+
+## 20:43
+
+To handle cases such as Palm OS when it comes to resource usage, I can have a
+basic counter used that will determine the section resource should be placed
+in.
