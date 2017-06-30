@@ -115,7 +115,7 @@ public class LinkerState
 	 * @since 2017/06/20
 	 */
 	final Reference<LinkerState> __reference()
-	{ 
+	{
 		return this.selfref;
 	}
 }
