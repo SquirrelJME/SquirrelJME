@@ -24,7 +24,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/06/15
  */
-public class LinkerState
+public final class LinkerState
 {
 	/**
 	 * This is a singular self reference which sub-classes refer to when they

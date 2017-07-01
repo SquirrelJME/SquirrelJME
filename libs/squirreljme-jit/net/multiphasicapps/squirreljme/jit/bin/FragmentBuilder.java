@@ -21,7 +21,7 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  *
  * @since 2017/06/23
  */
-public class FragmentBuilder
+public final class FragmentBuilder
 	extends __SubState__
 {
 	/** Deque for the bytes within the section. */
@@ -99,7 +99,7 @@ public class FragmentBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/27
 	 */
-	Reference<Fragment> __build(SectionType __t)
+	final Reference<Fragment> __build(SectionType __t)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check

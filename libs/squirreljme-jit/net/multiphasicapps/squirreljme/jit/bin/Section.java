@@ -16,16 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This represents and stores the binary data and code which makes up a section.
- * Sections may have some regions of their output be determined in a later stage
- * of the linker on output such as the address where a method is located.
- * A section contains multiple fragments which make up the entire section.
+ * This represents and stores the binary data and code which makes up a
+ * section. Sections may have some regions of their output be determined in a
+ * later stage of the linker on output such as the address where a method is
+ * located. A section contains multiple fragments which make up the entire
+ * section.
  *
  * @since 2017/06/15
  */
-public class Section
+public final class Section
 	extends __SubState__
 {
+	/** Fragments which exist within this section. */
+	private final List<Fragment> _fragments =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the section.
 	 *
