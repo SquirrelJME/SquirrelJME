@@ -17,6 +17,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -268,8 +269,37 @@ public class TargetBuilder
 			cc.add(id, v);
 		}
 		
+		// Comparator for sorting by project name
+		Comparator<ProjectBinary> comp = new Comparator<ProjectBinary>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2017/07/01
+				 */
+				@Override
+				public int compare(ProjectBinary __a, ProjectBinary __b)
+				{
+					return __a.name().compareTo(__b.name());
+				}
+			};
+		
+		// Sort sub-ranges alphabetically so that the given order is always
+		// the same
+		ProjectBinary[] rva = rv.<ProjectBinary>toArray(new ProjectBinary[n]);
+		for (int l = 0, r; l < n; l++)
+		{
+			// Find 
+			int basepiv = cc.get(l);
+			for (r = l; r < n; r++)
+				if (cc.get(r) != basepiv)
+					break;
+			
+			// Sort this region
+			Arrays.<ProjectBinary>sort(rva, l, r, comp);
+		}
+		
 		// Use given project list
-		return rv.<ProjectBinary>toArray(new ProjectBinary[rv.size()]);
+		return rva;
 	}
 	
 	/**
