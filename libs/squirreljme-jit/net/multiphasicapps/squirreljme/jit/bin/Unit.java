@@ -17,7 +17,7 @@ import java.lang.ref.Reference;
  *
  * @since 2017/06/17
  */
-public class Unit
+public final class Unit
 	extends __SubState__
 {
 	/**

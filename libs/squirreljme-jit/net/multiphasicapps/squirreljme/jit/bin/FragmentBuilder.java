@@ -24,6 +24,9 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
 public final class FragmentBuilder
 	extends __SubState__
 {
+	/** The type of section this is in. */
+	protected final SectionType type;
+	
 	/** Deque for the bytes within the section. */
 	protected final ByteDeque bytes =
 		new ByteDeque();
@@ -35,11 +38,21 @@ public final class FragmentBuilder
 	 * Initializes the section builder.
 	 *
 	 * @param __ls The owning linker state.
+	 * @param __t The section this fragment exists within.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/23
 	 */
-	FragmentBuilder(Reference<LinkerState> __ls)
+	FragmentBuilder(Reference<LinkerState> __ls, SectionType __t)
+		throws NullPointerException
 	{
 		super(__ls);
+		
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.type = __t;
 	}
 	
 	/**
@@ -91,21 +104,15 @@ public final class FragmentBuilder
 	}
 	
 	/**
-	 * Finishes the specified fragment adding it to the section of the
-	 * specified type.
+	 * Finishes the specified fragment adding it to the section in the owning
+	 * linker state.
 	 *
-	 * @param __t The type of section to add this fragment to.
 	 * @throws IllegalStateException If the fragment has been finished.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/27
 	 */
-	final Reference<Fragment> __build(SectionType __t)
-		throws IllegalStateException, NullPointerException
+	public final Reference<Fragment> build()
+		throws IllegalStateException
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
 		// {@squirreljme.error JI0x The fragment being built has already been
 		// finished.}
 		if (this._finished)
@@ -113,8 +120,7 @@ public final class FragmentBuilder
 		this._finished = true;
 		
 		// Build fragment
-		return __linkerState().sections().__getOrCreate(__t).__append(
+		return __linkerState().sections().__getOrCreate(this.type).__append(
 			this.bytes.toByteArray());
 	}
 }
-

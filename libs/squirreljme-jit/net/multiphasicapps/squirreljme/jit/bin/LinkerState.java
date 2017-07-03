@@ -109,6 +109,24 @@ public final class LinkerState
 	}
 	
 	/**
+	 * Creates a new fragment builder which is used to construct a fragment.
+	 *
+	 * @param __t The type of section this belongs in.
+	 * @return A fragment builder used for building fragments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/03
+	 */
+	public final FragmentBuilder createFragmentBuilder(SectionType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		return new FragmentBuilder(this.selfref, __t);
+	}
+	
+	/**
 	 * Returns the section manager which is used to provide access to the
 	 * sections contained within the target executable.
 	 *

@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This represents a group of resources which are referenced by classes, since
@@ -27,15 +29,23 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/06/17
  */
-public class Cluster
+public final class Cluster
 	extends __SubState__
 {
+	/** Reference to the self cluster. */
+	protected final Reference<Cluster> selfref =
+		new WeakReference<>(this);
+	
 	/** The key for this cluster. */
 	protected final ClusterKey key;
 	
 	/** Resources within the cluster. */
 	private final Map<String, Resource> _resources =
 		new SortedTreeMap<>();
+	
+	/** Units which are in this cluster. */
+	private final Set<ClassName> _units =
+		new SortedTreeSet<>();
 	
 	/**
 	 * Initializes this individual cluster.
@@ -88,8 +98,8 @@ public class Cluster
 			// Process as resource
 			else
 			{
-				// {@squirreljme.error JI0w A resource is duplicated within this
-				// cluster. (The cluster ID; The name of the resource)}
+				// {@squirreljme.error JI0w A resource is duplicated within
+				// this cluster. (The cluster ID; The name of the resource)}
 				Map<String, Resource> resources = this._resources;
 				if (resources.containsKey(__n))
 					throw new JITException(String.format("JI0w %s", this.key,
