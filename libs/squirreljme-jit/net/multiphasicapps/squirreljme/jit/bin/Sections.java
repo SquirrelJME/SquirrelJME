@@ -77,7 +77,14 @@ public class Sections
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Create section if missing
+		Map<SectionType, Section> sections = this._sections;
+		Section rv = sections.get(__t);
+		if (rv == null)
+			sections.put(__t,
+				(rv = new Section(__linkerState().__reference())));
+		
+		return rv;
 	}
 }
 
