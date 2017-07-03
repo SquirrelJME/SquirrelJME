@@ -45,7 +45,7 @@ public final class Section
 	/**
 	 * Appends a fragment to this section.
 	 *
-	 * @param __b The bytes which make up the section.
+	 * @param __b The bytes which make up the section, this is not copied.
 	 * @throws NullPointerException On null arguments.
 	 * @return The newly created fragment.
 	 * @since 2017/06/28
@@ -57,7 +57,13 @@ public final class Section
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Create new fragment
+		Fragment rv = new Fragment(__linkerState().__reference(), __b);
+		this._fragments.add(rv);
+		
+		// Fragments are referred to be reference to that they may be
+		// garbage collected as needed
+		return new WeakReference<>(rv);
 	}
 }
 
