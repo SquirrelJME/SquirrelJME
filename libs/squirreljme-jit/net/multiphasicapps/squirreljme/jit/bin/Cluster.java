@@ -81,7 +81,9 @@ public class Cluster
 		{
 			// Process as class file
 			if (__n.endsWith(".class"))
+			{
 				throw new todo.TODO();
+			}
 			
 			// Process as resource
 			else
