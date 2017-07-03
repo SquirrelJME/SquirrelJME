@@ -12,13 +12,9 @@ package net.multiphasicapps.squirreljme.jit.arch.mips;
 
 import java.io.InputStream;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
-import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
-import net.multiphasicapps.squirreljme.jit.LinkTable;
-import net.multiphasicapps.squirreljme.jit.rc.ResourceCompiler;
 
 /**
  * This manages the configuration for MIPS based targets.

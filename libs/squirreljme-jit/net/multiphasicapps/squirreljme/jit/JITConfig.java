@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
-import net.multiphasicapps.squirreljme.jit.java.ClassCompiler;
-import net.multiphasicapps.squirreljme.jit.rc.ResourceCompiler;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
