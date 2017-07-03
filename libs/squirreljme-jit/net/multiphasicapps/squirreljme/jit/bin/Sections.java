@@ -82,7 +82,7 @@ public class Sections
 		Section rv = sections.get(__t);
 		if (rv == null)
 			sections.put(__t,
-				(rv = new Section(__linkerState().__reference())));
+				(rv = new Section(__linkerState().__reference(), __t)));
 		
 		return rv;
 	}
