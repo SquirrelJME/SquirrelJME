@@ -21,6 +21,9 @@ import java.lang.ref.Reference;
 public class Fragment
 	extends __SubState__
 {
+	/** The base address of the fragment. */
+	protected final long baseaddr;
+	
 	/** The fragment byte data. */
 	private final byte[] _data;
 	
@@ -28,11 +31,12 @@ public class Fragment
 	 * Initializes the fragment.
 	 *
 	 * @param __ls The owning linker state.
+	 * @param __bs The base address of the fragment in the section.
 	 * @param __b The data which makes up the fragment, this is not copied.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/27
 	 */
-	public Fragment(Reference<LinkerState> __ls, byte[] __b)
+	public Fragment(Reference<LinkerState> __ls, long __ba, byte[] __b)
 		throws NullPointerException
 	{
 		super(__ls);
@@ -42,7 +46,19 @@ public class Fragment
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.baseaddr = __ba;
 		this._data = __b;
+	}
+	
+	/**
+	 * Returns the base address of the fragment in the owning section.
+	 *
+	 * @return The base address of the fragment.
+	 * @since 2017/07/02
+	 */
+	public final long baseAddress()
+	{
+		return this.baseaddr;
 	}
 }
 
