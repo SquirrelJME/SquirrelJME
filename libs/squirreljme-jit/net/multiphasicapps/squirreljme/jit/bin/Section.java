@@ -59,6 +59,17 @@ public final class Section
 	}
 	
 	/**
+	 * Returns the size of the section in bytes.
+	 *
+	 * @return The size of the section in bytes.
+	 * @since 2017/07/02
+	 */
+	public final long size()
+	{
+		return this._size;
+	}
+	
+	/**
 	 * Appends a fragment to this section.
 	 *
 	 * @param __b The bytes which make up the section, this is not copied.
@@ -66,7 +77,7 @@ public final class Section
 	 * @return The newly created fragment.
 	 * @since 2017/06/28
 	 */
-	Reference<Fragment> __append(byte[] __b)
+	final Reference<Fragment> __append(byte[] __b)
 		throws NullPointerException
 	{
 		// Check
