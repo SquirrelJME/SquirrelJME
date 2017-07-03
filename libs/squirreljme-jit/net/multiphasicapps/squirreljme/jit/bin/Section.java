@@ -45,12 +45,18 @@ public final class Section
 	/**
 	 * Appends a fragment to this section.
 	 *
+	 * @param __b The bytes which make up the section.
 	 * @throws NullPointerException On null arguments.
+	 * @return The newly created fragment.
 	 * @since 2017/06/28
 	 */
-	void __appendFragment()
+	Reference<Fragment> __append(byte[] __b)
 		throws NullPointerException
 	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }

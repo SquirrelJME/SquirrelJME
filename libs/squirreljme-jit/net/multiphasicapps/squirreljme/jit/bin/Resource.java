@@ -82,8 +82,9 @@ public class Resource
 		this._parsed = true;
 		
 		// Need to declare a new section
-		FragmentBuilder sb = new FragmentBuilder(
-			this.__linkerState().__reference());
+		LinkerState ls = this.__linkerState();
+		Reference<LinkerState> rls = ls.__reference();
+		FragmentBuilder sb = new FragmentBuilder(rls);
 		
 		// Copy all bytes to the output
 		byte[] buf = new byte[512];
@@ -98,7 +99,8 @@ public class Resource
 		}
 		
 		// Set fragment
-		this._fragment = sb.__build(SectionType.DATA);
+		this._fragment = sb.__build(ls.__sectionCounter().nextResource(
+			ls, this.cluster.get(), this.name));
 	}
 }
 
