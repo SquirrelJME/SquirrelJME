@@ -109,6 +109,18 @@ public final class LinkerState
 	}
 	
 	/**
+	 * Returns the section manager which is used to provide access to the
+	 * sections contained within the target executable.
+	 *
+	 * @return The section manager.
+	 * @since 2017/07/02
+	 */
+	public final Sections sections()
+	{
+		return this.sections;
+	}
+	
+	/**
 	 * Returns the reference to this linker state.
 	 *
 	 * @return The linker state reference.
@@ -117,6 +129,18 @@ public final class LinkerState
 	final Reference<LinkerState> __reference()
 	{
 		return this.selfref;
+	}
+	
+	/**
+	 * Returns the section counter which is used to map resources and classes
+	 * to sections as needed.
+	 *
+	 * @return The section counter.
+	 * @since 2017/07/02
+	 */
+	final SectionCounter __sectionCounter()
+	{
+		return this.sectioncounter;
 	}
 }
 

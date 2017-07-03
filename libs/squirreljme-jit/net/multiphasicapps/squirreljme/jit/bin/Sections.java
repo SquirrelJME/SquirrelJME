@@ -60,5 +60,24 @@ public class Sections
 		
 		return this._sections.get(__t);
 	}
+	
+	/**
+	 * This obtains a pre-existing section or creates a new one if it has not
+	 * yet been created.
+	 *
+	 * @param __t The section type to get the section for.
+	 * @return The section which may be created as needed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/02
+	 */
+	final Section __getOrCreate(SectionType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
