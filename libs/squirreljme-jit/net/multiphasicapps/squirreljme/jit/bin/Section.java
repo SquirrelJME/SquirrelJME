@@ -27,6 +27,9 @@ import java.util.List;
 public final class Section
 	extends __SubState__
 {
+	/** The type of this section. */
+	protected final SectionType type;
+	
 	/** Fragments which exist within this section. */
 	private final List<Fragment> _fragments =
 		new ArrayList<>();
@@ -38,11 +41,21 @@ public final class Section
 	 * Initializes the section.
 	 *
 	 * @param __ls The reference to the owning linker state.
+	 * @param __t The section this is under.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/15
 	 */
-	Section(Reference<LinkerState> __ls)
+	Section(Reference<LinkerState> __ls, SectionType __t)
+		throws NullPointerException
 	{
 		super(__ls);
+		
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.type = __t;
 	}
 	
 	/**

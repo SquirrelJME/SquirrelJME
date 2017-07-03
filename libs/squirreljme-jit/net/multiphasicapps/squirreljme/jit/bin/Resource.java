@@ -60,6 +60,27 @@ public class Resource
 	}
 	
 	/**
+	 * Returns the fragment which this resource is bound to.
+	 *
+	 * @return The fragment this resource is bound to.
+	 * @throws IllegalStateException On null arguments.
+	 * @since 2017/07/02
+	 */
+	public final Fragment fragment()
+		throws IllegalStateException
+	{
+		Reference<Fragment> ref = this._fragment;
+		Fragment rv;
+		
+		// {@squirreljme.error JI11 No stream has yet been parsed or the
+		// fragment has been garbage collected.}
+		if (!this._parsed || ref == null || null == (rv = ref.get()))
+			throw new IllegalStateException("JI11");
+		
+		return rv;
+	}
+	
+	/**
 	 * Parses the specified input stream as the data for the given resource and
 	 * stores it within the binary section.
 	 *
