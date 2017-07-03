@@ -31,6 +31,9 @@ public final class Section
 	private final List<Fragment> _fragments =
 		new ArrayList<>();
 	
+	/** The current size of the section, in bytes. */
+	private volatile long _size;
+	
 	/**
 	 * Initializes the section.
 	 *
@@ -57,9 +60,13 @@ public final class Section
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Create new fragment
-		Fragment rv = new Fragment(__linkerState().__reference(), __b);
+		// Create new fragment, fragments are just smashed right next to
+		// each other
+		long baseaddr = this._size;
+		Fragment rv = new Fragment(__linkerState().__reference(), baseaddr,
+			__b);
 		this._fragments.add(rv);
+		this._size = baseaddr + __b.length;
 		
 		// Fragments are referred to be reference to that they may be
 		// garbage collected as needed
