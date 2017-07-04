@@ -1,0 +1,14 @@
+# 2017/07/03
+
+## 11:16
+
+Actually what I can do is have static determination of interface pointers so
+that there is no actual lookup performed. This would mean that after the cast
+that there is no checking performed to determine which interface table is to
+be used. Basically, what I can have is an interface adapter for objects which
+is set depending on the object and the interface used.
+
+## 11:40
+
+Actually `LinkerState` should be more mutable and allow sections to created
+and making things more visible. Otherwise it would be impossible to use it.

@@ -1,0 +1,12 @@
+# 2017/07/01
+
+## 10:20
+
+A new month is here! I should make sure the projects are truly deterministic
+as to sort order.
+
+## 10:21
+
+I was writing a test for `Arrays.sort()` on objects, but I totally missed and
+forgot the natural sort order object based one.
+
