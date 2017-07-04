@@ -13,10 +13,9 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.jit.ClusterIdentifier;
+import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
-import net.multiphasicapps.squirreljme.jit.LinkTable;
 
 /**
  * This class reads the Java class file format and then passes that to the
@@ -37,36 +36,31 @@ public final class ClassCompiler
 	/** The input stream containing the class data. */
 	protected final DataInputStream in;
 	
-	/** The cluster this class is within. */
-	protected final ClusterIdentifier cluster;
-	
-	/** The link table to link into. */
-	protected final LinkTable linktable;
+	/** The linker state to write into. */
+	protected final LinkerState linkerstate;
 	
 	/**
 	 * Creates an instance of the compiler for the given class file.
 	 *
 	 * @param __jc The JIT configuration.
 	 * @param __is The stream containing the class data to compile.
-	 * @param __ci The cluster the class is in.
-	 * @param __lt The link table which is given the compiled class data.
+	 * @param __ls The linker state which contains all of the output executable
+	 * information.
 	 * @return The compilation task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/02
 	 */
-	public ClassCompiler(JITConfig __jc, InputStream __is,
-		ClusterIdentifier __ci, LinkTable __lt)
+	public ClassCompiler(JITConfig __jc, InputStream __is, LinkerState __ls)
 		throws NullPointerException
 	{
 		// Check
-		if (__jc == null || __is == null || __ci == null || __lt == null)
+		if (__jc == null || __is == null || __ls == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.config = __jc;
 		this.in = new DataInputStream(__is);
-		this.cluster = __ci;
-		this.linktable = __lt;
+		this.linkerstate = __ls;
 	}
 	
 	/**
