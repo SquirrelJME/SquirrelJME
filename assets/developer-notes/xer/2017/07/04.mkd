@@ -1,0 +1,9 @@
+# 2017/07/04
+
+## 11:58
+
+Ok so, I think it is time to remove some of the old code that I have lying
+around. Also, I thought about `Class.forName()`. Since everything is static
+I can have it where that call is replaced by a virtualized call which
+provides the current package or method being called. Basically a kind of in
+the context of.
