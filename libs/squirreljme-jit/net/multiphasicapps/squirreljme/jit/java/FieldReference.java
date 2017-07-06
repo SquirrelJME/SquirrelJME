@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.bin.ClassName;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
