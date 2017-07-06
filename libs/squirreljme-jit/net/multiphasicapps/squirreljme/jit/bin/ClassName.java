@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents the name of a class which exists within the virtual machine.
@@ -30,6 +31,24 @@ public final class ClassName
 {
 	/** The package this class is in. */
 	private volatile Reference<PackageName> _package;
+	
+	/**
+	 * Initializes the class name.
+	 *
+	 * @param __s The string that makes up the class name.
+	 * @throws JITException If the class name is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/05
+	 */
+	public ClassName(String __s)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * {@inheritDoc}

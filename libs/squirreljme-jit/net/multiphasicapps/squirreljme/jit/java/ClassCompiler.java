@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.jit.bin.ClassName;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -72,9 +73,9 @@ public final class ClassCompiler
 	{
 		try
 		{
-			// {@squirreljme.error JI06 Invalid magic number read from the start
-			// of the class file. (The read magic number; The expected magic
-			// number)}
+			// {@squirreljme.error JI06 Invalid magic number read from the
+			// start of the class file. (The read magic number; The expected
+			// magic number)}
 			DataInputStream in = this.in;
 			int mnum;
 			if ((mnum = in.readInt()) != _MAGIC_NUMBER)
