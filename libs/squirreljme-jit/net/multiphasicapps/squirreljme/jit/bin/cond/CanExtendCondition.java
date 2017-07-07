@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.bin.cond;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.bin.ClassName;
+import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 
 /**
  * This is a condition to see if one class can extend another.
@@ -27,9 +28,6 @@ public final class CanExtendCondition
 	
 	/** The super class. */
 	protected final ClassName superclass;
-	
-	/** The string representation of the condition. */
-	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the condition.
@@ -49,6 +47,21 @@ public final class CanExtendCondition
 		// Set
 		this.thisclass = __this;
 		this.superclass = __super;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/07
+	 */
+	@Override
+	public final boolean check(LinkerState __ls)
+		throws NullPointerException
+	{
+		// Check
+		if (__ls == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -79,6 +92,16 @@ public final class CanExtendCondition
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/07
+	 */
+	@Override
+	protected final String internalToString()
+	{
+		return String.format("%s extends %s", this.thisclass, this.superclass);
+	}
+	
+	/**
 	 * Returns the super class.
 	 *
 	 * @return The super class.
@@ -98,24 +121,6 @@ public final class CanExtendCondition
 	public final ClassName thisClass()
 	{
 		return this.thisclass;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/07/07
-	 */
-	@Override
-	public final String toString()
-	{
-		Reference<String> ref = this._string;
-		String rv;
-		
-		// Check
-		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = String.format(
-				"%s extends %s", this.thisclass, this.superclass)));
-		
-		return rv;
 	}
 }
 
