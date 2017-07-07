@@ -21,6 +21,24 @@ public final class PackageName
 	implements Comparable<PackageName>
 {
 	/**
+	 * Initializes the package name.
+	 *
+	 * @param __n The name of the package.
+	 * @throws JITException If the package name is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/07
+	 */
+	public PackageName(String __n)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/15
 	 */
