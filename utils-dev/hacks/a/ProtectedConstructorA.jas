@@ -1,0 +1,29 @@
+; -*- Mode: Jasmin; indent-tabs-mode: t; tab-width: 4 -*-
+; ---------------------------------------------------------------------------
+; Multi-Phasic Applications: SquirrelJME
+;     Copyright (C) Steven Gawroriski <xer@multiphasicapps.net>
+;     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+; ---------------------------------------------------------------------------
+; SquirrelJME is under the GNU General Public License v3+, or later.
+; See license.mkd for licensing and copyright information.
+; ---------------------------------------------------------------------------
+
+.class a/ProtectedConstructorA
+.super java/lang/Object
+
+.method protected <init>()V
+	.limit stack 3
+	
+	; Construct
+	aload 0
+	invokespecial java/lang/Object/<init>()V
+	
+	; Note
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	ldc "Constructor A"
+	invokevirtual java/io/PrintStream/println(Ljava/lang/Object;)V
+	
+	; Done
+	return
+.end method
+
