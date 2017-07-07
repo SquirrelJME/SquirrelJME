@@ -14,9 +14,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This class contains all of the dynamics which are used in any of the sections
- * to refer to information (such as method addresses) which are not yet
- * available. This class manages those dynamic requests for information.
+ * This class contains all of the dynamics which are used in any of the
+ * sections to refer to information (such as method addresses) which are not
+ * yet available. This class manages those dynamic requests for information.
+ *
+ * Effectively this allows dynamic references to other elements of the class
+ * file to be cached.
  *
  * @since 2017/06/15
  */
