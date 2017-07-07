@@ -17,6 +17,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.java.ClassDecompiler;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
@@ -92,6 +93,10 @@ public final class Cluster
 			// Process as class file
 			if (__n.endsWith(".class"))
 			{
+				// Run the class decompiler
+				ClassDecompiler cd = new ClassDecompiler(ls, __is);
+				cd.run();
+				
 				throw new todo.TODO();
 			}
 			

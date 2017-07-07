@@ -24,7 +24,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/05/29
  */
-public final class ClassCompiler
+public final class ClassDecompiler
 	implements Runnable
 {
 	/** The magic number of the class file. */
@@ -43,23 +43,22 @@ public final class ClassCompiler
 	/**
 	 * Creates an instance of the compiler for the given class file.
 	 *
-	 * @param __jc The JIT configuration.
-	 * @param __is The stream containing the class data to compile.
 	 * @param __ls The linker state which contains all of the output executable
 	 * information.
+	 * @param __is The stream containing the class data to compile.
 	 * @return The compilation task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/02
 	 */
-	public ClassCompiler(JITConfig __jc, InputStream __is, LinkerState __ls)
+	public ClassDecompiler(LinkerState __ls, InputStream __is)
 		throws NullPointerException
 	{
 		// Check
-		if (__jc == null || __is == null || __ls == null)
+		if (__is == null || __ls == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.config = __jc;
+		this.config = __ls.config();
 		this.in = new DataInputStream(__is);
 		this.linkerstate = __ls;
 	}
