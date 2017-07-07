@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This represents the name of a package a class resides in.
  *

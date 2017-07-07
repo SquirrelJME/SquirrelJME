@@ -1,0 +1,36 @@
+; -*- Mode: Jasmin; indent-tabs-mode: t; tab-width: 4 -*-
+; ---------------------------------------------------------------------------
+; Multi-Phasic Applications: SquirrelJME
+;     Copyright (C) Steven Gawroriski <xer@multiphasicapps.net>
+;     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+; ---------------------------------------------------------------------------
+; SquirrelJME is under the GNU General Public License v3+, or later.
+; See license.mkd for licensing and copyright information.
+; ---------------------------------------------------------------------------
+; This constructs a/ProtectedConstructorA and b/ProtectedConstructorB to
+; see if running works.
+
+.class a/NewProtected
+.super java/lang/Object
+
+.method public static main([Ljava/lang/String;)V
+	.limit stack 42
+	
+	; Use new on a protected class in this package
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	new a/ProtectedConstructorA
+	dup
+	invokespecial a/ProtectedConstructorA/<init>()V
+	invokevirtual java/io/PrintStream/println(Ljava/lang/Object;)V
+	
+	; Use new on a protected class in another package
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	new b/ProtectedConstructorB
+	dup
+	invokespecial b/ProtectedConstructorB/<init>()V
+	invokevirtual java/io/PrintStream/println(Ljava/lang/Object;)V
+	
+	; Done
+	return
+.end method
+
