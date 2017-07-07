@@ -118,6 +118,25 @@ public final class ClassDecompiler
 				interfaces[i] = pool.<ClassName>require(ClassName.class,
 					in.readUnsignedShort());
 			
+			// Read in fields
+			int nf = in.readUnsignedShort();
+			for (int i = 0; i < nf; i++)
+				throw new todo.TODO();
+			
+			// Read in methods
+			int nm = in.readUnsignedShort();
+			for (int i = 0; i < nm; i++)
+				throw new todo.TODO();
+			
+			// Handle attributes
+			if (true)
+				throw new todo.TODO();
+			
+			// {@squirreljme.error JI12 Expected end of the class to follow the
+			// attributes in the class. (The name of this class)}
+			if (in.read() >= 0)
+				throw new JITException(String.format("JI12 %s", thisname));
+			
 			throw new todo.TODO();
 		}
 		
