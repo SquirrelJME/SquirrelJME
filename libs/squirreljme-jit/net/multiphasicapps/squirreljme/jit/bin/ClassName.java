@@ -29,25 +29,72 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public final class ClassName
 	implements Comparable<ClassName>
 {
+	/** String representation of the class name. */
+	protected final String string;
+	
+	/** The number of array dimensions. */
+	protected final int dimensions;
+	
 	/** The package this class is in. */
 	private volatile Reference<PackageName> _package;
 	
 	/**
 	 * Initializes the class name.
 	 *
-	 * @param __s The string that makes up the class name.
+	 * @param __n The string that makes up the class name.
 	 * @throws JITException If the class name is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/05
 	 */
-	public ClassName(String __s)
+	public ClassName(String __n)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__s == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.string = __n;
+		
+		// Is this an array?
+		if (__n.startsWith("["))
+			throw new todo.TODO();
+		
+		// Not an array
+		else
+		{
+			this.dimensions = 0;
+			
+			// Check characters
+			boolean ls = true;
+			for (int i = 0, n = __n.length(); i < n; i++)
+			{
+				char c = __n.charAt(i);
+				
+				// Slashes cannot be first and 
+				if (c == '/')
+				{
+					// {@squirreljme.error JI0h Class names cannot have an
+					// empty package or class name. (The class name)}
+					if (ls)
+						throw new JITException(String.format("JI0h %s", __n));
+					else
+						ls = true; 
+				}
+				else
+					ls = false;
+				
+				// {@squirreljme.error JI0f The specified class name contains
+				// an illegal character. (The class name)}
+				if (c == '.' || c == ';' || c == '[')
+					throw new JITException(String.format("JI0f %s", __n));
+			}
+			
+			// {@squirreljme.error JI0g Class names cannot end with a slash.
+			// (The class name)}
+			if (ls)
+				throw new JITException(String.format("JI0g %s", __n));
+		}
 	}
 	
 	/**
@@ -57,7 +104,31 @@ public final class ClassName
 	@Override
 	public int compareTo(ClassName __o)
 	{
-		throw new todo.TODO();
+		return this.string.compareTo(__o.string);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/07
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof ClassName))
+			return false;
+		
+		return this.string.equals(((ClassName)__o).string);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/07
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -72,6 +143,16 @@ public final class ClassName
 	public PackageName packageName()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/07
+	 */
+	@Override
+	public String toString()
+	{
+		return this.string;
 	}
 }
 
