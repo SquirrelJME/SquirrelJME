@@ -136,12 +136,16 @@ public final class ClassDecompiler
 			// Read in fields
 			int nf = in.readUnsignedShort();
 			for (int i = 0; i < nf; i++)
+			{
 				throw new todo.TODO();
+			}
 			
 			// Read in methods
 			int nm = in.readUnsignedShort();
 			for (int i = 0; i < nm; i++)
+			{
 				throw new todo.TODO();
+			}
 			
 			// Handle attributes
 			if (true)

@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.jit.bin;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.bin.cond.*;
 
 /**
  * This condition table is used to verify that all conditions within the state
@@ -26,9 +29,13 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/07/07
  */
-public class Conditions
+public final class Conditions
 	extends __SubState__
 {
+	/** The conditions which must be checked . */
+	private volatile Set<Condition> _conditions =
+		new LinkedHashSet<>();
+	
 	/**
 	 * Initializes the conditions table.
 	 *
@@ -48,14 +55,14 @@ public class Conditions
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/07
 	 */
-	public void canExtend(ClassName __this, ClassName __super)
+	public final void canExtend(ClassName __this, ClassName __super)
 		throws NullPointerException
 	{
 		// Check
 		if (__this == null || __super == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		__add(new CanExtendCondition(__this, __super));
 	}
 	
 	/**
@@ -66,7 +73,7 @@ public class Conditions
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/07
 	 */
-	public void canImplement(ClassName __this, ClassName __int)
+	public final void canImplement(ClassName __this, ClassName __int)
 		throws NullPointerException
 	{
 		// Check
@@ -74,6 +81,23 @@ public class Conditions
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Adds the specified condition to the set of conditions.
+	 *
+	 * @param __c The condition to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/07
+	 */
+	private final void __add(Condition __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		this._conditions.add(__c);
 	}
 }
 
