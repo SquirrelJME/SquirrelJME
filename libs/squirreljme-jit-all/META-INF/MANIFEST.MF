@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 1652351f-bf25-4372-9f55-69c3c5b1774d
+X-SquirrelJME-Error: AL
+X-SquirrelJME-Name: Metaproject For All JITs
+X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Depends: squirreljme-jit-arch-mips
+Microedition-Configuration: CLDC-1.8-Compact
+X-SquirrelJME-Description: This is a metaproject which depends on 
+ every supported architecture and operating system. This is mostly 
+ used by the build system so that there is only a single dependency 
+ rather than the build system relying on the varying projects as 
+ they are added.
+
