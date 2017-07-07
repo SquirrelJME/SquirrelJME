@@ -14,8 +14,8 @@ package net.multiphasicapps.squirreljme.jit.bin;
  * This represents an individual package identifier which is used to associate
  * a class to a given package.
  *
- * There also is a special package which is associated with classes which do not
- * belong to any package.
+ * There also is a special package which is associated with classes which do
+ * not belong to any package.
  *
  * This class is immutable and thread-safe.
  *
