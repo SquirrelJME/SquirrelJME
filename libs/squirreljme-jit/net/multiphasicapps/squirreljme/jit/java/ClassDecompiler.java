@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.bin.ClassName;
+import net.multiphasicapps.squirreljme.jit.bin.Conditions;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -72,6 +73,10 @@ public final class ClassDecompiler
 	{
 		try
 		{
+			// Needed for later
+			LinkerState linkerstate = this.linkerstate;
+			Conditions cond = linkerstate.conditions();
+			
 			// {@squirreljme.error JI06 Invalid magic number read from the
 			// start of the class file. (The read magic number; The expected
 			// magic number)}
@@ -111,12 +116,22 @@ public final class ClassDecompiler
 				throw new JITException(String.format("JI0s %s %s", thisname,
 					supername));
 			
+			// Verify extend
+			if (supername != null)
+				cond.canExtend(thisname, supername);
+			
 			// Read interfaces
 			int icount = in.readUnsignedShort();
 			ClassName[] interfaces = new ClassName[icount];
 			for (int i = 0; i < icount; i++)
-				interfaces[i] = pool.<ClassName>require(ClassName.class,
-					in.readUnsignedShort());
+			{
+				ClassName inf;
+				interfaces[i] = (inf = pool.<ClassName>require(ClassName.class,
+					in.readUnsignedShort()));
+				
+				// Very implements
+				cond.canImplement(thisname, inf);
+			}
 			
 			// Read in fields
 			int nf = in.readUnsignedShort();

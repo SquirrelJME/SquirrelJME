@@ -39,5 +39,41 @@ public class Conditions
 	{
 		super(__ls);
 	}
+	
+	/**
+	 * Checks whether the specified class can extend the given super class.
+	 *
+	 * @param __this The this class.
+	 * @param __super The class to check if it can extend.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/07
+	 */
+	public void canExtend(ClassName __this, ClassName __super)
+		throws NullPointerException
+	{
+		// Check
+		if (__this == null || __super == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Checks whether the given class can implement the specified class.
+	 *
+	 * @param __this The class implementing the interface.
+	 * @param __int The interface to check if it can be implemented.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/07
+	 */
+	public void canImplement(ClassName __this, ClassName __int)
+		throws NullPointerException
+	{
+		// Check
+		if (__this == null || __int == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
