@@ -40,6 +40,10 @@ public final class LinkerState
 	protected final Accesses accesses =
 		new Accesses(this.selfref);
 	
+	/** Conditions which must all pass for compilation to succeed. */
+	protected final Conditions conditions =
+		new Conditions(this.selfref);
+	
 	/** The dynamic code generation reference table. */
 	protected final Dynamics dynamics =
 		new Dynamics(this.selfref);
@@ -95,6 +99,17 @@ public final class LinkerState
 	public final Clusters clusters()
 	{
 		return this.clusters;
+	}
+	
+	/**
+	 * Returns the condition table.
+	 *
+	 * @return The table of conditions which must pass.
+	 * @since 2017/07/07
+	 */
+	public final Conditions conditions()
+	{
+		return this.conditions;
 	}
 	
 	/**
