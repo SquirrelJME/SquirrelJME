@@ -26,6 +26,9 @@ public final class MethodReference
 	/** Is this an interface? */
 	protected final boolean isinterface;
 	
+	/** The name of the method. */
+	protected final MethodName name;
+	
 	/**
 	 * Initializes the method reference.
 	 *
@@ -35,18 +38,19 @@ public final class MethodReference
 	 * @param __int Does this refer to an interface method?
 	 * @since 2017/06/12
 	 */
-	public MethodReference(ClassName __c, Identifier __i, MethodDescriptor __t,
-		boolean __int)
+	public MethodReference(ClassName __c, MethodName __i,
+		MethodDescriptor __t, boolean __int)
 		throws NullPointerException
 	{
-		super(__c, __i);
+		super(__c);
 		
 		// Check
-		if (__t == null)
+		if (__t == null || __i == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.descriptor = __t;
+		this.name = __i;
 		this.isinterface = __int;
 	}
 	
@@ -62,7 +66,7 @@ public final class MethodReference
 		
 		MethodReference o = (MethodReference)__o;
 		return this.classname.equals(o.classname) &&
-			this.identifier.equals(o.identifier) &&
+			this.name.equals(o.name) &&
 			this.descriptor.equals(o.descriptor) &&
 			this.isinterface == o.isinterface;
 	}
@@ -74,8 +78,18 @@ public final class MethodReference
 	@Override
 	public int hashCode()
 	{
-		return this.classname.hashCode() ^ this.identifier.hashCode() ^
+		return this.classname.hashCode() ^ this.name.hashCode() ^
 			this.descriptor.hashCode() ^ (this.isinterface ? 1 : 0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/08
+	 */
+	@Override
+	public final MethodName memberName()
+	{
+		return this.name;
 	}
 	
 	/**
