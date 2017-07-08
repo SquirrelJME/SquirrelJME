@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/12
  */
-public final class Identifier
+public abstract class Identifier
 {
 	/** The string which makes up the identifier. */
 	protected final String string;
@@ -31,7 +31,7 @@ public final class Identifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	public Identifier(String __n)
+	Identifier(String __n)
 		throws JITException, NullPointerException
 	{
 		// Check

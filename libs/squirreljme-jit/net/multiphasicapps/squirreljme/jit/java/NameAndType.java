@@ -20,8 +20,8 @@ import java.lang.ref.WeakReference;
  */
 public final class NameAndType
 {
-	/** Then name. */
-	protected final Identifier name;
+	/** The name. */
+	protected final String name;
 	
 	/** The type. */
 	protected final String type;
@@ -37,7 +37,7 @@ public final class NameAndType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	public NameAndType(Identifier __n, String __t)
+	public NameAndType(String __n, String __t)
 		throws NullPointerException
 	{
 		// Check
@@ -81,7 +81,7 @@ public final class NameAndType
 	 * @return The identifier.
 	 * @since 2017/06/12
 	 */
-	public Identifier name()
+	public String name()
 	{
 		return this.name;
 	}

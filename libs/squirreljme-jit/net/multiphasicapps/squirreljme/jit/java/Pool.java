@@ -383,8 +383,7 @@ public class Pool
 					{
 						int[] ina = (int[])in;
 						out = new NameAndType(
-							new Identifier(((UTFConstantEntry)
-								__entries[ina[0]]).toString()),
+							((UTFConstantEntry)__entries[ina[0]]).toString(),
 							((UTFConstantEntry)__entries[ina[1]]).toString());
 					}
 					break;
