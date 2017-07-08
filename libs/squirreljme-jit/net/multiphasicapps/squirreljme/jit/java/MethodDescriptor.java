@@ -72,10 +72,10 @@ public final class MethodDescriptor
 		// Skip the ending parenthesis
 		i++;
 		
-		// {@squirreljme.error JI0k The method descriptor has no return
+		// {@squirreljme.error JI13 The method descriptor has no return
 		// value. (The method descriptor)}
 		if (i >= n)
-			throw new JITException(String.format("JI0k %s", __n));
+			throw new JITException(String.format("JI13 %s", __n));
 		
 		// No return value?
 		char c = __n.charAt(i);

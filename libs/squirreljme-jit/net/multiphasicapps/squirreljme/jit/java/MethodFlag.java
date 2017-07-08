@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.link;
+package net.multiphasicapps.squirreljme.jit.java;
 
 /**
  * These are flags which are used by methods.
@@ -56,5 +56,33 @@ public enum MethodFlag
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the bit mask which is used for this flag.
+	 *
+	 * @return The bit mask used for the flag.
+	 * @since 2017/07/07
+	 */
+	public final int javaBitMask()
+	{
+		switch (this)
+		{
+			case PUBLIC:		return 0x0001;
+			case PRIVATE:		return 0x0002;
+			case PROTECTED:		return 0x0004;
+			case STATIC:		return 0x0008;
+			case FINAL:			return 0x0010;
+			case SYNCHRONIZED:	return 0x0020;
+			case BRIDGE:		return 0x0040;
+			case VARARGS:		return 0x0080;
+			case NATIVE:		return 0x0100;
+			case ABSTRACT:		return 0x0400;
+			case STRICT:		return 0x0800;
+			case SYNTHETIC:		return 0x1000;
+
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 

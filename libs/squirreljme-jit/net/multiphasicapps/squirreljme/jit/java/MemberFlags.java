@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.link;
+package net.multiphasicapps.squirreljme.jit.java;
 
 /**
  * This is the base class for flags which are for member types.

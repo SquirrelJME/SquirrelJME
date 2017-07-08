@@ -8,7 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.link;
+package net.multiphasicapps.squirreljme.jit.java;
+
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents the set of flags for methods.
@@ -175,30 +177,30 @@ public final class MethodFlags
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
-	 * @throws InvalidFlagsException If they are not valid.
+	 * @throws JITException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags(ClassFlags __oc)
-		throws InvalidFlagsException
+		throws JITException
 	{
 		// Check
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AH07 Native methods are not supported in Java ME
+		// {@squirreljme.error JI04 Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new InvalidFlagsException("AH07");
+			throw new JITException("JI04");
 		
-		// {@squirreljme.error AH08 An {@code abstract} method cannot be
+		// {@squirreljme.error JI05 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new InvalidFlagsException(String.format("AH08 %s", this));
+				throw new JITException(String.format("JI05 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
@@ -215,10 +217,10 @@ public final class MethodFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error AH09 Flags for interface method has an
+				// {@squirreljme.error JI14 Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
-					throw new InvalidFlagsException(String.format("AH09 %s", this));
+					throw new JITException(String.format("JI14 %s", this));
 			}
 	}
 }

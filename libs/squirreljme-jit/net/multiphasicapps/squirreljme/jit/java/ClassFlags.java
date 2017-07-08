@@ -220,7 +220,7 @@ public class ClassFlags
 		List<ClassFlag> fl = new ArrayList<>(8);
 		for (ClassFlag f : ClassFlag.values())
 		{
-			int v = f.javaBitValue();
+			int v = f.javaBitMask();
 			if (0 != (__i & v))
 			{
 				fl.add(f);
