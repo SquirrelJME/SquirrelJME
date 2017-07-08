@@ -20,24 +20,33 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public final class FieldReference
 	extends MemberReference
 {
+	/** The name of the field. */
+	protected final FieldName name;
+	
+	/** The member type. */
+	protected final FieldDescriptor type;
+	
 	/**
 	 * Initializes the field reference.
 	 *
 	 * @param __c The class the member resides in.
 	 * @param __i The name of the member.
 	 * @param __t The descriptor of the member.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	public FieldReference(ClassName __c, Identifier __i, FieldDescriptor __t)
+	public FieldReference(ClassName __c, FieldName __i, FieldDescriptor __t)
 		throws NullPointerException
 	{
-		super(__c, __i);
+		super(__c);
 		
 		// Check
-		if (__t == null)
+		if (__t == null || __i == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.name = __i;
+		this.type = __t;
 	}
 	
 	/**
@@ -58,6 +67,16 @@ public final class FieldReference
 	public int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/08
+	 */
+	@Override
+	public final FieldName memberName()
+	{
+		return this.name;
 	}
 	
 	/**

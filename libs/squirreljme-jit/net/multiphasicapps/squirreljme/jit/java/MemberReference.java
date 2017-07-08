@@ -22,27 +22,22 @@ public abstract class MemberReference
 	/** The class this refers to. */
 	protected final ClassName classname;
 	
-	/** The name of the member this refers to. */
-	protected final Identifier identifier;
-	
 	/**
 	 * Initializes the base member reference.
 	 *
 	 * @param __c The class the member resides in.
-	 * @param __i The member which is being referenced.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	MemberReference(ClassName __c, Identifier __i)
+	MemberReference(ClassName __c)
 		throws NullPointerException
 	{
 		// Check
-		if (__c == null || __i == null)
+		if (__c == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.classname = __c;
-		this.identifier = __i;
 	}
 	
 	/**
@@ -60,6 +55,14 @@ public abstract class MemberReference
 	public abstract int hashCode();
 	
 	/**
+	 * Returns the name of the member being referenced.
+	 *
+	 * @return The name of the referenced member.
+	 * @since 2017/06/12
+	 */
+	public abstract Identifier memberName();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
@@ -75,17 +78,6 @@ public abstract class MemberReference
 	public final ClassName className()
 	{
 		return this.classname;
-	}
-	
-	/**
-	 * Returns the name of the member being referenced.
-	 *
-	 * @return The name of the referenced member.
-	 * @since 2017/06/12
-	 */
-	public final Identifier memberName()
-	{
-		return this.identifier;
 	}
 }
 
