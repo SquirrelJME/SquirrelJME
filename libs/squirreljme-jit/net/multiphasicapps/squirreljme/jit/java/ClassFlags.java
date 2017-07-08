@@ -31,7 +31,7 @@ public class ClassFlags
 	 */
 	public ClassFlags(int __i)
 	{
-		this(__decode(__i));
+		this(Flags.<ClassFlag>__decode(__i, ClassFlag.values()));
 	}
 	
 	/**
@@ -205,35 +205,6 @@ public class ClassFlags
 			if (isAbstract() && isFinal())
 				throw new JITException(String.format("JI0q %s", this));
 		}
-	}
-	
-	/**
-	 * Decodes the specified bitfield and returns the used class flags.
-	 *
-	 * @param __i The input bitfield.
-	 * @return The flags specified in the bitfield.
-	 * @since 2017/06/13
-	 */
-	private static Iterable<ClassFlag> __decode(int __i)
-	{
-		// Find all matching flags in the bitfield
-		List<ClassFlag> fl = new ArrayList<>(8);
-		for (ClassFlag f : ClassFlag.values())
-		{
-			int v = f.javaBitMask();
-			if (0 != (__i & v))
-			{
-				fl.add(f);
-				__i ^= v;
-			}
-		}
-		
-		// {@squirreljme.error JI0k An undefined class flag has been specified.
-		// (The extra bitfield class flags)}
-		if (__i != 0)
-			throw new JITException(String.format("JI0k %02x", __i));
-		
-		return fl;
 	}
 }
 

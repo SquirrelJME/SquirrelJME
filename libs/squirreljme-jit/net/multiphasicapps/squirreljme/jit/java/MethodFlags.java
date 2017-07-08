@@ -57,7 +57,7 @@ public final class MethodFlags
 	 */
 	public MethodFlags(ClassFlags __oc, int __i)
 	{
-		this(__oc, __decode(__i));
+		this(__oc, Flags.<MethodFlag>__decode(__i, MethodFlag.values()));
 	}
 	
 	/**
@@ -235,20 +235,6 @@ public final class MethodFlags
 				if (must != has && !maybe)
 					throw new JITException(String.format("JI14 %s", this));
 			}
-	}
-	
-	/**
-	 * Decodes the given method flags.
-	 *
-	 * @param __i The bitfield to decode.
-	 * @return The decoded flags.
-	 * @throws JITException If invalid flags were specified.
-	 * @since 2017/07/07
-	 */
-	private static Iterable<MethodFlag> __decode(int __i)
-		throws JITException
-	{
-		throw new todo.TODO();
 	}
 }
 

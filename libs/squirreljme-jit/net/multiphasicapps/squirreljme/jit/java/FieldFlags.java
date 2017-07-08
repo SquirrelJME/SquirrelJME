@@ -58,7 +58,7 @@ public final class FieldFlags
 	 */
 	public FieldFlags(ClassFlags __oc, int __i)
 	{
-		this(__oc, __decode(__i));
+		this(__oc, Flags.<FieldFlag>__decode(__i, FieldFlag.values()));
 	}
 	
 	/**
@@ -193,20 +193,6 @@ public final class FieldFlags
 				if (must != has && !maybe)
 					throw new JITException(String.format("JI03 %s", this));
 			}
-	}
-	
-	/**
-	 * Decodes the given field flags.
-	 *
-	 * @param __i The bitfield to decode.
-	 * @return The decoded flags.
-	 * @throws JITException If invalid flags were specified.
-	 * @since 2017/07/07
-	 */
-	private static Iterable<FieldFlag> __decode(int __i)
-		throws JITException
-	{
-		throw new todo.TODO();
 	}
 }
 
