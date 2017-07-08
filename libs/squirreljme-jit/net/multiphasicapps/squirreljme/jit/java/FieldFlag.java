@@ -11,33 +11,36 @@
 package net.multiphasicapps.squirreljme.jit.java;
 
 /**
- * These are flags which modify how a class is accessed and is behaved.
+ * These are flags which are associated with class fields.
  *
  * @since 2016/04/23
  */
-public enum ClassFlag
-	implements Flag
+public enum FieldFlag
+	implements MemberFlag
 {
-	/** Public access. */
+	/** Public field. */
 	PUBLIC,
 	
-	/** Final. */
+	/** Private field. */
+	PRIVATE,
+	
+	/** Protected field. */
+	PROTECTED,
+	
+	/** Static field. */
+	STATIC,
+	
+	/** Final field. */
 	FINAL,
 	
-	/** Super. */
-	SUPER,
+	/** Volatile field. */
+	VOLATILE,
 	
-	/** Interface. */
-	INTERFACE,
+	/** Transient field. */
+	TRANSIENT,
 	
-	/** Abstract. */
-	ABSTRACT,
-	
-	/** Synthetic. */
+	/** Synthetic field. */
 	SYNTHETIC,
-	
-	/** Annotation. */
-	ANNOTATION,
 	
 	/** Enumeration. */
 	ENUM,
@@ -46,23 +49,25 @@ public enum ClassFlag
 	;
 	
 	/**
-	 * Returns the bit mask of the given flag.
+	 * Returns the bit mask which is used for this flag.
 	 *
-	 * @return The bit mask of the given flag.
-	 * @since 2017/06/13
+	 * @return The bit mask used for the flag.
+	 * @since 2017/07/07
 	 */
 	public final int javaBitMask()
 	{
 		switch (this)
 		{
-			case PUBLIC:		return 0x0001;
-			case FINAL:			return 0x0010;
-			case SUPER:			return 0x0020;
-			case INTERFACE:		return 0x0200;
-			case ABSTRACT:		return 0x0400;
-			case SYNTHETIC:		return 0x1000;
-			case ANNOTATION:	return 0x2000;
-			case ENUM:			return 0x4000;
+			case PUBLIC:	return 0x0001;
+			case PRIVATE:	return 0x0002;
+			case PROTECTED:	return 0x0004;
+			case STATIC:	return 0x0008;
+			case FINAL:		return 0x0010;
+			case VOLATILE:	return 0x0040;
+			case TRANSIENT:	return 0x0080;
+			case SYNTHETIC:	return 0x1000;
+			case ENUM:		return 0x4000;
+
 			default:
 				throw new RuntimeException("OOPS");
 		}
