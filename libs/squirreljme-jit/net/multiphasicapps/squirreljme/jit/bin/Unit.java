@@ -24,6 +24,12 @@ public final class Unit
 	/** The name of this class. */
 	protected final ClassName classname;
 	
+	/** The super class of this class. */
+	private volatile ClassName _superclass;
+	
+	/** The interfaces which this unit implements. */
+	private volatile ClassName[] _interfaceclasses;
+	
 	/**
 	 * Initializes the individual class unit.
 	 *
@@ -53,6 +59,40 @@ public final class Unit
 	public final ClassName className()
 	{
 		return this.classname;
+	}
+	
+	/**
+	 * Sets the interfaces that this unit implements.
+	 *
+	 * @param __i The interfaces to implement.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/08
+	 */
+	public final void setInterfaceClasses(ClassName... __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Never allow nulls
+		__i = __i.clone();
+		for (ClassName n : __i)
+			if (n == null)
+				throw new NullPointerException("NARG");
+		
+		this._interfaceclasses = __i;
+	}
+	
+	/**
+	 * Sets the name of the super class of this unit.
+	 *
+	 * @param __n The name of the super class.
+	 * @since 2017/07/08
+	 */
+	public final void setSuperClass(ClassName __n)
+	{
+		this._superclass = __n;
 	}
 }
 

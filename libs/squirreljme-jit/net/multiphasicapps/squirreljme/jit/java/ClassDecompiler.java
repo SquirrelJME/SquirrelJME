@@ -120,6 +120,7 @@ public final class ClassDecompiler
 				(supername == null))
 				throw new JITException(String.format("JI0s %s %s", thisname,
 					supername));
+			unit.setSuperClass(supername);
 			
 			// Verify extend
 			if (supername != null)
@@ -137,6 +138,7 @@ public final class ClassDecompiler
 				// Very implements
 				cond.canImplement(thisname, inf);
 			}
+			unit.setInterfaceClasses(interfaces);
 			
 			// Read in fields
 			int nf = in.readUnsignedShort();
