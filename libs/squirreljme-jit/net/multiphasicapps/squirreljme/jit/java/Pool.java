@@ -16,7 +16,6 @@ import java.io.UTFDataFormatException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import net.multiphasicapps.squirreljme.jit.bin.ClassName;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**

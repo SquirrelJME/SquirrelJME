@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.java.ClassDecompiler;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.sorted.SortedTreeSet;
@@ -95,7 +96,10 @@ public final class Cluster
 			{
 				// Run the class decompiler
 				ClassDecompiler cd = new ClassDecompiler(ls, __is);
-				cd.run();
+				Unit u = cd.run();
+				
+				// Record unit into the cluster
+				this._units.add(u.className());
 				
 				throw new todo.TODO();
 			}

@@ -154,6 +154,17 @@ public final class LinkerState
 	}
 	
 	/**
+	 * Returns the units which are available for usage.
+	 *
+	 * @return The units which are available.
+	 * @since 2017/07/08
+	 */
+	public final Units units()
+	{
+		return this.units;
+	}
+	
+	/**
 	 * Returns the reference to this linker state.
 	 *
 	 * @return The linker state reference.

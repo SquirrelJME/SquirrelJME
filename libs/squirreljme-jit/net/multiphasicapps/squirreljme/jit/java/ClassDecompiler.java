@@ -13,9 +13,11 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.jit.bin.ClassName;
 import net.multiphasicapps.squirreljme.jit.bin.Conditions;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
+import net.multiphasicapps.squirreljme.jit.bin.Unit;
+import net.multiphasicapps.squirreljme.jit.bin.UnitMethod;
+import net.multiphasicapps.squirreljme.jit.bin.Units;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
@@ -26,7 +28,6 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2017/05/29
  */
 public final class ClassDecompiler
-	implements Runnable
 {
 	/** The magic number of the class file. */
 	private static final int _MAGIC_NUMBER =
@@ -65,11 +66,12 @@ public final class ClassDecompiler
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Runs the class decompiler.
+	 *
+	 * @return The resulting unit.
 	 * @since 2017/06/02
 	 */
-	@Override
-	public void run()
+	public Unit run()
 	{
 		try
 		{
@@ -103,6 +105,9 @@ public final class ClassDecompiler
 			// Name of the current class
 			ClassName thisname = pool.<ClassName>require(ClassName.class,
 				in.readUnsignedShort());
+			
+			// Build new unit
+			Unit unit = linkerstate.units().createUnit(thisname);
 			
 			// Super class name
 			ClassName supername = pool.<ClassName>get(ClassName.class,
@@ -162,7 +167,10 @@ public final class ClassDecompiler
 			if (in.read() >= 0)
 				throw new JITException(String.format("JI12 %s", thisname));
 			
-			throw new todo.TODO();
+			if (true)
+				throw new todo.TODO();
+			
+			return unit;
 		}
 		
 		// {@squirreljme.error JI07 Read error reading the class.}

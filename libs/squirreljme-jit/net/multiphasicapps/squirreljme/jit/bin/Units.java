@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.bin;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -37,6 +39,34 @@ public final class Units
 	Units(Reference<LinkerState> __ls)
 	{
 		super(__ls);
+	}
+	
+	/**
+	 * Creates a new unit and places it within this set of units.
+	 *
+	 * @param __n The name of the unit to create.
+	 * @return The newly created unit.
+	 * @throws JITException If the unit already exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/08
+	 */
+	public final Unit createUnit(ClassName __n)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI16 Duplicate class name.
+		// (The duplicate class)}
+		Map<ClassName, Unit> units = this._units;
+		if (units.containsKey(__n))
+			throw new JITException(String.format("JI16 %s", __n));
+		
+		// Create unit
+		Unit rv = new Unit(__linkerState().__reference(), __n);
+		units.put(__n, rv);
+		return rv;
 	}
 }
 
