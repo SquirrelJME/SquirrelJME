@@ -50,6 +50,18 @@ public final class FieldFlags
 	}
 	
 	/**
+	 * Decodes field flags from the bit field.
+	 *
+	 * @param __oc The outer class flags.
+	 * @param __i The bitfield to decode.
+	 * @since 2017/07/07
+	 */
+	public FieldFlags(ClassFlags __oc, int __i)
+	{
+		this(__oc, __decode(__i));
+	}
+	
+	/**
 	 * Returns {@code true} if this is an enumeration.
 	 *
 	 * @return {@code true} if an enumeration.
@@ -181,6 +193,20 @@ public final class FieldFlags
 				if (must != has && !maybe)
 					throw new JITException(String.format("JI03 %s", this));
 			}
+	}
+	
+	/**
+	 * Decodes the given field flags.
+	 *
+	 * @param __i The bitfield to decode.
+	 * @return The decoded flags.
+	 * @throws JITException If invalid flags were specified.
+	 * @since 2017/07/07
+	 */
+	private static Iterable<FieldFlag> __decode(int __i)
+		throws JITException
+	{
+		throw new todo.TODO();
 	}
 }
 

@@ -49,6 +49,18 @@ public final class MethodFlags
 	}
 	
 	/**
+	 * Decodes method flags from the bit field.
+	 *
+	 * @param __oc The outer class flags.
+	 * @param __i The bitfield to decode.
+	 * @since 2017/07/07
+	 */
+	public MethodFlags(ClassFlags __oc, int __i)
+	{
+		this(__oc, __decode(__i));
+	}
+	
+	/**
 	 * Returns {@code true} if this is abstract.
 	 *
 	 * @return {@code true} if abstract.
@@ -173,6 +185,7 @@ public final class MethodFlags
 	{
 		return contains(MethodFlag.VARARGS);
 	}
+	
 	/**
 	 * Checks that the given flags are valid.
 	 *
@@ -222,6 +235,20 @@ public final class MethodFlags
 				if (must != has && !maybe)
 					throw new JITException(String.format("JI14 %s", this));
 			}
+	}
+	
+	/**
+	 * Decodes the given method flags.
+	 *
+	 * @param __i The bitfield to decode.
+	 * @return The decoded flags.
+	 * @throws JITException If invalid flags were specified.
+	 * @since 2017/07/07
+	 */
+	private static Iterable<MethodFlag> __decode(int __i)
+		throws JITException
+	{
+		throw new todo.TODO();
 	}
 }
 
