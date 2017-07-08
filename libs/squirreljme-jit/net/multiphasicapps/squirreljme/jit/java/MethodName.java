@@ -43,7 +43,7 @@ public final class MethodName
 				// {@squirreljme.error JI15 Method names cannot contain less
 				// than or greater than signs. (The method name)}
 				if (c == '<' || c == '>')
-					JITException(String.format("JI15 %s", __s));
+					new JITException(String.format("JI15 %s", __s));
 			}
 	}
 	
@@ -54,7 +54,7 @@ public final class MethodName
 	@Override
 	public boolean equals(Object __o)
 	{
-		return (__o instanceof MethodIdentifier) && super.equals(__o);
+		return (__o instanceof MethodName) && super.equals(__o);
 	}
 }
 

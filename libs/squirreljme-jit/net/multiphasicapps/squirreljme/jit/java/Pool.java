@@ -398,10 +398,12 @@ public class Pool
 						NameAndType nat = (NameAndType)__entries[ina[1]];
 						
 						if (tag == _TAG_FIELDREF)
-							out = new FieldReference(cn, nat.name(),
+							out = new FieldReference(cn,
+								new FieldName(nat.name()),
 								new FieldDescriptor(nat.type()));
 						else
-							out = new MethodReference(cn, nat.name(),
+							out = new MethodReference(cn,
+								new MethodName(nat.name()),
 								new MethodDescriptor(nat.type()),
 								tag == _TAG_INTERFACEMETHODREF);
 					}

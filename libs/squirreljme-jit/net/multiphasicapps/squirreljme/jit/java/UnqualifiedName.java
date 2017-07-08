@@ -11,7 +11,8 @@
 package net.multiphasicapps.squirreljme.jit.java;
 
 /**
- * This is a fragment of a class name .
+ * This is the unqualified name for a class binary name which consists of the
+ * name that packages or names of classes uses.
  *
  * @since 2017/07/07
  */
