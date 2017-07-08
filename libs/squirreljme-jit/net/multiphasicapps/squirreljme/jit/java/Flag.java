@@ -18,6 +18,14 @@ package net.multiphasicapps.squirreljme.jit.java;
 public interface Flag
 {
 	/**
+	 * Returns the bit mask of the given flag.
+	 *
+	 * @return The bit mask of the given flag.
+	 * @since 2017/07/07
+	 */
+	public abstract int javaBitMask();
+	
+	/**
 	 * Returns the flag ordinal.
 	 *
 	 * @return The ordinal of the flag.

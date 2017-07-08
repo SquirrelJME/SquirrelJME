@@ -11,10 +11,13 @@
 package net.multiphasicapps.squirreljme.jit.java;
 
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This is the base class for all flag collections.
@@ -118,6 +121,40 @@ public abstract class Flags<F extends Flag>
 	public final int size()
 	{
 		return this._flags.size();
+	}
+	
+	/**
+	 * Decodes the specified bitfield and returns the used flags.
+	 *
+	 * @param <F> The type of flags to decode.
+	 * @param __i The input bitfield.
+	 * @param __f The flag values to decode.
+	 * @return The flags specified in the bitfield.
+	 * @throws JITException If extra flags were specified.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/13
+	 */
+	static <F extends Flag> Iterable<F> __decode(int __i, F[] __f)
+		throws JITException, NullPointerException
+	{
+		// Find all matching flags in the bitfield
+		List<F> fl = new ArrayList<>(__f.length);
+		for (F f : __f)
+		{
+			int v = f.javaBitMask();
+			if (0 != (__i & v))
+			{
+				fl.add(f);
+				__i ^= v;
+			}
+		}
+		
+		// {@squirreljme.error JI0k An undefined flag has been specified.
+		// (The extra bitfield flags)}
+		if (__i != 0)
+			throw new JITException(String.format("JI0k %02x", __i));
+		
+		return fl;
 	}
 	
 	/**
