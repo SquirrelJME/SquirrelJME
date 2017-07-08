@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.bin.cond.*;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
 
 /**
  * This condition table is used to verify that all conditions within the state

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bin;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import net.multiphasicapps.squirreljme.jit.JITException;
 

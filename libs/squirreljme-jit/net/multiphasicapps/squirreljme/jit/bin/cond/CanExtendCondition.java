@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.jit.bin.cond;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.bin.ClassName;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
 
 /**
  * This is a condition to see if one class can extend another.
