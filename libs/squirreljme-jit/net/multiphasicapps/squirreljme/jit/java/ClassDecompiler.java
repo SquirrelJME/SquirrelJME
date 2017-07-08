@@ -137,6 +137,9 @@ public final class ClassDecompiler
 			int nf = in.readUnsignedShort();
 			for (int i = 0; i < nf; i++)
 			{
+				FieldFlags f = new FieldFlags(classflags,
+					in.readUnsignedShort());
+				
 				throw new todo.TODO();
 			}
 			
@@ -144,6 +147,9 @@ public final class ClassDecompiler
 			int nm = in.readUnsignedShort();
 			for (int i = 0; i < nm; i++)
 			{
+				MethodFlags f = new MethodFlags(classflags,
+					in.readUnsignedShort());
+				
 				throw new todo.TODO();
 			}
 			
