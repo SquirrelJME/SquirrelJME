@@ -37,7 +37,7 @@ public final class FieldName
 	@Override
 	public boolean equals(Object __o)
 	{
-		return (__o instanceof FieldIdentifier) && super.equals(__o);
+		return (__o instanceof FieldName) && super.equals(__o);
 	}
 }
 
