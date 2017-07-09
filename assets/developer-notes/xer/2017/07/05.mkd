@@ -1,0 +1,7 @@
+# 2017/07/05
+
+## 20:14
+
+Ok so, class names are rather simple when they are used by the VM. The
+classes as a whole are pretty much always referred to. Really all there is
+needed is getting the package used for access control.
