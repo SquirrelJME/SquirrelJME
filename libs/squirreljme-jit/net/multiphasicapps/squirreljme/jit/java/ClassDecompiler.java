@@ -154,8 +154,14 @@ public final class ClassDecompiler
 			int nm = in.readUnsignedShort();
 			for (int i = 0; i < nm; i++)
 			{
-				MethodFlags f = new MethodFlags(classflags,
+				MethodFlags flags = new MethodFlags(classflags,
 					in.readUnsignedShort());
+				MethodName name = new MethodName(
+					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+					in.readUnsignedShort()).toString());
+				MethodDescriptor type = new MethodDescriptor(
+					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+					in.readUnsignedShort()).toString());
 				
 				throw new todo.TODO();
 			}
