@@ -1,0 +1,184 @@
+# 2017/07/07
+
+## 01:12
+
+Ok so, basically when it comes to fields and methods I need to figure out and
+build structures for objects to consist of. Basically I am going to define a
+bunch of structures that each class uses to refer to fields. Then for static
+fields I will need pretty much a static area that is stuck into a single
+section since that is all that is really needed.
+
+## 01:15
+
+One good thing about this static compiler and how I am writing it is that I do
+not need to handle dynamic sizing and such at least until the linkage stage is
+performed.
+
+## 01:20
+
+I think my `Dynamic` and `Dynamics` is a bad idea. Basically the dynamics are
+part of the generated code in sections rather than being a dynamic as a whole.
+I mean combining and merging dynamics will result in probably less memory
+usage but with the compiler design that is not really much of an issue. So
+`Dynamics` go away and are just basic parts of sections that do lookups
+depending on the situation and have dynamic resolution things as needed when
+section bytes really need to be read.
+
+## 01:24
+
+So dynamics based on my comment text would be imports from a set of exports.
+But those might not really be known. The imports would be the entire thing for
+the most part. Well basically the dynamics are for caching. Say that a class
+object is at a given address somewhere special. And this will vary for PIC and
+not PIC (fixed addresses). So really based on the config the generated
+instruction in the section will totally differ based on the situation.
+
+## 01:28
+
+However the non-dynamics would be like accesses, but basically they are just
+conditions. Essentially that say a given class is extendable or similar. I can
+for the most part check whether things are sane all at once at the end. So
+this would reduce the checks that cannot be performed at class decoding. This
+works because I can just do the compilation stuff at first. In most cases the
+conditions will all pass anyway. This also allows me to defer and simplify the
+compiler so I do not need to handle complex verification issues until the
+later stage.
+
+## 01:33
+
+So this new set of classes will be conditions. Basically the conditions will
+be like: does `Foo` implement `Bar` or is `Foo` castable to `Bar`? Essentially
+doing a bunch of this verification at the end allows me to not worry about
+preloading classes wasting time and memory when in most cases all classes will
+pass anyway.
+
+## 02:29
+
+Conditions will get their own package because there will be quite a few dozen
+of conditions declared.
+
+## 03:15
+
+I think one thing I will do for methods is have an indirect pointer based on
+the class type of an object. Basically my previous plan was to have the method
+pointers in the objects but that is not needed at all and complications things
+a bit. So basically there will be a method table for each class unit which is
+then read off as a pointer. So it is like `((uintptr_t)classp + methodoffset)`
+where that is a function pointer which is executed. This then allows classes
+which override methods to just replace those pointer points and such. I
+suppose then special `specialinvoke` would just use the class table on any
+object in a way violating some things but still being somewhat compatible. So
+this way of doing method pointer lookups is much simpler. Of course then there
+are interfaces which is another thing to figure out. However at least here the
+methods for objects are handled. Objects will need a hash code field and the
+class pointer field. I also then suppose the `Class` instances would be mostly
+static for the most part. Well `Class` objects need initialization. I mean
+basically I do not need to have the method tables exactly at the end of the
+class, they can just be part of static class data which is then pointed to by
+the class object for reading things. So this static table would have access
+flags, the default constructor (if any), and a table of methods that are in
+the class in extendable replacement order.
+
+## 03:31
+
+Only way for it to work better would be for the method table to be somewhere
+in the `Class` instance. This at least can handle relocations and such. Static
+method calls on the other hand do not require any method table usage because
+they are not bound to objects.
+
+## 14:45
+
+One thing I will need to do is generate array classes and perhaps have it
+where you cannot just lookup non-existing array classes if they are never
+statically referenced. So if there is no usage of '[[[[I' then
+`Class.forName()` will not find any class. This simplifies things, makes it
+still work and does not need it where I need to worry about generating new
+classes at run-time. Also another idea I have is have a non-zero NULL for
+objects. Although this would differ from integer values it simplifies
+handling of objects and determining if they are NULL or not. Basically it
+can done where any method calls performed on the object with relation to
+the class regardless of which class it is will result in a NPE being thrown
+by any method calls without modifying anything about the stack and such. So
+basically it just disregards arguments and just throws a NPE. This however
+means that _monitorenter_ and _monitorexit_ will need to be actual methods
+but I intended this anyway. Naturally the null class will never compare or
+is an instance of another class anyway. Also the initial methods for all
+classes inlcuding the null class can include special things such as checking
+for instances. The only issue would be fields, there would need to be checks
+if the object is `null` before fields are attempted to be accessed. Also the
+null class/object pointer would have to be known or fixed and allowed to
+make things work well with them. However the alternative is to instead for
+method calls have the NPE check on `this` on entry of instance methods and
+just treat all methods as being static for the most part. The `this` is
+always passed anyway. Of course objects that are null cannot get their classes
+dereferenced, so no null checks are needed except before method calls. Also
+for the NULL class I would need a complete set of methods for the maximum
+possible depth. So having a NULL class would complicate things and require
+them to be set anyway. So bad idea!
+
+## 15:10
+
+So according to Java SE runtime tests, using `Class.newInstance()` in the
+given cases:
+
+ * private: FAIL
+ * package-private: PASS
+ * protected: PASS
+ * public: PASS
+
+Now if I put it in another package?
+
+ * private: FAIL
+ * package-private: FAIL
+ * protected: FAIL
+ * public: PASS
+
+So when it comes to `newInstance` it seems that `protected` is the same as
+package private.
+
+## 15:25
+
+So that is an interesting observation.
+
+## 15:40
+
+But `new` works when it is in another package. And `Class.newInstance()` acts
+like `new` at the language level and not the virtual machine level.
+
+## 15:46
+
+Well today I learned, in the same package that protected classes can be
+constructed but outside of the package they need to be extended. This is at
+least according to the compiler. But at the VM level, you can `new` and invoke
+protected constructors like they were public. And the classes do not even need
+to follow the same hierarchy. So this means with specially crafted classes
+that `protected` on a constructor is not enough to protect a class from being
+initialized.
+
+## 15:58
+
+So since you can `invokespecial` `protected` constructors. This is probably
+not something that may have been intended?
+
+## 19:32
+
+Actually I have an idea about what to do with the emulator. I can have a
+simulated executable environment which is just the flat binary placed
+somewhere and run in a special enviroment. It would just be MIPS for the most
+part but just as a flat binary.
+
+## 19:37
+
+I now own Amiga Forever and C64 Forever, so I am going to use these eventually
+to port SquirrelJME to these two systems. It would be an interesting
+experiment.
+
+## 20:06
+
+Ok so for methods, there will basically be `UnitMethod` which will be
+contained in `Unit`s. There would also need to be checking for overriding too.
+
+## 21:23
+
+I could split identifier into three, one for classes, fields, and methods.
+Then make them unique. The only variant would be for methods.

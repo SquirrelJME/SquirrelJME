@@ -1,0 +1,6 @@
+# 2017/07/08
+
+## 08:29
+
+I would say that this design of the JIT is a bit more relaxed and not as
+strict initialization wise. It is a working state so it works out.
