@@ -144,8 +144,14 @@ public final class ClassDecompiler
 			int nf = in.readUnsignedShort();
 			for (int i = 0; i < nf; i++)
 			{
-				FieldFlags f = new FieldFlags(classflags,
+				FieldFlags flags = new FieldFlags(classflags,
 					in.readUnsignedShort());
+				FieldName name = new FieldName(
+					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+					in.readUnsignedShort()).toString());
+				FieldDescriptor type = new FieldDescriptor(
+					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+					in.readUnsignedShort()).toString());
 				
 				throw new todo.TODO();
 			}
