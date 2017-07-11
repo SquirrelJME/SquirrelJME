@@ -1,0 +1,8 @@
+# 2017/07/11
+
+## 02:08
+
+I have an idea for a sample game that is probably rather simple to implement
+in a way. I suppose it would be a clone of _Marble Madness_ but I would pun
+it and go for _Marble Magnets_. Basically have a similar game but instead have
+magnets in play, which could mess things up and such.
