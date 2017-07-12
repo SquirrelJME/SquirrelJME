@@ -90,7 +90,14 @@ public final class FieldDescriptor
 				this.dimensions = 0;
 				this.component = null;
 				
-				throw new todo.TODO();
+				// {@squirreljme.error JI19 The field descriptor for a class
+				// must end with a semicolon. (The field descriptor)}
+				if (';' != __n.charAt(n - 1))
+					throw new JITException(String.format("JI19 %s", __n));
+				
+				// Decode
+				this.classname = new ClassName(__n.substring(1, n - 1));
+				break;
 				
 				// {@squirreljme.error JI0m The field descriptor is not valid.
 				// (The field descriptor)}
