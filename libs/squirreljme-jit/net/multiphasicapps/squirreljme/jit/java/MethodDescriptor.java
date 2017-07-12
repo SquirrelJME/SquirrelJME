@@ -56,7 +56,7 @@ public final class MethodDescriptor
 		// Parse all input arguments
 		List<FieldDescriptor> args = new ArrayList<>();
 		int i = 1, n = __n.length();
-		for (; i < n; i++)
+		for (; i < n;)
 		{
 			char c = __n.charAt(i);
 			
@@ -64,7 +64,49 @@ public final class MethodDescriptor
 			if (c == ')')
 				break;
 			
-			throw new todo.TODO();
+			// Skip array markers
+			int at = i;
+			for (; at < n; at++)
+				if ('[' != __n.charAt(at))
+					break;
+			
+			// {@squirreljme.error JI18 Reached end of descriptor parsing
+			// arguments. (The method descriptor)}
+			if (at >= n)
+				throw new JITException(String.format("JI18 %s", __n));
+			
+			// Find end sequence
+			switch (__n.charAt(at))
+			{
+					// Primitive
+				case 'B':
+				case 'C':
+				case 'D':
+				case 'F':
+				case 'I':
+				case 'J':
+				case 'S':
+				case 'Z':
+					break;
+					
+					// Class, find ;
+				case 'L':
+					for (; at < n; at++)
+						if (';' == __n.charAt(at))
+							break;
+					break;
+				
+					// {@squirreljme.error JI17 Unknown field descriptor in
+					// method descriptor argument. (The descriptor)}
+				default:
+					throw new JITException(String.format("JI17 %s", __n));
+			}
+			
+			// Parse field
+			args.add(new FieldDescriptor(__n.substring(i, at + 1)));
+			
+			// Go to next field
+			i = at + 1;
 		}
 		this._args = args.<FieldDescriptor>toArray(
 			new FieldDescriptor[args.size()]);
