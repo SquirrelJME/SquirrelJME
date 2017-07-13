@@ -12,7 +12,9 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.jit.bin.Fragment;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This class is used to decompile the Java byte code in the Code attribute and
@@ -63,7 +65,20 @@ public class CodeDecompiler
 		this.in = __in;
 		this.pool = __pool;
 		this.linkerstate = __linkerstate;
-		
+	}
+	
+	/**
+	 * Runs the decompiler and recompiles Java byte code to native machine
+	 * code.
+	 *
+	 * @return The recompiled fragment containing the target machine code.
+	 * @throws IOException On read errors.
+	 * @throws JITException On malformed or illegal method code.
+	 * @since 2017/07/13
+	 */
+	public Fragment run()
+		throws IOException, JITException
+	{
 		throw new todo.TODO();
 	}
 }
