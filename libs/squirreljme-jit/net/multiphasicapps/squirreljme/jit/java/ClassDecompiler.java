@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.jit.bin.Conditions;
+import net.multiphasicapps.squirreljme.jit.bin.Fragment;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.bin.Unit;
 import net.multiphasicapps.squirreljme.jit.bin.UnitMethod;
@@ -185,6 +186,7 @@ public final class ClassDecompiler
 				
 				// Handle attributes
 				int na = in.readUnsignedShort();
+				Fragment cf = null;
 				for (int j = 0; j < na; j++)
 					try (DataInputStream ai = __nextAttribute(in, pool, attr))
 					{
@@ -192,12 +194,26 @@ public final class ClassDecompiler
 						if (!"Code".equals(attr[0]))
 							continue;
 						
+						// {@squirreljme.error JI1b The specified method
+						// contains more than one code attribute. (The current
+						// class; The method name; The method type)}
+						if (cf != null)
+							throw new JITException(String.format(
+								"JI1b %s %s %s", thisname, name, type));
+						
 						// Run decompiler
 						CodeDecompiler cd = new CodeDecompiler(flags, type, ai,
 							pool, linkerstate);
-						
-						throw new todo.TODO();
+						cf = cd.run();
 					}
+					
+				// {@squirreljme.error JI1c The specified method does not have
+				// the correct matching for abstract and if code exists or not.
+				// (The current
+				// class; The method name; The method type; The method flags)}
+				if ((cf == null) != (flags.isAbstract() | flags.isNative()))
+					throw new JITException(String.format(
+						"JI1c %s %s %s", thisname, name, type, flags));
 				
 				throw new todo.TODO();
 			}
