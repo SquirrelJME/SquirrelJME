@@ -79,6 +79,12 @@ public class CodeDecompiler
 	public Fragment run()
 		throws IOException, JITException
 	{
+		DataInputStream in = this.in;
+		
+		// The number of variables allocated to the method
+		int maxstack = in.readUnsignedShort(),
+			maxlocals = in.readUnsignedShort();
+		
 		throw new todo.TODO();
 	}
 }
