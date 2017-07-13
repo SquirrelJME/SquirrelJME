@@ -84,6 +84,7 @@ public class CodeDecompiler
 		throws IOException, JITException
 	{
 		DataInputStream in = this.in;
+		Pool pool = this.pool;
 		
 		// The number of variables allocated to the method
 		int maxstack = in.readUnsignedShort(),
@@ -98,6 +99,10 @@ public class CodeDecompiler
 		// Read code buffer
 		byte[] code = new byte[codelen];
 		in.readFully(code);
+		
+		// Read exception handler table
+		ExceptionHandlerTable eht = new ExceptionHandlerTable(in, pool,
+			codelen);
 		
 		throw new todo.TODO();
 	}

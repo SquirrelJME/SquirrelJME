@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents a single exception handler.
@@ -32,7 +32,7 @@ public final class ExceptionHandler
 	protected final JumpTarget handlerpc;
 	
 	/** The class type to handle. */
-	protected final ClassNameSymbol type;
+	protected final ClassName type;
 	
 	/** The string representation. */
 	private volatile Reference<String> _string;
@@ -47,26 +47,26 @@ public final class ExceptionHandler
 	 * @throws JITException If the addresses are not valid.
 	 * @since 2017/02/09
 	 */
-	ExceptionHandler(int __spc, int __epc, int __hpc, ClassNameSymbol __cn)
+	ExceptionHandler(int __spc, int __epc, int __hpc, ClassName __cn)
 		throws JITException
 	{
-		// {@squirreljme.error AQ0z An address is negative. (The start address;
+		// {@squirreljme.error JI1f An address is negative. (The start address;
 		// The end address; The handler address)}
 		if (__spc < 0 || __epc < 0 || __hpc < 0)
-			throw new JITException(String.format("AQ0z %d %d %d",
+			throw new JITException(String.format("JI1f %d %d %d",
 				__spc, __epc, __hpc));
 		
-		// {@squirreljme.error AQ10 The end address is at or before the start
+		// {@squirreljme.error JI1g The end address is at or before the start
 		// address. (The start address; The end address)}
 		if (__epc <= __spc)
-			throw new JITException(String.format("AQ10 %d %d",
+			throw new JITException(String.format("JI1g %d %d",
 				__spc, __epc));
 		
 		// Set
 		this.startpc = __spc;
 		this.endpc = __epc;
 		this.handlerpc = new JumpTarget(__hpc);
-		this.type = (__cn == null ? ClassNameSymbol.of("java/lang/Throwable") :
+		this.type = (__cn == null ? new ClassName("java/lang/Throwable") :
 			__cn);
 	}
 	
@@ -171,7 +171,7 @@ public final class ExceptionHandler
 	 * @return The type of exception to handle.
 	 * @since 2017/02/09
 	 */
-	public ClassNameSymbol type()
+	public ClassName type()
 	{
 		return this.type;
 	}

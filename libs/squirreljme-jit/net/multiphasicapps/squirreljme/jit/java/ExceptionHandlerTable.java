@@ -8,13 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.AbstractList;
 import java.util.RandomAccess;
-import net.multiphasicapps.squirreljme.jit.link.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents a every exception that exists within a method.
@@ -55,15 +55,15 @@ public final class ExceptionHandlerTable
 			int spc = __is.readUnsignedShort();
 			int epc = __is.readUnsignedShort();
 			int hpc = __is.readUnsignedShort();
-			ClassNameSymbol type = __pool.get(__is.readUnsignedShort()).
-				<ClassNameSymbol>optional(ClassNameSymbol.class);
+			ClassName type = __pool.<ClassName>require(ClassName.class,
+				__is.readUnsignedShort());
 			
-			// {@squirreljme.error AQ0y Address is outside of the bounds of the
+			// {@squirreljme.error JI1e Address is outside of the bounds of the
 			// method. (The start address; The end address; The handler
 			// address; The code length)}
 			if (spc >= __len || epc > __len || hpc >= __len)
 				throw new JITException(String.format(
-					"AQ0y %d %d %d %d", spc, epc, hpc, __len));
+					"JI1e %d %d %d %d", spc, epc, hpc, __len));
 			
 			// Setup exception
 			table[i] = new ExceptionHandler(spc, epc, hpc, type);
