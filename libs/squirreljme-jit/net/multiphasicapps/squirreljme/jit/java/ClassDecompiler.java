@@ -130,19 +130,19 @@ public final class ClassDecompiler
 			// Read interfaces
 			int icount = in.readUnsignedShort();
 			ClassName[] interfaces = new ClassName[icount];
-			String[] attr = new String[1];
 			for (int i = 0; i < icount; i++)
 			{
 				ClassName inf;
 				interfaces[i] = (inf = pool.<ClassName>require(ClassName.class,
 					in.readUnsignedShort()));
 				
-				// Very implements
+				// Verify implements
 				cond.canImplement(thisname, inf);
 			}
 			unit.setInterfaceClasses(interfaces);
 			
 			// Read in fields
+			String[] attr = new String[1];
 			int nf = in.readUnsignedShort();
 			for (int i = 0; i < nf; i++)
 			{
@@ -191,6 +191,10 @@ public final class ClassDecompiler
 						// Only care about the code attribute
 						if (!"Code".equals(attr[0]))
 							continue;
+						
+						// Run decompiler
+						CodeDecompiler cd = new CodeDecompiler(flags, type, ai,
+							pool, linkerstate);
 						
 						throw new todo.TODO();
 					}
