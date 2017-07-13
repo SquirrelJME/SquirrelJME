@@ -24,6 +24,10 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public class CodeDecompiler
 {
+	/** The maximum number of bytes the byte code may be. */
+	private static final int _MAX_CODE_LENGTH =
+		65535;
+	
 	/** The method flags. */
 	protected final MethodFlags flags;
 	
@@ -84,6 +88,16 @@ public class CodeDecompiler
 		// The number of variables allocated to the method
 		int maxstack = in.readUnsignedShort(),
 			maxlocals = in.readUnsignedShort();
+		
+		// {@squirreljme.error JI1d The specified code length is not valid.
+		// (The code length)}
+		int codelen = in.readInt();
+		if (codelen <= 0 || codelen > _MAX_CODE_LENGTH)
+			throw new JITException(String.format("JI1d %d", codelen));
+		
+		// Read code buffer
+		byte[] code = new byte[codelen];
+		in.readFully(code);
 		
 		throw new todo.TODO();
 	}
