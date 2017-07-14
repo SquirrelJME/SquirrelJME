@@ -1,0 +1,21 @@
+# 2017/07/13
+
+## 08:49
+
+For simplicity rather than what I did before, the code that the decompiler
+generates will just be thrown into a basic code segment. Before I had a rather
+designed structure for things. There would be method details along with stuff
+like imports and exports. For the most part now it is just going to be
+dynamics and that will be followed by the class decompiler on the outside
+wrapping it up into a container. Effectively to the class decompiler whatever
+code is generated is just a basic pointer to the block of generated code. So
+the generated machine code made by the code decompiler will just throw it all
+into a chunk of bytes. With the delayed verification in place I do not need to
+worry about checking if everything is fully sane until later. One thing I can
+also add are checks for `new` to make sure that the initialized classes are
+really initializable.
+
+## 09:03
+
+So the implementation for the most part is much better and simpler and does
+not complicate things needlessly.
