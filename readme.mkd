@@ -20,7 +20,20 @@ The source is written in pure Java and is designed to use small amounts of
 memory, where simplicity increases operation speed without sacrificing
 quality.
 
-Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
+Note that Java ME 8 has a Java 7 virtual machine with specific limitations and
+a few changes.
+
+## I Am Open For Hiring
+
+**SquirrelJME** is a hobby project (which means I work on it in my spare time)
+and as such does not sustain me monetarily. If you do like my work please also
+be advised that I am available for hire to work on a number of other projects
+potentially. Most of my experience for languages is in _C_, _Java_, and
+_POSIX Shell_. Although I do not mainly use other languages they can be learned
+by adapting my current experience with those languages. **SquirrelJME** itself
+mostly relates to embedded and compiler development. I prefer remote
+development as it allows me to work from home rather than spending time
+commuting every day (which wastes time).
 
 ## Licenses
 
@@ -77,7 +90,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
  * Personal Accounts (If you wish to contact me this way)
    * [FurAffinity](https://www.furaffinity.net/user/mpasteven/)
-   * [GitHub](https://github.com/mpasteven/)
+   * [GitHub](https://github.com/XerTheSquirrel/)
    * [LinkedIn](https://www.linkedin.com/in/steven-gawroriski/)
 
 ## Goals
@@ -112,14 +125,13 @@ purchasing of food items for consumption.
    ethereum:0x9738136f7EcB11d554Ef767704F62216a646e0AB)
  * LiteCoin (**LTC**): [`LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi`](
    litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
- * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
 
 ## Important Statements
 
 ***JAVA AND ALL OTHER RELATED TRADEMARKS AND COPYRIGHTS ARE OWNED BY ORACLE
 CORPORATION <http://www.oracle.com/>.***
 
-***SQUIRRELJME IS NEITHER PRODUCED NOR ENDORSED BY ORACLE CORPORATION.***
+***SQUIRRELJME IS NEITHER PRODUCED BY NOR ENDORSED BY ORACLE CORPORATION.***
 
 ***ALL SOURCE CODE IS WRITTEN BY MYSELF WITH FUNCTIONALITY DETERMINED BY THE
 DOCUMENTED APIS AND RUN-TIME BEHAVIOR. I HAVE NOT LOOKED AT THE SOURCE CODE FOR
