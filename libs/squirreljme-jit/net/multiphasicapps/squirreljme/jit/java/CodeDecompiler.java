@@ -43,6 +43,9 @@ public class CodeDecompiler
 	/** The target linker state to get the byte code. */
 	protected final LinkerState linkerstate;
 	
+	/** The version number of the class. */
+	protected final ClassVersion version;
+	
 	/**
 	 * Initializes the code decompiler.
 	 *
@@ -51,16 +54,18 @@ public class CodeDecompiler
 	 * @param __in The input stream for the code's data.
 	 * @param __pool The constant pool.
 	 * @param __linkerstate The target linker state to write the code into.
+	 * @param __ver The class version number.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/13
 	 */
 	public CodeDecompiler(MethodFlags __f, MethodDescriptor __t,
-		DataInputStream __in, Pool __pool, LinkerState __linkerstate)
+		DataInputStream __in, Pool __pool, LinkerState __linkerstate,
+		ClassVersion __ver)
 		throws NullPointerException
 	{
 		// Check
 		if (__f == null || __t == null || __in == null || __pool == null ||
-			__linkerstate == null)
+			__linkerstate == null || __ver == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -69,6 +74,7 @@ public class CodeDecompiler
 		this.in = __in;
 		this.pool = __pool;
 		this.linkerstate = __linkerstate;
+		this.version = __ver;
 	}
 	
 	/**
@@ -103,6 +109,26 @@ public class CodeDecompiler
 		// Read exception handler table
 		ExceptionHandlerTable eht = new ExceptionHandlerTable(in, pool,
 			codelen);
+		
+		// The only attribute which needs to be handled is the stack map
+		// table which can either be in the new or old form depending on the
+		// class version
+		int na = in.readUnsignedShort();
+		String[] attr = new String[1];
+		ClassVersion version = this.version;
+		String wantmap = (version.useStackMapTable() ? "StackMapTable" :
+			"StackMap");
+		for (int i = 0; i < na; i++)
+			try (DataInputStream ai = ClassDecompiler.__nextAttribute(in,
+				pool, attr))
+			{
+				// Only the stack map which is compatible with this class
+				// version is to be used
+				if (!wantmap.equals(attr[0]))
+					continue;
+				
+				throw new todo.TODO();
+			}
 		
 		throw new todo.TODO();
 	}
