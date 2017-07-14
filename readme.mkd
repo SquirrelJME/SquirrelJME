@@ -33,7 +33,8 @@ _POSIX Shell_. Although I do not mainly use other languages they can be learned
 by adapting my current experience with those languages. **SquirrelJME** itself
 mostly relates to embedded and compiler development. I prefer remote
 development as it allows me to work from home rather than spending time
-commuting every day (which wastes time).
+commuting every day (which wastes time). Interest can be e-mailed to
+the following address: <xer@multiphasicapps.net>.
 
 ## Licenses
 
