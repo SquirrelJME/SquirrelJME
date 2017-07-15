@@ -239,8 +239,8 @@ public final class Instruction
 				
 				// Reference is in the constant pool
 				MethodReference mr = __pool.<MethodReference>require(
-					MethodReference.class, ((__code[argbase] & 0xFF) << 8) |
-					(__code[argbase + 1] & 0xFF));
+					MethodReference.class,
+					__readUnsignedShort(__code, argbase));
 				
 				// {@squirreljme.error JI1o Invocation of method did not
 				// have the matching interface/not-interface attribute.
@@ -251,6 +251,13 @@ public final class Instruction
 						op, __a, mr));
 				
 				args = new Object[]{mr};
+				break;
+				
+				// Allocate (but do not construct) instance of new object
+			case InstructionIndex.NEW:
+				naturalflow = true;
+				args = new Object[]{__pool.<ClassName>require(ClassName.class,
+					__readUnsignedShort(__code, argbase))};
 				break;
 				
 				// {@squirreljme.error JI1p The operation at the specified
@@ -393,6 +400,33 @@ public final class Instruction
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Reads an unsigned short from the specified array.
+	 *
+	 * @param __a The array to read from.
+	 * @param __o The offset to read from.
+	 * @return The read value.
+	 * @throws JITException If the offset exceeds the bounds of the given
+	 * array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/15
+	 */
+	private static final int __readUnsignedShort(byte[] __a, int __o)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI1q Illegal read off the end of the instruction
+		// array. (The offset; The length of the code array)}
+		if (__o < 0 || __o + 1 >= __a.length)
+			throw new JITException(String.format("JI1q %d %d", __o,
+				__a.length));
+		
+		return ((__a[__o] & 0xFF) << 8) | (__a[__o + 1] & 0xFF);
 	}
 }
 
