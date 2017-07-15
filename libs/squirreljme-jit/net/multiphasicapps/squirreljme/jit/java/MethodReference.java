@@ -83,6 +83,17 @@ public final class MethodReference
 	}
 	
 	/**
+	 * Is this an interface method reference?
+	 *
+	 * @return {@code true} if a reference to an interface method.
+	 * @since 2017/07/15
+	 */
+	public boolean isInterface()
+	{
+		return this.isinterface;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/07/08
 	 */

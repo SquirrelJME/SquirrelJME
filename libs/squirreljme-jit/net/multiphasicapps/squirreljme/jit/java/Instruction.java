@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This represents a single instruction within the byte code.
  *
@@ -23,7 +29,7 @@ public final class Instruction
 	/** The instruction operation. */
 	protected final int op;
 	
-	// Does this method naturally flow?
+	/** Does this method naturally flow? */
 	protected final boolean naturalflow;
 	
 	/** Instruction arguments. */
@@ -38,18 +44,25 @@ public final class Instruction
 	/**
 	 * Initializes the instruction information.
 	 *
+	 * @param __code The instruction bytes.
+	 * @param __pool The constant pool.
 	 * @param __a The instruction address.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/18
 	 */
-	private Instruction(int __a)
+	Instruction(byte[] __code, Pool __pool, int __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__code == null || __pool == null)
+			throw new NullPointerException("NARG");
+		
 		// Read operation here
-		byte[] code = ByteCode.this._code;
-		int op = (code[__a] & 0xFF),
+		int op = (__code[__a] & 0xFF),
 			argbase = __a + 1;
 		if (op == InstructionIndex.WIDE)
 		{
-			op = (op << 8) | (code[__a + 1] & 0xFF);
+			op = (op << 8) | (__code[__a + 1] & 0xFF);
 			argbase++;
 		}
 		this.op = op;
@@ -58,7 +71,6 @@ public final class Instruction
 		// Depends on the operation
 		Object[] args;
 		boolean naturalflow;
-		Pool pool = ByteCode.this._pool;
 		switch (op)
 		{
 				// No arguments and does not flow naturally
@@ -226,28 +238,27 @@ public final class Instruction
 				naturalflow = true;
 				
 				// Reference is in the constant pool
-				MethodReference mr = pool.get(
-					((code[argbase] & 0xFF) << 8) |
-					(code[argbase + 1] & 0xFF)).<MethodReference>get(
-					MethodReference.class);
+				MethodReference mr = __pool.<MethodReference>require(
+					MethodReference.class, ((__code[argbase] & 0xFF) << 8) |
+					(__code[argbase + 1] & 0xFF));
 				
-				// {@squirreljme.error AQ19 Invocation of method did not
+				// {@squirreljme.error JI1o Invocation of method did not
 				// have the matching interface/not-interface attribute.
 				// (The operation; The address; The method reference)}
 				if (mr.isInterface() !=
 					(op == InstructionIndex.INVOKEINTERFACE))
-					throw new JITException(String.format("AQ19 %d %d %s",
+					throw new JITException(String.format("JI1o %d %d %s",
 						op, __a, mr));
 				
 				args = new Object[]{mr};
 				break;
 				
-				// {@squirreljme.error AQ18 The operation at the specified
-				// address is not supported yet. (The operation;
-				// The address it is at)}
+				// {@squirreljme.error JI1p The operation at the specified
+				// address is not supported yet. (The operation; The name of
+				// the operation; The address it is at)}
 			default:
-				throw new RuntimeException(String.format("AQ18 %d %d",
-					op, __a));
+				throw new RuntimeException(String.format("JI1p %d %s %d",
+					op, InstructionMnemonics.toString(op), __a));
 		}
 		
 		// Set
@@ -360,7 +371,7 @@ public final class Instruction
 			
 			// Then the operation
 			sb.append('#');
-			sb.append(__Mnemonics__.__toString(this.op));
+			sb.append(InstructionMnemonics.toString(this.op));
 			
 			// Add marker if it flows naturally
 			if (this.naturalflow)
