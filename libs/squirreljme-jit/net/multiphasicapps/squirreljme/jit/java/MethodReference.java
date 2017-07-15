@@ -121,9 +121,9 @@ public final class MethodReference
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"Reference to %s method %s %s in class %s",
-				(this.isinterface ? "interface" : "non-interface"), this.name,
-				this.descriptor, this.classname)));
+				"%smethod %s::%s%s",
+				(this.isinterface ? "interface-" : ""), this.classname,
+				this.name, this.descriptor)));
 		
 		return rv;
 	}
