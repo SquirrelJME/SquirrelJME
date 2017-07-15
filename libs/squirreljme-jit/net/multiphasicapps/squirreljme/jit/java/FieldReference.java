@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -25,6 +27,9 @@ public final class FieldReference
 	
 	/** The member type. */
 	protected final FieldDescriptor type;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the field reference.
@@ -86,7 +91,16 @@ public final class FieldReference
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"field %s::%s%s", this.classname, this.name,
+				this.type)));
+		
+		return rv;
 	}
 }
 
