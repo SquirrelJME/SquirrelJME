@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -28,6 +30,9 @@ public final class MethodReference
 	
 	/** The name of the method. */
 	protected final MethodName name;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the method reference.
@@ -110,7 +115,17 @@ public final class MethodReference
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"Reference to %s method %s %s in class %s",
+				(this.isinterface ? "interface" : "non-interface"), this.name,
+				this.descriptor, this.classname)));
+		
+		return rv;
 	}
 }
 
