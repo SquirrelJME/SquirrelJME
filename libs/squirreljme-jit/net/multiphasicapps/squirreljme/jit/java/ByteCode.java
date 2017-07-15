@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.jit.link.MethodReference;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents the byte code for a given method. It contains the actual
@@ -46,11 +46,11 @@ public class ByteCode
 	/** Instruction lengths at each position. */
 	private final int[] _lengths;
 	
+	/** The constant pool. */
+	protected final Pool pool;
+	
 	/** Jump targets. */
 	private final JumpTarget[] _jumptargets;
-	
-	/** The constant pool. */
-	private final Pool _pool;
 	
 	/** The cache of instructions in the byte code. */
 	private final Reference<Instruction>[] _icache;
@@ -65,7 +65,7 @@ public class ByteCode
 	 * @param __ml The maximum number of local entries.
 	 * @param __code The program's byte code, this is not copied.
 	 * @param __eht The exception handler table.
-	 * @param __pool The constant pool.
+	 * @param _pool The constant pool.
 	 * @throws JITException If the byte code is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/14
@@ -81,7 +81,7 @@ public class ByteCode
 		// Set
 		this._code = __code;
 		this.codelen = __code.length;
-		this._pool = __pool;
+		this.pool = __pool;
 		int codelen = __code.length;
 		this.maxstack = __ms;
 		this.maxlocals = __ml;
@@ -103,11 +103,11 @@ public class ByteCode
 			int oplen;
 			lengths[i] = (oplen = __opLength(__code, i));
 			
-			// {@squirreljme.error AQ15 The operation exceeds the bounds of
+			// {@squirreljme.error JI1h The operation exceeds the bounds of
 			// the method byte code. (The operation pointer; The operation
 			// length; The code length)}
 			if ((i += oplen) > codelen)
-				throw new JITException(String.format("AQ15 %d %d %d", i, oplen,
+				throw new JITException(String.format("JI1h %d %d %d", i, oplen,
 					codelen));
 		}
 		this._lengths = lengths;
@@ -158,10 +158,10 @@ public class ByteCode
 	public int addressFollowing(int __a)
 		throws JITException
 	{
-		// {@squirreljme.error AQ1a The instruction at the specified address is
+		// {@squirreljme.error JI1i The instruction at the specified address is
 		// not valid. (The address)}
 		if (!isValidAddress(__a))
-			throw new JITException(String.format("AQ1a %d", __a));
+			throw new JITException(String.format("JI1i %d", __a));
 		
 		return __a + this._lengths[__a];
 	}
@@ -177,17 +177,18 @@ public class ByteCode
 	public Instruction get(int __a)
 		throws JITException
 	{
-		// {@squirreljme.error AQ16 The instruction at the specified address is
+		// {@squirreljme.error JI1j The instruction at the specified address is
 		// not valid. (The address)}
 		if (!isValidAddress(__a))
-			throw new JITException(String.format("AQ16 %d", __a));
+			throw new JITException(String.format("JI1j %d", __a));
 		
 		Reference<Instruction>[] icache = this._icache;
 		Reference<Instruction> ref = icache[__a];
 		Instruction rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			icache[__a] = new WeakReference<>((rv = new Instruction(__a)));
+			icache[__a] = new WeakReference<>((rv = new Instruction(this._code,
+				this.pool, __a)));
 		
 		return rv;
 	}
@@ -273,7 +274,7 @@ public class ByteCode
 	 */
 	public Pool pool()
 	{
-		return this._pool;
+		return this.pool;
 	}
 	
 	/**
@@ -292,7 +293,8 @@ public class ByteCode
 			
 			// Fill in instructions
 			boolean comma = false;
-			for (Iterator<Instruction> it = instructionIterator; it.hasNext();)
+			for (Iterator<Instruction> it = instructionIterator();
+				it.hasNext();)
 			{
 				if (comma)
 					sb.append(", ");
@@ -366,10 +368,10 @@ public class ByteCode
 		int op = (__code[__a] & 0xFF);
 		if (op == InstructionIndex.WIDE)
 		{
-			// {@squirreljme.error AQ17 The wide instruction cannot be the
+			// {@squirreljme.error JI1k The wide instruction cannot be the
 			// last instruction in a method. (The address)}
 			if (__a + 1 >= __code.length)
-				throw new JITException(String.format("AQ17 %d", __a));
+				throw new JITException(String.format("JI1k %d", __a));
 			
 			op = (op << 8) | (__code[__a + 1] & 0xFF);
 			rv = 2;
@@ -378,7 +380,7 @@ public class ByteCode
 		// Depends on the operation
 		switch (op)
 		{
-				// {@squirreljme.error AQ12 Unsupported instruction specified
+				// {@squirreljme.error JI1l Unsupported instruction specified
 				// in the method byte code. (The operation; The address)}
 			case InstructionIndex.BREAKPOINT:
 			case InstructionIndex.IMPDEP1:
@@ -387,12 +389,12 @@ public class ByteCode
 			case InstructionIndex.JSR_W:
 			case InstructionIndex.RET:
 			case InstructionIndex.WIDE:
-				throw new JITException(String.format("AQ12 %d %d", op, __a));
+				throw new JITException(String.format("JI1l %d %d", op, __a));
 			
-				// {@squirreljme.error AQ13 Invokedynamic is not supported in
+				// {@squirreljme.error JI1m Invokedynamic is not supported in
 				// this virtual machine. (The address)}
 			case InstructionIndex.INVOKEDYNAMIC:
-				throw new JITException(String.format("AQ13 %d", __a));
+				throw new JITException(String.format("JI1m %d", __a));
 				
 				// Operands with no arguments
 			case InstructionIndex.AALOAD:
@@ -627,11 +629,11 @@ public class ByteCode
 			case InstructionIndex.LOOKUPSWITCH:
 				throw new todo.TODO();
 			
-				// {@squirreljme.error AQ14 Cannot get the length of the
+				// {@squirreljme.error JI1n Cannot get the length of the
 				// specified operation because it is not valid. (The operation;
 				// The address)}
 			default:
-				throw new JITException(String.format("AQ14 %d %d", op, __a));
+				throw new JITException(String.format("JI1n %d %d", op, __a));
 		}
 		
 		return rv;

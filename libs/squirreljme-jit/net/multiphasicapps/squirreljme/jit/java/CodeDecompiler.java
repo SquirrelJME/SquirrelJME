@@ -103,12 +103,15 @@ public class CodeDecompiler
 			throw new JITException(String.format("JI1d %d", codelen));
 		
 		// Read code buffer
-		byte[] code = new byte[codelen];
-		in.readFully(code);
+		byte[] rawcode = new byte[codelen];
+		in.readFully(rawcode);
 		
 		// Read exception handler table
 		ExceptionHandlerTable eht = new ExceptionHandlerTable(in, pool,
 			codelen);
+		
+		// Setup the byte code
+		ByteCode code = new ByteCode(maxstack, maxlocals, rawcode, eht, pool);
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the
