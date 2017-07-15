@@ -11,16 +11,13 @@
 package net.multiphasicapps.squirreljme.jit.java;
 
 /**
- * This is the stack map table which is used to verify the types of local and
- * stack variables along with the stack length are valid for certain
- * positions within the instruction.
- *
- * This just contains the type and potential initialization information for
- * instructions which are targets of jumps.
+ * This class is used to construct instances of {@link StackMapTable}, this
+ * reads the raw data from the {@code StackMap} or {@code StackMapTable}
+ * attribute.
  *
  * @since 2017/07/15
  */
-public final class StackMapTable
+public class StackMapTableBuilder
 {
 }
 
