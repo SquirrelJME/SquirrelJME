@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 import net.multiphasicapps.squirreljme.jit.bin.Fragment;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -112,6 +113,12 @@ public class CodeDecompiler
 		
 		// Setup the byte code
 		ByteCode code = new ByteCode(maxstack, maxlocals, rawcode, eht, pool);
+		
+		// Debug the method
+		System.err.println("DEBUG -- --------------------------");
+		for (Iterator<Instruction> ii = code.instructionIterator();
+			ii.hasNext();)
+			System.err.printf("DEBUG -- %s%n", ii.next());
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the
