@@ -1,0 +1,19 @@
+# 2017/07/15
+
+## 08:41
+
+Ok so the thing to do for the stack map table is just have verification of
+type information, no registers or anything else other than just the types. I
+very likely should have checks on uninitialized values and such on objects by
+handling the uninitialized value using the appropriate means.
+
+## 08:44
+
+I will need to process the byte code and such to handle uninitialized
+variables because they point to the `new` instruction. So first thing to do is
+have a basic abstract representation of byte code. Then following that I have
+the stack map table data also.
+
+## 11:31
+
+This means I really only need a stack map state.
