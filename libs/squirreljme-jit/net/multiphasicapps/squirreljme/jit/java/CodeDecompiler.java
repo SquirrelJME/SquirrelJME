@@ -128,6 +128,7 @@ public class CodeDecompiler
 		ClassVersion version = this.version;
 		String wantmap = (version.useStackMapTable() ? "StackMapTable" :
 			"StackMap");
+		StackMapTable smt = null;
 		for (int i = 0; i < na; i++)
 			try (DataInputStream ai = ClassDecompiler.__nextAttribute(in,
 				pool, attr))

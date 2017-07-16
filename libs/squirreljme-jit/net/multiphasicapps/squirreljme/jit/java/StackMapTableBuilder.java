@@ -19,5 +19,15 @@ package net.multiphasicapps.squirreljme.jit.java;
  */
 public class StackMapTableBuilder
 {
+	/**
+	 * Builds the stack map table representation.
+	 *
+	 * @return The resulting stack map table.
+	 * @since 2017/07/16
+	 */
+	public StackMapTable build()
+	{
+		throw new todo.TODO();
+	}
 }
 
