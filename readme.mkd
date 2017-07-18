@@ -6,7 +6,7 @@
    <http://multiphasicapps.net/>
  * _Lex_ (The SquirrelJME Mascot) was drawn by...
    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
- * Support me on [Patreon](https://www.patreon.com/mpasteven)!
+ * Support me on [Patreon](https://www.patreon.com/XerTheSquirrel)!
 
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. That is, you would be able to have a Java
@@ -52,7 +52,7 @@ the following address: <xer@multiphasicapps.net>.
    * One of these commands
      * `fossil clone -u http://multiphasicapps.net/ squirreljme.fossil`
      * `fossil clone -u https://multiphasicapps.net/ squirreljme.fossil`
-   * `mkdir squireljme`
+   * `mkdir squirreljme`
    * `cd squirreljme`
    * `fossil open ../squirreljme.fossil`
  * Trunk Source Snapshot (`fossil serve` only):
@@ -119,7 +119,7 @@ You may donate to SquirrelJME to which would be used by the author to keep the
 web server online, the purchasing of new hardware/software, and for the
 purchasing of food items for consumption.
 
- * [Patreon](https://www.patreon.com/mpasteven)
+ * [Patreon](https://www.patreon.com/XerTheSquirrel)
  * BitCoin (**BTC/XBT**): [`13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4`](
    bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
  * Ethereum (**ETH**): [`0x9738136f7EcB11d554Ef767704F62216a646e0AB`](
