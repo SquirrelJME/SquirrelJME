@@ -1,0 +1,6 @@
+# 2017/07/14
+
+## 09:25
+
+Minor work but this time around I have correct handling of which stack map to
+use now depending on the version rather than accepting any of them.
