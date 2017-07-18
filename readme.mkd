@@ -124,8 +124,8 @@ purchasing of food items for consumption.
    bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
  * Ethereum (**ETH**): [`0x9738136f7EcB11d554Ef767704F62216a646e0AB`](
    ethereum:0x9738136f7EcB11d554Ef767704F62216a646e0AB)
- * LiteCoin (**LTC**): [`LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi`](
-   litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
+ * LiteCoin (**LTC**): [`Lf7d8X9LQ6GMTuwUMtnDqzqdsmQ4W5mN6i`](
+   litecoin:Lf7d8X9LQ6GMTuwUMtnDqzqdsmQ4W5mN6i)
 
 ## Important Statements
 
