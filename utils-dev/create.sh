@@ -90,7 +90,7 @@ __inroot()
 	while [ "$__qq" != "/" ]
 	do
 		# Version marker?
-		if [ -f "$__qq/squirreljme-version" ]
+		if [ "$__exedir/../squirreljme-version" -ef "$__qq/squirreljme-version" ]
 		then
 			return 0
 		fi
