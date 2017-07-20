@@ -17,5 +17,5 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-wine cmd.exe /C "$(winepath -w "$__exedir/../build.cmd")" $*
+wine cmd.exe /C "$(winepath -w "$__exedir/../build.cmd")" "$@"
 

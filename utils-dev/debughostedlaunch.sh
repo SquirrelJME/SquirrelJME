@@ -17,6 +17,6 @@ __exedir="$(dirname -- "$0")"
 
 # Run it
 export HOSTED_JAVA_OPTIONS="-zero -agentlib:jdwp=transport=dt_socket,server=y,address=8000"
-"$__exedir/hostedlaunch.sh" $*
+"$__exedir/hostedlaunch.sh" "$@"
 exit $?
 

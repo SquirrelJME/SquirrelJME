@@ -29,7 +29,7 @@ rm -f "$$.zip"
 __jo="$JAVA_OPTIONS"
 if JAVA_OPTIONS="-Dnet.multiphasicapps.squirreljme.builder.dumptarget=true \
 	-Dnet.multiphasicapps.squirreljme.builder.hexdump=true $__jo" \
-	"$__exedir/../build.sh" $* "$$.zip"
+	"$__exedir/../build.sh" "$@" "$$.zip"
 then
 	# Unzip then delete the ZIP
 	unzip -o "$$.zip" squirreljme

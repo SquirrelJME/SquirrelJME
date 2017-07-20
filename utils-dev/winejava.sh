@@ -15,6 +15,6 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-wine java $*
+wine java "$@"
 exit $?
 
