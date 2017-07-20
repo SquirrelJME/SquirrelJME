@@ -28,7 +28,7 @@ if [ ! -f "$BOOTSTRAP_CLASS.class" ] || \
 	[ "$__exedir/$BOOTSTRAP_CLASS.java" -nt "$BOOTSTRAP_CLASS.class" ]
 then
 	# Clear potential old stuff
-	rm -f "$BOOTSTRAP_CLASS.class" "$BOOTSTRAP_CLASS\$*.class"
+	rm -f "$BOOTSTRAP_CLASS.class" "$BOOTSTRAP_CLASS\$$*.class"
 	
 	# Build it
 	echo "Building the build system..." 1>&2
@@ -49,7 +49,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=true" \
 	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)/bins" \
-	"$BOOTSTRAP_CLASS" $*
+	"$BOOTSTRAP_CLASS" "$@"
 then
 	exit 1
 fi
@@ -69,7 +69,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=false" \
 	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)/bins" \
-	-jar "sjmeboot.jar" $*
+	-jar "sjmeboot.jar" "$@"
 then
 	exit 1
 fi

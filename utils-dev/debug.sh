@@ -17,6 +17,6 @@ __exedir="$(dirname -- "$0")"
 
 # Run it
 export JAVA_OPTIONS="-zero -agentlib:jdwp=transport=dt_socket,server=y,address=8000"
-"$__exedir/../build.sh" $*
+"$__exedir/../build.sh" "$@"
 exit $?
 
