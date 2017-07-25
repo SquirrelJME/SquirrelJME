@@ -203,7 +203,7 @@ public final class ClassDecompiler
 						
 						// Run decompiler
 						CodeDecompiler cd = new CodeDecompiler(flags, type, ai,
-							pool, linkerstate, version);
+							pool, linkerstate, version, thisname);
 						cf = cd.run();
 					}
 					
