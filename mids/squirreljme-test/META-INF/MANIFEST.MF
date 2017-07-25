@@ -9,7 +9,7 @@ X-SquirrelJME-Description: This project contains all of the tests
  that no regressions occur. If the test system fails to run then 
  something is very wrong. The test system operates in profiles where 
  there can either be a default profile set or an input profile set.
-X-SquirrelJME-Depends: sorted-collections
+X-SquirrelJME-Depends: sorted-collections math
 MicroEdition-Configuration: CLDC-1.8
 Main-Class: net.multiphasicapps.squirreljme.test.Main
 
