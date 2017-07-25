@@ -47,6 +47,9 @@ public class CodeDecompiler
 	/** The version number of the class. */
 	protected final ClassVersion version;
 	
+	/** The class which this method is in. */
+	protected final ClassName outerclass;
+	
 	/**
 	 * Initializes the code decompiler.
 	 *
@@ -56,17 +59,18 @@ public class CodeDecompiler
 	 * @param __pool The constant pool.
 	 * @param __linkerstate The target linker state to write the code into.
 	 * @param __ver The class version number.
+	 * @param __cn The class this method is within.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/13
 	 */
 	public CodeDecompiler(MethodFlags __f, MethodDescriptor __t,
 		DataInputStream __in, Pool __pool, LinkerState __linkerstate,
-		ClassVersion __ver)
+		ClassVersion __ver, ClassName __cn)
 		throws NullPointerException
 	{
 		// Check
 		if (__f == null || __t == null || __in == null || __pool == null ||
-			__linkerstate == null || __ver == null)
+			__linkerstate == null || __ver == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -76,6 +80,7 @@ public class CodeDecompiler
 		this.pool = __pool;
 		this.linkerstate = __linkerstate;
 		this.version = __ver;
+		this.outerclass = __cn;
 	}
 	
 	/**
@@ -120,6 +125,10 @@ public class CodeDecompiler
 			ii.hasNext();)
 			System.err.printf("DEBUG -- %s%n", ii.next());
 		
+		// Initialize the base stack map table
+		StackMapTableBuilder smtbuilder = new StackMapTableBuilder(this.flags,
+			this.type, this.outerclass, code, pool);
+		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the
 		// class version
@@ -128,7 +137,6 @@ public class CodeDecompiler
 		ClassVersion version = this.version;
 		String wantmap = (version.useStackMapTable() ? "StackMapTable" :
 			"StackMap");
-		StackMapTable smt = null;
 		for (int i = 0; i < na; i++)
 			try (DataInputStream ai = ClassDecompiler.__nextAttribute(in,
 				pool, attr))
@@ -140,6 +148,11 @@ public class CodeDecompiler
 				
 				throw new todo.TODO();
 			}
+		
+		// Build the stack map table, it is used for the basic register
+		// initialization for arguments along with being used for verification
+		// so that the code operates correctly
+		StackMapTable smt = smtbuilder.build();
 		
 		throw new todo.TODO();
 	}
