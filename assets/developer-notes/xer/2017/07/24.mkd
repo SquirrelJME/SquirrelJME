@@ -1,0 +1,17 @@
+# 2017/07/24
+
+## 20:49
+
+Ok so, I have been working on another project for a bit but I am not too sure
+what to do there for now, at least until I figure it out.
+
+## 21:35
+
+Ok so, I need a better `JavaType` but which just has stack map information in
+it for the most part. So this means that I should have a `StackMapType` so
+that information specific to the map is used.
+
+## 22:27
+
+So CLDC 1.8 lacks logarithms in the Math class. That is quite a bummer as that
+means I would need to implement it myself.
