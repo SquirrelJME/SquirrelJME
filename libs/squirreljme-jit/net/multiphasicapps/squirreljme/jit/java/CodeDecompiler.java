@@ -127,7 +127,7 @@ public class CodeDecompiler
 		
 		// Initialize the base stack map table
 		StackMapTableBuilder smtbuilder = new StackMapTableBuilder(this.flags,
-			this.type, this.outerclass, code, pool);
+			this.type, this.outerclass, code, pool, maxstack, maxlocals);
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the

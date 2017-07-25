@@ -35,10 +35,13 @@ public class StackMapTableBuilder
 	 * @param __bc The byte code for the current method, required for handling
 	 * initialization of new objects.
 	 * @param __pool The constant pool.
+	 * @param __ns The number of stack entries.
+	 * @param __nl The number of local variables.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/24 
 	 */
 	public StackMapTableBuilder(MethodFlags __f, MethodDescriptor __t,
-		ClassName __oc, ByteCode __bc, Pool __pool)
+		ClassName __oc, ByteCode __bc, Pool __pool, int __ns, int __nl)
 		throws NullPointerException
 	{
 		// Check
