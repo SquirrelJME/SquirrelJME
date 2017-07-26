@@ -1,0 +1,6 @@
+# 2017/07/25
+
+## 12:44
+
+Now I have logarithms, they are approximations and are not completely accurate
+but they can work for now.
