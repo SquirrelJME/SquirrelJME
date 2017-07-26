@@ -25,6 +25,15 @@ public class StackMapTableBuilder
 	/** The constant pool, needed for type decoding. */
 	protected final Pool pool;
 	
+	/** Entries which are in local variables. */
+	private final StackMapType[] _locals;
+	
+	/** Entries which are on the stack. */
+	private final StackMapType[] _stack;
+	
+	/** The depth of the stack. */
+	private volatile int _depth;
+	
 	/**
 	 * Initializes the stack map table builder.
 	 *
@@ -52,6 +61,14 @@ public class StackMapTableBuilder
 		// Set base
 		this.code = __bc;
 		this.pool = __pool;
+		
+		// The stack is always empty on initial entry
+		this._stack = new StackMapType[__ns];
+		
+		// Locals are initialized according to the argument types
+		StackMapType[] locals = new StackMapType[__nl];
+		this._locals = locals;
+		
 		
 		throw new todo.TODO();
 	}
