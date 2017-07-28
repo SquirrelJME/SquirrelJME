@@ -202,8 +202,8 @@ public final class ClassDecompiler
 								"JI1b %s %s %s", thisname, name, type));
 						
 						// Run decompiler
-						CodeDecompiler cd = new CodeDecompiler(flags, type, ai,
-							pool, linkerstate, version, thisname);
+						CodeDecompiler cd = new CodeDecompiler(flags, name,
+							type, ai, pool, linkerstate, version, thisname);
 						cf = cd.run();
 					}
 					
