@@ -56,5 +56,27 @@ public final class MethodName
 	{
 		return (__o instanceof MethodName) && super.equals(__o);
 	}
+	
+	/**
+	 * Returns {@code true} if this represents the instance initializer.
+	 *
+	 * @return {@code true} if this is the instance initializer.
+	 * @since 2017/07/28
+	 */
+	public boolean isInstanceInitializer()
+	{
+		return this.string.equals("<init>");
+	}
+	
+	/**
+	 * Returns {@code true} if this represents the static initializer.
+	 *
+	 * @return {@code true} if this is the static initializer.
+	 * @since 2017/07/28
+	 */
+	public boolean isStaticInitializer()
+	{
+		return this.string.equals("<clinit>");
+	}
 }
 
