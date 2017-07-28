@@ -32,6 +32,9 @@ public class CodeDecompiler
 	/** The method flags. */
 	protected final MethodFlags flags;
 	
+	/** The name of this method. */
+	protected final MethodName name;
+	
 	/** The descriptor. */
 	protected final MethodDescriptor type;
 	
@@ -54,6 +57,7 @@ public class CodeDecompiler
 	 * Initializes the code decompiler.
 	 *
 	 * @param __f The flags for the method.
+	 * @param __n The name of the method.
 	 * @param __t The descriptor for the method.
 	 * @param __in The input stream for the code's data.
 	 * @param __pool The constant pool.
@@ -63,18 +67,20 @@ public class CodeDecompiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/13
 	 */
-	public CodeDecompiler(MethodFlags __f, MethodDescriptor __t,
+	public CodeDecompiler(MethodFlags __f, MethodName __n, MethodDescriptor __t,
 		DataInputStream __in, Pool __pool, LinkerState __linkerstate,
 		ClassVersion __ver, ClassName __cn)
 		throws NullPointerException
 	{
 		// Check
 		if (__f == null || __t == null || __in == null || __pool == null ||
-			__linkerstate == null || __ver == null || __cn == null)
+			__linkerstate == null || __ver == null || __cn == null ||
+			__n == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.flags = __f;
+		this.name = __n;
 		this.type = __t;
 		this.in = __in;
 		this.pool = __pool;
@@ -127,7 +133,8 @@ public class CodeDecompiler
 		
 		// Initialize the base stack map table
 		StackMapTableBuilder smtbuilder = new StackMapTableBuilder(this.flags,
-			this.type, this.outerclass, code, pool, maxstack, maxlocals);
+			this.name, this.type, this.outerclass, code, pool, maxstack,
+			maxlocals);
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the
@@ -153,6 +160,9 @@ public class CodeDecompiler
 		// initialization for arguments along with being used for verification
 		// so that the code operates correctly
 		StackMapTable smt = smtbuilder.build();
+		
+		// Debug
+		System.err.printf("DEBUG -- SMT: %s%n", smt);
 		
 		throw new todo.TODO();
 	}

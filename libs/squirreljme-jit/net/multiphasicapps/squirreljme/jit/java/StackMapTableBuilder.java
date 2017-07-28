@@ -38,6 +38,7 @@ public class StackMapTableBuilder
 	 * Initializes the stack map table builder.
 	 *
 	 * @param __f The flags used for the method.
+	 * @param __n The name of the method.
 	 * @param __t The descriptor for the method.
 	 * @param __oc The class which contains the method to build a stack map
 	 * for, this is needed for {@code this} references.
@@ -49,13 +50,14 @@ public class StackMapTableBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/24 
 	 */
-	public StackMapTableBuilder(MethodFlags __f, MethodDescriptor __t,
-		ClassName __oc, ByteCode __bc, Pool __pool, int __ns, int __nl)
+	public StackMapTableBuilder(MethodFlags __f, MethodName __n,
+		MethodDescriptor __t, ClassName __oc, ByteCode __bc, Pool __pool,
+		int __ns, int __nl)
 		throws NullPointerException
 	{
 		// Check
 		if (__f == null || __t == null || __oc == null || __bc == null ||
-			__pool == null)
+			__pool == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Set base
@@ -69,6 +71,13 @@ public class StackMapTableBuilder
 		StackMapType[] locals = new StackMapType[__nl];
 		this._locals = locals;
 		
+		// If this is an instance method then the first argument is always the
+		// the parameter. Instance initializers start with an uninitialized
+		// this which requires initialization first.
+		int at = 0;
+		if (!__f.isStatic())
+			locals[at++] = new StackMapType(__oc,
+				!__n.isInstanceInitializer());
 		
 		throw new todo.TODO();
 	}
