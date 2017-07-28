@@ -133,7 +133,7 @@ public class StackMapTableBuilder
 	 */
 	public StackMapTable build()
 	{
-		throw new todo.TODO();
+		return new StackMapTable(this._states);
 	}
 }
 
