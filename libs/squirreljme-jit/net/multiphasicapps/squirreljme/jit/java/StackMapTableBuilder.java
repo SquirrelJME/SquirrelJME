@@ -33,10 +33,10 @@ public class StackMapTableBuilder
 		new SortedTreeMap<>();
 	
 	/** Entries which are in local variables. */
-	private final StackMapType[] _locals;
+	private final JavaType[] _locals;
 	
 	/** Entries which are on the stack. */
-	private final StackMapType[] _stack;
+	private final JavaType[] _stack;
 	
 	/** The depth of the stack. */
 	private volatile int _depth;
@@ -72,10 +72,10 @@ public class StackMapTableBuilder
 		this.pool = __pool;
 		
 		// The stack is always empty on initial entry
-		this._stack = new StackMapType[__ns];
+		this._stack = new JavaType[__ns];
 		
 		// Locals are initialized according to the argument types
-		StackMapType[] locals = new StackMapType[__nl];
+		JavaType[] locals = new JavaType[__nl];
 		this._locals = locals;
 		
 		// If this is an instance method then the first argument is always the
@@ -83,8 +83,7 @@ public class StackMapTableBuilder
 		// this which requires initialization first.
 		int at = 0;
 		if (!__f.isStatic())
-			locals[at++] = new StackMapType(__oc,
-				!__n.isInstanceInitializer());
+			locals[at++] = new JavaType(__oc, !__n.isInstanceInitializer());
 		
 		// Handle all arguments now
 		for (int i = 0, na = __t.argumentCount(); i < na; i++)
@@ -101,17 +100,21 @@ public class StackMapTableBuilder
 	 * an internal map for later building.
 	 *
 	 * @param __pc The address to set the state for.
+	 * @return The created stack map table state.
 	 * @throws IllegalArgumentException If the address is negative.
 	 * @since 2017/07/29
 	 */
-	public void add(int __pc)
+	public StackMapTableState add(int __pc)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error JI1r
 		if (__pc < 0)
 			throw new IllegalArgumentException("JI1r");
 		
-		throw new todo.TODO();
+		StackMapTableState rv;
+		this._states.put(__pc, (rv = new StackMapTableState(this._locals,
+			this._stack, this._depth)));
+		return rv;
 	}
 	
 	/**

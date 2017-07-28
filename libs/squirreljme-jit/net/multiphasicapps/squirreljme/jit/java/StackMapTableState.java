@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This represents a single state within the stack map table which contains
  * a listing of all of the types used for local and stack variable along with
@@ -19,5 +21,33 @@ package net.multiphasicapps.squirreljme.jit.java;
  */
 public final class StackMapTableState
 {
+	/** The depth of the stack. */
+	protected final int depth;
+	
+	/** Local variables. */
+	private final JavaType[] _locals;
+	
+	/** Stack variables. */
+	private final JavaType[] _stack;
+	
+	/**
+	 * Initializes the stack map table state.
+	 *
+	 * @param __l Local variables.
+	 * @param __s Stack variables.
+	 * @param __d The depth of the stack.
+	 * @throws JITException If the state is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/28
+	 */
+	public StackMapTableState(JavaType[] __l, JavaType[] __s, int __d)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__l == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
