@@ -130,6 +130,17 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns the number of arguments this descriptor has.
+	 *
+	 * @return The number of arguments this descriptor has.
+	 * @since 2017/07/28
+	 */
+	public int argumentCount()
+	{
+		return this._args.length;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
