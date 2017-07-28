@@ -22,5 +22,14 @@ package net.multiphasicapps.squirreljme.jit.java;
  */
 public final class StackMapTable
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/28
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 

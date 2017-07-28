@@ -47,6 +47,55 @@ public final class StackMapTableState
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error JI1t The depth of the stack is not within the
+		// bounds of the stack. (The stack depth; The stack size)}
+		int ns = __s.length;
+		if (__d < 0 || __d > ns)
+			throw new JITException(String.format("JI1t %d %d", __d, ns));
+		
+		// Duplicate
+		__l = __l.clone();
+		__s = __s.clone();
+		
+		// Clear elements above the stack top
+		for (int i = __d; i < ns; i++)
+			__s[i] = null;
+		
+		// Verify each state
+		__verify(__l);
+		__verify(__s);
+		
+		// Set
+		this._locals = __l;
+		this._stack = __s;
+		this.depth = __d;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/28
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Verifies the types within the map.
+	 *
+	 * @param __t The types to check.
+	 * @throws JITException If the type are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/28
+	 */
+	private static void __verify(JavaType[] __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }
