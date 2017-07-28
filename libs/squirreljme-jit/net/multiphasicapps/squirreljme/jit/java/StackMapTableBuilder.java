@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.util.Map;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
+
 /**
  * This class is used to construct instances of {@link StackMapTable}, this
  * reads the raw data from the {@code StackMap} or {@code StackMapTable}
@@ -24,6 +27,10 @@ public class StackMapTableBuilder
 	
 	/** The constant pool, needed for type decoding. */
 	protected final Pool pool;
+	
+	/** Stack map states for given addresses. */
+	private final Map<Integer, StackMapTableState> _states =
+		new SortedTreeMap<>();
 	
 	/** Entries which are in local variables. */
 	private final StackMapType[] _locals;
@@ -78,6 +85,31 @@ public class StackMapTableBuilder
 		if (!__f.isStatic())
 			locals[at++] = new StackMapType(__oc,
 				!__n.isInstanceInitializer());
+		
+		// Handle all arguments now
+		for (int i = 0, na = __t.argumentCount(); i < na; i++)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Set initial entry stat
+		add(0);
+	}
+	
+	/**
+	 * Adds the current partial state to a constructed state and holds it in
+	 * an internal map for later building.
+	 *
+	 * @param __pc The address to set the state for.
+	 * @throws IllegalArgumentException If the address is negative.
+	 * @since 2017/07/29
+	 */
+	public void add(int __pc)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error JI1r
+		if (__pc < 0)
+			throw new IllegalArgumentException("JI1r");
 		
 		throw new todo.TODO();
 	}
