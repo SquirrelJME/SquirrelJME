@@ -130,6 +130,19 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns the argument of the given parameter number.
+	 *
+	 * @param __i The parameter to get the argument for.
+	 * @throws IndexOutOfBoundsException If the argument is not within bounds.
+	 * @since 2017/07/28
+	 */
+	public FieldDescriptor argument(int __i)
+		throws IndexOutOfBoundsException
+	{
+		return this._args[__i];
+	}
+	
+	/**
 	 * Returns the number of arguments this descriptor has.
 	 *
 	 * @return The number of arguments this descriptor has.
