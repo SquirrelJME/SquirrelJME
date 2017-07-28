@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -19,6 +21,38 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class FieldDescriptor
 {
+	/** The boolean type. */
+	public static final FieldDescriptor BOOLEAN =
+		new FieldDescriptor("Z");
+	
+	/** The byte type. */
+	public static final FieldDescriptor BYTE =
+		new FieldDescriptor("B");
+	
+	/** The short type. */
+	public static final FieldDescriptor SHORT =
+		new FieldDescriptor("S");
+	
+	/** The char type. */
+	public static final FieldDescriptor CHARACTER =
+		new FieldDescriptor("C");
+	
+	/** The int type. */
+	public static final FieldDescriptor INTEGER =
+		new FieldDescriptor("I");
+	
+	/** The long type. */
+	public static final FieldDescriptor LONG =
+		new FieldDescriptor("J");
+	
+	/** The float type. */
+	public static final FieldDescriptor FLOAT =
+		new FieldDescriptor("F");
+	
+	/** The double type. */
+	public static final FieldDescriptor DOUBLE =
+		new FieldDescriptor("D");
+	
 	/** String representation. */
 	protected final String string;
 	
@@ -128,6 +162,17 @@ public final class FieldDescriptor
 	public int hashCode()
 	{
 		return this.string.hashCode();
+	}
+	
+	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if this is a primitive type.
+	 * @since 2017/07/28
+	 */
+	public boolean isPrimitive()
+	{
+		return this.primitive;
 	}
 	
 	/**

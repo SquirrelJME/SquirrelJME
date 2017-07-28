@@ -132,6 +132,17 @@ public final class ClassName
 	}
 	
 	/**
+	 * Returns {@code true} if this represents an array.
+	 *
+	 * @return {@code true} if this represents an array.
+	 * @since 2017/07/28
+	 */
+	public boolean isArray()
+	{
+		return this.dimensions != 0;
+	}
+	
+	/**
 	 * Returns the package that this class resides within.
 	 *
 	 * If this class name represents a primitive type or an array then the

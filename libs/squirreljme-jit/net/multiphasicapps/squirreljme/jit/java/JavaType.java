@@ -18,10 +18,10 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/07/26
  */
-public final class StackMapType
+public final class JavaType
 {
-	/** The class name if this has one. */
-	protected final ClassName name;
+	/** The type this refers to. */
+	protected final FieldDescriptor type;
 	
 	/** Is this type initialized? */
 	protected final boolean isinitialized;
@@ -29,20 +29,50 @@ public final class StackMapType
 	/**
 	 * Initializes the stack map type.
 	 *
-	 * @param __cn The name of the associated class.
+	 * @param __cn The name of the field.
 	 * @param __init Is this object initialized?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	public StackMapType(ClassName __cn, boolean __init)
+	public JavaType(ClassName __cn, boolean __init)
 		throws NullPointerException
 	{
+		this(new FieldDescriptor((__cn.isArray() ? __cn.toString() :
+			"L" + __cn + ";")), __init);
+	}
+	
+	/**
+	 * Initializes the stack map type.
+	 *
+	 * @param __f The field type.
+	 * @param __init Is the value initialized.
+	 * @throws IllegalStateException If an uninitialized primitive type is
+	 * used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/28
+	 */
+	public JavaType(FieldDescriptor __f, boolean __init)
+		throws IllegalStateException, NullPointerException
+	{
 		// Check
-		if (__cn == null)
+		if (__f == null)
 			throw new NullPointerException("NARG");
 		
+		// Promote to integer since the VM does not have a representation for
+		// types smaller than int
+		if (__f.equals(FieldDescriptor.BOOLEAN) ||
+			__f.equals(FieldDescriptor.BYTE) ||
+			__f.equals(FieldDescriptor.SHORT) ||
+			__f.equals(FieldDescriptor.CHARACTER))
+			__f = FieldDescriptor.INTEGER;
+		
+		// {@squirreljme.error JI1s Cannot have a primitive type which is not
+		// initialized.}
+		if (__f.isPrimitive() && !__init)
+			throw new IllegalStateException("JI1s");
+		
 		// Set
-		this.name = __cn;
+		this.type = __f;
 		this.isinitialized = __init;
 	}
 }
