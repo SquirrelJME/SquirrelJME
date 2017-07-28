@@ -20,11 +20,22 @@ package net.multiphasicapps.squirreljme.jit.java;
  */
 public final class JavaType
 {
+	/** The top of a long. */
+	public static final JavaType TOP_LONG =
+		new JavaType(1);
+	
+	/** The top of a double. */
+	public static final JavaType TOP_DOUBLE =
+		new JavaType(2);
+	
 	/** The type this refers to. */
 	protected final FieldDescriptor type;
 	
 	/** Is this type initialized? */
 	protected final boolean isinitialized;
+	
+	/** Internal property. */
+	private final int _internal;
 	
 	/**
 	 * Initializes the stack map type.
@@ -72,8 +83,75 @@ public final class JavaType
 			throw new IllegalStateException("JI1s");
 		
 		// Set
+		this._internal = 0;
 		this.type = __f;
 		this.isinitialized = __init;
+	}
+	
+	/**
+	 * Used internally to create special non-comparable types.
+	 *
+	 * @param __i Internal identifier.
+	 * @throws RuntimeException If the internal value is zero.
+	 * @since 2017/07/28
+	 */
+	private JavaType(int __i)
+		throws RuntimeException
+	{
+		// Check
+		if (__i == 0)
+			throw new RuntimeException("OOPS");
+		
+		this._internal = __i;
+		this.type = null;
+		this.isinitialized = false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/28
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof JavaType))
+			return false;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/28
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Is this a wide type?
+	 *
+	 * @return {@code true} if the type is a wide type.
+	 * @since 2017/07/28
+	 */
+	public boolean isWide()
+	{
+		FieldDescriptor type = this.type;
+		return FieldDescriptor.LONG.equals(type) ||
+			FieldDescriptor.DOUBLE.equals(type);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/07/28
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
 	}
 }
 

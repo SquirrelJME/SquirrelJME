@@ -88,7 +88,15 @@ public class StackMapTableBuilder
 		// Handle all arguments now
 		for (int i = 0, na = __t.argumentCount(); i < na; i++)
 		{
-			throw new todo.TODO();
+			// Trivial set of argument
+			FieldDescriptor a = __t.argument(i);
+			locals[at++] = new JavaType(a, true);
+			
+			// Add top of long/double but with unique distinct types
+			if (a.equals(FieldDescriptor.LONG))
+				locals[at++] = JavaType.TOP_LONG;
+			else if (a.equals(FieldDescriptor.DOUBLE))
+				locals[at++] = JavaType.TOP_DOUBLE;
 		}
 		
 		// Set initial entry stat
