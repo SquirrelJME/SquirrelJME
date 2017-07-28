@@ -145,6 +145,23 @@ public final class JavaType
 	}
 	
 	/**
+	 * Returns the type that is used for the top type.
+	 *
+	 * @return The associated top type used for this type or {@code null} if
+	 * there is none.
+	 * @since 2017/07/28
+	 */
+	public JavaType topType()
+	{
+		FieldDescriptor type = this.type;
+		if (type.equals(FieldDescriptor.LONG))
+			return TOP_LONG;
+		else if (type.equals(FieldDescriptor.DOUBLE))
+			return TOP_DOUBLE;
+		return null;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/07/28
 	 */

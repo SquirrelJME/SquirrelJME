@@ -96,7 +96,40 @@ public final class StackMapTableState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Go through all entries, w acts as a kind of single entry stack which
+		// is used to ensure that the tops of long/double are valid
+		JavaType w = null;
+		for (int i = 0, n = __t.length; i < n; i++)
+		{
+			JavaType a = __t[i];
+			
+			// A wide type was pushed
+			if (w != null)
+			{
+				// {@squirreljme.error JI1v The type at the read index does
+				// not match the expected type following a wide type. (The wide
+				// type; The expected type; The actual type)}
+				JavaType t = w.topType();
+				if (!a.equals(t))
+					throw new JITException(String.format("JI1v %s %s %s", w, t,
+						a));
+				
+				// Clear
+				w = null;
+			}
+			
+			// No real checking has to be done unless it is a wide type
+			else
+			{
+				if (a != null && a.isWide())
+					w = a;
+			}
+		}
+		
+		// {@squirreljme.error JI1u Long or double appears at the end of the
+		// type array and does not have a top associated with it.}
+		if (w != null)
+			throw new JITException("JI1u");
 	}
 }
 
