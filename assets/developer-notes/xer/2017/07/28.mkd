@@ -1,0 +1,16 @@
+# 2017/07/28
+
+## 15:13
+
+I wonder if constructors start always with the uninitialized this in the
+stack map table rather than having an initialized this.
+
+## 15:24
+
+Ok, so the verifier section has this information. It has unitialized
+variables which are created by new which then need initialization.
+
+## 17:04
+
+It would be best to have distinct tops for long/double so that there is no
+confusion as to what the values are associated with.
