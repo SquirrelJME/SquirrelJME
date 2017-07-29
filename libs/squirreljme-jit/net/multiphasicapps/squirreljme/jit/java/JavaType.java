@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 /**
  * This represents a type within the stack map table which maps to a type used
  * within the running virtual machine. Types in the stack map will usually be
@@ -36,6 +40,9 @@ public final class JavaType
 	
 	/** Internal property. */
 	private final int _internal;
+	
+	/** String representation of this table. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the stack map type.
@@ -118,7 +125,10 @@ public final class JavaType
 		if (!(__o instanceof JavaType))
 			return false;
 		
-		throw new todo.TODO();
+		JavaType o = (JavaType)__o;
+		return this._internal == o._internal &&
+			Objects.equals(this.type, o.type) &&
+			this.isinitialized == o.isinitialized;
 	}
 	
 	/**
@@ -168,7 +178,34 @@ public final class JavaType
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		// Unknown
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Fixed type
+			if (this.equals(TOP_LONG))
+				rv = "top-long";
+			else if (this.equals(TOP_DOUBLE))
+				rv = "top-double";
+			
+			// Other
+			else
+			{
+				FieldDescriptor type = this.type;
+				if (this.isinitialized)
+					rv = type.toString();
+				else
+					rv = type + "*";
+			}
+			
+			// Cache
+			this._string = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 }
 

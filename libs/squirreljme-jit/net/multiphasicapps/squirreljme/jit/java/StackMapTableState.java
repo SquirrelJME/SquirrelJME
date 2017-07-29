@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -29,6 +31,9 @@ public final class StackMapTableState
 	
 	/** Stack variables. */
 	private final JavaType[] _stack;
+	
+	/** String representation of this table. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the stack map table state.
@@ -78,7 +83,55 @@ public final class StackMapTableState
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder("{locals=");
+			__stringize(this._locals, sb);
+			sb.append(", stack(");
+			sb.append(this.depth);
+			sb.append(")=");
+			__stringize(this._stack, sb);
+			sb.append("}");
+			
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Stringizes the specified type array.
+	 *
+	 * @param __jt The type array to stringize.
+	 * @param __sb The destination string builder.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/07/28
+	 */
+	private static void __stringize(JavaType[] __jt, StringBuilder __sb)
+		throws NullPointerException
+	{
+		// Check
+		if (__jt == null || __sb == null)
+			throw new NullPointerException("NARG");
+		
+		// Open
+		__sb.append('[');
+		
+		// Add
+		for (int i = 0, n = __jt.length; i < n; i++)
+		{
+			if (i > 0)
+				__sb.append(", ");
+			
+			__sb.append(__jt[i]);
+		}
+		
+		// Close
+		__sb.append(']');
 	}
 	
 	/**
