@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +35,9 @@ public final class StackMapTable
 	
 	/** Stack map tables for each address. */
 	private final StackMapTableState[] _tables;
+	
+	/** String representation of this table. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Constructs the stack map table.
@@ -94,7 +99,33 @@ public final class StackMapTable
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			int[] address = this._address;
+			StackMapTableState[] tables = this._tables;
+			
+			// Build string
+			StringBuilder sb = new StringBuilder("{");
+			for (int i = 0, n = address.length; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(", ");
+				
+				sb.append(address[i]);
+				sb.append('=');
+				sb.append(tables[i]);
+			}
+			sb.append("}");
+			
+			// Finish
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 }
 
