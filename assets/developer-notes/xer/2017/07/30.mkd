@@ -1,0 +1,6 @@
+# 2017/07/30
+
+## 22:32
+
+So the next thing to do would be to parse the byte code to generate the
+machine code. I have what I plan to do down in another day.
