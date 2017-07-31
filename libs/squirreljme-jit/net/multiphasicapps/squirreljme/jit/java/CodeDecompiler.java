@@ -164,6 +164,8 @@ public class CodeDecompiler
 		// Debug
 		System.err.printf("DEBUG -- SMT: %s%n", smt);
 		
+		// Now at this point the code can be parsed and instructions generated
+		
 		throw new todo.TODO();
 	}
 }
