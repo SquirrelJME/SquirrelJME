@@ -164,7 +164,13 @@ public class CodeDecompiler
 		// Debug
 		System.err.printf("DEBUG -- SMT: %s%n", smt);
 		
+		// Split the byte code into crude basic blocks. 
+		if (true)
+			throw new todo.TODO();
+		
 		// Now at this point the code can be parsed and instructions generated
+		if (true)
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 	}
