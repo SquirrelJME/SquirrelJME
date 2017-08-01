@@ -1,6 +1,6 @@
 # SquirrelJME
 
- * Copyright (C) 2013-2017 Steven Gawroriski
+ * Copyright (C) 2013-2017 Stephanie Gawroriski
    <xer@multiphasicapps.net>
  * Copyright (C) 2013-2017 Multi-Phasic Applications
    <http://multiphasicapps.net/>

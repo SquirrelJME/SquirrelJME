@@ -102,7 +102,7 @@ What is needed is the following:
 	MicroEdition-Configuration: CLDC-1.8
 	MicroEdition-Profile: MEEP-8.0
 	MIDlet-Name: Squirrel Quarrel
-	MIDlet-Vendor: Steven Gawroriski
+	MIDlet-Vendor: Stephanie Gawroriski
 	MIDlet-Version: 0.0.2
 	MIDlet-1: Name, icon.png, main
 
@@ -129,7 +129,7 @@ system.
 	Suite: 2
 	  Name: Squirrel Quarrel
 	  Version: 0.0.2
-	  Vendor: Steven Gawroriski
+	  Vendor: Stephanie Gawroriski
 	  MIDlets:
 		Squirrel Quarrel (Console): net.multiphasicapps.squirrelquarrel.
 		ConsoleMain

@@ -1,7 +1,7 @@
 @ECHO OFF
 REM ---------------------------------------------------------------------------
 REM Multi-Phasic Applications: SquirrelJME
-REM     Copyright (C) Steven Gawroriski <steven@multiphasicapps.net>
+REM     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 REM     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 REM ---------------------------------------------------------------------------
 REM SquirrelJME is under the GNU General Public License v3, or later.

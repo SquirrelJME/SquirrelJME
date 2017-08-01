@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: b600863c-fbba-41ec-9ca1-544e71d6f86d
 X-SquirrelJME-Error: AW
 X-SquirrelJME-Depends: meep-rms java-manifest mutable-java-manifest
 X-SquirrelJME-Name: File Backed RecordStore
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides RecordStores which are backed 
  by files on the disk.

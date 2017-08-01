@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: Multiple Set-Based Deque
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the MultiSetDeque class
   which act simiarly to multiple Deques except that all elements in the 

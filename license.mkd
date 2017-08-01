@@ -2,7 +2,7 @@
 
 SquirrelJME is copyright:
 
- * Copyright (C) 2013-2017 Steven Gawroriski <steven@multiphasicapps.net>
+ * Copyright (C) 2013-2017 Stephanie Gawroriski <xer@multiphasicapps.net>
  * Copyright (C) 2013-2017 Multi-Phasic Applications <multiphasicapps.net>
 
 SquirrelJME has two primary types of files, source code and non-source code.
@@ -22,11 +22,11 @@ The mascot is under the **Creative Commons CC-BY-SA 4.0 With Additional**
    "Powered by SquirrelJME".
  * It is acceptable to use the mascot for programs in a way that software
    "Runs on SquirrelJME".
- * That the SquirrelJME mascot is trademarked by _Steven Gawroriski_ and
+ * That the SquirrelJME mascot is trademarked by _Stephanie Gawroriski_ and
    _Multi-Phasic Applications_.
  * The high-resolution mascot was drawn by:
    "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
- * The low resolution mascot (below 128x128) was drawn by _Steven Gawroriski_
+ * The low resolution mascot (below 128x128) was drawn by _Stephanie Gawroriski_
    using the high-resolution mascot as a base.
 
 Contributors must agree to the contributor license before their code may be
@@ -1173,7 +1173,7 @@ cheap to produce).
 **CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
 **PERMISSION OF THE EMPLOYER.**
 
-	You grant Multi-Phasic Applications and Steven Gawroriski an irrevocable
+	You grant Multi-Phasic Applications and Stephanie Gawroriski an irrevocable
 	license that:
 	
 	 1. Grants a patent license, as per the GNU GPLv3.

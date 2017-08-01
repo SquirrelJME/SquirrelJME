@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-UUID: 4b20ba4f-4ec6-4b1f-b5c2-738b8b19da60
 X-SquirrelJME-Error: AX
 X-SquirrelJME-Name: ZIP File Dumper
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This dumps ZIP files.
 X-SquirrelJME-Depends: zip-reader-stream zip-reader-block 

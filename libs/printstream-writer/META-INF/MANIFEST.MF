@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-UUID: acbe8ea6-18ff-40da-8148-def89ce2bfdc
 X-SquirrelJME-Error: BR
 X-SquirrelJME-Name: PrintStream Writer
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This copies a PrintStream except it 
  outputs to a Writer.

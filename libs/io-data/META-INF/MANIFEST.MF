@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: Generic Data Output
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides slightly more powerful data 
  input and output streams which can be used to read binary data.

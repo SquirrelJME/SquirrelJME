@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: squirreljme-build-base sorted-collections
  squirreljme-suite-id empty-collections zip-reader-block 
  zip-writer-stream mutable-java-manifest
 X-SquirrelJME-Error: AT
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Name: SquirrelJME Project Manager
 X-SquirrelJME-Description: This contains the project manager which is 
