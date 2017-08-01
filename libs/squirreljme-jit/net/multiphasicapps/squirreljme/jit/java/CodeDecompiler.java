@@ -164,10 +164,6 @@ public class CodeDecompiler
 		// Debug
 		System.err.printf("DEBUG -- SMT: %s%n", smt);
 		
-		// Split the byte code into crude basic blocks.
-		if (true)
-			throw new todo.TODO();
-		
 		// After all of that, run through all byte code operations and
 		// create an expanded byte code program contained within basic blocks
 		// which are then used the processor. The expanded byte code is used
