@@ -46,6 +46,9 @@ public class ByteCode
 	/** Instruction lengths at each position. */
 	private final int[] _lengths;
 	
+	/** The addresses of every instruction by index. */
+	private final int[] _index;
+	
 	/** The constant pool. */
 	protected final Pool pool;
 	
@@ -90,6 +93,11 @@ public class ByteCode
 		// Cache instructions
 		this._icache = __newCache(codelen);
 		
+		// The instruction index is used to lookup using a linear index count
+		// rather than the potentially spaced out address lookup
+		int[] index = new int[codelen];
+		int indexat = 0;
+		
 		// Set all lengths initially to invalid positions, this used as a quick
 		// marker to determine which positions have valid instructions
 		int[] lengths = new int[codelen];
@@ -99,6 +107,9 @@ public class ByteCode
 		// Determine instruction lengths for each position
 		for (int i = 0; i < codelen;)
 		{
+			// Store address of instruction for an index based lookup
+			index[indexat++] = i;
+			
 			// Store length
 			int oplen;
 			lengths[i] = (oplen = __opLength(__code, i));
@@ -111,6 +122,12 @@ public class ByteCode
 					codelen));
 		}
 		this._lengths = lengths;
+		
+		// Store addresses for all the indexes
+		if (indexat == codelen)
+			this._index = index;
+		else
+			this._index = Arrays.copyOf(index, indexat);
 		
 		// Debug
 		System.err.print("DEBUG -- Lengths: [");
@@ -135,7 +152,7 @@ public class ByteCode
 		// Handle for each instruction
 		for (int i = 0; i < codelen; i++)
 			if (isValidAddress(i))
-				for (JumpTarget jt : get(i).jumpTargets())
+				for (JumpTarget jt : getByAddress(i).jumpTargets())
 					jumpcount = __addSortedArray(jt, jumptargets, jumpcount);
 		
 		// Store jump targets
@@ -174,7 +191,7 @@ public class ByteCode
 	 * @throws JITException If the address is not valid.
 	 * @since 2017/05/18
 	 */
-	public Instruction get(int __a)
+	public Instruction getByAddress(int __a)
 		throws JITException
 	{
 		// {@squirreljme.error JI1j The instruction at the specified address is
@@ -191,6 +208,38 @@ public class ByteCode
 				this.pool, __a)));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the instruction based on an index in the order it apperas within
+	 * the byte code rather than by address.
+	 *
+	 * @param __i The instruction index to get.
+	 * @return The instruction at this index.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws JITException If the instruction is not valid.
+	 * @since 2017/08/01
+	 */
+	public Instruction getByIndex(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// Check
+		int[] index = this._index;
+		if (__i < 0 || __i >= index.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return getByAddress(index[__i]);
+	}
+	
+	/**
+	 * Returns the number of instructions which are within this method.
+	 *
+	 * @return The number of instructions which are in the method.
+	 * @since 2017/08/01
+	 */
+	public int instructionCount()
+	{
+		return this._index.length;
 	}
 	
 	/**
@@ -679,7 +728,7 @@ public class ByteCode
 			
 			// Instruction at current pointer
 			int at = this._at;
-			Instruction rv = ByteCode.this.get(at);
+			Instruction rv = ByteCode.this.getByAddress(at);
 			
 			// Skip length of instruction
 			this._at += ByteCode.this._lengths[at];
