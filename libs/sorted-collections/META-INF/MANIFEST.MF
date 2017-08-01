@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: Sorted Set and Map
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains a sorted implementation
   of a Map and a Set.

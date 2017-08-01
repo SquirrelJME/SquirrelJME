@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: Dynamic History InputStream
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project provides an InputStream which is
   buffered to a dynamic and changeable set of bytes to allow for reading

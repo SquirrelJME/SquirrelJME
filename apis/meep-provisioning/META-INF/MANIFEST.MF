@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: MEEP Provisioning
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides support for provisioning new 
  MIDlets and LIBlets which may exist on the network and can beseen in a 

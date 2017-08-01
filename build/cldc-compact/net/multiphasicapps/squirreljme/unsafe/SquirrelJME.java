@@ -1,7 +1,7 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
-//     Copyright (C) Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 //     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
@@ -383,7 +383,7 @@ public final class SquirrelJME
 		// Use a precomposed string since it is the same regardless
 		try
 		{
-			return "Steven Gawroriski;SquirrelJME;0.0.2".getBytes("utf-8");
+			return "Stephanie Gawroriski;SquirrelJME;0.0.2".getBytes("utf-8");
 		}
 		
 		// Should not occur

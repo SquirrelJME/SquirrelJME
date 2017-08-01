@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: 10f6b6d9-d5b4-49f8-a7a3-ee37ec0d5733
 X-SquirrelJME-Name: Hexadecimal Input Stream
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This decodes hexadecimal characters to 
  binary data.

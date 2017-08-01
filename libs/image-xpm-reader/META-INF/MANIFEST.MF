@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-UUID: 0fd6f8f4-4345-4b1f-be76-6fb23e6c1031
 X-SquirrelJME-Error: BQ
 X-SquirrelJME-Name: XPM Image Reader
-X-SquirrelJME-Vendor: Steven Gawroriski
+X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: midp-lcdui
 X-SquirrelJME-Description: This supports reading of XPM images.

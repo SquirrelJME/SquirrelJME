@@ -1,5 +1,5 @@
 # Developer Notes
-# Steven Gawroriski
+# Stephanie Gawroriski
 
 ## 2013
 
@@ -1463,7 +1463,7 @@
 
 # Other
 
-## Steven Gawroriski
+## Stephanie Gawroriski
 
  * [ARM: Palm OS](xer/other/arm32_palmos_generic__dev.mkd)
  * [Could It Run SquirrelJME?](xer/other/could-it-run.mkd)
