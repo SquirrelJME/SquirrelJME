@@ -1,7 +1,7 @@
 #!/bin/sh
 # ---------------------------------------------------------------------------
 # Multi-Phasic Applications: SquirrelJME
-#     Copyright (C) Steven Gawroriski <xer@multiphasicapps.net>
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 #     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
 # SquirrelJME is under the GNU General Public License v3+, or later.
