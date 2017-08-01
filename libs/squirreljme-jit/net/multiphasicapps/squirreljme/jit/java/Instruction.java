@@ -47,10 +47,12 @@ public final class Instruction
 	 * @param __code The instruction bytes.
 	 * @param __pool The constant pool.
 	 * @param __a The instruction address.
+	 * @param __eh Exception handler table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/18
 	 */
-	Instruction(byte[] __code, Pool __pool, int __a)
+	Instruction(byte[] __code, Pool __pool, int __a,
+		ExceptionHandlerTable __eh)
 		throws NullPointerException
 	{
 		// Check

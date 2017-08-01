@@ -61,6 +61,9 @@ public class ByteCode
 	/** The string representation. */
 	private volatile Reference<String> _string;
 	
+	/** Basic blocks within the byte code. */
+	private volatile Reference<BasicBlocks> _blocks;
+	
 	/**
 	 * Represents the byte code.
 	 *
@@ -184,6 +187,24 @@ public class ByteCode
 	}
 	
 	/**
+	 * Returns a representation of the basic blocks within the byte code which
+	 * indicates which instructions are formed as a logical non-jumping unit.
+	 *
+	 * @return The basic blocks which make up the byte code.
+	 * @since 2017/08/01
+	 */
+	public BasicBlocks basicBlocks()
+	{
+		Reference<BasicBlocks> ref = this._blocks;
+		BasicBlocks rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			throw new todo.TODO();
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the instruction at the specified address.
 	 *
 	 * @param __a The address to get the instruction for.
@@ -205,7 +226,7 @@ public class ByteCode
 		
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new WeakReference<>((rv = new Instruction(this._code,
-				this.pool, __a)));
+				this.pool, __a, this.exceptions)));
 		
 		return rv;
 	}
