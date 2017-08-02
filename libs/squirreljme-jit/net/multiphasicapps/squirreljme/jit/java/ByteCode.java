@@ -187,6 +187,21 @@ public class ByteCode
 	}
 	
 	/**
+	 * Translates an address to an index.
+	 *
+	 * @param __a The address to translate.
+	 * @return The index of the instruction or {@code -1} if it is not valid.
+	 * @since 2017/08/02
+	 */
+	public int addressToIndex(int __a)
+	{
+		int rv = Arrays.binarySearch(this._index, __a);
+		if (rv < 0)
+			return -1;
+		return rv;
+	}
+	
+	/**
 	 * Returns a representation of the basic blocks within the byte code which
 	 * indicates which instructions are formed as a logical non-jumping unit.
 	 *
@@ -199,7 +214,7 @@ public class ByteCode
 		BasicBlocks rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			throw new todo.TODO();
+			this._blocks = new WeakReference<>((rv = new BasicBlocks(this)));
 		
 		return rv;
 	}
@@ -253,6 +268,23 @@ public class ByteCode
 	}
 	
 	/**
+	 * Translates an index to an address.
+	 *
+	 * @param __i The index to translate.
+	 * @return The address of the index or {@code -1} if it is not valid.
+	 * @since 2017/08/02
+	 */
+	public int indexToAddress(int __i)
+	{
+		// Check
+		int[] index = this._index;
+		if (__i < 0 || __i >= index.length)
+			return -1;
+		
+		return index[__i];
+	}
+	
+	/**
 	 * Returns the number of instructions which are within this method.
 	 *
 	 * @return The number of instructions which are in the method.
@@ -301,6 +333,26 @@ public class ByteCode
 	public JumpTarget[] jumpTargets()
 	{
 		return this._jumptargets.clone();
+	}
+	
+	/**
+	 * This returns the addresses of all jump targets within the method as a
+	 * plain array of integers.
+	 *
+	 * @return An array of plain integers for every jump target in a method.
+	 * @since 2017/08/02
+	 */
+	public int[] jumpTargetAddresses()
+	{
+		JumpTarget[] jumptargets = this._jumptargets;
+		int n = jumptargets.length;
+		int[] rv = new int[n];
+		
+		// Fill
+		for (int i = 0; i < n; i++)
+			rv[i] = jumptargets[i].address();
+		
+		return rv;
 	}
 	
 	/**

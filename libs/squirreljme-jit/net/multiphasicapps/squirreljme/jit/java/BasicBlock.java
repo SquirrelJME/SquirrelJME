@@ -22,7 +22,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  * @see BasicBlocks
  * @since 2017/08/01
  */
-public class BasicBlock
+public final class BasicBlock
 {
 }
 

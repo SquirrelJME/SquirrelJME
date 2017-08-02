@@ -163,6 +163,7 @@ public class CodeDecompiler
 		
 		// Debug
 		System.err.printf("DEBUG -- SMT: %s%n", smt);
+		System.err.printf("DEBUG -- BBr: %s%n", code.basicBlocks());
 		
 		// After all of that, run through all byte code operations and
 		// create an expanded byte code program contained within basic blocks
