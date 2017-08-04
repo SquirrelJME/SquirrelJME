@@ -21,6 +21,7 @@ and requires only a Java compiler and virtual machine for it to be built.
  * [Code of Conduct](code-of-conduct.mkd)
  * [Contributing](contributing.mkd)
  * [Design Document](design.mkd)
+ * [Developer Notes](assets/developer-notes/index.mkd)
  * [Project Scope](scope.mkd)
 
 ## I Am Open For Hiring
