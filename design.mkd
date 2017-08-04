@@ -18,7 +18,7 @@ this document is mostly within the scope of Java ME and not Java SE.
    * There is `Class.forName()` and `Class.newInstance()`, however they are
      trivial to support.
    * More secure because access checks do not have to be performed at run-time
-     to determine if it is permissable to access an object.
+     to determine if it is permissible to access an object.
    * Random object fields (and finals) can be cached because their reference
      or primitive values will never change.
    * More secure because for example changing `Boolean.TRUE` to be `false` may
