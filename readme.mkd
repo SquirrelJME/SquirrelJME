@@ -14,14 +14,12 @@ environment on a wide range of _Internet of Things_ devices, older computers
 (such as the _Amiga_), embedded devices, and mobile devices from old to new.
 It intends to be 99.9% compatible with Java ME 8 and older J2ME standards. It
 should be able to run a wide range of older J2ME software which would enable
-this software to be used for archival purposes.
+this software to be used for archival purposes. It is written purely in Java
+and requires only a Java compiler and virtual machine for it to be built.
 
-The source is written in pure Java and is designed to use small amounts of
-memory, where simplicity increases operation speed without sacrificing
-quality.
-
-Note that Java ME 8 has a Java 7 virtual machine with specific limitations and
-a few changes.
+ * [Code of Conduct](code-of-conduct.mkd)
+ * [Design Document](design.mkd)
+ * [Project Scope](scope.mkd)
 
 ## I Am Open For Hiring
 
@@ -59,15 +57,14 @@ the following address: <xer@multiphasicapps.net>.
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
  * Read-Only Mirrors:
+   * _GitHub_: <https://github.com/XerTheSquirrel/SquirrelJME>
    * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
-   * GitHub: <https://github.com/XerTheSquirrel/SquirrelJME>
    * GitLab: <https://gitlab.com/mpasteven/SquirrelJME>
    * Tor: <http://squirrelzarhffxz.onion/>
      (`fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`)
 
-## Documents
+## Links
 
- * [Code of Conduct](code-of-conduct.mkd)
  * [Developer Notes](assets/developer-notes/index.mkd)
    (In repository)
    * [Unversioned Notes](/uv/developer-notes/index.mkd)
@@ -75,24 +72,16 @@ the following address: <xer@multiphasicapps.net>.
    * [Alternative URL](http://multiphasicapps.net/uv/developer-notes/index.mkd)
      ([HTTPS](https://multiphasicapps.net/uv/developer-notes/index.mkd);
      Links to the main repository, do not follow via Tor use the direct link)
- * [Manual](assets/manual/index.mkd)
- * [Project Scope](scope.mkd)
- * [Why?](assets/manual/user/why.mkd)
-
-## Links
-
  * Locations where you can get support:
    * [Freenode #squirreljme](ircs://irc.freenode.net:6697/squirreljme)
-   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
-   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
  * Front facing social media:
-   * [Mastodon](https://mastodon.social/@XerTheSquirrel)
-   * [Twitter](https://twitter.com/MultiPhasicApps)
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
  * Personal Accounts (If you wish to contact me this way)
    * [FurAffinity](https://www.furaffinity.net/user/mpasteven/)
    * [GitHub](https://github.com/XerTheSquirrel/)
+   * [Mastodon](https://mastodon.social/@XerTheSquirrel)
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
+   * [Twitter](https://twitter.com/MultiPhasicApps)
 
 ## Goals
 

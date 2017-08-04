@@ -1,0 +1,73 @@
+# Design Document
+
+This document outlines several decisions and design considerations for the
+SquirrelJME Virtual Machine. This document should reflect the most recent
+path that SquirrelJME will be taking in its design.
+
+# Considerations
+
+Java ME is a much lighter Java platform and here are the things which are
+missing along with a reason as to why this may be a good thing:
+
+ * Reduced and subsetted class library.
+   * The main library is much smaller which means it will load faster and
+     use less memory. Less memory means it can run on smaller/weaker systems.
+ * No reflection.
+   * There is `Class.forName()` and `Class.newInstance()`, however they are
+     trivial to support.
+   * More secure because access checks do not have to be performed at run-time
+     to determine if it is permissable to access an object.
+   * Random object fields (and finals) can be cached because their reference
+     or primitive values will never change.
+   * More secure because for example changing `Boolean.TRUE` to be `false` may
+     cause security exploits with code that relies on it being `true`.
+   * The resulting virtual machine is smaller because information such as
+     the types of fields and methods that exist and their type information does
+     not have to be included within the virtual machine. This reduces the bloat
+     within the virtual machine.
+   * Produces faster code because `final` variable and especially
+     `static final` values can directly be accessed rather than requiring a
+     read of a field pointer value.
+ * No finalizers (the `finalize()` method).
+   * Finalizers are very integrated with how the garbage collector works.
+   * It is never known when they will actually be called (if ever).
+   * Timing attacks could be performed when finalizers are called between
+     garbage collection runs.
+ * No serialization.
+   * No objects are `Serializable`.
+   * Serialization uses virtual machine magic to access internal details, since
+     there is no reflection the information that would be used for
+     serialization does not exist.
+   * The `transient` keyword becomes obsolete.
+   * Simplifies implementation.
+ * No `invokedynamic` instruction.
+   * Simplifies virtual machine operation, at the cost of lambdas (which could
+     be smartly wrapped in anonymous classes by a compiler).
+
+There are also disadvantages however:
+
+ * Without reflection, one cannot include plugins dynamically from the program.
+   * However, Java ME 3 (or so) added LIBlets which may be optional and provide
+     a slight alternative to plugins. These however are fixed to the JAR/JAD
+     which means that the difficulty is increased.
+   * Alternatively, Java ME 8 has `ServiceLoader` which enables JARs to
+     potentially be merged to provide services. Also using `Class.forName()`
+     and `Class.newInstance()`, plugins using a common interface can be
+     initialized when they are not directly known.
+
+For specific APIs, one should read the [Project Scope](scope.mkd) document.
+
+# Garbage Collection
+
+For simplicity the garbage collector is a reference counter with sweeping when
+no more memory is available (or GC is called manually). As such, cyclic
+object references will not be freed unless one or both directions are
+weakly referenced (using `WeakReference`). This means that if object A depends
+on object B:
+
+ * A has a strong reference to B, B does not reference A.
+ * A has a weak reference to B, B does not reference A.
+ * A has a strong reference to B, B has a weak reference to A.
+ * A has a weak reference to B, B has a strong reference to A.
+ * A and B both have weak references to each other.
+
