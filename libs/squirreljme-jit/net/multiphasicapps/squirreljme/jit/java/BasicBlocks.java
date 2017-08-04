@@ -27,8 +27,14 @@ public final class BasicBlocks
 	/** The owning byte code. */
 	protected final ByteCode code;
 	
-	/** Byte code ranges which appear in integer pairs. */
+	/**
+	 * Byte code ranges which appear in integer pairs, indexes are used so
+	 * that the sub-references are easier to be used iteration wise.
+	 */
 	private final int[] _ranges;
+	
+	/** Basic blocks cache. */
+	private volatile Reference<BasicBlock>[] _blocks;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -93,6 +99,47 @@ public final class BasicBlocks
 		
 		// Store
 		this._ranges = Arrays.copyOf(ranges, rangeat);
+		this._blocks = __createArray(rangeat / 2);
+	}
+	
+	/**
+	 * Returns the basic block by its own index.
+	 *
+	 * @param __i The index of the block.
+	 * @return The basic block for the given index range.
+	 * @throws IndexOutOfBoundsException
+	 */
+	public BasicBlock get(int __i)
+		throws IndexOutOfBoundsException
+	{
+		Reference<BasicBlock>[] blocks = this._blocks;
+		if (__i < 0 || __i >= blocks.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		Reference<BasicBlock> ref = blocks[__i];
+		BasicBlock rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			int dx = __i * 2;
+			int[] ranges = this._ranges;
+			blocks[__i] = new WeakReference<>((rv = new BasicBlock(this.code,
+				ranges[dx], ranges[dx + 1])));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the number of basic blocks.
+	 *
+	 * @return The number of basic blocks.
+	 * @since 2017/08/03
+	 */
+	public int size()
+	{
+		return this._blocks.length;
 	}
 	
 	/**
@@ -110,6 +157,7 @@ public final class BasicBlocks
 			StringBuilder sb = new StringBuilder("[");
 			
 			// Record all the ranges
+			ByteCode code = this.code;
 			int[] ranges = this._ranges;
 			for (int i = 0, n = ranges.length; i < n; i += 2)
 			{
@@ -119,9 +167,9 @@ public final class BasicBlocks
 				// Use [, ) for inclusive and exclusive since the second
 				// part of the range reaches past the end
 				sb.append('[');
-				sb.append(ranges[i]);
+				sb.append(code.indexToAddress(ranges[i]));
 				sb.append(", ");
-				sb.append(ranges[i + 1]);
+				sb.append(code.indexToAddress(ranges[i + 1]));
 				sb.append(')');
 			}
 			
@@ -130,6 +178,19 @@ public final class BasicBlocks
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Creates a new reference array.
+	 *
+	 * @param __i The number of elements in the array.
+	 * @return The created array.
+	 * @since 2017/08/03
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<BasicBlock>[] __createArray(int __i)
+	{
+		return (Reference<BasicBlock>[])((Object)new Reference[__i]);
 	}
 }
 
