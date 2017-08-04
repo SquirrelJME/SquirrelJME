@@ -4,6 +4,9 @@ This document outlines several decisions and design considerations for the
 SquirrelJME Virtual Machine. This document should reflect the most recent
 path that SquirrelJME will be taking in its design.
 
+For day to day notes on my current thought process you may look within the
+[developer notes](assets/developer-notes/index.mkd).
+
 Because Java ME is different from Java SE, there are some considerations,
 advantages, and disadvantages to consider when reading this document. Note that
 this document is mostly within the scope of Java ME and not Java SE.
