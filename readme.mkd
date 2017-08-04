@@ -43,24 +43,24 @@ the following address: <xer@multiphasicapps.net>.
 ## Repository
 
  * [Online repository](http://multiphasicapps.net/)
-   ([HTTPS](https://multiphasicapps.net/))
+   ([HTTPS](https://multiphasicapps.net/),
+   [Tor](http://squirrelzarhffxz.onion/))
  * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
- * The repository may be cloned with:
-   * One of these commands
+ * The repository may be cloned using Fossil:
+   * One of these commands:
      * `fossil clone -u http://multiphasicapps.net/ squirreljme.fossil`
      * `fossil clone -u https://multiphasicapps.net/ squirreljme.fossil`
+     * `fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
    * `cd squirreljme`
    * `fossil open ../squirreljme.fossil`
+ * Alternatively via [GitHub](https://github.com/XerTheSquirrel/SquirrelJME):
+   * `git clone https://github.com/XerTheSquirrel/SquirrelJME`
+   * `cd SquirrelJME`
  * Trunk Source Snapshot (`fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
  * Read-Only Mirrors:
-   * _GitHub_: <https://github.com/XerTheSquirrel/SquirrelJME>
-   * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
-   * GitLab: <https://gitlab.com/mpasteven/SquirrelJME>
-   * Tor: <http://squirrelzarhffxz.onion/>
-     (`fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`)
 
 ## Links
 
