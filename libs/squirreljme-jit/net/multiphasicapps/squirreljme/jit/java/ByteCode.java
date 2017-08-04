@@ -190,12 +190,20 @@ public class ByteCode
 	 * Translates an address to an index.
 	 *
 	 * @param __a The address to translate.
-	 * @return The index of the instruction or {@code -1} if it is not valid.
+	 * @return The index of the instruction or {@code -1} if it is not valid,
+	 * if the address is the byte code length then the number of indexes is
+	 * returned.
 	 * @since 2017/08/02
 	 */
 	public int addressToIndex(int __a)
 	{
-		int rv = Arrays.binarySearch(this._index, __a);
+		// Byte right at the end converts to the last index
+		int[] index = this._index;
+		if (__a == this.codelen)
+			return index.length;
+		
+		// Not the end
+		int rv = Arrays.binarySearch(index, __a);
 		if (rv < 0)
 			return -1;
 		return rv;
@@ -271,16 +279,22 @@ public class ByteCode
 	 * Translates an index to an address.
 	 *
 	 * @param __i The index to translate.
-	 * @return The address of the index or {@code -1} if it is not valid.
+	 * @return The address of the index or {@code -1} if it is not valid, if
+	 * the index is the number of indexes then the length of the byte code in
+	 * addresses is returned.
 	 * @since 2017/08/02
 	 */
 	public int indexToAddress(int __i)
 	{
-		// Check
+		// Last index translates to the length of the byte code
 		int[] index = this._index;
-		if (__i < 0 || __i >= index.length)
-			return -1;
+		int n = index.length;
+		if (__i == n)
+			return this.codelen;
 		
+		// Normal position
+		if (__i < 0 || __i >= n)
+			return -1;
 		return index[__i];
 	}
 	

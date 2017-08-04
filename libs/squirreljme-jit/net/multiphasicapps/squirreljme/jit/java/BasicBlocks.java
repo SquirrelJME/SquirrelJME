@@ -87,9 +87,8 @@ public final class BasicBlocks
 			if (i > 0 && (i == count || !hadlast ||
 				Arrays.binarySearch(jumptargets, u.address()) >= 0))
 			{
-				ranges[rangeat++] = __code.indexToAddress(fromdx);
-				ranges[rangeat++] = (i == count ? __code.length() :
-					__code.indexToAddress(i));
+				ranges[rangeat++] = fromdx;
+				ranges[rangeat++] = i;
 				
 				// The from index is now set to the current instruction which
 				// starts this basic block
