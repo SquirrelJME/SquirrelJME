@@ -22,6 +22,9 @@ and requires only a Java compiler and virtual machine for it to be built.
  * [Contributing](contributing.mkd)
  * [Design Document](design.mkd)
  * [Developer Notes](assets/developer-notes/index.mkd)
+ * [License](license.mkd)
+   * _Source_: GNU General Public License, Version 3 or later
+   * _Assets_: Creative Commons CC-BY-SA 4.0
  * [Project Scope](scope.mkd)
 
 ## I Am Open For Hiring
@@ -36,13 +39,6 @@ mostly relates to embedded and compiler development. I prefer remote
 development as it allows me to work from home rather than spending time
 commuting every day (which wastes time). Interest can be e-mailed to
 the following address: <xer@multiphasicapps.net>.
-
-## Licenses
-
- * Source:
-   [GNU General Public License, Version 3 or later](license.mkd)
- * Non-Source:
-   [Creative Commons CC-BY-SA 4.0](license.mkd)
 
 ## Repository
 
@@ -68,13 +64,6 @@ the following address: <xer@multiphasicapps.net>.
 
 ## Links
 
- * [Developer Notes](assets/developer-notes/index.mkd)
-   (In repository)
-   * [Unversioned Notes](/uv/developer-notes/index.mkd)
-     (In unversioned space, will be up to date for the current day)
-   * [Alternative URL](http://multiphasicapps.net/uv/developer-notes/index.mkd)
-     ([HTTPS](https://multiphasicapps.net/uv/developer-notes/index.mkd);
-     Links to the main repository, do not follow via Tor use the direct link)
  * Locations where you can get support:
    * [Freenode #squirreljme](ircs://irc.freenode.net:6697/squirreljme)
  * Front facing social media:
