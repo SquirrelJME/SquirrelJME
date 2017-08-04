@@ -1,0 +1,43 @@
+# Building
+
+SquirrelJME requires the following before it can be built:
+
+ * Java 7 or newer Virtual Machine
+ * Java 7 or newer Compiler
+
+# Bootstrap Build Environment
+
+The main interaction with the SquirrelJME build environment is with the build
+bootstrapper which initializes, compiles, and runs the build environment.
+
+## System Specific
+
+Each system has a different interface to the bootstrap environment, beyond this
+the remainder of it is the same regardless of the system used.
+
+### ReactOS and Windows
+
+The script used for building is `build.cmd`. This requires the command prompt
+which may be accessed by running `cmd`. This may be found in the start menu
+or may be accessed via **Windows Key + R**, typing `cmd`, then hitting enter.
+
+Recommended setup for running the environment, assuming SquirrelJME source
+code is located in the example `c:\users\stephanie\desktop\squirreljme`:
+
+ * `cd c:\users\stephanie\temp`
+ * `mkdir squirreljme-build`
+ * `cd squirreljme-build`
+ * `c:\users\stephanie\desktop\squirreljme\build.cmd`
+
+### UNIX-Like: Linux, Mac OS X, Solaris, BSD, etc.
+
+The script used for building is `build.sh`.
+
+Recommended setup for running the environment, assuming SquirrelJME source
+code is located in the example `/home/stephanie/squirreljme`:
+
+ * `cd /tmp`
+ * `mkdir squirreljme-build`
+ * `cd squirreljme-build`
+ * `/home/stephanie/squirreljme/build.sh`
+
