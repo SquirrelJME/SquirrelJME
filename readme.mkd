@@ -17,7 +17,9 @@ should be able to run a wide range of older J2ME software which would enable
 this software to be used for archival purposes. It is written purely in Java
 and requires only a Java compiler and virtual machine for it to be built.
 
+ * [Building](building.mkd)
  * [Code of Conduct](code-of-conduct.mkd)
+ * [Contributing](contributing.mkd)
  * [Design Document](design.mkd)
  * [Project Scope](scope.mkd)
 

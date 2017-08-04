@@ -4,10 +4,9 @@ This document outlines several decisions and design considerations for the
 SquirrelJME Virtual Machine. This document should reflect the most recent
 path that SquirrelJME will be taking in its design.
 
-# Considerations
-
-Java ME is a much lighter Java platform and here are the things which are
-missing along with a reason as to why this may be a good thing:
+Because Java ME is different from Java SE, there are some considerations,
+advantages, and disadvantages to consider when reading this document. Note that
+this document is mostly within the scope of Java ME and not Java SE.
 
  * Reduced and subsetted class library.
    * The main library is much smaller which means it will load faster and
@@ -55,7 +54,59 @@ There are also disadvantages however:
      and `Class.newInstance()`, plugins using a common interface can be
      initialized when they are not directly known.
 
-For specific APIs, one should read the [Project Scope](scope.mkd) document.
+For specific APIs, one should read the [Project Scope](scope.mkd) document
+which outlines the APIs which exist for Java ME and whether they would be
+implemented in SquirrelJME or third party vendors.
+
+# Programming
+
+SquirrelJME is written entirely in Java. This means that it only requires a
+Java virtual machine and a Java compiler to be built. There are also no other
+dependencies apart from what is within SquirrelJME itself, it is entirely
+standalone and self contained.
+
+## Self Hosting
+
+I intend SquirrelJME to be self hosting in that it can build itself.
+
+In the future a Java compiler will be written which can run on SquirrelJME
+itself and allow building and compiling itself from source. This would also
+allow other programs to be built from source and can be used as a self
+contained Java development environment.
+
+## Compilation
+
+One may ask why Java and not another language such as C? Well, Java is a much
+simpler language compared to C when it comes to syntax (C has the preprocessor,
+structures, pointers, typedefs, function pointers, etc.). One main advantage
+of Java is the consistency of the code.
+
+One misconception about using Java is that it is impossible to use native code
+or one will require and assembler to assemble assembly code for things which
+Java cannot do. This is not the case for SquirrelJME. The major and most
+important part of SquirrelJME is the compiler which can turn Java byte code
+into native machine code. Since the compiler is very much integrated into
+SquirrelJME this means that certain aspects of interacting with the host
+environment can be accessed by changing compilation for certain aspects in a
+way where it remains compatible with Java but also provides native access when
+needed. Native access is provided by replacing method calls to special static
+methods within a special class by the appropriate machine code rather than
+invoking a method call. These special rewrites are only available to a single
+class which is called `net.multiphasicapps.squirreljme.unsafe.SquirrelJME`.
+The choice of doing this allows this class to wrap native behavior in the
+library in a way where it can be used on Java SE virtual machines along with
+SquirrelJME using it itself.
+
+On a Java SE host, the `SquirrelJME` class implements all of its methods and
+it interacts directly with the host virtual machine.
+
+On SquirrelJME, the `SquirrelJME` class invokes methods within a secretive and
+internal `__Unsafe__`. Essentially `__Unsafe__` becomes a virtual class where
+any invocation of its methods are renamed to another class which is specific to
+a given operating system or machine. This means that there are no conflicts
+when `__Unsafe__` is called and does not require magic to allow duplicate class
+names to be called. So for example calling static methods from `__Unsafe__`
+will just turn into `TargetSpecificUnsafe`.
 
 # Garbage Collection
 
@@ -70,4 +121,11 @@ on object B:
  * A has a strong reference to B, B has a weak reference to A.
  * A has a weak reference to B, B has a strong reference to A.
  * A and B both have weak references to each other.
+
+Although reference counting may increase lock contention on the CPU and memory
+buses it simplifies the design greatly by not requiring complex garbage
+collection algorithms. In most cases with reference counting, SquirrelJME is
+capable of using always a minimum footprint of memory depending on whether that
+memory should be freed to the operating system or within SquirrelJME's own
+memory for other programs running in it.
 
