@@ -106,7 +106,9 @@ any invocation of its methods are renamed to another class which is specific to
 a given operating system or machine. This means that there are no conflicts
 when `__Unsafe__` is called and does not require magic to allow duplicate class
 names to be called. So for example calling static methods from `__Unsafe__`
-will just turn into `TargetSpecificUnsafe`.
+will just turn into `TargetSpecificUnsafe`. Then that target specific class
+itself can call other compiler special classes which could generate machine
+code and such.
 
 # Garbage Collection
 
