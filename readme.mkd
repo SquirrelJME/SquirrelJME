@@ -44,7 +44,8 @@ the following address: <xer@multiphasicapps.net>.
 
  * [Online repository](http://multiphasicapps.net/)
    ([HTTPS](https://multiphasicapps.net/),
-   [Tor](http://squirrelzarhffxz.onion/))
+   [Tor (A)](http://squirrelzarhffxz.onion/),
+   [Tor (B)](http://squirrelmfbf2udn.onion/))
  * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
  * The repository may be cloned using Fossil:
    * One of these commands:
