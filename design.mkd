@@ -11,7 +11,7 @@ Because Java ME is different from Java SE, there are some considerations,
 advantages, and disadvantages to consider when reading this document. Note that
 this document is mostly within the scope of Java ME and not Java SE.
 
- * Reduced and subsetted class library.
+ * Reduced library subset.
    * The main library is much smaller which means it will load faster and
      use less memory. Less memory means it can run on smaller/weaker systems.
  * No reflection.
@@ -61,7 +61,12 @@ For specific APIs, one should read the [Project Scope](scope.mkd) document
 which outlines the APIs which exist for Java ME and whether they would be
 implemented in SquirrelJME or third party vendors.
 
-# Programming
+# Virtual Machine
+
+This section contains information related to the virtual machine at compile
+and run-time.
+
+## Programming Language
 
 SquirrelJME is written entirely in Java. This means that it only requires a
 Java virtual machine and a Java compiler to be built. There are also no other
@@ -113,13 +118,18 @@ will just turn into `TargetSpecificUnsafe`. Then that target specific class
 itself can call other compiler special classes which could generate machine
 code and such.
 
-# Garbage Collection
+## Portability
+
+I intend for SquirrelJME to be very portable so that it can be built for and
+built on a large number of systems.
+
+## Garbage Collection
 
 For simplicity the garbage collector is a reference counter with sweeping when
 no more memory is available (or GC is called manually). As such, cyclic
 object references will not be freed unless one or both directions are
-weakly referenced (using `WeakReference`). This means that if object A depends
-on object B:
+weakly referenced (using `WeakReference`). This means that the following
+situations would permit both objects to be potentially collected:
 
  * A has a strong reference to B, B does not reference A.
  * A has a weak reference to B, B does not reference A.
