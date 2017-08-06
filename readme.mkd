@@ -52,6 +52,7 @@ the following address: <xer@multiphasicapps.net>.
      * `fossil clone -u http://multiphasicapps.net/ squirreljme.fossil`
      * `fossil clone -u https://multiphasicapps.net/ squirreljme.fossil`
      * `fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`
+     * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
    * `cd squirreljme`
    * `fossil open ../squirreljme.fossil`
