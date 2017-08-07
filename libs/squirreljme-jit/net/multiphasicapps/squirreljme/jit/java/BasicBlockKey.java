@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.expanded;
+package net.multiphasicapps.squirreljme.jit.java;
 
 /**
  * This interface is associated with .
