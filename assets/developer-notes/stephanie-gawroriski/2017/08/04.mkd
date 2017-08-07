@@ -1,0 +1,27 @@
+# 2017/08/04
+
+## 10:56
+
+I think what I am going to do is revamp the readme before I go to work today.
+Perhaps I can make it much better than before.
+
+## 10:57
+
+Basically, remove the "why" and the other manual documents.
+
+## 11:06
+
+I also do wonder if I should have a GitHub pages kind of thing available for
+my developer notes. There would be some duplicate information in some other
+branch but it would not have duplicated files, just duplicated changesets.
+
+## 23:39
+
+Going to setup another Tor mirror, one is on my home network while the other
+will be on my actual server. I just need to generate a new hostname which
+uses `squirrel` since vanity addresses are cute.
+
+## 23:44
+
+Of course it can take up to five hours to find a hostname so this is something
+that is best done when I am about to sleep, which will be very soon now.
