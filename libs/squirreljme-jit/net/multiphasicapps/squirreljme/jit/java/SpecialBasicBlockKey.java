@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/08/07
  */
-public enum SpecialBasicBlock
+public enum SpecialBasicBlockKey
 	implements BasicBlockKey
 {
 	/**
