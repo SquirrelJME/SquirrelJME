@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.expanded.BasicBlockKey;
 
 /**
  * This is used to store jump targets to other instructions in a type safe
@@ -21,7 +22,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/05/20
  */
 public final class JumpTarget
-	implements Comparable<JumpTarget>
+	implements BasicBlockKey, Comparable<JumpTarget>
 {
 	/** The target of the jump. */
 	protected final int address;
