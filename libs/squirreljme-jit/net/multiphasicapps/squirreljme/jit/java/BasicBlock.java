@@ -36,6 +36,9 @@ public final class BasicBlock
 	/** The ending index of the block. */
 	protected final int enddx;
 	
+	/** The jump target associated with this block. */
+	private volatile Reference<JumpTarget> _target;
+	
 	/**
 	 * Initializes the basic block.
 	 *
@@ -66,6 +69,26 @@ public final class BasicBlock
 		this.code = __code;
 		this.startdx = __lo;
 		this.enddx = __hi;
-	} 
+	}
+	
+	/**
+	 * This returns the jump target for the start of this basic block which
+	 * can be used as a {@link BasicBlockKey}.
+	 *
+	 * @return The jump target for the start of this block.
+	 * @since 2017/08/07
+	 */
+	public JumpTarget jumpTarget()
+	{
+		Reference<JumpTarget> ref = this._target;
+		JumpTarget rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._target = new WeakReference<>(
+				(rv = new JumpTarget(this.startdx)));
+		
+		return rv;
+	}
 }
 
