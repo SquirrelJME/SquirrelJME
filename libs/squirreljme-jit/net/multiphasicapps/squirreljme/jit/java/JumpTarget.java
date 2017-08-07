@@ -12,7 +12,6 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.expanded.BasicBlockKey;
 
 /**
  * This is used to store jump targets to other instructions in a type safe
