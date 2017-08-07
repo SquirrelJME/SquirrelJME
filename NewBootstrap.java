@@ -763,8 +763,11 @@ public class NewBootstrap
 			String name = this.name;
 			System.err.printf("NB09 %s%n", name);
 			
-			// {@squirreljme.error NB07 No system Java compiler is
-			// available.}
+			// {@squirreljme.error NB07 No Java compiler is available through
+			// the Java class library (javax.tools.JavaCompiler), you may need
+			// to make sure that tools.jar is loaded into your classpath
+			// either manually (although in most installations it should be
+			// automatic).}
 			JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
 			if (javac == null)
 				throw new IllegalStateException("NB07");
