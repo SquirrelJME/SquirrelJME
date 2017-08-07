@@ -36,6 +36,10 @@ code is located in the example `c:\users\stephanie\desktop\squirreljme`:
  * `cd squirreljme-build`
  * `c:\users\stephanie\desktop\squirreljme\build.cmd`
 
+Make sure that the Java path which is used refers to the JDK such as:
+
+ * `C:\Program Files\Java\jdk1.8.0_131\bin\`
+
 ### UNIX-Like: Linux, Mac OS X, Solaris, BSD, etc.
 
 The script used for building is `build.sh`.
@@ -47,4 +51,12 @@ code is located in the example `/home/stephanie/squirreljme`:
  * `mkdir squirreljme-build`
  * `cd squirreljme-build`
  * `/home/stephanie/squirreljme/build.sh`
+
+# Standard Building
+
+Currently SquirrelJME is in a state of development and does not produce any
+actual runnable binaries yet. To see the current state of what is being worked
+on you may run:
+
+ * `<build script> target linux-mips`
 
