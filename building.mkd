@@ -5,6 +5,13 @@ SquirrelJME requires the following before it can be built:
  * Java 7 or newer Virtual Machine
  * Java 7 or newer Compiler
 
+# Notes on Running
+
+SquirrelJME uses a simplified error system which starts with a two capital
+letter prefix followed by two digits and letters.
+
+ * [List of Error Codes](http://multiphasicapps.net/uv/errors.mkd)
+
 # Bootstrap Build Environment
 
 The main interaction with the SquirrelJME build environment is with the build
