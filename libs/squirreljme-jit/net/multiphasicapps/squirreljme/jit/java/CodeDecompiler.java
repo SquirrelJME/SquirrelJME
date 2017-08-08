@@ -133,14 +133,61 @@ public class CodeDecompiler
 			ii.hasNext();)
 			System.err.printf("DEBUG -- %s%n", ii.next());
 		
+		// Load the stack map table
+		MethodFlags flags = this.flags;
+		StackMapTable smt = __locateStackMapTable(code);
+		
+		// Debug
+		System.err.printf("DEBUG -- SMT: %s%n", smt);
+		System.err.printf("DEBUG -- EHT: %s%n", eht);
+		System.err.printf("DEBUG -- BBr: %s%n", code.basicBlocks());
+		
+		// If any address has exception handlers then each unique group must
+		// be expanded so that if an exception does exist they can have their
+		// tables expanded virtually.
+		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
+		
+		// After all of that, run through all byte code operations and
+		// create an expanded byte code program contained within basic blocks
+		// which are then used the processor. The expanded byte code is used
+		// so that translators do not need to reimplement support for the more
+		// complex byte code which can be prone to errors.
+		if (true)
+			throw new todo.TODO();
+		
+		// If the method is synchronized, setup a special basic block that acts
+		// as the method entry point which copies to a special register and
+		// generates an enter of a monitor
+		if (flags.isSynchronized())
+			throw new todo.TODO();
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Locates the stack map table within the code.
+	 *
+	 * @param __code The byte code for the method.
+	 * @return The stack map table.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/08
+	 */
+	private StackMapTable __locateStackMapTable(ByteCode __code)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
 		// Initialize the base stack map table
 		StackMapTableBuilder smtbuilder = new StackMapTableBuilder(this.flags,
-			this.name, this.type, this.outerclass, code, pool, maxstack,
-			maxlocals);
+			this.name, this.type, this.outerclass, __code);
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the
 		// class version
+		DataInputStream in = this.in;
 		int na = in.readUnsignedShort();
 		String[] attr = new String[1];
 		ClassVersion version = this.version;
@@ -161,27 +208,7 @@ public class CodeDecompiler
 		// Build the stack map table, it is used for the basic register
 		// initialization for arguments along with being used for verification
 		// so that the code operates correctly
-		StackMapTable smt = smtbuilder.build();
-		
-		// Debug
-		System.err.printf("DEBUG -- SMT: %s%n", smt);
-		System.err.printf("DEBUG -- EHT: %s%n", eht);
-		System.err.printf("DEBUG -- BBr: %s%n", code.basicBlocks());
-		
-		// If any address has exception handlers then each unique group must
-		// be expanded so that if an exception does exist they can have their
-		// tables expanded virtually.
-		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
-		
-		// After all of that, run through all byte code operations and
-		// create an expanded byte code program contained within basic blocks
-		// which are then used the processor. The expanded byte code is used
-		// so that translators do not need to reimplement support for the more
-		// complex byte code which can be prone to errors.
-		if (true)
-			throw new todo.TODO();
-		
-		throw new todo.TODO();
+		return smtbuilder.build();
 	}
 }
 

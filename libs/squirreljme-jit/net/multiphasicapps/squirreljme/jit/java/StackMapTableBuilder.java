@@ -58,24 +58,25 @@ public class StackMapTableBuilder
 	 * @since 2017/07/24 
 	 */
 	public StackMapTableBuilder(MethodFlags __f, MethodName __n,
-		MethodDescriptor __t, ClassName __oc, ByteCode __bc, Pool __pool,
-		int __ns, int __nl)
+		MethodDescriptor __t, ClassName __oc, ByteCode __bc)
 		throws NullPointerException
 	{
 		// Check
-		if (__f == null || __t == null || __oc == null || __bc == null ||
-			__pool == null || __n == null)
+		if (__f == null || __t == null || __oc == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
 		// Set base
 		this.code = __bc;
-		this.pool = __pool;
+		Pool pool = __bc.pool();
+		this.pool = pool;
 		
 		// The stack is always empty on initial entry
-		this._stack = new JavaType[__ns];
+		int maxstack = __bc.maxStack();
+		this._stack = new JavaType[maxstack];
 		
 		// Locals are initialized according to the argument types
-		JavaType[] locals = new JavaType[__nl];
+		int maxlocals = __bc.maxLocals();
+		JavaType[] locals = new JavaType[maxlocals];
 		this._locals = locals;
 		
 		// If this is an instance method then the first argument is always the
