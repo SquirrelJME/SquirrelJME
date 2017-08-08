@@ -228,6 +228,37 @@ public class ByteCode
 	}
 	
 	/**
+	 * Returns the exception handler key for the given address, this will
+	 * return a unique key for the given address.
+	 *
+	 * @return The exception handler key for the given address or {@code null}
+	 * if there are no exceptions to be handled by the given address.
+	 * @throws IllegalArgumentException If the address is negative.
+	 * @throws JITException If the address is not valid.
+	 * @since 2017/08/08
+	 */
+	public ExceptionHandlerKey exceptionHandlerKeyByAddress(int __a)
+		throws IllegalArgumentException, JITException
+	{
+		// {@squirreljme.error JI1y The address for the given key is
+		// negative. (The address)}
+		if (__a < 0)
+			throw new IllegalArgumentException(String.format("JI1y %d", __a));
+		
+		// {@squirreljme.error JI1z The specified address cannot have
+		// exceptions because it is not a valid address. (The address)}
+		if (!isValidAddress(__a))
+			throw new JITException(String.format("JI1z %d", __a));
+		
+		// If no exceptions are handled in the method do not bother at all
+		ExceptionHandlerTable exceptions = this.exceptions;
+		if (exceptions == null || exceptions.size() <= 0)
+			return null;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the instruction at the specified address.
 	 *
 	 * @param __a The address to get the instruction for.

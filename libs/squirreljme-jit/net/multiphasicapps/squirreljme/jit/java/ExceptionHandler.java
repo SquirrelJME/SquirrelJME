@@ -92,6 +92,9 @@ public final class ExceptionHandler
 		if (!(__o instanceof ExceptionHandler))
 			return false;
 		
+		if (__o == this)
+			return true;
+		
 		// Compare
 		ExceptionHandler o = (ExceptionHandler)__o;
 		return this.startpc == o.startpc &&
