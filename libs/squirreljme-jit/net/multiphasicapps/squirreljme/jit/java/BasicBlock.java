@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This class represents a basic block which exists to wrap a small portion of
@@ -26,6 +28,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/08/01
  */
 public final class BasicBlock
+	implements Iterable<Instruction>
 {
 	/** The owning byte code. */
 	protected final ByteCode code;
@@ -72,6 +75,15 @@ public final class BasicBlock
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/08
+	 */
+	public Iterator<Instruction> iterator()
+	{
+		return new __Iterator__(this.code, this.startdx, this.enddx);
+	}
+	
+	/**
 	 * This returns the jump target for the start of this basic block which
 	 * can be used as a {@link BasicBlockKey}.
 	 *
@@ -89,6 +101,87 @@ public final class BasicBlock
 				(rv = new JumpTarget(this.startdx)));
 		
 		return rv;
+	}
+	
+	/**
+	 * This iterates over instructions in the basic block.
+	 *
+	 * @since 2017/08/08
+	 */
+	private static final class __Iterator__
+		implements Iterator<Instruction>
+	{
+		/** The byte code to get instruction. */
+		protected final ByteCode code;
+		
+		/** The end point. */
+		protected final int end;
+		
+		/** The current position. */
+		private volatile int _at;
+		
+		/**
+		 * Initializes the iterator.
+		 *
+		 * @param __code The code to iterate over.
+		 * @param __s The start position.
+		 * @param __e The end position.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2017/08/08
+		 */
+		private __Iterator__(ByteCode __code, int __s, int __e)
+			throws NullPointerException
+		{
+			// Check
+			if (__code == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.code = __code;
+			this.end = __e;
+			this._at = __s;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/08/08
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this._at < this.end;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/08/08
+		 */
+		@Override
+		public Instruction next()
+			throws NoSuchElementException
+		{
+			// End?
+			int at = this._at,
+				end = this.end;
+			if (at >= end)
+				throw new NoSuchElementException("NSEE");
+			
+			// Increment
+			this._at = at + 1;
+			
+			// Get instruction at the current position
+			return this.code.getByIndex(at);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/08/08
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 
