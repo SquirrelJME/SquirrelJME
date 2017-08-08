@@ -23,6 +23,9 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class Instruction
 {
+	/** The byte code which contains this instruction. */
+	protected final ByteCode code;
+	
 	/** The instruction address. */
 	protected final int address;
 	
@@ -52,12 +55,15 @@ public final class Instruction
 	 * @since 2017/05/18
 	 */
 	Instruction(byte[] __code, Pool __pool, int __a,
-		ExceptionHandlerTable __eh)
+		ExceptionHandlerTable __eh, ByteCode __bc)
 		throws NullPointerException
 	{
 		// Check
 		if (__code == null || __pool == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.code = __bc;
 		
 		// Read operation here
 		int op = (__code[__a] & 0xFF),
@@ -327,6 +333,17 @@ public final class Instruction
 	public int count()
 	{
 		return this._args.length;
+	}
+	
+	/**
+	 * Returns the exception handler key for this instruction.
+	 *
+	 * @return The exception handler key for this instruction.
+	 * @since 2017/09/08
+	 */
+	public ExceptionHandlerKey exceptionHandlerKey()
+	{
+		return this.code.exceptionHandlerKeyByAddress(this.address);
 	}
 	
 	/**

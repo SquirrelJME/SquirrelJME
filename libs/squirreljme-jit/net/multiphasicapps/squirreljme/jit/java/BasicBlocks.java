@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This class manages all of the basic blocks which are used within a program
@@ -23,6 +25,7 @@ import java.util.Arrays;
  * @since 2017/08/01
  */
 public final class BasicBlocks
+	implements Iterable<BasicBlock>
 {
 	/** The owning byte code. */
 	protected final ByteCode code;
@@ -131,6 +134,16 @@ public final class BasicBlocks
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/08
+	 */
+	@Override
+	public Iterator<BasicBlock> iterator()
+	{
+		return new __Iterator__();
+	}
+	
+	/**
 	 * Returns the number of basic blocks.
 	 *
 	 * @return The number of basic blocks.
@@ -190,6 +203,63 @@ public final class BasicBlocks
 	private static Reference<BasicBlock>[] __createArray(int __i)
 	{
 		return (Reference<BasicBlock>[])((Object)new Reference[__i]);
+	}
+	
+	/**
+	 * The iterator over basic blocks.
+	 *
+	 * @since 2017/08/08
+	 */
+	private final class __Iterator__
+		implements Iterator<BasicBlock>
+	{
+		/** The end index. */
+		protected final int end =
+			BasicBlocks.this.size();
+		
+		/** The current index. */
+		private volatile int _at;
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/08/08
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this._at < this.end;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/08/08
+		 */
+		@Override
+		public BasicBlock next()
+			throws NoSuchElementException
+		{
+			// End?
+			int at = this._at,
+				end = this.end;
+			if (at >= end)
+				throw new NoSuchElementException("NSEE");
+			
+			// Increment
+			this._at = at + 1;
+			
+			// Get the next block
+			return BasicBlocks.this.get(at);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/08/08
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 
