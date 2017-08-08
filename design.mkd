@@ -144,3 +144,9 @@ capable of using always a minimum footprint of memory depending on whether that
 memory should be freed to the operating system or within SquirrelJME's own
 memory for other programs running in it.
 
+## Pathname Handling
+
+Instances of the `Path` class will be strictly limited to the limitations of
+the host system and will not provide support for allowing limitations to be
+skirted as that complicates compatibility.
+
