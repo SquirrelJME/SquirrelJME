@@ -82,6 +82,25 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * Returns the exception handler key for the given address, this will
+	 * return a unique key for the given address.
+	 *
+	 * @return The exception handler key for the given address.
+	 * @throws IllegalArgumentException If the address is negative.
+	 * @since 2017/08/08
+	 */
+	public ExceptionHandlerKey getKey(int __a)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error JI1y The address for the given key is
+		// negative. (The address)}
+		if (__a < 0)
+			throw new IllegalArgumentException(String.format("JI1y %d", __a));
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/09
 	 */
