@@ -144,9 +144,19 @@ capable of using always a minimum footprint of memory depending on whether that
 memory should be freed to the operating system or within SquirrelJME's own
 memory for other programs running in it.
 
+# Environment
+
+This details the environment in which SquirrelJME operates within the host
+operating system.
+
 ## Pathname Handling
 
 Instances of the `Path` class will be strictly limited to the limitations of
 the host system and will not provide support for allowing limitations to be
 skirted as that complicates compatibility.
+
+As an example for DOS, there are severe filename limitations such as a
+maximum of 8 characters for a file name and 3 characters for an extension along
+with other naming restrictions. As such getting a path which does not produce
+a valid DOS pathname will result in an exception being thrown.
 

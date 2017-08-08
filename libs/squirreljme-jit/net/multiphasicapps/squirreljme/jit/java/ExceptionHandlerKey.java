@@ -28,6 +28,13 @@ public final class ExceptionHandlerKey
 	@Override
 	public boolean equals(Object __o)
 	{
+		// Check
+		if (!(__o instanceof ExceptionHandlerKey))
+			return false;
+		
+		if (__o == this)
+			return true;
+		
 		throw new todo.TODO();
 	}
 	

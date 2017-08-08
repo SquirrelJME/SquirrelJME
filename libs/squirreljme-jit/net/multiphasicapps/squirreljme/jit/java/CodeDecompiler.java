@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.bin.Fragment;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -163,7 +165,13 @@ public class CodeDecompiler
 		
 		// Debug
 		System.err.printf("DEBUG -- SMT: %s%n", smt);
+		System.err.printf("DEBUG -- EHT: %s%n", eht);
 		System.err.printf("DEBUG -- BBr: %s%n", code.basicBlocks());
+		
+		// If any address has exception handlers then each unique group must
+		// be expanded so that if an exception does exist they can have their
+		// tables expanded virtually.
+		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
 		
 		// After all of that, run through all byte code operations and
 		// create an expanded byte code program contained within basic blocks
