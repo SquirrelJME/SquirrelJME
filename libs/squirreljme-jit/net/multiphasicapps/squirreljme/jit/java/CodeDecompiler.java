@@ -170,19 +170,41 @@ public class CodeDecompiler
 		// tables expanded virtually.
 		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
 		
-		// After all of that, run through all byte code operations and
-		// create an expanded byte code program contained within basic blocks
-		// which are then used the processor. The expanded byte code is used
-		// so that translators do not need to reimplement support for the more
-		// complex byte code which can be prone to errors.
-		if (true)
-			throw new todo.TODO();
-		
 		// If the method is synchronized, setup a special basic block that acts
 		// as the method entry point which copies to a special register and
 		// generates an enter of a monitor
 		MethodFlags flags = this.flags;
 		if (flags.isSynchronized())
+			throw new todo.TODO();
+		
+		// After all of that, run through all byte code operations and
+		// create an expanded byte code program contained within basic blocks
+		// which are then used the processor. The expanded byte code is used
+		// so that translators do not need to reimplement support for the more
+		// complex byte code which can be prone to errors.
+		for (BasicBlock bb : __code.basicBlocks())
+		{
+			// Debug
+			System.err.printf("DEBUG -- Decode BB %s%n", bb.jumpTarget());
+			
+			// Setup base block
+			if (true)
+				throw new todo.TODO();
+			
+			// Go through instructions for the block and parse them
+			for (Instruction i : bb)
+			{
+				// Debug
+				System.err.printf("DEBUG -- Decode IN %s%n", i);
+				
+				throw new todo.TODO();
+			}
+			
+			throw new todo.TODO();
+		}
+		
+		// Expand exception handlers if any were used
+		for (ExceptionHandlerKey ek : xkeys)
 			throw new todo.TODO();
 		
 		throw new todo.TODO();

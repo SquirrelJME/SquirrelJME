@@ -280,7 +280,7 @@ public class ByteCode
 		
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new WeakReference<>((rv = new Instruction(this._code,
-				this.pool, __a, this.exceptions)));
+				this.pool, __a, this.exceptions, this)));
 		
 		return rv;
 	}
