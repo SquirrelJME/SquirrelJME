@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
+import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -77,6 +79,28 @@ public abstract class JITConfig
 	public SectionCounter createSectionCounter()
 	{
 		return new FlatSectionCounter();
+	}
+	
+	/**
+	 * Creates an {@link ExpandedByteCode} instance which may be attached to
+	 * a native generation engine along with translators (for potential
+	 * optimizations). 
+	 *
+	 * @param __f The output fragment where native instructions go.
+	 * @return The expanded byte code engine which is used to generate the
+	 * native machine code.
+	 * @throws JITException If it could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/09
+	 */
+	public final ExpandedByteCode createExpandedByteCode(FragmentBuilder __f)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
