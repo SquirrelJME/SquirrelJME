@@ -8,8 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -211,14 +215,42 @@ public class NewBootstrap
 				tempjar = Files.createTempFile("squirreljme-boot-out", ".jar");
 				
 				// Open output
+				Map<String, Set<String>> services = new LinkedHashMap<>();
 				try (ZipOutputStream zos = new ZipOutputStream(Channels.
 					newOutputStream(FileChannel.open(tempjar,
 					StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
 				{
 					// Copy contents from other JARs
 					for (BuildProject dp : mergethese)
-						__mergeInto(dp, zos, dp == bp);
+						__mergeInto(dp, zos, dp == bp, services);
 					
+					// Write services as needed
+					System.err.printf("DEBUG -- Services: %s%n", services);
+					byte[] buf = new byte[512];
+					for (Map.Entry<String, Set<String>> e :
+						services.entrySet())
+					{
+						// Write service descriptor
+						zos.putNextEntry(
+							new ZipEntry("META-INF/services/" + e.getKey()));
+			
+						// Write classes to provide services for 
+						for (String v : e.getValue())
+						{
+							// Write name followed by \r\n pair
+							zos.write(v.getBytes("utf-8"));
+							zos.write('\r');
+							zos.write('\n');
+						}
+			
+						// Always end in a blank line
+						zos.write('\r');
+						zos.write('\n');
+			
+						// Done writing it
+						zos.closeEntry();
+					}
+						
 					// Finish it
 					zos.finish();
 					zos.flush();
@@ -387,20 +419,18 @@ public class NewBootstrap
 	 * @param __bp The source.
 	 * @param __zos The destination.
 	 * @param __useman Use the manifest?
+	 * @param __svs Service list.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/28
 	 */
 	private static void __mergeInto(BuildProject __bp, ZipOutputStream __zos,
-		boolean __useman)
+		boolean __useman, Map<String, Set<String>> __svs)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__bp == null || __zos == null)
+		if (__bp == null || __zos == null || __svs == null)
 			throw new NullPointerException("NARG");
-		
-		// Services which are available
-		Map<String, Set<String>> services = new LinkedHashMap<>();
 		
 		// Go through the input
 		try (ZipInputStream zis = new ZipInputStream(Channels.newInputStream(
@@ -422,16 +452,58 @@ public class NewBootstrap
 					}
 				
 				// This is a service, needs to be handled later
-				if (name.startsWith("META-INF/services/"))
+				if (name.startsWith("META-INF/services/") &&
+					name.length() > "META-INF/services/".length())
 				{
 					// Record service to write later
 					String k = name.substring("META-INF/services/".length());
-					Set<String> into = services.get(k);
+					Set<String> into = __svs.get(k);
 					if (into == null)
-						services.put(k, (into = new LinkedHashSet<>()));
+						__svs.put(k, (into = new LinkedHashSet<>()));
 					
-					if (true)
-						throw new Error("TODO");
+					// Read in services completely
+					byte[] data = null;
+					try (ByteArrayOutputStream baos =
+						new ByteArrayOutputStream())
+					{
+						// Copy loop
+						for (;;)
+						{
+							int rc = zis.read(buf);
+					
+							// EOF?
+							if (rc < 0)
+								break;
+					
+							// Write
+							baos.write(buf, 0, rc);
+						}
+						
+						// Write in
+						baos.flush();
+						data = baos.toByteArray();
+					}
+					
+					// Parse the data
+					try (BufferedReader br = new BufferedReader(
+						new InputStreamReader(new ByteArrayInputStream(data))))
+					{
+						String ln = br.readLine();
+						
+						// EOF?
+						if (ln == null)
+							break;
+						
+						// Ignore whitespace and empty lines
+						ln = ln.trim();
+						if (ln.length() <= 0)
+							continue;
+						
+						// Add service
+						into.add(ln);
+					}
+					
+					// Do not write this entry
 					continue;
 				}
 				
@@ -455,30 +527,6 @@ public class NewBootstrap
 				__zos.closeEntry();
 				zis.closeEntry();
 			}
-		}
-		
-		// Write services as needed
-		for (Map.Entry<String, Set<String>> e : services.entrySet())
-		{
-			// Write service descriptor
-			__zos.putNextEntry(
-				new ZipEntry("META-INF/services/" + e.getKey()));
-			
-			// Write classes to provide services for 
-			for (String v : e.getValue())
-			{
-				// Write name followed by \r\n pair
-				__zos.write(v.getBytes("utf-8"));
-				__zos.write('\r');
-				__zos.write('\n');
-			}
-			
-			// Always end in a blank line
-			__zos.write('\r');
-			__zos.write('\n');
-			
-			// Done writing it
-			__zos.closeEntry();
 		}
 	}
 	
