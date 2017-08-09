@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.expanded;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This class is initialized by an implementation of {@link ExpandedByteCode}
  * and is used to translate expanded instructions to a target language
@@ -22,6 +24,18 @@ package net.multiphasicapps.squirreljme.jit.expanded;
  * @since 2017/08/07
  */
 public abstract class ExpandedBasicBlock
+	implements AutoCloseable
 {
+	/**
+	 * Closes the expanded basic block forcing all changes to be finalized.
+	 * This may be needed by optimizing translators to perform all of their
+	 * optimizations.
+	 *
+	 * @throws JITException If 
+	 * @since 2017/08/09
+	 */
+	@Override
+	public abstract void close()
+		throws JITException;
 }
 
