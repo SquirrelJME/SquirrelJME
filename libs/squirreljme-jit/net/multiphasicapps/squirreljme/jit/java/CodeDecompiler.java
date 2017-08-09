@@ -16,7 +16,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.bin.Fragment;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
+import net.multiphasicapps.squirreljme.jit.bin.Section;
+import net.multiphasicapps.squirreljme.jit.bin.Sections;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -143,9 +146,12 @@ public class CodeDecompiler
 		
 		// Expand the byte code to a simpler format and unroll exceptions so
 		// that they are exactly like normal code
-		__expand(code, smt, eht);
+		Fragment rv = __expand(code, smt, eht);
 		
-		throw new todo.TODO();
+		if (true)
+			throw new todo.TODO();
+		
+		return rv;
 	}
 	
 	/**
@@ -154,16 +160,24 @@ public class CodeDecompiler
 	 * @param __code The method byte code.
 	 * @param __smt The stack map table.
 	 * @param __eht The exception handler table.
+	 * @return The resulting fragment.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/08
 	 */
-	private void __expand(ByteCode __code, StackMapTable __smt,
+	private Fragment __expand(ByteCode __code, StackMapTable __smt,
 		ExceptionHandlerTable __eht)
 		throws NullPointerException
 	{
 		// Check
 		if (__code == null || __smt == null || __eht == null)
 			throw new NullPointerException("NARG");
+		
+		// The fragment which is to be built may be within an existing section
+		// or it could be a newly created section for each method byte code
+		Sections sections = this.linkerstate.sections();
+		MethodFlags flags = this.flags;
+		FragmentBuilder fb = sections.createFragmentBuilder(this.outerclass,
+			this.name, this.type, flags);
 		
 		// If any address has exception handlers then each unique group must
 		// be expanded so that if an exception does exist they can have their
@@ -173,7 +187,6 @@ public class CodeDecompiler
 		// If the method is synchronized, setup a special basic block that acts
 		// as the method entry point which copies to a special register and
 		// generates an enter of a monitor
-		MethodFlags flags = this.flags;
 		if (flags.isSynchronized())
 			throw new todo.TODO();
 		

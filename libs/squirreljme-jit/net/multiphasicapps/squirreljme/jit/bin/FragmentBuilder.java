@@ -124,3 +124,4 @@ public final class FragmentBuilder
 			this.bytes.toByteArray());
 	}
 }
+
