@@ -326,63 +326,102 @@ public class TargetBuilder
 		if (__opt == null || __pn == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		// Read input resource as a manifest
-		ProjectManager manager = this.manager;
-		try (InputStream is = TargetBuilder.class.getResourceAsStream(
-			"template/" + __in))
+		// Allow options to be specified on the command line without requiring
+		// a template be used
+		boolean plus;
+		if ((plus = __in.startsWith("+")) || __in.startsWith("-"))
 		{
-			// Failed to find template, try looking for a project instead
-			if (is == null)
-			{
-				// If a binary exists with the specified name then add it to
-				// the list of projects to build
-				ProjectName pn = new ProjectName(__in);
-				ProjectBinary pb = manager.getBinary(pn);
-				if (pb != null)
-				{
-					__pn.add(pn);
-					return;
-				}
-				
-				// {@squirreljme.error AO06 The specified template or project
-				// does not exist.}
-				throw new IOException(String.format("AO06 %s", __in));
-			}
+			// {@squirreljme.error AO0b Invalid argument to be parsed, it must
+			// either be in the format of '{@code +key=value}' to add a JIT
+			// configuration option or '{@code -key}' to remove it. (The input
+			// argument)}
+			int eq = __in.indexOf('=');
+			if (plus == (eq < 0))
+				throw new IOException(String.format("AO0b %s", __in));
 			
-			// Parse the manifest
-			JavaManifest man = new JavaManifest(is);
-			for (Map.Entry<JavaManifestKey, String> e :
-				man.getMainAttributes().entrySet())
+			// Parse pair
+			JITConfigKey k = new JITConfigKey(__in.substring(1, eq));
+			JITConfigValue v = (eq < 0 ? null :
+				new JITConfigValue(__in.substring(eq + 1)));
+			
+			// Add or remove option
+			if (plus)
+				__opt.put(k, v);
+			else
+				__opt.remove(k);
+			
+			// Do not process as a template
+			return;
+		}
+		
+		// Project file
+		else if (__in.endsWith(".jar") || __in.endsWith(".JAR"))
+		{
+			// Remove the extension
+			String extless = __in.substring(0, __in.length() - 4);
+			
+			// If a binary exists with the specified name then add it to
+			// the list of projects to build
+			ProjectName pn = new ProjectName(extless);
+			ProjectBinary pb = manager.getBinary(pn);
+			
+			// {@squirreljme.error AO0c The specified project cannot be added
+			// to the target because it does not exist. (The project to add)}
+			if (pb == null)
+				throw new IOException(String.format("AO0c %s", pn));
+			
+			// Add
+			__pn.add(pn);
+		}
+		
+		// Try to find a template
+		else
+		{
+			// Read input resource as a manifest
+			ProjectManager manager = this.manager;
+			try (InputStream is = TargetBuilder.class.getResourceAsStream(
+				"template/" + __in))
 			{
-				JavaManifestKey k = e.getKey();
-				String ks = k.toString(),
-					v = e.getValue();
-				
-				// JIT option?
-				if (ks.startsWith("jit-"))
-					__opt.put(
-						new JITConfigKey(ks.substring(4).replace('-', '.')),
-						new JITConfigValue(v));
-				
-				// Add projects to set?
-				else if (k.equals(_ADD_PROJECTS))
+				// {@squirreljme.error AO06 The specified template
+				// does not exist. (The template name)}
+				if (is == null)
+					throw new IOException(String.format("AO06 %s", __in));
+			
+				// Parse the manifest
+				JavaManifest man = new JavaManifest(is);
+				for (Map.Entry<JavaManifestKey, String> e :
+					man.getMainAttributes().entrySet())
 				{
-					// Projects appear in a space split list
-					for (int i = 0, n = v.length(); i < n; i++)
+					JavaManifestKey k = e.getKey();
+					String ks = k.toString(),
+						v = e.getValue();
+				
+					// JIT option?
+					if (ks.startsWith("jit-"))
+						__opt.put(
+							new JITConfigKey(ks.substring(4).replace('-', '.')),
+							new JITConfigValue(v));
+				
+					// Add projects to set?
+					else if (k.equals(_ADD_PROJECTS))
 					{
-						// Ignore spaces
-						char c = v.charAt(i);
-						if (c == ' ')
-							continue;
+						// Projects appear in a space split list
+						for (int i = 0, n = v.length(); i < n; i++)
+						{
+							// Ignore spaces
+							char c = v.charAt(i);
+							if (c == ' ')
+								continue;
 						
-						// Find last space
-						int s = v.indexOf(' ', i);
-						if (s < 0)
-							s = n;
+							// Find last space
+							int s = v.indexOf(' ', i);
+							if (s < 0)
+								s = n;
 						
-						// Add project
-						__pn.add(new ProjectName(v.substring(i, s)));
-						i = s;
+							// Add project
+							__pn.add(new ProjectName(v.substring(i, s)));
+							i = s;
+						}
 					}
 				}
 			}
