@@ -27,6 +27,27 @@ import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 public class NaiveTranslator
 	implements ExpandedByteCode
 {
+	/** The output. */
+	protected final MachineCodeOutput out;
+	
+	/**
+	 * Initializes the naive translator.
+	 *
+	 * @param __out The output for the translator.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/09
+	 */
+	public NaiveTranslator(MachineCodeOutput __out)
+		throws NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.out = __out;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/08/09

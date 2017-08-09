@@ -13,10 +13,12 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
+import net.multiphasicapps.squirreljme.jit.trans.naive.NaiveTranslator;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -90,6 +92,21 @@ public abstract class JITConfig
 	}
 	
 	/**
+	 * Creates an instance of the native machine code output which writes to
+	 * the specified fragment.
+	 *
+	 * @param __f The fragment to write instructions to.
+	 * @return The output for native machine code which matches this given
+	 * JIT.
+	 * @throws JITException If the output could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/09
+	 */
+	public abstract MachineCodeOutput createMachineCodeOutput(
+		FragmentBuilder __f)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * This creates a new section counter which is used to count text and data
 	 * sections for placement in an output linked executable.
 	 *
@@ -123,7 +140,23 @@ public abstract class JITConfig
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// This will be wrapped by the translator
+		MachineCodeOutput mco = createMachineCodeOutput(__f);
+		
+		// Create a translator
+		String v;
+		switch ((v = this._values.get(JITConfigKey.JIT_TRANSLATOR).toString()))
+		{
+				// The worst and unoptimized translator, runs using the least
+				// amount of resources however
+			case "naive":
+				return new NaiveTranslator(mco);
+			
+				// {@squirreljme.error JI20 The specified translator is not
+				// valid. (The translator)}
+			default:
+				throw new JITException(String.format("JI20", v));
+		}
 	}
 	
 	/**

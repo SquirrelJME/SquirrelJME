@@ -34,7 +34,7 @@ public final class JITConfigValue
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Lowercase key
+		// Lowercase value
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0, n = __s.length(); i < n; i++)
 		{
