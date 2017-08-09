@@ -20,6 +20,8 @@ import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.bin.Section;
 import net.multiphasicapps.squirreljme.jit.bin.Sections;
+import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
+import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -174,10 +176,15 @@ public class CodeDecompiler
 		
 		// The fragment which is to be built may be within an existing section
 		// or it could be a newly created section for each method byte code
-		Sections sections = this.linkerstate.sections();
+		LinkerState linkerstate = this.linkerstate;
+		Sections sections = linkerstate.sections();
 		MethodFlags flags = this.flags;
 		FragmentBuilder fb = sections.createFragmentBuilder(this.outerclass,
 			this.name, this.type, flags);
+		
+		// Use the specified expander which varies depending on the JIT
+		// configuration and other options
+		ExpandedByteCode ebc = linkerstate.config().createExpandedByteCode(fb);
 		
 		// If any address has exception handlers then each unique group must
 		// be expanded so that if an exception does exist they can have their
