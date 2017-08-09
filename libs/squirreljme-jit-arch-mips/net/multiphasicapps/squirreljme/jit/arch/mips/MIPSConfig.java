@@ -12,9 +12,12 @@ package net.multiphasicapps.squirreljme.jit.arch.mips;
 
 import java.io.InputStream;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This manages the configuration for MIPS based targets.
@@ -33,6 +36,21 @@ public class MIPSConfig
 	public MIPSConfig(Map<JITConfigKey, JITConfigValue> __o)
 	{
 		super(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/09
+	 */
+	@Override
+	public MachineCodeOutput createMachineCodeOutput(FragmentBuilder __f)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
