@@ -399,6 +399,9 @@ public class NewBootstrap
 		if (__bp == null || __zos == null)
 			throw new NullPointerException("NARG");
 		
+		// Services which are available
+		Map<String, Set<String>> services = new LinkedHashMap<>();
+		
 		// Go through the input
 		try (ZipInputStream zis = new ZipInputStream(Channels.newInputStream(
 			FileChannel.open(__bp.jarout, StandardOpenOption.READ))))
@@ -410,12 +413,27 @@ public class NewBootstrap
 			{
 				// If the entry is the manifest, only use it if it was
 				// requested
-				if (e.getName().equals("META-INF/MANIFEST.MF"))
+				String name = e.getName();
+				if (name.equals("META-INF/MANIFEST.MF"))
 					if (!__useman)
 					{
 						zis.closeEntry();
 						continue;
 					}
+				
+				// This is a service, needs to be handled later
+				if (name.startsWith("META-INF/services/"))
+				{
+					// Record service to write later
+					String k = name.substring("META-INF/services/".length());
+					Set<String> into = services.get(k);
+					if (into == null)
+						services.put(k, (into = new LinkedHashSet<>()));
+					
+					if (true)
+						throw new Error("TODO");
+					continue;
+				}
 				
 				// Write to target
 				__zos.putNextEntry(e);
@@ -437,6 +455,30 @@ public class NewBootstrap
 				__zos.closeEntry();
 				zis.closeEntry();
 			}
+		}
+		
+		// Write services as needed
+		for (Map.Entry<String, Set<String>> e : services.entrySet())
+		{
+			// Write service descriptor
+			__zos.putNextEntry(
+				new ZipEntry("META-INF/services/" + e.getKey()));
+			
+			// Write classes to provide services for 
+			for (String v : e.getValue())
+			{
+				// Write name followed by \r\n pair
+				__zos.write(v.getBytes("utf-8"));
+				__zos.write('\r');
+				__zos.write('\n');
+			}
+			
+			// Always end in a blank line
+			__zos.write('\r');
+			__zos.write('\n');
+			
+			// Done writing it
+			__zos.closeEntry();
 		}
 	}
 	
