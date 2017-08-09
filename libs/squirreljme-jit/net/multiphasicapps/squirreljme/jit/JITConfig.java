@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
@@ -26,9 +27,27 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public abstract class JITConfig
 {
+	/** The default translator to use. */
+	private static final JITConfigValue _DEFAULT_TRANSLATOR;
+	
 	/** Values stored within the configuration. */
 	private final Map<JITConfigKey, JITConfigValue> _values =
 		new SortedTreeMap<>();
+	
+	/**
+	 * Initializes some settings.
+	 *
+	 * @since 2017/08/09
+	 */
+	static
+	{
+		// {@squirreljme.property
+		// net.multiphasicapps.squirreljme.jit.translator=value
+		// This sets the default translator for the expanded byte code engine
+		// which may or may not perform optimizations.}
+		_DEFAULT_TRANSLATOR = new JITConfigValue(System.getProperty(
+			"net.multiphasicapps.squirreljme.jit.translator", "naive"));
+	}
 	
 	/**
 	 * Initializes the JIT configuration using the given option set.
@@ -64,6 +83,10 @@ public abstract class JITConfig
 		// JIT configuration.}
 		if (values.get(new JITConfigKey("cpu.arch")) == null)
 			throw new JITException("JI01");
+		
+		// A translator is required
+		if (values.get(JITConfigKey.JIT_TRANSLATOR) == null)
+			values.put(JITConfigKey.JIT_TRANSLATOR, _DEFAULT_TRANSLATOR);
 	}
 	
 	/**
@@ -101,6 +124,17 @@ public abstract class JITConfig
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns a copy of the JIT configuration options.
+	 *
+	 * @return A copy of the JIT configuration options.
+	 * @since 2017/08/09
+	 */
+	public Map<JITConfigKey, JITConfigValue> options()
+	{
+		return new LinkedHashMap<>(this._values);
 	}
 }
 
