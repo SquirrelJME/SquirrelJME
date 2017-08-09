@@ -27,5 +27,16 @@ import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 public class NaiveTranslator
 	implements ExpandedByteCode
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/09
+	 */
+	@Override
+	public void close()
+	{
+		// The naive translator does not need the close operation because it
+		// always writes directly to the machine code output and does not
+		// cache an expanded state for optimization.
+	}
 }
 

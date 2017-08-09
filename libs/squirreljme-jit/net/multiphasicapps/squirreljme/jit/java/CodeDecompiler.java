@@ -183,49 +183,54 @@ public class CodeDecompiler
 			this.name, this.type, flags);
 		
 		// Use the specified expander which varies depending on the JIT
-		// configuration and other options
-		ExpandedByteCode ebc = linkerstate.config().createExpandedByteCode(fb);
-		
-		// If any address has exception handlers then each unique group must
-		// be expanded so that if an exception does exist they can have their
-		// tables expanded virtually.
-		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
-		
-		// If the method is synchronized, setup a special basic block that acts
-		// as the method entry point which copies to a special register and
-		// generates an enter of a monitor
-		if (flags.isSynchronized())
-			throw new todo.TODO();
-		
-		// After all of that, run through all byte code operations and
-		// create an expanded byte code program contained within basic blocks
-		// which are then used the processor. The expanded byte code is used
-		// so that translators do not need to reimplement support for the more
-		// complex byte code which can be prone to errors.
-		for (BasicBlock bb : __code.basicBlocks())
+		// configuration and other options. The expanded byte code is
+		// autoclosed so that the translator knows when it is safe to write
+		// to the wrapped generator if there is any.
+		try (ExpandedByteCode ebc = linkerstate.config().
+			createExpandedByteCode(fb))
 		{
-			// Debug
-			System.err.printf("DEBUG -- Decode BB %s%n", bb.jumpTarget());
-			
-			// Setup base block
-			if (true)
+			// If any address has exception handlers then each unique group
+			// must be expanded so that if an exception does exist they can
+			// have their tables expanded virtually.
+			Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
+		
+			// If the method is synchronized, setup a special basic block that
+			// acts as the method entry point which copies to a special
+			// register and generates an enter of a monitor
+			if (flags.isSynchronized())
 				throw new todo.TODO();
-			
-			// Go through instructions for the block and parse them
-			for (Instruction i : bb)
+		
+			// After all of that, run through all byte code operations and
+			// create an expanded byte code program contained within basic
+			// blocks which are then used the processor. The expanded byte
+			// code is used so that translators do not need to reimplement
+			// support for the more complex byte code which can be prone to
+			// errors.
+			for (BasicBlock bb : __code.basicBlocks())
 			{
 				// Debug
-				System.err.printf("DEBUG -- Decode IN %s%n", i);
+				System.err.printf("DEBUG -- Decode BB %s%n", bb.jumpTarget());
+			
+				// Setup base block
+				if (true)
+					throw new todo.TODO();
+			
+				// Go through instructions for the block and parse them
+				for (Instruction i : bb)
+				{
+					// Debug
+					System.err.printf("DEBUG -- Decode IN %s%n", i);
 				
+					throw new todo.TODO();
+				}
+			
 				throw new todo.TODO();
 			}
-			
-			throw new todo.TODO();
-		}
 		
-		// Expand exception handlers if any were used
-		for (ExceptionHandlerKey ek : xkeys)
-			throw new todo.TODO();
+			// Expand exception handlers if any were used
+			for (ExceptionHandlerKey ek : xkeys)
+				throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
