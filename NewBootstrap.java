@@ -225,7 +225,6 @@ public class NewBootstrap
 						__mergeInto(dp, zos, dp == bp, services);
 					
 					// Write services as needed
-					System.err.printf("DEBUG -- Services: %s%n", services);
 					byte[] buf = new byte[512];
 					for (Map.Entry<String, Set<String>> e :
 						services.entrySet())
