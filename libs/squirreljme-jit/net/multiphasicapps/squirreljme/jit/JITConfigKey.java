@@ -19,6 +19,10 @@ package net.multiphasicapps.squirreljme.jit;
 public final class JITConfigKey
 	implements Comparable<JITConfigKey>
 {
+	/** The JIT translation engine to use. */
+	public static final JITConfigKey JIT_TRANSLATOR =
+		new JITConfigKey("jit.translator");
+	
 	/** The key name. */
 	protected final String key;
 	

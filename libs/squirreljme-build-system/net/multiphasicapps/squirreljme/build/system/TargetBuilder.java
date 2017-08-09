@@ -117,6 +117,9 @@ public class TargetBuilder
 		}
 		this.jitconfig = jc;
 		
+		// Debug
+		System.err.printf("DEBUG -- Actual JIT Options: %s%n", jc.options());
+		
 		// Initialize the link state
 		this.linkerstate = new LinkerState(jc);
 		
