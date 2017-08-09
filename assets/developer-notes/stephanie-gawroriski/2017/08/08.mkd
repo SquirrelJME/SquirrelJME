@@ -1,0 +1,7 @@
+# 2017/08/08
+
+## 12:46
+
+At least with iterators things would be easy. Also, if a piece of code has no
+exception handlers and it throws an exception then it could just return with
+an exception.
