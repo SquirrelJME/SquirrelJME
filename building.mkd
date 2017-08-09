@@ -54,9 +54,34 @@ code is located in the example `/home/stephanie/squirreljme`:
 
 # Standard Building
 
-Currently SquirrelJME is in a state of development and does not produce any
-actual runnable binaries yet. To see the current state of what is being worked
-on you may run:
+***Currently SquirrelJME is in a state of development and does not produce***
+***any actual runnable binaries yet.***
 
- * `<build script> target linux-mips`
+Compiling SquirrelJME binaries to run on a target system uses the following
+format, the main command being `target`.
+
+ * `<build script> target <options>`
+
+The options used to build the target vary depending on how the build system
+parses them.
+
+ * `template`
+   * This represents that a template be used which is read from a set of
+     built-in files and is used to configure the JIT.
+ * `project.jar`
+   * This specifies that the given project (within the SquirrelJME packaging
+     system) is to be included for compilation in the output target.
+   * Note that this does not read JARs which are in the host filesystem unless
+     they are in a location SquirrelJME is able to use them.
+   * The location the build system looks for projects which are not provided
+     by SquirrelJME should be the `bins` directory in the build location unless
+     it has been overridden by a system property.
+ * `+key=value`
+   * This adds the specified key and value to the JIT configuration, replacing
+     a value which has previously been set.
+   * This can be used to override an option that is provided in a template.
+ * `-key`
+   * This removes the specified key from the JIT configuration so that it is
+     no longer set.
+   * This can be used to remove an option that has previously been provided.
 
