@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.squirreljme.jit.java.MethodDescriptor;
+import net.multiphasicapps.squirreljme.jit.java.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.java.MethodName;
+
 /**
  * This is a section counter which only uses a single indexed text and data
  * section.
@@ -35,6 +40,25 @@ public class FlatSectionCounter
 		// Only the basic data section is always used so that resources are
 		// packed onto each other
 		return SectionType.DATA;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/09
+	 */
+	@Override
+	public SectionType nextSection(LinkerState __ls,
+		ClassName __c, MethodName __n, MethodDescriptor __t, MethodFlags __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__ls == null || __c == null || __n == null || __t == null ||
+			__f == null)
+			throw new NullPointerException("NARG");
+		
+		// All data is thrown into the text section regardless of where the
+		// class is located
+		return SectionType.TEXT;
 	}
 }
 

@@ -14,6 +14,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.squirreljme.jit.java.MethodDescriptor;
+import net.multiphasicapps.squirreljme.jit.java.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.java.MethodName;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -41,6 +45,33 @@ public class Sections
 		throws NullPointerException
 	{
 		super(__ls);
+	}
+	
+	/**
+	 * Creates a new fragment builder which will append to the next section
+	 * that is referenced.
+	 *
+	 * @param __c The name of the class.
+	 * @param __n The name of the method.
+	 * @param __t The type of the method.
+	 * @param __f The flags for the method.
+	 * @return The fragment builder.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/09
+	 */
+	public final FragmentBuilder createFragmentBuilder(ClassName __c,
+		MethodName __n, MethodDescriptor __t, MethodFlags __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null || __n == null || __t == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		LinkerState ls = __linkerState();
+		Reference<LinkerState> rls = ls.__reference();
+		return new FragmentBuilder(rls, ls.__sectionCounter().nextSection(ls,
+			__c, __n, __t, __f));
 	}
 	
 	/**
