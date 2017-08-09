@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
@@ -37,6 +38,7 @@ import net.multiphasicapps.squirreljme.jit.bin.Clusters;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
+import net.multiphasicapps.squirreljme.jit.JITConfigService;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 
 /**
@@ -100,27 +102,27 @@ public class TargetBuilder
 		if (arch == null)
 			throw new IllegalArgumentException("AO07");
 		
-		// Depends on the architecture
-		JITConfig jc;
-		switch (arch.toString())
-		{
-				// MIPS
-			case "mips":
-				jc = new MIPSConfig(jitopts);
+		// Locate the JITConfig which creates things such as the machine code
+		// output
+		JITConfig jc = null;
+		for (JITConfigService sv : ServiceLoader.<JITConfigService>load(
+			JITConfigService.class))
+			if (sv.matchesArchitecture(arch))
+			{
+				jc = sv.createConfig(jitopts);
 				break;
+			}
 			
-				// {@squirreljme.error AO08 Unknown architecture specified
-				// which is not supported. (The architecture)}
-			default:
-				throw new IllegalArgumentException(String.format("AO08 %s",
-					arch));
-		}
-		this.jitconfig = jc;
+		// {@squirreljme.error AO08 Unknown architecture specified
+		// which is not supported. (The architecture)}
+		if (jc == null)
+			throw new IllegalArgumentException(String.format("AO08 %s", arch));
 		
 		// Debug
 		System.err.printf("DEBUG -- Actual JIT Options: %s%n", jc.options());
 		
 		// Initialize the link state
+		this.jitconfig = jc;
 		this.linkerstate = new LinkerState(jc);
 		
 		// Obtain set of projects to compile in a given order
