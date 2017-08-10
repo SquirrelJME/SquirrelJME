@@ -11,32 +11,21 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This class handles software 64-bit math.
+ * This class contains the internal methods which are to be rewritten if they
+ * are called.
  *
- * @since 2017/04/01
+ * @see SystemVM
+ * @since 2017/08/10
  */
-public final class SoftLong
+public final class __Ext_SystemVM__
 {
 	/**
 	 * Not used.
 	 *
-	 * @since 2017/04/01
+	 * @since 2017/08/10
 	 */
-	private SoftLong()
+	private __Ext_SystemVM__()
 	{
-	}
-	
-	/**
-	 * Compares two long values and returns the sign result of the comparison.
-	 *
-	 * @param __a The first comparison.
-	 * @param __b The second comparison.
-	 * @return The sign result of comparison.
-	 * @since 2017/04/01
-	 */
-	public static int compareLong(long __a, long __b)
-	{
-		throw new todo.TODO();
 	}
 }
 

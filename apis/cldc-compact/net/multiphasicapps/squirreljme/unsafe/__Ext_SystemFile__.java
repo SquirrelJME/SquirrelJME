@@ -11,23 +11,20 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This class contains internal implementations. This is used by
- * {@link SquirrelJME} to implement the unsafe methods. Since the other class
- * is public and is used as a wrapper to this one, this means that the
- * implementations of methods in this class do not have to have certain checks
- * because the publically visible class handles such things.
+ * This class contains the implementation of the filesystem support to be
+ * rewritten.
  *
- * @see SquirrelJME
- * @since 2017/03/24
+ * @see SystemFile
+ * @since 2017/08/10
  */
-final class __Internal__
+public class __Ext_SystemFile__
 {
 	/**
 	 * Not used.
 	 *
-	 * @since 2017/03/24
+	 * @since 2017/08/10
 	 */
-	private __Internal__()
+	private __Ext_SystemFile__()
 	{
 	}
 }
