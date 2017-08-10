@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
-import java.io.IOException;
-import java.net.BindException;
 import java.util.NoSuchElementException;
 
 /**
@@ -41,11 +39,12 @@ public final class SystemMail
 	 * @throws IllegalArgumentException If the mailbox is not valid.
 	 * @throws InterruptedException If the thread was interrupted accepting
 	 * a connection.
-	 * @throws IOException If the mailbox is closed.
+	 * @throws SystemMailException If the mailbox is closed.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxAccept(int __ld)
-		throws IllegalArgumentException, IOException, InterruptedException
+		throws IllegalArgumentException, InterruptedException,
+			SystemMailException
 	{
 		throw new todo.TODO();
 	}
@@ -57,9 +56,11 @@ public final class SystemMail
 	 * no effect.
 	 *
 	 * @param __fd The descriptor to close.
+	 * @throws SystemMailException If the mailbox could not be closed.
 	 * @since 2016/10/13
 	 */
 	public static void mailboxClose(int __fd)
+		throws SystemMailException
 	{
 		throw new todo.TODO();
 	}
@@ -81,19 +82,20 @@ public final class SystemMail
 	 * @param __am If {@code true} then authorized mode to use.
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
-	 * @throws BindException If the server does not exist.
 	 * @throws IllegalArgumentException If the remote midlet is malformed or
 	 * the server name and/or version are malformed.
-	 * @throws IOException If the remote destination is closed.
 	 * @throws NullPointerException If no server was specified or the offset
 	 * and length are not of the specified values and the midlet is not
 	 * specified.
+	 * @throws SystemMailException If the server does not exist or if the
+	 * remote destination is closed.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxConnect(byte[] __mb, int __mo, int __ml,
 		byte[] __sb, int __so, int __sl, int __v, boolean __am)
-		throws ArrayIndexOutOfBoundsException, BindException,
-			IllegalArgumentException, IOException, NullPointerException
+		throws ArrayIndexOutOfBoundsException,
+			IllegalArgumentException, NullPointerException,
+			SystemMailException
 	{
 		throw new todo.TODO();
 	}
@@ -110,14 +112,15 @@ public final class SystemMail
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws IllegalArgumentException If the version number is not correct.
-	 * @throws IOException If the mailbox was closed.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SystemMailException If the mailbox was closed.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxListen(byte[] __b, int __o, int __l, int __v,
 		boolean __am)
 		throws ArrayIndexOutOfBoundsException,
-			IllegalArgumentException, IOException, NullPointerException
+			IllegalArgumentException, NullPointerException,
+			SystemMailException
 	{
 		throw new todo.TODO();
 	}
@@ -148,13 +151,14 @@ public final class SystemMail
 	 * @throws NoSuchElementException If not waiting and there are no datagrams
 	 * available.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SystemMailException If receiving could not happen.
 	 * @since 2016/10/13
 	 */
 	public static int mailboxReceive(int __fd, int[] __chan, byte[] __b,
 		int __o, int __l, boolean __wait)
 		throws ArrayIndexOutOfBoundsException, ArrayStoreException,
 			IllegalArgumentException, InterruptedException,
-			NoSuchElementException, NullPointerException
+			NoSuchElementException, NullPointerException, SystemMailException
 	{
 		throw new todo.TODO();
 	}
@@ -166,10 +170,11 @@ public final class SystemMail
 	 * @return The byte array representing the remote ID, the format is in the
 	 * form of {@code <vendor>;<name>;<version>}.
 	 * @throws IllegalArgumentException If the mailbox descriptor is not valid.
+	 * @throws SystemMailException If the ID could not be obtained.
 	 * @since 2016/10/13
 	 */
 	public static byte[] mailboxRemoteID(int __fd)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, SystemMailException
 	{
 		throw new todo.TODO();
 	}
@@ -185,14 +190,14 @@ public final class SystemMail
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
 	 * are negative or exceed the length of the array.
 	 * @throws IllegalArgumentException If the descriptor is not valid.
-	 * @throws IOException If the remote end was closed.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SystemMailException If the remote end was closed.
 	 * @since 2016/10/13
 	 */
 	public static void mailboxSend(int __fd, int __chan, byte[] __b, int __o,
 		int __l)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			IOException, NullPointerException
+			NullPointerException, SystemMailException
 	{
 		throw new todo.TODO();
 	}
