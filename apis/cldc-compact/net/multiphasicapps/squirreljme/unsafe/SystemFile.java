@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.IOException;
+
 /**
  * This class provides access to the host filesystem if it is available.
  *
