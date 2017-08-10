@@ -10,7 +10,7 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
 /**
  * This class is the root of all class trees in Java.
@@ -21,11 +21,11 @@ public class Object
 {
 	/** The type of class this object is. */
 	final Class<?> _classobj =
-		SquirrelJME.classOf(this);
+		SystemVM.classOf(this);
 	
 	/** The identity hash code of this object. */
 	final short _idhashcode =
-		SquirrelJME.identityHashCode(this);
+		SystemVM.identityHashCode(this);
 	
 	/**
 	 * Clones the current copy creating a shallow copy of it if

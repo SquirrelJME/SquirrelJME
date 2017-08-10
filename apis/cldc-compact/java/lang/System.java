@@ -13,7 +13,8 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
+import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
 public final class System
 {
@@ -39,7 +40,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return SquirrelJME.currentTimeMillis();
+		return SystemProcess.currentTimeMillis();
 	}
 	
 	/**
@@ -217,7 +218,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return SquirrelJME.nanoTime();
+		return SystemProcess.nanoTime();
 	}
 	
 	/**
