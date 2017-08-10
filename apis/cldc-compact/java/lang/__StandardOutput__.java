@@ -12,7 +12,7 @@ package java.lang;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemFile;
 
 /**
  * This wraps the standard default output stream.
@@ -29,7 +29,7 @@ final class __StandardOutput__
 	@Override
 	public void write(int __b)
 	{
-		SquirrelJME.stdOut(__b);
+		SystemFile.stdOut(__b);
 	}
 	
 	/**
@@ -39,7 +39,7 @@ final class __StandardOutput__
 	@Override
 	public void write(byte[] __b, int __o, int __l)
 	{
-		SquirrelJME.stdOut(__b, __o, __l);
+		SystemFile.stdOut(__b, __o, __l);
 	}
 }
 

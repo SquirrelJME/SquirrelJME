@@ -10,7 +10,8 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
+import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
 public class Runtime
 {
@@ -28,7 +29,7 @@ public class Runtime
 	 */
 	public void exit(int __a)
 	{
-		SquirrelJME.exit(__a);
+		SystemProcess.exit(__a);
 	}
 	
 	public long freeMemory()
@@ -44,7 +45,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		SquirrelJME.gc();
+		SystemVM.gc();
 	}
 	
 	public long maxMemory()

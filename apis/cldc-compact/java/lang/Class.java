@@ -11,7 +11,7 @@
 package java.lang;
 
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
 public final class Class<T>
 {
@@ -253,7 +253,7 @@ public final class Class<T>
 		
 		// {@squirreljme.error ZZ09 Could not find the specified class. (The
 		// name of the class)}
-		Class<?> rv = SquirrelJME.classForName(__a);
+		Class<?> rv = SystemVM.classForName(__a);
 		if (rv == null)
 			throw new ClassNotFoundException(String.format("ZZ09 %s", __a));
 		return rv;
