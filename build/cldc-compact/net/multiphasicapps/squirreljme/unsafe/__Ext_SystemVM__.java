@@ -11,10 +11,8 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This class contains the internal methods which are to be rewritten if they
- * are called.
+ * This provides VM support for the SquirrelJME build environment.
  *
- * @see SystemVM
  * @since 2017/08/10
  */
 public final class __Ext_SystemVM__
@@ -39,7 +37,22 @@ public final class __Ext_SystemVM__
 	 */
 	public static String mapService(String __v)
 	{
-		throw new todo.TODO();
+		switch (__v)
+		{
+				// Display engine for swing output
+			case "net.multiphasicapps.squirreljme.lcdui.NativeDisplay":
+				return "net.multiphasicapps.squirreljme.build.host." +
+					"javase.SwingNativeDisplay";
+				
+				// Record store manager
+			case "net.multiphasicapps.squirreljme.rms.RecordClusterManager":
+				return "net.multiphasicapps.squirreljme.rms.file." +
+					"FileRecordClusterManager";
+				
+				// Not mapped
+			default:
+				return null;
+		}
 	}
 }
 

@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class contains static methods which are used by the standard class
@@ -39,6 +41,10 @@ public final class SystemVM
 	public static final int ACCESS_PUBLIC =
 		3;
 	
+	/** Cached system services. */
+	private static final Map<Class<?>, Object> _CACHED_SERVICES =
+		new LinkedHashMap<>();
+	
 	/**
 	 * Not used.
 	 *
@@ -62,6 +68,10 @@ public final class SystemVM
 	public static <C> C allocateInstance(Class<C> __cl)
 		throws IllegalAccessException, NullPointerException
 	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
@@ -267,7 +277,66 @@ public final class SystemVM
 	public static <C> C systemService(Class<C> __cl)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Only a single thread may access services
+		Map<Class<?>, Object> services = _CACHED_SERVICES;
+		synchronized (services)
+		{
+			// If the service is already loaded use it, use contains key
+			// instead of a null check because it is possible the services does
+			// not actually exist so there is no point in trying again
+			Object v = services.get(__cl);
+			if (services.containsKey(__cl))
+				return __cl.cast(v);
+			
+			// Check system properties for system service overrides which may
+			// be useful when needed
+			String sname = __cl.getName(),
+				pname = "net.multiphasicapps.squirreljme.unsafe.service." +
+					sname,
+				vclass = System.getProperty(pname);
+			
+			// Try creating an instance of it
+			if (vclass != null)
+				try
+				{
+					C rv = __cl.cast(Class.forName(sname).newInstance());
+					services.put(__cl, rv);
+					return rv;
+				}
+				
+				// Does not exist, ignore, fallback to the system
+				catch (Exception e)
+				{
+				}
+			
+			// See if the system internally declares a service class for the
+			// given service
+			vclass = __Ext_SystemVM__.mapService(sname);
+			if (vclass == null)
+			{
+				services.put(__cl, null);
+				return null;
+			}
+			
+			// Create instance if possible
+			try
+			{
+				C rv = __cl.cast(Class.forName(vclass).newInstance());
+				services.put(__cl, rv);
+				return rv;
+			}
+			
+			// Failed, cache null so lookup does not happen again
+			catch (Exception e)
+			{
+				services.put(__cl, null);
+				return null;
+			}
+		}
 	}
 	
 	/**
