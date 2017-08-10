@@ -19,7 +19,7 @@ import java.io.IOException;
  * @see SystemFile
  * @since 2017/08/10
  */
-public class __Ext_SystemFile__
+final class __Ext_SystemFile__
 {
 	/**
 	 * Not used.

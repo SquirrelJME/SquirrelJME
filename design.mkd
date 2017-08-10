@@ -99,24 +99,30 @@ environment can be accessed by changing compilation for certain aspects in a
 way where it remains compatible with Java but also provides native access when
 needed. Native access is provided by replacing method calls to special static
 methods within a special class by the appropriate machine code rather than
-invoking a method call. These special rewrites are only available to a single
-class which is called `net.multiphasicapps.squirreljme.unsafe.SquirrelJME`.
-The choice of doing this allows this class to wrap native behavior in the
-library in a way where it can be used on Java SE virtual machines along with
-SquirrelJME using it itself.
+invoking a method call. These special rewrites affect everything within the
+`net.multiphasicapps.squirreljme.unsafe` package. This is used to provide
+support for multiple operating systems and environments without causing name
+collisions since the JIT requires renaming.
 
-On a Java SE host, the `SquirrelJME` class implements all of its methods and
-it interacts directly with the host virtual machine.
+### Unsafe Renaming
 
-On SquirrelJME, the `SquirrelJME` class invokes methods within a secretive and
-internal `__Unsafe__`. Essentially `__Unsafe__` becomes a virtual class where
-any invocation of its methods are renamed to another class which is specific to
-a given operating system or machine. This means that there are no conflicts
-when `__Unsafe__` is called and does not require magic to allow duplicate class
-names to be called. So for example calling static methods from `__Unsafe__`
-will just turn into `TargetSpecificUnsafe`. Then that target specific class
-itself can call other compiler special classes which could generate machine
-code and such.
+In the `net.multiphasicapps.squirreljme.unsafe` package, there are classes
+which are `public` and others which are internal and package private. The
+internal package private classes in the form of `__Ext_<Name>__` contain
+internal and to be renamed by the JIT implementations of class `<Name>`. So for
+example the public class `net.multiphasicapps.squirreljme.unsafe.SystemVM`. It
+internally checks and then calls methods within
+`net.multiphasicapps.squirreljme.unsafe.__Ext_SystemVM__` or other internal
+classes as needed. When the JIT sees a static method call to an `__Ext_` class
+it will rename it according to the JIT configuration. This means that any calls
+to that class end up turning into calls to
+`net.multiphasicapps.squirreljme.unsafe.__Int_MIPSSystemVM__` which implements
+the required classes to support the VM on MIPS systems.
+
+This renaming in turn allows the build environment to work like a normal Java
+program without requiring major rewriting or having various kludges between
+the build environment and SquirrelJME. This also reduces duplicate code since
+the code can be shared between the two.
 
 ## Portability
 

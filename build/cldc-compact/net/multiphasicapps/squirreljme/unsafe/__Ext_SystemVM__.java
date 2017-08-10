@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.unsafe;
  *
  * @since 2017/08/10
  */
-public final class __Ext_SystemVM__
+final class __Ext_SystemVM__
 {
 	/**
 	 * Not used.
@@ -24,35 +24,6 @@ public final class __Ext_SystemVM__
 	 */
 	private __Ext_SystemVM__()
 	{
-	}
-	
-	/**
-	 * Maps the given class service name to a class which implements the
-	 * given service.
-	 *
-	 * @param __v The class to map a service for.
-	 * @return The class which implements the given service or {@code null}
-	 * if it does not exist.
-	 * @sincem 2017/08/10 
-	 */
-	public static String mapService(String __v)
-	{
-		switch (__v)
-		{
-				// Display engine for swing output
-			case "net.multiphasicapps.squirreljme.lcdui.NativeDisplay":
-				return "net.multiphasicapps.squirreljme.build.host." +
-					"javase.SwingNativeDisplay";
-				
-				// Record store manager
-			case "net.multiphasicapps.squirreljme.rms.RecordClusterManager":
-				return "net.multiphasicapps.squirreljme.rms.file." +
-					"FileRecordClusterManager";
-				
-				// Not mapped
-			default:
-				return null;
-		}
 	}
 }
 
