@@ -28,15 +28,15 @@ public class SystemMath
 	
 	/** The exponent value mask. */
 	private static final int _FLOAT_EXPONENT_VALUE_MASK =
-		(1 << _EXPONENT_BITS) - 1;
+		(1 << _FLOAT_EXPONENT_BITS) - 1;
 	
 	/** The fraction value mask. */
 	private static final int _FLOAT_FRACTION_VALUE_MASK =
-		(1 << _EXPONENT_SHIFT) - 1;
+		(1 << _FLOAT_EXPONENT_SHIFT) - 1;
 	
 	/** The sign bit mask. */
 	private static final int _FLOAT_SIGN_SHIFTED_MASK =
-		(1 << (_EXPONENT_BITS + _EXPONENT_SHIFT));
+		(1 << (_FLOAT_EXPONENT_BITS + _FLOAT_EXPONENT_SHIFT));
 	
 	/**
 	 * Not used.

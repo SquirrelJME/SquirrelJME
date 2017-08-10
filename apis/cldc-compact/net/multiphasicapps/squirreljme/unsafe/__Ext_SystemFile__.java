@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.IOException;
+
 /**
  * This class contains the implementation of the filesystem support to be
  * rewritten.

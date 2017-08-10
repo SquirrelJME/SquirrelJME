@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.IOException;
+import java.net.BindException;
+import java.util.NoSuchElementException;
+
 /**
  * This contains the mailbox implementation which is used to act as an IPC
  * interface between running virtualized sub-processes within the SquirrelJME
