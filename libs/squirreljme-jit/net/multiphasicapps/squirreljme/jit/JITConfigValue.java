@@ -81,6 +81,17 @@ public final class JITConfigValue
 	}
 	
 	/**
+	 * Returns {@code true} if this value represents true.
+	 *
+	 * @return {@code true} if this value represents true.
+	 * @since 2017/08/10
+	 */
+	public boolean isTrue()
+	{
+		return TRUE.equals(matchesTrue(this));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/30
 	 */
@@ -97,11 +108,11 @@ public final class JITConfigValue
 	 * @return Either {@link #TRUE} or {@link #FALSE}.
 	 * @since 2017/08/10
 	 */
-	public static JITConfigValue matchTrue(JITConfigValue __v)
+	public static JITConfigValue matchesTrue(JITConfigValue __v)
 	{
 		if (__v == null)
 			return FALSE;
-		return matchTrue(__v.toString());
+		return matchesTrue(__v.toString());
 	}
 	
 	/**
@@ -111,11 +122,11 @@ public final class JITConfigValue
 	 * @return Either {@link #TRUE} or {@link #FALSE}.
 	 * @since 2017/08/10
 	 */
-	public static JITConfigValue matchTrue(String __v)
+	public static JITConfigValue matchesTrue(String __v)
 	{
 		if (__v == null)
 			return FALSE;
-		return matchTrue("true".equals(__v));
+		return matchesTrue("true".equals(__v));
 	}
 	
 	/**
@@ -125,7 +136,7 @@ public final class JITConfigValue
 	 * @return Either {@link #TRUE} or {@link #FALSE}.
 	 * @since 2017/08/10
 	 */
-	public static JITConfigValue matchTrue(boolean __v)
+	public static JITConfigValue matchesTrue(boolean __v)
 	{
 		if (!__v)
 			return FALSE;
