@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.unsafe;
  * @see SystemProcess
  * @since 2017/08/10
  */
-public final class __Ext_SystemProcess__
+final class __Ext_SystemProcess__
 {
 	/**
 	 * Not used.

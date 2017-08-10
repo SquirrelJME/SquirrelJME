@@ -17,7 +17,7 @@ import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
 import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
-import net.multiphasicapps.squirreljme.unsafe.SystemVM;
+import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 /**
  * This is a record store which may be used by an application to store
@@ -64,7 +64,7 @@ public class RecordStore
 	static
 	{
 		// {@squirreljme.error DC01 No record store manager exists.}
-		_MANAGER = SystemVM.<RecordClusterManager>systemService(
+		_MANAGER = SystemEnvironment.<RecordClusterManager>systemService(
 			RecordClusterManager.class);
 		if (_MANAGER == null)
 			throw new RuntimeException("DC01");

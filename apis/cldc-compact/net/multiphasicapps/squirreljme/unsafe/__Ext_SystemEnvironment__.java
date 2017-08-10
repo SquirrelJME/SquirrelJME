@@ -11,21 +11,34 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This class contains the internal methods which are to be rewritten if they
- * are called.
+ * This contains internal environment support.
  *
- * @see SystemVM
+ * @see SystemEnvironment
  * @since 2017/08/10
  */
-final class __Ext_SystemVM__
+final class __Ext_SystemEnvironment__
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/08/10
 	 */
-	private __Ext_SystemVM__()
+	private __Ext_SystemEnvironment__()
 	{
+	}
+	
+	/**
+	 * Maps the given class service name to a class which implements the
+	 * given service.
+	 *
+	 * @param __v The class to map a service for.
+	 * @return The class which implements the given service or {@code null}
+	 * if it does not exist.
+	 * @sincem 2017/08/10 
+	 */
+	public static String mapService(String __v)
+	{
+		throw new todo.TODO();
 	}
 }
 
