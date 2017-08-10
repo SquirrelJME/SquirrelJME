@@ -8,34 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch;
+package net.multiphasicapps.squirreljme.jit.arch.ia;
 
+import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfigKey;
+import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This class acts as the base for machine code output which is implemented by
- * each architecture. The machine code output does not care about any
- * optimizations that were performed, it just writes whatever instructions to
- * some output target. It should be noted that in most cases the output here
- * is intended really only to be written once rather than having multiple
- * variants of it. The machine code outputs are not intended in any way to
- * optimize what is input.
+ * This is a machine code output which is capable of writing to Intel
+ * architecture outputs.
  *
- * @since 2017/08/07
+ * @since 2017/08/09
  */
-public abstract class MachineCodeOutput
+public class IACodeOutput
+	extends MachineCodeOutput
 {
-	/** The JIT configuration. */
-	protected final JITConfig config;
-	
-	/** The target fragment. */
-	protected final FragmentBuilder out;
-	
 	/**
-	 * Initializes the base machine code output which sets the configuration
-	 * and the target for the machine code.
+	 * Initializes the Intel architecture code output.
 	 *
 	 * @param __conf The JIT configuration.
 	 * @param __out The output fragment builder.
@@ -43,16 +35,12 @@ public abstract class MachineCodeOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/09
 	 */
-	public MachineCodeOutput(JITConfig __conf, FragmentBuilder __out)
+	public IACodeOutput(JITConfig __conf, FragmentBuilder __out)
 		throws JITException, NullPointerException
 	{
-		// Check
-		if (__conf == null || __out == null)
-			throw new NullPointerException("NARG");
+		super(__conf, __out);
 		
-		// Set
-		this.config = __conf;
-		this.out = __out;
+		throw new todo.TODO();
 	}
 }
 

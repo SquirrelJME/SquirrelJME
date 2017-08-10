@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch.mips;
+package net.multiphasicapps.squirreljme.jit.arch.ia;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -20,20 +20,20 @@ import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This manages the configuration for MIPS based targets.
+ * This manages the configuration for Intel architecture based targets.
  *
- * @since 2017/05/29
+ * @since 2017/08/09
  */
-public class MIPSConfig
+public class IAConfig
 	extends JITConfig
 {
 	/**
-	 * Initializes the MIPS configuration.
+	 * Initializes the IA configuration.
 	 *
 	 * @param __o The input JIT configuration.
 	 * @since 2017/05/30
 	 */
-	public MIPSConfig(Map<JITConfigKey, JITConfigValue> __o)
+	public IAConfig(Map<JITConfigKey, JITConfigValue> __o)
 	{
 		super(__o);
 	}
@@ -50,7 +50,7 @@ public class MIPSConfig
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		return new MIPSCodeOutput(this, __f);
+		return new IACodeOutput(this, __f);
 	}
 }
 
