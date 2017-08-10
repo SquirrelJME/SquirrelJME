@@ -17,7 +17,8 @@ import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
 import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemMail;
+import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 
 /**
  * This implements the server side of an IMC connection.
@@ -72,8 +73,17 @@ public class IMCServer
 		
 		// Listen on the mailbox
 		byte[] encname = __name.getBytes("utf-8");
-		this._mailfd = SquirrelJME.mailboxListen(encname, 0, encname.length,
-			__ver.hashCode(), __auth);
+		try
+		{
+			this._mailfd = SystemMail.mailboxListen(encname, 0, encname.length,
+				__ver.hashCode(), __auth);
+		}
+		
+		// {@squirreljme.error EC0p Could not open a mailbox for listening.}
+		catch (SystemMailException e)
+		{
+			throw new IOException("EC0p", e);
+		}
 	}
 	
 	/**
@@ -96,7 +106,7 @@ public class IMCServer
 			try
 			{
 				// Accept socket
-				int clfd = SquirrelJME.mailboxAccept(mailfd);
+				int clfd = SystemMail.mailboxAccept(mailfd);
 				
 				// {@squirreljme.error EC0j Connection closed during accept.}
 				if (clfd < 0)
@@ -105,6 +115,13 @@ public class IMCServer
 				// Create client socket
 				return new IMCClient(clfd, this.name, this.version,
 					this.authmode, interrupt);
+			}
+			
+			// {@squirreljme.error EC0q Could not accept the mailbox
+			// connection. (The descriptor)}
+			catch (SystemMailException e)
+			{
+				throw new IOException(String.format("EC0q %d", mailfd), e);
 			}
 			
 			// Request interrupted
@@ -133,7 +150,17 @@ public class IMCServer
 		this._closed = true;
 		
 		// Close it
-		SquirrelJME.mailboxClose(this._mailfd);
+		try
+		{
+			SystemMail.mailboxClose(this._mailfd);
+		}
+		
+		// {@squirreljme.error EC0r Could not close the server mailbox.
+		// (The descriptor)}
+		catch (SystemMailException e)
+		{
+			throw new IOException(String.format("EC0r %d", this._mailfd), e);
+		}
 	}
 	
 	/**
