@@ -1,0 +1,39 @@
+# 2017/08/10
+
+## 00:22
+
+So later today will probably be generation of machine code, which means the
+`FragmentBuilder` and the associated classes for output of machine code. At
+least with the split off expanded handler I can implement that rather simply
+then later on when I want something optimized I can generate machine code.
+I can also handle stuff such as software floating point and other
+virtualized operations if a given CPU does not support certain things. The
+only thing is then is when it comes to register sizes and such. Some target
+architectures I plan on supporting, such as the Z80, only have mostly
+8-bit registers and a small number of them. I could actually cheat though.
+The naive translator could always not support anything below 32-bit and
+have it require registers with a size of at least 32-bits. For 8-bit systems
+since virtually every operation would be 32-bits in size, there would need
+to be some kind of optimization to prevent blatant waste of resources. But
+actually, there could be an 8-bit and 16-bit filter that is used after the
+given output. I think that would be the best route to be honest. Maybe for
+the 8-bit/16-bit, instead of it being an expanded thing I can instead just
+have it be a `MachineCodeOutput` that can be layered. Basically when the
+`MachineCodeOutput` is to be initialized from a config, if the target is a
+8-bit or 16-bit system then the native output would be wrapped. Then it
+would handle virtualizing registers and expanding any needed mathematical
+operations as required. It would be a bit of a kludge but it could work. At
+least the 8-bit/16-bit handler would be standalone. Then the native output
+would not need to handle `int`/`long` operations (which would result in
+failure anyway).
+
+## 00:33
+
+The translators would always pretty much write to `MachineCodeOutput`
+anyway, at least mine would. The translators just take the expanded byte code
+and make operations from them.
+
+## 00:38
+
+However, the low bits filter could be used for every CPU that is below 64-bits
+since Java does have `long`. It would pretty much be write once in a way.
