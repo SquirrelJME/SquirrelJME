@@ -24,7 +24,8 @@ import javax.microedition.midlet.MIDletIdentity;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.MidletSuiteIDFormat;
 import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemMail;
+import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 
 /**
  * This implements the client side of the IMC connection.
@@ -107,12 +108,12 @@ public class IMCClient
 		try
 		{
 			// Connect to the remote server
-			this._clientfd = (fd = SquirrelJME.mailboxConnect(midb, mido, midl,
+			this._clientfd = (fd = SystemMail.mailboxConnect(midb, mido, midl,
 				svnb, 0, svnb.length, __ver.hashCode(), __authmode));
 		}
 		
 		// {@squirreljme.error EC0d Could not connect to the remote server.}
-		catch (BindException e)
+		catch (SystemMailException e)
 		{
 			throw new ConnectionNotFoundException(Objects.toString(
 				e.getMessage(), "EC0d"));
@@ -124,13 +125,23 @@ public class IMCClient
 		
 		// Otherwise obtain it from the socket
 		else
-			this.connectid = new MidletSuiteID(new String(
-				SquirrelJME.mailboxRemoteID(fd), "utf-8"),
-				MidletSuiteIDFormat.JAR);
+			try
+			{
+				this.connectid = new MidletSuiteID(new String(
+					SystemMail.mailboxRemoteID(fd), "utf-8"),
+					MidletSuiteIDFormat.JAR);
+			}
+			
+			// {@squirreljme.error EC0s Could not determine the identifier
+			// of the remote system. (The descriptor)}
+			catch (SystemMailException e)
+			{
+				throw new IOException(String.format("EC0s %d", fd), e);
+			}
 	}
 	
 	/**
-	 * Initializes a client connection which is obtained its descriptor
+	 * Initializes a client connection which obtains its descriptor
 	 * from the server.
 	 *
 	 * @param __clfd The descriptor to bind to.
@@ -138,12 +149,13 @@ public class IMCClient
 	 * @param __ver The version of the server.
 	 * @param __auth Use authentication?
 	 * @param __interrupt Are interrupts permitted?
+	 * @throws IOException If the connection could not be opened.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	IMCClient(int __clfd, String __name, MidletVersion __ver, boolean __auth,
 		boolean __interrupt)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__name == null || __ver == null)
@@ -160,8 +172,15 @@ public class IMCClient
 		try
 		{
 			this.connectid = new MidletSuiteID(new String(
-				SquirrelJME.mailboxRemoteID(__clfd), "utf-8"),
+				SystemMail.mailboxRemoteID(__clfd), "utf-8"),
 				MidletSuiteIDFormat.JAR);
+		}
+		
+		// {@squrireljme.error EC0t Could not determine the name of the
+		// remote connection. (The descriptor)}
+		catch (SystemMailException e)
+		{
+			throw new IOException(String.format("EC0t %d", __clfd), e);
 		}
 		
 		// Should never occur
@@ -190,7 +209,18 @@ public class IMCClient
 		// If no streams were opened then the client descriptor must be closed
 		// so that the descriptors do not leak
 		if (!this._opened)
-			SquirrelJME.mailboxClose(this._clientfd);
+			try
+			{
+				SystemMail.mailboxClose(this._clientfd);
+			}
+			
+			// {@squirreljme.error EC0u Could not close the client connection.
+			// (The client descriptor)}
+			catch (SystemMailException e)
+			{
+				throw new IOException(String.format("EC0u %d", this._clientfd),
+					e);
+			}
 	}
 		
 	/**

@@ -14,7 +14,8 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemMail;
+import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 
 /**
  * This wraps the mailbox datagram connection for input.
@@ -77,7 +78,17 @@ class __IMCInputStream__
 		this._closed = true;
 		
 		// Close it
-		SquirrelJME.mailboxClose(this._fd);
+		try
+		{
+			SystemMail.mailboxClose(this._fd);
+		}
+		
+		// {@squirreljme.error EC0l Could not close the mailbox for the
+		// input stream. (The descriptor)}
+		catch (SystemMailException e)
+		{
+			throw new IOException(String.format("EC0l %d", this._fd), e);
+		}
 	}
 	
 	/**
@@ -151,7 +162,7 @@ class __IMCInputStream__
 						try
 						{
 							// Read in datagram
-							int rc = SquirrelJME.mailboxReceive(fd, chan,
+							int rc = SystemMail.mailboxReceive(fd, chan,
 								work, 0, work.length, true);
 							
 							// EOF? Return read bytes or EOF
@@ -172,6 +183,14 @@ class __IMCInputStream__
 							break;
 						}
 						
+						// {@squirreljme.error EC0m Could not read from the
+						// remote destination. (The descriptor)}
+						catch (SystemMailException e)
+						{
+							throw new IOException(String.format("EC0m %d", fd),
+								e);
+						}
+						
 						// The work buffer is too small
 						catch (ArrayStoreException e)
 						{
@@ -184,10 +203,10 @@ class __IMCInputStream__
 						// number of read bytes
 						catch (InterruptedException|NoSuchElementException e)
 						{
-							// {@squirreljme.error EC0j Read interrupt and no
+							// {@squirreljme.error EC0k Read interrupt and no
 							// data was read.}
 							if (interrupt && count == 0)
-								throw new InterruptedIOException("EC0j");
+								throw new InterruptedIOException("EC0k");
 							return count;
 						}
 				}
