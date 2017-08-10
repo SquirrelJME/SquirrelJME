@@ -221,15 +221,6 @@ public class SystemMath
 	}
 	
 	/**
-	 * Not used.
-	 *
-	 * @since 2916/08/29
-	 */
-	private SoftFloat()
-	{
-	}
-	
-	/**
 	 * Adds two values.
 	 *
 	 * @param __a The first.
