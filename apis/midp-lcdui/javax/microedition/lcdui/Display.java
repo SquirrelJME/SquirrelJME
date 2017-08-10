@@ -25,7 +25,6 @@ import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
 import net.multiphasicapps.squirreljme.lcdui.NullNativeDisplay;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public class Display
 {

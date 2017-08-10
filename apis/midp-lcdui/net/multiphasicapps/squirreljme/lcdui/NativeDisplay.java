@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
 /**
  * This is the base class for native display engines which also provides
@@ -39,7 +39,7 @@ public abstract class NativeDisplay
 	static
 	{
 		// Setup native display engine
-		NativeDisplay nd = SquirrelJME.systemService(NativeDisplay.class);
+		NativeDisplay nd = SystemVM.systemService(NativeDisplay.class);
 		if (nd == null)
 			nd = new NullNativeDisplay();
 		DISPLAY = nd;
