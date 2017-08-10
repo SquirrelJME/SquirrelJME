@@ -155,6 +155,16 @@ memory for other programs running in it.
 This details the environment in which SquirrelJME operates within the host
 operating system.
 
+## System Services
+
+The `net.multiphasicapps.squirreljme.unsafe.SystemEnvironment` has a method
+called `<C>systemService(Class<C>)` which is used to obtain a system service.
+The purpose of this class is mostly by the APIs which need to access some
+implementation of an API but one which may vary across various systems and
+such. This allows the API code to be very light and not require massive amounts
+of branches or complexities to support multiple systems. The services means
+that things can be implemented on an as used basis.
+
 ## Pathname Handling
 
 Instances of the `Path` class will be strictly limited to the limitations of
