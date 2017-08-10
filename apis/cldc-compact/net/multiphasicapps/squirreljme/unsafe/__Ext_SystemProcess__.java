@@ -8,11 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains unsafe methods.
- *
- * @since 2017/02/08
- */
-
 package net.multiphasicapps.squirreljme.unsafe;
+
+/**
+ * This is the internal implementation for the system process handling to be
+ * rewritten.
+ *
+ * @see SystemProcess
+ * @since 2017/08/10
+ */
+public final class __Ext_SystemProcess__
+{
+	/**
+	 * Not used.
+	 *
+	 * @since 2017/08/10
+	 */
+	private __Ext_SystemProcess__()
+	{
+	}
+}
 

@@ -11,34 +11,214 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This class contains software 32-bit floating point support for Java
- * operations.
+ * This contains all of the software long, float, and double math operations
+ * for CPUs which are not capable of natively performing these operations.
  *
- * All methods here map to Java byte code instructions.
- *
- * @since 2016/08/29
+ * @since 2017/08/10
  */
-public final class SoftFloat
+public class SystemMath
 {
 	/** The shift to get to the exponent. */
-	private static final int _EXPONENT_SHIFT =
+	private static final int _FLOAT_EXPONENT_SHIFT =
 		23;
 	
 	/** Bits in the exponent. */
-	private static final int _EXPONENT_BITS =
+	private static final int _FLOAT_EXPONENT_BITS =
 		8;
 	
 	/** The exponent value mask. */
-	private static final int _EXPONENT_VALUE_MASK =
+	private static final int _FLOAT_EXPONENT_VALUE_MASK =
 		(1 << _EXPONENT_BITS) - 1;
 	
 	/** The fraction value mask. */
-	private static final int _FRACTION_VALUE_MASK =
+	private static final int _FLOAT_FRACTION_VALUE_MASK =
 		(1 << _EXPONENT_SHIFT) - 1;
 	
 	/** The sign bit mask. */
-	private static final int _SIGN_SHIFTED_MASK =
+	private static final int _FLOAT_SIGN_SHIFTED_MASK =
 		(1 << (_EXPONENT_BITS + _EXPONENT_SHIFT));
+	
+	/**
+	 * Not used.
+	 *
+	 * @since 2017/08/10
+	 */
+	private SystemMath()
+	{
+	}
+	
+	/**
+	 * Adds two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The result.
+	 * @since 2016/08/29
+	 */
+	public static double doubleAdd(double __a, double __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compares two values, if either side is NaN then {@code 1} is returned.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return Integer based comparison, if either side is NaN then {@code 1}
+	 * is returned.
+	 * @since 2016/08/29
+	 */
+	public static int doubleCompareGreater(double __a, double __b)
+	{
+		// If either side is NaN, stop
+		if (doubleIsNaN(__a) || doubleIsNaN(__b))
+			return 1;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compares two values, if either side is NaN then {@code -1} is returned.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return Integer based comparison, if either side is NaN then {@code -1}
+	 * is returned.
+	 * @since 2016/08/29
+	 */
+	public static int doubleCompareLesser(double __a, double __b)
+	{
+		// If either side is NaN, stop
+		if (doubleIsNaN(__a) || doubleIsNaN(__b))
+			return -1;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Divides two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The result.
+	 * @since 2016/08/29
+	 */
+	public static double doubleDivide(double __a, double __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns {@code true} if the represented double value represents NaN.
+	 *
+	 * @param __a The value to check.
+	 * @return {@code true} if the value is NaN.
+	 * @since 2016/08/29
+	 */
+	public static boolean doubleIsNaN(double __a)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Multiplies two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The result.
+	 * @since 2016/08/29
+	 */
+	public static double doubleMultiply(double __a, double __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Negates a value.
+	 *
+	 * @param __a The value to negate.
+	 * @return The result.
+	 * @since 2016/08/29
+	 */
+	public static double doubleNegate(double __a)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Remainders two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The result.
+	 * @since 2016/08/29
+	 */
+	public static double doubleRemainder(double __a, double __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Subtracts two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The result.
+	 * @since 2016/08/29
+	 */
+	public static double doubleSubtract(double __a, double __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Converts the value to a float.
+	 *
+	 * @param __d The value to convert.
+	 * @return The converted value.
+	 * @since 2016/08/29
+	 */
+	public static float doubleToFloat(double __d)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Converts the value to an integer.
+	 *
+	 * @param __d The value to convert.
+	 * @return The converted value.
+	 * @since 2016/08/29
+	 */
+	public static int doubleToInteger(double __d)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Converts the value to a long.
+	 *
+	 * @param __d The value to convert.
+	 * @return The converted value.
+	 * @since 2016/08/29
+	 */
+	public static long doubleToLong(double __d)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns a raw bit representation of the given value.
+	 *
+	 * @param __v The input value.
+	 * @return The raw bits.
+	 * @since 2017/04/01
+	 */
+	public static long doubleToRawLong(double __v)
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Not used.
@@ -223,6 +403,19 @@ public final class SoftFloat
 	}
 	
 	/**
+	 * Compares two long values and returns the sign result of the comparison.
+	 *
+	 * @param __a The first comparison.
+	 * @param __b The second comparison.
+	 * @return The sign result of comparison.
+	 * @since 2017/04/01
+	 */
+	public static int longCompare(long __a, long __b)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Translates the raw bits to the specified type of value.
 	 *
 	 * @param __v The input raw bits.
@@ -230,6 +423,18 @@ public final class SoftFloat
 	 * @since 2017/04/01
 	 */
 	public static float rawIntegerToFloat(int __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Translates the raw bits to the specified type of value.
+	 *
+	 * @param __v The input raw bits.
+	 * @return The value of those bits.
+	 * @since 2017/04/01
+	 */
+	public static double rawLongToDouble(long __v)
 	{
 		throw new todo.TODO();
 	}
