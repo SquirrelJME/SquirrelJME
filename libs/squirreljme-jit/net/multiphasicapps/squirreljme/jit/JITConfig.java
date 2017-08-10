@@ -11,9 +11,14 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
@@ -33,9 +38,22 @@ public abstract class JITConfig
 	/** The default translator to use. */
 	private static final JITConfigValue _DEFAULT_TRANSLATOR;
 	
-	/** Values stored within the configuration. */
+	/** Keys which are included by the JIT by default. */
+	private static final JITConfigKey[] _DEFAULT_KEYS =
+		new JITConfigKey[]
+		{
+			JITConfigKey.JIT_ADDRESSBITS,
+			JITConfigKey.JIT_ARCH,
+			JITConfigKey.JIT_PROFILE,
+			JITConfigKey.JIT_TRANSLATOR,
+		};
+	
+	/** Values stored within the configuration, untranslated. */
 	private final Map<JITConfigKey, JITConfigValue> _values =
 		new SortedTreeMap<>();
+	
+	/** String representation of this configuration. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes some settings.
@@ -68,32 +86,28 @@ public abstract class JITConfig
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// Fill options into the value map
+		// Obtain the set of keys which are valid to be used within the
+		// configuration. The target may have duplicates which are not
+		// processed multiple times.
+		Set<JITConfigKey> dks = new LinkedHashSet<>();
+		for (JITConfigKey dk : _DEFAULT_KEYS)
+			if (dk != null)
+				dks.add(dk);
+		for (JITConfigKey dk : targetDefaultKeys())
+			if (dk != null)
+				dks.add(dk);
+		
+		// Only fill the option map with valid keys that are used to configure
+		// the output system. Only use default keys and ignore other key
+		// values
 		Map<JITConfigKey, JITConfigValue> values = this._values;
-		for (Map.Entry<JITConfigKey, JITConfigValue> e : __o.entrySet())
-		{
-			JITConfigKey k = e.getKey();
-			JITConfigValue v = e.getValue();
-			
-			// Check
-			if (k == null || v == null)
-				throw new NullPointerException("NARG");
-			
-			values.put(k, v);
-		}
+		for (JITConfigKey dk : dks)
+			values.put(dk, __o.get(dk));
 		
 		// {@squirreljme.error JI01 CPU architecture was not specified in the
 		// JIT configuration.}
-		if (values.get(new JITConfigKey("cpu.arch")) == null)
+		if (get(JITConfigKey.JIT_ARCH) == null)
 			throw new JITException("JI01");
-		
-		// A translator is required
-		if (values.get(JITConfigKey.JIT_TRANSLATOR) == null)
-			values.put(JITConfigKey.JIT_TRANSLATOR, _DEFAULT_TRANSLATOR);
-		
-		// Is profiling enabled?
-		values.put(JITConfigKey.JIT_PROFILE, JITConfigValue.matchTrue(
-			values.get(JITConfigKey.JIT_PROFILE)));
 	}
 	
 	/**
@@ -110,6 +124,30 @@ public abstract class JITConfig
 	public abstract MachineCodeOutput createMachineCodeOutput(
 		FragmentBuilder __f)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * Returns the set of keys which are provided by default for the target
+	 * JIT configuration.
+	 *
+	 * @return The set of default keys.
+	 * @since 2017/08/10
+	 */
+	protected abstract JITConfigKey[] targetDefaultKeys();
+	
+	/**
+	 * Translates the value for the specified key and value pair which is
+	 * specific to this JIT configuration.
+	 *
+	 * @param __k The input key.
+	 * @param __v The input value, if this is {@code null} then it has not
+	 * been set and may be set to a default value if applicable.
+	 * @return The output value.
+	 * @throws NullPointerException If the key is null.
+	 * @since 2017/08/10
+	 */
+	protected abstract JITConfigValue targetTranslateValue(JITConfigKey __k,
+		JITConfigValue __v)
+		throws NullPointerException;
 	
 	/**
 	 * This creates a new section counter which is used to count text and data
@@ -150,7 +188,7 @@ public abstract class JITConfig
 		
 		// Create a translator
 		String v;
-		switch ((v = this._values.get(JITConfigKey.JIT_TRANSLATOR).toString()))
+		switch ((v = getString(JITConfigKey.JIT_TRANSLATOR)))
 		{
 				// The worst and unoptimized translator, runs using the least
 				// amount of resources however
@@ -165,14 +203,185 @@ public abstract class JITConfig
 	}
 	
 	/**
+	 * Obtains the value for the given key.
+	 *
+	 * @param __k The key to get.
+	 * @return The value for the given key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/10
+	 */
+	public final JITConfigValue get(JITConfigKey __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// As a special condition, the architecture is never translated and
+		// will never get a default value
+		JITConfigValue rv = this._values.get(__k);
+		if ("cpu.arch".equals(__k.toString()))
+			return rv;
+		
+		// Internally translate the input value so it has a default value
+		// where possible
+		rv = __internalTranslate(__k, rv);
+		
+		// Only target tranlsate if it is not special
+		if (__isSpecialKey(__k))
+			return rv;
+		return targetTranslateValue(__k, rv);
+	}
+	
+	/**
+	 * Obtains the value for the given key.
+	 *
+	 * @param __k The key to get.
+	 * @return The value for the given key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/10
+	 */
+	public final boolean getBoolean(JITConfigKey __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Get
+		JITConfigValue rv = get(__k);
+		if (rv == null)
+			return false;
+		return Boolean.valueOf(rv.toString());
+	}
+	
+	/**
+	 * Obtains the value for the given key.
+	 *
+	 * @param __k The key to get.
+	 * @return The value for the given key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/10
+	 */
+	public final String getString(JITConfigKey __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Get
+		JITConfigValue rv = get(__k);
+		if (rv == null)
+			return "null";
+		return rv.toString();
+	}
+	
+	/**
 	 * Returns a copy of the JIT configuration options.
 	 *
 	 * @return A copy of the JIT configuration options.
 	 * @since 2017/08/09
 	 */
-	public Map<JITConfigKey, JITConfigValue> options()
+	public final Map<JITConfigKey, JITConfigValue> options()
 	{
-		return new LinkedHashMap<>(this._values);
+		// The target map
+		Map<JITConfigKey, JITConfigValue> rv = new LinkedHashMap<>();
+		
+		// Make sure all resulting values are translated!
+		for (JITConfigKey k : this._values.keySet())
+			rv.put(k, get(k));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/10
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Check
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = options().toString()));
+		
+		return rv;
+	}
+	
+	/**
+	 * Internally translates the key and value to a specified value, a default
+	 * may be set if the input is null.
+	 *
+	 * @param __k The key to check.
+	 * @param __v The input value, if this is {@code null} then it has not
+	 * been set and may be set to a default value if applicable.
+	 * @return The translated value, if it was translated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/10
+	 */
+	private final JITConfigValue __internalTranslate(JITConfigKey __k,
+		JITConfigValue __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Translate?
+		switch (__k.toString())
+		{
+				// Translator, default to naive
+				// May be replaced by the target if there is a more optimal
+				// translator available
+			case "jit.translator":
+				if (__v == null)
+					return _DEFAULT_TRANSLATOR;
+				break;
+				
+				// Is profiling enabled?
+			case "jit.profile":
+				return JITConfigValue.matchesTrue(__v);
+			
+				// Unchanged
+			default:
+				break;
+		}
+		
+		// Unchanged
+		return __v;
+	}
+	
+	/**
+	 * Checks whether the given key is special, if it is then it will not
+	 * be translated by the target.
+	 *
+	 * @param __k The key to check if it is special.
+	 * @return Whether it is special or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/0810
+	 */
+	private final boolean __isSpecialKey(JITConfigKey __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Translate?
+		switch (__k.toString())
+		{
+				// Special keys
+			case "jit.profile":
+				return true;
+			
+				// Not special
+			default:
+				return false;
+		}
 	}
 }
 

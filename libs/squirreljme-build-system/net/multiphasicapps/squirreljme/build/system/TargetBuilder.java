@@ -98,7 +98,7 @@ public class TargetBuilder
 		
 		// {@squirreljme.error AO07 No CPU architecture has been specified,
 		// compilation cannot continue.}
-		JITConfigValue arch = jitopts.get(new JITConfigKey("cpu.arch"));
+		JITConfigValue arch = jitopts.get(new JITConfigKey("jit.arch"));
 		if (arch == null)
 			throw new IllegalArgumentException("AO07");
 		
@@ -119,7 +119,7 @@ public class TargetBuilder
 			throw new IllegalArgumentException(String.format("AO08 %s", arch));
 		
 		// Debug
-		System.err.printf("DEBUG -- Actual JIT Options: %s%n", jc.options());
+		System.err.printf("DEBUG -- Actual JIT Options: %s%n", jc);
 		
 		// Initialize the link state
 		this.jitconfig = jc;

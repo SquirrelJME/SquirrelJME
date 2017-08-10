@@ -85,3 +85,20 @@ parses them.
      no longer set.
    * This can be used to remove an option that has previously been provided.
 
+## JIT Configuration Options
+
+This is a list of options which may be passed to the JIT.
+
+ * `jit.addressbits` -- The number of bits which are used to represents
+   pointers to memory addresses.
+ * `jit.arch` -- The architecture to target.
+   * `arm` -- ARM Family CPUs.
+   * `ia` -- Intel Architecture (x86, x86_64).
+ * `jit.profile` -- Enable profiling, used to measure how fast methods
+   execute.
+ * `jit.translator` -- The translator to use when compiling expanded byte code
+   into native machine code.
+   * `naive` -- Naive translator, this performs no optimization and directly
+     translates expanded byte code into machine code. Although this is the
+     fastest translator it produces the slowest and largest code.
+

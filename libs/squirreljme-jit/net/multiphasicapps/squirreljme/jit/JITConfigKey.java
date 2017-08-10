@@ -19,17 +19,21 @@ package net.multiphasicapps.squirreljme.jit;
 public final class JITConfigKey
 	implements Comparable<JITConfigKey>
 {
-	/** The JIT translation engine to use. */
-	public static final JITConfigKey JIT_TRANSLATOR =
-		new JITConfigKey("jit.translator");
+	/** The number of bits used for addresses. */
+	public static final JITConfigKey JIT_ADDRESSBITS =
+		new JITConfigKey("jit.addressbits");
+	
+	/** The architecture that is being targetted. */
+	public static final JITConfigKey JIT_ARCH =
+		new JITConfigKey("jit.arch");
 	
 	/** Should profiling information be included? */
 	public static final JITConfigKey JIT_PROFILE =
 		new JITConfigKey("jit.profile");
 	
-	/** The number of bits used for addresses. */
-	public static final JITConfigKey JIT_ADDRESSBITS =
-		new JITConfigKey("jit.addressbits");
+	/** The JIT translation engine to use. */
+	public static final JITConfigKey JIT_TRANSLATOR =
+		new JITConfigKey("jit.translator");
 	
 	/** The key name. */
 	protected final String key;

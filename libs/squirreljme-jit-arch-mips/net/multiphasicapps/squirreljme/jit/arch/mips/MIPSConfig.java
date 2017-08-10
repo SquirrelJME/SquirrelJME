@@ -52,5 +52,42 @@ public class MIPSConfig
 		
 		return new MIPSCodeOutput(this, __f);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/10
+	 */
+	@Override
+	protected JITConfigKey[] targetDefaultKeys()
+	{
+		return new JITConfigKey[]
+			{
+			};
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/10
+	 */
+	@Override
+	protected JITConfigValue targetTranslateValue(JITConfigKey __k,
+		JITConfigValue __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Translate?
+		switch (__k.toString())
+		{
+				// Unchanged
+			default:
+				break;
+		}
+		
+		// Unchanged
+		return __v;
+	}
 }
 
