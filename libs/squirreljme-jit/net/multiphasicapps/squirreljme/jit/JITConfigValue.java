@@ -17,6 +17,14 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public final class JITConfigValue
 {
+	/** True. */
+	public static final JITConfigValue TRUE =
+		new JITConfigValue("true");
+	
+	/** False. */
+	public static final JITConfigValue FALSE =
+		new JITConfigValue("false");
+	
 	/** The value of the option. */
 	protected final String value;
 	
@@ -80,6 +88,48 @@ public final class JITConfigValue
 	public String toString()
 	{
 		return this.value;
+	}
+	
+	/**
+	 * Returns a configuration value if the given value matches true.
+	 *
+	 * @param __v The value to check.
+	 * @return Either {@link #TRUE} or {@link #FALSE}.
+	 * @since 2017/08/10
+	 */
+	public static JITConfigValue matchTrue(JITConfigValue __v)
+	{
+		if (__v == null)
+			return FALSE;
+		return matchTrue(__v.toString());
+	}
+	
+	/**
+	 * Returns a configuration value if the given value matches true.
+	 *
+	 * @param __v The value to check.
+	 * @return Either {@link #TRUE} or {@link #FALSE}.
+	 * @since 2017/08/10
+	 */
+	public static JITConfigValue matchTrue(String __v)
+	{
+		if (__v == null)
+			return FALSE;
+		return matchTrue("true".equals(__v));
+	}
+	
+	/**
+	 * Returns a configuration value if the given value matches true.
+	 *
+	 * @param __v The value to check.
+	 * @return Either {@link #TRUE} or {@link #FALSE}.
+	 * @since 2017/08/10
+	 */
+	public static JITConfigValue matchTrue(boolean __v)
+	{
+		if (!__v)
+			return FALSE;
+		return TRUE;
 	}
 }
 

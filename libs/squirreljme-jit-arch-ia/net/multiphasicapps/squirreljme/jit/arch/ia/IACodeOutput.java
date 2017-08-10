@@ -26,6 +26,9 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public class IACodeOutput
 	extends MachineCodeOutput
 {
+	/** The target fragment. */
+	protected final FragmentBuilder out;
+	
 	/**
 	 * Initializes the Intel architecture code output.
 	 *
@@ -38,7 +41,11 @@ public class IACodeOutput
 	public IACodeOutput(JITConfig __conf, FragmentBuilder __out)
 		throws JITException, NullPointerException
 	{
-		super(__conf, __out);
+		super(__conf);
+		
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}

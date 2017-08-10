@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
@@ -89,6 +90,10 @@ public abstract class JITConfig
 		// A translator is required
 		if (values.get(JITConfigKey.JIT_TRANSLATOR) == null)
 			values.put(JITConfigKey.JIT_TRANSLATOR, _DEFAULT_TRANSLATOR);
+		
+		// Is profiling enabled?
+		values.put(JITConfigKey.JIT_PROFILE, JITConfigValue.matchTrue(
+			values.get(JITConfigKey.JIT_PROFILE)));
 	}
 	
 	/**

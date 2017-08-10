@@ -23,6 +23,14 @@ public final class JITConfigKey
 	public static final JITConfigKey JIT_TRANSLATOR =
 		new JITConfigKey("jit.translator");
 	
+	/** Should profiling information be included? */
+	public static final JITConfigKey JIT_PROFILE =
+		new JITConfigKey("jit.profile");
+	
+	/** The number of bits used for addresses. */
+	public static final JITConfigKey JIT_ADDRESSBITS =
+		new JITConfigKey("jit.addressbits");
+	
 	/** The key name. */
 	protected final String key;
 	

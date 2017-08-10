@@ -26,6 +26,9 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public class MIPSCodeOutput
 	extends MachineCodeOutput
 {
+	/** The target fragment. */
+	protected final FragmentBuilder out;
+	
 	/**
 	 * Initializes the MIPS code output.
 	 *
@@ -38,7 +41,11 @@ public class MIPSCodeOutput
 	public MIPSCodeOutput(JITConfig __conf, FragmentBuilder __out)
 		throws JITException, NullPointerException
 	{
-		super(__conf, __out);
+		super(__conf);
+		
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
