@@ -52,15 +52,15 @@ public class SystemProcess
 	}
 	
 	/**
-	 * Is this the SquirrelJME kernel?
+	 * Is the current thread associated with the launcher?
 	 *
 	 * @return {@code true} if this is the internal sub-process which is deemed
 	 * to be the kernel, otherwise this returns {@code false}.
 	 * @since 2016/10/11
 	 */
-	public static boolean isKernel()
+	public static boolean isLauncher()
 	{
-		throw new todo.TODO();
+		return __Ext_systemprocess__.isLauncher();
 	}
 	
 	/**
