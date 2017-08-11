@@ -11,32 +11,19 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This is the internal implementation for the system process handling to be
- * rewritten.
+ * Internal system process handling.
  *
- * @see SystemProcess
- * @since 2017/08/10
+ * @since 2017/08/11
  */
 final class __Ext_systemprocess__
 {
 	/**
 	 * Not used.
 	 *
-	 * @since 2017/08/10
+	 * @since 2017/08/11
 	 */
 	private __Ext_systemprocess__()
 	{
-	}
-	
-	/**
-	 * Returns {@code true} if this is the launcher thread.
-	 *
-	 * @return {@code true} if this is the launcher thread.
-	 * @since 2017/08/11
-	 */
-	public boolean isLauncher()
-	{
-		throw new todo.TODO();
 	}
 }
 
