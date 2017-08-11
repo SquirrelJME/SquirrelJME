@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
+import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -67,6 +68,20 @@ public class DumpTranslator
 		// Mark that this was opened
 		__printf("Opened (writing to %s@%08x)", __o.getClass().getName(),
 			System.identityHashCode(__o));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/11
+	 */
+	@Override
+	public ExpandedBasicBlock basicBlock(BasicBlockKey __key)
+		throws JITException, NullPointerException
+	{	
+		// Note
+		__printf("Open block: %s", __key);
+		
+		throw new todo.TODO();
 	}
 	
 	/**

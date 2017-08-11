@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.trans.simulator;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
+import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
 
@@ -45,6 +46,21 @@ public class SimulatorTranslator
 		
 		// Set
 		this.out = __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/11
+	 */
+	@Override
+	public ExpandedBasicBlock basicBlock(BasicBlockKey __key)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

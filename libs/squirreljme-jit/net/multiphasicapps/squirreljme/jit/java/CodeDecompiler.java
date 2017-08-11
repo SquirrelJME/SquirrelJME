@@ -208,20 +208,27 @@ public class CodeDecompiler
 			// errors.
 			for (BasicBlock bb : __code.basicBlocks())
 			{
+				// Obtain key
+				BasicBlockKey key = bb.jumpTarget();
+				
 				// Debug
-				System.err.printf("DEBUG -- Decode BB %s%n", bb.jumpTarget());
+				System.err.printf("DEBUG -- Decode BB %s%n", key);
 			
 				// Setup base block
-				if (true)
-					throw new todo.TODO();
-			
-				// Go through instructions for the block and parse them
-				for (Instruction i : bb)
+				try (ExpandedBasicBlock ebb = ebc.basicBlock(key))
 				{
-					// Debug
-					System.err.printf("DEBUG -- Decode IN %s%n", i);
+					// Go through instructions for the block and parse them
+					for (Instruction i : bb)
+					{
+						// Debug
+						System.err.printf("DEBUG -- Decode IN %s%n", i);
 				
-					throw new todo.TODO();
+						throw new todo.TODO();
+					}
+					
+					// Finish basic block output
+					if (true)
+						throw new todo.TODO();
 				}
 			
 				throw new todo.TODO();
