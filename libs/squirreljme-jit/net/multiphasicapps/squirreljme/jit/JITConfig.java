@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.arch.DumpMachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
@@ -210,6 +211,10 @@ public abstract class JITConfig
 		
 		// This will be wrapped by the translator
 		MachineCodeOutput mco = createMachineCodeOutput(__f);
+		
+		// If dumping is enabled, wrap this output with a dumper
+		if (getBoolean(JITConfigKey.JIT_DUMP_ASSEMBLER))
+			mco = new DumpMachineCodeOutput(mco);
 		
 		// Has the translator been cached already?
 		Reference<TranslatorService> ref = this._translator;

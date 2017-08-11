@@ -8,54 +8,52 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.trans;
+package net.multiphasicapps.squirreljme.jit.arch;
 
 import java.io.PrintStream;
-import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This is a translator which dumps any methods which are called to standard
- * error and then forwards the arguments to another translator. This is used
- * for debugging the byte code expander.
+ * This is a debug machine code output which dumps any instructions for the
+ * assembler to an output stream. This is used for debugging the assembler.
  *
  * @since 2017/08/11
  */
-public class DumpTranslator
-	implements ExpandedByteCode
+public class DumpMachineCodeOutput
+	extends MachineCodeOutput
 {
 	/** The stream to print to. */
 	protected final PrintStream print;
 	
 	/** The translator to wrap. */
-	protected final ExpandedByteCode wrap;
+	protected final MachineCodeOutput wrap;
 	
 	/**
-	 * Initializes the dumping translator.
+	 * Initializes the dumping assembler.
 	 *
-	 * @param __o The target for byte code expansion.
+	 * @param __o The target for machine code generation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public DumpTranslator(ExpandedByteCode __o)
+	public DumpMachineCodeOutput(MachineCodeOutput __o)
 		throws NullPointerException
 	{
 		this(System.err, __o);
 	}
 	
 	/**
-	 * Initializes the dumping translator.
+	 * Initializes the dumping assembler.
 	 *
 	 * @param __p The stream to print to.
-	 * @param __o The target for byte code expansion.
+	 * @param __o The target for machine code generation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public DumpTranslator(PrintStream __p, ExpandedByteCode __o)
+	public DumpMachineCodeOutput(PrintStream __p, MachineCodeOutput __o)
 		throws NullPointerException
 	{
+		super(__o.config());
+		
 		// Check
 		if (__p == null || __o == null)
 			throw new NullPointerException("NARG");
@@ -70,17 +68,6 @@ public class DumpTranslator
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/11
-	 */
-	@Override
-	public void close()
-	{
-		__printf("Closing");
-		this.wrap.close();
-	}
-	
-	/**
 	 * Prints formatted text on a line.
 	 *
 	 * @param __fmt The format to print.
@@ -91,7 +78,7 @@ public class DumpTranslator
 	{
 		// Print a nice header first
 		PrintStream print = this.print;
-		print.print("TRANSLATOR@");
+		print.print("ASSEMBLER@");
 		print.print(System.identityHashCode(this));
 		print.print(" -- ");
 		
