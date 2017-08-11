@@ -4,8 +4,9 @@ X-SquirrelJME-Error: AL
 X-SquirrelJME-Name: Metaproject For All JITs
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: squirreljme-jit-arch-mips 
- squirreljme-jit-arch-ia 
+X-SquirrelJME-Depends: squirreljme-jit-arch-ia 
+ squirreljme-jit-arch-mips 
+ squirreljme-jit-arch-mmix 
  squirreljme-jit-trans-naive 
  squirreljme-jit-trans-simulator 
 Microedition-Configuration: CLDC-1.8-Compact

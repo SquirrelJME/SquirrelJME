@@ -7,6 +7,8 @@ path that SquirrelJME will be taking in its design.
 For day to day notes on my current thought process you may look within the
 [developer notes](assets/developer-notes/index.mkd).
 
+For the current route of development see the [route document](route.mkd).
+
 Because Java ME is different from Java SE, there are some considerations,
 advantages, and disadvantages to consider when reading this document. Note that
 this document is mostly within the scope of Java ME and not Java SE.

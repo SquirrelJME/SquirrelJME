@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 67751ab8-6387-419b-8260-00afc9f7052e
+X-SquirrelJME-Error: BL
+X-SquirrelJME-Name: squirreljme-jit-arch-mmix
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: squirreljme-jit-arch-mmix
+X-SquirrelJME-Depends: squirreljme-jit
+Microedition-Configuration: CLDC-1.8-Compact
+
