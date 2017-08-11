@@ -104,7 +104,19 @@ public abstract class JITConfig
 		for (JITConfigKey dk : dks)
 			values.put(dk, __o.get(dk));
 		
-		// Look for unsafe class rewrites
+		// Look for options such as unsafe class rewrites and add them
+		for (Map.Entry<JITConfigKey, JITConfigValue> e : __o.entrySet())
+		{
+			JITConfigKey k = e.getKey();
+			JITConfigValue v = e.getValue();
+			
+			// Class rename, always include them
+			if (k != null && k.toString().startsWith("jit.rename."))
+			{
+				if (v != null)
+					values.put(k, v);
+			}
+		}
 		
 		// {@squirreljme.error JI01 CPU architecture was not specified in the
 		// JIT configuration.}

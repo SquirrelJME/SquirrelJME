@@ -112,17 +112,19 @@ internal package private classes in the form of `__Ext_<Name>__` contain
 internal and to be renamed by the JIT implementations of class `<Name>`. So for
 example the public class `net.multiphasicapps.squirreljme.unsafe.SystemVM`. It
 internally checks and then calls methods within
-`net.multiphasicapps.squirreljme.unsafe.__Ext_SystemVM__` or other internal
+`net.multiphasicapps.squirreljme.unsafe.__Ext_systemvm__` or other internal
 classes as needed. When the JIT sees a static method call to an `__Ext_` class
 it will rename it according to the JIT configuration. This means that any calls
 to that class end up turning into calls to
-`net.multiphasicapps.squirreljme.unsafe.__Int_MIPSSystemVM__` which implements
+`net.multiphasicapps.squirreljme.unsafe.__Int_mipssystemvm__` which implements
 the required classes to support the VM on MIPS systems.
 
 This renaming in turn allows the build environment to work like a normal Java
 program without requiring major rewriting or having various kludges between
 the build environment and SquirrelJME. This also reduces duplicate code since
 the code can be shared between the two.
+
+Note that all renames are lowercase and only lowercased renames are used.
 
 ## Portability
 
