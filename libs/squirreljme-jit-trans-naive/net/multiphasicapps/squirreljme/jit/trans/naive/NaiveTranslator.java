@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.trans.naive;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
+import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This is the naive translator which performs no optimizations and essentially
@@ -46,6 +48,21 @@ public class NaiveTranslator
 		
 		// Set
 		this.out = __out;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/11
+	 */
+	@Override
+	public ExpandedBasicBlock basicBlock(BasicBlockKey __key)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
