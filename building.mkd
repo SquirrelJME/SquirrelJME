@@ -151,7 +151,8 @@ CPU.
 
 ## `jit.rename` Namespace
 
-This namespace contains the unsafe renames, the keys are in the form of:
+This namespace contains the unsafe renames which are only performed in the
+package `net.multiphasicapps.squirreljme.unsafe`, the pairs are in the form of:
 
  * `jit.rename.systemvm=examplesystemvm`
 
