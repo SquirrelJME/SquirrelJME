@@ -8,33 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.unsafe;
-
 /**
- * Internal system process handling.
+ * This package contains the translator for the simulator.
  *
  * @since 2017/08/11
  */
-final class __Ext_systemprocess__
-{
-	/**
-	 * Not used.
-	 *
-	 * @since 2017/08/11
-	 */
-	private __Ext_systemprocess__()
-	{
-	}
-	
-	/**
-	 * The build system always has the most permission to do anything.
-	 *
-	 * @return Always {@code true}.
-	 * @since 2017/08/11
-	 */
-	public static boolean isLauncher()
-	{
-		return true;
-	}
-}
+
+package net.multiphasicapps.squirreljme.jit.trans.simulator;
 

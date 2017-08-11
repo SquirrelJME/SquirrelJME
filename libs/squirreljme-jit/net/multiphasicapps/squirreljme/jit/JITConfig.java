@@ -18,13 +18,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
-import net.multiphasicapps.squirreljme.jit.trans.naive.NaiveTranslator;
+import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -35,6 +36,10 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public abstract class JITConfig
 {
+	/** Translators available for usage. */
+	private static final ServiceLoader<TranslatorService> _TRANSLATORS =
+		ServiceLoader.<TranslatorService>load(TranslatorService.class);
+	
 	/** The default translator to use. */
 	private static final JITConfigValue _DEFAULT_TRANSLATOR;
 	
@@ -54,6 +59,9 @@ public abstract class JITConfig
 	
 	/** String representation of this configuration. */
 	private volatile Reference<String> _string;
+	
+	/** The translator service to use. */
+	private volatile Reference<TranslatorService> _translator;
 	
 	/**
 	 * Initializes some settings.
@@ -200,20 +208,38 @@ public abstract class JITConfig
 		// This will be wrapped by the translator
 		MachineCodeOutput mco = createMachineCodeOutput(__f);
 		
-		// Create a translator
-		String v;
-		switch ((v = getString(JITConfigKey.JIT_TRANSLATOR)))
+		// Has the translator been cached already?
+		Reference<TranslatorService> ref = this._translator;
+		TranslatorService translator = null;
+		
+		// Locate the translator and cache it, since it will be used multiple
+		// times
+		String want = getString(JITConfigKey.JIT_TRANSLATOR);
+		if (ref == null || null == (translator = ref.get()))
 		{
-				// The worst and unoptimized translator, runs using the least
-				// amount of resources however
-			case "naive":
-				return new NaiveTranslator(mco);
+			// Locate one
+			ServiceLoader<TranslatorService> translators = _TRANSLATORS;
+			synchronized (translators)
+			{
+				for (TranslatorService sv : translators)
+					if (want.equals(sv.name()))
+					{
+						translator = sv;
+						break;
+					}
+			}
 			
-				// {@squirreljme.error JI20 The specified translator is not
-				// valid. (The translator)}
-			default:
-				throw new JITException(String.format("JI20", v));
+			// {@squirreljme.error JI20 The specified translator is not
+			// valid. (The translator)}
+			if (translator == null)
+				throw new JITException(String.format("JI20", want));
+			
+			// Cache
+			this._translator = new WeakReference<>(translator);
 		}
+		
+		// Create instance
+		return translator.createTranslator(mco);
 	}
 	
 	/**
