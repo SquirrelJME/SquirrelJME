@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This implements the launcher which uses the 
  MEEP Line User Interface to interact with the user.
-X-SquirrelJME-Depends: meep-lui squirreljme-launcher-base meep-midlet
+X-SquirrelJME-Depends: squirreljme-launcher meep-lui meep-midlet
 X-SquirrelJME-Error: CN
 X-SquirrelJME-UUID: 5ee74e69-0c4d-465e-acea-dc50507a1b19
 MIDlet-1: SquirrelJME Launcher (Console), , net.multiphasicapps.launcher
