@@ -37,3 +37,89 @@ and make operations from them.
 
 However, the low bits filter could be used for every CPU that is below 64-bits
 since Java does have `long`. It would pretty much be write once in a way.
+
+## 14:04
+
+I can probably handle default values a bit better if I had a linear process of
+handling them. Basically if I did not make the `JITConfig` a `Map`, I could
+instead have it where a get of any value will return something specific
+depending on the internal value or derived values.
+
+## 14:06
+
+And `JITConfig` is not a `Map` so that is good.
+
+## 14:54
+
+I am thinking that perhaps I should target x86 first. That is where most of
+the user base today is on and having extra users could be useful to be honest.
+Other architectures could follow after that. At least with more users it would
+be much easier to find issues because there would be a larger pool of users.
+
+## 16:17
+
+I could make SquirrelJME output an object that is linked but that would be a
+bit messy. One thing about writing a compiler is the various ABIs for variants
+of systems. For example, I should link with the C library dynamically although
+I could use a static library. I should probably keep my library footprint to
+a minimum. One big thing though with native calls is how methods are treated
+and such. I suppose what I would need is special JIT library glue which
+matches a target API and provides an interface for execution. Basically
+something which wraps C level API and is in a way auto-generated so to speak.
+I would say that this stuff goes into unsafe and is kept hidden. When the
+wrapper `SquirrelJME` wishes to do things, it forwards to that. But thinking
+about it, having everything in a single class is a bit ugly, I can split it
+up. Basically, I can have the unsafe package have quite a number of classes
+where internal stuff is specially crafted.
+
+## 16:24
+
+Basically, I have a bunch of outer exposed classes. These then forward their
+calls to internal classes. So `SquirrelJME` calls into `__SquirrelJME__` after
+doing some basic checks. However any call to `__SquirrelJME__` would then
+instead call elsewhere, so it would just be rewritten to another class that
+handles the things. Then that class would instead call other architecture
+specific code. I could probably have a special naming setup for the class
+rewriting. Perhaps just `__Ext_Foo__` where `Foo` is a class which can be
+rewritten.
+
+## 16:31
+
+So anything that is operating specific that cannot internally be handled by
+SquirrelJME in `SquirrelJME` is to be removed. This would be like standard
+output and stuff like getting the current time or killing the VM.
+
+## 16:34
+
+I wonder if I should nuke mailboxes. They do work but I wonder if I should
+keep them or move them around in a way where they work via the `__Ext_` system
+and where the build system can use the same exact code.
+
+## 16:37
+
+The mailboxes are used by IMC though, so I need those. I will just commonize
+their code between the build system and SquirrelJME. At least with this, I can
+make it so that I only need to implement the `__Ext_` classes in the build
+system while they can still be rewritten as such.
+
+## 16:59
+
+Going to use a new checked exception for mailbox failures. This would make
+things much easier personally.
+
+## 17:52
+
+Ok so now I have common code between the build system and SquirrelJME, which
+is good, because the nastily duplicated interfaces were a bit ugly.
+
+## 18:04
+
+So now system services can be looked up via properties so they can be
+overidden if needed.
+
+## 18:11
+
+I believe `systemService` should not belong in `SystemVM`? Because that is
+very much an OS related thing. Maybe instead add an `SystemEnvironment` which
+handles that. The VM I want to be very OS independent as it can just be
+machine code for a target.
