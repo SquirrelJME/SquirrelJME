@@ -78,7 +78,7 @@ public class DumpMachineCodeOutput
 	{
 		// Print a nice header first
 		PrintStream print = this.print;
-		print.print("ASMBLR@");
+		print.print("MACHN@");
 		print.printf("%08x", System.identityHashCode(this));
 		print.print(" -- ");
 		

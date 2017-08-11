@@ -11,79 +11,59 @@
 package net.multiphasicapps.squirreljme.jit.trans;
 
 import java.io.PrintStream;
-import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This is a translator which dumps any methods which are called to standard
- * error and then forwards the arguments to another translator. This is used
- * for debugging the byte code expander.
+ * This dumps the basic block.
  *
  * @since 2017/08/11
  */
-public class DumpTranslator
-	implements ExpandedByteCode
+public class DumpBasicBlock
+	extends ExpandedBasicBlock
 {
 	/** The stream to print to. */
 	protected final PrintStream print;
 	
-	/** The translator to wrap. */
-	protected final ExpandedByteCode wrap;
+	/** The target to wrap. */
+	protected final ExpandedBasicBlock wrap;
+	
+	/** The code string for the dump. */
+	protected final String codestring;
 	
 	/**
-	 * Initializes the dumping translator.
-	 *
-	 * @param __o The target for byte code expansion.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/11
-	 */
-	public DumpTranslator(ExpandedByteCode __o)
-		throws NullPointerException
-	{
-		this(System.err, __o);
-	}
-	
-	/**
-	 * Initializes the dumping translator.
+	 * Initializes the basic block dumper.
 	 *
 	 * @param __p The stream to print to.
-	 * @param __o The target for byte code expansion.
+	 * @param __w The basic block output to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public DumpTranslator(PrintStream __p, ExpandedByteCode __o)
+	public DumpBasicBlock(PrintStream __p, ExpandedBasicBlock __w,
+		BasicBlockKey __k)
 		throws NullPointerException
 	{
 		// Check
-		if (__p == null || __o == null)
+		if (__p == null || __w == null || __k == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.print = __p;
-		this.wrap = __o;
+		this.wrap = __w;
+		
+		// Determine the code string, limit to 8 characters
+		String codestring = __k.toString();
+		int n = codestring.length();
+		if (n > 8)
+			codestring = codestring.substring(0, 8);
+		else if (n < 8)
+			codestring = String.format("%-8s", codestring);
+		this.codestring = codestring;
 		
 		// Mark that this was opened
-		__printf("Opened (writing to %s@%08x)", __o.getClass().getName(),
-			System.identityHashCode(__o));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/11
-	 */
-	@Override
-	public ExpandedBasicBlock basicBlock(BasicBlockKey __key)
-		throws JITException, NullPointerException
-	{	
-		// Note
-		__printf("Open block: %s", __key);
-		
-		// Dump basic blocks
-		return new DumpBasicBlock(this.print, this.wrap.basicBlock(__key),
-			__key);
+		__printf("Opened (writing to %s@%08x)", __w.getClass().getName(),
+			System.identityHashCode(__w));
 	}
 	
 	/**
@@ -108,8 +88,8 @@ public class DumpTranslator
 	{
 		// Print a nice header first
 		PrintStream print = this.print;
-		print.print("TRANS@");
-		print.printf("%08x", System.identityHashCode(this));
+		print.print("BLOCK@");
+		print.print(this.codestring);
 		print.print(" -- ");
 		
 		// Print formatted string
