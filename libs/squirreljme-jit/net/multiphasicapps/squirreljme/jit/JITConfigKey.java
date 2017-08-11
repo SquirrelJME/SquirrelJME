@@ -27,6 +27,14 @@ public final class JITConfigKey
 	public static final JITConfigKey JIT_ARCH =
 		new JITConfigKey("jit.arch");
 	
+	/** Should the assembler be dumped? */
+	public static final JITConfigKey JIT_DUMP_ASSEMBLER =
+		new JITConfigKey("jit.dump.assembler");
+	
+	/** Should the translator code be dumped? */
+	public static final JITConfigKey JIT_DUMP_TRANSLATOR =
+		new JITConfigKey("jit.dump.translator");
+	
 	/** Should profiling information be included? */
 	public static final JITConfigKey JIT_PROFILE =
 		new JITConfigKey("jit.profile");
