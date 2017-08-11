@@ -5,12 +5,54 @@ SquirrelJME requires the following before it can be built:
  * Java 7 or newer Virtual Machine
  * Java 7 or newer Compiler
 
-# Notes on Running
+## Notes on Running
 
 SquirrelJME uses a simplified error system which starts with a two capital
 letter prefix followed by two digits and letters.
 
  * [List of Error Codes](http://multiphasicapps.net/uv/errors.mkd)
+
+## Installing Java
+
+SquirrelJME requires a Java 7 virtual machine in order to build itself.
+
+### Common Linux Distributions
+
+If you use a common and popular Linux distribution it likely has a JDK
+available.
+
+ * Arch
+   * See <https://wiki.archlinux.org/index.php/Java>
+ * Debian, Ubuntu, and derivatives
+   * See <https://wiki.debian.org/Java>
+   * One of the following depending on package availability
+     * `apt-get install openjdk-7-jdk`
+     * `apt-get install openjdk-8-jdk`
+     * `apt-get install openjdk-9-jdk`
+ * Gentoo
+   * See <https://wiki.gentoo.org/wiki/Java>
+
+### Oracle's JDK
+
+Oracle's JDK supports the following (as of this writing):
+
+ * Linux
+ * Mac OS X
+ * ReactOS (as Windows)
+ * Solaris
+ * Windows
+ * Wine (as Windows)
+
+Oracle's Java JDK can be downloaded from:
+
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ 
+Ensure that you **download and install** the ***JDK***.
+
+If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
+variables refers to the JDK's binary directory:
+
+ * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
 # Bootstrap Build Environment
 
@@ -24,6 +66,10 @@ the remainder of it is the same regardless of the system used.
 
 ### ReactOS and Windows
 
+Oracle's Java JDK can be downloaded from:
+
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+
 The script used for building is `build.cmd`. This requires the command prompt
 which may be accessed by running `cmd`. This may be found in the start menu
 or may be accessed via **Windows Key + R**, typing `cmd`, then hitting enter.
@@ -35,11 +81,6 @@ code is located in the example `c:\users\stephanie\desktop\squirreljme`:
  * `mkdir squirreljme-build`
  * `cd squirreljme-build`
  * `c:\users\stephanie\desktop\squirreljme\build.cmd`
-
-Make sure that the `PATH` environment variables refers to the JDK's binary
-directory:
-
- * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
 ### UNIX-Like: Linux, Mac OS X, Solaris, BSD, etc.
 
@@ -77,6 +118,8 @@ parses them.
    * The location the build system looks for projects which are not provided
      by SquirrelJME should be the `bins` directory in the build location unless
      it has been overridden by a system property.
+     * For the JARs to be recognized by SquirrelJME they must be compatible
+       with Java ME, this includes having a compatible `META-INF/MANIFEST.MF`.
  * `+key=value`
    * This adds the specified key and value to the JIT configuration, replacing
      a value which has previously been set.
