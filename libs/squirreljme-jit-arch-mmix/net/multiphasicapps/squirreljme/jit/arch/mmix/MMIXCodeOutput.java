@@ -46,7 +46,8 @@ public class MMIXCodeOutput
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.out = __out;
 	}
 }
 
