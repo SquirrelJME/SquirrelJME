@@ -168,6 +168,10 @@ This is a list of options which may be passed to the JIT.
  * `jit.arch` -- The architecture to target.
    * `arm` -- ARM Family CPUs.
    * `ia` -- Intel Architecture (x86, x86_64).
+ * `jit.dump.assembler` -- If set to true then this will dump all commands sent
+   to the assembler.
+ * `jit.dump.translator` -- If set to true then this will dump all byte code
+   which has been expanded within basic blocks.
  * `jit.profile` -- Enable profiling, used to measure how fast methods
    execute.
  * `jit.translator` -- The translator to use when compiling expanded byte code

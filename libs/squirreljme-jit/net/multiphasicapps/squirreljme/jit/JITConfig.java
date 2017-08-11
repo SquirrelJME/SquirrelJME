@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
+import net.multiphasicapps.squirreljme.jit.trans.DumpTranslator;
 import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
@@ -49,6 +50,8 @@ public abstract class JITConfig
 		{
 			JITConfigKey.JIT_ADDRESSBITS,
 			JITConfigKey.JIT_ARCH,
+			JITConfigKey.JIT_DUMP_ASSEMBLER,
+			JITConfigKey.JIT_DUMP_TRANSLATOR,
 			JITConfigKey.JIT_PROFILE,
 			JITConfigKey.JIT_TRANSLATOR,
 		};
@@ -238,8 +241,12 @@ public abstract class JITConfig
 			this._translator = new WeakReference<>(translator);
 		}
 		
-		// Create instance
-		return translator.createTranslator(mco);
+		// Create instance, if dumping is enabled then dump anything sent to
+		// this
+		ExpandedByteCode rv = translator.createTranslator(mco);
+		if (getBoolean(JITConfigKey.JIT_DUMP_TRANSLATOR))
+			return new DumpTranslator(rv);
+		return rv;
 	}
 	
 	/**
