@@ -63,7 +63,7 @@ public class DumpMachineCodeOutput
 		this.wrap = __o;
 		
 		// Mark that this was opened
-		__printf("Opened (writing to %s@%d)", __o.getClass().getName(),
+		__printf("Opened (writing to %s@%08x)", __o.getClass().getName(),
 			System.identityHashCode(__o));
 	}
 	
@@ -78,8 +78,8 @@ public class DumpMachineCodeOutput
 	{
 		// Print a nice header first
 		PrintStream print = this.print;
-		print.print("ASSEMBLER@");
-		print.print(System.identityHashCode(this));
+		print.print("ASMBLR@");
+		print.printf("%08x", System.identityHashCode(this));
 		print.print(" -- ");
 		
 		// Print formatted string

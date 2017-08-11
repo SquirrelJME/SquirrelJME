@@ -65,7 +65,7 @@ public class DumpTranslator
 		this.wrap = __o;
 		
 		// Mark that this was opened
-		__printf("Opened (writing to %s@%d)", __o.getClass().getName(),
+		__printf("Opened (writing to %s@%08x)", __o.getClass().getName(),
 			System.identityHashCode(__o));
 	}
 	
@@ -91,8 +91,8 @@ public class DumpTranslator
 	{
 		// Print a nice header first
 		PrintStream print = this.print;
-		print.print("TRANSLATOR@");
-		print.print(System.identityHashCode(this));
+		print.print("TRANSL@");
+		print.printf("%08x", System.identityHashCode(this));
 		print.print(" -- ");
 		
 		// Print formatted string
