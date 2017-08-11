@@ -255,19 +255,5 @@ public final class SystemVM
 	{
 		throw new todo.TODO();
 	}
-	
-	/**
-	 * Throws the specified throwable, on successful throws this method does
-	 * not return. This method also causes the stack to unwind.
-	 *
-	 * @param __t The throwable to throw
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/03/31
-	 */
-	public static void throwThrowable(Throwable __t)
-		throws NullPointerException
-	{
-		throw new todo.TODO();
-	}
 }
 
