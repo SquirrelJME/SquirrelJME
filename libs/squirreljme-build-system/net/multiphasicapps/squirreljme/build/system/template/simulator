@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+jit-jit-arch: mmix
+jit-jit-translator: simulator
+
