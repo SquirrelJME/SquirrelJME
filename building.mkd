@@ -1,5 +1,14 @@
 # Building
 
+------------------------------------------------------------------------------
+
+***Patience is required:***
+***Currently SquirrelJME is in a state of development and does not produce***
+***any actual runnable binaries yet. There is no current predicated time***
+***when SquirrelJME will be able to run general software and games.***
+
+------------------------------------------------------------------------------
+
 SquirrelJME requires the following before it can be built:
 
  * Java 7 or newer Virtual Machine
@@ -95,9 +104,6 @@ code is located in the example `/home/stephanie/squirreljme`:
  * `/home/stephanie/squirreljme/build.sh`
 
 # Standard Building
-
-***Currently SquirrelJME is in a state of development and does not produce***
-***any actual runnable binaries yet.***
 
 Compiling SquirrelJME binaries to run on a target system uses the following
 format, the main command being `target`.
