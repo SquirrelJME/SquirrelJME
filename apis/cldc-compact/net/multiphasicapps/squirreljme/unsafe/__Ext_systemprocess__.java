@@ -34,7 +34,7 @@ final class __Ext_systemprocess__
 	 * @return {@code true} if this is the launcher thread.
 	 * @since 2017/08/11
 	 */
-	public boolean isLauncher()
+	public static boolean isLauncher()
 	{
 		throw new todo.TODO();
 	}

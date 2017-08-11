@@ -5,7 +5,9 @@ X-SquirrelJME-Name: Metaproject For All JITs
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: squirreljme-jit-arch-mips 
- squirreljme-jit-arch-ia
+ squirreljme-jit-arch-ia 
+ squirreljme-jit-trans-naive 
+ squirreljme-jit-trans-simulator 
 Microedition-Configuration: CLDC-1.8-Compact
 X-SquirrelJME-Description: This is a metaproject which depends on 
  every supported architecture and operating system. This is mostly 

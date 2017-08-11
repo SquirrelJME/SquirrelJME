@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 6edc3202-ba14-45be-9ce9-f65e43286935
+X-SquirrelJME-Error: AY
+X-SquirrelJME-Name: Naive JIT Translator
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This projects the naive JIT translator 
+ which performs no optimizations.
+X-SquirrelJME-Depends: squirreljme-jit
+Microedition-Configuration: CLDC-1.8-Compact
+
