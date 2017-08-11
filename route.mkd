@@ -1,0 +1,10 @@
+# Design Route
+
+The current design route is implementing the simulator.
+
+ * Assembling of operations to MMIX instructions.
+ * Translating using a very naive translator made specifically for the
+   MMIX simulator.
+ * Output a binary.
+ * Write the simulator to run the resulting binary.
+
