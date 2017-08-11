@@ -12,56 +12,47 @@ package net.multiphasicapps.squirreljme.jit.trans.simulator;
 
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
-import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
 
 /**
- * This is the simulator translator which generates MMIX operations using a
- * very simple approach.
+ * This expands basic blocks for the simulator.
  *
  * @since 2017/08/11
  */
-public class SimulatorTranslator
-	implements ExpandedByteCode
+public class SimulatorBasicBlock
+	extends ExpandedBasicBlock
 {
-	/** The output MMIX code. */
+	/** The owning translator. */
+	protected final SimulatorTranslator owner;
+	
+	/** The key for this block. */
+	protected final BasicBlockKey key;
+	
+	/** The machine code to write to. */
 	protected final MachineCodeOutput out;
 	
 	/**
-	 * Initializes the output.
+	 * Initializes the basic block writer for the simulator.
 	 *
-	 * @param __o The output where machine code goes.
-	 * @throws JITException If it could not be initialized.
+	 * @param __own The owning simulator.
+	 * @param __key The key for this basic block.
+	 * @param __out The assembler to write code to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public SimulatorTranslator(MachineCodeOutput __o)
-		throws JITException, NullPointerException
+	public SimulatorBasicBlock(SimulatorTranslator __own, BasicBlockKey __key,
+		MachineCodeOutput __out)
+		throws NullPointerException
 	{
 		// Check
-		if (__o == null)
+		if (__own == null || __key == null || __out == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.out = __o;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/11
-	 */
-	@Override
-	public ExpandedBasicBlock basicBlock(BasicBlockKey __key)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__key == null)
-			throw new NullPointerException("NARG");
-		
-		// Create
-		return new SimulatorBasicBlock(this, __key, this.out);
+		this.owner = __own;
+		this.key = __key;
+		this.out = __out;
 	}
 	
 	/**
@@ -70,8 +61,9 @@ public class SimulatorTranslator
 	 */
 	@Override
 	public void close()
+		throws JITException
 	{
-		// No closing has to be performed
+		throw new todo.TODO();
 	}
 }
 
