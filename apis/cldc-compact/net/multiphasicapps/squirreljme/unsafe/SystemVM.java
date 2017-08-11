@@ -18,7 +18,7 @@ import java.io.InputStream;
  * functions. These methods are specific to SquirrelJME and using them will
  * cause your code to not be compatible with other virtual machines.
  *
- * @see __Ext_SystemVM__
+ * @see __Ext_systemvm__
  * @since 2017/08/10
  */
 public final class SystemVM

@@ -15,14 +15,14 @@ package net.multiphasicapps.squirreljme.unsafe;
  *
  * @since 2017/08/10
  */
-final class __Ext_SystemEnvironment__
+final class __Ext_systemenvironment__
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/08/10
 	 */
-	private __Ext_SystemEnvironment__()
+	private __Ext_systemenvironment__()
 	{
 	}
 	

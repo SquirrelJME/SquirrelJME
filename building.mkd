@@ -135,6 +135,29 @@ parses them.
      no longer set.
    * This can be used to remove an option that has previously been provided.
 
+# JIT Configuration Options
+
+These options may be used when creating configurations to have the JIT compile
+for a specific platform.
+
+## `jit` Namespace
+
+These options affect the operation of the JIT.
+
+## `jit.target` Namespace
+
+These options only affect the target depending on the target architecture and
+CPU.
+
+## `jit.rename` Namespace
+
+This namespace contains the unsafe renames, the keys are in the form of:
+
+ * `jit.rename.systemvm=examplesystemvm`
+
+In that example any static method calls for methods in `__Ext_systemvm__` will
+be rewritten to use `__Int_examplesystemvm__` as the class instead.
+
 ## JIT Configuration Options
 
 This is a list of options which may be passed to the JIT.

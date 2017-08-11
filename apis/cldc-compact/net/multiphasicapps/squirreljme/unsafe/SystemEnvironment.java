@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * This contains the interfaces for the system environment.
  *
- * @see __Ext_SystemEnvironment__
+ * @see __Ext_systemenvironment__
  * @since 2017/08/10
  */
 public final class SystemEnvironment
@@ -87,7 +87,7 @@ public final class SystemEnvironment
 			
 			// See if the system internally declares a service class for the
 			// given service
-			vclass = __Ext_SystemEnvironment__.mapService(sname);
+			vclass = __Ext_systemenvironment__.mapService(sname);
 			if (vclass == null)
 			{
 				services.put(__cl, null);

@@ -104,6 +104,8 @@ public abstract class JITConfig
 		for (JITConfigKey dk : dks)
 			values.put(dk, __o.get(dk));
 		
+		// Look for unsafe class rewrites
+		
 		// {@squirreljme.error JI01 CPU architecture was not specified in the
 		// JIT configuration.}
 		if (get(JITConfigKey.JIT_ARCH) == null)
