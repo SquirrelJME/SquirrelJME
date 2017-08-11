@@ -36,7 +36,8 @@ code is located in the example `c:\users\stephanie\desktop\squirreljme`:
  * `cd squirreljme-build`
  * `c:\users\stephanie\desktop\squirreljme\build.cmd`
 
-Make sure that the Java path which is used refers to the JDK such as:
+Make sure that the `PATH` environment variables refers to the JDK's binary
+directory:
 
  * `C:\Program Files\Java\jdk1.8.0_131\bin\`
 
