@@ -11,31 +11,40 @@
 package net.multiphasicapps.squirreljme.jit.trans.simulator;
 
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
 
 /**
- * This is capable of creating the translator used by the simulator.
+ * This is the simulator translator which generates MMIX operations using a
+ * very simple approach.
  *
  * @since 2017/08/11
  */
-public class SimulatorTranslatorService
-	implements TranslatorService
+public class SimulatorTranslator
+	implements ExpandedByteCode
 {
+	/** The output MMIX code. */
+	protected final MachineCodeOutput out;
+	
 	/**
-	 * {@inheritDoc}
+	 * Initializes the output.
+	 *
+	 * @param __o The output where machine code goes.
+	 * @throws JITException If it could not be initialized.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	@Override
-	public ExpandedByteCode createTranslator(MachineCodeOutput __o)
+	public SimulatorTranslator(MachineCodeOutput __o)
 		throws JITException, NullPointerException
 	{
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		return new SimulatorTranslator(__o);
+		// Set
+		this.out = __o;
 	}
 	
 	/**
@@ -43,9 +52,9 @@ public class SimulatorTranslatorService
 	 * @since 2017/08/11
 	 */
 	@Override
-	public String name()
+	public void close()
 	{
-		return "simulator";
+		// No closing has to be performed
 	}
 }
 
