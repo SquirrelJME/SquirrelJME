@@ -14,7 +14,7 @@ package net.multiphasicapps.squirreljme.unsafe;
  * This class is used to manage the process in which SquirrelJME is running,
  * this information is needed for some VM functions.
  *
- * @see __Ext_SystemProcess__
+ * @see __Ext_systemprocess__
  * @since 2017/08/10
  */
 public class SystemProcess

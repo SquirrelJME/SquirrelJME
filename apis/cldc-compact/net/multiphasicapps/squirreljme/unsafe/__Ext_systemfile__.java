@@ -10,35 +10,24 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
+import java.io.IOException;
+
 /**
- * This contains internal environment support.
+ * This class contains the implementation of the filesystem support to be
+ * rewritten.
  *
- * @see SystemEnvironment
+ * @see SystemFile
  * @since 2017/08/10
  */
-final class __Ext_SystemEnvironment__
+final class __Ext_systemfile__
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/08/10
 	 */
-	private __Ext_SystemEnvironment__()
+	private __Ext_systemfile__()
 	{
-	}
-	
-	/**
-	 * Maps the given class service name to a class which implements the
-	 * given service.
-	 *
-	 * @param __v The class to map a service for.
-	 * @return The class which implements the given service or {@code null}
-	 * if it does not exist.
-	 * @sincem 2017/08/10 
-	 */
-	public static String mapService(String __v)
-	{
-		throw new todo.TODO();
 	}
 }
 

@@ -11,18 +11,20 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This provides VM support for the SquirrelJME build environment.
+ * This class contains the internal methods which are to be rewritten if they
+ * are called.
  *
+ * @see SystemVM
  * @since 2017/08/10
  */
-final class __Ext_SystemVM__
+final class __Ext_systemvm__
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/08/10
 	 */
-	private __Ext_SystemVM__()
+	private __Ext_systemvm__()
 	{
 	}
 }

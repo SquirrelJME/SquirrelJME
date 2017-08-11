@@ -17,14 +17,14 @@ package net.multiphasicapps.squirreljme.unsafe;
  * @see SystemProcess
  * @since 2017/08/10
  */
-final class __Ext_SystemProcess__
+final class __Ext_systemprocess__
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/08/10
 	 */
-	private __Ext_SystemProcess__()
+	private __Ext_systemprocess__()
 	{
 	}
 }
