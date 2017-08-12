@@ -63,6 +63,9 @@ public class CodeDecompiler
 	/** The stack map table. */
 	private volatile StackMapTable _smt;
 	
+	/** Variable state used for knowing where variables are. */
+	private volatile VariableState _varstate;
+	
 	/**
 	 * Initializes the code decompiler.
 	 *
@@ -186,6 +189,11 @@ public class CodeDecompiler
 		FragmentBuilder fb = sections.createFragmentBuilder(this.outerclass,
 			this.name, this.type, flags);
 		
+		// Initialize variable state
+		VariableState varstate = new VariableState(__smt, __code.maxStack(),
+			__code.maxLocals());
+		this._varstate = varstate;
+		
 		// Use the specified expander which varies depending on the JIT
 		// configuration and other options. The expanded byte code is
 		// autoclosed so that the translator knows when it is safe to write
@@ -199,17 +207,10 @@ public class CodeDecompiler
 			Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
 			
 			// Setup entry point which counts starting arguments
-			try (ExpandedBasicBlock ebb = ebc.basicBlock(ENTRY_POINT))
+			try (ExpandedBasicBlock ebb = ebc.basicBlock(
+				SpecialBasicBlockKey.ENTRY_POINT))
 			{
-				// Count objects which were passed to the method
-				if (true)
-					throw new todo.TODO();
-				
-				// If the method is synchronized, setup a special basic block
-				// that acts as the method entry point which copies to a
-				// special register and generates an enter of a monitor
-				if (flags.isSynchronized())
-					throw new todo.TODO();
+				__expandEntryPoint(ebb);
 			}
 		
 			// After all of that, run through all byte code operations and
@@ -219,32 +220,7 @@ public class CodeDecompiler
 			// support for the more complex byte code which can be prone to
 			// errors.
 			for (BasicBlock bb : __code.basicBlocks())
-			{
-				// Obtain key
-				BasicBlockKey key = bb.jumpTarget();
-				
-				// Debug
-				System.err.printf("DEBUG -- Decode BB %s%n", key);
-			
-				// Setup base block
-				try (ExpandedBasicBlock ebb = ebc.basicBlock(key))
-				{
-					// Go through instructions for the block and parse them
-					for (Instruction i : bb)
-					{
-						// Debug
-						System.err.printf("DEBUG -- Decode IN %s%n", i);
-				
-						throw new todo.TODO();
-					}
-					
-					// Finish basic block output
-					if (true)
-						throw new todo.TODO();
-				}
-			
-				throw new todo.TODO();
-			}
+				__expandBasicBlock(bb, ebc, xkeys);
 		
 			// Expand exception handlers if any were used
 			for (ExceptionHandlerKey ek : xkeys)
@@ -252,6 +228,75 @@ public class CodeDecompiler
 		}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Expands basic blocks which use standard instructions.
+	 *
+	 * @param __bb The basic block to expand.
+	 * @param __ebc The containing code which wraps the basic blocks.
+	 * @param __xk The exception handler keys.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/12
+	 */
+	private final void __expandBasicBlock(BasicBlock __bb,
+		ExpandedByteCode __ebc, Set<ExceptionHandlerKey> __xk)
+		throws NullPointerException
+	{
+		// Check
+		if (__bb == null || __ebc == null || __xk == null)
+			throw new NullPointerException("NARG");
+		
+		// Obtain key
+		BasicBlockKey key = __bb.jumpTarget();
+		
+		// Debug
+		System.err.printf("DEBUG -- Decode BB %s%n", key);
+	
+		// Setup base block
+		try (ExpandedBasicBlock ebb = __ebc.basicBlock(key))
+		{
+			// Go through instructions for the block and parse them
+			for (Instruction i : __bb)
+			{
+				// Debug
+				System.err.printf("DEBUG -- Decode IN %s%n", i);
+		
+				throw new todo.TODO();
+			}
+			
+			// Finish basic block output
+			if (true)
+				throw new todo.TODO();
+		}
+	
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Expands the entry point of the method.
+	 *
+	 * @param __ebb The target block.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/12
+	 */
+	private final void __expandEntryPoint(ExpandedBasicBlock __ebb)
+		throws NullPointerException
+	{
+		// Check
+		if (__ebb == null)
+			throw new NullPointerException("NARG");
+		
+		// Count objects which were passed to the method
+		VariableState varstate = this._varstate;
+		if (true)
+			throw new todo.TODO();
+		
+		// If the method is synchronized, setup a special basic block
+		// that acts as the method entry point which copies to a
+		// special register and generates an enter of a monitor
+		if (flags.isSynchronized())
+			throw new todo.TODO();
 	}
 	
 	/**
