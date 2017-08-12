@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.java;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,22 @@ public final class StackMapTable
 		this._address = iaddr;
 		this._tables = tables.<StackMapTableState>toArray(
 			new StackMapTableState[tables.size()]);
+	}
+	
+	/**
+	 * Returns the stack map state for the given address.
+	 *
+	 * @param __i The address to get the table for.
+	 * @return The state for the given address or {@code null} if it is not
+	 * represented within this table.
+	 * @since 2017/08/12
+	 */
+	public StackMapTableState get(int __i)
+	{
+		int dx = Arrays.binarySearch(this._address, __i);
+		if (dx < 0)
+			return null;
+		return this._tables[dx];
 	}
 	
 	/**

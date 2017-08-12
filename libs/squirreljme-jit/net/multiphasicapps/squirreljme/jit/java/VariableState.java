@@ -25,7 +25,7 @@ public final class VariableState
 	private final JavaType[] _stack;
 	
 	/** The top of the stack. */
-	private final int _top;
+	private volatile int _top;
 	
 	/**
 	 * Initializes the variable state.
@@ -49,7 +49,9 @@ public final class VariableState
 		this._stack = new JavaType[__ms];
 		
 		// Initialize locals
-		throw new todo.TODO();
+		StackMapTableState state = __smt.get(0);
+		for (int i = 0; i < __ml; i++)
+			locals[i] = state.getLocal(i);
 	}
 }
 
