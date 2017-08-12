@@ -1,0 +1,144 @@
+# 2017/08/11
+
+## 09:14
+
+One thing is that keys are forced to lowercase, which means the rewrites would
+need to be lowercased also. Although having the camel casing is nice. I wonder
+if there is an elegant solution to solve this. Well actually there is.
+Whenever a class matching the unsafe internal form is used, it can be forcibly
+lowercased. Although that would be a bit hacky in many situations. Also on
+another note...
+
+## 09:18
+
+I forgot what that note was.
+
+## 09:32
+
+Ok so the `TargetBuilder` class definitely needs a refactor and templates need
+to be a bit stronger. I can turn it into a better system since right now it is
+a bit ugly in a way.
+
+## 09:35
+
+When an architecture is specified I will need to include some common stuff
+for architectures. I could actually keep manifests. But one thing which would
+be nice is the ABI, having it in the configuration means that I do not need to
+hardcode ABIs and they can be crafted at will. I would however need an ABI
+description language or builder of sorts just to generate them unless I type
+all of them in manually. It could be useful though and would remove that code
+from the JIT itself. Then if the ABI changes slightly like maybe a register
+should be reserved and not used, it could be removed.
+
+## 10:12
+
+So how do I handle better templates? Maybe I should worry about the better
+template handling when I have more JIT code even though I know I will run into
+problems. I will keep it simple for now and then refactor it when I know what
+to expect from the JIT and build system.
+
+## 10:15
+
+One thing the naive generator will do is when there is a rewritten to
+assembly method call there would be copies of the input made since they would
+be on the stack and such, but not going to worry about that for the naive
+generator since it is as simple as possible.
+
+## 10:16
+
+Thinking about how SquirrelJME operates, I wonder if I even need a kernel.
+Most of the execution would be in threads and be rather linear. Only some
+systems will need a schedular for example, but ones with scheduling already
+would not need a kernel as they can just act on threads. So definitely the
+kernel is to go away now.
+
+## 10:17
+
+I do need to know the threads that exist however so they can be managed. But
+in reality there just needs to be special calls that handle special things. So
+I need a kernel but something not as complex as I had before. I can have most
+of the processes be rather adhoc. So it really becomes just a manager. The
+manager could have different sub-types such as being cooperative and such.
+
+## 10:21
+
+In reality though, there is the launcher. Personally the launcher itself could
+be the kernel which does all of the special things that are expected of the
+launcher. This means that the LCDUI code will probably have to change again to
+handle the launcher interface. But there could be an unsafe system class which
+directly interfaces with the launcher wherever it is running and calls into it
+for the most part. I think that would be a much simpler and lighter design
+that would be easier to maintain. Definitely the existing kernel as it is is
+too complex. I really just want a launcher with a main interface that can be
+used. I will need to figure out how the LCDUI code is managed with multiple
+applications and threads accessing it at the same time, but not having it
+where it is really slow.
+
+## 10:28
+
+Any calls made from the launcher will just be determined extra special and
+would be considered the "kernel" call.
+
+## 10:32
+
+I suppose one thing that would be made simpler if process groups and such were
+associated with threads instead. Basically everything within SquirrelJME is
+ran as a thread which interacts with the main whatever. There is no separation
+for sub-processes at all. CLDC cannot list the threads that are being used
+they can only get the current thread. So I could actually use this to my
+advantage, it does simplify things although there would need to be thread
+lookups to determine which process a thread is in.
+
+## 10:35
+
+This greatly simplfies the design as handling of processes is no longer
+needed. The only thing is that processes cannot terminate themselves. All of
+their loops will have to fall out. So I need to check this within MIDP3 to
+what it expects.
+
+## 10:37
+
+There is the destroy state. Hypothetically if a MIDlet is running and it
+leaves threads behind then it will just continue to happily execute. But
+actually the one main issue with multiple threads is a big one, and that is
+pretty much static variables and such. In the thread sense all statics are
+shared with each other, which is something which should not occur at all.
+Two processes running at one would completely destroy each other if they
+shared statics in any way.
+
+## 10:42
+
+So this state of globals complicates things. But this thread idea is
+definitely one to do things. At least for global statics, instead there can
+just be a pointer to the current thread's globals.
+
+## 10:43
+
+So I have said this before, probably the best first target instead of being
+native where it would be hard to debug things, I think the best first target
+would be an emulated MIPS environment. MIPS is simple to write and simple
+to execute. At least with that I can get a feel of how things will work
+natively before I actually write native things.
+
+## 10:45
+
+But I actually do not have to support MIPS. There is a virtual architecture
+I plan to support which has a large number of registers: MMIX.
+
+## 11:06
+
+Ok so the first thing to do is target MMIX for an emulator of sorts. For the
+most simplistic purposes there will be a translator that is even more naive
+and is only made for the simulator environment, with its large array of
+registers. I would say SquirrelJME itself would always run in user mode with
+a virtual operating system on top whichn interacts with the host system.
+
+## 11:08
+
+One optimization I can perform though are the translator projects, they can
+be forked off so tha they are not in the main JIT. This would produce lighter
+JIT implementations since they only need what they use.
+
+## 13:57
+
+I can actually have a debug dumping translator.
