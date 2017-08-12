@@ -77,6 +77,54 @@ public final class StackMapTableState
 	}
 	
 	/**
+	 * Returns the depth of the stack.
+	 *
+	 * @return The stack depth.
+	 * @since 2017/08/12
+	 */
+	public int depth()
+	{
+		return this.depth;
+	}
+	
+	/**
+	 * Obtains the local at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The type for the variable at the given index.
+	 * @throws JITException If the index is out of range.
+	 * @since 2017/08/12
+	 */
+	public JavaType getLocal(int __i)
+		throws JITException
+	{
+		// {@squirreljme.error JI22 The specified local variable is out of
+		// range. (The index)}
+		JavaType[] locals = this._locals;
+		if (__i < 0 || __i >= locals.length)
+			throw new JITException(String.format("JI22 %d", __i));
+		return locals[__i];
+	}
+	
+	/**
+	 * Obtains the stack at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The type for the variable at the given index.
+	 * @throws JITException If the index is out of range.
+	 * @since 2017/08/12
+	 */
+	public JavaType getStack(int __i)
+		throws JITException
+	{
+		// {@squirreljme.error JI21 The specified stack variable is out of
+		// range. (The index)}
+		if (__i < 0 || __i >= this.depth)
+			throw new JITException(String.format("JI21 %d", __i));
+		return this._stack[__i];
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/07/28
 	 */
