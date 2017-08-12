@@ -60,6 +60,9 @@ public class CodeDecompiler
 	/** The class which this method is in. */
 	protected final ClassName outerclass;
 	
+	/** The stack map table. */
+	private volatile StackMapTable _smt;
+	
 	/**
 	 * Initializes the code decompiler.
 	 *
@@ -140,6 +143,7 @@ public class CodeDecompiler
 		
 		// Load the stack map table
 		StackMapTable smt = __locateStackMapTable(code);
+		this._smt = smt;
 		
 		// Debug
 		System.err.printf("DEBUG -- SMT: %s%n", smt);
@@ -193,12 +197,20 @@ public class CodeDecompiler
 			// must be expanded so that if an exception does exist they can
 			// have their tables expanded virtually.
 			Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
-		
-			// If the method is synchronized, setup a special basic block that
-			// acts as the method entry point which copies to a special
-			// register and generates an enter of a monitor
-			if (flags.isSynchronized())
-				throw new todo.TODO();
+			
+			// Setup entry point which counts starting arguments
+			try (ExpandedBasicBlock ebb = ebc.basicBlock(ENTRY_POINT))
+			{
+				// Count objects which were passed to the method
+				if (true)
+					throw new todo.TODO();
+				
+				// If the method is synchronized, setup a special basic block
+				// that acts as the method entry point which copies to a
+				// special register and generates an enter of a monitor
+				if (flags.isSynchronized())
+					throw new todo.TODO();
+			}
 		
 			// After all of that, run through all byte code operations and
 			// create an expanded byte code program contained within basic

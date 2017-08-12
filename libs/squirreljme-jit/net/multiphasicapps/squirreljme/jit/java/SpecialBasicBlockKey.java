@@ -19,15 +19,17 @@ public enum SpecialBasicBlockKey
 	implements BasicBlockKey
 {
 	/**
-	 * The synchronized entry point of a method. For methods which are
-	 * {@code synchronized} they have an implicit {@code monitorenter}
+	 * This is the entry point for a method which initially counts any objects
+	 * which have been passed to the method.
+	 * Also acts as the synchronized entry point of a method. For methods which
+	 * are {@code synchronized} they have an implicit {@code monitorenter}
 	 * instruction before the start of the method, however it is not to be
 	 * treated as address zero (which means that jumps to address zero must
 	 * not perform a {@code monitorenter}). Additionally the this class must
 	 * be moved to a special variable so that it can be recalled when the
 	 * synchronized method exits.
 	 */
-	SYNCHRONIZED_ENTER,
+	ENTRY_POINT,
 	
 	/** End. */
 	;
