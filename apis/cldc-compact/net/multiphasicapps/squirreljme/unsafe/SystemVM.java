@@ -238,6 +238,17 @@ public final class SystemVM
 	}
 	
 	/**
+	 * Returns the version of the Java virtual machine.
+	 *
+	 * @return The Java virtual machine version.
+	 * @since 2017/08/13
+	 */
+	public static String javaVersion()
+	{
+		return "1.8.0";
+	}
+	
+	/**
 	 * Creates a new instance of the given class.
 	 *
 	 * @param <C> The class to create.

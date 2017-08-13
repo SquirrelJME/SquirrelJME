@@ -30,6 +30,39 @@ public final class SystemFile
 	}
 	
 	/**
+	 * Returns the separator which is used for directories.
+	 *
+	 * @return The path separator for directories.
+	 * @since 2017/08/13
+	 */
+	public static String directorySeparator()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the line separator that is used on the system.
+	 *
+	 * @return The line separator that is used on the system.
+	 * @since 2017/08/13
+	 */
+	public static String lineSeparator()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the {@code PATH} variable separator that the system uses.
+	 *
+	 * @return The separator used for the {@code PATH} variable.
+	 * @since 2017/08/13
+	 */
+	public static String pathSeparator()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Writes a single byte to standard error.
 	 *
 	 * @param __b The byte to write.
@@ -79,6 +112,39 @@ public final class SystemFile
 	 */
 	public static void stdOut(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the directory where temporary files are located.
+	 *
+	 * @return The temporary directory.
+	 * @since 2017/08/13
+	 */
+	public static String temporaryDirectory()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the home directory of the current user.
+	 *
+	 * @return The user's home directory.
+	 * @since 2017/08/03
+	 */
+	public static String userHome()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the current working directory.
+	 *
+	 * @return The current working directory.
+	 * @since 2017/08/13
+	 */
+	public static String workingDirectory()
 	{
 		throw new todo.TODO();
 	}

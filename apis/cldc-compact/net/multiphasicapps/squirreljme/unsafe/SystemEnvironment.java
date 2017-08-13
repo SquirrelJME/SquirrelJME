@@ -35,6 +35,61 @@ public final class SystemEnvironment
 	}
 	
 	/**
+	 * Returns the UUID of the system device.
+	 *
+	 * @return The UUID of the host system.
+	 * @since 2017/08/13
+	 */
+	public static String deviceUUID()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the hostname of the current system.
+	 *
+	 * @return The hostname of the system.
+	 * @since 2017/08/13
+	 */
+	public static String hostName()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the architecture the OS is running on.
+	 *
+	 * @return The architecture of the operating system.
+	 * @since 2017/08/13
+	 */
+	public static String osArchitecture()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the name of the operating system.
+	 *
+	 * @return The operating system name.
+	 * @since 2017/08/13
+	 */
+	public static String osName()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the version of the operating system.
+	 *
+	 * @return The operating system version.
+	 * @since 2017/08/13
+	 */
+	public static String osVersion()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * This obtains a class which implements a system specific service.
 	 * All services that exist are singletons, calling this same method twice
 	 * must return the same object for the given class.
@@ -113,6 +168,20 @@ public final class SystemEnvironment
 				return null;
 			}
 		}
+	}
+	
+	/**
+	 * Returns the account name of the user. This is the simplified account
+	 * name of the user, rather than {@code Stephanie Gawroriski} this would
+	 * return {@code stephanie} assuming that is what the account exists under
+	 * on the system.
+	 *
+	 * @return The account name of the user.
+	 * @since 2017/08/13
+	 */
+	public static String userAccountName()
+	{
+		throw new todo.TODO();
 	}
 }
 
