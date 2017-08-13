@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.expanded;
 
+import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
+import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -37,5 +39,17 @@ public abstract class ExpandedBasicBlock
 	@Override
 	public abstract void close()
 		throws JITException;
+	
+	/**
+	 * Copies from the source variable to the destination variable.
+	 *
+	 * @param __src The source variable.
+	 * @param __dest The destination variable.
+	 * @throws JITException If it could not be copied.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/13
+	 */
+	public abstract void copy(TypedVariable __src, Variable __dest)
+		throws JITException, NullPointerException;
 }
 

@@ -69,6 +69,53 @@ public final class TypedVariable
 	}
 	
 	/**
+	 * Returns {@code true} if the type is used for the variable.
+	 *
+	 * @return {@code true} if the type is used.
+	 * @since 2017/08/13
+	 */
+	public boolean hasType()
+	{
+		return null != this.type;
+	}
+	
+	/**
+	 * Has this type been initialized?
+	 *
+	 * @return {@code true} if this type was initialized.
+	 * @since 2017/08/13
+	 */
+	public boolean isInitialized()
+	{
+		JavaType type = this.type;
+		return type != null && type.isInitialized();
+	}
+	
+	/**
+	 * Is this an object type?
+	 *
+	 * @return {@code true} if this is an object type.
+	 * @since 2017/08/13
+	 */
+	public boolean isObject()
+	{
+		JavaType type = this.type;
+		return type != null && !type.isPrimitive();
+	}
+	
+	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if this is a primitive type.
+	 * @since 2017/08/13
+	 */
+	public boolean isPrimitive()
+	{
+		JavaType type = this.type;
+		return type != null && type.isPrimitive();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/08/13
 	 */
