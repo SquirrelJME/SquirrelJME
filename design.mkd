@@ -63,6 +63,41 @@ For specific APIs, one should read the [Project Scope](scope.mkd) document
 which outlines the APIs which exist for Java ME and whether they would be
 implemented in SquirrelJME or third party vendors.
 
+# Java SE vs SquirrelJME
+
+This section is more a bit in depth of the differences between SquirrelJME and
+Java SE.
+
+## Memory
+
+Java SE has a standard garbage collector which in general will free objects
+when they are no longer referenced using a mark and sweep algorithm. In most
+cases it will try to avoid freeing memory in the event that it could be used
+again, also doing major garbage collection sweeps can be computationally
+expensive. Despite being very virtual machine specific, this gives Java the
+appearance of using quite the amount of memory (it has historically and
+currently is seen as a memory and resource hog) especially if code running on
+it has not be designed in an optimal way (which is usually the case). The
+garbage collector in large instances may take awhile to execute and can take
+considerable resources. The garbage collector generally is designed to run in
+another thread and hopefully can concurrently garbage collect objects making
+use of extra CPUs to decrease cleanup time. In general this garbage collector
+is made for speed where it only affects program execution speed when needed.
+
+SquirrelJME on the other hand will try to use the lowest amount of memory it
+can by freeing objects from memory as soon as possible (in well designed code,
+one that does not use circular references). Once it is known that a given
+object can be freed from memory it will be freed to make up space for other
+programs and objects (within SquirrelJME). So virtually in most cases
+SquirrelJME will use the minimum memory footprint needed to run it. Although
+the lowest amount of memory will be used, a reference counted garbage collector
+has some slight overhead in that it needs to count objects and be able to
+free the objects when they are no longer counted. Parts of code which heavily
+use objects will run a bit slower due to the counting required. This is
+definitely a trade-off as it gives memory a more important consideration than
+speed. Since SquirrelJME targets low end systems, this extra memory can be
+very important.
+
 # Programming Language
 
 SquirrelJME is written entirely in Java. This means that it only requires a
