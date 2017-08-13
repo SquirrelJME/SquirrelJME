@@ -291,7 +291,7 @@ public class CodeDecompiler
 		VariableState varstate = this._varstate;
 		for (int i = 0, n = varstate.maxLocals(); i < n; i++)
 		{
-			Variable v = varstate.getLocal(i);
+			TypedVariable tv = varstate.getTypedLocal(i);
 			
 			if (true)
 				throw new todo.TODO();
