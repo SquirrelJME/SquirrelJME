@@ -238,12 +238,23 @@ public final class SystemVM
 	}
 	
 	/**
-	 * Returns the version of the Java virtual machine.
+	 * Returns the full version of the Java virtual machine.
 	 *
-	 * @return The Java virtual machine version.
+	 * @return The full Java virtual machine version.
 	 * @since 2017/08/13
 	 */
-	public static String javaVersion()
+	public static String javaVersionFull()
+	{
+		return "1.8.0-0.0.2";
+	}
+	
+	/**
+	 * Returns the short version of the Java virtual machine.
+	 *
+	 * @return The short Java virtual machine version.
+	 * @since 2017/08/13
+	 */
+	public static String javaVersionShort()
 	{
 		return "1.8.0";
 	}
