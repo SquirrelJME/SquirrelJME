@@ -66,6 +66,10 @@ public final class SystemEnvironment
 			
 			// Check system properties for system service overrides which may
 			// be useful when needed
+			// {@squirreljme.property
+			// net.multiphasicapps.squirreljme.unsafe.service.Foo=<Class>
+			// This allows custom services to be used apart from the standard
+			// services if required.}
 			String sname = __cl.getName(),
 				pname = "net.multiphasicapps.squirreljme.unsafe.service." +
 					sname,
