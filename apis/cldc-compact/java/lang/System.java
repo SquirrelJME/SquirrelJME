@@ -173,6 +173,10 @@ public final class System
 			case "java.vendor":
 				return "Stephanie Gawroriski";
 				
+				// Non-standard e-mail address
+			case "java.vendor.email":
+				return "xer@multiphasicapps.net";
+				
 				// The URL to the virtual machine's site
 			case "java.vendor.url":
 				return "http://multiphasicapps.net/";
