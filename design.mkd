@@ -83,6 +83,9 @@ considerable resources. The garbage collector generally is designed to run in
 another thread and hopefully can concurrently garbage collect objects making
 use of extra CPUs to decrease cleanup time. In general this garbage collector
 is made for speed where it only affects program execution speed when needed.
+Recent JVM advancements do have stack allocations which do not operate with the
+heap at all, which makes cleanup much easier if these optimizations can be
+used.
 
 SquirrelJME on the other hand will try to use the lowest amount of memory it
 can by freeing objects from memory as soon as possible (in well designed code,
@@ -96,7 +99,8 @@ free the objects when they are no longer counted. Parts of code which heavily
 use objects will run a bit slower due to the counting required. This is
 definitely a trade-off as it gives memory a more important consideration than
 speed. Since SquirrelJME targets low end systems, this extra memory can be
-very important.
+very important. However, unlike Java SE all allocations are on the heap since
+the size of the stack may be very small.
 
 # Programming Language
 
