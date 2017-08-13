@@ -252,7 +252,7 @@ public class CodeDecompiler
 		
 		// Debug
 		System.err.printf("DEBUG -- Decode BB %s%n", key);
-	
+		
 		// Setup base block
 		try (ExpandedBasicBlock ebb = __ebc.basicBlock(key))
 		{
@@ -289,8 +289,13 @@ public class CodeDecompiler
 		
 		// Count objects which were passed to the method
 		VariableState varstate = this._varstate;
-		if (true)
-			throw new todo.TODO();
+		for (int i = 0, n = varstate.maxLocals(); i < n; i++)
+		{
+			Variable v = varstate.getLocal(i);
+			
+			if (true)
+				throw new todo.TODO();
+		}
 		
 		// If the method is synchronized, setup a special basic block
 		// that acts as the method entry point which copies to a

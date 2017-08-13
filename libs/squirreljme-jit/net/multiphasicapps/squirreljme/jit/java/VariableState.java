@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This contains the state of variables which are located in local variables
  * or placed on the stack.
@@ -18,6 +20,15 @@ package net.multiphasicapps.squirreljme.jit.java;
  */
 public final class VariableState
 {
+	/** The number of local variables. */
+	protected final int maxlocals;
+	
+	/** The number of stack variables. */
+	protected final int maxstack;
+	
+	/** The number of variables. */
+	protected final int numvariables;
+	
 	/** The local variable types. */
 	private final JavaType[] _locals;
 	
@@ -52,6 +63,72 @@ public final class VariableState
 		StackMapTableState state = __smt.get(0);
 		for (int i = 0; i < __ml; i++)
 			locals[i] = state.getLocal(i);
+		
+		// Set
+		this.maxstack = __ms;
+		this.maxlocals = __ml;
+		this.numvariables = __ms + __ml;
+	}
+	
+	/**
+	 * Obtains the given local variable.
+	 *
+	 * @param __i The index of the variable to get.
+	 * @return The variable at the given index.
+	 * @throws JITException If the variable is not within bounds.
+	 * @since 2017/08/13
+	 */
+	public Variable getLocal(int __i)
+		throws JITException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the given stack variable.
+	 *
+	 * @param __i The index of the variable to get.
+	 * @return The variable at the given index.
+	 * @throws JITException If the variable is not within bounds.
+	 * @since 2017/08/13
+	 */
+	public Variable getStack(int __i)
+		throws JITException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the number of local variables.
+	 *
+	 * @return The number of local variables.
+	 * @since 2017/08/13
+	 */
+	public int maxLocals()
+	{
+		return this.maxlocals;
+	}
+	
+	/**
+	 * Returns the number of stack variables.
+	 *
+	 * @return The number of stack variables.
+	 * @since 2017/08/13
+	 */
+	public int maxStack()
+	{
+		return this.maxstack;
+	}
+	
+	/**
+	 * Returns the number of variable which are available.
+	 *
+	 * @return The number of variables which are recorded.
+	 * @since 2017/08/13
+	 */
+	public int numVariables()
+	{
+		return this.numvariables;
 	}
 }
 
