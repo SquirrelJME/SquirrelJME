@@ -63,28 +63,12 @@ For specific APIs, one should read the [Project Scope](scope.mkd) document
 which outlines the APIs which exist for Java ME and whether they would be
 implemented in SquirrelJME or third party vendors.
 
-# Virtual Machine
-
-This section contains information related to the virtual machine at compile
-and run-time.
-
-## Programming Language
+# Programming Language
 
 SquirrelJME is written entirely in Java. This means that it only requires a
 Java virtual machine and a Java compiler to be built. There are also no other
 dependencies apart from what is within SquirrelJME itself, it is entirely
 standalone and self contained.
-
-## Self Hosting
-
-I intend SquirrelJME to be self hosting in that it can build itself.
-
-In the future a Java compiler will be written which can run on SquirrelJME
-itself and allow building and compiling itself from source. This would also
-allow other programs to be built from source and can be used as a self
-contained Java development environment.
-
-## Compilation
 
 One may ask why Java and not another language such as C? Well, Java is a much
 simpler language compared to C when it comes to syntax (C has the preprocessor,
@@ -101,12 +85,32 @@ environment can be accessed by changing compilation for certain aspects in a
 way where it remains compatible with Java but also provides native access when
 needed. Native access is provided by replacing method calls to special static
 methods within a special class by the appropriate machine code rather than
-invoking a method call. These special rewrites affect everything within the
-`net.multiphasicapps.squirreljme.unsafe` package. This is used to provide
+invoking a method call. These special rewrites affect everything within a
+special package. This is used to provide
 support for multiple operating systems and environments without causing name
-collisions since the JIT requires renaming.
+collisions (since you cannot have classes with the same name in multiple
+projects when they are merged together).
 
-### Unsafe Renaming
+## Portability
+
+I intend for SquirrelJME to be very portable so that it can be built for and
+built on a large number of systems.
+
+## Self Hosting
+
+I intend SquirrelJME to be self hosting in that it can build itself.
+
+In the future a Java compiler will be written which can run on SquirrelJME
+itself and allow building and compiling itself from source. This would also
+allow other programs to be built from source and can be used as a self
+contained Java development environment.
+
+# Compile Time
+
+This section contains information related to the operation of the Ahead-Of-Time
+Compiler and the Just-In-Time Compiler.
+
+## Unsafe Renaming
 
 In the `net.multiphasicapps.squirreljme.unsafe` package, there are classes
 which are `public` and others which are internal and package private. The
@@ -128,10 +132,10 @@ the code can be shared between the two.
 
 Note that all renames are lowercase and only lowercased renames are used.
 
-## Portability
+# Virtual Machine
 
-I intend for SquirrelJME to be very portable so that it can be built for and
-built on a large number of systems.
+This section contains information related to the target independent virtual
+machine at run-time.
 
 ## Garbage Collection
 
@@ -153,6 +157,55 @@ collection algorithms. In most cases with reference counting, SquirrelJME is
 capable of using always a minimum footprint of memory depending on whether that
 memory should be freed to the operating system or within SquirrelJME's own
 memory for other programs running in it.
+
+Objects will have two counts: The number of strong references pointed to this
+object and the number of weak references pointed to this object. These two
+counts determine if an object can be garbage collected. If any object has a
+strong reference count that is non-zero then it will be garbage collected as
+long as it has zero weak count also. Thus, an object which is never referenced
+at all will be garbage collected. In a standard Java VM, a `WeakReference` in
+most cases will only give an object if it has at least one strong reference.
+
+### Strongly reached, weakly reached (`WeakReference`)
+
+In Java ME with Java being garbage collected, there are two types of
+references to objects which affects how garbage collection is performed.
+Similar to other languages this can be seen as a smart pointer or a special
+kind of reference counting pointer.
+
+A strong reference is a normal reference to an object, like a value which is
+placed within a field (a static field or an instance field) or a local
+variable in a method. Any objects that are strongly referenced cannot be
+garbage collected because they are used.
+
+A weak reference is another kind of reference to an object which is provided
+by the `WeakReference` class. Essentially it does not have a strong bond to
+the object it points to and that object may be garbage collected and
+return `null` as long as no strong references point to it. Weak references
+cannot really be used as a cache due to the way the garbage collector works,
+for a cache a `SoftReference` should be used by Java ME does not have such a
+class. At least with weak references, the virtual machine will in the most
+average case always use the least amount of memory. In short, weak references
+are garbage collected as soon as possible. If used for memoization it will
+not have the best intended effect of reducing calculations but it would reduce
+the memory footprint.
+
+### Strong Count of Zero, Non-Zero Weak Count
+
+When an object has no strong references and only weak references, that means
+that it can soon be garbage collected. For simplicity when `WeakReference`
+detects that a target object has no strong references to it, it will detach
+itself from that object, reduce the weak reference count, and return `null`.
+If a `WeakReference` is no longer strongly referenced it will also cause a
+detach to occur.
+
+If the system is out of memory then all objects will be iterated and any
+objects which only have weak references to them will be removed.
+
+### Strong Count of Zero, Zero Weak Count
+
+This object can be garbage collected, it will be removed and that memory will
+be made available for other allocations.
 
 # Environment
 
