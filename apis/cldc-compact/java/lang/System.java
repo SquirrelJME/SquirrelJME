@@ -258,6 +258,20 @@ public final class System
 		}
 	}
 	
+	/**
+	 * Obtains the specified system property and if it has not been set then
+	 * the default value will be returned instead.
+	 *
+	 * @param __k The system property to get.
+	 * @param __d If the system property is not set (returns {@code null}
+	 * then this value will be returned instead.
+	 * @throws IllegalArgumentException If the requested system property is
+	 * not valid (it is blank).
+	 * @throws NullPointerException If no key was specified.
+	 * @throws SecurityException If obtaining the given system property is
+	 * not permitted.
+	 * @since 2017/08/13
+	 */
 	public static String getProperty(String __k, String __d)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
