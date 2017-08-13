@@ -13,6 +13,8 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
+import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
+import net.multiphasicapps.squirreljme.unsafe.SystemFile;
 import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
 import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
@@ -152,7 +154,91 @@ public final class System
 		// Not allowed to do this?
 		getSecurityManager().checkPropertyAccess(__k);
 		
-		throw new todo.TODO();
+		// Depends on the property
+		switch (__k)
+		{
+				// The file separator
+			case "file.separator":
+				return SystemFile.directorySeparator();
+			
+				// Temporary directory
+			case "java.io.tmpdir":
+				return SystemFile.temporaryDirectory();
+				
+				// The version of the Java virtual machine
+			case "java.version":
+				return SystemVM.javaVersion();
+				
+				// The vendor of the virtual machine
+			case "java.vendor":
+				return "Stephanie Gawroriski";
+				
+				// The URL to the virtual machine's site
+			case "java.vendor.url":
+				return "http://multiphasicapps.net/";
+				
+				// The line separator used for text files on the system
+			case "line.separator":
+				return SystemFile.lineSeparator();
+				
+				// The configuration used
+			case "microedition.configuration":
+				throw new todo.TODO();
+				
+				// The unique device identifier
+			case "microedition.deviceid.uuid":
+				return SystemEnvironment.deviceUUID();
+				
+				// The encoding to use for reading/writing text files
+			case "microedition.encoding":
+				throw new todo.TODO();
+			
+				// The hostname used
+			case "microedition.hostname":
+				return SystemEnvironment.hostName();
+				
+				// The platform the device is running on, this is a model
+				// number and such
+			case "microedition.platform":
+				throw new todo.TODO();
+			
+				// Profiles supported by the virtual machine
+			case "microedition.profiles":
+				throw new todo.TODO();
+				
+				// The architecture of the OS, using standard SquirrelJME
+				// architecture name format
+			case "os.arch":
+				return SystemEnvironment.osArchitecture();
+				
+				// The name of the operating system
+			case "os.name":
+				return SystemEnvironment.osName();
+				
+				// The version of the operating system
+			case "os.version":
+				return SystemEnvironment.osVersion();
+			
+				// The PATH variable separator
+			case "path.separator":
+				return SystemFile.pathSeparator();
+			
+				// Working directory
+			case "user.dir":
+				return SystemFile.workingDirectory();
+				
+				// User home directory
+			case "user.home":
+				return SystemFile.userHome();
+				
+				// User account name
+			case "user.name":
+				return SystemEnvironment.userAccountName();
+			
+				// Unknown, get user supplied properties
+			default:
+				throw new todo.TODO();
+		}
 	}
 	
 	public static String getProperty(String __k, String __d)
