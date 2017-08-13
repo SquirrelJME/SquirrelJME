@@ -37,7 +37,7 @@ public final class VariableState
 	/** Local variable cache. */
 	private final Reference<Variable>[] _vlocals;
 	
-	/** Local typed variable cache. */
+	/** Local typed variable cache (cleared when type changes occur). */
 	private final Reference<TypedVariable>[] _tlocals;
 	
 	/** The stack variable types. */
@@ -46,7 +46,7 @@ public final class VariableState
 	/** Stack variable cache. */
 	private final Reference<Variable>[] _vstack;
 	
-	/** Stack typed variable cache. */
+	/** Stack typed variable cache (cleared when type changes occur). */
 	private final Reference<TypedVariable>[] _tstack;
 	
 	/** The top of the stack. */
@@ -104,7 +104,7 @@ public final class VariableState
 		if (__i < 0 || __i >= this.maxlocals)
 			throw new JITException(String.format("JI23 %d", __i));
 		
-		// Cache variable if needed
+		// Cache if needed
 		Reference<Variable>[] vlocals = this._vlocals;
 		Reference<Variable> ref = vlocals[__i];
 		Variable rv;
@@ -126,7 +126,20 @@ public final class VariableState
 	public Variable getStack(int __i)
 		throws JITException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JI24 The specified stack variable is not within
+		// the bounds of the stack variable set. (The stack variable index)}
+		if (__i < 0 || __i >= this._top)
+			throw new JITException(String.format("JI24 %d", __i));
+		
+		// Cache if needed
+		Reference<Variable>[] vstack = this._vstack;
+		Reference<Variable> ref = vstack[__i];
+		Variable rv;
+		if (ref == null || null == (rv = ref.get()))
+			vstack[__i] = new WeakReference<>((rv = new Variable(
+				VariableLocation.STACK, __i)));
+		
+		return rv;
 	}
 	
 	/**
@@ -140,7 +153,18 @@ public final class VariableState
 	public TypedVariable getTypedLocal(int __i)
 		throws JITException
 	{
-		throw new todo.TODO();
+		// Get variable first
+		Variable var = getLocal(__i);
+		
+		// Cache if needed
+		Reference<TypedVariable>[] tlocal = this._tlocals;
+		Reference<TypedVariable> ref = tlocal[__i];
+		TypedVariable rv;
+		if (ref == null || null == (rv = ref.get()))
+			tlocal[__i] = new WeakReference<>((rv = new TypedVariable(
+				this._locals[__i], var)));
+		
+		return rv;
 	}
 	
 	/**
@@ -154,7 +178,18 @@ public final class VariableState
 	public TypedVariable getTypedStack(int __i)
 		throws JITException
 	{
-		throw new todo.TODO();
+		// Get variable first
+		Variable var = getStack(__i);
+		
+		// Cache if needed
+		Reference<TypedVariable>[] tstack = this._tstack;
+		Reference<TypedVariable> ref = tstack[__i];
+		TypedVariable rv;
+		if (ref == null || null == (rv = ref.get()))
+			tstack[__i] = new WeakReference<>((rv = new TypedVariable(
+				this._stack[__i], var)));
+		
+		return rv;
 	}
 	
 	/**
