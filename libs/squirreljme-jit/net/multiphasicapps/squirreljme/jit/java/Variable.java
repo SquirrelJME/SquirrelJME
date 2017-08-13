@@ -35,6 +35,9 @@ public final class Variable
 	/** The variable index. */
 	protected final int index;
 	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the variable.
 	 *
@@ -82,7 +85,15 @@ public final class Variable
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format("%s#%d",
+				this.location, this.index)));
+		
+		return rv;
 	}
 }
 

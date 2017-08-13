@@ -92,6 +92,30 @@ public class DumpBasicBlock
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void countReference(TypedVariable __obj, boolean __up)
+		throws JITException, NullPointerException
+	{
+		__printf("countReference(%s, %b)", __obj, __up);
+		this.wrap.countReference(__obj, __up);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void monitorEnter(TypedVariable __obj)
+		throws JITException, NullPointerException
+	{
+		__printf("monitorEnter(%s)", __obj);
+		this.wrap.monitorEnter(__obj);
+	}
+	
+	/**
 	 * Prints formatted text on a line.
 	 *
 	 * @param __fmt The format to print.

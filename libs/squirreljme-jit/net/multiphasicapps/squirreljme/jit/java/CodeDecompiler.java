@@ -299,7 +299,7 @@ public class CodeDecompiler
 		{
 			TypedVariable tv = varstate.getTypedLocal(i);
 			if (tv.isObject() && tv.isInitialized())
-				throw new todo.TODO();
+				__ebb.countReference(tv, true);
 		}
 		
 		// If the method is synchronized, setup a special basic block
