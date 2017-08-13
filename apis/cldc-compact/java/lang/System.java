@@ -167,19 +167,32 @@ public final class System
 				
 				// The version of the Java virtual machine
 			case "java.version":
-				return SystemVM.javaVersion();
+				return SystemVM.javaVersionShort();
+				
+				// The version of the JVM (full)
+			case "java.runtime.version":
+			case "java.vm.version":
+				return SystemVM.javaVersionLong();
 				
 				// The vendor of the virtual machine
 			case "java.vendor":
+			case "java.vm.vendor":
 				return "Stephanie Gawroriski";
 				
 				// Non-standard e-mail address
 			case "java.vendor.email":
+			case "java.vm.vendor.email":
 				return "xer@multiphasicapps.net";
 				
 				// The URL to the virtual machine's site
 			case "java.vendor.url":
+			case "java.vm.vendor.url":
 				return "http://multiphasicapps.net/";
+				
+				// The name of the virtual machine
+			case "java.runtime.name":
+			case "java.vm.name":
+				return "SquirrelJME";
 				
 				// The line separator used for text files on the system
 			case "line.separator":
