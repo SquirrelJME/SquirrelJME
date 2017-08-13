@@ -21,5 +21,61 @@ import java.lang.ref.WeakReference;
  */
 public final class TypedVariable
 {
+	/** The type used for the variable, null means not used. */
+	protected final JavaType type;
+	
+	/** The variable. */
+	protected final Variable var;
+	
+	/**
+	 * Initializes the typed variable.
+	 *
+	 * @param __t The type that is used, may be {@code null} to indicate that
+	 * no type is used.
+	 * @param __v The location where the variable is located.
+	 * @throws NullPointerException If {@code __v} is {@code null}.
+	 * @since 2017/08/13
+	 */
+	public TypedVariable(JavaType __t, Variable __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+			
+		// Set
+		this.type = __t;
+		this.var = __v;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 
