@@ -1,0 +1,19 @@
+# 2017/08/12
+
+## 09:07
+
+Ok so regardless what I need is an entrypoint regardless if the method is
+synchronized or not, I can just handle synchronized after it. I do need to
+store the this reference and such.
+
+## 09:22
+
+Actually for `ExceptionHandlerKey`, I cannot really cache them because I have
+an idea of using a copy of variable states to also be used in the exception
+handler. I need to know the variable states because the stack is destroyed and
+just gets a single throwable while the local variables remain the same. The
+state for each could differ at least when it comes to locals. However stack
+entries will need to be cleared out. So locals are stored completely while
+stack entries will just have their objects recorded and their positions. That
+way stack entries which are mostly similar will just have their reference
+counts lowered.
