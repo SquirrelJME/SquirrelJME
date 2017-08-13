@@ -14,6 +14,8 @@ import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
+import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**

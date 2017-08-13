@@ -7,7 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: squirreljme-jit-arch-ia 
  squirreljme-jit-arch-mips 
  squirreljme-jit-arch-mmix 
- squirreljme-jit-trans-naive 
  squirreljme-jit-trans-simulator 
 Microedition-Configuration: CLDC-1.8-Compact
 X-SquirrelJME-Description: This is a metaproject which depends on 

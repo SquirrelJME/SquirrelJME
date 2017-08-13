@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.trans;
 import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
+import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -75,6 +77,18 @@ public class DumpBasicBlock
 	{
 		__printf("Closing");
 		this.wrap.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void copy(TypedVariable __src, Variable __dest)
+		throws JITException, NullPointerException
+	{
+		__printf("copy(%s, %s)", __src, __dest);
+		this.wrap.copy(__src, __dest);
 	}
 	
 	/**

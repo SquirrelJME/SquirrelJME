@@ -60,6 +60,9 @@ public class CodeDecompiler
 	/** The class which this method is in. */
 	protected final ClassName outerclass;
 	
+	/** The type used for this. */
+	protected final FieldDescriptor thistype;
+	
 	/** The stack map table. */
 	private volatile StackMapTable _smt;
 	
@@ -100,6 +103,9 @@ public class CodeDecompiler
 		this.linkerstate = __linkerstate;
 		this.version = __ver;
 		this.outerclass = __cn;
+		
+		// The this type is the type of the outer class
+		this.thistype = __cn.asField();
 	}
 	
 	/**
@@ -292,8 +298,7 @@ public class CodeDecompiler
 		for (int i = 0, n = varstate.maxLocals(); i < n; i++)
 		{
 			TypedVariable tv = varstate.getTypedLocal(i);
-			
-			if (true)
+			if (tv.isObject() && tv.isInitialized())
 				throw new todo.TODO();
 		}
 		
@@ -301,7 +306,18 @@ public class CodeDecompiler
 		// that acts as the method entry point which copies to a
 		// special register and generates an enter of a monitor
 		if (flags.isSynchronized())
+		{
+			// If this is an instance method then copy the this reference to
+			// a copied this so that the monitor can be exited when this
+			// method finishes
+			if (flags.isInstance())
+				__ebb.copy(varstate.getTypedLocal(1), varstate.getLocal(0));
+			
 			throw new todo.TODO();
+		}
+		
+		// Generate jump to the real method entry point
+		throw new todo.TODO();
 	}
 	
 	/**

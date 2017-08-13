@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.trans.simulator;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
+import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -63,6 +65,21 @@ public class SimulatorBasicBlock
 	public void close()
 		throws JITException
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void copy(TypedVariable __src, Variable __dest)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }

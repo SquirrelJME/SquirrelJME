@@ -38,6 +38,9 @@ public final class ClassName
 	/** The package this class is in. */
 	private volatile Reference<PackageName> _package;
 	
+	/** This class name as a field descriptor. */
+	private volatile Reference<FieldDescriptor> _field;
+	
 	/**
 	 * Initializes the class name.
 	 *
@@ -95,6 +98,28 @@ public final class ClassName
 			if (ls)
 				throw new JITException(String.format("JI0g %s", __n));
 		}
+	}
+	
+	/**
+	 * Returns this class name as a field descriptor.
+	 *
+	 * @return The field descriptor.
+	 * @since 2017/08/13
+	 */
+	public FieldDescriptor asField()
+	{
+		Reference<FieldDescriptor> ref = this._field;
+		FieldDescriptor rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			String s = toString();
+			this._field = new WeakReference<>((rv = new FieldDescriptor(
+				(isArray() ? s : "L" + s + ";"))));
+		}
+		
+		return rv;
 	}
 	
 	/**

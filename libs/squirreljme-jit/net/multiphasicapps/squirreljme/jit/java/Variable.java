@@ -21,6 +21,14 @@ import java.lang.ref.WeakReference;
  */
 public final class Variable
 {
+	/** Copied this variable, used for synchronization. */
+	public static final Variable COPIED_THIS =
+		new Variable(VariableLocation.COPIED_THIS, 0);
+	
+	/** The exception being thrown. */
+	public static final Variable THROWING_EXCEPTION =
+		new Variable(VariableLocation.THROWING_EXCEPTION, 0);
+	
 	/** The variable location. */
 	protected final VariableLocation location;
 	

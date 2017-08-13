@@ -142,6 +142,39 @@ public final class JavaType
 	}
 	
 	/**
+	 * Has this type been initialized?
+	 *
+	 * @return {@code true} if this type was initialized.
+	 * @since 2017/08/13
+	 */
+	public boolean isInitialized()
+	{
+		return this.isinitialized;
+	}
+	
+	/**
+	 * Is this an object type?
+	 *
+	 * @return {@code true} if this is an object type.
+	 * @since 2017/08/13
+	 */
+	public boolean isObject()
+	{
+		return !this.type.isPrimitive();
+	}
+	
+	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if this is a primitive type.
+	 * @since 2017/08/13
+	 */
+	public boolean isPrimitive()
+	{
+		return this.type.isPrimitive();
+	}
+	
+	/**
 	 * Is this a wide type?
 	 *
 	 * @return {@code true} if the type is a wide type.
