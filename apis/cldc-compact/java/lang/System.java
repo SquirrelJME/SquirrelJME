@@ -172,7 +172,7 @@ public final class System
 				// The version of the JVM (full)
 			case "java.runtime.version":
 			case "java.vm.version":
-				return SystemVM.javaVersionLong();
+				return SystemVM.javaVersionFull();
 				
 				// The vendor of the virtual machine
 			case "java.vendor":
