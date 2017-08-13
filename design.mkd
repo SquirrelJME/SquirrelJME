@@ -261,6 +261,11 @@ such. This allows the API code to be very light and not require massive amounts
 of branches or complexities to support multiple systems. The services means
 that things can be implemented on an as used basis.
 
+Custom system services can be specified by setting system properties with the
+given prefix `net.multiphasicapps.squirreljme.unsafe.service.` where anything
+following that is the target class to provide a service for, the value for the
+property is the implementation of that.
+
 ## Pathname Handling
 
 Instances of the `Path` class will be strictly limited to the limitations of
