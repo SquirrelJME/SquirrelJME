@@ -82,5 +82,35 @@ public class SimulatorBasicBlock
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void countReference(TypedVariable __obj, boolean __up)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__obj == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void monitorEnter(TypedVariable __obj)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__obj == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

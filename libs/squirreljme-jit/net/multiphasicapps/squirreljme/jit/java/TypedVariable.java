@@ -27,6 +27,9 @@ public final class TypedVariable
 	/** The variable. */
 	protected final Variable var;
 	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the typed variable.
 	 *
@@ -122,7 +125,15 @@ public final class TypedVariable
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format("%s=%s",
+				this.var, this.type)));
+		
+		return rv;
 	}
 }
 
