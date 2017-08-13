@@ -10,12 +10,71 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
- * This represents a variable which may in locals or on the stack.
+ * This represents the location of a variable, where it is located and the
+ * index of that variable.
  *
  * @since 2017/08/12
  */
 public final class Variable
 {
+	/** The variable location. */
+	protected final VariableLocation location;
+	
+	/** The variable index. */
+	protected final int index;
+	
+	/**
+	 * Initializes the variable.
+	 *
+	 * @param __l The variable location.
+	 * @param __i The index of the variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/13
+	 */
+	public Variable(VariableLocation __l, int __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.location = __l;
+		this.index = __i;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 

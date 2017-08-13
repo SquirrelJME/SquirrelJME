@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -32,8 +34,20 @@ public final class VariableState
 	/** The local variable types. */
 	private final JavaType[] _locals;
 	
+	/** Local variable cache. */
+	private final Reference<Variable>[] _vlocals;
+	
+	/** Local typed variable cache. */
+	private final Reference<TypedVariable>[] _tlocals;
+	
 	/** The stack variable types. */
 	private final JavaType[] _stack;
+	
+	/** Stack variable cache. */
+	private final Reference<Variable>[] _vstack;
+	
+	/** Stack typed variable cache. */
+	private final Reference<TypedVariable>[] _tstack;
 	
 	/** The top of the stack. */
 	private volatile int _top;
@@ -55,9 +69,13 @@ public final class VariableState
 			throw new NullPointerException("NARG");
 		
 		// Set
-		JavaType[] locals = new JavaType[__ml];
-		this._locals = locals;
+		JavaType[] locals;
+		this._locals = (locals = new JavaType[__ml]);
+		this._vlocals = __makeVariables(__ml);
+		this._tlocals = __makeTypedVariables(__ml);
 		this._stack = new JavaType[__ms];
+		this._vstack = __makeVariables(__ms);
+		this._tstack = __makeTypedVariables(__ms);
 		
 		// Initialize locals
 		StackMapTableState state = __smt.get(0);
@@ -81,7 +99,20 @@ public final class VariableState
 	public Variable getLocal(int __i)
 		throws JITException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JI23 The specified local variable is not within
+		// the bounds of the local variable set. (The local variable index)}
+		if (__i < 0 || __i >= this.maxlocals)
+			throw new JITException(String.format("JI23 %d", __i));
+		
+		// Cache variable if needed
+		Reference<Variable>[] vlocals = this._vlocals;
+		Reference<Variable> ref = vlocals[__i];
+		Variable rv;
+		if (ref == null || null == (rv = ref.get()))
+			vlocals[__i] = new WeakReference<>((rv = new Variable(
+				VariableLocation.LOCAL, __i)));
+		
+		return rv;
 	}
 	
 	/**
@@ -93,6 +124,34 @@ public final class VariableState
 	 * @since 2017/08/13
 	 */
 	public Variable getStack(int __i)
+		throws JITException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the given local typed variable.
+	 *
+	 * @param __i The index of the typed variable to get.
+	 * @return The typed variable at the given index.
+	 * @throws JITException If the variable is not within bounds.
+	 * @since 2017/08/13
+	 */
+	public TypedVariable getTypedLocal(int __i)
+		throws JITException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the given stack typed variable.
+	 *
+	 * @param __i The index of the typed variable to get.
+	 * @return The typed variable at the given index.
+	 * @throws JITException If the variable is not within bounds.
+	 * @since 2017/08/13
+	 */
+	public TypedVariable getTypedStack(int __i)
 		throws JITException
 	{
 		throw new todo.TODO();
@@ -129,6 +188,32 @@ public final class VariableState
 	public int numVariables()
 	{
 		return this.numvariables;
+	}
+	
+	/**
+	 * Creates an array of typed variable references.
+	 *
+	 * @param __n The number of elements in the array.
+	 * @return An array of references to typed variables.
+	 * @since 2017/08/13
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<TypedVariable>[] __makeTypedVariables(int __n)
+	{
+		return (Reference<TypedVariable>[])((Object)new Reference[__n]);
+	}
+	
+	/**
+	 * Creates an array of variable references.
+	 *
+	 * @param __n The number of elements in the array.
+	 * @return An array of references to variables.
+	 * @since 2017/08/13
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<Variable>[] __makeVariables(int __n)
+	{
+		return (Reference<Variable>[])((Object)new Reference[__n]);
 	}
 }
 
