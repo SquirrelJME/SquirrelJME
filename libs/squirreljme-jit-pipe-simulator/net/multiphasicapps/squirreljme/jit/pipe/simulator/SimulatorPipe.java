@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.pipe.simulator;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
@@ -27,6 +30,10 @@ public class SimulatorPipe
 {
 	/** The machine code to write to. */
 	protected final MachineCodeOutput out;
+	
+	/** The addresses where basic block start, for local jumps. */
+	private final Map<BasicBlockKey, PositionMarker> _bbstarts =
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the basic block writer for the simulator.
