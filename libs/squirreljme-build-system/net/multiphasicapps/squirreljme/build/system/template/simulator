@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 jit-jit-arch: mmix
-jit-jit-translator: simulator
-jit-jit-dump-translator: true
+jit-jit-pipe: simulator
+jit-jit-dump-pipe: true
 jit-jit-dump-assembler: true
 
