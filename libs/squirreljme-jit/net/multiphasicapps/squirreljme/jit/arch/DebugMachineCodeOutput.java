@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.arch;
 
 import java.io.PrintStream;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -63,6 +64,28 @@ public class DebugMachineCodeOutput
 		// Mark that this was opened
 		__printf("Opened (writing to %s@%08x)", __o.getClass().getName(),
 			System.identityHashCode(__o));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		__printf("Closing");
+		this.wrap.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public JITConfig config()
+	{
+		return this.wrap.config();
 	}
 	
 	/**

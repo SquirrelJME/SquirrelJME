@@ -215,7 +215,6 @@ public class CodeDecompiler
 			Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
 			
 			// Setup entry point which counts starting arguments
-			pipe.enterBlock(SpecialBasicBlockKey.ENTRY_POINT);
 			__expandEntryPoint(pipe);
 		
 			// After all of that, run through all byte code operations and
@@ -297,16 +296,19 @@ public class CodeDecompiler
 	/**
 	 * Expands the entry point of the method.
 	 *
-	 * @param __ebb The target block.
+	 * @param __pipe The target pipe.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/12
 	 */
-	private final void __expandEntryPoint(ExpandedBasicBlock __ebb)
+	private final void __expandEntryPoint(ExpandedPipe __pipe)
 		throws NullPointerException
 	{
 		// Check
-		if (__ebb == null)
+		if (__pipe == null)
 			throw new NullPointerException("NARG");
+		
+		// Enter the entry point
+		__pipe.enterBlock(SpecialBasicBlockKey.ENTRY_POINT);
 		
 		// Count objects which were passed to the method
 		VariableState varstate = this._varstate;
@@ -314,7 +316,7 @@ public class CodeDecompiler
 		{
 			TypedVariable tv = varstate.getTypedLocal(i);
 			if (tv.isObject() && tv.isInitialized())
-				__ebb.countReference(tv, true);
+				__pipe.countReference(tv, true);
 		}
 		
 		// If the method is synchronized, setup a special basic block
@@ -326,7 +328,7 @@ public class CodeDecompiler
 			// a copied this so that the monitor can be exited when this
 			// method finishes
 			if (flags.isInstance())
-				__ebb.copy(varstate.getTypedLocal(1), varstate.getLocal(0));
+				__pipe.copy(varstate.getTypedLocal(1), varstate.getLocal(0));
 			
 			throw new todo.TODO();
 		}
