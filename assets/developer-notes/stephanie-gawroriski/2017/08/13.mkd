@@ -1,0 +1,97 @@
+# 2017/08/13
+
+## 12:46
+
+I am thinking maybe `Variable` is going the wrong way. It has a type but I
+think it might be better if it was typeless, then I could also have a typed
+variable which is a `Variable`. Some operations use the type, while others
+do not. But do they extend each other and can be used interchanged? Well in
+most cases I would say yes, but `Variable` and `TypedVariable` would have
+a kind of weak `equals()` since if one was the other kind they would only
+compare their index. But if two were typed and they should be used in the
+concept of an index, then comparison would fail. So I need this
+distinction.
+
+## 21:04
+
+Ok, so I need to take a look at `FragmentBuilder`. I want something which
+can be debugged and extended in special fasion to allow for architecture
+specific things. Right now `FragmentBuilder` is `final` and constructed
+by the binary when it needs to output something. What I really need is an
+interface which can go on top of one that can provide machine specific
+things. `MachineCodeOutput` does not take a `FragmentBuilder` for the base.
+
+## 21:42
+
+Ok, so I think I just need a better way to create `Fragment`s. Basically
+they are appended through a section. But in reality fragments kind of just
+sit there and have things associated with them. Maybe this can work. Basically
+my idea is to have it where `MachineCodeOutput` is not given a fragment output
+it instead makes its own, where it can do whatever. `FragmentBuilder` will in
+essence not be linked to a `LinkerState` and acts standalone. It could also
+be non-final so it can be extended. This would give be a bit more freedom with
+`FragmentBuilder`. Then `MachineCodeOutput` can be made into an interface and
+I could have a special `MachineCodeOutputFragmentBuilder` or maybe just a
+short `MachineCodeBuilder`. This would be a `FragmentBuilder` but one with all
+the needed machine code specific stuff, which also works with the JIT and
+such. At least to the JIT itself, the `MachineCodeOutput` it uses, it would
+not use it a `FragmentBuilder`. All of the `MachineCodeOutput`s that exist now
+take a `FragmentBuilder` anyway. Then when it comes to debugging, there can
+be an interface to debug things. Basically this makes it so that the
+`FragmentBuilder` can have architecture specific things without straying
+farther from the base class. As for future replacements for instructions, I
+can have a slightly stronger means to generate them.
+
+## 21:48
+
+The `FragmentBuilder` really does not care what section type it is in until
+it is built. So decoupling is the way to go.
+
+## 22:11
+
+This is getting complex and confusing. I think the generation pipeline at
+least when it comes to the basic blocks is rather ugly. This makes me then
+wonder if `ExpandedByteCode` is needed to be implement by sub-interfaces.
+Well it should be for ones that do optimize.
+
+## 22:13
+
+I do have the `ExpandedBasicBlock`, but I wonder if I can simplify that in
+a way. I mean what I have currently does work out, but it does not seem
+elegant at all, like it is a giant mess.
+
+## 22:14
+
+It also seems rather error prone too. Like I do not want the JIT to be
+messed up due to some implementation issues with regards to how the classes
+work together. I think I should simplify it greatly. I really just need a
+single class for the most part. Also the `expanded` and `trans` packages
+are very alone, but they are in other projects so I will just keep them
+there being alone. But to duplicate the current functionality of basic
+blocks, instead of creating a new object I will just have a mark that says
+"from now on, everything is in this basic block". This could be completely
+disregarded by the expanded handler. I think I could also do with a rename
+of sorts, basically the translators are really just a pipeline that can do
+whatever. But my current goal will be to figure out a new package name and
+class name: perhaps `pipe` which combines `trans` and `expanded` since
+they are effectively the same package. Then there will be a single
+interface called `ExpandedPipe` which uses the functionality of the class
+`ExpandedBasicBlock` but with an extra method for the singular usage of
+`ExpandedByteCode`. `ExpandedByteCode` is basically a filler class anyway.
+
+## 23:09
+
+Ok how instead of that interface I made in `arch` that is really long, how
+about there is an interface in the binary which can be used to write a new
+section when the machine code is closed. Basically, the `MachineCodeOutput`
+is given this interface which then tells the binary to get said section
+added using a binary specific means according to the `JITConfig`. So the
+machine code output could choose any means it wants to write native code
+either extending a `FragmentBuilder` or doing another thing.
+
+## 23:31
+
+Ok, so this refactor makes things a bit simpler and easier to work with. Going
+to eat some food. After that would be getting resources being added to the
+binary working again, then moving back into code generation. At least with
+interfaces it seems much better now for the most part.
