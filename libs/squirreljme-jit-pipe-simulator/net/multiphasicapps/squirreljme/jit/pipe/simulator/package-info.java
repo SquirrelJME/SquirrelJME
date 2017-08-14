@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the translator for the simulator.
+ * This package contains the pipe for the simulator.
  *
  * @since 2017/08/11
  */
 
-package net.multiphasicapps.squirreljme.jit.trans.simulator;
+package net.multiphasicapps.squirreljme.jit.pipe.simulator;
 

@@ -8,29 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.trans.simulator;
+package net.multiphasicapps.squirreljme.jit.pipe.simulator;
 
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
 
 /**
  * This expands basic blocks for the simulator.
  *
  * @since 2017/08/11
  */
-public class SimulatorBasicBlock
-	extends ExpandedBasicBlock
+public class SimulatorPipe
+	implements ExpandedPipe
 {
-	/** The owning translator. */
-	protected final SimulatorTranslator owner;
-	
-	/** The key for this block. */
-	protected final BasicBlockKey key;
-	
 	/** The machine code to write to. */
 	protected final MachineCodeOutput out;
 	
@@ -43,7 +37,7 @@ public class SimulatorBasicBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public SimulatorBasicBlock(SimulatorTranslator __own, BasicBlockKey __key,
+	public SimulatorPipe(SimulatorTranslator __own, BasicBlockKey __key,
 		MachineCodeOutput __out)
 		throws NullPointerException
 	{

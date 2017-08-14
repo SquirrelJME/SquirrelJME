@@ -11,31 +11,31 @@
 package net.multiphasicapps.squirreljme.jit.trans.simulator;
 
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.JITException;
-import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
+import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
+import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipeService;
 
 /**
  * This is capable of creating the translator used by the simulator.
  *
  * @since 2017/08/11
  */
-public class SimulatorTranslatorService
-	implements TranslatorService
+public class SimulatorPipeService
+	implements ExpandedPipeService
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/08/11
 	 */
 	@Override
-	public ExpandedByteCode createTranslator(MachineCodeOutput __o)
+	public ExpandedPipe createPipe(MachineCodeOutput __o)
 		throws JITException, NullPointerException
 	{
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		return new SimulatorTranslator(__o);
+		return new SimulatorPipe(__o);
 	}
 	
 	/**
