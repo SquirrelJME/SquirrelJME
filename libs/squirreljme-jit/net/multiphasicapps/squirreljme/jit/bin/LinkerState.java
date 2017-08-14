@@ -147,13 +147,8 @@ public final class LinkerState
 		if (__c == null || __n == null || __t == null || __f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// Create
-		LinkerState ls = __linkerState();
-		Reference<LinkerState> rls = ls.__reference();
-		return new FragmentBuilder(rls, ls.__sectionCounter().nextSection(ls,
-			__c, __n, __t, __f));*/
+		return new __DefaultFragmentDestination__(this,
+			__sectionCounter().nextSection(this, __c, __n, __t, __f));
 	}
 	
 	/**
