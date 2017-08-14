@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.pipe;
 
 import java.io.PrintStream;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This is a pipe which outputs any commands which were sent to it to standard
@@ -26,7 +27,7 @@ public final class DebugPipe
 	protected final PrintStream print;
 	
 	/** The pipe to wrap. */
-	protected final DebugPipe wrap;
+	protected final ExpandedPipe pipe;
 	
 	/**
 	 * Initializes a debug pipe which prints debug output to standard output.
@@ -58,7 +59,7 @@ public final class DebugPipe
 		
 		// Set
 		this.print = __p;
-		this.wrap = __o;
+		this.pipe = __w;
 		
 		// Mark that this was opened
 		__printf("Opened (writing to %s@%08x)", __w.getClass().getName(),
@@ -71,6 +72,7 @@ public final class DebugPipe
 	 */
 	@Override
 	public void close()
+		throws JITException
 	{
 		__printf("Closing");
 		this.pipe.close();
@@ -88,7 +90,7 @@ public final class DebugPipe
 		// Print a nice header first
 		PrintStream print = this.print;
 		print.print("PIPE@");
-		print.printf("%08x", System.identityHashCode(this));
+		print.printf("%08x", System.identityHashCode(this.pipe));
 		print.print(" -- ");
 		
 		// Print formatted string

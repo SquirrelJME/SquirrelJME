@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2017/08/11
  */
 public class DebugMachineCodeOutput
-	extends MachineCodeOutput
+	implements MachineCodeOutput
 {
 	/** The stream to print to. */
 	protected final PrintStream print;
