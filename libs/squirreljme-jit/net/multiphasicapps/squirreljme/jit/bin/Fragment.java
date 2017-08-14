@@ -18,7 +18,7 @@ import java.lang.ref.Reference;
  *
  * @since 2017/06/27
  */
-public class Fragment
+public final class Fragment
 	extends __SubState__
 {
 	/** The base address of the fragment. */
@@ -36,7 +36,7 @@ public class Fragment
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/27
 	 */
-	public Fragment(Reference<LinkerState> __ls, long __ba, byte[] __b)
+	Fragment(Reference<LinkerState> __ls, long __ba, byte[] __b)
 		throws NullPointerException
 	{
 		super(__ls);
