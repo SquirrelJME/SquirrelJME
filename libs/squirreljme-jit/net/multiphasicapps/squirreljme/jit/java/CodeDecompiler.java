@@ -249,7 +249,7 @@ public class CodeDecompiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/09
 	 */
-	public final FragmentBuilder createFragmentBuilder(ClassName __c,
+	/*public final FragmentBuilder createFragmentBuilder(ClassName __c,
 		MethodName __n, MethodDescriptor __t, MethodFlags __f)
 		throws NullPointerException
 	{
@@ -262,7 +262,7 @@ public class CodeDecompiler
 		Reference<LinkerState> rls = ls.__reference();
 		return new FragmentBuilder(rls, ls.__sectionCounter().nextSection(ls,
 			__c, __n, __t, __f));
-	}
+	}*/
 		
 		throw new todo.TODO();
 	}
