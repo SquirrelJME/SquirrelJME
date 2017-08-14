@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
@@ -43,14 +44,14 @@ public class MIPSConfig
 	 * @since 2017/08/09
 	 */
 	@Override
-	public MachineCodeOutput createMachineCodeOutput(FragmentBuilder __f)
+	public MachineCodeOutput createMachineCodeOutput(FragmentDestination __fd)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__f == null)
+		if (__fd == null)
 			throw new NullPointerException("NARG");
 		
-		return new MIPSCodeOutput(this, __f);
+		throw new todo.TODO();
 	}
 	
 	/**

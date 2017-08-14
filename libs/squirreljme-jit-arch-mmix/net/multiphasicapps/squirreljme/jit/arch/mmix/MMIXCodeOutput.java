@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.arch.mmix;
 
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
@@ -23,31 +24,54 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2017/08/11
  */
 public class MMIXCodeOutput
-	extends MachineCodeOutput
+	implements MachineCodeOutput
 {
-	/** The target fragment. */
-	protected final FragmentBuilder out;
+	/** The JIT configuration used. */
+	protected final JITConfig config;
+	
+	/** The destination where the fragment goes when this is closed. */
+	protected final FragmentDestination destination;
 	
 	/**
 	 * Initializes the MMIX code output.
 	 *
 	 * @param __conf The JIT configuration.
-	 * @param __out The output fragment builder.
+	 * @param __dest The destination for the code output.
 	 * @throws JITException If the configuration is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public MMIXCodeOutput(JITConfig __conf, FragmentBuilder __out)
+	public MMIXCodeOutput(JITConfig __conf, FragmentDestination __dest)
 		throws JITException, NullPointerException
 	{
-		super(__conf);
-		
 		// Check
-		if (__out == null)
+		if (__conf == null || __dest == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.out = __out;
+		this.config = __conf;
+		this.destination = __dest;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public JITConfig config()
+	{
+		return this.config;
 	}
 }
 
