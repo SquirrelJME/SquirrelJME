@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.bin.Fragment;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.bin.Section;
 import net.multiphasicapps.squirreljme.jit.bin.Sections;
@@ -186,28 +187,22 @@ public class CodeDecompiler
 		if (__code == null || __smt == null || __eht == null)
 			throw new NullPointerException("NARG");
 		
-		// The fragment which is to be built may be within an existing section
-		// or it could be a newly created section for each method byte code
-		LinkerState linkerstate = this.linkerstate;
-		Sections sections = linkerstate.sections();
-		MethodFlags flags = this.flags;
-		/*FragmentBuilder fb = new FragmentBuilder();
-		
-		sections.createFragmentBuilder(this.outerclass,
-			this.name, this.type, flags);*/
-		if (true)
-			throw new todo.TODO();
-		
 		// Initialize variable state
 		VariableState varstate = new VariableState(__smt, __code.maxStack(),
 			__code.maxLocals());
 		this._varstate = varstate;
 		
+		// The fragment which is to be built may be within an existing section
+		// or it could be a newly created section for each method byte code
 		// Use the specified expander which varies depending on the JIT
 		// configuration and other options. The expanded byte code is
 		// autoclosed so that the translator knows when it is safe to write
 		// to the wrapped generator if there is any.
-		try (ExpandedPipe pipe = linkerstate.config().createPipe())
+		LinkerState linkerstate = this.linkerstate;
+		MethodFlags flags = this.flags;
+		FragmentDestination fd = linkerstate.createFragmentDestination(
+			this.outerclass, this.name, this.type, flags);
+		try (ExpandedPipe pipe = linkerstate.config().createPipe(fd))
 		{
 			// If any address has exception handlers then each unique group
 			// must be expanded so that if an exception does exist they can
@@ -230,34 +225,6 @@ public class CodeDecompiler
 			for (ExceptionHandlerKey ek : xkeys)
 				throw new todo.TODO();
 		}
-		
-		
-	/**
-	 * Creates a new fragment builder which will append to the next section
-	 * that is referenced.
-	 *
-	 * @param __c The name of the class.
-	 * @param __n The name of the method.
-	 * @param __t The type of the method.
-	 * @param __f The flags for the method.
-	 * @return The fragment builder.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/09
-	 */
-	/*public final FragmentBuilder createFragmentBuilder(ClassName __c,
-		MethodName __n, MethodDescriptor __t, MethodFlags __f)
-		throws NullPointerException
-	{
-		// Check
-		if (__c == null || __n == null || __t == null || __f == null)
-			throw new NullPointerException("NARG");
-		
-		// Create
-		LinkerState ls = __linkerState();
-		Reference<LinkerState> rls = ls.__reference();
-		return new FragmentBuilder(rls, ls.__sectionCounter().nextSection(ls,
-			__c, __n, __t, __f));
-	}*/
 		
 		throw new todo.TODO();
 	}
