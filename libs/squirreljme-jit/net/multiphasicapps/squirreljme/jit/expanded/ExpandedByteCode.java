@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
  * @see ExpandedBasicBlock
  * @since 2017/08/07
  */
-public interface class ExpandedByteCode
+public interface ExpandedByteCode
 	extends AutoCloseable
 {
 	/**

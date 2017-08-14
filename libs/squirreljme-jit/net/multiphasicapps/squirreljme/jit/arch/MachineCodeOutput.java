@@ -24,41 +24,15 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/08/07
  */
-public abstract class MachineCodeOutput
-	implements AutoCloseable
+public interface MachineCodeOutput
+	extends AutoCloseable
 {
-	/** The JIT configuration. */
-	protected final JITConfig config;
-	
-	/**
-	 * Initializes the base machine code output which sets the configuration
-	 * and the target for the machine code.
-	 *
-	 * @param __conf The JIT configuration.
-	 * @throws JITException If the configuration is not correct.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/09
-	 */
-	public MachineCodeOutput(JITConfig __conf)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__conf == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.config = __conf;
-	}
-	
 	/**
 	 * Returns the used JIT configuration.
 	 *
 	 * @return The JIT configuration.
 	 * @since 2017/08/10
 	 */
-	public final JITConfig config()
-	{
-		return this.config;
-	}
+	public abstract JITConfig config();
 }
 
