@@ -89,6 +89,16 @@ public class DebugMachineCodeOutput
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/14
+	 */
+	@Override
+	public PositionMarker positionMarker()
+	{
+		return this.wrap.positionMarker();
+	}
+	
+	/**
 	 * Prints formatted text on a line.
 	 *
 	 * @param __fmt The format to print.

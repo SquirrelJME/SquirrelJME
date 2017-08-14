@@ -68,6 +68,11 @@ public class ByteDeque
 	/** The relative position of the tail in relation to the last block. */
 	private volatile int _tail;
 	
+	/**
+	 * Sets the default block size.
+	 *
+	 * @since 2016/05/01
+	 */
 	static
 	{
 		// {@squirreljme.error AE02 The block size of the data deque is not
@@ -1011,6 +1016,17 @@ public class ByteDeque
 		// If the address is within the starting half then seek to the
 		// start, otherwise start to the trailing end
 		return __getOrSetVia((__a < (total >> 1)), __a, __b, __o, __l, true);
+	}
+	
+	/**
+	 * Returns the number of bytes which are in this deque.
+	 *
+	 * @return The total number of bytes in this deque.
+	 * @since 2017/08/14
+	 */
+	public final int size()
+	{
+		return this._total;
 	}
 	
 	/**

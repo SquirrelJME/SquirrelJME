@@ -45,5 +45,14 @@ public interface MachineCodeOutput
 	 * @since 2017/08/10
 	 */
 	public abstract JITConfig config();
+	
+	/**
+	 * Returns a position marker which marks the current write position
+	 * in the output code.
+	 *
+	 * @return The current position in the output.
+	 * @since 2017/08/14
+	 */
+	public abstract PositionMarker positionMarker();
 }
 

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.arch.mmix;
 
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
@@ -31,6 +32,10 @@ public class MMIXCodeOutput
 	
 	/** The destination where the fragment goes when this is closed. */
 	protected final FragmentDestination destination;
+	
+	/** The destination fragment. */
+	protected final MMIXFragmentBuilder fragment =
+		new MMIXFragmentBuilder();
 	
 	/**
 	 * Initializes the MMIX code output.
@@ -72,6 +77,16 @@ public class MMIXCodeOutput
 	public JITConfig config()
 	{
 		return this.config;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/14
+	 */
+	@Override
+	public PositionMarker positionMarker()
+	{
+		return this.fragment.positionMarker();
 	}
 }
 

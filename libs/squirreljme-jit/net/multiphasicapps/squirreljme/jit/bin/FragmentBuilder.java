@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.bin;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.util.datadeque.ByteDeque;
+import net.multiphasicapps.squirreljme.jit.arch.BasicPositionMarker;
+import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 
 /**
  * This class is used to build fractions which are placed into sections.
@@ -114,6 +116,29 @@ public class FragmentBuilder
 		// Build fragment
 		return __ls.sections().__getOrCreate(__t).__append(
 			this._bytes.toByteArray());
+	}
+	
+	/**
+	 * Returns the number of currently written bytes.
+	 *
+	 * @return The number of currently written bytes.
+	 * @since 2017/08/14
+	 */
+	public final int length()
+	{
+		return this._bytes.size();
+	}
+	
+	/**
+	 * Returns a position marker which marks the current write position of
+	 * this fragment.
+	 *
+	 * @return The position marker for this fragment.
+	 * @since 2017/08/14
+	 */
+	public final PositionMarker positionMarker()
+	{
+		return new BasicPositionMarker(length());
 	}
 }
 
