@@ -31,6 +31,10 @@ public final class JITConfigKey
 	public static final JITConfigKey JIT_DUMP_ASSEMBLER =
 		new JITConfigKey("jit.dump.assembler");
 	
+	/** Should the output fragments be dumped? */
+	public static final JITConfigKey JIT_DUMP_FRAGMENT =
+		new JITConfigKey("jit.dump.fragment");
+	
 	/** Should the expanded pipe be dumped? */
 	public static final JITConfigKey JIT_DUMP_PIPE =
 		new JITConfigKey("jit.dump.pipe");

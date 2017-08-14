@@ -15,12 +15,15 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.bin.DebugFragmentDestination;
 import net.multiphasicapps.squirreljme.jit.bin.Fragment;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.bin.Section;
 import net.multiphasicapps.squirreljme.jit.bin.Sections;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
 
@@ -194,15 +197,19 @@ public class CodeDecompiler
 		
 		// The fragment which is to be built may be within an existing section
 		// or it could be a newly created section for each method byte code
+		LinkerState linkerstate = this.linkerstate;
+		MethodFlags flags = this.flags;
+		JITConfig config = linkerstate.config();
+		FragmentDestination fd = linkerstate.createFragmentDestination(
+			this.outerclass, this.name, this.type, flags);
+		if (config.getBoolean(JITConfigKey.JIT_DUMP_FRAGMENT))
+			fd = new DebugFragmentDestination(fd);
+		
 		// Use the specified expander which varies depending on the JIT
 		// configuration and other options. The expanded byte code is
 		// autoclosed so that the translator knows when it is safe to write
 		// to the wrapped generator if there is any.
-		LinkerState linkerstate = this.linkerstate;
-		MethodFlags flags = this.flags;
-		FragmentDestination fd = linkerstate.createFragmentDestination(
-			this.outerclass, this.name, this.type, flags);
-		try (ExpandedPipe pipe = linkerstate.config().createPipe(fd))
+		try (ExpandedPipe pipe = config.createPipe(fd))
 		{
 			// If any address has exception handlers then each unique group
 			// must be expanded so that if an exception does exist they can
