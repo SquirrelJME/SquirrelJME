@@ -24,7 +24,7 @@ import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
  * @since 2017/08/11
  */
 public class SimulatorTranslator
-	implements ExpandedByteCode
+	extends ExpandedByteCode
 {
 	/** The output MMIX code. */
 	protected final MachineCodeOutput out;

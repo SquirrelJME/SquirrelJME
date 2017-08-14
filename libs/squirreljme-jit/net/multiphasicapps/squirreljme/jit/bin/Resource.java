@@ -103,10 +103,7 @@ public class Resource
 		this._parsed = true;
 		
 		// Need to declare a new section
-		LinkerState ls = this.__linkerState();
-		Reference<LinkerState> rls = ls.__reference();
-		FragmentBuilder sb = new FragmentBuilder(rls, ls.__sectionCounter().
-			nextResource(ls, this.cluster.get(), this.name));
+		FragmentBuilder sb = new FragmentBuilder();
 		
 		// Copy all bytes to the output
 		byte[] buf = new byte[512];
@@ -121,7 +118,9 @@ public class Resource
 		}
 		
 		// Set fragment
-		this._fragment = sb.build();
+		LinkerState ls = this.__linkerState();
+		this._fragment = sb.build(ls, ls.__sectionCounter().
+			nextResource(ls, this.cluster.get(), this.name));
 	}
 }
 
