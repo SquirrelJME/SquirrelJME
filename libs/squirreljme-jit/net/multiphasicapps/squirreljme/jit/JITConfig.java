@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.jit.arch.DebugMachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
+import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
 import net.multiphasicapps.squirreljme.jit.pipe.DebugPipe;
 import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
@@ -139,12 +140,15 @@ public abstract class JITConfig
 	 * Creates an instance of the native machine code output which writes to
 	 * an internal buffer which may then return the required bytes.
 	 *
+	 * @param __fd The destination for the created fragment.
 	 * @return The output for native machine code which matches this given
 	 * JIT.
 	 * @throws JITException If the output could not be created.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/09
 	 */
-	public abstract MachineCodeOutput createMachineCodeOutput()
+	public abstract MachineCodeOutput createMachineCodeOutput(
+		FragmentDestination __fd)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -175,19 +179,23 @@ public abstract class JITConfig
 	 * Creates an {@link ExpandedPipe} instance which will (eventually) be
 	 * attached to the output for native machine code generation.
 	 *
+	 * @param __fd The destination which receives the fragment when it has
+	 * been generated. 
 	 * @return The expanded byte code engine which is used to generate the
 	 * native machine code.
+	 * @throws JITException If the pipe could not be created.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/09
 	 */
-	public final ExpandedPipe createPipe()
+	public final ExpandedPipe createPipe(FragmentDestination __fd)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__r == null)
+		if (__fd == null)
 			throw new NullPointerException("NARG");
 		
 		// This will be wrapped by the translator
-		MachineCodeOutput mco = createMachineCodeOutput();
+		MachineCodeOutput mco = createMachineCodeOutput(__fd);
 		
 		// If dumping is enabled, wrap this output with a dumper
 		if (getBoolean(JITConfigKey.JIT_DUMP_ASSEMBLER))
