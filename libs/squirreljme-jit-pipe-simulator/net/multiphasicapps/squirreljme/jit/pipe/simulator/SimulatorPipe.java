@@ -31,23 +31,18 @@ public class SimulatorPipe
 	/**
 	 * Initializes the basic block writer for the simulator.
 	 *
-	 * @param __own The owning simulator.
-	 * @param __key The key for this basic block.
 	 * @param __out The assembler to write code to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public SimulatorPipe(SimulatorTranslator __own, BasicBlockKey __key,
-		MachineCodeOutput __out)
+	public SimulatorPipe(MachineCodeOutput __out)
 		throws NullPointerException
 	{
 		// Check
-		if (__own == null || __key == null || __out == null)
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.owner = __own;
-		this.key = __key;
 		this.out = __out;
 	}
 	
@@ -87,6 +82,21 @@ public class SimulatorPipe
 	{
 		// Check
 		if (__obj == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void enterBlock(BasicBlockKey __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
