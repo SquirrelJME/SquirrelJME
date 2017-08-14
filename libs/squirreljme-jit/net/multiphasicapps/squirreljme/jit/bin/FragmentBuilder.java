@@ -112,9 +112,8 @@ public class FragmentBuilder
 		this._finished = true;
 		
 		// Build fragment
-		throw new todo.TODO();
-		/*return __linkerState().sections().__getOrCreate(this.type).__append(
-			this.bytes.toByteArray());*/
+		return __ls.sections().__getOrCreate(__t).__append(
+			this._bytes.toByteArray());
 	}
 }
 
