@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.jit.pipe;
 
 import java.io.PrintStream;
+import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
+import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -76,6 +78,50 @@ public final class DebugPipe
 	{
 		__printf("Closing");
 		this.pipe.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void copy(TypedVariable __src, Variable __dest)
+		throws JITException, NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void countReference(TypedVariable __obj, boolean __up)
+		throws JITException, NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void enterBlock(BasicBlockKey __k)
+		throws JITException, NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/13
+	 */
+	@Override
+	public void monitorEnter(TypedVariable __obj)
+		throws JITException, NullPointerException
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

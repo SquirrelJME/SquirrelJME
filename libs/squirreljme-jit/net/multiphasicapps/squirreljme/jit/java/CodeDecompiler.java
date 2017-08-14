@@ -20,9 +20,8 @@ import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
 import net.multiphasicapps.squirreljme.jit.bin.Section;
 import net.multiphasicapps.squirreljme.jit.bin.Sections;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedBasicBlock;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
 
 /**
  * This class is used to decompile the Java byte code in the Code attribute and
@@ -192,10 +191,12 @@ public class CodeDecompiler
 		LinkerState linkerstate = this.linkerstate;
 		Sections sections = linkerstate.sections();
 		MethodFlags flags = this.flags;
-		FragmentBuilder fb = new FragmentBuilder();
+		/*FragmentBuilder fb = new FragmentBuilder();
 		
 		sections.createFragmentBuilder(this.outerclass,
-			this.name, this.type, flags);
+			this.name, this.type, flags);*/
+		if (true)
+			throw new todo.TODO();
 		
 		// Initialize variable state
 		VariableState varstate = new VariableState(__smt, __code.maxStack(),
@@ -206,9 +207,7 @@ public class CodeDecompiler
 		// configuration and other options. The expanded byte code is
 		// autoclosed so that the translator knows when it is safe to write
 		// to the wrapped generator if there is any.
-		FragmentBuilder[] rfb = new FragmentBuilder[1];
-		try (ExpandedByteCode ebc = linkerstate.config().
-			createExpandedByteCode(rfb))
+		try (ExpandedPipe pipe = linkerstate.config().createPipe())
 		{
 			// If any address has exception handlers then each unique group
 			// must be expanded so that if an exception does exist they can
@@ -216,11 +215,8 @@ public class CodeDecompiler
 			Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
 			
 			// Setup entry point which counts starting arguments
-			try (ExpandedBasicBlock ebb = ebc.basicBlock(
-				SpecialBasicBlockKey.ENTRY_POINT))
-			{
-				__expandEntryPoint(ebb);
-			}
+			pipe.enterBlock(SpecialBasicBlockKey.ENTRY_POINT);
+			__expandEntryPoint(pipe);
 		
 			// After all of that, run through all byte code operations and
 			// create an expanded byte code program contained within basic
@@ -229,7 +225,7 @@ public class CodeDecompiler
 			// support for the more complex byte code which can be prone to
 			// errors.
 			for (BasicBlock bb : __code.basicBlocks())
-				__expandBasicBlock(bb, ebc, xkeys);
+				__expandBasicBlock(bb, pipe, xkeys);
 		
 			// Expand exception handlers if any were used
 			for (ExceptionHandlerKey ek : xkeys)
@@ -271,42 +267,30 @@ public class CodeDecompiler
 	 * Expands basic blocks which use standard instructions.
 	 *
 	 * @param __bb The basic block to expand.
-	 * @param __ebc The containing code which wraps the basic blocks.
+	 * @param __pipe The containing code which wraps the basic blocks.
 	 * @param __xk The exception handler keys.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/12
 	 */
 	private final void __expandBasicBlock(BasicBlock __bb,
-		ExpandedByteCode __ebc, Set<ExceptionHandlerKey> __xk)
+		ExpandedPipe __pipe, Set<ExceptionHandlerKey> __xk)
 		throws NullPointerException
 	{
 		// Check
-		if (__bb == null || __ebc == null || __xk == null)
+		if (__bb == null || __pipe == null || __xk == null)
 			throw new NullPointerException("NARG");
 		
-		// Obtain key
-		BasicBlockKey key = __bb.jumpTarget();
-		
-		// Debug
-		System.err.printf("DEBUG -- Decode BB %s%n", key);
-		
-		// Setup base block
-		try (ExpandedBasicBlock ebb = __ebc.basicBlock(key))
+		// Go through instructions for the block and parse them
+		__pipe.enterBlock(__bb.jumpTarget());
+		for (Instruction i : __bb)
 		{
-			// Go through instructions for the block and parse them
-			for (Instruction i : __bb)
-			{
-				// Debug
-				System.err.printf("DEBUG -- Decode IN %s%n", i);
-		
-				throw new todo.TODO();
-			}
-			
-			// Finish basic block output
-			if (true)
-				throw new todo.TODO();
-		}
+			// Debug
+			System.err.printf("DEBUG -- Decode IN %s%n", i);
 	
+			throw new todo.TODO();
+		}
+		
+		// Finish basic block output
 		throw new todo.TODO();
 	}
 	
