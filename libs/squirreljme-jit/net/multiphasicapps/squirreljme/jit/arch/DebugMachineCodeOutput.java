@@ -99,7 +99,7 @@ public class DebugMachineCodeOutput
 	{
 		// Print a nice header first
 		PrintStream print = this.print;
-		print.print("MACHN@");
+		print.print("MACH@");
 		print.printf("%08x", System.identityHashCode(this));
 		print.print(" -- ");
 		
