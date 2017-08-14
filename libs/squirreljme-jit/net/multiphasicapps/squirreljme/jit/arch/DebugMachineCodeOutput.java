@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/08/11
  */
-public class DumpMachineCodeOutput
+public class DebugMachineCodeOutput
 	extends MachineCodeOutput
 {
 	/** The stream to print to. */
@@ -35,7 +35,7 @@ public class DumpMachineCodeOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public DumpMachineCodeOutput(MachineCodeOutput __o)
+	public DebugMachineCodeOutput(MachineCodeOutput __o)
 		throws NullPointerException
 	{
 		this(System.err, __o);
@@ -49,7 +49,7 @@ public class DumpMachineCodeOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public DumpMachineCodeOutput(PrintStream __p, MachineCodeOutput __o)
+	public DebugMachineCodeOutput(PrintStream __p, MachineCodeOutput __o)
 		throws NullPointerException
 	{
 		super(__o.config());

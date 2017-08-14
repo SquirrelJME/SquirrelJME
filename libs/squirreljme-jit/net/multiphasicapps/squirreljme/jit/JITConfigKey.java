@@ -31,17 +31,17 @@ public final class JITConfigKey
 	public static final JITConfigKey JIT_DUMP_ASSEMBLER =
 		new JITConfigKey("jit.dump.assembler");
 	
-	/** Should the translator code be dumped? */
-	public static final JITConfigKey JIT_DUMP_TRANSLATOR =
-		new JITConfigKey("jit.dump.translator");
+	/** Should the expanded pipe be dumped? */
+	public static final JITConfigKey JIT_DUMP_PIPE =
+		new JITConfigKey("jit.dump.pipe");
+	
+	/** The expanded pipe engine to use. */
+	public static final JITConfigKey JIT_PIPE =
+		new JITConfigKey("jit.pipe");
 	
 	/** Should profiling information be included? */
 	public static final JITConfigKey JIT_PROFILE =
 		new JITConfigKey("jit.profile");
-	
-	/** The JIT translation engine to use. */
-	public static final JITConfigKey JIT_TRANSLATOR =
-		new JITConfigKey("jit.translator");
 	
 	/** The key name. */
 	protected final String key;

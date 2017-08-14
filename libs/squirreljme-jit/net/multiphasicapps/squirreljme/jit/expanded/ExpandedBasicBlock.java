@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @see ExpandedByteCode
  * @since 2017/08/07
  */
+@Deprecated
 public abstract class ExpandedBasicBlock
 	implements AutoCloseable
 {

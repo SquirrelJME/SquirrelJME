@@ -170,13 +170,10 @@ This is a list of options which may be passed to the JIT.
    * `ia` -- Intel Architecture (x86, x86_64).
  * `jit.dump.assembler` -- If set to true then this will dump all commands sent
    to the assembler.
- * `jit.dump.translator` -- If set to true then this will dump all byte code
-   which has been expanded within basic blocks.
+ * `jit.dump.pipe` -- If set to true then this will dump all byte code
+   which has been expanded.
+ * `jit.pipe` -- This is a pipe which is given expanded Java byte code and
+   which then translates it into native machine code.
  * `jit.profile` -- Enable profiling, used to measure how fast methods
    execute.
- * `jit.translator` -- The translator to use when compiling expanded byte code
-   into native machine code.
-   * `naive` -- Naive translator, this performs no optimization and directly
-     translates expanded byte code into machine code. Although this is the
-     fastest translator it produces the slowest and largest code.
 
