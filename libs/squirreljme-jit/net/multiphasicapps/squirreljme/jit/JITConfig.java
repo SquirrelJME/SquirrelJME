@@ -378,12 +378,11 @@ public abstract class JITConfig
 		// Translate?
 		switch (__k.toString())
 		{
-				// Translator, default to naive
-				// May be replaced by the target if there is a more optimal
-				// translator available
-			case "jit.translator":
+				// Pipe, defaults to the system property at the start of the
+				// class.
+			case "jit.pipe":
 				if (__v == null)
-					return _DEFAULT_TRANSLATOR;
+					return _DEFAULT_PIPE;
 				break;
 				
 				// Is profiling enabled?
@@ -419,6 +418,7 @@ public abstract class JITConfig
 		switch (__k.toString())
 		{
 				// Special keys
+			case "jit.pipe":
 			case "jit.profile":
 				return true;
 			
