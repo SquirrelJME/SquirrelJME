@@ -52,8 +52,6 @@ public class DebugMachineCodeOutput
 	public DebugMachineCodeOutput(PrintStream __p, MachineCodeOutput __o)
 		throws NullPointerException
 	{
-		super(__o.config());
-		
 		// Check
 		if (__p == null || __o == null)
 			throw new NullPointerException("NARG");

@@ -225,7 +225,7 @@ public abstract class JITConfig
 		
 		// Create instance, if dumping is enabled then dump anything sent to
 		// this
-		ExpandedByteCode rv = pipeservice.createPipe(mco);
+		ExpandedPipe rv = pipeservice.createPipe(mco);
 		if (getBoolean(JITConfigKey.JIT_DUMP_PIPE))
 			return new DebugPipe(rv);
 		return rv;

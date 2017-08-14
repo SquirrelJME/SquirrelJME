@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.pipe;
 
 import java.io.PrintStream;
+import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
