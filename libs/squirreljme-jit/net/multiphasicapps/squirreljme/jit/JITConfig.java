@@ -138,17 +138,14 @@ public abstract class JITConfig
 	
 	/**
 	 * Creates an instance of the native machine code output which writes to
-	 * the specified fragment.
+	 * an internal buffer which may then return the required bytes.
 	 *
-	 * @param __f The fragment to write instructions to.
 	 * @return The output for native machine code which matches this given
 	 * JIT.
 	 * @throws JITException If the output could not be created.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/09
 	 */
-	public abstract MachineCodeOutput createMachineCodeOutput(
-		FragmentBuilder __f)
+	public abstract MachineCodeOutput createMachineCodeOutput()
 		throws JITException, NullPointerException;
 	
 	/**
@@ -195,22 +192,22 @@ public abstract class JITConfig
 	 * a native generation engine along with translators (for potential
 	 * optimizations). 
 	 *
-	 * @param __f The output fragment where native instructions go.
+	 * @param __r Reference to an array which is where an output fragment
+	 * builder will be written to on closing.
 	 * @return The expanded byte code engine which is used to generate the
 	 * native machine code.
 	 * @throws JITException If it could not be created.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/09
 	 */
-	public final ExpandedByteCode createExpandedByteCode(FragmentBuilder __f)
+	public final ExpandedByteCode createExpandedByteCode(FragmentBuilder[] __r)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__f == null)
+		if (__r == null)
 			throw new NullPointerException("NARG");
 		
 		// This will be wrapped by the translator
-		MachineCodeOutput mco = createMachineCodeOutput(__f);
+		MachineCodeOutput mco = createMachineCodeOutput(__r);
 		
 		// If dumping is enabled, wrap this output with a dumper
 		if (getBoolean(JITConfigKey.JIT_DUMP_ASSEMBLER))

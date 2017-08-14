@@ -15,44 +15,29 @@ import java.lang.ref.WeakReference;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
- * This class is used to build fractions which are placed in section.
+ * This class is used to build fractions which are placed into sections.
  * Since {@link Fragment} data should be as immutable as possible, this allows
- * such sections to be dynamically created.
+ * such sections to be dynamically created and appended when they are ready.
  *
  * @since 2017/06/23
  */
-public final class FragmentBuilder
-	extends __SubState__
+public class FragmentBuilder
 {
-	/** The type of section this is in. */
-	protected final SectionType type;
-	
 	/** Deque for the bytes within the section. */
-	protected final ByteDeque bytes =
+	private final ByteDeque _bytes =
 		new ByteDeque();
 	
 	/** Has the fragment been finished? */
 	private volatile boolean _finished;
 	
 	/**
-	 * Initializes the section builder.
+	 * Initializes the fragment builder.
 	 *
-	 * @param __ls The owning linker state.
-	 * @param __t The section this fragment exists within.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/23
 	 */
-	FragmentBuilder(Reference<LinkerState> __ls, SectionType __t)
+	public FragmentBuilder()
 		throws NullPointerException
 	{
-		super(__ls);
-		
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.type = __t;
 	}
 	
 	/**
@@ -62,15 +47,15 @@ public final class FragmentBuilder
 	 * @throws IllegalStateException If the fragment has been finished.
 	 * @since 2017/06/27
 	 */
-	public void append(byte __v)
+	public final void append(byte __v)
 		throws IllegalStateException
 	{
 		// {@squirreljme.error JI0z Cannot add a single non-dynamic byte
-		// because the section has been finished.}
+		// because the fragment builder has been finished.}
 		if (this._finished)
 			throw new IllegalStateException("JI0z");
 		
-		this.bytes.addLast(__v);
+		this._bytes.addLast(__v);
 	}
 	
 	/**
@@ -85,7 +70,7 @@ public final class FragmentBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/27
 	 */
-	public void append(byte[] __v, int __o, int __l)
+	public final void append(byte[] __v, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException,
 			NullPointerException
 	{
@@ -96,23 +81,30 @@ public final class FragmentBuilder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error JI0y Cannot add multiple non-dynamic bytes
-		// because the section has been finished.}
+		// because the fragment builder has been finished.}
 		if (this._finished)
 			throw new IllegalStateException("JI0y");
 		
-		this.bytes.addLast(__v, __o, __l);
+		this._bytes.addLast(__v, __o, __l);
 	}
 	
 	/**
-	 * Finishes the specified fragment adding it to the section in the owning
-	 * linker state.
+	 * Finishes the specified fragment adding it to the section in the
+	 * specified linker state.
 	 *
+	 * @param __ls The linker state to write the fragment to.
+	 * @param __t The section the fragment which is in\.
 	 * @throws IllegalStateException If the fragment has been finished.
 	 * @since 2017/06/27
 	 */
-	public final Reference<Fragment> build()
-		throws IllegalStateException
+	public final Reference<Fragment> build(LinkerState __ls,
+		SectionType __t)
+		throws IllegalStateException, NullPointerException
 	{
+		// Check
+		if (__ls == null || __t == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error JI0x The fragment being built has already been
 		// finished.}
 		if (this._finished)
@@ -120,8 +112,9 @@ public final class FragmentBuilder
 		this._finished = true;
 		
 		// Build fragment
-		return __linkerState().sections().__getOrCreate(this.type).__append(
-			this.bytes.toByteArray());
+		throw new todo.TODO();
+		/*return __linkerState().sections().__getOrCreate(this.type).__append(
+			this.bytes.toByteArray());*/
 	}
 }
 

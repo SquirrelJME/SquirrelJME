@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2017/08/07
  */
 public abstract class MachineCodeOutput
+	implements AutoCloseable
 {
 	/** The JIT configuration. */
 	protected final JITConfig config;

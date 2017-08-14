@@ -192,7 +192,9 @@ public class CodeDecompiler
 		LinkerState linkerstate = this.linkerstate;
 		Sections sections = linkerstate.sections();
 		MethodFlags flags = this.flags;
-		FragmentBuilder fb = sections.createFragmentBuilder(this.outerclass,
+		FragmentBuilder fb = new FragmentBuilder();
+		
+		sections.createFragmentBuilder(this.outerclass,
 			this.name, this.type, flags);
 		
 		// Initialize variable state
@@ -204,8 +206,9 @@ public class CodeDecompiler
 		// configuration and other options. The expanded byte code is
 		// autoclosed so that the translator knows when it is safe to write
 		// to the wrapped generator if there is any.
+		FragmentBuilder[] rfb = new FragmentBuilder[1];
 		try (ExpandedByteCode ebc = linkerstate.config().
-			createExpandedByteCode(fb))
+			createExpandedByteCode(rfb))
 		{
 			// If any address has exception handlers then each unique group
 			// must be expanded so that if an exception does exist they can
@@ -232,6 +235,34 @@ public class CodeDecompiler
 			for (ExceptionHandlerKey ek : xkeys)
 				throw new todo.TODO();
 		}
+		
+		
+	/**
+	 * Creates a new fragment builder which will append to the next section
+	 * that is referenced.
+	 *
+	 * @param __c The name of the class.
+	 * @param __n The name of the method.
+	 * @param __t The type of the method.
+	 * @param __f The flags for the method.
+	 * @return The fragment builder.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/09
+	 */
+	public final FragmentBuilder createFragmentBuilder(ClassName __c,
+		MethodName __n, MethodDescriptor __t, MethodFlags __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null || __n == null || __t == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		LinkerState ls = __linkerState();
+		Reference<LinkerState> rls = ls.__reference();
+		return new FragmentBuilder(rls, ls.__sectionCounter().nextSection(ls,
+			__c, __n, __t, __f));
+	}
 		
 		throw new todo.TODO();
 	}
