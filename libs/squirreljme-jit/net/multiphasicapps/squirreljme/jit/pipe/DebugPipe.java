@@ -89,7 +89,8 @@ public final class DebugPipe
 	public void copy(TypedVariable __src, Variable __dest)
 		throws JITException, NullPointerException
 	{
-		throw new todo.TODO();
+		__printf("copy(%s, %s)", __src, __dest);
+		this.pipe.copy(__src, __dest);
 	}
 	
 	/**
@@ -100,7 +101,8 @@ public final class DebugPipe
 	public void countReference(TypedVariable __obj, boolean __up)
 		throws JITException, NullPointerException
 	{
-		throw new todo.TODO();
+		__printf("countReference(%s, %b)", __obj, __up);
+		this.pipe.countReference(__obj, __up);
 	}
 	
 	/**
@@ -111,7 +113,8 @@ public final class DebugPipe
 	public void enterBlock(BasicBlockKey __k)
 		throws JITException, NullPointerException
 	{
-		throw new todo.TODO();
+		__printf("enterBlock(%s)", __k);
+		this.pipe.enterBlock(__k);
 	}
 	
 	/**
@@ -122,7 +125,8 @@ public final class DebugPipe
 	public void monitorEnter(TypedVariable __obj)
 		throws JITException, NullPointerException
 	{
-		throw new todo.TODO();
+		__printf("monitorEnter(%s)", __obj);
+		this.pipe.monitorEnter(__obj);
 	}
 	
 	/**
