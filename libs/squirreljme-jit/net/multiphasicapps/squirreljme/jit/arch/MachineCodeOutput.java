@@ -28,6 +28,17 @@ public interface MachineCodeOutput
 	extends AutoCloseable
 {
 	/**
+	 * This closes the machine code output which then causes any machine code
+	 * which has been generated to be output if delayed output is utilized.
+	 *
+	 * @throws JITException If it could not be closed.
+	 * @since 2017/08/13
+	 */
+	@Override
+	public abstract void close()
+		throws JITException;
+	
+	/**
 	 * Returns the used JIT configuration.
 	 *
 	 * @return The JIT configuration.

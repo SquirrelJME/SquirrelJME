@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.pipe;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+
 /**
  * This is an expanded pipe which is given expanded byte code.
  *
@@ -22,5 +24,16 @@ package net.multiphasicapps.squirreljme.jit.pipe;
 public interface ExpandedPipe
 	extends AutoCloseable
 {
+	/**
+	 * Closes the expanded pipe forcing all changes to be finalized. This
+	 * may be needed by optimizing pipes to perform all of their
+	 * optimizations.
+	 *
+	 * @throws JITException If it could not be closed.
+	 * @since 2017/08/09
+	 */
+	@Override
+	public abstract void close()
+		throws JITException;
 }
 
