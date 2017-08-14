@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.arch.DumpMachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.arch.DebugMachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
-import net.multiphasicapps.squirreljme.jit.expanded.ExpandedByteCode;
-import net.multiphasicapps.squirreljme.jit.trans.DumpTranslator;
-import net.multiphasicapps.squirreljme.jit.trans.TranslatorService;
+import net.multiphasicapps.squirreljme.jit.pipe.DebugPipe;
+import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
+import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipeService;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -39,11 +39,11 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 public abstract class JITConfig
 {
 	/** Translators available for usage. */
-	private static final ServiceLoader<TranslatorService> _TRANSLATORS =
-		ServiceLoader.<TranslatorService>load(TranslatorService.class);
+	private static final ServiceLoader<ExpandedPipeService> _PIPES =
+		ServiceLoader.<ExpandedPipeService>load(ExpandedPipeService.class);
 	
 	/** The default translator to use. */
-	private static final JITConfigValue _DEFAULT_TRANSLATOR;
+	private static final JITConfigValue _DEFAULT_PIPE;
 	
 	/** Keys which are included by the JIT by default. */
 	private static final JITConfigKey[] _DEFAULT_KEYS =
@@ -52,9 +52,9 @@ public abstract class JITConfig
 			JITConfigKey.JIT_ADDRESSBITS,
 			JITConfigKey.JIT_ARCH,
 			JITConfigKey.JIT_DUMP_ASSEMBLER,
-			JITConfigKey.JIT_DUMP_TRANSLATOR,
+			JITConfigKey.JIT_DUMP_PIPE,
+			JITConfigKey.JIT_PIPE,
 			JITConfigKey.JIT_PROFILE,
-			JITConfigKey.JIT_TRANSLATOR,
 		};
 	
 	/** Values stored within the configuration, untranslated. */
@@ -65,7 +65,7 @@ public abstract class JITConfig
 	private volatile Reference<String> _string;
 	
 	/** The translator service to use. */
-	private volatile Reference<TranslatorService> _translator;
+	private volatile Reference<ExpandedPipeService> _pipeservice;
 	
 	/**
 	 * Initializes some settings.
@@ -75,11 +75,10 @@ public abstract class JITConfig
 	static
 	{
 		// {@squirreljme.property
-		// net.multiphasicapps.squirreljme.jit.translator=value
-		// This sets the default translator for the expanded byte code engine
-		// which may or may not perform optimizations.}
-		_DEFAULT_TRANSLATOR = new JITConfigValue(System.getProperty(
-			"net.multiphasicapps.squirreljme.jit.translator", "naive"));
+		// net.multiphasicapps.squirreljme.jit.pipe=value
+		// This sets the default pipe for the expanded byte code engine.}
+		_DEFAULT_PIPE = new JITConfigValue(System.getProperty(
+			"net.multiphasicapps.squirreljme.jit.pipe", "naive"));
 	}
 	
 	/**
@@ -173,6 +172,66 @@ public abstract class JITConfig
 		throws NullPointerException;
 	
 	/**
+	 * Creates an {@link ExpandedPipe} instance which will (eventually) be
+	 * attached to the output for native machine code generation.
+	 *
+	 * @return The expanded byte code engine which is used to generate the
+	 * native machine code.
+	 * @since 2017/08/09
+	 */
+	public final ExpandedPipe createPipe()
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// This will be wrapped by the translator
+		MachineCodeOutput mco = createMachineCodeOutput();
+		
+		// If dumping is enabled, wrap this output with a dumper
+		if (getBoolean(JITConfigKey.JIT_DUMP_ASSEMBLER))
+			mco = new DebugMachineCodeOutput(mco);
+		
+		// Has the translator been cached already?
+		Reference<ExpandedPipeService> ref = this._pipeservice;
+		ExpandedPipeService pipeservice = null;
+		
+		// Locate the pipe service and cache it, since it will be used multiple
+		// times
+		String want = getString(JITConfigKey.JIT_PIPE);
+		if (ref == null || null == (pipeservice = ref.get()))
+		{
+			// Locate one
+			ServiceLoader<ExpandedPipeService> pipeservices = _PIPES;
+			synchronized (pipeservices)
+			{
+				for (ExpandedPipeService sv : pipeservices)
+					if (want.equals(sv.name()))
+					{
+						pipeservice = sv;
+						break;
+					}
+			}
+			
+			// {@squirreljme.error JI20 The specified pipe service is not
+			// valid. (The translator)}
+			if (pipeservice == null)
+				throw new JITException(String.format("JI20", want));
+			
+			// Cache
+			this._pipeservice = new WeakReference<>(pipeservice);
+		}
+		
+		// Create instance, if dumping is enabled then dump anything sent to
+		// this
+		ExpandedByteCode rv = pipeservice.createPipe(mco);
+		if (getBoolean(JITConfigKey.JIT_DUMP_PIPE))
+			return new DebugPipe(rv);
+		return rv;
+	}
+	
+	/**
 	 * This creates a new section counter which is used to count text and data
 	 * sections for placement in an output linked executable.
 	 *
@@ -185,70 +244,6 @@ public abstract class JITConfig
 	public SectionCounter createSectionCounter()
 	{
 		return new FlatSectionCounter();
-	}
-	
-	/**
-	 * Creates an {@link ExpandedByteCode} instance which may be attached to
-	 * a native generation engine along with translators (for potential
-	 * optimizations). 
-	 *
-	 * @param __r Reference to an array which is where an output fragment
-	 * builder will be written to on closing.
-	 * @return The expanded byte code engine which is used to generate the
-	 * native machine code.
-	 * @throws JITException If it could not be created.
-	 * @since 2017/08/09
-	 */
-	public final ExpandedByteCode createExpandedByteCode(FragmentBuilder[] __r)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__r == null)
-			throw new NullPointerException("NARG");
-		
-		// This will be wrapped by the translator
-		MachineCodeOutput mco = createMachineCodeOutput(__r);
-		
-		// If dumping is enabled, wrap this output with a dumper
-		if (getBoolean(JITConfigKey.JIT_DUMP_ASSEMBLER))
-			mco = new DumpMachineCodeOutput(mco);
-		
-		// Has the translator been cached already?
-		Reference<TranslatorService> ref = this._translator;
-		TranslatorService translator = null;
-		
-		// Locate the translator and cache it, since it will be used multiple
-		// times
-		String want = getString(JITConfigKey.JIT_TRANSLATOR);
-		if (ref == null || null == (translator = ref.get()))
-		{
-			// Locate one
-			ServiceLoader<TranslatorService> translators = _TRANSLATORS;
-			synchronized (translators)
-			{
-				for (TranslatorService sv : translators)
-					if (want.equals(sv.name()))
-					{
-						translator = sv;
-						break;
-					}
-			}
-			
-			// {@squirreljme.error JI20 The specified translator is not
-			// valid. (The translator)}
-			if (translator == null)
-				throw new JITException(String.format("JI20", want));
-			
-			// Cache
-			this._translator = new WeakReference<>(translator);
-		}
-		
-		// Create instance, if dumping is enabled then dump anything sent to
-		// this
-		ExpandedByteCode rv = translator.createTranslator(mco);
-		if (getBoolean(JITConfigKey.JIT_DUMP_TRANSLATOR))
-			return new DumpTranslator(rv);
-		return rv;
 	}
 	
 	/**

@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.jit.pipe;
  * @since 2017/08/13
  */
 public interface ExpandedPipe
-	implements AutoCloseable
+	extends AutoCloseable
 {
 }
 

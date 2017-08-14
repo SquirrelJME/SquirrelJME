@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/08/11
  */
+@Deprecated
 public interface TranslatorService
 {
 	/**

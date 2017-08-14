@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.pipe;
 
+import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+
 /**
  * This is a service which allows for the creation of {@link ExpandedPipe}
  * which turns expanded byte code into machine instructions (or passes it to
@@ -28,7 +30,7 @@ public interface ExpandedPipeService
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/13
 	 */
-	public abstract ExpandedPipe createPipe()
+	public abstract ExpandedPipe createPipe(MachineCodeOutput __m)
 		throws NullPointerException;
 	
 	/**
