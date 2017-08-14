@@ -106,7 +106,8 @@ public class SimulatorPipe
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Mark position
+		this._bbstarts.put(__k, this.out.positionMarker());
 	}
 	
 	/**
