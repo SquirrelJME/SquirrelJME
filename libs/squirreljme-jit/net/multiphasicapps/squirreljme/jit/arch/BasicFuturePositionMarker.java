@@ -88,7 +88,7 @@ public class BasicFuturePositionMarker
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = String.format("F#%d", this.id)));
+				(rv = String.format("Future#%d", this.id)));
 		
 		return rv;
 	}
