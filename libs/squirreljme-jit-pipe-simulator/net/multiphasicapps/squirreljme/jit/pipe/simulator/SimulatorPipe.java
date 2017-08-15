@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.pipe.simulator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
@@ -90,6 +91,11 @@ public class SimulatorPipe
 		// Check
 		if (__obj == null)
 			throw new NullPointerException("NARG");
+		
+		MachineCodeOutput out = this.out;
+		
+		// Only modify reference counts if the object is not-null
+		FuturePositionMarker fpm = out.createFuturePositionMarker();
 		
 		throw new todo.TODO();
 	}
