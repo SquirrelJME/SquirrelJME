@@ -498,9 +498,22 @@ public final class String
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns a character array which contains every character within this
+	 * string.
+	 *
+	 * @return A character array containing the characters of this string.
+	 * @since 2017/08/15
+	 */
 	public char[] toCharArray()
 	{
-		throw new todo.TODO();
+		int n = length();
+		char[] rv = new char[n];
+		
+		for (int i = 0; i < n; i++)
+			rv[i] = charAt(i);
+		
+		return rv;
 	}
 	
 	public String toLowerCase()
