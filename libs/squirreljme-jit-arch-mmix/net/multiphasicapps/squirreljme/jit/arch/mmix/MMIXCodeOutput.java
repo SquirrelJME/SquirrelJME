@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.arch.mmix;
 
+import net.multiphasicapps.squirreljme.jit.arch.BasicFuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
@@ -37,6 +38,9 @@ public class MMIXCodeOutput
 	/** The destination fragment. */
 	protected final MMIXFragmentBuilder fragment =
 		new MMIXFragmentBuilder();
+	
+	/** The next ID to use for future positions. */
+	private volatile int _nextfpid;
 	
 	/**
 	 * Initializes the MMIX code output.
@@ -87,7 +91,7 @@ public class MMIXCodeOutput
 	@Override
 	public FuturePositionMarker createFuturePositionMarker()
 	{
-		throw new todo.TODO();
+		return new BasicFuturePositionMarker(++this._nextfpid);
 	}
 	
 	/**
