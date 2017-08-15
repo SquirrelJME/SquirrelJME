@@ -178,9 +178,37 @@ public final class String
 		throw new todo.TODO();
 	}
 	
-	public String concat(String __a)
+	/**
+	 * Concatenates the given string to the end of this string.
+	 *
+	 * If the given string has a length of zero then this string is returned,
+	 * otherwise if this string has a length of zero the given string is
+	 * returned.
+	 *
+	 * @param __s The string to append to this string (returning a new string).
+	 * @return The new string with the appended characters.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public String concat(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Short circuits to not do anything
+		if (this.length() == 0)
+			return __s;
+		else if (__s.length() == 0)
+			return this;
+		
+		// Just build a new string this way because it is much simpler than
+		// having to mess with an internal representation of specially
+		// encoded strings
+		StringBuilder sb = new StringBuilder(this);
+		sb.append(__s);
+		return sb.toString();
 	}
 	
 	public boolean contains(CharSequence __s)
@@ -376,9 +404,15 @@ public final class String
 		}
 	}
 	
+	/**
+	 * Returns {@code true} if this string is empty.
+	 *
+	 * @return {@code true} if this string is empty.
+	 * @since 2017/08/15
+	 */
 	public boolean isEmpty()
 	{
-		throw new todo.TODO();
+		return length() == 0;
 	}
 	
 	public int lastIndexOf(int __a)
@@ -474,10 +508,16 @@ public final class String
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns {@code this}.
+	 *
+	 * @return {@code this}.
+	 * @since 2017/08/15
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this;
 	}
 	
 	public String toUpperCase()
