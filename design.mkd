@@ -250,12 +250,33 @@ be made available for other allocations.
 
 The `String` class is a Java class which is used virtually in every single
 program. One main consideration about strings are that to the virtual machine
-they are UTF-16 strings, which may have codepoints in them. To reduce the
-memory footprint for strings, their data will be stored in most cases within
-`byte` arrays. This handles standard ASCII which will end up being used in most
-of the cases. If it is not possible to represent the `String` in a byte array
-it will then be represented as an expanded `byte` array which consumes two
-entries per character.
+they are UTF-16 strings, which may have codepoints in them (but internally
+those are not considered at all).
+
+The following assumptions are made for the best case memory optimization:
+
+ * Most strings have a maximum length of 127 characters.
+ * At most strings have at most 127 unique non-ASCII characters.
+ * Most used characters are in the ASCII range (0-127).
+   * Latin languages may use a number of characters from other ranges.
+   * Characters for other languages usually do not have a massive number of
+     character combinations (except for Chinese character sets).
+
+To reduce the memory footprint of strings, the string itself is represented as
+a `byte` array and has interpretations depending on the value of a character
+within that given string.
+
+For characters within `[0, 127]` they will be treated as standard ASCII
+characters. These characters are the most used characters and require no
+special handling otherwise.
+
+Characters within `[128, 255]` will be translated to an index (via `AND 127`)
+which will point to an array of `char` specifying the character to use. Any
+non-ASCII character will use a character within the map.
+
+If the best case assumptions are not met, then the string will be represented
+using 16-bit characters so that variable length strings are not encoded to
+support `char`.
 
 # Environment
 
