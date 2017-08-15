@@ -47,6 +47,28 @@ public interface MachineCodeOutput
 	public abstract JITConfig config();
 	
 	/**
+	 * This creates a future position marker which may then be used to jump
+	 * to another position in writing.
+	 *
+	 * @return A future position marker which may be used for a future jump to
+	 * a given position.
+	 * @since 2017/08/15
+	 */
+	public abstract FuturePositionMarker createFuturePositionMarker();
+	
+	/**
+	 * This marks a future position which has previously been created. This can
+	 * be used for jumps to instructions which are later referred to.
+	 *
+	 * @param __fpm The future position marker.
+	 * @throws JITException If the position marker has already been claimed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public abstract void markFuturePosition(FuturePositionMarker __fpm)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * Returns a position marker which marks the current write position
 	 * in the output code.
 	 *

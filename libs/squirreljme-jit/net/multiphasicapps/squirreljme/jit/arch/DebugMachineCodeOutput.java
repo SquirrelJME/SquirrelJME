@@ -90,6 +90,30 @@ public class DebugMachineCodeOutput
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public FuturePositionMarker createFuturePositionMarker()
+	{
+		FuturePositionMarker rv = this.wrap.createFuturePositionMarker();
+		__printf("createFuturePositionMarker() = %s", rv);
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public void markFuturePosition(FuturePositionMarker __fpm)
+		throws JITException, NullPointerException
+	{
+		__printf("markFuturePosition(%s)", __fpm);
+		this.wrap.markFuturePosition(__fpm);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/08/14
 	 */
 	@Override

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.arch.mmix;
 
+import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
@@ -77,6 +78,27 @@ public class MMIXCodeOutput
 	public JITConfig config()
 	{
 		return this.config;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public FuturePositionMarker createFuturePositionMarker()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public void markFuturePosition(FuturePositionMarker __fpm)
+		throws JITException, NullPointerException
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
