@@ -80,6 +80,33 @@ public class DebugMachineCodeOutput
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public void compareAndAbsoluteBranchToRegister(
+		ZeroComparisonType __t, Register __r, Register __a)
+		throws JITException, NullPointerException
+	{
+		__printf("compareAndAbsoluteBranchToRegister(%s, %s, %s)",
+			__t, __r, __a);
+		this.wrap.compareAndAbsoluteBranchToRegister(__t, __r, __a);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public void compareAndRelativeBranch(ZeroComparisonType __t,
+		Register __r, FuturePositionMarker __a)
+		throws JITException, NullPointerException
+	{
+		__printf("compareAndRelativeBranch(%s, %s, %s)", __t, __r, __a);
+		this.wrap.compareAndRelativeBranch(__t, __r, __a);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/08/13
 	 */
 	@Override

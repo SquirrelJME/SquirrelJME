@@ -40,7 +40,23 @@ public interface MachineCodeOutput
 	
 	/**
 	 * Compare the value within the specific register against zero using the
-	 * given comparison then perform a relative branch.
+	 * given comparison then performs a branch to an address in a register if
+	 * it is true.
+	 *
+	 * @param __t The type of comparison to make.
+	 * @param __r The register to compare with zero.
+	 * @param __a The target destination of the branch.
+	 * @throws JITException If the branch is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public abstract void compareAndAbsoluteBranchToRegister(
+		ZeroComparisonType __t, Register __r, Register __a)
+		throws JITException, NullPointerException;
+	
+	/**
+	 * Compare the value within the specific register against zero using the
+	 * given comparison then performs a relative branch if it is true.
 	 *
 	 * @param __t The type of comparison to make.
 	 * @param __r The register to compare with zero.
@@ -50,7 +66,7 @@ public interface MachineCodeOutput
 	 * @since 2017/08/15
 	 */
 	public abstract void compareAndRelativeBranch(ZeroComparisonType __t,
-		Object __r, FuturePositionMarker __a)
+		Register __r, FuturePositionMarker __a)
 		throws JITException, NullPointerException;
 	
 	/**

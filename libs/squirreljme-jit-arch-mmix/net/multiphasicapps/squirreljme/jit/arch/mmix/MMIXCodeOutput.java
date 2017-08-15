@@ -14,6 +14,8 @@ import net.multiphasicapps.squirreljme.jit.arch.BasicFuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
+import net.multiphasicapps.squirreljme.jit.arch.Register;
+import net.multiphasicapps.squirreljme.jit.arch.ZeroComparisonType;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
@@ -70,6 +72,30 @@ public class MMIXCodeOutput
 	@Override
 	public void close()
 		throws JITException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public void compareAndAbsoluteBranchToRegister(
+		ZeroComparisonType __t, Register __r, Register __a)
+		throws JITException, NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public void compareAndRelativeBranch(ZeroComparisonType __t,
+		Register __r, FuturePositionMarker __a)
+		throws JITException, NullPointerException
 	{
 		throw new todo.TODO();
 	}
