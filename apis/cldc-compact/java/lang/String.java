@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 
 public final class String
 	implements Comparable<String>, CharSequence
@@ -35,9 +36,13 @@ public final class String
 	/**
 	 * Strings which are intered so that the same string is referred to so that
 	 * for example the {@code ==} operator is actually valid (despite not being
-	 * recommended at all).
+	 * recommended at all). The value for the keys are {@code null} and not
+	 * weak references to the keys to reduce the memory usage by non-static
+	 * interned strings (Otherwise for each non-static string, there would
+	 * need to be an extra weak reference to it when the keys are already
+	 * weak).
 	 */
-	private static final Map<String, Reference<String>> _INTERNS =
+	private static final Map<String, Object> _INTERNS =
 		new WeakHashMap<>();
 	
 	public String()
@@ -299,6 +304,10 @@ public final class String
 	 * This returns the unique string instance used for the current string, if
 	 * the current string is not within the internal map then it is added. If
 	 * it already exists in the map then that pre-existing value is returned.
+	 * The purpose of this method is for potential optimizations where there
+	 * are a large number of long-term string objects in memory which may be
+	 * duplicated in many places (such as in a database). As such, only
+	 * persistant strings should be interned, never short lived strings.
 	 *
 	 * Although this may be used for {@code ==} to work, it is not recommended
 	 * to use this method for such things.
@@ -308,7 +317,25 @@ public final class String
 	 */
 	public String intern()
 	{
-		throw new todo.TODO();
+		// The string may exist within the executable in a static form, use it
+		String rv = SystemVM.locateInternString(this);
+		if (rv != null)
+			return rv;
+		
+		// Otherwise go through a cache of interned strings to locate this
+		// string
+		Map<String, Object> interns = _INTERNS;
+		synchronized (interns)
+		{
+			// Use that string if it is found
+			for (String k : interns.keySet())
+				if (k.equals(this))
+					return k;
+			
+			// Otherwise add it and refer to this as the intern string
+			interns.put(this, null);
+			return this;
+		}
 	}
 	
 	public boolean isEmpty()

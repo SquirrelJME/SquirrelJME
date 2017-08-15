@@ -260,6 +260,25 @@ public final class SystemVM
 	}
 	
 	/**
+	 * This searches the the virtual machine executable memory space for
+	 * strings which exist within the binary (which are always interned).
+	 *
+	 * @param __s The string to find the interned instance of.
+	 * @return The interned string or {@code null} if it was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public static String locateInternString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Creates a new instance of the given class.
 	 *
 	 * @param <C> The class to create.
