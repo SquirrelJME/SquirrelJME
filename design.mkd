@@ -246,6 +246,17 @@ objects which only have weak references to them will be removed.
 This object can be garbage collected, it will be removed and that memory will
 be made available for other allocations.
 
+## `String` Implementation
+
+The `String` class is a Java class which is used virtually in every single
+program. One main consideration about strings are that to the virtual machine
+they are UTF-16 strings, which may have codepoints in them. To reduce the
+memory footprint for strings, their data will be stored in most cases within
+`byte` arrays. This handles standard ASCII which will end up being used in most
+of the cases. If it is not possible to represent the `String` in a byte array
+it will then be represented as an expanded `byte` array which consumes two
+entries per character.
+
 # Environment
 
 This details the environment in which SquirrelJME operates within the host

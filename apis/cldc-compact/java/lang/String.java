@@ -183,19 +183,57 @@ public final class String
 		throw new todo.TODO();
 	}
 	
-	public boolean contains(CharSequence __a)
+	public boolean contains(CharSequence __s)
 	{
 		throw new todo.TODO();
 	}
 	
-	public boolean contentEquals(StringBuffer __a)
+	/**
+	 * Checks whether the content of this string is equal to the specified
+	 * string buffer, the input buffer will be synchronized.
+	 *
+	 * @param __s The character sequence to check, this is synchronized.
+	 * @return If the content equals the input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public boolean contentEquals(StringBuffer __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// StringBuffers are synchronized and as such a lock is used to
+		// prevent it from being changed.
+		synchronized (__s)
+		{
+			return __contentEquals(__s);
+		}
 	}
 	
-	public boolean contentEquals(CharSequence __a)
+	/**
+	 * Checks whether the content of this string is equal to the specified
+	 * character sequence.
+	 *
+	 * @param __s The character sequence to check, if it is a
+	 * {@link StringBuffer} then it will be synchronized.
+	 * @return If the content equals the input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public boolean contentEquals(CharSequence __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Synchronize on StringBuffers
+		if (__s instanceof StringBuffer)
+			return contentEquals((StringBuffer)__s);
+		
+		return __contentEquals(__s);
 	}
 	
 	public boolean endsWith(String __a)
@@ -480,6 +518,36 @@ public final class String
 		
 		// Return trimmed variant of it
 		return substring(s, e + 1);
+	}
+	
+	/**
+	 * Checks to see if this string matches the target sequence.
+	 *
+	 * @param __s The input sequence to check against.
+	 * @return If they are the same or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	private final boolean __contentEquals(CharSequence __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// If the two have different lengths they will never be equal
+		int al = this.length(),
+			bl = __s.length();
+		if (al != bl)
+			return false;
+		
+		// Check each character
+		for (int i = 0; i < al; i++)
+			if (this.charAt(i) != __s.charAt(i))
+				return false;
+		
+		// If reached, they are equal
+		return true;
 	}
 	
 	/**
