@@ -11,7 +11,10 @@
 package net.multiphasicapps.squirreljme.jit.arch;
 
 /**
- * This is used for .
+ * This is used for marking future positions to potentially be used for jumps
+ * to instruction addresses which are in the future. Note that despite being
+ * intended to be used as a future type of object, it may be used for past
+ * events also provided it is created beforehand.
  *
  * The methods {@link #equals(Object)} and {@link hashCode()} must be
  * implemented.
@@ -20,5 +23,18 @@ package net.multiphasicapps.squirreljme.jit.arch;
  */
 public interface FuturePositionMarker
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/15
+	 */
+	@Override
+	public abstract int hashCode();
 }
 
