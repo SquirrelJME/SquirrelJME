@@ -1,0 +1,10 @@
+# 2017/08/14
+
+## 09:47
+
+Ok so last night was quite a rough night. Today will be finishing the refactor
+up so that I can actually start generating machine code.
+
+## 12:06
+
+Oh wow `ByteDeque` had no means of getting the number of bytes in the queue.

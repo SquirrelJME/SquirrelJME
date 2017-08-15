@@ -1,0 +1,15 @@
+# 2017/08/15
+
+## 01:33
+
+One thing I will need to consider are `String`s, the best way to store them in
+a memory optimized form. I think a general thing is that strings will never
+use more than a given count of characters. My plan is to use `byte` arrays and
+instead have it where 0-127 are normal ASCII values which are plain, but then
+have 128-255 be a mapped set of characters. This would reduce the speed a bit
+but it would potentially reduce characters used. Reading characters would
+require accessing the map. Probably in most cases, any strings that appear
+most of them will be pure ASCII, never triggering a map ever. The map itself
+would need to be backed by a `char` array if it exists, since it would handle
+characters outside of the ASCII range in most cases. I will say that most
+methods within `String` must use `charAt`.
