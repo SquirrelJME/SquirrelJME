@@ -39,6 +39,21 @@ public interface MachineCodeOutput
 		throws JITException;
 	
 	/**
+	 * Compare the value within the specific register against zero using the
+	 * given comparison then perform a relative branch.
+	 *
+	 * @param __t The type of comparison to make.
+	 * @param __r The register to compare with zero.
+	 * @param __a The target destination of the branch.
+	 * @throws JITException If the branch is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public abstract void compareAndRelativeBranch(ZeroComparisonType __t,
+		Object __r, FuturePositionMarker __a)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * Returns the used JIT configuration.
 	 *
 	 * @return The JIT configuration.
