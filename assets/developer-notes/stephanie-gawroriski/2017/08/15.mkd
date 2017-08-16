@@ -13,3 +13,18 @@ most of them will be pure ASCII, never triggering a map ever. The map itself
 would need to be backed by a `char` array if it exists, since it would handle
 characters outside of the ASCII range in most cases. I will say that most
 methods within `String` must use `charAt`.
+
+## 11:47
+
+Sometimes I wonder what James Gosling would think of SquirrelJME.
+
+## 13:02
+
+MMIX has forward and backwards branching, my machine code output will have to
+handle these cases despite most architectures having a signed branch
+instruction.
+
+## 14:52
+
+Ok, so what I need is a good representation of registers. This is where I have
+ran into issues many times because registers are complex things.
