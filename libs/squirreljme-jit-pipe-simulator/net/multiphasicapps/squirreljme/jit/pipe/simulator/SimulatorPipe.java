@@ -14,8 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.arch.ManagedRegister;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.Register;
+import net.multiphasicapps.squirreljme.jit.arch.RegisterManager;
 import net.multiphasicapps.squirreljme.jit.arch.ZeroComparisonType;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
@@ -33,6 +35,9 @@ public class SimulatorPipe
 {
 	/** The machine code to write to. */
 	protected final MachineCodeOutput out;
+	
+	/** The registers for the native target. */
+	protected final RegisterManager registers;
 	
 	/** The addresses where basic block start, for local jumps. */
 	private final Map<BasicBlockKey, PositionMarker> _bbstarts =
@@ -54,6 +59,7 @@ public class SimulatorPipe
 		
 		// Set
 		this.out = __out;
+		this.registers = __out.createRegisterManager();
 	}
 	
 	/**
