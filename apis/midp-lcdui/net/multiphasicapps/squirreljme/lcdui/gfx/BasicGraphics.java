@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcdui;
+package net.multiphasicapps.squirreljme.lcdui.gfx;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
