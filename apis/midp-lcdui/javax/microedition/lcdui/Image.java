@@ -70,8 +70,8 @@ public class Image
 				__data[i] |= 0xFF000000;
 	}
 	
-	public void getARGB16(short[] __data, int __off, int __scanlen, int __x,
-		int __y, int __w, int __h)
+	public final void getARGB16(short[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h)
 	{
 		throw new todo.TODO();
 	}
@@ -95,7 +95,7 @@ public class Image
 	 * @throws IllegalStateException If the image is not mutable.
 	 * @since 2017/02/10
 	 */
-	public Graphics getGraphics()
+	public final Graphics getGraphics()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error EB0f Cannot get mutable graphic operations for
@@ -114,7 +114,7 @@ public class Image
 	 * @return The height of the image.
 	 * @since 2017/02/10
 	 */
-	public int getHeight()
+	public final int getHeight()
 	{
 		return this._height;
 	}
@@ -145,8 +145,8 @@ public class Image
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/11
 	 */
-	public void getRGB(int[] __b, int __o, int __sl, int __x, int __y, int __w,
-		int __h)
+	public final void getRGB(int[] __b, int __o, int __sl, int __x, int __y,
+		int __w, int __h)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
@@ -202,8 +202,8 @@ public class Image
 		}
 	}
 	
-	public void getRGB16(short[] __data, int __off, int __scanlen, int __x,
-		int __y, int __w, int __h)
+	public final void getRGB16(short[] __data, int __off, int __scanlen,
+		int __x, int __y, int __w, int __h)
 	{
 		throw new todo.TODO();
 	}
@@ -214,7 +214,7 @@ public class Image
 	 * @return The width of the image.
 	 * @since 2017/02/10
 	 */
-	public int getWidth()
+	public final int getWidth()
 	{
 		return this._width;
 	}
@@ -225,7 +225,7 @@ public class Image
 	 * @return {@code true} if this image has an alpha channel.
 	 * @since 2017/02/10
 	 */
-	public boolean hasAlpha()
+	public final boolean hasAlpha()
 	{
 		return this._alpha;
 	}
@@ -236,7 +236,7 @@ public class Image
 	 * @return {@code true} if this image is animated.
 	 * @since 2017/02/10
 	 */
-	public boolean isAnimated()
+	public final boolean isAnimated()
 	{
 		return (this instanceof AnimatedImage);
 	}
@@ -247,7 +247,7 @@ public class Image
 	 * @return {@code true} if this image is mutable.
 	 * @since 2017/02/10
 	 */
-	public boolean isMutable()
+	public final boolean isMutable()
 	{
 		return this._mutable && !isAnimated() && !isScalable();
 	}
@@ -258,7 +258,7 @@ public class Image
 	 * @return {@code true} if this image is scalable.
 	 * @since 2017/02/10
 	 */
-	public boolean isScalable()
+	public final boolean isScalable()
 	{
 		return (this instanceof ScalableImage);
 	}

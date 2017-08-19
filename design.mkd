@@ -293,6 +293,19 @@ operating system.
 
 This describes the design of standard implementations.
 
+### `javax.microedition.lcdui.*`
+
+The LCDUI API is used by a large number of older J2ME applications to display
+widgets and graphics on the screen.
+
+#### `javax.microedition.lcdui.Image`
+
+Since many systems may have varying image formats and supported native pixel
+formats, instances of this class may be specific to the given hardware and may
+have the screen display limitations. Images generally may use 32-bits to
+store their pixel data, but some implementations may use images with a lower
+bit density (such as 256 color images).
+
 ## Pathname Handling
 
 Instances of the `Path` class will be strictly limited to the limitations of
