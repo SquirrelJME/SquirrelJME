@@ -12,8 +12,10 @@ package javax.microedition.lcdui;
 
 public interface ItemTraversalListener
 {
+	@__SerializedEvent__
 	public abstract void itemTraversedIn(Item __i);
 	
+	@__SerializedEvent__
 	public abstract void itemTraversedOut(Item __i);
 }
 

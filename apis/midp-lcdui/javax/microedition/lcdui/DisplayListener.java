@@ -12,14 +12,19 @@ package javax.microedition.lcdui;
 
 public interface DisplayListener
 {
+	@__SerializedEvent__
 	public abstract void displayAdded(Display __d);
 	
+	@__SerializedEvent__
 	public abstract void displayStateChanged(Display __d, int __ns);
 	
+	@__SerializedEvent__
 	public abstract void hardwareStateChanged(Display __d, int __ns);
 	
+	@__SerializedEvent__
 	public abstract void orientationChanged(Display __d, int __no);
 	
+	@__SerializedEvent__
 	public abstract void sizeChanged(Display __d, int __w, int __h);
 }
 
