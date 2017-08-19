@@ -144,7 +144,7 @@ itself and allow building and compiling itself from source. This would also
 allow other programs to be built from source and can be used as a self
 contained Java development environment.
 
-# Compile Time
+# Compilation Time
 
 This section contains information related to the operation of the Ahead-Of-Time
 Compiler and the Just-In-Time Compiler.
@@ -246,6 +246,12 @@ objects which only have weak references to them will be removed.
 This object can be garbage collected, it will be removed and that memory will
 be made available for other allocations.
 
+## Processes
+
+MIDP 3 allows multiple programs to be ran at the same time (provided they
+are actual different MIDlets). One thing to simplify the design of SquirrelJME
+without needing much work
+
 ## `String` Implementation
 
 The `String` class is a Java class which is used virtually in every single
@@ -283,6 +289,21 @@ support `char`.
 This details the environment in which SquirrelJME operates within the host
 operating system.
 
+## APIs
+
+This describes the design of standard implementations.
+
+## Pathname Handling
+
+Instances of the `Path` class will be strictly limited to the limitations of
+the host system and will not provide support for allowing limitations to be
+skirted as that complicates compatibility.
+
+As an example for DOS, there are severe filename limitations such as a
+maximum of 8 characters for a file name and 3 characters for an extension along
+with other naming restrictions. As such getting a path which does not produce
+a valid DOS pathname will result in an exception being thrown.
+
 ## System Services
 
 The `net.multiphasicapps.squirreljme.unsafe.SystemEnvironment` has a method
@@ -297,15 +318,4 @@ Custom system services can be specified by setting system properties with the
 given prefix `net.multiphasicapps.squirreljme.unsafe.service.` where anything
 following that is the target class to provide a service for, the value for the
 property is the implementation of that.
-
-## Pathname Handling
-
-Instances of the `Path` class will be strictly limited to the limitations of
-the host system and will not provide support for allowing limitations to be
-skirted as that complicates compatibility.
-
-As an example for DOS, there are severe filename limitations such as a
-maximum of 8 characters for a file name and 3 characters for an extension along
-with other naming restrictions. As such getting a path which does not produce
-a valid DOS pathname will result in an exception being thrown.
 
