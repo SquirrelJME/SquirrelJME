@@ -28,6 +28,14 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public class SimulatorConfig
 	extends JITConfig
 {
+	/** Number of local variables. */
+	public static final JITConfigKey JIT_ARCH_NUMLOCALS =
+		new JITConfigKey("jit.arch.maxlocals");
+	
+	/** Number of global registers. */
+	public static final JITConfigKey JIT_ARCH_NUMGLOBALS =
+		new JITConfigKey("jit.arch.numglobals");
+	
 	/**
 	 * Initializes the MIPS configuration.
 	 *
@@ -63,6 +71,8 @@ public class SimulatorConfig
 	{
 		return new JITConfigKey[]
 			{
+				JIT_ARCH_NUMLOCALS,
+				JIT_ARCH_NUMGLOBALS,
 			};
 	}
 	
@@ -82,6 +92,18 @@ public class SimulatorConfig
 		// Translate?
 		switch (__k.toString())
 		{
+				// The number of local variables
+			case "jit.arch.maxlocals":
+				if (__v == null || !__v.isInteger())
+					return new JITConfigValue("128");
+				break;
+			
+				// The number of global variables
+			case "jit.arch.maxglobals":
+				if (__v == null || !__v.isInteger())
+					return new JITConfigValue("8");
+				break;
+			
 				// Unchanged
 			default:
 				break;

@@ -304,7 +304,99 @@ public abstract class JITConfig
 		JITConfigValue rv = get(__k);
 		if (rv == null)
 			return false;
-		return Boolean.valueOf(rv.toString());
+		return rv.isTrue();
+	}
+	
+	/**
+	 * Returns the int value of the specified key.
+	 *
+	 * @param __k The key to get the value of.
+	 * @return The value of the given key.
+	 * @throws NumberFormatException If the value could not be parsed.
+	 * @since 2017/08/19
+	 */
+	public final int getInteger(JITConfigKey __k)
+		throws NumberFormatException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI25 The specified key is null. (The key)}
+		JITConfigValue rv = get(__k);
+		if (rv == null)
+			throw new NumberFormatException(String.format("JI25 %s", __k));
+		return rv.toInteger();
+	}
+	
+	/**
+	 * Obtains a int value or returns a default value.
+	 *
+	 * @param __k The key to get.
+	 * @param __def The default value to return if the value is not parsed as
+	 * the requested type.
+	 * @return The decoded value or {@code __def}.
+	 * @since 2017/08/19
+	 */
+	public final int getInteger(JITConfigKey __k, int __def)
+	{
+		// Could fail
+		try
+		{
+			return getInteger(__k);
+		}
+		
+		// Not a number
+		catch (NumberFormatException e)
+		{
+			return __def;
+		}
+	}
+	
+	/**
+	 * Returns the long value of the specified key.
+	 *
+	 * @param __k The key to get the value of.
+	 * @return The value of the given key.
+	 * @throws NumberFormatException If the value could not be parsed.
+	 * @since 2017/08/19
+	 */
+	public final long getLong(JITConfigKey __k)
+		throws NumberFormatException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI26 The specified key is null. (The key)}
+		JITConfigValue rv = get(__k);
+		if (rv == null)
+			throw new NumberFormatException(String.format("JI26 %s", __k));
+		return rv.toLong();
+	}
+	
+	/**
+	 * Obtains a long value or returns a default value.
+	 *
+	 * @param __k The key to get.
+	 * @param __def The default value to return if the value is not parsed as
+	 * the requested type.
+	 * @return The decoded value or {@code __def}.
+	 * @since 2017/08/19
+	 */
+	public final long getLong(JITConfigKey __k, long __def)
+	{
+		// Could fail
+		try
+		{
+			return getLong(__k);
+		}
+		
+		// Not a number
+		catch (NumberFormatException e)
+		{
+			return __def;
+		}
 	}
 	
 	/**
