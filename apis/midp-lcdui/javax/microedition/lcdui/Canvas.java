@@ -169,6 +169,7 @@ public abstract class Canvas
 		this._canvas = (NativeCanvas)this._displayable;
 	}
 	
+	@__SerializedEvent__
 	protected abstract void paint(Graphics __a);
 	
 	/**
@@ -278,6 +279,7 @@ public abstract class Canvas
 		return true;
 	}
 	
+	@__SerializedEvent__
 	protected void hideNotify()
 	{
 		throw new todo.TODO();
@@ -301,6 +303,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@__SerializedEvent__
 	protected void keyPressed(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -312,6 +315,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@__SerializedEvent__
 	protected void keyReleased(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -323,6 +327,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
+	@__SerializedEvent__
 	protected void keyRepeated(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -339,6 +344,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@__SerializedEvent__
 	protected void pointerDragged(int __x, int __y)
 	{
 		// Does nothing by default
@@ -354,6 +360,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@__SerializedEvent__
 	protected void pointerPressed(int __x, int __y)
 	{
 		// Does nothing by default
@@ -369,6 +376,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
+	@__SerializedEvent__
 	protected void pointerReleased(int __x, int __y)
 	{
 		// Does nothing by default
@@ -478,6 +486,7 @@ public abstract class Canvas
 		throw new todo.TODO();
 	}
 	
+	@__SerializedEvent__
 	protected void showNotify()
 	{
 		throw new todo.TODO();
@@ -488,6 +497,7 @@ public abstract class Canvas
 	 * @since 2017/02/10
 	 */
 	@Override
+	@__SerializedEvent__
 	protected void sizeChanged(int __w, int __h)
 	{
 		super.sizeChanged(__w, __h);

@@ -229,6 +229,8 @@ public class Display
 	
 	public void callSerially(Runnable __a)
 	{
+		// Note that the Runnable.run() will be called as if it were serialized
+		// like everything else with @__SerializedEvent__
 		throw new todo.TODO();
 	}
 	

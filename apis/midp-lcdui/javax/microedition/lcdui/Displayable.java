@@ -197,8 +197,10 @@ public abstract class Displayable
 	 * @param __h The new heigh of the displayable.
 	 * @since 2016/10/10
 	 */
+	@__SerializedEvent__
 	protected void sizeChanged(int __w, int __h)
 	{
+		// Implemented by sub-classes
 	}
 	
 	/**

@@ -10,11 +10,22 @@
 
 package javax.microedition.lcdui;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface CommandListener
+/**
+ * This annotation is used to specify that the given method is serialized and
+ * will never be called in parallel ever by the LCDUI display driver.
+ *
+ * @since 2017/08/19
+ */
+@Documented
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.METHOD})
+@interface __SerializedEvent__
 {
-	@__SerializedEvent__
-	public abstract void commandAction(Command __a, Displayable __b);
 }
-
 

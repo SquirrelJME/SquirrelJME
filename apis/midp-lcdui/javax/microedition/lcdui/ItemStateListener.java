@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 
 public interface ItemStateListener
 {
+	@__SerializedEvent__
 	public abstract void itemStateChanged(Item __a);
 }
 

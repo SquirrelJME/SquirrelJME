@@ -19,11 +19,13 @@ public abstract class IdleItem
 		throw new todo.TODO();
 	}
 	
+	@__SerializedEvent__
 	protected void addedToDisplay(Display __d)
 	{
 		throw new todo.TODO();
 	}
 	
+	@__SerializedEvent__
 	protected void removedFromDisplay(Display __d)
 	{
 		throw new todo.TODO();

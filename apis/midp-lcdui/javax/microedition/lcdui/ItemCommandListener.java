@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 
 public interface ItemCommandListener
 {
+	@__SerializedEvent__
 	public abstract void commandAction(Command __a, Item __b);
 }
 

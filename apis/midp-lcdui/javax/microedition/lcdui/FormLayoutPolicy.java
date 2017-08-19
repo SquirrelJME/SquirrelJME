@@ -23,6 +23,7 @@ public abstract class FormLayoutPolicy
 		throw new todo.TODO();
 	}
 	
+	@__SerializedEvent__
 	protected abstract void doLayout(int __vpx, int __vpy, int __vpw,
 		int __vph, int[] __ts);
 	
