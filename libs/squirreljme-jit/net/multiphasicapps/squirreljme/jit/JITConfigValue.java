@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This contains the values associated with keys in the JIT configuration.
  *
@@ -27,6 +30,9 @@ public final class JITConfigValue
 	
 	/** The value of the option. */
 	protected final String value;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the value.
@@ -67,7 +73,7 @@ public final class JITConfigValue
 		if (!(__o instanceof JITConfigValue))
 			return false;
 		
-		return this.value.equals(((JITConfigValue)__o).value);
+		return toString().equals(((JITConfigValue)__o).toString());
 	}
 	
 	/**
@@ -77,7 +83,51 @@ public final class JITConfigValue
 	@Override
 	public int hashCode()
 	{
-		return this.value.hashCode();
+		return toString().hashCode();
+	}
+	
+	/**
+	 * Returns {@code true} if this is an integer value.
+	 *
+	 * @return If the given value is an integer.
+	 * @since 2017/08/19
+	 */
+	public boolean isInteger()
+	{
+		// Attempt to decode a value
+		try
+		{
+			Integer.decode(this.value);
+			return true;
+		}
+		
+		// Did not parse a value
+		catch (NumberFormatException e)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if this is a long value.
+	 *
+	 * @return If the given value is a long.
+	 * @since 2017/08/19
+	 */
+	public boolean isLong()
+	{
+		// Attempt to decode a value
+		try
+		{
+			Long.decode(this.value);
+			return true;
+		}
+		
+		// Did not parse a value
+		catch (NumberFormatException e)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -92,13 +142,99 @@ public final class JITConfigValue
 	}
 	
 	/**
+	 * Parses this value as an int value.
+	 *
+	 * @return The parsed value.
+	 * @throws NumberFormatException If the value could not be parsed.
+	 * @since 2017/08/19
+	 */
+	public int toInteger()
+		throws NumberFormatException
+	{
+		return Integer.decode(this.value);
+	}
+	
+	/**
+	 * Returns the value as an int or returns the default value.
+	 *
+	 * @param __d The default value if this is not parsable as an int.
+	 * @return The parsed value or {@code __d}.
+	 * @since 2017/08/19
+	 */
+	public int toInteger(int __d)
+	{
+		try
+		{
+			return toInteger();
+		}
+		catch (NumberFormatException e)
+		{
+			return __d;
+		}
+	}
+	
+	/**
+	 * Parses this value as a long value.
+	 *
+	 * @return The parsed value.
+	 * @throws NumberFormatException If the value could not be parsed.
+	 * @since 2017/08/19
+	 */
+	public long toLong()
+		throws NumberFormatException
+	{
+		return Long.decode(this.value);
+	}
+	
+	/**
+	 * Returns the value as a long or returns the default value.
+	 *
+	 * @param __d The default value if this is not parsable as a long.
+	 * @return The parsed value or {@code __d}.
+	 * @since 2017/08/19
+	 */
+	public long toLong(long __d)
+	{
+		try
+		{
+			return toLong();
+		}
+		catch (NumberFormatException e)
+		{
+			return __d;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/30
 	 */
 	@Override
 	public String toString()
 	{
-		return this.value;
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Check
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Decode as a long value
+			try
+			{
+				rv = Long.toString(toLong());
+			}
+			
+			// Treat as string value
+			catch (NumberFormatException e)
+			{
+				rv = this.value;
+			}
+			
+			// Cache
+			this._string = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
