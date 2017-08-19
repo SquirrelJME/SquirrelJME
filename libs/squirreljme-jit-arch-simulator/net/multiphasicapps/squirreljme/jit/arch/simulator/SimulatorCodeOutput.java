@@ -13,8 +13,10 @@ package net.multiphasicapps.squirreljme.jit.arch.simulator;
 import net.multiphasicapps.squirreljme.jit.arch.BasicFuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
+import net.multiphasicapps.squirreljme.jit.arch.ManagedRegister;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.Register;
+import net.multiphasicapps.squirreljme.jit.arch.RegisterManager;
 import net.multiphasicapps.squirreljme.jit.arch.ZeroComparisonType;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
@@ -118,6 +120,16 @@ public class SimulatorCodeOutput
 	public FuturePositionMarker createFuturePositionMarker()
 	{
 		return new BasicFuturePositionMarker(++this._nextfpid);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/19
+	 */
+	@Override
+	public RegisterManager createRegisterManager()
+	{
+		return new SimulatorRegisterManager(this.config);
 	}
 	
 	/**

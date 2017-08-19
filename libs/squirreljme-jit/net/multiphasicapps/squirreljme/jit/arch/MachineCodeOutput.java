@@ -88,6 +88,15 @@ public interface MachineCodeOutput
 	public abstract FuturePositionMarker createFuturePositionMarker();
 	
 	/**
+	 * This returns a register manager which is used to manage registers for
+	 * the target system.
+	 *
+	 * @return A register manager which is used to manage registers.
+	 * @since 2017/08/19
+	 */
+	public abstract RegisterManager createRegisterManager();
+	
+	/**
 	 * This marks a future position which has previously been created. This can
 	 * be used for jumps to instructions which are later referred to.
 	 *

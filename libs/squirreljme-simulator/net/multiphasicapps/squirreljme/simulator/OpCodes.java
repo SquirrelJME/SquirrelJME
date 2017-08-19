@@ -8,15 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch;
+package net.multiphasicapps.squirreljme.simulator;
 
 /**
- * This class is used to provide access to the native registers used for the
- * native machine target.
+ * Opcodes that the simulator uses.
  *
- * @since 2017/08/16
+ * @since 2017/08/19
  */
-public abstract class RegisterProvider
+public interface OpCodes
 {
 }
 
