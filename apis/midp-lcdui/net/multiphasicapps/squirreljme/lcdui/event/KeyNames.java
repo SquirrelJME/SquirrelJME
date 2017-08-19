@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcdui;
+package net.multiphasicapps.squirreljme.lcdui.event;
 
 import javax.microedition.lcdui.Canvas;
 

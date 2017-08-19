@@ -8,25 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcdui;
-
 /**
- * This represents the kind of key event which was generated.
+ * This package contains anything related to event handling for LCDUI.
  *
- * @since 2017/02/12
+ * @since 2017/08/19
  */
-public enum KeyEventType
-{
-	/** Key was pressed. */
-	PRESSED,
-	
-	/** Key was released. */
-	RELEASED,
-	
-	/** Key was repeated. */
-	REPEATED,
-	
-	/** End. */
-	;
-}
+
+package net.multiphasicapps.squirreljme.lcdui.event;
 
