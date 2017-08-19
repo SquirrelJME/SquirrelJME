@@ -13,27 +13,32 @@ package javax.microedition.lcdui;
 public class ScalableImage
 	extends Image
 {
-	public int getViewportHeight()
+	ScalableImage()
 	{
 		throw new todo.TODO();
 	}
 	
-	public int getViewportWidth()
+	public final int getViewportHeight()
 	{
 		throw new todo.TODO();
 	}
 	
-	public void setHeight(int __h, boolean __mar)
+	public final int getViewportWidth()
 	{
 		throw new todo.TODO();
 	}
 	
-	public void setWidth(int __w, boolean __mar)
+	public final void setHeight(int __h, boolean __mar)
 	{
 		throw new todo.TODO();
 	}
 	
-	public void unbind()
+	public final void setWidth(int __w, boolean __mar)
+	{
+		throw new todo.TODO();
+	}
+	
+	public final void unbind()
 	{
 		throw new todo.TODO();
 	}
