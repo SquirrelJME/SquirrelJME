@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-UUID: a67921b8-7a05-40c2-adc8-c8d09ed4515e
 X-SquirrelJME-Depends: squirreljme-build-projects meep-midlet 
  squirreljme-build-base squirreljme-jit squirreljme-jit-all 
- hexdump-writer java-manifest
+ hexdump-writer java-manifest squirreljme-simulator
 X-SquirrelJME-Name: Build System
 X-SquirrelJME-Error: AO
 X-SquirrelJME-Vendor: Stephanie Gawroriski

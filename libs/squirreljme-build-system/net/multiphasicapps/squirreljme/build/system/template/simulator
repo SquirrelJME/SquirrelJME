@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-jit-jit-arch: mmix
+jit-jit-arch: simulator
 jit-jit-pipe: simulator
 jit-jit-dump-assembler: true
 jit-jit-dump-fragment: true

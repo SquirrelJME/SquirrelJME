@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch.mmix;
+package net.multiphasicapps.squirreljme.jit.arch.simulator;
 
 import net.multiphasicapps.squirreljme.jit.arch.BasicFuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
@@ -24,11 +24,11 @@ import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This outputs MMIX machine code.
+ * This outputs simulator machine code.
  *
  * @since 2017/08/11
  */
-public class MMIXCodeOutput
+public class SimulatorCodeOutput
 	implements MachineCodeOutput
 {
 	/** The JIT configuration used. */
@@ -38,14 +38,14 @@ public class MMIXCodeOutput
 	protected final FragmentDestination destination;
 	
 	/** The destination fragment. */
-	protected final MMIXFragmentBuilder fragment =
-		new MMIXFragmentBuilder();
+	protected final SimulatorFragmentBuilder fragment =
+		new SimulatorFragmentBuilder();
 	
 	/** The next ID to use for future positions. */
 	private volatile int _nextfpid;
 	
 	/**
-	 * Initializes the MMIX code output.
+	 * Initializes the Simulator code output.
 	 *
 	 * @param __conf The JIT configuration.
 	 * @param __dest The destination for the code output.
@@ -53,7 +53,7 @@ public class MMIXCodeOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/11
 	 */
-	public MMIXCodeOutput(JITConfig __conf, FragmentDestination __dest)
+	public SimulatorCodeOutput(JITConfig __conf, FragmentDestination __dest)
 		throws JITException, NullPointerException
 	{
 		// Check

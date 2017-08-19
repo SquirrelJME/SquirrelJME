@@ -8,17 +8,18 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch.mmix;
+package net.multiphasicapps.squirreljme.jit.arch.simulator;
 
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 
 /**
- * This is a fragment builder which more easily generates MMIX machine code
- * without needing the machine code generator to have instruction generation.
+ * This is a fragment builder which more easily generates Simulator machine
+ * code without needing the machine code generator to have instruction
+ * generation.
  *
  * @since 2017/08/14
  */
-public class MMIXFragmentBuilder
+public class SimulatorFragmentBuilder
 	extends FragmentBuilder
 {
 	/** Temporary buffer. */
@@ -26,7 +27,7 @@ public class MMIXFragmentBuilder
 		new byte[4];
 	
 	/**
-	 * Appends a MMIX operation.
+	 * Appends a Simulator operation.
 	 *
 	 * @param __op The operation code.
 	 * @param __x The X parameter, masked to 8-bits.
@@ -41,7 +42,7 @@ public class MMIXFragmentBuilder
 	}
 	
 	/**
-	 * Appends a MMIX operation.
+	 * Appends a Simulator operation.
 	 *
 	 * @param __op The operation code.
 	 * @param __x The X parameter, masked to 8-bits.
@@ -57,7 +58,7 @@ public class MMIXFragmentBuilder
 	}
 	
 	/**
-	 * Appends a MMIX operation.
+	 * Appends a Simulator operation.
 	 *
 	 * @param __op The operation code.
 	 * @param __x The X parameter, masked to 8-bits.
@@ -70,8 +71,8 @@ public class MMIXFragmentBuilder
 	public final void appendXYZ(int __op, int __x, int __y, int __z)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BL01 The MMIX operation code is out of range,
-		// (The operation)}
+		// {@squirreljme.error BL01 The Simulator operation code is out of
+		// range. (The operation)}
 		if (__op < 0 || __op > 255)
 			throw new IllegalArgumentException(String.format("BL01 %d", __op));
 		
@@ -85,7 +86,7 @@ public class MMIXFragmentBuilder
 	}
 	
 	/**
-	 * Appends a MMIX operation.
+	 * Appends a Simulator operation.
 	 *
 	 * @param __op The operation code.
 	 * @param __x The X parameter, masked to 8-bits.
@@ -101,7 +102,7 @@ public class MMIXFragmentBuilder
 	}
 	
 	/**
-	 * Appends a MMIX operation.
+	 * Appends a Simulator operation.
 	 *
 	 * @param __op The operation code.
 	 * @param __xyz The XYZ parameter, masked to 24-bits.

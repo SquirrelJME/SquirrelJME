@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 67751ab8-6387-419b-8260-00afc9f7052e
+X-SquirrelJME-Error: BL
+X-SquirrelJME-Name: SquirrelJME Simulator JIT
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This implements the JIT which targets the 
+ simulator which provides a basic and easy to implement instruction 
+ set for the purposes of building the JIT.
+X-SquirrelJME-Depends: squirreljme-jit squirreljme-simulator
+Microedition-Configuration: CLDC-1.8-Compact
+

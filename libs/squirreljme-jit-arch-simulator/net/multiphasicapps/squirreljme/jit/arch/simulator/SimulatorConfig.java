@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch.mmix;
+package net.multiphasicapps.squirreljme.jit.arch.simulator;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -21,11 +21,11 @@ import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This configuration is used for MMIX based systems.
+ * This configuration is used for the SquirrelJME simulator.
  *
  * @since 2017/08/11
  */
-public class MMIXConfig
+public class SimulatorConfig
 	extends JITConfig
 {
 	/**
@@ -34,7 +34,7 @@ public class MMIXConfig
 	 * @param __o The input JIT configuration.
 	 * @since 2017/08/11
 	 */
-	public MMIXConfig(Map<JITConfigKey, JITConfigValue> __o)
+	public SimulatorConfig(Map<JITConfigKey, JITConfigValue> __o)
 	{
 		super(__o);
 	}
@@ -51,7 +51,7 @@ public class MMIXConfig
 		if (__fd == null)
 			throw new NullPointerException("NARG");
 		
-		return new MMIXCodeOutput(this, __fd);
+		return new SimulatorCodeOutput(this, __fd);
 	}
 	
 	/**

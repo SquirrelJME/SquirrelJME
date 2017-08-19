@@ -32,7 +32,6 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
-import net.multiphasicapps.squirreljme.jit.arch.mips.MIPSConfig;
 import net.multiphasicapps.squirreljme.jit.bin.Cluster;
 import net.multiphasicapps.squirreljme.jit.bin.Clusters;
 import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
