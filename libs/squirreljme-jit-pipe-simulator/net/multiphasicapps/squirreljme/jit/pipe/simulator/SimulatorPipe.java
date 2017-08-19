@@ -15,6 +15,8 @@ import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.arch.FuturePositionMarker;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.PositionMarker;
+import net.multiphasicapps.squirreljme.jit.arch.Register;
+import net.multiphasicapps.squirreljme.jit.arch.ZeroComparisonType;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
@@ -95,9 +97,29 @@ public class SimulatorPipe
 		MachineCodeOutput out = this.out;
 		
 		// Only modify reference counts if the object is not-null
+		Register or = __variableToRegister(__obj);
 		FuturePositionMarker fpm = out.createFuturePositionMarker();
+		out.compareAndRelativeBranch(ZeroComparisonType.ZERO, or, fpm);
 		
-		throw new todo.TODO();
+		// Counting up is simple because the garbage collector and such is
+		// not involved
+		if (__up)
+		{
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// However, counting down requires a special method call because it may
+		// cause the resulting object to be garbage collected as soon it is
+		// free
+		else
+		{
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// If the object is null then a jump is made here
+		out.markFuturePosition(fpm);
 	}
 	
 	/**
@@ -126,6 +148,25 @@ public class SimulatorPipe
 	{
 		// Check
 		if (__obj == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Converts a variable to a register.
+	 *
+	 * @param __v The variable to convert.
+	 * @return The register for the given variable.
+	 * @throws JITException If it could not be converted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/19
+	 */
+	private Register __variableToRegister(TypedVariable __v)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__v == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
