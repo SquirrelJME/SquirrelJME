@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.arch.mmix;
+package net.multiphasicapps.squirreljme.jit.arch.simulator;
 
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
@@ -18,11 +18,11 @@ import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This is used to create instances of {@link MMIXConfig}.
+ * This is used to create instances of {@link SimulatorConfig}.
  *
  * @since 2017/08/11
  */
-public class MMIXConfigService
+public class SimulatorConfigService
 	implements JITConfigService
 {
 	/**
@@ -37,7 +37,7 @@ public class MMIXConfigService
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		return new MMIXConfig(__v);
+		return new SimulatorConfig(__v);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class MMIXConfigService
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		return __v.toString().equals("mmix");
+		return __v.toString().equals("simulator");
 	}
 }
 

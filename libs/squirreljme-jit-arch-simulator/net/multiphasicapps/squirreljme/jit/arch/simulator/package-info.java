@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This project contains support for the MMIX CPU.
+ * This project contains support for the simulated CPU.
  *
  * @since 2017/08/11
  */
 
-package net.multiphasicapps.squirreljme.jit.arch.mmix;
+package net.multiphasicapps.squirreljme.jit.arch.simulator;
 

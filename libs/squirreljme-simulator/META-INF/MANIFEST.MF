@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 00fb8e48-bf7c-4b50-9e10-244b2f887762
+X-SquirrelJME-Error: AY
+X-SquirrelJME-Name: SquirrelJME Simulator
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project provides the simulator for 
+ SquirrelJME, it is used mostly for development and testing of 
+ various parts of SquirrelJME without actually targetting a machine.
+X-SquirrelJME-Depends: midp-lcdui
+Microedition-Configuration: CLDC-1.8-Compact
+
