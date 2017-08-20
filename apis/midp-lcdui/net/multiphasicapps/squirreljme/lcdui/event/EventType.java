@@ -17,6 +17,9 @@ package net.multiphasicapps.squirreljme.lcdui.event;
  */
 public enum EventType
 {
+	/** Command activated. */
+	COMMAND,
+	
 	/** Key was pressed. */
 	KEY_PRESSED,
 	
