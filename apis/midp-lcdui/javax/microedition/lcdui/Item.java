@@ -64,6 +64,10 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
+	/** Thread safe lock. */
+	final Object _lock =
+		new Object();
+	
 	/** The current layout of the item. */
 	private volatile int _layout =
 		LAYOUT_DEFAULT;
