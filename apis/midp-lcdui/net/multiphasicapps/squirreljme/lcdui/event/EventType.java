@@ -11,20 +11,29 @@
 package net.multiphasicapps.squirreljme.lcdui.event;
 
 /**
- * This represents the type of pointer event which has occurred.
+ * This represents the type of event which has been performed.
  *
- * @since 2017/02/12
+ * @since 2017/08/19
  */
-public enum PointerEventType
+public enum EventType
 {
-	/** Dragged. */
-	DRAGGED,
+	/** Key was pressed. */
+	KEY_PRESSED,
 	
-	/** Pressed. */
-	PRESSED,
+	/** Key was released. */
+	KEY_RELEASED,
 	
-	/** Released. */
-	RELEASED,
+	/** Key was repeated. */
+	KEY_REPEATED,
+	
+	/** Pointer Dragged. */
+	POINTER_DRAGGED,
+	
+	/** Pointer Pressed. */
+	POINTER_PRESSED,
+	
+	/** Pointer Released. */
+	POINTER_RELEASED,
 	
 	/** End. */
 	;
