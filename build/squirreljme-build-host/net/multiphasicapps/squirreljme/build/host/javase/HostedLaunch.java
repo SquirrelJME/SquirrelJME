@@ -22,7 +22,9 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.io.hex.HexInputStream;
@@ -57,12 +59,24 @@ public class HostedLaunch
 		if (__args == null)
 			__args = new String[0];
 		
+		// Put arguments into a deque for easier handling
+		Deque<String> args = new ArrayDeque<>();
+		for (String a : __args)
+			if (a != null)
+				args.offerLast(a);
+		
+		// Use an alternative MIDlet ID?
+		int entryid = 1;
+		String peeked = args.peekFirst();
+		if (peeked != null && peeked.startsWith("-"))
+			entryid = Integer.parseInt(args.removeFirst().substring(1));
+		
 		// {@squirreljme.error BM0b Insufficient number of arguments.}
-		if (__args.length < 1)
+		if (args.size() < 1)
 			throw new IllegalArgumentException("BM0b");
 		
 		// Load the target ZIP to the read manifest
-		Path p = Paths.get(__args[0]);
+		Path p = Paths.get(args.removeFirst());
 		Class<?> mainclass;
 		boolean stdmain = false;
 		try (FileChannel fc = FileChannel.open(p, StandardOpenOption.READ);
@@ -78,39 +92,29 @@ public class HostedLaunch
 			}
 			JavaManifestAttributes attr = man.getMainAttributes();
 			
-			// This might not be an actual MIDlet
-			String midletval = attr.get(new JavaManifestKey("MIDlet-1"));
-			if (midletval == null)
-			{
-				// {@squirreljme.error BM0d The JAR to launch does not specify
-				// any midlets and there is no main class.}
-				String oldclass = attr.get(new JavaManifestKey("Main-Class"));
-				if (oldclass == null)
-					throw new RuntimeException("BM0d");
-				
-				// Use standard main
-				mainclass = Class.forName(oldclass);
-				stdmain = true;
-			}
+			// Decode entry points in the MIDlet
+			EntryPoints eps = new EntryPoints(attr);
 			
-			else
-			{
-				// The MIDlet field is in 3 fields: name, icon, class
-				// {@squirreljme.error BM0e Expected two commas in the MIDlet
-				// field.}
-				int pc = midletval.indexOf(','),
-					sc = midletval.indexOf(',', Math.max(pc + 1, 0));
-				if (pc < 0 || sc < 0)
-					throw new RuntimeException("BM0e");
+			// {@squirreljme.error BM0d The JAR to launch does not specify
+			// any midlets and there is no main class.}
+			if (eps.isEmpty())
+				throw new RuntimeException("BM0d");
 			
-				// Split fields
-				String name = midletval.substring(0, pc).trim(),
-					icon = midletval.substring(pc + 1, sc).trim(),
-					main = midletval.substring(sc + 1).trim();
+			// Debug print entry points
+			System.err.println("Available programs:");
+			for (int i = 0, n = eps.size(); i < n; i++)
+				System.err.printf("%d> %s%n", i, eps.get(i));
+			System.err.println();
 			
-				// Get the main class, which is in our own classpath!
-				mainclass = Class.forName(main);
-			}
+			// {@squirreljme.error BM0i The requested entry point identifier is
+			// out of range. (The entry point identifier)}
+			if (entryid < 0 || entryid >= eps.size())
+				throw new RuntimeException(String.format("BM0i %d", entryid));
+			EntryPoint ep = eps.get(entryid);
+			
+			// Set needed information
+			mainclass = Class.forName(ep.entryPoint());
+			stdmain = !ep.isMidlet();
 			
 			// This is used to hack around the application properties so that
 			// they exist (using their manifest values) without needing to have
@@ -144,8 +148,8 @@ public class HostedLaunch
 					(Class)String[].class);
 				
 				// Execute
-				startmethod.invoke(null, (Object)Arrays.<String>copyOfRange(
-					__args, 1, __args.length));
+				startmethod.invoke(null, (Object)args.<String>toArray(
+					new String[args.size()]));
 			}
 			
 			// Launch midlet
