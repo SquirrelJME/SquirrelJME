@@ -145,6 +145,10 @@ public class TextField
 	public static final int URL =
 		4;
 	
+	/** Thread safe lock. */
+	private final Object _lock =
+		new Object();
+	
 	/** The text contained within the field. */
 	private final StringBuilder _value =
 		new StringBuilder();
@@ -278,20 +282,50 @@ public class TextField
 		if (__ms <= 0)
 			throw new IllegalArgumentException(String.format("EB1d %d", __ms));
 		
-		// {@squirreljme.error EB1f Cannot set the maximum size because the
-		// input text field would have an invalid value.}
-		if (!__check(this._value, __ms, this._constraints))
-			throw new IllegalArgumentException("EB1f");
+		// Lock
+		synchronized (this._lock)
+		{
+			// {@squirreljme.error EB1f Cannot set the maximum size because the
+			// input text field would have an invalid value.}
+			if (!__check(this._value, __ms, this._constraints))
+				throw new IllegalArgumentException("EB1f");
 		
-		// Set, SquirrelJME does not have a fixed limit on the size of text
-		// fields
-		this._maxlength = __ms;
-		return __ms;
+			// Set, SquirrelJME does not have a fixed limit on the size of text
+			// fields
+			this._maxlength = __ms;
+			return __ms;
+		}
 	}
 	
-	public void setString(String __a)
+	/**
+	 * Sets the value of the text field.
+	 *
+	 * @param __s The value to set, if {@code null} then an empty string is
+	 * used.
+	 * @throws IllegalArgumentException If the input string is not within
+	 * the constraints or character count limitations.
+	 * @since 2017/08/20
+	 */
+	public void setString(String __s)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// Null becomes empty
+		if (__s == null)
+			__s = "";
+		
+		// Lock
+		synchronized (this._lock)
+		{
+			// {@squirreljme.error EB1g Cannot set the specified string
+			// because it is not valid within the constraints.}
+			if (!__check(__s, this._maxlength, this._constraints))
+				throw new IllegalArgumentException("EB1g");
+			
+			// Set value
+			StringBuilder value = this._value;
+			value.setLength(0);
+			value.append(__s);
+		}
 	}
 	
 	public int size()
@@ -317,9 +351,12 @@ public class TextField
 		if (__cs == null)
 			throw new NullPointerException("NARG");
 		
-		// Any input is valid
-		int type = (__c & CONSTRAINT_MASK);
-		if (type == ANY)
+		// No constraints used or the input string is empty
+		// Empty strings are always valid because otherwise constructing
+		// objects would always fail with illegal values
+		int type = (__c & CONSTRAINT_MASK),
+			n = __cs.length();
+		if (type == ANY || n == 0)
 			return true;
 		
 		throw new todo.TODO();
