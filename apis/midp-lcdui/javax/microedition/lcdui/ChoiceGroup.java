@@ -15,14 +15,82 @@ public class ChoiceGroup
 	extends Item
 	implements Choice
 {
+	/** The minimum permitted type. */
+	static final int _MIN_TYPE =
+		Choice.EXCLUSIVE;
+	
+	/** The maximum permitted type. */
+	static final int _MAX_TYPE =
+		Choice.POPUP;
+	
+	/** The valid choice selection type. */
+	private final int _type;
+	
+	/**
+	 * Initializes an empty choice group.
+	 *
+	 * @param __l The label for this group.
+	 * @param __ct The type of choice selection to use.
+	 * @throws IllegalArgumentException If the choice type is not valid or
+	 * if {@link Choice#IMPLICIT} was specified.
+	 * @since 2017/08/20
+	 */
 	public ChoiceGroup(String __l, int __ct)
+		throws IllegalArgumentException
 	{
 		this(__l, __ct, new String[0], null);
 	}
 	
+	/**
+	 * Initializes an empty choice group.
+	 *
+	 * @param __l The label for this group.
+	 * @param __ct The type of choice selection to use.
+	 * @param __se The , this cannot be {@code null}
+	 * @param __ie The images for each choice, this must either be {@code null}
+	 * or be the exact same length as the input {@code __se}.
+	 * @throws IllegalArgumentException If the choice type is not valid; 
+	 * if {@link Choice#IMPLICIT} was specified; If the image array is not
+	 * null and is not the same length as the string array.
+	 * @throws NullPointerException If {@code __se} is {@code null} or it
+	 * contains {@code null} elements; or if the string array contains null
+	 * elements.
+	 * @since 2017/08/20
+	 */
 	public ChoiceGroup(String __l, int __ct, String[] __se, Image[] __ie)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__se == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB1j The image array does not have the same
+		// length as the string array.}
+		int n = __se.length;
+		if (__ie != null && __ie.length != n)
+			throw new IllegalArgumentException("EB1j");
+		
+		// {@squirreljme.error EB1k Invalid choice type specified for a
+		// choice group. (The choice type)}
+		if (__ct < _MIN_TYPE || __ct > _MAX_TYPE || __ct == IMPLICIT)
+			throw new IllegalArgumentException(String.format("EB1k %d", __ct));
+		
+		// Set
+		setLabel(__l);
+		this._type = __ct;
+		
+		// Append all elements
+		for (int i = 0; i < n; i++)
+		{
+			// {@squirreljme.error EB1l A string element contains a null
+			// entry.}
+			String s = __se[i];
+			if (s == null)
+				throw new NullPointerException("EB1l");
+			
+			// Add it
+			append(s, (__ie != null ? __ie[i] : null));
+		}
 	}
 	
 	public int append(String __a, Image __b)

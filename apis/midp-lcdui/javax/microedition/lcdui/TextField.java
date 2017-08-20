@@ -154,10 +154,6 @@ public class TextField
 		INITIAL_CAPS_SENTENCE | INITIAL_CAPS_WORD | NON_PREDICTIVE | PASSWORD |
 		SENSITIVE | UNEDITABLE;
 	
-	/** Thread safe lock. */
-	private final Object _lock =
-		new Object();
-	
 	/** The text contained within the field. */
 	private final StringBuilder _value =
 		new StringBuilder();
