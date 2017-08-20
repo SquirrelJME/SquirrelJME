@@ -1,0 +1,140 @@
+# 2017/08/19
+
+## 09:36
+
+Ok so, since in the simulator pipe registers are fixed I can just have a
+simple translation from a variable to a register. At least with MMIX I do
+not have to worry about actually managing registers since there are quite
+plenty of them.
+
+## 11:32
+
+Ok so important registers for MMIX are these: rL and rG. These are both
+threshold registers for locals and globals, will need to read up on how they
+work.
+
+## 11:35
+
+How about this, for register provider I can have instead a system where I can
+create these `RegisterProvider`s from the MCO and have a kind of manager of
+sorts. So perhaps what would be better is a manager. Really I can see how
+the MMIX setup can be adapted to other architectures.
+
+## 11:45
+
+MMIX is actually a bit complex though. I do not really need to duplicate MMIX
+at all, but I can take a bunch of ideas from it. Basically I can just make an
+easy to write simulator instruction set which suits my needs as I require
+them. Basically, design the instruction set for the purpose of the simulator.
+I would have to match up MMIX and that requires a bunch of reading, with an
+ad-hoc instruction set I can write it as I go along.
+
+## 11:49
+
+Also, pretty much every system has non-unified integer and floating point
+registers.
+
+## 15:50
+
+A complete manager would work actually. One where each register has an
+accessible state associated with it which can be obtained and such.
+
+## 18:40
+
+Ok so for the LCDUI API, I need to figure out a good way to provide a native
+interface that works well regardless of the system. One main consideration
+though is that with my threaded-global model change that I plan on having just
+modified global pointer for each thread. So I will need a display manager
+which supports multiple processes per thread. However due to the way the
+garbage collector works, each process can share any `Displays` created from a
+single master instance.
+
+## 18:47
+
+Actually a problem with that is for each process there will be a violation of
+the global pointer. So an object that belongs to another process will need a
+jump to happen into that process, and additionally those methods should never
+return actual objects, or at have it where they can be cloned by the VM
+before they returned. Probably the safest means would be the mailbox system
+like I have before, however for intensive things such as the LCDUI, having
+an interface with so much overhead for drawing operations means that games and
+such would be insanely slow when being used. So really the native LCDUI code
+should directly use the native resources. If the native resources need to be
+switched (for example if there is only a single unmanaged screen) then the
+LCDUI implementation would have to handle that. I think that would be the
+simplest thing to do. So the native interface whatever it is, for each unique
+MIDlet will have to make a map of the current MIDlet process to give an
+interface for it, but it could work.
+
+## 18:56
+
+One thing though with MIDP3 is that it is designed to be single threaded and
+everything is serialized within each other. I will need to have a special
+marker for anything that is serialized, just so I know. I can use an
+annotation for this.
+
+## 19:11
+
+Also, one thing I could probably do is have optimized `Image`s where they are
+of their specified type (for example 32-bit or otherwise). For some images
+which are say 256 color ones, it would be a bit more memory efficient than
+always using 32-bits to store the color data.
+
+## 19:39
+
+Ok so there is `Canvas` then there are the UI widgets which are all based on
+`Screen`. Having a native look and feel would be nice though. But I need to
+simplify the LCDUI interface because right now it is too complex to begin
+with. Although I did simplify it before, it needs even more simplification.
+
+## 19:44
+
+Something I suppose that would be simple would be just an attachment.
+Basically when a form or otherwise is set to a display just say the current
+viewing whatever is this thing. A Displayable can only be bound to a single
+display anyway. So basically there would be a display engine. `Display`
+would be used to keep track of what is on the screen and such along with
+doing all of the event handling. I want it so that the native code _never_
+has to call events for anything outside of a display. Also where possible to
+never have a native display have direct access to the LCDUI elements. So I
+would suppose that there would be a native attachment so to speak which
+can be bound to a display.
+
+## 19:49
+
+I know previously I have had a complex locking mechanism for switching
+displayables, but I can actually remove that.
+
+## 20:07
+
+Ok, so can `Canvas` be fullscreen? They can, but only canvases are full-screen
+so that means I will just need a fullscreen mode for that. I could really
+support it for anything, but a fullscreen `Canvas` would probably be a bit
+more optimized so to speak.
+
+## 20:12
+
+Maybe since `Canvas` is different and the only outlier when it comes to
+full-screen, maybe what I can do is treat everything as a standard widget in
+the native classes, including canvases. Then I can have a special method
+which does a full screen canvas array access. Basically it creates a graphics
+object which is then returned which might directly access the screen.
+Otherwise, outside of full-screen mode it will just use whatever standard
+means of drawing graphics exists. Basically the full-screen mode can allow for
+more direct access, rather than potentially being behind a widget buffering
+engine and such. Of course I will need to have a software fallback in the
+event there is no actual native widget system.
+
+## 20:15
+
+So SquirrelJME will handle any widget stuff. But the basics would be that it
+is handled very similarly to full-screen mode. So what I need to do is
+determine the best way to handle fullscreen graphics and the widgeting
+system without having it be a giant mess.
+
+## 20:38
+
+In reality, only a single `Displayable` will get events and almost every
+displayable will be able to able to have various listeners attached to
+them. So I can have a very basic handle event in that class and have
+internal set of key listeners and such.
