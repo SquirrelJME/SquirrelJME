@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.lcdui.DisplayHeadProvider;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
+import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 public class Display
 {
@@ -185,6 +188,9 @@ public class Display
 	/** Display heads. */
 	private static final Display[] _DISPLAYS;
 	
+	/** The head this display is attached to. */
+	private final DisplayHead _head;
+	
 	/** The current displayable. */
 	private volatile Displayable _current;
 	
@@ -195,25 +201,44 @@ public class Display
 	 */
 	static
 	{
-		if (true)
-			throw new todo.TODO();
-		/*// Initialize heads
-		NativeDisplay.Head[] heads = NativeDisplay.DISPLAY.heads();
-		int n = heads.length;
-		Display[] displays = new Display[n];
-		for (int i = 0; i < n; i++)
-			displays[i] = new Display(heads[i]);
-		_DISPLAYS = displays;*/
+		// Use the default display head manager
+		DisplayHeadProvider dhp = SystemEnvironment.
+			<DisplayHeadProvider>systemService(DisplayHeadProvider.class);
+		
+		// If no manager is available, use no displays
+		if (dhp == null)
+			_DISPLAYS = new Display[0];
+		
+		// Otherwise initialize heads for all displays
+		else
+		{
+			DisplayHead[] heads = dhp.heads();
+			int n = heads.length;
+			Display[] displays = new Display[n];
+			
+			for (int i = 0; i < n; i++)
+				displays[i] = new Display(heads[i]);
+			
+			_DISPLAYS = displays;
+		}
 	}
 	
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __h The head this display is attached to.
+	 * @throws NullPointerException On null arguments. 
 	 * @since 2016/10/08
 	 */
-	Display()
+	Display(DisplayHead __h)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Check
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._head = __h;
 	}
 	
 	public void callSerially(Runnable __a)
