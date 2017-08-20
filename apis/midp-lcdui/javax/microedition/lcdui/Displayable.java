@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -24,6 +25,9 @@ public abstract class Displayable
 {
 	/** The display this is currently associated with. */
 	volatile Display _current;
+	
+	/** The command listener to call into when commands are generated. */
+	private volatile CommandListener _cmdlistener;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -137,9 +141,16 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
-	public void setCommandListener(CommandListener __a)
+	/**
+	 * Sets the command listener for this given displayable.
+	 *
+	 * @param __l The listener to use for callbacks, if {@code null} this
+	 * the listener is cleared.
+	 * @since 2017/08/19
+	 */
+	public void setCommandListener(CommandListener __l)
 	{
-		throw new todo.TODO();
+		this._cmdlistener = __l;
 	}
 	
 	public void setMenu(Menu __m, int __p)
@@ -211,6 +222,40 @@ public abstract class Displayable
 		Display d = getCurrentDisplay();
 		return (d != null ? d.getWidth() :
 			Display.getDisplays(0)[0].getWidth());
+	}
+	
+	/**
+	 * Handles an event.
+	 *
+	 * @param __t The type of event to perform.
+	 * @param __c The activated command, if this is a command.
+	 * @param __a The first parameter.
+	 * @param __b The second parameter.
+	 * @return {@code true} if the command was handled.
+	 * @throws NullPointerException If no event type was specified.
+	 * @since 2017/08/19
+	 */
+	boolean __handleEvent(EventType __t, Command __c, int __a, int __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the event
+		switch (__t)
+		{
+				// Command activated
+			case COMMAND:
+				CommandListener cmdlistener = this._cmdlistener;
+				if (cmdlistener != null)
+					cmdlistener.commandAction(__c, this);
+				return true;
+			
+				// Un-handled
+			default:
+				return false;
+		}
 	}
 }
 
