@@ -426,6 +426,10 @@ public abstract class Canvas
 	 *
 	 * Note that this might not use the entire screen.
 	 *
+	 * This method may permit access to the framebuffer directly on the device
+	 * which may enable accelerated drawing if supported by the underlying
+	 * display engine.
+	 *
 	 * @param __f If {@code true} then fullscreen mode should be used.
 	 * @since 2017/02/28
 	 */
