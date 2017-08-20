@@ -64,10 +64,17 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
+	/** The current layout of the item. */
+	private volatile int _layout =
+		LAYOUT_DEFAULT;
+	
+	/**
+	 * Initializes the base item.
+	 *
+	 * @since 2017/08/19
+	 */
 	Item()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
 	public void addCommand(Command __a)
