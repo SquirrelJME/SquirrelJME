@@ -145,6 +145,15 @@ public class TextField
 	public static final int URL =
 		4;
 	
+	/** The maximum constraint number. */
+	private static final int _MAX_CONSTRAINT =
+		CURRENCY;
+	
+	/** The valid constraint flag bits. */
+	private static final int _VALID_CONSTRAINT_FLAG_BITS =
+		INITIAL_CAPS_SENTENCE | INITIAL_CAPS_WORD | NON_PREDICTIVE | PASSWORD |
+		SENSITIVE | UNEDITABLE;
+	
 	/** Thread safe lock. */
 	private final Object _lock =
 		new Object();
@@ -247,9 +256,46 @@ public class TextField
 		throw new todo.TODO();
 	}
 	
-	public void setConstraints(int __a)
+	/**
+	 * Sets the constraints for this field according to the constraints which
+	 * are available. If the current value is not valid under the constraints
+	 * to be set then it is cleared.
+	 *
+	 * @param __c The constraints to set.
+	 * @throws IllegalArgumentException If the input constraints are not
+	 * valid.
+	 * @since 2017/08/20
+	 */
+	public void setConstraints(int __c)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB1h The specified constraint type is not
+		// valid. (The type)}
+		int type = (__c & CONSTRAINT_MASK);
+		if (type < 0 || type > _MAX_CONSTRAINT)
+			throw new IllegalArgumentException(String.format("EB1h %d", type));
+		
+		// {@squirreljme.error EB1i The specified constraint flags are not
+		// valid. (The constraint flags)}
+		if (((__c ^ type) & ~_VALID_CONSTRAINT_FLAG_BITS) != 0)
+			throw new IllegalArgumentException(String.format("EB1i %04x",
+				__c >>> 16));
+		
+		// Lock
+		synchronized (this._lock)
+		{
+			// If the new constraints are not valid then any previous text
+			// is cleared
+			StringBuilder value = this._value;
+			if (!__check(value, this._maxlength, __c))
+			{
+				value.setLength(0);
+				return;
+			}
+			
+			// Set
+			this._constraints = __c;
+		}
 	}
 	
 	public void setHighlight(int __i, int __l)
