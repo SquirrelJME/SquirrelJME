@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
-
 public class List
 	extends Screen
 	implements Choice
@@ -21,13 +19,11 @@ public class List
 	
 	public List(String __a, int __b)
 	{
-		super(DisplayableType.LIST);
 		throw new todo.TODO();
 	}
 	
 	public List(String __a, int __b, String[] __c, Image[] __d)
 	{
-		super(DisplayableType.LIST);
 		throw new todo.TODO();
 	}
 	

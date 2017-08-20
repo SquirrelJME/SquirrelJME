@@ -14,8 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
-import net.multiphasicapps.squirreljme.lcdui.PixelArrayGraphics;
+import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
+import net.multiphasicapps.squirreljme.lcdui.gfx.PixelArrayGraphics;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 public class Image

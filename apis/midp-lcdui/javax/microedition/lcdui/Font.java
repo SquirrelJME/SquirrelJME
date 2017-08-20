@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
-import net.multiphasicapps.squirreljme.lcdui.NativeFont;
 
 /**
  * This class represents a font which is a representation of the glyphs which
@@ -287,7 +285,8 @@ public final class Font
 				__style));
 		
 		// Find the best available font
-		for (NativeFont nf : NativeDisplay.DISPLAY.fonts())
+		/*for (NativeFont nf : NativeDisplay.DISPLAY.fonts())*/
+		if (true)
 			throw new todo.TODO();
 		
 		throw new todo.TODO();

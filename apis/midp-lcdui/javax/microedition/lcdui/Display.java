@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
-import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
-import net.multiphasicapps.squirreljme.lcdui.NullNativeDisplay;
 
 public class Display
 {
@@ -187,9 +185,6 @@ public class Display
 	/** Display heads. */
 	private static final Display[] _DISPLAYS;
 	
-	/** The head which is associated with this display. */
-	private final NativeDisplay.Head _head;
-	
 	/** The current displayable. */
 	private volatile Displayable _current;
 	
@@ -200,31 +195,25 @@ public class Display
 	 */
 	static
 	{
-		// Initialize heads
+		if (true)
+			throw new todo.TODO();
+		/*// Initialize heads
 		NativeDisplay.Head[] heads = NativeDisplay.DISPLAY.heads();
 		int n = heads.length;
 		Display[] displays = new Display[n];
 		for (int i = 0; i < n; i++)
 			displays[i] = new Display(heads[i]);
-		_DISPLAYS = displays;
+		_DISPLAYS = displays;*/
 	}
 	
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __h The head this display is associated with.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Display(NativeDisplay.Head __h)
-		throws NullPointerException
+	Display()
 	{
-		// Check
-		if (__h == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._head = __h;
+		throw new todo.TODO();
 	}
 	
 	public void callSerially(Runnable __a)
@@ -460,7 +449,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._head.getMaximumHeight();
+		throw new todo.TODO();
 	}
 	
 	public IdleItem getIdleItem()
@@ -491,7 +480,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._head.getMaximumWidth();
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -651,7 +640,8 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
-		// Enter background state?
+		throw new todo.TODO();
+		/*// Enter background state?
 		NativeDisplay.Head head = this._head;
 		if (__show == null)
 		{
@@ -663,7 +653,7 @@ public class Display
 		__setCurrent(__show, (__show instanceof Alert) ? getCurrent() : null);
 		
 		// Enter foreground state
-		head.setState(DisplayState.FOREGROUND);
+		head.setState(DisplayState.FOREGROUND);*/
 	}
 	
 	public void setCurrentItem(Item __a)

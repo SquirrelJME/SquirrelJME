@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
-
 /**
  * This is the base class for all user interactable displays.
  *
@@ -26,12 +24,11 @@ public abstract class Screen
 	/**
 	 * Initializes the base screen.
 	 *
-	 * @param __t The type of displayable to create.
 	 * @since 2017/02/28
 	 */
-	Screen(DisplayableType __t)
+	Screen()
 	{
-		super(__t);
+		throw new todo.TODO();
 	}
 }
 
