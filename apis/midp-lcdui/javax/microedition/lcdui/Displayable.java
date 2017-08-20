@@ -24,10 +24,13 @@ import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 public abstract class Displayable
 {
 	/** The display this is currently associated with. */
-	volatile Display _current;
+	private volatile Display _current;
 	
 	/** The command listener to call into when commands are generated. */
 	private volatile CommandListener _cmdlistener;
+	
+	/** The title of this displayable. */
+	private volatile String _title;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -107,7 +110,7 @@ public abstract class Displayable
 	 */
 	public String getTitle()
 	{
-		throw new todo.TODO();
+		return this._title;
 	}
 	
 	public void invalidateCommandLayout()
@@ -165,19 +168,17 @@ public abstract class Displayable
 	/**
 	 * Sets the title of this displayable.
 	 *
-	 * @param __a The title to use.
+	 * @param __a The title to use, {@code null} clears it.
 	 * @since 2016/10/08
 	 */
 	public void setTitle(String __a)
 	{
-		throw new todo.TODO();
-		/*// Set
 		this._title = __a;
 		
-		// Set the title to use
-		DisplayInstance instance = this._instance;
-		if (instance != null)
-			instance.setTitle(__a);*/
+		// TItle changed so an update is required
+		Display current = this._current;
+		if (current != null)
+			current.__update();
 	}
 	
 	/**
@@ -194,7 +195,7 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * Returns the height if the displayable or the maximum size of the
+	 * Returns the height of the displayable or the maximum size of the
 	 * default display.
 	 *
 	 * @return The displayable height or the maximum height of the default
@@ -209,7 +210,7 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * Returns the width if the displayable or the maximum size of the
+	 * Returns the width of the displayable or the maximum size of the
 	 * default display.
 	 *
 	 * @return The displayable width or the maximum width of the default

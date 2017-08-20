@@ -805,6 +805,17 @@ public class Display
 		}*/
 	}
 	
+	/**
+	 * Some kind of layout or otherwise changed on the display, so force it
+	 * to be updated and refreshed to reflect the latest Displayable changes.
+	 *
+	 * @since 2017/08/19
+	 */
+	void __update()
+	{
+		throw new todo.TODO();
+	}
+	
 	public static void addDisplayListener(DisplayListener __dl)
 	{
 		throw new todo.TODO();
