@@ -30,13 +30,14 @@ if echo "$1" | grep '^-' > /dev/null
 then
 	__numb="$1"
 	__file="$2"
+	shift 2
 else 
 	__numb="-0"
 	__file="$1"
+	shift 1
 fi
 
 __proj="$(basename "$__file" .jar)"
-shift 2
 
 # Build these projects because they are standard and may be relied upon
 for __maybe in midp-lcdui meep-rms squirreljme-rms-file media-api
