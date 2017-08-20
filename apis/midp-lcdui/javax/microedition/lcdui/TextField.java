@@ -153,6 +153,9 @@ public class TextField
 	private volatile int _maxlength =
 		Integer.MAX_VALUE;
 	
+	/** The current constraints. */
+	private volatile int _constraints;
+	
 	/**
 	 * Initializes the text field.
 	 *
@@ -275,9 +278,10 @@ public class TextField
 		if (__ms <= 0)
 			throw new IllegalArgumentException(String.format("EB1d %d", __ms));
 		
-		// Make sure the input is valid during truncation
-		if (true)
-			throw new todo.TODO();
+		// {@squirreljme.error EB1f Cannot set the maximum size because the
+		// input text field would have an invalid value.}
+		if (!__check(this._value, __ms, this._constraints))
+			throw new IllegalArgumentException("EB1f");
 		
 		// Set, SquirrelJME does not have a fixed limit on the size of text
 		// fields
@@ -292,6 +296,32 @@ public class TextField
 	
 	public int size()
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * This checks the given sequence to make sure it is within the
+	 * specified constraints.
+	 *
+	 * @param __cs The sequence to check.
+	 * @param __ms The maximum number of characters to check.
+	 * @param __c The constraints specifications.
+	 * @return Whether or not the data is valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/20
+	 */
+	private static boolean __check(CharSequence __cs, int __ms, int __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__cs == null)
+			throw new NullPointerException("NARG");
+		
+		// Any input is valid
+		int type = (__c & CONSTRAINT_MASK);
+		if (type == ANY)
+			return true;
+		
 		throw new todo.TODO();
 	}
 }
