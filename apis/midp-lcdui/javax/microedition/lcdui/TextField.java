@@ -56,10 +56,49 @@ public class TextField
 	public static final int URL =
 		4;
 	
-	public TextField(String __a, String __b, int __c, int __d)
+	/** The text contained within the field. */
+	private final StringBuilder _value =
+		new StringBuilder();
+	
+	/** The maximum length of the text field. */
+	private volatile int _maxlength =
+		Integer.MAX_VALUE;
+	
+	/**
+	 * Initializes the text field.
+	 *
+	 * If the implementation does not support the specified number of
+	 * characters then the input string will be truncated and no exception
+	 * will be thrown provided the input is still valid.
+	 *
+	 * @param __l The label of the field.
+	 * @param __t The text to initially set the field to,
+	 * see {@link #setString(String)}.
+	 * @param __ms The maximum amount of characters in the field,
+	 * see {@link #setMaxSize(int)}.
+	 * @param __c The constraints of the field,
+	 * see {@link #setConstraints(int)}.
+	 * @throws IllegalArgumentException If the maximum size is zero or less;
+	 * the constraints is not valid; the text is not valid; or the text
+	 * exceeds the maximum specified characters.
+	 * @since 2017/08/19
+	 */
+	public TextField(String __l, String __t, int __ms, int __c)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		// Standard item properties
+		setLabel(__l);
+		
+		// Size and constraints are set first to make sure the string is
+		// valid
+		int n = setMaxSize(__ms);
+		setConstraints(__c);
+		
+		// Set the string which validates the input
+		// However if the constraints are smaller for the implementation then
+		// no exception is thrown (just give the truncated string)
+		if (__t != null)
+			setString((n < __c ? __t.substring(0, n) : __t));
 	}
 	
 	public void delete(int __a, int __b)
@@ -127,9 +166,34 @@ public class TextField
 		throw new todo.TODO();
 	}
 	
-	public int setMaxSize(int __a)
+	/**
+	 * Sets the maximum size of the text field, if the value is larger than
+	 * this value then it will be truncated.
+	 *
+	 * @param __ms The number of characters that can be placed in the field.
+	 * @return The actual maximum capacity, this may be smaller than the
+	 * input value.
+	 * @throws IllegalArgumentException If the maximum size is not a non-zero
+	 * positive value or if the value would not be valid after truncation if
+	 * constraints are used.
+	 * @since 2017/08/19
+	 */
+	public int setMaxSize(int __ms)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB1d The maximum characters in the text field
+		// cannot be zero or negative. (The maximum characters)}
+		if (__ms <= 0)
+			throw new IllegalArgumentException(String.format("EB1d %d", __ms));
+		
+		// Make sure the input is valid during truncation
+		if (true)
+			throw new todo.TODO();
+		
+		// Set, SquirrelJME does not have a fixed limit on the size of text
+		// fields
+		this._maxlength = __ms;
+		return __ms;
 	}
 	
 	public void setString(String __a)
