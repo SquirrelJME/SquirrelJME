@@ -371,7 +371,8 @@ public class ForwardingGraphics
 		
 		// Initialize?
 		if (ref == null || null == (rv = ref.get()))
-			this._plain = new WeakReference<>(rv = new __PlainForward__(this));
+			this._plain = new WeakReference<>(
+				rv = new BasicForwardingGraphics(this));
 		
 		return rv;
 	}

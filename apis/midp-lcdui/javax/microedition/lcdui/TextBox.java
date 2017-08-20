@@ -10,14 +10,11 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
-
 public class TextBox
 	extends Screen
 {
 	public TextBox(String __a, String __b, int __c, int __d)
 	{
-		super(DisplayableType.TEXT_BOX);
 		throw new todo.TODO();
 	}
 	

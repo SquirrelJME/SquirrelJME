@@ -10,13 +10,10 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.BasicGraphics;
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
-import net.multiphasicapps.squirreljme.lcdui.KeyEventType;
-import net.multiphasicapps.squirreljme.lcdui.KeyNames;
-import net.multiphasicapps.squirreljme.lcdui.NativeCanvas;
-import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
-import net.multiphasicapps.squirreljme.lcdui.PointerEventType;
+import net.multiphasicapps.squirreljme.lcdui.event.KeyEventType;
+import net.multiphasicapps.squirreljme.lcdui.event.KeyNames;
+import net.multiphasicapps.squirreljme.lcdui.event.PointerEventType;
+import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -147,9 +144,6 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
-	/** The native canvas this uses internally. */
-	final NativeCanvas _canvas;
-	
 	/** The key listener to use. */
 	private volatile KeyListener _keylistener;
 	
@@ -163,10 +157,7 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
-		super(DisplayableType.CANVAS);
-		
-		// Set
-		this._canvas = (NativeCanvas)this._displayable;
+		throw new todo.TODO();
 	}
 	
 	@__SerializedEvent__

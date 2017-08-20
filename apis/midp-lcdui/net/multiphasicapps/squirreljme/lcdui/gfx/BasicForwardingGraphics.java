@@ -22,7 +22,7 @@ import javax.microedition.lcdui.Text;
  *
  * @since 2016/10/10
  */
-public class PlainForwardingGraphics
+public class BasicForwardingGraphics
 	extends Graphics
 {
 	/** The graphics to forward to. */
@@ -35,7 +35,7 @@ public class PlainForwardingGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/10
 	 */
-	PlainForwardingGraphics(Graphics __g)
+	BasicForwardingGraphics(Graphics __g)
 		throws NullPointerException
 	{
 		// Check

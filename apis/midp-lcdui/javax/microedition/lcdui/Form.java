@@ -10,20 +10,16 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
-
 public class Form
 	extends Screen
 {
 	public Form(String __a)
 	{
-		super(DisplayableType.FORM);
 		throw new todo.TODO();
 	}
 	
 	public Form(String __a, Item[] __b)
 	{
-		super(DisplayableType.FORM);
 		throw new todo.TODO();
 	}
 	

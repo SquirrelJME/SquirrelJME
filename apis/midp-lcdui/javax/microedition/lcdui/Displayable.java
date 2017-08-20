@@ -12,9 +12,6 @@ package javax.microedition.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
-import net.multiphasicapps.squirreljme.lcdui.NativeDisplay;
-import net.multiphasicapps.squirreljme.lcdui.NativeDisplayable;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -25,34 +22,17 @@ import net.multiphasicapps.squirreljme.lcdui.NativeDisplayable;
  */
 public abstract class Displayable
 {
-	/** The native displayable associated with this display. */
-	final NativeDisplayable _displayable;
-	
 	/** The display this is currently associated with. */
 	volatile Display _current;
 	
 	/**
 	 * Initializes the base displayable object.
 	 *
-	 * An enumeration is used because you cannot {@code this} in a super
-	 * constructor call so it is unknown which type of displayable needs to be
-	 * created.
-	 *
-	 * @param __t The type of displayable to create.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
-	Displayable(DisplayableType __t)
-		throws NullPointerException
+	Displayable()
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Native displayables only have back reference to LCDUI displayables
-		// so that they can detect and handle garbage collection.
-		NativeDisplay nd = NativeDisplay.DISPLAY;
-		this._displayable = nd.create(__t, new WeakReference<>(this));
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -13,7 +13,6 @@ package javax.microedition.lcdui;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
-import net.multiphasicapps.squirreljme.lcdui.DisplayableType;
 
 public class FileSelector
 	extends Screen
@@ -38,8 +37,6 @@ public class FileSelector
 	
 	public FileSelector(String __title, int __mode)
 	{
-		super(DisplayableType.FILE_SELECTOR);
-		
 		throw new todo.TODO();
 	}
 	
