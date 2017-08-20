@@ -13,6 +13,13 @@ package javax.microedition.lcdui;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A choice group represents a selectable group of elements which may be
+ * added to a {@link Form}. The number of selected choices may be limited to
+ * one or multiple choices may be available.
+ *
+ * @since 2017/08/20
+ */
 public class ChoiceGroup
 	extends Item
 	implements Choice
@@ -99,9 +106,28 @@ public class ChoiceGroup
 		}
 	}
 	
-	public int append(String __a, Image __b)
+	/**
+	 * This appends a single choice.
+	 *
+	 * @param __s The string to display.
+	 * @param __i The image to display, may be {@code null}.
+	 * @return The index the element was added at.
+	 * @throws NullPointerException If no string was specified.
+	 * @since 2017/08/20
+	 */
+	public int append(String __s, Image __i)
 	{
-		throw new todo.TODO();
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Just insert at the end
+		synchronized (this._lock)
+		{
+			int rv;
+			insert((rv = size()), __s, __i);
+			return rv;
+		}
 	}
 	
 	public void delete(int __a)
@@ -146,6 +172,7 @@ public class ChoiceGroup
 	
 	public void insert(int __a, String __b, Image __c)
 	{
+		
 		throw new todo.TODO();
 	}
 	
@@ -189,9 +216,18 @@ public class ChoiceGroup
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the number of choices which are in this group.
+	 *
+	 * @return The number of choices in this group.
+	 * @since 2017/08/20
+	 */
 	public int size()
 	{
-		throw new todo.TODO();
+		synchronized (this._lock)
+		{
+			return this._entries.size();
+		}
 	}
 }
 
