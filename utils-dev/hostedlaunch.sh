@@ -18,14 +18,25 @@ __exedir="$(dirname -- "$0")"
 # Usage
 if [ "$#" -lt 1 ]
 then
-	echo "Usage: $0 (project|file.jar)"
+	echo "Usage: $0 [-#] (project|file.jar)" 1>&2
+	echo "" 1>&2
+	echo "  [-#] Can be 0 or greater to specify that an alternative" 1>&2
+	echo "       application be used for a given program." 1>&2
 	exit 1
 fi
 
 # Determine project name, if possible
-__file="$1"
+if echo "$1" | grep '^-' > /dev/null
+then
+	__numb="$1"
+	__file="$2"
+else 
+	__numb="-0"
+	__file="$1"
+fi
+
 __proj="$(basename "$__file" .jar)"
-shift 1
+shift 2
 
 # Build these projects because they are standard and may be relied upon
 for __maybe in midp-lcdui meep-rms squirreljme-rms-file media-api
@@ -84,6 +95,7 @@ fi
 # Run the JVM with the bootstrap followed
 java -classpath "$(__gen_classpath "$__run")" \
 	$HOSTED_JAVA_OPTIONS \
-	net.multiphasicapps.squirreljme.build.host.javase.HostedLaunch "$__run" "$@"
+	net.multiphasicapps.squirreljme.build.host.javase.HostedLaunch \
+	"$__numb" "$__run" "$@"
 exit $?
 
