@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChoiceGroup
 	extends Item
@@ -22,6 +24,10 @@ public class ChoiceGroup
 	/** The maximum permitted type. */
 	static final int _MAX_TYPE =
 		Choice.POPUP;
+	
+	/** Entries which are available in the group. */
+	private final List<__ChoiceEntry__> _entries =
+		new ArrayList<>();
 	
 	/** The valid choice selection type. */
 	private final int _type;
