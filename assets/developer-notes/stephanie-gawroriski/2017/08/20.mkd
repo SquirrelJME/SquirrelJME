@@ -1,0 +1,19 @@
+# 2017/08/20
+
+## 01:15
+
+I am going to have to have a means of getting locale based information. This
+is needed for the `TextField` and such. However `Formatter` needs it also, so
+basically I am going to have a `SystemLocale` in unsafe which could be used
+to access the host system's local information when needed.
+
+## 02:24
+
+Hmm, the UIDemo I grabbed actually has multiple MIDlets. But my hosted launch
+only picks up the first one.
+
+## 02:58
+
+Ok so now the hosted launch allows multiple MIDlets and possibly the classic
+the command line to be handled. This is good because now I can fully test the
+UIDemo that is in an ancient version of the J2ME SDK (the WTK).
