@@ -15,15 +15,13 @@ public class ChoiceGroup
 	extends Item
 	implements Choice
 {
-	public ChoiceGroup(String __a, int __b)
+	public ChoiceGroup(String __l, int __ct)
 	{
-		super();
-		throw new todo.TODO();
+		this(__l, __ct, new String[0], null);
 	}
 	
-	public ChoiceGroup(String __a, int __b, String[] __c, Image[] __d)
+	public ChoiceGroup(String __l, int __ct, String[] __se, Image[] __ie)
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
