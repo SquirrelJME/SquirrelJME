@@ -36,7 +36,6 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		throw new todo.TODO();
 	}
 	
 	/**

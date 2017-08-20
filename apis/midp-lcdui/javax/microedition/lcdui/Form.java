@@ -13,14 +13,54 @@ package javax.microedition.lcdui;
 public class Form
 	extends Screen
 {
-	public Form(String __a)
+	/**
+	 * Initializes an empty form with an optionally specified title.
+	 *
+	 * @param __t The title of the form, may be {@code null}.
+	 * @since 2017/08/19
+	 */
+	public Form(String __t)
 	{
-		throw new todo.TODO();
+		this(__t, null);
 	}
 	
-	public Form(String __a, Item[] __b)
+	/**
+	 * Initializes a form with the given items and an optionally specified
+	 * title.
+	 *
+	 * @param __t The title of the form, may be {@code null}.
+	 * @param __i The items to add to the form.
+	 * @throws IllegalStateException If an item in the form is already owned
+	 * by another container.
+	 * @throws NullPointerException If any element in {@code __i} is
+	 * {@code null}.
+	 * @since 2017/08/19
+	 */
+	public Form(String __t, Item[] __i)
+		throws IllegalStateException, NullPointerException
 	{
-		throw new todo.TODO();
+		// Forms just use the titles the same as Displayables
+		try
+		{
+			setTitle(__t);
+		}
+		
+		// Ignore this if it occurs so that constructing the form does not
+		// end in failure
+		catch (DisplayCapabilityException e)
+		{
+		}
+		
+		// Append items in order
+		if (__i != null)
+			for (Item i : __i)
+			{
+				// Check
+				if (i == null)
+					throw new NullPointerException("NARG");
+				
+				append(i);
+			}
 	}
 	
 	public int append(String __a)
