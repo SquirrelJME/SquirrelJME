@@ -28,7 +28,6 @@ public abstract class Screen
 	 */
 	Screen()
 	{
-		throw new todo.TODO();
 	}
 }
 
