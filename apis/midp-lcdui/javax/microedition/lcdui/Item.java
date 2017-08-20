@@ -68,6 +68,12 @@ public abstract class Item
 	private volatile int _layout =
 		LAYOUT_DEFAULT;
 	
+	/** The label of this item. */
+	private volatile String _label;
+	
+	/** The owning screen. */
+	volatile Screen _screen;
+	
 	/**
 	 * Initializes the base item.
 	 *
@@ -147,9 +153,26 @@ public abstract class Item
 		throw new todo.TODO();
 	}
 	
-	public void setLabel(String __a)
+	/**
+	 * Sets the label of the item.
+	 *
+	 * @param __l The label of the item to set, may be {@code null} to clear
+	 * the label.
+	 * @throws IllegalArgumentException If this item is contained within an
+	 * alert.
+	 * @since 2017/08/20
+	 */
+	public void setLabel(String __l)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB1e Cannot set the label of an item which is
+		// contained within an Alert.}
+		if (this._screen instanceof Alert)
+			throw new IllegalArgumentException("EB1e");
+		
+		// Set
+		this._label = __l;
+		__update();
 	}
 	
 	public void setLayout(int __a)
@@ -165,6 +188,19 @@ public abstract class Item
 	public void setPreferredSize(int __a, int __b)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Updates the item on the containing form so that it knows of any
+	 * changes which have occured.
+	 *
+	 * @since 2017/08/20
+	 */
+	void __update()
+	{
+		Screen f = this._screen;
+		if (f != null)
+			throw new todo.TODO();
 	}
 }
 
