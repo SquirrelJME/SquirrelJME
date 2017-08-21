@@ -28,8 +28,14 @@ public class LCDUIChoiceInsert
 	{
 		ChoiceGroup cg = new ChoiceGroup("Test", ChoiceGroup.EXCLUSIVE);
 		
+		System.err.println("A");
 		cg.insert(cg.size(), "A", null);
+		
+		System.err.println("B");
 		cg.insert(cg.size(), "B", null);
+		
+		System.err.println("C");
+		cg.insert(cg.size() + 1, "C", null);
 	}
 }
 
