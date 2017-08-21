@@ -17,3 +17,28 @@ only picks up the first one.
 Ok so now the hosted launch allows multiple MIDlets and possibly the classic
 the command line to be handled. This is good because now I can fully test the
 UIDemo that is in an ancient version of the J2ME SDK (the WTK).
+
+## 11:14
+
+Ok so, optimizing boolean array accesses is possible because since all types
+will be known at compile time, the compiler knows to use a more compact
+representation. The same can be said for array creation.
+
+## 11:20
+
+`ReferenceQueue`s work with the reference counting garbage collector and can
+work. A `Reference` can only refer to a single queue and when it is collected
+it will just be pushed to the queue indicating it has been freed. However
+there still is a manual poll check.
+
+## 11:31
+
+`ChoiceGroup` and `List` for `insert` specify a range that does not include
+the number of elements. "_The elementNum parameter must be within the range_
+`[0..size()-1]`_, inclusive._". And as such, I assume this is an error? I will
+need to verify it when I can.
+
+## 11:36
+
+I should probably setup a means where I can create quick test JARs and
+build them, perhaps somewhere in utils-dev.
