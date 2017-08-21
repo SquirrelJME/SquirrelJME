@@ -170,10 +170,40 @@ public class ChoiceGroup
 		throw new todo.TODO();
 	}
 	
-	public void insert(int __a, String __b, Image __c)
+	/**
+	 * This inserts the specified choice at the given index.
+	 *
+	 * Note that the documentation erroneously specifies that an exception
+	 * will be thrown if {@code __v} is in the range of {@code [0, size()-1]},
+	 * this is not the case and {@code size()} is a valid index.
+	 *
+	 * @param __v The index to insert the choice at.
+	 * @param __s The string to display.
+	 * @param __i The image to display, may be {@code null}.
+	 * @throws IndexOutOfBoundsException If the index exceeds the bounds.
+	 * @throws NullPointerException If no string was specified.
+	 * @since 2017/08/21
+	 */
+	public void insert(int __v, String __s, Image __i)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Insert wherever
+		synchronized (this._lock)
+		{
+			// {@squirreljme.error EB1m Cannot insert choice at the specified
+			// index because it is not within bounds. (The index to add at)}
+			List<__ChoiceEntry__> entries = this._entries;
+			if (__v < 0 || __v > entries.size())
+				throw new IndexOutOfBoundsException(String.format("EB1m %d",
+					__v));
+			
+			// Insert
+			entries.add(__v, new __ChoiceEntry__(__s, __i));
+		}
 	}
 	
 	public boolean isEnabled(int __i)
