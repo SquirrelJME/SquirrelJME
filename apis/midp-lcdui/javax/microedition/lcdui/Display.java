@@ -23,8 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.lcdui.DisplayHeadProvider;
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
+import net.multiphasicapps.squirreljme.lcdui.HeadlessDisplayManager;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 public class Display
@@ -185,6 +186,9 @@ public class Display
 	public static final int TAB =
 		4;
 	
+	/** The global display manager instance. */
+	static final DisplayManager _MANAGER;
+	
 	/** Display heads. */
 	private static final Display[] _DISPLAYS;
 	
@@ -202,25 +206,24 @@ public class Display
 	static
 	{
 		// Use the default display head manager
-		DisplayHeadProvider dhp = SystemEnvironment.
-			<DisplayHeadProvider>systemService(DisplayHeadProvider.class);
+		DisplayManager dhp = SystemEnvironment.<DisplayManager>systemService(
+			DisplayManager.class);
 		
-		// If no manager is available, use no displays
+		// If no manager is available, use a null display manager that does
+		// not actually have any real function
 		if (dhp == null)
-			_DISPLAYS = new Display[0];
+			dhp = new HeadlessDisplayManager();
 		
-		// Otherwise initialize heads for all displays
-		else
-		{
-			DisplayHead[] heads = dhp.heads();
-			int n = heads.length;
-			Display[] displays = new Display[n];
-			
-			for (int i = 0; i < n; i++)
-				displays[i] = new Display(heads[i]);
-			
-			_DISPLAYS = displays;
-		}
+		// Initialize all displays for each head
+		DisplayHead[] heads = dhp.heads();
+		int n = heads.length;
+		Display[] displays = new Display[n];
+		for (int i = 0; i < n; i++)
+			displays[i] = new Display(heads[i]);
+		
+		// Set
+		_DISPLAYS = displays;
+		_MANAGER = dhp;
 	}
 	
 	/**
