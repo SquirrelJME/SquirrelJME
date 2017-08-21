@@ -68,9 +68,12 @@ fi
 
 # Create manifest
 echo "Manifest-Version: 1.0
-Microedition-Configuration: CLDC-1.0
 MIDlet-1: $__bas,,$__bas
-MIDlet-JAR-URL: $__jar
+MIDlet-Name: $__bas
+MIDlet-Vendor: $__bas
+MIDlet-Version: 1.0
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
 " > "$__jad"
 
 # Create JAR file
@@ -79,6 +82,18 @@ then
 	echo "Failed to create JAR $__jar" 1>&2
 	exit 6
 fi
+
+# Recreate a valid JAD
+echo "Manifest-Version: 1.0
+MIDlet-1: $__bas,,$__bas
+MIDlet-Name: $__bas
+MIDlet-Vendor: $__bas
+MIDlet-Version: 1.0
+MIDlet-Jar-URL: $__jar
+MIDlet-Jar-Size: $(stat -c %s "$__jar")
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
+" > "$__jad"
 
 # Note
 echo "Built $__jar and $__jad" 1>&2
