@@ -40,9 +40,9 @@ final class __Ext_systemenvironment__
 		switch (__v)
 		{
 				// Display engine for swing output
-			case "net.multiphasicapps.squirreljme.lcdui.DisplayHeadProvider":
+			case "net.multiphasicapps.squirreljme.lcdui.DisplayManager":
 				return "net.multiphasicapps.squirreljme.build.host." +
-					"javase.SwingDisplayHeadProvider";
+					"javase.SwingDisplayManager";
 				
 				// Record store manager
 			case "net.multiphasicapps.squirreljme.rms.RecordClusterManager":

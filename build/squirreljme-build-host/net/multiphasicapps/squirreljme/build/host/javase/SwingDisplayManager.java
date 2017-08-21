@@ -8,25 +8,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcdui;
+package net.multiphasicapps.squirreljme.build.host.javase;
+
+import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 
 /**
- * This is a provider which always returns a fixed set of display heads that
- * are available for usage.
- *
- * This is intended to be used as a system service.
+ * This provides access to Swing display heads for displaying graphics.
  *
  * @since 2017/08/19
  */
-public interface DisplayHeadProvider
+public class SwingDisplayManager
+	extends DisplayManager
 {
+	/** The single display head instance to use always. */
+	private static final SwingDisplayHead _HEAD =
+		new SwingDisplayHead();
+	
 	/**
-	 * Returns the display heads which are available on the system.
-	 *
-	 * @return The array of available display heads, this should always
-	 * return the same elements.
+	 * {@inheritDoc}
 	 * @since 2017/08/19
 	 */
-	public abstract DisplayHead[] heads();
+	@Override
+	public DisplayHead[] heads()
+	{
+		return new DisplayHead[]{_HEAD};
+	}
 }
 
