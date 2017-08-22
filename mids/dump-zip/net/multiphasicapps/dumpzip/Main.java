@@ -18,7 +18,11 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
@@ -41,61 +45,114 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// Do nothing
-		if (__args == null)
+		// Nothing can be done
+		if (__args == null || __args.length <= 0)
 			return;
+		
+		// Load arguments
+		List<String> args = new ArrayList<>();
+		for (String s : __args)
+			args.add(s);
+		
+		// Reading by stream rather than by block?
+		boolean dostream = "-c".equals(args.get(0));
+		if (dostream)
+			args.remove(0);
+		
+		// Nothing to be done?
+		if (args.isEmpty())
+			return;
+		
+		// Note the variation
+		System.err.println((dostream ? "Dumping by stream." :
+			"Dumping by block."));
 		
 		// Filter files?
 		Set<String> filter = new HashSet<>();
-		for (int i = 1, n = __args.length; i < n; i++)
-			filter.add(__args[i]);
+		for (int i = 1, n = args.size(); i < n; i++)
+			filter.add(args.get(i));
 		
 		// Open all files and dump entries
-		byte[] buf = new byte[512];
 		String lastentry = null;
-		try (ZipBlockReader zsr = new ZipBlockReader(
-			new FileChannelBlockAccessor(FileChannel.open(Paths.get(__args[0]),
-			StandardOpenOption.READ))))
+		Path inputzip = Paths.get(args.get(0));
+		try (FileChannel fc = FileChannel.open(inputzip,
+			StandardOpenOption.READ))
 		{
-			// Go through all entries
-			for (ZipBlockEntry entry : zsr)
-			{
-				// Filtered?
-				String name = entry.name();
-				if (!filter.isEmpty() && !filter.contains(name))
-					continue;
-				System.err.printf("> Dumping `%s`...%n", name);
-				lastentry = name;
-				
-				// Read it
-				try (InputStream in = entry.open())
+			// As a stream
+			if (dostream)
+				try (ZipStreamReader zsr = new ZipStreamReader(
+					Channels.newInputStream(fc)))
 				{
-					// Dump bytes
-					try (OutputStream os = new HexDumpOutputStream(
-						System.out))
-					{
-						for (;;)
+					for (;;)
+						try (ZipStreamEntry e = zsr.nextEntry())
 						{
-							int rc = in.read(buf);
-						
-							// EOF?
-							if (rc < 0)
+							// No more entries
+							if (e == null)
 								break;
 							
-							// Dump
-							os.write(buf, 0, rc);
+							__dump(filter, (lastentry = e.name()), e);
 						}
-					}
 				}
-			}
+			
+			// As a block
+			else
+				try (ZipBlockReader zsr = new ZipBlockReader(
+					new FileChannelBlockAccessor(fc)))
+				{
+					// Go through all entries
+					for (ZipBlockEntry entry : zsr)
+						try (InputStream in = entry.open())
+						{
+							__dump(filter, (lastentry = entry.name()), in);
+						}
+				}
 		}
 	
 		// {@squirreljme.error AX01 Failed to properly read the specified
 		// file. (The file name; The last entry read)}
 		catch (IOException e)
 		{
-			throw new RuntimeException(String.format("AX01 %s %s", __args[0],
+			throw new RuntimeException(String.format("AX01 %s %s", inputzip,
 				lastentry), e);
+		}
+	}
+	
+	/**
+	 * Dumps the given stream.
+	 *
+	 * @param __f The filter used.
+	 * @param __n The name of the file.
+	 * @param __s The stream to dump.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/22
+	 */
+	private static void __dump(Set<String> __f, String __n, InputStream __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__f == null || __n == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Filtered?
+		if (!__f.isEmpty() && !__f.contains(__n))
+			return;
+		System.err.printf("> Dumping `%s`...%n", __n);
+		
+		// Dump bytes
+		try (OutputStream os = new HexDumpOutputStream(System.out))
+		{
+			for (byte[] buf = new byte[512];;)
+			{
+				int rc = __s.read(buf);
+	
+				// EOF?
+				if (rc < 0)
+					break;
+		
+				// Dump
+				os.write(buf, 0, rc);
+			}
 		}
 	}
 }
