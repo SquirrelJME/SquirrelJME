@@ -26,15 +26,42 @@ modern systems.
 
 ## MPA Orange-Sapphire (2011/12/12 - 2011/12/13)
 
+This was a very short project which never really took off. It was intended
+to be an operating system written in a BASIC-like language. Obviously BASIC
+is rather horrible compared to the languages of today.
+
 ## MPAYAOS (2012/02/20 - 2012/02/29)
 
 Standing for __Yet Another Operating System__.
+
+This was a short attempt at another operating system, it never really got
+past the bootloader stage. It was written in C.
 
 ## HandNIX (2012/05/28 - 2012/05/29)
 
 Standing for __Hand UNIX Environment__.
 
+This was an attempt to make a UNIX-like environment for Palm OS so that I could
+do development for my projects on Palm OS. It existed as a single C source code
+file.
+
+Only a few things were implemented. The major thing which was implemented was
+a basic cooperative tasked system which was based on Palm OS's versions of
+`setjmp` and `longjmp`. There also was a basic terminal emulator which did not
+support any escape sequences.
+
+Every POSIX command that existed on the system was referenced via a function
+pointer and the intention was to have virtual files (via `#!`) which would
+execute those internal commands when requested. The environment would have
+started on the shell (`sh`) which would then be available to execute other
+programs.
+
 ## HandOS 6.3 (2012/05/31 - 2012/08/17)
+
+HandOS is a clone of Palm OS, however the main purpose of this project was to
+implement the only released in a simulated environment: Palm OS Cobalt.
+
+It was written in C and it required the Palm OS SDK for compilation.
 
 ## MPAPCOS (2012/09/30 - 2013/01/16)
 
@@ -66,4 +93,34 @@ This is the direct predecessor to SquirrelJME.
 This project had a massive number of commits: 9041.
 
 # The Beginning of SquirrelJME
+
+# Some Potential Ideas
+
+I am rather fascinated by virtualized environments and there are some ideas
+which I do consider every so often.
+
+## A POSIX Environment
+
+I could write an environment which acts as a POSIX environment, perhaps
+emulating Linux system calls and such potentially, written in Java. This could
+then be used to have a full fledged POSIX development environment on
+SquirrelJME. At least with SquirrelJME it is very possible for it to be done
+provided a Java compiler is written. In retrospect, everything could be done
+within Java although there would need to be special checks and handling for
+signals which can appear out of bound when execution occurs. There would need
+to be periodic check for signals so that a signal can potentially be thrown
+and handled. The `fork` system call would also be an issue, at best there
+would really only be `posix_pspawn`. Ideally for speed most everything would
+be written in Java and pretty much provide an environment which is mostly
+written in Java.
+
+A C compiler could be supported and could output to a special kind of byte code
+which the environment is capable of executing so that it can compile and run
+programs. However, this is not really needed provided there is a Java compiler.
+The environment itself could pretty much only be capable of compiling and
+executing Java byte code, perhaps in a simulated environment.
+
+This idea would however bring such a simulated environment to systems which do
+not have such things. Although there would be a speed penalty, there would be
+a consistent environment across multiple platforms.
 
