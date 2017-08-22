@@ -8,6 +8,10 @@ run on systems, since such things have fascinated me.
 
 These are old defunct projects which I have previously worked on.
 
+I will say that it can take years before you can find a project you enjoy
+working on and one that inspires you. Keep searching. Just be careful where
+you step and do not take in more than you can handle.
+
 ## HandOS (2011/01/15 - 2011/01/22)
 
 This was an attempt at creating an open source implementation of Palm OS.
@@ -63,21 +67,69 @@ implement the only released in a simulated environment: Palm OS Cobalt.
 
 It was written in C and it required the Palm OS SDK for compilation.
 
+I did not have headers for Palm OS 6, so I was writing the headers from
+scratch.
+
 ## MPAPCOS (2012/09/30 - 2013/01/16)
 
 Standing for __Posix Compatible Operating System__.
 
+This was an attempt to write an operating system which was compatible with
+POSIX:2008 and could run such programs. A C preprocessor was written and some
+basic utilities were supported, but generally that was as far as it got.
+
 ## HandOS 5.6 (2013/01/23 - 2013/02/05)
+
+This was another attempt at writing a Palm OS clone, it did not get very far.
+There was basic project structure but not much else.
 
 ## MPAMSEK (2013/03/31 - 2013/04/14)
 
 Standing for __Multi-System Emulation Kernel__.
 
+This project was I believe to write an operating system which could run many
+other operating systems in a very bare bones emulated environment to run as if
+it were on native hardware. Basically, you would boot into a system and instead
+of running an OS with an emulator running on it, the emulator would be
+directly running on the hardware.
+
+I only really got a basic system launch on PowerPC's Open Firmware. I was able
+to print to the system's framebuffer console but not much else.
+
 ## MPAOSKP (2013/04/14 - 2013/05/15)
 
 This project is based off MPAMSEK.
 
+I am not too sure what the acronym stood for
+
+I wrote a memory allocator but it never really got past the boot loader and
+early kernel initialization stages.
+
+PowerPC and x86 worked on Open Firmware.
+
+I failed to get SPARC working.
+
+I thought about writing a C compiler but I gave up quickly and abandoned that
+idea because that would be too much work with too little of a benefit.
+
 ## POSIX Environment for Palm OS (2013/07/25 - 2013/07/27)
+
+This project was essentially similar to an earlier but was a POSIX environment
+for Palm OS. By reverse engineering bits of Palm OS previously I determined
+that some things were very possible. For Palm OS 5 I had pretty much a concept
+background threading and server system. Basically a daemon would be launched
+in the background which would keep the environment running. There would be a
+connection made to the daemon with locks and semaphores. There would then be
+a terminal interface which would show what was being output to the console.
+
+There would be threads in the background running tasks. However to access the
+server process a pointer would have to be remembered. This is where the
+feature manager was used to keep a persistent handle in memory so the daemon
+could be connected to. I determined that it was very important to be able to
+switch programs outside of the environment.
+
+For SquirrelJME on Palm OS, I have an idea to do something very similar so
+that it runs in the background while other applications may be used.
 
 ## POSIX Environment for Palm OS (2014/10/12 - 2014/10/12)
 
@@ -86,18 +138,122 @@ project was the same as the previous.
 
 ## k5 (2013/12/25 - 2014/04/25)
 
+This project had 503 commits.
+
+This is basically the start of my delving into Java virtual machines. It was
+written in Java and was pretty bloated when it came to the compiler, using very
+abstract concepts for compilation. It was to target Java SE but I am not too
+sure which version it was for. Very likely it was Java 7 as Java 8 was released
+shortly before this project ended.
+
+I never really got past the JIT stage in the project. It was also quite massive
+of a project.
+
 ## k8/Squirrnix (2014/04/26 - 2016/02/25)
 
 This is the direct predecessor to SquirrelJME.
 
 This project had a massive number of commits: 9041.
 
+It intended to implement the entirety of Java SE 8 with all of its profiles.
+This was for the most part a very unrealistic goal. As with _k5_, it never
+really got past the JIT stage. The massive requirements in place were
+unrealistic. This project was doomed for failure even when it began but I was
+a bit foolish to take up this task.
+
 # The Beginning of SquirrelJME
+
+SquirrelJME stems from the following ideas:
+
+I had a growing fascination with J2ME. I had an old cell phone which could run
+J2ME applications. I would make a few concept projects but they did not last
+long because programming for J2ME is quite horrible as it is very lacking when
+it comes to Java. I did have the idea of writing a virtual machine that could
+run J2ME applications so that I could use some again.
+
+Another thing is that the write once and run anywhere aspect of Java pretty
+much fascinated me also. The idea of writing a program once and having it
+work pretty much everywhere was indeed interesting. I wanted to do this with
+_k8_ but it was not really a feasible thing to do because it was so gigantic.
+
+However, there was much frustration with my then current project _k8_. It was
+gigantic and the number of classes to implement was essentially an impossible
+mountain to cross. There was a growing sense of doubt that the project would
+never get anywhere because it had unrealistic goals that would be impossible
+for a single woman to obtain all by herself. I calculated that it could take
+perhaps up to a decade to implement the core classes of Java SE 8. By a
+decade's time, Java SE 8 would be obsolete and nobody would be using it anyway.
+So this compounded a wasted effort. Additionally being a third-party VM, there
+would quite literally be very little interest in it, so it could not be for
+fame. Basically it was too much and too ambitious of a project and sadly it
+took two years to realize that.
+
+Near the end of the project's life span I was a very depressed person, I felt
+like the project was a complete waste of time and that life was rather
+meaningless. I felt trapped working on the project with no escape. My life was
+melting away into nothingness and worthlessness. I did not want to admit that
+the project was a failure and would be going nowhere, I was naive.
+
+In February of 2016 I watched Hack Summit 2016, it was pretty much the first
+online conference which I have visited. It was really exciting and it did move
+me a bit. But I think the one talk which really moved me was the one by
+_Sarah Allen_ (you can see her on YouTube here:
+<https://www.youtube.com/watch?v=S1iYeThQO-g>). It really resonated with me and
+it has really given me the light shining through my own fog to realize that my
+own project was ruining my life. After that I decided that my own project was
+not something I really wanted to do, that my ambitious goals were not even
+caring for myself. I decided that I should care more about myself and that I
+had to cut my project loose.
+
+When that happened, I was still so very much interested in Java and having
+write once and run anywhere, portability and virtual machines. I found Java to
+be very awesome. I knew that _k8_ would never fit on the systems I would have
+liked to target. I got the motivation to push Java as small as it can go. I
+knew the gigantic size of _k8_ was too much, so I decided to switch to the
+small scale. I remember my fascination with J2ME and I wanted to clone that
+environment because I found it interesting. Java was seen as this gigantic
+bloated monster that ate so much CPU and so much memory. But working with the
+JVM so much made me realize how wrong it was. Java was in fact very small and
+very light. J2ME was very light and very simplistic.
+
+The first thing to do is determine has J2ME been updated ever? To my surprise
+it actually was updated for Java 8. So this was quite something. Although it
+was not really a microscopic Java 8 VM it was Java 7, which was good enough.
+It added extra classes and was in general quite cool. JSR360, which is the
+specification for Java ME 8 was proposed on October 2, 2012. The final release
+was made on April 30, 2014. Java SE 8 being released on March 18, 2014. So
+Java ME 8 came out very shortly after Java SE 8. However with Android and iOS
+being everywhere it never really stood a chance and Java ME 8 never really got
+the chance to actually be anything.
+
+I decided to study Java ME 8, to see if it was indeed viable. I took a quick
+glance at it and then deeper dives into it. Java ME 8 imported quite a number
+of things from Java SE 7. It basically was bringing it up to date with the
+modern Java language rather than languishing in the past. It did remove some
+things but, in the essence of compatibility those could still be brought in.
+These removed things were stuff such as LCDUI, which were pretty much
+nowhere. It took a bit to verify compatibility but the changes made do not have
+an impact on backwards compatibility. As such this was a bonus.
+
+One added bonus that I liked is that Java ME was so small compared to Java SE.
+It is very tiny and extremely compact. Basically what is in the language is the
+bare minimum sane choice. I will say that there are some errors and perhaps
+some omissions but in general it has been rather good. The thought of Java SE
+being implemented and the gigantic task I knew was impossible and the small
+size of Java ME is actually is within reach. The small number of classes, up
+around 512 classes for the standard makes it very reasonable. This estimated
+512 classes is about half the size of Java SE 8's compact1 and does not include
+things such as SQL. I really liked the fact that it gave you the minimum set
+of classes and you could just bring your own classes in if you care about it.
+Personally, I do not really care for SQL and stuff like CORBA because I do not
+often use them at all.
 
 # Some Potential Ideas
 
 I am rather fascinated by virtualized environments and there are some ideas
-which I do consider every so often.
+which I do consider every so often. I will not be implementing these ideas
+right now, but they could be done when SquirrelJME is rather complete and
+there is nothing else to do.
 
 ## A POSIX Environment
 
