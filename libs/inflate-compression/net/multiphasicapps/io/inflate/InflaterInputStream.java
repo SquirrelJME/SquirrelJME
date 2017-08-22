@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.io.crc32.CRC32Calculator;
+import net.multiphasicapps.io.checksum.Checksum;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 import net.multiphasicapps.util.huffmantree.BitSource;
@@ -70,8 +70,8 @@ public class InflaterInputStream
 	protected final ByteDeque overflow =
 		new ByteDeque();
 	
-	/** When a byte is read, the CRC will be calculated for it, optional. */
-	protected final CRC32Calculator crc;
+	/** When bytes are read, a checkum will be calculated for it, optional. */
+	protected final Checksum checksum;
 	
 	/** Single byte read. */
 	private final byte[] _solo =
@@ -183,18 +183,19 @@ public class InflaterInputStream
 	
 	/**
 	 * Initializes the deflate compression stream inflater with a custom
-	 * size specified for the sliding window.
+	 * size specified for the sliding window, an option checksum calculator
+	 * may be specified also.
 	 *
 	 * @param __in The stream to inflate.
 	 * @param __sls Custom size to the sliding window.
-	 * @param __crc If not {@code null} then when bytes are read from this
-	 * stream they will have their CRC calculated.
+	 * @param __checksum If not {@code null} then when bytes are read from this
+	 * stream they will have their checksum calculated.
 	 * @throws NullPointerException On null arguments, except for
-	 * {@code __crc}.
+	 * {@code __checksum}.
 	 * @since 2017/08/22
 	 */
 	public InflaterInputStream(InputStream __in, int __sls,
-		CRC32Calculator __crc)
+		Checksum __checksum)
 	{
 		// Check
 		if (__in == null)
@@ -203,7 +204,7 @@ public class InflaterInputStream
 		// Set
 		this.in = __in;
 		this.window = new SlidingByteWindow(__sls);
-		this.crc = __crc;
+		this.checksum = __checksum;
 	}
 	
 	/**
@@ -323,9 +324,9 @@ public class InflaterInputStream
 		}
 		
 		// Calculate CRC for this output data
-		CRC32Calculator crc = this.crc;
-		if (crc != null)
-			crc.offer(__b, __o, c);
+		Checksum checksum = this.checksum;
+		if (checksum != null)
+			checksum.offer(__b, __o, c);
 		
 		// Count uncompressed size
 		if (c > 0)
