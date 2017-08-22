@@ -605,6 +605,17 @@ public class ByteDeque
 	}
 	
 	/**
+	 * Returns whether or not this deque is empty.
+	 *
+	 * @return Whether it is empty or not.
+	 * @since 2017/08/22
+	 */
+	public final boolean isEmpty()
+	{
+		return available() == 0;
+	}
+	
+	/**
 	 * Offers a single byte to the start of the deque and returns {@code true}
 	 * if it was added to the deque.
 	 *
