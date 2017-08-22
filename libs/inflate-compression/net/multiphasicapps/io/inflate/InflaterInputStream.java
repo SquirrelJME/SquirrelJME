@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;
+import net.multiphasicapps.io.crc32.CRC32Calculator;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 import net.multiphasicapps.util.huffmantree.BitSource;
@@ -68,6 +69,9 @@ public class InflaterInputStream
 	/** If the output cannot be filled, bytes are written here instead. */
 	protected final ByteDeque overflow =
 		new ByteDeque();
+	
+	/** When a byte is read, the CRC will be calculated for it, optional. */
+	protected final CRC32Calculator crc;
 	
 	/** Single byte read. */
 	private final byte[] _solo =
@@ -168,6 +172,24 @@ public class InflaterInputStream
 	 */
 	public InflaterInputStream(InputStream __in, int __sls)
 	{
+		this(__in, __sls, null);
+	}
+	
+	/**
+	 * Initializes the deflate compression stream inflater with a custom
+	 * size specified for the sliding window.
+	 *
+	 * @param __in The stream to inflate.
+	 * @param __sls Custom size to the sliding window.
+	 * @param __crc If not {@code null} then when bytes are read from this
+	 * stream they will have their CRC calculated.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __crc}.
+	 * @since 2017/08/22
+	 */
+	public InflaterInputStream(InputStream __in, int __sls,
+		CRC32Calculator __crc)
+	{
 		// Check
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -175,6 +197,7 @@ public class InflaterInputStream
 		// Set
 		this.in = __in;
 		this.window = new SlidingByteWindow(__sls);
+		this.crc = __crc;
 	}
 	
 	/**
@@ -253,48 +276,44 @@ public class InflaterInputStream
 			ovr = (ovn < __l ? ovn : __l);
 		int c = overflow.removeFirst(__b, __o, __l);
 		
-		// End of stream reached
-		if (this._eof)
+		// More bytes can be read from the input compressed data because the
+		// overflow buffer has been emptied
+		boolean eof = this._eof;
+		if (!eof && c < __l)
 		{
-			// Never return EOF if no bytes were read and bytes were available
-			// even when EOF has been triggered.
-			if (c > 0 || overflow.available() > 0)
-				return c;
-			
-			// Otherwise EOF
-			return -1;
-		}
+			// Store write information
+			this._targ = __b;
 		
-		// Only read overflow bytes? Do not bother decompressing more data
-		// because it will just be added to the queue
-		if (c >= __l)
-			return c;
-		
-		// Store write information
-		this._targ = __b;
-		
-		// Try to fit as many bytes as possible into the output
-		while (c < __l)
-		{
-			// Decompress
-			int base;
-			this._targoff = (base = __o + c);
-			this._targend = base + (__l - c);
-			int rv = __decompress();
-			
-			// Ended?
-			if (rv < 0)
+			// Try to fit as many bytes as possible into the output
+			while (c < __l)
 			{
-				this._eof = true;
-				break;
-			}
+				// Decompress
+				int base;
+				this._targoff = (base = __o + c);
+				this._targend = base + (__l - c);
+				int rv = __decompress();
 			
-			// Otherwise add those bytes
-			c += rv;
+				// Ended?
+				if (rv < 0)
+				{
+					this._eof = true;
+					break;
+				}
+			
+				// Otherwise add those bytes
+				c += rv;
+			}
 		}
 		
-		// Return the read count
-		return c;
+		// Calculate CRC for this output data
+		CRC32Calculator crc = this.crc;
+		if (crc != null)
+			crc.offer(__b, __o, c);
+		
+		// Return the read count or end of file if the end of the stream has
+		// been reached
+		// But never leave bytes waiting in the overflow buffer ever
+		return (c == 0 && eof && overflow.isEmpty() ? -1 : c);
 	}
 	
 	/**
