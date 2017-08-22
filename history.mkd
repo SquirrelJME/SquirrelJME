@@ -10,6 +10,20 @@ These are old defunct projects which I have previously worked on.
 
 ## HandOS (2011/01/15 - 2011/01/22)
 
+This was an attempt at creating an open source implementation of Palm OS.
+Palm OS was not actively used much often and additionally existing emulators
+for Palm OS are sub-par in that they were either old or were horribly out
+of date. The goal of the project was to run m68k and ARM Palm OS applications
+on the host system.
+
+The project was fully structured and had all the default applications in place
+as placeholders for when they were ready.
+
+However, the project could not actually be compiled, it was mostly pretty much
+just placeholders, some reference documentation, and notes. It did include
+some tests which showed that threading was indeed possible on Palm OS like
+modern systems.
+
 ## MPA Orange-Sapphire (2011/12/12 - 2011/12/13)
 
 ## MPAYAOS (2012/02/20 - 2012/02/29)
