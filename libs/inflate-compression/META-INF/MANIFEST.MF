@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This implements support for inflating 
  deflate compressed streams.
 X-SquirrelJME-Depends: data-deque-buffer sliding-window 
- huffman-tree crc32
+ huffman-tree checksum
 Microedition-Configuration: CLDC-1.8-Compact
 
