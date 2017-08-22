@@ -107,6 +107,12 @@ public class InflaterInputStream
 	private final int[] _nextcode =
 		new int[_MAX_BITS + 1];
 	
+	/** The number of compressed bytes. */
+	private volatile long _compressedsize;
+	
+	/** The number of uncompressed bytes. */
+	private volatile long _uncompressedsize;
+	
 	/** The code length tree. */
 	private volatile Reference<HuffmanTreeInt> _codelentree;
 	
@@ -226,6 +232,17 @@ public class InflaterInputStream
 	}
 	
 	/**
+	 * Returns the number of compressed bytes which were read.
+	 *
+	 * @return The number of compressed bytes which were read.
+	 * @since 2017/08/22
+	 */
+	public long compressedBytes()
+	{
+		return this._compressedsize;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/24
 	 */
@@ -310,10 +327,25 @@ public class InflaterInputStream
 		if (crc != null)
 			crc.offer(__b, __o, c);
 		
+		// Count uncompressed size
+		if (c > 0)
+			this._uncompressedsize += c;
+		
 		// Return the read count or end of file if the end of the stream has
 		// been reached
 		// But never leave bytes waiting in the overflow buffer ever
 		return (c == 0 && eof && overflow.isEmpty() ? -1 : c);
+	}
+	
+	/**
+	 * Returns the number of uncompressed bytes which have been read.
+	 *
+	 * @return The number of read uncompressed bytes.
+	 * @since 2017/08/22
+	 */
+	public long uncompressedSize()
+	{
+		return this._uncompressedsize;
 	}
 	
 	/**
@@ -834,6 +866,9 @@ public class InflaterInputStream
 				miniwindow |= ((readin[i] & 0xFF) << minisize);
 				minisize += 8;
 			}
+			
+			// Count the number of compressed bytes
+			this._compressedsize += rc;
 		}
 		
 		// Mask in the value, which is always at the lower bits
