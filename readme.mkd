@@ -22,6 +22,7 @@ and requires only a Java compiler and virtual machine for it to be built.
  * [Contributing](contributing.mkd)
  * [Design Document](design.mkd)
  * [Developer Notes](assets/developer-notes/index.mkd)
+ * [History](history.mkd)
  * [License](license.mkd)
    * _Source_: GNU General Public License, Version 3 or later
    * _Assets_: Creative Commons CC-BY-SA 4.0

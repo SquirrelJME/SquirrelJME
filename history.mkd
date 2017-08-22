@@ -1,0 +1,55 @@
+# History
+
+SquirrelJME is an idea and execution that extends from previous ideas and
+projects. The base idea extends from my desire to write an operating system to
+run on systems, since such things have fascinated me.
+
+# Old Projects
+
+These are old defunct projects which I have previously worked on.
+
+## HandOS (2011/01/15 - 2011/01/22)
+
+## MPA Orange-Sapphire (2011/12/12 - 2011/12/13)
+
+## MPAYAOS (2012/02/20 - 2012/02/29)
+
+Standing for __Yet Another Operating System__.
+
+## HandNIX (2012/05/28 - 2012/05/29)
+
+Standing for __Hand UNIX Environment__.
+
+## HandOS 6.3 (2012/05/31 - 2012/08/17)
+
+## MPAPCOS (2012/09/30 - 2013/01/16)
+
+Standing for __Posix Compatible Operating System__.
+
+## HandOS 5.6 (2013/01/23 - 2013/02/05)
+
+## MPAMSEK (2013/03/31 - 2013/04/14)
+
+Standing for __Multi-System Emulation Kernel__.
+
+## MPAOSKP (2013/04/14 - 2013/05/15)
+
+This project is based off MPAMSEK.
+
+## POSIX Environment for Palm OS (2013/07/25 - 2013/07/27)
+
+## POSIX Environment for Palm OS (2014/10/12 - 2014/10/12)
+
+This project never went past a few files and headers. The purpose of this
+project was the same as the previous.
+
+## k5 (2013/12/25 - 2014/04/25)
+
+## k8/Squirrnix (2014/04/26 - 2016/02/25)
+
+This is the direct predecessor to SquirrelJME.
+
+This project had a massive number of commits: 9041.
+
+# The Beginning of SquirrelJME
+
