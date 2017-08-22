@@ -189,7 +189,8 @@ public class InflaterInputStream
 	 * @param __in The stream to inflate.
 	 * @param __sls Custom size to the sliding window.
 	 * @param __checksum If not {@code null} then when bytes are read from this
-	 * stream they will have their checksum calculated.
+	 * stream they will have their checksum calculated. The checksum is
+	 * calculated on the uncompressed bytes.
 	 * @throws NullPointerException On null arguments, except for
 	 * {@code __checksum}.
 	 * @since 2017/08/22
