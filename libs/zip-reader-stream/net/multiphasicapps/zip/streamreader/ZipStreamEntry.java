@@ -372,12 +372,6 @@ public final class ZipStreamEntry
 				ddcomp = ZipStreamReader.__readInt(peeking, offset + 4),
 				dduncomp = ZipStreamReader.__readInt(peeking, offset + 8);
 			
-			if (ddcrc == crc.checksum())
-				System.err.printf(
-					"DEBUG -- S:[%08x, %d, %d] ?= D:[%08x, %d, %d]%n",
-					crc.checksum(), cin.compressedBytes(),
-					cin.uncompressedBytes(), ddcrc, ddcomp, dduncomp);
-			
 			// EOF occurs?
 			if (ddcomp == cin.compressedBytes() &&
 				dduncomp == cin.uncompressedBytes() &&
