@@ -1,0 +1,29 @@
+# 2017/08/23
+
+## 01:21
+
+Ok so, decompressing unknown sized data looking for the descriptor I get this:
+
+	DEBUG -- S:[c74e8309, 1890, 1890] ?= D:[b2a9c247, 1906, 1906]
+
+Which is a bit close, although off by 16.
+
+## 01:23
+
+Also `ByteDeque` has a bug or the dynamic history input stream has a bug:
+
+	ByteDeque.get(ByteDeque.java:482)
+	DynamicHistoryInputStream.peek(DynamicHistoryInputStream.java:245)
+
+## 01:25
+
+Actually I was using it wrong.
+
+## 01:26
+
+And the code I wrote works! First try it seems too.
+
+## 01:43
+
+I copied and pasted the expected values but those are not valid for udnefined
+entries.
