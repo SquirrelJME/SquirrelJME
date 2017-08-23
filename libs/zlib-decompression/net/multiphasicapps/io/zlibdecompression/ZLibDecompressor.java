@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.adler32.Adler32Calculator;
 import net.multiphasicapps.io.checksum.ChecksumInputStream;
-import net.multiphasicapps.io.compressionstream.CompressionInputStream;
+import net.multiphasicapps.io.compressionstream.DecompressionInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 
 /**
@@ -29,7 +29,7 @@ import net.multiphasicapps.io.inflate.InflaterInputStream;
  * @since 2017/03/04
  */
 public class ZLibDecompressor
-	extends CompressionInputStream
+	extends DecompressionInputStream
 {
 	/** Compression method mask. */
 	private static final int _CMF_COMPRESSION_METHOD_MASK =
@@ -63,7 +63,7 @@ public class ZLibDecompressor
 		new Adler32Calculator();
 	
 	/** Current stream to read data from, will change for blocks. */
-	private volatile CompressionInputStream _current;
+	private volatile DecompressionInputStream _current;
 	
 	/** Has EOF been read? */
 	private volatile boolean _eof;
@@ -138,10 +138,20 @@ public class ZLibDecompressor
 		// otherwise it would be really unknown how many bytes were truly
 		// read from the compressed stream
 		long basecomp = this._basecomp;
-		CompressionInputStream current = this._current;
+		DecompressionInputStream current = this._current;
 		if (current != null)
 			return basecomp + current.compressedBytes();
 		return basecomp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/22
+	 */
+	@Override
+	public boolean detectsEOF()
+	{
+		return true;
 	}
 	
 	/**
@@ -194,7 +204,7 @@ public class ZLibDecompressor
 		int rv = 0;
 		boolean eof = false;
 		DataInputStream in = this.in;
-		CompressionInputStream current = this._current;
+		DecompressionInputStream current = this._current;
 		Adler32Calculator checksum = this._checksum;
 		for (int at = __o, rest = __l; rv < __l;)
 		{

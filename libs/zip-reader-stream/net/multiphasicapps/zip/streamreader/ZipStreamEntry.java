@@ -14,7 +14,7 @@ import java.io.Flushable;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32Calculator;
-import net.multiphasicapps.io.compressionstream.CompressionInputStream;
+import net.multiphasicapps.io.compressionstream.DecompressionInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
@@ -59,7 +59,7 @@ public final class ZipStreamEntry
 	protected final DynamicHistoryInputStream dhin;
 	
 	/** The compressed stream which also has counting. */
-	protected final CompressionInputStream cin;
+	protected final DecompressionInputStream cin;
 	
 	/** Is the content length undefined? */
 	protected final boolean undefined;
@@ -221,7 +221,7 @@ public final class ZipStreamEntry
 			return -1;
 		
 		// Needed to check things
-		CompressionInputStream cin = this.cin;
+		DecompressionInputStream cin = this.cin;
 		long cinusz = cin.uncompressedBytes(),
 			cincsz = cin.compressedBytes();
 		
