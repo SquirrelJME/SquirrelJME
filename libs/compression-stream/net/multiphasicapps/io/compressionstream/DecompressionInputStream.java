@@ -19,7 +19,7 @@ import java.io.IOException;
  *
  * @since 2017/08/22
  */
-public abstract class CompressionInputStream
+public abstract class DecompressionInputStream
 	extends InputStream
 	implements CompressionStream
 {

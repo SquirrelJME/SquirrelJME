@@ -12,7 +12,7 @@ package net.multiphasicapps.zip;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.compressionstream.CompressionInputStream;
+import net.multiphasicapps.io.compressionstream.DecompressionInputStream;
 
 /**
  * This is an input stream which offers no compression but keeps count of
@@ -20,8 +20,8 @@ import net.multiphasicapps.io.compressionstream.CompressionInputStream;
  *
  * @since 2017/08/22
  */
-class __NoCompressionInputStream__
-	extends CompressionInputStream
+class __NoDecompressionInputStream__
+	extends DecompressionInputStream
 {
 	/** The stream to wrap. */
 	protected final InputStream wrap;
@@ -36,7 +36,7 @@ class __NoCompressionInputStream__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/22
 	 */
-	__NoCompressionInputStream__(InputStream __w)
+	__NoDecompressionInputStream__(InputStream __w)
 		throws NullPointerException
 	{
 		// Check
@@ -66,6 +66,16 @@ class __NoCompressionInputStream__
 	public long compressedBytes()
 	{
 		return this._count;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/22
+	 */
+	@Override
+	public boolean detectsEOF()
+	{
+		return false;
 	}
 	
 	/**
