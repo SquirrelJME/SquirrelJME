@@ -100,14 +100,17 @@ to print to the system's framebuffer console but not much else.
 
 This project is based off MPAMSEK.
 
-I am not too sure what the acronym stood for
+I am not too sure what the acronym stood for, very likely it stood for
+__Operating System Kernel Project__.
 
 I wrote a memory allocator but it never really got past the boot loader and
 early kernel initialization stages.
 
 PowerPC and x86 worked on Open Firmware.
 
-I failed to get SPARC working.
+I failed to get SPARC working, I could just not get the bootloader to run
+properly and it usually ended up just crashing or not working at all. It may
+have been related to register windows.
 
 I thought about writing a C compiler but I gave up quickly and abandoned that
 idea because that would be too much work with too little of a benefit.
