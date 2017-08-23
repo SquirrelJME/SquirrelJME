@@ -14,6 +14,7 @@ import java.io.Flushable;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32Calculator;
+import net.multiphasicapps.io.compressionstream.CompressionInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
@@ -54,8 +55,11 @@ public final class ZipStreamEntry
 	/** The compression method. */
 	protected final ZipCompressionType method;
 	
-	/** The input stream to read from. */
+	/** The dynamic input stream to read from. */
 	protected final DynamicHistoryInputStream dhin;
+	
+	/** The compressed stream which also has counting. */
+	protected final CompressionInputStream cin;
 	
 	/** Is the content length undefined? */
 	protected final boolean undefined;
@@ -69,15 +73,15 @@ public final class ZipStreamEntry
 	/** The expected file compressed size. */
 	protected final int expectedcompsize;
 	
-	/** No compression used? */
-	protected final boolean nocompression;
-	
 	/** Single byte read. */
 	private final byte[] _solo =
 		new byte[1];
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
+	
+	/** The number of uncompressed bytes read. */
+	private volatile long _readuncomp;
 	
 	/**
 	 * Initializes the entry.
@@ -109,11 +113,11 @@ public final class ZipStreamEntry
 		this.filename = __fn;
 		this.method = __method;
 		this.dhin = __ins;
+		this.cin = __method.inputStream(__ins, this.crc);
 		this.undefined = __undef;
 		this.expectedcrc = __crc;
 		this.expecteduncompsize = __uncomp;
 		this.expectedcompsize = __comp;
-		this.nocompression = (__method == ZipCompressionType.NO_COMPRESSION);
 	}
 	
 	/**
@@ -221,7 +225,35 @@ public final class ZipStreamEntry
 		if (__o < 0 || __l < 0 || (__o + __l) > n)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		CRC32Calculator crc = this.crc;
+		CompressionInputStream cin = this.cin;
+		long cinusz = cin.uncompressedBytes(),
+			cincsz = cin.compressedBytes();
+		
+		// Reading an undefined number of bytes?
+		boolean undefined = this.undefined;
+		if (undefined)
+			throw new todo.TODO();
+		
+		// Read of a defined number of bytes
+		else
+		{
+			// Never read more than the maximum in unsigned bytes
+			int rest = (int)(this.expecteduncompsize - cinusz);
+			if (__l > rest)
+				__l = rest;
+			
+			// Read data
+			int rc = this.cin.read(__b, __o, __l);
+			
+			// EOF reached?
+			if (rc < 0)
+				throw new todo.TODO();
+			
+			// Mark as read
+			this._readuncomp += rc;
+			return rc;
+		}
 	}
 }
 
