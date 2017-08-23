@@ -229,6 +229,9 @@ public final class ZipStreamEntry
 		boolean undefined = this.undefined;
 		if (undefined)
 		{
+			// 
+			DynamicHistoryInputStream dhin = this.dhin;
+			
 			throw new todo.TODO();
 		}
 		
