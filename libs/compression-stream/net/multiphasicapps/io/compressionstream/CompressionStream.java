@@ -35,6 +35,6 @@ public interface CompressionStream
 	 * @return The number of read uncompressed bytes.
 	 * @since 2017/08/22
 	 */
-	public abstract long uncompressedSize();
+	public abstract long uncompressedBytes();
 }
 

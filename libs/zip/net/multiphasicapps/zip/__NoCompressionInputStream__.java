@@ -21,8 +21,7 @@ import net.multiphasicapps.io.compressionstream.CompressionInputStream;
  * @since 2017/08/22
  */
 class __NoCompressionInputStream__
-	extends InputStream
-	implements CompressionInputStream
+	extends CompressionInputStream
 {
 	/** The stream to wrap. */
 	protected final InputStream wrap;
@@ -119,7 +118,7 @@ class __NoCompressionInputStream__
 	 * @since 2017/08/22
 	 */
 	@Override
-	public long uncompressedSize()
+	public long uncompressedBytes()
 	{
 		return this._count;
 	}
