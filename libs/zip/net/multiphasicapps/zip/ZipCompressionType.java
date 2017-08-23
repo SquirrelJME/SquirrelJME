@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.checksum.Checksum;
 import net.multiphasicapps.io.checksum.ChecksumInputStream;
+import net.multiphasicapps.io.compressionstream.CompressionInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 
 /**
@@ -80,7 +81,7 @@ public enum ZipCompressionType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
-	public final InputStream inputStream(InputStream __is)
+	public final CompressionInputStream inputStream(InputStream __is)
 		throws IOException, NullPointerException
 	{
 		return inputStream(__is, null);
@@ -99,7 +100,8 @@ public enum ZipCompressionType
 	 * @throws NullPointerException If no input stream was specified.
 	 * @since 2016/08/22
 	 */
-	public final InputStream inputStream(InputStream __is, Checksum __cs)
+	public final CompressionInputStream inputStream(InputStream __is,
+		Checksum __cs)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -111,9 +113,8 @@ public enum ZipCompressionType
 		{
 				// Just use the same stream
 			case NO_COMPRESSION:
-				if (__cs != null)
-					return new ChecksumInputStream(__cs, __is);
-				return __is;
+				return new __NoCompressionInputStream__((__cs != null ?
+					new ChecksumInputStream(__cs, __is) : __is));
 			
 				// Inflate
 			case DEFLATE:

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.adler32.Adler32Calculator;
 import net.multiphasicapps.io.checksum.ChecksumInputStream;
+import net.multiphasicapps.io.compressionstream.CompressionInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 
 /**
@@ -29,6 +30,7 @@ import net.multiphasicapps.io.inflate.InflaterInputStream;
  */
 public class ZLibDecompressor
 	extends InputStream
+	implements CompressionInputStream
 {
 	/** Compression method mask. */
 	private static final int _CMF_COMPRESSION_METHOD_MASK =
