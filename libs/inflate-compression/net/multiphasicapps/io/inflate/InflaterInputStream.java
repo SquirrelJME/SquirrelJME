@@ -168,6 +168,21 @@ public class InflaterInputStream
 	}
 	
 	/**
+	 * Initializes the deflate compression stream inflater, an optional
+	 * checksum calculator may be specified also.
+	 *
+	 * @param __in The stream to inflate.
+	 * @param __cs
+	 * @throws NullPointerException On null arguments, except for {@code __cs}.
+	 * @since 2017/02/24
+	 */
+	public InflaterInputStream(InputStream __in, Checksum __cs)
+		throws NullPointerException
+	{
+		this(__in, _DEFAULT_SLIDING_WINDOW_SIZE, __cs);
+	}
+	
+	/**
 	 * Initializes the deflate compression stream inflater with a custom
 	 * size specified for the sliding window.
 	 *
@@ -183,7 +198,7 @@ public class InflaterInputStream
 	
 	/**
 	 * Initializes the deflate compression stream inflater with a custom
-	 * size specified for the sliding window, an option checksum calculator
+	 * size specified for the sliding window, an optional checksum calculator
 	 * may be specified also.
 	 *
 	 * @param __in The stream to inflate.
