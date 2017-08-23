@@ -64,6 +64,9 @@ public final class ZipStreamEntry
 	/** Is the content length undefined? */
 	protected final boolean undefined;
 	
+	/** Is EOF detected? */
+	protected final boolean detectseof;
+	
 	/** The expected CRC. */
 	protected final int expectedcrc;
 	
@@ -116,8 +119,10 @@ public final class ZipStreamEntry
 		this.filename = __fn;
 		this.method = __method;
 		this.dhin = __ins;
-		this.cin = __method.inputStream(__ins, this.crc);
+		DecompressionInputStream dis;
+		this.cin = (dis = __method.inputStream(__ins, this.crc));
 		this.undefined = __undef;
+		this.detectseof = dis.detectsEOF();
 		this.expectedcrc = __crc;
 		this.expecteduncompsize = __uncomp;
 		this.expectedcompsize = __comp;
