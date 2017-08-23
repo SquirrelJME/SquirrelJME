@@ -83,6 +83,9 @@ public final class ZipStreamEntry
 	/** The number of uncompressed bytes read. */
 	private volatile long _readuncomp;
 	
+	/** Has EOF been reached? */
+	private volatile boolean _eof;
+	
 	/**
 	 * Initializes the entry.
 	 *
@@ -225,7 +228,11 @@ public final class ZipStreamEntry
 		if (__o < 0 || __l < 0 || (__o + __l) > n)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		CRC32Calculator crc = this.crc;
+		// If EOF reached, do nothing
+		if (this._eof)
+			return -1;
+		
+		// Needed to check things
 		CompressionInputStream cin = this.cin;
 		long cinusz = cin.uncompressedBytes(),
 			cincsz = cin.compressedBytes();
@@ -248,7 +255,31 @@ public final class ZipStreamEntry
 			
 			// EOF reached?
 			if (rc < 0)
-				throw new todo.TODO();
+			{
+				// Mark EOF
+				this._eof = true;
+				
+				// {@squirreljme.error BG04 Reached end of file in the entry
+				// however the size it consumes and/or its CRC does not match
+				// the expected values. (The expected CRC; The actual CRC;
+				// The expected uncompressed size; The actual uncompressed
+				// size; The expected compressed size; The actual compressed
+				// size)}
+				CRC32Calculator crc = this.crc;
+				int expectedcrc = this.expectedcrc,
+					expecteduncompsize = this.expecteduncompsize,
+					expectedcompsize = this.expectedcompsize;
+				if (expecteduncompsize != cinusz ||
+					expectedcompsize != cincsz ||
+					expectedcrc != crc.checksum())
+					throw new ZipException(String.format(
+						"BG04 %08x %08x %d %d %d %d", expectedcrc,
+						crc.checksum(), expecteduncompsize, cinusz,
+						expectedcompsize, cincsz));
+				
+				// Nothing read
+				return -1;
+			}
 			
 			// Mark as read
 			this._readuncomp += rc;
