@@ -55,7 +55,7 @@ public final class ZipStreamEntry
 	protected final ZipCompressionType method;
 	
 	/** The input stream to read from. */
-	protected final DynamicHistoryInputStream in;
+	protected final DynamicHistoryInputStream dhin;
 	
 	/** Is the content length undefined? */
 	protected final boolean undefined;
@@ -108,7 +108,7 @@ public final class ZipStreamEntry
 		this.zipreader = __zsr;
 		this.filename = __fn;
 		this.method = __method;
-		this.in = __ins;
+		this.dhin = __ins;
 		this.undefined = __undef;
 		this.expectedcrc = __crc;
 		this.expecteduncompsize = __uncomp;
