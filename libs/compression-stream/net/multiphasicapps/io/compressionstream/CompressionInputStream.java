@@ -23,5 +23,20 @@ public abstract class CompressionInputStream
 	extends InputStream
 	implements CompressionStream
 {
+	/**
+	 * If the decompression algorithm has a means or flag to indicate that
+	 * there is no more compressed data and that the end of stream has been
+	 * reached then this should return {@code true}.
+	 *
+	 * If it is unknown whether it can be detected or not, then {@code false}
+	 * should be returned.
+	 *
+	 * @return {@code true} if this algorithm detects the end of file before
+	 * the end of the actual input source, otherwise if only the end of the
+	 * file causes EOF to be returned then this returns {@code false}. If it
+	 * is not known then {@code false} must be returned.
+	 * @since 2017/08/22
+	 */
+	public abstract boolean detectsEOF();
 }
 
