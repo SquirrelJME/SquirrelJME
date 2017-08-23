@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.checksum.Checksum;
+import net.multiphasicapps.io.compressionstream.CompressionInputStream;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 import net.multiphasicapps.util.huffmantree.BitSource;
@@ -28,6 +29,7 @@ import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
  */
 public class InflaterInputStream
 	extends InputStream
+	implements CompressionInputStream
 {
 	/** The size of the sliding window. */
 	private static final int _DEFAULT_SLIDING_WINDOW_SIZE =
@@ -249,11 +251,10 @@ public class InflaterInputStream
 	}
 	
 	/**
-	 * Returns the number of compressed bytes which were read.
-	 *
-	 * @return The number of compressed bytes which were read.
+	 * {@inheritDoc}
 	 * @since 2017/08/22
 	 */
+	@Override
 	public long compressedBytes()
 	{
 		return this._compressedsize;
@@ -355,11 +356,10 @@ public class InflaterInputStream
 	}
 	
 	/**
-	 * Returns the number of uncompressed bytes which have been read.
-	 *
-	 * @return The number of read uncompressed bytes.
+	 * {@inheritDoc}
 	 * @since 2017/08/22
 	 */
+	@Override
 	public long uncompressedSize()
 	{
 		return this._uncompressedsize;
