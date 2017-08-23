@@ -11,12 +11,12 @@
 package net.multiphasicapps.squirreljme.jit.arch;
 
 /**
- * This class is used by the JIT to manage registers.
+ * This class is used to manage the a given a given for a target system and
+ * allows the calling convention and such to be used.
  *
- * @see ManagedRegister
- * @since 2017/08/16
+ * @since 2017/08/23
  */
-public abstract class RegisterManager
+public abstract class ABIManager
 {
 }
 
