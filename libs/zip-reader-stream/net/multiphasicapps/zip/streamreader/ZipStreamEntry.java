@@ -326,7 +326,57 @@ public final class ZipStreamEntry
 	private int __detectedRead(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		throw new todo.TODO();
+		// This is as simple as reading the input bytes
+		DecompressionInputStream cin = this.cin;
+		int rc = cin.read(__b, __o, __l);
+		
+		// If EOF was not reached, then just return with the read bytes
+		if (rc >= 0)
+			return rc;
+		
+		// EOF was reached from the compressed stream, so the data descriptor
+		// has to immedietly follow
+		DynamicHistoryInputStream dhin = this.dhin;
+		byte[] peeking = this._peeking;
+		
+		// Mark EOF so future reads fail
+		this._eof = true;
+		
+		// {@squirreljme.error BG0b Could not find end of entry because the
+		// entry exceeds the bounds of the ZIP file. (The number of read
+		// bytes)}
+		int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
+		if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
+			throw new ZipException(String.format("BG0b %d", probed));
+		
+		// The specification says the descriptor is optional
+		int offset = (_DESCRIPTOR_MAGIC_NUMBER ==
+			ZipStreamReader.__readInt(peeking, 0) ? 4 : 0);
+
+		// Read descriptor fields
+		int ddcrc = ZipStreamReader.__readInt(peeking, offset),
+			ddcomp = ZipStreamReader.__readInt(peeking, offset + 4),
+			dduncomp = ZipStreamReader.__readInt(peeking, offset + 8);
+
+		// {@squirreljme.error BG0c Reached end of file in the entry
+		// however the size it consumes and/or its CRC does not match
+		// the expected values. (The expected CRC; The actual CRC;
+		// The expected uncompressed size; The actual uncompressed
+		// size; The expected compressed size; The actual compressed
+		// size)}
+		CRC32Calculator crc = this.crc;
+		long cinusz = cin.uncompressedBytes(),
+			cincsz = cin.compressedBytes();
+		if (dduncomp != cinusz ||
+			ddcomp != cincsz ||
+			ddcrc != crc.checksum())
+			throw new ZipException(String.format(
+				"BG0c %08x %08x %d %d %d %d", ddcrc,
+				crc.checksum(), dduncomp, cinusz,
+				ddcomp, cincsz));
+		
+		// EOF is OK now
+		return -1;
 	}
 	
 	/**
