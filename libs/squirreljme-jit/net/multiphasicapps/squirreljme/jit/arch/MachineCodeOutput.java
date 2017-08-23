@@ -78,6 +78,14 @@ public interface MachineCodeOutput
 	public abstract JITConfig config();
 	
 	/**
+	 * Returns a manager which can be used to provide an ABI.
+	 *
+	 * @return The ABI manager.
+	 * @since 2017/08/23
+	 */
+	public abstract ABIManager createABIManager();
+	
+	/**
 	 * This creates a future position marker which may then be used to jump
 	 * to another position in writing.
 	 *
@@ -88,13 +96,12 @@ public interface MachineCodeOutput
 	public abstract FuturePositionMarker createFuturePositionMarker();
 	
 	/**
-	 * This returns a register manager which is used to manage registers for
-	 * the target system.
+	 * This returns a provider for native system registers.
 	 *
-	 * @return A register manager which is used to manage registers.
+	 * @return A provider for native system registers.
 	 * @since 2017/08/19
 	 */
-	public abstract RegisterManager createRegisterManager();
+	public abstract RegisterProvider createRegisterProvider();
 	
 	/**
 	 * This marks a future position which has previously been created. This can

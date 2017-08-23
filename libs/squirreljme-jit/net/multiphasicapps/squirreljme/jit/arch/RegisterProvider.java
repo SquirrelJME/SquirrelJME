@@ -11,13 +11,13 @@
 package net.multiphasicapps.squirreljme.jit.arch;
 
 /**
- * This is a single managed register which is managed by
- * {@link RegisterManager}.
+ * This class is used to provide registers which are available on the native
+ * target system.
  *
- * @see RegisterManager
- * @since 2017/08/19
+ * @see ManagedRegister
+ * @since 2017/08/16
  */
-public class ManagedRegister
+public abstract class RegisterProvider
 {
 }
 
