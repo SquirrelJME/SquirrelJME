@@ -4,7 +4,7 @@ X-SquirrelJME-Error: BT
 X-SquirrelJME-Name: ZLib Decompression
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: inflate-compression adler32
+X-SquirrelJME-Depends: inflate-compression adler32 compression-stream
 X-SquirrelJME-Description: This implements support for decompressing 
  ZLib compressed streams.
 Microedition-Configuration: CLDC-1.8-Compact
