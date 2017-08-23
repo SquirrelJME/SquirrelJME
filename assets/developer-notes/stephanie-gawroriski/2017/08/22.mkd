@@ -1,0 +1,55 @@
+# 2017/08/22
+
+## 02:10
+
+I can actually redesign the ZIP stream based reader to be a bit faster and use
+maybe less wrapper classes (and potentially less overhead) if I add the
+ability for the inflate input stream to return a CRC value after some bytes
+have been read to the output.
+
+## 02:19
+
+With `InflaterInputStream` now having access to the CRC, it can now more be
+used with the stream based ZIP reader code to find the end of entries. I can
+also see the complete removal of one of the streams and just having an inner
+stream which is wrapped by the decompressor (which is wrapped by the entry
+stream).
+
+## 02:53
+
+So I could potentially refactor the stream based ZIP reader now that I have a
+means to test it along with having the size and CRC information from the
+inflater.
+
+## 02:56
+
+In fact I can have just a single stream and one object in the outermost class
+which can handle the stream related details and could potentially be a bit
+faster. At least when it comes to data which is compressed, the end of the
+stream will be following when the inflate stream has ended. This means the
+descriptor can be searched for and checked for validity. On data which is not
+compressed at all, there will still need to be a manual search. However the
+benefit here is that since most ZIPs would be compressed (eventually mine
+will be) is that there is no wasted cycles checking for the end descriptor
+since it is implicitly at the end of the decompressed data.
+
+## 03:01
+
+This also means that the inflater that is part of PNG (which uses ZLib) or
+really the ZLib part of it can just directly use the inflater stream rather
+than wrapping it to calculate a checksum.
+
+## 11:07
+
+Before I refactor the ZIP stream reader a bit I am going to document some of
+the history of SquirrelJME.
+
+## 21:33
+
+I have much more free time off from work, but I am not really making much
+progress anymore.
+
+## 23:21
+
+Ok, so now I have much cleaner handling of entries with a known size which is
+a good thing.
