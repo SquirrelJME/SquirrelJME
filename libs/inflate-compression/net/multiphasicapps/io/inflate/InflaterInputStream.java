@@ -28,8 +28,7 @@ import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
  * @since 2017/02/24
  */
 public class InflaterInputStream
-	extends InputStream
-	implements CompressionInputStream
+	extends CompressionInputStream
 {
 	/** The size of the sliding window. */
 	private static final int _DEFAULT_SLIDING_WINDOW_SIZE =
@@ -360,7 +359,7 @@ public class InflaterInputStream
 	 * @since 2017/08/22
 	 */
 	@Override
-	public long uncompressedSize()
+	public long uncompressedBytes()
 	{
 		return this._uncompressedsize;
 	}

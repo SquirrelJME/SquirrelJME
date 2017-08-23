@@ -29,8 +29,7 @@ import net.multiphasicapps.io.inflate.InflaterInputStream;
  * @since 2017/03/04
  */
 public class ZLibDecompressor
-	extends InputStream
-	implements CompressionInputStream
+	extends CompressionInputStream
 {
 	/** Compression method mask. */
 	private static final int _CMF_COMPRESSION_METHOD_MASK =
@@ -64,10 +63,16 @@ public class ZLibDecompressor
 		new Adler32Calculator();
 	
 	/** Current stream to read data from, will change for blocks. */
-	private volatile InputStream _current;
+	private volatile CompressionInputStream _current;
 	
 	/** Has EOF been read? */
 	private volatile boolean _eof;
+	
+	/** The number of uncompressed bytes. */
+	private volatile long _uncomp;
+	
+	/** The base number of compressed bytes. */
+	private volatile long _basecomp;
 	
 	/**
 	 * Initializes the ZLib decompressor.
@@ -123,6 +128,24 @@ public class ZLibDecompressor
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/08/22
+	 */
+	@Override
+	public long compressedBytes()
+	{
+		// It is really hard to tell how many compressed bytes were read so
+		// if there is a current stream then use it from the base because
+		// otherwise it would be really unknown how many bytes were truly
+		// read from the compressed stream
+		long basecomp = this._basecomp;
+		CompressionInputStream current = this._current;
+		if (current != null)
+			return basecomp + current.compressedBytes();
+		return basecomp;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/04
 	 */
 	@Override
@@ -171,7 +194,7 @@ public class ZLibDecompressor
 		int rv = 0;
 		boolean eof = false;
 		DataInputStream in = this.in;
-		InputStream current = this._current;
+		CompressionInputStream current = this._current;
 		Adler32Calculator checksum = this._checksum;
 		for (int at = __o, rest = __l; rv < __l;)
 		{
@@ -183,6 +206,12 @@ public class ZLibDecompressor
 				// If EOF is reached then the checksum must be checked
 				if (rc < 0)
 				{
+					// The number of compressed bytes always acts as a base
+					// since it is unknown how many bytes were read by the
+					// decompression stream. So when it has ended it a new base
+					// must be set for every byte which was read.
+					this._basecomp += current.compressedBytes();
+					
 					// {@squirreljme.error BT05 The checksum for the ZLib
 					// stream is not valid. (The desired checksum; The actual
 					// checksum)}
@@ -191,6 +220,9 @@ public class ZLibDecompressor
 					if (want != was)
 						throw new IOException(String.format("BT05 %08x %08x",
 							want, was));
+					
+					// This is the checksum
+					this._basecomp += 4;
 					
 					// Clear current because no more data can be read from
 					// it
@@ -204,6 +236,9 @@ public class ZLibDecompressor
 					at += rc;
 					rv += rc;
 					rest -= rc;
+					
+					// Count those bytes as uncompressed
+					this._uncomp += rc;
 				}
 			}
 			
@@ -221,6 +256,9 @@ public class ZLibDecompressor
 					this._eof = true;
 					break;
 				}
+				
+				// Count single compressed byte
+				this._basecomp++;
 				
 				// {@squirreljme.error BT02 Only deflate compressed ZLib
 				// streams are supported. (The compression method used)}
@@ -243,6 +281,9 @@ public class ZLibDecompressor
 				
 				// Read more flags
 				int mf = in.readUnsignedByte();
+				
+				// Count single compressed byte
+				this._basecomp++;
 				
 				// {@squirreljme.error BT04 The checksum for the starting
 				// ZLib header is not a multiple of 31. (The checksum
@@ -267,6 +308,16 @@ public class ZLibDecompressor
 		
 		// Return EOF or the read count
 		return (eof && rv == 0 ? -1 : rv);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/22
+	 */
+	@Override
+	public long uncompressedBytes()
+	{
+		return this._uncomp;
 	}
 }
 
