@@ -15,6 +15,8 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.checksum.Checksum;
+import net.multiphasicapps.io.checksum.ChecksumInputStream;
 import net.multiphasicapps.io.inflate.InflaterInputStream;
 
 /**
@@ -81,6 +83,25 @@ public enum ZipCompressionType
 	public final InputStream inputStream(InputStream __is)
 		throws IOException, NullPointerException
 	{
+		return inputStream(__is, null);
+	}
+	
+	/**
+	 * Creates an input stream which wraps another for input which is used
+	 * to read the associated data.
+	 *
+	 * @param __is The input stream to read from.
+	 * @param __cs An optional target checksum where the CRC for uncompressed
+	 * data is stored.
+	 * @return An input stream for reading the data for this given
+	 * compression method.
+	 * @throws IOException If the stream could not be initialized.
+	 * @throws NullPointerException If no input stream was specified.
+	 * @since 2016/08/22
+	 */
+	public final InputStream inputStream(InputStream __is, Checksum __cs)
+		throws IOException, NullPointerException
+	{
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
@@ -90,11 +111,13 @@ public enum ZipCompressionType
 		{
 				// Just use the same stream
 			case NO_COMPRESSION:
+				if (__cs != null)
+					return new ChecksumInputStream(__cs, __is);
 				return __is;
 			
 				// Inflate
 			case DEFLATE:
-				return new InflaterInputStream(__is);
+				return new InflaterInputStream(__is, __cs);
 				
 				// {@squirreljme.error BF03 Decompressing using the given
 				// method is not supported. (The current compression method)}
