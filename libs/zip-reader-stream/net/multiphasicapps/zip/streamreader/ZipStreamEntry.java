@@ -231,13 +231,26 @@ public final class ZipStreamEntry
 			cincsz = cin.compressedBytes();
 		
 		// Reading an undefined number of bytes?
+		// If so then a data descriptor will need to be checked
 		boolean undefined = this.undefined;
 		if (undefined)
 		{
-			// 
-			DynamicHistoryInputStream dhin = this.dhin;
+			// If EOF is detectable then read in the contents until such
+			// things occur. Then read the data descriptor to verify that it
+			// actually is correct
+			if (this.detectseof)
+			{
+				throw new todo.TODO();
+			}
 			
-			throw new todo.TODO();
+			// Otherwise, the input stream has to be peeked constantly to
+			// detect the data descriptor.
+			else
+			{
+				DynamicHistoryInputStream dhin = this.dhin;
+				
+				throw new todo.TODO();
+			}
 		}
 		
 		// Read of a defined number of bytes
