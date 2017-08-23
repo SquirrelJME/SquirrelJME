@@ -35,6 +35,10 @@ public final class ZipStreamEntry
 	private static final int _MAX_DESCRIPTOR_SIZE =
 		16;
 	
+	/** The descriptor size if there is no header. */
+	private static final int _HEADERLESS_DESCRIPTOR_SIZE =
+		12;
+	
 	/** Data descriptor magic number. */
 	private static final int _DESCRIPTOR_MAGIC_NUMBER =
 		0x08074B50;
@@ -79,6 +83,9 @@ public final class ZipStreamEntry
 	/** Single byte read. */
 	private final byte[] _solo =
 		new byte[1];
+	
+	/** Used for peeking bytes to detect EOF. */
+	private final byte[] _peeking;
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -126,6 +133,7 @@ public final class ZipStreamEntry
 		this.expectedcrc = __crc;
 		this.expecteduncompsize = __uncomp;
 		this.expectedcompsize = __comp;
+		this._peeking = (__undef ? new byte[_MAX_DESCRIPTOR_SIZE] : null);
 	}
 	
 	/**
@@ -225,77 +233,165 @@ public final class ZipStreamEntry
 		if (this._eof)
 			return -1;
 		
-		// Needed to check things
-		DecompressionInputStream cin = this.cin;
-		long cinusz = cin.uncompressedBytes(),
-			cincsz = cin.compressedBytes();
-		
 		// Reading an undefined number of bytes?
 		// If so then a data descriptor will need to be checked
-		boolean undefined = this.undefined;
-		if (undefined)
+		if (this.undefined)
 		{
 			// If EOF is detectable then read in the contents until such
 			// things occur. Then read the data descriptor to verify that it
 			// actually is correct
 			if (this.detectseof)
-			{
-				throw new todo.TODO();
-			}
+				return __detectedRead(__b, __o, __l);
 			
 			// Otherwise, the input stream has to be peeked constantly to
 			// detect the data descriptor.
 			else
-			{
-				DynamicHistoryInputStream dhin = this.dhin;
-				
-				throw new todo.TODO();
-			}
+				return __probingRead(__b, __o, __l);
 		}
 		
 		// Read of a defined number of bytes
 		else
+			return __definedRead(__b, __o, __l);
+	}
+	
+	/**
+	 * This is a read of input which has a defined size.
+	 *
+	 * @param __b The array to read into.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to potentially read.
+	 * @return The number of bytes read.
+	 * @throws IOException On read errors.
+	 * @since 2017/08/23
+	 */
+	private int __definedRead(byte[] __b, int __o, int __l)
+		throws IOException
+	{
+		// Needed to check things
+		DecompressionInputStream cin = this.cin;
+		long cinusz = cin.uncompressedBytes(),
+			cincsz = cin.compressedBytes();
+		
+		// Never read more than the maximum in unsigned bytes
+		int rest = (int)(this.expecteduncompsize - cinusz);
+		if (__l > rest)
+			__l = rest;
+		
+		// Read data
+		int rc = this.cin.read(__b, __o, __l);
+		
+		// EOF reached?
+		if (rc < 0)
 		{
-			// Never read more than the maximum in unsigned bytes
-			int rest = (int)(this.expecteduncompsize - cinusz);
-			if (__l > rest)
-				__l = rest;
+			// Mark EOF
+			this._eof = true;
 			
-			// Read data
-			int rc = this.cin.read(__b, __o, __l);
+			// {@squirreljme.error BG04 Reached end of file in the entry
+			// however the size it consumes and/or its CRC does not match
+			// the expected values. (The expected CRC; The actual CRC;
+			// The expected uncompressed size; The actual uncompressed
+			// size; The expected compressed size; The actual compressed
+			// size)}
+			CRC32Calculator crc = this.crc;
+			int expectedcrc = this.expectedcrc,
+				expecteduncompsize = this.expecteduncompsize,
+				expectedcompsize = this.expectedcompsize;
+			if (expecteduncompsize != cinusz ||
+				expectedcompsize != cincsz ||
+				expectedcrc != crc.checksum())
+				throw new ZipException(String.format(
+					"BG04 %08x %08x %d %d %d %d", expectedcrc,
+					crc.checksum(), expecteduncompsize, cinusz,
+					expectedcompsize, cincsz));
 			
-			// EOF reached?
-			if (rc < 0)
+			// Nothing read
+			return -1;
+		}
+		
+		// Mark as read
+		this._readuncomp += rc;
+		return rc;
+	}
+	
+	/**
+	 * Read of undefined size data, but where the EOF is detectable.
+	 *
+	 * @param __b The array to read into.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to potentially read.
+	 * @return The number of bytes read.
+	 * @throws IOException On read errors.
+	 * @since 2017/08/23
+	 */
+	private int __detectedRead(byte[] __b, int __o, int __l)
+		throws IOException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Read of undefined size data, however since the input is not known it
+	 * must be probed for the end to be detected.
+	 *
+	 * @param __b The array to read into.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to potentially read.
+	 * @return The number of bytes read.
+	 * @throws IOException On read errors.
+	 * @since 2017/08/23
+	 */
+	private int __probingRead(byte[] __b, int __o, int __l)
+		throws IOException
+	{
+		DynamicHistoryInputStream dhin = this.dhin;
+		byte[] peeking = this._peeking;
+		CRC32Calculator crc = this.crc;
+		DecompressionInputStream cin = this.cin;
+		
+		// Due to the nature the end of a stream must be detected for this
+		// data, the input must be read a single byte at a time which
+		// introduces much overhead
+		int d = 0;
+		for (int i = __o, e = __o + __l; i < e; i++, d++)
+		{
+			// {@squirreljme.error BG02 Could not find end of entry because the
+			// entry exceeds the bounds of the ZIP file. (The number of read
+			// bytes)}
+			int probed = dhin.peek(_MAX_DESCRIPTOR_SIZE, peeking);
+			if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
+				throw new ZipException(String.format("BG02 %d", probed));
+		
+			// According to the specification, the magic number is optional and
+			// might not be specified
+			// Regardless if it is or not, potentially skip it
+			int offset = (_DESCRIPTOR_MAGIC_NUMBER ==
+				ZipStreamReader.__readInt(peeking, 0) ? 4 : 0);
+		
+			// Read descriptor fields
+			int ddcrc = ZipStreamReader.__readInt(peeking, offset),
+				ddcomp = ZipStreamReader.__readInt(peeking, offset + 4),
+				dduncomp = ZipStreamReader.__readInt(peeking, offset + 8);
+			
+			// EOF occurs?
+			if (ddcomp == cin.compressedBytes() &&
+				dduncomp == cin.uncompressedBytes() &&
+				ddcrc == crc.checksum())
 			{
 				// Mark EOF
 				this._eof = true;
-				
-				// {@squirreljme.error BG04 Reached end of file in the entry
-				// however the size it consumes and/or its CRC does not match
-				// the expected values. (The expected CRC; The actual CRC;
-				// The expected uncompressed size; The actual uncompressed
-				// size; The expected compressed size; The actual compressed
-				// size)}
-				CRC32Calculator crc = this.crc;
-				int expectedcrc = this.expectedcrc,
-					expecteduncompsize = this.expecteduncompsize,
-					expectedcompsize = this.expectedcompsize;
-				if (expecteduncompsize != cinusz ||
-					expectedcompsize != cincsz ||
-					expectedcrc != crc.checksum())
-					throw new ZipException(String.format(
-						"BG04 %08x %08x %d %d %d %d", expectedcrc,
-						crc.checksum(), expecteduncompsize, cinusz,
-						expectedcompsize, cincsz));
-				
-				// Nothing read
-				return -1;
+				return (d == 0 ? -1 : d);
 			}
 			
-			// Mark as read
-			this._readuncomp += rc;
-			return rc;
+			// {@squirreljme.error BG03 Reached end of file before the end
+			// of the ZIP entry could be found.}
+			int rc = cin.read();
+			if (rc < 0)
+				throw new ZipException("BG03");
+			__b[i] = (byte)rc; 
 		}
+		
+		// Read count
+		return d;
 	}
 }
 
