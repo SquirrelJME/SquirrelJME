@@ -131,36 +131,24 @@ public final class ZipStreamEntry
 	public void close()
 		throws IOException
 	{
-		throw new todo.TODO();
-		/*
 		if (!this._closed)
 		{
 			// Mark closed
 			this._closed = true;
 			
-			// Read all the remaining bytes
-			while (read() >= 0)
-				;
+			// Read all input bytes until EOF, except when EOF was already
+			// reached
+			if (!this._eof)
+			{
+				byte[] buf = new byte[512];
+				while (read(buf) >= 0)
+					;
+			}
 			
-			// Calculate the CRC
-			__HigherStream__ higher = this._higher;
-			higher.flush();
-			
-			// Close the higher end
-			this._higher.close();
-			
-			// {@squirreljme.error BG03 The expected CRC and the actual
-			// CRC do not match, the data is corrupt. (The expected CRC;
-			// The actual CRC)}
-			int wantcrc, wascrc;
-			if ((wantcrc = this._wantcrc) !=
-				(wascrc = higher.crccalc.checksum()))
-				throw new ZipException(String.format("BG03 %08x %08x",
-					wantcrc, wascrc));
-			
-			// Clear it
+			// Tell the ZIP reader that this entry is gone and the next
+			// can be read
 			this.zipreader.__closeEntry(this);
-		}*/
+		}
 	}
 	
 	/**
@@ -240,7 +228,9 @@ public final class ZipStreamEntry
 		// Reading an undefined number of bytes?
 		boolean undefined = this.undefined;
 		if (undefined)
+		{
 			throw new todo.TODO();
+		}
 		
 		// Read of a defined number of bytes
 		else
