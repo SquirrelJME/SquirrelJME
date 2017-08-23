@@ -357,7 +357,7 @@ public final class ZipStreamEntry
 			// {@squirreljme.error BG02 Could not find end of entry because the
 			// entry exceeds the bounds of the ZIP file. (The number of read
 			// bytes)}
-			int probed = dhin.peek(_MAX_DESCRIPTOR_SIZE, peeking);
+			int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
 			if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
 				throw new ZipException(String.format("BG02 %d", probed));
 		
@@ -371,6 +371,12 @@ public final class ZipStreamEntry
 			int ddcrc = ZipStreamReader.__readInt(peeking, offset),
 				ddcomp = ZipStreamReader.__readInt(peeking, offset + 4),
 				dduncomp = ZipStreamReader.__readInt(peeking, offset + 8);
+			
+			if (ddcrc == crc.checksum())
+				System.err.printf(
+					"DEBUG -- S:[%08x, %d, %d] ?= D:[%08x, %d, %d]%n",
+					crc.checksum(), cin.compressedBytes(),
+					cin.uncompressedBytes(), ddcrc, ddcomp, dduncomp);
 			
 			// EOF occurs?
 			if (ddcomp == cin.compressedBytes() &&
