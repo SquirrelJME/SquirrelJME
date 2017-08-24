@@ -15,17 +15,9 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.bin.DebugFragmentDestination;
-import net.multiphasicapps.squirreljme.jit.bin.Fragment;
-import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
-import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
-import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
-import net.multiphasicapps.squirreljme.jit.bin.Section;
-import net.multiphasicapps.squirreljme.jit.bin.Sections;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
-import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
 
 /**
  * This class is used to decompile the Java byte code in the Code attribute and
@@ -86,9 +78,9 @@ public class CodeDecompiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/13
 	 */
-	public CodeDecompiler(MethodFlags __f, MethodName __n, MethodDescriptor __t,
-		DataInputStream __in, Pool __pool, LinkerState __linkerstate,
-		ClassVersion __ver, ClassName __cn)
+	public CodeDecompiler(MethodFlags __f, MethodName __n,
+		MethodDescriptor __t, DataInputStream __in, Pool __pool,
+		LinkerState __linkerstate, ClassVersion __ver, ClassName __cn)
 		throws NullPointerException
 	{
 		// Check

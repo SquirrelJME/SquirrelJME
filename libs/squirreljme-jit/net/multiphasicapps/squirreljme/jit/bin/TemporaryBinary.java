@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * This class represents a temporary binary which is used to contain the
  * compiled information that is to be placed in the text and data sections
