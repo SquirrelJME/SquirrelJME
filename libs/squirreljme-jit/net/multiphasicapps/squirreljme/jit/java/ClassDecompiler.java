@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.symbols.Symbols;
 import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
 
 /**
@@ -44,6 +45,9 @@ public final class ClassDecompiler
 	/** Later stage verification steps. */
 	protected final VerificationChecks verifier;
 	
+	/** Class symbols. */
+	protected final Symbols symbols;
+	
 	/**
 	 * Creates an instance of the compiler for the given class file.
 	 *
@@ -63,6 +67,7 @@ public final class ClassDecompiler
 		// Set
 		this.config = __jp.config();
 		this.binary = __jp.binary();
+		this.symbols = __jp.symbols();
 		this.verifier = __jp.verifier();
 		this.in = new DataInputStream(__is);
 	}
@@ -73,7 +78,7 @@ public final class ClassDecompiler
 	 * @return The resulting unit.
 	 * @since 2017/06/02
 	 */
-	public Unit run()
+	public void run()
 	{
 		try
 		{
@@ -227,10 +232,7 @@ public final class ClassDecompiler
 			if (in.read() >= 0)
 				throw new JITException(String.format("JI12 %s", thisname));
 			
-			if (true)
-				throw new todo.TODO();
-			
-			return unit;
+			throw new todo.TODO();
 		}
 		
 		// {@squirreljme.error JI07 Read error reading the class.}

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
 import net.multiphasicapps.squirreljme.jit.java.ClassDecompiler;
+import net.multiphasicapps.squirreljme.jit.symbols.Symbols;
 import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -32,6 +33,10 @@ public class JITProcessor
 	/** The binary where the output is placed into. */
 	protected final TemporaryBinary binary =
 		new TemporaryBinary();
+	
+	/** Class symbols. */
+	protected final Symbols symbols =
+		new Symbols();
 	
 	/** Verification checks that may be performed. */
 	protected final VerificationChecks verifier =
@@ -133,6 +138,17 @@ public class JITProcessor
 			}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the symbol storage for the procesor.
+	 *
+	 * @return The symbol storage.
+	 * @since 2017/08/24
+	 */
+	public final Symbols symbols()
+	{
+		return this.symbols;
 	}
 	
 	/**
