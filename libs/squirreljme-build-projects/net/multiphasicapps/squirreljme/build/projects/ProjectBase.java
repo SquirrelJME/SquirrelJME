@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.build.projects;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
@@ -34,6 +35,7 @@ import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
 import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This acts as the common base for binary and source projects.
@@ -372,7 +374,7 @@ public abstract class ProjectBase
 	 * @throws IOException If it could not be opened.
 	 * @since 2016/12/21
 	 */
-	public FileDirectory openFileDirectory()
+	public final FileDirectory openFileDirectory()
 		throws IOException
 	{
 		// If a directory open it as one
@@ -407,6 +409,43 @@ public abstract class ProjectBase
 				}
 			
 			// Rethrow
+			throw e;
+		}
+	}
+	
+	/**
+	 * This opens the given project as a ZIP file and returns it.
+	 *
+	 * @return A stream for reading the contents of the ZIP.
+	 * @throws IOException If the stream could not be opened or could not be
+	 * read as a ZIP file.
+	 * @since 2017/08/24
+	 */
+	public final ZipStreamReader openZipStreamReader()
+		throws IOException
+	{
+		// Could fail
+		FileChannel fc = null;
+		try
+		{
+			fc = FileChannel.open(this.path,
+				StandardOpenOption.READ);
+			return new ZipStreamReader(Channels.newInputStream(fc));
+		}
+		
+		// Make sure the file channel does get closed
+		catch (IOException e)
+		{
+			if (fc != null)
+				try
+				{
+					fc.close();
+				}
+				catch (Exception f)
+				{
+					e.addSuppressed(f);
+				}
+			
 			throw e;
 		}
 	}
