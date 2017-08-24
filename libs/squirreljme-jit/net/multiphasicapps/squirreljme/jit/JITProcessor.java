@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
+import net.multiphasicapps.squirreljme.jit.java.ClassDecompiler;
+import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -24,9 +26,45 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  */
 public class JITProcessor
 {
+	/** The configuration for the JIT. */
+	protected final JITConfig config;
+	
 	/** The binary where the output is placed into. */
 	protected final TemporaryBinary binary =
 		new TemporaryBinary();
+	
+	/** Verification checks that may be performed. */
+	protected final VerificationChecks verifier =
+		new VerificationChecks();
+	
+	/**
+	 * The configuration used for the JIT.
+	 *
+	 * @param __conf The JIT configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/24
+	 */
+	public JITProcessor(JITConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+	}
+	
+	/**
+	 * Returns the JIT configuration this processor is using.
+	 *
+	 * @return The configuration to use during compilation.
+	 * @since 2017/08/24
+	 */
+	public final JITConfig config()
+	{
+		return this.config;
+	}
 	
 	/**
 	 * Opens the input stream as a ZIP file then processes it.
@@ -66,19 +104,35 @@ public class JITProcessor
 			throw new NullPointerException("NARG");
 		
 		// Go through the ZIP contents and process the entries
-		for (ZipStreamEntry e; null != (e = __zip.nextEntry());)
-		{
-			// Compiling a class?
-			String name = e.name();
-			if (name.endsWith(".class"))
-				throw new todo.TODO();
-			
-			// Appending a resource
-			else
-				throw new todo.TODO();
-		}
+		for (;;)
+			try (ZipStreamEntry e = __zip.nextEntry())
+			{
+				// No more input
+				if (e == null)
+					break;
+				
+				// Compiling a class?
+				String name = e.name();
+				if (name.endsWith(".class"))
+					new ClassDecompiler(this, e).run();
+				
+				// Appending a resource
+				else
+					throw new todo.TODO();
+			}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the verifier for this processor.
+	 *
+	 * @return The verifier.
+	 * @since 2017/08/24
+	 */
+	public final VerificationChecks verifier()
+	{
+		return this.verifier;
 	}
 }
 

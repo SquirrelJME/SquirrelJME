@@ -15,12 +15,15 @@ import java.util.Map;
 
 /**
  * This class represents a temporary binary which is used to contain the
- * compiled information that is to be placed in the text and data sections
- * for a given executable.
+ * compiled fragments which will eventually be placed within sections as the
+ * output binary is built.
  *
  * @since 2017/08/24
  */
 public class TemporaryBinary
 {
+	/** Fragments which exist within the binary. */
+	private final Map<LinkingPoint, TemporaryFragment> _fragments =
+		new LinkedHashMap<>();
 }
 

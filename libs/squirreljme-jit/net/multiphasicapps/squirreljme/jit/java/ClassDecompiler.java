@@ -14,14 +14,10 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
-import net.multiphasicapps.squirreljme.jit.bin.Conditions;
-import net.multiphasicapps.squirreljme.jit.bin.Fragment;
-import net.multiphasicapps.squirreljme.jit.bin.LinkerState;
-import net.multiphasicapps.squirreljme.jit.bin.Unit;
-import net.multiphasicapps.squirreljme.jit.bin.UnitMethod;
-import net.multiphasicapps.squirreljme.jit.bin.Units;
+import net.multiphasicapps.squirreljme.jit.JITProcessor;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
 
 /**
  * This class reads the Java class file format and then passes that to the
@@ -41,30 +37,29 @@ public final class ClassDecompiler
 	/** The input stream containing the class data. */
 	protected final DataInputStream in;
 	
-	/** The linker state to write into. */
-	protected final LinkerState linkerstate;
+	/** Later stage verification steps. */
+	protected final VerificationChecks verifier;
 	
 	/**
 	 * Creates an instance of the compiler for the given class file.
 	 *
-	 * @param __ls The linker state which contains all of the output executable
-	 * information.
+	 * @param __jp The JIT Processor which is processing this class.
 	 * @param __is The stream containing the class data to compile.
 	 * @return The compilation task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/02
 	 */
-	public ClassDecompiler(LinkerState __ls, InputStream __is)
+	public ClassDecompiler(JITProcessor __jp, InputStream __is)
 		throws NullPointerException
 	{
 		// Check
-		if (__is == null || __ls == null)
+		if (__is == null || __jp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.config = __ls.config();
+		this.config = __jp.config();
+		this.verifier = __jp.verifier();
 		this.in = new DataInputStream(__is);
-		this.linkerstate = __ls;
 	}
 	
 	/**
