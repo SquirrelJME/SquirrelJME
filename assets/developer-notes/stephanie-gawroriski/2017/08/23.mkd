@@ -27,3 +27,204 @@ And the code I wrote works! First try it seems too.
 
 I copied and pasted the expected values but those are not valid for udnefined
 entries.
+
+## 03:47
+
+I definitely am not currently sleeping right now.
+
+## 03:51
+
+Ok so the `ABIManager` and the `RegisterProvider` that I have planned are not
+going to work at all. Maybe I am looking at it the wrong way. What if I made
+the ABI management in-line. What if I make the registers meaningless?
+Basically I add a pipe between the machine code output which is more native
+but a bit higher abstracted which can handle registers and things such as
+the calling convention. So the pipes would be as such:
+
+ * Java byte code
+ * Expanded byte code
+ * __ABI pipe output__
+ * Machine code output
+
+ABIs are very specific to a system and having for the most part a common
+abstracted ABI setup would be pretty messy for the most part. Every operating
+system has different ABIs and a general approach to how things are done.
+Basically this is nearly an impossible possible problem to generalize
+correctly. The one advantage the machine code output will have is being able
+to output machine code without needing to worry about an ABI or anything like
+that.
+
+## 03:56
+
+So when it comes to registers which are available for usage, there needs to be
+a way to keep track of so called storage units. Basically, I want to keep
+track and potentially stack cache or move arguments around in the code which
+handles the expanded byte code potentially. But like the machine code output
+the ABI pipe will be very general and will not optimize, that will be up to
+the expanded byte code output. But the ABI would provide storage units that
+the expanded pipe can use to do whatever it wants with it. These storage units
+would be rather stateless with no type information other than their native
+primitive type (integer or float) registers.
+
+## 03:59
+
+So the main thing is that I can commonize and abstract the ABI stuff another
+way by not having an abstract model but a rather implicit model. The ABI
+pipe could still be an abstract class. Since most systems will have a very
+similar ABI for the same architecture they could extend from base classes
+and modify the behavior slightly as needed. There would need to be providers
+also, but that is rather simple.
+
+## 04:00
+
+One major thing would be to make storage units simple.
+
+On a quick note though, ABIs could technically be mixed across architectures
+but that would be rather undefined. I would prefix ABIs by the architecture
+it belongs in so that they do not get mixed up. Then there would need to be
+some extra options according to the ABI since they could be configured
+slightly different for each target.
+
+## 04:04
+
+So the ABI pipe will be more native but will take an even less managed
+output from the expanded. It will essentially just act as input and output
+to the machine code output. At least with machine code output being rather
+fixed it will be shared between ABIs. The main thing to think about are
+storage units. Basically I need to have something similar to what I have
+before but only primitive types. The ABI would have to have a means of
+managing the storage units which are used to used as a reference to
+allocated variables and such.
+
+## 04:09
+
+I would say that a simple stack could be used for storage units to make
+things a bit easier.
+
+## 04:13
+
+Ok so my current storage unit idea is giving me just a nasty feeling of
+it is not going to work. So the ABI split is in the right direction but the
+best way to manage variables? That idea as a way to manage variables has
+been done before. There is the pipe splitting but it actually moves the
+problem sideways to it is on the side rather than being top-down in the
+machine code output and the expanded pipe.
+
+## 04:15
+
+I should definitely be sleeping however. I could probably think of something
+in the morning related to storage units. But a sideways ABI move is good. I
+just need to solve how variables and stack things are handled. Maybe the
+expanded byte code just does not really care what happens. It can do some
+optimizations and register caching. But really the ABI just knows of some
+register state where things need to be loaded and stored.
+
+## 04:21
+
+Closed my eyes to sleep and the image of dancing registers appeared to me.
+Basically storage units map to registers and they can be shuffled by the
+ABI pipe. They would be actively moved and used like a timeline thread through
+the operations being performed.
+
+## 15:52
+
+Ok so I had the idea of what if the ABI pipe hide the ABI related stuff from
+the expanded byte code stuff potentially. There would still be the storage
+units and such.
+
+## 18:44
+
+You know really when it comes to the ABI pipe it can expose storage units but
+it does not have to actually manage anything by itself. Basically, the ABI
+will have active units and stored units. Active units are ones which exist in
+registers while stored ones are on the stack somewhere.
+
+## 19:58
+
+The "ABI" part of it probably needs a better name though, but it would exist
+on the arch side of the JIT. Also the simulator JIT parts can be combined into
+a single project, there really is no need to have two of them.
+
+## 20:09
+
+Ok so the Java byte code and expanded pipe are on the left side of the system
+and the "ABI" and MCO are on the right part of the system. The Expanded pipe
+removes all of the Java specific bits and just shows the "ABI" part.
+
+## 20:10
+
+So would you say the "ABI" would really be a Compiler? It takes whatever was
+output by the expanded code and then outputs the machine code, however it 
+wants to actually work. I mean the only real difference between the expanded
+code and the machine code side is...
+
+## 20:12
+
+Thinking about it. The MCO is not part of the ABI and it should just assemble
+things and such. Basically the expanded byte code outputs an intermediate
+language, that is the purpose of it for the most part. I could design a class
+which just holds a bunch of instructions. I have tried this before but it does
+not really work out. But it is easier to optimize and such. Maybe get rid of
+the expanded pipe and just have the byte code expand to an intermediate
+representation. This would have to be rather CISCy, but it would do the same
+thing as the expanded byte code interface. Basically maybe what I really need
+is program transformation in steps. Turn the byte code into a higher
+intermediate language say _hil_. Then that higher intermediate program is
+transformed by something which turns it into _lil_. Remove the expanded pipe.
+At first an entire program is generated first. But generate it in a way where
+it does violate basic block requirements (no jumps in the middle of basic
+blocks), but that is very easily done. Exceptions can then get their _hil_
+generated. At least the thing I can worry about first is generating the _hil_
+first and then worry later about transforming that into _lil_. Basically the
+ABI part of what was before would transform to _lil_. Then _lil_ is output
+directly to machine code. So that works out. Then the `arch` project and
+such becomes just `asm`. So the route is _class_ -> _hil_ -> _lil_ -> _asm_.
+
+## 20:20
+
+Well really it is not _class_, it is _java_.
+
+## 20:46
+
+Then anything that was placed into _lil_ should easily be translated to
+assembly code accordingly.
+
+## 20:54
+
+Looking at `bin` package, things could be made much simpler. Everything in
+SquirrelJME is a static executable for the most part. Really all there will
+be is a text and data section. Virtually every single system only uses
+single sections. One exception I know of being PalmOS, but that would only
+be an issue if the text or data sections exceed 32KiB. Makes me wonder if
+SquirrelJME could indeed fit into such a small space.
+
+## 20:57
+
+Really the output binary could be very simplified. Conditions are artifacts
+of the byte code interpreter and not of the native target, so they really
+do not belong in the binary at all. Clusters could be changed to just be
+single indexes for the class is in, similar to how it is before. Resources
+can just end up being an array of classes and resource names. Of course I
+need a string table for interning and such.
+
+## 21:00
+
+String interning could really just be byte arrays being returned. If a string
+is not in the intern table then the interning can just return a byte array
+representing the string data, although there would need to be a map too. So
+really the intern method turns into get of an index, then if the index is
+valid get the `byte[]` and `char[]` arrays. Internal strings would be
+duplicated but they would be cached. The only thing would string constants
+would need to return objects allocated for internal strings. Since code such
+as `"boop" == new String("boop").intern()` must be true. Would need to
+figure that out.
+
+## 21:03
+
+But regardless I can really refactor the binary setup. Then I just need a
+dump for conditions to validate things. As long as all the conditions meet the
+code is correct.
+
+## 21:05
+
+`LinkerState` is too complex to begin with anyway.
