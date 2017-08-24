@@ -4,8 +4,7 @@ X-SquirrelJME-Error: AL
 X-SquirrelJME-Name: Metaproject For All JITs
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: squirreljme-jit-arch-simulator 
- squirreljme-jit-pipe-simulator 
+X-SquirrelJME-Depends: squirreljme-jit-simulator
 Microedition-Configuration: CLDC-1.8-Compact
 X-SquirrelJME-Description: This is a metaproject which depends on 
  every supported architecture and operating system. This is mostly 
