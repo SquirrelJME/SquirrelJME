@@ -8,13 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains all of the conditions which may be used by the
- * {@link net.multiphasicapps.squirreljme.jit.bin.Conditions} class which
- * is used for deferred verification of class files.
- *
- * @since 2017/07/07
- */
+package net.multiphasicapps.squirreljme.jit.verifier;
 
-package net.multiphasicapps.squirreljme.jit.bin.cond;
+/**
+ * This class is used to contain all of the checks that need to be performed
+ * in order for the verifier to completley pass.
+ *
+ * @since 2017/08/24
+ */
+public final class VerificationChecks
+{
+}
 
