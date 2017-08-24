@@ -1,0 +1,32 @@
+# 2017/08/24
+
+## 01:13
+
+You know what if I could make `JITConfig` immutable and then have a branch off
+of it which provides a set of options and abilities to do things. Instead
+of having it be extended (which can be error prone and have the base class
+issue), just have it bring in things. I would have assembler, hil, lil, and
+some other selections available. But those selections would have pretty much
+the same exact interface with some slight differences. They would provide
+options with defaults however.
+
+## 01:18
+
+Also, the fragment output can just include some basic constructor bits for
+some instruction sets such as MIPS, just so it is there to be there.
+
+## 01:26
+
+I think instead of the build system calling the JIT and doing whatever, there
+is something in the JIT which handles it automatically.
+
+## 01:28
+
+The JIT basically requires that JAR files are processed and such and they will
+pretty much always be processed the same way. So I believe the JIT should
+depend on the ZIP code, have it process an input stream for compilation.
+
+## 01:29
+
+Indeed! This way it can manage the cluster stuff itself, this makes the build
+system much cleaner and will definitely make much more sense.

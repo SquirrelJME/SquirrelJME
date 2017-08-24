@@ -1,0 +1,86 @@
+# 2017/08/21
+
+## 09:24
+
+Ok so I need to setup a thing where I can create JARs to be tested on the
+simulator to test some conditions.
+
+## 11:41
+
+And that is not working, so I am just going to disassemble the classes to
+take a peek. This is legal because reverse engineering compatibility.
+
+	14: getfield      #11                 // Field numOfEls:I
+	17: if_icmple     28
+	20: new           #22                 // class java/lang/IndexOutOfB
+
+So it is a documentation error.
+
+## 16:19
+
+I saw the eclipse and it was soo cool! Definitely was quite something. It was
+not partial but it was still pretty amazing and interesting.
+
+## 16:20
+
+One thing I will need to do with the LCDUI system is have a means to handle
+native references. Native widgets will probably be treated as if they were C
+code to the operating system. Since Java has a garbage collector, they will
+need to be maintained, otherwise they would end up garbage collected. So I
+basically just need a handle system. Basically when something is created from
+the native system there will need to be returned handle. So the display
+provider will need to be much more powerful and be able to have handles.
+Basically, I will need something with weak references and the provider will
+need to be an abstract class because it will need to handle the collection of
+the native references however it works.
+
+## 16:24
+
+Basically there will need to be a garbage collecting UI thread which polls to
+see if things were garbage collected so that the resources can be freed
+properly.
+
+## 16:44
+
+Ok so there are tabbed panes where screens can be placed into them, but the
+only two valid screens are forms and lists. However, in the general point of
+things, virtually everything would be inside of some kind of container like
+a form and such. So each display would have a container of sorts where things
+can be added and such.
+
+## 16:47
+
+So I think it would definitely simplify the design much if every `Displayable`
+were to be treated as something which can be contained. That would make things
+a bit simpler to implement on the native side. Containers could contain
+multiple items. So basically these containers would act exactly like forms
+except the LCDUI code will have some added limitations to prevent them from
+being used as such. So canvases and such will just be widgets.
+
+## 16:56
+
+One main thing is that I can have a widget system, but due to the class
+nature some parts could get ugly. I could have some base class issues.
+
+## 18:14
+
+Ok, so widgets for a base then, then those widgets can be used by things. But
+that does not completely fully match how LCDUI things. At least on very
+cramped displays it will not really be that effective and elements would have
+trouble being viewed. So I suppose just native representation of the screen
+elements. But have it where any of them can be placed into a tabbed pane
+despite only forms and lists being useable.
+
+## 18:17
+
+So widgets can be owned by other widgets. But then there are displayable
+containers and such. Really the tabbed pane complicates things potentially.
+So how about instead treat widgets as a grouping of sorts.
+
+## 23:48
+
+Maye for registers I have been trying to have a combined register and ABI
+interface. Maybe those are two separate concerns. What if they should not be
+together as one. Basically have an `ABIManager` and the `RegisterManager` or
+provider whatever. Both managers can work, but I would say go back to
+provider. It provides registers.
