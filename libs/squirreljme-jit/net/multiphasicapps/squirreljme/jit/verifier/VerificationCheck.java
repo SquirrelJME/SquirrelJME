@@ -11,15 +11,26 @@
 package net.multiphasicapps.squirreljme.jit.verifier;
 
 /**
- * This class is used to contain all of the checks that need to be performed
- * in order for the verifier to completley pass. This contains a set of
- * {@link VerificationCheck} instances which can be used to to ensure that
- * the output binary will meet the specifications of the virtual machine.
+ * This interface indicates something which can be checked by the verifier.
  *
- * @see VerificationCheck
+ * This must implement {@link #equals(Object)} and {@link #hashCode()}.
+ *
  * @since 2017/08/24
  */
-public final class VerificationChecks
+public interface VerificationCheck
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/24
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/24
+	 */
+	@Override
+	public abstract int hashCode();
 }
 
