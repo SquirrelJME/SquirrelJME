@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -37,6 +38,9 @@ public final class ClassDecompiler
 	/** The input stream containing the class data. */
 	protected final DataInputStream in;
 	
+	/** The temporary binary where output methods and such are placed. */
+	protected final TemporaryBinary binary;
+	
 	/** Later stage verification steps. */
 	protected final VerificationChecks verifier;
 	
@@ -58,6 +62,7 @@ public final class ClassDecompiler
 		
 		// Set
 		this.config = __jp.config();
+		this.binary = __jp.binary();
 		this.verifier = __jp.verifier();
 		this.in = new DataInputStream(__is);
 	}
