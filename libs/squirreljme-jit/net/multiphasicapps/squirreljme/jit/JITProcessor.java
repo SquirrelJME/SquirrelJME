@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
+import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
@@ -22,6 +24,10 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  */
 public class JITProcessor
 {
+	/** The binary where the output is placed into. */
+	protected final TemporaryBinary binary =
+		new TemporaryBinary();
+	
 	/**
 	 * Opens the input stream as a ZIP file then processes it.
 	 *
@@ -58,6 +64,19 @@ public class JITProcessor
 		// Check
 		if (__zip == null)
 			throw new NullPointerException("NARG");
+		
+		// Go through the ZIP contents and process the entries
+		for (ZipStreamEntry e; null != (e = __zip.nextEntry());)
+		{
+			// Compiling a class?
+			String name = e.name();
+			if (name.endsWith(".class"))
+				throw new todo.TODO();
+			
+			// Appending a resource
+			else
+				throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
