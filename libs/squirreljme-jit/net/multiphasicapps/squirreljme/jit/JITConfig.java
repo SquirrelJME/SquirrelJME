@@ -26,7 +26,7 @@ import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
 import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
 import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
-import net.multiphasicapps.squirreljme.jit.pipe.DebugPipe;
+import net.multiphasicapps.squirreljme.jit.pipe.DebugExpandedPipe;
 import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
 import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipeService;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
@@ -235,7 +235,7 @@ public abstract class JITConfig
 		// this
 		ExpandedPipe rv = pipeservice.createPipe(mco);
 		if (getBoolean(JITConfigKey.JIT_DUMP_PIPE))
-			return new DebugPipe(rv);
+			return new DebugExpandedPipe(rv);
 		return rv;
 	}
 	

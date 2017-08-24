@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/08/13
  */
-public final class DebugPipe
+public final class DebugExpandedPipe
 	implements ExpandedPipe
 {
 	/** The stream to print to. */
@@ -39,7 +39,7 @@ public final class DebugPipe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/13
 	 */
-	public DebugPipe(ExpandedPipe __w)
+	public DebugExpandedPipe(ExpandedPipe __w)
 		throws NullPointerException
 	{
 		this(System.err, __w);
@@ -53,7 +53,7 @@ public final class DebugPipe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/13
 	 */
-	public DebugPipe(PrintStream __p, ExpandedPipe __w)
+	public DebugExpandedPipe(PrintStream __p, ExpandedPipe __w)
 		throws NullPointerException
 	{
 		// Check
