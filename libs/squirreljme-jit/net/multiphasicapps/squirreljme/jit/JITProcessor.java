@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.InputStream;
+
 /**
  * This class is used to process classes and resources for compilation for the
  * JIT.
