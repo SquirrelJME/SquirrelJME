@@ -129,16 +129,6 @@ public class DebugMachineCodeOutput
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/08/19
-	 */
-	@Override
-	public RegisterManager createRegisterManager()
-	{
-		return this.wrap.createRegisterManager();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2017/08/15
 	 */
 	@Override
