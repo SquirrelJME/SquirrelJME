@@ -56,6 +56,17 @@ public class JITProcessor
 	}
 	
 	/**
+	 * Returns the binary where compiled methods and data sections are placed.
+	 *
+	 * @return The target for data and code.
+	 * @since 2017/08/24
+	 */
+	public final TemporaryBinary binary()
+	{
+		return this.binary;
+	}
+	
+	/**
 	 * Returns the JIT configuration this processor is using.
 	 *
 	 * @return The configuration to use during compilation.
