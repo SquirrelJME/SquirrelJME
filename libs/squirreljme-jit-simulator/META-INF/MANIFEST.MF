@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: f93ac7d1-e6af-45cb-be3b-69aaafc583e7
 X-SquirrelJME-Error: AZ
-X-SquirrelJME-Name: Simulator JIT Translator
+X-SquirrelJME-Name: JIT Simulator Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: squirreljme-jit
-X-SquirrelJME-Description: This is the translator for the simulated 
- environment and acts as a test for initial generation of code for the 
- simulated environment.
+X-SquirrelJME-Description: This supports code generation for the 
+ simulated environment. The main purpose is for debugging and 
+ development of the virtual machine parts in a known environment.][
 Microedition-Configuration: CLDC-1.8-Compact
 

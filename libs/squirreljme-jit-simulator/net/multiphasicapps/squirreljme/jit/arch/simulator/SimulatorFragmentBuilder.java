@@ -71,10 +71,10 @@ public class SimulatorFragmentBuilder
 	public final void appendXYZ(int __op, int __x, int __y, int __z)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BL01 The Simulator operation code is out of
+		// {@squirreljme.error AZ01 The Simulator operation code is out of
 		// range. (The operation)}
 		if (__op < 0 || __op > 255)
-			throw new IllegalArgumentException(String.format("BL01 %d", __op));
+			throw new IllegalArgumentException(String.format("AZ01 %d", __op));
 		
 		// Build operation and append
 		byte[] buf = this._buf;
