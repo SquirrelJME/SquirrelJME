@@ -11,13 +11,28 @@
 package net.multiphasicapps.squirreljme.jit.bin;
 
 /**
- * This represents a section within a binary which will contain fragments
- * that contains data or executable code.
+ * This contains a linking point which is used to describe a part of the
+ * binary which exports a link which may then be utilized by other sections
+ * of the binary as needed.
  *
- * @see TemporaryFragment
+ * This must implement {@link #equals(Object)} and {@link #hashCode()}.
+ *
  * @since 2017/08/24
  */
-public class TemporarySection
+public interface LinkingPoint
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/24
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/08/24
+	 */
+	@Override
+	public abstract int hashCode();
 }
 
