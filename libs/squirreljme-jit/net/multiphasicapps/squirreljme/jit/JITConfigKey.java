@@ -19,34 +19,6 @@ package net.multiphasicapps.squirreljme.jit;
 public final class JITConfigKey
 	implements Comparable<JITConfigKey>
 {
-	/** The number of bits used for addresses. */
-	public static final JITConfigKey JIT_ADDRESSBITS =
-		new JITConfigKey("jit.addressbits");
-	
-	/** The architecture that is being targetted. */
-	public static final JITConfigKey JIT_ARCH =
-		new JITConfigKey("jit.arch");
-	
-	/** Should the assembler be dumped? */
-	public static final JITConfigKey JIT_DUMP_ASSEMBLER =
-		new JITConfigKey("jit.dump.assembler");
-	
-	/** Should the output fragments be dumped? */
-	public static final JITConfigKey JIT_DUMP_FRAGMENT =
-		new JITConfigKey("jit.dump.fragment");
-	
-	/** Should the expanded pipe be dumped? */
-	public static final JITConfigKey JIT_DUMP_PIPE =
-		new JITConfigKey("jit.dump.pipe");
-	
-	/** The expanded pipe engine to use. */
-	public static final JITConfigKey JIT_PIPE =
-		new JITConfigKey("jit.pipe");
-	
-	/** Should profiling information be included? */
-	public static final JITConfigKey JIT_PROFILE =
-		new JITConfigKey("jit.profile");
-	
 	/** The key name. */
 	protected final String key;
 	

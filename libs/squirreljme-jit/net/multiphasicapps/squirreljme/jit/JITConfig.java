@@ -22,10 +22,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.arch.DebugMachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
-import net.multiphasicapps.squirreljme.jit.bin.FlatSectionCounter;
-import net.multiphasicapps.squirreljme.jit.bin.FragmentBuilder;
-import net.multiphasicapps.squirreljme.jit.bin.FragmentDestination;
-import net.multiphasicapps.squirreljme.jit.bin.SectionCounter;
 import net.multiphasicapps.squirreljme.jit.pipe.DebugExpandedPipe;
 import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
 import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipeService;
@@ -39,6 +35,34 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public abstract class JITConfig
 {
+	/** The number of bits used for addresses. */
+	public static final JITConfigKey JIT_ADDRESSBITS =
+		new JITConfigKey("jit.addressbits");
+	
+	/** The architecture that is being targetted. */
+	public static final JITConfigKey JIT_ARCH =
+		new JITConfigKey("jit.arch");
+	
+	/** Should the assembler be dumped? */
+	public static final JITConfigKey JIT_DUMP_ASM =
+		new JITConfigKey("jit.dump.assembler");
+	
+	/** Should the output fragments be dumped? */
+	public static final JITConfigKey JIT_DUMP_FRAGMENT =
+		new JITConfigKey("jit.dump.fragment");
+	
+	/** Should the high level IL be dumped? */
+	public static final JITConfigKey JIT_DUMP_HIL =
+		new JITConfigKey("jit.dump.hil");
+	
+	/** Should the low level IL be dumped? */
+	public static final JITConfigKey JIT_DUMP_LIL =
+		new JITConfigKey("jit.dump.lil");
+	
+	/** Should profiling information be included? */
+	public static final JITConfigKey JIT_PROFILE =
+		new JITConfigKey("jit.profile");
+	
 	/** Translators available for usage. */
 	private static final ServiceLoader<ExpandedPipeService> _PIPES =
 		ServiceLoader.<ExpandedPipeService>load(ExpandedPipeService.class);
@@ -50,12 +74,13 @@ public abstract class JITConfig
 	private static final JITConfigKey[] _DEFAULT_KEYS =
 		new JITConfigKey[]
 		{
-			JITConfigKey.JIT_ADDRESSBITS,
-			JITConfigKey.JIT_ARCH,
-			JITConfigKey.JIT_DUMP_ASSEMBLER,
-			JITConfigKey.JIT_DUMP_PIPE,
-			JITConfigKey.JIT_PIPE,
-			JITConfigKey.JIT_PROFILE,
+			JIT_ADDRESSBITS,
+			JIT_ARCH,
+			JIT_DUMP_ASM,
+			JIT_DUMP_FRAGMENT,
+			JIT_DUMP_HIL,
+			JIT_DUMP_LIL,
+			JIT_PROFILE,
 		};
 	
 	/** Values stored within the configuration, untranslated. */
@@ -64,9 +89,6 @@ public abstract class JITConfig
 	
 	/** String representation of this configuration. */
 	private volatile Reference<String> _string;
-	
-	/** The translator service to use. */
-	private volatile Reference<ExpandedPipeService> _pipeservice;
 	
 	/**
 	 * Initializes some settings.
@@ -237,21 +259,6 @@ public abstract class JITConfig
 		if (getBoolean(JITConfigKey.JIT_DUMP_PIPE))
 			return new DebugExpandedPipe(rv);
 		return rv;
-	}
-	
-	/**
-	 * This creates a new section counter which is used to count text and data
-	 * sections for placement in an output linked executable.
-	 *
-	 * By default a {@link FlatSectionCounter} is used, if an alternative is
-	 * required then this may be replaced accordingly.
-	 *
-	 * @return The section counter for placing code and resources.
-	 * @since 2017/06/28
-	 */
-	public SectionCounter createSectionCounter()
-	{
-		return new FlatSectionCounter();
 	}
 	
 	/**
