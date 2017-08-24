@@ -15,5 +15,6 @@
  * @since 2017/08/13
  */
 
+@Deprecated
 package net.multiphasicapps.squirreljme.jit.pipe;
 
