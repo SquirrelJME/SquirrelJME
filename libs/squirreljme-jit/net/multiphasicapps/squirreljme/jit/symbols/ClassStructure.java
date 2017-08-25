@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.symbols;
 
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
+
 /**
  * The contains information on the structure of the class.
  *

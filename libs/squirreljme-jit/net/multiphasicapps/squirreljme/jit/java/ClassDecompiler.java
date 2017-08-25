@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.symbols.ClassStructure;
 import net.multiphasicapps.squirreljme.jit.symbols.Symbols;
 import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
 
@@ -39,14 +40,8 @@ public final class ClassDecompiler
 	/** The input stream containing the class data. */
 	protected final DataInputStream in;
 	
-	/** The temporary binary where output methods and such are placed. */
-	protected final TemporaryBinary binary;
-	
-	/** Later stage verification steps. */
-	protected final VerificationChecks verifier;
-	
-	/** Class symbols. */
-	protected final Symbols symbols;
+	/** The processor being used. */
+	protected final JITProcessor processor;
 	
 	/**
 	 * Creates an instance of the compiler for the given class file.
@@ -66,9 +61,7 @@ public final class ClassDecompiler
 		
 		// Set
 		this.config = __jp.config();
-		this.binary = __jp.binary();
-		this.symbols = __jp.symbols();
-		this.verifier = __jp.verifier();
+		this.processor = __jp;
 		this.in = new DataInputStream(__is);
 	}
 	
@@ -82,9 +75,9 @@ public final class ClassDecompiler
 	{
 		try
 		{
-			// Needed for later
-			LinkerState linkerstate = this.linkerstate;
-			Conditions cond = linkerstate.conditions();
+			JITProcessor processor = this.processor;
+			Symbols symbols = processor.symbols();
+			Verifier verifier = processor.verifier();
 			
 			// {@squirreljme.error JI06 Invalid magic number read from the
 			// start of the class file. (The read magic number; The expected
@@ -114,7 +107,7 @@ public final class ClassDecompiler
 				in.readUnsignedShort());
 			
 			// Build new unit
-			Unit unit = linkerstate.units().createUnit(thisname);
+			ClassStructure struct = symbols.createClass(thisname);
 			
 			// Super class name
 			ClassName supername = pool.<ClassName>get(ClassName.class,
