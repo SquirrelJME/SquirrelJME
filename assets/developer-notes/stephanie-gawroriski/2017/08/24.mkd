@@ -30,3 +30,62 @@ depend on the ZIP code, have it process an input stream for compilation.
 
 Indeed! This way it can manage the cluster stuff itself, this makes the build
 system much cleaner and will definitely make much more sense.
+
+## 11:46
+
+So the binary will be similar to how it was before, just a bit simpler.
+
+## 14:18
+
+I can definitely have sections again, just as part of the binary. Each OS or
+target could more than the text or data sections. Each section though needs to
+have a load address specified anyway, at least until that is known. Well in
+reality there just needs to be a single section. But some systems might only
+use a single section, for example if they are ROM. I think keeping things in
+single sections would be the easiest.
+
+## 14:22
+
+Maybe I should not care about which sections something exists in. Basically I
+just have a bunch of fragments which can have parts which point to other
+fragments. But when it comes to linking time, those fragments could be pieced
+together to make something that works. An optimization could be performed
+where if the fragments have the same exact data like generated instructions
+then they can be merged into one. That could potentially work.
+
+## 14:25
+
+That will work because I really have no idea how fragments would be laid out
+and their addresses and such. Doing that at a later step would be so much
+easier.
+
+## 14:27
+
+Basically the linking stage can create a gigantic byte array which is then
+filled with data based on generated instructions with some special markers
+and such to determine how some things are handled. Then some basic class
+information tables can be generated to on the output. The only distinction
+I will have to make would be PIC based binaries which are not at a fixed
+memory address. Also an operating system for some things, such as in ROM
+could have special starting point offsets (like the N64, the ROM header
+would cause the rest of the code to be pushed off but at a fixed address).
+
+## 14:43
+
+`TemporaryBinary` will just not care at all for the process or where things
+are, it will just hold fragments. Later on the `JITProcessor` can handle
+output to a linked executable or maybe some internal JIT dynamic thing.
+
+## 15:18
+
+Actually for a JIT to function, there needs to be symbol information for
+methods and fields. Basically anything needed for reflection. I suppose I
+should design the JIT as a two fold approach, either the initial static
+environment or JIT environment. This also means the static environment
+part of the code needs to handle cases where it is JITted.
+
+## 15:58
+
+Ok so the temporary binary will just contain linking points and fragments,
+nothing else. There will though have to be another class which stores the
+symbol information that is used at link time to do magical things.
