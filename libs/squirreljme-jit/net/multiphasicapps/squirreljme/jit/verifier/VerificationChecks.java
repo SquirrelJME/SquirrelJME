@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.verifier;
 
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
+
 /**
  * This class is used to contain all of the checks that need to be performed
  * in order for the verifier to completley pass. This contains a set of
@@ -21,5 +23,32 @@ package net.multiphasicapps.squirreljme.jit.verifier;
  */
 public final class VerificationChecks
 {
+	/**
+	 * Adds a check if the given class can extend the other class.
+	 *
+	 * @param __t The class doing the extending.
+	 * @param __o The class to be extended.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/25
+	 */
+	public final void canExtend(ClassName __t, ClassName __o)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Adds a check if the given class can implement the other class.
+	 *
+	 * @param __t The class doing the implementing.
+	 * @param __o The class to be implemented.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/25
+	 */
+	public final void canImplement(ClassName __t, ClassName __o)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
+	}
 }
 
