@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.symbols;
 
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
+
 /**
  * This contains the manager for symbols.
  *
@@ -17,5 +21,33 @@ package net.multiphasicapps.squirreljme.jit.symbols;
  */
 public class Symbols
 {
+	/** Classes which have been declared. */
+	private final Map<ClassName, ClassStructure> _classes =
+		new SortedTreeMap<>();
+	
+	/**
+	 * Creates a new class structure.
+	 *
+	 * @param __cn The name of the class to create.
+	 * @return The structure for the given class.
+	 * @throws JITException If the class already has a structure on it.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/25
+	 */
+	public final ClassStructure createClass(ClassName __cn)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI27 Could not create the class structure
+		// because it has already been created. (The name of the class)}
+		Map<ClassName, ClassStructure> classes = this._classes;
+		if (classes.containsKey(__cn))
+			throw new JITException(String.format("JI27 %s", __cn));
+		
+		throw new todo.TODO();
+	}
 }
 
