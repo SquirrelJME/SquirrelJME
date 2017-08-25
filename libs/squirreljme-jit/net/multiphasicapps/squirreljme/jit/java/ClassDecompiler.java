@@ -194,7 +194,7 @@ public final class ClassDecompiler
 						
 						// Run decompiler
 						CodeDecompiler cd = new CodeDecompiler(flags, name,
-							type, ai, pool, linkerstate, version, thisname);
+							type, ai, pool, process, version, thisname);
 						cf = cd.run();
 					}
 					

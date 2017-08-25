@@ -18,6 +18,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.JITProcessor;
 
 /**
  * This class is used to decompile the Java byte code in the Code attribute and
@@ -46,8 +47,8 @@ public class CodeDecompiler
 	/** The constant pool. */
 	protected final Pool pool;
 	
-	/** The target linker state to get the byte code. */
-	protected final LinkerState linkerstate;
+	/** The process doing the compilation. */
+	protected final JITProcessor processor;
 	
 	/** The version number of the class. */
 	protected final ClassVersion version;
@@ -72,7 +73,7 @@ public class CodeDecompiler
 	 * @param __t The descriptor for the method.
 	 * @param __in The input stream for the code's data.
 	 * @param __pool The constant pool.
-	 * @param __linkerstate The target linker state to write the code into.
+	 * @param __p The processor doing compilation.
 	 * @param __ver The class version number.
 	 * @param __cn The class this method is within.
 	 * @throws NullPointerException On null arguments.
@@ -80,12 +81,12 @@ public class CodeDecompiler
 	 */
 	public CodeDecompiler(MethodFlags __f, MethodName __n,
 		MethodDescriptor __t, DataInputStream __in, Pool __pool,
-		LinkerState __linkerstate, ClassVersion __ver, ClassName __cn)
+		JITProcessor __p, ClassVersion __ver, ClassName __cn)
 		throws NullPointerException
 	{
 		// Check
 		if (__f == null || __t == null || __in == null || __pool == null ||
-			__linkerstate == null || __ver == null || __cn == null ||
+			p == null || __ver == null || __cn == null ||
 			__n == null)
 			throw new NullPointerException("NARG");
 		
@@ -95,7 +96,7 @@ public class CodeDecompiler
 		this.type = __t;
 		this.in = __in;
 		this.pool = __pool;
-		this.linkerstate = __linkerstate;
+		this.processor = __p;
 		this.version = __ver;
 		this.outerclass = __cn;
 		
