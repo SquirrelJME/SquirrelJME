@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.symbols;
 
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**

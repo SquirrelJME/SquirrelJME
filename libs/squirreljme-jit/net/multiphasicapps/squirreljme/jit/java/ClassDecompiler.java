@@ -108,23 +108,16 @@ public final class ClassDecompiler
 			
 			// Build new unit
 			ClassStructure struct = symbols.createClass(thisname);
+			struct.setFlags(classflags);
 			
 			// Super class name
 			ClassName supername = pool.<ClassName>get(ClassName.class,
 				in.readUnsignedShort());
-			
-			// {@squirreljme.error JI0s Either Object has a superclass which it
-			// cannot extend any class or any other class does not have a super
-			// class. (The current class name; The super class name)}
-			if (thisname.equals(new ClassName("java/lang/Object")) !=
-				(supername == null))
-				throw new JITException(String.format("JI0s %s %s", thisname,
-					supername));
-			unit.setSuperClass(supername);
+			struct.setSuperClass(supername);
 			
 			// Verify extend
 			if (supername != null)
-				cond.canExtend(thisname, supername);
+				verifier.canExtend(thisname, supername);
 			
 			// Read interfaces
 			int icount = in.readUnsignedShort();
@@ -136,9 +129,9 @@ public final class ClassDecompiler
 					in.readUnsignedShort()));
 				
 				// Verify implements
-				cond.canImplement(thisname, inf);
+				verifier.canImplement(thisname, inf);
 			}
-			unit.setInterfaceClasses(interfaces);
+			struct.setInterfaces(interfaces);
 			
 			// Read in fields
 			String[] attr = new String[1];
