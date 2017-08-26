@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.hil.HighLevelProgram;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -108,12 +109,12 @@ public class CodeDecompiler
 	 * Runs the decompiler and recompiles Java byte code to native machine
 	 * code.
 	 *
-	 * @return The recompiled fragment containing the target machine code.
+	 * @return The high level program for this code.
 	 * @throws IOException On read errors.
 	 * @throws JITException On malformed or illegal method code.
 	 * @since 2017/07/13
 	 */
-	public Fragment run()
+	public HighLevelProgram run()
 		throws IOException, JITException
 	{
 		DataInputStream in = this.in;
@@ -157,7 +158,7 @@ public class CodeDecompiler
 		
 		// Expand the byte code to a simpler format and unroll exceptions so
 		// that they are exactly like normal code
-		Fragment rv = __expand(code, smt, eht);
+		HighLevelProgram rv = __expand(code, smt, eht);
 		
 		if (true)
 			throw new todo.TODO();
@@ -171,11 +172,11 @@ public class CodeDecompiler
 	 * @param __code The method byte code.
 	 * @param __smt The stack map table.
 	 * @param __eht The exception handler table.
-	 * @return The resulting fragment.
+	 * @return The resulting program.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/08
 	 */
-	private Fragment __expand(ByteCode __code, StackMapTable __smt,
+	private HighLevelProgram __expand(ByteCode __code, StackMapTable __smt,
 		ExceptionHandlerTable __eht)
 		throws NullPointerException
 	{
@@ -188,62 +189,48 @@ public class CodeDecompiler
 			__code.maxLocals());
 		this._varstate = varstate;
 		
-		// The fragment which is to be built may be within an existing section
-		// or it could be a newly created section for each method byte code
-		LinkerState linkerstate = this.linkerstate;
-		MethodFlags flags = this.flags;
-		JITConfig config = linkerstate.config();
-		FragmentDestination fd = linkerstate.createFragmentDestination(
-			this.outerclass, this.name, this.type, flags);
-		if (config.getBoolean(JITConfigKey.JIT_DUMP_FRAGMENT))
-			fd = new DebugFragmentDestination(fd);
+		// Initialize high level program which will be given instructions
+		// that represent the program code
+		HighLevelProgram rv = new HighLevelProgram();
 		
-		// Use the specified expander which varies depending on the JIT
-		// configuration and other options. The expanded byte code is
-		// autoclosed so that the translator knows when it is safe to write
-		// to the wrapped generator if there is any.
-		try (ExpandedPipe pipe = config.createPipe(fd))
-		{
-			// If any address has exception handlers then each unique group
-			// must be expanded so that if an exception does exist they can
-			// have their tables expanded virtually.
-			Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
+		// Expand the entry point of the program
+		__expandEntryPoint(rv);
+		
+		// If any address has exception handlers then each unique group
+		// must be expanded so that if an exception does exist they can
+		// have their tables expanded virtually.
+		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
+		
+		// After all of that, run through all byte code operations and
+		// create an expanded byte code program contained within basic
+		// blocks which are then used the processor. The expanded byte
+		// code is used so that translators do not need to reimplement
+		// support for the more complex byte code which can be prone to
+		// errors.
+		for (BasicBlock bb : __code.basicBlocks())
+			__expandBasicBlock(rv, pipe, xkeys);
 			
-			// Setup entry point which counts starting arguments
-			__expandEntryPoint(pipe);
+		// Expand exception handlers if any were used
+		for (ExceptionHandlerKey ek : xkeys)
+			throw new todo.TODO();
 		
-			// After all of that, run through all byte code operations and
-			// create an expanded byte code program contained within basic
-			// blocks which are then used the processor. The expanded byte
-			// code is used so that translators do not need to reimplement
-			// support for the more complex byte code which can be prone to
-			// errors.
-			for (BasicBlock bb : __code.basicBlocks())
-				__expandBasicBlock(bb, pipe, xkeys);
-		
-			// Expand exception handlers if any were used
-			for (ExceptionHandlerKey ek : xkeys)
-				throw new todo.TODO();
-		}
-		
-		throw new todo.TODO();
+		return rv;
 	}
 	
 	/**
 	 * Expands basic blocks which use standard instructions.
 	 *
-	 * @param __bb The basic block to expand.
-	 * @param __pipe The containing code which wraps the basic blocks.
+	 * @param __hlp The target high level program.
 	 * @param __xk The exception handler keys.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/12
 	 */
 	private final void __expandBasicBlock(BasicBlock __bb,
-		ExpandedPipe __pipe, Set<ExceptionHandlerKey> __xk)
+		HighLevelProgram __hlp, Set<ExceptionHandlerKey> __xk)
 		throws NullPointerException
 	{
 		// Check
-		if (__bb == null || __pipe == null || __xk == null)
+		if (__bb == null || __hlp == null || __xk == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through instructions for the block and parse them
@@ -263,11 +250,11 @@ public class CodeDecompiler
 	/**
 	 * Expands the entry point of the method.
 	 *
-	 * @param __pipe The target pipe.
+	 * @param __hlp The target high level program.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/12
 	 */
-	private final void __expandEntryPoint(ExpandedPipe __pipe)
+	private final void __expandEntryPoint(HighLevelProgram __hlp)
 		throws NullPointerException
 	{
 		// Check
