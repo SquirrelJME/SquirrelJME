@@ -1,0 +1,7 @@
+# 2017/08/25
+
+## 23:20
+
+One thing I can do is transform the stack based machine to a register based
+one but do not perform any caching, that would be considered an optimization.
+
