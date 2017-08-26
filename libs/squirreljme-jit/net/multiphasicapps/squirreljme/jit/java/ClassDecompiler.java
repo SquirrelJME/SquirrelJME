@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
+import net.multiphasicapps.squirreljme.jit.hil.HighLevelProgram;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -77,7 +78,7 @@ public final class ClassDecompiler
 		{
 			JITProcessor processor = this.processor;
 			Symbols symbols = processor.symbols();
-			Verifier verifier = processor.verifier();
+			VerificationChecks verifier = processor.verifier();
 			
 			// {@squirreljme.error JI06 Invalid magic number read from the
 			// start of the class file. (The read magic number; The expected
@@ -177,7 +178,7 @@ public final class ClassDecompiler
 				
 				// Handle attributes
 				int na = in.readUnsignedShort();
-				Fragment cf = null;
+				HighLevelProgram cf = null;
 				for (int j = 0; j < na; j++)
 					try (DataInputStream ai = __nextAttribute(in, pool, attr))
 					{
@@ -194,7 +195,7 @@ public final class ClassDecompiler
 						
 						// Run decompiler
 						CodeDecompiler cd = new CodeDecompiler(flags, name,
-							type, ai, pool, process, version, thisname);
+							type, ai, pool, processor, version, thisname);
 						cf = cd.run();
 					}
 					

@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
+import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
 
 /**
  * This class is used to decompile the Java byte code in the Code attribute and
@@ -88,7 +89,7 @@ public class CodeDecompiler
 	{
 		// Check
 		if (__f == null || __t == null || __in == null || __pool == null ||
-			p == null || __ver == null || __cn == null ||
+			__p == null || __ver == null || __cn == null ||
 			__n == null)
 			throw new NullPointerException("NARG");
 		
@@ -209,7 +210,7 @@ public class CodeDecompiler
 		// support for the more complex byte code which can be prone to
 		// errors.
 		for (BasicBlock bb : __code.basicBlocks())
-			__expandBasicBlock(rv, pipe, xkeys);
+			__expandBasicBlock(bb, rv, xkeys);
 			
 		// Expand exception handlers if any were used
 		for (ExceptionHandlerKey ek : xkeys)
@@ -259,7 +260,7 @@ public class CodeDecompiler
 		throws NullPointerException
 	{
 		// Check
-		if (__pipe == null)
+		if (__hlp == null)
 			throw new NullPointerException("NARG");
 		
 		// Enter the entry point
