@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.hil.HighLevelBlock;
 import net.multiphasicapps.squirreljme.jit.hil.HighLevelProgram;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
@@ -234,7 +235,7 @@ public class CodeDecompiler
 			throw new NullPointerException("NARG");
 		
 		// Go through instructions for the block and parse them
-		__pipe.enterBlock(__bb.jumpTarget());
+		HighLevelBlock block = __hlp.createBlock(__bb.jumpTarget());
 		for (Instruction i : __bb)
 		{
 			// Debug
@@ -262,7 +263,8 @@ public class CodeDecompiler
 			throw new NullPointerException("NARG");
 		
 		// Enter the entry point
-		__pipe.enterBlock(SpecialBasicBlockKey.ENTRY_POINT);
+		HighLevelBlock block = __hlp.createBlock(
+			SpecialBasicBlockKey.ENTRY_POINT);
 		
 		// Count objects which were passed to the method
 		VariableState varstate = this._varstate;
