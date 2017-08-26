@@ -22,9 +22,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.arch.DebugMachineCodeOutput;
 import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
-import net.multiphasicapps.squirreljme.jit.pipe.DebugExpandedPipe;
-import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipe;
-import net.multiphasicapps.squirreljme.jit.pipe.ExpandedPipeService;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
