@@ -135,80 +135,12 @@ public final class ClassDecompiler
 			struct.setInterfaces(interfaces);
 			
 			// Read in fields
-			String[] attr = new String[1];
-			int nf = in.readUnsignedShort();
-			for (int i = 0; i < nf; i++)
-			{
-				FieldFlags flags = new FieldFlags(classflags,
-					in.readUnsignedShort());
-				FieldName name = new FieldName(
-					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-					in.readUnsignedShort()).toString());
-				FieldDescriptor type = new FieldDescriptor(
-					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-					in.readUnsignedShort()).toString());
-				
-				// Handle attributes
-				int na = in.readUnsignedShort();
-				for (int j = 0; j < na; j++)
-					try (DataInputStream ai = __nextAttribute(in, pool, attr))
-					{
-						// Only care about the constant value
-						if (!"ConstantValue".equals(attr[0]))
-							continue;
-						
-						throw new todo.TODO();
-					}
-				
-				throw new todo.TODO();
-			}
+			for (int i = 0, nf = in.readUnsignedShort(); i < nf; i++)
+				__readField();
 			
 			// Read in methods
-			int nm = in.readUnsignedShort();
-			for (int i = 0; i < nm; i++)
-			{
-				MethodFlags flags = new MethodFlags(classflags,
-					in.readUnsignedShort());
-				MethodName name = new MethodName(
-					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-					in.readUnsignedShort()).toString());
-				MethodDescriptor type = new MethodDescriptor(
-					pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-					in.readUnsignedShort()).toString());
-				
-				// Handle attributes
-				int na = in.readUnsignedShort();
-				HighLevelProgram cf = null;
-				for (int j = 0; j < na; j++)
-					try (DataInputStream ai = __nextAttribute(in, pool, attr))
-					{
-						// Only care about the code attribute
-						if (!"Code".equals(attr[0]))
-							continue;
-						
-						// {@squirreljme.error JI1b The specified method
-						// contains more than one code attribute. (The current
-						// class; The method name; The method type)}
-						if (cf != null)
-							throw new JITException(String.format(
-								"JI1b %s %s %s", thisname, name, type));
-						
-						// Run decompiler
-						CodeDecompiler cd = new CodeDecompiler(flags, name,
-							type, ai, pool, processor, version, thisname);
-						cf = cd.run();
-					}
-					
-				// {@squirreljme.error JI1c The specified method does not have
-				// the correct matching for abstract and if code exists or not.
-				// (The current
-				// class; The method name; The method type; The method flags)}
-				if ((cf == null) != (flags.isAbstract() | flags.isNative()))
-					throw new JITException(String.format(
-						"JI1c %s %s %s", thisname, name, type, flags));
-				
-				throw new todo.TODO();
-			}
+			for (int i = 0, nm = in.readUnsignedShort(); i < nm; i++)
+				__readMethod();
 			
 			// Handle attributes
 			if (true)
@@ -227,6 +159,101 @@ public final class ClassDecompiler
 		{
 			throw new JITException("JI07", e);
 		}
+	}
+	
+	/**
+	 * Reads and handles a single field.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2017/08/26
+	 */
+	private void __readField()
+		throws IOException
+	{
+		FieldFlags flags = new FieldFlags(classflags,
+			in.readUnsignedShort());
+		FieldName name = new FieldName(
+			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			in.readUnsignedShort()).toString());
+		FieldDescriptor type = new FieldDescriptor(
+			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			in.readUnsignedShort()).toString());
+		
+		// Handle attributes
+		int na = in.readUnsignedShort();
+		String[] attr = new String[1];
+		for (int j = 0; j < na; j++)
+			try (DataInputStream ai = __nextAttribute(in, pool, attr))
+			{
+				// Only care about the constant value
+				if (!"ConstantValue".equals(attr[0]))
+					continue;
+				
+				throw new todo.TODO();
+			}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Reads in a single method and decodes it.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2017/08/26
+	 */
+	private void __readMethod()
+		throws IOException
+	{
+		MethodFlags flags = new MethodFlags(classflags,
+			in.readUnsignedShort());
+		MethodName name = new MethodName(
+			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			in.readUnsignedShort()).toString());
+		MethodDescriptor type = new MethodDescriptor(
+			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			in.readUnsignedShort()).toString());
+		
+		// Resulting program which may exist
+		HighLevelProgram hil = null;
+		
+		// Handle attributes
+		int na = in.readUnsignedShort();
+		String[] attr = new String[1];
+		for (int j = 0; j < na; j++)
+			try (DataInputStream ai = __nextAttribute(in, pool, attr))
+			{
+				// Only care about the code attribute
+				if (!"Code".equals(attr[0]))
+					continue;
+				
+				// {@squirreljme.error JI1b The specified method
+				// contains more than one code attribute. (The current
+				// class; The method name; The method type)}
+				if (hil != null)
+					throw new JITException(String.format(
+						"JI1b %s %s %s", thisname, name, type));
+				
+				// Run decompiler
+				CodeDecompiler hil = new CodeDecompiler(flags, name,
+					type, ai, pool, processor, version, thisname);
+				cf = cd.run();
+			}
+			
+		// {@squirreljme.error JI1c The specified method does not have
+		// the correct matching for abstract and if code exists or not.
+		// (The current
+		// class; The method name; The method type; The method flags)}
+		if ((hil == null) != (flags.isAbstract() | flags.isNative()))
+			throw new JITException(String.format(
+				"JI1c %s %s %s", thisname, name, type, flags));
+		
+		// Compile high level program
+		if (hil != null)
+		{
+			throw new todo.TODO();
+		}
+		
+		throw new todo.TODO();
 	}
 	
 	/**

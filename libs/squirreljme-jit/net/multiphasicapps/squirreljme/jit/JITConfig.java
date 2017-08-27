@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.arch.DebugMachineCodeOutput;
-import net.multiphasicapps.squirreljme.jit.arch.MachineCodeOutput;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -60,13 +58,6 @@ public abstract class JITConfig
 	public static final JITConfigKey JIT_PROFILE =
 		new JITConfigKey("jit.profile");
 	
-	/** Translators available for usage. */
-	private static final ServiceLoader<ExpandedPipeService> _PIPES =
-		ServiceLoader.<ExpandedPipeService>load(ExpandedPipeService.class);
-	
-	/** The default translator to use. */
-	private static final JITConfigValue _DEFAULT_PIPE;
-	
 	/** Keys which are included by the JIT by default. */
 	private static final JITConfigKey[] _DEFAULT_KEYS =
 		new JITConfigKey[]
@@ -94,11 +85,6 @@ public abstract class JITConfig
 	 */
 	static
 	{
-		// {@squirreljme.property
-		// net.multiphasicapps.squirreljme.jit.pipe=value
-		// This sets the default pipe for the expanded byte code engine.}
-		_DEFAULT_PIPE = new JITConfigValue(System.getProperty(
-			"net.multiphasicapps.squirreljme.jit.pipe", "naive"));
 	}
 	
 	/**
@@ -193,70 +179,6 @@ public abstract class JITConfig
 	protected abstract JITConfigValue targetTranslateValue(JITConfigKey __k,
 		JITConfigValue __v)
 		throws NullPointerException;
-	
-	/**
-	 * Creates an {@link ExpandedPipe} instance which will (eventually) be
-	 * attached to the output for native machine code generation.
-	 *
-	 * @param __fd The destination which receives the fragment when it has
-	 * been generated. 
-	 * @return The expanded byte code engine which is used to generate the
-	 * native machine code.
-	 * @throws JITException If the pipe could not be created.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/09
-	 */
-	public final ExpandedPipe createPipe(FragmentDestination __fd)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__fd == null)
-			throw new NullPointerException("NARG");
-		
-		// This will be wrapped by the translator
-		MachineCodeOutput mco = createMachineCodeOutput(__fd);
-		
-		// If dumping is enabled, wrap this output with a dumper
-		if (getBoolean(JITConfigKey.JIT_DUMP_ASSEMBLER))
-			mco = new DebugMachineCodeOutput(mco);
-		
-		// Has the translator been cached already?
-		Reference<ExpandedPipeService> ref = this._pipeservice;
-		ExpandedPipeService pipeservice = null;
-		
-		// Locate the pipe service and cache it, since it will be used multiple
-		// times
-		String want = getString(JITConfigKey.JIT_PIPE);
-		if (ref == null || null == (pipeservice = ref.get()))
-		{
-			// Locate one
-			ServiceLoader<ExpandedPipeService> pipeservices = _PIPES;
-			synchronized (pipeservices)
-			{
-				for (ExpandedPipeService sv : pipeservices)
-					if (want.equals(sv.name()))
-					{
-						pipeservice = sv;
-						break;
-					}
-			}
-			
-			// {@squirreljme.error JI20 The specified pipe service is not
-			// valid. (The translator)}
-			if (pipeservice == null)
-				throw new JITException(String.format("JI20", want));
-			
-			// Cache
-			this._pipeservice = new WeakReference<>(pipeservice);
-		}
-		
-		// Create instance, if dumping is enabled then dump anything sent to
-		// this
-		ExpandedPipe rv = pipeservice.createPipe(mco);
-		if (getBoolean(JITConfigKey.JIT_DUMP_PIPE))
-			return new DebugExpandedPipe(rv);
-		return rv;
-	}
 	
 	/**
 	 * Obtains the value for the given key.
@@ -482,13 +404,6 @@ public abstract class JITConfig
 		// Translate?
 		switch (__k.toString())
 		{
-				// Pipe, defaults to the system property at the start of the
-				// class.
-			case "jit.pipe":
-				if (__v == null)
-					return _DEFAULT_PIPE;
-				break;
-				
 				// Is profiling enabled?
 			case "jit.profile":
 				return JITConfigValue.matchesTrue(__v);
@@ -522,7 +437,6 @@ public abstract class JITConfig
 		switch (__k.toString())
 		{
 				// Special keys
-			case "jit.pipe":
 			case "jit.profile":
 				return true;
 			

@@ -160,12 +160,7 @@ public class CodeDecompiler
 		
 		// Expand the byte code to a simpler format and unroll exceptions so
 		// that they are exactly like normal code
-		HighLevelProgram rv = __expand(code, smt, eht);
-		
-		if (true)
-			throw new todo.TODO();
-		
-		return rv;
+		return __expand(code, smt, eht);
 	}
 	
 	/**
