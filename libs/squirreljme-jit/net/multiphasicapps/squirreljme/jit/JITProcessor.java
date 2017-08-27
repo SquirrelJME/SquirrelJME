@@ -12,7 +12,9 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.jit.bin.LinkingPoint;
 import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
+import net.multiphasicapps.squirreljme.jit.hil.HighLevelProgram;
 import net.multiphasicapps.squirreljme.jit.java.ClassDecompiler;
 import net.multiphasicapps.squirreljme.jit.symbols.Symbols;
 import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
@@ -80,6 +82,25 @@ public class JITProcessor
 	public final JITConfig config()
 	{
 		return this.config;
+	}
+	
+	/**
+	 * JITs the specified high level program. 
+	 *
+	 * @param __e The program entry point.
+	 * @param __hlp The high level program to JIT.
+	 * @throws JITException The program to JIT.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/27
+	 */
+	public final void jitProgram(LinkingPoint __e, HighLevelProgram __hlp)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__e == null || __hlp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
