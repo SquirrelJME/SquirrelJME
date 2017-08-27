@@ -1,0 +1,22 @@
+# 2017/08/26
+
+## 11:13
+
+I think instead of scattering classes around I will have them in some kind of
+`impl` package for architecture specific stuff.
+
+## 22:38
+
+For `JITConfig` things will be quite detached.
+
+## 22:48
+
+The `JITConfig` class will not be creating pipes and machine code outputs and
+such, it should solely be used for storing the configuration.
+
+## 23:01
+
+Ok so, `HighLevelBlock` is much better than the expanded pipe, because this
+means that certain checks only have to be performed once rather than them
+being implemented by every expanded pipe implementation. So this is far
+safer.

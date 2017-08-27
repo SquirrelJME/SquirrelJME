@@ -1,0 +1,14 @@
+# 2017/08/27
+
+## 01:50
+
+With `JITProcessor` being given linking points and high level programs, I can
+actually have it where I can implement target specific high level programs
+or other fragments. Basically, it works better.
+
+## 02:03
+
+I can use `native` to implement some special methods potentially. The JIT will
+need to generate classes such as arrays and otherwise. Actually one thing I
+need is a means to commonize arrays. I will need classes for every array type
+which is statically used in the byte code.
