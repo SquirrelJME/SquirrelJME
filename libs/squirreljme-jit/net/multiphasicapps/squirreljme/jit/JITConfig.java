@@ -28,7 +28,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/05/29
  */
-public abstract class JITConfig
+public final class JITConfig
 {
 	/** The number of bits used for addresses. */
 	public static final JITConfigKey JIT_ADDRESSBITS =
@@ -96,7 +96,7 @@ public abstract class JITConfig
 	 * contains a null value.
 	 * @since 2017/05/30
 	 */
-	protected JITConfig(Map<JITConfigKey, JITConfigValue> __o)
+	public JITConfig(Map<JITConfigKey, JITConfigValue> __o)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -110,9 +110,11 @@ public abstract class JITConfig
 		for (JITConfigKey dk : _DEFAULT_KEYS)
 			if (dk != null)
 				dks.add(dk);
-		for (JITConfigKey dk : targetDefaultKeys())
+		if (true)
+			throw new todo.TODO();
+		/*for (JITConfigKey dk : targetDefaultKeys())
 			if (dk != null)
-				dks.add(dk);
+				dks.add(dk);*/
 		
 		// Only fill the option map with valid keys that are used to configure
 		// the output system. Only use default keys and ignore other key
@@ -148,7 +150,7 @@ public abstract class JITConfig
 	 * @return The set of default keys.
 	 * @since 2017/08/10
 	 */
-	protected abstract JITConfigKey[] targetDefaultKeys();
+	/*protected abstract JITConfigKey[] targetDefaultKeys();*/
 	
 	/**
 	 * Translates the value for the specified key and value pair which is
@@ -161,9 +163,9 @@ public abstract class JITConfig
 	 * @throws NullPointerException If the key is null.
 	 * @since 2017/08/10
 	 */
-	protected abstract JITConfigValue targetTranslateValue(JITConfigKey __k,
+	/*protected abstract JITConfigValue targetTranslateValue(JITConfigKey __k,
 		JITConfigValue __v)
-		throws NullPointerException;
+		throws NullPointerException;*/
 	
 	/**
 	 * Obtains the value for the given key.
@@ -193,7 +195,8 @@ public abstract class JITConfig
 		// Only target tranlsate if it is not special
 		if (__isSpecialKey(__k))
 			return rv;
-		return targetTranslateValue(__k, rv);
+		throw new todo.TODO();
+		/*return targetTranslateValue(__k, rv);*/
 	}
 	
 	/**
