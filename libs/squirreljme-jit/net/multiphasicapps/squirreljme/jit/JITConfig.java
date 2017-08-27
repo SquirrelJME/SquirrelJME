@@ -137,7 +137,7 @@ public abstract class JITConfig
 		
 		// {@squirreljme.error JI01 CPU architecture was not specified in the
 		// JIT configuration.}
-		if (get(JITConfigKey.JIT_ARCH) == null)
+		if (get(JITConfig.JIT_ARCH) == null)
 			throw new JITException("JI01");
 	}
 	
