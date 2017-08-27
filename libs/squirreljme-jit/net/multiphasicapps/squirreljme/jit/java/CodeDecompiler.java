@@ -268,7 +268,7 @@ public class CodeDecompiler
 		{
 			TypedVariable tv = varstate.getTypedLocal(i);
 			if (tv.isObject() && tv.isInitialized())
-				__pipe.countReference(tv, true);
+				block.appendCountReference(tv, true);
 		}
 		
 		// If the method is synchronized, setup a special basic block
@@ -280,7 +280,8 @@ public class CodeDecompiler
 			// a copied this so that the monitor can be exited when this
 			// method finishes
 			if (flags.isInstance())
-				__pipe.copy(varstate.getTypedLocal(1), varstate.getLocal(0));
+				block.appendCopy(varstate.getTypedLocal(1),
+					varstate.getLocal(0));
 			
 			throw new todo.TODO();
 		}
