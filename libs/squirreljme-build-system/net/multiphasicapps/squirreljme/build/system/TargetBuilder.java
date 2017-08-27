@@ -36,6 +36,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This is used to build a target executable for compilation.
@@ -52,7 +53,7 @@ public class TargetBuilder
 	protected final ProjectManager manager;
 	
 	/** The target link table which contains the binary linkages. */
-	protected final LinkerState linkerstate;
+	protected final JITProcessor processor;
 	
 	/** The JIT configuration (arch dependent). */
 	protected final JITConfig jitconfig;
@@ -100,14 +101,7 @@ public class TargetBuilder
 		
 		// Locate the JITConfig which creates things such as the machine code
 		// output
-		JITConfig jc = null;
-		for (JITConfigService sv : ServiceLoader.<JITConfigService>load(
-			JITConfigService.class))
-			if (sv.matchesArchitecture(arch))
-			{
-				jc = sv.createConfig(jitopts);
-				break;
-			}
+		JITConfig jc = new JITConfig(jitopts);
 			
 		// {@squirreljme.error AO08 Unknown architecture specified
 		// which is not supported. (The architecture)}
@@ -119,7 +113,7 @@ public class TargetBuilder
 		
 		// Initialize the link state
 		this.jitconfig = jc;
-		this.linkerstate = new LinkerState(jc);
+		this.processor = new JITProcessor(jc);
 		
 		// Obtain set of projects to compile in a given order
 		this._binaries = __getBinaries(extraproj);
@@ -146,8 +140,7 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Used for cluster counting and progress
-		LinkerState linkerstate = this.linkerstate;
-		Clusters clusters = linkerstate.clusters();
+		JITProcessor processor = this.processor;
 		JITConfig jitconfig = this.jitconfig;
 		ProjectBinary[] binaries = this._binaries;
 		int count = 0,
@@ -161,26 +154,10 @@ public class TargetBuilder
 			String pbname = pb.name().toString();
 			System.out.printf("AO09 %s %d %d%n", pbname, ++count, numbins);
 			
-			// Setup cluster
-			Cluster c = clusters.createCluster(pbname);
-			
 			// Process all classes and resources
-			try (FileDirectory fd = pb.openFileDirectory())
+			try (ZipStreamReader zsr = pb.openZipStreamReader())
 			{
-				int didfiles = 1;
-				for (String fn : fd)
-				{
-					// {@squirreljme.error AO0a The specified class or resource
-					// is being compiled. (The current file; The number of
-					// processed files)}
-					System.out.printf("AO0a %s %d%n", fn, didfiles++);
-					
-					// Process data stream
-					try (InputStream is = fd.open(fn))
-					{
-						c.processStream(fn, is);
-					}
-				}
+				processor.process(zsr);
 			}
 			
 			throw new todo.TODO();
