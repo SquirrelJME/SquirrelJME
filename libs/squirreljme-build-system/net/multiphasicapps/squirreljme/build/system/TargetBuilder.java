@@ -159,8 +159,6 @@ public class TargetBuilder
 			{
 				processor.process(zsr);
 			}
-			
-			throw new todo.TODO();
 		}
 		
 		throw new todo.TODO();
