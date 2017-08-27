@@ -142,21 +142,6 @@ public abstract class JITConfig
 	}
 	
 	/**
-	 * Creates an instance of the native machine code output which writes to
-	 * an internal buffer which may then return the required bytes.
-	 *
-	 * @param __fd The destination for the created fragment.
-	 * @return The output for native machine code which matches this given
-	 * JIT.
-	 * @throws JITException If the output could not be created.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/09
-	 */
-	public abstract MachineCodeOutput createMachineCodeOutput(
-		FragmentDestination __fd)
-		throws JITException, NullPointerException;
-	
-	/**
 	 * Returns the set of keys which are provided by default for the target
 	 * JIT configuration.
 	 *
