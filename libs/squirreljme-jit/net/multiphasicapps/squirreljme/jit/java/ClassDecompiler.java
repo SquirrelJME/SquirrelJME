@@ -136,11 +136,11 @@ public final class ClassDecompiler
 			
 			// Read in fields
 			for (int i = 0, nf = in.readUnsignedShort(); i < nf; i++)
-				__readField();
+				__readField(in, pool, classflags);
 			
 			// Read in methods
 			for (int i = 0, nm = in.readUnsignedShort(); i < nm; i++)
-				__readMethod();
+				__readMethod(in, pool, version, thisname, classflags);
 			
 			// Handle attributes
 			if (true)
@@ -164,26 +164,38 @@ public final class ClassDecompiler
 	/**
 	 * Reads and handles a single field.
 	 *
+	 * @param __in The source class data.
+	 * @param __pool The constant pool.
+	 * @param __cf The flags for a class.
 	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/26
 	 */
-	private void __readField()
+	private void __readField(DataInputStream __in, Pool __pool,
+		ClassFlags __cf)
 		throws IOException
 	{
-		FieldFlags flags = new FieldFlags(classflags,
-			in.readUnsignedShort());
+		// Check
+		if (__in == null || __pool == null || __cf == null)
+			throw new NullPointerException("NARG");
+		
+		JITProcessor processor = this.processor;
+		
+		// Parse fields
+		FieldFlags flags = new FieldFlags(__cf,
+			__in.readUnsignedShort());
 		FieldName name = new FieldName(
-			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-			in.readUnsignedShort()).toString());
+			__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			__in.readUnsignedShort()).toString());
 		FieldDescriptor type = new FieldDescriptor(
-			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-			in.readUnsignedShort()).toString());
+			__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			__in.readUnsignedShort()).toString());
 		
 		// Handle attributes
 		int na = in.readUnsignedShort();
 		String[] attr = new String[1];
 		for (int j = 0; j < na; j++)
-			try (DataInputStream ai = __nextAttribute(in, pool, attr))
+			try (DataInputStream ai = __nextAttribute(__in, __pool, attr))
 			{
 				// Only care about the constant value
 				if (!"ConstantValue".equals(attr[0]))
@@ -198,20 +210,35 @@ public final class ClassDecompiler
 	/**
 	 * Reads in a single method and decodes it.
 	 *
+	 * @param __in The source class data.
+	 * @param __pool The constant pool.
+	 * @param __ver The class version number.
+	 * @param __tn This class name.
+	 * @param __cf The flags for the current class.
 	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/26
 	 */
-	private void __readMethod()
+	private void __readMethod(DataInputStream __in, Pool __pool,
+		ClassVersion __ver, ClassName __tn, ClassFlags __cf)
 		throws IOException
 	{
-		MethodFlags flags = new MethodFlags(classflags,
-			in.readUnsignedShort());
+		// Check
+		if (__in == null || __pool == null || __ver == null || __tn == null ||
+			__cf == null)
+			throw new NullPointerException("NARG");
+		
+		JITProcessor processor = this.processor;
+		
+		// Parse fields
+		MethodFlags flags = new MethodFlags(__cf,
+			__in.readUnsignedShort());
 		MethodName name = new MethodName(
-			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-			in.readUnsignedShort()).toString());
+			__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			__in.readUnsignedShort()).toString());
 		MethodDescriptor type = new MethodDescriptor(
-			pool.<UTFConstantEntry>require(UTFConstantEntry.class,
-			in.readUnsignedShort()).toString());
+			__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			__in.readUnsignedShort()).toString());
 		
 		// Resulting program which may exist
 		HighLevelProgram hil = null;
@@ -220,7 +247,7 @@ public final class ClassDecompiler
 		int na = in.readUnsignedShort();
 		String[] attr = new String[1];
 		for (int j = 0; j < na; j++)
-			try (DataInputStream ai = __nextAttribute(in, pool, attr))
+			try (DataInputStream ai = __nextAttribute(__in, __pool, attr))
 			{
 				// Only care about the code attribute
 				if (!"Code".equals(attr[0]))
@@ -231,12 +258,11 @@ public final class ClassDecompiler
 				// class; The method name; The method type)}
 				if (hil != null)
 					throw new JITException(String.format(
-						"JI1b %s %s %s", thisname, name, type));
+						"JI1b %s %s %s", __tn, name, type));
 				
 				// Run decompiler
-				CodeDecompiler hil = new CodeDecompiler(flags, name,
-					type, ai, pool, processor, version, thisname);
-				cf = cd.run();
+				hil = new CodeDecompiler(flags, name,
+					type, ai, __pool, processor, __ver, __tn).run();
 			}
 			
 		// {@squirreljme.error JI1c The specified method does not have
@@ -245,7 +271,7 @@ public final class ClassDecompiler
 		// class; The method name; The method type; The method flags)}
 		if ((hil == null) != (flags.isAbstract() | flags.isNative()))
 			throw new JITException(String.format(
-				"JI1c %s %s %s", thisname, name, type, flags));
+				"JI1c %s %s %s", __tn, name, type, flags));
 		
 		// Compile high level program
 		if (hil != null)
