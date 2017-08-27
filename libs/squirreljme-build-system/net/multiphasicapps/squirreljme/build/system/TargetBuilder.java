@@ -34,8 +34,8 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
-import net.multiphasicapps.squirreljme.jit.JITConfigService;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
+import net.multiphasicapps.squirreljme.jit.JITProcessor;
 
 /**
  * This is used to build a target executable for compilation.
