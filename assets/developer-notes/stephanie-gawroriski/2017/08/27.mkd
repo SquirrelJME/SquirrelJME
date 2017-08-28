@@ -12,3 +12,11 @@ I can use `native` to implement some special methods potentially. The JIT will
 need to generate classes such as arrays and otherwise. Actually one thing I
 need is a means to commonize arrays. I will need classes for every array type
 which is statically used in the byte code.
+
+## 13:32
+
+I would say for `JITConfig` have a JIT option set so to speak. Basically have
+core options, then architecture options, then perhaps OS options, then
+after than I suppose operating system? Those two later ones are quite
+intermixed so it can be unknown how they relate to each other. Basically it
+can be managed by multiple classes.
