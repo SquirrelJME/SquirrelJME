@@ -131,12 +131,12 @@ public final class JITConfigValue
 	}
 	
 	/**
-	 * Returns {@code true} if this value represents true.
+	 * Returns the value as a boolean.
 	 *
-	 * @return {@code true} if this value represents true.
+	 * @return The value as a boolean.
 	 * @since 2017/08/10
 	 */
-	public boolean isTrue()
+	public boolean toBoolean()
 	{
 		return TRUE.equals(matchesTrue(this));
 	}

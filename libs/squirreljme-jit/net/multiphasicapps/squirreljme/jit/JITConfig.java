@@ -30,62 +30,12 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public final class JITConfig
 {
-	/** The number of bits used for addresses. */
-	public static final JITConfigKey JIT_ADDRESSBITS =
-		new JITConfigKey("jit.addressbits");
-	
-	/** The architecture that is being targetted. */
-	public static final JITConfigKey JIT_ARCH =
-		new JITConfigKey("jit.arch");
-	
-	/** Should the assembler be dumped? */
-	public static final JITConfigKey JIT_DUMP_ASM =
-		new JITConfigKey("jit.dump.assembler");
-	
-	/** Should the output fragments be dumped? */
-	public static final JITConfigKey JIT_DUMP_FRAGMENT =
-		new JITConfigKey("jit.dump.fragment");
-	
-	/** Should the high level IL be dumped? */
-	public static final JITConfigKey JIT_DUMP_HIL =
-		new JITConfigKey("jit.dump.hil");
-	
-	/** Should the low level IL be dumped? */
-	public static final JITConfigKey JIT_DUMP_LIL =
-		new JITConfigKey("jit.dump.lil");
-	
-	/** Should profiling information be included? */
-	public static final JITConfigKey JIT_PROFILE =
-		new JITConfigKey("jit.profile");
-	
-	/** Keys which are included by the JIT by default. */
-	private static final JITConfigKey[] _DEFAULT_KEYS =
-		new JITConfigKey[]
-		{
-			JIT_ADDRESSBITS,
-			JIT_ARCH,
-			JIT_DUMP_ASM,
-			JIT_DUMP_FRAGMENT,
-			JIT_DUMP_HIL,
-			JIT_DUMP_LIL,
-			JIT_PROFILE,
-		};
-	
 	/** Values stored within the configuration, untranslated. */
 	private final Map<JITConfigKey, JITConfigValue> _values =
 		new SortedTreeMap<>();
 	
 	/** String representation of this configuration. */
 	private volatile Reference<String> _string;
-	
-	/**
-	 * Initializes some settings.
-	 *
-	 * @since 2017/08/09
-	 */
-	static
-	{
-	}
 	
 	/**
 	 * Initializes the JIT configuration using the given option set.
@@ -103,69 +53,20 @@ public final class JITConfig
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// Obtain the set of keys which are valid to be used within the
-		// configuration. The target may have duplicates which are not
-		// processed multiple times.
-		Set<JITConfigKey> dks = new LinkedHashSet<>();
-		for (JITConfigKey dk : _DEFAULT_KEYS)
-			if (dk != null)
-				dks.add(dk);
-		if (true)
-			throw new todo.TODO();
-		/*for (JITConfigKey dk : targetDefaultKeys())
-			if (dk != null)
-				dks.add(dk);*/
-		
-		// Only fill the option map with valid keys that are used to configure
-		// the output system. Only use default keys and ignore other key
-		// values
+		// Copy all options, nulls are not permitted
 		Map<JITConfigKey, JITConfigValue> values = this._values;
-		for (JITConfigKey dk : dks)
-			values.put(dk, __o.get(dk));
-		
-		// Look for options such as unsafe class rewrites and add them
 		for (Map.Entry<JITConfigKey, JITConfigValue> e : __o.entrySet())
 		{
 			JITConfigKey k = e.getKey();
 			JITConfigValue v = e.getValue();
 			
-			// Class rename, always include them
-			if (k != null && k.toString().startsWith("jit.rename."))
-			{
-				if (v != null)
-					values.put(k, v);
-			}
+			// Cannot be null
+			if (k == null || v == null)
+				throw new NullPointerException("NARG");
+			
+			values.put(k, v);
 		}
-		
-		// {@squirreljme.error JI01 CPU architecture was not specified in the
-		// JIT configuration.}
-		if (get(JITConfig.JIT_ARCH) == null)
-			throw new JITException("JI01");
 	}
-	
-	/**
-	 * Returns the set of keys which are provided by default for the target
-	 * JIT configuration.
-	 *
-	 * @return The set of default keys.
-	 * @since 2017/08/10
-	 */
-	/*protected abstract JITConfigKey[] targetDefaultKeys();*/
-	
-	/**
-	 * Translates the value for the specified key and value pair which is
-	 * specific to this JIT configuration.
-	 *
-	 * @param __k The input key.
-	 * @param __v The input value, if this is {@code null} then it has not
-	 * been set and may be set to a default value if applicable.
-	 * @return The output value.
-	 * @throws NullPointerException If the key is null.
-	 * @since 2017/08/10
-	 */
-	/*protected abstract JITConfigValue targetTranslateValue(JITConfigKey __k,
-		JITConfigValue __v)
-		throws NullPointerException;*/
 	
 	/**
 	 * Obtains the value for the given key.
@@ -182,21 +83,29 @@ public final class JITConfig
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// As a special condition, the architecture is never translated and
-		// will never get a default value
-		JITConfigValue rv = this._values.get(__k);
-		if ("cpu.arch".equals(__k.toString()))
-			return rv;
+		return this._values.get(__k);
+	}
+	
+	/**
+	 * Obtains the value for the given key or returns a default value.
+	 *
+	 * @param __k The key to get.
+	 * @parma __d If the key is not set then this value is returned.
+	 * @return The value for the key or {@code __d}.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2017/08/29
+	 */
+	public final JITConfigValue get(JITConfigKey __k, JITConfigValue __d)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
 		
-		// Internally translate the input value so it has a default value
-		// where possible
-		rv = __internalTranslate(__k, rv);
-		
-		// Only target tranlsate if it is not special
-		if (__isSpecialKey(__k))
-			return rv;
-		throw new todo.TODO();
-		/*return targetTranslateValue(__k, rv);*/
+		Map<JITConfigKey, JITConfigValue> values = this._values;
+		if (!values.containsKey(__k))
+			return __d;
+		return values.get(__k);
 	}
 	
 	/**
@@ -218,7 +127,7 @@ public final class JITConfig
 		JITConfigValue rv = get(__k);
 		if (rv == null)
 			return false;
-		return rv.isTrue();
+		return rv.toBoolean();
 	}
 	
 	/**
@@ -236,7 +145,8 @@ public final class JITConfig
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI25 The specified key is null. (The key)}
+		// {@squirreljme.error JI25 The specified key has no assigned
+		// value. (The key)}
 		JITConfigValue rv = get(__k);
 		if (rv == null)
 			throw new NumberFormatException(String.format("JI25 %s", __k));
@@ -343,14 +253,7 @@ public final class JITConfig
 	 */
 	public final Map<JITConfigKey, JITConfigValue> options()
 	{
-		// The target map
-		Map<JITConfigKey, JITConfigValue> rv = new LinkedHashMap<>();
-		
-		// Make sure all resulting values are translated!
-		for (JITConfigKey k : this._values.keySet())
-			rv.put(k, get(k));
-		
-		return rv;
+		return new LinkedHashMap<>(this._values);
 	}
 	
 	/**
@@ -365,73 +268,9 @@ public final class JITConfig
 		
 		// Check
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = options().toString()));
+			this._string = new WeakReference<>((rv = this._values.toString()));
 		
 		return rv;
-	}
-	
-	/**
-	 * Internally translates the key and value to a specified value, a default
-	 * may be set if the input is null.
-	 *
-	 * @param __k The key to check.
-	 * @param __v The input value, if this is {@code null} then it has not
-	 * been set and may be set to a default value if applicable.
-	 * @return The translated value, if it was translated.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/10
-	 */
-	private final JITConfigValue __internalTranslate(JITConfigKey __k,
-		JITConfigValue __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		// Translate?
-		switch (__k.toString())
-		{
-				// Is profiling enabled?
-			case "jit.profile":
-				return JITConfigValue.matchesTrue(__v);
-			
-				// Unchanged
-			default:
-				break;
-		}
-		
-		// Unchanged
-		return __v;
-	}
-	
-	/**
-	 * Checks whether the given key is special, if it is then it will not
-	 * be translated by the target.
-	 *
-	 * @param __k The key to check if it is special.
-	 * @return Whether it is special or not.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/0810
-	 */
-	private final boolean __isSpecialKey(JITConfigKey __k)
-		throws NullPointerException
-	{
-		// Check
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		// Translate?
-		switch (__k.toString())
-		{
-				// Special keys
-			case "jit.profile":
-				return true;
-			
-				// Not special
-			default:
-				return false;
-		}
 	}
 }
 
