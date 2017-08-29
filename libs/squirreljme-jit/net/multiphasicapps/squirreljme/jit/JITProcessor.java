@@ -32,6 +32,9 @@ public class JITProcessor
 	/** The configuration for the JIT. */
 	protected final JITConfig config;
 	
+	/** The progresss notifier for the JIT. */
+	protected final JITProgressNotifier notifier;
+	
 	/** The binary where the output is placed into. */
 	protected final TemporaryBinary binary =
 		new TemporaryBinary();
@@ -54,12 +57,27 @@ public class JITProcessor
 	public JITProcessor(JITConfig __conf)
 		throws NullPointerException
 	{
+		this(__conf, new NullProgressNotifier());
+	}
+	
+	/**
+	 * The configuration used for the JIT.
+	 *
+	 * @param __conf The JIT configuration.
+	 * @param __notifier Notifier for events which are happening within the
+	 * processor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/24
+	 */
+	public JITProcessor(JITConfig __conf, JITProgressNotifier __notifier)
+	{
 		// Check
-		if (__conf == null)
+		if (__conf == null || __notifier == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.config = __conf;
+		this.notifier = __notifier;
 	}
 	
 	/**
@@ -100,12 +118,28 @@ public class JITProcessor
 		if (__e == null || __hlp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Timed execution
+		JITProgressNotifier notifier = this.notifier;
+		long start = System.nanoTime();
+		try
+		{
+			// Specify start
+			notifier.jitStartHighLevelProgram(__e);
+			
+			throw new todo.TODO();
+		}
+		
+		// Report time
+		finally
+		{
+			notifier.jitEndHighLevelProgram(__e, System.nanoTime() - start);
+		}
 	}
 	
 	/**
 	 * Opens the input stream as a ZIP file then processes it.
 	 *
+	 * @param __n The name of the input ZIP file.
 	 * @param __is The stream to read ZIP file contents from.
 	 * @throws IOException If it is not a ZIP or if the stream could not be
 	 * read.
@@ -113,34 +147,40 @@ public class JITProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/24
 	 */
-	public final void process(InputStream __is)
+	public final void process(String __n, InputStream __is)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__n == null || __is == null)
 			throw new NullPointerException("NARG");
 		
 		// Wrap in a ZIP
-		process(new ZipStreamReader(__is));
+		process(__n, new ZipStreamReader(__is));
 	}
 	
 	/**
 	 * Processes the given ZIP file
 	 *
+	 * @param __n The name of the input ZIP file.
 	 * @param __zip The ZIP file to read from.
 	 * @throws IOException If the ZIP could not be read.
 	 * @throws JITException If the JIT could not process the input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/24
 	 */
-	public final void process(ZipStreamReader __zip)
+	public final void process(String __n, ZipStreamReader __zip)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
-		if (__zip == null)
+		if (__n == null || __zip == null)
 			throw new NullPointerException("NARG");
 		
+		// Log processing
+		JITProgressNotifier notifier = this.notifier;
+		notifier.beginJar(__n);
+		
 		// Go through the ZIP contents and process the entries
+		int numrc = 0, numcl = 0;
 		for (;;)
 			try (ZipStreamEntry e = __zip.nextEntry())
 			{
@@ -151,12 +191,21 @@ public class JITProcessor
 				// Compiling a class?
 				String name = e.name();
 				if (name.endsWith(".class"))
+				{
+					notifier.processClass(__n, name, ++numcl);
 					new ClassDecompiler(this, e).run();
+				}
 				
 				// Appending a resource
 				else
+				{
+					notifier.processResource(__n, name, ++numrc);
 					throw new todo.TODO();
+				}
 			}
+		
+		// Report results
+		notifier.endJar(__n, numrc, numcl);
 		
 		throw new todo.TODO();
 	}

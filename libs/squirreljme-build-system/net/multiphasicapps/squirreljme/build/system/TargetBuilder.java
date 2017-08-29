@@ -36,6 +36,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITProcessor;
+import net.multiphasicapps.squirreljme.jit.PrintStreamProgressNotifier;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
@@ -113,7 +114,8 @@ public class TargetBuilder
 		
 		// Initialize the link state
 		this.jitconfig = jc;
-		this.processor = new JITProcessor(jc);
+		this.processor = new JITProcessor(jc,
+			new PrintStreamProgressNotifier(System.out));
 		
 		// Obtain set of projects to compile in a given order
 		this._binaries = __getBinaries(extraproj);
@@ -157,7 +159,7 @@ public class TargetBuilder
 			// Process all classes and resources
 			try (ZipStreamReader zsr = pb.openZipStreamReader())
 			{
-				processor.process(zsr);
+				processor.process(pbname, zsr);
 			}
 		}
 		
