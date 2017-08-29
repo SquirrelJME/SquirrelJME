@@ -152,6 +152,17 @@ public class TemporaryFragmentBuilder
 	}
 	
 	/**
+	 * Builds the fragment which has been generated from this.
+	 *
+	 * @return The resulting built fragment.
+	 * @since 2017/08/29
+	 */
+	public final TemporaryFragment build()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the number of currently written bytes.
 	 *
 	 * @return The number of currently written bytes.
