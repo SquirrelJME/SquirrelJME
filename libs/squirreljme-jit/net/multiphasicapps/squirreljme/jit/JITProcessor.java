@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.bin.LinkingPoint;
 import net.multiphasicapps.squirreljme.jit.bin.TemporaryBinary;
+import net.multiphasicapps.squirreljme.jit.bin.TemporaryFragmentBuilder;
+import net.multiphasicapps.squirreljme.jit.bin.ResourceLinkingPoint;
 import net.multiphasicapps.squirreljme.jit.hil.HighLevelProgram;
 import net.multiphasicapps.squirreljme.jit.java.ClassDecompiler;
 import net.multiphasicapps.squirreljme.jit.symbols.Symbols;
@@ -200,7 +202,7 @@ public class JITProcessor
 				else
 				{
 					notifier.processResource(__n, name, ++numrc);
-					throw new todo.TODO();
+					__processResource(__n, name, e);
 				}
 			}
 		
@@ -230,6 +232,41 @@ public class JITProcessor
 	public final VerificationChecks verifier()
 	{
 		return this.verifier;
+	}
+	
+	/**
+	 * Processes the specified resource.
+	 *
+	 * @param __n The owning JAR.
+	 * @param __rc The name of the resource being processed.
+	 * @param __in The stream containing the resource data.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/29
+	 */
+	private final void __processResource(String __n, String __rc,
+		InputStream __in)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__n == null || __rc == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy data into a fragment
+		TemporaryFragmentBuilder tfb = new TemporaryFragmentBuilder();
+		byte[] buf = new byte[512];
+		for (;;)
+		{
+			int rc = __in.read(buf);
+			
+			if (rc < 0)
+				break;
+			
+			tfb.append(buf, 0, rc);
+		}
+		
+		// Link into the program
+		this.binary.link(new ResourceLinkingPoint(__n, __rc), tfb.build());
 	}
 }
 
