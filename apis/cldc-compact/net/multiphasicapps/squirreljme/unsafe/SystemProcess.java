@@ -29,6 +29,17 @@ public class SystemProcess
 	}
 	
 	/**
+	 * This returns the number of CPU threads which are available for usage.
+	 *
+	 * @return The total number of available CPU threads.
+	 * @since 2017/08/29
+	 */
+	public static int cpuThreads()
+	{
+		return __Ext_systemprocess__.cpuThreads();
+	}
+	
+	/**
 	 * Returns the number of milliseconds that have passed in the UTC
 	 * timezone since the Java epoch.
 	 *
