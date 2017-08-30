@@ -159,7 +159,7 @@ public class TemporaryFragmentBuilder
 	 */
 	public final TemporaryFragment build()
 	{
-		throw new todo.TODO();
+		return new TemporaryFragment(this._bytes);
 	}
 	
 	/**

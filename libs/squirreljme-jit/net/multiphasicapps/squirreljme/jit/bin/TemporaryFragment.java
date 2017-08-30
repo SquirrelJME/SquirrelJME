@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.bin;
 
+import net.multiphasicapps.util.datadeque.ByteDeque;
+
 /**
  * This represents a single fragment within a section which is used to
  * store compiled machine code or data temporarily before the binary is fully
@@ -18,7 +20,27 @@ package net.multiphasicapps.squirreljme.jit.bin;
  * @see TemporarySection
  * @since 2017/08/24
  */
-public class TemporaryFragment
+public final class TemporaryFragment
 {
+	/** The data which makes up the fragment. */
+	private final byte[] _data;
+	
+	/**
+	 * Initializes the fragment with just data.
+	 *
+	 * @param __q The data to initialize the fragment with.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/29
+	 */
+	TemporaryFragment(ByteDeque __q)
+		throws NullPointerException
+	{
+		// Check
+		if (__q == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy data
+		this._data = __q.toByteArray();
+	}
 }
 
