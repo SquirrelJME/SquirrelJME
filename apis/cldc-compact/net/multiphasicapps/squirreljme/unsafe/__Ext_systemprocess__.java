@@ -29,6 +29,17 @@ final class __Ext_systemprocess__
 	}
 	
 	/**
+	 * This returns the number of CPU threads which are available for usage.
+	 *
+	 * @return The total number of available CPU threads.
+	 * @since 2017/08/29
+	 */
+	public static int cpuThreads()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns {@code true} if this is the launcher thread.
 	 *
 	 * @return {@code true} if this is the launcher thread.
