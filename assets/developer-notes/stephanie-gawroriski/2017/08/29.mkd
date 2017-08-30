@@ -1,0 +1,39 @@
+# 2017/08/29
+
+## 11:03
+
+So I have an idea on how to do the `JITConfig`, but not sure of how it would
+be implemented and such.
+
+## 11:04
+
+Maybe a set of available options. I want something simple, but not something
+super complex such as the Linux configuration. Really the JIT is only
+concerned with options the JIT wants.
+
+## 11:59
+
+Ok, so like I thought of the other day, `JITConfig` should not care about
+anything. There would be things which use the config to do things.
+
+## 18:12
+
+Ok so with this design, the class decompiler and the HIL do not need to know
+anything about the JIT configuration.
+
+## 18:17
+
+Actually this is most effective. With my current design the considerations
+which are major at link time will happen at link time, this way at this early
+point in the JIT I do not really have to care about much at all.
+
+## 20:32
+
+I am going to make it so the JIT can be ran in parallel, I have a way where it
+can be done. Basically the JIT that turns the high level binary into machine
+code can be done in a way where multiple processes can be ran at the same time
+regardless of how fast input class processing is performed. Handling of JARs
+is a strictly linear process which should be rather fast, the compilation and
+optimization phase may take longer to perform. After initial work, I will want
+to make it where the later parts can run on as many CPUs as are available.
+This would definitely increase compilation speed.
