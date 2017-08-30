@@ -18,6 +18,8 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 /**
  * This contains the manager for symbols.
  *
+ * This class is thread safe.
+ *
  * @since 2017/08/24
  */
 public class Symbols
@@ -42,13 +44,20 @@ public class Symbols
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI27 Could not create the class structure
-		// because it has already been created. (The name of the class)}
+		// Make this thread safe so that classes can be added concurrently
+		// in the event concurrent processing of JARs is supported
 		Map<ClassName, ClassStructure> classes = this._classes;
-		if (classes.containsKey(__cn))
-			throw new JITException(String.format("JI27 %s", __cn));
+		synchronized (classes)
+		{
+			// {@squirreljme.error JI27 Could not create the class structure
+			// because it has already been created. (The name of the class)}
+			if (classes.containsKey(__cn))
+				throw new JITException(String.format("JI27 %s", __cn));
 		
-		throw new todo.TODO();
+			ClassStructure rv = new ClassStructure(__cn);
+			classes.put(__cn, rv);
+			return rv;
+		}
 	}
 }
 
