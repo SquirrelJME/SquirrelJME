@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.symbols;
 
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.java.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.java.ClassName;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -23,6 +25,16 @@ public class ClassStructure
 {
 	/** The name of this class. */
 	protected final ClassName thisname;
+	
+	/** The flags for the class. */
+	private volatile ClassFlags _flags;
+	
+	/** The superclass for this class. */
+	private volatile ClassName _super;
+	
+	/** Interfaces this class implements. */
+	private volatile ClassName[] _interfaces =
+		new ClassName[0];
 	
 	/**
 	 * Initializes the class structure.
@@ -56,7 +68,8 @@ public class ClassStructure
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this._flags = __f;
 	}
 	
 	/**
@@ -74,7 +87,21 @@ public class ClassStructure
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Check for null
+		// {@squirreljme.error JI0y A duplicate interface has been
+		// specified. (The duplicate interface)}
+		__i = __i.clone();
+		Set<ClassName> is = new HashSet<>();
+		for (ClassName i : __i)
+			if (i == null)
+				throw new NullPointerException("NARG");
+			else if (is.contains(i))
+				throw new JITException(String.format("JI0y %s", i));
+			else
+				is.add(i);
+		
+		// Set
+		this._interfaces = __i;
 	}
 	
 	/**
@@ -95,7 +122,8 @@ public class ClassStructure
 			(__n == null))
 			throw new JITException(String.format("JI0s %s %s", thisname, __n));
 		
-		throw new todo.TODO();
+		// Set
+		this._super = __n;
 	}
 }
 
