@@ -28,19 +28,20 @@ public final class TemporaryFragment
 	/**
 	 * Initializes the fragment with just data.
 	 *
-	 * @param __q The data to initialize the fragment with.
+	 * @param __d The data to initialize the fragment with, this is not
+	 * copied.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/29
 	 */
-	TemporaryFragment(ByteDeque __q)
+	TemporaryFragment(byte[] __d)
 		throws NullPointerException
 	{
 		// Check
-		if (__q == null)
+		if (__d == null)
 			throw new NullPointerException("NARG");
 		
 		// Copy data
-		this._data = __q.toByteArray();
+		this._data = __d;
 	}
 }
 
