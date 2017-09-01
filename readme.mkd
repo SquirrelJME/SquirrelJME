@@ -107,8 +107,8 @@ purchasing of food items for consumption.
  * [Patreon](https://www.patreon.com/XerTheSquirrel)
  * BitCoin (**BTC/XBT**): [`13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4`](
    bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
- * Ethereum (**ETH**): [`0x9738136f7EcB11d554Ef767704F62216a646e0AB`](
-   ethereum:0x9738136f7EcB11d554Ef767704F62216a646e0AB)
+ * Ethereum (**ETH**): [`0xf9C7d3a5496E66140de099EEFBa1eD8446b319d2`](
+   ethereum:0xf9C7d3a5496E66140de099EEFBa1eD8446b319d2)
  * LiteCoin (**LTC**): [`Lf7d8X9LQ6GMTuwUMtnDqzqdsmQ4W5mN6i`](
    litecoin:Lf7d8X9LQ6GMTuwUMtnDqzqdsmQ4W5mN6i)
 
