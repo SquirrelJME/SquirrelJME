@@ -22,35 +22,11 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class VariableState
 {
-	/** The number of local variables. */
-	protected final int maxlocals;
+	/** Local variables. */
+	protected final VariableTread locals;
 	
-	/** The number of stack variables. */
-	protected final int maxstack;
-	
-	/** The number of variables. */
-	protected final int numvariables;
-	
-	/** The local variable types. */
-	private final JavaType[] _locals;
-	
-	/** Local variable cache. */
-	private final Reference<Variable>[] _vlocals;
-	
-	/** Local typed variable cache (cleared when type changes occur). */
-	private final Reference<TypedVariable>[] _tlocals;
-	
-	/** The stack variable types. */
-	private final JavaType[] _stack;
-	
-	/** Stack variable cache. */
-	private final Reference<Variable>[] _vstack;
-	
-	/** Stack typed variable cache (cleared when type changes occur). */
-	private final Reference<TypedVariable>[] _tstack;
-	
-	/** The top of the stack. */
-	private volatile int _top;
+	/** Stack variables. */
+	protected final VariableTread stack;
 	
 	/**
 	 * Initializes the variable state.
@@ -68,128 +44,30 @@ public final class VariableState
 		if (__smt == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		JavaType[] locals;
-		this._locals = (locals = new JavaType[__ml]);
-		this._vlocals = __makeVariables(__ml);
-		this._tlocals = __makeTypedVariables(__ml);
-		this._stack = new JavaType[__ms];
-		this._vstack = __makeVariables(__ms);
-		this._tstack = __makeTypedVariables(__ms);
+		// Initialize treads
+		VariableTread locals;
+		this.locals = (locals = new VariableTread(__ml, false));
+		this.stack = new VariableTread(__ms, true);
 		
-		// Initialize locals
+		// Initialize local variables from the stack map state
 		StackMapTableState state = __smt.get(0);
 		for (int i = 0; i < __ml; i++)
-			__setSMTEntry(i, state.getLocal(i));
-		
-		// Set
-		this.maxstack = __ms;
-		this.maxlocals = __ml;
-		this.numvariables = __ms + __ml;
+		{
+			StackMapTableEntry e = state.getLocal(0);
+			if (e != null)
+				locals.__set(e);
+		}
 	}
 	
 	/**
-	 * Obtains the given local variable.
+	 * Returns the local variable tread.
 	 *
-	 * @param __i The index of the variable to get.
-	 * @return The variable at the given index.
-	 * @throws JITException If the variable is not within bounds.
-	 * @since 2017/08/13
+	 * @return The local variable tread.
+	 * @since 2017/09/02
 	 */
-	public Variable getLocal(int __i)
-		throws JITException
+	public VariableTread locals()
 	{
-		// {@squirreljme.error JI23 The specified local variable is not within
-		// the bounds of the local variable set. (The local variable index)}
-		if (__i < 0 || __i >= this.maxlocals)
-			throw new JITException(String.format("JI23 %d", __i));
-		
-		// Cache if needed
-		Reference<Variable>[] vlocals = this._vlocals;
-		Reference<Variable> ref = vlocals[__i];
-		Variable rv;
-		if (ref == null || null == (rv = ref.get()))
-			vlocals[__i] = new WeakReference<>((rv = new Variable(
-				VariableLocation.LOCAL, __i)));
-		
-		return rv;
-	}
-	
-	/**
-	 * Obtains the given stack variable.
-	 *
-	 * @param __i The index of the variable to get.
-	 * @return The variable at the given index.
-	 * @throws JITException If the variable is not within bounds.
-	 * @since 2017/08/13
-	 */
-	public Variable getStack(int __i)
-		throws JITException
-	{
-		// {@squirreljme.error JI24 The specified stack variable is not within
-		// the bounds of the stack variable set. (The stack variable index)}
-		if (__i < 0 || __i >= this._top)
-			throw new JITException(String.format("JI24 %d", __i));
-		
-		// Cache if needed
-		Reference<Variable>[] vstack = this._vstack;
-		Reference<Variable> ref = vstack[__i];
-		Variable rv;
-		if (ref == null || null == (rv = ref.get()))
-			vstack[__i] = new WeakReference<>((rv = new Variable(
-				VariableLocation.STACK, __i)));
-		
-		return rv;
-	}
-	
-	/**
-	 * Obtains the given local typed variable.
-	 *
-	 * @param __i The index of the typed variable to get.
-	 * @return The typed variable at the given index.
-	 * @throws JITException If the variable is not within bounds.
-	 * @since 2017/08/13
-	 */
-	public TypedVariable getTypedLocal(int __i)
-		throws JITException
-	{
-		// Get variable first
-		Variable var = getLocal(__i);
-		
-		// Cache if needed
-		Reference<TypedVariable>[] tlocal = this._tlocals;
-		Reference<TypedVariable> ref = tlocal[__i];
-		TypedVariable rv;
-		if (ref == null || null == (rv = ref.get()))
-			tlocal[__i] = new WeakReference<>((rv = new TypedVariable(
-				this._locals[__i], var)));
-		
-		return rv;
-	}
-	
-	/**
-	 * Obtains the given stack typed variable.
-	 *
-	 * @param __i The index of the typed variable to get.
-	 * @return The typed variable at the given index.
-	 * @throws JITException If the variable is not within bounds.
-	 * @since 2017/08/13
-	 */
-	public TypedVariable getTypedStack(int __i)
-		throws JITException
-	{
-		// Get variable first
-		Variable var = getStack(__i);
-		
-		// Cache if needed
-		Reference<TypedVariable>[] tstack = this._tstack;
-		Reference<TypedVariable> ref = tstack[__i];
-		TypedVariable rv;
-		if (ref == null || null == (rv = ref.get()))
-			tstack[__i] = new WeakReference<>((rv = new TypedVariable(
-				this._stack[__i], var)));
-		
-		return rv;
+		return this.locals;
 	}
 	
 	/**
@@ -200,7 +78,7 @@ public final class VariableState
 	 */
 	public int maxLocals()
 	{
-		return this.maxlocals;
+		return this.locals.storageSize();
 	}
 	
 	/**
@@ -211,7 +89,7 @@ public final class VariableState
 	 */
 	public int maxStack()
 	{
-		return this.maxstack;
+		return this.stack.storageSize();
 	}
 	
 	/**
@@ -222,33 +100,34 @@ public final class VariableState
 	 */
 	public int numVariables()
 	{
-		return this.numvariables;
+		return maxLocals() + maxStack();
 	}
 	
 	/**
-	 * Creates an array of typed variable references.
+	 * Returns the stack tread.
 	 *
-	 * @param __n The number of elements in the array.
-	 * @return An array of references to typed variables.
-	 * @since 2017/08/13
+	 * @return The stack tread.
+	 * @since 2017/09/02
 	 */
-	@SuppressWarnings({"unchecked"})
-	private static Reference<TypedVariable>[] __makeTypedVariables(int __n)
+	public VariableTread stack()
 	{
-		return (Reference<TypedVariable>[])((Object)new Reference[__n]);
+		return this.stack;
 	}
 	
 	/**
-	 * Creates an array of variable references.
-	 *
-	 * @param __n The number of elements in the array.
-	 * @return An array of references to variables.
-	 * @since 2017/08/13
+	 * {@inheritDoc}
+	 * @since 2017/09/02
 	 */
-	@SuppressWarnings({"unchecked"})
-	private static Reference<Variable>[] __makeVariables(int __n)
+	@Override
+	public String toString()
 	{
-		return (Reference<Variable>[])((Object)new Reference[__n]);
+		StringBuilder sb = new StringBuilder();
+		sb.append("{locals= ");
+		sb.append(this.locals);
+		sb.append(", stack=");
+		sb.append(this.stack);
+		sb.append("}");
+		return sb.toString();
 	}
 }
 
