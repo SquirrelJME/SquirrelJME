@@ -114,7 +114,7 @@ public final class StackMapTableEntry
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format("%s%s",
-				(this.isinitialized ? "!" : ""), this.type)));
+				(this.isinitialized ? "" : "!"), this.type)));
 		
 		return rv;
 	}
