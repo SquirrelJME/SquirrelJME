@@ -281,8 +281,14 @@ public class CodeDecompiler
 			// method finishes
 			if (flags.isInstance())
 				block.appendCopy(varstate.getTypedLocal(1),
-					varstate.getLocal(0));
+					Variable.SYNCHRONIZED);
 			
+			// Otherwise need to get the pointer to the current class object
+			// and lock on that instead
+			else
+				throw new todo.TODO();
+			
+			// Enter the monitor on the synchronized object
 			throw new todo.TODO();
 		}
 		
