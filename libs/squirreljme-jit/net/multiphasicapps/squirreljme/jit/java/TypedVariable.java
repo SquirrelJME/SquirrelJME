@@ -135,5 +135,27 @@ public final class TypedVariable
 		
 		return rv;
 	}
+	
+	/**
+	 * Returns the variable type.
+	 *
+	 * @return The variable type.
+	 * @since 2017/09/01
+	 */
+	public JavaType type()
+	{
+		return this.type;
+	}
+	
+	/**
+	 * Returns the variable.
+	 *
+	 * @return The variable.
+	 * @since 2017/09/01
+	 */
+	public Variable variable()
+	{
+		return this.var;
+	}
 }
 
