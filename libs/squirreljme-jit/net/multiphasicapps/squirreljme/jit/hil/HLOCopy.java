@@ -38,7 +38,7 @@ public final class HLOCopy
 	 *
 	 * @param __src The source variable.
 	 * @param __dest The destination variable.
-	 * @throws JITException If the copy operation could not be appended.
+	 * @throws JITException If the copy overwrites itself.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/01
 	 */
@@ -48,6 +48,11 @@ public final class HLOCopy
 		// Check
 		if (__src == null || __dest == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI2b The destination variable is the same as
+		// the source. (The source; The destination)}
+		if (__src.variable().equals(__dest))
+			throw new JITException(String.format("JI2b %s %s", __src, __dest));
 		
 		// Set
 		this.source = __src;
