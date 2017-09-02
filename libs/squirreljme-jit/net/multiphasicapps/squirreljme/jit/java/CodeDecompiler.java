@@ -293,7 +293,7 @@ public class CodeDecompiler
 		}
 		
 		// Generate jump to the real method entry point
-		throw new todo.TODO();
+		block.appendUnconditionalJump(new JumpTarget(0));
 	}
 	
 	/**
