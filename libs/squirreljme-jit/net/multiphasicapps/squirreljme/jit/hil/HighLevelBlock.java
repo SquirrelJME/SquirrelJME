@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.hil;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.java.JumpTarget;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -109,6 +110,23 @@ public class HighLevelBlock
 			throw new NullPointerException("NARG");
 		
 		append(new HLOCountReference(__v, __up));
+	}
+	
+	/**
+	 * Appends an unconditional jump to the given target.
+	 *
+	 * @param __t The target to jump to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/01
+	 */
+	public final void appendUnconditionalJump(JumpTarget __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		append(new HLOUnconditionalJump(__t));
 	}
 	
 	/**
