@@ -35,7 +35,7 @@ public final class InitializationKey
 	 */
 	public InitializationKey(int __id)
 	{
-		this.id = __k;
+		this.id = __id;
 	}
 	
 	/**

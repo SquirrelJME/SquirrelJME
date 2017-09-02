@@ -27,6 +27,9 @@ public final class TypedVariable
 	/** The variable. */
 	protected final Variable var;
 	
+	/** The initialization key. */
+	protected final InitializationKey initkey;
+	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -42,6 +45,21 @@ public final class TypedVariable
 	public TypedVariable(JavaType __t, Variable __v)
 		throws NullPointerException
 	{
+		this(__t, __v, null);
+	}
+	
+	/**
+	 * Initializes the typed variable with the given initialization key.
+	 *
+	 * @param __t The type that is used, may be {@code null} to indicate that
+	 * no type is used.
+	 * @param __v The location where the variable is located.
+	 * @param __i The initialization key.
+	 * @throws NullPointerException If {@code __v} is {@code null}.
+	 * @since 2017/08/13
+	 */
+	public TypedVariable(JavaType __t, Variable __v, InitializationKey __i)
+	{
 		// Check
 		if (__v == null)
 			throw new NullPointerException("NARG");
@@ -49,6 +67,7 @@ public final class TypedVariable
 		// Set
 		this.type = __t;
 		this.var = __v;
+		this.initkey = __i;
 	}
 	
 	/**
@@ -90,8 +109,7 @@ public final class TypedVariable
 	 */
 	public boolean isInitialized()
 	{
-		JavaType type = this.type;
-		return type != null && type.isInitialized();
+		return this.initkey == null;
 	}
 	
 	/**

@@ -267,9 +267,10 @@ public class CodeDecompiler
 		
 		// Count objects which were passed to the method
 		VariableState varstate = this._varstate;
+		VariableTread locals = varstate.locals;
 		for (int i = 0, n = varstate.maxLocals(); i < n; i++)
 		{
-			TypedVariable tv = varstate.getTypedLocal(i);
+			TypedVariable tv = locals.getTypedVariable(i);
 			if (tv.isObject())
 				block.appendCountReference(tv, true);
 		}
@@ -283,7 +284,7 @@ public class CodeDecompiler
 			// a copied this so that the monitor can be exited when this
 			// method finishes
 			if (flags.isInstance())
-				block.appendCopy(varstate.getTypedLocal(1),
+				block.appendCopy(locals.getTypedVariable(1),
 					Variable.SYNCHRONIZED);
 			
 			// Otherwise need to get the pointer to the current class object
