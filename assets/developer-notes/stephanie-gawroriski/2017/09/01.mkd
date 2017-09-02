@@ -1,0 +1,62 @@
+# 2017/09/01
+
+## 17:03
+
+You know, alternatively with the way the basic blocks are setup it is possible
+to compile to Java byte code and have it be valid. At least to the byte code
+operations such as goto are completely valid. So I wonder if instead of a
+simulated target have like a simulated environment. Then once the environment
+is built up I can then work on a simulator that generates instructions. So
+the initial output will spit out a JAR that could be executed on the host VM
+like a normal Java program. The fragment builder will need to the ability to
+handle these cases and have "Meta" blocks associated with fragments. For
+example the byte code target will need stuff such as the constant pool which
+would be shared. Hypothetically everything could fit within a single class
+so to speak, although that would be a bit nasty. But I should consider this
+after I get the high level byte code handled if I want to take this route.
+
+## 17:24
+
+I am going to end up having duplicate code. `TemporaryFragmentBuilder` could
+be used for binary output without any fragment information. So basically
+instead I can have a base class `DataBuilder` which the byte related stuff.
+The anything specific to fragments is in there. This way when linking time is
+handled it can just use that base class.
+
+## 21:56
+
+The class structure will actually make sense standalone. After verification
+checks, the VM's class structure will be needed in the future for the JIT to
+function properly. One thing though is that in the generated code, if the JIT
+is enabled some checks cannot be optimized for. So I will need two separate
+check instructions or similar to handle this case. I could go for minimum
+compact binaries by removing unused things, it is valid for Java ME but there
+could potentially be issues. The main thing is the main program entry point
+and such. Manifests would need to be read, `Class.forName()` guessed, and a
+few other things so it complicates things especially. I think complication
+is not what I want. Plus a fully working VM would be much better.
+
+## 22:03
+
+So question, are `HighLevelBlock`s immutable? Do I have a builder and an
+associated key? Well `HighLevelProgram`s are mutable so having a mix would
+complicate some things a bit. Blocks can only be appened to. So there
+could be some sanity checks as needed.
+
+## 22:05
+
+High level instructions will be immutable since that is a bit easier to
+manage.
+
+## 23:27
+
+The semantics for new will basically be the following:
+
+ * Allocate storage
+ * Initialize
+   * Set class type
+
+## 22:44
+
+Preventing copies from dest == src means that things can be easier done
+than just generating no-ops.
