@@ -27,6 +27,9 @@ public final class VariableTread
 	/** The variable types. */
 	private final JavaType[] _types;
 	
+	/** Initialization keys for entries. */
+	private final InitializationKey[] _initkeys;
+	
 	/** Variable cache. */
 	private final Reference<Variable>[] _vars;
 	
@@ -53,8 +56,9 @@ public final class VariableTread
 		
 		// Initialize
 		this._types = new JavaType[__n];
+		this._initkeys = new InitializationKey[__n];
 		this._vars = __makeVariables(__n);
-		this._tvars = __makeTypedVariables(__n);
+		this._tvars = __makeTypedVariables(__n); 
 		this.isstack = __s;
 		
 		throw new todo.TODO();
