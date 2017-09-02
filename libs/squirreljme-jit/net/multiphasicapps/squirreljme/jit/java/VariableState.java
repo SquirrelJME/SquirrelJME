@@ -54,7 +54,7 @@ public final class VariableState
 		StackMapTableState state = __smt.get(0);
 		for (int i = 0; i < __ml; i++)
 		{
-			StackMapTableEntry e = state.getLocal(0);
+			StackMapTableEntry e = state.getLocal(i);
 			if (e != null)
 				locals.__set(i, e);
 		}
