@@ -33,10 +33,10 @@ public class StackMapTableBuilder
 		new SortedTreeMap<>();
 	
 	/** Entries which are in local variables. */
-	private final JavaType[] _locals;
+	private final StackMapTableEntry[] _locals;
 	
 	/** Entries which are on the stack. */
-	private final JavaType[] _stack;
+	private final StackMapTableEntry[] _stack;
 	
 	/** The depth of the stack. */
 	private volatile int _depth;
@@ -72,11 +72,11 @@ public class StackMapTableBuilder
 		
 		// The stack is always empty on initial entry
 		int maxstack = __bc.maxStack();
-		this._stack = new JavaType[maxstack];
+		this._stack = new StackMapTableEntry[maxstack];
 		
 		// Locals are initialized according to the argument types
 		int maxlocals = __bc.maxLocals();
-		JavaType[] locals = new JavaType[maxlocals];
+		StackMapTableEntry[] locals = new StackMapTableEntry[maxlocals];
 		this._locals = locals;
 		
 		// If this is an instance method then the first argument is always the
@@ -84,20 +84,21 @@ public class StackMapTableBuilder
 		// this which requires initialization first.
 		int at = 0;
 		if (!__f.isStatic())
-			locals[at++] = new JavaType(__oc, !__n.isInstanceInitializer());
+			locals[at++] = new StackMapTableEntry(new JavaType(__oc),
+				!__n.isInstanceInitializer());
 		
 		// Handle all arguments now
 		for (int i = 0, na = __t.argumentCount(); i < na; i++)
 		{
 			// Trivial set of argument
 			FieldDescriptor a = __t.argument(i);
-			locals[at++] = new JavaType(a, true);
+			locals[at++] = new StackMapTableEntry(new JavaType(a), true);
 			
 			// Add top of long/double but with unique distinct types
 			if (a.equals(FieldDescriptor.LONG))
-				locals[at++] = JavaType.TOP_LONG;
+				locals[at++] = StackMapTableEntry.TOP_LONG;
 			else if (a.equals(FieldDescriptor.DOUBLE))
-				locals[at++] = JavaType.TOP_DOUBLE;
+				locals[at++] = StackMapTableEntry.TOP_DOUBLE;
 		}
 		
 		// Set initial entry stat

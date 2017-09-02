@@ -22,6 +22,14 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class StackMapTableEntry
 {
+	/** The top of a long. */
+	public static final StackMapTableEntry TOP_LONG =
+		new StackMapTableEntry(JavaType.TOP_LONG, true);
+	
+	/** The top of a double. */
+	public static final StackMapTableEntry TOP_DOUBLE =
+		new StackMapTableEntry(JavaType.TOP_DOUBLE, true);
+	
 	/** The type. */
 	protected final JavaType type;
 	
