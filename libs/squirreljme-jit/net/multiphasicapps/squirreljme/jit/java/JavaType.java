@@ -35,9 +35,6 @@ public final class JavaType
 	/** The type this refers to. */
 	protected final FieldDescriptor type;
 	
-	/** Is this type initialized? */
-	protected final boolean isinitialized;
-	
 	/** Internal property. */
 	private final int _internal;
 	
@@ -63,13 +60,10 @@ public final class JavaType
 	 * Initializes the stack map type.
 	 *
 	 * @param __f The field type.
-	 * @param __init Is the value initialized.
-	 * @throws IllegalStateException If an uninitialized primitive type is
-	 * used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	public JavaType(FieldDescriptor __f, boolean __init)
+	public JavaType(FieldDescriptor __f)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check
@@ -84,15 +78,9 @@ public final class JavaType
 			__f.equals(FieldDescriptor.CHARACTER))
 			__f = FieldDescriptor.INTEGER;
 		
-		// {@squirreljme.error JI1s Cannot have a primitive type which is not
-		// initialized.}
-		if (__f.isPrimitive() && !__init)
-			throw new IllegalStateException("JI1s");
-		
 		// Set
 		this._internal = 0;
 		this.type = __f;
-		this.isinitialized = __init;
 	}
 	
 	/**
@@ -111,7 +99,6 @@ public final class JavaType
 		
 		this._internal = __i;
 		this.type = null;
-		this.isinitialized = false;
 	}
 	
 	/**
@@ -127,8 +114,7 @@ public final class JavaType
 		
 		JavaType o = (JavaType)__o;
 		return this._internal == o._internal &&
-			Objects.equals(this.type, o.type) &&
-			this.isinitialized == o.isinitialized;
+			Objects.equals(this.type, o.type);
 	}
 	
 	/**
@@ -138,18 +124,7 @@ public final class JavaType
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Has this type been initialized?
-	 *
-	 * @return {@code true} if this type was initialized.
-	 * @since 2017/08/13
-	 */
-	public boolean isInitialized()
-	{
-		return this.isinitialized;
+		return this._internal ^ Objects.hashCode(this.type);
 	}
 	
 	/**
@@ -226,13 +201,7 @@ public final class JavaType
 			
 			// Other
 			else
-			{
-				FieldDescriptor type = this.type;
-				if (this.isinitialized)
-					rv = type.toString();
-				else
-					rv = type + "*";
-			}
+				rv = this.type.toString();
 			
 			// Cache
 			this._string = new WeakReference<>(rv);
