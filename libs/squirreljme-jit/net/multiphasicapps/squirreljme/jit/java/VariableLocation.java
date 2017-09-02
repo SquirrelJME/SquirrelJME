@@ -23,8 +23,8 @@ public enum VariableLocation
 	/** Stack variables. */
 	STACK,
 	
-	/** The copied {@code this} reference, used for {@code synchronized}. */
-	COPIED_THIS,
+	/** If the method is synchronized this is the monitor to keep track of. */
+	SYNCHRONIZED,
 	
 	/** The exception that is in the throwing state. */
 	THROWING_EXCEPTION,
