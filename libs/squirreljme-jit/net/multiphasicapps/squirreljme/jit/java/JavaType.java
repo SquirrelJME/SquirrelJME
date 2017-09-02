@@ -49,11 +49,11 @@ public final class JavaType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	public JavaType(ClassName __cn, boolean __init)
+	public JavaType(ClassName __cn)
 		throws NullPointerException
 	{
 		this(new FieldDescriptor((__cn.isArray() ? __cn.toString() :
-			"L" + __cn + ";")), __init);
+			"L" + __cn + ";")));
 	}
 	
 	/**

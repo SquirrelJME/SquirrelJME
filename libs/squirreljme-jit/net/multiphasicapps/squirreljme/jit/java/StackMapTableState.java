@@ -27,10 +27,10 @@ public final class StackMapTableState
 	protected final int depth;
 	
 	/** Local variables. */
-	private final JavaType[] _locals;
+	private final StackMapTableEntry[] _locals;
 	
 	/** Stack variables. */
-	private final JavaType[] _stack;
+	private final StackMapTableEntry[] _stack;
 	
 	/** String representation of this table. */
 	private volatile Reference<String> _string;
@@ -45,7 +45,8 @@ public final class StackMapTableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	public StackMapTableState(JavaType[] __l, JavaType[] __s, int __d)
+	public StackMapTableState(StackMapTableEntry[] __l,
+		StackMapTableEntry[] __s, int __d)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -95,12 +96,12 @@ public final class StackMapTableState
 	 * @throws JITException If the index is out of range.
 	 * @since 2017/08/12
 	 */
-	public JavaType getLocal(int __i)
+	public StackMapTableEntry getLocal(int __i)
 		throws JITException
 	{
 		// {@squirreljme.error JI22 The specified local variable is out of
 		// range. (The index)}
-		JavaType[] locals = this._locals;
+		StackMapTableEntry[] locals = this._locals;
 		if (__i < 0 || __i >= locals.length)
 			throw new JITException(String.format("JI22 %d", __i));
 		return locals[__i];
@@ -114,7 +115,7 @@ public final class StackMapTableState
 	 * @throws JITException If the index is out of range.
 	 * @since 2017/08/12
 	 */
-	public JavaType getStack(int __i)
+	public StackMapTableEntry getStack(int __i)
 		throws JITException
 	{
 		// {@squirreljme.error JI21 The specified stack variable is out of
@@ -159,7 +160,8 @@ public final class StackMapTableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	private static void __stringize(JavaType[] __jt, StringBuilder __sb)
+	private static void __stringize(StackMapTableEntry[] __jt,
+		StringBuilder __sb)
 		throws NullPointerException
 	{
 		// Check
@@ -190,7 +192,7 @@ public final class StackMapTableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */
-	private static void __verify(JavaType[] __t)
+	private static void __verify(StackMapTableEntry[] __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -202,7 +204,8 @@ public final class StackMapTableState
 		JavaType w = null;
 		for (int i = 0, n = __t.length; i < n; i++)
 		{
-			JavaType a = __t[i];
+			StackMapTableEntry ea = __t[i];
+			JavaType a = (ea != null ? ea.type() : null);
 			
 			// A wide type was pushed
 			if (w != null)
