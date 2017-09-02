@@ -21,6 +21,9 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class VariableTread
 {
+	/** The location of this tread. */
+	protected final VariableLocation location;
+	
 	/** Is this treated as a stack? */
 	protected final boolean isstack;
 	
@@ -45,23 +48,29 @@ public final class VariableTread
 	 * @param __n The number of entries to use.
 	 * @param __s Is this treated as a stack?
 	 * @throws IllegalArgumentException If the number of entries is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/02
 	 */
-	public VariableTread(int __n, boolean __s)
-		throws IllegalArgumentException
+	public VariableTread(VariableLocation __l, int __n, boolean __s)
+		throws IllegalArgumentException, NullPointerException
 	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error JI2d Cannot initialize a tread with a negative
 		// size.}
 		if (__n < 0)
 			throw new IllegalArgumentException("JI2d");
 		
 		// Initialize
+		this.location = __l;
 		this._types = new JavaType[__n];
 		this._initkeys = new InitializationKey[__n];
 		this._vars = __makeVariables(__n);
 		this._tvars = __makeTypedVariables(__n); 
 		this.isstack = __s;
-		
-		throw new todo.TODO();
+		this._top = (__s ? 0 : __n);
 	}
 	
 	/**
@@ -89,7 +98,21 @@ public final class VariableTread
 	public final TypedVariable getTypedVariable(int __i)
 		throws JITException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JI2e The specified index is not within bounds
+		// of the tread. (The index of the variable)}
+		if (__i < 0 || __i >= this._top)
+			throw new JITException(String.format("JI2e %d", __i));
+		
+		Reference<TypedVariable>[] tvars = this._tvars;
+		Reference<TypedVariable> ref = tvars[__i];
+		TypedVariable rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			tvars[__i] = new WeakReference<>((rv = new TypedVariable(
+				this._types[__i], getVariable(__i), this._initkeys[__i])));
+		
+		return rv;
 	}
 	
 	/**
@@ -103,7 +126,21 @@ public final class VariableTread
 	public final Variable getVariable(int __i)
 		throws JITException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JI2f The specified index is not within bounds
+		// of the tread. (The index of the variable)}
+		if (__i < 0 || __i >= this._top)
+			throw new JITException(String.format("JI2f %d", __i));
+		
+		Reference<Variable>[] vars = this._vars;
+		Reference<Variable> ref = vars[__i];
+		Variable rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			vars[__i] = new WeakReference<>((rv =
+				new Variable(this.location, __i)));
+		
+		return rv;
 	}
 	
 	/**
@@ -131,18 +168,23 @@ public final class VariableTread
 	 * Sets the variable from the given stack map table state.
 	 *
 	 * @param __smt The stack map table state.
+	 * @throws IndexOutOfBoundsException If the index it out of bounds.
 	 * @throws JITException If it could not be set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/02
 	 */
-	final void __set(StackMapTableEntry __smt)
-		throws JITException, NullPointerException
+	final void __set(int __i, StackMapTableEntry __smt)
+		throws IndexOutOfBoundsException, JITException, NullPointerException
 	{
 		// Check
 		if (__smt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		JavaType jt = __smt.type();
+		this._types[__i] = jt;
+		this._initkeys[__i] = (jt != null ? (__smt.isInitialized() ? null :
+			new InitializationKey((-__i) - 1)) : null);
+		this._tvars[__i] = null;
 	}
 	
 	/**

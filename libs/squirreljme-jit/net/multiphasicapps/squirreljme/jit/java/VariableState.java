@@ -46,8 +46,9 @@ public final class VariableState
 		
 		// Initialize treads
 		VariableTread locals;
-		this.locals = (locals = new VariableTread(__ml, false));
-		this.stack = new VariableTread(__ms, true);
+		this.locals =
+			(locals = new VariableTread(VariableLocation.LOCAL, __ml, false));
+		this.stack = new VariableTread(VariableLocation.STACK, __ms, true);
 		
 		// Initialize local variables from the stack map state
 		StackMapTableState state = __smt.get(0);
@@ -55,7 +56,7 @@ public final class VariableState
 		{
 			StackMapTableEntry e = state.getLocal(0);
 			if (e != null)
-				locals.__set(e);
+				locals.__set(i, e);
 		}
 	}
 	
