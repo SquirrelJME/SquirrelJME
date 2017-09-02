@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.hil;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
@@ -25,6 +27,10 @@ public class HighLevelBlock
 {
 	/** The key which this block is associated with. */
 	protected final BasicBlockKey key;
+	
+	/** Instructions which exist in the block. */
+	private final List<HLO> _ops =
+		new ArrayList<HLO>();
 	
 	/**
 	 * Initializes the high level basic block.
@@ -45,6 +51,29 @@ public class HighLevelBlock
 	}
 	
 	/**
+	 * Appends the given operation.
+	 *
+	 * @param __op The operation to append.
+	 * @throws JITException If it could not be appended.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/01
+	 */
+	public final void append(HLO __op)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		// Add
+		List<HLO> ops = this._ops;
+		ops.add(__op);
+		
+		// Debug
+		System.err.printf("DEBUG -- Append: %s%n", __op);
+	}
+	
+	/**
 	 * Appends a copy operation from one variable to another.
 	 *
 	 * @param __src The source variable.
@@ -60,7 +89,7 @@ public class HighLevelBlock
 		if (__src == null || __dest == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		append(new HLOCopy(__src, __dest));
 	}
 	
 	/**
@@ -79,7 +108,18 @@ public class HighLevelBlock
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		append(new HLOCountReference(__v, __up));
+	}
+	
+	/**
+	 * Returns the number of operations in this block.
+	 *
+	 * @return The number of operations in thiss block.
+	 * @since 2017/09/01
+	 */
+	public final int size()
+	{
+		return this._ops.size();
 	}
 }
 
