@@ -148,8 +148,12 @@ public final class TypedVariable
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = String.format("%s=%s",
+		{
+			InitializationKey initkey = this.initkey;
+			this._string = new WeakReference<>((rv = String.format("%s%s=%s",
+				(initkey == null ? "" : String.format("![%s]", initkey)),
 				this.var, this.type)));
+		}
 		
 		return rv;
 	}
