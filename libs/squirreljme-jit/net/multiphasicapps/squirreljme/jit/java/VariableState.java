@@ -80,7 +80,7 @@ public final class VariableState
 		// Initialize locals
 		StackMapTableState state = __smt.get(0);
 		for (int i = 0; i < __ml; i++)
-			locals[i] = state.getLocal(i);
+			__setSMTEntry(i, state.getLocal(i));
 		
 		// Set
 		this.maxstack = __ms;
