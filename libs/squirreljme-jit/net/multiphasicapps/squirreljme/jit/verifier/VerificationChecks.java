@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.verifier;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.java.ClassName;
 
 /**
@@ -23,6 +25,10 @@ import net.multiphasicapps.squirreljme.jit.java.ClassName;
  */
 public final class VerificationChecks
 {
+	/** Current verification checks. */
+	private final Set<VerificationCheck> _checks =
+		new LinkedHashSet<>();
+	
 	/**
 	 * Adds a check if the given class can extend the other class.
 	 *
@@ -34,7 +40,7 @@ public final class VerificationChecks
 	public final void canExtend(ClassName __t, ClassName __o)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		check(new CanExtendCheck(__t, __o));
 	}
 	
 	/**
@@ -48,7 +54,24 @@ public final class VerificationChecks
 	public final void canImplement(ClassName __t, ClassName __o)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		check(new CanImplementCheck(__t, __o));
+	}
+	
+	/**
+	 * Adds the given check to be performed.
+	 *
+	 * @param __v The check to be performed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/01
+	 */
+	public final void check(VerificationCheck __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this._checks.add(__v);
 	}
 }
 
