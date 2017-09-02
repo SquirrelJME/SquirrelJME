@@ -68,6 +68,9 @@ public class CodeDecompiler
 	/** Variable state used for knowing where variables are. */
 	private volatile VariableState _varstate;
 	
+	/** The next initialization key to use. */
+	private volatile int _nextinitkey;
+	
 	/**
 	 * Initializes the code decompiler.
 	 *
@@ -267,7 +270,7 @@ public class CodeDecompiler
 		for (int i = 0, n = varstate.maxLocals(); i < n; i++)
 		{
 			TypedVariable tv = varstate.getTypedLocal(i);
-			if (tv.isObject() && tv.isInitialized())
+			if (tv.isObject())
 				block.appendCountReference(tv, true);
 		}
 		
@@ -341,6 +344,17 @@ public class CodeDecompiler
 		// initialization for arguments along with being used for verification
 		// so that the code operates correctly
 		return smtbuilder.build();
+	}
+	
+	/**
+	 * Returns the next initialization key.
+	 *
+	 * @return The next initialization key.
+	 * @since 2017/09/02
+	 */
+	private InitializationKey __nextInitKey()
+	{
+		return new InitializationKey(++this._nextinitkey);
 	}
 }
 
