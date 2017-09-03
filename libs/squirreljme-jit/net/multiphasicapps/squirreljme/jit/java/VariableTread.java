@@ -144,6 +144,36 @@ public final class VariableTread
 	}
 	
 	/**
+	 * Pushes the specified variable to the stack.
+	 *
+	 * @param __v The variable to push.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JITException If the stack overflows or if the type is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/02
+	 */
+	public final void push(TypedVariable __v)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI2h Cannot push a variable to a non-stack
+		// tread.}
+		if (!this.isstack)
+			throw new IllegalStateException("JI2h");
+		
+		// {@squirreljme.error JI2i Cannot push the given variable to
+		// the stack because it has no type. (The variable)}
+		if (!__v.hasType())
+			throw new JITException(String.format("JI2i %s", __v));
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the maximum number of entries which can fit in this tread.
 	 *
 	 * @return The storage size of this tread.
