@@ -335,6 +335,13 @@ public class CodeDecompiler
 		if (__bl == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.erorr JI2j Cannot load the specified variable
+		// because it is not an object. (The source variable)}
+		VariableState varstate = this._varstate;
+		TypedVariable var = varstate.locals().getTypedVariable(__src);
+		if (var == null || !var.isObject())
+			throw new JITException(String.format("JI2j %s", var));
+		
 		throw new todo.TODO();
 	}
 	
