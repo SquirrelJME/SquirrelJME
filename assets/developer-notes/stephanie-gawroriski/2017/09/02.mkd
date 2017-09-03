@@ -1,0 +1,50 @@
+# 2017/09/02
+
+## 13:33
+
+Uninitialized objects need to have a unique key associated with them.
+Basically in the byte code when a object is used with `new` it will be
+placed on the stack. However usually in most cases it will be `dup`ed
+so that it can be constructed while also still being on the stack. With
+my current model initializations cannot be detected because there is no
+way to link objects together. But, basically calling a constructor on
+an object should all objects with that identifier to be set as
+initialized.
+
+## 13:36
+
+However, this information does not exist in the stack map table at all.
+It is just stored as being initialized or not initialized. So this
+means that `VariableState` needs to be changed to handle keying
+uninitialized variables and such. Then the stack map needs a new type
+used to indicate uninitialization. Then `JavaType` would have to lose
+the uninitialized bit. Then `TypedVariable` gets the initialization
+information.
+
+## 13:48
+
+So looking at `Variable`, `TypedVariable` and `JavaType`. `JavaType`
+will lose initialization state, but it will be recorded in the stack map
+table representation. `TypedVariable` will have an extra parameter that
+can be used as a key for uninitialized objects.
+
+## 22:26
+
+I only need to handle exceptions after certain instructions. For example
+the `LOAD` instructions will never require an exception to be handled
+because.
+
+## 22:49
+
+Ok so the first thing to do actually is write a bunch of simulators. The
+first simulator that gets written is the HIL simulator. Basically this is
+the simplest of simulators. The ABI and machine generators for the HIL
+simulator will just encode the HIL directly without doing anything. When
+the HIL code is working as intended it can be extended to a simplified
+instruction set. So basically the route is:
+
+ 1. HIL Simulator
+ 2. LIL Simulator
+
+At least with HIL only, I can get the bulk of the VM working in a testable
+environment.
