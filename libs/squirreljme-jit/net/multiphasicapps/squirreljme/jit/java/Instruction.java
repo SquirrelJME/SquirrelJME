@@ -358,6 +358,22 @@ public final class Instruction
 	}
 	
 	/**
+	 * Obtains the given argument as an integer.
+	 *
+	 * @param __i The argument to get.
+	 * @return The value of the argument.
+	 * @throws ClassCastException If the given argument is not an integer.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * bounds of the instruction arguments.
+	 * @since 2017/09/02
+	 */
+	public int intArgument(int __i)
+		throws ClassCastException, IndexOutOfBoundsException
+	{
+		return this.<Integer>argument(__i, Integer.class).intValue();
+	}
+	
+	/**
 	 * Returns the jump targets for this instruction.
 	 *
 	 * @return The jump targets for this instruction.
