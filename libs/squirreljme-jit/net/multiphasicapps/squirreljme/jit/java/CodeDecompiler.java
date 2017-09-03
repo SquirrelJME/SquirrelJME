@@ -240,6 +240,24 @@ public class CodeDecompiler
 			// Debug
 			System.err.printf("DEBUG -- Decode IN %s%n", i);
 			
+			// Depends on the operation
+			int op;
+			switch ((op = i.operation()))
+			{
+				case InstructionIndex.ALOAD_0:
+				case InstructionIndex.ALOAD_1:
+				case InstructionIndex.ALOAD_2:
+				case InstructionIndex.ALOAD_3:
+					__genLoadObject(block, op - InstructionIndex.ALOAD_0);
+					break;
+				
+					// {@squirreljme.error JI2g The specified instruction
+					// is not implemented. (The instruction)}
+				default:
+					throw new JITException(String.format("JI2g %s", i));
+			}
+			
+			// Handle exceptions
 			throw new todo.TODO();
 		}
 		
@@ -298,6 +316,26 @@ public class CodeDecompiler
 		
 		// Generate jump to the real method entry point
 		block.appendUnconditionalJump(new JumpTarget(0));
+	}
+	
+	/**
+	 * Loads the specified object from the local variables onto the stack.
+	 *
+	 * @param __bl The output block.
+	 * @param __src The source local to copy from.
+	 * @throws JITException If the source cannot be copied because it is not
+	 * an object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/02
+	 */
+	private void __genLoadObject(HighLevelBlock __bl, int __src)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__bl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
