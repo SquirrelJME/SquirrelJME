@@ -251,8 +251,12 @@ public class CodeDecompiler
 					__genLoadObject(block, op - InstructionIndex.ALOAD_0);
 					break;
 				
+				case InstructionIndex.INVOKEINTERFACE:
 				case InstructionIndex.INVOKESPECIAL:
-					throw new todo.TODO();
+				case InstructionIndex.INVOKESTATIC:
+				case InstructionIndex.INVOKEVIRTUAL:
+					__genInvokeMethod(block, i);
+					break;
 				
 					// {@squirreljme.error JI2g The specified instruction
 					// is not implemented. (The instruction)}
@@ -316,6 +320,27 @@ public class CodeDecompiler
 		
 		// Generate jump to the real method entry point
 		block.appendUnconditionalJump(new JumpTarget(0));
+	}
+	
+	/**
+	 * This generates the required code for invoking methods.
+	 *
+	 * @param __bl The output block.
+	 * @param __i The instruction for the method invocation.
+	 * @throws JITException If the method could not be invoked.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/04
+	 */
+	private void __genInvokeMethod(HighLevelBlock __bl, Instruction __i)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__bl == null || __i == null)
+			throw new NullPointerException("NARG");
+		
+		VariableState varstate = this._varstate;
+		
+		throw new todo.TODO();
 	}
 	
 	/**
