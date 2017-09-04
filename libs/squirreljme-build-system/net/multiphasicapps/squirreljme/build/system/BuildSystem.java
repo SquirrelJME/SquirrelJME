@@ -82,6 +82,8 @@ public class BuildSystem
 		// ({@code target [template]}: Loads a pre-created target template and
 		// performs compilation of that target.;
 		// {@code build [project]}: Builds the specified project.;
+		// {@code generate-docs [target]}: Parses the source code and generates
+		// documentation from it and places it within the target directory.;
 		// {@code ok}: Does nothing, is used to determine if the build system
 		// was able to be built.)
 		// }
@@ -121,6 +123,17 @@ public class BuildSystem
 					p.binary();
 				}
 				break;
+			
+				// Generates all of the documentation
+			case "generate-docs":
+				{
+					// {@squirreljme.error AO0d The documentation generator
+					// requires an output directory.}
+					if (na < 2)
+						throw new IllegalArgumentException("AO0d");
+					
+					new DocumentBuilder(Paths.get(__args[1])).run();
+				}
 				
 				// Target a specific system
 			case "target":
