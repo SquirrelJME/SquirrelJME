@@ -81,7 +81,9 @@ public class BuildSystem
 		// commands which are valid.
 		// ({@code target [template]}: Loads a pre-created target template and
 		// performs compilation of that target.;
-		// {@code build [project]}: Builds the specified project.)
+		// {@code build [project]}: Builds the specified project.;
+		// {@code ok}: Does nothing, is used to determine if the build system
+		// was able to be built.)
 		// }
 		int na = __args.length;
 		if (na <= 0)
@@ -93,6 +95,11 @@ public class BuildSystem
 		switch ((command = Objects.toString(__args[0], "").trim().
 			toLowerCase()))
 		{
+				// Ok -- Does nothing, just to see if the build system was
+				// properly built
+			case "ok":
+				break;
+			
 				// Build a project
 			case "build":
 				{
