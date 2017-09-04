@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.squirreljme.build.system;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import net.multiphasicapps.javac.token.Tokenizer;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
@@ -27,21 +30,26 @@ public class DocumentBuilder
 	/** The output path for documents. */
 	protected final Path output;
 	
+	/** The manager which is used for projects. */
+	protected final ProjectManager projects;
+	
 	/**
 	 * Initializes the document builder.
 	 *
+	 * @param __pm The manager for projects.
 	 * @param __p The output path.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/04
 	 */
-	public DocumentBuilder(Path __p)
+	public DocumentBuilder(ProjectManager __pm, Path __p)
 		throws NullPointerException
 	{
 		// Check
-		if (__p == null)
+		if (__pm == null || __p == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.projects = __pm;
 		this.output = __p;
 	}
 	
@@ -54,6 +62,18 @@ public class DocumentBuilder
 	public void run()
 		throws IOException
 	{
+		for (Project p : this.projects)
+			try (FileDirectory fd = p.source().openFileDirectory())
+			{
+				for (String fn : fd)
+				{
+					try (InputStream is = fd.open(fn))
+					{
+						new Tokenizer(is).run();
+					}
+				}
+			}
+		
 		throw new todo.TODO();
 	}
 }

@@ -8,14 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.struct;
+package net.multiphasicapps.javac.token;
 
 /**
- * This class is the tokenizer which is used to provide tokens.
+ * This represents the type of token which was parsed.
  *
  * @since 2017/09/04
  */
-public class Tokenizer
+public enum TokenType
 {
+	/** End. */
+	;
 }
 

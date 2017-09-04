@@ -132,7 +132,7 @@ public class BuildSystem
 					if (na < 2)
 						throw new IllegalArgumentException("AO0d");
 					
-					new DocumentBuilder(Paths.get(__args[1])).run();
+					new DocumentBuilder(projects, Paths.get(__args[1])).run();
 				}
 				
 				// Target a specific system

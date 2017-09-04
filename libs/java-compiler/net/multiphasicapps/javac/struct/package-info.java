@@ -9,9 +9,8 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package provides the interfaces which are used by the source structure
- * parser and is used to parse Java source code and return a representation
- * of the structure.
+ * This package provides information on the structure of Java source code and
+ * is used by the documenter and compiler.
  *
  * @since 2017/09/04
  */

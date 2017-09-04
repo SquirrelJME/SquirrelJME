@@ -8,16 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.struct;
-
 /**
- * This represents the type of token which was parsed.
+ * This package contains the tokenizers for Java source code which is needed
+ * by the documenter and compiler to parse Java source code.
  *
  * @since 2017/09/04
  */
-public enum TokenType
-{
-	/** End. */
-	;
-}
+
+package net.multiphasicapps.javac.token;
 
