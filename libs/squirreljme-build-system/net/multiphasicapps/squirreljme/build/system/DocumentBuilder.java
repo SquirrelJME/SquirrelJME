@@ -69,7 +69,7 @@ public class DocumentBuilder
 				{
 					try (InputStream is = fd.open(fn))
 					{
-						new Tokenizer(is).run();
+						System.err.println(new Tokenizer(is, true).run());
 					}
 				}
 			}
