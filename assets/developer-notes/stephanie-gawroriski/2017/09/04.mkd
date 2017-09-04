@@ -1,0 +1,15 @@
+# 2017/09/04
+
+## 00:36
+
+I do not believe anything has to be done at the end of an instruction within a
+basic block at all. Just need to parse the instructions. Only some
+instructions will require an actual check and handling be performed for stuff
+such as exceptions.
+
+## 00:48
+
+Ok so `invokespecial` when a constructor is called will do some things since
+many different scenarios could occur. But I think the basic scenario would
+work the same for the most part. It can just set the specified object as
+initialized via its key and that is it for the most part.
