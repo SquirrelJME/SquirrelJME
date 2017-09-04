@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.struct;
+package net.multiphasicapps.javac.token;
 
 /**
  * This represents a single token which contains a type and the characters
