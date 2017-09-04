@@ -102,6 +102,17 @@ public final class TypedVariable
 	}
 	
 	/**
+	 * Returns the initialization key of the variable.
+	 *
+	 * @return The object's initialization key.
+	 * @since 2017/09/03
+	 */
+	public InitializationKey initializationKey()
+	{
+		return this.initkey;
+	}
+	
+	/**
 	 * Has this type been initialized?
 	 *
 	 * @return {@code true} if this type was initialized.
@@ -150,9 +161,8 @@ public final class TypedVariable
 		if (ref == null || null == (rv = ref.get()))
 		{
 			InitializationKey initkey = this.initkey;
-			this._string = new WeakReference<>((rv = String.format("%s%s=%s",
-				(initkey == null ? "" : String.format("![%s]", initkey)),
-				this.var, this.type)));
+			this._string = new WeakReference<>((rv = String.format("%s[%s]=%s",
+				this.var, (initkey == null ? "valid" : initkey), this.type)));
 		}
 		
 		return rv;

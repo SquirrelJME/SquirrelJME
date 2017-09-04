@@ -61,6 +61,57 @@ public final class VariableState
 	}
 	
 	/**
+	 * Returns the tread for the given location.
+	 *
+	 * @param __l The location to get the tread for.
+	 * @return The tread for the given location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/03
+	 */
+	public VariableTread getTread(VariableLocation __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__l)
+		{
+				// Local variables
+			case LOCAL:
+				return this.locals;
+			
+				// Stack variables
+			case STACK:
+				return this.stack;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Obtains the typed variable based on the given variable.
+	 *
+	 * @param __v The variable to obtain a typed variable for.
+	 * @return The typed variable to use.
+	 * @throws JITException If the variable is out of range.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/03
+	 */
+	public TypedVariable getTypedVariable(Variable __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return getTread(__v.location()).getTypedVariable(__v.index());
+	}
+	
+	/**
 	 * Returns the local variable tread.
 	 *
 	 * @return The local variable tread.

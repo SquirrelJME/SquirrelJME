@@ -209,5 +209,16 @@ public final class JavaType
 		
 		return rv;
 	}
+	
+	/**
+	 * Returns the width of the type.
+	 *
+	 * @return The width of the type.
+	 * @since 2017/09/03
+	 */
+	public int width()
+	{
+		return (isWide() ? 2 : 1);
+	}
 }
 

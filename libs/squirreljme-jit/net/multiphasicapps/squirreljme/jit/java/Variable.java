@@ -65,7 +65,13 @@ public final class Variable
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof Variable))
+			return false;
+		
+		Variable o = (Variable)__o;
+		return this.location.equals(o.location) &&
+			this.index == o.index;
 	}
 	
 	/**
@@ -75,7 +81,29 @@ public final class Variable
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.location.hashCode() ^ this.index;
+	}
+	
+	/**
+	 * Returns the index of the variable.
+	 *
+	 * @return The index of the variable.
+	 * @since 2017/09/03
+	 */
+	public int index()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * Returns the location of the variable.
+	 *
+	 * @return The location of the variable.
+	 * @since 2017/09/03
+	 */
+	public VariableLocation location()
+	{
+		return this.location;
 	}
 	
 	/**
