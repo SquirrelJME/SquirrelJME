@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 8fbf0127-aca6-477f-8220-cde2ce21da48
+X-SquirrelJME-Error: AQ
+X-SquirrelJME-Name: Java Source Code Structure
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project is used to parse Java source 
+ code and provides a representation of the class structure. This is 
+ used by the Java compiler and the documentation tool.
+Microedition-Configuration: CLDC-1.8-Compact
+
