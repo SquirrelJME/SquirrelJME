@@ -251,6 +251,9 @@ public class CodeDecompiler
 					__genLoadObject(block, op - InstructionIndex.ALOAD_0);
 					break;
 				
+				case InstructionIndex.INVOKESPECIAL:
+					throw new todo.TODO();
+				
 					// {@squirreljme.error JI2g The specified instruction
 					// is not implemented. (The instruction)}
 				default:
