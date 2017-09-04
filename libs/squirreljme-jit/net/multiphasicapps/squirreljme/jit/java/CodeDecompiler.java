@@ -256,9 +256,6 @@ public class CodeDecompiler
 				default:
 					throw new JITException(String.format("JI2g %s", i));
 			}
-			
-			// Handle exceptions
-			throw new todo.TODO();
 		}
 		
 		// Finish basic block output
