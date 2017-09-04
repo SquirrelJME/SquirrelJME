@@ -147,17 +147,48 @@ public final class VariableTread
 	 * Pushes the specified variable to the stack.
 	 *
 	 * @param __v The variable to push.
+	 * @return The variable of the pushed stack slot.
 	 * @throws IllegalStateException If this is not a stack.
 	 * @throws JITException If the stack overflows or if the type is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/02
 	 */
-	public final void push(TypedVariable __v)
-		throws JITException, NullPointerException
+	public final Variable push(TypedVariable __v)
+		throws IllegalStateException, JITException, NullPointerException
 	{
 		// Check
 		if (__v == null)
+			throw new NullPointerException("NARG");
+			
+		// {@squirreljme.error JI2i Cannot push the given variable to
+		// the stack because it has no type. (The variable)}
+		if (!__v.hasType())
+			throw new JITException(String.format("JI2i %s", __v));
+		
+		return push(__v.type(), __v.initializationKey());
+	}
+	
+	/**
+	 * Pushes the specified type and initialization key to the stack.
+	 *
+	 * @param __t The type to push.
+	 * @param __i An optional initialization key for the given object.
+	 * @return The variable of the pushed stack slot.
+	 * @throws IllegalArgumentException If an initialization key was specified
+	 * for a non-object.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JITException If the stack overflows or if the type is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/03
+	 */
+	public final Variable push(JavaType __t, InitializationKey __i)
+		throws IllegalArgumentException, IllegalStateException, JITException,
+			NullPointerException
+	{
+		// Check
+		if (__t == null || __i == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JI2h Cannot push a variable to a non-stack
@@ -165,12 +196,49 @@ public final class VariableTread
 		if (!this.isstack)
 			throw new IllegalStateException("JI2h");
 		
-		// {@squirreljme.error JI2i Cannot push the given variable to
-		// the stack because it has no type. (The variable)}
-		if (!__v.hasType())
-			throw new JITException(String.format("JI2i %s", __v));
+		// {@squirreljme.error JI2k Non-objects cannot have an initialization
+		// key specified for them. (The type; The initialization key)}
+		if (__i != null && !__t.isObject())
+			throw new IllegalArgumentException(String.format(
+				"JI2k %s %s", __t, __t));
 		
-		throw new todo.TODO();
+		JavaType[] types = this._types;
+		InitializationKey[] initkeys = this._initkeys;
+		Reference<Variable>[] vars = this._vars;
+		Reference<TypedVariable>[] tvars = this._tvars;
+		
+		// {@squirreljme.error JI2j The stack would overflow pushing the
+		// specified type. (The type being pushed;
+		// The stack limit; The stack size after pushing)}
+		int top = this._top,
+			w = __t.width(),
+			next = top + w,
+			limit = types.length;
+		if (next > limit)
+			throw new JITException(String.format("JI2j %s %d %d", __t, limit,
+				next));
+		
+		// Fill base
+		types[top] = __t;
+		initkeys[top] = __i;
+		vars[top] = null;
+		tvars[top] = null;
+		
+		// Fill top of long/double?
+		if (__t.isWide())
+		{
+			int wp = top + 1;
+			types[wp] = __t.topType();
+			initkeys[wp] = null;
+			vars[wp] = null;
+			tvars[wp] = null;
+		}
+		
+		// Set new top
+		this._top = next;
+		
+		// Refer to the top as a variable that can be used for writing
+		return new Variable(this.location, top);
 	}
 	
 	/**

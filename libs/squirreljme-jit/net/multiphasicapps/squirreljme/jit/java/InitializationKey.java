@@ -87,7 +87,7 @@ public final class InitializationKey
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = Integer.toString(this.id)));
+				(rv = String.format("IKey#%d", this.id)));
 		
 		return rv;
 	}

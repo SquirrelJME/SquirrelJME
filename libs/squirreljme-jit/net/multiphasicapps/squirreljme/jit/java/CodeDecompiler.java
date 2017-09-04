@@ -342,7 +342,15 @@ public class CodeDecompiler
 		if (var == null || !var.isObject())
 			throw new JITException(String.format("JI2j %s", var));
 		
-		throw new todo.TODO();
+		// Push onto the stack
+		Variable dv = varstate.stack().push(var);
+		__bl.appendCopy(var, dv);
+		
+		// The object needs to be reference counted so it is not garbage
+		// collected
+		// Note that nothing needs to be counted down because the variable is
+		// never replaced
+		__bl.appendCountReference(varstate.getTypedVariable(dv), true);
 	}
 	
 	/**
