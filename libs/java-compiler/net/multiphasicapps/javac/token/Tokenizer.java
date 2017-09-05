@@ -82,17 +82,42 @@ public class Tokenizer
 	public List<Token> run()
 		throws IOException
 	{
+		// Output list
+		List<Token> rv = new ArrayList<>();
+		
+		StringBuilder buf = new StringBuilder();
 		Reader in = this.in;
-		int c;
 		for (;;)
 		{
-			__peek(_QUEUE_SIZE - 1);
-			if ((c = __next()) < 0)
+			// Clear buffer as tokens are processed in single groups
+			buf.setLength(0);
+			
+			// EOF?
+			int a = __peek(0),
+				b = __peek(1);
+			if (a < 0)
 				break;
-			System.err.print((char)c);
+			
+			// Ignore whitespace
+			else if (__isWhite(a))
+				continue;
+			
+			// Single line comment
+			if (a == '/' && b == '/')
+			{
+				// Eat the comment start
+				__consume(2);
+				
+				// Read until EOL
+				
+				
+				throw new todo.TODO();
+			}
+			
+			throw new todo.TODO();
 		}
 		
-		throw new todo.TODO();
+		return rv;
 	}
 	
 	/**
@@ -197,7 +222,7 @@ public class Tokenizer
 		
 		// Read in characters
 		Reader in = this.in;
-		while (qz < __a)
+		while (qz <= __a)
 			cq[qz++] = in.read();
 		this._qz = qz;
 		
@@ -220,6 +245,31 @@ public class Tokenizer
 			if (__next() < 0)
 				return i;
 		return __n;
+	}
+	
+	/**
+	 * Is the specified character deemed an end of line?
+	 *
+	 * @param __c The character to check.
+	 * @return If it is the end of the line.
+	 * @since 2017/09/05
+	 */
+	private static boolean __isNewline(int __c)
+	{
+		return __c < 0 || __c == '\r' || __c == '\n';
+	}
+	
+	/**
+	 * Is the specified character whitespace?
+	 *
+	 * @param __c The character to check.
+	 * @return If it is whitespace.
+	 * @since 2017/09/05
+	 */
+	private static boolean __isWhite(int __c)
+	{
+		return __c == ' ' || __c == '\t' || __c == '\f' || __c == '\r' ||
+			__c == '\n';
 	}
 	
 	/**
