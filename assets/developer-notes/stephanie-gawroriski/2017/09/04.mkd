@@ -13,3 +13,99 @@ Ok so `invokespecial` when a constructor is called will do some things since
 many different scenarios could occur. But I think the basic scenario would
 work the same for the most part. It can just set the specified object as
 initialized via its key and that is it for the most part.
+
+## 04:12
+
+`invokespecial` will be a bit complex to handle because it is not known if the
+class is a super class of the current class. Basically it will be the same as
+a normal invoke but the target method (which could throw an exception). So due
+to this nature, my handling of whatever method that is invoked must be
+deferred. The thrown exception `AbstractMethodError` is not part of the
+generated code, it is a compile/link time failure. So I do not need to worry
+about that. If the conditions fail at link time then nothing can be linked.
+
+## 12:08
+
+I think I will take a short break and work on JavaDoc. I am pretty sure I know
+of a better way to generate documentation and such. Basically I will just use
+the host build system that runs on JavaSE to do this with perhaps a bump for
+something SquirrelJME specific so it can run on itself. Maybe just allow for
+a JavaDoc option to exist also.
+
+## 12:14
+
+`DocumentationTool` does not exist in Java 7 though, so it will need to be
+wrapped by a virtual interface so that it works properly.
+
+## 12:18
+
+I think what is needed is a refactor of the documentation setup. But actually
+I could in reality just write my own Java source parser and have something
+that can describe anything in the source code. I could later use it with the
+compiler and such. I would not actually need to compile anything at all, it
+would just describe source code with JavaDoc comments and such. Then from the
+result of that parse I can have far better control as to how documentation
+is generated to something that I like with a more sane interface. Currently
+the Sun doclet API is really messy and a bit confusing for things. But the
+base structure parser could be used as a basis for a compiler in the future.
+
+## 12:23
+
+It would definitely provide a much better result and would be much more
+inituitive. Also the documentation tool would work on SquirrelJME also so
+there is that bonus. I can build a system that is built into my package
+manager. Currently right now, implementing any kind of documentation tool
+would be ugly because the `DocumentationTool` seems to have been an
+afterthought, so a bit messy.
+
+## 12:55
+
+The class structure will need a means to obtain dependent classes or source
+code files which may reside within different units. So for example, to
+generate the documentation properly, dependencies will need to be parsed
+and handled accordingly. However there may be cases where compilation fails
+at which point it is unknown how the documentation will be valid or invalid.
+One big thing is structure and how it all goes together. I could make the
+documentation tool I have work for the most part solely on source code files
+for now. But I think I should build a project first then if it compiles
+properly, I will then generate documentation for it. I could have a global
+link of structures though so that parsed source code can easily be referred
+to by other locations. So I would say that the documentation tool would
+depend on projects. But in reality I do not actually need to compile anything,
+just parse the code and build structure. I do however need to know
+dependencies because they could vary.
+
+## 13:13
+
+Ok, a major problem I will have is with generics. Generics are context
+sensitive. But I think I can not worry about it at all. I will probably very
+much not have to worry about it because the operators before provide the
+context. I will know if I am inside of a method or not. If I am outside of
+anything that is code then there will never be operators used. If I am ever
+within code then generic method calls will always be preceded by a period. So
+this makes things easier.
+
+## 13:15
+
+At least initially I will work on the tokenizer first to see how well it
+works. Then after that I will make a basic class structure which just
+describes what the class feels like without actually knowing anything about
+any other class. Then I will work my way from there.
+
+## 13:16
+
+But the main thing I will need to consider are casts. Luckily in Java all
+casts are in parenthesis. So stuff like `short(12)` is not a possibility.
+
+## 13:22
+
+Also unlike C, Java does not have swapped array handling like `12[boop]`. So
+I think from the surrounding context it is possible to determine what exactly
+a token represents. So as long as I know what I am tokenizing I can determine
+the rules used.
+
+## 13:55
+
+Never knew about the multiple `u`s in the escape sequences. This means you can
+hide files within Java source code and still have it compile.
+
