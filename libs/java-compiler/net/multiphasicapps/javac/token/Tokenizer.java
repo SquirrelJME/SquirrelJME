@@ -137,9 +137,10 @@ public class Tokenizer
 		
 		// Shift characters down
 		int[] cq = this._cq;
-		for (int i = 0, b = __n; i < __n; i++, b++)
+		int lim = qz - __n;
+		for (int i = 0, b = __n; i < lim; i++, b++)
 			cq[i] = cq[b];
-		this._qz = qz - __n;
+		this._qz = lim;
 	}
 	
 	/**
