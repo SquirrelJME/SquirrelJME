@@ -25,8 +25,19 @@ import java.util.List;
  */
 public class Tokenizer
 {
+	/** The number of characters in the queue. */
+	private static final int _QUEUE_SIZE =
+		8;
+	
 	/** Input character source. */
 	protected final Reader in;
+	
+	/** Character queue. */
+	private final int[] _cq =
+		new int[_QUEUE_SIZE];
+	
+	/** The characters within the queue. */
+	private volatile int _qz;
 	
 	/**
 	 * Initializes the tokenizer for Java source code.
@@ -73,11 +84,141 @@ public class Tokenizer
 	{
 		Reader in = this.in;
 		int c;
-		while ((c = in.read()) >= 0)
+		for (;;)
+		{
+			__peek(_QUEUE_SIZE - 1);
+			if ((c = __next()) < 0)
+				break;
 			System.err.print((char)c);
-		System.err.println();
+		}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the number of characters available in the queue.
+	 *
+	 * @return The number of available queue characters.
+	 * @since 2017/09/05
+	 */
+	private int __available()
+	{
+		return this._qz;
+	}
+	
+	/**
+	 * Consumes the specified number of characters without returning them.
+	 *
+	 * @param __n The number of characters to consume.
+	 * @throws IndexOutOfBoundsException If the after count is negative or
+	 * exceeds the number of available characters in the queue.
+	 */
+	private void __consume(int __n)
+		throws IndexOutOfBoundsException, IOException
+	{
+		// {@squirreljme.error AQ02 Cannot consume more characters that are
+		// waiting in the queue. (The number of characters to consume; The
+		// number of characters in the queue)}
+		int qz = this._qz;
+		if (__n < 0 || __n > qz)
+			throw new IndexOutOfBoundsException(String.format("AQ02 %d %d",
+				__n, qz));
+		
+		// If consuming all the characters the queue does not need shuffling
+		if (qz == __n)
+		{
+			this._qz = 0;
+			return;
+		}
+		
+		// Not consuming anything?
+		if (__n == 0)
+			return;
+		
+		// Shift characters down
+		int[] cq = this._cq;
+		for (int i = 0, b = __n; i < __n; i++, b++)
+			cq[i] = cq[b];
+		this._qz = qz - __n;
+	}
+	
+	/**
+	 * Returns the next character.
+	 *
+	 * @return The next character.
+	 * @throws IOException On read errors.
+	 * @since 2017/09/05
+	 */
+	private int __next()
+		throws IOException
+	{
+		// Just a peek followed by a consume
+		int rv = __peek();
+		__consume(1);
+		return rv;
+	}
+	
+	/**
+	 * Peeks the next character without removing it from the queue.
+	 *
+	 * @return The next character.
+	 * @throws IOException On read errors.
+	 * @since 2017/09/05
+	 */
+	private int __peek()
+		throws IOException
+	{
+		return __peek(0);
+	}
+	
+	/**
+	 * Peeks the next character without removing it from the queue.
+	 *
+	 * @param __a The character ahead of the current position to return.
+	 * @return The next character.
+	 * @throws IndexOutOfBoundsException If the after count is negative or
+	 * exceeds the queue size.
+	 * @throws IOException On read errors.
+	 * @since 2017/09/05
+	 */
+	private int __peek(int __a)
+		throws IndexOutOfBoundsException, IOException
+	{
+		// Check
+		if (__a < 0 || __a >= _QUEUE_SIZE)
+			throw new IndexOutOfBoundsException(String.format("AQ01 %d", __a));
+		
+		// No need to read in more characters
+		int[] cq = this._cq;
+		int qz = this._qz;
+		if (__a < qz)
+			return cq[__a];
+		
+		// Read in characters
+		Reader in = this.in;
+		while (qz < __a)
+			cq[qz++] = in.read();
+		this._qz = qz;
+		
+		return cq[__a];
+	}
+	
+	/**
+	 * Skips the specified number of characters in the input.
+	 *
+	 * @param __n The number of characters to skip.
+	 * @return The number of characters which were skipped before EOF was
+	 * reached.
+	 * @throws IOException On null arguments.
+	 * @since 2017/09/05
+	 */
+	private int __skip(int __n)
+		throws IOException
+	{
+		for (int i = 0; i < __n; i++)
+			if (__next() < 0)
+				return i;
+		return __n;
 	}
 	
 	/**
