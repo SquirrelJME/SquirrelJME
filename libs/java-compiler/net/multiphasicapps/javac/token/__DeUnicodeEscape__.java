@@ -60,7 +60,7 @@ class __DeUnicodeEscape__
 	 */
 	@Override
 	public int read(char[] __c, int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		// Check
 		if (__c == null)
@@ -68,7 +68,42 @@ class __DeUnicodeEscape__
 		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
 			throw new IndexOutOfBoundsException("CAOB");
 		
-		throw new todo.TODO();
+		// Potentially parse sequences
+		Reader from = this.from;
+		for (int i = 0, o = __o; i < __l; i++)
+		{
+			int c = from.read();
+			
+			// EOF?
+			if (c < 0)
+				return (i == 0 ? -1 : i);
+			
+			// Cannot be an escape sequence
+			if (c != '\\')
+			{
+				__c[o++] = (char)c;
+				continue;
+			}
+			
+			// EOF? Give back the slash
+			c = from.read();
+			if (c < 0)
+			{
+				__c[o++] = '\\';
+				return (o - __o);
+			}
+			
+			// Not a unicode sequence
+			if (c != 'u')
+			{
+				__c[o++] = (char)c;
+				continue;
+			}
+			
+			throw new todo.TODO();
+		}
+		
+		return __l;
 	}
 }
 

@@ -71,6 +71,12 @@ public class Tokenizer
 	public List<Token> run()
 		throws IOException
 	{
+		Reader in = this.in;
+		int c;
+		while ((c = in.read()) >= 0)
+			System.err.print((char)c);
+		System.err.println();
+		
 		throw new todo.TODO();
 	}
 	
