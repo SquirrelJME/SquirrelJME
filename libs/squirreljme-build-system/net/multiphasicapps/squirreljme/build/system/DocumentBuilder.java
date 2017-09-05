@@ -67,6 +67,9 @@ public class DocumentBuilder
 			{
 				for (String fn : fd)
 				{
+					if (!fn.endsWith(".java"))
+						continue;
+					
 					try (InputStream is = fd.open(fn))
 					{
 						System.err.println(new Tokenizer(is, true).run());
