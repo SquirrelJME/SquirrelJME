@@ -1,0 +1,9 @@
+# 2017/09/05
+
+## 10:00
+
+Ok so for character handling, I am going to need a queue. But that queue will
+need to consist of integers for EOF purposes. Also, I will need to specially
+key EOF and characters which are not valid in the queue, although a length
+could work. It would be a ring buffer.
+
