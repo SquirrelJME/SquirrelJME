@@ -39,6 +39,9 @@ public class Tokenizer
 	/** The characters within the queue. */
 	private volatile int _qz;
 	
+	/** Has EOF been reached? */
+	private volatile boolean _eof;
+	
 	/**
 	 * Initializes the tokenizer for Java source code.
 	 *
@@ -73,10 +76,67 @@ public class Tokenizer
 	}
 	
 	/**
+	 * Returns the next token.
+	 *
+	 * @return The next token or {@code null} if none remain.
+	 * @throws IOException On read errors.
+	 * @throws TokenizerException If a token sequence is not valid.
+	 * @since 2017/09/05
+	 */
+	public Token next()
+		throws IOException, TokenizerException
+	{
+		// No more tokens?
+		if (this._eof)
+			return null;
+		
+		// Either hit EOF or ignore initial whitespace
+		int x;
+		for (;;)
+		{
+			x = __peek(0);
+			if (x < 0)
+			{
+				this._eof = true;
+				return null;
+			}
+		
+			// Ignore whitespace
+			if (__isWhite(x))
+				continue;
+			
+			// Otherwise treat other characters as valid
+			break;
+		}
+		
+		// Peek the next few characters to detect extra sequences
+		StringBuilder buf = new StringBuilder();
+		int y = __peek(1),
+			z = __peek(2);
+		
+		// Single line comment
+		if (x == '/' && x == '/')
+		{
+			// Eat the comment start
+			__consume(2);
+			
+			// Read until EOL
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ01 Unknown character sequence in Java source
+		// code. (The next few characters)}
+		else
+			throw new TokenizerException(String.format("AQ01 %c%c%c", (char)x,
+				(char)y, (char)z));
+	}
+	
+	/**
 	 * Runs the tokenizer.
 	 *
 	 * @return The list of parsed tokens.
-	 * @throws IOException On read/write errors.
+	 * @throws IOException On read errors.
+	 * @throws TokenizerException If a token sequence is not valid.
 	 * @since 2017/09/04
 	 */
 	public List<Token> run()
@@ -85,37 +145,9 @@ public class Tokenizer
 		// Output list
 		List<Token> rv = new ArrayList<>();
 		
-		StringBuilder buf = new StringBuilder();
-		Reader in = this.in;
-		for (;;)
-		{
-			// Clear buffer as tokens are processed in single groups
-			buf.setLength(0);
-			
-			// EOF?
-			int a = __peek(0),
-				b = __peek(1);
-			if (a < 0)
-				break;
-			
-			// Ignore whitespace
-			else if (__isWhite(a))
-				continue;
-			
-			// Single line comment
-			if (a == '/' && b == '/')
-			{
-				// Eat the comment start
-				__consume(2);
-				
-				// Read until EOL
-				
-				
-				throw new todo.TODO();
-			}
-			
-			throw new todo.TODO();
-		}
+		Token n;
+		while (null != (n = next()))
+			rv.add(n);
 		
 		return rv;
 	}
