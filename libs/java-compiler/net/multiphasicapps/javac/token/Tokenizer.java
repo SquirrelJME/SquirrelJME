@@ -32,6 +32,9 @@ public class Tokenizer
 	/** Input character source. */
 	protected final Reader in;
 	
+	/** Should comments be read? */
+	protected final boolean comments;
+	
 	/** Character queue. */
 	private final int[] _cq =
 		new int[_QUEUE_SIZE];
@@ -73,6 +76,7 @@ public class Tokenizer
 			throw new NullPointerException("NARG");
 		
 		this.in = new __DeUnicodeEscape__(__r);
+		this.comments = __comments;
 	}
 	
 	/**
@@ -86,70 +90,22 @@ public class Tokenizer
 	public Token next()
 		throws IOException, TokenizerException
 	{
-		// No more tokens?
-		if (this._eof)
-			return null;
-		
-		// Either hit EOF or ignore initial whitespace
-		int x;
+		// Loop for comment removal, it is easier done here than in the token
+		// loop
+		boolean comments = this.comments;
 		for (;;)
 		{
-			x = __peek(0);
-			if (x < 0)
-			{
-				this._eof = true;
+			Token rv = __nextToken();
+			
+			// None left
+			if (rv == null)
 				return null;
-			}
-		
-			// Ignore whitespace
-			if (__isWhite(x))
-			{
-				__consume(1);
+			
+			// Ignore comments
+			if (!comments && rv.type().isComment())
 				continue;
-			}
-			
-			// Otherwise treat other characters as valid
-			break;
+			return rv;
 		}
-		
-		// Peek the next few characters to detect extra sequences
-		StringBuilder sb = new StringBuilder();
-		int y = __peek(1),
-			z = __peek(2);
-		
-		// Single line comment
-		if (x == '/' && x == '/')
-		{
-			// Eat the comment start
-			__consume(2);
-			
-			// Read until EOL
-			boolean firstspace = true;
-			for (;;)
-			{
-				int c = __peek();
-				if (__isNewline(c))
-					return new Token(TokenType.COMMENT, sb.toString());
-				else
-				{
-					if (firstspace)
-						if (__isWhite(c))
-						{
-							__next();
-							continue;
-						}
-						else
-							firstspace = false;
-					sb.append((char)__next());
-				}
-			}
-		}
-		
-		// {@squirreljme.error AQ01 Unknown character sequence in Java source
-		// code. (The next few characters)}
-		else
-			throw new TokenizerException(String.format("AQ01 %c%c%c", (char)x,
-				(char)y, (char)z));
 	}
 	
 	/**
@@ -238,6 +194,83 @@ public class Tokenizer
 		int rv = __peek();
 		__consume(1);
 		return rv;
+	}
+	
+	/**
+	 * Returns the next token.
+	 *
+	 * @return The next token or {@code null} if none remain.
+	 * @throws IOException On read errors.
+	 * @throws TokenizerException If a token sequence is not valid.
+	 * @since 2017/09/05
+	 */
+	private Token __nextToken()
+		throws IOException, TokenizerException
+	{
+		// No more tokens?
+		if (this._eof)
+			return null;
+		
+		// Either hit EOF or ignore initial whitespace
+		int x;
+		for (;;)
+		{
+			x = __peek(0);
+			if (x < 0)
+			{
+				this._eof = true;
+				return null;
+			}
+		
+			// Ignore whitespace
+			if (__isWhite(x))
+			{
+				__consume(1);
+				continue;
+			}
+			
+			// Otherwise treat other characters as valid
+			break;
+		}
+		
+		// Peek the next few characters to detect extra sequences
+		StringBuilder sb = new StringBuilder();
+		int y = __peek(1),
+			z = __peek(2);
+		
+		// Single line comment
+		if (x == '/' && x == '/')
+		{
+			// Eat the comment start
+			__consume(2);
+			
+			// Read until EOL
+			boolean firstspace = true;
+			for (;;)
+			{
+				int c = __peek();
+				if (__isNewline(c))
+					return new Token(TokenType.COMMENT, sb.toString());
+				else
+				{
+					if (firstspace)
+						if (__isWhite(c))
+						{
+							__next();
+							continue;
+						}
+						else
+							firstspace = false;
+					sb.append((char)__next());
+				}
+			}
+		}
+		
+		// {@squirreljme.error AQ01 Unknown character sequence in Java source
+		// code. (The next few characters)}
+		else
+			throw new TokenizerException(String.format("AQ01 %c%c%c", (char)x,
+				(char)y, (char)z));
 	}
 	
 	/**

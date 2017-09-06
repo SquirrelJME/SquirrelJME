@@ -22,5 +22,25 @@ public enum TokenType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is this a comment?
+	 *
+	 * @return If this is a comment or not.
+	 * @since 2017/09/06
+	 */
+	public final boolean isComment()
+	{
+		switch (this)
+		{
+				// Comments
+			case COMMENT:
+				return true;
+			
+				// Not a comment
+			default:
+				return false;
+		}
+	}
 }
 
