@@ -103,14 +103,17 @@ public class Tokenizer
 		
 			// Ignore whitespace
 			if (__isWhite(x))
+			{
+				__consume(1);
 				continue;
+			}
 			
 			// Otherwise treat other characters as valid
 			break;
 		}
 		
 		// Peek the next few characters to detect extra sequences
-		StringBuilder buf = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		int y = __peek(1),
 			z = __peek(2);
 		
@@ -121,7 +124,25 @@ public class Tokenizer
 			__consume(2);
 			
 			// Read until EOL
-			throw new todo.TODO();
+			boolean firstspace = true;
+			for (;;)
+			{
+				int c = __peek();
+				if (__isNewline(c))
+					return new Token(TokenType.COMMENT, sb.toString());
+				else
+				{
+					if (firstspace)
+						if (__isWhite(c))
+						{
+							__next();
+							continue;
+						}
+						else
+							firstspace = false;
+					sb.append((char)__next());
+				}
+			}
 		}
 		
 		// {@squirreljme.error AQ01 Unknown character sequence in Java source
@@ -147,7 +168,10 @@ public class Tokenizer
 		
 		Token n;
 		while (null != (n = next()))
+		{
+			System.err.printf("DEBUG -- Token: %s%n", n);
 			rv.add(n);
+		}
 		
 		return rv;
 	}
