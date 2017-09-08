@@ -18,6 +18,7 @@ this software to be used for archival purposes. It is written purely in Java
 and requires only a Java compiler and virtual machine for it to be built.
 
  * [Building](building.mkd)
+ * [Changelog](changelog.mkd)
  * [Code of Conduct](code-of-conduct.mkd)
  * [Contributing](contributing.mkd)
  * [Design Document](design.mkd)
@@ -26,6 +27,7 @@ and requires only a Java compiler and virtual machine for it to be built.
  * [License](license.mkd)
    * _Source_: GNU General Public License, Version 3 or later
    * _Assets_: Creative Commons CC-BY-SA 4.0
+ * [Release Route](route.mkd)
  * [Project Scope](scope.mkd)
 
 ## I Am Open For Hiring

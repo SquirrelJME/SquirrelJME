@@ -1,0 +1,4 @@
+# Changelog
+
+There are not released versions of SquirrelJME yet.
+
