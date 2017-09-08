@@ -40,6 +40,8 @@ concept version for the most part.
        would probably be a good choice.
  * Any library functionality needed to support the three MIDlets.
    * Core CLDC Library
+     * Most clases can probably be left unimplemented, just enough to get the
+       MIDlets working.
    * MIDP3 Classes
      * LCDUI will be the biggest part.
 
