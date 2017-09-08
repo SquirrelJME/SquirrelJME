@@ -5,6 +5,13 @@
 This will be the first released version of SquirrelJME, it will be a proof of
 concept version for the most part.
 
+ * JavaDoc with Completion
+   * Need to know which stuff is not documented and what is not implemented.
+   * This will be useful.
+   * Can be used to show how much of the API is implemented.
+   * Shows documentation of the code.
+   * Can be used as a reference I can refer to instead of opening up source
+     code to look what something does.
  * HIL Compiler
    * Forget about LIL until later.
    * Do not worry about native architectures for now.
