@@ -41,8 +41,8 @@ public class Tokenizer
 	private final int[] _cq =
 		new int[_QUEUE_SIZE];
 	
-	/** The zone queue. */
-	private final Deque<TokenZone> _zoneq =
+	/** The zone stack. */
+	private final Deque<TokenZone> _zonestack =
 		new ArrayDeque<>();
 	
 	/** The characters within the queue. */
@@ -85,7 +85,7 @@ public class Tokenizer
 		this.comments = __comments;
 		
 		// Start in the outer zone
-		this._zoneq.push(TokenZone.OUTER);
+		this._zonestack.push(TokenZone.OUTER);
 	}
 	
 	/**
@@ -246,9 +246,6 @@ public class Tokenizer
 		int y = __peek(1),
 			z = __peek(2);
 		
-		// The zone of the token
-		Deque<TokenZone> zoneq = this._zoneq;
-		
 		// Single line comment
 		if (x == '/' && x == '/')
 			return __nextTokenDecodeSingleLineComment();
@@ -281,7 +278,7 @@ public class Tokenizer
 			int c = __peek();
 			if (__isNewline(c))
 				return new Token(TokenType.COMMENT, sb.toString(),
-					this._zoneq.peek());
+					this._zonestack.peek());
 			else
 			{
 				if (firstspace)
