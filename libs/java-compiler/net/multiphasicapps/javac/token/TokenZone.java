@@ -20,7 +20,38 @@ public enum TokenZone
 	/** The outer region such as package, imports, and class declarations. */
 	OUTER,
 	
+	/** Inside of a class declaration. */
+	IN_CLASS,
+	
+	/** Inside of a field. */
+	IN_FIELD,
+	
+	/** Inside of a method. */
+	IN_METHOD,
+	
 	/** End. */
 	;
+	
+	/**
+	 * Can non-local classes be declared in this zone?
+	 *
+	 * @return {@code true} if non-local classes can be declared.
+	 * @since 2017/09/09
+	 */
+	public final boolean canDeclareNonLocalClass()
+	{
+		return this == OUTER || this == IN_CLASS;
+	}
+	
+	/**
+	 * Is this part of a member zone.
+	 *
+	 * @return {@code true} if this is a member zone.
+	 * @since 2017/09/09
+	 */
+	public final boolean isMemberZone()
+	{
+		return this == IN_FIELD || this == IN_METHOD;
+	}
 }
 
