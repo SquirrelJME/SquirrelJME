@@ -1,0 +1,30 @@
+# 2017/09/08
+
+## 10:13
+
+Ok, so I need a release goal. I believe the best way to go would be to have it
+where development versions are even numbers and are just _trunk_ and release
+versioned are forked off as odd numbers. Then development continues from the
+version in trunk so that the release version is its own branch. Then cherry
+picking and perhaps other fixes can be done to the released version. But I
+suppose things vary, I suppose I will have a release branch. I suppose when
+I make a release I will merge the trunk branch into the release one and tag
+it. But it seems kind of pointless in a way. But it does make sense where the
+release branch will always have the latest released version.
+
+## 10:16
+
+But my original thought was that the following will happen. I should have a
+proof of concept version be made so that attention can be grabbed which would
+be very good for me. Perhaps I could get donations and such to help me out. So
+my goal for SquirrelJME 0.0.3 will be to get the simulator up and running. For
+now the fastest way to do that would be to only implement HIL. Forget about
+the other parts for now they can come later. It will be incremental in the
+early stages. For now I will not need to worry about figuring out register
+allocation and other things. Once HIL is setup I can start work on
+implementing the main library and I would suppose to make SquirrelJME a bit
+more popular implement MIDP3 enough to run some games and perhaps have Opera
+Mini working on it too, which hopefully the proxy Opera runs still exists. So
+I suppose the game to run would be DoomRPG since that is a popular series that
+I know of and it probably consists of only a Canvas and such since I do not
+remember ever seeing any widgets. Opera Mini I believe is very similar.
