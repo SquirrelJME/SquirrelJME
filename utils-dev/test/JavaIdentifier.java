@@ -37,7 +37,7 @@ public class JavaIdentifier
 			// Is it valid?
 			char c = (char)i;
 			boolean nowvalid = (i <= 65535 &&
-				Character.isJavaIdentifierStart(c));
+				Character.isJavaIdentifierPart(c));
 			
 			// Validity switch?
 			if (nowvalid != wasvalid)
