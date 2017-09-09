@@ -41,10 +41,6 @@ public class Tokenizer
 	private final int[] _cq =
 		new int[_QUEUE_SIZE];
 	
-	/** The zone stack. */
-	private final Deque<TokenZone> _zonestack =
-		new ArrayDeque<>();
-	
 	/** The characters within the queue. */
 	private volatile int _qz;
 	
@@ -83,9 +79,6 @@ public class Tokenizer
 		
 		this.in = new __DeUnicodeEscape__(__r);
 		this.comments = __comments;
-		
-		// Start in the outer zone
-		this._zonestack.push(TokenZone.OUTER);
 	}
 	
 	/**
@@ -284,7 +277,6 @@ public class Tokenizer
 				// as a plain identifier make it a reserved word
 				// Identifiers can be zone context sensitive, so exploit that
 				// fact to make the parser easier
-				TokenZone zone = this._zonestack.peek();
 				TokenType type;
 				switch (s)
 				{
@@ -294,190 +286,207 @@ public class Tokenizer
 					case "const":
 						throw new TokenizerException(String.format("AQ05 %s",
 							s));
+							
+					case "abstract":
+						type = TokenType.KEYWORD_;
+						break;
 					
-						// Package
-					case "package":
-						if (zone == TokenZone.OUTER)
-							type = TokenType.PACKAGE;
-						
-						// {@squirreljme.error AQ03 The package statement
-						// cannot appear inside of a class. (The current zone
-						// being parsed)}
-						else
-							throw new TokenizerException(
-								String.format("AQ03 %s", zone));
-						break;
-						
-						// Import
-					case "import":
-						if (zone == TokenType.OUTER)
-							type = TokenType.IMPORT;
-						
-						// {@squirreljme.error AQ04 The import statement
-						// cannot appear inside of a class. (The current zone
-						// being parsed)}.
-						else
-							throw new TokenizerException(
-								String.format("AQ04 %s", zone));
-						break;
-						
-						// Enumeration
-					case "enum":
-						if (zone.canDeclareNonLocalClass())
-							type = TokenType.DECLARE_ENUM;
-						
-						// {@squirreljme.error AQ06 The enum keyword cannot
-						// appear within this zone. (The current zone being
-						// parsed)}
-						else
-							throw new TokenizerException(String.format(
-								"AQ06 %s", zone));
-						break;
-						
-						// Interface
-					case "interface":
-						if (zone.canDeclareNonLocalClass())
-							type = TokenType.DECLARE_INTERFACE;
-						
-						// {@squirreljme.error AQ07 The interface keyword
-						// cannot appear within this zone. (The current zone
-						// being parsed)}
-						else
-							throw new TokenizerException(String.format(
-								"AQ07 %s", zone));
-						break;
-						
-						// Valid in member areas
-					case "new":
-					case "default":
-					case "super":
-					case "this":
-						if (zone.isMemberZone())
-							switch (s)
-							{
-								case "new":
-									type = TokenType.KEYWORD_NEW;
-									break;
-								
-								case "default":
-									type = TokenType.KEYWORD_DEFAULT;
-									break;
-								
-								case "super":
-									type = TokenType.KEYWORD_SUPER;
-									break;
-									
-								case "this":
-									type = TokenType.KEYWORD_THIS;
-									break;
-								
-								default:
-									throw new RuntimeException("OOPS");
-							}
-						
-						// {@squirreljme.error AQ08 This keyword cannot
-						// appear within this zone. (The current zone being
-						// parsed)}
-						else
-							throw new TokenizerException(String.format(
-								"AQ08 %s %s", s, zone));
-						break;
-						
-						// Only valid in methods
-					case "continue":
-					case "for":
-					case "switch":
 					case "assert":
-					case "if":
-					case "do":
-					case "break":
-					case "throw":
-					case "else":
-					case "return":
-					case "catch":
-					case "try":
-					case "finally":
-					case "while":
-						if (zone == TokenZone.IN_METHOD)
-							switch (s)
-							{
-								case "continue":
-									type = TokenType.KEYWORD_CONTINUE;
-									break;
-									
-								case "for":
-									type = TokenType.KEYWORD_FOR;
-									break;
-									
-								case "switch":
-									type = TokenType.KEYWORD_SWITCH;
-									break;
-									
-								case "assert":
-									type = TokenType.KEYWORD_ASSERT;
-									break;
-									
-								case "if":
-									type = TokenType.KEYWORD_IF;
-									break;
-									
-								case "do":
-									type = TokenType.KEYWORD_DO;
-									break;
-									
-								case "break":
-									type = TokenType.KEYWORD_BREAK;
-									break;
-									
-								case "throw":
-									type = TokenType.KEYWORD_THROW;
-									break;
-									
-								case "else":
-									type = TokenType.KEYWORD_ELSE;
-									break;
-									
-								case "return":
-									type = TokenType.KEYWORD_RETURN;
-									break;
-									
-								case "catch":
-									type = TokenType.KEYWORD_CATCH;
-									break;
-									
-								case "try":
-									type = TokenType.KEYWORD_TRY;
-									break;
-									
-								case "finally":
-									type = TokenType.KEYWORD_FINALLY;
-									break;
-									
-								case "while":
-									type = TokenType.KEYWORD_WHILE;
-									break;
-									
-								default:
-									throw new RuntimeException("OOPS");
-							}
-						
-						// {@squirreljme.error AQ09 This keyword cannot
-						// appear within this zone. (The current zone being
-						// parsed)}
-						else
-							throw new TokenizerException(String.format(
-								"AQ09 %s %s", s, zone));
+						type = TokenType.KEYWORD_;
 						break;
-						
-abstract synchronized boolean private double implements protected byte public throws instanceof transient extends int short char final static void class long strictfp volatile float native
-				
+					
+					case "boolean":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "break":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "byte":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "case":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "catch":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "char":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "class":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "continue":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "default":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "do":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "double":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "else":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "enum":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "extends":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "final":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "finally":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "float":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "for":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "if":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "implements":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "import":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "instanceof":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "int":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "interface":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "long":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "native":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "new":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "package":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "private":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "protected":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "public":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "return":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "short":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "static":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "strictfp":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "super":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "switch":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "synchronized":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "this":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "throw":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "throws":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "transient":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "try":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "void":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "volatile":
+						type = TokenType.KEYWORD_;
+						break;
+					
+					case "while":
+						type = TokenType.KEYWORD_;
+						break;
+					
 						// Normal identifier
 					default:
 						type = TokenType.IDENTIFIER;
 						break;
 				}
 				
-				return new Token(type, s, this._zonestack.peek());
+				// Create token
+				return new Token(type, s);
 			}
 			
 			// Use it
@@ -505,8 +514,7 @@ abstract synchronized boolean private double implements protected byte public th
 		{
 			int c = __peek();
 			if (__isNewline(c))
-				return new Token(TokenType.COMMENT, sb.toString(),
-					this._zonestack.peek());
+				return new Token(TokenType.COMMENT, sb.toString());
 			else
 			{
 				if (firstspace)

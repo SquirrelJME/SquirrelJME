@@ -20,76 +20,148 @@ public enum TokenType
 	/** A comment. */
 	COMMENT,
 	
-	/** Package. */
-	PACKAGE,
+	/** Keyword xxxxx. */
+	KEYWORD_ABSTRACT,
 	
-	/** Import statement. */
-	IMPORT,
-	
-	/** Import wildcard. */
-	IMPORT_WILDCARD,
-	
-	/** Declare an enumeration. */
-	DECLARE_ENUM,
-	
-	/** Declare an interface. */
-	DECLARE_INTERFACE,
-	
-	/** Class keyword. */
-	KEYWORD_CLASS,
-	
-	/** New keyword. */
-	KEYWORD_NEW,
-	
-	/** The default keyword. */
-	KEYWORD_DEFAULT,
-	
-	/** Super keyword. */
-	KEYWORD_SUPER,
-	
-	/** This keyword. */
-	KEYWORD_THIS,
-	
-	/** Continue keyword. */
-	KEYWORD_CONTINUE,
-	
-	/** For keyword. */
-	KEYWORD_FOR,
-	
-	/** Switch keyword. */
-	KEYWORD_SWITCH,
-	
-	/** Asset keyword. */
+	/** Keyword xxxxx. */
 	KEYWORD_ASSERT,
 	
-	/** If keyword. */
-	KEYWORD_IF,
+	/** Keyword xxxxx. */
+	KEYWORD_BOOLEAN,
 	
-	/** Do keyword. */
-	KEYWORD_DO,
-	
-	/** Break keyword. */
+	/** Keyword xxxxx. */
 	KEYWORD_BREAK,
 	
-	/** Throw keyword. */
-	KEYWORD_THROW,
+	/** Keyword xxxxx. */
+	KEYWORD_BYTE,
 	
-	/** Else keyword. */
-	KEYWORD_ELSE,
+	/** Keyword xxxxx. */
+	KEYWORD_CASE,
 	
-	/** Return keyword. */
-	KEYWORD_RETURN,
-	
-	/** Catch keyword. */
+	/** Keyword xxxxx. */
 	KEYWORD_CATCH,
 	
-	/** Try keyword. */
-	KEYWORD_TRY,
+	/** Keyword xxxxx. */
+	KEYWORD_CHAR,
 	
-	/** Finally keyword. */
+	/** Keyword xxxxx. */
+	KEYWORD_CLASS,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_CONTINUE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_DEFAULT,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_DO,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_DOUBLE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_ELSE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_ENUM,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_EXTENDS,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_FINAL,
+	
+	/** Keyword xxxxx. */
 	KEYWORD_FINALLY,
 	
-	/** While keyword. */
+	/** Keyword xxxxx. */
+	KEYWORD_FLOAT,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_FOR,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_IF,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_IMPLEMENTS,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_IMPORT,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_INSTANCEOF,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_INT,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_INTERFACE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_LONG,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_NATIVE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_NEW,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_PACKAGE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_PRIVATE,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_PROTECTED,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_PUBLIC,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_RETURN,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_SHORT,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_STATIC,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_STRICTFP,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_SUPER,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_SWITCH,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_SYNCHRONIZED,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_THIS,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_THROW,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_THROWS,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_TRANSIENT,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_TRY,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_VOID,
+	
+	/** Keyword xxxxx. */
+	KEYWORD_VOLATILE,
+	
+	/** Keyword xxxxx. */
 	KEYWORD_WHILE,
 	
 	/** End. */
