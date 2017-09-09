@@ -250,11 +250,239 @@ public class Tokenizer
 		if (x == '/' && x == '/')
 			return __nextTokenDecodeSingleLineComment();
 		
+		// Start of identifier?
+		else if (CharacterTest.isIdentifierStart(x))
+			return __nextTokenDecodeIdentifier();
+		
 		// {@squirreljme.error AQ01 Unknown character sequence in Java source
 		// code. (The next few characters)}
 		else
 			throw new TokenizerException(String.format("AQ01 %c%c%c", (char)x,
 				(char)y, (char)z));
+	}
+	
+	/**
+	 * This decodes a single identifier.
+	 *
+	 * @return The read identifier.
+	 * @throws IOException On read errors.
+	 * @since 2017/09/09
+	 */
+	private Token __nextTokenDecodeIdentifier()
+		throws IOException
+	{
+		StringBuilder sb = new StringBuilder();
+		for (;;)
+		{
+			// Stop outside of identifiers
+			int c = __peek(0);
+			if (c < 0 || !Character.isIdentifierPart(c))
+			{
+				String s = sb.toString();
+				
+				// The token may be a reserved word so instead of having it
+				// as a plain identifier make it a reserved word
+				// Identifiers can be zone context sensitive, so exploit that
+				// fact to make the parser easier
+				TokenZone zone = this._zonestack.peek();
+				TokenType type;
+				switch (s)
+				{
+						// {@squirreljme.error AQ05 The specified token is not
+						// valid for an identifier. (The token)}
+					case "goto":
+					case "const":
+						throw new TokenizerException(String.format("AQ05 %s",
+							s));
+					
+						// Package
+					case "package":
+						if (zone == TokenZone.OUTER)
+							type = TokenType.PACKAGE;
+						
+						// {@squirreljme.error AQ03 The package statement
+						// cannot appear inside of a class. (The current zone
+						// being parsed)}
+						else
+							throw new TokenizerException(
+								String.format("AQ03 %s", zone));
+						break;
+						
+						// Import
+					case "import":
+						if (zone == TokenType.OUTER)
+							type = TokenType.IMPORT;
+						
+						// {@squirreljme.error AQ04 The import statement
+						// cannot appear inside of a class. (The current zone
+						// being parsed)}.
+						else
+							throw new TokenizerException(
+								String.format("AQ04 %s", zone));
+						break;
+						
+						// Enumeration
+					case "enum":
+						if (zone.canDeclareNonLocalClass())
+							type = TokenType.DECLARE_ENUM;
+						
+						// {@squirreljme.error AQ06 The enum keyword cannot
+						// appear within this zone. (The current zone being
+						// parsed)}
+						else
+							throw new TokenizerException(String.format(
+								"AQ06 %s", zone));
+						break;
+						
+						// Interface
+					case "interface":
+						if (zone.canDeclareNonLocalClass())
+							type = TokenType.DECLARE_INTERFACE;
+						
+						// {@squirreljme.error AQ07 The interface keyword
+						// cannot appear within this zone. (The current zone
+						// being parsed)}
+						else
+							throw new TokenizerException(String.format(
+								"AQ07 %s", zone));
+						break;
+						
+						// Valid in member areas
+					case "new":
+					case "default":
+					case "super":
+					case "this":
+						if (zone.isMemberZone())
+							switch (s)
+							{
+								case "new":
+									type = TokenType.KEYWORD_NEW;
+									break;
+								
+								case "default":
+									type = TokenType.KEYWORD_DEFAULT;
+									break;
+								
+								case "super":
+									type = TokenType.KEYWORD_SUPER;
+									break;
+									
+								case "this":
+									type = TokenType.KEYWORD_THIS;
+									break;
+								
+								default:
+									throw new RuntimeException("OOPS");
+							}
+						
+						// {@squirreljme.error AQ08 This keyword cannot
+						// appear within this zone. (The current zone being
+						// parsed)}
+						else
+							throw new TokenizerException(String.format(
+								"AQ08 %s %s", s, zone));
+						break;
+						
+						// Only valid in methods
+					case "continue":
+					case "for":
+					case "switch":
+					case "assert":
+					case "if":
+					case "do":
+					case "break":
+					case "throw":
+					case "else":
+					case "return":
+					case "catch":
+					case "try":
+					case "finally":
+					case "while":
+						if (zone == TokenZone.IN_METHOD)
+							switch (s)
+							{
+								case "continue":
+									type = TokenType.KEYWORD_CONTINUE;
+									break;
+									
+								case "for":
+									type = TokenType.KEYWORD_FOR;
+									break;
+									
+								case "switch":
+									type = TokenType.KEYWORD_SWITCH;
+									break;
+									
+								case "assert":
+									type = TokenType.KEYWORD_ASSERT;
+									break;
+									
+								case "if":
+									type = TokenType.KEYWORD_IF;
+									break;
+									
+								case "do":
+									type = TokenType.KEYWORD_DO;
+									break;
+									
+								case "break":
+									type = TokenType.KEYWORD_BREAK;
+									break;
+									
+								case "throw":
+									type = TokenType.KEYWORD_THROW;
+									break;
+									
+								case "else":
+									type = TokenType.KEYWORD_ELSE;
+									break;
+									
+								case "return":
+									type = TokenType.KEYWORD_RETURN;
+									break;
+									
+								case "catch":
+									type = TokenType.KEYWORD_CATCH;
+									break;
+									
+								case "try":
+									type = TokenType.KEYWORD_TRY;
+									break;
+									
+								case "finally":
+									type = TokenType.KEYWORD_FINALLY;
+									break;
+									
+								case "while":
+									type = TokenType.KEYWORD_WHILE;
+									break;
+									
+								default:
+									throw new RuntimeException("OOPS");
+							}
+						
+						// {@squirreljme.error AQ09 This keyword cannot
+						// appear within this zone. (The current zone being
+						// parsed)}
+						else
+							throw new TokenizerException(String.format(
+								"AQ09 %s %s", s, zone));
+						break;
+						
+abstract synchronized boolean private double implements protected byte public throws instanceof transient extends int short char final static void class long strictfp volatile float native
+				
+						// Normal identifier
+					default:
+						type = TokenType.IDENTIFIER;
+						break;
+				}
+				
+				return new Token(type, s, this._zonestack.peek());
+			}
+			
+			// Use it
+			sb.append((char)__next());
+		}
 	}
 	
 	/**
