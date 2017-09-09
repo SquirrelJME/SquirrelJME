@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -38,6 +40,10 @@ public class Tokenizer
 	/** Character queue. */
 	private final int[] _cq =
 		new int[_QUEUE_SIZE];
+	
+	/** The zone queue. */
+	private final Deque<TokenZone> _zoneq =
+		new ArrayDeque<>();
 	
 	/** The characters within the queue. */
 	private volatile int _qz;
@@ -77,6 +83,9 @@ public class Tokenizer
 		
 		this.in = new __DeUnicodeEscape__(__r);
 		this.comments = __comments;
+		
+		// Start in the outer zone
+		this._zoneq.push(TokenZone.OUTER);
 	}
 	
 	/**
@@ -234,43 +243,58 @@ public class Tokenizer
 		}
 		
 		// Peek the next few characters to detect extra sequences
-		StringBuilder sb = new StringBuilder();
 		int y = __peek(1),
 			z = __peek(2);
 		
+		// The zone of the token
+		Deque<TokenZone> zoneq = this._zoneq;
+		
 		// Single line comment
 		if (x == '/' && x == '/')
-		{
-			// Eat the comment start
-			__consume(2);
-			
-			// Read until EOL
-			boolean firstspace = true;
-			for (;;)
-			{
-				int c = __peek();
-				if (__isNewline(c))
-					return new Token(TokenType.COMMENT, sb.toString());
-				else
-				{
-					if (firstspace)
-						if (__isWhite(c))
-						{
-							__next();
-							continue;
-						}
-						else
-							firstspace = false;
-					sb.append((char)__next());
-				}
-			}
-		}
+			return __nextTokenDecodeSingleLineComment();
 		
 		// {@squirreljme.error AQ01 Unknown character sequence in Java source
 		// code. (The next few characters)}
 		else
 			throw new TokenizerException(String.format("AQ01 %c%c%c", (char)x,
 				(char)y, (char)z));
+	}
+	
+	/**
+	 * Decodes a single line comment token.
+	 *
+	 * @return The comment.
+	 * @throws IOException On read errors.
+	 * @since 2017/09/09
+	 */
+	private Token __nextTokenDecodeSingleLineComment()
+		throws IOException
+	{
+		// Eat the comment start
+		__consume(2);
+		
+		// Read until EOL
+		StringBuilder sb = new StringBuilder();
+		boolean firstspace = true;
+		for (;;)
+		{
+			int c = __peek();
+			if (__isNewline(c))
+				return new Token(TokenType.COMMENT, sb.toString(),
+					this._zoneq.peek());
+			else
+			{
+				if (firstspace)
+					if (__isWhite(c))
+					{
+						__next();
+						continue;
+					}
+					else
+						firstspace = false;
+				sb.append((char)__next());
+			}
+		}
 	}
 	
 	/**

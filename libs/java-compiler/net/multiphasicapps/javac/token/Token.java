@@ -27,6 +27,9 @@ public final class Token
 	/** The token string data. */
 	protected final String chars;
 	
+	/** The zone the token is in. */
+	protected final TokenZone zone;
+	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -35,18 +38,20 @@ public final class Token
 	 *
 	 * @param __t The type of token this is.
 	 * @param __c The characters which make up the token.
+	 * @param __z The zone the token is in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public Token(TokenType __t, String __c)
+	public Token(TokenType __t, String __c, TokenZone __z)
 		throws NullPointerException
 	{
 		// Check
-		if (__t == null || __c == null)
+		if (__t == null || __c == null || __z == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __t;
 		this.chars = __c;
+		this.zone = __z;
 	}
 	
 	/**
@@ -72,7 +77,8 @@ public final class Token
 		
 		Token o = (Token)__o;
 		return this.type.equals(o.type) &&
-			this.chars.equals(o.chars);
+			this.chars.equals(o.chars) &&
+			this.zone.equals(o.zone);
 	}
 	
 	/**
@@ -82,7 +88,8 @@ public final class Token
 	@Override
 	public int hashCode()
 	{
-		return this.type.hashCode() ^ this.chars.hashCode();
+		return this.type.hashCode() ^ this.chars.hashCode() ^
+			this.zone.hashCode();
 	}
 	
 	/**
@@ -96,8 +103,8 @@ public final class Token
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = String.format("%s: %s",
-				this.type, this.chars)));
+			this._string = new WeakReference<>((rv = String.format(
+				"%s: %s (in %s)", this.type, this.chars, this.zone)));
 		
 		return rv;
 	}
@@ -111,6 +118,17 @@ public final class Token
 	public TokenType type()
 	{
 		return this.type;
+	}
+	
+	/**
+	 * Returns the zone that the token appears within.
+	 *
+	 * @return The token's zone.
+	 * @since 2017/09/09
+	 */
+	public TokenZone zone()
+	{
+		return this.zone;
 	}
 }
 
