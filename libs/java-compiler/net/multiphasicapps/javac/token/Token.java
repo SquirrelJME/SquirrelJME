@@ -50,7 +50,7 @@ public final class Token
 		throws NullPointerException
 	{
 		// Check
-		if (__t == null || __c == null || __z == null)
+		if (__t == null || __c == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __t;
