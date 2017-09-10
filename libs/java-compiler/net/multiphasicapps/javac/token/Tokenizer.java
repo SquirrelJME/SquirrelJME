@@ -203,8 +203,7 @@ public class Tokenizer
 		throws IOException
 	{
 		// Peek character so it is in the buffer
-		if (!this._nxwaiting)
-			__peek();
+		__peek();
 		
 		// Position needed for finding errors
 		this._curline = this._nxline;
@@ -232,9 +231,9 @@ public class Tokenizer
 		
 		// Read in next character
 		LogicalReader in = this.in;
-		int ln = in.line(),
-			cl = in.column(),
-			c = in.read();
+		int c = in.read(),
+			ln = in.line(),
+			cl = in.column();
 		
 		// Set details
 		this._nxchar = c;
