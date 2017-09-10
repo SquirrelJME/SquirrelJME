@@ -41,16 +41,28 @@ public class Tokenizer
 	private volatile int _nxchar;
 	
 	/** The next line. */
-	private volatile int _nxline;
+	private volatile int _nxline =
+		1;
 	
 	/** The next column. */
-	private volatile int _nxcolumn;
+	private volatile int _nxcolumn =
+		1;
 	
 	/** The current line. */
-	private volatile int _curline;
+	private volatile int _curline =
+		1;
 	
 	/** The current column. */
-	private volatile int _curcolumn;
+	private volatile int _curcolumn =
+		1;
+	
+	/** The current token's line. */
+	private volatile int _atline =
+		1;
+	
+	/** The current token's column. */
+	private volatile int _atcolumn =
+		1;
 	
 	/**
 	 * Initializes the tokenizer for Java source code.
@@ -94,12 +106,90 @@ public class Tokenizer
 	public Token next()
 		throws IOException, TokenizerException
 	{
-		// Stop at EOF
-		int c = __next();
-		if (c < 0)
-			return null;
+		// Loop to skip whitespace
+		for (;;)
+		{
+			// Record before read because the read will make the column count
+			// and possibly even the row be off by one
+			int line = this._curline,
+				column = this._curcolumn;
+			
+			// Stop at EOF
+			int c = __next();
+			if (c < 0)
+				return null;
+			
+			// Skip whitespace
+			if (CharacterTest.isWhite(c))
+				continue;
+			
+			// Token position, used for debugging
+			this._atline = line;
+			this._atcolumn = column;
+			
+			// Forward slash: comments, /, or /=.
+			if (c == '/')
+				return __decideForwardSlash();
 		
-		throw new todo.TODO();
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Decides what to do with a forward slash.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2017/09/09
+	 */
+	private Token __decideForwardSlash()
+		throws IOException
+	{
+		int c = __peek();
+		
+		// Not-divide
+		if (c == '*' || c == '/' || c == '=')
+		{
+			// Eat character
+			__next();
+			
+			// Multi-line comment
+			if (c == '*')
+				throw new todo.TODO();
+		
+			// Single line comment
+			else if (c == '/')
+				return __getSingleLineComment();
+		
+			// Divide and assign
+			else
+				return __token(TokenType.OPERATOR_DIVIDE_AND_ASSIGN, "/=");
+		}
+		
+		// Divide otherwise
+		else
+			return __token(TokenType.OPERATOR_DIVIDE, "/");
+	}
+	
+	/**
+	 * Reads a single line comment.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2017/09/09
+	 */
+	private Token __getSingleLineComment()
+		throws IOException
+	{
+		StringBuilder sb = new StringBuilder();
+		for (;;)
+		{
+			// Stop if it is consider the end of line
+			int c = __peek();
+			if (c < 0 || CharacterTest.isNewline(c))
+				return __token(TokenType.COMMENT, sb);
+			
+			// Otherwise consume it
+			sb.append((char)__next());
+		}
 	}
 	
 	/**
@@ -154,6 +244,25 @@ public class Tokenizer
 		
 		// Need to know the actual character
 		return c;
+	}
+	
+	/**
+	 * Creates a token and returns it.
+	 *
+	 * @param __t The type of token to create.
+	 * @param __s The string making up the token characters.
+	 * @return The created token.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/09
+	 */
+	private Token __token(TokenType __t, CharSequence __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		return new Token(__t, __s.toString(), this._atline, this._atcolumn);
 	}
 
 	/**

@@ -20,149 +20,155 @@ public enum TokenType
 	/** A comment. */
 	COMMENT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword abstract. */
 	KEYWORD_ABSTRACT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword assert. */
 	KEYWORD_ASSERT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword boolean. */
 	KEYWORD_BOOLEAN,
 	
-	/** Keyword xxxxx. */
+	/** Keyword break. */
 	KEYWORD_BREAK,
 	
-	/** Keyword xxxxx. */
+	/** Keyword byte. */
 	KEYWORD_BYTE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword case. */
 	KEYWORD_CASE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword catch. */
 	KEYWORD_CATCH,
 	
-	/** Keyword xxxxx. */
+	/** Keyword char. */
 	KEYWORD_CHAR,
 	
-	/** Keyword xxxxx. */
+	/** Keyword class. */
 	KEYWORD_CLASS,
 	
-	/** Keyword xxxxx. */
+	/** Keyword continue. */
 	KEYWORD_CONTINUE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword default. */
 	KEYWORD_DEFAULT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword do. */
 	KEYWORD_DO,
 	
-	/** Keyword xxxxx. */
+	/** Keyword double. */
 	KEYWORD_DOUBLE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword else. */
 	KEYWORD_ELSE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword enum. */
 	KEYWORD_ENUM,
 	
-	/** Keyword xxxxx. */
+	/** Keyword extends. */
 	KEYWORD_EXTENDS,
 	
-	/** Keyword xxxxx. */
+	/** Keyword final. */
 	KEYWORD_FINAL,
 	
-	/** Keyword xxxxx. */
+	/** Keyword finally. */
 	KEYWORD_FINALLY,
 	
-	/** Keyword xxxxx. */
+	/** Keyword float. */
 	KEYWORD_FLOAT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword for. */
 	KEYWORD_FOR,
 	
-	/** Keyword xxxxx. */
+	/** Keyword if. */
 	KEYWORD_IF,
 	
-	/** Keyword xxxxx. */
+	/** Keyword implements. */
 	KEYWORD_IMPLEMENTS,
 	
-	/** Keyword xxxxx. */
+	/** Keyword import. */
 	KEYWORD_IMPORT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword instanceof. */
 	KEYWORD_INSTANCEOF,
 	
-	/** Keyword xxxxx. */
+	/** Keyword int. */
 	KEYWORD_INT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword interface. */
 	KEYWORD_INTERFACE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword long. */
 	KEYWORD_LONG,
 	
-	/** Keyword xxxxx. */
+	/** Keyword native. */
 	KEYWORD_NATIVE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword new. */
 	KEYWORD_NEW,
 	
-	/** Keyword xxxxx. */
+	/** Keyword package. */
 	KEYWORD_PACKAGE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword private. */
 	KEYWORD_PRIVATE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword protected. */
 	KEYWORD_PROTECTED,
 	
-	/** Keyword xxxxx. */
+	/** Keyword public. */
 	KEYWORD_PUBLIC,
 	
-	/** Keyword xxxxx. */
+	/** Keyword return. */
 	KEYWORD_RETURN,
 	
-	/** Keyword xxxxx. */
+	/** Keyword short. */
 	KEYWORD_SHORT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword static. */
 	KEYWORD_STATIC,
 	
-	/** Keyword xxxxx. */
+	/** Keyword strictfp. */
 	KEYWORD_STRICTFP,
 	
-	/** Keyword xxxxx. */
+	/** Keyword super. */
 	KEYWORD_SUPER,
 	
-	/** Keyword xxxxx. */
+	/** Keyword switch. */
 	KEYWORD_SWITCH,
 	
-	/** Keyword xxxxx. */
+	/** Keyword synchronized. */
 	KEYWORD_SYNCHRONIZED,
 	
-	/** Keyword xxxxx. */
+	/** Keyword this. */
 	KEYWORD_THIS,
 	
-	/** Keyword xxxxx. */
+	/** Keyword throw. */
 	KEYWORD_THROW,
 	
-	/** Keyword xxxxx. */
+	/** Keyword throws. */
 	KEYWORD_THROWS,
 	
-	/** Keyword xxxxx. */
+	/** Keyword transient. */
 	KEYWORD_TRANSIENT,
 	
-	/** Keyword xxxxx. */
+	/** Keyword try. */
 	KEYWORD_TRY,
 	
-	/** Keyword xxxxx. */
+	/** Keyword void. */
 	KEYWORD_VOID,
 	
-	/** Keyword xxxxx. */
+	/** Keyword volatile. */
 	KEYWORD_VOLATILE,
 	
-	/** Keyword xxxxx. */
+	/** Keyword while. */
 	KEYWORD_WHILE,
+	
+	/** Divide operator. */
+	OPERATOR_DIVIDE,
+	
+	/** Dive and assign operator. */
+	OPERATOR_DIVIDE_AND_ASSIGN,
 	
 	/** End. */
 	;
