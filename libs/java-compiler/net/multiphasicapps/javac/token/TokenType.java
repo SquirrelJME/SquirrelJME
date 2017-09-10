@@ -20,6 +20,9 @@ public enum TokenType
 	/** A comment. */
 	COMMENT,
 	
+	/** Identifier. */
+	IDENTIFIER,
+	
 	/** Keyword abstract. */
 	KEYWORD_ABSTRACT,
 	
