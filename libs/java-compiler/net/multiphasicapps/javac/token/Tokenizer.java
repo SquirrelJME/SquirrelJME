@@ -94,6 +94,11 @@ public class Tokenizer
 	public Token next()
 		throws IOException, TokenizerException
 	{
+		// Stop at EOF
+		int c = __next();
+		if (c < 0)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
