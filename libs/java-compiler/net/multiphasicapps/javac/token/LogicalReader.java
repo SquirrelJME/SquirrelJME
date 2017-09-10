@@ -125,10 +125,19 @@ public class LogicalReader
 			unicodemask = 0;
 		for (;;)
 		{
+			// Full unicode mask read, return the read value
+			if (unicode && unicodemask >= 0xFFFF)
+				return unicodeval;
+			
 			// EOF?
 			int c = in.read();
 			if (c < 0)
 			{
+				// {@squirreljme.error AQ02 Unicode sequence truncated at
+				// end of file.}
+				if (unicode)
+					throw new TokenizerException("AQ02");
+				
 				// Make sure the escape is returned before EOF
 				if (escaped)
 					return '\\';
@@ -169,21 +178,36 @@ public class LogicalReader
 			if (unicode)
 			{
 				// Calculate hex value
-				int val = 
+				int val = Character.digit((char)c, 16);
 				
-				// Reading value
-				if (c >= '0'
-				
-				// Reading more Us
-				if (c == 'u')
+				// Reading digits
+				if (val >= 0 && unicodemask < 0xFFFF)
 				{
-					// {@squirreljme.error AQ01 Invalid unicode seque.}
-					if (unicodemask != 0)
-						throw new TokenizerException();
+					// Shift in value
+					unicodeval <<= 4;
+					unicodeval |= val;
+					
+					// Move mask up
+					unicodemask <<= 4;
+					unicodemask |= 0xF;
+					
+					// Read more of the value
+					continue;
 				}
 				
-		int unicodeval = 0,
-			unicodemask = 0;
+				// Either another character or something else?
+				else
+				{
+					// {@squirreljme.error AQ03 Invalid unicode escape
+					// sequence. (The line; The column)}
+					if (unicodemask != 0 || c != 'u')
+						throw new TokenizerException(
+							String.format("AQ03 %d %d", this._line,
+							this._column));
+					
+					// Just skip the u, there can be tons of them
+					continue;
+				}
 			}
 			
 			// In escape mode
