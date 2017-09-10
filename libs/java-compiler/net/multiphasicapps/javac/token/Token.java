@@ -132,8 +132,8 @@ public final class Token
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s: %s (C:%d, L:%d)", this.type, this.chars, this.line,
-				this.column)));
+				"%s@%d,%d: %s", this.type, this.line, this.column,
+				this.chars)));
 		
 		return rv;
 	}
