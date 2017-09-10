@@ -27,8 +27,11 @@ public final class Token
 	/** The token string data. */
 	protected final String chars;
 	
-	/** The zone the token is in. */
-	protected final TokenZone zone;
+	/** The line the token is on. */
+	protected final int line;
+	
+	/** The column the token is on. */
+	protected final int column;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -38,11 +41,12 @@ public final class Token
 	 *
 	 * @param __t The type of token this is.
 	 * @param __c The characters which make up the token.
-	 * @param __z The zone the token is in.
+	 * @param __l The line the token is on.
+	 * @param __o The column the token is on.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public Token(TokenType __t, String __c, TokenZone __z)
+	public Token(TokenType __t, String __c, int __l, int __o)
 		throws NullPointerException
 	{
 		// Check
@@ -51,7 +55,8 @@ public final class Token
 		
 		this.type = __t;
 		this.chars = __c;
-		this.zone = __z;
+		this.line = __l;
+		this.column = __o;
 	}
 	
 	/**
@@ -63,6 +68,17 @@ public final class Token
 	public String characters()
 	{
 		return this.chars;
+	}
+	
+	/**
+	 * Returns the column this token is on.
+	 *
+	 * @return The column the token is on.
+	 * @since 2017/09/09
+	 */
+	public int column()
+	{
+		return this.column;
 	}
 	
 	/**
@@ -78,7 +94,8 @@ public final class Token
 		Token o = (Token)__o;
 		return this.type.equals(o.type) &&
 			this.chars.equals(o.chars) &&
-			this.zone.equals(o.zone);
+			this.line == o.line &&
+			this.column == o.column;
 	}
 	
 	/**
@@ -89,7 +106,18 @@ public final class Token
 	public int hashCode()
 	{
 		return this.type.hashCode() ^ this.chars.hashCode() ^
-			this.zone.hashCode();
+			this.line ^ (~this.column);
+	}
+	
+	/**
+	 * Returns the line this token is on.
+	 *
+	 * @return The line the token is on.
+	 * @since 2017/09/09
+	 */
+	public int line()
+	{
+		return this.line;
 	}
 	
 	/**
@@ -104,7 +132,8 @@ public final class Token
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s: %s (in %s)", this.type, this.chars, this.zone)));
+				"%s: %s (C:%d, L:%d)", this.type, this.chars, this.line,
+				this.column)));
 		
 		return rv;
 	}
@@ -118,17 +147,6 @@ public final class Token
 	public TokenType type()
 	{
 		return this.type;
-	}
-	
-	/**
-	 * Returns the zone that the token appears within.
-	 *
-	 * @return The token's zone.
-	 * @since 2017/09/09
-	 */
-	public TokenZone zone()
-	{
-		return this.zone;
 	}
 }
 

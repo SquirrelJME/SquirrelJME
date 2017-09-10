@@ -32,10 +32,7 @@ public class Tokenizer
 		8;
 	
 	/** Input character source. */
-	protected final Reader in;
-	
-	/** Should comments be read? */
-	protected final boolean comments;
+	protected final LogicalReader in;
 	
 	/** Character queue. */
 	private final int[] _cq =
@@ -47,38 +44,41 @@ public class Tokenizer
 	/** Has EOF been reached? */
 	private volatile boolean _eof;
 	
+	/** The current read line. */
+	private volatile int _line;
+	
+	/** The current column line. */
+	private volatile int _column;
+	
 	/**
 	 * Initializes the tokenizer for Java source code.
 	 *
 	 * @param __is The tokenizer input, it is treated as UTF-8.
-	 * @param __comments Should comments be included?
 	 * @throws NullPointerException On null arguments.
 	 * @throws RuntimeException If UTF-8 is not supported, but this should
 	 * not occur.
 	 * @since 2017/09/04
 	 */
-	public Tokenizer(InputStream __is, boolean __comments)
+	public Tokenizer(InputStream __is)
 		throws NullPointerException, RuntimeException
 	{
-		this(__wrap(__is), __comments);
+		this(__wrap(__is));
 	}
 	
 	/**
 	 * Initializes the tokenizer for Java source code.
 	 *
 	 * @param __r The reader to read characters from.
-	 * @param __comments Should comments be included?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/04
 	 */
-	public Tokenizer(Reader __r, boolean __comments)
+	public Tokenizer(Reader __r)
 	{
 		// Check
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		this.in = new __DeUnicodeEscape__(__r);
-		this.comments = __comments;
+		this.in = new LogicalReader(__r);
 	}
 	
 	/**
@@ -92,46 +92,7 @@ public class Tokenizer
 	public Token next()
 		throws IOException, TokenizerException
 	{
-		// Loop for comment removal, it is easier done here than in the token
-		// loop
-		boolean comments = this.comments;
-		for (;;)
-		{
-			Token rv = __nextToken();
-			
-			// None left
-			if (rv == null)
-				return null;
-			
-			// Ignore comments
-			if (!comments && rv.type().isComment())
-				continue;
-			return rv;
-		}
-	}
-	
-	/**
-	 * Runs the tokenizer.
-	 *
-	 * @return The list of parsed tokens.
-	 * @throws IOException On read errors.
-	 * @throws TokenizerException If a token sequence is not valid.
-	 * @since 2017/09/04
-	 */
-	public List<Token> run()
-		throws IOException
-	{
-		// Output list
-		List<Token> rv = new ArrayList<>();
-		
-		Token n;
-		while (null != (n = next()))
-		{
-			System.err.printf("DEBUG -- Token: %s%n", n);
-			rv.add(n);
-		}
-		
-		return rv;
+		return __nextToken();
 	}
 	
 	/**
@@ -591,6 +552,24 @@ public class Tokenizer
 			if (__next() < 0)
 				return i;
 		return __n;
+	}
+	
+	/**
+	 * Creates a new token and returns it.
+	 *
+	 * @param __t The type of token to create.
+	 * @param __s The sequence that the token consists of.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/09
+	 */
+	private Token __token(TokenType __t, CharSequence __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		return new Token(__t, __s.toString(), this._line, this._column);
 	}
 	
 	/**
