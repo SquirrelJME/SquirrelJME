@@ -1,0 +1,56 @@
+# 2017/09/09
+
+## 17:04
+
+Ok, I should have a token parse location which specifies the zone a token
+is in. This is a token without just a basic high level context.
+
+## 17:51
+
+Well this appeared in my code for parts of identifiers:
+
+	(__c >= 0x0001 && __c < 0x0009) ||
+	(__c >= 0x000E && __c < 0x001C) ||
+
+These are ASCII control codes. I never would have suspected these would be
+valid.
+
+## 17:55
+
+It even includes NUL. So the valid characters are: NUL, SOH, STX, ETX, EOT,
+EOT, ENQ, ACK, BEL, BS, SO, SI, DLE, DC1, DC2, DC3, DC4, NAK, SYN, ETB, CAN,
+EM, SUB, ESC, and DEL. This excludes: HT, LT, VT, FF, CR, FS, GS, RS, and US.
+
+## 19:28
+
+I am going to teir the tokenizer up. First have a basic tokenizer which is
+really simple then have one that is a bit more complex and knows more about
+the program state (handled as a queue) which can create better context
+sensitive tokens.
+
+## 19:30
+
+So that means the token zone goes away and things get simpler. The `Tokenizer`
+will just only care about tokens.
+
+## 19:58
+
+Ok so the first stage reader gets simplified and is given position and such.
+
+## 20:13
+
+One thing with peaking is that the line and column information will end up
+being a bit off, so if I want something accurate I will need to record it. So
+I suppose there will be a bunch of slots although a bunch of arrays could do.
+Maybe instead of the `Tokenizer` doing the queueing the `LogicalReader` can
+that way it is just in one spot. It itself has to de-escape unicode sequences
+anyway so it will have bytes in a queue for the most part.
+
+## 20:52
+
+I do not actually need a queue, I can take multiple routes based on the first
+read character.
+
+## 22:06
+
+Ok so unicode escape sequences are nicely handled and it works quite well.
