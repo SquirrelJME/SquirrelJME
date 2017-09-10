@@ -333,3 +333,35 @@ given prefix `net.multiphasicapps.squirreljme.unsafe.service.` where anything
 following that is the target class to provide a service for, the value for the
 property is the implementation of that.
 
+# Some Potential Ideas
+
+I am rather fascinated by virtualized environments and there are some ideas
+which I do consider every so often. I will not be implementing these ideas
+right now, but they could be done when SquirrelJME is rather complete and
+there is nothing else to do.
+
+## A POSIX Environment
+
+I could write an environment which acts as a POSIX environment, perhaps
+emulating Linux system calls and such potentially, written in Java. This could
+then be used to have a full fledged POSIX development environment on
+SquirrelJME. At least with SquirrelJME it is very possible for it to be done
+provided a Java compiler is written. In retrospect, everything could be done
+within Java although there would need to be special checks and handling for
+signals which can appear out of bound when execution occurs. There would need
+to be periodic check for signals so that a signal can potentially be thrown
+and handled. The `fork` system call would also be an issue, at best there
+would really only be `posix_pspawn`. Ideally for speed most everything would
+be written in Java and pretty much provide an environment which is mostly
+written in Java.
+
+A C compiler could be supported and could output to a special kind of byte code
+which the environment is capable of executing so that it can compile and run
+programs. However, this is not really needed provided there is a Java compiler.
+The environment itself could pretty much only be capable of compiling and
+executing Java byte code, perhaps in a simulated environment.
+
+This idea would however bring such a simulated environment to systems which do
+not have such things. Although there would be a speed penalty, there would be
+a consistent environment across multiple platforms.
+
