@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.Tokenizer;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.Project;
@@ -72,7 +73,10 @@ public class DocumentBuilder
 					
 					try (InputStream is = fd.open(fn))
 					{
-						System.err.println(new Tokenizer(is, true).run());
+						Tokenizer tz = new Tokenizer(is);
+						Token t;
+						while (null != (t = tz.next()))
+							System.err.println(t);
 					}
 				}
 			}

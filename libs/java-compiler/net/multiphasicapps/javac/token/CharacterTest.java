@@ -666,5 +666,30 @@ public final class CharacterTest
 			(__c >= 0xFFE0 && __c < 0xFFE2) ||
 			(__c >= 0xFFE5 && __c < 0xFFE7));
 	}
+	
+	/**
+	 * Is the specified character deemed an end of line?
+	 *
+	 * @param __c The character to check.
+	 * @return If it is the end of the line.
+	 * @since 2017/09/05
+	 */
+	public static boolean isNewline(int __c)
+	{
+		return __c < 0 || __c == '\r' || __c == '\n';
+	}
+	
+	/**
+	 * Is the specified character whitespace?
+	 *
+	 * @param __c The character to check.
+	 * @return If it is whitespace.
+	 * @since 2017/09/05
+	 */
+	public static boolean isWhite(int __c)
+	{
+		return __c == ' ' || __c == '\t' || __c == '\f' || __c == '\r' ||
+			__c == '\n';
+	}
 }
 
