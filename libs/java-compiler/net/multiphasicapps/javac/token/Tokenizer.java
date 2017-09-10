@@ -130,7 +130,11 @@ public class Tokenizer
 			// Forward slash: comments, /, or /=.
 			if (c == '/')
 				return __decideForwardSlash();
-		
+			
+			// Identifiers
+			else if (CharacterTest.isIdentifierStart((char)c))
+				return __getIdentifier((char)c);
+			
 			throw new todo.TODO();
 		}
 	}
@@ -168,6 +172,102 @@ public class Tokenizer
 		// Divide otherwise
 		else
 			return __token(TokenType.OPERATOR_DIVIDE, "/");
+	}
+	
+	/**
+	 * Reads an identifier.
+	 *
+	 * @param __ic The initial character.
+	 * @return The read identifier.
+	 * @since 2017/09/10
+	 */
+	private Token __getIdentifier(char __ic)
+		throws IOException
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(__ic);
+		for (;;)
+		{
+			// Only consider identifier parts
+			int c = __peek();
+			if (c < 0 || !CharacterTest.isIdentifierPart((char)c))
+			{
+				String s = sb.toString();
+				TokenType t;
+				switch (s)
+				{
+						// {@squirreljme.error AQ04 The specified keywords
+						// are reserved and not valid. (The keyword)}
+					case "const":
+					case "goto":
+						throw new TokenizerException(String.format("AQ04 %s",
+							__token(TokenType.IDENTIFIER, s)));
+					
+					case "abstract":	t = TokenType.KEYWORD_ABSTRACT; break;
+					case "assert":		t = TokenType.KEYWORD_ASSERT; break;
+					case "boolean":		t = TokenType.KEYWORD_BOOLEAN; break;
+					case "break":		t = TokenType.KEYWORD_BREAK; break;
+					case "byte":		t = TokenType.KEYWORD_BYTE; break;
+					case "case":		t = TokenType.KEYWORD_CASE; break;
+					case "catch":		t = TokenType.KEYWORD_CATCH; break;
+					case "char":		t = TokenType.KEYWORD_CHAR; break;
+					case "class":		t = TokenType.KEYWORD_CLASS; break;
+					case "continue":	t = TokenType.KEYWORD_CONTINUE; break;
+					case "default":		t = TokenType.KEYWORD_DEFAULT; break;
+					case "do":			t = TokenType.KEYWORD_DO; break;
+					case "double":		t = TokenType.KEYWORD_DOUBLE; break;
+					case "else":		t = TokenType.KEYWORD_ELSE; break;
+					case "enum":		t = TokenType.KEYWORD_ENUM; break;
+					case "extends":		t = TokenType.KEYWORD_EXTENDS; break;
+					case "final":		t = TokenType.KEYWORD_FINAL; break;
+					case "finally":		t = TokenType.KEYWORD_FINALLY; break;
+					case "float":		t = TokenType.KEYWORD_FLOAT; break;
+					case "for":			t = TokenType.KEYWORD_FOR; break;
+					case "if":			t = TokenType.KEYWORD_IF; break;
+					case "implements":
+						t = TokenType.KEYWORD_IMPLEMENTS;
+						break;
+						
+					case "import":		t = TokenType.KEYWORD_IMPORT; break;
+					case "instanceof":
+						t = TokenType.KEYWORD_INSTANCEOF;
+						break;
+					case "int":			t = TokenType.KEYWORD_INT; break;
+					case "interface":	t = TokenType.KEYWORD_INTERFACE; break;
+					case "long":		t = TokenType.KEYWORD_LONG; break;
+					case "native":		t = TokenType.KEYWORD_NATIVE; break;
+					case "new":			t = TokenType.KEYWORD_NEW; break;
+					case "package":		t = TokenType.KEYWORD_PACKAGE; break;
+					case "private":		t = TokenType.KEYWORD_PRIVATE; break;
+					case "protected":	t = TokenType.KEYWORD_PROTECTED; break;
+					case "public":		t = TokenType.KEYWORD_PUBLIC; break;
+					case "return":		t = TokenType.KEYWORD_RETURN; break;
+					case "short":		t = TokenType.KEYWORD_SHORT; break;
+					case "static":		t = TokenType.KEYWORD_STATIC; break;
+					case "strictfp":	t = TokenType.KEYWORD_STRICTFP; break;
+					case "super":		t = TokenType.KEYWORD_SUPER; break;
+					case "switch":		t = TokenType.KEYWORD_SWITCH; break;
+					case "synchronized":
+						t = TokenType.KEYWORD_SYNCHRONIZED;
+						break;
+						
+					case "this":		t = TokenType.KEYWORD_THIS; break;
+					case "throw":		t = TokenType.KEYWORD_THROW; break;
+					case "throws":		t = TokenType.KEYWORD_THROWS; break;
+					case "transient":	t = TokenType.KEYWORD_TRANSIENT; break;
+					case "try":			t = TokenType.KEYWORD_TRY; break;
+					case "void":		t = TokenType.KEYWORD_VOID; break;
+					case "volatile":	t = TokenType.KEYWORD_VOLATILE; break;
+					case "while":		t = TokenType.KEYWORD_WHILE; break;
+					default:			t = TokenType.IDENTIFIER; break;
+				}
+				
+				return __token(t, s); 
+			}
+			
+			// Consume it
+			sb.append((char)__next());
+		}
 	}
 	
 	/**
@@ -212,6 +312,7 @@ public class Tokenizer
 		// Use the next character
 		int rv = this._nxchar;
 		this._nxwaiting = false;
+		this._nxchar = -1;
 		return rv;
 	}
 	
