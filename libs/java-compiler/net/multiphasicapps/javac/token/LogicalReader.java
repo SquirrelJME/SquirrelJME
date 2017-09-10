@@ -41,6 +41,10 @@ public class LogicalReader
 	/** Was the last character CR? */
 	private volatile boolean _wascr;
 	
+	/** The character which was in the queue after the slash. */
+	private volatile int _slashrem =
+		-1;
+	
 	/**
 	 * Initializes the logical reader.
 	 *
@@ -103,15 +107,33 @@ public class LogicalReader
 	public int read()
 		throws IOException
 	{
+		// An escape sequence was attempted to be read but it was not a
+		// unicode escape sequence
+		int slashrem = this._slashrem;
+		if (slashrem >= 0)
+		{
+			this._slashrem = -1;
+			return slashrem;
+		}
+		
 		// Usually a single character will be read from the source unless it is
 		// a escape sequence for unicode characters
 		Reader in = this.in;
+		boolean escaped = false,
+			unicode = false;
+		int unicodeval = 0,
+			unicodemask = 0;
 		for (;;)
 		{
 			// EOF?
 			int c = in.read();
 			if (c < 0)
+			{
+				// Make sure the escape is returned before EOF
+				if (escaped)
+					return '\\';
 				return -1;
+			}
 			
 			// Reset carriage return check, this is for Windows line endings
 			// which consist of CRLF pairs which must not be incremented as
@@ -143,7 +165,61 @@ public class LogicalReader
 			else
 				this._column++;
 			
-			throw new todo.TODO();
+			// Reading unicode sequence
+			if (unicode)
+			{
+				// Calculate hex value
+				int val = 
+				
+				// Reading value
+				if (c >= '0'
+				
+				// Reading more Us
+				if (c == 'u')
+				{
+					// {@squirreljme.error AQ01 Invalid unicode seque.}
+					if (unicodemask != 0)
+						throw new TokenizerException();
+				}
+				
+		int unicodeval = 0,
+			unicodemask = 0;
+			}
+			
+			// In escape mode
+			else if (escaped)
+			{
+				// Unicode escape sequence?
+				if (c == 'u')
+				{
+					// Enter unicode mode so that the sequence gets
+					// counted properly
+					unicode = true;
+					continue;
+				}
+				
+				// Not one, recycle it
+				else
+				{
+					this._slashrem = c;
+					return '\\';
+				}
+			}
+			
+			// not escaped
+			else
+			{
+				// Could be a unicode sequence
+				if (c == '\\')
+				{
+					escaped = true;
+					continue;
+				}
+				
+				// Return normal character
+				else
+					return c;
+			}
 		}
 	}
 }
