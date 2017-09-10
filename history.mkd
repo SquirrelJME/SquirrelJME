@@ -251,35 +251,21 @@ of classes and you could just bring your own classes in if you care about it.
 Personally, I do not really care for SQL and stuff like CORBA because I do not
 often use them at all.
 
-# Some Potential Ideas
+# Naming and Mascot
 
-I am rather fascinated by virtualized environments and there are some ideas
-which I do consider every so often. I will not be implementing these ideas
-right now, but they could be done when SquirrelJME is rather complete and
-there is nothing else to do.
+The name _SquirrelJME_ comes from the fact that I personally find squirrels to
+be very interesting and curious animals, not to mention that they are cute.
+Where I used to live I would see squirrels all the time so they were quite
+common, although where I live currently as of this writing I do not often see
+squirrels.
 
-## A POSIX Environment
-
-I could write an environment which acts as a POSIX environment, perhaps
-emulating Linux system calls and such potentially, written in Java. This could
-then be used to have a full fledged POSIX development environment on
-SquirrelJME. At least with SquirrelJME it is very possible for it to be done
-provided a Java compiler is written. In retrospect, everything could be done
-within Java although there would need to be special checks and handling for
-signals which can appear out of bound when execution occurs. There would need
-to be periodic check for signals so that a signal can potentially be thrown
-and handled. The `fork` system call would also be an issue, at best there
-would really only be `posix_pspawn`. Ideally for speed most everything would
-be written in Java and pretty much provide an environment which is mostly
-written in Java.
-
-A C compiler could be supported and could output to a special kind of byte code
-which the environment is capable of executing so that it can compile and run
-programs. However, this is not really needed provided there is a Java compiler.
-The environment itself could pretty much only be capable of compiling and
-executing Java byte code, perhaps in a simulated environment.
-
-This idea would however bring such a simulated environment to systems which do
-not have such things. Although there would be a speed penalty, there would be
-a consistent environment across multiple platforms.
+Originally my plan for a mascot at least for _k5_ or _k8_ would be to have a
+pink bunny rabbit in reference to _The Legend of Zelda: A Link To The Past_.
+In this game there is a region that you can enter called the _Dark World_ where
+every human who enters is transformed into an animal that reflects their
+inner self. I then switched my idea to having the mascot be albino because
+these animals are a bit more rare (since they are more easily predated in
+nature because their bright white fur stands out). Then when _SquirrelJME_ has
+come around I decided to keep the same mascot but make him a squirrel instead.
+So the green tunic that Link wears is a reference to the Zelda series.
 
