@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.token;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -20,10 +21,25 @@ import java.io.Reader;
  * @since 2017/09/09
  */
 public class LogicalReader
-	extends Reader
+	implements Closeable
 {
+	/** The size of tabs. */
+	private static final int _TAB_SIZE =
+		4;
+	
 	/** The reader to source from. */
-	protected final Reader from;
+	protected final Reader in;
+	
+	/** The current line. */
+	private volatile int _line =
+		1;
+	
+	/** The current column. */
+	private volatile int _column =
+		1;
+	
+	/** Was the last character CR? */
+	private volatile boolean _wascr;
 	
 	/**
 	 * Initializes the logical reader.
@@ -40,7 +56,7 @@ public class LogicalReader
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.from = __r;
+		this.in = __r;
 	}
 	
 	
@@ -52,7 +68,7 @@ public class LogicalReader
 	public void close()
 		throws IOException
 	{
-		this.from.close();
+		this.in.close();
 	}
 	
 	/**
@@ -63,7 +79,7 @@ public class LogicalReader
 	 */
 	public int column()
 	{
-		throw new todo.TODO();
+		return this._column;
 	}
 	
 	/**
@@ -74,24 +90,61 @@ public class LogicalReader
 	 */
 	public int line()
 	{
-		throw new todo.TODO();
+		return this._line;
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Reads the next character.
+	 *
+	 * @return The next character or a negative value on EOF.
+	 * @throws IOException On read errors.
 	 * @since 2017/09/09
 	 */
-	@Override
-	public int read(char[] __c, int __o, int __l)
-		throws IndexOutOfBoundsException, IOException, NullPointerException
+	public int read()
+		throws IOException
 	{
-		// Check
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
-			throw new IndexOutOfBoundsException("CAOB");
-		
-		throw new todo.TODO();
+		// Usually a single character will be read from the source unless it is
+		// a escape sequence for unicode characters
+		Reader in = this.in;
+		for (;;)
+		{
+			// EOF?
+			int c = in.read();
+			if (c < 0)
+				return -1;
+			
+			// Reset carriage return check, this is for Windows line endings
+			// which consist of CRLF pairs which must not be incremented as
+			// if they were two lines
+			boolean wascr = this._wascr;
+			this._wascr = (c == '\r');
+			
+			// Do line/column counting now because some characters could end
+			// up taking up much more space especially if they are escape
+			// sequences. Logically there could be boop\nbap where the \n is
+			// unicode escaped. For text editor compatibility that is not
+			// treated as a new line when related to the count
+			if (c == '\n' || wascr)
+			{
+				// Go to the next line
+				this._line++;
+				this._column = 1;
+			}
+			
+			// Tab sets to the tab size
+			else if (c == '\t')
+			{
+				int column = this._column;
+				column = column + (_TAB_SIZE - (column % _TAB_SIZE));
+				this._column = column;
+			}
+			
+			// Single character increase
+			else
+				this._column++;
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
