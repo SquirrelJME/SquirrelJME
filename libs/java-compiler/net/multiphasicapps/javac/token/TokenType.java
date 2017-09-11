@@ -173,6 +173,33 @@ public enum TokenType
 	/** Dive and assign operator. */
 	OPERATOR_DIVIDE_AND_ASSIGN,
 	
+	/** Open parenthesis. */
+	SEPARATOR_OPEN_PARENTHESIS,
+	
+	/** Closed parenthesis. */
+	SEPARATOR_CLOSED_PARENTHESIS,
+	
+	/** Open brace. */
+	SEPARATOR_OPEN_BRACE,
+	
+	/** Closed brace. */
+	SEPARATOR_CLOSED_BRACE,
+	
+	/** Open bracket. */
+	SEPARATOR_OPEN_BRACKET,
+	
+	/** Closed bracket. */
+	SEPARATOR_CLOSED_BRACKET,
+	
+	/** Semicolon. */
+	SEPARATOR_SEMICOLON,
+	
+	/** Comma. */
+	SEPARATOR_COMMA,
+	
+	/** The dot separator. */
+	SEPARATOR_DOT,
+	
 	/** End. */
 	;
 	
