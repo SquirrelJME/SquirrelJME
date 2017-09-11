@@ -131,6 +131,42 @@ public class Tokenizer
 			if (c == '/')
 				return __decideForwardSlash();
 			
+			// Open parenthesis
+			else if (c == '(')
+				return __token(TokenType.SEPARATOR_OPEN_PARENTHESIS, "(");
+			
+			// Closed parenthesis
+			else if (c == ')')
+				return __token(TokenType.SEPARATOR_CLOSED_PARENTHESIS, ")");
+			
+			// Open brace
+			else if (c == '{')
+				return __token(TokenType.SEPARATOR_OPEN_BRACE, "{");
+			
+			// Closed brace
+			else if (c == '}')
+				return __token(TokenType.SEPARATOR_CLOSED_BRACE, "}");
+			
+			// Open bracket
+			else if (c == '[')
+				return __token(TokenType.SEPARATOR_OPEN_BRACKET, "[");
+			
+			// Closed bracket
+			else if (c == ']')
+				return __token(TokenType.SEPARATOR_CLOSED_BRACKET, "]");
+			
+			// Semi-colon
+			else if (c == ';')
+				return __token(TokenType.SEPARATOR_SEMICOLON, ";");
+			
+			// Comma
+			else if (c == ',')
+				return __token(TokenType.SEPARATOR_COMMA, ",");
+			
+			// Dot
+			else if (c == '.')
+				return __token(TokenType.SEPARATOR_DOT, ".");
+			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
 				return __getIdentifier((char)c);
