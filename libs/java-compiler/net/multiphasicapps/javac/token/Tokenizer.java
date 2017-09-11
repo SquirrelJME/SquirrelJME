@@ -337,7 +337,12 @@ public class Tokenizer
 				
 				// Finish it, do not include the */
 				if (d == '/')
+				{
+					// Eat the slash otherwise divide operators will always
+					// follow multi-line comments
+					__next();
 					return __token(TokenType.COMMENT, sb);
+				}
 				
 				// Just some asterisk
 				else
