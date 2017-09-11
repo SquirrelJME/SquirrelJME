@@ -410,6 +410,23 @@ public class Tokenizer
 	private Token __getNumberLiteral(char __c)
 		throws IOException
 	{
+		// All possibilities are available at start
+		boolean isbinint = true,
+			isoctint = true,
+			isdecint = true,
+			ishexint = true,
+			isdecfloat = true,
+			ishexfloat = true;
+		
+		// Only decimal values
+		if (__c >= '1' && __c <= '9')
+			isbinint = isoctint = ishexint = ishexfloat = false;
+		
+		// Otherwise cannot be an integer. Note that it can still be a decimal
+		// float because 0009.7 is possible to be decoded still.
+		else
+			isdecint = false;
+		
 		throw new todo.TODO();
 	}
 	
