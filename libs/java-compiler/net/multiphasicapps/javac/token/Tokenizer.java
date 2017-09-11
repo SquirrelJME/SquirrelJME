@@ -171,7 +171,11 @@ public class Tokenizer
 			else if (CharacterTest.isIdentifierStart((char)c))
 				return __getIdentifier((char)c);
 			
-			throw new todo.TODO();
+			// {@squirreljme.error AQ05 Unknown character while tokenizing the
+			// Java source code. (The character; The line; The column)}
+			else
+				throw new TokenizerException(String.format("AQ05 %c %d %d",
+					(char)c, line, column));
 		}
 	}
 	
