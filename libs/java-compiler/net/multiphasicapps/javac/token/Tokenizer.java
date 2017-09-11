@@ -335,6 +335,9 @@ public class Tokenizer
 					case "void":		t = TokenType.KEYWORD_VOID; break;
 					case "volatile":	t = TokenType.KEYWORD_VOLATILE; break;
 					case "while":		t = TokenType.KEYWORD_WHILE; break;
+					case "null":		t = TokenType.LITERAL_NULL; break;
+					case "false":		t = TokenType.LITERAL_FALSE; break;
+					case "true":		t = TokenType.LITERAL_TRUE; break;
 					default:			t = TokenType.IDENTIFIER; break;
 				}
 				
