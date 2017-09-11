@@ -212,6 +212,15 @@ public enum TokenType
 	/** The dot separator. */
 	SEPARATOR_DOT,
 	
+	/** The null literal. */
+	LITERAL_NULL,
+	
+	/** The false literal. */
+	LITERAL_FALSE,
+	
+	/** The true literal. */
+	LITERAL_TRUE,
+	
 	/** End. */
 	;
 	
