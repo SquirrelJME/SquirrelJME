@@ -183,6 +183,10 @@ public class Tokenizer
 			else if (CharacterTest.isIdentifierStart((char)c))
 				return __getIdentifier((char)c);
 			
+			// Integer/float literals
+			else if (c >= '0' && c <= '9')
+				return __getNumberLiteral((char)c);
+			
 			// {@squirreljme.error AQ05 Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
 			else
@@ -395,8 +399,24 @@ public class Tokenizer
 	}
 	
 	/**
+	 * Decodes a number literal which could be an integer or floating point
+	 * value.
+	 *
+	 * @param __c The initial read character.
+	 * @return The decoded token.
+	 * @throws IOException On read errors.
+	 * @since 201709/11
+	 */
+	private Token __getNumberLiteral(char __c)
+		throws IOException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Reads a single line comment.
 	 *
+	 * @return The decoded token.
 	 * @throws IOException On read errors.
 	 * @since 2017/09/09
 	 */
