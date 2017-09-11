@@ -194,7 +194,7 @@ public class Tokenizer
 			
 			// Multi-line comment
 			if (c == '*')
-				throw new todo.TODO();
+				return __getMultiLineComment();
 		
 			// Single line comment
 			else if (c == '/')
@@ -303,6 +303,46 @@ public class Tokenizer
 			
 			// Consume it
 			sb.append((char)__next());
+		}
+	}
+	
+	/**
+	 * Reads a multi-line comment.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2017/09/11
+	 */
+	private Token __getMultiLineComment()
+		throws IOException
+	{
+		StringBuilder sb = new StringBuilder();
+		for (;;)
+		{
+			// {@squirreljme.error AQ01 End of file reached while reading a
+			// multi-line comment.}
+			int c = __peek();
+			if (c < 0)
+				throw new TokenizerException("AQ01");
+			
+			// Potential end of comment?
+			if (c == '*')
+			{
+				// Need to potentially detect the slash
+				c = __next();
+				int d = __peek();
+				
+				// Finish it, do not include the */
+				if (d == '/')
+					return __token(TokenType.COMMENT, sb);
+				
+				// Just some asterisk
+				else
+					sb.append((char)c);
+			}
+			
+			// Normal
+			else
+				sb.append((char)__next());
 		}
 	}
 	
