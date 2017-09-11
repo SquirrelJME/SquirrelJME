@@ -131,6 +131,10 @@ public class Tokenizer
 			if (c == '/')
 				return __decideForwardSlash();
 			
+			// Equal sign
+			else if (c == '=')
+				return __decideEquals();
+			
 			// Open parenthesis
 			else if (c == '(')
 				return __token(TokenType.SEPARATOR_OPEN_PARENTHESIS, "(");
@@ -167,6 +171,14 @@ public class Tokenizer
 			else if (c == '.')
 				return __token(TokenType.SEPARATOR_DOT, ".");
 			
+			// Ternary question
+			else if (c == '?')
+				return __token(TokenType.OPERATOR_TERNARY_QUESTION, "?");
+			
+			// Ternary colon
+			else if (c == ':')
+				return __token(TokenType.OPERATOR_TERNARY_COLON, ":");
+			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
 				return __getIdentifier((char)c);
@@ -180,8 +192,32 @@ public class Tokenizer
 	}
 	
 	/**
+	 * Decides how to parse an equal sign.
+	 *
+	 * @return The read token.
+	 * @throws IOException On read errors.
+	 * @since 2017/09/11
+	 */
+	private Token __decideEquals()
+		throws IOException
+	{
+		// Checking for equality?
+		int d = __peek();
+		if (d == '=')
+		{
+			__next();
+			return __token(TokenType.OPERATOR_COMPARE_EQUALS, "==");
+		}
+		
+		// Just an assignment
+		else
+			return __token(TokenType.OPERATOR_ASSIGN, "=");
+	}
+	
+	/**
 	 * Decides what to do with a forward slash.
 	 *
+	 * @return The read token.
 	 * @throws IOException On read errors.
 	 * @since 2017/09/09
 	 */

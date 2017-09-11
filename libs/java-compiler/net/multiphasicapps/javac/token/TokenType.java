@@ -167,11 +167,23 @@ public enum TokenType
 	/** Keyword while. */
 	KEYWORD_WHILE,
 	
+	/** Assign operator. */
+	OPERATOR_ASSIGN,
+	
+	/** Compare for equality. */
+	OPERATOR_COMPARE_EQUALS,
+	
 	/** Divide operator. */
 	OPERATOR_DIVIDE,
 	
 	/** Dive and assign operator. */
 	OPERATOR_DIVIDE_AND_ASSIGN,
+	
+	/** Ternary question operator. */
+	OPERATOR_TERNARY_QUESTION,
+	
+	/** Ternary colon operator. */
+	OPERATOR_TERNARY_COLON,
 	
 	/** Open parenthesis. */
 	SEPARATOR_OPEN_PARENTHESIS,
