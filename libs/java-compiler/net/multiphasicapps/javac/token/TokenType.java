@@ -221,6 +221,24 @@ public enum TokenType
 	/** The true literal. */
 	LITERAL_TRUE,
 	
+	/** Binary integer literal. */
+	LITERAL_BINARY_INTEGER,
+	
+	/** Octal integer literal. */
+	LITERAL_OCTAL_INTEGER,
+	
+	/** Decimal integer literal. */
+	LITERAL_DECIMAL_INTEGER,
+	
+	/** Hexadecimal integer literal. */
+	LITERAL_HEXADECIMAL_INTEGER,
+	
+	/** Decimal float literal. */
+	LITERAL_DECIMAL_FLOAT,
+	
+	/** Hexadecimal float literal. */
+	LITERAL_HEXADECIMAL_FLOAT,
+	
 	/** End. */
 	;
 	
