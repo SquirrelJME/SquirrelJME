@@ -1,0 +1,20 @@
+# 2017/09/11
+
+## 13:36
+
+I would say that parsing integer and floating point values is the most complex
+part of the tokenizer.
+
+## 13:48
+
+The simplest way to parse would be similar to what I have done before,
+basically a mini kind of state machine with possibilities. Basically as
+characters are parsed determine what it cannot be. The only unambigious
+literal would be binary digits which start with `0b`. Anything else could be
+floating point values. But if a decimal point exists, it will be known that it
+is a float value, so there will just be removing what is needed.
+
+## 13:55
+
+But definitely literal parsing will be quite complex, especially with
+underscores and such.
