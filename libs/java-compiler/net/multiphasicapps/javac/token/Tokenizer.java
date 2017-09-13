@@ -427,6 +427,15 @@ public class Tokenizer
 		else
 			isdecint = false;
 		
+		// Resulting token
+		StringBuilder sb = new StringBuilder();
+		sb.append(__c);
+		
+		// Literal processing is a bit complex and as such there is much
+		// handling for state within this loop. One general thing to remember
+		// is that something which appears invalid for one state can be
+		// completely valid for another state.
+		
 		throw new todo.TODO();
 	}
 	
