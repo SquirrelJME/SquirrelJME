@@ -285,6 +285,71 @@ If the best case assumptions are not met, then the string will be represented
 using 16-bit characters so that variable length strings are not encoded to
 support `char`.
 
+## Synchronization and Locks
+
+Java naturally provides synchronization which is used for writing code which
+is thread safe. Since synchronization and monitors are very intertwined, the
+design will reference future information. Since there are a number of different
+ways different CPUs and targets could have thread safety, those details have
+been removed and replaced with easy to determine common means.
+
+Every object will have the specified fields in their structure which indicates
+the synchronization state of the object:
+
+ * _threadid_  - The ID of the thread which has synchronized the object.
+ * _lockcount_ - The number of times the lock has been triggered.
+   * All objects have re-entrant locks.
+
+### Loop Threading for Multi-Threading
+
+Since Java is multi-threaded and SquirrelJME may run on top of a number of
+system which may have different threading models, the following differences
+determine what happens when a loop needs to be repeated due to a failed
+operation.
+
+#### Preemptive
+
+The loop should perform a given number of checks, then once a certain
+threshold is reached a longer duration sleep should be entered so that CPU
+cycles are not spent deadlocking. Essentially it waits upon a signal where
+possible.
+
+#### Cooperative
+
+The loop should yield and not attempt another try (because only a single thread
+can run at one time) that way another thread which is able to be ran can
+executed, potentially one which controls the monitor for the given object.
+
+It is possible that an internal threading manager can determine the best
+thread to choose for consecutive execution.
+
+### `synchronized` (aka `monitorenter`)
+
+When a monitor on an object is to be locked the following actions will be
+performed:
+
+ 1. Start of loop
+ 2. Atomic check of _threadid_ against zero.
+    * If zero, atomically set the value to the current thread ID.
+    * If non-zero, fail, thread the loop, and try again.
+ 3. Increment _lockcount_.
+
+### End of `synchronized` (aka `monitorexit`)
+
+This is performed when the current thread wishes to exit the monitor for the
+given object:
+
+ 1. Atomic check of _threadid_ against the current thread ID.
+    * If the value matches the thread ID, continue the operations.
+    * If it mismatches, keep the same value but throw
+      `IllegalMonitorStateException`.
+ 2. Decrement _lockcount_.
+ 3. If _lockcount_ is zero, atomically set _threadid_ to zero.
+
+### `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
+
+### `Object.notify()` and `Object.notifyAll()`
+
 # Environment
 
 This details the environment in which SquirrelJME operates within the host
