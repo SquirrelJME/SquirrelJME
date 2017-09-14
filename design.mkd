@@ -299,6 +299,11 @@ the synchronization state of the object:
  * _threadid_  - The ID of the thread which has synchronized the object.
  * _lockcount_ - The number of times the lock has been triggered.
    * All objects have re-entrant locks.
+ * _waiters_   - A counter for how many threads are waiting on this object.
+
+For simplicity, any threads which are waiting to be notified will use a simple
+counter which will essentially act as a stack. As such the last thread to wait
+on a thread will ....... ***THIS COULD DEADLOCK!***
 
 ### Loop Threading for Multi-Threading
 
