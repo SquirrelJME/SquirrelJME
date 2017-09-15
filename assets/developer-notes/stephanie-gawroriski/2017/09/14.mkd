@@ -1,0 +1,10 @@
+# 2017/09/14
+
+## 10:21
+
+Ok, I figured out how lock and signaling will work.
+
+## 10:55
+
+For `Object.notify()` I have decided to go with a simple stack based last
+locked thread.
