@@ -1477,7 +1477,7 @@
 [**`11`**](stephanie-gawroriski/2017/09/11.mkd)
 `12`
 [**`13`**](stephanie-gawroriski/2017/09/13.mkd)
-`14`
+[**`14`**](stephanie-gawroriski/2017/09/14.mkd)
 `15`
 `16`
  * `17`
