@@ -366,12 +366,20 @@ public class CodeDecompiler
 				throw new RuntimeException("OOPS");
 		}
 		
+		// Get the target method which is being called
+		if (true)
+			throw new todo.TODO();
+		
 		// Used to check invocation and casting
 		VerificationChecks verifier = this.verifier;
 		
 		// Variables will be popped off the stack
 		VariableState varstate = this._varstate;
 		VariableTread stack = varstate.stack;
+		
+		// If this is an instance call, pop calling object off stack
+		if (mit.isInstance())
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 	}

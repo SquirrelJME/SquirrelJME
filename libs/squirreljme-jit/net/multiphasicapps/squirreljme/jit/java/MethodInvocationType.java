@@ -29,6 +29,18 @@ public enum MethodInvocationType
 	/** Virtual call. */
 	VIRTUAL,
 	
+	/** End. */
 	;
+	
+	/**
+	 * Is this an instance call?
+	 *
+	 * @return If this is an instance call or not.
+	 * @since 2017/09/16
+	 */
+	public final boolean isInstance()
+	{
+		return this == INTERFACE || this == VIRTUAL;
+	}
 }
 
