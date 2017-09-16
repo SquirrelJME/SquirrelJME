@@ -62,6 +62,9 @@ public class CodeDecompiler
 	/** The type used for this. */
 	protected final FieldDescriptor thistype;
 	
+	/** The verififier for state checking. */
+	protected final VerificationChecks verifier;
+	
 	/** The stack map table. */
 	private volatile StackMapTable _smt;
 	
@@ -105,6 +108,7 @@ public class CodeDecompiler
 		this.processor = __p;
 		this.version = __ver;
 		this.outerclass = __cn;
+		this.verifier = __p.verifier();
 		
 		// The this type is the type of the outer class
 		this.thistype = __cn.asField();
@@ -338,7 +342,36 @@ public class CodeDecompiler
 		if (__bl == null || __i == null)
 			throw new NullPointerException("NARG");
 		
+		// Determine how the method is being called
+		MethodInvocationType mit;
+		switch (__i.operation())
+		{
+			case InstructionIndex.INVOKEINTERFACE:
+				mit = MethodInvocationType.INTERFACE;
+				break;
+				
+			case InstructionIndex.INVOKESPECIAL:
+				mit = MethodInvocationType.SPECIAL;
+				break;
+				
+			case InstructionIndex.INVOKESTATIC:
+				mit = MethodInvocationType.STATIC;
+				break;
+				
+			case InstructionIndex.INVOKEVIRTUAL:
+				mit = MethodInvocationType.VIRTUAL;
+				break;
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		
+		// Used to check invocation and casting
+		VerificationChecks verifier = this.verifier;
+		
+		// Variables will be popped off the stack
 		VariableState varstate = this._varstate;
+		VariableTread stack = varstate.stack;
 		
 		throw new todo.TODO();
 	}
