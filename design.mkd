@@ -2,7 +2,8 @@
 
 This document outlines several decisions and design considerations for the
 SquirrelJME Virtual Machine. This document should reflect the most recent
-path that SquirrelJME will be taking in its design.
+path that SquirrelJME will be taking in its design. Note that the design may
+change and this is not forever concrete (that would be foolish).
 
 For day to day notes on my current thought process you may look within the
 [developer notes](assets/developer-notes/index.mkd).
@@ -299,11 +300,10 @@ the synchronization state of the object:
  * _threadid_  - The ID of the thread which has synchronized the object.
  * _lockcount_ - The number of times the lock has been triggered.
    * All objects have re-entrant locks.
- * _waiters_   - A counter for how many threads are waiting on this object.
+ * _waitcount_ - The number of threads waiting on this handler.
 
-For simplicity, any threads which are waiting to be notified will use a simple
-counter which will essentially act as a stack. As such the last thread to wait
-on a thread will ....... ***THIS COULD DEADLOCK!***
+Notifications are handled by going through all threads and locating threads
+which are waiting on a given object.
 
 ### Loop Threading for Multi-Threading
 
@@ -353,7 +353,38 @@ given object:
 
 ### `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
 
+This indicates that the thread wishes to wait for a notification for the
+object. This effectively prepares some state then unlocks the monitor.
+
+On calling of a wait:
+
+ 1. If applicable, determine the nanoseconds for the program clock for when
+    the wait should expire.
+ 2. Atomic check of _threadid_ against the current thread ID.
+    * If the value matches the thread ID, continue the operations.
+    * If it mismatches, keep the same value but throw
+      `IllegalMonitorStateException`.
+ 3. Lock the state of the current thread.
+ 4. Set the timeout flag and timeout appropriately.
+ 5. Set the current object being waited on.
+ 6. Increment _waitcount_.
+ 7. Exit the monitor for the given object.
+ 8. Switch to other threads and enter the background waiting state.
+
+When a notification occurs:
+
+ 1. Lock the current monitor.
+ 2. Decrement _waitcount_.
+
+When timeout or interrupt occurs:
+
+ 1. Lock the current monitor.
+ 2. Decrement _waitcount_.
+ 3. If applicable, throw `InterruptedException`.
+
 ### `Object.notify()` and `Object.notifyAll()`
+
+This notifies other threads waiting on the given object.
 
 # Environment
 
