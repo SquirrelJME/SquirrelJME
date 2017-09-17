@@ -168,6 +168,32 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns the Java type stack for this descriptor.
+	 * 
+	 * @return The descriptor as it appears on the Java Stack.
+	 * @since 2017/09/16
+	 */
+	public JavaType[] javaStack()
+	{
+		// Handle all arguments now
+		int n = argumentCount();
+		JavaType[] rv = new JavaType[n];
+		for (int i = 0, o = 0; i < n; i++)
+		{
+			FieldDescriptor a;
+			rv[o++] = new JavaType(a = argument(i));
+			
+			// Add top of long/double but with unique distinct types
+			if (a.equals(FieldDescriptor.LONG))
+				rv[o++] = JavaType.TOP_LONG;
+			else if (a.equals(FieldDescriptor.DOUBLE))
+				rv[o++] = JavaType.TOP_DOUBLE;
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
