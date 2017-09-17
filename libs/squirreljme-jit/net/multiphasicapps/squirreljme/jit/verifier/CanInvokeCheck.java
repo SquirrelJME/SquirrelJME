@@ -27,7 +27,13 @@ public final class CanInvokeCheck
 	implements VerificationCheck
 {
 	/** The source class. */
-	protected final ClassName source;
+	protected final ClassName sourceclass;
+	
+	/** The source method name. */
+	protected final MethodName sourcename;
+	
+	/** The source descriptor. */
+	protected final 
 	
 	/** The type of invocation to perform. */
 	protected final MethodInvocationType type;
@@ -42,22 +48,28 @@ public final class CanInvokeCheck
 	 * Initializes the check to see if the given class can invoke the given
 	 * method in another class.
 	 *
-	 * @param __src The class doing the invoking.
+	 * @param __srccl The class doing the invoking.
+	 * @param __srcname The name of the method doing the call.
+	 * @param __srcdesc The descriptor of the method doing the call.
 	 * @param __t The type of invocation being performed.
 	 * @param __m The target method being called.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/16
 	 */
-	public CanInvokeCheck(ClassName __src, MethodInvocationType __t,
+	public CanInvokeCheck(ClassName __srccl, MethodName __srcname,
+		MethodDescriptor __srcdesc, MethodInvocationType __t,
 		MethodReference __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__src == null || __t == null || __m == null)
+		if (__srccl == null || __srcname == null || __srcdesc == null ||
+			__t == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.source = __src;
+		this.sourceclass = __srccl;
+		this.sourceclass = __srcname;
+		this.sourceclass = __srcdesc;
 		this.type = __t;
 		this.target = __m;
 	}
