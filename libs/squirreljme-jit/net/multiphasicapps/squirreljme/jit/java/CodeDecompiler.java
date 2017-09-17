@@ -437,7 +437,7 @@ public class CodeDecompiler
 		// Initialize the base stack map table
 		MethodHandle handle = this.handle;
 		StackMapTableBuilder smtbuilder = new StackMapTableBuilder(this.flags,
-			handle.name(), handle.descriptor(), handle.outerClass(), __code);
+			handle, __code);
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the

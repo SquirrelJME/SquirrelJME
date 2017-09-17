@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.java;
 
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -45,24 +46,20 @@ public class StackMapTableBuilder
 	 * Initializes the stack map table builder.
 	 *
 	 * @param __f The flags used for the method.
-	 * @param __n The name of the method.
-	 * @param __t The descriptor for the method.
+	 * @param __h The handle of the current class.
 	 * @param __oc The class which contains the method to build a stack map
 	 * for, this is needed for {@code this} references.
 	 * @param __bc The byte code for the current method, required for handling
 	 * initialization of new objects.
-	 * @param __pool The constant pool.
-	 * @param __ns The number of stack entries.
-	 * @param __nl The number of local variables.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/24 
 	 */
-	public StackMapTableBuilder(MethodFlags __f, MethodName __n,
-		MethodDescriptor __t, ClassName __oc, ByteCode __bc)
+	public StackMapTableBuilder(MethodFlags __f, MethodHandle __h,
+		ByteCode __bc)
 		throws NullPointerException
 	{
 		// Check
-		if (__f == null || __t == null || __oc == null || __bc == null)
+		if (__f == null || __h == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
 		// Set base
@@ -79,27 +76,25 @@ public class StackMapTableBuilder
 		StackMapTableEntry[] locals = new StackMapTableEntry[maxlocals];
 		this._locals = locals;
 		
-		// If this is an instance method then the first argument is always the
-		// the parameter. Instance initializers start with an uninitialized
-		// this which requires initialization first.
-		int at = 0;
-		if (!__f.isStatic())
-			locals[at++] = new StackMapTableEntry(new JavaType(__oc),
-				!__n.isInstanceInitializer());
+		// Setup initial state
+		// {@squirreljme.error JI2l The arguments that are required for the
+		// given method exceeds the maximum number of permitted local
+		// variables. (The method in question; The required number of local
+		// variables; The maximum number of local variables)}
+		boolean isinstance = !__f.isStatic();
+		JavaType[] jis = __h.javaStack(isinstance);
+		int jn = jis.length;
+		if (jn > maxlocals)
+			throw new JITException(String.format("JI2l %s %d %d", __h, jn,
+				maxlocals));
 		
-		// Handle all arguments now
-		for (int i = 0, na = __t.argumentCount(); i < na; i++)
-		{
-			// Trivial set of argument
-			FieldDescriptor a = __t.argument(i);
-			locals[at++] = new StackMapTableEntry(new JavaType(a), true);
-			
-			// Add top of long/double but with unique distinct types
-			if (a.equals(FieldDescriptor.LONG))
-				locals[at++] = StackMapTableEntry.TOP_LONG;
-			else if (a.equals(FieldDescriptor.DOUBLE))
-				locals[at++] = StackMapTableEntry.TOP_DOUBLE;
-		}
+		// Setup entries
+		// If this is an instance initializer method then only the first
+		// argument is not initialized
+		boolean isiinit = isinstance && __h.name().isInstanceInitializer();
+		for (int i = 0; i < jn; i++)
+			locals[i] = new StackMapTableEntry(jis[i],
+				(isiinit ? (i != 0) : true));
 		
 		// Set initial entry stat
 		add(0);
