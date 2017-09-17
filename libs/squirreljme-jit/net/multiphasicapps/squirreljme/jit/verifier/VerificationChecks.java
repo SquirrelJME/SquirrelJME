@@ -91,6 +91,9 @@ public final class VerificationChecks
 			throw new NullPointerException("NARG");
 		
 		this._checks.add(__v);
+		
+		// Debug
+		System.err.printf("DEBUG -- check(%s)%n", __v);
 	}
 }
 
