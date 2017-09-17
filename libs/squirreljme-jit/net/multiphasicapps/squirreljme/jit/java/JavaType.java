@@ -135,7 +135,8 @@ public final class JavaType
 	 */
 	public boolean isObject()
 	{
-		return !this.type.isPrimitive();
+		FieldDescriptor type = this.type;
+		return (type != null && type.isObject());
 	}
 	
 	/**
@@ -146,7 +147,19 @@ public final class JavaType
 	 */
 	public boolean isPrimitive()
 	{
-		return this.type.isPrimitive();
+		FieldDescriptor type = this.type;
+		return (type != null && type.isPrimitive());
+	}
+	
+	/**
+	 * Is this a top type?
+	 *
+	 * @return If this is a top type or not.
+	 * @since 2017/09/16
+	 */
+	public boolean isTop()
+	{
+		return equals(TOP_LONG) || equals(TOP_DOUBLE);
 	}
 	
 	/**
