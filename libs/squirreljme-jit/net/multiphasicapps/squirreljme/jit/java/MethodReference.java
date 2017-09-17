@@ -22,17 +22,34 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 public final class MethodReference
 	extends MemberReference
 {
-	/** The method descriptor. */
-	protected final MethodDescriptor descriptor;
+	/** The method handle. */
+	protected final MethodHandle handle;
 	
 	/** Is this an interface? */
 	protected final boolean isinterface;
 	
-	/** The name of the method. */
-	protected final MethodName name;
-	
 	/** String representation. */
 	private volatile Reference<String> _string;
+	
+	/**
+	 * Initializes the method reference.
+	 *
+	 * @param __h The handle of the class.
+	 * @param __int Does this refer to an interface method?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/16
+	 */
+	public MethodReference(MethodHandle __h, boolean __int)
+	{
+		super(__h.outerClass());
+		
+		// Check
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.isinterface = __int;
+	}
 	
 	/**
 	 * Initializes the method reference.
@@ -41,22 +58,14 @@ public final class MethodReference
 	 * @param __i The name of the member.
 	 * @param __t The descriptor of the member.
 	 * @param __int Does this refer to an interface method?
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
 	public MethodReference(ClassName __c, MethodName __i,
 		MethodDescriptor __t, boolean __int)
 		throws NullPointerException
 	{
-		super(__c);
-		
-		// Check
-		if (__t == null || __i == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.descriptor = __t;
-		this.name = __i;
-		this.isinterface = __int;
+		this(new MethodHandle(__c, __i, __t), __int);
 	}
 	
 	/**
@@ -70,10 +79,19 @@ public final class MethodReference
 			return false;
 		
 		MethodReference o = (MethodReference)__o;
-		return this.classname.equals(o.classname) &&
-			this.name.equals(o.name) &&
-			this.descriptor.equals(o.descriptor) &&
+		return this.handle.equals(o.handle) &&
 			this.isinterface == o.isinterface;
+	}
+	
+	/**
+	 * Returns the method handle.
+	 *
+	 * @return The method handle.
+	 * @since 2017/09/16
+	 */
+	public MethodHandle handle()
+	{
+		return this.handle;
 	}
 	
 	/**
@@ -83,8 +101,7 @@ public final class MethodReference
 	@Override
 	public int hashCode()
 	{
-		return this.classname.hashCode() ^ this.name.hashCode() ^
-			this.descriptor.hashCode() ^ (this.isinterface ? 1 : 0);
+		return this.handle.hashCode() ^ (this.isinterface ? 1 : 0);
 	}
 	
 	/**
@@ -105,7 +122,7 @@ public final class MethodReference
 	@Override
 	public final MethodName memberName()
 	{
-		return this.name;
+		return this.handle.name();
 	}
 	
 	/**
@@ -121,9 +138,8 @@ public final class MethodReference
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%smethod %s::%s%s",
-				(this.isinterface ? "interface-" : ""), this.classname,
-				this.name, this.descriptor)));
+				"%smethod %s",
+				(this.isinterface ? "interface-" : ""), this.handle)));
 		
 		return rv;
 	}
