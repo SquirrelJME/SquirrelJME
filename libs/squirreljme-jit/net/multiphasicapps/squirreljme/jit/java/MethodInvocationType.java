@@ -40,7 +40,7 @@ public enum MethodInvocationType
 	 */
 	public final boolean isInstance()
 	{
-		return this == INTERFACE || this == VIRTUAL;
+		return this == INTERFACE || this == VIRTUAL || this == SPECIAL;
 	}
 }
 

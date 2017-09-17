@@ -12,8 +12,10 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.hil.HighLevelBlock;
 import net.multiphasicapps.squirreljme.jit.hil.HighLevelProgram;
@@ -372,13 +374,23 @@ public class CodeDecompiler
 		VariableState varstate = this._varstate;
 		VariableTread stack = varstate.stack;
 		
-		// Pop arguments off in reverse order
-		if (true)
-			throw new todo.TODO();
+		// Determine how the target is being called
+		JavaType[] ts = desthandle.javaStack(mit.isInstance());
+		List<TypedVariable> callargs = new ArrayList<>(ts.length);
 		
-		// If this is an instance call, pop calling object off stack
-		if (mit.isInstance())
+		// Pop arguments off in reverse order
+		for (int i = ts.length - 1; i >= 0; i--)
+		{
+			// Ignore the tops of type, only interact with the base
+			JavaType want = ts[i];
+			if (want.isTop())
+				continue;
+			
+			// Pop off to check
+			TypedVariable pv = stack.pop();
+			
 			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}

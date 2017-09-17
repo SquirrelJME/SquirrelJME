@@ -176,6 +176,17 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Is this an object type?
+	 *
+	 * @return If this is an object type.
+	 * @since 2017/09/16
+	 */
+	public boolean isObject()
+	{
+		return !isPrimitive();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */

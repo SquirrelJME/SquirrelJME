@@ -144,6 +144,25 @@ public final class VariableTread
 	}
 	
 	/**
+	 * Pops the variable which is at the top of the stack.
+	 *
+	 * @return The popped variable.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JITException If the stack overflows.
+	 * @since 2017/09/16
+	 */
+	public final TypedVariable pop()
+		throws IllegalStateException, JITException
+	{
+		// {@squirreljme.error JI2m Cannot pop a variable from a non-stack
+		// tread.}
+		if (!this.isstack)
+			throw new IllegalStateException("JI2m");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Pushes the specified variable to the stack.
 	 *
 	 * @param __v The variable to push.
