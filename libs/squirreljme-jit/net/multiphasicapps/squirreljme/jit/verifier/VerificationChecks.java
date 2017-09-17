@@ -13,8 +13,8 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.squirreljme.jit.java.MethodHandle;
 import net.multiphasicapps.squirreljme.jit.java.MethodInvocationType;
-import net.multiphasicapps.squirreljme.jit.java.MethodReference;
 
 /**
  * This class is used to contain all of the checks that need to be performed
@@ -63,20 +63,17 @@ public final class VerificationChecks
 	 * Adds a check to see if the given class can invoke the given method in
 	 * another class.
 	 *
-	 * @param __srccl The class doing the invoking.
-	 * @param __srcname The name of the method doing the call.
-	 * @param __srcdesc The descriptor of the method doing the call.
+	 * @param __src The source method which is invoking the other method.
+	 * @param __dest The target method which is being invoked.
 	 * @param __t The type of invocation being performed.
-	 * @param __m The target method being called.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/16
 	 */
-	public final void canInvoke(ClassName __srccl, MethodName __srcname,
-		MethodDescriptor __srcdesc, MethodInvocationType __t,
-		MethodReference __m)
+	public final void canInvoke(MethodHandle __src, MethodHandle __dest,
+		MethodInvocationType __t)
 		throws NullPointerException
 	{
-		check(new CanInvokeCheck(__srccl, __srcname, __srcdesc, __t, __m));
+		check(new CanInvokeCheck(__src, __dest, __t));
 	}
 	
 	/**

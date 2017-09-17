@@ -38,11 +38,8 @@ public class CodeDecompiler
 	/** The method flags. */
 	protected final MethodFlags flags;
 	
-	/** The name of this method. */
-	protected final MethodName name;
-	
-	/** The descriptor. */
-	protected final MethodDescriptor type;
+	/** The handle for the current class. */
+	protected final MethodHandle handle;
 	
 	/** The input stream of the code attribute. */
 	protected final DataInputStream in;
@@ -55,9 +52,6 @@ public class CodeDecompiler
 	
 	/** The version number of the class. */
 	protected final ClassVersion version;
-	
-	/** The class which this method is in. */
-	protected final ClassName outerclass;
 	
 	/** The type used for this. */
 	protected final FieldDescriptor thistype;
@@ -101,13 +95,11 @@ public class CodeDecompiler
 		
 		// Set
 		this.flags = __f;
-		this.name = __n;
-		this.type = __t;
 		this.in = __in;
 		this.pool = __pool;
 		this.processor = __p;
 		this.version = __ver;
-		this.outerclass = __cn;
+		this.handle = new MethodHandle(__cn, __n, __t);
 		this.verifier = __p.verifier();
 		
 		// The this type is the type of the outer class
@@ -372,7 +364,9 @@ public class CodeDecompiler
 		// Get the target method which is being called
 		MethodReference mref = __i.<MethodReference>argument(0,
 			MethodReference.class);
-		verifier.canInvoke(this.outerclass, mit, mref);
+		MethodHandle srchandle = this.handle,
+			desthandle = mref.handle();
+		verifier.canInvoke(srchandle, desthandle, mit);
 		
 		// Variables will be popped off the stack
 		VariableState varstate = this._varstate;
@@ -441,8 +435,9 @@ public class CodeDecompiler
 			throw new NullPointerException("NARG");
 		
 		// Initialize the base stack map table
+		MethodHandle handle = this.handle;
 		StackMapTableBuilder smtbuilder = new StackMapTableBuilder(this.flags,
-			this.name, this.type, this.outerclass, __code);
+			handle.name(), handle.descriptor(), handle.outerClass(), __code);
 		
 		// The only attribute which needs to be handled is the stack map
 		// table which can either be in the new or old form depending on the
