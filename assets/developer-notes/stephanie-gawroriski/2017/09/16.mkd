@@ -1,0 +1,25 @@
+# 2017/09/16
+
+## 19:48
+
+Sickness has ended much so, things are better health wise.
+
+## 19:59
+
+Ok so, I will have a `canStaticCast` verification check which determines if a
+given class can statically at compile time be casted to another class. This
+only is capable of being used to determine if a given class is a super class
+of another. So for example an `Integer` visible as `Object` is not castable
+to `Integer` from `Object`, but it is castable to `Object` from `Integer`.
+
+## 20:05
+
+The invoke check needs the name and type, because there could be a super call
+to say a super constructor. In fact I need to figure out how the constructed
+this is to be handled. I will need a special identifier for that.
+
+## 20:42
+
+Ok so the verification state can be adjusted a bit with a method which can
+turn a descriptor and an instance type to an array of arguments for the Java
+stack.
