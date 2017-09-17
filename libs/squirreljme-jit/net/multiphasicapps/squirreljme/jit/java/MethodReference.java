@@ -48,6 +48,7 @@ public final class MethodReference
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.handle = __h;
 		this.isinterface = __int;
 	}
 	
