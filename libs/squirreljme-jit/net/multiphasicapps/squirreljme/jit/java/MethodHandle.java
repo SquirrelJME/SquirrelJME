@@ -94,6 +94,17 @@ public final class MethodHandle
 	}
 	
 	/**
+	 * Returns {@code true} if this represents the instance initializer.
+	 *
+	 * @return {@code true} if this is the instance initializer.
+	 * @since 2017/09/18
+	 */
+	public boolean isInstanceInitializer()
+	{
+		return this.name.isInstanceInitializer();
+	}
+	
+	/**
 	 * Returns the Java type stack for this handle.
 	 * 
 	 * @param __i If {@code true} then this is an instance invocation.
