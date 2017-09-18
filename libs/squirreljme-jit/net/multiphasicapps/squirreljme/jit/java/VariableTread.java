@@ -159,7 +159,35 @@ public final class VariableTread
 		if (!this.isstack)
 			throw new IllegalStateException("JI2m");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error JI2n Stack underflow.}
+		int top = this._top;
+		if (top <= 0)
+			throw new JITException("JI2n");
+			
+		JavaType[] types = this._types;
+		InitializationKey[] initkeys = this._initkeys;
+		Reference<Variable>[] vars = this._vars;
+		Reference<TypedVariable>[] tvars = this._tvars;
+		
+		// Do not return the top of a type
+		int pivot = top - 1;
+		JavaType jt = types[pivot];
+		if (jt.isTop())
+			jt = types[--pivot];
+		
+		// The work is already done in another method
+		TypedVariable rv = getTypedVariable(pivot);
+		
+		// Clear old stack information
+		this._top = pivot;
+		types[pivot] = null;
+		initkeys[pivot] = null;
+		tvars[pivot] = null;
+		
+		// Debug
+		System.err.printf("DEBUG -- Pop %s%n", rv);
+		
+		return rv;
 	}
 	
 	/**
@@ -240,7 +268,6 @@ public final class VariableTread
 		// Fill base
 		types[top] = __t;
 		initkeys[top] = __i;
-		vars[top] = null;
 		tvars[top] = null;
 		
 		// Fill top of long/double?
@@ -249,7 +276,6 @@ public final class VariableTread
 			int wp = top + 1;
 			types[wp] = __t.topType();
 			initkeys[wp] = null;
-			vars[wp] = null;
 			tvars[wp] = null;
 		}
 		
