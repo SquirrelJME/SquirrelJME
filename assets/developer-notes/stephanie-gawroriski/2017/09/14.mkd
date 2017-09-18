@@ -8,3 +8,38 @@ Ok, I figured out how lock and signaling will work.
 
 For `Object.notify()` I have decided to go with a simple stack based last
 locked thread.
+
+## 11:06
+
+Need to figure out notification and such so that deadlocking or completely
+unfair notifications occur. I could do a simple stack based approach but that
+would definitely break `notifyAll()`. Having a LIFO would cause `notifyAll()`
+to never exit.
+
+## 11:15
+
+Also a stack cannot work because waits can timeout after a certain amount of
+time has passed. Since there are timeouts and notifications, there will have
+have to be a way to know which thread needs to be ran if it did not timeout.
+
+## 11:18
+
+I could but I would not want to waste time iteration through each thread to
+see if it is waiting on a given lock. I could though use a waiting pool.
+For any given object that is waiting on a lock there will pretty much be
+only a _n-1_ threads waiting on it. So if there are 12 threads then 11
+threads can wait on that object. So as such, there will be 12 locking pools.
+When a thread waits on an object it can grab the pool.
+
+## 11:55
+
+Ok so, I will just do a basic design where when an object is notified...
+
+## 11:59
+
+Just got another nose bleed. So my design will be simple, I will lock and
+iterate through every thread because threads can only lock a single object at
+a time. So I locate a thread waiting on the object and run it. A very similar
+action will be performed for `notifyAll()` but will not stop on the first
+thread it finds an object waiting on a lock for. It is a slow and not as
+optimized design but I can improve it later.
