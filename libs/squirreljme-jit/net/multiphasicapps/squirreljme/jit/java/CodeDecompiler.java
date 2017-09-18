@@ -392,6 +392,23 @@ public class CodeDecompiler
 			throw new todo.TODO();
 		}
 		
+		// If the first argument has an initialization key then all instances
+		// of it will become initialized on instance constructors
+		InitializationKey initkey = null;
+		if (desthandle.isInstanceInitializer())
+			initkey = callargs.get(0).initializationKey();
+		
+		// Generate code
+		if (true)
+			throw new todo.TODO();
+		
+		// If an initialization key is set then go through all variables and
+		// set them to being initialized for any that match the key
+		// This allows local variables that have been copied to be set as
+		// being initialized
+		if (initkey != null)
+			throw new todo.TODO();
+		
 		throw new todo.TODO();
 	}
 	
