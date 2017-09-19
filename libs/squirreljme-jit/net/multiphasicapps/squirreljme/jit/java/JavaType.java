@@ -141,8 +141,22 @@ public final class JavaType
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
-			
-		throw new todo.TODO();
+		
+		// The same exact objects are always compatible
+		if (equals(__t))
+			return TypeCompatibility.COMPATIBLE;
+		
+		// Objects and non-objects are never compatibile
+		boolean isobject;
+		if ((isobject = isObject()) != __t.isObject())
+			return TypeCompatibility.NONE;
+		
+		// Objects are always checked later at compile time
+		if (isobject)
+			return TypeCompatibility.CHECK_INSTANCE;
+		
+		// If this point is reached, then incompatible primitive are used
+		return TypeCompatibility.NONE;
 	}
 	
 	/**
@@ -249,7 +263,7 @@ public final class JavaType
 	 */
 	public FieldDescriptor type()
 	{
-		return this.type();
+		return this.type;
 	}
 	
 	/**
