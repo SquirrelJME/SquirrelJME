@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.java.ClassName;
+import net.multiphasicapps.squirreljme.jit.java.FieldDescriptor;
 import net.multiphasicapps.squirreljme.jit.java.MethodHandle;
 import net.multiphasicapps.squirreljme.jit.java.MethodInvocationType;
 
@@ -74,6 +75,22 @@ public final class VerificationChecks
 		throws NullPointerException
 	{
 		check(new CanInvokeCheck(__src, __dest, __t));
+	}
+	
+	/**
+	 * Can the compiler statically cast from the from type to the target to
+	 * type?
+	 *
+	 * @param __from The type to cast from.
+	 * @param __to The type to cast to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/19
+	 */
+	public final void canStaticCast(FieldDescriptor __from,
+		FieldDescriptor __to)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

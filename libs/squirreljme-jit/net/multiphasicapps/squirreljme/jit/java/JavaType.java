@@ -128,6 +128,24 @@ public final class JavaType
 	}
 	
 	/**
+	 * Checks if the specified type is compatible with this type.
+	 *
+	 * @param __t The type to check compatibility with.
+	 * @return The type of compatibility the type will have.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/19
+	 */
+	public TypeCompatibility isCompatibleType(JavaType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+			
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Is this an object type?
 	 *
 	 * @return {@code true} if this is an object type.
@@ -221,6 +239,17 @@ public final class JavaType
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the type for this type.
+	 *
+	 * @return The type used.
+	 * @since 2017/09/19
+	 */
+	public FieldDescriptor type()
+	{
+		return this.type();
 	}
 	
 	/**

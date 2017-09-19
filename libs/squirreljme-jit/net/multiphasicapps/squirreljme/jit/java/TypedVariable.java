@@ -113,6 +113,27 @@ public final class TypedVariable
 	}
 	
 	/**
+	 * Checks if the specified type is compatible with this type.
+	 *
+	 * @param __t The type to check compatibility with.
+	 * @return The type of compatibility the type will have.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/19
+	 */
+	public TypeCompatibility isCompatibleType(JavaType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+			
+		JavaType type = this.type;
+		if (type == null)
+			return TypeCompatibility.NONE;
+		return type.isCompatibleType(__t);
+	}
+	
+	/**
 	 * Has this type been initialized?
 	 *
 	 * @return {@code true} if this type was initialized.
