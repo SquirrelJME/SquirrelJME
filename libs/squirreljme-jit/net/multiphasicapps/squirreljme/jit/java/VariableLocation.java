@@ -29,6 +29,9 @@ public enum VariableLocation
 	/** The exception that is in the throwing state. */
 	THROWING_EXCEPTION,
 	
+	/** The return value from a method. */
+	RETURN_VALUE,
+	
 	/** End. */
 	;
 }
