@@ -386,8 +386,30 @@ public class CodeDecompiler
 			if (want.isTop())
 				continue;
 			
-			// Pop off to check
+			// Pop off to check type compatibility
 			TypedVariable pv = stack.pop();
+			switch (pv.isCompatibleType(want))
+			{
+					// {@squirreljme.error JI2o The expected type on the stack
+					// is not compatible with the argument for the method.
+					// (The type on the stack; The expected type)}
+				case NONE:
+					throw new JITException(String.format("JI2o %s %s", pv,
+						want));
+				
+					// Requires an instance check
+				case CHECK_INSTANCE:
+					verifier.canStaticCast(pv.type().type(), want.type());
+					break;
+					
+					// Is compatible
+				case COMPATIBLE:
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
 			
 			throw new todo.TODO();
 		}
