@@ -376,7 +376,7 @@ public class CodeDecompiler
 		
 		// Determine how the target is being called
 		JavaType[] ts = desthandle.javaStack(mit.isInstance());
-		List<TypedVariable> callargs = new ArrayList<>(ts.length);
+		List<TypedVariable> cargs = new ArrayList<>(ts.length);
 		
 		// Pop arguments off in reverse order
 		for (int i = ts.length - 1; i >= 0; i--)
@@ -411,18 +411,22 @@ public class CodeDecompiler
 					throw new RuntimeException("OOPS");
 			}
 			
-			throw new todo.TODO();
+			// Done last to first, so place in the first entry
+			cargs.add(0, pv);
 		}
 		
 		// If the first argument has an initialization key then all instances
 		// of it will become initialized on instance constructors
 		InitializationKey initkey = null;
 		if (desthandle.isInstanceInitializer())
-			initkey = callargs.get(0).initializationKey();
+			initkey = cargs.get(0).initializationKey();
 		
-		// Generate code
-		if (true)
-			throw new todo.TODO();
+		// Debug
+		System.err.printf("DEBUG -- Args: %s; Ik: %s%n", cargs, initkey);
+		
+		// Call the given method
+		__bl.appendMethodCall(mit.lookupType(), desthandle,
+			cargs.<TypedVariable>toArray(new TypedVariable[cargs.size()]));
 		
 		// If an initialization key is set then go through all variables and
 		// set them to being initialized for any that match the key

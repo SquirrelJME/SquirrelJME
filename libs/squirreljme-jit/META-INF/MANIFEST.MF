@@ -8,6 +8,6 @@ X-SquirrelJME-Description: This project contains the just in time
  compiler which is used to recompile Java class files to native 
  machine code.
 X-SquirrelJME-Depends: sorted-collections data-deque-buffer 
- io-region zip-reader-stream
+ io-region zip-reader-stream unmodifiable-collections
 Microedition-Configuration: CLDC-1.8-Compact
 

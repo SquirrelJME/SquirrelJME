@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.java;
 
+import net.multiphasicapps.squirreljme.jit.hil.MethodLookupType;
+
 /**
  * This represents the type of invocation that may be performed on a method.
  *
@@ -41,6 +43,32 @@ public enum MethodInvocationType
 	public final boolean isInstance()
 	{
 		return this == INTERFACE || this == VIRTUAL || this == SPECIAL;
+	}
+	
+	/**
+	 * This returns the type of lookup to perform when the method is to be
+	 * invoked.
+	 *
+	 * @return The type of lookup to perform.
+	 * @since 2017/09/20
+	 */
+	public final MethodLookupType lookupType()
+	{
+		switch (this)
+		{
+			case INTERFACE:
+			case VIRTUAL:
+				return MethodLookupType.VIRTUAL;
+			
+			case SPECIAL:
+				return MethodLookupType.SPECIAL;
+			
+			case STATIC:
+				return MethodLookupType.EXACT;
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 
