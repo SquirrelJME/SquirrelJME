@@ -144,6 +144,38 @@ public final class VariableTread
 	}
 	
 	/**
+	 * Initializes all instances of the given variable.
+	 *
+	 * @param __ik The variable to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/20
+	 */
+	public void initializeVariable(InitializationKey __ik)
+		throws NullPointerException
+	{
+		// Check
+		if (__ik == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all variables and match, just clearing to null means
+		// that they become initialized
+		InitializationKey[] initkeys = this._initkeys;
+		Reference<TypedVariable>[] tvars = this._tvars;
+		for (int i = 0, n = this._top; i < n; i++)
+			if (__ik.equals(initkeys[i]))
+			{
+				// Clear both and the typed cache because that has
+				// initialization info
+				initkeys[i] = null;
+				tvars[i] = null;
+				
+				// Debug
+				System.err.printf("DEBUG -- %s becomes initialized%n",
+					getTypedVariable(n));
+			}
+	}
+	
+	/**
 	 * Pops the variable which is at the top of the stack.
 	 *
 	 * @return The popped variable.
