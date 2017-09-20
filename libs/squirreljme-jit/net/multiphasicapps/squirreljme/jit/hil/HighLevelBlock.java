@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
 import net.multiphasicapps.squirreljme.jit.java.JumpTarget;
+import net.multiphasicapps.squirreljme.jit.java.MethodHandle;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
 import net.multiphasicapps.squirreljme.jit.java.Variable;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -86,10 +87,6 @@ public class HighLevelBlock
 	public final void appendCopy(TypedVariable __src, Variable __dest)
 		throws JITException, NullPointerException
 	{
-		// Check
-		if (__src == null || __dest == null)
-			throw new NullPointerException("NARG");
-		
 		append(new HLOCopy(__src, __dest));
 	}
 	
@@ -105,11 +102,24 @@ public class HighLevelBlock
 	public final void appendCountReference(TypedVariable __v, boolean __up)
 		throws JITException, NullPointerException
 	{
-		// Check
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
 		append(new HLOCountReference(__v, __up));
+	}
+	
+	/**
+	 * Appends a method call to the given method.
+	 *
+	 * @param __mlt The type of lookup to perform for the given method.
+	 * @param __mh The method handle of the target method to call.
+	 * @param __args The input arguments to the method.
+	 * @throws JITException If the method call is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/20
+	 */
+	public final void appendMethodCall(MethodLookupType __mlt,
+		MethodHandle __mh, TypedVariable... __args)
+		throws JITException, NullPointerException
+	{
+		append(new HLOMethodCall(__mlt, __mh, __args));
 	}
 	
 	/**
@@ -122,10 +132,6 @@ public class HighLevelBlock
 	public final void appendUnconditionalJump(JumpTarget __t)
 		throws NullPointerException
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
 		append(new HLOUnconditionalJump(__t));
 	}
 	
