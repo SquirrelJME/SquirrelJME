@@ -61,6 +61,9 @@ public class CodeDecompiler
 	/** The verififier for state checking. */
 	protected final VerificationChecks verifier;
 	
+	/** Exception keys. */
+	private volatile Set<ExceptionHandlerKey> _xkeys;
+	
 	/** The stack map table. */
 	private volatile StackMapTable _smt;
 	
@@ -198,6 +201,7 @@ public class CodeDecompiler
 		// must be expanded so that if an exception does exist they can
 		// have their tables expanded virtually.
 		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
+		this._xkeys = xkeys;
 		
 		// After all of that, run through all byte code operations and
 		// create an expanded byte code program contained within basic
@@ -206,7 +210,7 @@ public class CodeDecompiler
 		// support for the more complex byte code which can be prone to
 		// errors.
 		for (BasicBlock bb : __code.basicBlocks())
-			__expandBasicBlock(bb, rv, xkeys);
+			__expandBasicBlock(bb, rv);
 			
 		// Expand exception handlers if any were used
 		for (ExceptionHandlerKey ek : xkeys)
@@ -218,17 +222,17 @@ public class CodeDecompiler
 	/**
 	 * Expands basic blocks which use standard instructions.
 	 *
+	 * @param __bb The input basic block.
 	 * @param __hlp The target high level program.
-	 * @param __xk The exception handler keys.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/12
 	 */
 	private final void __expandBasicBlock(BasicBlock __bb,
-		HighLevelProgram __hlp, Set<ExceptionHandlerKey> __xk)
+		HighLevelProgram __hlp)
 		throws NullPointerException
 	{
 		// Check
-		if (__bb == null || __hlp == null || __xk == null)
+		if (__bb == null || __hlp == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through instructions for the block and parse them
