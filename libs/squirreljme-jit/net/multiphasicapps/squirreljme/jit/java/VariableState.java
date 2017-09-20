@@ -112,6 +112,25 @@ public final class VariableState
 	}
 	
 	/**
+	 * Initializes all instances of the given variable.
+	 *
+	 * @param __ik The variable to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/20
+	 */
+	public void initializeVariable(InitializationKey __ik)
+		throws NullPointerException
+	{
+		// Check
+		if (__ik == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all treads and initialize them individually
+		for (VariableTread t : treads())
+			t.initializeVariable(__ik);
+	}
+	
+	/**
 	 * Returns the local variable tread.
 	 *
 	 * @return The local variable tread.
@@ -164,6 +183,17 @@ public final class VariableState
 	public VariableTread stack()
 	{
 		return this.stack;
+	}
+	
+	/**
+	 * Returns an array containing all of the treads.
+	 *
+	 * @return An array containing all of the treads.
+	 * @since 2017/09/20
+	 */
+	public VariableTread[] treads()
+	{
+		return new VariableTread[]{this.locals, this.stack};
 	}
 	
 	/**
