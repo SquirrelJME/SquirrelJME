@@ -90,7 +90,7 @@ public final class VerificationChecks
 		FieldDescriptor __to)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		check(new CanStaticCastCheck(__from, __to));
 	}
 	
 	/**
