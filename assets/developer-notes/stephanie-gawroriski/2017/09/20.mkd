@@ -1,0 +1,11 @@
+# 2017/09/20
+
+## 14:19
+
+So method invocation is slowly coming along, I believe it is the most complex
+part of the code.
+
+## 15:00
+
+Need to remember to do the exception check, which means I need to have a
+conditional jump instruction which checks the exception variable.
