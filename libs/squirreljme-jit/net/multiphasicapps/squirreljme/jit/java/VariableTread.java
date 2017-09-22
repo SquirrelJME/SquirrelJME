@@ -316,7 +316,7 @@ public final class VariableTread
 		
 		// Refer to the top as a variable that can be used for writing
 		Variable rv = new Variable(this.location, top);
-		System.err.printf("DEBUG -- Push %s%n", rv);
+		System.err.printf("DEBUG -- Push %s%n", getTypedVariable(top));
 		return rv;
 	}
 	
