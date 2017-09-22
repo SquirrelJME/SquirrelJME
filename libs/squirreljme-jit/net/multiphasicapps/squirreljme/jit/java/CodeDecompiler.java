@@ -532,6 +532,11 @@ public class CodeDecompiler
 		ClassName alloc = __i.<ClassName>argument(0, ClassName.class);
 		this.verifier.canAllocate(this.handle, alloc);
 		
+		// The object to be pushed to the stack is not allocated, it must
+		// be allocated
+		InitializationKey ik = __nextInitKey();
+		Variable v = this._varstate.stack().push(new JavaType(alloc), ik);
+		
 		throw new todo.TODO();
 	}
 	
