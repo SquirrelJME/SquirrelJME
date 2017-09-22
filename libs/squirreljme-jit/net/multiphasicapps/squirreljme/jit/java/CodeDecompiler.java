@@ -471,8 +471,6 @@ public class CodeDecompiler
 		// being initialized
 		if (initkey != null)
 			varstate.initializeVariable(initkey);
-		
-		throw new todo.TODO();
 	}
 	
 	/**
