@@ -311,7 +311,7 @@ public class CodeDecompiler
 		
 		// Count objects which were passed to the method
 		VariableState varstate = this._varstate;
-		VariableTread locals = varstate.locals;
+		VariableTread locals = varstate.locals();
 		for (int i = 0, n = varstate.maxLocals(); i < n; i++)
 		{
 			TypedVariable tv = locals.getTypedVariable(i);
@@ -396,7 +396,7 @@ public class CodeDecompiler
 		
 		// Variables will be popped off the stack
 		VariableState varstate = this._varstate;
-		VariableTread stack = varstate.stack;
+		VariableTread stack = varstate.stack();
 		
 		// Determine how the target is being called
 		JavaType[] ts = desthandle.javaStack(mit.isInstance());

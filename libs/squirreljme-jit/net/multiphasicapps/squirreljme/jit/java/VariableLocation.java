@@ -34,5 +34,33 @@ public enum VariableLocation
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is this considered a stack?
+	 *
+	 * @return If this is considered a stack.
+	 * @since 2017/09/22
+	 */
+	public final boolean isStack()
+	{
+		return this == STACK;
+	}
+	
+	/**
+	 * Returns the size of this location.
+	 *
+	 * @param __ms The maximum number of stack entries.
+	 * @param __ml The maximum number of local entries.
+	 * @return The size of this location.
+	 * @since 2017/09/22
+	 */
+	public final int size(int __ms, int __ml)
+	{
+		if (this == STACK)
+			return __ms;
+		if (this == LOCAL)
+			return __ml;
+		return 1;
+	}
 }
 
