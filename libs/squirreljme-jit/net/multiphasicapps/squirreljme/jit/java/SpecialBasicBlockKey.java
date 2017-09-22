@@ -31,6 +31,9 @@ public enum SpecialBasicBlockKey
 	 */
 	ENTRY_POINT,
 	
+	/** The default exception handler when there are no exceptions handled. */
+	DEFAULT_EXCEPTION_HANDLER,
+	
 	/** End. */
 	;
 }

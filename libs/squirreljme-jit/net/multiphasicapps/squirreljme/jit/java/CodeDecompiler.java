@@ -62,7 +62,7 @@ public class CodeDecompiler
 	protected final VerificationChecks verifier;
 	
 	/** Exception keys. */
-	private volatile Set<ExceptionHandlerKey> _xkeys;
+	private volatile Set<BasicBlockKey> _xkeys;
 	
 	/** The stack map table. */
 	private volatile StackMapTable _smt;
@@ -182,9 +182,18 @@ public class CodeDecompiler
 		if (__bl == null || __i == null)
 			throw new NullPointerException("NARG");
 		
-		// ExceptionHandlerKey exceptionHandlerKey()
+		// Force a jump to a default handler if there are no exceptions to be
+		// handled specifically
+		BasicBlockKey key = __i.exceptionHandlerKey();
+		if (key == null)
+			key = SpecialBasicBlockKey.DEFAULT_EXCEPTION_HANDLER;
 		
-		throw new todo.TODO();
+		// Add jump to exception handler if an exception is being thrown
+		__bl.appendJumpOnNotNull(this._varstate.getTread(
+			VariableLocation.THROWING_EXCEPTION).getTypedVariable(0), key);
+		
+		// Add key to be handled in the future
+		this._xkeys.add(key);
 	}
 	
 	/**
@@ -220,7 +229,7 @@ public class CodeDecompiler
 		// If any address has exception handlers then each unique group
 		// must be expanded so that if an exception does exist they can
 		// have their tables expanded virtually.
-		Set<ExceptionHandlerKey> xkeys = new LinkedHashSet<>();
+		Set<BasicBlockKey> xkeys = new LinkedHashSet<>();
 		this._xkeys = xkeys;
 		
 		// After all of that, run through all byte code operations and
@@ -233,7 +242,7 @@ public class CodeDecompiler
 			__expandBasicBlock(bb, rv);
 			
 		// Expand exception handlers if any were used
-		for (ExceptionHandlerKey ek : xkeys)
+		for (BasicBlockKey ek : xkeys)
 			throw new todo.TODO();
 		
 		return rv;

@@ -63,6 +63,10 @@ public final class VariableState
 			if (e != null)
 				locals.__set(i, e);
 		}
+		
+		// The exception register is set to some throwable
+		treads.get(VariableLocation.THROWING_EXCEPTION).__set(0,
+			new JavaType(new FieldDescriptor("Ljava/lang/Throwable;")));
 	}
 	
 	/**
