@@ -106,6 +106,21 @@ public class HighLevelBlock
 	}
 	
 	/**
+	 * Appends a jump if the given variable is not null.
+	 *
+	 * @param __v The variable to check.
+	 * @param __t The target to jump to.
+	 * @throws JITException If the variable is not an object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/22
+	 */
+	public final void appendJumpOnNotNull(TypedVariable __v, BasicBlockKey __t)
+		throws JITException, NullPointerException
+	{
+		append(new HLOJumpOnNotNull(__v, __t));
+	}
+	
+	/**
 	 * Appends a method call to the given method.
 	 *
 	 * @param __mlt The type of lookup to perform for the given method.

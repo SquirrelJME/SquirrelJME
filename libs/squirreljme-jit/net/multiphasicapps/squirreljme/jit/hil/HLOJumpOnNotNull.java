@@ -13,67 +13,82 @@ package net.multiphasicapps.squirreljme.jit.hil;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This represents an unconditional jump to a given target.
+ * This jumps to the target if the given variable is not null.
  *
- * @since 2017/09/01
+ * @since 2017/09/22
  */
-public final class HLOUnconditionalJump
-	implements HLO, HLOJump
+public final class HLOJumpOnNotNull
+	implements HLOJump, HLOSingularConditional
 {
-	/** The target of the jump. */
+	/** The variable to check. */
+	protected final TypedVariable variable;
+	
+	/** The jump target. */
 	protected final BasicBlockKey target;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
 	/**
-	 * Initializes an unconditional jump to the specified target.
+	 * Initializes a jump if the given variable is not null.
 	 *
+	 * @param __v The variable to check.
 	 * @param __t The target to jump to.
+	 * @throws JITException If the variable is not an object.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/09/01
+	 * @since 2017/09/22
 	 */
-	public HLOUnconditionalJump(BasicBlockKey __t)
-		throws NullPointerException
+	public HLOJumpOnNotNull(TypedVariable __v, BasicBlockKey __t)
+		throws JITException, NullPointerException
 	{
 		// Check
-		if (__t == null)
+		if (__v == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error JI2p Cannot check a non-object against null.
+		// (The variable to check)}
+		if (!__v.isObject())
+			throw new JITException(String.format("JI2p %s", __v));
+		
 		// Set
+		this.variable = __v;
 		this.target = __t;
 	}
-		
+	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/09/01
+	 * @since 2017/09/22
 	 */
 	@Override
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof HLOUnconditionalJump))
+		if (!(__o instanceof HLOJumpOnNotNull))
 			return false;
 		
-		HLOUnconditionalJump o = (HLOUnconditionalJump)__o;
-		return this.target.equals(o.target);
+		HLOJumpOnNotNull o = (HLOJumpOnNotNull)__o;
+		return this.variable.equals(o.variable) &&
+			this.target.equals(o.target);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/09/01
+	 * @since 2017/09/22
 	 */
 	@Override
 	public int hashCode()
 	{
-		return this.target.hashCode();
+		return this.variable.hashCode() ^
+			this.target.hashCode();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/09/01
+	 * @since 2017/09/22
 	 */
 	@Override
 	public BasicBlockKey target()
@@ -83,7 +98,7 @@ public final class HLOUnconditionalJump
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/09/01
+	 * @since 2017/09/22
 	 */
 	@Override
 	public String toString()
@@ -91,12 +106,21 @@ public final class HLOUnconditionalJump
 		Reference<String> ref = this._string;
 		String rv;
 		
-		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"Unconditional Jump %s", this.target)));
+				"Jump to %s if %s != null", this.target, this.variable)));
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/09/22
+	 */
+	@Override
+	public TypedVariable variable()
+	{
+		return this.variable;
 	}
 }
 
