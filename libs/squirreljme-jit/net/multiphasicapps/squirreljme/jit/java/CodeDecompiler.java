@@ -289,6 +289,10 @@ public class CodeDecompiler
 					__genInvokeMethod(block, i);
 					break;
 				
+				case InstructionIndex.NEW:
+					__genNew(block, i);
+					break;
+				
 					// {@squirreljme.error JI2g The specified instruction
 					// is not implemented. (The instruction)}
 				default:
@@ -506,6 +510,25 @@ public class CodeDecompiler
 		// Note that nothing needs to be counted down because the variable is
 		// never replaced
 		__bl.appendCountReference(varstate.getTypedVariable(dv), true);
+	}
+	
+	/**
+	 * Generates an allocation of a new object.
+	 *
+	 * @param __bl The target block.
+	 * @param __i The instruction containing the new instance.
+	 * @throws JITException If the new operation is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/22
+	 */
+	private void __genNew(HighLevelBlock __bl, Instruction __i)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__bl == null || __i == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
