@@ -315,7 +315,9 @@ public final class VariableTread
 		this._top = next;
 		
 		// Refer to the top as a variable that can be used for writing
-		return new Variable(this.location, top);
+		Variable rv = new Variable(this.location, top);
+		System.err.printf("DEBUG -- Push %s%n", rv);
+		return rv;
 	}
 	
 	/**
