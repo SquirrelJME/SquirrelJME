@@ -12,6 +12,10 @@ package net.multiphasicapps.squirreljme.jit.java;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
@@ -22,11 +26,8 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  */
 public final class VariableState
 {
-	/** Local variables. */
-	protected final VariableTread locals;
-	
-	/** Stack variables. */
-	protected final VariableTread stack;
+	/** Treads which are available. */
+	private final Map<VariableLocation, VariableTread> _treads;
 	
 	/**
 	 * Initializes the variable state.
@@ -45,10 +46,14 @@ public final class VariableState
 			throw new NullPointerException("NARG");
 		
 		// Initialize treads
-		VariableTread locals;
-		this.locals =
-			(locals = new VariableTread(VariableLocation.LOCAL, __ml, false));
-		this.stack = new VariableTread(VariableLocation.STACK, __ms, true);
+		Map<VariableLocation, VariableTread> treads = new LinkedHashMap<>();
+		this._treads = treads;
+		for (VariableLocation l : VariableLocation.values())
+			treads.put(l, new VariableTread(l, l.size(__ms, __ml),
+				l.isStack()));
+		
+		// Initialize treads
+		VariableTread locals = treads.get(VariableLocation.LOCAL);
 		
 		// Initialize local variables from the stack map state
 		StackMapTableState state = __smt.get(0);
@@ -75,21 +80,7 @@ public final class VariableState
 		if (__l == null)
 			throw new NullPointerException("NARG");
 		
-		// Depends
-		switch (__l)
-		{
-				// Local variables
-			case LOCAL:
-				return this.locals;
-			
-				// Stack variables
-			case STACK:
-				return this.stack;
-			
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}
+		return this._treads.get(__l);
 	}
 	
 	/**
@@ -138,7 +129,7 @@ public final class VariableState
 	 */
 	public VariableTread locals()
 	{
-		return this.locals;
+		return getTread(VariableLocation.LOCAL);
 	}
 	
 	/**
@@ -149,7 +140,7 @@ public final class VariableState
 	 */
 	public int maxLocals()
 	{
-		return this.locals.storageSize();
+		return locals().storageSize();
 	}
 	
 	/**
@@ -160,7 +151,7 @@ public final class VariableState
 	 */
 	public int maxStack()
 	{
-		return this.stack.storageSize();
+		return stack().storageSize();
 	}
 	
 	/**
@@ -182,7 +173,7 @@ public final class VariableState
 	 */
 	public VariableTread stack()
 	{
-		return this.stack;
+		return getTread(VariableLocation.STACK);
 	}
 	
 	/**
@@ -193,7 +184,8 @@ public final class VariableState
 	 */
 	public VariableTread[] treads()
 	{
-		return new VariableTread[]{this.locals, this.stack};
+		Collection<VariableTread> vs = this._treads.values();
+		return vs.toArray(new VariableTread[vs.size()]);
 	}
 	
 	/**
@@ -203,13 +195,7 @@ public final class VariableState
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("{locals= ");
-		sb.append(this.locals);
-		sb.append(", stack=");
-		sb.append(this.stack);
-		sb.append("}");
-		return sb.toString();
+		return this._treads.toString();
 	}
 }
 
