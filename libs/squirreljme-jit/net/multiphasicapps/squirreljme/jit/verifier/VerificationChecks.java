@@ -33,6 +33,21 @@ public final class VerificationChecks
 		new LinkedHashSet<>();
 	
 	/**
+	 * Adds a check to determiner if the source method can allocate the
+	 * specified class.
+	 *
+	 * @param __src The method performing the allocation.
+	 * @param __cl The target class to be allocated.
+	 * @throws NullPointerException On nullarguments.
+	 * @since 2017/09/22
+	 */
+	public final void canAllocate(MethodHandle __src, ClassName __cl)
+		throws NullPointerException
+	{
+		check(new CanAllocateCheck(__src, __cl));
+	}
+	
+	/**
 	 * Adds a check if the given class can extend the other class.
 	 *
 	 * @param __t The class doing the extending.
