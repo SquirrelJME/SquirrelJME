@@ -171,7 +171,7 @@ public final class VariableTread
 				
 				// Debug
 				System.err.printf("DEBUG -- %s becomes initialized%n",
-					getTypedVariable(n));
+					getTypedVariable(i));
 			}
 	}
 	
