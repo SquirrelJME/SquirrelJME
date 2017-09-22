@@ -528,6 +528,10 @@ public class CodeDecompiler
 		if (__bl == null || __i == null)
 			throw new NullPointerException("NARG");
 		
+		// Check to see if it can allocate it
+		ClassName alloc = __i.<ClassName>argument(0, ClassName.class);
+		this.verifier.canAllocate(this.handle, alloc);
+		
 		throw new todo.TODO();
 	}
 	
