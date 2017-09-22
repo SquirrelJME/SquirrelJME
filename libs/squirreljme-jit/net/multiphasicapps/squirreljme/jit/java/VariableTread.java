@@ -342,6 +342,7 @@ public final class VariableTread
 	/**
 	 * Sets the variable from the given stack map table state.
 	 *
+	 * @param __i The slot index to set.
 	 * @param __smt The stack map table state.
 	 * @throws IndexOutOfBoundsException If the index it out of bounds.
 	 * @throws JITException If it could not be set.
@@ -359,6 +360,26 @@ public final class VariableTread
 		this._types[__i] = jt;
 		this._initkeys[__i] = (jt != null ? (__smt.isInitialized() ? null :
 			new InitializationKey((-__i) - 1)) : null);
+		this._tvars[__i] = null;
+	}
+	
+	/**
+	 * Sets the variable type for the given slot.
+	 *
+	 * @param __i The slot index to set.
+	 * @param __t The type to set the slot as.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/02
+	 */
+	final void __set(int __i, JavaType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		this._types[__i] = __t;
+		this._initkeys[__i] = null;
 		this._tvars[__i] = null;
 	}
 	
