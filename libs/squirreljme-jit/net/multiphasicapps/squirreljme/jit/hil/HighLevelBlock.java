@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.hil;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.java.BasicBlockKey;
+import net.multiphasicapps.squirreljme.jit.java.ClassName;
 import net.multiphasicapps.squirreljme.jit.java.JumpTarget;
 import net.multiphasicapps.squirreljme.jit.java.MethodHandle;
 import net.multiphasicapps.squirreljme.jit.java.TypedVariable;
@@ -73,6 +74,22 @@ public class HighLevelBlock
 		
 		// Debug
 		System.err.printf("DEBUG -- Append: %s%n", __op);
+	}
+	
+	/**
+	 * Appends an allocation operation which allocates the specified class
+	 * and places the allocation at the destination.
+	 *
+	 * @param __dest The destination to place the allocated data into.
+	 * @param __cl The class type to allocate.
+	 * @throws JITException If the allocation is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/22
+	 */
+	public final void appendAllocate(Variable __dest, ClassName __cl)
+		throws JITException, NullPointerException
+	{
+		append(new HLOAllocate(__dest, __cl));
 	}
 	
 	/**
