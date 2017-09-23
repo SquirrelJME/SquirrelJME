@@ -535,9 +535,19 @@ public class CodeDecompiler
 		// The object to be pushed to the stack is not allocated, it must
 		// be allocated
 		InitializationKey ik = __nextInitKey();
-		Variable v = this._varstate.stack().push(new JavaType(alloc), ik);
+		VariableState varstate = this._varstate;
+		Variable v = varstate.stack().push(new JavaType(alloc), ik);
 		
-		throw new todo.TODO();
+		// Allocate
+		__bl.appendAllocate(v, alloc);
+		
+		// It is possible that there is not enough memory available to
+		// allocate, so check for this condition
+		__checkException(__bl, __i);
+		
+		// Count the reference, if an exception was not thrown then it
+		// would have been created
+		__bl.appendCountReference(varstate.getTypedVariable(v), true);
 	}
 	
 	/**
