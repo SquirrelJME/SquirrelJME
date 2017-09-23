@@ -204,6 +204,18 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns the return value of this descriptor.
+	 *
+	 * @return The value returned in this descriptor or {@code null} if there
+	 * is no return value.
+	 * @since 2017/09/22
+	 */
+	public FieldDescriptor returnValue()
+	{
+		return this.rvalue;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
