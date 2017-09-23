@@ -475,6 +475,16 @@ public class CodeDecompiler
 		// being initialized
 		if (initkey != null)
 			varstate.initializeVariable(initkey);
+		
+		// If there is a return value, copy the return value
+		FieldDescriptor rv = desthandle.descriptor().returnValue();
+		if (rv != null)
+		{
+			// Need to put the return value on the stack
+			Variable v = stack.push(new JavaType(rv));
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**

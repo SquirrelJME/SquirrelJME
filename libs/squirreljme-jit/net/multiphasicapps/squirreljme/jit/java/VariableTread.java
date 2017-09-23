@@ -249,6 +249,23 @@ public final class VariableTread
 	}
 	
 	/**
+	 * Pushes the specified type to the stack.
+	 *
+	 * @param __t The type to push.
+	 * @return The variable of the pushed stack slot.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JITException If the stack overflows or if the type is not
+	 * valid.
+	 * @throws NullPointerException If no type was specified.
+	 * @since 2017/09/22
+	 */
+	public final Variable push(JavaType __t)
+		throws IllegalStateException, JITException, NullPointerException
+	{
+		return push(__t, null);
+	}
+	
+	/**
 	 * Pushes the specified type and initialization key to the stack.
 	 *
 	 * @param __t The type to push.
@@ -259,7 +276,7 @@ public final class VariableTread
 	 * @throws IllegalStateException If this is not a stack.
 	 * @throws JITException If the stack overflows or if the type is not
 	 * valid.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no type was specified.
 	 * @since 2017/09/03
 	 */
 	public final Variable push(JavaType __t, InitializationKey __i)
@@ -267,7 +284,7 @@ public final class VariableTread
 			NullPointerException
 	{
 		// Check
-		if (__t == null || __i == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JI2h Cannot push a variable to a non-stack
