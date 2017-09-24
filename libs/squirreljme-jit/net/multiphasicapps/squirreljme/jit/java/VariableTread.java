@@ -176,6 +176,61 @@ public final class VariableTread
 	}
 	
 	/**
+	 * Returns the entry which is at the top of the stack.
+	 *
+	 * @return The top-most entry.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JITException If the stack is empty.
+	 * @since 2017/09/24
+	 */
+	public final TypedVariable peek()
+		throws IllegalStateException, JITException
+	{
+		return peek(0);
+	}
+	
+	/**
+	 * Returns the entry which is offset from the top of the stack.
+	 *
+	 * @param __i From the top of the stack, return the entry which is this
+	 * many from the top.
+	 * @return The {@code __i}th entry from the top of the stack.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JITException If the stack is empty or overflows.
+	 * @since 2017/09/24
+	 */
+	public final TypedVariable peek(int __i)
+		throws IllegalStateException, JITException
+	{
+		// {@squirreljme.error JI2q Cannot peek a variable from a non-stack
+		// tread.}
+		if (!this.isstack)
+			throw new IllegalStateException("JI2q");
+		
+		// There are variable length entries, so they must be correctly
+		// handled
+		TypedVariable rv = null;
+		for (int i = 0, at = this._top - 1; i < __i; i++)
+		{
+			// {@squirreljme.error JI2r Cannot peek the specified number of
+			// entries because it exceeds the stack size. (The number of
+			// entries to peek down)}
+			if (at < 0)
+				throw new JITException(String.format("JI2r %d", __i));
+			
+			// Get the type at the top, note that this method handles wide
+			// entries so it will return the base type
+			rv = getTypedVariable(at);
+			
+			// Skip the width of the type for the next run because otherwise
+			// the same type will always be returned
+			at -= rv.type().width();
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Pops the variable which is at the top of the stack.
 	 *
 	 * @return The popped variable.
