@@ -210,7 +210,7 @@ public final class VariableTread
 		// There are variable length entries, so they must be correctly
 		// handled
 		TypedVariable rv = null;
-		for (int i = 0, at = this._top - 1; i < __i; i++)
+		for (int i = 0, at = this._top - 1; i <= __i; i++, at--)
 		{
 			// {@squirreljme.error JI2r Cannot peek the specified number of
 			// entries because it exceeds the stack size. (The number of
@@ -218,13 +218,11 @@ public final class VariableTread
 			if (at < 0)
 				throw new JITException(String.format("JI2r %d", __i));
 			
-			// Get the type at the top, note that this method handles wide
-			// entries so it will return the base type
+			// Get the type at the top, if it is wide, then drop down and try
+			// again
 			rv = getTypedVariable(at);
-			
-			// Skip the width of the type for the next run because otherwise
-			// the same type will always be returned
-			at -= rv.type().width();
+			if (rv.type().isWide())
+				rv = getTypedVariable(--at);
 		}
 		
 		return rv;

@@ -293,6 +293,14 @@ public class CodeDecompiler
 					__genNew(block, i);
 					break;
 				
+				case InstructionIndex.DUP:
+					__genDup(block, false);
+					break;
+				
+				case InstructionIndex.DUP2:
+					__genDup(block, true);
+					break;
+				
 					// {@squirreljme.error JI2g The specified instruction
 					// is not implemented. (The instruction)}
 				default:
@@ -355,6 +363,40 @@ public class CodeDecompiler
 		
 		// Generate jump to the real method entry point
 		block.appendUnconditionalJump(new JumpTarget(0));
+	}
+	
+	/**
+	 * Generates a duplicate of the top-most stack entry.
+	 *
+	 * @param __bl The output block for the copy operation.
+	 * @param __w If {@code true} then this is for a wide operation.
+	 * @throws JITException If the top-most entry does not match the wideness
+	 * or narrowness that was expected.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/24
+	 */
+	private void __genDup(HighLevelBlock __bl, boolean __w)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__bl == null)
+			throw new NullPointerException("NARG");
+		
+		VariableState varstate = this._varstate;
+		VariableTread stack = varstate.stack();
+		
+		// {@squirreljme.error JI2s Could not duplicate the top-most entry
+		// because the wide or narrowness for it does not match. (The top-most
+		// entry on the stack; Whether a wide or narrow type is expected)}
+		TypedVariable top = stack.peek();
+		System.err.printf("DEBUG -- Dup %s%n", top);
+		if (__w != top.type().isWide())
+			throw new JITException(String.format("JI2s %s %s", top,
+				(__w ? "wide" : "narrow")));
+		
+		// Push it and generate op
+		Variable v = stack.push(top);
+		__bl.appendCopy(top, v);
 	}
 	
 	/**
