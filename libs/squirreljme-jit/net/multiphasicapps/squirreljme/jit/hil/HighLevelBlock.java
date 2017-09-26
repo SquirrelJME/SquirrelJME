@@ -161,7 +161,7 @@ public class HighLevelBlock
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/01
 	 */
-	public final void appendUnconditionalJump(JumpTarget __t)
+	public final void appendUnconditionalJump(BasicBlockKey __t)
 		throws NullPointerException
 	{
 		append(new HLOUnconditionalJump(__t));

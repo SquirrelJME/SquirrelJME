@@ -347,6 +347,20 @@ public final class Instruction
 	}
 	
 	/**
+	 * Returns the exception handler key for this instruction or the default
+	 * exception handler if there is none.
+	 *
+	 * @return The exception handler key or the default exception handler.
+	 * @since 2017/09/26
+	 */
+	public final BasicBlockKey exceptionHandlerKeyOrDefault()
+	{
+		BasicBlockKey rv = exceptionHandlerKey();
+		return (rv == null ? SpecialBasicBlockKey.DEFAULT_EXCEPTION_HANDLER :
+			rv);
+	}
+	
+	/**
 	 * Returns {@code true} if the instruction has natural flow.
 	 *
 	 * @return The instruction flows to the next naturally.
