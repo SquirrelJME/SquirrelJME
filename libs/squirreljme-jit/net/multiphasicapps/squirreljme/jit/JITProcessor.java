@@ -29,6 +29,7 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  *
  * @since 2017/08/24
  */
+@Deprecated
 public class JITProcessor
 {
 	/** The configuration for the JIT. */
@@ -88,6 +89,7 @@ public class JITProcessor
 	 * @return The target for data and code.
 	 * @since 2017/08/24
 	 */
+	@Deprecated
 	public final TemporaryBinary binary()
 	{
 		return this.binary;
@@ -113,6 +115,7 @@ public class JITProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/27
 	 */
+	@Deprecated
 	public final void jitProgram(LinkingPoint __e, HighLevelProgram __hlp)
 		throws JITException, NullPointerException
 	{
@@ -218,6 +221,7 @@ public class JITProcessor
 	 * @return The symbol storage.
 	 * @since 2017/08/24
 	 */
+	@Deprecated
 	public final Symbols symbols()
 	{
 		return this.symbols;
@@ -229,6 +233,7 @@ public class JITProcessor
 	 * @return The verifier.
 	 * @since 2017/08/24
 	 */
+	@Deprecated
 	public final VerificationChecks verifier()
 	{
 		return this.verifier;
