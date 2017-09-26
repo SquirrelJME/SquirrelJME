@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/08
  */
+@Deprecated
 public class Pool
 {
 	/** The UTF constant tag. */

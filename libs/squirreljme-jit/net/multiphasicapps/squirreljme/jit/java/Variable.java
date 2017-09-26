@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/08/12
  */
+@Deprecated
 public final class Variable
 {
 	/** Copied this variable, used for synchronization. */

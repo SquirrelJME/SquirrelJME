@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/05/18
  */
+@Deprecated
 public final class Instruction
 {
 	/** The byte code which contains this instruction. */

@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/05/14
  */
+@Deprecated
 public class ByteCode
 {
 	/** The number of stack variables. */

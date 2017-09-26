@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/09/19
  */
+@Deprecated
 public enum TypeCompatibility
 {
 	/** Not compatible. */

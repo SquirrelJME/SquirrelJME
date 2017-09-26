@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/15
  */
+@Deprecated
 public final class ClassName
 	implements Comparable<ClassName>
 {

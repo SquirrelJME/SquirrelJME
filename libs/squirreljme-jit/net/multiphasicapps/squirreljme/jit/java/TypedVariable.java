@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/08/13
  */
+@Deprecated
 public final class TypedVariable
 {
 	/** The type used for the variable, null means not used. */

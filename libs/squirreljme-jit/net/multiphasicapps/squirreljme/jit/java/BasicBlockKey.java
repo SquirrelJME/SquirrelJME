@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/08/07
  */
+@Deprecated
 public interface BasicBlockKey
 {
 	/**

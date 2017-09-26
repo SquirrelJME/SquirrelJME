@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2016/04/23
  */
+@Deprecated
 public enum FieldFlag
 	implements MemberFlag
 {

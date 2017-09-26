@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
  *
  * @since 2017/05/29
  */
+@Deprecated
 public final class ClassDecompiler
 {
 	/** The magic number of the class file. */

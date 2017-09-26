@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/06/09
  */
+@Deprecated
 public final class UTFConstantEntry
 {
 	/** The string representation. */

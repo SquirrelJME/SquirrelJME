@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2016/05/12
  */
+@Deprecated
 public interface AccessibleFlags
 {
 	/**

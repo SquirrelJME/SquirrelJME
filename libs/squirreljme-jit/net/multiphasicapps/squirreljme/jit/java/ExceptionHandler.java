@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/02/09
  */
+@Deprecated
 public final class ExceptionHandler
 {
 	/** The start address. */

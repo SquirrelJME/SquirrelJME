@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.jit.hil.MethodLookupType;
  *
  * @since 2017/09/16
  */
+@Deprecated
 public enum MethodInvocationType
 {
 	/** Interface method. */

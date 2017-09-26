@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/02/09
  */
+@Deprecated
 public final class ExceptionHandlerTable
 	extends AbstractList<ExceptionHandler>
 	implements RandomAccess

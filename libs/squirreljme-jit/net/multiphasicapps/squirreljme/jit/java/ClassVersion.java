@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2016/06/29
  */
+@Deprecated
 public enum ClassVersion
 {
 	/** CLDC 1.0 (JSR 30). */

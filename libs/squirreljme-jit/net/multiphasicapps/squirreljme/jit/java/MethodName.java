@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/07/07
  */
+@Deprecated
 public final class MethodName
 	extends Identifier
 {

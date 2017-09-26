@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/05/20
  */
+@Deprecated
 public final class JumpTarget
 	implements BasicBlockKey, Comparable<JumpTarget>
 {

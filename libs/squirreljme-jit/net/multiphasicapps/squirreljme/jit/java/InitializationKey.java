@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/09/02
  */
+@Deprecated
 public final class InitializationKey
 {
 	/** The identifier for this key. */

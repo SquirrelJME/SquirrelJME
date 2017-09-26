@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/09/02
  */
+@Deprecated
 public final class StackMapTableEntry
 {
 	/** The top of a long. */

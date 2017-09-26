@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/12
  */
+@Deprecated
 public final class FieldReference
 	extends MemberReference
 {
