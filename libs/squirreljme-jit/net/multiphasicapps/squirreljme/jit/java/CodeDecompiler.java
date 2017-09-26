@@ -168,6 +168,22 @@ public class CodeDecompiler
 	}
 	
 	/**
+	 * Adds an exception handler key to be handled.
+	 *
+	 * @param __k The target key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/26
+	 */
+	private void __addHandledException(BasicBlockKey __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		this._xkeys.add(__k);
+	}
+	
+	/**
 	 * This generates a check which determines if an exception was thrown.
 	 *
 	 * @param __bl The block to generate code for.
@@ -193,7 +209,7 @@ public class CodeDecompiler
 			VariableLocation.THROWING_EXCEPTION).getTypedVariable(0), key);
 		
 		// Add key to be handled in the future
-		this._xkeys.add(key);
+		__addHandledException(key);
 	}
 	
 	/**
@@ -280,6 +296,10 @@ public class CodeDecompiler
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
 					__genLoadObject(block, op - InstructionIndex.ALOAD_0);
+					break;
+					
+				case InstructionIndex.ATHROW:
+					__genThrowException(block, i);
 					break;
 				
 				case InstructionIndex.INVOKEINTERFACE:
@@ -600,6 +620,34 @@ public class CodeDecompiler
 		// Count the reference, if an exception was not thrown then it
 		// would have been created
 		__bl.appendCountReference(varstate.getTypedVariable(v), true);
+	}
+	
+	/**
+	 * Generates a throw of an exception.
+	 *
+	 * @param __bl The block to write to.
+	 * @param __i The instruction this generates for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/26
+	 */
+	private void __genThrowException(HighLevelBlock __bl, Instruction __i)
+	{
+		// Check
+		if (__bl == null || __i == null)
+			throw new NullPointerException("NARG");
+		
+		// Force a jump to a default handler if there are no exceptions to be
+		// handled specifically
+		BasicBlockKey key = __i.exceptionHandlerKeyOrDefault();
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Add jump to exception handler if an exception is being thrown
+		__bl.appendUnconditionalJump(key);
+		
+		// Add key to be handled in the future
+		__addHandledException(key);
 	}
 	
 	/**
