@@ -34,7 +34,7 @@ public class NullProgressNotifier
 	 * @since 2017/08/29
 	 */
 	@Override
-	public void endJar(String __n, int __lr, int __lc)
+	public void endJar(String __n, long __ns, int __lr, int __lc)
 	{
 	}
 	
