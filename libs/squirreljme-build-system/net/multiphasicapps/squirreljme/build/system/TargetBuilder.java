@@ -35,7 +35,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
-import net.multiphasicapps.squirreljme.jit.JITProcessor;
+import net.multiphasicapps.squirreljme.jit.JITInput;
 import net.multiphasicapps.squirreljme.jit.PrintStreamProgressNotifier;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -52,9 +52,6 @@ public class TargetBuilder
 	
 	/** The manager for projects. */
 	protected final ProjectManager manager;
-	
-	/** The target link table which contains the binary linkages. */
-	protected final JITProcessor processor;
 	
 	/** The JIT configuration (arch dependent). */
 	protected final JITConfig jitconfig;
@@ -114,8 +111,6 @@ public class TargetBuilder
 		
 		// Initialize the link state
 		this.jitconfig = jc;
-		this.processor = new JITProcessor(jc,
-			new PrintStreamProgressNotifier(System.out));
 		
 		// Obtain set of projects to compile in a given order
 		this._binaries = __getBinaries(extraproj);
@@ -142,7 +137,7 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Used for cluster counting and progress
-		JITProcessor processor = this.processor;
+		JITInput input = new JITInput();
 		JITConfig jitconfig = this.jitconfig;
 		ProjectBinary[] binaries = this._binaries;
 		int count = 0,
@@ -159,7 +154,7 @@ public class TargetBuilder
 			// Process all classes and resources
 			try (ZipStreamReader zsr = pb.openZipStreamReader())
 			{
-				processor.process(pbname, zsr);
+				input.readZip(pbname, zsr);
 			}
 		}
 		

@@ -59,12 +59,12 @@ public class PrintStreamProgressNotifier
 	 * @since 2017/08/29
 	 */
 	@Override
-	public void endJar(String __n, int __lr, int __lc)
+	public void endJar(String __n, long __ns, int __lr, int __lc)
 	{
 		// {@squirreljme.error JI0t Finished processing the specified JAR.
-		// (The name of the JAR; The number of resources; The number of
-		// classes)}
-		this.out.printf("JI0t %s %d %d%n", __n, __lr, __lc);
+		// (The name of the JAR; The number of nanoseconds it took to
+		// process; The number of resources; The number of classes)}
+		this.out.printf("JI0t %s %d %d %d%n", __n, __ns, __lr, __lc);
 	}
 	
 	/**

@@ -210,7 +210,7 @@ public class JITProcessor
 			}
 		
 		// Report results
-		notifier.endJar(__n, numrc, numcl);
+		notifier.endJar(__n, Long.MAX_VALUE, numrc, numcl);
 		
 		throw new todo.TODO();
 	}

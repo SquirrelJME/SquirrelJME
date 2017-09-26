@@ -32,11 +32,12 @@ public interface JITProgressNotifier
 	 * Specifies that the given JAR has finished processing.
 	 *
 	 * @param __n The JAR that was processed.
+	 * @param __ns The number of nanoseconds it took to process the JAR.
 	 * @param __lr The number of resources processed.
 	 * @param __lc The number of classes processed.
 	 * @since 2017/08/29
 	 */
-	public abstract void endJar(String __n, int __lr, int __lc);
+	public abstract void endJar(String __n, long __ns, int __lr, int __lc);
 	
 	/**
 	 * Specifies that the high level program has been processed and linked.

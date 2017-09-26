@@ -62,11 +62,11 @@ public class CatchingProgressNotifier
 	 * @since 2017/08/29
 	 */
 	@Override
-	public void endJar(String __n, int __lr, int __lc)
+	public void endJar(String __n, long __ns, int __lr, int __lc)
 	{
 		try
 		{
-			this.forward.endJar(__n, __lr, __lc);
+			this.forward.endJar(__n, __ns, __lr, __lc);
 		}
 		catch (Exception e)
 		{
