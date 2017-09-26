@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/08/13
  */
+@Deprecated
 public enum VariableLocation
 {
 	/** Local variables. */

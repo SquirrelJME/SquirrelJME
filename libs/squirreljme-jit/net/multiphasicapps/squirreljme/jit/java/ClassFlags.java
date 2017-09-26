@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2016/04/23
  */
+@Deprecated
 public class ClassFlags
 	extends Flags<ClassFlag>
 	implements AccessibleFlags

@@ -10,7 +10,9 @@
 
 /**
  * This package contains the classes which are used to represent class files
- * in an abstract structure format.
+ * in an abstract structure format. None of the classes in this package perform
+ * any JIT operation, it is only concerned with loading class files and
+ * representing them.
  *
  * Structures are read, then they are compiled by the JIT.
  *

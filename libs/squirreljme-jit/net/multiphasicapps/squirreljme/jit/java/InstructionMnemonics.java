@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/05/20
  */
+@Deprecated
 public final class InstructionMnemonics
 {
 	/**

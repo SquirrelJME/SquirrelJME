@@ -22,6 +22,7 @@ import java.util.Objects;
  *
  * @since 2017/07/26
  */
+@Deprecated
 public final class JavaType
 {
 	/** The top of a long. */

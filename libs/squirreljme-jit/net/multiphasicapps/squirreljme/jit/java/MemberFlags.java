@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
+@Deprecated
 public abstract class MemberFlags<F extends MemberFlag>
 	extends Flags<F>
 	implements AccessibleFlags

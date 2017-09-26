@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.jit.verifier.VerificationChecks;
  *
  * @since 2017/07/13
  */
+@Deprecated
 public class CodeDecompiler
 {
 	/** The maximum number of bytes the byte code may be. */

@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2016/08/24
  */
+@Deprecated
 public interface InstructionIndex
 {
 	/** NOP. */

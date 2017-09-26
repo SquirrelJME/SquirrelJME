@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/07/28
  */
+@Deprecated
 public final class StackMapTableState
 {
 	/** The depth of the stack. */

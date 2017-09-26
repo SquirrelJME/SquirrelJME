@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/07/07
  */
+@Deprecated
 public final class FieldName
 	extends Identifier
 {

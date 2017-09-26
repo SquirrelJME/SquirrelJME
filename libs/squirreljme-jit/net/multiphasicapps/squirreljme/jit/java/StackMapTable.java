@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/07/15
  */
+@Deprecated
 public final class StackMapTable
 {
 	/** The instruction address lookup. */

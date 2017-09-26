@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
  * @see BasicBlocks
  * @since 2017/08/01
  */
+@Deprecated
 public final class BasicBlock
 	implements Iterable<Instruction>
 {

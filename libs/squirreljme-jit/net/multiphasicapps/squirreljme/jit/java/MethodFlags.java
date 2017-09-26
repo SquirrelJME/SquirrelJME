@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2016/04/23
  */
+@Deprecated
 public final class MethodFlags
 	extends MemberFlags<MethodFlag>
 {

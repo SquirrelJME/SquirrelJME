@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/06/12
  */
+@Deprecated
 public final class NameAndType
 {
 	/** The name. */

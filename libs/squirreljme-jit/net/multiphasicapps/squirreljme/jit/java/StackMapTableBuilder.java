@@ -21,6 +21,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/07/15
  */
+@Deprecated
 public class StackMapTableBuilder
 {
 	/** The byte code for the method owning this, needed for {@code new}. */

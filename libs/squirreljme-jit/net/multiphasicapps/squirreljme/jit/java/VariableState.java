@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/08/12
  */
+@Deprecated
 public final class VariableState
 {
 	/** Treads which are available. */

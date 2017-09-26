@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/09/16
  */
+@Deprecated
 public final class MethodHandle
 {
 	/** The class the method is in. */

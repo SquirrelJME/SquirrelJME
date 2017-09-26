@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/12
  */
+@Deprecated
 public abstract class Identifier
 {
 	/** The string which makes up the identifier. */
