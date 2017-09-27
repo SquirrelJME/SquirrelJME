@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This represents the class verion that a class may be.
  *
  * @since 2016/06/29
  */
-@Deprecated
 public enum ClassVersion
 {
 	/** CLDC 1.0 (JSR 30). */

@@ -56,11 +56,19 @@ public final class ClassFile
 		
 		// {@squirreljme.error JI2u The magic number for the class is not
 		// valid. (The read magic number; The expected magic number)}
-		DataInputStream dis = new DataInputStream(__is);
-		int magic = dis.readInt();
+		DataInputStream in = new DataInputStream(__is);
+		int magic = in.readInt();
 		if (magic != _MAGIC_NUMBER)
 			throw new InvalidClassFormatException(String.format(
 				"JI2u %08x %08x", magic, _MAGIC_NUMBER));
+		
+		// {@squirreljme.error JI08 The version number of the input class
+		// file is not valid. (The version number)}
+		int cver = in.readShort() | (in.readShort() << 16);
+		ClassVersion version = ClassVersion.findVersion(cver);
+		if (version == null)
+			throw new InvalidClassFormatException(String.format("JI08 %d.%d",
+				cver >>> 16, (cver & 0xFFFF)));
 		
 		throw new todo.TODO();
 	}
