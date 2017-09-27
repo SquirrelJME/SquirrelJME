@@ -11,48 +11,29 @@
 package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
- * This represents the name of a class or array within the virtual machine.
- *
- * This class is immutable.
+ * This represents a binary name which consists of a class which is
+ * separted internally by forwarded slashes.
  *
  * @since 2017/09/27
  */
-public class ClassName
-	implements Comparable<ClassName>
+public final class BinaryName
+	implements Comparable<BinaryName>
 {
-	/** The binary name of the class. */
-	protected final BinaryName binary;
-	
-	/** The field type of the class (for arrays). */
-	protected final FieldDescriptor field;
-	
 	/**
-	 * Initializes the class name.
+	 * Initializes the binary name.
 	 *
-	 * @param __n The input string.
-	 * @throws InvalidClassFormatException If it is not a valid class name.
+	 * @param __n The name to initialize.
+	 * @throws InvalidClassFormatException If the binary name is valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/27
 	 */
-	public ClassName(String __n)
+	public BinaryName(String __n)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Is an array?
-		if (__n.startsWith("["))
-		{
-			this.binary = null;
-			this.field = new FieldDescriptor(__n);
-		}
-		
-		// Not an array
-		else
-		{
-			this.binary = new BinaryName(__n);
-			this.field = null;
-		}
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -60,7 +41,7 @@ public class ClassName
 	 * @since 2017/09/27
 	 */
 	@Override
-	public int compareTo(ClassName __o)
+	public int compareTo(BinaryName __o)
 	{
 		throw new todo.TODO();
 	}

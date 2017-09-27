@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This represents the name of a field. It has the same constraints as
@@ -16,7 +16,6 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/07/07
  */
-@Deprecated
 public final class FieldName
 	extends Identifier
 {

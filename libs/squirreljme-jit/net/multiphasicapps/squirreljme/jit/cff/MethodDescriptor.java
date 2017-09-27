@@ -8,18 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents the type descriptor of a method.
  *
  * @since 2017/06/12
  */
-@Deprecated
 public final class MethodDescriptor
 {
 	/** String representation of the descriptor. */
@@ -35,12 +33,12 @@ public final class MethodDescriptor
 	 * Initializes the method descriptor.
 	 *
 	 * @param __n The method descriptor to decode.
-	 * @throws JITException If it is not a valid method descriptor.
+	 * @throws InvalidClassFormatException If it is not a valid method descriptor.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
 	public MethodDescriptor(String __n)
-		throws JITException, NullPointerException
+		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -52,7 +50,8 @@ public final class MethodDescriptor
 		// {@squirreljme.error JI0j Method descriptors must start with an open
 		// parenthesis. (The method descriptor)}
 		if (!__n.startsWith("("))
-			throw new JITException(String.format("JI0j %s", __n));
+			throw new InvalidClassFormatException(
+				String.format("JI0j %s", __n));
 		
 		// Parse all input arguments
 		List<FieldDescriptor> args = new ArrayList<>();
@@ -74,7 +73,8 @@ public final class MethodDescriptor
 			// {@squirreljme.error JI18 Reached end of descriptor parsing
 			// arguments. (The method descriptor)}
 			if (at >= n)
-				throw new JITException(String.format("JI18 %s", __n));
+				throw new InvalidClassFormatException(
+					String.format("JI18 %s", __n));
 			
 			// Find end sequence
 			switch (__n.charAt(at))
@@ -100,7 +100,8 @@ public final class MethodDescriptor
 					// {@squirreljme.error JI17 Unknown field descriptor in
 					// method descriptor argument. (The descriptor)}
 				default:
-					throw new JITException(String.format("JI17 %s", __n));
+					throw new InvalidClassFormatException(
+						String.format("JI17 %s", __n));
 			}
 			
 			// Parse field
@@ -118,7 +119,8 @@ public final class MethodDescriptor
 		// {@squirreljme.error JI13 The method descriptor has no return
 		// value. (The method descriptor)}
 		if (i >= n)
-			throw new JITException(String.format("JI13 %s", __n));
+			throw new InvalidClassFormatException(
+				String.format("JI13 %s", __n));
 		
 		// No return value?
 		char c = __n.charAt(i);
@@ -166,32 +168,6 @@ public final class MethodDescriptor
 			return false;
 		
 		return this.string.equals(((MethodDescriptor)__o).string);
-	}
-	
-	/**
-	 * Returns the Java type stack for this descriptor.
-	 * 
-	 * @return The descriptor as it appears on the Java Stack.
-	 * @since 2017/09/16
-	 */
-	public JavaType[] javaStack()
-	{
-		// Handle all arguments now
-		int n = argumentCount();
-		JavaType[] rv = new JavaType[n];
-		for (int i = 0, o = 0; i < n; i++)
-		{
-			FieldDescriptor a;
-			rv[o++] = new JavaType(a = argument(i));
-			
-			// Add top of long/double but with unique distinct types
-			if (a.equals(FieldDescriptor.LONG))
-				rv[o++] = JavaType.TOP_LONG;
-			else if (a.equals(FieldDescriptor.DOUBLE))
-				rv[o++] = JavaType.TOP_DOUBLE;
-		}
-		
-		return rv;
 	}
 	
 	/**

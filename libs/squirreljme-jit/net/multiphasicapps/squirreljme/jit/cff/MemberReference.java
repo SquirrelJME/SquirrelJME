@@ -8,16 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
-
-import net.multiphasicapps.squirreljme.jit.JITException;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This is the base class for field and method references.
  *
  * @since 2017/06/12
  */
-@Deprecated
 public abstract class MemberReference
 {
 	/** The class this refers to. */

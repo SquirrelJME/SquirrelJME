@@ -8,18 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This describes a reference to a method.
  *
  * @since 2017/06/12
  */
-@Deprecated
 public final class MethodReference
 	extends MemberReference
 {
