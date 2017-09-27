@@ -12,6 +12,14 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.rc.Resource;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -24,8 +32,20 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  */
 public final class JITInput
 {
+	/** Lock for the input. */
+	final Object _lock =
+		new Object();
+	
 	/** The progress notifier to use. */
 	protected final JITProgressNotifier notifier;
+	
+	/** Input groups. */
+	private final Map<String, JITInputGroup> _groups =
+		new LinkedHashMap<>();
+	
+	/** Classes which are available. */
+	private final Map<ClassName, ClassFile> _classes =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes the JIT input.
@@ -77,7 +97,7 @@ public final class JITInput
 	/**
 	 * Reads the specified ZIP file and appends it to the input for the JIT.
 	 *
-	 * @param __gn The group name of the ZIP.
+	 * @param __n The group name of the ZIP.
 	 * @param __in The ZIP file to read from for input.
 	 * @return {@code this}.
 	 * @throws IOException On read errors.
@@ -85,13 +105,76 @@ public final class JITInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/26
 	 */
-	public final JITInput readZip(String __gn, ZipStreamReader __in)
+	public final JITInput readZip(String __n, ZipStreamReader __in)
 		throws IOException, NullPointerException
 	{
-		if (__gn == null || __in == null)
+		if (__n == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Log processing
+		JITProgressNotifier notifier = this.notifier;
+		notifier.beginJar(__n);
+		
+		// Target class and resources for groups
+		List<ClassFile> tcl = new LinkedList<>();
+		List<Resource> trc = new LinkedList<>();
+		
+		// Process entries
+		long start = System.nanoTime();
+		int numrc = 0, numcl = 0;
+		try
+		{
+			for (;;)
+				try (ZipStreamEntry e = __in.nextEntry())
+				{
+					// No more input
+					if (e == null)
+						break;
+				
+					// Compiling a class?
+					String name = e.name();
+					if (name.endsWith(".class"))
+					{
+						notifier.processClass(__n, name, ++numcl);
+						tcl.add(ClassFile.decode(e));
+					}
+				
+					// Appending a resource
+					else
+					{
+						notifier.processResource(__n, name, ++numrc);
+						trc.add(Resource.read(__n, e));
+					}
+				}
+		}
+		
+		// Count duration
+		finally
+		{
+			notifier.endJar(__n, System.nanoTime() - start, numrc, numcl);
+		}
+		
+		// Setup group
+		JITInputGroup grp = new JITInputGroup(__n, trc, tcl);
+		
+		// Add group
+		synchronized (this._lock)
+		{
+			// {@squirreljme.error JI2t A group with the specified name already
+			// is being used as input. (The name of the group)}
+			Map<String, JITInputGroup> groups = this._groups;
+			if (groups.containsKey(__n))
+				throw new JITException(String.format("JI2t %s", __n));
+			
+			if (true)
+				throw new todo.TODO();
+			
+			// Add
+			groups.put(__n, grp);
+		}
+		
+		// All done!
+		return this;
 	}
 }
 
