@@ -1,0 +1,86 @@
+# 2017/09/26
+
+## 15:27
+
+Ok, the `CodeDecompiler` is a bit unwieldy in that it seems quite messy and
+will end up being a giant mess. The JIT is going to be quite large in
+retrospect, it already is large and I am not too sure it would be that
+possible to condense it into a smaller amount. Having a small clean amount of
+code for the JIT would be really really nice. I keep getting stuck on the JIT
+because handling the class file is a complex process.
+
+## 15:32
+
+I mean the class decoding code is quite complex when it can be probably far
+simpler in operation. Maybe it is not possible to have a JIT that is clean and
+really the only thing that there can be is a giant mess. There has to be a way
+to have a nice and clean order.
+
+## 15:36
+
+Maybe the individual units are too intertwined, the bulk of the subpackages in
+the JIT are interconnected. The class decoder does the verification calls and
+such. The class structure is built with the structure code. The one thing I do
+not like is the intertwined nature. Also the class information is pretty much
+duplicated by the structure system. Also I have a hope that the JIT would run
+on systems with a small amount of memory, but that seems a bit unlikely right
+now. I could and probably should require the JIT not be limited by memory and
+execution speed. So that would be the best choice.
+
+## 15:44
+
+You could run the JIT on say a Commodore 64, but really why would you want to?
+The length of time it would take would essentially be forever. Although you
+would not be able to run programs which are not fixed, there might not even be
+the memory or disk space for that.
+
+## 15:55
+
+So basically I will make the class format just be represented as a bunch of
+classes which contain a representation of the instructions. The class
+representation will know nothing of what goes on in the JIT. There would just
+be classes which go through all methods which can then be compiled on an
+instructional basis. So most of the code will be the same as before, just in
+a different fashion.
+
+## 15:58
+
+I can call the new class representation `cff` for _Class File Format_.
+
+## 16:07
+
+I think I will design the JIT to really take advantage of stuff such as whole
+program optimization. I want the resultant binaries to be really tiny and I
+could do these optimizations, such as inlining and other things potentially.
+I can also have like attributes for optimization in methods. So methods which
+just read a field and for the most part, just return that given field. This
+can be recursive so that method overhead is just removed. I think knowing
+and loading everything during compilation would be the most optimal.
+
+## 16:14
+
+I should also probably have debugging information, because while it will
+increase waste it will provide location based information.
+
+## 16:16
+
+I would say the first stage of the JIT processing should just load every class
+that exists.
+
+## 16:18
+
+Worry about binaries later.
+
+## 16:21
+
+Ok so, what I need is a class called `JITInput`. This class reads all of the
+resources and class files, it then it provided as input for the JIT itself. It
+knows nothing about the JIT or anything that it does. It just provides itself
+as input for everything.
+
+## 16:32
+
+At least when everything is loaded, multiple threads can be taken advantage of
+for the most part. Actually with a sorted tree map, I can have it ordered
+based on an index while allowing multiple threads to perform the loading of
+the input streams. So I can multi-thread loading of JARs from the disk.
