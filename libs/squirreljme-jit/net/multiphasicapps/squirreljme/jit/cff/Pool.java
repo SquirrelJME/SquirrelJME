@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -24,67 +24,66 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/08
  */
-@Deprecated
-public class Pool
+public final class Pool
 {
 	/** The UTF constant tag. */
-	private static final int _TAG_UTF8 =
+	public static final int TAG_UTF8 =
 		1;
 	
 	/** Integer constant. */
-	private static final int _TAG_INTEGER =
+	public static final int TAG_INTEGER =
 		3;
 	
 	/** Float constant. */
-	private static final int _TAG_FLOAT =
+	public static final int TAG_FLOAT =
 		4;
 	
 	/** Long constant. */
-	private static final int _TAG_LONG =
+	public static final int TAG_LONG =
 		5;
 	
 	/** Double constant. */
-	private static final int _TAG_DOUBLE =
+	public static final int TAG_DOUBLE =
 		6;
 	
 	/** Reference to another class. */
-	private static final int _TAG_CLASS =
+	public static final int TAG_CLASS =
 		7;
 	
 	/** String constant. */
-	private static final int _TAG_STRING =
+	public static final int TAG_STRING =
 		8;
 	
 	/** Field reference. */
-	private static final int _TAG_FIELDREF =
+	public static final int TAG_FIELDREF =
 		9;
 	
 	/** Method reference. */
-	private static final int _TAG_METHODREF =
+	public static final int TAG_METHODREF =
 		10;
 	
 	/** Interface method reference. */
-	private static final int _TAG_INTERFACEMETHODREF =
+	public static final int TAG_INTERFACEMETHODREF =
 		11;
 	
 	/** Name and type. */
-	private static final int _TAG_NAMEANDTYPE =
+	public static final int TAG_NAMEANDTYPE =
 		12;
 	
 	/** Method handle (illegal). */
-	private static final int _TAG_METHODHANDLE =
+	public static final int TAG_METHODHANDLE =
 		15;
 	
 	/** Method type (illegal). */
-	private static final int _TAG_METHODTYPE =
+	public static final int TAG_METHODTYPE =
 		16;
 	
 	/** Invoke dynamic call site (illegal). */
-	private static final int _TAG_INVOKEDYNAMIC =
+	public static final int TAG_INVOKEDYNAMIC =
 		18;
 	
 	/** The top of a long/double. */
-	private static final int _TAG_WIDETOP =
+	public static final int TAG_WIDETOP =
 		-1;
 	
 	/** Entries within the constant pool. */
@@ -93,14 +92,89 @@ public class Pool
 	/**
 	 * Parses and initializes the constant pool structures.
 	 *
-	 * @param __in The input class containing the constant pool to be read.
-	 * @throws IOException On read errors.
-	 * @throws JITException If the constant pool is not valid.
+	 * @param __e The entries which make up the pool, this is used directly.
+	 * @since 2017/06/08
+	 */
+	Pool(Object... __e)
+		throws IOException, JITException, NullPointerException
+	{
+		this._entries = (__e == null ? new Object[0] : __e);
+	}
+	
+	/**
+	 * Obtains the entry at the specified index.
+	 *
+	 * @param <C> The type of class to get.
+	 * @param __cl The type of class to get.
+	 * @param __i The index of the entry to get.
+	 * @return The entry at the specified position as the given class.
+	 * @throws InvalidClassFormatException If the class type does not match or
+	 * the pool index is out of range.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/08
 	 */
-	public Pool(DataInputStream __in)
-		throws IOException, JITException, NullPointerException
+	public <C> C get(Class<C> __cl, int __i)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI0c The specified index is not within the bounds
+		// of the constant pool. (The index of the entry)}
+		Object[] entries = this._entries;
+		if (__i < 0 || __i >= entries.length)
+			throw new InvalidClassFormatException(
+				String.format("JI0c %d", __i));
+		
+		// {@squirreljme.error JI0d The specified entry's class is not of the
+		// expected class. (The index of the entry; The class the entry is; The
+		// expected class)}
+		Object val = entries[__i];
+		if (val != null && !__cl.isInstance(val))
+			throw new InvalidClassFormatException(
+				String.format("JI0d %d %s %s", __i, val.getClass(), __cl));
+		
+		return __cl.cast(val);
+	}
+	
+	/**
+	 * This is similar to {@link #get(Class, int)} except that it is not valid
+	 * if the entry is the {@code null} entry (the first one).
+	 *
+	 * @param <C> The type of class to get.
+	 * @param __cl The type of class to get.
+	 * @param __i The index of the entry to get.
+	 * @return The entry at the specified position as the given class.
+	 * @throws InvalidClassFormatException If the class type does not match,
+	 * the pool index is out of range, or the entry is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/06/14
+	 */
+	public <C> C require(Class<C> __cl, int __i)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		// {@squirreljme.error JI0r Expected the specified constant pool entry
+		// to not be the null entry. (The index; The expected class)}
+		C rv = this.<C>get(__cl, __i);
+		if (rv == null)
+			throw new InvalidClassFormatException(
+				String.format("JI0r %d %s", __i, __cl));
+		return rv;
+	}
+	
+	/**
+	 * Decodes the constant pool.
+	 *
+	 * @param __in The input stream.
+	 * @return The read constant pool.
+	 * @throws InvalidClassFormatException If the constant pool is not valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/27
+	 */
+	public static Pool decode(DataInputStream __in)
+		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		// Check
 		if (__in == null)
@@ -126,7 +200,7 @@ public class Pool
 					// UTF-8 constants to be directly used by the byte code so
 					// this prevents their usage from occuring by causing a
 					// class cast exception
-				case _TAG_UTF8:
+				case TAG_UTF8:
 					try
 					{
 						data = new UTFConstantEntry(__in.readUTF());
@@ -136,65 +210,66 @@ public class Pool
 					// the correct format.}
 					catch (UTFDataFormatException e)
 					{
-						throw new JITException("JI0b", e);
+						throw new InvalidClassFormatException("JI0b", e);
 					}
 					break;
 					
 					// Reference to two entries
-				case _TAG_FIELDREF:
-				case _TAG_METHODREF:
-				case _TAG_INTERFACEMETHODREF:
-				case _TAG_NAMEANDTYPE:
+				case TAG_FIELDREF:
+				case TAG_METHODREF:
+				case TAG_INTERFACEMETHODREF:
+				case TAG_NAMEANDTYPE:
 					data = new int[]{__in.readUnsignedShort(),
 						__in.readUnsignedShort()};
 					break;
 					
 					// References to single entry
-				case _TAG_CLASS:
-				case _TAG_STRING:
+				case TAG_CLASS:
+				case TAG_STRING:
 					data = new int[]{__in.readUnsignedShort()};
 					break;
 					
 					// Integer
-				case _TAG_INTEGER:
+				case TAG_INTEGER:
 					data = Integer.valueOf(__in.readInt());
 					break;
 					
 					// Long
-				case _TAG_LONG:
+				case TAG_LONG:
 					data = Long.valueOf(__in.readLong());
 					break;
 					
 					// Float
-				case _TAG_FLOAT:
+				case TAG_FLOAT:
 					data = Float.valueOf(__in.readFloat());
 					break;
 					
 					// Double
-				case _TAG_DOUBLE:
+				case TAG_DOUBLE:
 					data = Double.valueOf(__in.readDouble());
 					break;
 					
 					// {@squirreljme.error JI09 Java ME does not support dynamic
 					// invocation (such as method handles or lambda
 					// expressions).}
-				case _TAG_METHODHANDLE:
-				case _TAG_METHODTYPE:
-				case _TAG_INVOKEDYNAMIC:
-					throw new JITException("JI09");
+				case TAG_METHODHANDLE:
+				case TAG_METHODTYPE:
+				case TAG_INVOKEDYNAMIC:
+					throw new InvalidClassFormatException("JI09");
 				
 					// {@squirreljme.error JI0a Unknown tag type in the constant
 					// pool. (The constant pool tag)}
 				default:
-					throw new JITException(String.format("JI0a %d", tag));
+					throw new InvalidClassFormatException(
+						String.format("JI0a %d", tag));
 			}
 			rawdata[i] = data;
 			
 			// Skip long/double?
-			if (tag == _TAG_LONG || tag == _TAG_DOUBLE)
+			if (tag == TAG_LONG || tag == TAG_DOUBLE)
 			{
 				rawdata[++i] = new WideConstantTopEntry();
-				tags[i] = _TAG_WIDETOP;
+				tags[i] = TAG_WIDETOP;
 			}
 		}
 		
@@ -210,70 +285,11 @@ public class Pool
 		catch (ClassCastException|IndexOutOfBoundsException|
 			NullPointerException e)
 		{
-			throw new JITException("JI0e", e);
+			throw new InvalidClassFormatException("JI0e", e);
 		}
 		
-		this._entries = entries;
-	}
-	
-	/**
-	 * Obtains the entry at the specified index.
-	 *
-	 * @param <C> The type of class to get.
-	 * @param __cl The type of class to get.
-	 * @param __i The index of the entry to get.
-	 * @return The entry at the specified position as the given class.
-	 * @throws JITException If the class type does not match or the pool index
-	 * is out of range.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/06/08
-	 */
-	public <C> C get(Class<C> __cl, int __i)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error JI0c The specified index is not within the bounds
-		// of the constant pool. (The index of the entry)}
-		Object[] entries = this._entries;
-		if (__i < 0 || __i >= entries.length)
-			throw new JITException(String.format("JI0c %d", __i));
-		
-		// {@squirreljme.error JI0d The specified entry's class is not of the
-		// expected class. (The index of the entry; The class the entry is; The
-		// expected class)}
-		Object val = entries[__i];
-		if (val != null && !__cl.isInstance(val))
-			throw new JITException(String.format("JI0d %d %s %s", __i,
-				val.getClass(), __cl));
-		
-		return __cl.cast(val);
-	}
-	
-	/**
-	 * This is similar to {@link #get(Class, int)} except that it is not valid
-	 * if the entry is the {@code null} entry (the first one).
-	 *
-	 * @param <C> The type of class to get.
-	 * @param __cl The type of class to get.
-	 * @param __i The index of the entry to get.
-	 * @return The entry at the specified position as the given class.
-	 * @throws JITException If the class type does not match, the pool index
-	 * is out of range, or the entry is not valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/06/14
-	 */
-	public <C> C require(Class<C> __cl, int __i)
-		throws JITException, NullPointerException
-	{
-		// {@squirreljme.error JI0r Expected the specified constant pool entry
-		// to not be the null entry. (The index; The expected class)}
-		C rv = this.<C>get(__cl, __i);
-		if (rv == null)
-			throw new JITException(String.format("JI0r %d %s", __i, __cl));
-		return rv;
+		// Setup
+		return new Pool(entries);
 	}
 	
 	/**
@@ -282,13 +298,13 @@ public class Pool
 	 * @param __entries Output pool entries.
 	 * @param __tags Constant pool tags for the entries.
 	 * @param __rawdata The raw pool data.
-	 * @throws JITException If the entries are not valid.
+	 * @throws InvalidClassFormatException If the entries are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	private final void __initializeEntries(Object[] __entries, int[] __tags,
+	private static void __initializeEntries(Object[] __entries, int[] __tags,
 		Object[] __rawdata)
-		throws JITException, NullPointerException
+		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
 		if (__entries == null || __tags == null || __rawdata == null)
@@ -310,27 +326,27 @@ public class Pool
 			switch (tag)
 			{
 				case 0:
-				case _TAG_UTF8:
-				case _TAG_INTEGER:
-				case _TAG_FLOAT:
-				case _TAG_LONG:
-				case _TAG_DOUBLE:
-				case _TAG_WIDETOP:
+				case TAG_UTF8:
+				case TAG_INTEGER:
+				case TAG_FLOAT:
+				case TAG_LONG:
+				case TAG_DOUBLE:
+				case TAG_WIDETOP:
 					sequence = 0;
 					break;
 				
-				case _TAG_CLASS:
-				case _TAG_STRING:
+				case TAG_CLASS:
+				case TAG_STRING:
 					sequence = 1;
 					break;
 				
-				case _TAG_NAMEANDTYPE:
+				case TAG_NAMEANDTYPE:
 					sequence = 2;
 					break;
 				
-				case _TAG_FIELDREF:
-				case _TAG_METHODREF:
-				case _TAG_INTERFACEMETHODREF:
+				case TAG_FIELDREF:
+				case TAG_METHODREF:
+				case TAG_INTERFACEMETHODREF:
 					sequence = 3;
 					break;
 					
@@ -357,29 +373,29 @@ public class Pool
 			{
 					// These are copied directly
 				case 0:
-				case _TAG_UTF8:
-				case _TAG_INTEGER:
-				case _TAG_FLOAT:
-				case _TAG_LONG:
-				case _TAG_DOUBLE:
-				case _TAG_WIDETOP:
+				case TAG_UTF8:
+				case TAG_INTEGER:
+				case TAG_FLOAT:
+				case TAG_LONG:
+				case TAG_DOUBLE:
+				case TAG_WIDETOP:
 					out = in;
 					break;
 					
 					// Name of a class
-				case _TAG_CLASS:
+				case TAG_CLASS:
 					out = new ClassName(((UTFConstantEntry)
 						__entries[((int[])in)[0]]).toString());
 					break;
 					
 					// String constant
-				case _TAG_STRING:
+				case TAG_STRING:
 					out = ((UTFConstantEntry)__entries[((int[])in)[0]]).
 						toString();
 					break;
 					
 					// Name and type information
-				case _TAG_NAMEANDTYPE:
+				case TAG_NAMEANDTYPE:
 					{
 						int[] ina = (int[])in;
 						out = new NameAndType(
@@ -389,15 +405,15 @@ public class Pool
 					break;
 					
 					// Field and method references
-				case _TAG_FIELDREF:
-				case _TAG_METHODREF:
-				case _TAG_INTERFACEMETHODREF:
+				case TAG_FIELDREF:
+				case TAG_METHODREF:
+				case TAG_INTERFACEMETHODREF:
 					{
 						int[] ina = (int[])in;
 						ClassName cn = (ClassName)__entries[ina[0]];
 						NameAndType nat = (NameAndType)__entries[ina[1]];
 						
-						if (tag == _TAG_FIELDREF)
+						if (tag == TAG_FIELDREF)
 							out = new FieldReference(cn,
 								new FieldName(nat.name()),
 								new FieldDescriptor(nat.type()));
@@ -405,7 +421,7 @@ public class Pool
 							out = new MethodReference(cn,
 								new MethodName(nat.name()),
 								new MethodDescriptor(nat.type()),
-								tag == _TAG_INTERFACEMETHODREF);
+								tag == TAG_INTERFACEMETHODREF);
 					}
 					break;
 				
