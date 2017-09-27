@@ -21,6 +21,10 @@ import java.io.IOException;
  */
 public final class ClassFile
 {
+	/** The magic number of the class file. */
+	private static final int _MAGIC_NUMBER =
+		0xCAFEBABE;
+	
 	/**
 	 * Initializes the class file.
 	 *
@@ -37,18 +41,26 @@ public final class ClassFile
 	 *
 	 * @param __is The input stream to source classes from.
 	 * @return The decoded class file.
+	 * @throws InvalidClassFormatException If the class file is not formatted
+	 * correctly.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/26
 	 */
 	public static ClassFile decode(InputStream __is)
-		throws IOException, NullPointerException
+		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error JI2u The magic number for the class is not
+		// valid. (The read magic number; The expected magic number)}
 		DataInputStream dis = new DataInputStream(__is);
+		int magic = dis.readInt();
+		if (magic != _MAGIC_NUMBER)
+			throw new InvalidClassFormatException(String.format(
+				"JI2u %08x %08x", magic, _MAGIC_NUMBER));
 		
 		throw new todo.TODO();
 	}
