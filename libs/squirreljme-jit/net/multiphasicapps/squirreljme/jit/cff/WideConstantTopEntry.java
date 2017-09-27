@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This represents an entry which is the top of a long or double so that the
@@ -16,7 +16,6 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2017/06/09
  */
-@Deprecated
 public final class WideConstantTopEntry
 {
 }

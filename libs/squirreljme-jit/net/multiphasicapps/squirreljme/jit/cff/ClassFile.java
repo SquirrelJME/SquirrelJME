@@ -70,6 +70,9 @@ public final class ClassFile
 			throw new InvalidClassFormatException(String.format("JI08 %d.%d",
 				cver >>> 16, (cver & 0xFFFF)));
 		
+		// Decode the constant pool
+		Pool pool = Pool.decode(in);
+		
 		throw new todo.TODO();
 	}
 }

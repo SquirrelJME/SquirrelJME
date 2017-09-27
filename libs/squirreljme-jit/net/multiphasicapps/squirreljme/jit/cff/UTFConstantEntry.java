@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This represents a UTF-8 constant pool entry.
  *
  * @since 2017/06/09
  */
-@Deprecated
 public final class UTFConstantEntry
 {
 	/** The string representation. */
