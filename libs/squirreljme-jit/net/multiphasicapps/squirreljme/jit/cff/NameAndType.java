@@ -8,50 +8,44 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This describes a reference to a field.
+ * This holds the name and type strings, the type descriptor is not checked.
  *
  * @since 2017/06/12
  */
-@Deprecated
-public final class FieldReference
-	extends MemberReference
+public final class NameAndType
 {
-	/** The name of the field. */
-	protected final FieldName name;
+	/** The name. */
+	protected final String name;
 	
-	/** The member type. */
-	protected final FieldDescriptor type;
+	/** The type. */
+	protected final String type;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
 	/**
-	 * Initializes the field reference.
+	 * Initializes the name and type information.
 	 *
-	 * @param __c The class the member resides in.
-	 * @param __i The name of the member.
-	 * @param __t The descriptor of the member.
+	 * @param __n The name.
+	 * @param __t The type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
-	public FieldReference(ClassName __c, FieldName __i, FieldDescriptor __t)
+	public NameAndType(String __n, String __t)
 		throws NullPointerException
 	{
-		super(__c);
-		
 		// Check
-		if (__t == null || __i == null)
+		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.name = __i;
+		this.name = __n;
 		this.type = __t;
 	}
 	
@@ -62,7 +56,13 @@ public final class FieldReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Check
+		if (!(__o instanceof NameAndType))
+			return false;
+		
+		NameAndType o = (NameAndType)__o;
+		return this.name.equals(o.name) &&
+			this.type.equals(o.type);
 	}
 	
 	/**
@@ -72,15 +72,16 @@ public final class FieldReference
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode() ^ this.type.hashCode();
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2017/07/08
+	 * Returns the identifier.
+	 *
+	 * @return The identifier.
+	 * @since 2017/06/12
 	 */
-	@Override
-	public final FieldName memberName()
+	public String name()
 	{
 		return this.name;
 	}
@@ -97,11 +98,21 @@ public final class FieldReference
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = String.format(
-				"field %s::%s%s", this.classname, this.name,
-				this.type)));
+			this._string = new WeakReference<>((rv = this.name + "." +
+				this.type));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the type.
+	 *
+	 * @return The type.
+	 * @since 2017/06/12
+	 */
+	public String type()
+	{
+		return this.type;
 	}
 }
 

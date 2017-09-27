@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,7 +18,6 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/09/16
  */
-@Deprecated
 public final class MethodHandle
 {
 	/** The class the method is in. */
@@ -103,30 +102,6 @@ public final class MethodHandle
 	public boolean isInstanceInitializer()
 	{
 		return this.name.isInstanceInitializer();
-	}
-	
-	/**
-	 * Returns the Java type stack for this handle.
-	 * 
-	 * @param __i If {@code true} then this is an instance invocation.
-	 * @return The handle as it appears on the Java Stack.
-	 * @since 2017/09/16
-	 */
-	public JavaType[] javaStack(boolean __i)
-	{
-		// No need to add current class type
-		JavaType[] djs = this.descriptor.javaStack();
-		if (!__i)
-			return djs;
-		
-		// JUst cop
-		int dn = djs.length;
-		JavaType[] rv = new JavaType[dn + 1];
-		rv[0] = new JavaType(this.outerclass);
-		for (int i = 0, o = 1; i < dn; i++, o++)
-			rv[o] = djs[i];
-		
-		return rv;
 	}
 	
 	/**

@@ -8,9 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
-
-import net.multiphasicapps.squirreljme.jit.JITException;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This represents an identifier which acts as a name of a fragment of a class
@@ -18,7 +16,6 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/06/12
  */
-@Deprecated
 public abstract class Identifier
 {
 	/** The string which makes up the identifier. */
@@ -28,12 +25,12 @@ public abstract class Identifier
 	 * Initializes the identifier.
 	 *
 	 * @param __n The input identifier to decode.
-	 * @throws JITException If it is not a valid identifier.
+	 * @throws InvalidClassFormatException If it is not a valid identifier.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
 	Identifier(String __n)
-		throws JITException, NullPointerException
+		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -50,7 +47,8 @@ public abstract class Identifier
 			// {@squirreljme.error JI0i The specified identifier contains an
 			// invalid character. (The identifier)}
 			if (c == '.' || c == ';' || c == '[' || c == '/')
-				throw new JITException(String.format("JI0i %s", __n));
+				throw new InvalidClassFormatException(
+					String.format("JI0i %s", __n));
 		}
 	}
 	

@@ -8,9 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
-
-import net.multiphasicapps.squirreljme.jit.JITException;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This represents the name of a method. This has the same constraints as the
@@ -19,7 +17,6 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2017/07/07
  */
-@Deprecated
 public final class MethodName
 	extends Identifier
 {
@@ -27,11 +24,11 @@ public final class MethodName
 	 * Initializes the method name.
 	 *
 	 * @param __s The method name.
-	 * @throws JITException If the method name is method valid.
+	 * @throws InvalidClassFormatException If the method name is method valid.
 	 * @since 2017/07/07
 	 */
 	public MethodName(String __s)
-		throws JITException
+		throws InvalidClassFormatException
 	{
 		super(__s);
 		
@@ -44,7 +41,8 @@ public final class MethodName
 				// {@squirreljme.error JI15 Method names cannot contain less
 				// than or greater than signs. (The method name)}
 				if (c == '<' || c == '>')
-					new JITException(String.format("JI15 %s", __s));
+					throw new InvalidClassFormatException(
+						String.format("JI15 %s", __s));
 			}
 	}
 	
