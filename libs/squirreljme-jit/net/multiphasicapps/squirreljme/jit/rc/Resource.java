@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This represents a single resource which may exist within a class.
@@ -104,7 +105,21 @@ public final class Resource
 		if (__n == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Copy bytes
+		ByteDeque q = new ByteDeque();
+		byte[] buf = new byte[512];
+		for (;;)
+		{
+			int rc = __in.read(buf);
+			
+			if (rc < 0)
+				break;
+			
+			q.addLast(buf, 0, rc);
+		}
+		
+		// Create
+		return new Resource(__n, q.toByteArray());
 	}
 }
 
