@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.cff;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This represents a binary name which consists of a class which is
  * separted internally by forwarded slashes.
@@ -19,6 +24,9 @@ package net.multiphasicapps.squirreljme.jit.cff;
 public final class BinaryName
 	implements Comparable<BinaryName>
 {
+	/** The identifiers in the name. */
+	private final ClassIdentifier[] _identifiers;
+	
 	/**
 	 * Initializes the binary name.
 	 *
@@ -33,7 +41,25 @@ public final class BinaryName
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Split
+		List<ClassIdentifier> id = new ArrayList<>();
+		for (int i = 0, n = __n.length(); i < n;)
+		{
+			// Identifiers are always split by forward slashes like UNIX
+			// paths
+			int ns = __n.indexOf('/', i);
+			if (ns < 0)
+				ns = n;
+			
+			// Split in
+			id.add(new ClassIdentifier(__n.substring(i, ns)));
+			
+			// Skip
+			i = ns + 1;
+		}
+		
+		this._identifiers = id.<ClassIdentifier>toArray(
+			new ClassIdentifier[id.size()]);
 	}
 	
 	/**
