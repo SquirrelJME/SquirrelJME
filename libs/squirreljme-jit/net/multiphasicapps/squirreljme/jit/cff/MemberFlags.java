@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This is the base class for flags which are for member types.
@@ -16,7 +16,6 @@ package net.multiphasicapps.squirreljme.jit.java;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
-@Deprecated
 public abstract class MemberFlags<F extends MemberFlag>
 	extends Flags<F>
 	implements AccessibleFlags

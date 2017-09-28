@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,6 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  *
  * @since 2016/04/23
  */
-@Deprecated
 public class ClassFlags
 	extends Flags<ClassFlag>
 	implements AccessibleFlags

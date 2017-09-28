@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * These are flags which modify how a class is accessed and is behaved.
  *
  * @since 2016/04/23
  */
-@Deprecated
 public enum ClassFlag
 	implements Flag
 {

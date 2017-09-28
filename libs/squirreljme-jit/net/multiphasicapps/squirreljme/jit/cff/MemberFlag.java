@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This is a flagging interface for flags which are associated with members.
  *
  * @since 2016/04/23
  */
-@Deprecated
 public interface MemberFlag
 	extends Flag
 {
