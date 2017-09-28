@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * This interface is used to flag the types used for flags.
  *
  * @since 2016/04/23
  */
-@Deprecated
 public interface Flag
 {
 	/**

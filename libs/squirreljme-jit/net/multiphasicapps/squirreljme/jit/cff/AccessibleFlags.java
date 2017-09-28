@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 /**
  * These are flags which are associated with accessible objects to determine
@@ -16,7 +16,6 @@ package net.multiphasicapps.squirreljme.jit.java;
  *
  * @since 2016/05/12
  */
-@Deprecated
 public interface AccessibleFlags
 {
 	/**

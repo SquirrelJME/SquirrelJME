@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.java;
+package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
-@Deprecated
 public abstract class Flags<F extends Flag>
 	extends AbstractSet<F>
 {
