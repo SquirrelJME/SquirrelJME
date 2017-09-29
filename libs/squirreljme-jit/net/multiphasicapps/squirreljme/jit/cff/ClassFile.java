@@ -80,6 +80,23 @@ public final class ClassFile
 		ClassName thisname = pool.<ClassName>require(ClassName.class,
 			in.readUnsignedShort());
 		
+		// {@squirreljme.error JI0s Either Object has a superclass which it
+		// cannot extend any class or any other class does not have a super
+		// class. (The current class name; The super class name)}
+		ClassName supername = pool.<ClassName>get(ClassName.class,
+			in.readUnsignedShort());
+		if (thisname.equals(new ClassName("java/lang/Object")) !=
+			(supername == null))
+			throw new InvalidClassFormatException(String.format("JI0s %s %s",
+				thisname, supername));
+		
+		// Read interfaces
+		int icount = in.readUnsignedShort();
+		ClassName[] interfaces = new ClassName[icount];
+		for (int i = 0; i < icount; i++)
+			interfaces[i] = pool.<ClassName>require(ClassName.class,
+				in.readUnsignedShort());
+		
 		throw new todo.TODO();
 	}
 }
