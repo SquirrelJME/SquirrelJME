@@ -1,0 +1,10 @@
+# 2017/09/27
+
+## 10:50
+
+I believe I like how the new class code is going to turn out, much less
+intertwined and hopefully simpler.
+
+## 10:59
+
+Most of the stuff is just bring in of the old code.
