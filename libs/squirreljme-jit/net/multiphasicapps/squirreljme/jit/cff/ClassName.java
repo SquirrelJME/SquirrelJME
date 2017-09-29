@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.cff;
 
+import java.util.Objects;
+
 /**
  * This represents the name of a class or array within the virtual machine.
  *
@@ -72,7 +74,12 @@ public class ClassName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (!(__o instanceof ClassName))
+			return false;
+		
+		ClassName o = (ClassName)__o;
+		return Objects.equals(this.binary, o.binary) &&
+			Objects.equals(this.field, o.field);
 	}
 	
 	/**

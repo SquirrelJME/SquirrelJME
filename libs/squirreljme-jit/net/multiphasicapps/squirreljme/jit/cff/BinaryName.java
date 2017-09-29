@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.cff;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,7 +80,11 @@ public final class BinaryName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (!(__o instanceof BinaryName))
+			return false;
+		
+		BinaryName o = (BinaryName)__o;
+		return Arrays.equals(this._identifiers, o._identifiers);
 	}
 	
 	/**
