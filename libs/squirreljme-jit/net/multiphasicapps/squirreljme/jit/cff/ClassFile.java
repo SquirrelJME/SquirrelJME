@@ -73,6 +73,13 @@ public final class ClassFile
 		// Decode the constant pool
 		Pool pool = Pool.decode(in);
 		
+		// Decode flags
+		ClassFlags classflags = new ClassFlags(in.readUnsignedShort());
+		
+		// Name of the current class
+		ClassName thisname = pool.<ClassName>require(ClassName.class,
+			in.readUnsignedShort());
+		
 		throw new todo.TODO();
 	}
 }
