@@ -84,7 +84,18 @@ public final class FieldDescriptor
 				this.primitive = false;
 				this.classname = null;
 				
-				throw new todo.TODO();
+				// Count dimensions
+				int dims = 0;
+				for (int i = 0; i < n; i++)
+					if (__n.charAt(i) != '[')
+						break;
+					else
+						dims++;
+				this.dimensions = dims;
+				
+				// Parse component
+				this.component = new FieldDescriptor(__n.substring(dims));
+				break;
 				
 				// Class
 			case 'L':
