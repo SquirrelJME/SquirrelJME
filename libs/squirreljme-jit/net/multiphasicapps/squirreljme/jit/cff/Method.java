@@ -127,11 +127,11 @@ public final class Method
 			// Handle attributes
 			int na = __in.readUnsignedShort();
 			String[] attr = new String[1];
-			int[] lens = new int[1];
+			int[] alen = new int[1];
 			byte[] code = null;
 			for (int j = 0; j < na; j++)
 				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
-					__pool, attr, lens))
+					__pool, attr, alen))
 				{
 					// Only care about the code attribute
 					if (!"Code".equals(attr[0]))
@@ -145,7 +145,7 @@ public final class Method
 							"JI1b %s %s %s", __tn, name, type));
 					
 					// Copy bytes
-					int rlen = lens[0];
+					int rlen = alen[0];
 					code = new byte[rlen];
 					ai.readFully(code, 0, rlen);
 				}
