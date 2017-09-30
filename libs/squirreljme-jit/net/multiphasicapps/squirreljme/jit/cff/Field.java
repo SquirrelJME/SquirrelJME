@@ -47,7 +47,7 @@ public final class Field
 		
 		int nf = __in.readUnsignedShort();
 		Field[] rv = new Field[nf];
-		Set<FieldName> names = new HashSet<>();
+		Set<NameAndType> dup = new HashSet<>();
 		
 		// Parse fields
 		for (int i = 0; i < nf; i++)
@@ -59,6 +59,12 @@ public final class Field
 			FieldDescriptor type = new FieldDescriptor(
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
+			
+			// {@squirreljme.error JI2w A duplicate method exists within the
+			// class. (The method name; The method descriptor)}
+			if (!dup.add(new NameAndType(name.toString(), type.toString())))
+				throw new InvalidClassFormatException(String.format(
+					"JI2w %s %s", name, type));
 			
 			throw new todo.TODO();
 		}

@@ -114,6 +114,7 @@ public final class ClassFile
 	 * @param __in The input stream where bytes come from.
 	 * @param __pool The constant pool.
 	 * @param __aname The output name of the attribute which was just read.
+	 * @param __alens The length of the attribute.
 	 * @return The stream to the attribute which just has been read.
 	 * @throws IOException On read errors.
 	 * @throws InvalidClassFormatException If the attribute is not correct.
@@ -121,11 +122,11 @@ public final class ClassFile
 	 * @since 2017/04/09
 	 */
 	static DataInputStream __nextAttribute(DataInputStream __in,
-		Pool __pool, String[] __aname)
+		Pool __pool, String[] __aname, int[] __alens)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		// Check
-		if (__aname == null)
+		if (__aname == null || __alens == null)
 			throw new NullPointerException("NARG");
 		
 		// The name is not parsed here
@@ -138,6 +139,9 @@ public final class ClassFile
 		if (len < 0)
 			throw new InvalidClassFormatException(String.format("JI1a %d",
 				len & 0xFFFFFFFFL));
+		
+		// Used as a hint
+		__alens[0] = len;
 		
 		// Setup reader
 		return new DataInputStream(new SizeLimitedInputStream(__in, len, true,
