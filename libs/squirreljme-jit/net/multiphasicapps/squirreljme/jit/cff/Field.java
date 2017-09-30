@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This represents a field in a class which is used to store values either as
@@ -43,7 +45,26 @@ public final class Field
 			__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		int nf = __in.readUnsignedShort();
+		Field[] rv = new Field[nf];
+		Set<FieldName> names = new HashSet<>();
+		
+		// Parse fields
+		for (int i = 0; i < nf; i++)
+		{
+			FieldFlags flags = new FieldFlags(__cf, __in.readUnsignedShort());
+			FieldName name = new FieldName(
+				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+				__in.readUnsignedShort()).toString());
+			FieldDescriptor type = new FieldDescriptor(
+				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+				__in.readUnsignedShort()).toString());
+			
+			throw new todo.TODO();
+		}
+		
+		// All done!
+		return rv;
 	}
 }
 

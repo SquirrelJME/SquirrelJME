@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This represents a method which is used to execute byte code.
@@ -42,7 +44,27 @@ public final class Method
 			__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		int nm = __in.readUnsignedShort();
+		Method[] rv = new Method[nm];
+		Set<MethodName> names = new HashSet<>();
+		
+		// Parse fields
+		for (int i = 0; i < nm; i++)
+		{
+			MethodFlags flags = new MethodFlags(__cf,
+				__in.readUnsignedShort());
+			MethodName name = new MethodName(
+				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+				__in.readUnsignedShort()).toString());
+			MethodDescriptor type = new MethodDescriptor(
+				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+				__in.readUnsignedShort()).toString());
+			
+			throw new todo.TODO();
+		}
+		
+		// All done!
+		return rv;
 	}
 }
 

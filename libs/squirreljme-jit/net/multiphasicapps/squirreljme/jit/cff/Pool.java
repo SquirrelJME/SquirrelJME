@@ -16,7 +16,6 @@ import java.io.UTFDataFormatException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This class decodes the constant pool and provides generic access to the
@@ -96,7 +95,6 @@ public final class Pool
 	 * @since 2017/06/08
 	 */
 	Pool(Object... __e)
-		throws IOException, JITException, NullPointerException
 	{
 		this._entries = (__e == null ? new Object[0] : __e);
 	}

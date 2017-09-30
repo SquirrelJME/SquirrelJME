@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.cff;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.region.SizeLimitedInputStream;
 
 /**
  * This represents a single class file.
@@ -105,6 +106,42 @@ public final class ClassFile
 			in);
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Reads the next attribute from the class.
+	 *
+	 * @param __in The input stream where bytes come from.
+	 * @param __pool The constant pool.
+	 * @param __aname The output name of the attribute which was just read.
+	 * @return The stream to the attribute which just has been read.
+	 * @throws IOException On read errors.
+	 * @throws InvalidClassFormatException If the attribute is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/04/09
+	 */
+	static DataInputStream __nextAttribute(DataInputStream __in,
+		Pool __pool, String[] __aname)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		// Check
+		if (__aname == null)
+			throw new NullPointerException("NARG");
+		
+		// The name is not parsed here
+		__aname[0] = __pool.<UTFConstantEntry>require(UTFConstantEntry.class,
+			__in.readUnsignedShort()).toString();
+		
+		// {@squirreljme.error JI1a Attribute exceeds 2GiB in length. (The
+		// size of the attribute)}
+		int len = __in.readInt();
+		if (len < 0)
+			throw new InvalidClassFormatException(String.format("JI1a %d",
+				len & 0xFFFFFFFFL));
+		
+		// Setup reader
+		return new DataInputStream(new SizeLimitedInputStream(__in, len, true,
+			false));
 	}
 }
 
