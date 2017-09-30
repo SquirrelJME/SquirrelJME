@@ -97,6 +97,13 @@ public final class ClassFile
 			interfaces[i] = pool.<ClassName>require(ClassName.class,
 				in.readUnsignedShort());
 		
+		// Read fields
+		Field[] fields = Field.decode(version, thisname, classflags, pool, in);
+		
+		// Read methods
+		Method[] methods = Method.decode(version, thisname, classflags, pool,
+			in);
+		
 		throw new todo.TODO();
 	}
 }
