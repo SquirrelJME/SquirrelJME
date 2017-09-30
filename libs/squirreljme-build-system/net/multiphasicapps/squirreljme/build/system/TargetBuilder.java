@@ -137,7 +137,8 @@ public class TargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Used for cluster counting and progress
-		JITInput input = new JITInput();
+		JITInput input = new JITInput(
+			new PrintStreamProgressNotifier(System.err));
 		JITConfig jitconfig = this.jitconfig;
 		ProjectBinary[] binaries = this._binaries;
 		int count = 0,
