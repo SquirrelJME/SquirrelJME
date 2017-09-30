@@ -66,6 +66,22 @@ public final class Field
 				throw new InvalidClassFormatException(String.format(
 					"JI2w %s %s", name, type));
 			
+			// Handle attributes
+			int na = __in.readUnsignedShort();
+			String[] attr = new String[1];
+			int[] alen = new int[1];
+			byte[] code = null;
+			for (int j = 0; j < na; j++)
+				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
+					__pool, attr, alen))
+				{
+					// Only care about the constant value attribute
+					if (!"ConstantValue".equals(attr[0]))
+						continue;
+					
+					throw new todo.TODO();
+				}
+			
 			throw new todo.TODO();
 		}
 		

@@ -105,6 +105,23 @@ public final class ClassFile
 		Method[] methods = Method.decode(version, thisname, classflags, pool,
 			in);
 		
+		// Handle attributes
+		int na = in.readUnsignedShort();
+		String[] attr = new String[1];
+		int[] alen = new int[1];
+		for (int j = 0; j < na; j++)
+			try (DataInputStream ai = __nextAttribute(in, pool, attr, alen))
+			{
+				// Just do nothing with any attribute because to the VM none
+				// of the information is really that important anyway
+			}
+		
+		// {@squirreljme.error JI12 Expected end of the class to follow the
+		// attributes in the class. (The name of this class)}
+		if (in.read() >= 0)
+			throw new InvalidClassFormatException(
+				String.format("JI12 %s", thisname));
+		
 		throw new todo.TODO();
 	}
 	
