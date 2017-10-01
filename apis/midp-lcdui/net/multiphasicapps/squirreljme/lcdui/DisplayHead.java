@@ -16,7 +16,32 @@ package net.multiphasicapps.squirreljme.lcdui;
  *
  * @since 2017/08/19
  */
-public class DisplayHead
+public abstract class DisplayHead
 {
+	/**
+	 * Sets the current state of the display.
+	 *
+	 * @param __ds The current display state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/01
+	 */
+	public final void setState(DisplayState __ds)
+		throws NullPointerException
+	{
+		if (__ds == null)
+			throw new NullPointerException("NARG");
+		
+		// If there is no change in state, then do nothing
+		if (true)
+			throw new todo.TODO();
+		
+		// If the hardware state of this display is in the background or
+		// disabled then the only valid display state is in the background
+		// and it will never be the foreground
+		if (true)
+			throw new todo.TODO();
+		
+		throw new todo.TODO();
+	} 
 }
 
