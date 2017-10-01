@@ -668,21 +668,21 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
-		System.err.printf("DEBUG -- setCurrent %s%n", __show);
-		throw new todo.TODO();
-		/*// Enter background state?
-		NativeDisplay.Head head = this._head;
-		if (__show == null)
+		// Lock due to complex operations
+		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
-			head.setState(DisplayState.BACKGROUND);
-			return;
+			// Enter background state?
+			DisplayHead head = this._head;
+			if (__show == null)
+			{
+				head.setState(DisplayState.BACKGROUND);
+				return;
+			}
+			
+			// Forward
+			__setCurrent(__show,
+				(__show instanceof Alert) ? getCurrent() : null);
 		}
-		
-		// Forward
-		__setCurrent(__show, (__show instanceof Alert) ? getCurrent() : null);
-		
-		// Enter foreground state
-		head.setState(DisplayState.FOREGROUND);*/
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -819,19 +819,16 @@ public class Display
 		if (__show == null)
 			__exit = null;
 		
-		throw new todo.TODO();
-		/*
-		// Lock on self
-		synchronized (this._lock)
+		// There area multiple displayables being modified potentially since
+		// new current sets will decurrent other ones.
+		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
-			// Need the current displays
-			Displayable oldshow = this._show;
-			Displayable oldexit = this._ondismissed;
 			
-			// Perform a massive four way synchronization
-			Object dummy = new Object();
-			__setCurrentB(dummy, oldshow, oldexit, __show, __exit);
-		}*/
+			throw new todo.TODO();
+			
+			/*// Foreground state is entered
+			head.setState(DisplayState.FOREGROUND);*/
+		}
 	}
 	
 	/**
