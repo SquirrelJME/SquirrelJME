@@ -195,6 +195,18 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * This returns the current display, one which is not potentially modified
+	 * by sub-classes.
+	 *
+	 * @return The current display.
+	 * @since 2017/10/01
+	 */
+	final Display __currentDisplay()
+	{
+		return this._current;
+	}
+	
+	/**
 	 * Returns the height of the displayable or the maximum size of the
 	 * default display.
 	 *
@@ -204,7 +216,7 @@ public abstract class Displayable
 	 */
 	final int __getHeight()
 	{
-		Display d = getCurrentDisplay();
+		Display d = __currentDisplay();
 		return (d != null ? d.getHeight() :
 			Display.getDisplays(0)[0].getHeight());
 	}
@@ -219,7 +231,7 @@ public abstract class Displayable
 	 */
 	final int __getWidth()
 	{
-		Display d = getCurrentDisplay();
+		Display d = __currentDisplay();
 		return (d != null ? d.getWidth() :
 			Display.getDisplays(0)[0].getWidth());
 	}
