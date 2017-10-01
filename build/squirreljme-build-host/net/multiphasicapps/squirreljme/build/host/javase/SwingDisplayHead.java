@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 
 /**
  * This is a display head which outputs to Swing.
@@ -20,5 +22,46 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 public class SwingDisplayHead
 	extends DisplayHead
 {
+	/**
+	 * Initializes the display head.
+	 *
+	 * @since 2017/10/01
+	 */
+	public SwingDisplayHead()
+	{
+		// Make the display hardware enabled always
+		setHardwareState(DisplayHardwareState.ENABLED);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/01
+	 */
+	@Override
+	protected void displayStateChanged(DisplayState __old,
+		DisplayState __new)
+		throws NullPointerException
+	{
+		if (__old == null || __new == null)
+			throw new NullPointerException("NARG");
+		
+		// The swing interface has no notion of foreground and background
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/01
+	 */
+	@Override
+	protected void hardwareStateChanged(DisplayHardwareState __old,
+		DisplayHardwareState __new)
+		throws NullPointerException
+	{
+		if (__new == null)
+			throw new NullPointerException("NARG");
+		
+		// The swing interface does not really care about this, so do
+		// nothing at all
+	}
 }
 

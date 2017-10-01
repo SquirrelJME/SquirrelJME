@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import java.util.Objects;
+
 /**
  * This class represents a display head where instances of
  * {@link javax.microedition.Display} are linked to.
@@ -20,6 +22,34 @@ public abstract class DisplayHead
 {
 	/** The current hardware state of this head. */
 	private volatile DisplayHardwareState _hwstate;
+	
+	/** The current display state, defaults to the background. */
+	private volatile DisplayState _displaystate =
+		DisplayState.BACKGROUND;
+	
+	/**
+	 * Specifies that the display state has changed.
+	 *
+	 * @param __old The old display state.
+	 * @param __new The new display state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/01
+	 */
+	protected abstract void displayStateChanged(DisplayState __old,
+		DisplayState __new)
+		throws NullPointerException;
+	
+	/**
+	 * Specifies that the hardware state has changed.
+	 *
+	 * @param __old The old hardware state.
+	 * @param __new The new hardware state.
+	 * @throws NullPointerException If {@code __new} is {@code null}.
+	 * @since 2017/10/01
+	 */
+	protected abstract void hardwareStateChanged(DisplayHardwareState __old,
+		DisplayHardwareState __new)
+		throws NullPointerException;
 	
 	/**
 	 * Returns the current hardware state.
@@ -56,22 +86,20 @@ public abstract class DisplayHead
 		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
 			// If the hardware state is in disabled mode, then force the
-			// display to be disabled
+			// display to be disabled always
 			DisplayHardwareState hws = getHardwareState();
 			if (hws.forceDisabled())
 				__ds = DisplayState.BACKGROUND;
 			
 			// If there is no change in state, then do nothing
-			if (true)
-				throw new todo.TODO();
-		
-			// If the hardware state of this display is in the background or
-			// disabled then the only valid display state is in the background
-			// and it will never be the foreground
-			if (true)
-				throw new todo.TODO();
-		
-			throw new todo.TODO();
+			DisplayState oldstate = this._displaystate;
+			if (Objects.equals(oldstate, __ds))
+				return;
+			
+			// Set the display state to change, an exception may be thrown
+			// to cancel the change
+			displayStateChanged(oldstate, __ds);
+			this._displaystate = __ds;
 		}
 	}
 	
@@ -91,7 +119,15 @@ public abstract class DisplayHead
 		// Modifies global state
 		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
-			throw new todo.TODO();
+			// If the hardware state is not changing then ignore
+			DisplayHardwareState oldhwstate = this._hwstate;
+			if (Objects.equals(oldhwstate, __s))
+				return;
+			
+			// Say that the hardware state changed, an exception can be
+			// thrown to disallow it
+			hardwareStateChanged(oldhwstate, __s);
+			this._hwstate = __s;
 		}
 	}
 }
