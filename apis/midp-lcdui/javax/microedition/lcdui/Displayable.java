@@ -24,7 +24,7 @@ import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 public abstract class Displayable
 {
 	/** The display this is currently associated with. */
-	private volatile Display _current;
+	volatile Display _current;
 	
 	/** The command listener to call into when commands are generated. */
 	private volatile CommandListener _cmdlistener;
