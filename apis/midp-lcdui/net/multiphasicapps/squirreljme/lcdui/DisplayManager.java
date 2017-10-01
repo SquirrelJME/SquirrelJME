@@ -24,6 +24,16 @@ import java.lang.ref.WeakReference;
 public abstract class DisplayManager
 {
 	/**
+	 * Anything which happens in displays are thread safe and serialized
+	 * between all potential displays. Since there can be multiple displays
+	 * running at the same time all managing other widgets, it is more
+	 * effective for situations where there is global state to maintain that
+	 * a single lock is used, despite some performance costs.
+	 */
+	public static final Object GLOBAL_LOCK =
+		new Object();
+	
+	/**
 	 * Returns the display heads which are available on the system.
 	 *
 	 * @return The array of available display heads, this should always

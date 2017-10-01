@@ -374,7 +374,7 @@ public class Display
 				p = DisplayProperty.COLOR_BORDER;
 				break;
 				
-			case COLOR_FOREGROUND:
+			case COLOR_FORsEGROUND:
 				p = DisplayProperty.COLOR_FOREGROUND;
 				break;
 				
@@ -668,6 +668,7 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
+		System.err.printf("DEBUG -- setCurrent %s%n", __show);
 		throw new todo.TODO();
 		/*// Enter background state?
 		NativeDisplay.Head head = this._head;

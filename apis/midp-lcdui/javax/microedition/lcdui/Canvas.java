@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 import net.multiphasicapps.squirreljme.lcdui.event.KeyNames;
 import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
@@ -150,7 +151,7 @@ public abstract class Canvas
 	/** Is the rendering transparent or opaque? */
 	private volatile boolean _transparent;
 	
-	/** Is this fullscreen? */
+	/** Should this be ran full-screen? */
 	private volatile boolean _isfullscreen;
 	
 	/**
@@ -432,28 +433,31 @@ public abstract class Canvas
 	 * which may enable accelerated drawing if supported by the underlying
 	 * display engine.
 	 *
+	 * Note that the fullscreen mode is treated
+	 *
 	 * @param __f If {@code true} then fullscreen mode should be used.
 	 * @since 2017/02/28
 	 */
 	public void setFullScreenMode(boolean __f)
 	{
-		// Full screen can be set without setting a current display, so if
-		// there is no display then just set fullscreen on the default
-		// display (which is always the first one)
-		Display current = __currentDisplay();
-		if (current == null)
-			current = Display.getDisplay(ActiveMidlet.get());
-		
-		// {@squirreljme.error EB1n Trying to set full-screen mode with no
-		// known display to set it on.}
-		if (current == null)
-			throw new RuntimeException("EB1n");
-		
-		throw new todo.TODO();
-		/*
-		DisplayInstance instance = this._instance;
-		if (instance != null)
-			instance.setFullScreen(__f);*/
+		// Use global lock because there are many operations to be performed
+		// especially if this display is bound
+		synchronized (DisplayManager.GLOBAL_LOCK)
+		{
+			// If there is no change of state, do nothing
+			boolean wasfullscreen = this._isfullscreen;
+			if (wasfullscreen == __f)
+				return;
+			
+			// Set the new fullscreen action
+			this._isfullscreen = __f;
+			
+			// Fullscreen mode can be set before setCurrent(), so this is
+			// treated as a flag
+			Display current = __currentDisplay();
+			if (current != null)
+				__doFullscreen(__f);
+		}
 	}
 	
 	/**
@@ -510,6 +514,17 @@ public abstract class Canvas
 	protected void sizeChanged(int __w, int __h)
 	{
 		super.sizeChanged(__w, __h);
+	}
+	
+	/**
+	 * Performs the action of making this canvas fullscreen or not.
+	 *
+	 * @param __full Is fullscreen mode used?
+	 * @since 2017/10/01
+	 */
+	void __doFullscreen(boolean __full)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
