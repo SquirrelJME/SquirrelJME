@@ -1,0 +1,11 @@
+# 2017/09/30
+
+## 09:38
+
+Actually, loading every single class that exists is more optimized because I
+can do basic inlining of methods that are really simple (like methods which
+just return a field value) and I can also read the value of final fields which
+have a known value at compile time. So basically I can produce better code and
+have a simpler JIT and linking stage because those randoms and unknown that
+come from before would be less complicated because now there would be less of
+them.
