@@ -198,6 +198,9 @@ public class Display
 	/** The current displayable. */
 	private volatile Displayable _current;
 	
+	/** The displayable to show on exit. */
+	private volatile Displayable _exit;
+	
 	/**
 	 * This initializes the native display which provides sub-display views.
 	 *
@@ -621,7 +624,10 @@ public class Display
 	}
 	
 	/**
-	 * Shows the given alert on this display, when the alert is .
+	 * Shows the given alert on this display, when the alert is finished the
+	 * specified displayable is shown when it exits.
+	 *
+	 * This follows the same semantics as {@link #setCurrent(Displayable)}.
 	 *
 	 * @param __show The alert to show.
 	 * @param __exit The displayable to show when the alert that is
@@ -656,6 +662,11 @@ public class Display
 	 *
 	 * If the value to be passed is an {@link Alert} then this acts as if
 	 * {@code setCurrent(__show, getCurrent())} was called.
+	 *
+	 * The displayable if specified will be put into the foreground state.
+	 *
+	 * Note that it is unspecified when the displayable is made current, it may
+	 * be done when this is called or it may be queued for later.
 	 *
 	 * @param __show The displayable to show, if {@code null} this tells the
 	 * {@link Display} to enter the background state.
@@ -809,25 +820,58 @@ public class Display
 	 * displayable.
 	 * @throws IllegalStateException If the display hardware is missing; If
 	 * the displayables are associated with another display or tab pane. 
+	 * @throws NullPointerException If {@code __show} is null.
 	 * @since 2016/10/08
 	 */
 	private void __setCurrent(Displayable __show, Displayable __exit)
-		throws DisplayCapabilityException, IllegalStateException
+		throws DisplayCapabilityException, IllegalStateException,
+			NullPointerException
 	{
-		// If there is nothing to show then the dismissed one is also never
-		// shown
+		// The displayable to show should never be null
 		if (__show == null)
-			__exit = null;
+			throw new NullPointerException("NARG");
 		
 		// There area multiple displayables being modified potentially since
 		// new current sets will decurrent other ones.
 		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
+			Displayable wascurrent = this._current,
+				wasexit = this._exit;
 			
-			throw new todo.TODO();
+			// {@squirreljme.error EB1o The displayable to display is currently
+			// bound to another display.}
+			if (__show._current != null)
+				throw new IllegalStateException("EB1o");
 			
-			/*// Foreground state is entered
-			head.setState(DisplayState.FOREGROUND);*/
+			// {@squirreljme.error EB1p The alert to be displayed is currently
+			// bound to another display.}
+			if (__exit != null && __exit._current != null)
+				throw new IllegalStateException("EB1p");
+			
+			// If any alert is currently being displayed then it will be
+			// removed along with its timer (if any)
+			if (wascurrent instanceof Alert)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Remove the old current display
+			if (wascurrent != null)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Bind current display
+			this._current = __show;
+			__show._current = this;
+			
+			// And the exit display
+			this._exit = __exit;
+			if (__exit != null)
+				__exit._current = this;
+			
+			// Enter the foreground state always
+			this._head.setState(DisplayState.FOREGROUND);
 		}
 	}
 	
@@ -872,7 +916,7 @@ public class Display
 		
 		// {@squirreljme.error EB01 Could not get the display for the specified
 		// MIDlet because no displays are available.}
-		throw new RuntimeException("EB01");
+		throw new IllegalStateException("EB01");
 	}
 	
 	/**
