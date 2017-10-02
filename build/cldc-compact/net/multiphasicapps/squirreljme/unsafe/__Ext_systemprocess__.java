@@ -32,7 +32,7 @@ final class __Ext_systemprocess__
 	 * @return The total number of available CPU threads.
 	 * @since 2017/08/29
 	 */
-	public static int cpuThreads()
+	static int cpuThreads()
 	{
 		return Runtime.getRuntime().availableProcessors();
 	}
@@ -43,7 +43,7 @@ final class __Ext_systemprocess__
 	 * @return Always {@code true}.
 	 * @since 2017/08/11
 	 */
-	public static boolean isLauncher()
+	static boolean isLauncher()
 	{
 		return true;
 	}
