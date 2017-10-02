@@ -25,6 +25,17 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public final class JITInputGroup
 {
+	/** The name of this group. */
+	protected final String name;
+	
+	/** Resources within this group. */
+	private final Map<String, Resource> _resources =
+		new SortedTreeMap<>();
+	
+	/** Classes within this group. */
+	private final Map<ClassName, ClassFile> _classes =
+		new SortedTreeMap<>();
+	
 	/**
 	 * This initializes an input group from the given collections.
 	 *
@@ -41,6 +52,9 @@ public final class JITInputGroup
 	{
 		if (__n == null || __trc == null || __tcl == null)
 			throw new NullPointerException("NARG");
+		
+		// This is trivial and requires no complex work
+		this.name = __n;
 		
 		throw new todo.TODO();
 	}
