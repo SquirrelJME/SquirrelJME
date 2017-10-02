@@ -1,0 +1,21 @@
+# 2017/10/01
+
+## 11:08
+
+Ok so, I will need to have a kind of hack for `TabbedPane`. What I can do is
+just have it be implemented as a display head, which handles all the tab
+stuff as needed. I will just need then to have it where the Display cannot be
+exposed.
+
+## 11:48
+
+For fonts, I will go with a font engine which can handle everything.
+
+## 21:51
+
+Ok so there is increased interest in SquirrelJME. I think what I should do is
+take the fast route to SquirrelJME 0.0.3. Essentially I write a pure
+interpreter to run the byte code after loading every class. I then have a
+`JITVerifiedInput` which takes `JITInput`, performs verification of
+practically everything. Then the pure interpreter will run on the verified
+input as its class libraries and such.
