@@ -33,7 +33,7 @@ public final class MethodName
 		super(__s);
 		
 		// Cannot contain < or >
-		if (!__s.equals("<init>") && __s.equals("<clinit>"))
+		if (!__s.equals("<init>") && !__s.equals("<clinit>"))
 			for (int i = 0, n = __s.length(); i < n; i++)
 			{
 				char c = __s.charAt(i);
