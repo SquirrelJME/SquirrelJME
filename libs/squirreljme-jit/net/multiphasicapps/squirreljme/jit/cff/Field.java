@@ -24,6 +24,40 @@ import java.util.Set;
 public final class Field
 	extends Member
 {
+	/** The flags for the field. */
+	protected final FieldFlags flags;
+	
+	/** The name of the field. */
+	protected final FieldName name;
+	
+	/** The descriptor of the field. */
+	protected final FieldDescriptor type;
+	
+	/** The constant value, if there is none then this is {@code null}. */
+	protected final Object constval;
+	
+	/**
+	 * Initializes the field.
+	 *
+	 * @param __f The flags for the field.
+	 * @param __n The name of the field.
+	 * @param __t The type of the field.
+	 * @param __cv The constant value of the field, may be {@code null}.
+	 * @throws NullPointerException On null arguments, except for {@code __cv}.
+	 * @since 2017/10/02
+	 */
+	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t, Object __cv)
+		throws NullPointerException
+	{
+		if (__f == null || __n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		this.flags = __f;
+		this.name = __n;
+		this.type = __t;
+		this.constval = __cv;
+	}
+	
 	/**
 	 * Decodes all fields from the input class data.
 	 *
@@ -70,7 +104,7 @@ public final class Field
 			int na = __in.readUnsignedShort();
 			String[] attr = new String[1];
 			int[] alen = new int[1];
-			byte[] code = null;
+			Object constval = null;
 			for (int j = 0; j < na; j++)
 				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
 					__pool, attr, alen))
@@ -79,10 +113,28 @@ public final class Field
 					if (!"ConstantValue".equals(attr[0]))
 						continue;
 					
-					throw new todo.TODO();
+					// {@squirreljme.error JI2y There may only be one constant
+					// value for a field.}
+					if (constval != null)
+						throw new InvalidClassFormatException("JI2y");
+					
+					// {@squirreljme.error JI2x Expected the constant value
+					// of a field to be a constant value type, not one that
+					// is another type. (The value that was input)}.
+					Object read = __pool.<Object>require(Object.class,
+						ai.readUnsignedShort());
+					if (!(read instanceof Integer || read instanceof Long ||
+						read instanceof Float || read instanceof Double ||
+						read instanceof String) || read == null)
+						throw new InvalidClassFormatException(String.format(
+							"JI2x %s", read));
+					
+					// Set
+					constval = read;
 				}
 			
-			throw new todo.TODO();
+			// Create field
+			rv[i] = new Field(flags, name, type, constval);
 		}
 		
 		// All done!
