@@ -138,7 +138,7 @@ could just be declared `native` and be linked by the JVM as required.
 Since SquirrelJME's JVM is not being used, there are some requirements of
 how some of these classes are implemented.
 
-## `SystemEnvironment` (__Ext_systemenvironment__)`
+## `SystemEnvironment` (__Ext_systemenvironment__`)
 
 SquirrelJME uses a basic service system similar to `ServiceLoader` except it
 provides services on a system level. Unlike `ServiceLoader` which provides
