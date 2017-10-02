@@ -1,2 +1,73 @@
 # SquirrelJME As A Runtime
 
+There are two portions of SquirrelJME, the _SquirrelJME Virtual Machine_ and
+the _SquirrelJME Runtime_. The virtual machine is the one which executes the
+program and provides an environment that runs on the operating system or
+other bare hardware. The runtime is the class libraries which provide a
+standard set of classes and interfaces which are used by Java programs. This
+document describes the requirements which are needed to have a virtual machine
+which can use the SquirrelJME runtime.
+
+Note that **J2ME** was renamed to **Java ME**, so any mentions of **Java ME**
+retroactively mentions **J2ME**.
+
+There are two cases where the runtime is used, those two cases are _pure_ and
+_hosted_. There are two major differences between the two:
+
+ * _pure_
+   * All of the classes in the runtime are solely provided by SquirrelJME.
+   * More consistent.
+   * Portability is increased because there is less code to be ported.
+   * More likely to be less complicated.
+   * Requires more implementation work
+ * _hosted_
+   * Runs an extra SquirrelJME APIs on top of an existing virtual machine.
+   * Hacks will be required for correct operation to match the semantics of
+     Java ME.
+   * May have compatibility issues.
+   * Requires maintaining two separate programs.
+   * Faster to implement non-provided APIs, there is no need to implement the
+     core APIs because the host environment provides them.
+   * Does not need a virtual machine to be modified to support SquirrelJME.
+
+# Requirements of Java ME
+
+Java ME is different from Java SE and operates in a slightly different
+fashion. However, every conforming Java SE JVM can run Java ME programs but
+the same is not possible in most cases because Java ME is a subset of Java SE.
+
+## JAR Resource Lookup
+
+When using `Class.getResourceAsStream()` in Java ME, there is a strict method
+in how resource lookup is performed. A single JAR is considered to be a single
+unit where resources and classes are located. A class within one unit is not
+able to access the resources in another unit. Class files should not be visible
+to this method and not accessible as resources, the reason for this is that
+output executables may be ROMized which would destroy the class files that
+executable code is derived from.
+
+As an example, here is a set of two JAR files:
+
+ * _foo.jar_
+   * _Foo.class_
+   * _onlyinfoo.txt_
+   * _inboth.txt_
+ * _bar.jar_
+   * _Bar.class_
+   * _onlyinbar.txt_
+   * _inboth.txt_
+
+This would be the result of multiple `Class.getResourceAsStream()` calls from
+each class:
+
+ * `Foo` -> _onlyinfoo.txt_: Returns _foo.jar/onlyinfoo.txt_.
+ * `Foo` -> _onlyinbar.txt_: Returns `null`.
+ * `Foo` -> _inboth.txt_: Returns _foo.jar/inboth.txt_.
+ * `Foo` -> _Foo.class_: Should return `null`.
+ * `Foo` -> _Bar.class_: Should return `null`.
+ * `Bar` -> _onlyinfoo.txt_: Returns `null`.
+ * `Bar` -> _onlyinbar.txt_: Returns _bar.jar/onlyinbar.txt_
+ * `Bar` -> _inboth.txt_: Returns _bar.jar/inboth.txt_.
+ * `Bar` -> _Foo.class_: Should return `null`.
+ * `Bar` -> _Bar.class_: Should return `null`.
+
