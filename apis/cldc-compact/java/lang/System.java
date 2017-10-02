@@ -167,32 +167,47 @@ public final class System
 				
 				// The version of the Java virtual machine
 			case "java.version":
-				return SystemVM.javaVersionShort();
+				return SystemVM.javaVMVersionShort();
 				
 				// The version of the JVM (full)
-			case "java.runtime.version":
 			case "java.vm.version":
-				return SystemVM.javaVersionFull();
+				return SystemVM.javaVMVersionFull();
 				
-				// The vendor of the virtual machine
-			case "java.vendor":
+				// The name of the JVM
+			case "java.vm.name":
+				return SystemVM.javaVMName();
+				
+				// The vendor of the JVM
 			case "java.vm.vendor":
+				return SystemVM.javaVMVendor();
+			
+				// The e-mail of the JVM
+			case "java.vm.vendor.email":
+				return SystemVM.javaVMEmail();
+			
+				// The URL of the JVM
+			case "java.vm.vendor.url":
+				return SystemVM.javaVMURL();
+				
+				// The vendor of the class libraries
+			case "java.vendor":
 				return "Stephanie Gawroriski";
 				
 				// Non-standard e-mail address
 			case "java.vendor.email":
-			case "java.vm.vendor.email":
 				return "xer@multiphasicapps.net";
 				
 				// The URL to the virtual machine's site
 			case "java.vendor.url":
-			case "java.vm.vendor.url":
 				return "http://multiphasicapps.net/";
 				
 				// The name of the virtual machine
 			case "java.runtime.name":
-			case "java.vm.name":
 				return "SquirrelJME";
+				
+				// The version of the run-time
+			case "java.runtime.version":
+				return SystemVM.javaRuntimeVersion();
 				
 				// The line separator used for text files on the system
 			case "line.separator":
@@ -251,6 +266,10 @@ public final class System
 				// User account name
 			case "user.name":
 				return SystemEnvironment.userAccountName();
+			
+				// Is this a SquirrelJME JVM?
+			case "net.multiphasicapps.squirreljme.isvm":
+				return Boolean.toString(SystemVM.isSquirrelJMEJVM());
 			
 				// Unknown, get user supplied properties
 			default:
