@@ -42,7 +42,7 @@ final class __Ext_systemvm__
 	 * otherwise {@code false}.
 	 * @since 2016/10/11
 	 */
-	public static boolean isSquirrelJMEJVM()
+	static boolean isSquirrelJMEJVM()
 	{
 		// Is not a SquirrelJME VM
 		return false;
@@ -56,7 +56,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMEmail()
+	static String javaVMEmail()
 	{
 		return System.getProperty("java.vm.vendor.email");
 	}
@@ -69,7 +69,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMName()
+	static String javaVMName()
 	{
 		return System.getProperty("java.vm.name");
 	}
@@ -82,7 +82,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMURL()
+	static String javaVMURL()
 	{
 		return System.getProperty("java.vm.vendor.url");
 	}
@@ -95,7 +95,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMVendor()
+	static String javaVMVendor()
 	{
 		return System.getProperty("java.vm.vendor");
 	}
@@ -108,7 +108,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/08/13
 	 */
-	public static String javaVMVersionFull()
+	static String javaVMVersionFull()
 	{
 		return System.getProperty("java.vm.version");
 	}
@@ -121,7 +121,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/08/13
 	 */
-	public static String javaVMVersionShort()
+	static String javaVMVersionShort()
 	{
 		return System.getProperty("java.version");
 	}

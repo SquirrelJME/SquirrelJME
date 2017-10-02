@@ -36,7 +36,7 @@ final class __Ext_systemenvironment__
 	 * if it does not exist.
 	 * @sincem 2017/08/10 
 	 */
-	public static String mapService(String __v)
+	static String mapService(String __v)
 	{
 		throw new todo.TODO();
 	}

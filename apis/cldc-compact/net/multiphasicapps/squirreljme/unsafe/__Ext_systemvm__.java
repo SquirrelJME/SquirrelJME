@@ -44,7 +44,7 @@ final class __Ext_systemvm__
 	 * otherwise {@code false}.
 	 * @since 2016/10/11
 	 */
-	public static boolean isSquirrelJMEJVM()
+	static boolean isSquirrelJMEJVM()
 	{
 		throw new todo.TODO();
 	}
@@ -57,7 +57,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMEmail()
+	static String javaVMEmail()
 	{
 		throw new todo.TODO();
 	}
@@ -70,7 +70,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMName()
+	static String javaVMName()
 	{
 		throw new todo.TODO();
 	}
@@ -83,7 +83,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMURL()
+	static String javaVMURL()
 	{
 		throw new todo.TODO();
 	}
@@ -96,7 +96,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	public static String javaVMVendor()
+	static String javaVMVendor()
 	{
 		throw new todo.TODO();
 	}
@@ -109,7 +109,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/08/13
 	 */
-	public static String javaVMVersionFull()
+	static String javaVMVersionFull()
 	{
 		throw new todo.TODO();
 	}
@@ -122,7 +122,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/08/13
 	 */
-	public static String javaVMVersionShort()
+	static String javaVMVersionShort()
 	{
 		throw new todo.TODO();
 	}
