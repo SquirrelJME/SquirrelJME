@@ -30,6 +30,23 @@ _hosted_. There are two major differences between the two:
      core APIs because the host environment provides them.
    * Does not need a virtual machine to be modified to support SquirrelJME.
 
+SquirrelJME operates in one of two fashions: _Single Program Mode_ where only
+a single program is ran at once which eventually terminates, and
+_Launcher Mode_ where a launcher is available and multiple programs can be
+launched and ran at the same time.
+
+ * _Single Program Mode_
+   * Simple to implement, only need to worry about a single program running at
+     a time.
+   * Not possible to run other programs.
+   * Class initialization and static initialization is easier.
+ * _Launcher Mode_
+   * Potentially allows JARs to be loaded at run-time to run other programs.
+   * Provides an interface for selecting JARs to be ran.
+   * Allows multiple programs to be ran at the same time.
+   * Requires that different program execution domains be supported, this is
+     because static variables need to be initialized for each program.
+
 # Requirements of Java ME
 
 Java ME is different from Java SE and operates in a slightly different
@@ -70,4 +87,77 @@ each class:
  * `Bar` -> _inboth.txt_: Returns _bar.jar/inboth.txt_.
  * `Bar` -> _Foo.class_: Should return `null`.
  * `Bar` -> _Bar.class_: Should return `null`.
+
+This reason for this is that in each JAR, there is a resource called
+_META-INF/MANIFEST.MF_. This resource is used and looked up my programs which
+are MIDlets in order to obtain their application properties. It also is used
+by the run-time to determine what a JAR is and what it supports.
+
+## Class Loading And Lookup
+
+Unlike Java SE, there are no `ClassLoaders`. Java ME operates entirely on a
+single two tier approach. The first tier are classes which are built-in and
+available to every program. The second tier are classes which are not
+built-in and which have been loaded dynamically from the launcher. When a
+class is looked up, the order is always built-in classes first. If a program is
+currently being executed then it may only look up classes which exist in its
+execution context. If two programs are loaded they are both in two different
+execution contexts and they cannot lookup each others classes. Thus if two
+JARs have the same class, it will only use the class that is in their same
+JAR.
+
+# Required Methods
+
+For simplicity, sanity, and portability; SquirrelJME has a very simple means to
+provide support for many systems and is designed in a way to reduce the amount
+of work that is required to support various systems. This means that porting
+SquirrelJME will be very simple and straightforward once the base semantics of
+the virtual machine are implemented.
+
+The package `net.multiphasicapps.squirreljme.unsafe` is a very special package
+which contains the methods which are used as a bridge to native code or
+other bridging code. The package is designed in a public and private fashion.
+Since the methods will be needed across many methods in other packages, the
+first major interface are the public interfaces. The public interfaces allow
+for checks to be performed so that sane values and such are used on input for
+the private implementation. The private implementation are the ones that
+porters will implement to provide functionality, all of these classes are in
+the form of `__Ext_foo__` where `foo` is the functionality group. These classes
+are only visible to the `net.multiphasicapps.squirreljme.unsafe` package which
+means that they do not have to worry as much of being exposed for exploitive
+purposes. This also allows for virtual functionality to be provided and a means
+for backwards compatibility and migration.
+
+The public classes call into the private classes, but due to the hidden nature
+it is not required for the classes to actually exist, just that they have the
+functionality provided. For example, the JVM can replace any instance of a call
+in the `unsafe` package to the private class with just a function pointer while
+disregarding the actual class. This would mean that these private classes
+could just be declared `native` and be linked by the JVM as required.
+
+Since SquirrelJME's JVM is not being used, there are some requirements of
+how some of these classes are implemented.
+
+## `SystemEnvironment` (__Ext_systemenvironment__)`
+
+SquirrelJME uses a basic service system similar to `ServiceLoader` except it
+provides services on a system level. Unlike `ServiceLoader` which provides
+multiple services, only single services are available at a time and once a
+service object is initialized it will remain available to the program until it
+exits always returning the same instance (that is, it is a singleton).
+
+As an example, the JVM may provide a framebuffer which needs to be accessed
+by SquirrelJME's LCDUI API. In this case the
+`net.multiphasicapps.squirreljme.lcdui.DisplayManager` class needs to be
+implemented. In this example environment, that class is implemented as
+`foo.FooDisplayManager`. In order for the runtime to find that class, the
+full name of the class must be returned in the
+`__Ext_systemenvironment__.mapService()` method. When that service is
+requested, that class will be loaded and stored and returned so that the LCDUI
+code may use it to provide a display interface.
+
+## `SystemVM` (`__Ext_systemvm__`)
+
+`__Ext_systemvm__.isSquirrelJMEJVM()` should always return `false` because
+using just the run-time is not using the JVM.
 
