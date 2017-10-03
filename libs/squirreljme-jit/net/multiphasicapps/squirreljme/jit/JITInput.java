@@ -171,11 +171,10 @@ public final class JITInput
 			// Check classes
 			Map<ClassName, ClassFile> clput = new HashMap<>();
 			Map<ClassName, ClassFile> classes = this._classes;
-			for (Iterator<ClassFile> it = grp.classesIterator(); it.hasNext();)
+			for (ClassFile c : grp.classes().values())
 			{
 				// {@squirreljme.error JI31 A duplicate class exists within
 				// the input and the group. (The name of the class)}
-				ClassFile c = it.next();
 				ClassName n = c.thisName();
 				if (classes.containsKey(n))
 					throw new JITException(String.format("JI31 %s", n));

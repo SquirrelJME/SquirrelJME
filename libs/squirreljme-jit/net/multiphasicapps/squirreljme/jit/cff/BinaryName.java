@@ -119,7 +119,10 @@ public final class BinaryName
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		for (ClassIdentifier i : this._identifiers)
+			rv ^= i.hashCode();
+		return rv;
 	}
 	
 	/**

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This represents a group of resources and classes together as a single
@@ -36,6 +39,9 @@ public final class JITInputGroup
 	/** Classes within this group. */
 	private final Map<ClassName, ClassFile> _classes =
 		new SortedTreeMap<>();
+	
+	/** Unmodifiable class view. */
+	private volatile Reference<Map<ClassName, ClassFile>> _roclasses;
 	
 	/**
 	 * This initializes an input group from the given collections.
@@ -85,14 +91,21 @@ public final class JITInputGroup
 	}
 	
 	/**
-	 * Returns an iterator over the internal classes.
+	 * Returns the classes map.
 	 *
-	 * @return An internal class iterator.
+	 * @return The classes map.
 	 * @since 2017/10/03
 	 */
-	public final Iterator<ClassFile> classesIterator()
+	public final Map<ClassName, ClassFile> classes()
 	{
-		throw new todo.TODO();
+		Reference<Map<ClassName, ClassFile>> ref = this._roclasses;
+		Map<ClassName, ClassFile> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._roclasses = new WeakReference<>(
+				rv = UnmodifiableMap.<ClassName, ClassFile>of(this._classes));
+		
+		return rv;
 	}
 }
 
