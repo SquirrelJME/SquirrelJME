@@ -102,7 +102,8 @@ public class ClassName
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		BinaryName ab = this.binary;
+		return (ab != null ? ab.hashCode() : this.field.hashCode());
 	}
 	
 	/**
