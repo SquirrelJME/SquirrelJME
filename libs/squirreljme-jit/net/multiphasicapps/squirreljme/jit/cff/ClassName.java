@@ -64,7 +64,20 @@ public class ClassName
 	@Override
 	public int compareTo(ClassName __o)
 	{
-		throw new todo.TODO();
+		BinaryName ab = this.binary;
+		if (ab != null)
+		{
+			BinaryName bb = __o.binary;
+			if (bb == null)
+				return -1;
+			return ab.compareTo(bb);
+		}
+		
+		FieldDescriptor af = this.field,
+			bf = __o.field;
+		if (bf == null)
+			return 1;
+		return af.compareTo(bf);
 	}
 	
 	/**
@@ -99,7 +112,10 @@ public class ClassName
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		BinaryName binary = this.binary;
+		if (binary != null)
+			return binary.toString();
+		return field.toString();
 	}
 }
 

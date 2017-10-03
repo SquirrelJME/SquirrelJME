@@ -17,6 +17,7 @@ package net.multiphasicapps.squirreljme.jit.cff;
  */
 public final class ClassIdentifier
 	extends Identifier
+	implements Comparable<ClassIdentifier>
 {
 	/**
 	 * Initializes the class name.
@@ -27,6 +28,16 @@ public final class ClassIdentifier
 	public ClassIdentifier(String __s)
 	{
 		super(__s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/02
+	 */
+	@Override
+	public int compareTo(ClassIdentifier __o)
+	{
+		return toString().compareTo(__o.toString());
 	}
 	
 	/**

@@ -93,6 +93,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The current class name.
+	 * @since 2017/10/02
+	 */
+	public final ClassName thisName()
+	{
+		return this.thisname;
+	}
+	
+	/**
 	 * This parses the input stream as a class file and returns the
 	 * representation of that class file.
 	 *

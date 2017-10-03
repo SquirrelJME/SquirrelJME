@@ -28,6 +28,9 @@ public final class BinaryName
 	/** The identifiers in the name. */
 	private final ClassIdentifier[] _identifiers;
 	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the binary name.
 	 *
@@ -70,7 +73,29 @@ public final class BinaryName
 	@Override
 	public int compareTo(BinaryName __o)
 	{
-		throw new todo.TODO();
+		ClassIdentifier[] a = this._identifiers,
+			b = __o._identifiers;
+		
+		// Compare lengths first
+		int an = a.length,
+			bn = b.length;
+		int rv = an - bn;
+		if (rv != 0)
+			return rv;
+		
+		// Then individual units
+		for (int i = 0; i < an; i++)
+		{
+			ClassIdentifier x = a[i],
+				y = b[i];
+			
+			rv = x.compareTo(y);
+			if (rv != 0)
+				return rv;
+		}
+		
+		// Matches
+		return 0;
 	}
 	
 	/**
@@ -104,7 +129,24 @@ public final class BinaryName
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			for (ClassIdentifier i : this._identifiers)
+			{
+				if (sb.length() > 0)
+					sb.append('.');
+				sb.append(i.identifier());
+			}
+			
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 }
 
