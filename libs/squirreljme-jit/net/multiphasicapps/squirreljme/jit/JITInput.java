@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -166,11 +168,25 @@ public final class JITInput
 			if (groups.containsKey(__n))
 				throw new JITException(String.format("JI2t %s", __n));
 			
-			if (true)
-				throw new todo.TODO();
+			// Check classes
+			Map<ClassName, ClassFile> clput = new HashMap<>();
+			Map<ClassName, ClassFile> classes = this._classes;
+			for (Iterator<ClassFile> it = grp.classesIterator(); it.hasNext();)
+			{
+				// {@squirreljme.error JI31 A duplicate class exists within
+				// the input and the group. (The name of the class)}
+				ClassFile c = it.next();
+				ClassName n = c.thisName();
+				if (classes.containsKey(n))
+					throw new JITException(String.format("JI31 %s", n));
+				
+				// Is added in bulk later
+				clput.put(n, c);
+			}
 			
-			// Add
+			// Add everything
 			groups.put(__n, grp);
+			classes.putAll(clput);
 		}
 		
 		// All done!
