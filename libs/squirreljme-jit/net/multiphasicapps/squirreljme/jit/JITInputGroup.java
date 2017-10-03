@@ -56,7 +56,31 @@ public final class JITInputGroup
 		// This is trivial and requires no complex work
 		this.name = __n;
 		
-		throw new todo.TODO();
+		// Fill in classes
+		Map<ClassName, ClassFile> classes = this._classes;
+		for (ClassFile c : __tcl)
+		{
+			// {@squirreljme.error JI2z A duplicate class exists within the
+			// input group. (The name of the class)}
+			ClassName n = c.thisName();
+			if (classes.containsKey(n))
+				throw new JITException(String.format("JI2z %s", n));
+			
+			classes.put(n, c);
+		}
+		
+		// Fill in resources
+		Map<String, Resource> resource = this._resources;
+		for (Resource r : __trc)
+		{
+			// {@squirreljme.error JI30 A duplicate resource exists within the
+			// input group. (The name of the resource)}
+			String n = r.name();
+			if (resource.containsKey(n))
+				throw new JITException(String.format("JI30 %s", n));
+			
+			resource.put(n, r);
+		}
 	}
 }
 

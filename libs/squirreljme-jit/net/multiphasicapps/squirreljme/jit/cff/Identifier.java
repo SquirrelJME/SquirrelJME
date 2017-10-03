@@ -77,6 +77,17 @@ public abstract class Identifier
 	}
 	
 	/**
+	 * Returns the identifier.
+	 *
+	 * @return The identifier.
+	 * @since 2017/10/02
+	 */
+	public final String identifier()
+	{
+		return this.string;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */

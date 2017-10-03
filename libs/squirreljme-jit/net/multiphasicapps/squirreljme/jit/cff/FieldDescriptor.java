@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/12
  */
 public final class FieldDescriptor
+	implements Comparable<FieldDescriptor>
 {
 	/** String representation. */
 	protected final String string;
@@ -119,6 +120,16 @@ public final class FieldDescriptor
 				throw new InvalidClassFormatException(
 					String.format("JI0m %s", __n));
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/02
+	 */
+	@Override
+	public int compareTo(FieldDescriptor __o)
+	{
+		return this.string.compareTo(__o.string);
 	}
 	
 	/**
