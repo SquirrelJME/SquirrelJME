@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
@@ -81,6 +82,17 @@ public final class JITInputGroup
 			
 			resource.put(n, r);
 		}
+	}
+	
+	/**
+	 * Returns an iterator over the internal classes.
+	 *
+	 * @return An internal class iterator.
+	 * @since 2017/10/03
+	 */
+	public final Iterator<ClassFile> classesIterator()
+	{
+		throw new todo.TODO();
 	}
 }
 
