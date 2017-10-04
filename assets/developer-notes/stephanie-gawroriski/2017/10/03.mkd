@@ -1,0 +1,14 @@
+# 2017/10/03
+
+## 11:38
+
+So what I need is to write up `JITVerifiedInput` which takes in every single
+class and otherwise, verifies that they are all correct. Since there are some
+complex verification checks, there will need to be a cache. However, once
+everything is verified I never have to worry about anything ever again.
+
+## 23:21
+
+A cache will greatly increase the speed of verification to make sure that
+everything is correct. But the verified input will be used to make sure
+things are correct.
