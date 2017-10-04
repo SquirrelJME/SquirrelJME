@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.verifier.Verifier;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+
 /**
  * This class contains input for the JIT which has completely been verified
  * to be correct and well forming. After the verification step, the compiler
@@ -48,6 +54,21 @@ public final class VerifiedJITInput
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
+		
+		// Go through all classes to verify them
+		Map<ClassName, ClassFile> inclasses =
+			UnmodifiableMap.<ClassName, ClassFile>of(__i._classes);
+		synchronized (__i._lock)
+		{
+			// Initialize the verifier
+			Verifier verifier = new Verifier(inclasses);
+			
+			// Run it
+			verifier.run();
+			
+			if (true)
+				throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}

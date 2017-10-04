@@ -46,7 +46,7 @@ public final class JITInput
 		new LinkedHashMap<>();
 	
 	/** Classes which are available. */
-	private final Map<ClassName, ClassFile> _classes =
+	final Map<ClassName, ClassFile> _classes =
 		new SortedTreeMap<>();
 	
 	/**
