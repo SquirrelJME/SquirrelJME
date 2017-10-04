@@ -37,6 +37,7 @@ import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITInput;
 import net.multiphasicapps.squirreljme.jit.PrintStreamProgressNotifier;
+import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
@@ -158,6 +159,9 @@ public class TargetBuilder
 				input.readZip(pbname, zsr);
 			}
 		}
+		
+		// Verify all of the input
+		VerifiedJITInput vji = VerifiedJITInput.verify(input);
 		
 		throw new todo.TODO();
 	}
