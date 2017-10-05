@@ -145,7 +145,7 @@ public final class JITInput
 					else
 					{
 						notifier.processResource(__n, name, ++numrc);
-						trc.add(Resource.read(__n, e));
+						trc.add(Resource.read(name, e));
 					}
 				}
 		}

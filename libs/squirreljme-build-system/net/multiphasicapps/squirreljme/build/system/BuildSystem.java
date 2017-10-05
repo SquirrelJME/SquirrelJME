@@ -29,6 +29,7 @@ import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
+import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -104,24 +105,34 @@ public class BuildSystem
 		if (args.isEmpty())
 			throw new IllegalArgumentException("AO0e");
 		
+		// If there are no templates, just use the interpreter one
+		if (templates.isEmpty())
+			templates.add("interpreter");
+		
 		// Determine if the program to be ran is external (it is out of the
 		// project space) or if it is internal
-		if (true)
+		String run = args.removeFirst();
+		Path runpath = Paths.get(run);
+		ProjectManager projects = this.projects;
+		if (Files.exists(runpath))
 			throw new todo.TODO();
+		
+		// Otherwise treat as internal!
+		else
+			templates.add(run + ".jar");
 		
 		// Setup a target builder
 		// Use the input templates to provide an enviroment for what is
 		// included
 		// If the project to be built is internal then include that in the
 		// projects to build
-		if (true)
-			throw new todo.TODO();
+		TargetBuilder tb = new TargetBuilder(projects,
+			templates.<String>toArray(new String[templates.size()]));
 		
 		// Get the verified input, which will be sent to the interpreter
 		// The higher level interpreters will actually perform compilation but
 		// the lowest levels will not
-		if (true)
-			throw new todo.TODO();
+		VerifiedJITInput vji = tb.getVerifiedInput();
 		
 		// Launching depends on the interpreter type
 		switch (interpretertype)
