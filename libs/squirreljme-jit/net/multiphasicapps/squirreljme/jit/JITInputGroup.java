@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -18,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -107,6 +109,32 @@ public final class JITInputGroup
 				rv = UnmodifiableMap.<ClassName, ClassFile>of(this._classes));
 		
 		return rv;
+	}
+	
+	/**
+	 * Loads the resource with the specified name.
+	 *
+	 * @param __f The name of the resource to load.
+	 * @return The input stream to the resource data.
+	 * @throws NoSuchResourceException If the resource does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/01/05
+	 */
+	public final InputStream loadResource(String __f)
+		throws NoSuchResourceException, NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI33 No such resource exists. (The name of
+		// the resource)}
+		Map<String, Resource> resources = this._resources;
+		Resource rc = resources.get(__f);
+		if (rc == null)
+			throw new NoSuchResourceException(String.format("JI33 %s", __f));
+		
+		// Load it
+		return rc.load();
 	}
 }
 

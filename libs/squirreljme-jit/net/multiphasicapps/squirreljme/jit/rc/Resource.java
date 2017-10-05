@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.rc;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -27,7 +28,7 @@ public final class Resource
 	protected final String name;
 	
 	/** The data which makes up this resource. */
-	protected final byte[] data;
+	private final byte[] _data;
 	
 	/** The string representation. */
 	private volatile Reference<String> _string;
@@ -48,7 +49,18 @@ public final class Resource
 		
 		// Set
 		this.name = __n;
-		this.data = __d;
+		this._data = __d;
+	}
+	
+	/**
+	 * Loads the input stream to the resource data.
+	 *
+	 * @return The input stream for the resource data.
+	 * @since 2017/10/05
+	 */
+	public InputStream load()
+	{
+		return new ByteArrayInputStream(this._data);
 	}
 	
 	/**
@@ -70,7 +82,7 @@ public final class Resource
 	 */
 	public int size()
 	{
-		return this.data.length;
+		return this._data.length;
 	}
 	
 	/**
@@ -85,7 +97,7 @@ public final class Resource
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"Resource %s (%d bytes)", this.name, this.data.length)));
+				"Resource %s (%d bytes)", this.name, this._data.length)));
 		
 		return rv;
 	}
