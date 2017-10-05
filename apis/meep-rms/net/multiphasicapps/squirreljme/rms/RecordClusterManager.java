@@ -24,6 +24,9 @@ import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
  * This is the base class for a manager which provides access to a record
  * store.
  *
+ * The project {@code squirreljme-rms-file} provides an implementation of this
+ * class which uses the host filesystem to store records.
+ *
  * @since 2017/02/27
  */
 public abstract class RecordClusterManager
