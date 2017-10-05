@@ -1,0 +1,11 @@
+# 2017/10/04
+
+## 12:49
+
+Ok so one thing I need to do first is setup the hierachy of classes. Basically
+which classes extend what and in what order and then which classes implement
+what. Making sure that final, interfaces, and other such things are checked
+for. So I will need quite the number of working structures so to speak. But
+these structures must be garbage collectable though, so they cannot directly
+reference each other, only refer to each. I would say the first thing to do
+would be to make it where at first just the type is known and their flags.
