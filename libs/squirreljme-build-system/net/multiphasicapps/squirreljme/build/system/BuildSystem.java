@@ -20,7 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
@@ -61,6 +63,41 @@ public class BuildSystem
 	}
 	
 	/**
+	 * Runs the interpreter.
+	 *
+	 * @param __args The arguments for the interpreter.
+	 * @throws IllegalArgumentException If the input arguments are not
+	 * correct.
+	 * @throws IOException On read/write errors.
+	 * @since 2017/10/05
+	 */
+	public void interpret(String... __args)
+		throws IOException
+	{
+		// Copy arguments
+		Deque<String> args = new ArrayDeque<>();
+		if (__args != null)
+			for (String a : __args)
+				if (a != null)
+					args.offerLast(a);
+		
+		// Interpreter type?
+		String type = args.removeFirst().trim().toLowerCase();
+		switch (type)
+		{
+				// Standard interpreter
+			case "interpret":
+				throw new todo.TODO();
+			
+				// {@squirreljme.error AO0a Unknown interpreter type.
+				// (The interpreter type)}
+			default:
+				throw new IllegalArgumentException(String.format("AO0a %s",
+					type));
+		}
+	}
+	
+	/**
 	 * This wraps the main entry point from a single specified string which
 	 * may be used by host environments.
 	 *
@@ -84,6 +121,8 @@ public class BuildSystem
 		// {@code build [project]}: Builds the specified project.;
 		// {@code generate-docs [target]}: Parses the source code and generates
 		// documentation from it and places it within the target directory.;
+		// {@code interpret (-Dproperty=value) [project] (id)}:
+		// Launches the specified project and runs it in the interpreter;
 		// {@code ok}: Does nothing, is used to determine if the build system
 		// was able to be built.)
 		// }
@@ -156,9 +195,14 @@ public class BuildSystem
 					// Compile target to the given output stream
 					try (OutputStream os = new HexDumpOutputStream(System.out))
 					{
-						tb.run(os);
+						tb.runTarget(os);
 					}
 				}
+				break;
+				
+				// Interpreter
+			case "interpret":
+				interpret(__args);
 				break;
 				
 				// {@squirreljme.error AO02 An unknown command was specified.

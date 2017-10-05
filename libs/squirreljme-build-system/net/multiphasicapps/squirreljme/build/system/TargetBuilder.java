@@ -130,39 +130,18 @@ public class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/29
 	 */
-	public void run(OutputStream __os)
+	public void runTarget(OutputStream __os)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		// Used for cluster counting and progress
-		JITInput input = new JITInput(
-			new PrintStreamProgressNotifier(System.err));
+		// Get the verified input
+		VerifiedJITInput vji = __getVerifiedInput(__os);
+		
+		// Compile to target
 		JITConfig jitconfig = this.jitconfig;
-		ProjectBinary[] binaries = this._binaries;
-		int count = 0,
-			numbins = binaries.length;
-		
-		// Go through all binary projects and compile them
-		for (ProjectBinary pb : binaries)
-		{
-			// {@squirreljme.error AO09 Compiling the specified project. (The
-			// project name; The current binary; The number of binaries)}
-			String pbname = pb.name().toString();
-			System.out.printf("AO09 %s %d %d%n", pbname, ++count, numbins);
-			
-			// Process all classes and resources
-			try (ZipStreamReader zsr = pb.openZipStreamReader())
-			{
-				input.readZip(pbname, zsr);
-			}
-		}
-		
-		// Verify all of the input
-		VerifiedJITInput vji = VerifiedJITInput.verify(input);
-		
 		throw new todo.TODO();
 	}
 	
@@ -278,6 +257,48 @@ public class TargetBuilder
 		
 		// Use given project list
 		return rva;
+	}
+	
+	/**
+	 * Generates the output for the given target to the specified output
+	 * stream.
+	 *
+	 * @param __os The stream to write the executable to.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/05
+	 */
+	private VerifiedJITInput __getVerifiedInput(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Used for cluster counting and progress
+		JITInput input = new JITInput(
+			new PrintStreamProgressNotifier(System.err));
+		ProjectBinary[] binaries = this._binaries;
+		int count = 0,
+			numbins = binaries.length;
+		
+		// Go through all binary projects and compile them
+		for (ProjectBinary pb : binaries)
+		{
+			// {@squirreljme.error AO09 Compiling the specified project. (The
+			// project name; The current binary; The number of binaries)}
+			String pbname = pb.name().toString();
+			System.out.printf("AO09 %s %d %d%n", pbname, ++count, numbins);
+			
+			// Process all classes and resources
+			try (ZipStreamReader zsr = pb.openZipStreamReader())
+			{
+				input.readZip(pbname, zsr);
+			}
+		}
+		
+		// Verify all of the input
+		return VerifiedJITInput.verify(input);
 	}
 	
 	/**
