@@ -33,6 +33,8 @@ import net.multiphasicapps.squirreljme.build.projects.FileChannelBlockAccessor;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.squirreljme.launcher.EntryPoint;
+import net.multiphasicapps.squirreljme.launcher.EntryPoints;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
