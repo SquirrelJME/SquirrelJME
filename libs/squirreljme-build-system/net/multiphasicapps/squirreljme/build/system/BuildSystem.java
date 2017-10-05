@@ -72,7 +72,7 @@ public class BuildSystem
 	 * @since 2017/10/05
 	 */
 	public void interpret(String... __args)
-		throws IOException
+		throws IllegalArgumentException, IOException
 	{
 		// Copy arguments
 		Deque<String> args = new ArrayDeque<>();
@@ -89,8 +89,20 @@ public class BuildSystem
 		// -Ttemplate Which set of built-in commands to use.
 		// -Rid The index of the midlet in the manifest to execute based on
 		// the entry point order.
-		if (true)
+		List<String> templates = new ArrayList<>();
+		while (!args.isEmpty())
+		{
+			String a = args.peekFirst();
+			
+			if (!a.startsWith("-"))
+				break;
+			
 			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AO0e No program was specified to interpret.}
+		if (args.isEmpty())
+			throw new IllegalArgumentException("AO0e");
 		
 		// Determine if the program to be ran is external (it is out of the
 		// project space) or if it is internal
