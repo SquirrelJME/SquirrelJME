@@ -81,9 +81,14 @@ public class BuildSystem
 				if (a != null)
 					args.offerLast(a);
 		
-		// Interpreter type?
-		String type = args.removeFirst().trim().toLowerCase();
-		switch (type)
+		// Determines how the code is ran
+		String interpretertype = args.removeFirst().trim().toLowerCase();
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Launching depends on the interpreter type
+		switch (interpretertype)
 		{
 				// Standard interpreter
 			case "interpret":
@@ -93,7 +98,7 @@ public class BuildSystem
 				// (The interpreter type)}
 			default:
 				throw new IllegalArgumentException(String.format("AO0a %s",
-					type));
+					interpretertype));
 		}
 	}
 	
