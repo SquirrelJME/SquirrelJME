@@ -34,14 +34,28 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  */
 public final class VerifiedJITInput
 {
+	/** The tree of classes. */
+	protected final FamilyTree tree;
+	
+	/** Groups which are available. */
+	private final Map<String, JITInputGroup> _groups;
+	
 	/**
 	 * Initializes the verified input.
 	 *
+	 * @param __tree The tree of classes.
+	 * @param __g Groups, this is used directly. 
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/03
 	 */
-	private VerifiedJITInput()
+	private VerifiedJITInput(FamilyTree __tree, Map<String, JITInputGroup> __g)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__tree == null)
+			throw new NullPointerException("NARG");
+		
+		this.tree = __tree;
+		this._groups = __g;
 	}
 	
 	/**
@@ -60,13 +74,18 @@ public final class VerifiedJITInput
 		// First build a family tree as soon as possible so that the lock on
 		// the input can be cleared
 		FamilyTree ftree;
+		Map<String, JITInputGroup> groups = new SortedTreeMap<>();
 		synchronized (__i._lock)
 		{
 			// Build the family tree
 			ftree = new FamilyTree(__i._classes.values());
 			
-			throw new todo.TODO();
+			// Copy groups
+			groups.putAll(__i._groups);
 		}
+		
+		// Setup
+		return new VerifiedJITInput(ftree, groups);
 	}
 }
 

@@ -42,7 +42,7 @@ public final class JITInput
 	protected final JITProgressNotifier notifier;
 	
 	/** Input groups. */
-	private final Map<String, JITInputGroup> _groups =
+	final Map<String, JITInputGroup> _groups =
 		new LinkedHashMap<>();
 	
 	/** Classes which are available. */
