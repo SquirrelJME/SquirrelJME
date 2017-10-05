@@ -13,8 +13,10 @@ package net.multiphasicapps.squirreljme.jit;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.verifier.Verifier;
+import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This class contains input for the JIT which has completely been verified
@@ -55,22 +57,16 @@ public final class VerifiedJITInput
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// Go through all classes to verify them
-		Map<ClassName, ClassFile> inclasses =
-			UnmodifiableMap.<ClassName, ClassFile>of(__i._classes);
+		// First build a family tree as soon as possible so that the lock on
+		// the input can be cleared
+		FamilyTree ftree;
 		synchronized (__i._lock)
 		{
-			// Initialize the verifier
-			Verifier verifier = new Verifier(inclasses);
+			// Build the family tree
+			ftree = new FamilyTree(__i._classes.values());
 			
-			// Run it
-			verifier.run();
-			
-			if (true)
-				throw new todo.TODO();
+			throw new todo.TODO();
 		}
-		
-		throw new todo.TODO();
 	}
 }
 
