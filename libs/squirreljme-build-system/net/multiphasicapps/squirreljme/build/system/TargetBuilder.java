@@ -130,10 +130,6 @@ public class TargetBuilder
 	public VerifiedJITInput getVerifiedInput()
 		throws IOException, NullPointerException
 	{
-		// Check
-		if (__os == null)
-			throw new NullPointerException("NARG");
-		
 		// Used for cluster counting and progress
 		JITInput input = new JITInput(
 			new PrintStreamProgressNotifier(System.err));
