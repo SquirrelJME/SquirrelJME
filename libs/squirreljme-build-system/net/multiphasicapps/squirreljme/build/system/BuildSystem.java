@@ -84,6 +84,30 @@ public class BuildSystem
 		// Determines how the code is ran
 		String interpretertype = args.removeFirst().trim().toLowerCase();
 		
+		// Parse an arguments
+		// -Dproperty=value.
+		// -Ttemplate Which set of built-in commands to use.
+		// -Rid The index of the midlet in the manifest to execute based on
+		// the entry point order.
+		if (true)
+			throw new todo.TODO();
+		
+		// Determine if the program to be ran is external (it is out of the
+		// project space) or if it is internal
+		if (true)
+			throw new todo.TODO();
+		
+		// Setup a target builder
+		// Use the input templates to provide an enviroment for what is
+		// included
+		// If the project to be built is internal then include that in the
+		// projects to build
+		if (true)
+			throw new todo.TODO();
+		
+		// Get the verified input, which will be sent to the interpreter
+		// The higher level interpreters will actually perform compilation but
+		// the lowest levels will not
 		if (true)
 			throw new todo.TODO();
 		
@@ -126,7 +150,7 @@ public class BuildSystem
 		// {@code build [project]}: Builds the specified project.;
 		// {@code generate-docs [target]}: Parses the source code and generates
 		// documentation from it and places it within the target directory.;
-		// {@code interpret (-Dproperty=value) [project] (id)}:
+		// {@code interpret (-Dproperty=value) (-Rid) (-Ttemplate) [project]}:
 		// Launches the specified project and runs it in the interpreter;
 		// {@code ok}: Does nothing, is used to determine if the build system
 		// was able to be built.)
