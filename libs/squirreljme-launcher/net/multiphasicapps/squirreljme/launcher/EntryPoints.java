@@ -62,12 +62,12 @@ public class EntryPoints
 				break;
 			
 			// The MIDlet field is in 3 fields: name, icon, class
-			// {@squirreljme.error BM0e Expected two commas in the MIDlet
+			// {@squirreljme.error CM01 Expected two commas in the MIDlet
 			// field.}
 			int pc = midletval.indexOf(','),
 				sc = midletval.indexOf(',', Math.max(pc + 1, 0));
 			if (pc < 0 || sc < 0)
-				throw new RuntimeException("BM0e");
+				throw new RuntimeException("CM01");
 		
 			// Split fields
 			target.add(new EntryPoint(midletval.substring(0, pc).trim(),
