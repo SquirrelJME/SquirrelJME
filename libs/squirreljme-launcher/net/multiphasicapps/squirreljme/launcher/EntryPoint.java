@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.host.javase;
+package net.multiphasicapps.squirreljme.launcher;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
