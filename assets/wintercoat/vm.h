@@ -78,18 +78,17 @@ typedef struct sjme_vm
 {
 } sjme_vm;
 
-
 sjme_error wc_initvm(sjme_init* initstruct, sjme_vm** outvm);
 
 /** Debugging. */
 
-#define SJME_MODE_INIT		1
+#define SJME_DEBUG_INIT		1
 
 #define wc_assert(code, i) \
 	wc_assert_real(__FILE__, __LINE__, __func__, (code), (i))
 #define wc_todo() wc_todo_real(__FILE__, __LINE__, __func__)
 #define wc_verbose(mode, msg, ...) wc_verbose_real(__FILE__, __LINE__, \
-	__func__, (mode), (msg) __VA_ARGS__)
+	__func__, (mode), (msg), __VA_ARGS__)
 void wc_assert_real(const char* const pin, int pline, const char* const pfunc,
 	const char* const pcode, int pcond);
 void wc_todo_real(const char* const pin, int pline, const char* const pfunc);

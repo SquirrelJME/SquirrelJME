@@ -30,10 +30,10 @@ int main(int argc, char** argv)
 	initstruct.classpath = argv + 1;
 	
 	// Initialize the virtual machine
-	wc_verbose(SJME_MODE_INIT, "Initializing the virtual machine...");
+	wc_verbose(SJME_DEBUG_INIT, "Initializing the virtual machine...", 0);
 	if (wc_initvm(&initstruct, &vm) != SJME_ERROR_OK)
 	{
-		wc_verbose(SJME_MODE_INIT, "Failed to initialize the VM.");
+		wc_verbose(SJME_DEBUG_INIT, "Failed to initialize the VM.", 0);
 		return EXIT_FAILURE;
 	}
 	

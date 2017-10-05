@@ -18,6 +18,17 @@
 
 sjme_error wc_initvm(sjme_init* initstruct, sjme_vm** outvm)
 {
+	int i;
+	
+	// Load all entries 
+	for (i = 0; i < initstruct->numclasspath; i++)
+	{
+		char* cp = initstruct->classpath[i];
+		
+		wc_verbose(SJME_DEBUG_INIT, "Loading classpath `%s`...", cp);
+		
+		wc_todo();
+	}
 	
 	wc_todo();
 	
