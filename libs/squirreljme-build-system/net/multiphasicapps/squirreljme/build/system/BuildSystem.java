@@ -23,13 +23,23 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
+import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.projects.Project;
+import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
+import net.multiphasicapps.squirreljme.interpreter.Interpreter;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.squirreljme.launcher.EntryPoint;
+import net.multiphasicapps.squirreljme.launcher.EntryPoints;
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -90,7 +100,9 @@ public class BuildSystem
 		// -Ttemplate Which set of built-in commands to use.
 		// -Rid The index of the midlet in the manifest to execute based on
 		// the entry point order.
+		Map<String, String> properties = new LinkedHashMap<>();
 		List<String> templates = new ArrayList<>();
+		int entrydx = 0;
 		while (!args.isEmpty())
 		{
 			String a = args.peekFirst();
@@ -114,12 +126,16 @@ public class BuildSystem
 		String run = args.removeFirst();
 		Path runpath = Paths.get(run);
 		ProjectManager projects = this.projects;
+		String bootgroup;
 		if (Files.exists(runpath))
 			throw new todo.TODO();
 		
 		// Otherwise treat as internal!
 		else
+		{
+			bootgroup = run;
 			templates.add(run + ".jar");
+		}
 		
 		// Setup a target builder
 		// Use the input templates to provide an enviroment for what is
@@ -134,11 +150,39 @@ public class BuildSystem
 		// the lowest levels will not
 		VerifiedJITInput vji = tb.getVerifiedInput();
 		
+		// Load the initial manifest
+		JavaManifest man;
+		try (InputStream in = vji.loadResource(bootgroup,
+			"META-INF/MANIFEST.MF"))
+		{
+			man = new JavaManifest(in);
+		}
+		
+		// Load entry points
+		JavaManifestAttributes attr = man.getMainAttributes();
+		EntryPoints eps = new EntryPoints(attr);
+		
+		// {@squirreljme.error AO0f The JAR to launch does not specify
+		// any midlets and there is no main class.}
+		if (eps.isEmpty())
+			throw new RuntimeException("AO0f");
+		
+		// Debug print entry points
+		System.err.println("Available programs:");
+		for (int i = 0, n = eps.size(); i < n; i++)
+			System.err.printf("%d> %s%n", i, eps.get(i));
+		System.err.println();
+		
+		// Get the one to use
+		String entrypoint = eps.get(entrydx).entryPoint();
+		
 		// Launching depends on the interpreter type
 		switch (interpretertype)
 		{
 				// Standard interpreter
 			case "interpret":
+				Interpreter terp = new Interpreter(vji, properties,
+					entrypoint);
 				throw new todo.TODO();
 			
 				// {@squirreljme.error AO0a Unknown interpreter type.

@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.InputStream;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
+import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -56,6 +59,34 @@ public final class VerifiedJITInput
 		
 		this.tree = __tree;
 		this._groups = __g;
+	}
+	
+	/**
+	 * Loads a resource from the given group.
+	 *
+	 * @param __g The group to look within.
+	 * @param __f The file to load.
+	 * @return The input stream to the resource.
+	 * @throws NoSuchGroupException If the group does not exist.
+	 * @throws NoSuchResourceException If the resource does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/05
+	 */
+	public InputStream loadResource(String __g, String __f)
+		throws NoSuchResourceException, NullPointerException
+	{
+		if (__g == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI32 No such group with the given name exists.
+		// (The name of the group)}
+		Map<String, JITInputGroup> groups = this._groups;
+		JITInputGroup grp = groups.get(__g);
+		if (grp == null)
+			throw new NoSuchGroupException(String.format("JI32 %s", __g));
+		
+		// Load from group
+		return grp.loadResource(__f);
 	}
 	
 	/**
