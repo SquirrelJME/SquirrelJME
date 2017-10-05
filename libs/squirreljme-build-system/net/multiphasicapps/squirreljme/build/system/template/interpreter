@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-jit-jit-arch: simulator
-jit-jit-pipe: simulator
+jit-jit-arch: interpreter
+jit-jit-pipe: interpreter
 jit-jit-dump-assembler: true
 jit-jit-dump-fragment: true
 jit-jit-dump-pipe: true
