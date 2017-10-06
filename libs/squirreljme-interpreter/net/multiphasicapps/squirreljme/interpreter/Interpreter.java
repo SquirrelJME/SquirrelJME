@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains the interpreter which executes Java byte code in a contained
@@ -20,9 +22,16 @@ import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
  * @since 2017/10/05
  */
 public class Interpreter
+	implements Runnable
 {
 	/** The input for the JIT. */
 	protected final VerifiedJITInput input;
+	
+	/** Extra system properties. */
+	private Map<String, String> _properties;
+	
+	/** The boot class. */
+	protected final ClassName bootclass;
 	
 	/**
 	 * Initializes the interpreter to run the given program.
@@ -42,6 +51,24 @@ public class Interpreter
 		
 		// Set input
 		this.input = __vji;
+		
+		// Copy properties
+		Map<String, String> properties = new SortedTreeMap<>();
+		properties.putAll(__props);
+		this._properties = properties;
+		
+		// Set starting point
+		this.bootclass = new ClassName(__boot.replace('.', '/'));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/06
+	 */
+	@Override
+	public void run()
+	{
+		throw new todo.TODO();
 	}
 }
 
