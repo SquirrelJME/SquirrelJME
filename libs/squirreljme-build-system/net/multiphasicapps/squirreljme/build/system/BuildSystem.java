@@ -177,13 +177,13 @@ public class BuildSystem
 		String entrypoint = eps.get(entrydx).entryPoint();
 		
 		// Launching depends on the interpreter type
+		Runnable runner;
 		switch (interpretertype)
 		{
 				// Standard interpreter
 			case "interpret":
-				Interpreter terp = new Interpreter(vji, properties,
-					entrypoint);
-				throw new todo.TODO();
+				runner = new Interpreter(vji, properties, entrypoint);
+				break;
 			
 				// {@squirreljme.error AO0a Unknown interpreter type.
 				// (The interpreter type)}
@@ -191,6 +191,9 @@ public class BuildSystem
 				throw new IllegalArgumentException(String.format("AO0a %s",
 					interpretertype));
 		}
+		
+		// Run the VM
+		runner.run();
 	}
 	
 	/**
