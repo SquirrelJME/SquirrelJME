@@ -21,6 +21,9 @@ import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
  */
 public class Interpreter
 {
+	/** The input for the JIT. */
+	protected final VerifiedJITInput input;
+	
 	/**
 	 * Initializes the interpreter to run the given program.
 	 *
@@ -37,7 +40,8 @@ public class Interpreter
 		if (__vji == null || __props == null || __boot == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set input
+		this.input = __vji;
 	}
 }
 
