@@ -42,6 +42,10 @@ public class Interpreter
 	/** The main thread. */
 	protected final VMThread mainthread;
 	
+	/** Classes which have been loaded by the virtual machine. */
+	private final Map<ClassName, ClassInstance> _classes =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the interpreter to run the given program.
 	 *
