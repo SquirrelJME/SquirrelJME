@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
@@ -24,6 +26,10 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 public class Interpreter
 	implements Runnable
 {
+	/** The lock for the global state in the virtual machine. */
+	final Object _lock =
+		new Object();
+	
 	/** The input for the JIT. */
 	protected final VerifiedJITInput input;
 	
@@ -32,6 +38,9 @@ public class Interpreter
 	
 	/** The boot class. */
 	protected final ClassName bootclass;
+	
+	/** The main thread. */
+	protected final VMThread mainthread;
 	
 	/**
 	 * Initializes the interpreter to run the given program.
@@ -59,6 +68,9 @@ public class Interpreter
 		
 		// Set starting point
 		this.bootclass = new ClassName(__boot.replace('.', '/'));
+		
+		// Setup main thread which is specially ran
+		this.mainthread = new VMThread(new WeakReference<>(this));
 	}
 	
 	/**
@@ -68,7 +80,15 @@ public class Interpreter
 	@Override
 	public void run()
 	{
-		throw new todo.TODO();
+		// Setup main thread, construct/init an object in it and then set
+		// the entry point to startApp().
+		VMThread thread = this.mainthread;
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Run the main thread in this thread, like magic!
+		thread.run();
 	}
 }
 
