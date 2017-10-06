@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+
 /**
  * This represents the instance of a class object. This is specially handled
  * by the virtual machine because classes are unique objects compared to
