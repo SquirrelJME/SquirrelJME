@@ -1,0 +1,39 @@
+# 2017/10/05
+
+## 08:43
+
+Ok, so what I need is a `FamilyTree` and a `FamilyNode`, one that handles and
+detects recursion and builds a tree of what is implemented by what and all
+those things. This would be used by the interpreter for cast checks for
+example.
+
+## 09:18
+
+The Java compiler does not allow recursive interfaces, but I wonder if the
+virtual machine does.
+
+## 09:20
+
+Ok so, it does not permit circular interface declarations. So handle the
+multi-natured aspect of this, I will actually need a stacked queue of sets
+or similar. Actually, yeah that is what I need.
+
+## 09:31
+
+I believe lazy lookup can be useful, because verification can be deferred
+and such. Well just the verification for recursion and such. I mean all
+classes will be hit, but it can act as a cache for such things.
+
+## 09:39
+
+I can verify by recursion, I just need to fail on if a node is currently in
+visit mode. If a node is to be visited and it is in visit mode then that means
+there is recursion.
+
+## 11:53
+
+I need a new target which can interpret and such.
+
+## 17:02
+
+So I have an idea for Wintercoat, use a generated ROM on top of a C backend.
