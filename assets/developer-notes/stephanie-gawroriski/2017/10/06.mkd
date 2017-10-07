@@ -1,0 +1,7 @@
+# 2017/10/06
+
+## 10:06
+
+Ok so since classes need to be initialized, they get initialized in the
+current thread pretty much for the most part. So class lookup is actually
+going to be in `VMThread`.
