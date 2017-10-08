@@ -16,8 +16,8 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
-import net.multiphasicapps.squirreljme.jit.verifier.FamilyNode;
-import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
+import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClass;
+import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClassTree;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
@@ -39,7 +39,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 public final class VerifiedJITInput
 {
 	/** The tree of classes. */
-	protected final FamilyTree tree;
+	protected final VerifiedClassTree tree;
 	
 	/** Groups which are available. */
 	private final Map<String, JITInputGroup> _groups;
@@ -52,7 +52,7 @@ public final class VerifiedJITInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/03
 	 */
-	private VerifiedJITInput(FamilyTree __tree, Map<String, JITInputGroup> __g)
+	private VerifiedJITInput(VerifiedClassTree __tree, Map<String, JITInputGroup> __g)
 		throws NullPointerException
 	{
 		if (__tree == null)
@@ -69,7 +69,7 @@ public final class VerifiedJITInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/08
 	 */
-	public FamilyNode getNode(ClassName __n)
+	public VerifiedClass getNode(ClassName __n)
 		throws NullPointerException
 	{
 		if (__n == null)
@@ -121,12 +121,12 @@ public final class VerifiedJITInput
 		
 		// First build a family tree as soon as possible so that the lock on
 		// the input can be cleared
-		FamilyTree ftree;
+		VerifiedClassTree ftree;
 		Map<String, JITInputGroup> groups = new SortedTreeMap<>();
 		synchronized (__i._lock)
 		{
 			// Build the family tree
-			ftree = new FamilyTree(__i._classes.values());
+			ftree = new VerifiedClassTree(__i._classes.values());
 			
 			// Copy groups
 			groups.putAll(__i._groups);

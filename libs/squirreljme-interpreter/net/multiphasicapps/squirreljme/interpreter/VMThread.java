@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.NoSuchClassException;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
-import net.multiphasicapps.squirreljme.jit.verifier.FamilyNode;
+import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClass;
 
 /**
  * This represents a thread within the virtual machine.
@@ -99,7 +99,7 @@ public class VMThread
 		synchronized (interpreter._lock)
 		{
 			// Initialize all objects first
-			List<FamilyNode> initorder = new ArrayList<>();
+			List<VerifiedClass> initorder = new ArrayList<>();
 			__classInstance(__cn, initorder);
 			
 			// Run static initializers for all classes to be initialized
@@ -135,7 +135,7 @@ public class VMThread
 	 * @since 2017/10/06
 	 */
 	private ClassInstance __classInstance(ClassName __cn,
-		List<FamilyNode> __io)
+		List<VerifiedClass> __io)
 		throws InterpreterClassNotFoundException, NullPointerException
 	{
 		if (__cn == null || __io == null)
@@ -154,7 +154,7 @@ public class VMThread
 				return rv;
 			
 			// Need to get the node to know its family and such
-			FamilyNode node;
+			VerifiedClass node;
 			try
 			{
 				node = input.getNode(__cn);
