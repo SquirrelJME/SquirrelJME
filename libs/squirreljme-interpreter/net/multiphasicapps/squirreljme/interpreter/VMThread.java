@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
@@ -114,6 +116,11 @@ public class VMThread
 				throw new InterpreterClassNotFoundException(
 					String.format("AH05 %s", __cn), e);
 			}
+			
+			// Setup new class instances which would then be initialized
+			// accordingly with their static initializers if they have any
+			Deque<ClassInstance> initorder = new ArrayDeque<>();
+			rv = new ClassInstance(this._processref, initorder);
 			
 			throw new todo.TODO();
 		}
