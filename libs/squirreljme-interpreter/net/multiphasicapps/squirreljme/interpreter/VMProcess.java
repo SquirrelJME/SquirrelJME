@@ -72,7 +72,7 @@ public final class VMProcess
 	 * @throws IllegalStateException If the interpreter was garbage collected.
 	 * @since 2017/10/06
 	 */
-	private Interpreter __interpreter()
+	final Interpreter __interpreter()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error AH02 The interpreter has been garbage

@@ -20,7 +20,6 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassName;
  * @since 2017/10/06
  */
 public class VMThread
-	implements Runnable
 {
 	/** The reference to the owning interpreter. */
 	protected final Reference<Interpreter> _interpreterref;
@@ -53,6 +52,23 @@ public class VMThread
 	}
 	
 	/**
+	 * Allocates an instance of the specified class.
+	 *
+	 * @param __ci The class to allocate.
+	 * @return The newly allocated instance of the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/08
+	 */
+	public final Instance allocateInstance(ClassInstance __ci)
+		throws NullPointerException
+	{
+		if (__ci == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the instance for the specified class.
 	 *
 	 * @param __cn The name of the class to get the instance for.
@@ -70,12 +86,19 @@ public class VMThread
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/06
+	 * Invokes the specified method.
+	 *
+	 * @param __args The arguments to the method.
+	 * @return The return value of the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/08
 	 */
-	@Override
-	public final void run()
+	public final Object invoke(ClassMethod __m, Object... __args)
+		throws NullPointerException
 	{
+		if (__m == null || __args == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
@@ -105,7 +128,7 @@ public class VMThread
 	 * collected.
 	 * @since 2017/10/08
 	 */
-	private VMProcess __process()
+	final VMProcess __process()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error AH03 The process has been garbage collected.}
