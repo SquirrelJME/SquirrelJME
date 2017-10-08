@@ -14,6 +14,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This represents a single process within the virtual machine.
@@ -28,6 +32,10 @@ public final class VMProcess
 	/** Threads owned by this process. */
 	private final List<VMThread> _threads =
 		new ArrayList<>();
+	
+	/** Classes which have been loaded by the virtual machine. */
+	final Map<ClassName, ClassInstance> _classes =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes the process.

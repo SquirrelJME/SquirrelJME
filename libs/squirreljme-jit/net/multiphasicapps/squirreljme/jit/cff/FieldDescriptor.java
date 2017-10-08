@@ -157,6 +157,17 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Is this an array type?
+	 *
+	 * @return {@code true} if an array type.
+	 * @since 2017/10/08
+	 */
+	public boolean isArray()
+	{
+		return this.component != null;
+	}
+	
+	/**
 	 * Is this a primitive type?
 	 *
 	 * @return {@code true} if this is a primitive type.

@@ -34,11 +34,11 @@ public class Interpreter
 	final Object _lock =
 		new Object();
 	
-	/** The input for the JIT. */
-	protected final VerifiedJITInput input;
-	
 	/** The boot class. */
 	protected final ClassName bootclass;
+	
+	/** The input for the JIT. */
+	final VerifiedJITInput _input;
 	
 	/** Extra system properties. */
 	private Map<String, String> _properties;
@@ -46,10 +46,6 @@ public class Interpreter
 	/** Processes within the virtual machine. */
 	private final List<VMProcess> _processes =
 		new ArrayList<>();
-	
-	/** Classes which have been loaded by the virtual machine. */
-	private final Map<ClassName, ClassInstance> _classes =
-		new SortedTreeMap<>();
 	
 	/** The next ID for new threads. */
 	private volatile int _nextthreadid;
@@ -71,7 +67,7 @@ public class Interpreter
 			throw new NullPointerException("NARG");
 		
 		// Set input
-		this.input = __vji;
+		this._input = __vji;
 		
 		// Copy properties
 		Map<String, String> properties = new SortedTreeMap<>();

@@ -12,7 +12,12 @@ package net.multiphasicapps.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.NoSuchClassException;
+import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.squirreljme.jit.verifier.FamilyNode;
 
 /**
  * This represents a thread within the virtual machine.
@@ -73,16 +78,45 @@ public class VMThread
 	 *
 	 * @param __cn The name of the class to get the instance for.
 	 * @return The instance of the class.
+	 * @throws InterpreterClassNotFoundException If the class does not exist.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/06
 	 */
 	public final ClassInstance classInstance(ClassName __cn)
-		throws NullPointerException
+		throws InterpreterClassNotFoundException, NullPointerException
 	{
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Use global interpreter lock
+		Interpreter interpreter = __interpreter();
+		VMProcess process = __process();
+		Map<ClassName, ClassInstance> classes = process._classes;
+		VerifiedJITInput input = interpreter._input;
+		synchronized (interpreter._lock)
+		{
+			// If it has already been initialized then use that instance
+			ClassInstance rv = classes.get(__cn);
+			if (rv != null)
+				return rv;
+			
+			// Need to get the node to know its family and such
+			FamilyNode node;
+			try
+			{
+				node = input.getNode(__cn);
+			}
+			
+			// {@squirreljme.error AH05 The specified class does not exist.
+			// (The name of the class)}
+			catch (NoSuchClassException e)
+			{
+				throw new InterpreterClassNotFoundException(
+					String.format("AH05 %s", __cn), e);
+			}
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -131,10 +165,10 @@ public class VMThread
 	final VMProcess __process()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH03 The process has been garbage collected.}
+		// {@squirreljme.error AH04 The process has been garbage collected.}
 		VMProcess rv = this._processref.get();
 		if (rv == null)
-			throw new IllegalStateException("AH03");
+			throw new IllegalStateException("AH04");
 		return rv;
 	}
 }

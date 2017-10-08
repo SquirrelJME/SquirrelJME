@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
+import net.multiphasicapps.squirreljme.jit.verifier.FamilyNode;
 import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -59,6 +60,22 @@ public final class VerifiedJITInput
 		
 		this.tree = __tree;
 		this._groups = __g;
+	}
+	
+	/**
+	 * Obtains the specified class from the family tree.
+	 *
+	 * @param __n The name of the class to get the node for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/08
+	 */
+	public FamilyNode getNode(ClassName __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		return this.tree.get(__n);
 	}
 	
 	/**
