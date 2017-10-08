@@ -50,40 +50,6 @@ public final class FamilyNode
 	}
 	
 	/**
-	 * Returns the initialization order of nodes which need to be initialized
-	 * before this node can be initialized.
-	 *
-	 * @return The collection containing the initialization order of nodes.
-	 * @throws VerificationException If the classes failed verification.
-	 * @since 2017/10/08
-	 */
-	public final Collection<FamilyNode> initializationOrder()
-		throws VerificationException
-	{
-		return initializationOrder(new LinkedHashSet<FamilyNode>());
-	}
-	
-	/**
-	 * Returns the initialization order of nodes which need to be initialized
-	 * before this node can be initialized.
-	 *
-	 * @param __o The collection to contain the initialization order of nodes.
-	 * @return {@code __o}.
-	 * @throws NullPointerException On null arguments.
-	 * @throws VerificationException If the classes failed verification.
-	 * @since 2017/10/08
-	 */
-	public final Collection<FamilyNode> initializationOrder(
-		Collection<FamilyNode> __o)
-		throws NullPointerException, VerificationException
-	{
-		if (__o == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Returns the name of the current class.
 	 *
 	 * @return The current class name.
