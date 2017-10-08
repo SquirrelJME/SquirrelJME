@@ -26,14 +26,14 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/10/05
  */
-public final class FamilyTree
+public final class VerifiedClassTree
 {
 	/** Lock for thread-safety, for when arrays need to be created. */
 	final Object _lock =
 		new Object();
 	
 	/** The family tree. */
-	private final Map<ClassName, FamilyNode> nodes =
+	private final Map<ClassName, VerifiedClass> nodes =
 		new SortedTreeMap<>();
 	
 	/**
@@ -44,19 +44,19 @@ public final class FamilyTree
 	 * @throws VerificationException If the tree structure cannot be built.
 	 * @since 2017/10/05
 	 */
-	public FamilyTree(Collection<ClassFile> __n)
+	public VerifiedClassTree(Collection<ClassFile> __n)
 		throws NullPointerException, VerificationException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
 		// Reference to this tree
-		Reference<FamilyTree> self = new WeakReference<>(this);
+		Reference<VerifiedClassTree> self = new WeakReference<>(this);
 		
 		// Build nodes, recursion checks are done lazily
-		Map<ClassName, FamilyNode> nodes = this.nodes;
+		Map<ClassName, VerifiedClass> nodes = this.nodes;
 		for (ClassFile f : __n)
-			nodes.put(f.thisName(), new FamilyNode(self, f));
+			nodes.put(f.thisName(), new VerifiedClass(self, f));
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public final class FamilyTree
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/08
 	 */
-	public final FamilyNode get(ClassName __n)
+	public final VerifiedClass get(ClassName __n)
 		throws NoSuchClassException, NullPointerException
 	{
 		if (__n == null)
@@ -77,11 +77,11 @@ public final class FamilyTree
 		// classes and it is very possible for array types to be automatically
 		// generated as they are needed
 		// The same goes for primitive types
-		Map<ClassName, FamilyNode> nodes = this.nodes;
+		Map<ClassName, VerifiedClass> nodes = this.nodes;
 		synchronized (this._lock)
 		{
 			// If it exists in the map then use that
-			FamilyNode rv = nodes.get(__n);
+			VerifiedClass rv = nodes.get(__n);
 			if (rv != null)
 				return rv;
 			

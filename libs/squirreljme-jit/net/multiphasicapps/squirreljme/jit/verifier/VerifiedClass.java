@@ -23,10 +23,10 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
  *
  * @since 2017/10/05
  */
-public final class FamilyNode
+public final class VerifiedClass
 {
 	/** The reference to the outer tree. */
-	protected final Reference<FamilyTree> treeref;
+	protected final Reference<VerifiedClassTree> treeref;
 	
 	/** The class file this represents. */
 	protected final ClassFile classfile;
@@ -39,7 +39,7 @@ public final class FamilyNode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/05
 	 */
-	FamilyNode(Reference<FamilyTree> __tr, ClassFile __f)
+	VerifiedClass(Reference<VerifiedClassTree> __tr, ClassFile __f)
 		throws NullPointerException
 	{
 		if (__tr == null || __f == null)
@@ -67,11 +67,11 @@ public final class FamilyNode
 	 * @throws IllegalStateException If the tree has been garbage collected.
 	 * @since 2017/10/08
 	 */
-	private final FamilyTree __tree()
+	private final VerifiedClassTree __tree()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error JI35 The class tree has been garbage collected.}
-		FamilyTree rv = this.treeref.get();
+		VerifiedClassTree rv = this.treeref.get();
 		if (rv == null)
 			throw new IllegalStateException("JI35");
 		return rv;
