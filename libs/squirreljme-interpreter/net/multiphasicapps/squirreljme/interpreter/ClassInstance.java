@@ -14,6 +14,8 @@ import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
 import net.multiphasicapps.squirreljme.jit.cff.MethodName;
+import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.squirreljme.jit.verifier.FamilyNode;
 
 /**
  * This represents the instance of a class object. This is specially handled

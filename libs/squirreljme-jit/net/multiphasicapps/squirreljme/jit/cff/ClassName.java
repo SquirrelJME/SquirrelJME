@@ -107,6 +107,30 @@ public class ClassName
 	}
 	
 	/**
+	 * Does this class refer to an array type?
+	 *
+	 * @return If this is an array type.
+	 * @since 2017/10/08
+	 */
+	public boolean isArray()
+	{
+		FieldDescriptor field = this.field;
+		return field != null && field.isArray();
+	}
+	
+	/**
+	 * Does this class refer to a primitive type?
+	 *
+	 * @return If this is a primitive type.
+	 * @since 2017/10/08
+	 */
+	public boolean isPrimitive()
+	{
+		FieldDescriptor field = this.field;
+		return field != null && field.isPrimitive();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/27
 	 */
