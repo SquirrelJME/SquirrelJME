@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
@@ -33,18 +35,22 @@ public class Interpreter
 	/** The input for the JIT. */
 	protected final VerifiedJITInput input;
 	
-	/** Extra system properties. */
-	private Map<String, String> _properties;
-	
 	/** The boot class. */
 	protected final ClassName bootclass;
 	
-	/** The main thread. */
-	protected final VMThread mainthread;
+	/** Extra system properties. */
+	private Map<String, String> _properties;
+	
+	/** Processes within the virtual machine. */
+	private final List<VMProcess> _processes =
+		new ArrayList<>();
 	
 	/** Classes which have been loaded by the virtual machine. */
 	private final Map<ClassName, ClassInstance> _classes =
 		new SortedTreeMap<>();
+	
+	/** The next ID for new threads. */
+	private volatile int _nextthreadid;
 	
 	/**
 	 * Initializes the interpreter to run the given program.
@@ -72,9 +78,25 @@ public class Interpreter
 		
 		// Set starting point
 		this.bootclass = new ClassName(__boot.replace('.', '/'));
-		
-		// Setup main thread which is specially ran
-		this.mainthread = new VMThread(new WeakReference<>(this));
+	}
+	
+	/**
+	 * Creates a new process and returns it.
+	 *
+	 * @return The newly created process.
+	 * @since 2017/10/08
+	 */
+	public VMProcess createProcess()
+	{
+		List<VMProcess> processes = this._processes;
+		synchronized (this._lock)
+		{
+			VMProcess rv = new VMProcess(new WeakReference<>(this));
+			
+			processes.add(rv);
+			
+			return rv;
+		}
 	}
 	
 	/**
@@ -86,13 +108,28 @@ public class Interpreter
 	{
 		// Setup main thread, construct/init an object in it and then set
 		// the entry point to startApp().
-		VMThread thread = this.mainthread;
+		VMProcess mainprocess = createProcess();
+		VMThread mainthread = mainprocess.createThread();
 		
 		if (true)
 			throw new todo.TODO();
 		
 		// Run the main thread in this thread, like magic!
-		thread.run();
+		mainthread.run();
+	}
+	
+	/**
+	 * Returns the next thread ID.
+	 *
+	 * @return The next thread ID.
+	 * @since 2017/10/08
+	 */
+	final int __nextThreadId()
+	{
+		synchronized (this._lock)
+		{
+			return ++this._nextthreadid;
+		}
 	}
 }
 

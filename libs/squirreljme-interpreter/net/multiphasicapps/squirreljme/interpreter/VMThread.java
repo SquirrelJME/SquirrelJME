@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 
 /**
@@ -24,20 +25,31 @@ public class VMThread
 	/** The reference to the owning interpreter. */
 	protected final Reference<Interpreter> _interpreterref;
 	
+	/** Reference to the owning process. */
+	protected final Reference<VMProcess> _processref;
+	
+	/** Returns the process thread ID. */
+	protected final int threadid;
+	
 	/**
 	 * Initializes the virtual machine thread.
 	 *
 	 * @param __i The owning interpreter.
+	 * @param __p The process which owns this thread.
+	 * @param __id The thread ID within the process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/06
 	 */
-	public VMThread(Reference<Interpreter> __i)
+	public VMThread(Reference<Interpreter> __i, Reference<VMProcess> __p,
+		int __id)
 		throws NullPointerException
 	{
-		if (__i == null)
+		if (__i == null || __p == null)
 			throw new NullPointerException("NARG");
 		
 		this._interpreterref = __i;
+		this._processref = __p;
+		this.threadid = __id;
 	}
 	
 	/**
@@ -82,6 +94,24 @@ public class VMThread
 		Interpreter rv = this._interpreterref.get();
 		if (rv == null)
 			throw new IllegalStateException("AH01");
+		return rv;
+	}
+	
+	/**
+	 * Returns the process which owns this thread.
+	 *
+	 * @return The owning process.
+	 * @throws IllegalStateException If the process has been garbage
+	 * collected.
+	 * @since 2017/10/08
+	 */
+	private VMProcess __process()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error AH03 The process has been garbage collected.}
+		VMProcess rv = this._processref.get();
+		if (rv == null)
+			throw new IllegalStateException("AH03");
 		return rv;
 	}
 }
