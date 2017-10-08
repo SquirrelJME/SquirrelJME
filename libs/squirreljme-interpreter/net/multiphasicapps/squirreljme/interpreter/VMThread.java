@@ -13,8 +13,12 @@ package net.multiphasicapps.squirreljme.interpreter;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.NoSuchClassException;
@@ -90,6 +94,53 @@ public class VMThread
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
+		// Use global lock
+		Interpreter interpreter = __interpreter();
+		synchronized (interpreter._lock)
+		{
+			// Initialize all objects first
+			List<FamilyNode> initorder = new ArrayList<>();
+			__classInstance(__cn, initorder);
+			
+			// Run static initializers for all classes to be initialized
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Invokes the specified method.
+	 *
+	 * @param __args The arguments to the method.
+	 * @return The return value of the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/08
+	 */
+	public final Object invoke(ClassMethod __m, Object... __args)
+		throws NullPointerException
+	{
+		if (__m == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the instance for the specified class.
+	 *
+	 * @param __cn The name of the class to get the instance for.
+	 * @param __io The initialization order of classes.
+	 * @return The instance of the class.
+	 * @throws InterpreterClassNotFoundException If the class does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/06
+	 */
+	private ClassInstance __classInstance(ClassName __cn,
+		List<FamilyNode> __io)
+		throws InterpreterClassNotFoundException, NullPointerException
+	{
+		if (__cn == null || __io == null)
+			throw new NullPointerException("NARG");
+		
 		// Use global interpreter lock
 		Interpreter interpreter = __interpreter();
 		VMProcess process = __process();
@@ -120,27 +171,10 @@ public class VMThread
 			// Setup new class instances which would then be initialized
 			// accordingly with their static initializers if they have any
 			Deque<ClassInstance> initorder = new ArrayDeque<>();
-			rv = new ClassInstance(this._processref, initorder);
+			rv = new ClassInstance(this._processref, __io);
 			
 			throw new todo.TODO();
 		}
-	}
-	
-	/**
-	 * Invokes the specified method.
-	 *
-	 * @param __args The arguments to the method.
-	 * @return The return value of the object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/10/08
-	 */
-	public final Object invoke(ClassMethod __m, Object... __args)
-		throws NullPointerException
-	{
-		if (__m == null || __args == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
 	}
 	
 	/**

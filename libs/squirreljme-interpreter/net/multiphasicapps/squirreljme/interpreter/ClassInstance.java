@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
+import java.util.Collection;
 import java.util.Deque;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
@@ -36,7 +37,7 @@ public class ClassInstance
 	 * classes and implemented interfaces must be implemented first.
 	 * @since 2017/10/08
 	 */
-	ClassInstance(Reference<VMProcess> __p, Deque<ClassInstance> __io)
+	ClassInstance(Reference<VMProcess> __p, Collection<FamilyNode> __io)
 	{
 		super(__p);
 		
