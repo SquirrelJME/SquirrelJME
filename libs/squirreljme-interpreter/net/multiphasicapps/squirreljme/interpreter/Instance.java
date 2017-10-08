@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 
 /**
@@ -19,5 +20,41 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassName;
  */
 public class Instance
 {
+	/** The owning process. */
+	private final Reference<VMProcess> _processref;
+	
+	/**
+	 * Initializes the instance of the object.
+	 *
+	 * @param __p The owning process.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/08
+	 */
+	Instance(Reference<VMProcess> __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		this._processref = __p;
+	}
+	
+	/**
+	 * Returns the process which owns this thread.
+	 *
+	 * @return The owning process.
+	 * @throws IllegalStateException If the process has been garbage
+	 * collected.
+	 * @since 2017/10/08
+	 */
+	final VMProcess __process()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error AH03 The process has been garbage collected.}
+		VMProcess rv = this._processref.get();
+		if (rv == null)
+			throw new IllegalStateException("AH03");
+		return rv;
+	}
 }
 

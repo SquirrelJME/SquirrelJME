@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
+import net.multiphasicapps.squirreljme.jit.cff.MethodName;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
@@ -111,11 +113,16 @@ public class Interpreter
 		VMProcess mainprocess = createProcess();
 		VMThread mainthread = mainprocess.createThread();
 		
-		if (true)
-			throw new todo.TODO();
+		// Create a new instance and construct it
+		ClassInstance classobj = mainthread.classInstance(this.bootclass);
+		ClassMethod defcon = classobj.getDefaultConstructor();
+		Instance bootobj = mainthread.allocateInstance(classobj);
+		mainthread.invoke(defcon, bootobj);
 		
 		// Run the main thread in this thread, like magic!
-		mainthread.run();
+		ClassMethod startapp = classobj.getVirtualMethod(bootobj,
+			new MethodName("startApp"), new MethodDescriptor("()V"));
+		mainthread.invoke(startapp, bootobj);
 	}
 	
 	/**
