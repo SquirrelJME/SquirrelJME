@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
+import java.util.Deque;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
 import net.multiphasicapps.squirreljme.jit.cff.MethodName;
@@ -31,11 +32,18 @@ public class ClassInstance
 	 * Initializes the instance of the class object.
 	 *
 	 * @param __p The owning process.
+	 * @param __io The initialization order of class instances, since super
+	 * classes and implemented interfaces must be implemented first.
 	 * @since 2017/10/08
 	 */
-	ClassInstance(Reference<VMProcess> __p)
+	ClassInstance(Reference<VMProcess> __p, Deque<ClassInstance> __io)
 	{
 		super(__p);
+		
+		if (__io == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
