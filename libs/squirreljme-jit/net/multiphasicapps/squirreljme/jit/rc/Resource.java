@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.Groupable;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
@@ -23,7 +24,11 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * @since 2017/09/27
  */
 public final class Resource
+	implements Groupable
 {
+	/** The group this is part of. */
+	protected final String group;
+	
 	/** The name of this resource. */
 	protected final String name;
 	
@@ -36,20 +41,32 @@ public final class Resource
 	/**
 	 * Initializes the resource.
 	 *
+	 * @param __g The group this resource is in.
 	 * @param __n The name of the resource.
 	 * @param __d The data which makes up the resource, this is not copied.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/27
 	 */
-	Resource(String __n, byte[] __d)
+	Resource(String __g, String __n, byte[] __d)
 		throws NullPointerException
 	{
-		if (__n == null || __d == null)
+		if (__g == null || __n == null || __d == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.group = __g;
 		this.name = __n;
 		this._data = __d;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/09
+	 */
+	@Override
+	public String group()
+	{
+		return this.group;
 	}
 	
 	/**
@@ -105,16 +122,17 @@ public final class Resource
 	/**
 	 * Reads the resource from the given input stream and initializes it.
 	 *
+	 * @param __g The group this is part of.
 	 * @param __n The name of the resource.
 	 * @param __in The input stream containing the resource data.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/27
 	 */
-	public static Resource read(String __n, InputStream __in)
+	public static Resource read(String __g, String __n, InputStream __in)
 		throws IOException, NullPointerException
 	{
-		if (__n == null || __in == null)
+		if (__g == null || __n == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Copy bytes
@@ -131,7 +149,7 @@ public final class Resource
 		}
 		
 		// Create
-		return new Resource(__n, q.toByteArray());
+		return new Resource(__g, __n, q.toByteArray());
 	}
 }
 

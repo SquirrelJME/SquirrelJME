@@ -138,14 +138,14 @@ public final class JITInput
 					if (name.endsWith(".class"))
 					{
 						notifier.processClass(__n, name, ++numcl);
-						tcl.add(ClassFile.decode(e));
+						tcl.add(ClassFile.decode(__n, e));
 					}
 				
 					// Appending a resource
 					else
 					{
 						notifier.processResource(__n, name, ++numrc);
-						trc.add(Resource.read(name, e));
+						trc.add(Resource.read(__n, name, e));
 					}
 				}
 		}

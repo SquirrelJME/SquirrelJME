@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.squirreljme.jit.Groupable;
 
 /**
  * This represents a single class file.
@@ -21,10 +22,14 @@ import net.multiphasicapps.io.region.SizeLimitedInputStream;
  * @since 2017/09/26
  */
 public final class ClassFile
+	implements Groupable
 {
 	/** The magic number of the class file. */
 	private static final int _MAGIC_NUMBER =
 		0xCAFEBABE;
+	
+	/** The group this class is within. */
+	protected final String group;
 	
 	/** The version of this class. */
 	protected final ClassVersion version;
@@ -50,6 +55,7 @@ public final class ClassFile
 	/**
 	 * Initializes the class file.
 	 *
+	 * @param __g The group this class is within.
 	 * @param __ver The version of the class.
 	 * @param __cf The flags for this class.
 	 * @param __tn The name of this class.
@@ -61,13 +67,16 @@ public final class ClassFile
 	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2017/09/26
 	 */
-	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
+	ClassFile(String __g, ClassVersion __ver, ClassFlags __cf, ClassName __tn,
 		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__ver == null || __cf == null || __tn == null || __in == null ||
-			__fs == null || __ms == null)
+		if (__g == null || __ver == null || __cf == null || __tn == null ||
+			__in == null || __fs == null || __ms == null)
 			throw new NullPointerException("NARG");
+		
+		// Set initial group
+		this.group = __g;
 		
 		// Check sub-arrays for null
 		for (Object[] foo : new Object[][]{__in, __fs, __ms})
@@ -104,6 +113,16 @@ public final class ClassFile
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/09
+	 */
+	@Override
+	public String group()
+	{
+		return this.group;
+	}
+	
+	/**
 	 * Returns the names of implemented interfaces.
 	 *
 	 * @return The implemented interface names.
@@ -137,9 +156,41 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Initializes a class file which is a special representation of the
+	 * following field descriptor which is either an array or a primitive
+	 * type.
+	 *
+	 * @param __d The descriptor to create a special class for.
+	 * @return The generated class file from the specified descriptor.
+	 * @throws IllegalArgumentException If the descriptor is not an array
+	 * or a pritimive type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/09
+	 */
+	public static ClassFile special(FieldDescriptor __d)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI3d Cannot create a special class because it
+		// is not an array or primitive type. (The descriptor)}
+		if (!__d.isArray() && !__d.isPrimitive())
+			throw new IllegalArgumentException(String.format("JI3d %s", __d));
+		
+		// Build
+		return new ClassFile("", ClassVersion.MAX_VERSION,
+			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
+			ClassFlag.SYNTHETIC), new ClassName(__d.toString()),
+			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
+			new Method[0]);
+	}
+	
+	/**
 	 * This parses the input stream as a class file and returns the
 	 * representation of that class file.
 	 *
+	 * @param __g The group this class is within.
 	 * @param __is The input stream to source classes from.
 	 * @return The decoded class file.
 	 * @throws InvalidClassFormatException If the class file is not formatted
@@ -148,11 +199,11 @@ public final class ClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/26
 	 */
-	public static ClassFile decode(InputStream __is)
+	public static ClassFile decode(String __g, InputStream __is)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__g == null || __is == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JI2u The magic number for the class is not
@@ -217,7 +268,7 @@ public final class ClassFile
 				String.format("JI12 %s", thisname));
 		
 		// Build
-		return new ClassFile(version, classflags, thisname, supername,
+		return new ClassFile(__g, version, classflags, thisname, supername,
 			interfaces, fields, methods);
 	}
 	
