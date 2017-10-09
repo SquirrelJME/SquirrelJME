@@ -212,11 +212,6 @@ public final class MethodFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI04 Native methods are not supported in Java ME
-		// and as such, methods must not be {@code native}.}
-		if (isNative())
-			throw new InvalidClassFormatException("JI04");
-		
 		// {@squirreljme.error JI05 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The

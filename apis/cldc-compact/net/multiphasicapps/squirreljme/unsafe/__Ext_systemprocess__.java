@@ -34,10 +34,7 @@ final class __Ext_systemprocess__
 	 * @return The total number of available CPU threads.
 	 * @since 2017/08/29
 	 */
-	static int cpuThreads()
-	{
-		throw new todo.TODO();
-	}
+	static native int cpuThreads();
 	
 	/**
 	 * Returns {@code true} if this is the launcher thread.
@@ -45,9 +42,6 @@ final class __Ext_systemprocess__
 	 * @return {@code true} if this is the launcher thread.
 	 * @since 2017/08/11
 	 */
-	static boolean isLauncher()
-	{
-		throw new todo.TODO();
-	}
+	static native boolean isLauncher();
 }
 

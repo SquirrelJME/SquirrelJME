@@ -44,10 +44,7 @@ final class __Ext_systemvm__
 	 * otherwise {@code false}.
 	 * @since 2016/10/11
 	 */
-	static boolean isSquirrelJMEJVM()
-	{
-		throw new todo.TODO();
-	}
+	static native boolean isSquirrelJMEJVM();
 	
 	/**
 	 * Returns the e-mail to contact for the virtual machine.
@@ -57,10 +54,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	static String javaVMEmail()
-	{
-		throw new todo.TODO();
-	}
+	static native String javaVMEmail();
 	
 	/**
 	 * Returns the name of the Java virtual machine.
@@ -70,10 +64,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	static String javaVMName()
-	{
-		throw new todo.TODO();
-	}
+	static native String javaVMName();
 	
 	/**
 	 * Returns the URL to the virtual machine's vendor's URL.
@@ -83,10 +74,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	static String javaVMURL()
-	{
-		throw new todo.TODO();
-	}
+	static native String javaVMURL();
 	
 	/**
 	 * Returns the vendor of the Java virtual machine.
@@ -96,10 +84,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/10/02
 	 */
-	static String javaVMVendor()
-	{
-		throw new todo.TODO();
-	}
+	static native String javaVMVendor();
 	
 	/**
 	 * Returns the full version of the Java virtual machine.
@@ -109,10 +94,7 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/08/13
 	 */
-	static String javaVMVersionFull()
-	{
-		throw new todo.TODO();
-	}
+	static native String javaVMVersionFull();
 	
 	/**
 	 * Returns the short version of the Java virtual machine.
@@ -122,9 +104,6 @@ final class __Ext_systemvm__
 	 * not used.
 	 * @since 2017/08/13
 	 */
-	static String javaVMVersionShort()
-	{
-		throw new todo.TODO();
-	}
+	static native String javaVMVersionShort();
 }
 
