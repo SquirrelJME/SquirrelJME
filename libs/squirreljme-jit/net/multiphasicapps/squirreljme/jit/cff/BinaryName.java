@@ -31,6 +31,9 @@ public final class BinaryName
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
+	/** The package this is in. */
+	private volatile Reference<BinaryName> _package;
+	
 	/**
 	 * Initializes the binary name.
 	 *
@@ -122,6 +125,36 @@ public final class BinaryName
 		int rv = 0;
 		for (ClassIdentifier i : this._identifiers)
 			rv ^= i.hashCode();
+		return rv;
+	}
+	
+	/**
+	 * Returns the binary name of the package this class is within.
+	 *
+	 * @return The binary name of the owning package.
+	 * @since 2017/10/09
+	 */
+	public BinaryName inPackage()
+	{
+		Reference<BinaryName> ref = this._package;
+		BinaryName rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder();
+			ClassIdentifier[] identifier = this._identifiers;
+			
+			for (int i = 0, n = identifier.length - 1; i < n; i++)
+			{
+				if (i > 0)
+					sb.append('/');
+				sb.append(identifier[i]);
+			}
+			
+			this._package = new WeakReference<>(
+				(rv = new BinaryName(sb.toString())));
+		}
+		
 		return rv;
 	}
 	
