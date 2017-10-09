@@ -104,6 +104,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Returns the names of implemented interfaces.
+	 *
+	 * @return The implemented interface names.
+	 * @since 2017/10/09
+	 */
+	public final ClassName[] interfaceNames()
+	{
+		return this._interfaces.clone();
+	}
+	
+	/**
 	 * Returns the name of the super class.
 	 *
 	 * @return The name of the super class.

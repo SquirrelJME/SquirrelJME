@@ -12,12 +12,17 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.cff.BinaryName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFlags;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This is used to build nodes within the tree.
@@ -31,6 +36,18 @@ final class __NodeBuilder__
 	
 	/** Reference to the owning tree. */
 	private final Reference<__TreeBuilder__> _treeref;
+	
+	/** This class implements all of the specified classes. */
+	private final Set<ClassName> _implementsclasses =
+		new SortedTreeSet<>();
+	
+	/** This class extends all of the specified classes. */
+	private final Set<ClassName> _extendsclasses =
+		new SortedTreeSet<>();
+	
+	/** This class is an instance of the specified classes. */
+	private final Set<ClassName> _isinstanceof =
+		new SortedTreeSet<>();
 	
 	/** Has this finished the inheritence stage? */
 	private volatile boolean _didinherits;
@@ -96,7 +113,6 @@ final class __NodeBuilder__
 			if (!__isClassVisibleFrom(this, supernode))
 				throw new VerificationException(String.format("JI38 %s %s %s",
 					thisname, supername, superflags));
-			throw new todo.TODO();
 		}
 		
 		// No super node, set this because it is used later to determine the
@@ -104,8 +120,35 @@ final class __NodeBuilder__
 		else
 			supernode = null;
 		
-		if (true)
-			throw new todo.TODO();
+		// Handle all interfaces
+		List<__NodeBuilder__> interfacenodes = new ArrayList<>();
+		for (ClassName interfacename : __f.interfaceNames())
+		{
+			// {@squirreljme.error JI3a Circular inheritence detected in
+			// interface class tree. (This class; The interface class)}
+			__NodeBuilder__ interfacenode = tree.get(interfacename);
+			if (!interfacenode._didinherits)
+				throw new VerificationException(String.format("JI3a %s %s",
+					thisname, interfacename));
+			
+			// Use for later
+			interfacenodes.add(interfacenode);
+			
+			// {@squirreljme.error JI3b The specified class cannot implement
+			// the other class because it has the incorrect flags. (The name of
+			// this class; The interface class; The interface class flags)}
+			ClassFlags interfaceflags = interfacenode.flags();
+			if (!interfaceflags.isInterface())
+				throw new VerificationException(String.format("JI3b %s %s %s",
+					thisname, interfacename, interfaceflags));
+			
+			// {@squirreljme.error JI3c The current class cannot implement the
+			// specified class because it is not visible. (The name of this
+			// class; The interface class; The interface class flags)}
+			if (!__isClassVisibleFrom(this, interfacenode))
+				throw new VerificationException(String.format("JI3c %s %s %s",
+					thisname, interfacename, interfaceflags));
+		}
 		
 		// The initial inheritence stage has been completed for this node
 		// This flag should never normally be read by the inheritence check
@@ -113,8 +156,9 @@ final class __NodeBuilder__
 		// for classes
 		this._didinherits = true;
 		
+		// Todo
+		System.err.println("TODO -- Do other verification things.");
 		throw new todo.TODO();
-		
 	}
 	
 	/**
