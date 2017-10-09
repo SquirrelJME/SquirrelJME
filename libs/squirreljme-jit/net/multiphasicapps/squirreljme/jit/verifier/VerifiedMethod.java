@@ -14,14 +14,11 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This contains the structure information for a single class. The class
- * contains a structure of instance and static members. This information is
- * used to determine how large a class is and which methods should be
- * invoked when required.
+ * This is a single method which has been verified.
  *
  * @since 2017/10/09
  */
-public final class ClassStructure
+public final class VerifiedMethod
 {
 }
 
