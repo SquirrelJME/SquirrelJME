@@ -43,6 +43,9 @@ public final class ByteCode
 	/** The exceptions within this method. */
 	protected final ExceptionHandlerTable exceptions;
 	
+	/** The stack map table for the method code. */
+	protected final StackMapTable stackmaptable;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawattributedata;
 	
@@ -93,6 +96,9 @@ public final class ByteCode
 			ExceptionHandlerTable eht = ExceptionHandlerTable.decode(in, pool,
 				codelen);
 			
+			// The stack map table is used for verification
+			StackMapTable smt = null;
+			
 			// Handle attributes
 			int na = in.readUnsignedShort();
 			String[] attr = new String[1];
@@ -102,19 +108,22 @@ public final class ByteCode
 					attr, alen))
 				{
 					String a;
+					boolean newtable = false;
 					switch ((a = attr[0]))
 					{
-							// The stack map table
+							// The stack map table, either new or old
 						case "StackMapTable":
-							throw new todo.TODO();
+							newtable = true;
+						case "StackMap":
+							// {@squirreljme.error JI3g Duplicate stack map
+							// tables exist within the method byte code.}
+							if (smt != null)
+								throw new InvalidClassFormatException("JI3g");
 							
-							// The file the code is in
-						case "SourceFile":
-							throw new todo.TODO();
-							
-							// The line numbers in the file
-						case "LineNumberTable":
-							throw new todo.TODO();
+							// Decode
+							smt = StackMapTable.decode(pool, method, newtable,
+								ai);
+							break;
 						
 							// Unknown, ignore
 						default:
@@ -122,16 +131,22 @@ public final class ByteCode
 					}
 				}
 			
+			// If there is no stack map, then use a default one (which has
+			// just no entries)
+			if (smt == null)
+				smt = StackMapTable.decode(pool, method, true,
+					new DataInputStream(
+					new ByteArrayInputStream(new byte[2])));
+			
 			// Can set fields now
 			this.maxstack = maxstack;
 			this.maxlocals = maxlocals;
 			this.codelen = codelen;
 			this.exceptions = eht;
-			
-			throw new todo.TODO();
+			this.stackmaptable = smt;
 		}
 		
-		// {@squirreljme.error JI3f }
+		// {@squirreljme.error JI3f Failed to read from the code attribute.}
 		catch (IOException e)
 		{
 			throw new InvalidClassFormatException("JI3f", e);
