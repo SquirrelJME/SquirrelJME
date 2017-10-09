@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.squirreljme.jit.verifier.ClassStructures;
 import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
+import net.multiphasicapps.squirreljme.jit.verifier.VerifiedMethods;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
@@ -38,11 +39,17 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  */
 public final class VerifiedJITInput
 {
+	/** The input for the JIT. */
+	protected final JITInput input;
+	
 	/** The tree of classes that are available. */
 	protected final FamilyTree tree;
 	
-	/** The input for the JIT. */
-	protected final JITInput input;
+	/** The structures of fields and methods within classes. */
+	protected final ClassStructures structures;
+	
+	/** Methods which have been verified. */
+	protected final VerifiedMethods methods;
 	
 	/**
 	 * Initializes the verified input.
@@ -52,14 +59,18 @@ public final class VerifiedJITInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/03
 	 */
-	private VerifiedJITInput(FamilyTree __tree, JITInput __input)
+	private VerifiedJITInput(JITInput __input, FamilyTree __tree,
+		ClassStructures __structs, VerifiedMethods __methods)
 		throws NullPointerException
 	{
-		if (__tree == null || __input == null)
+		if (__tree == null || __input == null || __structs == null ||
+			__methods == null)
 			throw new NullPointerException("NARG");
 		
 		this.tree = __tree;
 		this.input = __input;
+		this.structures = __structs;
+		this.methods = __methods;
 	}
 	
 	/**
@@ -108,11 +119,11 @@ public final class VerifiedJITInput
 		// Determine the structure classes are within
 		ClassStructures structs = new ClassStructures(tree);
 		
-		if (true)
-			throw new todo.TODO();
+		// Setup all methods
+		VerifiedMethods methods = new VerifiedMethods(__i, structs);
 		
 		// Setup verified input
-		return new VerifiedJITInput(tree, __i);
+		return new VerifiedJITInput(__i, tree, structs, methods);
 	}
 }
 

@@ -12,42 +12,33 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.JITInput;
 
 /**
- * This contains the structure of every class which is available to the
- * virtual machine.
- *
- * Like {@link FamilyTree} this class is lazily initialized.
- *
- * This class is thread safe.
+ * This class is used to contain all of the methods which exist within the
+ * class structures and is used to verify that all of them are valid.
  *
  * @since 2017/10/09
  */
-public final class ClassStructures
+public final class VerifiedMethods
 {
-	/** Lock for safety. */
-	final Object _lock =
-		new Object();
-	
-	/** The source class tree with inheritence information. */
-	protected final FamilyTree tree;
-	
 	/**
-	 * Initializes the class structures.
+	 * Initializes the verification of methods, initializing every method
+	 * which exists within the input structures.
 	 *
-	 * @param __tree The family tree of classes.
+	 * @param __i The input classes to be verified.
+	 * @param __structs The structures which make up classes.
 	 * @throws NullPointerException On null arguments.
-	 * @throws VerificationException If the class structure could not be
-	 * verified.
+	 * @throws VerificationException If verification fails.
 	 * @since 2017/10/09
 	 */
-	public ClassStructures(FamilyTree __tree)
+	public VerifiedMethods(JITInput __i, ClassStructures __structs)
 		throws NullPointerException, VerificationException
 	{
-		if (__tree == null)
+		if (__i == null || __structs == null)
 			throw new NullPointerException("NARG");
 		
-		this.tree = __tree;
+		throw new todo.TODO();
 	}
 }
 
