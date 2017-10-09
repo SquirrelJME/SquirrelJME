@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.suiteid;
+package net.multiphasicapps.squirreljme.midlet;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -124,12 +124,12 @@ public final class MidletVersion
 	 */
 	public MidletVersion(int __maj, int __min, int __rel)
 	{
-		// {@squirreljme.error CC03 Input version number is out of range, only
+		// {@squirreljme.error AD03 Input version number is out of range, only
 		// 0 through 99 are valid. (The major version; The minor version; The
 		// release version)}
 		if (__maj < 0 || __maj > 99 || __min < 0 || __min > 99 ||
 			__rel < 0 || __rel > 99)
-			throw new IllegalArgumentException(String.format("CC03 %d %d %d",
+			throw new IllegalArgumentException(String.format("AD03 %d %d %d",
 				__maj, __min, __rel));
 		
 		// Set
@@ -302,10 +302,10 @@ public final class MidletVersion
 			{
 				rv[at++] = Integer.parseInt(sb.toString(), 10);
 				
-				// {@squirreljme.error CC04 Too many version fields in the
+				// {@squirreljme.error AD04 Too many version fields in the
 				// specified string. (The input string)}
 				if (c != -1 && at >= 4)
-					throw new IllegalArgumentException(String.format("CC04 %s",
+					throw new IllegalArgumentException(String.format("AD04 %s",
 						__v));
 				
 				// Clear
@@ -316,10 +316,10 @@ public final class MidletVersion
 			else if (c >= '0' && c < '9')
 				sb.append((char)c);
 			
-			// {@squirreljme.error CC05 An illegal character is in the
+			// {@squirreljme.error AD05 An illegal character is in the
 			// version string. (The input string)}
 			else
-				throw new IllegalArgumentException(String.format("CC05 %s",
+				throw new IllegalArgumentException(String.format("AD05 %s",
 					__v));
 		}
 		

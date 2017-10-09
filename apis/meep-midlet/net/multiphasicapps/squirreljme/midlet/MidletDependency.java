@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.suiteid;
+package net.multiphasicapps.squirreljme.midlet;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -63,12 +63,12 @@ public final class MidletDependency
 		{
 			int lastpos = (i == 0 ? 0 : sc[i - 1] + 1);
 			
-			// {@squirreljme.error CC0e Expected four semi-colons in the
+			// {@squirreljme.error AD0e Expected four semi-colons in the
 			// dependency field. (The input dependency)}
 			int com = __s.indexOf(';', lastpos);
 			if ((i < 4 && com < 0) || (i >= 4 && com >= 0))
 				throw new IllegalArgumentException(String.format(
-					"CC0e %s", __s));
+					"AD0e %s", __s));
 			
 			// Stop
 			if (i == 4)
@@ -101,11 +101,11 @@ public final class MidletDependency
 		this.version = (version = (inversion.isEmpty() ? null :
 			new MidletVersionRange(inversion)));
 		
-		// {@squirreljme.error CC0j Dependencies on LIBlets must have the
+		// {@squirreljme.error AD0j Dependencies on LIBlets must have the
 		// name, vendor, and version set. (The input string)}
 		if (type == MidletDependencyType.LIBLET && (name == null ||
 			vendor == null || version == null))
-			throw new IllegalArgumentException(String.format("CC0j %s", __s));
+			throw new IllegalArgumentException(String.format("AD0j %s", __s));
 	}
 	
 	/**

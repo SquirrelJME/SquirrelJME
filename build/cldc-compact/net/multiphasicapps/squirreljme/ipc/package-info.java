@@ -1,1 +1,0 @@
-../../../../../../libs/squirreljme-ipc/net/multiphasicapps/squirreljme/ipc/package-info.java

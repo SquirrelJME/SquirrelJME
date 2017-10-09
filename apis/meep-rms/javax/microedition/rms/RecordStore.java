@@ -15,8 +15,8 @@ import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 import net.multiphasicapps.squirreljme.rms.RecordCluster;
 import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
 import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 /**

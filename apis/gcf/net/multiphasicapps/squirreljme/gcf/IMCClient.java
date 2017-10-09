@@ -21,9 +21,9 @@ import java.util.Objects;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteIDFormat;
-import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteIDFormat;
+import net.multiphasicapps.squirreljme.midlet.MidletVersion;
 import net.multiphasicapps.squirreljme.unsafe.SystemMail;
 import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 

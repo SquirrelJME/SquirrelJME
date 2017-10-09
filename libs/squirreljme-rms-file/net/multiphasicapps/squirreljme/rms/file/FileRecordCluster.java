@@ -34,8 +34,8 @@ import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifestAttributes;
 import net.multiphasicapps.squirreljme.rms.RecordCluster;
 import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
 
 /**
  * This is a cluster which is backed by the filesystem.

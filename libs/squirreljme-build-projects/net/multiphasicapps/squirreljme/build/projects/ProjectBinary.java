@@ -21,12 +21,12 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
-import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
-import net.multiphasicapps.squirreljme.suiteid.MidletDependencyLevel;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
-import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
+import net.multiphasicapps.squirreljme.midlet.MidletDependency;
+import net.multiphasicapps.squirreljme.midlet.MidletDependencyLevel;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midlet.MidletVersion;
 
 /**
  * This represents the base for a binary project which is a compiled form
@@ -41,7 +41,7 @@ public abstract class ProjectBinary
 	private volatile Reference<JavaManifest> _manifest;
 	
 	/** The suite identifier. */
-	private volatile Reference<MidletSuiteID> _suiteid;
+	private volatile Reference<MidletSuiteID> _midlet;
 	
 	/**
 	 * Initializes the project binary.
@@ -170,7 +170,7 @@ public abstract class ProjectBinary
 	public MidletSuiteID suiteId()
 		throws InvalidProjectException
 	{
-		Reference<MidletSuiteID> ref = this._suiteid;
+		Reference<MidletSuiteID> ref = this._midlet;
 		MidletSuiteID rv;
 		
 		// Cache?
@@ -206,7 +206,7 @@ public abstract class ProjectBinary
 					name()));
 			
 			// Generate
-			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
+			this._midlet = new WeakReference<>((rv = new MidletSuiteID(
 				new MidletSuiteName(name), new MidletSuiteVendor(vendor),
 				new MidletVersion(version))));
 		}

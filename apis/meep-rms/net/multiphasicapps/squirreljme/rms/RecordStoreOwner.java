@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.rms;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
 
 /**
  * This represents the owner of a record store and is used to access record

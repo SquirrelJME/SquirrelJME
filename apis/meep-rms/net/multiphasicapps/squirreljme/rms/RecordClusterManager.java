@@ -17,8 +17,8 @@ import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStoreException;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
 
 /**
  * This is the base class for a manager which provides access to a record
