@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.bin.LinkingPoint;
-
 /**
  * This is a progress notifier which catches exceptions.
  *
@@ -67,38 +65,6 @@ public class CatchingProgressNotifier
 		try
 		{
 			this.forward.endJar(__n, __ns, __lr, __lc);
-		}
-		catch (Exception e)
-		{
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/29
-	 */
-	@Override
-	public void jitEndHighLevelProgram(LinkingPoint __lp, long __ns)
-	{
-		try
-		{
-			this.forward.jitEndHighLevelProgram(__lp, __ns);
-		}
-		catch (Exception e)
-		{
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/29
-	 */
-	@Override
-	public void jitStartHighLevelProgram(LinkingPoint __lp)
-	{
-		try
-		{
-			this.forward.jitStartHighLevelProgram(__lp);
 		}
 		catch (Exception e)
 		{

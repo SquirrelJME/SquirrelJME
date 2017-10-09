@@ -11,7 +11,6 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.PrintStream;
-import net.multiphasicapps.squirreljme.jit.bin.LinkingPoint;
 
 /**
  * This is a progress notifier which outputs to the given stream.
@@ -65,31 +64,6 @@ public class PrintStreamProgressNotifier
 		// (The name of the JAR; The number of nanoseconds it took to
 		// process; The number of resources; The number of classes)}
 		this.out.printf("JI0t %s %d %d %d%n", __n, __ns, __lr, __lc);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/29
-	 */
-	@Override
-	public void jitEndHighLevelProgram(LinkingPoint __lp, long __ns)
-	{
-		// {@squirreljme.error JI0u Finished JIT compiling the specified high
-		// level program. (The linking point of the program; The number of
-		// nanoseconds it took for compilation)}
-		this.out.printf("JI0u %s %d%n", __lp, __ns);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/29
-	 */
-	@Override
-	public void jitStartHighLevelProgram(LinkingPoint __lp)
-	{
-		// {@squirreljme.error JI0v Starting JIT compilation of the specified
-		// program. (The linking point of the program)}
-		this.out.printf("JI0v %s%n", __lp);
 	}
 	
 	/**
