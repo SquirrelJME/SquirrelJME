@@ -29,6 +29,7 @@ import net.multiphasicapps.util.sorted.SortedTreeSet;
  *
  * @since 2017/10/09
  */
+@Deprecated
 final class __NodeBuilder__
 {
 	/** The class file containing most of the class data. */

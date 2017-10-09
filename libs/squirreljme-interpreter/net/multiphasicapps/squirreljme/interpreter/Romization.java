@@ -8,33 +8,41 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.verifier;
+package net.multiphasicapps.squirreljme.interpreter;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
 
 /**
- * This represents a single node within the class inheritence tree.
+ * This class is used to make SquirrelJME interpreter and Wintercoat ROMs.
  *
  * @since 2017/10/09
  */
-public final class FamilyNode
+public final class Romization
 {
 	/**
-	 * Initializes the node within the tree.
+	 * Initializes the romizer.
 	 *
-	 * @param __tr The owning tree reference.
+	 * @param __vji The input for the JIT.
 	 * @throws NullPointerException On null arguments.
-	 * @throws VerificationException If there is a circular dependency within
-	 * the loaded classes.
 	 * @since 2017/10/09
 	 */
-	FamilyNode(Reference<FamilyTree> __tr)
-		throws NullPointerException, VerificationException
+	public Romization(VerifiedJITInput __vji)
+		throws NullPointerException
 	{
-		if (__tr == null)
+		if (__vji == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Builds the ROM from the input.
+	 *
+	 * @return The resulting ROM.
+	 * @since 2017/10/09
+	 */
+	public final byte[] build()
+	{
 		throw new todo.TODO();
 	}
 }

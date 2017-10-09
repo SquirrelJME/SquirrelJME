@@ -17,8 +17,6 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
-import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClass;
-import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClassTree;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
@@ -39,45 +37,28 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  */
 public final class VerifiedJITInput
 {
-	/** The tree of classes. */
-	protected final VerifiedClassTree tree;
+	/** The tree of classes that are available. */
+	protected final FamilyTree tree;
 	
-	/** Groups which are available. */
-	private final Map<String, JITInputGroup> _groups;
+	/** The input for the JIT. */
+	protected final JITInput input;
 	
 	/**
 	 * Initializes the verified input.
 	 *
 	 * @param __tree The tree of classes.
-	 * @param __g Groups, this is used directly. 
+	 * @param __input The input classes and groups.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/03
 	 */
-	private VerifiedJITInput(VerifiedClassTree __tree,
-		Map<String, JITInputGroup> __g)
+	private VerifiedJITInput(FamilyTree __tree, JITInput __input)
 		throws NullPointerException
 	{
-		if (__tree == null)
+		if (__tree == null || __input == null)
 			throw new NullPointerException("NARG");
 		
 		this.tree = __tree;
-		this._groups = __g;
-	}
-	
-	/**
-	 * Obtains the specified class from the family tree.
-	 *
-	 * @param __n The name of the class to get the node for.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/10/08
-	 */
-	public VerifiedClass getNode(ClassName __n)
-		throws NullPointerException
-	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		return this.tree.get(__n);
+		this.input = __input;
 	}
 	
 	/**
@@ -99,8 +80,7 @@ public final class VerifiedJITInput
 		
 		// {@squirreljme.error JI32 No such group with the given name exists.
 		// (The name of the group)}
-		Map<String, JITInputGroup> groups = this._groups;
-		JITInputGroup grp = groups.get(__g);
+		JITInputGroup grp = this.input.getGroup(__g);
 		if (grp == null)
 			throw new NoSuchGroupException(String.format("JI32 %s", __g));
 		

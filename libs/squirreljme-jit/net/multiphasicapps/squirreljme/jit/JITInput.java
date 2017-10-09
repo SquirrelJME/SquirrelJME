@@ -93,5 +93,28 @@ public final class JITInput
 			}
 		}
 	}
+	
+	/**
+	 * Returns the input group by the given name.
+	 *
+	 * @param __g The group to use as input.
+	 * @return The input group.
+	 * @throws NoSuchGroupException If the group does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/09
+	 */
+	public final JITInputGroup getGroup(String __g)
+		throws NoSuchGroupException, NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI3e The specified group does not exist within
+		// the input. (The name of the group)}
+		JITInputGroup rv = this._groups.get(__g);
+		if (rv == null)
+			throw new NoSuchGroupException(String.format("JI3e %s", __g));
+		return rv;
+	}
 }
 
