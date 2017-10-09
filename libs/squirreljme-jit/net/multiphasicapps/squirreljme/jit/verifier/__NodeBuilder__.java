@@ -23,6 +23,9 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
  */
 class __NodeBuilder__
 {
+	/** Reference to the owning tree. */
+	private final Reference<__TreeBuilder__> _treeref;
+	
 	/**
 	 * Initializes the node builder for the tree data.
 	 *
@@ -39,6 +42,10 @@ class __NodeBuilder__
 		if (__tr == null || __m == null || __f == null)
 			throw new NullPointerException("NARG");
 		
+		// Used to refer to the tree while allowing it to be garbage
+		// collected
+		this._treeref = __tr;
+		
 		// Add self to the map
 		ClassName thisname = __f.thisName();
 		__m.put(thisname, this);
@@ -47,6 +54,24 @@ class __NodeBuilder__
 		System.err.printf("DEBUG -- Verifying node %s%n", thisname);
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the owning tree builder.
+	 *
+	 * @return The tree which is building this node.
+	 * @throws IllegalStateException If the tree has been garbage collected.
+	 * @since 2017/10/09
+	 */
+	final __TreeBuilder__ __treeBuilder()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error JI36 The class tree builder has been garbage
+		// collected.}
+		__TreeBuilder__ rv = this._treeref.get();
+		if (rv == null)
+			throw new IllegalStateException("JI36");
+		return rv;
 	}
 }
 

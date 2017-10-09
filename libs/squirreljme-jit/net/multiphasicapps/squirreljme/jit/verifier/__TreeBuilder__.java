@@ -113,6 +113,8 @@ class __TreeBuilder__
 		ClassFile file = files.get(__n);
 		
 		// Need to dynamically create a class representation?
+		// Note that dynamically loaded classes here do not need to actually
+		// be placed into the queue because they are initialized here
 		if (file == null)
 		{
 			// {@squirreljme.error JI34 Cannot create the node for the
