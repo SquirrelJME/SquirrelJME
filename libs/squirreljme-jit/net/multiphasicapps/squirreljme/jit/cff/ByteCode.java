@@ -31,6 +31,21 @@ public final class ByteCode
 	private static final int _MAX_CODE_LENGTH =
 		65535;
 	
+	/** The maximum number of stack entries. */
+	protected final int maxstack;
+	
+	/** The maximum number of local entries. */
+	protected final int maxlocals;
+	
+	/** The length of the method code in bytes. */
+	protected final int codelen;
+	
+	/** The exceptions within this method. */
+	protected final ExceptionHandlerTable exceptions;
+	
+	/** The input attribute code, used for instruction lookup. */
+	private final byte[] _rawattributedata;
+	
 	/** The owning method reference. */
 	private final Reference<Method> _methodref;
 	
@@ -51,10 +66,11 @@ public final class ByteCode
 		
 		// Set
 		this._methodref = __mr;
+		this._rawattributedata = __ca;
+		
+		// If any IOExceptions are generated then the attribute is not valid
 		Method method = __mr.get();
 		Pool pool = method.pool();
-		
-		// Could fail to read properly
 		try (DataInputStream in = new DataInputStream(
 			new ByteArrayInputStream(__ca)))
 		{
@@ -76,6 +92,41 @@ public final class ByteCode
 			// Read exception handler table
 			ExceptionHandlerTable eht = ExceptionHandlerTable.decode(in, pool,
 				codelen);
+			
+			// Handle attributes
+			int na = in.readUnsignedShort();
+			String[] attr = new String[1];
+			int[] alen = new int[1];
+			for (int j = 0; j < na; j++)
+				try (DataInputStream ai = ClassFile.__nextAttribute(in, pool,
+					attr, alen))
+				{
+					String a;
+					switch ((a = attr[0]))
+					{
+							// The stack map table
+						case "StackMapTable":
+							throw new todo.TODO();
+							
+							// The file the code is in
+						case "SourceFile":
+							throw new todo.TODO();
+							
+							// The line numbers in the file
+						case "LineNumberTable":
+							throw new todo.TODO();
+						
+							// Unknown, ignore
+						default:
+							continue;
+					}
+				}
+			
+			// Can set fields now
+			this.maxstack = maxstack;
+			this.maxlocals = maxlocals;
+			this.codelen = codelen;
+			this.exceptions = eht;
 			
 			throw new todo.TODO();
 		}
