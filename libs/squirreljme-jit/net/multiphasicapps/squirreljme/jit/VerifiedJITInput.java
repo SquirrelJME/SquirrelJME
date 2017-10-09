@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
+import net.multiphasicapps.squirreljme.jit.verifier.ClassStructures;
 import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -101,7 +102,17 @@ public final class VerifiedJITInput
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Setup family tree
+		FamilyTree tree = new FamilyTree(__i);
+		
+		// Determine the structure classes are within
+		ClassStructures structs = new ClassStructures(tree);
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Setup verified input
+		return new VerifiedJITInput(tree, __i);
 	}
 }
 
