@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.bin.LinkingPoint;
-
 /**
  * This is an optional interface which may be called when there has been an
  * update to the JIT and can be used to gauge progress.
@@ -38,23 +36,6 @@ public interface JITProgressNotifier
 	 * @since 2017/08/29
 	 */
 	public abstract void endJar(String __n, long __ns, int __lr, int __lc);
-	
-	/**
-	 * Specifies that the high level program has been processed and linked.
-	 *
-	 * @param __lp The linking point for the program.
-	 * @param __ns The number of nano-seconds which have progressed.
-	 * @since 2017/08/29
-	 */
-	public abstract void jitEndHighLevelProgram(LinkingPoint __lp, long __ns);
-	
-	/**
-	 * Specifies that the high level program is about to be processed.
-	 *
-	 * @param __lp The linking point for the program.
-	 * @since 2017/08/29
-	 */
-	public abstract void jitStartHighLevelProgram(LinkingPoint __lp);
 	
 	/**
 	 * Specifies that the specified class is being processed.

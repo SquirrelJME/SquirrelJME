@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.bin.LinkingPoint;
-
 /**
  * This is a progress notifier which has no output anywhere.
  *
@@ -35,24 +33,6 @@ public class NullProgressNotifier
 	 */
 	@Override
 	public void endJar(String __n, long __ns, int __lr, int __lc)
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/29
-	 */
-	@Override
-	public void jitEndHighLevelProgram(LinkingPoint __lp, long __ns)
-	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/29
-	 */
-	@Override
-	public void jitStartHighLevelProgram(LinkingPoint __lp)
 	{
 	}
 	
