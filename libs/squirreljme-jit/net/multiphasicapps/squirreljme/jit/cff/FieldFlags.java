@@ -172,7 +172,8 @@ public final class FieldFlags
 		// {@squirreljme.error JI02 A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
-			throw new JITException(String.format("JI02 %s", this));
+			throw new InvalidClassFormatException(
+				String.format("JI02 %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
@@ -191,7 +192,8 @@ public final class FieldFlags
 				// {@squirreljme.error JI03 Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
-					throw new JITException(String.format("JI03 %s", this));
+					throw new InvalidClassFormatException(
+						String.format("JI03 %s", this));
 			}
 	}
 }
