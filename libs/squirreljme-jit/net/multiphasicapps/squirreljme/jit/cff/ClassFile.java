@@ -104,6 +104,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Returns the name of the super class.
+	 *
+	 * @return The name of the super class.
+	 * @since 2017/10/09
+	 */
+	public final ClassName superName()
+	{
+		return this.supername;
+	}
+	
+	/**
 	 * Returns the name of the current class.
 	 *
 	 * @return The current class name.
