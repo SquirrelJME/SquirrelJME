@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.suiteid;
+package net.multiphasicapps.squirreljme.midlet;
 
 /**
  * This describes the format that is used in the MIDlet or LIBlet suite

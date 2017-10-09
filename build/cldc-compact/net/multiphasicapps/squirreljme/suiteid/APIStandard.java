@@ -1,1 +1,0 @@
-../../../../../../libs/squirreljme-suite-id/net/multiphasicapps/squirreljme/suiteid/APIStandard.java

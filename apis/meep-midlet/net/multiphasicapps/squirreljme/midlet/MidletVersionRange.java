@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.suiteid;
+package net.multiphasicapps.squirreljme.midlet;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -80,10 +80,10 @@ public final class MidletVersionRange
 		// Trim
 		__s = __s.trim();
 		
-		// {@squirreljme.error CC0f The version range cannot be blank.}
+		// {@squirreljme.error AD0f The version range cannot be blank.}
 		int sl = __s.length();
 		if (sl <= 0)
-			throw new IllegalArgumentException("CC0f");
+			throw new IllegalArgumentException("AD0f");
 		
 		// Get the last character
 		char lc = __s.charAt(__s.length() - 1);
@@ -109,10 +109,10 @@ public final class MidletVersionRange
 					this.to = new MidletVersion(99, 99, 99);
 				}
 				
-				// {@squirreljme.error CC0g Major only wildcard versions must
+				// {@squirreljme.error AD0g Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new IllegalArgumentException(String.format("CC0g %s",
+					throw new IllegalArgumentException(String.format("AD0g %s",
 						__s));
 			}
 			
@@ -120,10 +120,10 @@ public final class MidletVersionRange
 			// how deep it goes
 			else
 			{
-				// {@squirreljme.error CC0h The last dot in a wildcard must be
+				// {@squirreljme.error AD0h The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new IllegalArgumentException(String.format("CC0h %s",
+					throw new IllegalArgumentException(String.format("AD0h %s",
 						__s));
 				
 				// Source range is simple
@@ -145,10 +145,10 @@ public final class MidletVersionRange
 				else if (numdots == 2)
 					this.to = new MidletVersion(ver.major(), ver.minor(), 99);
 				
-				// {@squirreljme.error CC0i There are too many decimal points
+				// {@squirreljme.error AD0i There are too many decimal points
 				// in the wildcard version string. (The input string)}
 				else
-					throw new IllegalArgumentException(String.format("CC0i %s",
+					throw new IllegalArgumentException(String.format("AD0i %s",
 						__s));
 			}
 		}

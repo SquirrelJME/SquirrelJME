@@ -38,11 +38,11 @@ import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.mutable.
 	MutableJavaManifestAttributes;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteID;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteName;
-import net.multiphasicapps.squirreljme.suiteid.MidletSuiteVendor;
-import net.multiphasicapps.squirreljme.suiteid.MidletVersion;
-import net.multiphasicapps.squirreljme.suiteid.ServiceSuiteID;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.midlet.ServiceSuiteID;
 import net.multiphasicapps.util.empty.EmptySet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -84,7 +84,7 @@ public abstract class ProjectSource
 	private volatile Reference<Set<Project>> _depends;
 	
 	/** The suite identifier. */
-	private volatile Reference<MidletSuiteID> _suiteid;
+	private volatile Reference<MidletSuiteID> _midlet;
 	
 	/**
 	 * Initializes the source representation.
@@ -236,7 +236,7 @@ public abstract class ProjectSource
 	public MidletSuiteID suiteId()
 		throws InvalidProjectException
 	{
-		Reference<MidletSuiteID> ref = this._suiteid;
+		Reference<MidletSuiteID> ref = this._midlet;
 		MidletSuiteID rv;
 		
 		// Cache?
@@ -267,7 +267,7 @@ public abstract class ProjectSource
 					name()));
 			
 			// Generate
-			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
+			this._midlet = new WeakReference<>((rv = new MidletSuiteID(
 				new MidletSuiteName(name), new MidletSuiteVendor(vendor),
 				new MidletVersion(version))));
 		}

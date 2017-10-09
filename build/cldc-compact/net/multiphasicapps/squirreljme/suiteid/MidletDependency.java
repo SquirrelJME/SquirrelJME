@@ -1,1 +1,0 @@
-../../../../../../libs/squirreljme-suite-id/net/multiphasicapps/squirreljme/suiteid/MidletDependency.java

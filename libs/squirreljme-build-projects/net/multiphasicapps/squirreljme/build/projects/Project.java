@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.suiteid.MidletDependency;
+import net.multiphasicapps.squirreljme.midlet.MidletDependency;
 
 /**
  * This class represents the base for projects. A project may be an API, a
