@@ -36,6 +36,8 @@ import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigKey;
 import net.multiphasicapps.squirreljme.jit.JITConfigValue;
 import net.multiphasicapps.squirreljme.jit.JITInput;
+import net.multiphasicapps.squirreljme.jit.JITInputGroup;
+import net.multiphasicapps.squirreljme.jit.JITProgressNotifier;
 import net.multiphasicapps.squirreljme.jit.PrintStreamProgressNotifier;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -131,11 +133,13 @@ public class TargetBuilder
 		throws IOException, NullPointerException
 	{
 		// Used for cluster counting and progress
-		JITInput input = new JITInput(
-			new PrintStreamProgressNotifier(System.err));
+		JITProgressNotifier pn = new PrintStreamProgressNotifier(System.err);
 		ProjectBinary[] binaries = this._binaries;
 		int count = 0,
 			numbins = binaries.length;
+		
+		// Target groups to load from binaries
+		List<JITInputGroup> groups = new ArrayList<>();
 		
 		// Go through all binary projects and compile them
 		for (ProjectBinary pb : binaries)
@@ -148,12 +152,13 @@ public class TargetBuilder
 			// Process all classes and resources
 			try (ZipStreamReader zsr = pb.openZipStreamReader())
 			{
-				input.readZip(pbname, zsr);
+				groups.add(JITInputGroup.readZip(pn, pbname, zsr));
 			}
 		}
 		
 		// Verify all of the input
-		return VerifiedJITInput.verify(input);
+		return VerifiedJITInput.verify(new JITInput(
+			groups.<JITInputGroup>toArray(new JITInputGroup[groups.size()])));
 	}
 	
 	/**

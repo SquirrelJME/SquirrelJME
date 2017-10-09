@@ -11,11 +11,15 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
@@ -23,6 +27,8 @@ import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This represents a group of resources and classes together as a single
@@ -135,6 +141,137 @@ public final class JITInputGroup
 		
 		// Load it
 		return rc.load();
+	}
+	
+	/**
+	 * Returns the name of the group.
+	 *
+	 * @return The group name.
+	 * @since 2017/10/09
+	 */
+	public final String name()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * Reads the specified ZIP file and appends it to the input for the JIT.
+	 *
+	 * @param __gn The group name of the ZIP.
+	 * @param __in The input stream to be treated as a ZIP file for input.
+	 * @return {@code this}.
+	 * @throws IOException On read errors.
+	 * @throws JITException If the input is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/26
+	 */
+	public static JITInputGroup readZip(String __n, InputStream __in)
+		throws IOException, JITException, NullPointerException
+	{
+		return readZip(new NullProgressNotifier(), __n,
+			new ZipStreamReader(__in));
+	}
+	
+	/**
+	 * Reads the specified ZIP file and appends it to the input for the JIT.
+	 *
+	 * @param __pn The notifier for progress on parsing of input groups.
+	 * @param __gn The group name of the ZIP.
+	 * @param __in The input stream to be treated as a ZIP file for input.
+	 * @return {@code this}.
+	 * @throws IOException On read errors.
+	 * @throws JITException If the input is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/26
+	 */
+	public static JITInputGroup readZip(JITProgressNotifier __pn, String __n,
+		InputStream __in)
+		throws IOException, JITException, NullPointerException
+	{
+		return readZip(__pn, __n, new ZipStreamReader(__in));
+	}
+	
+	/**
+	 * Reads the specified ZIP file and appends it to the input for the JIT.
+	 *
+	 * @param __n The group name of the ZIP.
+	 * @param __in The ZIP file to read from for input.
+	 * @return {@code this}.
+	 * @throws IOException On read errors.
+	 * @throws JITException If the input is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/26
+	 */
+	public static JITInputGroup readZip(String __n, ZipStreamReader __in)
+		throws IOException, JITException, NullPointerException
+	{
+		return readZip(new NullProgressNotifier(), __n, __in);
+	}
+	
+	/**
+	 * Reads the specified ZIP file and appends it to the input for the JIT.
+	 *
+	 * @param __pn The notifier for progress on parsing of input groups.
+	 * @param __n The group name of the ZIP.
+	 * @param __in The ZIP file to read from for input.
+	 * @return {@code this}.
+	 * @throws IOException On read errors.
+	 * @throws JITException If the input is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/09/26
+	 */
+	public static JITInputGroup readZip(JITProgressNotifier __pn, String __n,
+		ZipStreamReader __in)
+		throws IOException, JITException, NullPointerException
+	{
+		if (__pn == null || __n == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Log processing
+		__pn = new CatchingProgressNotifier(__pn);
+		__pn.beginJar(__n);
+		
+		// Target class and resources for groups
+		List<ClassFile> tcl = new LinkedList<>();
+		List<Resource> trc = new LinkedList<>();
+		
+		// Process entries
+		long start = System.nanoTime();
+		int numrc = 0, numcl = 0;
+		try
+		{
+			for (;;)
+				try (ZipStreamEntry e = __in.nextEntry())
+				{
+					// No more input
+					if (e == null)
+						break;
+				
+					// Compiling a class?
+					String name = e.name();
+					if (name.endsWith(".class"))
+					{
+						__pn.processClass(__n, name, ++numcl);
+						tcl.add(ClassFile.decode(__n, e));
+					}
+				
+					// Appending a resource
+					else
+					{
+						__pn.processResource(__n, name, ++numrc);
+						trc.add(Resource.read(__n, name, e));
+					}
+				}
+		}
+		
+		// Count duration
+		finally
+		{
+			__pn.endJar(__n, System.nanoTime() - start, numrc, numcl);
+		}
+		
+		// Setup group
+		return new JITInputGroup(__n, trc, tcl);
 	}
 }
 

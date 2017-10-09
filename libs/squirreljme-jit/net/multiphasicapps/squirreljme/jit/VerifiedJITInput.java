@@ -121,22 +121,7 @@ public final class VerifiedJITInput
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// First build a family tree as soon as possible so that the lock on
-		// the input can be cleared
-		VerifiedClassTree ftree;
-		Map<String, JITInputGroup> groups = new SortedTreeMap<>();
-		synchronized (__i._lock)
-		{
-			// Build the family tree
-			ftree = VerifiedClassTree.verify(__i._classes.values());
-			
-			// Copy groups
-			groups.putAll(__i._groups);
-		}
-		
-		// Setup
 		throw new todo.TODO();
-		/*return new VerifiedJITInput(ftree, groups);*/
 	}
 }
 
