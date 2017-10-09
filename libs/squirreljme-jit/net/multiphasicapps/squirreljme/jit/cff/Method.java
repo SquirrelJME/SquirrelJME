@@ -113,6 +113,17 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the constant pool this method uses.
+	 *
+	 * @return The constant pool which is used.
+	 * @since 2017/10/09
+	 */
+	public final Pool pool()
+	{
+		return this.pool;
+	}
+	
+	/**
 	 * Decodes all methods from the input class data.
 	 *
 	 * @param __ver The version of the class.
