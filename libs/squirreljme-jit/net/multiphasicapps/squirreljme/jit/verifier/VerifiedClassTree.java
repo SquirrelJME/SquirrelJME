@@ -95,5 +95,23 @@ public final class VerifiedClassTree
 			throw new todo.TODO();
 		}
 	}
+	
+	/**
+	 * Verifies all of the input classes.
+	 *
+	 * @param __n The input classes to verify.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VerificationException If the classes could not be verified.
+	 * @since 2017/10/09
+	 */
+	public static VerifiedClassTree verify(Collection<ClassFile> __n)
+		throws NullPointerException, VerificationException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Build result
+		return new __TreeBuilder__(__n).build();
+	}
 }
 

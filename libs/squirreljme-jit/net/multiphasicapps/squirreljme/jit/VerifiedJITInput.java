@@ -52,7 +52,8 @@ public final class VerifiedJITInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/03
 	 */
-	private VerifiedJITInput(VerifiedClassTree __tree, Map<String, JITInputGroup> __g)
+	private VerifiedJITInput(VerifiedClassTree __tree,
+		Map<String, JITInputGroup> __g)
 		throws NullPointerException
 	{
 		if (__tree == null)
@@ -126,7 +127,7 @@ public final class VerifiedJITInput
 		synchronized (__i._lock)
 		{
 			// Build the family tree
-			ftree = new VerifiedClassTree(__i._classes.values());
+			ftree = VerifiedClassTree.verify(__i._classes.values());
 			
 			// Copy groups
 			groups.putAll(__i._groups);
