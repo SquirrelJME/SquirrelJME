@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.JITInput;
 
 /**
@@ -37,6 +38,12 @@ public final class VerifiedMethods
 	{
 		if (__i == null || __structs == null)
 			throw new NullPointerException("NARG");
+		
+		// Go through all classes and all methods to verify them
+		for (ClassFile f : __i.classFiles())
+		{
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
