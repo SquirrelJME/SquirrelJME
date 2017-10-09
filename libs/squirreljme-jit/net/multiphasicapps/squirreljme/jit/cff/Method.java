@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +49,9 @@ public final class Method
 	/** The code attribute data, which is optional. */
 	private final byte[] _rawcodeattr;
 	
+	/** The method byte code. */
+	private volatile Reference<ByteCode> _bytecode;
+	
 	/**
 	 * Initializes the method.
 	 *
@@ -80,7 +85,33 @@ public final class Method
 		this.methodtype = __mt;
 		this._rawcodeattr = __mc;
 	}
+	
+	/**
+	 * Returns the byte code for this method.
+	 *
+	 * @return The byte code for this method or {@code null} if there is none.
+	 * @throws InvalidClassFormatException If the byte code is not valid.
+	 * @since 2017/10/09
+	 */
+	public final ByteCode byteCode()
+		throws InvalidClassFormatException
+	{
+		// If there is no code atribute there is no byte code
+		byte[] rawcodeattr = this._rawcodeattr;
+		if (rawcodeattr == null)
+			return null;
 		
+		// Otherwise load a representation of it
+		Reference<ByteCode> ref = this._bytecode;
+		ByteCode rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._bytecode = new WeakReference<>((rv = new ByteCode(
+				new WeakReference<>(this), this._rawcodeattr)));
+		
+		return rv;
+	}
+	
 	/**
 	 * Decodes all methods from the input class data.
 	 *

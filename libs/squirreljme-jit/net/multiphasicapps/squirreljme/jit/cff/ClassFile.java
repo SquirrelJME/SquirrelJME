@@ -134,6 +134,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Methods which exist within this class.
+	 *
+	 * @return The class methods.
+	 * @since 2017/10/09
+	 */
+	public final Method[] methods()
+	{
+		return this._methods.clone();
+	}
+	
+	/**
 	 * Returns the name of the super class.
 	 *
 	 * @return The name of the super class.

@@ -12,7 +12,9 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
+import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.JITInput;
 
 /**
@@ -42,7 +44,24 @@ public final class VerifiedMethods
 		// Go through all classes and all methods to verify them
 		for (ClassFile f : __i.classFiles())
 		{
-			throw new todo.TODO();
+			// Debug
+			System.err.printf("DEBUG -- Verify methods in %s%n", f.thisName());
+			
+			// Go through all methods
+			for (Method m : f.methods())
+			{
+				// Only verify methods which actually have code
+				ByteCode code = m.byteCode();
+				if (code == null)
+					continue;
+				
+				// Get the structure for the class to ensure it exists
+				if (true)
+					throw new todo.TODO();
+				
+				// Create verified method for it
+				throw new todo.TODO();
+			}
 		}
 		
 		throw new todo.TODO();
