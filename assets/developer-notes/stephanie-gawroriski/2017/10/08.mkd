@@ -1,0 +1,68 @@
+# 2017/10/08
+
+## 9:11
+
+Ok so, for my interpreter which will have to run a launcher eventually I
+basically need processes and threads, so I am handling it that way.
+
+## 12:40
+
+You know, the interpreter has initialization order, but really all virtual
+machines will need to know the initialization order (for static
+initializers and dependencies). So really this can be handled by the
+`FamilyNode` class which determines initialization dependency order lookup
+for given classes. The only confusing thing would be that if a class is
+already looked up, it cannot be handled again. So in the event of recursive
+initialization, some classes will not be fully initialized properly.
+
+## 12:58
+
+Ok so, initialization order between classes is a bit of a complex thing. The
+JIT is going to perform all of the same work the interpreter does and there is
+state that will be known regardless. I will need to develop the `FamilyTree`
+more and have it where arrays and primitives are handled. Basically that class
+will verify and initialize as much of the virtual machine that can be
+initialized statically as possible. Then complex inter-dependencies and such
+can be sorted out. Basically the family tree will be doing a bunch of the work
+making sure things are safe, and giving all of the classes which are known to
+exist at run-time. But it will not compile or anything, it will just for the
+most part just set statically known state. It will not optimize methods or do
+anything like that, that can be done in later stages. So basically what is
+needed is an initialization counter, the classes which are dependended on the
+most through the verification passes will be "initialized" first.
+
+## 13:21
+
+I wonder if initializing everything at once would be the most optimal thing
+to do, like normal C programs. Basically, I run the static initializers for
+every single class that exists within the VM at the start of execution. If I
+do this, then I never need to worry about checking if a class needs
+initialization. This simplifies the VM design. It is completely valid for
+Java ME (but not for Java SE) and I will take advantage of it. Basically the
+global initialization order will be essentially in the order of the classes
+which are used most are initialized first. This might create some
+oddities though. This will need to be done for every process though.
+
+## 13:28
+
+But not needing to check if classes are initialized will be quite nice. But
+at most, classes will just need their class instance initialized and set
+since every class has a class object. It can pretty much just exist as a
+gigantic array of class objects. That does mean though that there will be
+quite a number of allocations on the initial glance though. One thing though
+is that synchronization on classes, synchronizes on the class object.
+
+## 13:32
+
+But, the initialization at VM start can be completely thread safe for the
+most part. If any static initializers create threads then they would need to
+have deferred starts. Synchronization and monitors would not be needed in
+static initializers at all (which is an optimization boost). A large number
+of objects could be constructed at the start of the VM though. But I think
+that would be best for simplicity. It does put a slight drag on the memory
+requirements because now everything would be initialized at the start. But
+really limited and old systems are kind of like a goal, but I do not think
+it will really be realistic. I suppose I will concentrate on systems which
+are good enough for the most part. I could run it on systems such as the
+Amiga which has plenty of memory though. But, after verification I could do
+a guess as to how much memory is needed as a minimum.
