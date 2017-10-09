@@ -27,6 +27,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/10/09
  */
+@Deprecated
 class __TreeBuilder__
 {
 	/** The mapping of available files. */

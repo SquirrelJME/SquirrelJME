@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.system;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,6 +35,7 @@ import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
 import net.multiphasicapps.squirreljme.build.projects.ProjectName;
 import net.multiphasicapps.squirreljme.interpreter.Interpreter;
+import net.multiphasicapps.squirreljme.interpreter.Romization;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
@@ -182,7 +184,10 @@ public class BuildSystem
 		{
 				// Standard interpreter
 			case "interpret":
-				runner = new Interpreter(vji, properties, entrypoint);
+				// Build ROM
+				Romization romizer = new Romization(vji);
+				runner = new Interpreter(romizer.build(), properties,
+					entrypoint);
 				break;
 			
 				// {@squirreljme.error AO0a Unknown interpreter type.

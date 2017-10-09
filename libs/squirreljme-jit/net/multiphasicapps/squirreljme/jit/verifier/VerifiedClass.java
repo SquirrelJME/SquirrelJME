@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
  *
  * @since 2017/10/05
  */
+@Deprecated
 public final class VerifiedClass
 {
 	/** The reference to the outer tree. */

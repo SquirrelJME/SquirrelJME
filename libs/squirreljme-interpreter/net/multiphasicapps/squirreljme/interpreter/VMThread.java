@@ -23,7 +23,6 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.NoSuchClassException;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
-import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClass;
 
 /**
  * This represents a thread within the virtual machine.
@@ -94,7 +93,8 @@ public class VMThread
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Use global lock
+		throw new todo.TODO();
+		/*// Use global lock
 		Interpreter interpreter = __interpreter();
 		synchronized (interpreter._lock)
 		{
@@ -104,7 +104,7 @@ public class VMThread
 			
 			// Run static initializers for all classes to be initialized
 			throw new todo.TODO();
-		}
+		}*/
 	}
 	
 	/**
@@ -128,20 +128,19 @@ public class VMThread
 	 * Returns the instance for the specified class.
 	 *
 	 * @param __cn The name of the class to get the instance for.
-	 * @param __io The initialization order of classes.
 	 * @return The instance of the class.
 	 * @throws InterpreterClassNotFoundException If the class does not exist.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/06
 	 */
-	private ClassInstance __classInstance(ClassName __cn,
-		List<VerifiedClass> __io)
+	private ClassInstance __classInstance(ClassName __cn)
 		throws InterpreterClassNotFoundException, NullPointerException
 	{
-		if (__cn == null || __io == null)
+		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Use global interpreter lock
+		throw new todo.TODO();
+		/*// Use global interpreter lock
 		Interpreter interpreter = __interpreter();
 		VMProcess process = __process();
 		Map<ClassName, ClassInstance> classes = process._classes;
@@ -174,7 +173,7 @@ public class VMThread
 			rv = new ClassInstance(this._processref, __io);
 			
 			throw new todo.TODO();
-		}
+		}*/
 	}
 	
 	/**

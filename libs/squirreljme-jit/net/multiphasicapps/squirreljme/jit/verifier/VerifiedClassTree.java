@@ -26,6 +26,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  *
  * @since 2017/10/05
  */
+@Deprecated
 public final class VerifiedClassTree
 {
 	/** Lock for thread-safety, for when arrays need to be created. */

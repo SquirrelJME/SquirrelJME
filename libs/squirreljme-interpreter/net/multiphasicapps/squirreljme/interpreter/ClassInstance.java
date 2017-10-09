@@ -17,7 +17,6 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
 import net.multiphasicapps.squirreljme.jit.cff.MethodName;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
-import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClass;
 
 /**
  * This represents the instance of a class object. This is specially handled
@@ -33,16 +32,11 @@ public class ClassInstance
 	 * Initializes the instance of the class object.
 	 *
 	 * @param __p The owning process.
-	 * @param __io The initialization order of class instances, since super
-	 * classes and implemented interfaces must be implemented first.
 	 * @since 2017/10/08
 	 */
-	ClassInstance(Reference<VMProcess> __p, Collection<VerifiedClass> __io)
+	ClassInstance(Reference<VMProcess> __p)
 	{
 		super(__p);
-		
-		if (__io == null)
-			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
