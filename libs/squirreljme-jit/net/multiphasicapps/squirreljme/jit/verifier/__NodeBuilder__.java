@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import java.util.Objects;
+import net.multiphasicapps.squirreljme.jit.cff.BinaryName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFlags;
@@ -73,7 +75,12 @@ final class __NodeBuilder__
 		__NodeBuilder__ supernode;
 		if (supername != null)
 		{
+			// {@squirreljme.error JI39 Circular inheritence detected in
+			// super class tree. (This class; The super class)}
 			supernode = tree.get(supername);
+			if (!supernode._didinherits)
+				throw new VerificationException(String.format("JI39 %s %s",
+					thisname, supername));
 			
 			// {@squirreljme.error JI37 The specified class cannot extend the
 			// other class because it has the incorrect flags. (The name of
@@ -83,6 +90,12 @@ final class __NodeBuilder__
 				throw new VerificationException(String.format("JI37 %s %s %s",
 					thisname, supername, superflags));
 			
+			// {@squirreljme.error JI38 The current class cannot extend the
+			// specified class because it is not visible. (The name of this
+			// class; The name of the super class; The super class flags)}
+			if (!__isClassVisibleFrom(this, supernode))
+				throw new VerificationException(String.format("JI38 %s %s %s",
+					thisname, supername, superflags));
 			throw new todo.TODO();
 		}
 		
@@ -116,6 +129,17 @@ final class __NodeBuilder__
 	}
 	
 	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The current class name.
+	 * @since 2017/10/09
+	 */
+	public final ClassName thisName()
+	{
+		return this.file.thisName();
+	}
+	
+	/**
 	 * Returns the owning tree builder.
 	 *
 	 * @return The tree which is building this node.
@@ -131,6 +155,33 @@ final class __NodeBuilder__
 		if (rv == null)
 			throw new IllegalStateException("JI36");
 		return rv;
+	}
+	
+	/**
+	 * Is the specified class visible from a specified class?
+	 *
+	 * @param __from The source class.
+	 * @param __cansee The class to see if {@code __from} is visible to it.
+	 * @return The visibility.
+	 */
+	static final boolean __isClassVisibleFrom(__NodeBuilder__ __from,
+		__NodeBuilder__ __cansee)
+		throws NullPointerException
+	{
+		if (__from == null || __cansee == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the package of both classes
+		BinaryName pa = __from.thisName().inPackage(),
+			pb = __from.thisName().inPackage();
+		
+		// If in the same package, always visible
+		if (Objects.equals(pa, pb))
+			return true;
+		
+		// Otherwise only if the target class is public
+		ClassFlags tf = __cansee.flags();
+		return tf.isPublic();
 	}
 }
 

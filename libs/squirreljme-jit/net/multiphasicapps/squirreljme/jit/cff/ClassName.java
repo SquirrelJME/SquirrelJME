@@ -107,6 +107,21 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns the package that this class is within. Primitive types and
+	 * arrays are not part of any package.
+	 *
+	 * @return The package or {@code null} if it is not in the package.
+	 * @since 2017/10/09
+	 */
+	public BinaryName inPackage()
+	{
+		BinaryName b = this.binary;
+		if (b != null)
+			return b.inPackage();
+		return null;
+	}
+	
+	/**
 	 * Does this class refer to an array type?
 	 *
 	 * @return If this is an array type.
