@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
+import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
 import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClass;
 import net.multiphasicapps.squirreljme.jit.verifier.VerifiedClassTree;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
@@ -134,7 +135,8 @@ public final class VerifiedJITInput
 		}
 		
 		// Setup
-		return new VerifiedJITInput(ftree, groups);
+		throw new todo.TODO();
+		/*return new VerifiedJITInput(ftree, groups);*/
 	}
 }
 

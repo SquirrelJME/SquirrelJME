@@ -52,6 +52,9 @@ final class __NodeBuilder__
 	/** Has this finished the inheritence stage? */
 	private volatile boolean _didinherits;
 	
+	/** The number of times this node was referenced. */
+	private volatile int _refercount;
+	
 	/**
 	 * Initializes the node builder for the tree data.
 	 *
@@ -99,6 +102,9 @@ final class __NodeBuilder__
 				throw new VerificationException(String.format("JI39 %s %s",
 					thisname, supername));
 			
+			// Count as usage
+			supernode._refercount++;
+			
 			// {@squirreljme.error JI37 The specified class cannot extend the
 			// other class because it has the incorrect flags. (The name of
 			// this class; The name of the super class; The super class flags)}
@@ -131,7 +137,8 @@ final class __NodeBuilder__
 				throw new VerificationException(String.format("JI3a %s %s",
 					thisname, interfacename));
 			
-			// Use for later
+			// Count usage and use for later
+			interfacenode._refercount++;
 			interfacenodes.add(interfacenode);
 			
 			// {@squirreljme.error JI3b The specified class cannot implement
@@ -155,10 +162,6 @@ final class __NodeBuilder__
 		// because if it does, it means that there is a circular reference
 		// for classes
 		this._didinherits = true;
-		
-		// Todo
-		System.err.println("TODO -- Do other verification things.");
-		throw new todo.TODO();
 	}
 	
 	/**
