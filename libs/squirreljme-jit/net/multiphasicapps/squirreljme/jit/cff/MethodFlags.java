@@ -215,7 +215,7 @@ public final class MethodFlags
 		// {@squirreljme.error JI04 Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new JITException("JI04");
+			throw new InvalidClassFormatException("JI04");
 		
 		// {@squirreljme.error JI05 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
@@ -224,7 +224,8 @@ public final class MethodFlags
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new JITException(String.format("JI05 %s", this));
+				throw new InvalidClassFormatException(
+					String.format("JI05 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
@@ -244,7 +245,8 @@ public final class MethodFlags
 				// {@squirreljme.error JI14 Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
-					throw new JITException(String.format("JI14 %s", this));
+					throw new InvalidClassFormatException(
+						String.format("JI14 %s", this));
 			}
 	}
 }

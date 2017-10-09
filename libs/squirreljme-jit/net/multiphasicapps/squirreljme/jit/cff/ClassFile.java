@@ -93,6 +93,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Returns the flags for this class.
+	 *
+	 * @return The class flags.
+	 * @since 2017/10/09
+	 */
+	public final ClassFlags flags()
+	{
+		return this.classflags;
+	}
+	
+	/**
 	 * Returns the name of the current class.
 	 *
 	 * @return The current class name.

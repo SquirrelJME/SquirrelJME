@@ -15,14 +15,18 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
+import net.multiphasicapps.squirreljme.jit.cff.ClassFlags;
 
 /**
  * This is used to build nodes within the tree.
  *
  * @since 2017/10/09
  */
-class __NodeBuilder__
+final class __NodeBuilder__
 {
+	/** The class file containing most of the class data. */
+	protected final ClassFile file;
+	
 	/** Reference to the owning tree. */
 	private final Reference<__TreeBuilder__> _treeref;
 	
@@ -46,6 +50,9 @@ class __NodeBuilder__
 		// collected
 		this._treeref = __tr;
 		
+		// Flags are needed before these are fully constructed
+		this.file = __f;
+		
 		// Add self to the map
 		ClassName thisname = __f.thisName();
 		__m.put(thisname, this);
@@ -53,7 +60,21 @@ class __NodeBuilder__
 		// Debug
 		System.err.printf("DEBUG -- Verifying node %s%n", thisname);
 		
+		// Will need to work with the owning tree
+		__TreeBuilder__ tree = __treeBuilder();
+		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the flags for this class.
+	 *
+	 * @return The class flags.
+	 * @since 2017/10/09
+	 */
+	public final ClassFlags flags()
+	{
+		return this.file.flags();
 	}
 	
 	/**
