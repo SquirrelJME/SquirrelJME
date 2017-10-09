@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -22,6 +25,8 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableCollection;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -46,6 +51,9 @@ public final class JITInput
 	/** Classes which are available. */
 	final Map<ClassName, ClassFile> _classes =
 		new SortedTreeMap<>();
+	
+	/** The collection of input classes. */
+	private volatile Reference<Collection<ClassFile>> _classfiles;
 	
 	/**
 	 * Initializes the JIT input.
@@ -92,6 +100,25 @@ public final class JITInput
 				classes.put(n, c);
 			}
 		}
+	}
+	
+	/**
+	 * Returns the collection of class files which are available.
+	 *
+	 * @return The collection of class files.
+	 * @since 2017/10/09
+	 */
+	public final Collection<ClassFile> classFiles()
+	{
+		Reference<Collection<ClassFile>> ref = this._classfiles;
+		Collection<ClassFile> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._classfiles = new WeakReference<>(
+				(rv = UnmodifiableCollection.<ClassFile>of(
+				this._classes.values())));
+		
+		return rv;
 	}
 	
 	/**
