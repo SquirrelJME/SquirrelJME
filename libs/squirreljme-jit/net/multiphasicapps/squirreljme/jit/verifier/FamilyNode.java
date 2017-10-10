@@ -163,6 +163,20 @@ public final class FamilyNode
 	}
 	
 	/**
+	 * Returns the node which is the super class of this node.
+	 *
+	 * @return The super class node or {@code null} if there is none.
+	 * @since 2017/10/10
+	 */
+	public final FamilyNode superNode()
+	{
+		ClassName n = superName();
+		if (n == null)
+			return null;
+		return __tree().get(n);
+	}
+	
+	/**
 	 * Returns the name of the current class.
 	 *
 	 * @return The current class name.
@@ -171,6 +185,24 @@ public final class FamilyNode
 	public final ClassName thisName()
 	{
 		return this.classfile.thisName();
+	}
+	
+	/**
+	 * Returns the owning tree.
+	 *
+	 * @return The owning tree.
+	 * @throws IllegalStateException If the tree has been garbage collected.
+	 * @since 2017/10/09
+	 */
+	final FamilyTree __tree()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error JI36 The class tree has been garbage
+		// collected.}
+		FamilyTree rv = this._treeref.get();
+		if (rv == null)
+			throw new IllegalStateException("JI36");
+		return rv;
 	}
 	
 	/**
