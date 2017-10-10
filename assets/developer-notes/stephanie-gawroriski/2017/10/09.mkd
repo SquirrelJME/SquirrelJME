@@ -1,0 +1,72 @@
+# 2017/10/09
+
+## 8:20
+
+Definitely mutable initial state would be the way to go, with a queue.
+
+## 08:58
+
+Definitely the first thing I should do is verify super classes and
+interfaces to make sure they are correct and do not recursively go all
+over the place.
+
+## 09:02
+
+In the `__Ext_` classes I really should do native.
+
+## 12:22
+
+Ok, so thinking about it, having a single immutable verification state would
+be a bit complicated. I can have a builder and do everything at once. In
+most cases everything will always be verified, there just has to be one
+verification miss for everything to fail. Maybe what I need is an initial
+stage one processor pipeline in the JIT. Basically, instead of everything in
+one spot I have it where different functions of the verifier are in different
+locations. So basically, the first initial thing to create is the inheritence
+tree which checks for recursion and knows about which classes implement what.
+This would be the basic first step in verification. The inheritence tree would
+be mutable in a way where new classes such as arrays and primitive types
+could be added so to speak as a kind of virtual class. So basically, there
+will be virtual class files for arrays and such, as they are needed. But once
+all the inheritence and tree information is loaded, it can be locked in for
+the most part.
+
+## 12:31
+
+The inheritence tree will basically for the most part just contain information
+related to inheritence, it will not care about fields or anything else like
+that. It will keep a cache and have a means of figuring out if a class extends
+another class or is an instance or whatever.
+
+## 13:05
+
+Ok so groups are represented in classes because that will be important.
+
+## 13:07
+
+It would actually be great if `JITInput` was mutable and no more new classes
+could be attached to it as such.
+
+## 14:26
+
+One thing that is known is that special classes such as for primitive types
+and arrays, they will never have any actual methods. As such they do not
+need to be verified at all.
+
+## 15:40
+
+So after the inheritence tree is known, it is then the class structure which
+mostly consists of methods and such. Since it has to be known after the
+inheritence information, due to extended and potential abstracts and such.
+
+## 17:07
+
+For methods I will need a unique method index which basically just has it where
+methods are entirely in their own group of things.
+
+## 20:05
+
+Ok, so I spent all day programming for the most part. I wrote a bunch of new
+code which I like so far, just need to continue it tomorrow. Mostly just a
+bunch of refactoring and thinking. But when I reach the interpreter things
+should be a bit better.
