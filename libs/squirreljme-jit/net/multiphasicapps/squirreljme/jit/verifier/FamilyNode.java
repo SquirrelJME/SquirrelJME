@@ -130,6 +130,17 @@ public final class FamilyNode
 	}
 	
 	/**
+	 * Returns the class file for this node.
+	 *
+	 * @return The class file for this node.
+	 * @since 2017/10/10
+	 */
+	public final ClassFile classFile()
+	{
+		return this.classfile;
+	}
+	
+	/**
 	 * Returns the flags for this class.
 	 *
 	 * @return The class flags.
@@ -138,6 +149,17 @@ public final class FamilyNode
 	public final ClassFlags flags()
 	{
 		return this.classfile.flags();
+	}
+	
+	/**
+	 * Returns the name of the super class.
+	 *
+	 * @return The super class name.
+	 * @since 2017/10/10
+	 */
+	public final ClassName superName()
+	{
+		return this.classfile.superName();
 	}
 	
 	/**
