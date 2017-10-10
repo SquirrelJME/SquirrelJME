@@ -12,7 +12,11 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.JITInput;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains the family tree of classes and is used to store the
@@ -36,6 +40,10 @@ public final class FamilyTree
 	/** The input for the JIT. */
 	protected final JITInput input;
 	
+	/** Nodes that exist within the family tree. */
+	private final Map<ClassName, FamilyNode> _nodes =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the family tree from the given base input classes.
 	 *
@@ -51,6 +59,44 @@ public final class FamilyTree
 			throw new NullPointerException("NARG");
 		
 		this.input = __i;
+	}
+	
+	/**
+	 * Obtains the specified node from the family tree.
+	 *
+	 * @param __n The node to get.
+	 * @return The node for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VerificationException If the family could not be verified.
+	 * @since 2017/10/10
+	 */
+	public final FamilyNode get(ClassName __n)
+		throws NullPointerException, VerificationException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Nodes are dynamically generated as needed
+		Map<ClassName, FamilyNode> nodes = this._nodes;
+		synchronized (this._lock)
+		{
+			// If it exists, use it
+			FamilyNode rv = nodes.get(__n);
+			if (rv != null)
+				return rv;
+			
+			// Which classfile should be used?
+			ClassFile file;
+			if (__n.isArray() || __n.isPrimitive())
+				file = ClassFile.special(__n.field());
+			else
+				file = this.input.getClass(__n);
+			
+			// Setup node
+			nodes.put(__n,
+				(rv = new FamilyNode(new WeakReference<>(this), file)));
+			return rv;
+		}
 	}
 }
 

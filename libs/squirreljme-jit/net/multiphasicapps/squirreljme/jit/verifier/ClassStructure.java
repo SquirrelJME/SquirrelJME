@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 
 /**
  * This contains the structure information for a single class. The class
@@ -23,5 +24,24 @@ import java.lang.ref.WeakReference;
  */
 public final class ClassStructure
 {
+	/**
+	 * Initializes the individual class structure.
+	 *
+	 * @param __csr The owning class reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/10
+	 */
+	ClassStructure(Reference<ClassStructures> __csr, FamilyTree __tree,
+		ClassName __cn)
+		throws NullPointerException
+	{
+		if (__csr == null || __tree == null || __cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Need to node to determine which methods are replacable or not
+		FamilyNode node = __tree.get(__cn);
+		
+		throw new todo.TODO();
+	}
 }
 

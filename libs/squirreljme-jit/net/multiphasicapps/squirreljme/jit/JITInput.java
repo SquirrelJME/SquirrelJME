@@ -122,6 +122,29 @@ public final class JITInput
 	}
 	
 	/**
+	 * Returns the specified class which is used as input.
+	 *
+	 * @param __n The name of the class to get.
+	 * @return The class file for that class.
+	 * @throws NoSuchClassException If that class does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/10
+	 */
+	public final ClassFile getClass(ClassName __n)
+		throws NoSuchClassException, NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JI3h The specified class does not exist within
+		// the input. (The name of the class)}
+		ClassFile rv = this._classes.get(__n);
+		if (rv == null)
+			throw new NoSuchClassException(String.format("JI3h %s", __n));
+		return rv;
+	}
+	
+	/**
 	 * Returns the input group by the given name.
 	 *
 	 * @param __g The group to use as input.
