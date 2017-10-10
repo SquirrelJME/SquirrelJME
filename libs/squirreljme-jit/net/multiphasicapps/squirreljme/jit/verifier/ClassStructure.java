@@ -42,6 +42,16 @@ public final class ClassStructure
 		ClassStructures structs = __csr.get();
 		FamilyNode node = __tree.get(__cn);
 		
+		// Inherit all methods from super classes.
+		// Static, private, and package private (in another package)
+		ClassName supername = node.superName();
+		if (supername != null)
+		{
+			ClassStructure superstruct = structs.get(supername);
+			
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 }
