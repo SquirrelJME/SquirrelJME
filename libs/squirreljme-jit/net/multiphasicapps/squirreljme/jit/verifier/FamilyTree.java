@@ -93,9 +93,7 @@ public final class FamilyTree
 				file = this.input.getClass(__n);
 			
 			// Setup node
-			nodes.put(__n,
-				(rv = new FamilyNode(new WeakReference<>(this), file)));
-			return rv;
+			return new FamilyNode(new WeakReference<>(this), file, nodes);
 		}
 	}
 }
