@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains the structure of every class which is available to the
@@ -32,6 +35,10 @@ public final class ClassStructures
 	/** The source class tree with inheritence information. */
 	protected final FamilyTree tree;
 	
+	/** Structures that exist within the run-time. */
+	private final Map<ClassName, ClassStructure> _structs =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the class structures.
 	 *
@@ -48,6 +55,37 @@ public final class ClassStructures
 			throw new NullPointerException("NARG");
 		
 		this.tree = __tree;
+	}
+	
+	/**
+	 * Obtains the structure for the given class.
+	 *
+	 * @param __n The structure of the class to get.
+	 * @return The structure of the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VerificationException If the structure could not be verified.
+	 * @since 2017/10/10
+	 */
+	public final ClassStructure get(ClassName __n)
+		throws NullPointerException, VerificationException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// The structures are dynamically generated
+		Map<ClassName, ClassStructure> structs = this._structs;
+		synchronized (this._lock)
+		{
+			// Use pre-existing class
+			ClassStructure rv = structs.get(__n);
+			if (rv != null)
+				return rv;
+			
+			// Generate it
+			structs.put(__n, new ClassStructure(new WeakReference<>(this),
+				tree, __n));
+			return rv;
+		}
 	}
 }
 

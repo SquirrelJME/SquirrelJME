@@ -96,6 +96,20 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns the field descriptor for this class.
+	 *
+	 * @return The class field descriptor.
+	 * @since 2017/10/10
+	 */
+	public FieldDescriptor field()
+	{
+		BinaryName binary = this.binary;
+		if (binary != null)
+			return new FieldDescriptor("L" + binary + ";");
+		return this.field;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/27
 	 */

@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
+import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.JITInput;
 
@@ -47,6 +48,10 @@ public final class VerifiedMethods
 			// Debug
 			System.err.printf("DEBUG -- Verify methods in %s%n", f.thisName());
 			
+			// Get the structure for this class
+			ClassName cname = f.thisName();
+			ClassStructure struct = __structs.get(cname);
+			
 			// Go through all methods
 			for (Method m : f.methods())
 			{
@@ -55,13 +60,15 @@ public final class VerifiedMethods
 				if (code == null)
 					continue;
 				
-				// Get the structure for the class to ensure it exists
+				// Look into the structure to determine the method index
 				if (true)
 					throw new todo.TODO();
 				
 				// Create verified method for it
 				throw new todo.TODO();
 			}
+			
+			throw new todo.TODO();
 		}
 		
 		throw new todo.TODO();
