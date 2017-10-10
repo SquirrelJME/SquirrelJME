@@ -40,14 +40,20 @@ public final class ByteCode
 	/** The length of the method code in bytes. */
 	protected final int codelen;
 	
+	/** The constant pool. */
+	protected final Pool pool;
+	
 	/** The exceptions within this method. */
 	protected final ExceptionHandlerTable exceptions;
 	
-	/** The stack map table for the method code. */
-	protected final StackMapTable stackmaptable;
-	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawattributedata;
+	
+	/** The stack map table data. */
+	private final byte[] _smtdata;
+	
+	/** Is the stack map table data new? */
+	private final boolean _newsmtdata;
 	
 	/** The owning method reference. */
 	private final Reference<Method> _methodref;
@@ -97,7 +103,8 @@ public final class ByteCode
 				codelen);
 			
 			// The stack map table is used for verification
-			StackMapTable smt = null;
+			byte[] smt = null;
+			boolean smtnew = false;
 			
 			// Handle attributes
 			int na = in.readUnsignedShort();
@@ -121,8 +128,7 @@ public final class ByteCode
 								throw new InvalidClassFormatException("JI3g");
 							
 							// Decode
-							smt = StackMapTable.decode(pool, method, newtable,
-								ai);
+							ai.readFully((smt = new byte[alen[0]]));
 							break;
 						
 							// Unknown, ignore
@@ -134,16 +140,19 @@ public final class ByteCode
 			// If there is no stack map, then use a default one (which has
 			// just no entries)
 			if (smt == null)
-				smt = StackMapTable.decode(pool, method, true,
-					new DataInputStream(
-					new ByteArrayInputStream(new byte[2])));
+			{
+				smt = new byte[2];
+				smtnew = true;
+			}
 			
 			// Can set fields now
 			this.maxstack = maxstack;
 			this.maxlocals = maxlocals;
 			this.codelen = codelen;
 			this.exceptions = eht;
-			this.stackmaptable = smt;
+			this.pool = pool;
+			this._smtdata = smt;
+			this._newsmtdata = smtnew;
 		}
 		
 		// {@squirreljme.error JI3f Failed to read from the code attribute.}
