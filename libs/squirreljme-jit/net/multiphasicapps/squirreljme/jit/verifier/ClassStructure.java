@@ -39,6 +39,7 @@ public final class ClassStructure
 			throw new NullPointerException("NARG");
 		
 		// Need to node to determine which methods are replacable or not
+		ClassStructures structs = __csr.get();
 		FamilyNode node = __tree.get(__cn);
 		
 		throw new todo.TODO();
