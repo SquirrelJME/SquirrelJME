@@ -66,3 +66,7 @@ it will really be realistic. I suppose I will concentrate on systems which
 are good enough for the most part. I could run it on systems such as the
 Amiga which has plenty of memory though. But, after verification I could do
 a guess as to how much memory is needed as a minimum.
+
+## 18:46
+
+It would be easier to verify state with mutable classes.
