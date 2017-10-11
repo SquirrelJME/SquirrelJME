@@ -12,7 +12,11 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.cff.Method;
+import net.multiphasicapps.squirreljme.jit.cff.MethodNameAndType;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This contains the structure information for a single class. The class
@@ -41,6 +45,9 @@ public final class ClassStructure
 		// Need to node to determine which methods are replacable or not
 		ClassStructures structs = __csr.get();
 		FamilyNode node = __tree.get(__cn);
+		
+		// Methods to exist within this class
+		Map<MethodNameAndType, Method> methods = new SortedTreeMap<>();
 		
 		// Inherit all methods from super classes.
 		// Static, private, and package private (in another package)

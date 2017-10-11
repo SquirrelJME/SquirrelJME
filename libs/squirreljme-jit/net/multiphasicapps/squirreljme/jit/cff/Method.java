@@ -52,6 +52,9 @@ public final class Method
 	/** The method byte code. */
 	private volatile Reference<ByteCode> _bytecode;
 	
+	/** Name and type reference. */
+	private volatile Reference<MethodNameAndType> _nameandtype;
+	
 	/**
 	 * Initializes the method.
 	 *
@@ -108,6 +111,24 @@ public final class Method
 		if (ref == null || null == (rv = ref.get()))
 			this._bytecode = new WeakReference<>((rv = new ByteCode(
 				new WeakReference<>(this), this._rawcodeattr)));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the name and type of the method.
+	 *
+	 * @return The method name and type.
+	 * @since 2017/10/10
+	 */
+	public final MethodNameAndType nameAndType()
+	{
+		Reference<MethodNameAndType> ref = this._nameandtype;
+		MethodNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._nameandtype = new WeakReference<>(
+				rv = new MethodNameAndType(this.methodname, this.methodtype));
 		
 		return rv;
 	}

@@ -19,6 +19,7 @@ package net.multiphasicapps.squirreljme.jit.cff;
  */
 public final class MethodName
 	extends Identifier
+	implements Comparable<MethodName>
 {
 	/**
 	 * Initializes the method name.
@@ -44,6 +45,16 @@ public final class MethodName
 					throw new InvalidClassFormatException(
 						String.format("JI15 %s", __s));
 			}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/10
+	 */
+	@Override
+	public int compareTo(MethodName __o)
+	{
+		return this.string.compareTo(__o.string);
 	}
 	
 	/**
