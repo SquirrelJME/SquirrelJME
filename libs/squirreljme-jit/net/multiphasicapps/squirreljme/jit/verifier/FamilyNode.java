@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.cff.BinaryName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.cff.Method;
 
 /**
  * This represents a single node within the class inheritence tree.
@@ -149,6 +150,17 @@ public final class FamilyNode
 	public final ClassFlags flags()
 	{
 		return this.classfile.flags();
+	}
+	
+	/**
+	 * Returns the methods which are in this class.
+	 *
+	 * @return The class methods.
+	 * @since 2017/10/10
+	 */
+	public final Method[] methods()
+	{
+		return this.classfile.methods();
 	}
 	
 	/**
