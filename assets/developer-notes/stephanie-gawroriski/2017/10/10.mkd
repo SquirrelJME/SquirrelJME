@@ -1,0 +1,13 @@
+# 2017/10/10
+
+## 16:23
+
+So `ClassStructure` can handle verification of super classes and interfaces
+and it also can be used to determine when a method is super, which super
+method that should be used.
+
+## 16:32
+
+Ok, so need to figure out the best way to handle methods. I suppose the best
+thing to do would be to have it where methods name and types can be keyed
+as such.
