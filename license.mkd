@@ -1216,7 +1216,8 @@ the primary developers alive.
 	THE PROPRIETARY LICENSE MAY ONLY BE GRANTED BY STEPHANIE GAWRORISKI AND/OR
 	MULTI-PHASIC APPLICATIONS. DOWNSTREAM PROJECTS AND/OR FORKS DO NOT OWN THE
 	COPYRIGHT FOR THIS CODE AND ARE NOT PERMITTED TO APPLY THEIR OWN
-	PROPRIETARY LICENSE.
+	PROPRIETARY LICENSE. THIS LICENSE IS ONLY AVAILBLE TO THOSE WHO HAVE
+	PURCHASED IT. IT IS NOT TRANSFERABLE.
 	
 	License Cost:
 		This license has a cost which is negotiated.
@@ -1267,7 +1268,9 @@ the primary developers alive.
 	Patents:
 		A patent grant is given, however the patent grant only covers
 		SquirrelJME and not any other portion of software or proprietary
-		modifications of SquirrelJME.
+		modifications of SquirrelJME. If the licensor owns any patents which
+		pertain to SquirrelJME then there is an implicit license which allows
+		SquirrelJME to use said patents.
 	
 	Open Sourcing:
 		If the licensor desires to open source their licensed copy, then their
