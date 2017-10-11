@@ -148,6 +148,22 @@ public class ClassName
 	}
 	
 	/**
+	 * Is the other class in the same package as this class?
+	 *
+	 * @param __b The other class to check.
+	 * @return If the other class is in this same package.
+	 * @since 2017/10/11
+	 */
+	public boolean isInSamePackage(ClassName __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return Objects.equals(inPackage(), __b.inPackage());
+	}
+	
+	/**
 	 * Does this class refer to a primitive type?
 	 *
 	 * @return If this is a primitive type.

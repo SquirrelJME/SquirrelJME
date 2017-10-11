@@ -13,8 +13,10 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
+import net.multiphasicapps.squirreljme.jit.cff.MethodFlags;
 import net.multiphasicapps.squirreljme.jit.cff.MethodNameAndType;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -30,7 +32,10 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 public final class ClassStructure
 {
 	/** The methods which are available in this class. */
-	private Map<MethodNameAndType, Method> _methods;
+	private final Map<MethodNameAndType, Method> _methods;
+	
+	/** Read only view of methods. */
+	private volatile Reference<Map<MethodNameAndType, Method>> _romethods;
 	
 	/**
 	 * Initializes the individual class structure.
@@ -57,12 +62,74 @@ public final class ClassStructure
 		ClassName supername = node.superName();
 		if (supername != null)
 		{
-			ClassStructure superstruct = structs.get(supername);
+			boolean samepk = __cn.isInSamePackage(supername);
 			
-			throw new todo.TODO();
+			// Initially add all methods which exist in the super class that
+			// are not private, package private (from another package)
+			// Static methods are always inherited, but if a static method is
+			// final then it gets hidden
+			ClassStructure superstruct = structs.get(supername);
+			for (Map.Entry<MethodNameAndType, Method> e :
+				superstruct.methods().entrySet())
+			{
+				MethodNameAndType nat = e.getKey();
+				Method meth = e.getValue();
+				MethodFlags mflags = meth.flags();
+				
+				// Never copy private methods
+				if (mflags.isPrivate() ||
+					(!samepk && mflags.isPackagePrivate()))
+					continue;
+				
+				// Use those methods
+				methods.put(nat, meth);
+			}
 		}
 		
+		// Go through the classes for this method and see if they can override
+		// or otherwise replace methods.
+		// Final methods cannot be replaced
+		// change of static cannot be performed (a static cannot override
+		// an instance, and an instance cannot override a static)
+		if (true)
+			throw new todo.TODO();
+		
+		// Go through
+		if (true)
+			throw new todo.TODO();
+		
+		// If the class is not abstract then go through all methods and make
+		// sure that there are no abstract methods which exist in the class
+		if (true)
+			throw new todo.TODO();
+		
+		// All methods are good now
+		this._methods = methods;
+		
+		// Build the table of static and instance fields
+		// Static fields are held differently from instance fields and count
+		// twords static storage
+		// Instance fields become part of the object
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the mapping of methods which exist in the structure.
+	 *
+	 * @return The mapping of all available methods.
+	 * @since 2017/10/11
+	 */
+	public final Map<MethodNameAndType, Method> methods()
+	{
+		Reference<Map<MethodNameAndType, Method>> ref = this._romethods;
+		Map<MethodNameAndType, Method> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._romethods = new WeakReference<>(
+				(rv = UnmodifiableMap.<MethodNameAndType, Method>of(
+					this._methods)));
+		
+		return rv;
 	}
 }
 

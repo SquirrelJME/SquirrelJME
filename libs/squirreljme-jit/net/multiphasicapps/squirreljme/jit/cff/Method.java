@@ -116,6 +116,17 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the flags for this method.
+	 *
+	 * @return The method flags.
+	 * @since 2017/10/11
+	 */
+	public final MethodFlags flags()
+	{
+		return this.methodflags;
+	}
+	
+	/**
 	 * Returns the name and type of the method.
 	 *
 	 * @return The method name and type.
