@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.cff.MethodNameAndType;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This contains the structure information for a single class. The class
@@ -28,6 +29,9 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public final class ClassStructure
 {
+	/** The methods which are available in this class. */
+	private Map<MethodNameAndType, Method> _methods;
+	
 	/**
 	 * Initializes the individual class structure.
 	 *
@@ -49,8 +53,7 @@ public final class ClassStructure
 		// Methods to exist within this class
 		Map<MethodNameAndType, Method> methods = new SortedTreeMap<>();
 		
-		// Inherit all methods from super classes.
-		// Static, private, and package private (in another package)
+		// Inherit all methods from super classes first
 		ClassName supername = node.superName();
 		if (supername != null)
 		{

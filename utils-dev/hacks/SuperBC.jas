@@ -1,0 +1,40 @@
+; -*- Mode: Jasmin; indent-tabs-mode: t; tab-width: 4 -*-
+; ---------------------------------------------------------------------------
+; Multi-Phasic Applications: SquirrelJME
+;     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+;     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+; ---------------------------------------------------------------------------
+; SquirrelJME is under the GNU General Public License v3+, or later.
+; See license.mkd for licensing and copyright information.
+; ---------------------------------------------------------------------------
+
+.class SuperBC
+.super SuperBB
+
+.method public <init>()V
+	.limit stack 2
+	aload_0
+	invokespecial SuperBB/<init>()V
+	return
+.end method
+
+.method public foo()V
+	.limit stack 2
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	ldc "SuperBC"
+	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	
+	aload_0
+	invokespecial SuperBA/foo()V
+	return
+.end method
+
+.method public static main([Ljava/lang/String;)V
+	.limit stack 2
+	new SuperBC
+	dup
+	invokespecial SuperBC/<init>()V
+	invokevirtual SuperBC/foo()V
+	return
+.end method
+
