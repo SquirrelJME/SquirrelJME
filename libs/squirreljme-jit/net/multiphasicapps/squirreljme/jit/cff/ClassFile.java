@@ -102,6 +102,17 @@ public final class ClassFile
 	}
 	
 	/**
+	 * Returns the fields within this class.
+	 *
+	 * @return The class fields.
+	 * @since 2017/10/12
+	 */
+	public final Field[] fields()
+	{
+		return this._fields.clone();
+	}
+	
+	/**
 	 * Returns the flags for this class.
 	 *
 	 * @return The class flags.

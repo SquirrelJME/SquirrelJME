@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.cff;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +38,9 @@ public final class Field
 	/** The constant value, if there is none then this is {@code null}. */
 	protected final Object constval;
 	
+	/** Name and type reference. */
+	private volatile Reference<FieldNameAndType> _nameandtype;
+	
 	/**
 	 * Initializes the field.
 	 *
@@ -56,6 +61,35 @@ public final class Field
 		this.name = __n;
 		this.type = __t;
 		this.constval = __cv;
+	}
+	
+	/**
+	 * Returns the flags for the field.
+	 *
+	 * @return The field flags.
+	 * @since 2017/10/12
+	 */
+	public final FieldFlags flags()
+	{
+		return this.flags;
+	}
+	
+	/**
+	 * Returns the name and type of the method.
+	 *
+	 * @return The method name and type.
+	 * @since 2017/10/12
+	 */
+	public final FieldNameAndType nameAndType()
+	{
+		Reference<FieldNameAndType> ref = this._nameandtype;
+		FieldNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._nameandtype = new WeakReference<>(
+				rv = new FieldNameAndType(this.name, this.type));
+		
+		return rv;
 	}
 	
 	/**
