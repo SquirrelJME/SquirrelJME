@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.cff.BinaryName;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.cff.Field;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 
 /**
@@ -139,6 +140,17 @@ public final class FamilyNode
 	public final ClassFile classFile()
 	{
 		return this.classfile;
+	}
+	
+	/**
+	 * Returns the fields for this node.
+	 *
+	 * @return The field nodes.
+	 * @since 2017/10/10
+	 */
+	public final Field[] fields()
+	{
+		return this.classfile.fields();
 	}
 	
 	/**

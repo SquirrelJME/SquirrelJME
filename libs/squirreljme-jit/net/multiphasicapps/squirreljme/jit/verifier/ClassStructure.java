@@ -12,10 +12,15 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.jit.cff.AccessibleFlags;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import net.multiphasicapps.squirreljme.jit.cff.Field;
+import net.multiphasicapps.squirreljme.jit.cff.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.cff.FieldNameAndType;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.cff.MethodFlags;
 import net.multiphasicapps.squirreljme.jit.cff.MethodName;
@@ -35,6 +40,12 @@ public final class ClassStructure
 {
 	/** The methods which are available in this class. */
 	private final Map<MethodNameAndType, Method> _methods;
+	
+	/** Static fields. */
+	private final Map<FieldNameAndType, Field> _staticfields;
+	
+	/** Instance fields. */
+	private final Map<FieldNameAndType, Field> _instancefields;
 	
 	/** Read only view of methods. */
 	private volatile Reference<Map<MethodNameAndType, Method>> _romethods;
@@ -169,7 +180,25 @@ public final class ClassStructure
 		// Static fields are held differently from instance fields and count
 		// twords static storage
 		// Instance fields become part of the object
-		throw new todo.TODO();
+		// 
+		Map<FieldNameAndType, Field> staticfields = new SortedTreeMap<>();
+		Map<FieldNameAndType, Field> instancefields = new SortedTreeMap<>();
+		for (Field f : node.fields())
+		{
+			FieldNameAndType nat = f.nameAndType();
+			
+			// Static fields, these count twords global size
+			if (f.flags().isStatic())
+				staticfields.put(nat, f);
+			
+			// Instance fields, these count twords object size
+			else
+				instancefields.put(nat, f);
+		}
+		
+		// These are done
+		this._staticfields = staticfields;
+		this._instancefields = instancefields;
 	}
 	
 	/**

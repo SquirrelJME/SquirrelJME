@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.jit.cff;
  */
 public final class FieldName
 	extends Identifier
+	implements Comparable<FieldName>
 {
 	/**
 	 * Initializes the field name.
@@ -28,6 +29,16 @@ public final class FieldName
 	public FieldName(String __s)
 	{
 		super(__s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/12
+	 */
+	@Override
+	public int compareTo(FieldName __o)
+	{
+		return this.string.compareTo(__o.string);
 	}
 	
 	/**
