@@ -132,7 +132,7 @@ public final class ClassStructure
 		
 		// If the class is not abstract then go through all methods and make
 		// sure that there are no abstract methods which exist in the class
-		if (true)
+		if (!node.flags().isAbstract())
 			throw new todo.TODO();
 		
 		// All methods are good now
