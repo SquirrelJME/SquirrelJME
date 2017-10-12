@@ -82,8 +82,8 @@ public final class ClassStructures
 				return rv;
 			
 			// Generate it
-			structs.put(__n, new ClassStructure(new WeakReference<>(this),
-				tree, __n));
+			structs.put(__n, (rv = new ClassStructure(
+				new WeakReference<>(this), tree, __n)));
 			return rv;
 		}
 	}
