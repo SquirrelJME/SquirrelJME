@@ -127,6 +127,17 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the name of the method.
+	 *
+	 * @return The method name.
+	 * @since 2017/10/12
+	 */
+	public final MethodName name()
+	{
+		return this.methodname;
+	}
+	
+	/**
 	 * Returns the name and type of the method.
 	 *
 	 * @return The method name and type.

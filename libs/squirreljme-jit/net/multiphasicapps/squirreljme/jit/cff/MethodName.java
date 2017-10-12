@@ -68,6 +68,17 @@ public final class MethodName
 	}
 	
 	/**
+	 * Is this any initializer for a method.
+	 *
+	 * @return If this is any initializer method.
+	 * @since 2017/10/12
+	 */
+	public boolean isAnyInitializer()
+	{
+		return isInstanceInitializer() || isStaticInitializer();
+	}
+	
+	/**
 	 * Returns {@code true} if this represents the instance initializer.
 	 *
 	 * @return {@code true} if this is the instance initializer.

@@ -17,6 +17,7 @@ import java.util.Objects;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.cff.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.cff.MethodName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodNameAndType;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -73,16 +74,17 @@ public final class ClassStructure
 				superstruct.methods().entrySet())
 			{
 				MethodNameAndType nat = e.getKey();
-				Method meth = e.getValue();
-				MethodFlags mflags = meth.flags();
+				Method m = e.getValue();
+				MethodFlags mflags = m.flags();
+				MethodName name = m.name();
 				
-				// Never copy private methods
-				if (mflags.isPrivate() ||
+				// Never copy private methods or constructors
+				if (mflags.isPrivate() || name.isAnyInitializer() ||
 					(!samepk && mflags.isPackagePrivate()))
 					continue;
 				
 				// Use those methods
-				methods.put(nat, meth);
+				methods.put(nat, m);
 			}
 		}
 		
@@ -91,10 +93,17 @@ public final class ClassStructure
 		// Final methods cannot be replaced
 		// change of static cannot be performed (a static cannot override
 		// an instance, and an instance cannot override a static)
-		if (true)
+		for (Method m : node.methods())
+		{
+			MethodFlags mflags = m.flags();
+			
 			throw new todo.TODO();
+		}
 		
-		// Go through
+		// Go through every interface which is implemented and copy all methods
+		// which are available provided they are not already defined.
+		// Support functionality for default methods that exist in Java 8 just
+		// so it is there for if this kind of feature set becomes available
 		if (true)
 			throw new todo.TODO();
 		
