@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.jit.cff.AccessibleFlags;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.cff.MethodFlags;
@@ -43,11 +44,12 @@ public final class ClassStructure
 	 *
 	 * @param __csr The owning class reference.
 	 * @throws NullPointerException On null arguments.
+	 * @throws VerificationException If the class fails to verify.
 	 * @since 2017/10/10
 	 */
 	ClassStructure(Reference<ClassStructures> __csr, FamilyTree __tree,
 		ClassName __cn)
-		throws NullPointerException
+		throws NullPointerException, VerificationException
 	{
 		if (__csr == null || __tree == null || __cn == null)
 			throw new NullPointerException("NARG");
@@ -96,8 +98,27 @@ public final class ClassStructure
 		for (Method m : node.methods())
 		{
 			MethodFlags mflags = m.flags();
+			MethodNameAndType nat = m.nameAndType();
 			
-			throw new todo.TODO();
+			// A pre-existing method exists
+			Method pre = methods.get(nat);
+			if (pre != null)
+			{
+				MethodFlags pf = pre.flags();
+				
+				// {@squirreljme.error JI3i The specified method in the given
+				// class overrides a method which cannot override the given
+				// method. (The name of the current class; The name of the
+				// method; The flags for the overriding method; The flags
+				// for the method to be overridden}
+				if (pf.isFinal() || (mflags.isStatic() != pf.isStatic()) ||
+					__accessOrder(mflags) < __accessOrder(pf))
+					throw new VerificationException(String.format(
+						"JI3i %s %s %s %s", __cn, nat, mflags, pf));
+			}
+			
+			// Override method
+			methods.put(nat, m);
 		}
 		
 		// Go through every interface which is implemented and copy all methods
@@ -139,6 +160,30 @@ public final class ClassStructure
 					this._methods)));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the access order of the given flags.
+	 *
+	 * @param __f The flags to check.
+	 * @return The access order.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/12
+	 */
+	private static final int __accessOrder(AccessibleFlags __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		if (__f.isPrivate())
+			return 0;
+		else if (__f.isPackagePrivate())
+			return 1;
+		else if (__f.isProtected())
+			return 2;
+		else
+			return 3;
 	}
 }
 
