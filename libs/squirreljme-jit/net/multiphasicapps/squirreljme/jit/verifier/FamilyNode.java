@@ -153,6 +153,17 @@ public final class FamilyNode
 	}
 	
 	/**
+	 * Returns the names of all directly implemented interfaces.
+	 *
+	 * @return The names of all direcly implemented interface.
+	 * @since 2017/10/12
+	 */
+	public final ClassName[] interfaceNames()
+	{
+		return this.classfile.interfaceNames();
+	}
+	
+	/**
 	 * Returns the methods which are in this class.
 	 *
 	 * @return The class methods.
