@@ -125,6 +125,8 @@ public final class ClassStructure
 		// which are available provided they are not already defined.
 		// Support functionality for default methods that exist in Java 8 just
 		// so it is there for if this kind of feature set becomes available
+		// Note that interfaces do not need to be recursively handled because
+		// all methods in the interface are given
 		if (true)
 			throw new todo.TODO();
 		
