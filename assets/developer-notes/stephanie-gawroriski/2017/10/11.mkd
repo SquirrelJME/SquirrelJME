@@ -1,0 +1,23 @@
+# 2017/10/11
+
+## 09:10
+
+Ok so, invokespecial cannot cross from a super class to a super class of that
+class, which is nice.
+
+## 09:12
+
+And `invokespecial` only can call the super class. So this makes sense for
+compatibility, like if a base class adds a new method in between. Although
+there is one more case to check.
+
+## 09:14
+
+And as I expected, `invokespecial` with no middle method instead uses the
+original desired method. So this means that in the class structure, unless
+something was overridden it will instead point to the super class.
+
+## 09:21
+
+So this makes things simple. For super classes, unless something was already
+declared then use that.
