@@ -133,14 +133,34 @@ public final class ClassStructure
 			for (Map.Entry<MethodNameAndType, Method> e :
 				istruct.methods().entrySet())
 			{
-				throw new todo.TODO();
+				MethodNameAndType nat = e.getKey();
+				Method m = e.getValue();
+				MethodFlags mflags = m.flags();
+				MethodName name = m.name();
+				
+				// Only replace pre-existing methods if they are abstract and
+				// the interface method is not abstract
+				Method pre = methods.get(nat);
+				if (pre != null)
+				{
+					MethodFlags pf = pre.flags();
+					if (pf.isAbstract() && !mflags.isAbstract())
+						methods.put(nat, m);
+				}
+				
+				// Does not exist, use it regardless
+				else
+					methods.put(nat, m);
 			}
 		}
 		
 		// If the class is not abstract then go through all methods and make
 		// sure that there are no abstract methods which exist in the class
 		if (!node.flags().isAbstract())
-			throw new todo.TODO();
+			for (Method m : methods.values())
+				if (m.flags().isAbstract())
+					throw new VerificationException(String.format("JI3j %s %s",
+						__cn, m.nameAndType()));
 		
 		// All methods are good now
 		this._methods = methods;
