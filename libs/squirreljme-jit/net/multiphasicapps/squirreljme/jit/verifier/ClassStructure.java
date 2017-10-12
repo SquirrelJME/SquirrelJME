@@ -127,8 +127,15 @@ public final class ClassStructure
 		// so it is there for if this kind of feature set becomes available
 		// Note that interfaces do not need to be recursively handled because
 		// all methods in the interface are given
-		if (true)
-			throw new todo.TODO();
+		for (ClassName iname : node.interfaceNames())
+		{
+			ClassStructure istruct = structs.get(supername);
+			for (Map.Entry<MethodNameAndType, Method> e :
+				istruct.methods().entrySet())
+			{
+				throw new todo.TODO();
+			}
+		}
 		
 		// If the class is not abstract then go through all methods and make
 		// sure that there are no abstract methods which exist in the class
