@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/09/16
  */
 public final class MethodHandle
+	implements Comparable<MethodHandle>
 {
 	/** The class the method is in. */
 	protected final ClassName outerclass;
@@ -51,6 +52,21 @@ public final class MethodHandle
 		this.outerclass = __cl;
 		this.name = __n;
 		this.descriptor = __d;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/14
+	 */
+	@Override
+	public int compareTo(MethodHandle __o)
+	{
+		int rv;
+		if ((rv = this.outerclass.compareTo(__o.outerclass)) != 0)
+			return rv;
+		if ((rv = this.name.compareTo(__o.name)) != 0)
+			return rv;
+		return this.descriptor.toString().compareTo(__o.descriptor.toString());
 	}
 	
 	/**
