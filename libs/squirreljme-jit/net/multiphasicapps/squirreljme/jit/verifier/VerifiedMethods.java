@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
-import net.multiphasicapps.squirreljme.jit.cff.MethodIndex;
+import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
 import net.multiphasicapps.squirreljme.jit.JITInput;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
@@ -37,7 +37,7 @@ public final class VerifiedMethods
 		new ArrayList<>();
 	
 	/** The map of verified methods. */
-	private final Map<MethodIndex, VerifiedMethod> _methods =
+	private final Map<MethodHandle, VerifiedMethod> _methods =
 		new SortedTreeMap<>();
 	
 	/** The list of methods in their verified order. */
@@ -61,7 +61,7 @@ public final class VerifiedMethods
 		
 		// Used to index methods in a fixed order
 		List<VerifiedMethod> order = this._order;
-		Map<MethodIndex, VerifiedMethod> methods = this._methods;
+		Map<MethodHandle, VerifiedMethod> methods = this._methods;
 		int nextmethod = 0;
 		
 		// Go through all classes and all methods to verify them
@@ -83,7 +83,7 @@ public final class VerifiedMethods
 					continue;
 				
 				// Methods only need to be verified once
-				MethodIndex mdx = m.index();
+				MethodHandle mdx = m.handle();
 				VerifiedMethod vm = methods.get(mdx);
 				if (vm != null)
 					continue;

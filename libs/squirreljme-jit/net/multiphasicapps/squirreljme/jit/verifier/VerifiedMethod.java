@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
-import net.multiphasicapps.squirreljme.jit.cff.MethodIndex;
+import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
 
 /**
  * This is a single method which has been verified.
@@ -34,7 +34,7 @@ public final class VerifiedMethod
 	 * @since 2017/10/14
 	 */
 	final static VerifiedMethod __verify(ClassStructures __structs,
-		MethodIndex __mi, int __vid, ByteCode __bc)
+		MethodHandle __mi, int __vid, ByteCode __bc)
 		throws NullPointerException, VerificationException
 	{
 		if (__structs == null || __mi == null || __bc == null)

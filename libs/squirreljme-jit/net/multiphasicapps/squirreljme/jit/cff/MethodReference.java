@@ -30,6 +30,8 @@ public final class MethodReference
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
+	/** The method index. */
+	
 	/**
 	 * Initializes the method reference.
 	 *
