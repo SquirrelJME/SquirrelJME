@@ -55,6 +55,9 @@ public final class Method
 	/** Name and type reference. */
 	private volatile Reference<MethodNameAndType> _nameandtype;
 	
+	/** The method index. */
+	private volatile Reference<MethodIndex> _index;
+	
 	/**
 	 * Initializes the method.
 	 *
@@ -124,6 +127,24 @@ public final class Method
 	public final MethodFlags flags()
 	{
 		return this.methodflags;
+	}
+	
+	/**
+	 * Returns the index of the method.
+	 *
+	 * @return The method index.
+	 * @since 2017/10/14
+	 */
+	public final MethodIndex index()
+	{
+		Reference<MethodIndex> ref = this._index;
+		MethodIndex rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._index = new WeakReference<>(rv = new MethodIndex(
+				this.classname, this.methodname, this.methodtype));
+		
+		return rv;
 	}
 	
 	/**

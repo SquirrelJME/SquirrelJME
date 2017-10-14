@@ -12,11 +12,17 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
+import net.multiphasicapps.squirreljme.jit.cff.MethodIndex;
 import net.multiphasicapps.squirreljme.jit.JITInput;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This class is used to contain all of the methods which exist within the
@@ -26,6 +32,17 @@ import net.multiphasicapps.squirreljme.jit.JITInput;
  */
 public final class VerifiedMethods
 {
+	/** The order in which methods exist. */
+	private final List<VerifiedMethod> _order =
+		new ArrayList<>();
+	
+	/** The map of verified methods. */
+	private final Map<MethodIndex, VerifiedMethod> _methods =
+		new SortedTreeMap<>();
+	
+	/** The list of methods in their verified order. */
+	private volatile Reference<List<VerifiedMethod>> _roorder;
+	
 	/**
 	 * Initializes the verification of methods, initializing every method
 	 * which exists within the input structures.
@@ -41,6 +58,11 @@ public final class VerifiedMethods
 	{
 		if (__i == null || __structs == null)
 			throw new NullPointerException("NARG");
+		
+		// Used to index methods in a fixed order
+		List<VerifiedMethod> order = this._order;
+		Map<MethodIndex, VerifiedMethod> methods = this._methods;
+		int nextmethod = 0;
 		
 		// Go through all classes and all methods to verify them
 		for (ClassFile f : __i.classFiles())
@@ -60,18 +82,37 @@ public final class VerifiedMethods
 				if (code == null)
 					continue;
 				
-				// Look into the structure to determine the method index
-				if (true)
-					throw new todo.TODO();
+				// Methods only need to be verified once
+				MethodIndex mdx = m.index();
+				VerifiedMethod vm = methods.get(mdx);
+				if (vm != null)
+					continue;
 				
-				// Create verified method for it
-				throw new todo.TODO();
+				// Verify it
+				vm = VerifiedMethod.__verify(__structs, mdx, nextmethod++,
+					code);
+				methods.put(mdx, vm);
+				order.add(vm);
 			}
-			
-			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Returns the methods which appear in their verification order.
+	 *
+	 * @return The list of methods in their verification order.
+	 * @since 2017/10/14
+	 */
+	public final List<VerifiedMethod> order()
+	{
+		Reference<List<VerifiedMethod>> ref = this._roorder;
+		List<VerifiedMethod> rv;
 		
-		throw new todo.TODO();
+		if (ref == null || null == (rv = ref.get()))
+			this._roorder = new WeakReference<>(
+				(rv = UnmodifiableList.<VerifiedMethod>of(this._order)));
+		
+		return rv;
 	}
 }
 
