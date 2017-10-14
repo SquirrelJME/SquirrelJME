@@ -23,6 +23,16 @@ __exedir="$(dirname -- "$0")"
 # The class to use for bootstrapping
 : ${BOOTSTRAP_CLASS:=NewBootstrap}
 
+# If the Java compiler was not detected, try ECJ instead
+if ! which "$JAVAC" > /dev/null
+then
+	__ecj="$(which ecj 2> /dev/null)"
+	if [ "$__ecj" != "" ]
+	then
+		JAVAC="$__ecj"
+	fi
+fi
+
 # The build class is missing or out of date?
 if [ ! -f "$BOOTSTRAP_CLASS.class" ] || \
 	[ "$__exedir/$BOOTSTRAP_CLASS.java" -nt "$BOOTSTRAP_CLASS.class" ]
