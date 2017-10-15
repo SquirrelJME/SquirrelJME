@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.cff;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -29,18 +30,28 @@ public final class StackMapTable
 	 * @param __in The data for the stack map table.
 	 * @throws InvalidClassFormatException If the stack map table is not
 	 * valid.
-	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/09
 	 */
 	public static StackMapTable decode(Pool __p, Method __m, boolean __new,
-		DataInputStream __in)
-		throws InvalidClassFormatException, IOException, NullPointerException
+		byte[] __in)
+		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__p == null || __m == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Wrap it
+		try (DataInputStream in = new DataInputStream(
+			new ByteArrayInputStream(__in)))
+		{
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error JI3k Failed to read the stack map table data.}
+		catch (IOException e)
+		{
+			throw new InvalidClassFormatException("JI3k");
+		}
 	}
 }
 

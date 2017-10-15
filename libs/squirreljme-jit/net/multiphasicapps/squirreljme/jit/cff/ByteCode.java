@@ -73,6 +73,9 @@ public final class ByteCode
 	/** String representation of this byte code */
 	private volatile Reference<String> _string;
 	
+	/** The stack map table cache. */
+	private volatile Reference<StackMapTable> _smt;
+	
 	/**
 	 * Initializes the byte code.
 	 *
@@ -283,7 +286,8 @@ public final class ByteCode
 		
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new WeakReference<>((rv = new Instruction(
-				this._rawattributedata, this.pool, __a, this.exceptions)));
+				this._rawattributedata, this.pool, __a, this.exceptions,
+				stackMapTable())));
 		
 		return rv;
 	}
@@ -417,6 +421,24 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the stack map table.
+	 *
+	 * @return The stack map table.
+	 * @since 2017/10/15
+	 */
+	public StackMapTable stackMapTable()
+	{
+		Reference<StackMapTable> ref = this._smt;
+		StackMapTable rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._smt = new WeakReference<>(rv = StackMapTable.decode(
+				this.pool, __method(), this._newsmtdata, this._smtdata));
+		
+		return rv;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/05/20
 	 */
@@ -447,6 +469,22 @@ public final class ByteCode
 			this._string = new WeakReference<>((rv = sb.toString()));
 		}
 		
+		return rv;
+	}
+	
+	/**
+	 * Returns the method which owns this byte code.
+	 *
+	 * @return The owning method.
+	 * @since 2017/10/15
+	 */
+	private final Method __method()
+	{
+		// {@squirreljme.error JI3j The method owning this byte code has been
+		// garbage collected.}
+		Method rv = this._methodref.get();
+		if (rv == null)
+			throw new IllegalStateException("JI3j");
 		return rv;
 	}
 	

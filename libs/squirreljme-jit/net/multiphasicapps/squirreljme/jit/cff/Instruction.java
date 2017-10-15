@@ -42,16 +42,17 @@ public class Instruction
 	 * @param __pool The constant pool.
 	 * @param __a The instruction address.
 	 * @param __eh Exception handler table.
+	 * @param __smt The stack map table data.
 	 * @throws InvalidClassFormatException If the instruction is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/18
 	 */
 	Instruction(byte[] __code, Pool __pool, int __a,
-		ExceptionHandlerTable __eh)
+		ExceptionHandlerTable __eh, StackMapTable __smt)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
-		if (__code == null || __pool == null)
+		if (__code == null || __pool == null || __smt == null)
 			throw new NullPointerException("NARG");
 		
 		// Calculate real instruction address
@@ -271,6 +272,9 @@ public class Instruction
 		// Set
 		this._args = args;
 		this.naturalflow = naturalflow;
+		
+		// Initialize stack map table information
+		throw new todo.TODO();
 	}
 	
 	/**
