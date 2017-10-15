@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.bvm.InstructionParser;
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.Instruction;
 import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
@@ -23,6 +24,30 @@ import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
  */
 public final class VerifiedMethod
 {
+	/** The handle of this method. */
+	protected final MethodHandle handle;
+	
+	/** The index of this method in the verification order. */
+	protected final int order;
+	
+	/**
+	 * Initializes the verified method.
+	 *
+	 * @param __h The handle of the verified method.
+	 * @param __o The verification order of the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/15
+	 */
+	private VerifiedMethod(MethodHandle __h, int __o)
+		throws NullPointerException
+	{
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		this.handle = __h;
+		this.order = __o;
+	}
+	
 	/**
 	 * Verifies the specified method.
 	 *
@@ -41,18 +66,15 @@ public final class VerifiedMethod
 		if (__structs == null || __mi == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup initial state
-		int maxstack = __bc.maxStack(),
-			maxlocals = __bc.maxLocals();
-		if (true)
-			throw new todo.TODO();
-		
-		// Go through all instructions
-		for (int dx = 0, n = __bc.instructionCount(); dx < n; dx++)
+		// Initialize the instruction parser
+		InstructionParser parser = new InstructionParser(__bc);
+		for (int dx = 0, ndx = __bc.instructionCount(); dx < ndx; dx++)
 		{
-			Instruction i = __bc.getByIndex(dx);
+			// Setup execution at this address
+			parser.setProgramCounter(__bc.indexToAddress(dx));
 			
-			throw new todo.TODO();
+			// Run that instruction to verify its action
+			parser.singleStep();
 		}
 		
 		throw new todo.TODO();
