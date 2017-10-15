@@ -67,7 +67,6 @@ commuting every day (which wastes time). Interest can be e-mailed to me
  * Trunk Source Snapshot (`fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
- * Read-Only Mirrors:
 
 ## Links
 
