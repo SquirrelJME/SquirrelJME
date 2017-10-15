@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
+import net.multiphasicapps.squirreljme.jit.cff.Instruction;
 import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
 
 /**
@@ -39,6 +40,20 @@ public final class VerifiedMethod
 	{
 		if (__structs == null || __mi == null || __bc == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup initial state
+		int maxstack = __bc.maxStack(),
+			maxlocals = __bc.maxLocals();
+		if (true)
+			throw new todo.TODO();
+		
+		// Go through all instructions
+		for (int dx = 0, n = __bc.instructionCount(); dx < n; dx++)
+		{
+			Instruction i = __bc.getByIndex(dx);
+			
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
