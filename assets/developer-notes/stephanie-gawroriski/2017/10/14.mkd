@@ -1,0 +1,7 @@
+# 2017/10/14
+
+## 07:16
+
+I think for class name, method name, and method type for global indexing
+should be `MethodIndex` since that makes sense I suppose. It will be used
+as an index to determine the unique method number and such.
