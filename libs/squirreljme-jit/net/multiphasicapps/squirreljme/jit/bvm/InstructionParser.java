@@ -43,27 +43,43 @@ public class InstructionParser
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.bytecode = __bc;
 	}
 	
 	/**
 	 * Sets the program counter address.
 	 *
 	 * @param __pc The program counter address.
+	 * @throws ParserException If the address is outside of bounds.
 	 * @since 2017/10/15
 	 */
 	public void setProgramCounter(int __pc)
+		throws ParserException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JI3l Cannot set the program counter address
+		// because it does not refer to a valid instruction. (The program
+		// counter address to set)}
+		ByteCode bytecode = this.bytecode;
+		if (!bytecode.isValidAddress(__pc))
+			throw new ParserException(String.format("JI3l %d", __pc));
+		
+		this._pcaddr = __pc;
 	}
 	
 	/**
 	 * Executes a single instruction within a single step.
 	 *
+	 * @throws ParserException If execution of the instruction is not valid.
 	 * @since 2017/10/15
 	 */
 	public void singleStep()
+		throws ParserException
 	{
+		// Get execution parameters
+		ByteCode bytecode = this.bytecode;
+		Instruction i = bytecode.getByAddress(this._pcaddr);
+		
 		throw new todo.TODO();
 	}
 }
