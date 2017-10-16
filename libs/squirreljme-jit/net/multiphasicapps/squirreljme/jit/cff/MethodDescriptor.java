@@ -181,6 +181,31 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns the Java type stack for this descriptor.
+	 * 
+	 * @return The descriptor as it appears on the Java Stack.
+	 * @since 2017/09/16
+	 */
+	public JavaType[] javaStack()
+	{
+		// Handle all arguments now
+		int n = argumentCount();
+		JavaType[] rv = new JavaType[n];
+		for (int i = 0, o = 0; i < n; i++)
+		{
+			FieldDescriptor a;
+			JavaType j;
+			rv[o++] = (j = new JavaType(a = argument(i)));
+			
+			// Add top of long/double but with unique distinct types
+			if (j.isWide())
+				rv[o++] = j.topType();
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the return value of this descriptor.
 	 *
 	 * @return The value returned in this descriptor or {@code null} if there

@@ -188,6 +188,17 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the method's type.
+	 *
+	 * @return The type of the method.
+	 * @since 2017/10/16
+	 */
+	public final MethodDescriptor type()
+	{
+		return this.methodtype;
+	}
+	
+	/**
 	 * Decodes all methods from the input class data.
 	 *
 	 * @param __ver The version of the class.

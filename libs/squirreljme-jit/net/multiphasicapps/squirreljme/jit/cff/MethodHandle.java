@@ -121,6 +121,30 @@ public final class MethodHandle
 	}
 	
 	/**
+	 * Returns the Java type stack for this handle.
+	 * 
+	 * @param __i If {@code true} then this is an instance invocation.
+	 * @return The handle as it appears on the Java Stack.
+	 * @since 2017/09/16
+	 */
+	public JavaType[] javaStack(boolean __i)
+	{
+		// No need to add current class type
+		JavaType[] djs = this.descriptor.javaStack();
+		if (!__i)
+			return djs;
+		
+		// Just copy over
+		int dn = djs.length;
+		JavaType[] rv = new JavaType[dn + 1];
+		rv[0] = new JavaType(this.outerclass);
+		for (int i = 0, o = 1; i < dn; i++, o++)
+			rv[o] = djs[i];
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the name of the method.
 	 *
 	 * @return The method name.

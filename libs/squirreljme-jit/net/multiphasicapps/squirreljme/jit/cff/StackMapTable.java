@@ -28,20 +28,48 @@ public final class StackMapTable
 	 * @param __m The method this code exists within.
 	 * @param __new Should the new stack map table format be used?
 	 * @param __in The data for the stack map table.
+	 * @param __bc The owning byte code.
 	 * @throws InvalidClassFormatException If the stack map table is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/09
 	 */
 	public static StackMapTable decode(Pool __p, Method __m, boolean __new,
-		byte[] __in)
+		byte[] __in, ByteCode __bc)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__p == null || __m == null || __in == null)
+		if (__p == null || __m == null || __in == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup initial base from the method arguments
+		int maxstack = __bc.maxStack(),
+			maxlocals = __bc.maxLocals();
+		StackMapTableEntry[] stack = new StackMapTableEntry[maxstack],
+			locals = new StackMapTableEntry[maxlocals];
 		
+		// Setup initial state
+		// {@squirreljme.error JI2l The arguments that are required for the
+		// given method exceeds the maximum number of permitted local
+		// variables. (The method in question; The required number of local
+		// variables; The maximum number of local variables)}
+		MethodHandle handle = __m.handle();
+		boolean isinstance = !__m.flags().isStatic();
+		JavaType[] jis = handle.javaStack(isinstance);
+		int jn = jis.length;
+		if (jn > maxlocals)
+			throw new InvalidClassFormatException(
+				String.format("JI2l %s %d %d", handle, jn, maxlocals));
+		
+		// Setup entries
+		// If this is an instance initializer method then only the first
+		// argument is not initialized
+		boolean isiinit = isinstance && __m.name().isInstanceInitializer();
+		for (int i = 0; i < jn; i++)
+			locals[i] = new StackMapTableEntry(jis[i],
+				(isiinit ? (i != 0) : true));
+		
+		if (true)
+			throw new todo.TODO();
 		
 		// Wrap it
 		try (DataInputStream in = new DataInputStream(
