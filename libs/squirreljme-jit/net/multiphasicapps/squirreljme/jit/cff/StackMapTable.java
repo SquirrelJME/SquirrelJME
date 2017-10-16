@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.cff;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Map;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is the stack map table which is used for verification purposes.
@@ -41,6 +43,9 @@ public final class StackMapTable
 		if (__p == null || __m == null || __in == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
+		// Each initial state
+		Map<Integer, StackMapTableState> states = new SortedTreeMap<>();
+		
 		// Setup initial base from the method arguments
 		int maxstack = __bc.maxStack(),
 			maxlocals = __bc.maxLocals();
@@ -68,8 +73,8 @@ public final class StackMapTable
 			locals[i] = new StackMapTableEntry(jis[i],
 				(isiinit ? (i != 0) : true));
 		
-		if (true)
-			throw new todo.TODO();
+		// Store initial state
+		states.put(0, new StackMapTableState(locals, stack, 0));
 		
 		// Wrap it
 		try (DataInputStream in = new DataInputStream(
