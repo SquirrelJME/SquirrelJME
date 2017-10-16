@@ -179,7 +179,7 @@ public final class JavaType
 	 */
 	public boolean isTop()
 	{
-		return equals(TOP_LONG) || equals(TOP_DOUBLE);
+		return equals(TOP_LONG) || equals(TOP_DOUBLE) || equals(TOP_UNDEFINED);
 	}
 	
 	/**
@@ -190,7 +190,10 @@ public final class JavaType
 	 */
 	public boolean isWide()
 	{
-		PrimitiveType pt = this.type.primitiveType();
+		FieldDescriptor type = this.type;
+		if (type == null)
+			return false;
+		PrimitiveType pt = type.primitiveType();
 		return pt != null && pt.isWide();
 	}
 	
