@@ -184,7 +184,7 @@ final class __StackMapParser__
 							String.format("JI3p %d", type));
 					
 					// Setup next
-					__next(addr, true);
+					__next(addr, false);
 				}
 			}
 		}
@@ -434,8 +434,14 @@ final class __StackMapParser__
 			naddr + (__au + (naddr == 0 ? 0 : 1)));
 		this._placeaddr = pp;
 	
-		// Set the state
-		this._targets.put(pp, rv);
+		// {@squirreljme.error JI3w A duplicate stack map information for the
+		// specified address has already been loaded. (The address; The
+		// already existing information; The information to be placed there)}
+		Map<Integer, StackMapTableState> targets = this._targets;
+		if (targets.containsKey(pp))
+			throw new IllegalStateException(String.format("JI3w %d %s %s",
+				pp, targets.get(pp), rv));
+		targets.put(pp, rv);
 		
 		// Debug
 		System.err.printf("DEBUG -- Read state @%d: %s%n", pp, rv);
