@@ -49,7 +49,7 @@ public class ByteCodeParser
 	 */
 	public final BasicProgram parse()
 	{
-		// Setup parser state
+		// Setup parser state for initial entry into the program
 		ByteCode bytecode = this.bytecode;
 		
 		// Execute all instructions
@@ -63,8 +63,8 @@ public class ByteCodeParser
 			switch ((op = i.operation()))
 			{
 					// {@squirreljme.error JI3x Cannot execute the given
-					// instruction because it is not implemented within the basic
-					// virtual machine. (The instruction)}
+					// instruction because it is not implemented in the
+					// byte code parser. (The instruction)}
 				default:
 					throw new ParserException(String.format("JI3x %s", i));
 			}
