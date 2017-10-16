@@ -30,6 +30,30 @@ public final class JavaType
 	public static final JavaType TOP_DOUBLE =
 		new JavaType(2);
 	
+	/** Top of an undefined type. */
+	public static final JavaType TOP_UNDEFINED =
+		new JavaType(3);
+	
+	/** Nothing. */
+	public static final JavaType NOTHING =
+		new JavaType(4);
+	
+	/** Integer. */
+	public static final JavaType INTEGER =
+		new JavaType(new FieldDescriptor("I"));
+	
+	/** Long. */
+	public static final JavaType LONG =
+		new JavaType(new FieldDescriptor("J"));
+	
+	/** Float. */
+	public static final JavaType FLOAT =
+		new JavaType(new FieldDescriptor("F"));
+	
+	/** Double. */
+	public static final JavaType DOUBLE =
+		new JavaType(new FieldDescriptor("D"));
+	
 	/** The type this refers to. */
 	protected final FieldDescriptor type;
 	
@@ -211,6 +235,10 @@ public final class JavaType
 				rv = "top-long";
 			else if (this.equals(TOP_DOUBLE))
 				rv = "top-double";
+			else if (this.equals(TOP_UNDEFINED))
+				rv = "top-undefined";
+			else if (this.equals(NOTHING))
+				rv = "nothing";
 			
 			// Other
 			else
