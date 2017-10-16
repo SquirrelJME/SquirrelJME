@@ -17,6 +17,11 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Use the second script instead because it is much better
+"$__exedir/megagrep2.sh" $*
+exit $?
+################################################################
+
 # Usage
 if [ "$#" -lt "1" ]
 then
