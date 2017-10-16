@@ -1,36 +1,8 @@
 # Release Route
 
-# 0.0.7 (TBD)
-
-This will be a release which will result in generation of more optimized code
-which should increase the speed of how fast code executes accordingly.
-
- * HIL
-   * Next stage after the byte code.
-   * Should be stack caching.
-   * Should perform optimizations that are known at compile time.
-
 # 0.0.5 (TBD)
 
- * Incremental Verifier and JIT Backend
-   * Allow JARs to be compiled at run-time at a far lower cost than the
-     initial compilation.
-   * The initial generation of the kernel, speed does not really matter but
-     a new verifier and JIT compilation backend can be written where it
-     allows for a JIT along with making the verification process faster.
-   * Be able to run JARs dynamically.
-
-# 0.0.3 (TBD)
-
-This will be the first released version of SquirrelJME, it will be a proof of
-concept version for the most part. This will require some advanced usage
-because of being a proof of concept.
-
-I did plan for a run-time JIT to be done here, but I think it would be faster
-to make everything exist first and have the JIT in place for the next version
-instead. That way all the base code exists and I have something that can
-actually be tested rather than not. One could still one programs provided they
-were compiled into the same binary.
+This release will work on improvements generally and more program support.
 
  * JavaDoc with Completion
    * Need to know which stuff is not documented and what is not implemented.
@@ -39,16 +11,27 @@ were compiled into the same binary.
    * Shows documentation of the code.
    * Can be used as a reference I can refer to instead of opening up source
      code to look what something does.
- * Byte Code Interpreter
+ * Optimizations
+ * Implement more of the library
+ * Any needed refactoring
+
+# 0.0.3 (TBD)
+
+This will be the first released version of SquirrelJME, it will be a proof of
+concept version for the most part.
+
+ * Basic Program
+   * Represents a Java method.
+   * Register based.
+   * Can be optimized at a basic level in the future.
+ * Basic Program Interpreter
    * Slow but it is the simplest and quickest to implement for the most part.
-   * Allows behavior to be more fully known before the HIL is implemented.
    * Allows part of the core library to be implemented.
      * Running tests would be a good thing.
-     * When the HIL is implemented, the library would already be there rather
-       than being partially implemented.
-     * With a library already existing and with tests available, making sure
-       the HIL works would be far easier.
    * Faster to write.
+ * Dynamic program compilation and loading
+   * Allow programs to be ran at run-time rather than relying solely on
+     built-in ones.
  * Support MIDlets
    * UI Demo
      * This is the UI demo available in the J2ME SDK.

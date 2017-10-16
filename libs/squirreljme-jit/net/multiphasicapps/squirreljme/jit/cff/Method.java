@@ -148,6 +148,18 @@ public final class Method
 	}
 	
 	/**
+	 * Returns if this method is effectively final, meaning that it cannot be
+	 * replaced.
+	 *
+	 * @return If this method is effectively final or not.
+	 * @since 2017/10/16
+	 */
+	public boolean isEffectivelyFinal()
+	{
+		return this.methodflags.isFinal() || this.classflags.isFinal();
+	}
+	
+	/**
 	 * Returns the name of the method.
 	 *
 	 * @return The method name.
