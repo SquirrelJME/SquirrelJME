@@ -23,6 +23,25 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  */
 public final class StackMapTable
 {
+	/** Stack map states. */
+	private final Map<Integer, StackMapTableState> _states;
+	
+	/**
+	 * Initializes the stack map table.
+	 *
+	 * @param __s The input states, this is used directly.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/16
+	 */
+	private StackMapTable(Map<Integer, StackMapTableState> __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this._states = __s;
+	}
+	
 	/**
 	 * Decodes the stack map table.
 	 *
@@ -80,7 +99,12 @@ public final class StackMapTable
 		try (DataInputStream in = new DataInputStream(
 			new ByteArrayInputStream(__in)))
 		{
-			throw new todo.TODO();
+			// Read the specified number of entries in the table
+			int ns = in.readUnsignedShort();
+			for (int i = 0; i < ns; i++)
+			{
+				throw new todo.TODO();
+			}
 		}
 		
 		// {@squirreljme.error JI3k Failed to read the stack map table data.}
@@ -88,6 +112,9 @@ public final class StackMapTable
 		{
 			throw new InvalidClassFormatException("JI3k");
 		}
+		
+		// Build table
+		return new StackMapTable(states);
 	}
 }
 
