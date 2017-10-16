@@ -68,8 +68,7 @@ public final class StackMapTable
 		// Setup initial base from the method arguments
 		int maxstack = __bc.maxStack(),
 			maxlocals = __bc.maxLocals();
-		StackMapTableEntry[] stack = new StackMapTableEntry[maxstack],
-			locals = new StackMapTableEntry[maxlocals];
+		__WorkingState__ work = new __WorkingState__(maxstack, maxlocals);
 		
 		// Setup initial state
 		// {@squirreljme.error JI2l The arguments that are required for the
@@ -89,22 +88,48 @@ public final class StackMapTable
 		// argument is not initialized
 		boolean isiinit = isinstance && __m.name().isInstanceInitializer();
 		for (int i = 0; i < jn; i++)
-			locals[i] = new StackMapTableEntry(jis[i],
-				(isiinit ? (i != 0) : true));
+			work.setLocal(i, new StackMapTableEntry(jis[i],
+				(isiinit ? (i != 0) : true)));
 		
 		// Store initial state
-		states.put(0, new StackMapTableState(locals, stack, 0));
+		states.put(0, work.build());
 		
 		// Wrap it
 		try (DataInputStream in = new DataInputStream(
 			new ByteArrayInputStream(__in)))
 		{
-			// Read the specified number of entries in the table
-			int ns = in.readUnsignedShort();
-			for (int i = 0; i < ns; i++)
-			{
-				throw new todo.TODO();
-			}
+			// Read of modern StackMapTable
+			int count = in.readUnsignedShort();
+			if (__new)
+				for (int tdx = 0; tdx < count; tdx++)
+				{
+					throw new todo.TODO();
+				}
+			
+			// The old-style StackMap is much simpler
+			else
+				for (int tdx = 0; tdx < count; tdx++)
+				{
+					// Read in address to use
+					int addr = in.readUnsignedShort();
+					
+					// Read in local variables
+					int nl = in.readUnsignedShort(),
+						j;
+					for (j = 0; j < nl; j++)
+						work.setLocal(j, __read(in, __bc));
+					for (; j < maxlocals; j++)
+						work.setLocal(j, null);
+					
+					// Read in stack variables
+					int ns = in.readUnsignedShort();
+					work.setStackTop(ns);
+					for (j = 0; j < ns; j++)
+						work.setStack(j, __read(in, __bc));
+					
+					// Generate
+					states.put(addr, work.build());
+				}
 		}
 		
 		// {@squirreljme.error JI3k Failed to read the stack map table data.}
@@ -115,6 +140,25 @@ public final class StackMapTable
 		
 		// Build table
 		return new StackMapTable(states);
+	}
+	
+	/**
+	 * Reads a single entry.
+	 *
+	 * @param __in The input data stream.
+	 * @param __bc The owning byte code, needed for new.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/16
+	 */
+	private static StackMapTableEntry __read(DataInputStream __in,
+		ByteCode __bc)
+		throws IOException, NullPointerException
+	{
+		if (__in == null || __bc == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

@@ -177,6 +177,7 @@ public final class ByteCode
 							
 							// Decode
 							ai.readFully((smt = new byte[alen[0]]));
+							smtnew = newtable;
 							break;
 						
 							// Unknown, ignore
