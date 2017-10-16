@@ -1,0 +1,34 @@
+# 2017/10/15
+
+## 14:32
+
+Ok so, what I can do is either verify the `ByteCode` and leave it as a mark as
+being verified or I can alternatively create some extra byte code information.
+I think at this point, there would be duplicated code between the interpreter,
+the verifier, and anything which would verify the method. So basically, there
+is a class which can process the instructions based on an input instruction and
+keep everything processed and handle the stack.
+
+## 14:35
+
+So the question is, does the handler keep state information or does it just
+run through the instructions. I think it would be best if it kept track of
+everything. It would not verify anything, but if execution ever does fail then
+it would just verify correctly. It would check things naturally and then would
+call elsewhere. So it would be an interpreter for the most part. The verifier
+and compilers though, would perform state resets and not handle looping at
+all. So basically it would execute the code, but would rely on an
+implementation to actually execute those instructions.
+
+## 14:42
+
+Probably at this point they can use the same class structures and such but not
+the verified methods. This is due to the method verifier needing those things.
+
+## 17:39
+
+The instruction parser can also do some common things. It can for the most
+part hide the somewhat stack nature of the code by doing copy operations
+potentially automatically. However, that might cause some issues. Well not
+really as long as those copies are known to wherever copies are stored and
+such.
