@@ -40,6 +40,9 @@ public final class StackMapTable
 		if (__p == null || __m == null || __in == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup initial base from the method arguments
+		
+		
 		// Wrap it
 		try (DataInputStream in = new DataInputStream(
 			new ByteArrayInputStream(__in)))

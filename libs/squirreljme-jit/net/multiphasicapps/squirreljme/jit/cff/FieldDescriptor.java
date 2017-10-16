@@ -190,6 +190,34 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Returns the primitive type for this field.
+	 *
+	 * @return The primitive type to use or {@code null} if there is none.
+	 * @since 2017/10/16
+	 */
+	public PrimitiveType primitiveType()
+	{
+		// Quick detect
+		if (!this.primitive)
+			return null;
+		
+		// Depends on the string
+		switch (toString())
+		{
+			case "B": return PrimitiveType.BYTE;
+			case "C": return PrimitiveType.CHARACTER;
+			case "D": return PrimitiveType.DOUBLE;
+			case "F": return PrimitiveType.FLOAT;
+			case "I": return PrimitiveType.INTEGER;
+			case "J": return PrimitiveType.LONG;
+			case "S": return PrimitiveType.SHORT;
+			case "Z": return PrimitiveType.BOOLEAN;
+			default:
+				return null;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
