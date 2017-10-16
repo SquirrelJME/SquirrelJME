@@ -41,5 +41,18 @@ public final class StackMapTable
 		
 		this._states = new SortedTreeMap<>(__s);
 	}
+	
+	/**
+	 * Returns the stack map table state for the given entry.
+	 *
+	 * @param __a The address to get.
+	 * @return The state for the given address or {@code null} if it there is
+	 * no entry.
+	 * @since 2017/10/16
+	 */
+	public StackMapTableState get(int __a)
+	{
+		return this._states.get(__a);
+	}
 }
 

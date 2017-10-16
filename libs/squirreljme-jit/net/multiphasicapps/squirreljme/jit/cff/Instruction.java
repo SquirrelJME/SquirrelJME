@@ -29,6 +29,9 @@ public class Instruction
 	/** Does this instruction naturally flow? */
 	protected final boolean naturalflow;
 	
+	/** Stack map table entry for this instruction. */
+	protected final StackMapTableState smtstate;
+	
 	/** Instruction arguments. */
 	private final Object[] _args;
 	
@@ -54,6 +57,9 @@ public class Instruction
 		// Check
 		if (__code == null || __pool == null || __smt == null)
 			throw new NullPointerException("NARG");
+		
+		// Get potential stack map entry for this instruction
+		this.smtstate = __smt.get(__a);
 		
 		// Calculate real instruction address
 		int aa = __a + ByteCode._CODE_OFFSET;
@@ -272,9 +278,6 @@ public class Instruction
 		// Set
 		this._args = args;
 		this.naturalflow = naturalflow;
-		
-		// Initialize stack map table information
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -359,6 +362,17 @@ public class Instruction
 	public int operation()
 	{
 		return op;
+	}
+	
+	/**
+	 * Returns the stack map table state for this entry.
+	 *
+	 * @return The stack map table state.
+	 * @since 2017/10/16
+	 */
+	public StackMapTableState stackMapTableState()
+	{
+		return this.smtstate;
 	}
 	
 	/**
