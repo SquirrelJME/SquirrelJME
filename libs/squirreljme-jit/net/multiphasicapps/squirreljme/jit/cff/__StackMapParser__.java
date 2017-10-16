@@ -393,8 +393,9 @@ final class __StackMapParser__
 				
 				// Initialized object
 			case 7:
-				int id = in.readUnsignedShort();
-				throw new todo.TODO();
+				return new StackMapTableEntry(new JavaType(
+					this.pool.<ClassName>get(ClassName.class,
+					in.readUnsignedShort()).field()), true);
 				
 				// Uninitialized variable for a new instruction, the pc points
 				// to the new instruction so the class must be read from
