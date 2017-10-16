@@ -175,7 +175,7 @@ public final class BinaryName
 			for (ClassIdentifier i : this._identifiers)
 			{
 				if (sb.length() > 0)
-					sb.append('.');
+					sb.append('/');
 				sb.append(i.identifier());
 			}
 			
