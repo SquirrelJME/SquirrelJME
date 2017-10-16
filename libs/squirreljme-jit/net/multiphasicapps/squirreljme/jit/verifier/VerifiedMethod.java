@@ -12,7 +12,8 @@ package net.multiphasicapps.squirreljme.jit.verifier;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.bvm.InstructionParser;
+import net.multiphasicapps.squirreljme.jit.bvm.BasicProgram;
+import net.multiphasicapps.squirreljme.jit.bvm.ByteCodeParser;
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.Instruction;
 import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
@@ -30,15 +31,19 @@ public final class VerifiedMethod
 	/** The index of this method in the verification order. */
 	protected final int order;
 	
+	/** The program for this method. */
+	protected final BasicProgram program;
+	
 	/**
 	 * Initializes the verified method.
 	 *
 	 * @param __h The handle of the verified method.
 	 * @param __o The verification order of the method.
+	 * @param __p The program for this method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/15
 	 */
-	private VerifiedMethod(MethodHandle __h, int __o)
+	private VerifiedMethod(MethodHandle __h, int __o, BasicProgram __p)
 		throws NullPointerException
 	{
 		if (__h == null)
@@ -46,6 +51,7 @@ public final class VerifiedMethod
 		
 		this.handle = __h;
 		this.order = __o;
+		this.program = __p;
 	}
 	
 	/**
@@ -67,17 +73,10 @@ public final class VerifiedMethod
 			throw new NullPointerException("NARG");
 		
 		// Initialize the instruction parser
-		InstructionParser parser = new InstructionParser(__bc);
-		for (int dx = 0, ndx = __bc.instructionCount(); dx < ndx; dx++)
-		{
-			// Setup execution at this address
-			parser.setProgramCounter(__bc.indexToAddress(dx));
-			
-			// Run that instruction to verify its action
-			parser.singleStep();
-		}
+		ByteCodeParser parser = new ByteCodeParser(__bc);
 		
-		throw new todo.TODO();
+		// Generate verified program
+		return new VerifiedMethod(__mi, __vid, parser.parse());
 	}
 }
 
