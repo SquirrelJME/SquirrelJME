@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.bvm;
 
 import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
 import net.multiphasicapps.squirreljme.jit.cff.Instruction;
+import net.multiphasicapps.squirreljme.jit.cff.InstructionIndex;
+import net.multiphasicapps.squirreljme.jit.cff.InstructionMnemonics;
 import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
 
 /**
@@ -78,9 +80,19 @@ public class InstructionParser
 	{
 		// Get execution parameters
 		ByteCode bytecode = this.bytecode;
-		Instruction i = bytecode.getByAddress(this._pcaddr);
+		int pcaddr;
+		Instruction i = bytecode.getByAddress((pcaddr = this._pcaddr));
 		
-		throw new todo.TODO();
+		// Depends on the operation
+		int op;
+		switch ((op = i.operation()))
+		{
+				// {@squirreljme.error JI3x Cannot execute the given
+				// instruction because it is not implemented within the basic
+				// virtual machine. (The instruction)}
+			default:
+				throw new ParserException(String.format("JI3x %s", i));
+		}
 	}
 }
 
