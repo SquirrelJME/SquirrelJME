@@ -433,9 +433,9 @@ public final class ByteCode
 		StackMapTable rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._smt = new WeakReference<>(rv = StackMapTable.decode(
+			this._smt = new WeakReference<>(rv = new __StackMapParser__(
 				this.pool, __method(), this._newsmtdata, this._smtdata,
-				this));
+				this).get());
 		
 		return rv;
 	}

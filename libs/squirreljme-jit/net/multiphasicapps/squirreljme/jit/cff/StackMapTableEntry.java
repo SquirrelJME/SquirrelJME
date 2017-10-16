@@ -29,6 +29,30 @@ public final class StackMapTableEntry
 	public static final StackMapTableEntry TOP_DOUBLE =
 		new StackMapTableEntry(JavaType.TOP_DOUBLE, true);
 	
+	/** Undefined top type. */
+	public static final StackMapTableEntry TOP_UNDEFINED =
+		new StackMapTableEntry(JavaType.TOP_UNDEFINED, true);
+	
+	/** Not used. */
+	public static final StackMapTableEntry NOTHING =
+		new StackMapTableEntry(JavaType.NOTHING, false);
+	
+	/** Integer. */
+	public static final StackMapTableEntry INTEGER =
+		new StackMapTableEntry(JavaType.INTEGER, true);
+	
+	/** Long. */
+	public static final StackMapTableEntry LONG =
+		new StackMapTableEntry(JavaType.LONG, true);
+	
+	/** Float. */
+	public static final StackMapTableEntry FLOAT =
+		new StackMapTableEntry(JavaType.FLOAT, true);
+	
+	/** Double. */
+	public static final StackMapTableEntry DOUBLE =
+		new StackMapTableEntry(JavaType.DOUBLE, true);
+	
 	/** The type. */
 	protected final JavaType type;
 	
@@ -55,11 +79,25 @@ public final class StackMapTableEntry
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI2c Non-object types cannot be uninitialized.
-		// (The type)}
-		if (!__init && !__t.isObject())
-			throw new InvalidClassFormatException(
-				String.format("JI2c %s", __t));
+		// Nothing can never be initialized
+		if (__t.equals(JavaType.NOTHING))
+		{
+			// {@squirreljme.error JI31 The nothing type cannot be initialized.
+			// (The type)}
+			if (__init && __t.equals(JavaType.NOTHING))
+				throw new InvalidClassFormatException(
+					String.format("JI3w %s", __t));
+		}
+		
+		// Otherwise only objects may be initialized
+		else
+		{
+			// {@squirreljme.error JI2c Non-object types cannot be.
+			// uninitialized (The type)}
+			if (!__init && !__t.isObject())
+				throw new InvalidClassFormatException(
+					String.format("JI2c %s", __t));
+		}
 		
 		// Set
 		this.type = __t;
@@ -100,6 +138,18 @@ public final class StackMapTableEntry
 	public boolean isInitialized()
 	{
 		return this.isinitialized;
+	}
+	
+	/**
+	 * Does this represent a wide type?
+	 *
+	 * @return If this is a wide type.
+	 * @since 2017/10/16
+	 */
+	public boolean isWide()
+	{
+		JavaType t = this.type;
+		return t != null && t.isWide();
 	}
 	
 	/**
