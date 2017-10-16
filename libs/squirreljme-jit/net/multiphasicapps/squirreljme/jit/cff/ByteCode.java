@@ -433,7 +433,8 @@ public final class ByteCode
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._smt = new WeakReference<>(rv = StackMapTable.decode(
-				this.pool, __method(), this._newsmtdata, this._smtdata));
+				this.pool, __method(), this._newsmtdata, this._smtdata,
+				this));
 		
 		return rv;
 	}
