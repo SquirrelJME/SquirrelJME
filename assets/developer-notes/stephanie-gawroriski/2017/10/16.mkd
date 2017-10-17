@@ -1,0 +1,57 @@
+# 2017/10/16
+
+## 13:35
+
+So I made my own grep script which uses a web interface request to get every
+single artifact that exists. Then for every artifact that is a file it will
+cat its contents and then search within it to see what it contains. This will
+be handy right now because I need to find some old code. Normally I would
+use the file list, but with so many revisions it is near impossible to find.
+There is a slow initial start because the request needs to be generated but
+so far in tests it has worked well.
+
+## 14:40
+
+The stack map parser is a bit ugly, but it works. Now to continue into the
+interpreter. Basically I will need to have some basic state verification but
+have the code able to be ran in a way where it can be used by the verifier,
+the JIT for code transformation, and as an actual interpreter.
+
+## 14:41
+
+Technically though that is not the case, the interpreter will not be using it
+to execute the code directly at all. The interpreter as I have planned will
+be generating a ROM from the verified byte code, which is then executed. So
+pretty much since the later stages will use the interpreted code a bit the
+same way, I could just spit out some optimized code. So basically just end up
+writing the HIL in a way, but a primitive HIL. But, with everything verified
+and the entire state of the program known for the most part, I could just
+write the HIL to begin with and just interpret that code. I can do basic
+handling of stack caching and such in the HIL representation, along with
+handling of constants and such. I can handle in this case, the instructions
+for some optimizations. Some things will be known at run-time while other
+things will be known at compile time. Basically I will need a flag to indicate
+if the JIT is being used. If a JIT is not enabled, then it can make those
+special optimizations and such.
+
+## 14:48
+
+But for the most part, the verifier and the basic virtual machine will be
+doing the same exact thing. Also the output of the code could generate a
+simple HIL program that has stack caching and some optimizations. So it would
+probably be best if `VerifiedMethod` were to contain a reference to a program
+which could then be sent through an interpreter or other such thing. So this
+bunch of split code and reusage would end up doing the same thing anyway. The
+basic virtual machine would need to optimize things anyway. So basically the
+HIL will end up being the BVM. But for the BVM I can have a rather simplisitic
+goal. I do have the representation I want and the verification of structure
+that I like. It would also be faster and would be better if the JIT were
+available in the first version, since that would make it even more popular.
+
+## 16:31
+
+It might be best if the verifier were to infact generate some kind of program
+and perform the byte operations only one just to get rid of them as soon as
+possible. It would be simplest to be done this way and the instruction parser
+would only need to be written once. It would also remove the potential
+uglyness of the byte code due to its representation.
