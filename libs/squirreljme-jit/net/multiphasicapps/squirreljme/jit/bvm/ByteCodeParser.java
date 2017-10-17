@@ -135,6 +135,66 @@ public class ByteCodeParser
 						op - InstructionIndex.DLOAD_0);
 					break;
 				
+				case InstructionIndex.ASTORE:
+					__opStore(__BasicType__.OBJECT, i.intArgument(0));
+					break;
+				
+				case InstructionIndex.ASTORE_0:
+				case InstructionIndex.ASTORE_1:
+				case InstructionIndex.ASTORE_2:
+				case InstructionIndex.ASTORE_3:
+					__opStore(__BasicType__.OBJECT,
+						op - InstructionIndex.ASTORE_0);
+					break;
+					
+				case InstructionIndex.ISTORE:
+					__opStore(__BasicType__.INTEGER, i.intArgument(0));
+					break;
+				
+				case InstructionIndex.ISTORE_0:
+				case InstructionIndex.ISTORE_1:
+				case InstructionIndex.ISTORE_2:
+				case InstructionIndex.ISTORE_3:
+					__opStore(__BasicType__.INTEGER,
+						op - InstructionIndex.ISTORE_0);
+					break;
+					
+				case InstructionIndex.LSTORE:
+					__opStore(__BasicType__.LONG, i.intArgument(0));
+					break;
+				
+				case InstructionIndex.LSTORE_0:
+				case InstructionIndex.LSTORE_1:
+				case InstructionIndex.LSTORE_2:
+				case InstructionIndex.LSTORE_3:
+					__opStore(__BasicType__.LONG,
+						op - InstructionIndex.LSTORE_0);
+					break;
+					
+				case InstructionIndex.FSTORE:
+					__opStore(__BasicType__.FLOAT, i.intArgument(0));
+					break;
+				
+				case InstructionIndex.FSTORE_0:
+				case InstructionIndex.FSTORE_1:
+				case InstructionIndex.FSTORE_2:
+				case InstructionIndex.FSTORE_3:
+					__opStore(__BasicType__.FLOAT,
+						op - InstructionIndex.FSTORE_0);
+					break;
+					
+				case InstructionIndex.DSTORE:
+					__opStore(__BasicType__.DOUBLE, i.intArgument(0));
+					break;
+				
+				case InstructionIndex.DSTORE_0:
+				case InstructionIndex.DSTORE_1:
+				case InstructionIndex.DSTORE_2:
+				case InstructionIndex.DSTORE_3:
+					__opStore(__BasicType__.DOUBLE,
+						op - InstructionIndex.DSTORE_0);
+					break;
+					
 					// {@squirreljme.error JI3x Cannot execute the given
 					// instruction because it is not implemented in the
 					// byte code parser. (The instruction)}
@@ -155,6 +215,23 @@ public class ByteCodeParser
 	 * @since 2017/10/17
 	 */
 	private void __opLoad(__BasicType__ __bt, int __ldx)
+		throws NullPointerException
+	{
+		if (__bt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Handles the store operation.
+	 *
+	 * @param __bt The basic type to store.
+	 * @param __ldx The local variable index to store into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/17
+	 */
+	private void __opStore(__BasicType__ __bt, int __ldx)
 		throws NullPointerException
 	{
 		if (__bt == null)
