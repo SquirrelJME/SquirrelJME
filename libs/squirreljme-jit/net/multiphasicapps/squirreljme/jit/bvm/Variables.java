@@ -21,6 +21,9 @@ import java.lang.ref.WeakReference;
  */
 public final class Variables
 {
+	/** Data variables. */
+	protected final DataValues data;
+	
 	/** Local variables. */
 	protected final VariableTread locals;
 	
@@ -37,6 +40,7 @@ public final class Variables
 	public Variables(int __ms, int __ml)
 	{
 		Reference<Variables> selfref = new WeakReference<>(this);
+		this.data = new DataValues(selfref);
 		this.locals = new VariableTread(selfref, __ml, false);
 		this.stack = new VariableTread(selfref, __ms, true);
 	}
