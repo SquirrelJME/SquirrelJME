@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.bvm;
 
+import java.lang.ref.Reference;
+
 /**
  * This contains a single tread of variables and may optionally be used as
  * a stack.
@@ -19,7 +21,7 @@ package net.multiphasicapps.squirreljme.jit.bvm;
  *
  * @since 2017/10/17
  */
-public class VariableTread
+public final class VariableTread
 {
 	/** The number of variables in the tread. */
 	protected final int size;
@@ -27,24 +29,33 @@ public class VariableTread
 	/** Is this a stack? */
 	protected final boolean isstack;
 	
+	/** Owning variables. */
+	private Reference<Variables> _varsref;
+	
 	/**
 	 * Initializes the variable tread.
 	 *
+	 * @param __vr Reference to the owning variables.
 	 * @param __n The number of variables to store in this tread.
 	 * @param __stack Is this tread to be treated as a stack?
 	 * @throws IllegalArgumentException If the number of variables to store
 	 * is negative.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/17
 	 */
-	public VariableTread(int __n, boolean __stack)
-		throws IllegalArgumentException
+	VariableTread(Reference<Variables> __vr, int __n, boolean __stack)
+		throws IllegalArgumentException, NullPointerException
 	{
+		if (__vr == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error JI3y Negative number of variable slots in the
 		// tread specified.}
 		if (__n < 0)
 			throw new IllegalArgumentException("JI3y");
 		
 		// Set
+		this._varsref = __vr;
 		this.size = __n;
 		this.isstack = __stack;
 	}

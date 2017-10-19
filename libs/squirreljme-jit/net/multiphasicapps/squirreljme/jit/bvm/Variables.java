@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.bvm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This class contains the variable treads for the stack, local, and
  * any needed temporary variables to be used when executing the program.
@@ -18,19 +21,11 @@ package net.multiphasicapps.squirreljme.jit.bvm;
  */
 public final class Variables
 {
-	/** The number of temporary variables to allocate. */
-	private static final int _NUM_TEMPORARIES =
-		32;
-	
 	/** Local variables. */
 	protected final VariableTread locals;
 	
 	/** Stack variables. */
 	protected final VariableTread stack;
-	
-	/** Temporary and secondary stack variables. */
-	protected final VariableTread temp =
-		new VariableTread(_NUM_TEMPORARIES, true);
 	
 	/**
 	 * Initializes variable storage.
@@ -41,8 +36,9 @@ public final class Variables
 	 */
 	public Variables(int __ms, int __ml)
 	{
-		this.locals = new VariableTread(__ml, false);
-		this.stack = new VariableTread(__ms, true);
+		Reference<Variables> selfref = new WeakReference<>(this);
+		this.locals = new VariableTread(selfref, __ml, false);
+		this.stack = new VariableTread(selfref, __ms, true);
 	}
 }
 
