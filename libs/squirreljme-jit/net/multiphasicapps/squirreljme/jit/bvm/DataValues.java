@@ -21,5 +21,23 @@ import java.lang.ref.WeakReference;
  */
 public final class DataValues
 {
+	/** Reference to the variables which own this data set. */
+	private final Reference<Variables> _varsref;
+	
+	/**
+	 * Initializes the data values.
+	 *
+	 * @param __vr Variable references to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/19
+	 */
+	DataValues(Reference<Variables> __vr)
+		throws NullPointerException
+	{
+		if (__vr == null)
+			throw new NullPointerException("NARG");
+		
+		this._varsref = __vr;
+	}
 }
 
