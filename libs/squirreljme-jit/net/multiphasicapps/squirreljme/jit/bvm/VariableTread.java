@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.bvm;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This contains a single tread of variables and may optionally be used as
@@ -29,8 +30,11 @@ public final class VariableTread
 	/** Is this a stack? */
 	protected final boolean isstack;
 	
+	/** Variables. */
+	private final Variable[] _vars;
+	
 	/** Owning variables. */
-	private Reference<Variables> _varsref;
+	private final Reference<Variables> _varsref;
 	
 	/**
 	 * Initializes the variable tread.
@@ -58,6 +62,13 @@ public final class VariableTread
 		this._varsref = __vr;
 		this.size = __n;
 		this.isstack = __stack;
+		
+		// Setup variables
+		Reference<VariableTread> selfref = new WeakReference<>(this);
+		Variable[] vars = new Variable[__n];
+		for (int i = 0; i < __n; i++)
+			vars[i] = new Variable(selfref, i);
+		this._vars = vars;
 	}
 }
 
