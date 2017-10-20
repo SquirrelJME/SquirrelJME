@@ -193,7 +193,10 @@ public class ZipStreamReader
 			ZipException defer = null;
 			
 			// Check the version needed for extracting
-			int xver = __readUnsignedShort(localheader, 4);
+			// Note that some ZIP writing software sets the upper byte when it
+			// should not. Since the made by version is not stored in the
+			// local file header, the byte will just be stripped.
+			int xver = __readUnsignedShort(localheader, 4) & 0xFF;
 			boolean deny = false;
 			deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
 			

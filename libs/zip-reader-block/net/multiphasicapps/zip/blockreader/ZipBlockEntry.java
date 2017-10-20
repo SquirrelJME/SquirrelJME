@@ -29,6 +29,10 @@ public final class ZipBlockEntry
 	private static final int _MAX_CENTRAL_DIR_VERSION =
 		20;
 	
+	/** The version which made the ZIP */
+	private static final int _CENTRAL_DIRECTORY_MADE_BY_VERSION_OFFSET =
+		4;
+	
 	/** The offset to the version needed to extract. */
 	private static final int _CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET =
 		6;
@@ -181,11 +185,19 @@ public final class ZipBlockEntry
 			data, 0, _CENTRAL_DIRECTORY_MIN_LENGTH))
 			throw new ZipException("CJ0h");
 		
+		// The version needed to extract should not have the upper byte set
+		// but some archive writing software sets the upper byte to match the
+		// OS with the version in the made by bit.
+		int ver = __ArrayData__.readUnsignedShort(
+			_CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET, data),
+			made = __ArrayData__.readUnsignedShort(
+			_CENTRAL_DIRECTORY_MADE_BY_VERSION_OFFSET, data);
+		if ((ver & 0xFF00) != 0 && (made & 0xFF00) == (ver & 0xFF00))
+			ver &= 0xFF;
+		
 		// {@squirreljme.error CJ0i Cannot open the entry because it uses
 		// too new of a version. (The version number)}
-		int ver;
-		if (_MAX_CENTRAL_DIR_VERSION < (ver = __ArrayData__.readUnsignedShort(
-			_CENTRAL_DIRECTORY_EXTRACT_VERSION_OFFSET, data)))
+		if (_MAX_CENTRAL_DIR_VERSION < ver)
 			throw new ZipException(String.format("CJ0i %d", ver));
 		
 		// Need these later to determine how much data is available and how it
