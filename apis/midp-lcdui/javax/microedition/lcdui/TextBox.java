@@ -10,12 +10,36 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.common.EditableText;
+
 public class TextBox
 	extends Screen
 {
-	public TextBox(String __a, String __b, int __c, int __d)
+	/** The common text editor this is associated with. */
+	private final EditableText _editabletext =
+		new EditableText();
+	
+	/**
+	 * Initializes the text box.
+	 *
+	 * @param __title The title of the text box.
+	 * @param __text The initial text in the box
+	 * @param __max The maximum number of characters which may be specified in
+	 * the text box.
+	 * @param __con The constraints of the text box.
+	 * @throws IllegalArgumentException See the exceptions for
+	 * {@link EditableText#initialize(String, int, int)}.
+	 * @since 2017/10/20
+	 */
+	public TextBox(String __title, String __text, int __max, int __con)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// Set title if there is one
+		if (__title != null)
+			setTitle(__title);
+		
+		// Initialize editor with the given set of values
+		this._editabletext.initialize(__text, __max, __con);
 	}
 	
 	public void delete(int __a, int __b)
