@@ -52,6 +52,23 @@ public abstract class DisplayHead
 		throws NullPointerException;
 	
 	/**
+	 * Is this display head in color?
+	 *
+	 * @return If this display head is in color, otherwise it will be
+	 * grayscale.
+	 * @since 2017/10/20
+	 */
+	public abstract boolean isColor();
+	
+	/**
+	 * Returns the number of colors which are supported in this display head.
+	 *
+	 * @return The number of supported colors.
+	 * @since 2017/10/20
+	 */
+	public abstract int numColors();
+	
+	/**
 	 * Returns the current hardware state.
 	 *
 	 * @return The hardware state.

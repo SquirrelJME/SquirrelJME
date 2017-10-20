@@ -63,5 +63,25 @@ public class SwingDisplayHead
 		// The swing interface does not really care about this, so do
 		// nothing at all
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public boolean isColor()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int numColors()
+	{
+		return 256 * 256 * 256;
+	}
 }
 
