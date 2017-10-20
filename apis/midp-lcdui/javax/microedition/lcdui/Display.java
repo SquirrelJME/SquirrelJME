@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.lcdui.CompatibilityDisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
@@ -216,6 +217,17 @@ public class Display
 		// not actually have any real function
 		if (dhp == null)
 			dhp = new HeadlessDisplayManager();
+		
+		// {@squirreljme.property
+		// net.multiphasicapps.squirreljme.lcdui.compatibility=args
+		// This specifies that a compatibility display manager should be
+		// used instead for the LCDUI interfaces. This is intended so that
+		// old and modern software which depends on certain display quirks can
+		// run on any system.}
+		String compatdmparms = System.getProperty(
+			"net.multiphasicapps.squirreljme.lcdui.compatibility");
+		if (compatdmparms != null)
+			dhp = new CompatibilityDisplayManager(dhp, compatdmparms);
 		
 		// Initialize all displays for each head
 		DisplayHead[] heads = dhp.heads();
@@ -555,7 +567,7 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		throw new todo.TODO();
+		return this._head.isColor();
 	}
 	
 	/**
@@ -585,7 +597,7 @@ public class Display
 	 */
 	public int numColors()
 	{
-		throw new todo.TODO();
+		return this._head.numColors();
 	}
 	
 	public void removeCurrent()
