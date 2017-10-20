@@ -1,0 +1,54 @@
+# 2017/10/19
+
+## 10:58
+
+I can do stack caching in a non-traditional way so to speak. There is a
+tread of variables. Basically my idea is similar to the initialization states
+for variables. One of the major things is that variables can be copied all
+over the place and my previous attempts at keeping trails of variables were
+quite very much messy. However, instead what I can do instead of having only
+the initialization flags is having a unique data specifier so to speak. So
+every variable has a value which can be virtually copied to others and such.
+But, instead of allocating based on the Java locals or stack, all allocations
+are against the data allocation set. So basically any values which are tossed
+will just lose their allocation and such. Traversing to other states will just
+use copy operations for the most part to make things match. Methods with
+smaller number of variables will work better. It would be a good optimization.
+Then when it comes to register and stack allocations, those single data
+allocations points are what are considered. Then with this, it will be easier
+to tell when data points no longer have any allocations to them.
+
+## 11:05
+
+This will be the HIL, but I can do virtualized register allocation with just a
+very large set of registers. Native code compilers which have a limited set of
+registers can just instead determine how points are allocated. So that way the
+allocation of unique points purely are managed in an independent way without
+going into any machine specific areas such as the stack. So essentially an
+infinite register set is managed. Additionally, the number of variables used
+can be used as an indicator as to how the stack should be setup. So for
+example if only 6 variables are used and if there are enough registers to fit
+more than 6 and many other things, then there would not need to be stack
+placement at all (unless for like method calls).
+
+## 11:20
+
+Then that means no temporary variables are needed at all, because I would have
+used that previously for temporary things.
+
+## 12:50
+
+Also, push and pop operations can instead use the unique data variables instead
+of using the variables themselves and just refer to the data indexes instead of
+using the variables. This way I do not need to keep track of values in
+variables and worry about pushing and popping. Instead the operations are done
+on the data indexes rather than just the variables.
+
+## 13:33
+
+I can also optimize operations on values too. Since I can know some constants
+which are available at compilation time statically, than can be used to write
+better code for cases which would never normally be reached for example. Since
+I do know enumerated types and their structures, I can optimize those objects
+and treat them somewhat special as enumerations. The same can be said for
+strings too.
