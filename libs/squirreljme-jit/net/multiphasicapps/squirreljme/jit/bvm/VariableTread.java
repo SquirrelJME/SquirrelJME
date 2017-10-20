@@ -37,6 +37,9 @@ public final class VariableTread
 	/** Owning variables. */
 	private final Reference<Variables> _varsref;
 	
+	/** The top of the stack. */
+	private volatile int _top;
+	
 	/**
 	 * Initializes the variable tread.
 	 *
@@ -63,6 +66,7 @@ public final class VariableTread
 		this._varsref = __vr;
 		this.size = __n;
 		this.isstack = __stack;
+		this._top = (__stack ? 0 : -1);
 		
 		// Setup variables
 		Reference<VariableTread> selfref = new WeakReference<>(this);
@@ -76,13 +80,27 @@ public final class VariableTread
 	 * Clears the value at the given index.
 	 *
 	 * @param __i The index of the value to set.
+	 * @return The value which at the given location.
 	 * @throws ParserException If the index is out of bounds.
 	 * @since 2017/10/20
 	 */
-	public void clearValue(int __i)
+	public DataValue clearValue(int __i)
 		throws ParserException
 	{
-		throw new todo.TODO();
+		return __set(__i, null, null);
+	}
+	
+	/**
+	 * Returns the current limit of the tread which may be the number of
+	 * variables or the size of the stack if this is the stack.
+	 *
+	 * @return The limit of the tread, the number of variables it can store
+	 * at the current time.
+	 * @since 2017/10/20
+	 */
+	public int limit()
+	{
+		return (this.isstack ? this._top : this.size);
 	}
 	
 	/**
@@ -102,7 +120,7 @@ public final class VariableTread
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return __set(__i, __t, null);
 	}
 	
 	/**
@@ -124,18 +142,44 @@ public final class VariableTread
 		if (__t == null || __k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return __set(__i, __t, __k);
 	}
 	
 	/**
 	 * Returns the size of the tread.
 	 *
-	 * @return The tread size.
+	 * @return The tread size, the maximum number of variables it can store.
 	 * @since 2017/10/20
 	 */
 	public int size()
 	{
 		return this.size;
+	}
+	
+	/**
+	 * Internally sets the given slot to the given value or potentially
+	 * clears it.
+	 *
+	 * @param __i The index of the value to set.
+	 * @param __t The type of value to set there.
+	 * @param __k The initialization key which determines which variables will
+	 * become initialized when the any one of those variables are initialized.
+	 * @return The resulting data value from the set or clear operation.
+	 * @throws ParserException If the value to set is not valid or the index
+	 * is out of bounds.
+	 * @since 2017/10/20
+	 */
+	DataValue __set(int __i, JavaType __t, InitializationKey __k)
+		throws ParserException
+	{
+		// {@squirreljme.error JI3z Cannot set the given index because it
+		// exceeds the limit of the tread. (The index to set; The limit of the
+		// tread)}
+		int limit = limit();
+		if (__i < 0 || __i >= limit)
+			throw new ParserException(String.format("JI3z %d %d", __i, limit));
+		
+		throw new todo.TODO();
 	}
 }
 
