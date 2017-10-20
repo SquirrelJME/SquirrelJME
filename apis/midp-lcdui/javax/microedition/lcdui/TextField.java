@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.common.EditableText;
+
 /**
  * This represents a field of editable or read-only text which may be placed
  * within a form.
@@ -145,25 +147,9 @@ public class TextField
 	public static final int URL =
 		4;
 	
-	/** The maximum constraint number. */
-	private static final int _MAX_CONSTRAINT =
-		CURRENCY;
-	
-	/** The valid constraint flag bits. */
-	private static final int _VALID_CONSTRAINT_FLAG_BITS =
-		INITIAL_CAPS_SENTENCE | INITIAL_CAPS_WORD | NON_PREDICTIVE | PASSWORD |
-		SENSITIVE | UNEDITABLE;
-	
-	/** The text contained within the field. */
-	private final StringBuilder _value =
-		new StringBuilder();
-	
-	/** The maximum length of the text field. */
-	private volatile int _maxlength =
-		Integer.MAX_VALUE;
-	
-	/** The current constraints. */
-	private volatile int _constraints;
+	/** The common text editor this is associated with. */
+	private final EditableText _editabletext =
+		new EditableText();
 	
 	/**
 	 * Initializes the text field.
@@ -190,16 +176,8 @@ public class TextField
 		// Standard item properties
 		setLabel(__l);
 		
-		// Size and constraints are set first to make sure the string is
-		// valid
-		int n = setMaxSize(__ms);
-		setConstraints(__c);
-		
-		// Set the string which validates the input
-		// However if the constraints are smaller for the implementation then
-		// no exception is thrown (just give the truncated string)
-		if (__t != null)
-			setString((n < __c ? __t.substring(0, n) : __t));
+		// Initialize text area
+		this._editabletext.initialize(__t, __ms, __c);
 	}
 	
 	public void delete(int __a, int __b)
@@ -265,33 +243,7 @@ public class TextField
 	public void setConstraints(int __c)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1h The specified constraint type is not
-		// valid. (The type)}
-		int type = (__c & CONSTRAINT_MASK);
-		if (type < 0 || type > _MAX_CONSTRAINT)
-			throw new IllegalArgumentException(String.format("EB1h %d", type));
-		
-		// {@squirreljme.error EB1i The specified constraint flags are not
-		// valid. (The constraint flags)}
-		if (((__c ^ type) & ~_VALID_CONSTRAINT_FLAG_BITS) != 0)
-			throw new IllegalArgumentException(String.format("EB1i %04x",
-				__c >>> 16));
-		
-		// Lock
-		synchronized (this._lock)
-		{
-			// If the new constraints are not valid then any previous text
-			// is cleared
-			StringBuilder value = this._value;
-			if (!__check(value, this._maxlength, __c))
-			{
-				value.setLength(0);
-				return;
-			}
-			
-			// Set
-			this._constraints = __c;
-		}
+		this._editabletext.setConstraints(__c);
 	}
 	
 	public void setHighlight(int __i, int __l)
@@ -319,24 +271,7 @@ public class TextField
 	public int setMaxSize(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1d The maximum characters in the text field
-		// cannot be zero or negative. (The maximum characters)}
-		if (__ms <= 0)
-			throw new IllegalArgumentException(String.format("EB1d %d", __ms));
-		
-		// Lock
-		synchronized (this._lock)
-		{
-			// {@squirreljme.error EB1f Cannot set the maximum size because the
-			// input text field would have an invalid value.}
-			if (!__check(this._value, __ms, this._constraints))
-				throw new IllegalArgumentException("EB1f");
-		
-			// Set, SquirrelJME does not have a fixed limit on the size of text
-			// fields
-			this._maxlength = __ms;
-			return __ms;
-		}
+		return this._editabletext.setMaxSize(__ms);
 	}
 	
 	/**
@@ -351,56 +286,11 @@ public class TextField
 	public void setString(String __s)
 		throws IllegalArgumentException
 	{
-		// Null becomes empty
-		if (__s == null)
-			__s = "";
-		
-		// Lock
-		synchronized (this._lock)
-		{
-			// {@squirreljme.error EB1g Cannot set the specified string
-			// because it is not valid within the constraints.}
-			if (!__check(__s, this._maxlength, this._constraints))
-				throw new IllegalArgumentException("EB1g");
-			
-			// Set value
-			StringBuilder value = this._value;
-			value.setLength(0);
-			value.append(__s);
-		}
+		this._editabletext.setString(__s);
 	}
 	
 	public int size()
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * This checks the given sequence to make sure it is within the
-	 * specified constraints.
-	 *
-	 * @param __cs The sequence to check.
-	 * @param __ms The maximum number of characters to check.
-	 * @param __c The constraints specifications.
-	 * @return Whether or not the data is valid.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/08/20
-	 */
-	private static boolean __check(CharSequence __cs, int __ms, int __c)
-		throws NullPointerException
-	{
-		// Check
-		if (__cs == null)
-			throw new NullPointerException("NARG");
-		
-		// No constraints used or the input string is empty
-		// Empty strings are always valid because otherwise constructing
-		// objects would always fail with illegal values
-		int type = (__c & CONSTRAINT_MASK),
-			n = __cs.length();
-		if (type == ANY || n == 0)
-			return true;
-		
 		throw new todo.TODO();
 	}
 }

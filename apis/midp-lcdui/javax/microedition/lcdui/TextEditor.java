@@ -10,9 +10,15 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.common.EditableText;
+
 public class TextEditor
 	extends CanvasItem
 {
+	/** The common text editor this is associated with. */
+	private final EditableText _editabletext =
+		new EditableText();
+	
 	public TextEditor(String __text, int __maxsz, int __cons, int __w, int __h)
 	{
 		throw new todo.TODO();
