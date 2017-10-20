@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.bvm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.cff.JavaType;
 
 /**
  * This contains a single tread of variables and may optionally be used as
@@ -69,6 +70,72 @@ public final class VariableTread
 		for (int i = 0; i < __n; i++)
 			vars[i] = new Variable(selfref, i);
 		this._vars = vars;
+	}
+	
+	/**
+	 * Clears the value at the given index.
+	 *
+	 * @param __i The index of the value to set.
+	 * @throws ParserException If the index is out of bounds.
+	 * @since 2017/10/20
+	 */
+	public void clearValue(int __i)
+		throws ParserException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the given slot to the specified value.
+	 *
+	 * @param __i The index of the value to set.
+	 * @param __t The type of value to set there.
+	 * @return The resulting data value from the set.
+	 * @throws NullPointerException On null arguments.
+	 * @throws ParserException If the value to set is not valid or the index
+	 * is out of bounds.
+	 * @since 2017/10/20
+	 */
+	public DataValue setNewValue(int __i, JavaType __t)
+		throws NullPointerException, ParserException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the given slot to the specified value which is not initialized.
+	 *
+	 * @param __i The index of the value to set.
+	 * @param __t The type of value to set there.
+	 * @param __k The initialization key which determines which variables will
+	 * become initialized when the any one of those variables are initialized.
+	 * @return The resulting data value from the set.
+	 * @throws NullPointerException On null arguments.
+	 * @throws ParserException If the value to set is not valid or the index
+	 * is out of bounds.
+	 * @since 2017/10/20
+	 */
+	public DataValue setNewValue(int __i, JavaType __t, InitializationKey __k)
+		throws NullPointerException, ParserException
+	{
+		if (__t == null || __k == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the size of the tread.
+	 *
+	 * @return The tread size.
+	 * @since 2017/10/20
+	 */
+	public int size()
+	{
+		return this.size;
 	}
 }
 

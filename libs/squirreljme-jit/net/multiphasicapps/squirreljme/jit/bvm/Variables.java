@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.jit.bvm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.jit.cff.JavaType;
+import net.multiphasicapps.squirreljme.jit.cff.StackMapTableEntry;
+import net.multiphasicapps.squirreljme.jit.cff.StackMapTableState;
 
 /**
  * This class contains the variable treads for the stack, local, and
@@ -43,6 +46,43 @@ public final class Variables
 		this.data = new DataValues(selfref);
 		this.locals = new VariableTread(selfref, __ml, false);
 		this.stack = new VariableTread(selfref, __ms, true);
+	}
+	
+	/**
+	 * Initializes the local variable state from the given stack map table
+	 * state.
+	 *
+	 * @param __s The stack map state to initialize from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/20
+	 */
+	public void initializeLocalsFrom(StackMapTableState __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Only care about locals
+		VariableTread locals = this.locals;
+		for (int i = 0, n = locals.size(); i < n; i++)
+		{
+			// Only use valid entries
+			StackMapTableEntry se = __s.getLocal(i);
+			if (se == null)
+				continue;
+			
+			// Ignore anything set to nothing or is the top type
+			JavaType set = se.type();
+			if (set == null || set.isNothing() || set.isTop())
+				continue;
+			
+			// Set new value from the given data
+			DataValue dv = (se.isInitialized() ? locals.setNewValue(i, set) :
+				locals.setNewValue(i, set, new InitializationKey(-(i + 1))));
+			
+			// Debug
+			System.err.printf("DEBUG -- %s -> %s%n", se, dv);
+		}
 	}
 }
 

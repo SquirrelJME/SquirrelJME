@@ -172,6 +172,17 @@ public final class JavaType
 	}
 	
 	/**
+	 * Is this the nothing type?
+	 *
+	 * @return If this is the nothing type.
+	 * @since 2017/10/20
+	 */
+	public boolean isNothing()
+	{
+		return equals(NOTHING);
+	}
+	
+	/**
 	 * Is this a top type?
 	 *
 	 * @return If this is a top type or not.

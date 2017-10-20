@@ -26,11 +26,8 @@ public class ByteCodeParser
 	/** The byte code to source from. */
 	protected final ByteCode bytecode;
 	
-	/** Entry variables. */
-	protected final Variables entryvars;
-	
-	/** Currently active variables. */
-	protected final Variables activevars;
+	/** The state of every variable which is available. */
+	protected final Variables variables;
 	
 	/**
 	 * Initializes the byte code parser.
@@ -47,11 +44,12 @@ public class ByteCodeParser
 		
 		this.bytecode = __bc;
 		
-		// Setup variables
+		// Setup variables, which uses the initial stack map state
 		int maxstack = __bc.maxStack(),
 			maxlocals = __bc.maxLocals();
-		this.entryvars = new Variables(maxstack, maxlocals);
-		this.activevars = new Variables(maxstack, maxlocals);
+		Variables variables = new Variables(maxstack, maxlocals);
+		variables.initializeLocalsFrom(__bc.stackMapTable().get(0));
+		this.variables = variables;
 	}
 	
 	/**
