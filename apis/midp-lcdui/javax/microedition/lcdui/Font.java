@@ -104,9 +104,16 @@ public final class Font
 		this._handle = __handle;
 	}
 	
-	public int charWidth(char __a)
+	/**
+	 * Returns the width of the specified character.
+	 *
+	 * @param __c The character to get the width of.
+	 * @return The width of the given character.
+	 * @since 2017/10/21
+	 */
+	public int charWidth(char __c)
 	{
-		throw new todo.TODO();
+		return this._handle.codePointWidth(__c);
 	}
 	
 	public int charsWidth(char[] __a, int __b, int __c)
