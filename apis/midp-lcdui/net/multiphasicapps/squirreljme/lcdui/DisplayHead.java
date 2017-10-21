@@ -28,6 +28,22 @@ public abstract class DisplayHead
 		DisplayState.BACKGROUND;
 	
 	/**
+	 * Returns the display height in millimeters.
+	 *
+	 * @return The display height in millimeters.
+	 * @since 2017/10/20
+	 */
+	public abstract int displayHeightMillimeters();
+	
+	/**
+	 * Returns the display height in pixels.
+	 *
+	 * @return The display height in pixels.
+	 * @since 2017/10/20
+	 */
+	public abstract int displayHeightPixels();
+	
+	/**
 	 * Specifies that the display state has changed.
 	 *
 	 * @param __old The old display state.
@@ -38,6 +54,31 @@ public abstract class DisplayHead
 	protected abstract void displayStateChanged(DisplayState __old,
 		DisplayState __new)
 		throws NullPointerException;
+	
+	/**
+	 * Returns the display width in millimeters.
+	 *
+	 * @return The display width in millimeters.
+	 * @since 2017/10/20
+	 */
+	public abstract int displayWidthMillimeters();
+	
+	/**
+	 * Returns the display width in pixels.
+	 *
+	 * @return The display width in pixels.
+	 * @since 2017/10/20
+	 */
+	public abstract int displayWidthPixels();
+	
+	/**
+	 * Converts the specified abstract font size to a pixel size.
+	 *
+	 * @param __s The abstract font size to convert.
+	 * @return The pixel size of the font.
+	 * @since 2017/10/20
+	 */
+	public abstract int fontSizeToPixelSize(int __s);
 	
 	/**
 	 * Specifies that the hardware state has changed.
@@ -67,6 +108,22 @@ public abstract class DisplayHead
 	 * @since 2017/10/20
 	 */
 	public abstract int numColors();
+	
+	/**
+	 * Returns the DPI of the display.
+	 *
+	 * @return The DPI of the display.
+	 * @since 2017/10/20
+	 */
+	public final int displayDpi()
+	{
+		// dpi = (pixels / mm) * 25.4
+		double dw = ((double)displayWidthPixels() /
+				(double)displayWidthMillimeters()) * 25.4,
+			dh = ((double)displayHeightPixels() /
+				(double)displayHeightMillimeters()) * 25.4;
+		return (int)((dw + dh) / 2.0);
+	}
 	
 	/**
 	 * Returns the current hardware state.
