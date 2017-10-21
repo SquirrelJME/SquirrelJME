@@ -51,7 +51,7 @@ public class DefaultFontManager
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return new DefaultFontFamily(__n);
 	}
 }
 
