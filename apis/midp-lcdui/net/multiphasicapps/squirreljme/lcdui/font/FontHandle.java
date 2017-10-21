@@ -36,6 +36,9 @@ public final class FontHandle
 	/** The size of the font. */
 	protected final int size;
 	
+	/** Is this a monospace font? */
+	protected final boolean ismonospace;
+	
 	/**
 	 * Initializes the font handle.
 	 *
@@ -56,6 +59,26 @@ public final class FontHandle
 		this.family = __fam;
 		this.style = __style;
 		this.size = __size;
+	}
+	
+	/**
+	 * Returns the width of the given codepoint.
+	 *
+	 * @param __p The codepoint to get the pixel width of.
+	 * @return The width of the codepoint in pixels.
+	 * @since 2017/10/21
+	 */
+	public final int codePointWidth(int __p)
+	{
+		// Some characters have special widths
+		switch (__p)
+		{
+				// Zero width characters
+			case 0x200B: return 0;
+			
+			default:
+				throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -117,19 +140,28 @@ public final class FontHandle
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Must be in bounds
-		int sn = __s.length();
-		if (__o < 0 || __l < 0 || (__o + __l) > sn)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// Calculate the width of the string in pixels
-		int rv = 0;
-		for (int i = __o, e = __o + __l; i < e;)
+		// Decode the sequence of characters
+		CharSequenceDecoder csd = new CharSequenceDecoder(__s, __o, __l);
+		int next,
+			width = 0,
+			rvmax = 0;
+		while ((next = csd.next()) >= 0)
 		{
-			throw new todo.TODO();
+			// New line resets the width
+			if (next == '\r' || width == '\n')
+				width = 0;
+			
+			// Otherwise it is added to
+			else
+				width += codePointWidth(next);
+			
+			// Use the maximum width
+			if (width > rvmax)
+				rvmax = width;
 		}
 		
-		return rv;
+		// Use the given width
+		return rvmax;
 	}
 }
 
