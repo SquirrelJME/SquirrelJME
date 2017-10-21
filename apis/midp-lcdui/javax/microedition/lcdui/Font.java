@@ -227,14 +227,55 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
-	public int stringWidth(String __a)
+	/**
+	 * Returns the width of the specified string in pixels.
+	 *
+	 * @param __s The string to get the width.
+	 * @return The width of the string in pixels.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/21
+	 */
+	public int stringWidth(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return substringWidth(__s, 0, __s.length());
 	}
 	
-	public int substringWidth(String __a, int __b, int __c)
+	/**
+	 * Returns the width of the specified sub-string in pixels.
+	 *
+	 * @param __s The string to get the width.
+	 * @param __o The offset into the string.
+	 * @param __l The number of characters to count.
+	 * @return The width of the string in pixels.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StringIndexOutOfBoundsException If the string index is not
+	 * within bounds.
+	 * @since 2017/10/21
+	 */
+	public int substringWidth(String __s, int __o, int __l)
+		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			return this._handle.sequencePixelWidth(__s, __o, __l);
+		}
+		
+		// For compatibility just wrap out of bounds, since it is
+		// confusidly used
+		catch (IndexOutOfBoundsException e)
+		{
+			StringIndexOutOfBoundsException t =
+				new StringIndexOutOfBoundsException(e.getMessage());
+			t.initCause(e);
+			throw t;
+		}
 	}
 	
 	public static Font createFont(InputStream __data)
