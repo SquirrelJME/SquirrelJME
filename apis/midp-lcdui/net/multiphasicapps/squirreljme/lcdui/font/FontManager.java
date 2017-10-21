@@ -10,8 +10,12 @@
 
 package net.multiphasicapps.squirreljme.lcdui.font;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Map;
 import javax.microedition.lcdui.Font;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This class is used as a service and provides management for fonts to be
@@ -26,6 +30,13 @@ public abstract class FontManager
 {
 	/** The single instance font manager to use. */
 	public static final FontManager FONT_MANAGER;
+	
+	/** The handles of every font which has been created. */
+	private final Map<Integer, FontHandle> _handles =
+		new SortedTreeMap<>();
+	
+	/** The ID of the next font to create. */
+	private volatile int _nexthandle;
 	
 	/**
 	 * Locates the font manager to use in this instance or returns the
@@ -42,12 +53,45 @@ public abstract class FontManager
 	}
 	
 	/**
-	 * Returns a primitive font which closest matches the given face.
+	 * Creates a font with the specified parameters.
 	 *
-	 * @param __face The face of the font to get.
-	 * @return The primitive font which closest matches the given face.
-	 * @since 2017/10/20
+	 * @param __face The font face, this is a single value.
+	 * @param __style The style of the font, this may be a combination of
+	 * values.
+	 * @param __size The size of the font, this is a single value.
+	 * @return The nearest font which matches the specified parameters.
+	 * @throws IllegalArgumentException If the input parameters are not valid.
+	 * @since 2017/05/25
 	 */
-	public abstract PrimitiveFont getPrimitiveFont(int __face);
+	public final FontHandle createFont(int __face, int __style, int __size)
+		throws IllegalArgumentException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the handle for the given font or returns {@code null} if no
+	 * font uses that handle.
+	 *
+	 * @return The handle for the given font.
+	 */
+	public final FontHandle getHandle(Font __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Needs to be thread safe
+		Map<Integer, FontHandle> handles = this._handles;
+		synchronized (handles)
+		{
+			// {@squirreljme.error EB1q Attempt to get the handle for a font
+			// which does not have a valid handle mapping.}
+			FontHandle rv = handles.get(__f.hashCode());
+			if (rv == null)
+				throw new RuntimeException("EB1q");
+			return rv;
+		}
+	}
 }
 

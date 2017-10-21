@@ -22,19 +22,5 @@ import javax.microedition.lcdui.Font;
 public class DefaultFontManager
 	extends FontManager
 {
-	/** Instance of the built-in monospace font. */
-	protected final BuiltInMonospaceFont monospace =
-		new BuiltInMonospaceFont();
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/20
-	 */
-	@Override
-	public PrimitiveFont getPrimitiveFont(int __face)
-	{
-		// Always just return the monospace font
-		return this.monospace;
-	}
 }
 

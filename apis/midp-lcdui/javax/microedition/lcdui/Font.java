@@ -12,8 +12,11 @@ package javax.microedition.lcdui;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.lcdui.font.FontHandle;
 import net.multiphasicapps.squirreljme.lcdui.font.FontManager;
 import net.multiphasicapps.squirreljme.lcdui.font.PrimitiveFont;
 
@@ -81,38 +84,23 @@ public final class Font
 	public static final int STYLE_UNDERLINED =
 		4;
 	
-	/** The backing primitive font. */
-	private final PrimitiveFont _primitive;
-	
-	/** The font style. */
-	private final int _style;
-	
-	/** The size of the font. */
-	private final int _size;
-	
-	/** Use exact pixel size for a font? */
-	private final boolean _ispixelsize;
+	/** The handle to the native font. */
+	private final FontHandle _handle;
 	
 	/**
-	 * Initializes the native font representation of the given primitive font
+	 * Initializes the font with the given handle.
 	 *
-	 * @param __pf The backing primitive font.
-	 * @param __style The style of the font.
-	 * @param __size The size of the font.
-	 * @param __px Is the size in pixels or abstract unit sizes?
+	 * @param __handle The handle of the native font to refer to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/20
 	 */
-	private Font(PrimitiveFont __pf, int __style, int __size, boolean __px)
+	private Font(FontHandle __handle)
 		throws NullPointerException
 	{
-		if (__pf == null)
+		if (__handle == null)
 			throw new NullPointerException("NARG");
 		
-		this._primitive = __pf;
-		this._style = __style;
-		this._size = __size;
-		this._ispixelsize = __px;
+		this._handle = __handle;
 	}
 	
 	public int charWidth(char __a)
@@ -201,10 +189,14 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this._handle.hashCode();
 	}
 	
 	public boolean isBold()
@@ -314,9 +306,9 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1c %d",
 				__style));
 		
-		// Create a font with the given parameters
-		return new Font(FontManager.FONT_MANAGER.getPrimitiveFont(__face),
-			__style, __size, false);
+		// Setup font to the given handle
+		return new Font(FontManager.FONT_MANAGER.createFont(__face, __style,
+			__size));
 	}
 	
 	public static Font getFont(String __name, int __style, int __pxs)
