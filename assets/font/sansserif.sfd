@@ -15,15 +15,14 @@ InvalidEm: 0
 LayerCount: 2
 Layer: 0 0 "Back" 1
 Layer: 1 0 "Fore" 0
-NeedsXUIDChange: 1
-XUID: [1021 527 -1201700292 11135526]
+XUID: [1021 527 -1201700292 11135527]
 UseXUID: 1
 FSType: 0
 OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1508598780
-ModificationTime: 1508601740
+ModificationTime: 1508602314
 PfmFamily: 17
 TTFWeight: 400
 TTFWidth: 5
@@ -52,12 +51,12 @@ NameList: AGL For New Fonts
 DisplaySize: 16
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 0 29 6
+WinInfo: 87 29 6
 OnlyBitmaps: 1
 BeginPrivate: 0
 EndPrivate
 TeXData: 1 0 0 346030 173015 115343 0 1048576 115343 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
-BeginChars: 256 31
+BeginChars: 256 32
 
 StartChar: uni0000
 Encoding: 0 0 0
@@ -304,8 +303,16 @@ Width: 1000
 VWidth: 0
 LayerCount: 2
 EndChar
+
+StartChar: uni00A0
+Encoding: 160 160 31
+Width: 0
+VWidth: 0
+Flags: W
+LayerCount: 2
+EndChar
 EndChars
-BitmapFont: 8 31 6 2 1
+BitmapFont: 8 32 6 2 1
 BDFChar: 0 0 8 0 0 0 0
 z
 BDFChar: 6 70 4 0 0 0 0
@@ -317,7 +324,7 @@ z
 BDFChar: 25 89 6 0 0 0 0
 z
 EndBitmapFont
-BitmapFont: 16 31 13 3 1
+BitmapFont: 16 32 13 3 1
 BDFChar: 0 0 16 0 10 0 10
 "98o3*rn$GDSZ80H,)Xp)ZU?J"98E%
 BDFChar: 1 65 9 0 6 0 10
@@ -380,8 +387,10 @@ BDFChar: 29 92 16 0 0 0 0
 z
 BDFChar: 30 1 16 0 0 0 0
 z
+BDFChar: 31 160 0 0 0 0 0
+z
 EndBitmapFont
-BitmapFont: 24 31 19 5 1
+BitmapFont: 24 32 19 5 1
 BDFChar: 0 0 24 0 0 0 0
 z
 BDFChar: 1 65 13 0 0 0 0
