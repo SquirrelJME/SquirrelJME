@@ -36,6 +36,10 @@ public abstract class FontManager
 	private final Map<Integer, FontHandle> _handles =
 		new SortedTreeMap<>();
 	
+	/** The families which are available. */
+	private final Map<FontFamilyName, FontFamily> _families =
+		new SortedTreeMap<>();
+	
 	/** The ID of the next font to create. */
 	private volatile int _nexthandle;
 	
@@ -54,6 +58,100 @@ public abstract class FontManager
 	}
 	
 	/**
+	 * Returns the alias for the given family name so that it always refers
+	 * to another family name.
+	 *
+	 * @param __n The name of the font to alias.
+	 * @return The alias for that given name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/20
+	 */
+	public abstract FontFamilyName aliasFamilyName(FontFamilyName __n)
+		throws NullPointerException;
+	
+	/**
+	 * Loads the given font family.
+	 *
+	 * @param __n The font family to load.
+	 * @return The family for the given font.
+	 * @throws IllegalArgumentException If the font does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 217/10/20
+	 */
+	protected abstract FontFamily loadFamily(FontFamilyName __n)
+		throws IllegalArgumentException, NullPointerException;
+	
+	/**
+	 * Returns the family to use for the given face.
+	 *
+	 * @param __face The face to create.
+	 * @return The family of the font to use for the face.
+	 * @since 2017/10/20
+	 */
+	public final FontFamily createFamily(int __face)
+	{
+		switch (__face)
+		{
+				// Monospaced
+			case Font.FACE_MONOSPACE:
+				return createFamily("Monospaced");
+				
+				// Proportional
+			case Font.FACE_PROPORTIONAL:
+				return createFamily("SansSerif");
+			
+				// Default font
+			case Font.FACE_SYSTEM:
+			default:
+				return createFamily("Default");
+		}
+	}
+	
+	/**
+	 * Returns the family to use for the given font name.
+	 *
+	 * @param __name The name of the font to get.
+	 * @return The family for the given font.
+	 * @throws IllegalArgumentException If the given family name does not
+	 * exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/20
+	 */
+	public final FontFamily createFamily(String __name)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup font family name
+		FontFamilyName fn = new FontFamilyName(__name),
+			alias = aliasFamilyName(fn);
+		if (alias != null)
+			fn = alias;
+		
+		// Families are only initialized once
+		Map<FontFamilyName, FontFamily> families = this._families;
+		synchronized (families)
+		{
+			// Use pre-existing family
+			FontFamily rv = families.get(fn);
+			if (rv != null)
+				return rv;
+			
+			// {@squirreljme.error EB1r Could not load the specified font
+			// family because it does not exist. (The name of the family)}
+			rv = loadFamily(fn);
+			if (rv == null)
+				throw new IllegalArgumentException(String.format("EB1r %s",
+					fn));
+			
+			// Cache for later
+			families.put(fn, rv);
+			return rv;
+		}
+	}
+	
+	/**
 	 * Creates a font with the specified parameters.
 	 *
 	 * @param __face The font face, this is a single value.
@@ -67,6 +165,28 @@ public abstract class FontManager
 	public final FontHandle createFont(int __face, int __style, int __size)
 		throws IllegalArgumentException
 	{
+		return createFont(createFamily(__face), __style, __size);
+	}
+	
+	/**
+	 * Creates a font with the specified parameters.
+	 *
+	 * @param __fam The family of the font.
+	 * @param __style The style of the font, this may be a combination of
+	 * values.
+	 * @param __size The size of the font in pixels.
+	 * @return The nearest font which matches the specified parameters.
+	 * @throws IllegalArgumentException If the input parameters are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/05/25
+	 */
+	public final FontHandle createFont(FontFamily __fam, int __style,
+		int __size)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__fam == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
