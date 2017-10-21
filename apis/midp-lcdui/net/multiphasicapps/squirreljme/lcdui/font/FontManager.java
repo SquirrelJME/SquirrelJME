@@ -191,7 +191,16 @@ public abstract class FontManager
 		Map<Integer, FontHandle> handles = this._handles;
 		synchronized (handles)
 		{
-			throw new todo.TODO();
+			// Go through fonts to find a compatible font which already exists
+			for (FontHandle h : handles.values())
+				if (h.isCompatible(__fam, __style, __size))
+					return h;
+			
+			// Create new handle
+			int rid = ++this._nexthandle;
+			FontHandle rv = new FontHandle(rid, __fam, __style, __size);
+			handles.put(rid, rv);
+			return rv;
 		}
 	}
 	

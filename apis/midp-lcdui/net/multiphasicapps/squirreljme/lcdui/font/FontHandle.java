@@ -27,15 +27,35 @@ public final class FontHandle
 	/** The identifier of the handle. */
 	protected final int id;
 	
+	/** The family of the font. */
+	protected final FontFamily family;
+	
+	/** The font style. */
+	protected final int style;
+	
+	/** The size of the font. */
+	protected final int size;
+	
 	/**
 	 * Initializes the font handle.
 	 *
 	 * @param __id The ID of the font.
+	 * @param __fam The font family.
+	 * @param __style The style of the font.
+	 * @param __size The size of the font.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/20
 	 */
-	public FontHandle(int __id)
+	public FontHandle(int __id, FontFamily __fam, int __style, int __size)
+		throws NullPointerException
 	{
+		if (__fam == null)
+			throw new NullPointerException("NARG");
+		
 		this.id = __id;
+		this.family = __fam;
+		this.style = __style;
+		this.size = __size;
 	}
 	
 	/**
@@ -59,6 +79,24 @@ public final class FontHandle
 	public final int hashCode()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Checks if the given specifiers are compatible.
+	 *
+	 * @param __f The font family.
+	 * @param __style The style of the font.
+	 * @param __size The size of the font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/21
+	 */
+	public final boolean isCompatible(FontFamily __f, int __style, int __size)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
