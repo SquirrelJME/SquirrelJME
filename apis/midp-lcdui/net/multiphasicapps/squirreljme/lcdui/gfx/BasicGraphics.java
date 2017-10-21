@@ -667,7 +667,7 @@ public abstract class BasicGraphics
 	@Override
 	public final void drawSubstring(String __s, int __o, int __l, int __x,
 		int __y, int __anchor)
-		throws NullPointerException
+		throws NullPointerException, StringIndexOutOfBoundsException
 	{
 		throw new todo.TODO();
 	}

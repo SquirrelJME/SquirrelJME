@@ -98,5 +98,38 @@ public final class FontHandle
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Returns the width of the character sequence in pixels.
+	 *
+	 * @param __s The characters to get the width of.
+	 * @param __o The offset into the sequence.
+	 * @param __l The number of characters to count.
+	 * @return The width of the sequence in pixels.
+	 * @throws IndexOutOfBoundsException If the specified indexes are not
+	 * within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/21
+	 */
+	public final int sequencePixelWidth(CharSequence __s, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Must be in bounds
+		int sn = __s.length();
+		if (__o < 0 || __l < 0 || (__o + __l) > sn)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Calculate the width of the string in pixels
+		int rv = 0;
+		for (int i = __o, e = __o + __l; i < e;)
+		{
+			throw new todo.TODO();
+		}
+		
+		return rv;
+	}
 }
 

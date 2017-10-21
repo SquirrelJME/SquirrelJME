@@ -292,7 +292,7 @@ public abstract class Graphics
 	
 	public abstract void drawSubstring(String __s, int __o, int __l, int __x,
 		int __y, int __anchor)
-		throws NullPointerException;
+		throws NullPointerException, StringIndexOutOfBoundsException;
 	
 	public abstract void drawText(Text __t, int __x, int __y);
 	
