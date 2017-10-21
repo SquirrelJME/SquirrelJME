@@ -11,12 +11,12 @@
 package net.multiphasicapps.squirreljme.lcdui.font;
 
 /**
- * This represents the built-in monospace font.
+ * This represents the family of a font and is used to provide a native
+ * representation of a given family.
  *
  * @since 2017/10/20
  */
-public class BuiltInMonospaceFont
-	extends PrimitiveFont
+public abstract class FontFamily
 {
 }
 
