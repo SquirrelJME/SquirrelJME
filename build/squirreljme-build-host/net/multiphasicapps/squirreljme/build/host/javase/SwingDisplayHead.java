@@ -109,7 +109,8 @@ public class SwingDisplayHead
 		// scaled accordingly
 		// The pixel sizes of the font are determined to be the distance
 		// between the lowest part of the o character in my word processor
-		// in pixels.
+		// in pixels, but regardless it should still work for the most
+		// part.
 		double dpimul = ((double)displayDpi() / 120.0);
 		switch (__s)
 		{

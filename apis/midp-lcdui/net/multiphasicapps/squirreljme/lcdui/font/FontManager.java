@@ -59,7 +59,7 @@ public abstract class FontManager
 	 * @param __face The font face, this is a single value.
 	 * @param __style The style of the font, this may be a combination of
 	 * values.
-	 * @param __size The size of the font, this is a single value.
+	 * @param __size The size of the font in pixels.
 	 * @return The nearest font which matches the specified parameters.
 	 * @throws IllegalArgumentException If the input parameters are not valid.
 	 * @since 2017/05/25
