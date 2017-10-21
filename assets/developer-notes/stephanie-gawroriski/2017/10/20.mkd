@@ -1,0 +1,58 @@
+# 2017/10/20
+
+## 15:20
+
+Question is do initialization keys go with values? I would say no because
+each value is unique anyway and that would require copying new values when
+all of the same values become initialized.
+
+## 19:11
+
+TextBox, TextEditor, and TextField are literally the same exact classes with
+carets, size limits, and constraints. It would be best to just have a single
+common class all three can use.
+
+## 19:40
+
+So the question is, do I do graphics through a framebuffer and have my own
+display interface kind of thing? Or... do I have it where widget engines which
+match native UI elements and otherwise able to be used. It would be nice if
+native systems could be considered and such. I know many users have complained
+about Swing's huge lack of native widgets (even though it really supported
+them), although it was quite odd. I would need to figure that out.
+
+## 20:28
+
+Pretty sure I want to support codepoints and emoji when it comes to font,
+since those are the wave of the future. Only thing is would be handling color
+and dynamically generated fonts. I will say that of the LCDUI interfaces that
+fonts will be the most complex thing ever. I also need to figure out a way
+to do reverse font lookups which will be needed by drawing. Most of the
+classes are given `Font`, but that needs to be reversable from the font
+manager to be able to draw them properly. So I am pretty sure I will be able
+to do that, if I manage things correctly.
+
+## 20:32
+
+This will mean that `Font` just wraps some `PrimitiveFont`.
+
+## 20:36
+
+Actually, maybe instead Fonts are just handles to primitive fonts with special
+specifiers. Basically there are just `FontHandle`s, which are pointed to
+directly.
+
+## 20:44
+
+Actually, what I can do is just hide the fonts within handles which is stored
+by the hash code. Basically I just have a mapping of every single font which
+has ever been created by the native system. This makes it simple to be handled
+and such then.
+
+## 21:02
+
+Question is, how do you handle DPI differences across displays? That would be
+a bit complicated, so I suppose the `DisplayManager` should have a consistent
+setup. Well really, I suppose when it comes to fonts and anything display
+dependent, it should just use the default head to get parameters from. Since
+multiple heads can in fact have different color parameters and such.
