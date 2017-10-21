@@ -36,9 +36,6 @@ public final class FontHandle
 	/** The size of the font. */
 	protected final int size;
 	
-	/** Is this a monospace font? */
-	protected final boolean ismonospace;
-	
 	/**
 	 * Initializes the font handle.
 	 *
