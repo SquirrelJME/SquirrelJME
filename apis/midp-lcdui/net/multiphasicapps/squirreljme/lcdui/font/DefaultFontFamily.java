@@ -11,16 +11,14 @@
 package net.multiphasicapps.squirreljme.lcdui.font;
 
 /**
- * This represents the family of a font and is used to provide a native
- * representation of a given family.
+ * This supports handling of font families for the default font manager which
+ * provides fallback fonts if no system fonts are available.
  *
- * @since 2017/10/20
+ * @since 2017/10/21
  */
-public abstract class FontFamily
+public class DefaultFontFamily
+	extends FontFamily
 {
-	/** The name of the family. */
-	protected final FontFamilyName name;
-	
 	/**
 	 * Initializes the base font family.
 	 *
@@ -28,13 +26,10 @@ public abstract class FontFamily
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/21
 	 */
-	public FontFamily(FontFamilyName __n)
+	public DefaultFontFamily(FontFamilyName __n)
 		throws NullPointerException
 	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		this.name = __n;
+		super(__n);
 	}
 }
 

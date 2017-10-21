@@ -187,7 +187,12 @@ public abstract class FontManager
 		if (__fam == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Needs to be thread safe
+		Map<Integer, FontHandle> handles = this._handles;
+		synchronized (handles)
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
