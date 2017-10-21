@@ -76,5 +76,16 @@ public abstract class DisplayManager
 	 * @since 2017/08/19
 	 */
 	public abstract DisplayHead[] heads();
+	
+	/**
+	 * Returns the default display head.
+	 *
+	 * @return The default display head.
+	 * @since 2017/10/20
+	 */
+	public static final DisplayHead defaultDisplayHead()
+	{
+		return DISPLAY_MANAGER.heads()[0];
+	}
 }
 

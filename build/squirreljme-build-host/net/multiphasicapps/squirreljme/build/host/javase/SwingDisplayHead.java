@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import javax.microedition.lcdui.Font;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
@@ -35,6 +39,28 @@ public class SwingDisplayHead
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int displayHeightMillimeters()
+	{
+		return (int)((displayHeightPixels() * 25.4) /
+			(double)Toolkit.getDefaultToolkit().getScreenResolution());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int displayHeightPixels()
+	{
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().
+			getDefaultScreenDevice().getDisplayMode().getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/10/01
 	 */
 	@Override
@@ -46,6 +72,60 @@ public class SwingDisplayHead
 			throw new NullPointerException("NARG");
 		
 		// The swing interface has no notion of foreground and background
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int displayWidthMillimeters()
+	{
+		return (int)((displayWidthPixels() * 25.4) /
+			(double)Toolkit.getDefaultToolkit().getScreenResolution());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int displayWidthPixels()
+	{
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().
+			getDefaultScreenDevice().getDisplayMode().getWidth();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int fontSizeToPixelSize(int __s)
+	{
+		// There is really no real known way to get the pixel font size in
+		// Swing and it is really really generic.
+		// So the pixel sizes are calibrated for my display with the DPI
+		// scaled accordingly
+		// The pixel sizes of the font are determined to be the distance
+		// between the lowest part of the o character in my word processor
+		// in pixels.
+		double dpimul = ((double)displayDpi() / 120.0);
+		switch (__s)
+		{
+				// Small, 8 pt
+			case Font.SIZE_SMALL:
+				return (int)(15.0 * dpimul);
+			
+				// Large, 16 pt
+			case Font.SIZE_LARGE:
+				return (int)(23.0 * dpimul);
+			
+				// Default, 12 pt
+			case Font.SIZE_MEDIUM:
+			default:
+				return (int)(30.0 * dpimul);
+		}
 	}
 	
 	/**

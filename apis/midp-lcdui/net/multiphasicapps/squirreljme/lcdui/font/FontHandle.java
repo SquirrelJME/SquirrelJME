@@ -16,6 +16,10 @@ package net.multiphasicapps.squirreljme.lcdui.font;
  *
  * Handles are identified by a single ID.
  *
+ * All fonts are in pixels. The height of the font is specified as the distance
+ * in pixels between the baselines of two unadjusted lines of text, which is
+ * also called the em box.
+ *
  * @since 2017/10/20
  */
 public final class FontHandle

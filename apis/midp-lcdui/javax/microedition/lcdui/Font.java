@@ -16,6 +16,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.font.FontHandle;
 import net.multiphasicapps.squirreljme.lcdui.font.FontManager;
 import net.multiphasicapps.squirreljme.lcdui.font.PrimitiveFont;
@@ -154,9 +156,16 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the standard height of a line for this font. This is equal
+	 * to the sum of the leading, ascent, and the descent.
+	 *
+	 * @return The standard font height.
+	 * @since 2017/10/20
+	 */
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return getLeading() + getAscent() + getDescent();
 	}
 	
 	public int getLeading()
@@ -306,9 +315,11 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1c %d",
 				__style));
 		
-		// Setup font to the given handle
+		// Setup font to the given handle, the font size needs to be adjusted
+		// so that it uses pixel sizes rather than abstract sizes
+		DisplayHead dh = DisplayManager.defaultDisplayHead();
 		return new Font(FontManager.FONT_MANAGER.createFont(__face, __style,
-			__size));
+			dh.fontSizeToPixelSize(__size)));
 	}
 	
 	public static Font getFont(String __name, int __style, int __pxs)
