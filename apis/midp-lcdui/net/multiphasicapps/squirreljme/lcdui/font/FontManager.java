@@ -145,6 +145,9 @@ public abstract class FontManager
 				throw new IllegalArgumentException(String.format("EB1r %s",
 					fn));
 			
+			// Debug
+			System.err.printf("DEBUG -- Created font family: %s%n", fn);
+			
 			// Cache for later
 			families.put(fn, rv);
 			return rv;
