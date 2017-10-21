@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 /**
  * This is a provider which always returns a fixed set of display heads that
@@ -32,6 +33,40 @@ public abstract class DisplayManager
 	 */
 	public static final Object GLOBAL_LOCK =
 		new Object();
+	
+	/** The global display manager instance. */
+	public static final DisplayManager DISPLAY_MANAGER;
+	
+	/**
+	 * This locates and initializes the default display manager.
+	 *
+	 * @since 2017/05/23
+	 */
+	static
+	{
+		// Use the default display head manager
+		DisplayManager dhp = SystemEnvironment.<DisplayManager>systemService(
+			DisplayManager.class);
+		
+		// If no manager is available, use a null display manager that does
+		// not actually have any real function
+		if (dhp == null)
+			dhp = new HeadlessDisplayManager();
+		
+		// {@squirreljme.property
+		// net.multiphasicapps.squirreljme.lcdui.compatibility=args
+		// This specifies that a compatibility display manager should be
+		// used instead for the LCDUI interfaces. This is intended so that
+		// old and modern software which depends on certain display quirks can
+		// run on any system.}
+		String compatdmparms = System.getProperty(
+			"net.multiphasicapps.squirreljme.lcdui.compatibility");
+		if (compatdmparms != null)
+			dhp = new CompatibilityDisplayManager(dhp, compatdmparms);
+		
+		// Use this one as the manager
+		DISPLAY_MANAGER = dhp;
+	}
 	
 	/**
 	 * Returns the display heads which are available on the system.
