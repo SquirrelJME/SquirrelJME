@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import javax.microedition.lcdui.Font;
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 

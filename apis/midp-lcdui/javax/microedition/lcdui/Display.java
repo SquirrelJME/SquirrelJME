@@ -187,9 +187,6 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** The global display manager instance. */
-	static final DisplayManager _MANAGER;
-	
 	/** Display heads. */
 	private static final Display[] _DISPLAYS;
 	
@@ -209,25 +206,8 @@ public class Display
 	 */
 	static
 	{
-		// Use the default display head manager
-		DisplayManager dhp = SystemEnvironment.<DisplayManager>systemService(
-			DisplayManager.class);
-		
-		// If no manager is available, use a null display manager that does
-		// not actually have any real function
-		if (dhp == null)
-			dhp = new HeadlessDisplayManager();
-		
-		// {@squirreljme.property
-		// net.multiphasicapps.squirreljme.lcdui.compatibility=args
-		// This specifies that a compatibility display manager should be
-		// used instead for the LCDUI interfaces. This is intended so that
-		// old and modern software which depends on certain display quirks can
-		// run on any system.}
-		String compatdmparms = System.getProperty(
-			"net.multiphasicapps.squirreljme.lcdui.compatibility");
-		if (compatdmparms != null)
-			dhp = new CompatibilityDisplayManager(dhp, compatdmparms);
+		// Use the display manager which was said to be used
+		DisplayManager dhp = DisplayManager.DISPLAY_MANAGER;
 		
 		// Initialize all displays for each head
 		DisplayHead[] heads = dhp.heads();
@@ -238,7 +218,6 @@ public class Display
 		
 		// Set
 		_DISPLAYS = displays;
-		_MANAGER = dhp;
 	}
 	
 	/**
