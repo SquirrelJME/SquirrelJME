@@ -1,0 +1,19 @@
+# 2017/10/21
+
+## 10:12
+
+Just going to have some glue for `StringIndexOutOfBoundsException` because
+it is only used in 5 classes and is used exactly 6 times. So for those
+that throw it, for compatibility it will wrap an existing index out of
+bounds and throw that in said event.
+
+## 10:46
+
+So basically I am going to need a class which can decode text and
+completely handle codepoints and everything else.
+
+## 11:18
+
+I suppose since font formats are complex, the internal fonts will be in the
+bitmap X font format. This simplifies things for the most part and I believe
+the format is purely in text, which is something I like.
