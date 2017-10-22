@@ -1,5 +1,5 @@
 SplineFontDB: 3.0
-FontName: Monospace
+FontName: monospace
 FullName: SquirrelJME Monospace
 FamilyName: Monospace
 Weight: Regular
@@ -15,15 +15,14 @@ InvalidEm: 0
 LayerCount: 2
 Layer: 0 0 "Back" 1
 Layer: 1 0 "Fore" 0
-NeedsXUIDChange: 1
-XUID: [1021 527 -1201700292 1746735]
+XUID: [1021 527 -1201700292 16181516]
 UseXUID: 1
 FSType: 0
 OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1508689808
-ModificationTime: 1508690065
+ModificationTime: 1508691144
 PfmFamily: 17
 TTFWeight: 400
 TTFWidth: 5
