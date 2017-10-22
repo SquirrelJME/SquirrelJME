@@ -1,5 +1,5 @@
 SplineFontDB: 3.0
-FontName: SansSerif
+FontName: sansserif
 FullName: SquirrelJME Sans Serif
 FamilyName: SansSerif
 Weight: Regular
@@ -21,7 +21,7 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1508688836
-ModificationTime: 1508690436
+ModificationTime: 1508691108
 PfmFamily: 33
 TTFWeight: 400
 TTFWidth: 5
