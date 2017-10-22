@@ -1,0 +1,29 @@
+# 2017/10/22
+
+## 02:22
+
+I need a font but FontForge is really glitchy in that it fails to properly
+save glyphs which have been drawn. I would draw a bunch and then suddenly they
+just go away.
+
+## 02:31
+
+Looks like I will have to operate solely on BDFs I suppose. That would be
+annoying a bit because it is like GIMPs export, but so far it seems that
+glyphs are not just lost out of nowhere at least when they are in memory.
+So that means not keeping around any sfd files.
+
+## 02:37
+
+I could though, write my own font editor and keep it within SquirrelJME and
+just have it do what I need it to do. Would be some more work, but it would
+in a way work for the most part.
+
+## 02:39
+
+I just have a slight dependency issue, to develop the UI and such more I need
+some fonts. But to draw the fonts I need, I need the UI. So I would have to
+pull out GIMP and have very basic bitmap fonts, just enough to get things
+done for the most part. Then after that, move the font engine over. I could
+operate with BFDs, so that the fonts are in text format but could potentially
+be edited by FontForge and such.
