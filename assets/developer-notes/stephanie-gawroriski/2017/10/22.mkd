@@ -27,3 +27,8 @@ pull out GIMP and have very basic bitmap fonts, just enough to get things
 done for the most part. Then after that, move the font engine over. I could
 operate with BFDs, so that the fonts are in text format but could potentially
 be edited by FontForge and such.
+
+## 13:03
+
+I hope directories will end up being much better compared to single files.
+Better for version control and glyphs it seems will not be able to get lost.
