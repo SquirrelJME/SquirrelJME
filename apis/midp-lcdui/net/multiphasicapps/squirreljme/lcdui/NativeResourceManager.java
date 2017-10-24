@@ -25,6 +25,10 @@ import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
 public final class NativeResourceManager
 	implements Runnable
 {
+	/** Single instance of the resource manager. */
+	public static final NativeResourceManager RESOURCE_MANAGER =
+		new NativeResourceManager();
+	
 	/** The thread which manages resources. */
 	protected final Thread thread;
 	
@@ -33,7 +37,7 @@ public final class NativeResourceManager
 	 *
 	 * @since 2017/10/24
 	 */
-	public NativeResourceManager()
+	private NativeResourceManager()
 	{
 		// Initialize and run the thread last
 		Thread thread = SystemProcess.createDaemonThread(this,
