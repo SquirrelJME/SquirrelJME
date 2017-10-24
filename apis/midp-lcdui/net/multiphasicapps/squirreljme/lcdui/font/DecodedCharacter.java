@@ -11,37 +11,25 @@
 package net.multiphasicapps.squirreljme.lcdui.font;
 
 /**
- * This supports handling of font families for the default font manager which
- * provides fallback fonts if no system fonts are available.
+ * This contains structured information on a character which has been
+ * decoded. This is used for font rendering.
  *
- * @since 2017/10/21
+ * @since 2017/10/24
  */
-public class DefaultFontFamily
-	extends FontFamily
+public final class DecodedCharacter
 {
-	/**
-	 * Initializes the base font family.
-	 *
-	 * @param __n The name of the font.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/10/21
-	 */
-	public DefaultFontFamily(FontFamilyName __n)
-		throws NullPointerException
-	{
-		super(__n);
-	}
+	/** The primary and visible codepoint. */
+	public final int codepoint;
 	
 	/**
-	 * {@inheritDoc}
+	 * Initializes the decoded character.
+	 *
+	 * @param __cp The code point of the character.
 	 * @since 2017/10/24
 	 */
-	@Override
-	public int sequencePixelWidth(FontHandle __h, CharSequence __s,
-		int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
+	public DecodedCharacter(int __cp)
 	{
-		return FontFamily.INVALID_WIDTH;
+		this.codepoint = __cp;
 	}
 }
 

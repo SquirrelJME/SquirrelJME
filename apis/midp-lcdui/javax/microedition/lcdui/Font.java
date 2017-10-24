@@ -113,7 +113,7 @@ public final class Font
 	 */
 	public int charWidth(char __c)
 	{
-		return this._handle.codePointWidth(__c);
+		return this._handle.codepointWidth(__c, -1);
 	}
 	
 	public int charsWidth(char[] __a, int __b, int __c)

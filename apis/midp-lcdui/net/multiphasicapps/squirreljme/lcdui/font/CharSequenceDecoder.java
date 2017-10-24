@@ -28,6 +28,9 @@ public final class CharSequenceDecoder
 	/** The current marker position. */
 	private volatile int _at;
 	
+	/** The next detail. */
+	private volatile DecodedCharacter _next;
+	
 	/**
 	 * Initializes the decoder for the given character sequence.
 	 *
@@ -64,18 +67,51 @@ public final class CharSequenceDecoder
 	 * points remaining.
 	 * @since 2017/10/21
 	 */
-	public int next()
+	public DecodedCharacter next()
 	{
+		// Peek first always
+		peek();
+		
+		// Has been read already?
+		DecodedCharacter rv = this._next;
+		if (rv != null)
+		{
+			this._next = null;
+			return rv;
+		}
+		
+		// No more characters left
+		return null;
+	}
+	
+	/**
+	 * This returns the character which follows the next character.
+	 *
+	 * @return The character which follows the next character or {@code null}
+	 * if there is no next character.
+	 * @since 2017/10/24
+	 */
+	public DecodedCharacter peek()
+	{
+		// Already peeked?
+		DecodedCharacter rv = this._next;
+		if (rv != null)
+			return rv;
+		
 		// Detect no more characters
 		int at = this._at,
 			end = this.end;
 		if (at >= end)
-			return -1;
+			return null;
 		
-		// Otherwise return the next character
+		// Read the next codepoint
 		CharSequence sequence = this.sequence;
-		int rv = sequence.charAt(at);
+		int codepoint = sequence.charAt(at);
 		this._at = at + 1;
+		
+		// Build information
+		rv = new DecodedCharacter(codepoint);
+		this._next = rv;
 		return rv;
 	}
 }
