@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.lcdui;
 
 import java.util.Objects;
+import javax.microedition.lcdui.Graphics;
 
 /**
  * This class represents a display head where instances of
@@ -79,6 +80,14 @@ public abstract class DisplayHead
 	 * @since 2017/10/20
 	 */
 	public abstract int fontSizeToPixelSize(int __s);
+	
+	/**
+	 * Returns the graphics object which can draw on the entire screen.
+	 *
+	 * @return The fullscreen graphics object.
+	 * @since 2017/10/24
+	 */
+	public abstract Graphics fullscreenGraphics();
 	
 	/**
 	 * Specifies that the hardware state has changed.

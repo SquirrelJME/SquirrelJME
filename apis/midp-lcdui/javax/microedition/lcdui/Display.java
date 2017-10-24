@@ -195,7 +195,7 @@ public class Display
 	private static final Thread _EVENT_LOOP_THREAD;
 	
 	/** The head this display is attached to. */
-	private final DisplayHead _head;
+	final DisplayHead _head;
 	
 	/** The current displayable. */
 	private volatile Displayable _current;

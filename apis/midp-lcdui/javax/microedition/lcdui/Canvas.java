@@ -536,10 +536,14 @@ public abstract class Canvas
 	@__SerializedEvent__
 	void __doRepaint(int __x, int __y, int __w, int __h)
 	{
+		// Ignore repaints if there is no current display
+		Display current = super._current;
+		if (current == null)
+			return;
+		
 		// Obtain the graphics which is used to draw on the canvas
-		Graphics g = null;
-		if (true)
-			throw new todo.TODO();
+		Graphics g = (this._isfullscreen ? current._head.fullscreenGraphics() :
+			todo.TODO.<Graphics>missingObject());
 		
 		// Reset any parameters as possible and the clip
 		if (g instanceof BasicGraphics)
