@@ -96,6 +96,44 @@ public final class FontHandle
 	}
 	
 	/**
+	 * This returns the ascent of the font from the top of the line to the
+	 * average point where the tops of characters are.
+	 *
+	 * @return The ascent of the font.
+	 * @since 2017/10/24
+	 */
+	public int getAscent()
+	{
+		return this.family.getAscent(this);
+	}
+	
+	/**
+	 * This returns the descent of the font from the baseline of the font to
+	 * the bottom of most alphanumeric characters.
+	 *
+	 * @return The descent of the font.
+	 * @since 2017/10/24
+	 */
+	public int getDescent()
+	{
+		return this.family.getDescent(this);
+	}
+	
+	/**
+	 * Returns the standard leading of the font in pixels. The leading is the
+	 * standard number of pixels which are between each line. The space is
+	 * reserved between the descent of the first line and the ascent of the
+	 * next line.
+	 *
+	 * @return The standard leading.
+	 * @since 2017/10/24
+	 */
+	public int getLeading()
+	{
+		return this.size / 5;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/10/20
 	 */

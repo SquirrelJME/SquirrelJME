@@ -137,9 +137,16 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This returns the ascent of the font from the top of the line to the
+	 * average point where the tops of characters are.
+	 *
+	 * @return The ascent of the font.
+	 * @since 2017/10/24
+	 */
 	public int getAscent()
 	{
-		throw new todo.TODO();
+		return this._handle.getAscent();
 	}
 	
 	public int getBaselinePosition()
@@ -147,9 +154,16 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This returns the descent of the font from the baseline of the font to
+	 * the bottom of most alphanumeric characters.
+	 *
+	 * @return The descent of the font.
+	 * @since 2017/10/24
+	 */
 	public int getDescent()
 	{
-		throw new todo.TODO();
+		return this._handle.getDescent();
 	}
 	
 	public int getFace()
@@ -174,9 +188,18 @@ public final class Font
 		return getLeading() + getAscent() + getDescent();
 	}
 	
+	/**
+	 * Returns the standard leading of the font in pixels. The leading is the
+	 * standard number of pixels which are between each line. The space is
+	 * reserved between the descent of the first line and the ascent of the
+	 * next line.
+	 *
+	 * @return The standard leading.
+	 * @since 2017/10/24
+	 */
 	public int getLeading()
 	{
-		throw new todo.TODO();
+		return this._handle.getLeading();
 	}
 	
 	public int getMaxAscent()

@@ -51,6 +51,34 @@ public class DefaultFontFamily
 	 * @since 2017/10/24
 	 */
 	@Override
+	public int getAscent(FontHandle __h)
+		throws NullPointerException
+	{
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		return 2;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/24
+	 */
+	@Override
+	public int getDescent(FontHandle __h)
+		throws NullPointerException
+	{
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		return 2;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/24
+	 */
+	@Override
 	public int sequencePixelWidth(FontHandle __h, CharSequence __s,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
