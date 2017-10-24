@@ -657,6 +657,9 @@ public abstract class BasicGraphics
 		int __anchor)
 		throws NullPointerException
 	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
@@ -669,6 +672,9 @@ public abstract class BasicGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
