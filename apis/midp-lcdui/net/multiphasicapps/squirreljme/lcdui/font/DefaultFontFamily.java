@@ -37,6 +37,20 @@ public class DefaultFontFamily
 	 * @since 2017/10/24
 	 */
 	@Override
+	public int codepointWidth(FontHandle __h, int __p, int __k)
+		throws NullPointerException
+	{
+		if (__h == null)
+			throw new NullPointerException("NARG");
+		
+		return __h.size();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/24
+	 */
+	@Override
 	public int sequencePixelWidth(FontHandle __h, CharSequence __s,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException

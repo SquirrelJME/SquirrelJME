@@ -42,6 +42,21 @@ public abstract class FontFamily
 	}
 	
 	/**
+	 * Returns the width of the given codepoint.
+	 *
+	 * @param __h The handle to the font information.
+	 * @param __p The codepoint to get the pixel width of.
+	 * @param __k The second character to use which can be used to modify the
+	 * width to adjust for kerning, will be a negative value if there is no
+	 * known second characater.
+	 * @return The width of the codepoint in pixels.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/24
+	 */
+	public abstract int codepointWidth(FontHandle __h, int __p, int __k)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the width of the character sequence in pixels.
 	 *
 	 * @param __h The handle to the character details.
