@@ -11,37 +11,18 @@
 package net.multiphasicapps.squirreljme.lcdui.event;
 
 /**
- * This represents the type of event which has been performed.
+ * This is the base interface for all events.
  *
- * @since 2017/08/19
+ * @since 2017/10/24
  */
-public enum EventType
+public interface Event
 {
-	/** Command activated. */
-	COMMAND,
-	
-	/** Key was pressed. */
-	KEY_PRESSED,
-	
-	/** Key was released. */
-	KEY_RELEASED,
-	
-	/** Key was repeated. */
-	KEY_REPEATED,
-	
-	/** Pointer Dragged. */
-	POINTER_DRAGGED,
-	
-	/** Pointer Pressed. */
-	POINTER_PRESSED,
-	
-	/** Pointer Released. */
-	POINTER_RELEASED,
-	
-	/** Canvas to be repainted. */
-	CANVAS_REPAINT,
-	
-	/** End. */
-	;
+	/**
+	 * Returns the event type.
+	 *
+	 * @return The event type.
+	 * @since 2017/10/24
+	 */
+	public abstract EventType type();
 }
 
