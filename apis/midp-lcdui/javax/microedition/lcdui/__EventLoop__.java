@@ -11,7 +11,10 @@
 package javax.microedition.lcdui;
 
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
+import net.multiphasicapps.squirreljme.lcdui.event.CanvasRepaintEvent;
+import net.multiphasicapps.squirreljme.lcdui.event.Event;
 import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
+import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 
 /**
  * This class manages the event loop for the LCDUI sub-system, all events and
@@ -35,20 +38,44 @@ final class __EventLoop__
 		{
 			for (;;)
 			{
-				// Wait until the event queue is notified, it will be notified
-				// whenever an event is added to the queue which may then
-				// cause new events to be pushed
+				// Wait for the next event
+				Event e;
 				try
 				{
-					queue.wait();
+					e = queue.next();
 				}
-				catch (InterruptedException e)
+				catch (InterruptedException x)
 				{
+					continue;
 				}
 				
-				// Process events regardless of interruption, this way
-				// interrupts forces all events to be flushed
-				System.err.println("DEBUG -- process events.");
+				// Handling any event could fail
+				try
+				{
+					EventType type = e.type();
+					switch (type)
+					{
+							// Repaint this canvas
+						case CANVAS_REPAINT:
+							CanvasRepaintEvent cre = (CanvasRepaintEvent)e;
+							cre.canvas.__doRepaint(cre.x, cre.y,
+								cre.width, cre.height);
+							break;
+						
+							// {@squirreljme.error EB1t Unknown event.
+							// (The type of event this is)}
+						default:
+							throw new RuntimeException(
+								String.format("EB1t %s", type));
+					}
+				}
+				
+				// Catch all exceptions and print, but do not let the event
+				// thread die because an exception was thrown
+				catch (Throwable t)
+				{
+					t.printStackTrace();
+				}
 			}
 		}
 	}

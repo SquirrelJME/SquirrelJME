@@ -411,11 +411,8 @@ public abstract class Canvas
 			return;
 		
 		// Send repaint
-		throw new todo.TODO();
-		/*
-		DisplayInstance instance = this._instance;
-		if (instance != null)
-			instance.repaint(__x, __y, __w, __h); */
+		DisplayManager.DISPLAY_MANAGER.getEventQueue().repaintCanvas(
+			this, __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()
@@ -523,6 +520,21 @@ public abstract class Canvas
 	 * @since 2017/10/01
 	 */
 	void __doFullscreen(boolean __full)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Specifies that this canvas is to be repainted.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2017/10/24
+	 */
+	@__SerializedEvent__
+	void __doRepaint(int __x, int __y, int __w, int __h)
 	{
 		throw new todo.TODO();
 	}
