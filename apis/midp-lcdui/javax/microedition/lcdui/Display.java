@@ -471,7 +471,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return this._head.displayHeightPixels();
 	}
 	
 	public IdleItem getIdleItem()
@@ -502,7 +502,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return this._head.displayWidthPixels();
 	}
 	
 	/**
