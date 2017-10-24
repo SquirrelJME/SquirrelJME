@@ -57,6 +57,30 @@ public abstract class FontFamily
 		throws NullPointerException;
 	
 	/**
+	 * This returns the ascent of the font from the top of the line to the
+	 * average point where the tops of characters are.
+	 *
+	 * @param __h The handle to the font display information.
+	 * @return The ascent of the font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/24
+	 */
+	public abstract int getAscent(FontHandle __h)
+		throws NullPointerException;
+	
+	/**
+	 * This returns the descent of the font from the baseline of the font to
+	 * the bottom of most alphanumeric characters.
+	 *
+	 * @param __h The handle to the font display information.
+	 * @return The descent of the font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/24
+	 */
+	public abstract int getDescent(FontHandle __h)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the width of the character sequence in pixels.
 	 *
 	 * @param __h The handle to the character details.
