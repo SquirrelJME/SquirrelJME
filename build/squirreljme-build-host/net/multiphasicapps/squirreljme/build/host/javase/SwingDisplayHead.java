@@ -14,6 +14,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
@@ -127,6 +128,16 @@ public class SwingDisplayHead
 			default:
 				return (int)(30.0 * dpimul);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/24
+	 */
+	@Override
+	public Graphics fullscreenGraphics()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

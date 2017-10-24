@@ -56,5 +56,17 @@ public class TODO
 			{
 			}
 	}
+	
+	/**
+	 * Specifies that the object value is missing.
+	 *
+	 * @param <T> The object to miss.
+	 * @return Should return that object, but never does.
+	 * @since 2017/10/24
+	 */
+	public static final <T> T missingObject()
+	{
+		throw new todo.TODO();
+	}
 }
 
