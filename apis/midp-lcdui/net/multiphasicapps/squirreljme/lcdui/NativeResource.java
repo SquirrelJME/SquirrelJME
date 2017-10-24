@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.lcdui;
 
 /**
- * DESCRIBE THIS.
+ * This represents a link to a native resource which binds an object which is
+ * managed by the virtual machine to one which is not managed by the virtual
+ * machine.
  *
  * @since 2017/10/24
  */
