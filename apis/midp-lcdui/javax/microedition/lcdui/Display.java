@@ -28,6 +28,7 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.HeadlessDisplayManager;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
+import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
 
 public class Display
 {
@@ -190,6 +191,9 @@ public class Display
 	/** Display heads. */
 	private static final Display[] _DISPLAYS;
 	
+	/** The event loop thread. */
+	private static final Thread _EVENT_LOOP_THREAD;
+	
 	/** The head this display is attached to. */
 	private final DisplayHead _head;
 	
@@ -218,6 +222,12 @@ public class Display
 		
 		// Set
 		_DISPLAYS = displays;
+		
+		// Setup event loop
+		Thread t;
+		_EVENT_LOOP_THREAD = (t = SystemProcess.createDaemonThread(
+			new __EventLoop__(), "LCDUIEventLoop"));
+		t.start();
 	}
 	
 	/**

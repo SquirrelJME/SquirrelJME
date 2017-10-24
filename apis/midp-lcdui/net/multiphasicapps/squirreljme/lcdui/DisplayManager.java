@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 /**
@@ -36,6 +37,10 @@ public abstract class DisplayManager
 	
 	/** The global display manager instance. */
 	public static final DisplayManager DISPLAY_MANAGER;
+	
+	/** The event queue where events are generated. */
+	protected final EventQueue eventqueue =
+		new EventQueue();
 	
 	/**
 	 * This locates and initializes the default display manager.
@@ -76,6 +81,17 @@ public abstract class DisplayManager
 	 * @since 2017/08/19
 	 */
 	public abstract DisplayHead[] heads();
+	
+	/**
+	 * Returns the event queue.
+	 *
+	 * @return The event queue.
+	 * @since 2017/10/24
+	 */
+	public final EventQueue getEventQueue()
+	{
+		return this.eventqueue;
+	}
 	
 	/**
 	 * Returns the default display head.

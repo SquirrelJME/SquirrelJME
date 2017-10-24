@@ -38,6 +38,25 @@ final class __Ext_systemprocess__
 	}
 	
 	/**
+	 * Creates a new thread, but one which is considered a daemon thread which
+	 * is automatically killed when exit is called. This is required because
+	 * CLDC has no concept of daemon threads.
+	 *
+	 * @param __r The method to call when the thread runs.
+	 * @param __n The name of the thread.
+	 * @return The newly created daemon thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/24
+	 */
+	static Thread createDaemonThread(Runnable __r, String __n)
+		throws NullPointerException
+	{
+		Thread rv = new Thread(__r, __n);
+		rv.setDaemon(true);
+		return rv;
+	}
+	
+	/**
 	 * The build system always has the most permission to do anything.
 	 *
 	 * @return Always {@code true}.

@@ -56,7 +56,7 @@ public class SystemProcess
 		if (__r == null || __n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return __Ext_systemprocess__.createDaemonThread(__r, __n);
 	}
 	
 	/**
