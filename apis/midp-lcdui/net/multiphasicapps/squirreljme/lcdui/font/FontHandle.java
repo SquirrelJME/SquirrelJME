@@ -76,8 +76,9 @@ public final class FontHandle
 				// Zero width characters
 			case 0x200B: return 0;
 			
+				// Ask the font family to return the length
 			default:
-				throw new todo.TODO();
+				return this.family.codepointWidth(this, __p, __k);
 		}
 	}
 	
@@ -120,6 +121,17 @@ public final class FontHandle
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the size of the font.
+	 *
+	 * @return The font size.
+	 * @since 2017/10/24
+	 */
+	public final int size()
+	{
+		return this.size;
 	}
 	
 	/**
