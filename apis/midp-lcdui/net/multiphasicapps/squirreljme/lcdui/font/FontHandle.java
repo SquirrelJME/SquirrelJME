@@ -62,10 +62,13 @@ public final class FontHandle
 	 * Returns the width of the given codepoint.
 	 *
 	 * @param __p The codepoint to get the pixel width of.
+	 * @param __k The second character to use which can be used to modify the
+	 * width to adjust for kerning, will be a negative value if there is no
+	 * known second characater.
 	 * @return The width of the codepoint in pixels.
 	 * @since 2017/10/21
 	 */
-	public final int codePointWidth(int __p)
+	public final int codepointWidth(int __p, int __k)
 	{
 		// Some characters have special widths
 		switch (__p)
@@ -137,20 +140,32 @@ public final class FontHandle
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		// See if the font family has a proprietary means of determining the
+		// font width
+		FontFamily family = this.family;
+		int prv = family.sequencePixelWidth(this, __s, __o, __l);
+		if (prv != FontFamily.INVALID_WIDTH)
+			return prv;
+	
 		// Decode the sequence of characters
 		CharSequenceDecoder csd = new CharSequenceDecoder(__s, __o, __l);
-		int next,
-			width = 0,
+		int width = 0,
 			rvmax = 0;
-		while ((next = csd.next()) >= 0)
+		DecodedCharacter next, peek;
+		while ((next = csd.next()) != null)
 		{
+			// Peek the next for potential kerning
+			peek = csd.peek();
+			int codepoint = next.codepoint,
+				peekedcp = (peek != null ? peek.codepoint : -1);
+			
 			// New line resets the width
-			if (next == '\r' || width == '\n')
+			if (codepoint == '\r' || codepoint == '\n')
 				width = 0;
 			
 			// Otherwise it is added to
 			else
-				width += codePointWidth(next);
+				width += codepointWidth(codepoint, peekedcp);
 			
 			// Use the maximum width
 			if (width > rvmax)

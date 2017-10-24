@@ -18,6 +18,10 @@ package net.multiphasicapps.squirreljme.lcdui.font;
  */
 public abstract class FontFamily
 {
+	/** Used to represent that the string has an invalid width. */
+	public static final int INVALID_WIDTH =
+		Integer.MIN_VALUE;
+	
 	/** The name of the family. */
 	protected final FontFamilyName name;
 	
@@ -36,5 +40,23 @@ public abstract class FontFamily
 		
 		this.name = __n;
 	}
+	
+	/**
+	 * Returns the width of the character sequence in pixels.
+	 *
+	 * @param __h The handle to the character details.
+	 * @param __s The characters to get the width of.
+	 * @param __o The offset into the sequence.
+	 * @param __l The number of characters to count.
+	 * @return The width of the sequence in pixels or {@link #INVALID_WIDTH}
+	 * if it is not calculated by a proprietary font system.
+	 * @throws IndexOutOfBoundsException If the specified indexes are not
+	 * within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/24
+	 */
+	public abstract int sequencePixelWidth(FontHandle __h, CharSequence __s,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException;
 }
 
