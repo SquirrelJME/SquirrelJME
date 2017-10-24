@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.lcdui.event;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import javax.microedition.lcdui.Canvas;
 
 /**
@@ -17,14 +19,22 @@ import javax.microedition.lcdui.Canvas;
  * native LCDUI widgets and such. This enables everything about the UI system
  * to be natively serialized as needed.
  *
- * Internally this performs locks on two separate objects so that while an
- * event is being obtained, another can be returned so that way there is as
- * little latency as possible.
+ * This internally uses two monitors so that a thread may wait on an event
+ * and additionally add more events to the queue without locking other
+ * threads.
  *
  * @since 2017/10/24
  */
 public final class EventQueue
 {
+	/** The internal event queue. */
+	private final Deque<Event> _queue =
+		new LinkedList<>();
+	
+	/** Monitor. */
+	private final Object _monitor =
+		new Object();
+	
 	/**
 	 * Waits for the next event to be generated.
 	 *
@@ -36,7 +46,27 @@ public final class EventQueue
 	public final Event next()
 		throws InterruptedException
 	{
-		throw new todo.TODO();
+		Deque<Event> queue = this._queue;
+		Object monitor = this._monitor;
+		
+		// Constantly try to get events
+		for (;;)
+		{
+			// If there is an event in the queue, immedietly return that
+			synchronized (queue)
+			{
+				// Can immedietely return an event? Do that
+				Event rv = queue.pollFirst();
+				if (rv != null)
+					return rv;
+			}
+		
+			// Otherwise wait for one to be generated
+			synchronized (monitor)
+			{
+				monitor.wait();
+			}
+		}
 	}
 	
 	/**
@@ -52,7 +82,19 @@ public final class EventQueue
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Lock on queue to add the event
+		Deque<Event> queue = this._queue;
+		synchronized (queue)
+		{
+			queue.offerLast(__e);
+		}
+		
+		// Tell all waiting threads that an event is ready
+		Object monitor = this._monitor;
+		synchronized (monitor)
+		{
+			monitor.notifyAll();
+		}
 	}
 	
 	/**
