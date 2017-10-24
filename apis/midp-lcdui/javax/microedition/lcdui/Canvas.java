@@ -536,7 +536,23 @@ public abstract class Canvas
 	@__SerializedEvent__
 	void __doRepaint(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Obtain the graphics which is used to draw on the canvas
+		Graphics g = null;
+		if (true)
+			throw new todo.TODO();
+		
+		// Reset any parameters as possible and the clip
+		if (g instanceof BasicGraphics)
+			((BasicGraphics)g).resetParameters(true);
+		else
+			g.setClip(__x - g.getTranslateX(), __y - g.getTranslateY(),
+				__w, __h);
+		
+		// Reclip so only the repainted area is drawn
+		g.setClip(__x, __y, __w, __h);
+		
+		// Call paint on this graphics instance
+		paint(g);
 	}
 	
 	/**
