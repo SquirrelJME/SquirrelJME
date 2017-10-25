@@ -155,6 +155,16 @@ public class SwingDisplayableWidget
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/25
+	 */
+	@Override
+	public void shouldRepaint(int __x, int __y, int __w, int __h)
+	{
+		this._panel.repaint(__x, __y, __w, __h);
+	}
+	
+	/**
 	 * This is the drawing panel.
 	 *
 	 * @since 2017/02/08

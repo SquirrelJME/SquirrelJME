@@ -72,6 +72,17 @@ public abstract class DisplayableWidget
 	public abstract int getWidth();
 	
 	/**
+	 * This specifies that the widget should be repainted.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2017/10/25
+	 */
+	public abstract void shouldRepaint(int __x, int __y, int __w, int __h);
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/10/25
 	 */

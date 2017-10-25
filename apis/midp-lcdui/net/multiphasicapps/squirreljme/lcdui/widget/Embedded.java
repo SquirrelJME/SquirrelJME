@@ -32,7 +32,7 @@ public abstract class Embedded
 	 * @throws IllegalStateException If it was garbage collected.
 	 * @since 2017/10/25
 	 */
-	protected final DisplayableWidget container()
+	public final DisplayableWidget container()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error EB21 The displayable widget has been garbage
