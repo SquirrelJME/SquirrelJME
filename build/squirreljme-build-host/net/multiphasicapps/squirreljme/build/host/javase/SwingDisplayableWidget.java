@@ -104,9 +104,9 @@ public class SwingDisplayableWidget
 			newh = this._panel.getHeight();
 		
 		// Recreate the image if it is larger
-		if (neww > oldw || newh > oldh)
-			this._image = new BufferedImage(Math.max(oldw, neww),
-				Math.max(oldh, newh), BufferedImage.TYPE_INT_RGB);
+		if (neww != oldw || newh != oldh)
+			this._image = new BufferedImage(neww, newh,
+				BufferedImage.TYPE_INT_RGB);
 		
 		// Send repaint event
 		eventQueue().repaintCanvas(
