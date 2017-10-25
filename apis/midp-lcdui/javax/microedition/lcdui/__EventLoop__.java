@@ -53,6 +53,10 @@ final class __EventLoop__
 				try
 				{
 					EventType type = e.type();
+					
+					// Debug
+					System.err.printf("DEBUG -- Event %s%n", type);
+					
 					switch (type)
 					{
 							// Repaint this canvas
