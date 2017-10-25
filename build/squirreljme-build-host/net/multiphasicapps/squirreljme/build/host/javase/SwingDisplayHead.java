@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -42,6 +43,14 @@ public class SwingDisplayHead
 	{
 		// Make the display hardware enabled always
 		setHardwareState(DisplayHardwareState.ENABLED);
+		
+		// Set some default display properties
+		JFrame frame = this.frame;
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// Force minimum size to something more friendly
+		frame.setMinimumSize(new Dimension(160, 160));
+		frame.setPreferredSize(new Dimension(640, 480));
 	}
 	
 	/**
@@ -206,6 +215,7 @@ public class SwingDisplayHead
 			
 			// Make it nice
 			frame.pack();
+			frame.setLocationRelativeTo(null);
 			
 			// Display it
 			frame.setVisible(true);

@@ -26,6 +26,24 @@ public abstract class Embedded
 	private volatile Reference<DisplayableWidget> _inside;
 	
 	/**
+	 * Returns the widget container.
+	 *
+	 * @return The widget which contians this embedded.
+	 * @throws IllegalStateException If it was garbage collected.
+	 * @since 2017/10/25
+	 */
+	protected final DisplayableWidget container()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error EB21 The displayable widget has been garbage
+		// collected.}
+		DisplayableWidget rv = this._inside.get();
+		if (rv == null)
+			throw new IllegalStateException("EB21");
+		return rv;
+	}
+	
+	/**
 	 * Specifies that this widget was embedded to the given displayable.
 	 *
 	 * @param __dw The displayable widget.

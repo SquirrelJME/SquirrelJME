@@ -22,10 +22,6 @@ import javax.microedition.lcdui.Image;
 public class DefaultEmbeddedCanvas
 	extends EmbeddedCanvas
 {
-	/** The backing image. */
-	private volatile Image _image =
-		Image.createImage(1, 1);
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/10/25
@@ -33,8 +29,8 @@ public class DefaultEmbeddedCanvas
 	@Override
 	public Graphics getGraphics()
 	{
-		Image image = this._image;
-		return image.getGraphics();
+		// Just use the widget's direct graphics
+		return container().getGraphics();
 	}
 }
 
