@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.lcdui.widget;
 
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.NativeResource;
 
@@ -44,6 +45,30 @@ public abstract class DisplayableWidget
 		
 		this.reference = __ref;
 	}
+	
+	/**
+	 * Returns the graphics which are used to draw on this widget.
+	 *
+	 * @return The graphics object for drawing directly on this widget.
+	 * @since 2017/10/25
+	 */
+	public abstract Graphics getGraphics();
+	
+	/**
+	 * Returns the height of the widget.
+	 *
+	 * @return The height in pixels.
+	 * @since 2017/10/25
+	 */
+	public abstract int getHeight();
+	
+	/**
+	 * Returns the width of the widget.
+	 *
+	 * @return The width in pixels.
+	 * @since 2017/10/25
+	 */
+	public abstract int getWidth();
 	
 	/**
 	 * {@inheritDoc}

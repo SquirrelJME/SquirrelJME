@@ -98,13 +98,15 @@ public abstract class DisplayManager
 	public abstract DisplayHead[] heads();
 	
 	/**
-	 * This creates an embedded canvas which is always a virtual object
-	 * which directly interfaces with the display head graphics.
+	 * Creates an embedded canvas.
+	 *
+	 * The default implementation provides an internally default provided
+	 * canvas.
 	 *
 	 * @return The newly created canvas.
 	 * @since 2017/10/25
 	 */
-	public final EmbeddedCanvas createEmbeddedCanvas()
+	public EmbeddedCanvas createEmbeddedCanvas()
 	{
 		return new DefaultEmbeddedCanvas();
 	}

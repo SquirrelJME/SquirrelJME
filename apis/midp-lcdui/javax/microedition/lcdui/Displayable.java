@@ -230,9 +230,18 @@ public abstract class Displayable
 	 */
 	final int __getHeight()
 	{
+		// Use width of default head
 		Display d = __currentDisplay();
-		return (d != null ? d.getHeight() :
-			Display.getDisplays(0)[0].getHeight());
+		if (d == null)
+			return Display.getDisplays(0)[0].getHeight();
+		
+		// Use maximum display width
+		DisplayableWidget widget = this._widget;
+		if (widget == null)
+			return d.getHeight();
+		
+		// Use actual canvas width
+		return widget.getHeight();
 	}
 	
 	/**
@@ -245,9 +254,18 @@ public abstract class Displayable
 	 */
 	final int __getWidth()
 	{
+		// Use width of default head
 		Display d = __currentDisplay();
-		return (d != null ? d.getWidth() :
-			Display.getDisplays(0)[0].getWidth());
+		if (d == null)
+			return Display.getDisplays(0)[0].getWidth();
+		
+		// Use maximum display width
+		DisplayableWidget widget = this._widget;
+		if (widget == null)
+			return d.getWidth();
+		
+		// Use actual canvas width
+		return widget.getWidth();
 	}
 	
 	/**
