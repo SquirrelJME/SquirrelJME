@@ -552,8 +552,9 @@ public abstract class Canvas
 			return;
 		
 		// Obtain the graphics which is used to draw on the canvas
+		EmbeddedCanvas embedded = this._embedded;
 		Graphics g = (this._isfullscreen ? current._head.fullscreenGraphics() :
-			this._embedded.getGraphics());
+			embedded.getGraphics());
 		
 		// Reset any parameters as possible and the clip
 		if (g instanceof BasicGraphics)
@@ -567,6 +568,9 @@ public abstract class Canvas
 		
 		// Call paint on this graphics instance
 		paint(g);
+		
+		// Tell the embedded that it should repaint
+		embedded.container().shouldRepaint(__x, __y, __w, __h);
 	}
 	
 	/**
