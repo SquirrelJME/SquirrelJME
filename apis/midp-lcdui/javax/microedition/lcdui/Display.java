@@ -27,6 +27,9 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.HeadlessDisplayManager;
+import net.multiphasicapps.squirreljme.lcdui.NativeResource;
+import net.multiphasicapps.squirreljme.lcdui.NativeResourceManager;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
 
@@ -839,6 +842,10 @@ public class Display
 			Displayable wascurrent = this._current,
 				wasexit = this._exit;
 			
+			// Will need the native displayable resource
+			DisplayableWidget dw = NativeResourceManager.RESOURCE_MANAGER.
+				<DisplayableWidget>getNative(DisplayableWidget.class, __show);
+			
 			// {@squirreljme.error EB1o The displayable to display is currently
 			// bound to another display.}
 			if (__show._current != null)
@@ -857,6 +864,7 @@ public class Display
 			}
 			
 			// Remove the old current display
+			DisplayHead head = this._head;
 			if (wascurrent != null)
 			{
 				throw new todo.TODO();
@@ -872,7 +880,8 @@ public class Display
 				__exit._current = this;
 			
 			// Enter the foreground state always
-			this._head.setState(DisplayState.FOREGROUND);
+			head.setCurrent(dw);
+			head.setState(DisplayState.FOREGROUND);
 		}
 	}
 	

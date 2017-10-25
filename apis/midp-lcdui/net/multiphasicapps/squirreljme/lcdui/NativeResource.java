@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.lcdui;
 
+import java.lang.ref.Reference;
+
 /**
  * This represents a link to a native resource which binds an object which is
  * managed by the virtual machine to one which is not managed by the virtual
@@ -17,7 +19,22 @@ package net.multiphasicapps.squirreljme.lcdui;
  *
  * @since 2017/10/24
  */
-public abstract class NativeResource
+public interface NativeResource
 {
+	/**
+	 * Returns the object which is bound to this resource.
+	 *
+	 * @return The reference to the native object.
+	 * @since 2017/10/25
+	 */
+	public abstract Reference<Object> boundObject();
+	
+	/**
+	 * This is called when the native object holding this resource has been
+	 * garbage collected.
+	 *
+	 * @since 2017/10/25
+	 */
+	public abstract void freeResource();
 }
 
