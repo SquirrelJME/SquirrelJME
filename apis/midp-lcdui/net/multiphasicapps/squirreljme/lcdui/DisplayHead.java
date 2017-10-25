@@ -149,6 +149,17 @@ public abstract class DisplayHead
 	}
 	
 	/**
+	 * Returns the current display state.
+	 *
+	 * @return The display state.
+	 * @since 2017/10/25
+	 */
+	public final DisplayState displayState()
+	{
+		return this._displaystate;
+	}
+	
+	/**
 	 * Returns the current hardware state.
 	 *
 	 * @return The hardware state.
@@ -266,6 +277,32 @@ public abstract class DisplayHead
 			hardwareStateChanged(oldhwstate, __s);
 			this._hwstate = __s;
 		}
+	}
+	
+	/**
+	 * Are fullscreen graphics supported?
+	 *
+	 * @return If fullscreen graphics are supported.
+	 * @since 2017/10/25
+	 */
+	public boolean supportsFullscreenGraphics()
+	{
+		// Defaults to not supported
+		return false;
+	}
+	
+	/**
+	 * Vibrates the device associated with this display head.
+	 *
+	 * @param __d The number of milliseconds to vibrate for, if zero the
+	 * vibrator will be switched off.
+	 * @return {@code true} if the vibrator is controllable.
+	 * @since 2017/10/25
+	 */
+	public boolean vibrate(int __d)
+	{
+		// Default implemenation does nothing
+		return false;
 	}
 }
 

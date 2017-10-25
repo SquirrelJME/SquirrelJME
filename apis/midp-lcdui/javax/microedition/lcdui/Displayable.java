@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 import net.multiphasicapps.squirreljme.lcdui.NativeResourceManager;
@@ -221,6 +222,17 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Returns the current display head.
+	 *
+	 * @return The current display head.
+	 * @since 2017/10/25
+	 */
+	final DisplayHead __currentHead()
+	{
+		return this._current._head;
+	}
+	
+	/**
 	 * Returns the height of the displayable or the maximum size of the
 	 * default display.
 	 *
@@ -279,6 +291,7 @@ public abstract class Displayable
 	 * @throws NullPointerException If no event type was specified.
 	 * @since 2017/08/19
 	 */
+	@Deprecated
 	boolean __handleEvent(EventType __t, Command __c, int __a, int __b)
 		throws NullPointerException
 	{

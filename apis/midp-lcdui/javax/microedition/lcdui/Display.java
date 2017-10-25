@@ -742,19 +742,13 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB0q");
 		
-		throw new todo.TODO();
-		/*
-		// Display is not attached, do not vibrate
-		DisplayInstance instance = this._instance;
-		if (instance == null)
+		// Do not vibrate in the background
+		DisplayHead head = this._head;
+		if (head.displayState() == DisplayState.BACKGROUND)
 			return false;
 		
-		// In the background
-		if (instance.getState() == STATE_BACKGROUND)
-			return false;
-		
-		// Otherwise vibrate
-		return instance.vibrate(__d);*/
+		// Vibrate the display head
+		return head.vibrate(__d);
 	}
 	
 	/**
