@@ -18,6 +18,7 @@ import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * This is a display head which outputs to Swing.
@@ -174,6 +175,26 @@ public class SwingDisplayHead
 	public int numColors()
 	{
 		return 256 * 256 * 256;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public void registerCurrent(DisplayableWidget __w)
+	{
+		// Clearing
+		if (__w == null)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Setting new widget
+		else
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 

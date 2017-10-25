@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.lcdui;
 
 import java.util.Objects;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * This class represents a display head where instances of
@@ -27,6 +29,9 @@ public abstract class DisplayHead
 	/** The current display state, defaults to the background. */
 	private volatile DisplayState _displaystate =
 		DisplayState.BACKGROUND;
+	
+	/** The current displayable attached to this head. */
+	private volatile DisplayableWidget _current;
 	
 	/**
 	 * Returns the display height in millimeters.
@@ -119,6 +124,15 @@ public abstract class DisplayHead
 	public abstract int numColors();
 	
 	/**
+	 * This registers that the given displayable is to be displayed on this
+	 * head.
+	 *
+	 * @param __d The displayable to display, may be {@code null} to clear it.
+	 * @since 2017/10/25
+	 */
+	protected abstract void registerCurrent(DisplayableWidget __d);
+	
+	/**
 	 * Returns the DPI of the display.
 	 *
 	 * @return The DPI of the display.
@@ -150,6 +164,46 @@ public abstract class DisplayHead
 		if (rv == null)
 			throw new RuntimeException("EB1n");
 		return rv;
+	}
+	
+	/**
+	 * Sets the current displayable.
+	 *
+	 * @param __d The displayable to show, if {@code null} then the current
+	 * display is to have its current displayable removed.
+	 * @throws IllegalStateException If there is already a current displayable
+	 * and one is being set.
+	 * @since 2017/10/25
+	 */
+	public final void setCurrent(DisplayableWidget __d)
+		throws IllegalStateException
+	{
+		// Modifies global state
+		synchronized (DisplayManager.GLOBAL_LOCK)
+		{
+			// Clearing the current displayable?
+			if (__d == null)
+			{
+				// Clearing nothing, do nothing
+				if (this._current == null)
+					return;
+				
+				throw new todo.TODO();
+			}
+			
+			// Setting a current displayable
+			else
+			{
+				// {@squirreljme.error EB1u Cannot set a new current
+				// displayable because there is already one being displayed.}
+				if (this._current != null)
+					throw new IllegalStateException("EB1u");
+			
+				// Set and register
+				this._current = __d;
+				registerCurrent(__d);
+			}
+		}
 	}
 	
 	/**
