@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
+import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
 import net.multiphasicapps.squirreljme.lcdui.NativeResource;
 
 /**
@@ -81,6 +82,31 @@ public abstract class DisplayableWidget
 	}
 	
 	/**
+	 * Returns the displayable this widget is bound to.
+	 *
+	 * @param <D> The class to cast to.
+	 * @param __cl The class to cast to.
+	 * @return The displayable.
+	 * @throws ClassCastException If the class type is not valid.
+	 * @throws IllegalStateException If it was garbage collected.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/25
+	 */
+	public final <D extends Displayable> D displayable(Class<D> __cl)
+		throws ClassCastException, IllegalStateException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB22 The displayable has been garbage
+		// collected.}
+		Displayable rv = this.reference.get();
+		if (rv == null)
+			throw new IllegalStateException("EB22");
+		return __cl.cast(rv);
+	}
+	
+	/**
 	 * Returns the embedded object as the given class.
 	 *
 	 * @param <E> The class to cast to.
@@ -97,6 +123,17 @@ public abstract class DisplayableWidget
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(this._embed);
+	}
+	
+	/**
+	 * Returns the event queue.
+	 *
+	 * @return The event queue.
+	 * @since 2017/10/25
+	 */
+	public final EventQueue eventQueue()
+	{
+		return DisplayManager.DISPLAY_MANAGER.getEventQueue();
 	}
 	
 	/**
