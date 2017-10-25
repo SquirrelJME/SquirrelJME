@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.lcdui.widget;
 
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
 /**
  * This is the default canvas object which contains a picture and a default
  * implementation.
@@ -19,5 +22,19 @@ package net.multiphasicapps.squirreljme.lcdui.widget;
 public class DefaultEmbeddedCanvas
 	extends EmbeddedCanvas
 {
+	/** The backing image. */
+	private volatile Image _image =
+		Image.createImage(1, 1);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/25
+	 */
+	@Override
+	public Graphics getGraphics()
+	{
+		Image image = this._image;
+		return image.getGraphics();
+	}
 }
 

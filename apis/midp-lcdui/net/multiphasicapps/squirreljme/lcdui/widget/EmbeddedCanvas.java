@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.lcdui.widget;
 
+import javax.microedition.lcdui.Graphics;
+
 /**
  * This represents a canvas which can be embedded into a displayable.
  *
@@ -18,5 +20,12 @@ package net.multiphasicapps.squirreljme.lcdui.widget;
 public abstract class EmbeddedCanvas
 	extends Embedded
 {
+	/**
+	 * Returns the graphics to draw on this canvas.
+	 *
+	 * @return The graphics to draw on this canvas.
+	 * @since 2017/10/25
+	 */
+	public abstract Graphics getGraphics();
 }
 
