@@ -8,45 +8,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.lcdui;
+package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
-import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
- * This is a headless display manager which provides only a non-visible
- * display.
+ * This represents widgtes that swing uses to display embedded objects.
  *
- * @since 2017/08/21
+ * @since 2017/10/25
  */
-public class HeadlessDisplayManager
-	extends DisplayManager
+public class SwingDisplayableWidget
+	extends DisplayableWidget
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the widget.
+	 *
+	 * @param __rd The reference to the displayable.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/25
 	 */
-	@Override
-	public DisplayableWidget createDisplayableWidget(
-		Reference<Displayable> __rd)
+	public SwingDisplayableWidget(Reference<Displayable> __rd)
 		throws NullPointerException
 	{
-		if (__rd == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/21
-	 */
-	public DisplayHead[] heads()
-	{
-		return new DisplayHead[0];
+		super(__rd);
 	}
 }
 

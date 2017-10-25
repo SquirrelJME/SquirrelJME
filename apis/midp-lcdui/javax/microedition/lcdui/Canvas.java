@@ -14,6 +14,8 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 import net.multiphasicapps.squirreljme.lcdui.event.KeyNames;
 import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
+import net.multiphasicapps.squirreljme.lcdui.widget.EmbeddedCanvas;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 /**
@@ -145,6 +147,9 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
+	/** The canvas which can be embedded. */
+	final EmbeddedCanvas _embedded;
+	
 	/** The key listener to use. */
 	private volatile KeyListener _keylistener;
 	
@@ -161,6 +166,11 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
+		// Create native canvas
+		DisplayManager dm = DisplayManager.DISPLAY_MANAGER;
+		EmbeddedCanvas embedded;
+		this._widget.embed(embedded = dm.createEmbeddedCanvas());
+		this._embedded = embedded;
 	}
 	
 	@__SerializedEvent__

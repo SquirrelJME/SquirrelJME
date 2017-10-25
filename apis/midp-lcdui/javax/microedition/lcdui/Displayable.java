@@ -12,7 +12,10 @@ package javax.microedition.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
+import net.multiphasicapps.squirreljme.lcdui.NativeResourceManager;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -23,6 +26,9 @@ import net.multiphasicapps.squirreljme.lcdui.event.EventType;
  */
 public abstract class Displayable
 {
+	/** The widget container. */
+	final DisplayableWidget _widget;
+	
 	/** The display this is currently associated with. */
 	volatile Display _current;
 	
@@ -39,6 +45,14 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
+		// Setup widget for this displayable
+		DisplayManager dm = DisplayManager.DISPLAY_MANAGER;
+		DisplayableWidget widget = dm.createDisplayableWidget(
+			new WeakReference<>(this));
+		this._widget = widget;
+		
+		// Register it natively
+		NativeResourceManager.RESOURCE_MANAGER.register(widget, this);
 	}
 	
 	/**

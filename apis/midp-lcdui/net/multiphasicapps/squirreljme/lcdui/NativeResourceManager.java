@@ -99,6 +99,44 @@ public final class NativeResourceManager
 	}
 	
 	/**
+	 * Registers the resource with the native resource.
+	 *
+	 * @param __nr
+	 * @throws IllegalStateException If the object is already registered or
+	 * does not match the native resource.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/25
+	 */
+	public void register(NativeResource __nr, Object __v)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__nr == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB1x Cannot register the specified object
+		// because it is not bound to the native resource.}
+		if (__v != __nr.boundObject().get())
+			throw new IllegalStateException("EB1x");
+		
+		// Lock
+		ReferenceQueue<Object> queue = this._queue;
+		Map<Reference<Object>, NativeResource> natives = this._natives;
+		Map<Object, NativeResource> binds = this._binds;
+		synchronized (this._lock)
+		{
+			// {@squirreljme.error EB1y The specified object has already
+			// been registered.}
+			if (binds.containsKey(__v))
+				throw new IllegalStateException("EB1y");
+			
+			// Create and store reference
+			Reference<Object> ref = new WeakReference<>(__v, queue);
+			natives.put(ref, __nr);
+			binds.put(__v, __nr);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/10/24
 	 */
@@ -107,6 +145,7 @@ public final class NativeResourceManager
 	{
 		// Constantly try to garbage collect native resources
 		ReferenceQueue<Object> queue = this._queue;
+		Map<Reference<Object>, NativeResource> natives = this._natives;
 		for (;;)
 		{
 			// Try to remove an object
@@ -124,7 +163,6 @@ public final class NativeResourceManager
 			
 			// Remove from object maps
 			NativeResource nrc;
-			Map<Reference<Object>, NativeResource> natives = this._natives;
 			synchronized (this._lock)
 			{
 				// {@squirreljme.error EB1w An unregistered native resource
