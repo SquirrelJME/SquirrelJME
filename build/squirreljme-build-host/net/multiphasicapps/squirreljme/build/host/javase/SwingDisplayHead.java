@@ -15,6 +15,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
@@ -28,6 +29,10 @@ import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 public class SwingDisplayHead
 	extends DisplayHead
 {
+	/** The frame this uses. */
+	protected final JFrame frame =
+		new JFrame("SquirrelJME");
+	
 	/**
 	 * Initializes the display head.
 	 *
@@ -184,6 +189,8 @@ public class SwingDisplayHead
 	@Override
 	public void registerCurrent(DisplayableWidget __w)
 	{
+		JFrame frame = this.frame;
+		
 		// Clearing
 		if (__w == null)
 		{
@@ -193,7 +200,15 @@ public class SwingDisplayHead
 		// Setting new widget
 		else
 		{
-			throw new todo.TODO();
+			// Setup frame
+			SwingDisplayableWidget w = (SwingDisplayableWidget)__w;
+			frame.add(w._panel);
+			
+			// Make it nice
+			frame.pack();
+			
+			// Display it
+			frame.setVisible(true);
 		}
 	}
 }

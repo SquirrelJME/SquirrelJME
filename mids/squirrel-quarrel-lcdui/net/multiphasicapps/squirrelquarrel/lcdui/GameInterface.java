@@ -338,8 +338,8 @@ public class GameInterface
 		int ww = debugimage.getWidth(), hh = debugimage.getHeight();
 		int sx = 50 - 5, sy = 50 - 5,
 			ex = sx + ((ww * 3) + 10), ey = sy + ((hh * 3) + 10);
-		__g.drawRegion(debugimage, 0, 0, ww, hh, Sprite.TRANS_NONE,
-			sx + 5, sy + 5, 0, ww * 3, hh * 3);
+		/*__g.drawRegion(debugimage, 0, 0, ww, hh, Sprite.TRANS_NONE,
+			sx + 5, sy + 5, 0, ww * 3, hh * 3);*/
 		__g.setColor(0xFF0000);
 		__g.drawLine(sx, sy, ex, sy);
 		__g.setColor(0x00FF00);

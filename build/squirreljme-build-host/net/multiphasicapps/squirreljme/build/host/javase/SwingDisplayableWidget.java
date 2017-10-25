@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
+import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
@@ -22,6 +23,10 @@ import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 public class SwingDisplayableWidget
 	extends DisplayableWidget
 {
+	/** The panel where widgets are displayed in. */
+	final JPanel _panel =
+		new JPanel();
+	
 	/**
 	 * Initializes the widget.
 	 *

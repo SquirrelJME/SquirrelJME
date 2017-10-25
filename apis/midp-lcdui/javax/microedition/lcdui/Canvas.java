@@ -169,7 +169,7 @@ public abstract class Canvas
 		// Create native canvas
 		DisplayManager dm = DisplayManager.DISPLAY_MANAGER;
 		EmbeddedCanvas embedded;
-		this._widget.embed(embedded = dm.createEmbeddedCanvas());
+		this._widget.setEmbed(embedded = dm.createEmbeddedCanvas());
 		this._embedded = embedded;
 	}
 	
@@ -553,7 +553,7 @@ public abstract class Canvas
 		
 		// Obtain the graphics which is used to draw on the canvas
 		Graphics g = (this._isfullscreen ? current._head.fullscreenGraphics() :
-			todo.TODO.<Graphics>missingObject());
+			this._embedded.getGraphics());
 		
 		// Reset any parameters as possible and the clip
 		if (g instanceof BasicGraphics)

@@ -56,6 +56,35 @@ public abstract class DisplayableWidget
 	}
 	
 	/**
+	 * Returns the embedded object as the given class.
+	 *
+	 * @param <E> The class to cast to.
+	 * @param __cl The class to cast to.
+	 * @return The embed for this displayable.
+	 * @throws ClassCastException If the class type does not match.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/25
+	 */
+	public final <E extends Embedded> E embed(Class<E> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this._embed);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/25
+	 */
+	@Override
+	public final void freeResource()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Embeds the specified embedded into this displayable.
 	 *
 	 * @param __e The embedded to embed.
@@ -63,7 +92,7 @@ public abstract class DisplayableWidget
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/25
 	 */
-	public final void embed(Embedded __e)
+	public final void setEmbed(Embedded __e)
 		throws IllegalStateException, NullPointerException
 	{
 		if (__e == null)
@@ -81,16 +110,6 @@ public abstract class DisplayableWidget
 			__e.__embeddedInto(this);
 			this._embed = __e;
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/25
-	 */
-	@Override
-	public final void freeResource()
-	{
-		throw new todo.TODO();
 	}
 }
 
