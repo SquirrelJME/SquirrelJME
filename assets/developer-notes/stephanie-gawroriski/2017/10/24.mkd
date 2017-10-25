@@ -1,0 +1,63 @@
+# 2017/10/24
+
+## 11:11
+
+I am going to need to split `PixelArrayGraphics` for cases that are other than
+RGB. But one thing I need to figure out is font rendering. I need to handle
+stuff like accents and all those things, potentially italics and bold too.
+I suppose fonts should have their glyphs cached using `Image`s at which point
+they can be stored. I think that would be the best way to handle things. The
+glyphs at least can be stored in the `FontHandle` so that the caching system
+is the same for all fonts. I am not entirely sure how things will work when
+it comes to memory and such.
+
+## 12:29
+
+I think I need to overhaul how images are handled and how the graphics system
+is done. I will need speed for the most part. Basically I can do something
+similar to the fonts, but not with a cached mapping. Well actually really just
+an image manager with a reference queue so to speak. Basically I want to have
+native images and have the image data purely be in the native data, but where
+the image can be obtained from the graphics drawing system. I will need this
+because I do really want to have accelerated image drawing. Otherwise images
+that are drawn will for the most part just end up being copied and such.
+
+## 12:35
+
+If there are say OpenGL graphics back ends for displays for example, having
+the unaccelerated wrappers will just make things so slow when they could be
+faster. But, there will be a native image system that can handle such cases.
+
+## 14:32
+
+Ok so I have an idea how to get this done, basically I have native images
+which are resource managed by weak references. There also would be a class
+which can manage any native resource, this would be needed for widgets and
+such. When the object holding the native resource is garbage collected then
+the native thing will be called so that it may be freed. Since it may be in
+C code, it will need deallocations potentially. When it comes to native
+images, there will be initialization of native images, their needed
+information such as size, their type, and any needed arrays. Then there will
+be `Graphics`. I will do an overhaul of the graphics. Basically, what will
+happen is that there will be a means of doing graphic primitives using
+potential hardware acceleration on undefined surfaces. I will have a rule
+where surfaces are required memory access, since it simplifies things I
+would say. Plus all modern systems handle graphics that way. Images could be
+directly associated with the framebuffer. Then when it comes to fullscreen
+graphics in a canvas, it can just draw on the image that is the framebuffer
+itself for the most part. That would be a direct route to images.
+
+## 14:51
+
+Will need to figure out scalable images also.
+
+## 16:34
+
+Figures that when I get to something exciting, I have to go to a menial
+labor job. Regardless the thing to work on I suppose would be getting
+canvases working again with a basic event system so that I can run what I
+have for Squirrel Quarrel. I think to be honest I will get rid of that and
+make something far simpler. Will definitely need to refactor the `Image`
+class and the associated `Graphics` classes so that way things are a bit
+better, easier, and faster hopefully. I could also experiment with rendering
+text too, which will be rather complicated.
