@@ -553,7 +553,9 @@ public abstract class Canvas
 		
 		// Obtain the graphics which is used to draw on the canvas
 		EmbeddedCanvas embedded = this._embedded;
-		Graphics g = (this._isfullscreen ? current._head.fullscreenGraphics() :
+		Graphics g = (this._isfullscreen &&
+			__currentHead().supportsFullscreenGraphics() ?
+			current._head.fullscreenGraphics() :
 			embedded.getGraphics());
 		
 		// Reset any parameters as possible and the clip
