@@ -104,6 +104,10 @@ public class SwingDisplayableWidget
 		if (neww > oldw || newh > oldh)
 			this._image = new BufferedImage(Math.max(oldw, neww),
 				Math.max(oldh, newh), BufferedImage.TYPE_INT_RGB);
+		
+		// Send repaint event
+		eventQueue().repaintCanvas(
+			this.<Canvas>displayable(Canvas.class), 0, 0, neww, newh);
 	}
 
 	/**
