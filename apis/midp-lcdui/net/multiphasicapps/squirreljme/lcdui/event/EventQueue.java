@@ -19,10 +19,6 @@ import javax.microedition.lcdui.Canvas;
  * native LCDUI widgets and such. This enables everything about the UI system
  * to be natively serialized as needed.
  *
- * This internally uses two monitors so that a thread may wait on an event
- * and additionally add more events to the queue without locking other
- * threads.
- *
  * @since 2017/10/24
  */
 public final class EventQueue
@@ -30,10 +26,6 @@ public final class EventQueue
 	/** The internal event queue. */
 	private final Deque<Event> _queue =
 		new LinkedList<>();
-	
-	/** Monitor. */
-	private final Object _monitor =
-		new Object();
 	
 	/**
 	 * Waits for the next event to be generated.
@@ -46,27 +38,19 @@ public final class EventQueue
 	public final Event next()
 		throws InterruptedException
 	{
+		// Try to get a single event
 		Deque<Event> queue = this._queue;
-		Object monitor = this._monitor;
-		
-		// Constantly try to get events
 		for (;;)
-		{
-			// If there is an event in the queue, immedietly return that
 			synchronized (queue)
 			{
 				// Can immedietely return an event? Do that
 				Event rv = queue.pollFirst();
 				if (rv != null)
 					return rv;
+			
+				// Wait for an event
+				queue.wait();
 			}
-		
-			// Otherwise wait for one to be generated
-			synchronized (monitor)
-			{
-				monitor.wait();
-			}
-		}
 	}
 	
 	/**
@@ -90,13 +74,9 @@ public final class EventQueue
 		synchronized (queue)
 		{
 			queue.offerLast(__e);
-		}
-		
-		// Tell all waiting threads that an event is ready
-		Object monitor = this._monitor;
-		synchronized (monitor)
-		{
-			monitor.notifyAll();
+			
+			// Notify that an event happened
+			queue.notifyAll();
 		}
 	}
 	
