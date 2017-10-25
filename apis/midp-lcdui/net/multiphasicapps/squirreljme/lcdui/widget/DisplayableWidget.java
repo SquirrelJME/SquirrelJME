@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.lcdui.widget;
 
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
+import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.NativeResource;
 
 /**
@@ -24,6 +25,9 @@ public abstract class DisplayableWidget
 {
 	/** The displayable reference. */
 	protected final Reference<Displayable> reference;
+	
+	/** The widget embedded here. */
+	private volatile Embedded _embed;
 	
 	/**
 	 * Initializes the displayable widget.
@@ -55,7 +59,7 @@ public abstract class DisplayableWidget
 	 * Embeds the specified embedded into this displayable.
 	 *
 	 * @param __e The embedded to embed.
-	 * @throws IllegalStateException If there is alreayd something embedded.
+	 * @throws IllegalStateException If there is already something embedded.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/25
 	 */
@@ -65,7 +69,18 @@ public abstract class DisplayableWidget
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Use global lock
+		synchronized (DisplayManager.GLOBAL_LOCK)
+		{
+			// {@squirreljme.error EB20 This widget has already had an
+			// embedded placed into it.}
+			if (this._embed != null)
+				throw new IllegalStateException("EB20");
+			
+			// Embed into this and store
+			__e.__embeddedInto(this);
+			this._embed = __e;
+		}
 	}
 	
 	/**

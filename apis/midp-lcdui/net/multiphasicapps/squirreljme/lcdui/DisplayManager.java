@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
+import net.multiphasicapps.squirreljme.lcdui.widget.DefaultEmbeddedCanvas;
 import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 import net.multiphasicapps.squirreljme.lcdui.widget.EmbeddedCanvas;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
@@ -105,7 +106,7 @@ public abstract class DisplayManager
 	 */
 	public final EmbeddedCanvas createEmbeddedCanvas()
 	{
-		throw new todo.TODO();
+		return new DefaultEmbeddedCanvas();
 	}
 	
 	/**

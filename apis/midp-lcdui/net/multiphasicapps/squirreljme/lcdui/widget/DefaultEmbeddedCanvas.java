@@ -11,12 +11,13 @@
 package net.multiphasicapps.squirreljme.lcdui.widget;
 
 /**
- * This represents a canvas which can be embedded into a displayable.
+ * This is the default canvas object which contains a picture and a default
+ * implementation.
  *
  * @since 2017/10/25
  */
-public abstract class EmbeddedCanvas
-	extends Embedded
+public class DefaultEmbeddedCanvas
+	extends EmbeddedCanvas
 {
 }
 
