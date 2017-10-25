@@ -27,7 +27,7 @@ public interface NativeResource
 	 * @return The reference to the native object.
 	 * @since 2017/10/25
 	 */
-	public abstract Reference<Object> boundObject();
+	public abstract Reference<? extends Object> boundObject();
 	
 	/**
 	 * This is called when the native object holding this resource has been

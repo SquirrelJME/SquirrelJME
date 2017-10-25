@@ -12,7 +12,10 @@ package net.multiphasicapps.squirreljme.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
+import net.multiphasicapps.squirreljme.lcdui.widget.EmbeddedCanvas;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 
 /**
@@ -74,6 +77,17 @@ public abstract class DisplayManager
 	}
 	
 	/**
+	 * Creates a native displayable widget.
+	 *
+	 * @param __rd The displayable to display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/25
+	 */
+	public abstract DisplayableWidget createDisplayableWidget(
+		Reference<Displayable> __rd)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the display heads which are available on the system.
 	 *
 	 * @return The array of available display heads, this should always
@@ -81,6 +95,18 @@ public abstract class DisplayManager
 	 * @since 2017/08/19
 	 */
 	public abstract DisplayHead[] heads();
+	
+	/**
+	 * This creates an embedded canvas which is always a virtual object
+	 * which directly interfaces with the display head graphics.
+	 *
+	 * @return The newly created canvas.
+	 * @since 2017/10/25
+	 */
+	public final EmbeddedCanvas createEmbeddedCanvas()
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Returns the event queue.

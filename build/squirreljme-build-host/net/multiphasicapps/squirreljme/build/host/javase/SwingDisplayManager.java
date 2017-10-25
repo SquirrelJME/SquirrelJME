@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.build.host.javase;
 
+import java.lang.ref.Reference;
+import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
+import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * This provides access to Swing display heads for displaying graphics.
@@ -24,6 +27,21 @@ public class SwingDisplayManager
 	/** The single display head instance to use always. */
 	private static final SwingDisplayHead _HEAD =
 		new SwingDisplayHead();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/25
+	 */
+	@Override
+	public DisplayableWidget createDisplayableWidget(
+		Reference<Displayable> __rd)
+		throws NullPointerException
+	{
+		if (__rd == null)
+			throw new NullPointerException("NARG");
+		
+		return new SwingDisplayableWidget(__rd);
+	}
 	
 	/**
 	 * {@inheritDoc}
