@@ -67,6 +67,9 @@ public class SwingDisplayableWidget
 		// The panel needs to be made focusable in order to get key events
 		panel.setFocusable(true);
 		panel.requestFocusInWindow();
+		
+		// Add needed events
+		panel.addComponentListener(this);
 	}
 	
 	/**
