@@ -11,24 +11,27 @@
 package net.multiphasicapps.squirreljme.lcdui.gfx;
 
 /**
- * This is a graphics handler which.
+ * This is the base class for classes which operate on linear arrays of pixels.
  *
  * @since 2017/02/12
  */
-public class PixelArrayGraphics
+public abstract class PixelArrayGraphics
 	extends BasicGraphics
 {
-	/** The RGB image data. */
-	private final int[] _data;
-	
 	/** Image width. */
-	private final int _width;
+	protected final int width;
 	
 	/** Image height. */
-	private final int _height;
+	protected final int height;
 	
-	/** Does this have an alpha channel? */
-	private final boolean _alpha;
+	/** The image pitch (the actual scanline length in pixels). */
+	protected final int pitch;
+	
+	/** The offset into the data buffer. */
+	protected final int offset;
+	
+	/** The total number of elements used in the data array. */
+	protected final int elementcount;
 	
 	/**
 	 * Initializes the graphics drawer which draw into the given integer
@@ -38,38 +41,62 @@ public class PixelArrayGraphics
 	 * @param __width The width of the image.
 	 * @param __height The height of the image.
 	 * @param __alpha If {@code true} then an alpha channel is used.
-	 * @throws ArrayIndexOutOfBoundsException If 
+	 * @param __pitch The image pitch.
+	 * @param __offset The data buffer offset.
+	 * @throws ArrayIndexOutOfBoundsException If the image dimensions exceeds
+	 * the array bounds.
 	 * @throws IllegalArgumentException If the width or height is negative.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/12
+	 * @since 2017/10/26
 	 */
-	public PixelArrayGraphics(int[] __data, int __width, int __height,
-		boolean __alpha)
-		throws IllegalArgumentException, NullPointerException
+	public PixelArrayGraphics(Object __data, int __width, int __height,
+		boolean __alpha, int __pitch, int __offset)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
+		super(__alpha);
+		
 		// Check
 		if (__data == null)
 			throw new NullPointerException("NARG");
+		
+		// Determine the array properties
+		int datalen;
+		if (__data instanceof byte[])
+			datalen = ((byte[])__data).length;
+		else if (__data instanceof short[])
+			datalen = ((short[])__data).length;
+		else if (__data instanceof int[])
+			datalen = ((int[])__data).length;
+		
+		// {@squirreljme.error EB25 The specified class is not an array or is
+		// not a supported array for image data. (The class)} 
+		else
+			throw new IllegalArgumentException(String.format("EB25 %s",
+				__data.getClass()));
+		
+		// {@squirreljme.error EB24 The specified parameters exceed the bounds
+		// of the array. (The pitch; The height; The offset; The array length)}
+		int elementcount = (__pitch * __height);
+		if (__offset < 0 || (__offset + elementcount) > datalen)
+			throw new ArrayIndexOutOfBoundsException(
+				String.format("EB24 %d %d %d %d", __pitch, __height, __offset,
+				datalen));
 		
 		// {@squirreljme.error EB0p Invalid width and/or height specified.}
 		if (__width <= 0 || __height <= 0)
 			throw new IllegalArgumentException("EB0p");
 		
+		// {@squirreljme.error EB23 The pitch is less than the width.}
+		if (__pitch < __width)
+			throw new IllegalArgumentException("EB23");
+		
 		// Set
-		this._data = __data;
-		this._width = __width;
-		this._height = __height;
-		this._alpha = __alpha;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/10
-	 */
-	@Override
-	protected boolean primitiveHasAlphaChannel()
-	{
-		return this._alpha;
+		this.width = __width;
+		this.height = __height;
+		this.pitch = __pitch;
+		this.offset = __offset;
+		this.elementcount = elementcount;
 	}
 	
 	/**
@@ -79,7 +106,7 @@ public class PixelArrayGraphics
 	@Override
 	protected int primitiveImageHeight()
 	{
-		return this._height;
+		return this.height;
 	}
 
 	/**
@@ -89,7 +116,7 @@ public class PixelArrayGraphics
 	@Override
 	protected int primitiveImageWidth()
 	{
-		return this._width;
+		return this.width;
 	}
 	
 	/**
@@ -101,7 +128,7 @@ public class PixelArrayGraphics
 		int __w, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
-		int iw = this._width,
+		int iw = this.width,
 			dest = (__y * iw) + __x,
 			ex = dest + __w;
 		
@@ -145,7 +172,7 @@ public class PixelArrayGraphics
 		int __y2, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
-		int iw = this._width,
+		int iw = this.width,
 			dx = __x2 - __x1,
 			dy = Math.abs(__y2 - __y1),
 			sy = (__y1 < __y2 ? 1 : -1),
@@ -290,7 +317,7 @@ public class PixelArrayGraphics
 		int __alpha)
 	{
 		int[] data = this._data;
-		int iw = this._width;
+		int iw = this.width;
 		
 		// The distance from the end of a row to the scanline, this way the
 		// source variable does not need an extra copy
@@ -321,7 +348,7 @@ public class PixelArrayGraphics
 		int __h, int __color, boolean __dotted, boolean __blend, int __bor)
 	{
 		int[] data = this._data;
-		int iw = this._width,
+		int iw = this.width,
 			dest = (__y * iw) + __x,
 			ey = dest + (iw * __h);
 		
