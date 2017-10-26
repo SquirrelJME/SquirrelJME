@@ -246,9 +246,28 @@ class __FileManager__
 	 */
 	@Override
 	public Iterable<? extends File> getLocation(
-		JavaFileManager.Location __a)
+		JavaFileManager.Location __l)
 	{
-		throw new todo.TODO();
+		// Ignore null
+		if (__l == null)
+			return null;
+		
+		// Standard locations
+		if (__l instanceof StandardLocation)
+			switch ((StandardLocation)__l)
+			{
+					// This is required for Java 9's compiler to generate
+					// code
+				case CLASS_OUTPUT:
+					return Arrays.<File>asList(new File("virtual://"));
+				
+					// Unknown
+				default:
+					return null;
+			}
+		
+		// Unknown
+		return null;
 	}
 	
 	/**
@@ -326,9 +345,20 @@ class __FileManager__
 	 * @since 2016/09/19
 	 */
 	@Override
-	public int isSupportedOption(String __a)
+	public int isSupportedOption(String __o)
 	{
-		throw new todo.TODO();
+		// Ignore nulls
+		if (__o == null)
+			return -1;
+		
+		// Depends on the options
+		switch (__o)
+		{
+				// Not supported
+			case "--multi-release":		// Java 9 multi-release JARs
+			default:
+				return -1;
+		}
 	}
 	
 	/**
