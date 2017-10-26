@@ -28,7 +28,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.swing.JPanel;
-import net.multiphasicapps.squirreljme.lcdui.gfx.PixelArrayGraphics;
+import net.multiphasicapps.squirreljme.lcdui.gfx.IntArrayGraphics;
 import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
@@ -129,9 +129,10 @@ public class SwingDisplayableWidget
 	@Override
 	public Graphics getGraphics()
 	{
-		return new PixelArrayGraphics(
+		int w = getWidth();
+		return new IntArrayGraphics(
 			((DataBufferInt)this._image.getRaster().getDataBuffer()).
-			getData(), getWidth(), getHeight(), false);
+			getData(), w, getHeight(), false, w, 0);
 	}
 	
 	/**
