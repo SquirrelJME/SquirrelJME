@@ -44,6 +44,9 @@ public abstract class BasicGraphics
 	private static final int _CLIP_LEFT =
 		8;
 	
+	/** Is there an alpha channel? */
+	protected final boolean hasalpha;
+	
 	/** Pixel slice which is used for RGB-based drawing operations. */
 	private final int[] _slice =
 		new int[PIXEL_SLICE];
@@ -84,14 +87,6 @@ public abstract class BasicGraphics
 	private volatile Font _font;
 	
 	/**
-	 * Returns {@code true} if the image has an alpha channel.
-	 *
-	 * @returns {@code true} if the image has an alpha channel.
-	 * @since 2017/02/10
-	 */
-	protected abstract boolean primitiveHasAlphaChannel();
-	
-	/**
 	 * Returns the height of the surface.
 	 *
 	 * @return The height width.
@@ -106,6 +101,17 @@ public abstract class BasicGraphics
 	 * @since 2017/02/11
 	 */
 	protected abstract int primitiveImageWidth();
+	
+	/**
+	 * Initializes the base graphics.
+	 *
+	 * @param __alpha Is there an alpha channel?
+	 * @since 2017/10/16
+	 */
+	public BasicGraphics(boolean __alpha)
+	{
+		this.hasalpha = __alpha;
+	}
 	
 	/**
 	 * Draws a primitive line.
@@ -1103,7 +1109,7 @@ public abstract class BasicGraphics
 		
 		// {@squirreljme.error EB0g Cannot set the overlay blending mode
 		// because this graphics context does not have the alpha channel.}
-		if (__m == SRC && !primitiveHasAlphaChannel())
+		if (__m == SRC && !this.hasalpha)
 			throw new IllegalArgumentException("EB0g");
 		
 		// Set
@@ -1319,7 +1325,7 @@ public abstract class BasicGraphics
 	{
 		// There must be an alpha channel along with the blend mode being
 		// actual blending
-		return /*primitiveHasAlphaChannel() &&*/ (_blendmode == SRC_OVER);
+		return /*this.hasalpha &&*/ (_blendmode == SRC_OVER);
 	}
 	
 	/**
@@ -1331,7 +1337,7 @@ public abstract class BasicGraphics
 	 */
 	private final int __blendOr()
 	{
-		return (primitiveHasAlphaChannel() ? 0 : 0xFF);
+		return (this.hasalpha ? 0 : 0xFF);
 	}
 	
 	/**
