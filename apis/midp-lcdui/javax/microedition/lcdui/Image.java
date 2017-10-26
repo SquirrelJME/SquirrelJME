@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
+import net.multiphasicapps.squirreljme.lcdui.gfx.IntArrayGraphics;
 import net.multiphasicapps.squirreljme.lcdui.gfx.PixelArrayGraphics;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
@@ -104,8 +105,8 @@ public class Image
 			throw new IllegalStateException("EB0f");
 		
 		// Create
-		return new PixelArrayGraphics(this._data, this._width, this._height,
-			this._alpha);
+		return new IntArrayGraphics(this._data, this._width, this._height,
+			this._alpha, this._width, 0);
 	}
 	
 	/**
