@@ -1,0 +1,22 @@
+# 2017/10/25
+
+## 10:14
+
+Ok so, the thing is now figuring out how to get objects on the screen for
+display like the Canvas and such.
+
+## 10:36
+
+Ok so, the resource manager will use two maps. A `WeakHashMap` because that
+can optimize for stuff such as hash codes for weak references, then I will
+need one that keeps weak references (since they have their own
+identities) which are pushed to a resource queue.
+
+## 11:00
+
+Actually I do not need to worry about callbacks, because that would be done
+through the event handling system.
+
+## 14:32
+
+I need to make sure SquirrelJME works with Java 9.
