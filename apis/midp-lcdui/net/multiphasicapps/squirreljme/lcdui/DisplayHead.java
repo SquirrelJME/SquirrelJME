@@ -269,18 +269,6 @@ public abstract class DisplayHead
 	}
 	
 	/**
-	 * Are fullscreen graphics supported?
-	 *
-	 * @return If fullscreen graphics are supported.
-	 * @since 2017/10/25
-	 */
-	public boolean supportsFullscreenGraphics()
-	{
-		// Defaults to not supported
-		return false;
-	}
-	
-	/**
 	 * Vibrates the device associated with this display head.
 	 *
 	 * @param __d The number of milliseconds to vibrate for, if zero the
