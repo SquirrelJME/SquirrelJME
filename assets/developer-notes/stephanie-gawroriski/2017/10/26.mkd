@@ -1,0 +1,50 @@
+# 2017/10/26
+
+## 11:31
+
+I am going to refactor the graphics drawing classes since they can be done so
+much better. Also images could be directly accessed along with their pixel
+data so things could be done much faster too.
+
+## 14:06
+
+Going to see if SquirrelJME works on Java 9.
+
+## 20:42
+
+Not really feeling it right now for the most part.
+
+## 20:44
+
+Suppose all I can do is do some minor refactoring.
+
+## 20:46
+
+I believe for simplicity I will have it where the graphics system has no
+widgets. It will not match the native feel, but it would provide a more
+consistant experience. Also it would be much simpler to program and I would
+then be able to completely simplify the display system. There would still be
+display heads, but they would just provide some native graphics and other
+such things. Basically, the purpose is to simplify things so that it is not
+a mess. I know people will probably complain about the lack of "native" feel
+but this is MIDP, it is what it is. There could be a theme engine anyway so
+it could be modified to not be too bad. But when it comes to games, they all
+use their own UI anyway. So having a native UI is probably not much of a
+point to begin with. So for simplicity I will just have a basic UI. I do also
+need to handle cases for tab panes and whatnot.
+
+## 20:58
+
+Also I think I will make the filesystem mandatory.
+
+## 21:05
+
+Ok so, I think I will combine all of the compression code into a single
+project ZIP. Which supports zlib and all that stuff, along with checksums,
+and other things.
+
+## 22:30
+
+I need a script which can read in every error code and sort it
+alphanumerically but replace it in a way where it reorders them cleanly. Of
+course it might be a bit messy, but it can work for the most part.
