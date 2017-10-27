@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
 
 /**
@@ -43,6 +44,9 @@ final class __DrawSpace__
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");
+		
+		// Need the display head for parameters
+		DisplayHead head = __d._head;
 		
 		throw new todo.TODO();
 	}
