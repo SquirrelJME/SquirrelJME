@@ -107,6 +107,13 @@ public abstract class DisplayHead
 	public abstract Graphics graphics();
 	
 	/**
+	 * This is called when the graphics on the display head have been painted.
+	 *
+	 * @since 2017/10/27
+	 */
+	public abstract void graphicsPainted();
+	
+	/**
 	 * Specifies that the hardware state has changed.
 	 *
 	 * @param __old The old hardware state.
@@ -128,12 +135,34 @@ public abstract class DisplayHead
 	public abstract boolean isColor();
 	
 	/**
+	 * Checks whether the given orientation is a natural orientation.
+	 *
+	 * Natural means that the framebuffer is in the given orientation and that
+	 * it is not required to rotate the framebuffer in software.
+	 *
+	 * @param __o The orientation to check.
+	 * @return If the given orientation is a natural one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/27
+	 */
+	public abstract boolean isNaturalOrientation(DisplayOrientation __o)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the number of colors which are supported in this display head.
 	 *
 	 * @return The number of supported colors.
 	 * @since 2017/10/20
 	 */
 	public abstract int numColors();
+	
+	/**
+	 * Returns the current display orientation.
+	 *
+	 * @return The display orientation.
+	 * @since 2017/10/27
+	 */
+	public abstract DisplayOrientation orientation();
 	
 	/**
 	 * Returns the DPI of the display.

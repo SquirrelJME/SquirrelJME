@@ -234,8 +234,14 @@ public abstract class Displayable
 		if (d == null)
 			return Display.getDisplays(0)[0].getHeight();
 		
-		// Use actual canvas height
-		throw new todo.TODO();
+		// Fullscreen?
+		boolean isfullscreen = (this instanceof Canvas &&
+			((Canvas)this)._isfullscreen);
+		
+		// Fullscreen uses virtual size, otherwise content size
+		if (isfullscreen)
+			return d.getHeight();
+		return d.__contentAreaHeight();
 	}
 	
 	/**
@@ -253,8 +259,14 @@ public abstract class Displayable
 		if (d == null)
 			return Display.getDisplays(0)[0].getWidth();
 		
-		// Use canvas width
-		throw new todo.TODO();
+		// Fullscreen?
+		boolean isfullscreen = (this instanceof Canvas &&
+			((Canvas)this)._isfullscreen);
+		
+		// Fullscreen uses virtual size, otherwise content size
+		if (isfullscreen)
+			return d.getWidth();
+		return d.__contentAreaWidth();
 	}
 }
 
