@@ -91,11 +91,11 @@ public class Level
 	public MegaTile megaTile(int __x, int __y)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BE04 Megatile not in level range.}
+		// {@squirreljme.error BE03 Megatile not in level range.}
 		int megaw = this.megaw,
 			megah = this.megah;
 		if (__x < 0 || __y < 0 || __x >= megaw || __y >= megah)
-			throw new IndexOutOfBoundsException("BE04");
+			throw new IndexOutOfBoundsException("BE03");
 		
 		// Get
 		return this._tiles[(__y * megaw) + __x];

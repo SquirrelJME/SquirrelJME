@@ -150,9 +150,9 @@ public class Game
 	public Player player(int __i)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BE07 Invalid player index. (The index)}
+		// {@squirreljme.error BE01 Invalid player index. (The index)}
 		if (__i < 0 || __i >= PlayerColor.NUM_PLAYERS)
-			throw new IllegalArgumentException(String.format("BE07 %d", __i));
+			throw new IllegalArgumentException(String.format("BE01 %d", __i));
 		
 		return this._players[__i];
 	}
