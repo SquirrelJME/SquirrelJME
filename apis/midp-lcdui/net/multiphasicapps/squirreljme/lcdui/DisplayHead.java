@@ -13,7 +13,6 @@ package net.multiphasicapps.squirreljme.lcdui;
 import java.util.Objects;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * This class represents a display head where instances of
@@ -137,15 +136,6 @@ public abstract class DisplayHead
 	public abstract int numColors();
 	
 	/**
-	 * This registers that the given displayable is to be displayed on this
-	 * head.
-	 *
-	 * @param __d The displayable to display, may be {@code null} to clear it.
-	 * @since 2017/10/25
-	 */
-	protected abstract void registerCurrent(DisplayableWidget __d);
-	
-	/**
 	 * Returns the DPI of the display.
 	 *
 	 * @return The DPI of the display.
@@ -155,10 +145,10 @@ public abstract class DisplayHead
 	{
 		// dpi = (pixels / mm) * 25.4
 		float dw = ((float)displayPhysicalWidthPixels() /
-				(float)displayPhysicalWidthMillimeters()) * 25.4,
+				(float)displayPhysicalWidthMillimeters()) * 25.4F,
 			dh = ((float)displayPhysicalHeightPixels() /
-				(float)displayPhysicalHeightMillimeters()) * 25.4;
-		return (int)((dw + dh) / 2.0);
+				(float)displayPhysicalHeightMillimeters()) * 25.4F;
+		return (int)((dw + dh) / 2.0F);
 	}
 	
 	/**

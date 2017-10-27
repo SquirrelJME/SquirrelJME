@@ -15,8 +15,6 @@ import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
-import net.multiphasicapps.squirreljme.lcdui.NativeResourceManager;
-import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -27,9 +25,6 @@ import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
  */
 public abstract class Displayable
 {
-	/** The widget container. */
-	final DisplayableWidget _widget;
-	
 	/** The display this is currently associated with. */
 	volatile Display _current;
 	
@@ -46,14 +41,6 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		// Setup widget for this displayable
-		DisplayManager dm = DisplayManager.DISPLAY_MANAGER;
-		DisplayableWidget widget = dm.createDisplayableWidget(
-			new WeakReference<>(this));
-		this._widget = widget;
-		
-		// Register it natively
-		NativeResourceManager.RESOURCE_MANAGER.register(widget, this);
 	}
 	
 	/**
@@ -247,13 +234,8 @@ public abstract class Displayable
 		if (d == null)
 			return Display.getDisplays(0)[0].getHeight();
 		
-		// Use maximum display width
-		DisplayableWidget widget = this._widget;
-		if (widget == null)
-			return d.getHeight();
-		
-		// Use actual canvas width
-		return widget.getHeight();
+		// Use actual canvas height
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -271,48 +253,8 @@ public abstract class Displayable
 		if (d == null)
 			return Display.getDisplays(0)[0].getWidth();
 		
-		// Use maximum display width
-		DisplayableWidget widget = this._widget;
-		if (widget == null)
-			return d.getWidth();
-		
-		// Use actual canvas width
-		return widget.getWidth();
-	}
-	
-	/**
-	 * Handles an event.
-	 *
-	 * @param __t The type of event to perform.
-	 * @param __c The activated command, if this is a command.
-	 * @param __a The first parameter.
-	 * @param __b The second parameter.
-	 * @return {@code true} if the command was handled.
-	 * @throws NullPointerException If no event type was specified.
-	 * @since 2017/08/19
-	 */
-	@Deprecated
-	boolean __handleEvent(EventType __t, Command __c, int __a, int __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends on the event
-		switch (__t)
-		{
-				// Command activated
-			case COMMAND:
-				CommandListener cmdlistener = this._cmdlistener;
-				if (cmdlistener != null)
-					cmdlistener.commandAction(__c, this);
-				return true;
-			
-				// Un-handled
-			default:
-				return false;
-		}
+		// Use canvas width
+		throw new todo.TODO();
 	}
 }
 

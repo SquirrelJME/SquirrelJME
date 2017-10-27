@@ -14,7 +14,6 @@ import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * This class contains an implementation of a display manager which wraps an
@@ -74,21 +73,6 @@ public class CompatibilityDisplayManager
 		
 		this.wrapped = __dm;
 		this.parameters = __parms;
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/25
-	 */
-	@Override
-	public DisplayableWidget createDisplayableWidget(
-		Reference<Displayable> __rd)
-		throws NullPointerException
-	{
-		if (__rd == null)
-			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}

@@ -29,7 +29,6 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.HeadlessDisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.NativeResource;
 import net.multiphasicapps.squirreljme.lcdui.NativeResourceManager;
-import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
 
@@ -484,7 +483,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._head.displayHeightPixels();
+		return this._head.displayPhysicalHeightPixels();
 	}
 	
 	public IdleItem getIdleItem()
@@ -515,7 +514,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._head.displayWidthPixels();
+		return this._head.displayPhysicalWidthPixels();
 	}
 	
 	/**
@@ -836,10 +835,6 @@ public class Display
 			Displayable wascurrent = this._current,
 				wasexit = this._exit;
 			
-			// Will need the native displayable resource
-			DisplayableWidget dw = NativeResourceManager.RESOURCE_MANAGER.
-				<DisplayableWidget>getNative(DisplayableWidget.class, __show);
-			
 			// {@squirreljme.error EB0d The displayable to display is currently
 			// bound to another display.}
 			if (__show._current != null)
@@ -874,7 +869,6 @@ public class Display
 				__exit._current = this;
 			
 			// Enter the foreground state always
-			head.setCurrent(dw);
 			head.setState(DisplayState.FOREGROUND);
 		}
 	}
