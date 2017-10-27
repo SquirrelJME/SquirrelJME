@@ -94,20 +94,20 @@ public class TargetBuilder
 		System.err.printf("DEBUG -- JIT Options: %s, Proj: %s%n", jitopts,
 			extraproj);
 		
-		// {@squirreljme.error AO07 No CPU architecture has been specified,
+		// {@squirreljme.error AO0a No CPU architecture has been specified,
 		// compilation cannot continue.}
 		JITConfigValue arch = jitopts.get(new JITConfigKey("jit.arch"));
 		if (arch == null)
-			throw new IllegalArgumentException("AO07");
+			throw new IllegalArgumentException("AO0a");
 		
 		// Locate the JITConfig which creates things such as the machine code
 		// output
 		JITConfig jc = new JITConfig(jitopts);
 			
-		// {@squirreljme.error AO08 Unknown architecture specified
+		// {@squirreljme.error AO0d Unknown architecture specified
 		// which is not supported. (The architecture)}
 		if (jc == null)
-			throw new IllegalArgumentException(String.format("AO08 %s", arch));
+			throw new IllegalArgumentException(String.format("AO0d %s", arch));
 		
 		// Debug
 		System.err.printf("DEBUG -- Actual JIT Options: %s%n", jc);
@@ -144,10 +144,10 @@ public class TargetBuilder
 		// Go through all binary projects and compile them
 		for (ProjectBinary pb : binaries)
 		{
-			// {@squirreljme.error AO09 Compiling the specified project. (The
+			// {@squirreljme.error AO0e Compiling the specified project. (The
 			// project name; The current binary; The number of binaries)}
 			String pbname = pb.name().toString();
-			System.out.printf("AO09 %s %d %d%n", pbname, ++count, numbins);
+			System.out.printf("AO0e %s %d %d%n", pbname, ++count, numbins);
 			
 			// Process all classes and resources
 			try (ZipStreamReader zsr = pb.openZipStreamReader())
@@ -323,13 +323,13 @@ public class TargetBuilder
 		boolean plus;
 		if ((plus = __in.startsWith("+")) || __in.startsWith("-"))
 		{
-			// {@squirreljme.error AO0b Invalid argument to be parsed, it must
+			// {@squirreljme.error AO0d Invalid argument to be parsed, it must
 			// either be in the format of '{@code +key=value}' to add a JIT
 			// configuration option or '{@code -key}' to remove it. (The input
 			// argument)}
 			int eq = __in.indexOf('=');
 			if (plus == (eq < 0))
-				throw new IOException(String.format("AO0b %s", __in));
+				throw new IOException(String.format("AO0d %s", __in));
 			
 			// Parse pair
 			JITConfigKey k = new JITConfigKey(__in.substring(1, eq));
@@ -357,10 +357,10 @@ public class TargetBuilder
 			ProjectName pn = new ProjectName(extless);
 			ProjectBinary pb = manager.getBinary(pn);
 			
-			// {@squirreljme.error AO0c The specified project cannot be added
+			// {@squirreljme.error AO0e The specified project cannot be added
 			// to the target because it does not exist. (The project to add)}
 			if (pb == null)
-				throw new IOException(String.format("AO0c %s", pn));
+				throw new IOException(String.format("AO0e %s", pn));
 			
 			// Add
 			__pn.add(pn);
@@ -374,10 +374,10 @@ public class TargetBuilder
 			try (InputStream is = TargetBuilder.class.getResourceAsStream(
 				"template/" + __in))
 			{
-				// {@squirreljme.error AO06 The specified template
+				// {@squirreljme.error AO0f The specified template
 				// does not exist. (The template name)}
 				if (is == null)
-					throw new IOException(String.format("AO06 %s", __in));
+					throw new IOException(String.format("AO0f %s", __in));
 			
 				// Parse the manifest
 				JavaManifest man = new JavaManifest(is);

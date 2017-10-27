@@ -115,9 +115,9 @@ public class BuildSystem
 			throw new todo.TODO();
 		}
 		
-		// {@squirreljme.error AO0e No program was specified to interpret.}
+		// {@squirreljme.error AO06 No program was specified to interpret.}
 		if (args.isEmpty())
-			throw new IllegalArgumentException("AO0e");
+			throw new IllegalArgumentException("AO06");
 		
 		// If there are no templates, just use the interpreter one
 		if (templates.isEmpty())
@@ -164,10 +164,10 @@ public class BuildSystem
 		JavaManifestAttributes attr = man.getMainAttributes();
 		EntryPoints eps = new EntryPoints(attr);
 		
-		// {@squirreljme.error AO0f The JAR to launch does not specify
+		// {@squirreljme.error AO09 The JAR to launch does not specify
 		// any midlets and there is no main class.}
 		if (eps.isEmpty())
-			throw new RuntimeException("AO0f");
+			throw new RuntimeException("AO09");
 		
 		// Debug print entry points
 		System.err.println("Available programs:");
@@ -190,10 +190,10 @@ public class BuildSystem
 					entrypoint);
 				break;
 			
-				// {@squirreljme.error AO0a Unknown interpreter type.
+				// {@squirreljme.error AO08 Unknown interpreter type.
 				// (The interpreter type)}
 			default:
-				throw new IllegalArgumentException(String.format("AO0a %s",
+				throw new IllegalArgumentException(String.format("AO08 %s",
 					interpretertype));
 		}
 		
@@ -218,7 +218,7 @@ public class BuildSystem
 		if (__args == null)
 			__args = new String[0];
 		
-		// {@squirreljme.error AO01 No arguments specified. The following are
+		// {@squirreljme.error AO06 No arguments specified. The following are
 		// commands which are valid.
 		// ({@code target [template]}: Loads a pre-created target template and
 		// performs compilation of that target.;
@@ -232,7 +232,7 @@ public class BuildSystem
 		// }
 		int na = __args.length;
 		if (na <= 0)
-			throw new IllegalArgumentException("AO01");
+			throw new IllegalArgumentException("AO06");
 		
 		// Depends on the input command
 		String command;
@@ -248,19 +248,19 @@ public class BuildSystem
 				// Build a project
 			case "build":
 				{
-					// {@squirreljme.error AO04 The build command requires a
+					// {@squirreljme.error AO06 The build command requires a
 					// project to build.}
 					if (na < 2)
-						throw new IllegalArgumentException("AO04");
+						throw new IllegalArgumentException("AO06");
 					
 					// Get project
 					Project p = projects.get(new ProjectName(__args[1]));
 					
-					// {@squirreljme.error AO05 The specified project is not
+					// {@squirreljme.error AO06 The specified project is not
 					// valid. (The project name)}
 					if (p == null)
 						throw new IllegalArgumentException(String.format(
-							"AO05 %s", __args[1]));
+							"AO06 %s", __args[1]));
 					
 					// Just get the binary (which tries to compile it)
 					p.binary();
@@ -270,10 +270,10 @@ public class BuildSystem
 				// Generates all of the documentation
 			case "generate-docs":
 				{
-					// {@squirreljme.error AO0d The documentation generator
+					// {@squirreljme.error AO07 The documentation generator
 					// requires an output directory.}
 					if (na < 2)
-						throw new IllegalArgumentException("AO0d");
+						throw new IllegalArgumentException("AO07");
 					
 					new DocumentBuilder(projects, Paths.get(__args[1])).run();
 				}
@@ -281,10 +281,10 @@ public class BuildSystem
 				// Target a specific system
 			case "target":
 				{
-					// {@squirreljme.error AO03 The target command requires a
+					// {@squirreljme.error AO08 The target command requires a
 					// template system to build.}
 					if (na < 2)
-						throw new IllegalArgumentException("AO03");
+						throw new IllegalArgumentException("AO08");
 					
 					// Fill in arguments
 					List<String> templates = new ArrayList<>();
@@ -309,11 +309,11 @@ public class BuildSystem
 				interpret(__args);
 				break;
 				
-				// {@squirreljme.error AO02 An unknown command was specified.
-				// Check the description for error code AO01 to see which
+				// {@squirreljme.error AO09 An unknown command was specified.
+				// Check the description for error code AO06 to see which
 				// commands are valid. (The command)}
 			default:
-				throw new IllegalArgumentException(String.format("AO02 %s",
+				throw new IllegalArgumentException(String.format("AO09 %s",
 					command));
 		}
 	}
