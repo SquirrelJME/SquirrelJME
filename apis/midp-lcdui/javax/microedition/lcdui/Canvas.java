@@ -550,7 +550,7 @@ public abstract class Canvas
 		paint(g);
 		
 		// Tail paint call that goes up to indicate that things were drawn
-		drawspace.tailPaint();
+		drawspace.tailPaint(this._isfullscreen);
 	}
 }
 
