@@ -20,7 +20,6 @@ import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
-import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
 
 /**
  * This is a display head which outputs to Swing.
@@ -58,9 +57,9 @@ public class SwingDisplayHead
 	 * @since 2017/10/20
 	 */
 	@Override
-	public int displayHeightMillimeters()
+	public int displayPhysicalHeightMillimeters()
 	{
-		return (int)((displayHeightPixels() * 25.4) /
+		return (int)((displayPhysicalHeightPixels() * 25.4) /
 			(double)Toolkit.getDefaultToolkit().getScreenResolution());
 	}
 	
@@ -69,10 +68,52 @@ public class SwingDisplayHead
 	 * @since 2017/10/20
 	 */
 	@Override
-	public int displayHeightPixels()
+	public int displayPhysicalHeightPixels()
 	{
 		return GraphicsEnvironment.getLocalGraphicsEnvironment().
 			getDefaultScreenDevice().getDisplayMode().getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int displayPhysicalWidthMillimeters()
+	{
+		return (int)((displayPhysicalWidthPixels() * 25.4) /
+			(double)Toolkit.getDefaultToolkit().getScreenResolution());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/20
+	 */
+	@Override
+	public int displayPhysicalWidthPixels()
+	{
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().
+			getDefaultScreenDevice().getDisplayMode().getWidth();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/27
+	 */
+	@Override
+	public int displayVirtualHeightPixels()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/27
+	 */
+	@Override
+	public int displayVirtualWidthPixels()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -87,29 +128,22 @@ public class SwingDisplayHead
 		if (__old == null || __new == null)
 			throw new NullPointerException("NARG");
 		
-		// The swing interface has no notion of foreground and background
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/20
-	 */
-	@Override
-	public int displayWidthMillimeters()
-	{
-		return (int)((displayWidthPixels() * 25.4) /
-			(double)Toolkit.getDefaultToolkit().getScreenResolution());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/20
-	 */
-	@Override
-	public int displayWidthPixels()
-	{
-		return GraphicsEnvironment.getLocalGraphicsEnvironment().
-			getDefaultScreenDevice().getDisplayMode().getWidth();
+		JFrame frame = this.frame;
+		
+		// If the new state is in the foreground make it visible
+		if (__new == DisplayState.FOREGROUND)
+		{
+			// Clean it up
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+			
+			// Make it visible
+			frame.setVisible(true);
+		}
+		
+		// Otherwise hide it
+		else
+			frame.setVisible(false);
 	}
 	
 	/**
@@ -150,7 +184,7 @@ public class SwingDisplayHead
 	 * @since 2017/10/24
 	 */
 	@Override
-	public Graphics fullscreenGraphics()
+	public Graphics graphics()
 	{
 		throw new todo.TODO();
 	}
@@ -189,37 +223,6 @@ public class SwingDisplayHead
 	public int numColors()
 	{
 		return 256 * 256 * 256;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/20
-	 */
-	@Override
-	public void registerCurrent(DisplayableWidget __w)
-	{
-		JFrame frame = this.frame;
-		
-		// Clearing
-		if (__w == null)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Setting new widget
-		else
-		{
-			// Setup frame
-			SwingDisplayableWidget w = (SwingDisplayableWidget)__w;
-			frame.add(w._panel);
-			
-			// Make it nice
-			frame.pack();
-			frame.setLocationRelativeTo(null);
-			
-			// Display it
-			frame.setVisible(true);
-		}
 	}
 }
 

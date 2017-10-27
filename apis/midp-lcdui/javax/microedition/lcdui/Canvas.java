@@ -14,8 +14,6 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
 import net.multiphasicapps.squirreljme.lcdui.event.KeyNames;
 import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
-import net.multiphasicapps.squirreljme.lcdui.widget.DisplayableWidget;
-import net.multiphasicapps.squirreljme.lcdui.widget.EmbeddedCanvas;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 /**
@@ -147,9 +145,6 @@ public abstract class Canvas
 	public static final int UP =
 		1;
 	
-	/** The canvas which can be embedded. */
-	final EmbeddedCanvas _embedded;
-	
 	/** The key listener to use. */
 	private volatile KeyListener _keylistener;
 	
@@ -166,11 +161,6 @@ public abstract class Canvas
 	 */
 	protected Canvas()
 	{
-		// Create native canvas
-		DisplayManager dm = DisplayManager.DISPLAY_MANAGER;
-		EmbeddedCanvas embedded;
-		this._widget.setEmbed(embedded = dm.createEmbeddedCanvas());
-		this._embedded = embedded;
 	}
 	
 	@__SerializedEvent__
@@ -552,11 +542,9 @@ public abstract class Canvas
 			return;
 		
 		// Obtain the graphics which is used to draw on the canvas
-		EmbeddedCanvas embedded = this._embedded;
-		Graphics g = (this._isfullscreen &&
-			__currentHead().supportsFullscreenGraphics() ?
-			current._head.fullscreenGraphics() :
-			embedded.getGraphics());
+		Graphics g = todo.TODO.<Graphics>missingObject();
+		if (true)
+			throw new todo.TODO();
 		
 		// Reset any parameters as possible and the clip
 		if (g instanceof BasicGraphics)
@@ -572,65 +560,7 @@ public abstract class Canvas
 		paint(g);
 		
 		// Tell the embedded that it should repaint
-		embedded.container().shouldRepaint(__x, __y, __w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/08/19
-	 */
-	@Override
-	boolean __handleEvent(EventType __t, Command __c, int __a, int __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends
-		KeyListener keylistener = this._keylistener;
-		switch (__t)
-		{
-				// Key was pressed
-			case KEY_PRESSED:
-				keyPressed(__a);
-				if (keylistener != null)
-					keylistener.keyPressed(__a, __b);
-				return true;
-			
-				// Key was released
-			case KEY_RELEASED:
-				keyReleased(__a);
-				if (keylistener != null)
-					keylistener.keyReleased(__a, __b);
-				return true;
-				
-				// Key was repeated
-			case KEY_REPEATED:
-				keyRepeated(__a);
-				if (keylistener != null)
-					keylistener.keyRepeated(__a, __b);
-				return true;
-			
-				// Pointer was dragged.
-			case POINTER_DRAGGED:
-				pointerDragged(__a, __b);
-				return true;
-				
-				// Pointer was pressed.
-			case POINTER_PRESSED:
-				pointerPressed(__a, __b);
-				return true;
-			
-				// Pointer was released.
-			case POINTER_RELEASED:
-				pointerReleased(__a, __b);
-				return true;
-					
-				// Unhandled
-			default:
-				return super.__handleEvent(__t, __c, __a, __b);
-		}
+		throw new todo.TODO();
 	}
 }
 
