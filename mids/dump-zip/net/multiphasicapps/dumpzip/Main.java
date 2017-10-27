@@ -108,11 +108,11 @@ public class Main
 				}
 		}
 	
-		// {@squirreljme.error AX01 Failed to properly read the specified
+		// {@squirreljme.error AX04 Failed to properly read the specified
 		// file. (The file name; The last entry read)}
 		catch (IOException e)
 		{
-			throw new RuntimeException(String.format("AX01 %s %s", inputzip,
+			throw new RuntimeException(String.format("AX04 %s %s", inputzip,
 				lastentry), e);
 		}
 	}
