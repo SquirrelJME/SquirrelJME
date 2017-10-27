@@ -14,5 +14,5 @@
  * @since 2017/03/04
  */
 
-package net.multiphasicapps.io.zlibdecompression;
+package net.multiphasicapps.zip.zlib;
 

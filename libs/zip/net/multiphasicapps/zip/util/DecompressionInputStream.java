@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.compressionstream;
+package net.multiphasicapps.zip.util;
 
 import java.io.InputStream;
 import java.io.IOException;

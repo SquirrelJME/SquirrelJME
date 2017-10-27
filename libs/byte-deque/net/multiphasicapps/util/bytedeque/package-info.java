@@ -8,23 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.data;
-
 /**
- * This can be set on a stream which sets the default endianess on methods
- * that do not read using a specified endianess.
+ * This package contains the circular buffer code.
  *
- * @since 2016/07/10
+ * @since 2016/04/30
  */
-public enum DataEndianess
-{
-	/** Big endian. */
-	BIG,
-	
-	/** Little endian. */
-	LITTLE,
-	
-	/** End. */
-	;
-}
+
+package net.multiphasicapps.util.bytedeque;
 

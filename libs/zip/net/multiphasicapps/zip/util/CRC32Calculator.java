@@ -8,9 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.crc32;
-
-import net.multiphasicapps.io.checksum.Checksum;
+package net.multiphasicapps.zip.util;
 
 /**
  * This is a data sink which supports the CRC 32 algorithm.

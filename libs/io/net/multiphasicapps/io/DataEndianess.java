@@ -8,11 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the circular buffer code.
- *
- * @since 2016/04/30
- */
+package net.multiphasicapps.io;
 
-package net.multiphasicapps.util.circlebufs;
+/**
+ * This can be set on a stream which sets the default endianess on methods
+ * that do not read using a specified endianess.
+ *
+ * @since 2016/07/10
+ */
+public enum DataEndianess
+{
+	/** Big endian. */
+	BIG,
+	
+	/** Little endian. */
+	LITTLE,
+	
+	/** End. */
+	;
+}
 

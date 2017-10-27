@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.zlibdecompression;
+package net.multiphasicapps.zip.zlib;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.adler32.Adler32Calculator;
-import net.multiphasicapps.io.checksum.ChecksumInputStream;
-import net.multiphasicapps.io.compressionstream.DecompressionInputStream;
-import net.multiphasicapps.io.inflate.InflaterInputStream;
+import net.multiphasicapps.zip.util.Adler32Calculator;
+import net.multiphasicapps.zip.util.ChecksumInputStream;
+import net.multiphasicapps.zip.util.DecompressionInputStream;
+import net.multiphasicapps.zip.util.InflaterInputStream;
 
 /**
  * This class supports decompressing ZLib streams.

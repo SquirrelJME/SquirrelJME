@@ -8,19 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.inflate;
+package net.multiphasicapps.zip.util;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.io.checksum.Checksum;
-import net.multiphasicapps.io.compressionstream.DecompressionInputStream;
-import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
-import net.multiphasicapps.util.datadeque.ByteDeque;
-import net.multiphasicapps.util.huffmantree.BitSource;
-import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
+import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
  * This is used to decompress standard deflate compressed stream.
