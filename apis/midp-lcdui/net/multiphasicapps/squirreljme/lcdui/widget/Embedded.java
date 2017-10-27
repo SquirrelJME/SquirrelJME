@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
  *
  * @since 2017/10/25
  */
+@Deprecated
 public abstract class Embedded
 {
 	/** The widget this is embedded into. */

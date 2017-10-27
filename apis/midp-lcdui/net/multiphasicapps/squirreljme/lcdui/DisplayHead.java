@@ -30,24 +30,53 @@ public abstract class DisplayHead
 	private volatile DisplayState _displaystate =
 		DisplayState.BACKGROUND;
 	
-	/** The current displayable attached to this head. */
-	private volatile DisplayableWidget _current;
+	/**
+	 * Returns the physical display height in millimeters.
+	 *
+	 * @return The physical display height in millimeters.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayPhysicalHeightMillimeters();
 	
 	/**
-	 * Returns the display height in millimeters.
+	 * Returns the physical display height in pixels.
 	 *
-	 * @return The display height in millimeters.
-	 * @since 2017/10/20
+	 * @return The physical display height in pixels.
+	 * @since 2017/10/27
 	 */
-	public abstract int displayHeightMillimeters();
+	public abstract int displayPhysicalHeightPixels();
 	
 	/**
-	 * Returns the display height in pixels.
+	 * Returns the physical display width in millimeters.
 	 *
-	 * @return The display height in pixels.
-	 * @since 2017/10/20
+	 * @return The physical display width in millimeters.
+	 * @since 2017/10/27
 	 */
-	public abstract int displayHeightPixels();
+	public abstract int displayPhysicalWidthMillimeters();
+	
+	/**
+	 * Returns the physical display width in pixels.
+	 *
+	 * @return The physical display width in pixels.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayPhysicalWidthPixels();
+	
+	/**
+	 * Returns the virtual display height in pixels.
+	 *
+	 * @return The virtual display height in pixels.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayVirtualHeightPixels();
+	
+	/**
+	 * Returns the virtual display width in pixels.
+	 *
+	 * @return The virtual display width in pixels.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayVirtualWidthPixels();
 	
 	/**
 	 * Specifies that the display state has changed.
@@ -62,22 +91,6 @@ public abstract class DisplayHead
 		throws NullPointerException;
 	
 	/**
-	 * Returns the display width in millimeters.
-	 *
-	 * @return The display width in millimeters.
-	 * @since 2017/10/20
-	 */
-	public abstract int displayWidthMillimeters();
-	
-	/**
-	 * Returns the display width in pixels.
-	 *
-	 * @return The display width in pixels.
-	 * @since 2017/10/20
-	 */
-	public abstract int displayWidthPixels();
-	
-	/**
 	 * Converts the specified abstract font size to a pixel size.
 	 *
 	 * @param __s The abstract font size to convert.
@@ -87,12 +100,12 @@ public abstract class DisplayHead
 	public abstract int fontSizeToPixelSize(int __s);
 	
 	/**
-	 * Returns the graphics object which can draw on the entire screen.
+	 * Returns the graphics object which can draw on this display head
 	 *
-	 * @return The fullscreen graphics object.
+	 * @return The graphics instance for drawing on this display head.
 	 * @since 2017/10/24
 	 */
-	public abstract Graphics fullscreenGraphics();
+	public abstract Graphics graphics();
 	
 	/**
 	 * Specifies that the hardware state has changed.
@@ -141,10 +154,10 @@ public abstract class DisplayHead
 	public final int displayDpi()
 	{
 		// dpi = (pixels / mm) * 25.4
-		double dw = ((double)displayWidthPixels() /
-				(double)displayWidthMillimeters()) * 25.4,
-			dh = ((double)displayHeightPixels() /
-				(double)displayHeightMillimeters()) * 25.4;
+		float dw = ((float)displayPhysicalWidthPixels() /
+				(float)displayPhysicalWidthMillimeters()) * 25.4,
+			dh = ((float)displayPhysicalHeightPixels() /
+				(float)displayPhysicalHeightMillimeters()) * 25.4;
 		return (int)((dw + dh) / 2.0);
 	}
 	
@@ -160,13 +173,39 @@ public abstract class DisplayHead
 	}
 	
 	/**
+	 * Returns the virtual display height in millimeters.
+	 *
+	 * @return The virtual display height in millimeters.
+	 * @since 2017/10/27
+	 */
+	public final int displayVirtualHeightMillimeters()
+	{
+		return (int)(displayPhysicalHeightMillimeters() * 
+			((float)displayVirtualHeightPixels() /
+			(float)displayPhysicalHeightPixels()));
+	}
+	
+	/**
+	 * Returns the virtual display width in millimeters.
+	 *
+	 * @return The virtual display width in millimeters.
+	 * @since 2017/10/27
+	 */
+	public final int displayVirtualWidthMillimeters()
+	{
+		return (int)(displayPhysicalWidthMillimeters() * 
+			((float)displayVirtualWidthPixels() /
+			(float)displayPhysicalWidthPixels()));
+	}
+	
+	/**
 	 * Returns the current hardware state.
 	 *
 	 * @return The hardware state.
 	 * @throws RuntimeException If the hardware state was not set.
 	 * @since 2017/10/01
 	 */
-	public final DisplayHardwareState getHardwareState()
+	public final DisplayHardwareState hardwareState()
 		throws RuntimeException
 	{
 		// {@squirreljme.error EB0x The hardware state has not been set by
@@ -175,46 +214,6 @@ public abstract class DisplayHead
 		if (rv == null)
 			throw new RuntimeException("EB0x");
 		return rv;
-	}
-	
-	/**
-	 * Sets the current displayable.
-	 *
-	 * @param __d The displayable to show, if {@code null} then the current
-	 * display is to have its current displayable removed.
-	 * @throws IllegalStateException If there is already a current displayable
-	 * and one is being set.
-	 * @since 2017/10/25
-	 */
-	public final void setCurrent(DisplayableWidget __d)
-		throws IllegalStateException
-	{
-		// Modifies global state
-		synchronized (DisplayManager.GLOBAL_LOCK)
-		{
-			// Clearing the current displayable?
-			if (__d == null)
-			{
-				// Clearing nothing, do nothing
-				if (this._current == null)
-					return;
-				
-				throw new todo.TODO();
-			}
-			
-			// Setting a current displayable
-			else
-			{
-				// {@squirreljme.error EB0y Cannot set a new current
-				// displayable because there is already one being displayed.}
-				if (this._current != null)
-					throw new IllegalStateException("EB0y");
-			
-				// Set and register
-				this._current = __d;
-				registerCurrent(__d);
-			}
-		}
 	}
 	
 	/**
@@ -235,7 +234,7 @@ public abstract class DisplayHead
 		{
 			// If the hardware state is in disabled mode, then force the
 			// display to be disabled always
-			DisplayHardwareState hws = getHardwareState();
+			DisplayHardwareState hws = hardwareState();
 			if (hws.forceDisabled())
 				__ds = DisplayState.BACKGROUND;
 			

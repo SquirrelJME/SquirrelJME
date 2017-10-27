@@ -15,5 +15,6 @@
  * @since 2017/10/25
  */
 
+@Deprecated
 package net.multiphasicapps.squirreljme.lcdui.widget;
 
