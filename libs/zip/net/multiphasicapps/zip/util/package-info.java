@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains an implementation of the huffman tree.
+ * This package contains the various ZIP utilities.
  *
- * @since 2016/04/30
+ * @since 2017/10/26
  */
 
-package net.multiphasicapps.util.huffmantree;
+package net.multiphasicapps.zip.util;
 
