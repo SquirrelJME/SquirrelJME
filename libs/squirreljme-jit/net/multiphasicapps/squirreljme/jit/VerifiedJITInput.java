@@ -19,9 +19,9 @@ import net.multiphasicapps.squirreljme.jit.rc.Resource;
 import net.multiphasicapps.squirreljme.jit.verifier.ClassStructures;
 import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
 import net.multiphasicapps.squirreljme.jit.verifier.VerifiedMethods;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableMap;
+import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
  * This class contains input for the JIT which has completely been verified

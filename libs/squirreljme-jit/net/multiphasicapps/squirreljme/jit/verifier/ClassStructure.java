@@ -25,8 +25,8 @@ import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.cff.MethodFlags;
 import net.multiphasicapps.squirreljme.jit.cff.MethodName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodNameAndType;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This contains the structure information for a single class. The class

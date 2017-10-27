@@ -25,8 +25,8 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 

@@ -33,9 +33,9 @@ import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.NullCompilerOutput;
 import net.multiphasicapps.squirreljme.build.base.NullFileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
-import net.multiphasicapps.util.sorted.SortedTreeSet;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
+import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableList;
+import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
  * This provides access to a single instance of the standard Java compiler

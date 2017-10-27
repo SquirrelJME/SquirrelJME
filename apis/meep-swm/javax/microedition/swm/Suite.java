@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.util.empty.EmptyIterator;
+import net.multiphasicapps.collections.EmptyIterator;
 
 /**
  * This represents an application suite.

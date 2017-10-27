@@ -31,7 +31,7 @@ import net.multiphasicapps.markdownwriter.MarkdownWriter;
 import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This loads the class doclet documentation and obtains information so that

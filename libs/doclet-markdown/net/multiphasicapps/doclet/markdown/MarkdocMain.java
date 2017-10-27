@@ -38,9 +38,9 @@ import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-import net.multiphasicapps.util.sorted.SortedTreeSet;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableSet;
 
 /**
  * This is the main entry point for the markdown code generators.

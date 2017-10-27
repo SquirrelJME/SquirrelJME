@@ -16,7 +16,7 @@ import java.util.Map;
 import javax.microedition.lcdui.Font;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This class is used as a service and provides management for fonts to be

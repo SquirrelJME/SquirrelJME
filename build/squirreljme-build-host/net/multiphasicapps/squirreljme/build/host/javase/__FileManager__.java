@@ -29,7 +29,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import net.multiphasicapps.squirreljme.build.base.CompilerOutput;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This is used by the Java compiler to manage files used by the compiler
