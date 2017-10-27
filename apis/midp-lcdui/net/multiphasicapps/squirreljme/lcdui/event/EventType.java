@@ -38,8 +38,8 @@ public enum EventType
 	/** Pointer Released. */
 	POINTER_RELEASED,
 	
-	/** Canvas to be repainted. */
-	CANVAS_REPAINT,
+	/** Repaint the current display. */
+	REPAINT,
 	
 	/** End. */
 	;

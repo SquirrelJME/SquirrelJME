@@ -89,7 +89,7 @@ public abstract class DisplayManager
 	 * @return The event queue.
 	 * @since 2017/10/24
 	 */
-	public final EventQueue getEventQueue()
+	public final EventQueue eventQueue()
 	{
 		return this.eventqueue;
 	}

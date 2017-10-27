@@ -411,8 +411,8 @@ public abstract class Canvas
 			return;
 		
 		// Send repaint
-		DisplayManager.DISPLAY_MANAGER.getEventQueue().repaintCanvas(
-			this, __x, __y, __w, __h);
+		DisplayManager.DISPLAY_MANAGER.eventQueue().repaint(
+			__headID(), __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()
@@ -525,15 +525,11 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * Specifies that this canvas is to be repainted.
-	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
+	 * {@inheritDoc}
 	 * @since 2017/10/24
 	 */
 	@__SerializedEvent__
+	@Override
 	void __doRepaint(int __x, int __y, int __w, int __h)
 	{
 		// Get the drawspace to draw onto, which can be a Display or a

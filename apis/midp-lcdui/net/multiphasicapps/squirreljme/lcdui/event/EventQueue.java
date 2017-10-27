@@ -81,24 +81,18 @@ public final class EventQueue
 	}
 	
 	/**
-	 * Specifies that the given canvas should be repainted.
+	 * Specifies that the given coordinates should be repainted.
 	 *
-	 * @param __c The canvas to have painted.
+	 * @param __id The display head ID.
 	 * @param __x The x coordinate.
 	 * @param __y The y coordinate.
 	 * @param __w The width.
 	 * @param __h The height.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/24
 	 */
-	public final void repaintCanvas(Canvas __c, int __x, int __y, int __w,
-		int __h)
-		throws NullPointerException
+	public final void repaint(int __id, int __x, int __y, int __w, int __h)
 	{
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		
-		push(new CanvasRepaintEvent(__c, __x, __y, __w, __h));
+		push(new RepaintEvent(__id, __x, __y, __w, __h));
 	}
 }
 
