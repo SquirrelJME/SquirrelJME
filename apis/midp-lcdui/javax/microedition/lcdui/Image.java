@@ -100,10 +100,10 @@ public class Image
 	public final Graphics getGraphics()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB0f Cannot get mutable graphic operations for
+		// {@squirreljme.error EB0o Cannot get mutable graphic operations for
 		// an immutable image.}
 		if (!isMutable())
-			throw new IllegalStateException("EB0f");
+			throw new IllegalStateException("EB0o");
 		
 		// Create
 		return new IntArrayGraphics(this._data, this._width, this._height,
@@ -164,31 +164,31 @@ public class Image
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0k The source coordinates are negative.}
+		// {@squirreljme.error EB0o The source coordinates are negative.}
 		if (__x < 0 || __y < 0)
-			throw new IllegalArgumentException("EB0k");
+			throw new IllegalArgumentException("EB0o");
 	
-		// {@squirreljme.error EB0l The absolute value of the scanline length
+		// {@squirreljme.error EB0o The absolute value of the scanline length
 		// exceeds the read width.}
 		int absl = Math.abs(__sl);
 		if (absl < __w)
-			throw new IllegalArgumentException("EB0l");
+			throw new IllegalArgumentException("EB0o");
 		
-		// {@squirreljme.error EB0j Reading of RGB data would exceed the bounds
+		// {@squirreljme.error EB0q Reading of RGB data would exceed the bounds
 		// out the output array.}
 		int srcarea = __w * __h;
 		int areasl = __sl * __h;
 		if (__o < 0 || (__o + areasl) > __b.length || (__o + areasl) < 0)
-			throw new ArrayIndexOutOfBoundsException("EB0j");
+			throw new ArrayIndexOutOfBoundsException("EB0q");
 		
-		// {@squirreljme.error EB0m The area to read exceeds the bounds of the
+		// {@squirreljme.error EB0o The area to read exceeds the bounds of the
 		// image.}
 		int ex = __x + __w,
 			ey = __y + __h;
 		int iw = this._width,
 			ih = this._height;
 		if (ex > iw || ey > ih)
-			throw new IllegalArgumentException("EB0m");
+			throw new IllegalArgumentException("EB0o");
 		
 		// Read image data
 		int[] data = this._data;
@@ -292,10 +292,10 @@ public class Image
 			return createImage(new ByteArrayInputStream(__b, __o, __l));
 		}
 		
-		// {@squirreljme.error EB0u Could not load the image data.}
+		// {@squirreljme.error EB0p Could not load the image data.}
 		catch (IOException e)
 		{
-			throw new IllegalArgumentException("EB0u", e);
+			throw new IllegalArgumentException("EB0p", e);
 		}
 	}
 	
@@ -330,9 +330,9 @@ public class Image
 	public static Image createImage(int __w, int __h, boolean __alpha, int __c)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0n Zero or negative image size requested.}
+		// {@squirreljme.error EB0q Zero or negative image size requested.}
 		if (__w <= 0 || __h <= 0)
-			throw new IllegalArgumentException("EB0n");
+			throw new IllegalArgumentException("EB0q");
 		
 		// Setup buffer
 		int area = __w * __h;
@@ -385,10 +385,10 @@ public class Image
 		try (InputStream is = ActiveMidlet.get().getClass().
 			getResourceAsStream(__s))
 		{
-			// {@squirreljme.error EB0t The specified resource does not
+			// {@squirreljme.error EB0r The specified resource does not
 			// exist. (The resource name)}
 			if (is == null)
-				throw new IOException(String.format("EB0t %s", __s));
+				throw new IOException(String.format("EB0r %s", __s));
 			
 			return createImage(is);
 		}
@@ -430,18 +430,18 @@ public class Image
 		if (__rgb == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0d Invalid image size. (The width;
+		// {@squirreljme.error EB0s Invalid image size. (The width;
 		// The height)}
 		int area = __w * __h;
 		if (__w <= 0 || __h <= 0 || area <= 0)
-			throw new IllegalArgumentException(String.format("EB0d %d %d",
+			throw new IllegalArgumentException(String.format("EB0s %d %d",
 				__w, __h));
 		
-		// {@squirreljme.error EB0e The input integer buffer is shorter than
+		// {@squirreljme.error EB0t The input integer buffer is shorter than
 		// the specified area.}
 		int rgblen;
 		if ((rgblen = __rgb.length) < area)
-			throw new IndexOutOfBoundsException("EB0e");
+			throw new IndexOutOfBoundsException("EB0t");
 		
 		// Use a cloned copy of the pixel data?
 		if (rgblen == area)

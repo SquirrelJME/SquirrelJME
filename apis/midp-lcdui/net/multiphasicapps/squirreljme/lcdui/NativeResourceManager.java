@@ -87,12 +87,12 @@ public final class NativeResourceManager
 		Map<Object, NativeResource> binds = this._binds;
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error EB1v Could not get the native resource for
+			// {@squirreljme.error EB0z Could not get the native resource for
 			// the given class type. (The class)}
 			NativeResource rv = binds.get(__v);
 			if (rv == null)
 				throw new NoSuchElementException(
-					String.format("EB1v %s", __v.getClass()));
+					String.format("EB0z %s", __v.getClass()));
 			
 			return __cl.cast(rv);
 		}
@@ -113,10 +113,10 @@ public final class NativeResourceManager
 		if (__nr == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB1x Cannot register the specified object
+		// {@squirreljme.error EB10 Cannot register the specified object
 		// because it is not bound to the native resource.}
 		if (__v != __nr.boundObject().get())
-			throw new IllegalStateException("EB1x");
+			throw new IllegalStateException("EB10");
 		
 		// Lock
 		ReferenceQueue<Object> queue = this._queue;
@@ -124,10 +124,10 @@ public final class NativeResourceManager
 		Map<Object, NativeResource> binds = this._binds;
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error EB1y The specified object has already
+			// {@squirreljme.error EB11 The specified object has already
 			// been registered.}
 			if (binds.containsKey(__v))
-				throw new IllegalStateException("EB1y");
+				throw new IllegalStateException("EB11");
 			
 			// Create and store reference
 			Reference<Object> ref = new WeakReference<>(__v, queue);
@@ -165,11 +165,11 @@ public final class NativeResourceManager
 			NativeResource nrc;
 			synchronized (this._lock)
 			{
-				// {@squirreljme.error EB1w An unregistered native resource
+				// {@squirreljme.error EB12 An unregistered native resource
 				// was garbage collected.}
 				nrc = natives.remove(gced);
 				if (nrc == null)
-					throw new IllegalStateException("EB1w");
+					throw new IllegalStateException("EB12");
 			}
 			
 			// Free the resource
