@@ -251,11 +251,11 @@ public final class Class<T>
 		if (__a == null)
 			throw new NullPointerException();
 		
-		// {@squirreljme.error ZZ09 Could not find the specified class. (The
+		// {@squirreljme.error ZZ01 Could not find the specified class. (The
 		// name of the class)}
 		Class<?> rv = SystemVM.classForName(__a);
 		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ09 %s", __a));
+			throw new ClassNotFoundException(String.format("ZZ01 %s", __a));
 		return rv;
 	}
 	

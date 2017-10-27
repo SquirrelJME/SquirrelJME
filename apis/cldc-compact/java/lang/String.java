@@ -327,11 +327,11 @@ public final class String
 			return getBytes(System.getProperty("microedition.encoding"));
 		}
 		
-		// {@squirreljme.error ZZ0o The default encoding is not supported by
+		// {@squirreljme.error ZZ02 The default encoding is not supported by
 		// the virtual machine.}
 		catch (UnsupportedEncodingException uee)
 		{
-			throw new AssertionError("ZZ0o");
+			throw new AssertionError("ZZ02");
 		}
 	}
 	

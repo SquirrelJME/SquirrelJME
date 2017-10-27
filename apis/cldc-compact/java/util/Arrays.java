@@ -13,8 +13,8 @@ package java.util;
 /**
  * This class contains utility methods which operate on arrays.
  *
- * {@squirreljme.error ZZ07 The sort range exceeds the array bounds.}
- * {@squirreljme.error ZZ08 The from index exceeds the to index.}
+ * {@squirreljme.error ZZ04 The sort range exceeds the array bounds.}
+ * {@squirreljme.error ZZ05 The from index exceeds the to index.}
  *
  * @since 2016/09/30
  */
@@ -309,9 +309,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -346,9 +346,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -383,9 +383,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -420,9 +420,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -457,9 +457,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -494,9 +494,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -531,9 +531,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -586,9 +586,9 @@ public class Arrays
 			throw new NullPointerException("NARG");
 		int an = __a.length;
 		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ07");
+			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ08");
+			throw new IllegalArgumentException("ZZ05");
 		
 		// Pointless sort?
 		if (__from == __to)

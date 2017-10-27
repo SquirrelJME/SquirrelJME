@@ -146,10 +146,10 @@ public final class System
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0p Cannot request a system property which has
+		// {@squirreljme.error ZZ03 Cannot request a system property which has
 		// a blank key.}
 		if (__k.equals(""))
-			throw new IllegalArgumentException("ZZ0p");
+			throw new IllegalArgumentException("ZZ03");
 		
 		// Not allowed to do this?
 		getSecurityManager().checkPropertyAccess(__k);
