@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
@@ -33,6 +34,10 @@ public class SwingDisplayHead
 	/** The frame this uses. */
 	protected final JFrame frame =
 		new JFrame("SquirrelJME");
+	
+	/** The client screen panel. */
+	protected final __Screen__ screen =
+		new __Screen__();
 	
 	/**
 	 * Initializes the display head.
@@ -51,6 +56,14 @@ public class SwingDisplayHead
 		// Force minimum size to something more friendly
 		frame.setMinimumSize(new Dimension(160, 160));
 		frame.setPreferredSize(new Dimension(640, 480));
+		
+		// Setup screen
+		__Screen__ screen = this.screen;
+		screen.setMinimumSize(new Dimension(160, 160));
+		screen.setPreferredSize(new Dimension(640, 480));
+		
+		// Screen belongs in the frame
+		frame.add(screen);
 	}
 	
 	/**
@@ -104,7 +117,7 @@ public class SwingDisplayHead
 	@Override
 	public int displayVirtualHeightPixels()
 	{
-		throw new todo.TODO();
+		return this.screen.getHeight();
 	}
 	
 	/**
@@ -114,7 +127,7 @@ public class SwingDisplayHead
 	@Override
 	public int displayVirtualWidthPixels()
 	{
-		throw new todo.TODO();
+		return this.screen.getWidth();
 	}
 	
 	/**
@@ -187,7 +200,7 @@ public class SwingDisplayHead
 	@Override
 	public Graphics graphics()
 	{
-		throw new todo.TODO();
+		return this.screen.lcduiGraphics();
 	}
 	
 	/**
@@ -197,7 +210,8 @@ public class SwingDisplayHead
 	@Override
 	public void graphicsPainted()
 	{
-		throw new todo.TODO();
+		// Just force a complete repaint of the frame
+		this.frame.repaint();
 	}
 	
 	/**
@@ -261,6 +275,27 @@ public class SwingDisplayHead
 		if (displayVirtualWidthPixels() > displayVirtualHeightPixels())
 			return DisplayOrientation.LANDSCAPE;
 		return DisplayOrientation.PORTRAIT;
+	}
+	
+	/**
+	 * This class represents the screen that is currently being displayed to
+	 * the user.
+	 *
+	 * @since 2017/10/27
+	 */
+	private static final class __Screen__
+		extends JPanel
+	{
+		/**
+		 * Returns the graphics to draw on this screen.
+		 *
+		 * @return The graphics to draw on this screen.
+		 * @since 2017/10/27
+		 */
+		public Graphics lcduiGraphics()
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
