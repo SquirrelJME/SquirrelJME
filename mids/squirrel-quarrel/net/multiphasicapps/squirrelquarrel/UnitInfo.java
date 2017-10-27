@@ -162,10 +162,10 @@ public final class UnitInfo
 		String path = "units/" + TerrainType.__lower(__t.name()) + "/info";
 		try (InputStream is = UnitInfo.class.getResourceAsStream(path))
 		{
-			// {@squirreljme.error BE0b No information resource exists for the
+			// {@squirreljme.error BE0g No information resource exists for the
 			// given unit type. (The unit type; The attempted path)}
 			if (is == null)
-				throw new IOException(String.format("BE0b %s %s", __t, path));
+				throw new IOException(String.format("BE0g %s %s", __t, path));
 			
 			// Load manifest
 			JavaManifest man = new JavaManifest(is);
@@ -205,9 +205,9 @@ public final class UnitInfo
 				case "medium": this.size = UnitSize.MEDIUM; break;
 				case "large": this.size = UnitSize.LARGE; break;
 				
-					// {@squirreljme.error BE0c Unknown unit size. (Unit size)}
+					// {@squirreljme.error BE0h Unknown unit size. (Unit size)}
 				default:
-					throw new IOException(String.format("BE0c %s", vsize));
+					throw new IOException(String.format("BE0h %s", vsize));
 			}
 			
 			// Parse unit dimensions and potential offsets
@@ -243,11 +243,11 @@ public final class UnitInfo
 			this.buildingcenterpointoffset = new Point(pxw / 2, pxh / 2);
 		}
 		
-		// {@squirreljme.error BE0a Failed to load information for the
+		// {@squirreljme.error BE0f Failed to load information for the
 		// specified unit type. (The unit type)}
 		catch (IOException|NumberFormatException e)
 		{
-			throw new RuntimeException(String.format("BE0a %s", __t), e);
+			throw new RuntimeException(String.format("BE0f %s", __t), e);
 		}
 	}
 	
@@ -293,11 +293,11 @@ public final class UnitInfo
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0d Missing space between dimensions.}
+		// {@squirreljme.error BE0g Missing space between dimensions.}
 		__v = __v.trim();
 		int spdx = __v.indexOf(' ');
 		if (spdx < 0)
-			throw new NumberFormatException("BE0d");
+			throw new NumberFormatException("BE0g");
 		
 		// Get both fragments
 		String fa = __v.substring(0, spdx).trim(),
@@ -324,11 +324,11 @@ public final class UnitInfo
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0e Missing space between points.}
+		// {@squirreljme.error BE0h Missing space between points.}
 		__v = __v.trim();
 		int spdx = __v.indexOf(' ');
 		if (spdx < 0)
-			throw new NumberFormatException("BE0e");
+			throw new NumberFormatException("BE0h");
 		
 		// Get both fragments
 		String fa = __v.substring(0, spdx).trim(),

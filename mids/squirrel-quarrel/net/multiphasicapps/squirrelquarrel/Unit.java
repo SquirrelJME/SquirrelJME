@@ -112,9 +112,9 @@ public class Unit
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0h Cannot morph a linked unit.}
+		// {@squirreljme.error BE0c Cannot morph a linked unit.}
 		if (this._islinked)
-			throw new IllegalStateException("BE0h");
+			throw new IllegalStateException("BE0c");
 		
 		// If the type remains the same, do nothing
 		UnitType oldtype = this._type;
@@ -260,14 +260,14 @@ public class Unit
 	void __move(int __x, int __y)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error BE0f Cannot move a linked unit.}
+		// {@squirreljme.error BE0a Cannot move a linked unit.}
 		if (this._islinked)
-			throw new IllegalStateException("BE0f");
+			throw new IllegalStateException("BE0a");
 		
-		// {@squirreljme.error BE0g Cannot move a unit of an unknown type.}
+		// {@squirreljme.error BE0b Cannot move a unit of an unknown type.}
 		UnitInfo info = this._info;
 		if (info == null)
-			throw new IllegalStateException("BE0g");
+			throw new IllegalStateException("BE0b");
 			
 		// Center unit size
 		Dimension d = info.pixeldimension;
@@ -371,10 +371,10 @@ public class Unit
 		public Unit get()
 			throws UnitDeletedException
 		{
-			// {@squirreljme.error BE08 The unit has been deleted.}
+			// {@squirreljme.error BE0c The unit has been deleted.}
 			Unit rv = this._unit;
 			if (rv == null)
-				throw new UnitDeletedException("BE08");
+				throw new UnitDeletedException("BE0c");
 			
 			return rv;
 		}
