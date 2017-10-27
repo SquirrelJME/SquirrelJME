@@ -159,12 +159,12 @@ public class VMThread
 				node = input.getNode(__cn);
 			}
 			
-			// {@squirreljme.error AH05 The specified class does not exist.
+			// {@squirreljme.error AH03 The specified class does not exist.
 			// (The name of the class)}
 			catch (NoSuchClassException e)
 			{
 				throw new InterpreterClassNotFoundException(
-					String.format("AH05 %s", __cn), e);
+					String.format("AH03 %s", __cn), e);
 			}
 			
 			// Setup new class instances which would then be initialized
@@ -186,11 +186,11 @@ public class VMThread
 	private Interpreter __interpreter()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH01 The interpreter has been garbage
+		// {@squirreljme.error AH05 The interpreter has been garbage
 		// collected.}
 		Interpreter rv = this._interpreterref.get();
 		if (rv == null)
-			throw new IllegalStateException("AH01");
+			throw new IllegalStateException("AH05");
 		return rv;
 	}
 	
@@ -205,10 +205,10 @@ public class VMThread
 	final VMProcess __process()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH04 The process has been garbage collected.}
+		// {@squirreljme.error AH05 The process has been garbage collected.}
 		VMProcess rv = this._processref.get();
 		if (rv == null)
-			throw new IllegalStateException("AH04");
+			throw new IllegalStateException("AH05");
 		return rv;
 	}
 }
