@@ -8,15 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package net.multiphasicapps.squirreljme.lcdui.image;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.checksum.ChecksumInputStream;
-import net.multiphasicapps.io.crc32.CRC32Calculator;
-import net.multiphasicapps.io.inflate.InflaterInputStream;
-import net.multiphasicapps.io.region.SizeLimitedInputStream;
-import net.multiphasicapps.io.zlibdecompression.ZLibDecompressor;
+import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.SizeLimitedInputStream;
+import net.multiphasicapps.zip.util.ChecksumInputStream;
+import net.multiphasicapps.zip.util.CRC32Calculator;
+import net.multiphasicapps.zip.util.InflaterInputStream;
+import net.multiphasicapps.zip.zlib.ZLibDecompressor;
 
 /**
  * This class parses PNG images.
@@ -29,7 +30,7 @@ import net.multiphasicapps.io.zlibdecompression.ZLibDecompressor;
  *
  * @since 2017/02/28
  */
-class __PNGImageParser__
+public class PNGReader
 {
 	/** The input source. */
 	protected final DataInputStream in;
@@ -71,7 +72,7 @@ class __PNGImageParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	__PNGImageParser__(DataInputStream __in)
+	PNGReader(DataInputStream __in)
 		throws NullPointerException
 	{
 		// Check
@@ -171,7 +172,7 @@ class __PNGImageParser__
 			throw new IOException("EB15");
 		
 		// Create image
-		return new Image(argb, this._width, this._height, false,
+		return Image.createRGBImage(argb, this._width, this._height,
 			this._hasalpha);
 	}
 	

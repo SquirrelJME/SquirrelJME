@@ -16,8 +16,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.ReflectiveOperationException;
+import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +28,6 @@ import java.util.Deque;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.io.hex.HexInputStream;
-import net.multiphasicapps.io.inflate.InflaterInputStream;
 import net.multiphasicapps.squirreljme.build.projects.FileChannelBlockAccessor;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -37,6 +36,7 @@ import net.multiphasicapps.squirreljme.launcher.EntryPoint;
 import net.multiphasicapps.squirreljme.launcher.EntryPoints;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.util.InflaterInputStream;
 
 /**
  * This is a hosted launch which runs the first MIDlet detected.
