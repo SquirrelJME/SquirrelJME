@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.lcdui;
 import java.util.Objects;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
+import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
 
 /**
  * This class represents a display head where instances of
@@ -126,6 +127,14 @@ public abstract class DisplayHead
 		throws NullPointerException;
 	
 	/**
+	 * Returns the display head identifier.
+	 *
+	 * @return The ID of the current display head.
+	 * @since 2017/10/27
+	 */
+	public abstract int headID();
+	
+	/**
 	 * Is this display head in color?
 	 *
 	 * @return If this display head is in color, otherwise it will be
@@ -215,6 +224,17 @@ public abstract class DisplayHead
 		return (int)(displayPhysicalWidthMillimeters() * 
 			((float)displayVirtualWidthPixels() /
 			(float)displayPhysicalWidthPixels()));
+	}
+	
+	/**
+	 * Returns the event queue.
+	 *
+	 * @return The event queue.
+	 * @since 2017/10/27
+	 */
+	public final EventQueue eventQueue()
+	{
+		return DisplayManager.DISPLAY_MANAGER.eventQueue();
 	}
 	
 	/**

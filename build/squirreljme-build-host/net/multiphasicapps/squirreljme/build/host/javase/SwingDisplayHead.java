@@ -11,17 +11,33 @@
 package net.multiphasicapps.squirreljme.build.host.javase;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.lang.ref.Reference;
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
+import net.multiphasicapps.squirreljme.lcdui.gfx.IntArrayGraphics;
 
 /**
  * This is a display head which outputs to Swing.
@@ -232,6 +248,17 @@ public class SwingDisplayHead
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/10/27
+	 */
+	@Override
+	public int headID()
+	{
+		// Always zero
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/10/20
 	 */
 	@Override
@@ -283,9 +310,73 @@ public class SwingDisplayHead
 	 *
 	 * @since 2017/10/27
 	 */
-	private static final class __Screen__
+	private final class __Screen__
 		extends JPanel
+		implements ComponentListener
 	{
+		/** The image to display in the panel. */
+		private volatile BufferedImage _image =
+			new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		
+		/**
+		 * Initialize the screen.
+		 *
+		 * @since 2017/10/27
+		 */
+		private __Screen__()
+		{
+			addComponentListener(this);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentHidden(ComponentEvent __e)
+		{
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentMoved(ComponentEvent __e)
+		{
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentResized(ComponentEvent __e)
+		{
+			BufferedImage image = this._image;
+			int oldw = image.getWidth(),
+				oldh = image.getHeight(),
+				neww = this.getWidth(),
+				newh = this.getHeight();
+		
+			// Recreate the image if it is larger
+			if (neww != oldw || newh != oldh)
+				this._image = new BufferedImage(neww, newh,
+					BufferedImage.TYPE_INT_RGB);
+		
+			// Send repaint event
+			eventQueue().repaint(headID(), 0, 0, neww, newh);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentShown(ComponentEvent __e)
+		{
+		}
+
 		/**
 		 * Returns the graphics to draw on this screen.
 		 *
@@ -294,7 +385,27 @@ public class SwingDisplayHead
 		 */
 		public Graphics lcduiGraphics()
 		{
-			throw new todo.TODO();
+			int w = getWidth();
+			return new IntArrayGraphics(
+				((DataBufferInt)this._image.getRaster().getDataBuffer()).
+				getData(), w, getHeight(), false, w, 0);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/10/25
+		 */
+		@Override
+		protected void paintComponent(java.awt.Graphics __g)
+		{
+			// This must always be called
+			super.paintComponent(__g);
+			
+			// Draw the backed buffered image
+			int xw = getWidth(),
+				xh = getHeight();
+			__g.drawImage(this._image, 0, 0, xw, xh,
+				0, 0, xw, xh, null);
 		}
 	}
 }

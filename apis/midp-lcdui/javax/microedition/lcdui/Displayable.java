@@ -245,6 +245,21 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Specifies that this canvas is to be repainted.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2017/10/24
+	 */
+	@__SerializedEvent__
+	void __doRepaint(int __x, int __y, int __w, int __h)
+	{
+		// Default implementation does nothing
+	}
+	
+	/**
 	 * Returns the height of the displayable or the maximum size of the
 	 * default display.
 	 *
@@ -280,6 +295,21 @@ public abstract class Displayable
 		
 		// Use the draw space size
 		return __drawSpace().width();
+	}
+	
+	/**
+	 * Returns the display head identifier.
+	 *
+	 * @return The ID of the current display head.
+	 * @since 2017/10/27
+	 */
+	final int __headID()
+	{
+		Display d = __currentDisplay();
+		if (d == null)
+			return -1;
+		
+		return d._head.headID();
 	}
 }
 

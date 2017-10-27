@@ -13,15 +13,15 @@ package net.multiphasicapps.squirreljme.lcdui.event;
 import javax.microedition.lcdui.Canvas;
 
 /**
- * This specifies that the given canvas should be repainted.
+ * This specifies that the current displayable should be repainted.
  *
  * @since 2017/10/24
  */
-public final class CanvasRepaintEvent
+public final class RepaintEvent
 	implements Event
 {
-	/** The canvas to repaint. */
-	public final Canvas canvas;
+	/** The display ID. */
+	public final int headid;
 	
 	/** The coordinates. */
 	public final int x, y;
@@ -32,7 +32,7 @@ public final class CanvasRepaintEvent
 	/**
 	 * Initializes the repaint event.
 	 *
-	 * @param __c The canvas to have painted.
+	 * @param __id The display head ID.
 	 * @param __x The x coordinate.
 	 * @param __y The y coordinate.
 	 * @param __w The width.
@@ -40,13 +40,9 @@ public final class CanvasRepaintEvent
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/24
 	 */
-	public CanvasRepaintEvent(Canvas __c, int __x, int __y, int __w, int __h)
-		throws NullPointerException
+	public RepaintEvent(int __id, int __x, int __y, int __w, int __h)
 	{
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		
-		this.canvas = __c;
+		this.headid = __id;
 		this.x = __x;
 		this.y = __y;
 		this.width = __w;
@@ -60,7 +56,7 @@ public final class CanvasRepaintEvent
 	@Override
 	public EventType type()
 	{
-		return EventType.CANVAS_REPAINT;
+		return EventType.REPAINT;
 	}
 }
 

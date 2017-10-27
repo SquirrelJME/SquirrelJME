@@ -11,10 +11,10 @@
 package javax.microedition.lcdui;
 
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.lcdui.event.CanvasRepaintEvent;
 import net.multiphasicapps.squirreljme.lcdui.event.Event;
 import net.multiphasicapps.squirreljme.lcdui.event.EventQueue;
 import net.multiphasicapps.squirreljme.lcdui.event.EventType;
+import net.multiphasicapps.squirreljme.lcdui.event.RepaintEvent;
 
 /**
  * This class manages the event loop for the LCDUI sub-system, all events and
@@ -33,7 +33,7 @@ final class __EventLoop__
 	public void run()
 	{
 		// Locks are performed on the event queue
-		EventQueue queue = DisplayManager.DISPLAY_MANAGER.getEventQueue();
+		EventQueue queue = DisplayManager.DISPLAY_MANAGER.eventQueue();
 		synchronized (queue)
 		{
 			for (;;)
@@ -60,10 +60,12 @@ final class __EventLoop__
 					switch (type)
 					{
 							// Repaint this canvas
-						case CANVAS_REPAINT:
-							CanvasRepaintEvent cre = (CanvasRepaintEvent)e;
-							cre.canvas.__doRepaint(cre.x, cre.y,
-								cre.width, cre.height);
+						case REPAINT:
+							if (true)
+								throw new todo.TODO();
+							RepaintEvent cre = (RepaintEvent)e;
+							/*cre.canvas.__doRepaint(cre.x, cre.y,
+								cre.width, cre.height);*/
 							break;
 						
 							// {@squirreljme.error EB0v Unknown event.
