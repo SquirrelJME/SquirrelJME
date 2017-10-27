@@ -125,10 +125,10 @@ final class __Sub__<V>
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BZ02 Deque capacity would be exceeded.}
+		// {@squirreljme.error AC08 Deque capacity would be exceeded.}
 		List<V> deque = this._deque;
 		if (deque.size() + 1 >= this._limit)
-			throw new IllegalStateException("BZ02");
+			throw new IllegalStateException("AC08");
 		
 		// Do not add the element if it is already in this queue.
 		Set<V> set = this._set;
@@ -209,10 +209,10 @@ final class __Sub__<V>
 	@Override
 	public V getFirst()
 	{
-		// {@squirreljme.error BZ04 The deque is empty.}
+		// {@squirreljme.error AC09 The deque is empty.}
 		List<V> deque = this._deque;
 		if (deque.size() <= 0)
-			throw new NoSuchElementException("BZ04");
+			throw new NoSuchElementException("AC09");
 		
 		// Just get it
 		return deque.get(0);
@@ -462,10 +462,10 @@ final class __Sub__<V>
 	public V removeFirst()
 		throws NoSuchElementException
 	{
-		// {@squirreljme.error BZ03 The deque is empty.}
+		// {@squirreljme.error AC0a The deque is empty.}
 		List<V> deque = this._deque;
 		if (deque.size() <= 0)
-			throw new NoSuchElementException("BZ03");
+			throw new NoSuchElementException("AC0a");
 		
 		// Remove it
 		V rv = deque.remove(0);
