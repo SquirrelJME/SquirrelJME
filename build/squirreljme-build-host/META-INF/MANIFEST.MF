@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: fea37c1c-007d-462b-a417-e77f326cdf73
 X-SquirrelJME-Depends: squirreljme-build-system 
- unmodifiable-collections midp-lcdui hex-input-stream 
+ collections midp-lcdui hex-input-stream 
  squirreljme-launcher
 X-SquirrelJME-Error: BM
 X-SquirrelJME-Description: This contains the entry system which runs 

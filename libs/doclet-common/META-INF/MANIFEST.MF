@@ -5,7 +5,7 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains code that can be shared
   among the various doclets which may be supported.
-X-SquirrelJME-Depends: sun-doclet-api sorted-collections 
+X-SquirrelJME-Depends: sun-doclet-api collections 
  unmodifiable-collections squirreljme-xjit
 X-SquirrelJME-Error: EN
 X-SquirrelJME-UUID: 9089b6e6-c628-4d73-ba89-661d2c8de768

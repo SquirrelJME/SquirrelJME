@@ -14,7 +14,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import net.multiphasicapps.util.empty.EmptyIterator;
+import net.multiphasicapps.collections.EmptyIterator;
 
 /**
  * This is a file directory which contains no files.

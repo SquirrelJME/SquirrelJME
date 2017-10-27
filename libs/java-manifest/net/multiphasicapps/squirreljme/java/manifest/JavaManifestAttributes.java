@@ -14,7 +14,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This contains the attributes for a single section within the manifest file.

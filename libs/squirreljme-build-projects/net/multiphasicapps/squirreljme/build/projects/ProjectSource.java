@@ -27,6 +27,8 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.collections.EmptySet;
+import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.build.base.SourceCompiler;
 import net.multiphasicapps.squirreljme.build.base.SourceCompilerProvider;
@@ -43,8 +45,6 @@ import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
 import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
 import net.multiphasicapps.squirreljme.midlet.MidletVersion;
 import net.multiphasicapps.squirreljme.midlet.ServiceSuiteID;
-import net.multiphasicapps.util.empty.EmptySet;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 import net.multiphasicapps.zip.ZipCompressionType;
 
