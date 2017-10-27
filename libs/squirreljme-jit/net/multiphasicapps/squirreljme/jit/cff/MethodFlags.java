@@ -212,7 +212,7 @@ public final class MethodFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI05 An {@code abstract} method cannot be
+		// {@squirreljme.error JI1p An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
@@ -220,7 +220,7 @@ public final class MethodFlags
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
 				throw new InvalidClassFormatException(
-					String.format("JI05 %s", this));
+					String.format("JI1p %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
@@ -237,11 +237,11 @@ public final class MethodFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error JI14 Flags for interface method has an
+				// {@squirreljme.error JI1q Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
-						String.format("JI14 %s", this));
+						String.format("JI1q %s", this));
 			}
 	}
 }

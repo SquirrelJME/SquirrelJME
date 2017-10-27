@@ -57,10 +57,10 @@ public final class VariableTread
 		if (__vr == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI3y Negative number of variable slots in the
+		// {@squirreljme.error JI0f Negative number of variable slots in the
 		// tread specified.}
 		if (__n < 0)
-			throw new IllegalArgumentException("JI3y");
+			throw new IllegalArgumentException("JI0f");
 		
 		// Set
 		this._varsref = __vr;
@@ -172,12 +172,12 @@ public final class VariableTread
 	DataValue __set(int __i, JavaType __t, InitializationKey __k)
 		throws ParserException
 	{
-		// {@squirreljme.error JI3z Cannot set the given index because it
+		// {@squirreljme.error JI0g Cannot set the given index because it
 		// exceeds the limit of the tread. (The index to set; The limit of the
 		// tread)}
 		int limit = limit();
 		if (__i < 0 || __i >= limit)
-			throw new ParserException(String.format("JI3z %d %d", __i, limit));
+			throw new ParserException(String.format("JI0g %d %d", __i, limit));
 		
 		throw new todo.TODO();
 	}

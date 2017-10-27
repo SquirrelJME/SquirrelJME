@@ -54,12 +54,12 @@ public final class FieldDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JI0l The field descriptor cannot be blank. (The
+		// {@squirreljme.error JI18 The field descriptor cannot be blank. (The
 		// field descriptor)}
 		int n = __n.length();
 		if (n <= 0)
 			throw new InvalidClassFormatException(
-				String.format("JI0l %s", __n));
+				String.format("JI18 %s", __n));
 		
 		// Depends on the first character
 		char c = __n.charAt(0);
@@ -114,11 +114,11 @@ public final class FieldDescriptor
 				this.classname = new ClassName(__n.substring(1, n - 1));
 				break;
 				
-				// {@squirreljme.error JI0m The field descriptor is not valid.
+				// {@squirreljme.error JI1a The field descriptor is not valid.
 				// (The field descriptor)}
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JI0m %s", __n));
+					String.format("JI1a %s", __n));
 		}
 	}
 	

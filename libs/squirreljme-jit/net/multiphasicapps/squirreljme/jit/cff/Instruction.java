@@ -249,13 +249,13 @@ public class Instruction
 					MethodReference.class,
 					__readUnsignedShort(__code, argbase));
 				
-				// {@squirreljme.error JI1o Invocation of method did not
+				// {@squirreljme.error JI1f Invocation of method did not
 				// have the matching interface/not-interface attribute.
 				// (The operation; The address; The method reference)}
 				if (mr.isInterface() !=
 					(op == InstructionIndex.INVOKEINTERFACE))
 					throw new InvalidClassFormatException(String.format(
-						"JI1o %d %d %s", op, __a, mr));
+						"JI1f %d %d %s", op, __a, mr));
 				
 				args = new Object[]{mr};
 				break;
@@ -267,11 +267,11 @@ public class Instruction
 					__readUnsignedShort(__code, argbase))};
 				break;
 				
-				// {@squirreljme.error JI1p The operation at the specified
+				// {@squirreljme.error JI1g The operation at the specified
 				// address is not supported yet. (The operation; The name of
 				// the operation; The address it is at)}
 			default:
-				throw new RuntimeException(String.format("JI1p %d %s %d",
+				throw new RuntimeException(String.format("JI1g %d %s %d",
 					op, InstructionMnemonics.toString(op), __a));
 		}
 		
@@ -435,11 +435,11 @@ public class Instruction
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI1q Illegal read off the end of the instruction
+		// {@squirreljme.error JI1h Illegal read off the end of the instruction
 		// array. (The offset; The length of the code array)}
 		if (__o < 0 || __o + 1 >= __a.length)
 			throw new InvalidClassFormatException(
-				String.format("JI1q %d %d", __o, __a.length));
+				String.format("JI1h %d %d", __o, __a.length));
 		
 		return ((__a[__o] & 0xFF) << 8) | (__a[__o + 1] & 0xFF);
 	}

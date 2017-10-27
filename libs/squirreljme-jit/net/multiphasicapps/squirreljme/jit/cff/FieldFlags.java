@@ -169,11 +169,11 @@ public final class FieldFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI02 A field cannot be both {@code final} and
+		// {@squirreljme.error JI1b A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
 			throw new InvalidClassFormatException(
-				String.format("JI02 %s", this));
+				String.format("JI1b %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
@@ -189,11 +189,11 @@ public final class FieldFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error JI03 Flags for interface field has an
+				// {@squirreljme.error JI1c Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
 					throw new InvalidClassFormatException(
-						String.format("JI03 %s", this));
+						String.format("JI1c %s", this));
 			}
 	}
 }

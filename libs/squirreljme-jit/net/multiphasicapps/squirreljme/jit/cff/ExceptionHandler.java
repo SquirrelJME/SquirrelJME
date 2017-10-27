@@ -49,16 +49,16 @@ public final class ExceptionHandler
 	ExceptionHandler(int __spc, int __epc, int __hpc, ClassName __cn)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JI1f An address is negative. (The start address;
+		// {@squirreljme.error JI12 An address is negative. (The start address;
 		// The end address; The handler address)}
 		if (__spc < 0 || __epc < 0 || __hpc < 0)
 			throw new InvalidClassFormatException(
-				String.format("JI1f %d %d %d", __spc, __epc, __hpc));
+				String.format("JI12 %d %d %d", __spc, __epc, __hpc));
 		
-		// {@squirreljme.error JI1g The end address is at or before the start
+		// {@squirreljme.error JI13 The end address is at or before the start
 		// address. (The start address; The end address)}
 		if (__epc <= __spc)
-			throw new InvalidClassFormatException(String.format("JI1g %d %d",
+			throw new InvalidClassFormatException(String.format("JI13 %d %d",
 				__spc, __epc));
 		
 		// Set

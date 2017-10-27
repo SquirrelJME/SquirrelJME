@@ -180,34 +180,34 @@ public class ClassFlags
 		// Interface?
 		if (isInterface())
 		{
-			// {@squirreljme.error JI0n An interface must also be abstract.
+			// {@squirreljme.error JI0y An interface must also be abstract.
 			// (The class flags)}
 			if (!isAbstract())
 				throw new InvalidClassFormatException(
-					String.format("JI0n %s", this));
+					String.format("JI0y %s", this));
 			
-			// {@squirreljme.error JI0o An interface cannot be {@code final} or
+			// {@squirreljme.error JI0z An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
 				throw new InvalidClassFormatException(
-					String.format("JI0o %s", this));
+					String.format("JI0z %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// {@squirreljme.error JI0p Annotations must be interfaces. (The
+			// {@squirreljme.error JI10 Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
 				throw new InvalidClassFormatException(
-					String.format("JI0p %s", this));
+					String.format("JI10 %s", this));
 				
-			// {@squirreljme.error JI0q A class cannot be both {@code abstract}
+			// {@squirreljme.error JI11 A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
 				throw new InvalidClassFormatException(
-					String.format("JI0q %s", this));
+					String.format("JI11 %s", this));
 		}
 	}
 }
