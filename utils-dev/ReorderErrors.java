@@ -9,8 +9,11 @@
 // ---------------------------------------------------------------------------
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class goes through all projects and reorders the error codes so that
@@ -49,6 +52,16 @@ public class ReorderErrors
 	public void run()
 		throws IOException
 	{
+		Path path = this.path;
+		
+		// Obtain Java source files
+		Set<Path> files = new TreeSet<>();
+		Files.walk(path).filter((__p) -> !Files.isDirectory(__p)).
+			filter((__p) -> __p.toString().endsWith(".java")).
+			forEach(files::add);
+		
+		System.err.println(files);
+		
 		throw new Error("TODO");
 	}
 	
