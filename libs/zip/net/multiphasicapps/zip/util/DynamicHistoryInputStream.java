@@ -91,18 +91,18 @@ public class DynamicHistoryInputStream
 	public int grab(int __i)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BI03 A negative number of bytes cannot be
+		// {@squirreljme.error BF1d A negative number of bytes cannot be
 		// grabbed. (The number of bytes to grab)}
 		if (__i < 0)
-			throw new IndexOutOfBoundsException(String.format("BI03 %s", __i));
+			throw new IndexOutOfBoundsException(String.format("BF1d %s", __i));
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
 		
-		// {@squirreljme.error BI04 Cannot grab bytes because the stream
+		// {@squirreljme.error BF1e Cannot grab bytes because the stream
 		// is closed.}
 		if (this._closed)
-			throw new IOException("BI04");
+			throw new IOException("BF1e");
 		
 		// Already have this number of bytes grabbed
 		int cursize = buffer.available();
@@ -151,18 +151,18 @@ public class DynamicHistoryInputStream
 	public int peek(int __a)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BI01 Cannot a peek byte which have already been
+		// {@squirreljme.error BF1f Cannot a peek byte which have already been
 		// read. (The requested index)}
 		if (__a < 0)
-			throw new IndexOutOfBoundsException(String.format("BI01 %d", __a));
+			throw new IndexOutOfBoundsException(String.format("BF1f %d", __a));
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
 		
-		// {@squirreljme.error BI05 Cannot peek a single byte because the
+		// {@squirreljme.error BF1g Cannot peek a single byte because the
 		// stream is closed.}
 		if (this._closed)
-			throw new IOException("BI05");
+			throw new IOException("BF1g");
 		
 		// Grab bytes, stop if none are available
 		int avail = grab(__a + 1);
@@ -211,10 +211,10 @@ public class DynamicHistoryInputStream
 	public int peek(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		// {@squirreljme.error BI02 Cannot peek bytes which have already been
+		// {@squirreljme.error BF1h Cannot peek bytes which have already been
 		// read. (The requested index)}
 		if (__a < 0)
-			throw new IndexOutOfBoundsException(String.format("BI02 %d", __a));
+			throw new IndexOutOfBoundsException(String.format("BF1h %d", __a));
 		
 		// Check
 		if (__b == null)
@@ -226,10 +226,10 @@ public class DynamicHistoryInputStream
 		// Lock
 		ByteDeque buffer = this.buffer;
 		
-		// {@squirreljme.error BI06 Cannot peek multiple bytes because
+		// {@squirreljme.error BF1i Cannot peek multiple bytes because
 		// the stream is closed.}
 		if (this._closed)
-			throw new IOException("BI06");
+			throw new IOException("BF1i");
 		
 		// Grab bytes, stop if none are available
 		int avail = grab(__a + __l);
@@ -254,10 +254,10 @@ public class DynamicHistoryInputStream
 	public int read()
 		throws IOException
 	{
-		// {@squirreljme.error BI07 Cannot read a single byte because the
+		// {@squirreljme.error BF1j Cannot read a single byte because the
 		// stream has been closed.}
 		if (this._closed)
-			throw new IOException("BI07");
+			throw new IOException("BF1j");
 		
 		// Grab a single byte
 		int gc = grab(1);

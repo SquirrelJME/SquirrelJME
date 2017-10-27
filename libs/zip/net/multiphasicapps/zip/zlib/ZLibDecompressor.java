@@ -222,13 +222,13 @@ public class ZLibDecompressor
 					// must be set for every byte which was read.
 					this._basecomp += current.compressedBytes();
 					
-					// {@squirreljme.error BT05 The checksum for the ZLib
+					// {@squirreljme.error BF24 The checksum for the ZLib
 					// stream is not valid. (The desired checksum; The actual
 					// checksum)}
 					int want = in.readInt(),
 						was = checksum.checksum();
 					if (want != was)
-						throw new IOException(String.format("BT05 %08x %08x",
+						throw new IOException(String.format("BF24 %08x %08x",
 							want, was));
 					
 					// This is the checksum
@@ -270,13 +270,13 @@ public class ZLibDecompressor
 				// Count single compressed byte
 				this._basecomp++;
 				
-				// {@squirreljme.error BT02 Only deflate compressed ZLib
+				// {@squirreljme.error BF25 Only deflate compressed ZLib
 				// streams are supported. (The compression method used)}
 				int method = (cmf & _CMF_COMPRESSION_METHOD_MASK);
 				if (_CMF_METHOD_DEFLATE != method)
-					throw new IOException(String.format("BT02 %d", method));
+					throw new IOException(String.format("BF25 %d", method));
 				
-				// {@squirreljme.error BT03 The specified binary logarithm
+				// {@squirreljme.error BF26 The specified binary logarithm
 				// specified for the sliding window is not valid. (The binary
 				// logarithm of the sliding window)}
 				// The specification says that higher sliding windows are not
@@ -284,7 +284,7 @@ public class ZLibDecompressor
 				int slwin = ((cmf & _CMF_COMPRESSION_INFO_MASK) >>>
 					_CMF_COMPRESSION_INFO_SHIFT) + 8;
 				if (slwin < 0 || slwin > 30)
-					throw new IOException(String.format("BT03 %d", slwin));
+					throw new IOException(String.format("BF26 %d", slwin));
 				
 				// Shift up
 				slwin = 1 << slwin;
@@ -295,19 +295,19 @@ public class ZLibDecompressor
 				// Count single compressed byte
 				this._basecomp++;
 				
-				// {@squirreljme.error BT04 The checksum for the starting
+				// {@squirreljme.error BF27 The checksum for the starting
 				// ZLib header is not a multiple of 31. (The checksum
 				// remainder)}
 				// This is a basic check to ensure that in most cases that the
 				// header of the ZLib chunk is not corrupt.
 				int was = ((cmf * 256) + mf) % 31;
 				if (was != 0)
-					throw new IOException(String.format("BT04 %d", was));
+					throw new IOException(String.format("BF27 %d", was));
 				
-				// {@squirreljme.error BT01 Preset dictionaries in ZLib
+				// {@squirreljme.error BF28 Preset dictionaries in ZLib
 				// streams are not supported.}
 				if ((mf & _FLAG_PRESET_DICTIONARY) != 0)
-					throw new IOException("BT01");
+					throw new IOException("BF28");
 				
 				// Setup inflate stream
 				checksum.reset();

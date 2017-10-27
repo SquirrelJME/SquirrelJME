@@ -286,7 +286,7 @@ public final class ZipStreamEntry
 			// Mark EOF
 			this._eof = true;
 			
-			// {@squirreljme.error BG04 Reached end of file in the entry
+			// {@squirreljme.error BF0r Reached end of file in the entry
 			// however the size it consumes and/or its CRC does not match
 			// the expected values. (The expected CRC; The actual CRC;
 			// The expected uncompressed size; The actual uncompressed
@@ -300,7 +300,7 @@ public final class ZipStreamEntry
 				expectedcompsize != cincsz ||
 				expectedcrc != crc.checksum())
 				throw new ZipException(String.format(
-					"BG04 %08x %08x %d %d %d %d", expectedcrc,
+					"BF0r %08x %08x %d %d %d %d", expectedcrc,
 					crc.checksum(), expecteduncompsize, cinusz,
 					expectedcompsize, cincsz));
 			
@@ -342,12 +342,12 @@ public final class ZipStreamEntry
 		// Mark EOF so future reads fail
 		this._eof = true;
 		
-		// {@squirreljme.error BG0b Could not find end of entry because the
+		// {@squirreljme.error BF0s Could not find end of entry because the
 		// entry exceeds the bounds of the ZIP file. (The number of read
 		// bytes)}
 		int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
 		if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
-			throw new ZipException(String.format("BG0b %d", probed));
+			throw new ZipException(String.format("BF0s %d", probed));
 		
 		// The specification says the descriptor is optional
 		int offset = (_DESCRIPTOR_MAGIC_NUMBER ==
@@ -358,7 +358,7 @@ public final class ZipStreamEntry
 			ddcomp = ZipStreamReader.__readInt(peeking, offset + 4),
 			dduncomp = ZipStreamReader.__readInt(peeking, offset + 8);
 
-		// {@squirreljme.error BG0c Reached end of file in the entry
+		// {@squirreljme.error BF0t Reached end of file in the entry
 		// however the size it consumes and/or its CRC does not match
 		// the expected values. (The expected CRC; The actual CRC;
 		// The expected uncompressed size; The actual uncompressed
@@ -371,7 +371,7 @@ public final class ZipStreamEntry
 			ddcomp != cincsz ||
 			ddcrc != crc.checksum())
 			throw new ZipException(String.format(
-				"BG0c %08x %08x %d %d %d %d", ddcrc,
+				"BF0t %08x %08x %d %d %d %d", ddcrc,
 				crc.checksum(), dduncomp, cinusz,
 				ddcomp, cincsz));
 		
@@ -404,12 +404,12 @@ public final class ZipStreamEntry
 		int d = 0;
 		for (int i = __o, e = __o + __l; i < e; i++, d++)
 		{
-			// {@squirreljme.error BG02 Could not find end of entry because the
+			// {@squirreljme.error BF0u Could not find end of entry because the
 			// entry exceeds the bounds of the ZIP file. (The number of read
 			// bytes)}
 			int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
 			if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
-				throw new ZipException(String.format("BG02 %d", probed));
+				throw new ZipException(String.format("BF0u %d", probed));
 		
 			// According to the specification, the magic number is optional and
 			// might not be specified
@@ -432,11 +432,11 @@ public final class ZipStreamEntry
 				return (d == 0 ? -1 : d);
 			}
 			
-			// {@squirreljme.error BG03 Reached end of file before the end
+			// {@squirreljme.error BF0v Reached end of file before the end
 			// of the ZIP entry could be found.}
 			int rc = cin.read();
 			if (rc < 0)
-				throw new ZipException("BG03");
+				throw new ZipException("BF0v");
 			__b[i] = (byte)rc; 
 		}
 		

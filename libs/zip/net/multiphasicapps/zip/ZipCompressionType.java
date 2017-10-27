@@ -120,10 +120,10 @@ public enum ZipCompressionType
 			case DEFLATE:
 				return new InflaterInputStream(__is, __cs);
 				
-				// {@squirreljme.error BF03 Decompressing using the given
+				// {@squirreljme.error BF02 Decompressing using the given
 				// method is not supported. (The current compression method)}
 			default:
-				throw new IOException(String.format("BF03 %s", this));
+				throw new IOException(String.format("BF02 %s", this));
 		}
 	}
 	
@@ -163,11 +163,11 @@ public enum ZipCompressionType
 			case NO_COMPRESSION:
 				return __os;
 			
-				// {@squirreljme.error BF01 Compressing using the given
+				// {@squirreljme.error BF03 Compressing using the given
 				// compression algorithm is not supported. (The compression
 				// algorithm)}
 			default:
-				throw new IOException(String.format("BF01 %s", this));
+				throw new IOException(String.format("BF03 %s", this));
 		}
 	}
 	

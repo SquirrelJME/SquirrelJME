@@ -412,9 +412,9 @@ public class InflaterInputStream
 				// Error or unknown
 			case _TYPE_ERROR:
 			default:
-				// {@squirreljme.error BY01 Unknown type or the error type
+				// {@squirreljme.error BF1o Unknown type or the error type
 				// was reached. (The type code used in the stream)}
-				throw new IOException(String.format("BY01 %d", type));
+				throw new IOException(String.format("BF1o %d", type));
 		}
 		
 		// If this was the last block to read, then return EOF if no data
@@ -473,10 +473,10 @@ public class InflaterInputStream
 				__decompressWindow(__handleLength(code),
 					distancetree.getValue(this._bitsource));
 			
-			// {@squirreljme.error BY0b Illegal dynamic huffman code. (The
+			// {@squirreljme.error BF1p Illegal dynamic huffman code. (The
 			// code.)}
 			else
-				throw new IOException(String.format("BY0b %d", code));
+				throw new IOException(String.format("BF1p %d", code));
 		}
 	}
 	
@@ -511,12 +511,12 @@ public class InflaterInputStream
 				next += __readCodeBits(__cltree, rawlitdistlens, next);
 		}
 
-		// {@squirreljme.error BY08 The compressed stream is
+		// {@squirreljme.error BF1y The compressed stream is
 		// damaged by being too short or having an illegal tree
 		// access.}				
 		catch (NoSuchElementException e)
 		{
-			throw new IOException("BY08", e);
+			throw new IOException("BF1y", e);
 		}
 		
 		// Initialize both trees
@@ -537,10 +537,10 @@ public class InflaterInputStream
 		// Target tree
 		HuffmanTreeInt codelentree = __obtainCodeLenTree();
 		
-		// {@squirreljme.error BY07 There may only be at most 19 used
+		// {@squirreljme.error BF1r There may only be at most 19 used
 		// code lengths. (The number of code lengths)}
 		if (__dhclen > 19)
-			throw new IOException(String.format("BY07 %d", __dhclen));
+			throw new IOException(String.format("BF1r %d", __dhclen));
 		
 		// The same array is used for reading code lengths but the next time
 		// around it is possible that less code lengths are read, so if the
@@ -588,10 +588,10 @@ public class InflaterInputStream
 			else if (code >= 257 && code <= 285)
 				__decompressWindow(__handleLength(code), Integer.MIN_VALUE);
 		
-			// {@squirreljme.error BY05 Illegal fixed huffman code. (The
+			// {@squirreljme.error BF1s Illegal fixed huffman code. (The
 			// code.)}
 			else
-				throw new IOException(String.format("BY05 %d", code));
+				throw new IOException(String.format("BF1s %d", code));
 		}
 	}
 	
@@ -615,11 +615,11 @@ public class InflaterInputStream
 		int com = __readBits(16, false);
 		
 		// The complemented length must be equal to the complement
-		// {@squirreljme.error BY0c Value mismatch reading the number of
+		// {@squirreljme.error BF1t Value mismatch reading the number of
 		// uncompressed symbols that exist. (The length; The complement;
 		// The complemented input length; The complemented input complement)}
 		if ((len ^ 0xFFFF) != com)
-			throw new IOException(String.format("BY0c %04x %04x %04x %04x",
+			throw new IOException(String.format("BF1t %04x %04x %04x %04x",
 				len, com, len ^ 0xFFFF, com ^ 0xFFFF));
 		
 		// Read all bytes
@@ -659,10 +659,10 @@ public class InflaterInputStream
 		// Bad window read
 		catch (IndexOutOfBoundsException ioobe)
 		{
-			// {@squirreljme.error BY06 Window access out of range.
+			// {@squirreljme.error BF1u Window access out of range.
 			// (The distance; The length)}
 			throw new IOException(String.format(
-				"BY06 %d %d", __dist, __len), ioobe);
+				"BF1u %d %d", __dist, __len), ioobe);
 		}
 	
 		// Add those bytes to the output, handle wrapping around if the
@@ -693,10 +693,10 @@ public class InflaterInputStream
 		if (__code == Integer.MIN_VALUE)
 			__code = __readBits(5, true);
 		
-		// {@squirreljme.error BY04 Illegal fixed distance code. (The distance
+		// {@squirreljme.error BF1v Illegal fixed distance code. (The distance
 		// code)}
 		if (__code > 29)
-			throw new IOException(String.format("BY04 %d", __code));
+			throw new IOException(String.format("BF1v %d", __code));
 		
 		// Calculate the required distance to use
 		int rv = 1;
@@ -738,9 +738,9 @@ public class InflaterInputStream
 		// Get the base code
 		int base = __c - 257;
 		
-		// {@squirreljme.error BY03 Illegal length code. (The length code)}
+		// {@squirreljme.error BF1w Illegal length code. (The length code)}
 		if (base < 0)
-			throw new IOException(String.format("BY03 %d", __c));
+			throw new IOException(String.format("BF1w %d", __c));
 		
 		// Calculate the required length to use
 		int rv = 3;
@@ -875,10 +875,10 @@ public class InflaterInputStream
 			byte[] readin = this._readin;
 			int rc = this.in.read(readin, 0, bc);
 			
-			// {@squirreljme.error BY02 Reached EOF while reading bytes to
+			// {@squirreljme.error BF1x Reached EOF while reading bytes to
 			// decompress. (Bits in the queue; Requested number of bits)}
 			if (rc < 0)
-				throw new IOException(String.format("BY02 %d %d", minisize,
+				throw new IOException(String.format("BF1x %d %d", minisize,
 					__n));
 			
 			// Shift in the read bytes to the higher positions
@@ -955,11 +955,11 @@ public class InflaterInputStream
 			// Repeat the previous length 3-6 times
 			if (code == 16)
 			{
-				// {@squirreljme.error BY08 A repeat code was specified,
+				// {@squirreljme.error BF1y A repeat code was specified,
 				// however this is the first entry. (The last length index)}
 				int lastlendx = __next - 1;
 				if (lastlendx < 0)
-					throw new IOException(String.format("BY08 %d",
+					throw new IOException(String.format("BF1y %d",
 						lastlendx));
 				
 				// Read the last
@@ -989,9 +989,9 @@ public class InflaterInputStream
 				repfor = 11 + __readBits(7, false);
 			}
 			
-			// {@squirreljme.error BY09 Illegal code. (The code)}
+			// {@squirreljme.error BF1z Illegal code. (The code)}
 			else
-				throw new IOException(String.format("BY09 %d", code));
+				throw new IOException(String.format("BF1z %d", code));
 			
 			// Could fail
 			try
@@ -1004,8 +1004,8 @@ public class InflaterInputStream
 			// Out of bounds entry
 			catch (IndexOutOfBoundsException ioobe)
 			{
-				// {@squirreljme.error BY0a Out of bounds index read.}
-				throw new IOException("BY0a", ioobe);
+				// {@squirreljme.error BF20 Out of bounds index read.}
+				throw new IOException("BF20", ioobe);
 			}
 		}
 		

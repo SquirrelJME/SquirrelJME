@@ -49,10 +49,10 @@ class __BlockAccessorRegionInputStream__
 		if (__ba == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error CJ0l The start position and length cannot be
+		// {@squirreljme.error BF0o The start position and length cannot be
 		// negative.}
 		if (__start < 0 || __len < 0)
-			throw new IllegalArgumentException("CJ0l");
+			throw new IllegalArgumentException("BF0o");
 		
 		// Set
 		this.accessor = __ba;

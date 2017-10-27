@@ -49,10 +49,10 @@ public class SlidingByteWindow
 	public SlidingByteWindow(int __wsz)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AI02 Zero or negative window size specified.
+		// {@squirreljme.error BF21 Zero or negative window size specified.
 		// (The window size)}
 		if (__wsz <= 0)
-			throw new IllegalArgumentException(String.format("AI02 %d",
+			throw new IllegalArgumentException(String.format("BF21 %d",
 				__wsz));
 		
 		// Set
@@ -182,7 +182,7 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// {@squirreljme.error AI03 Bulk read of window bytes would exceed
+		// {@squirreljme.error BF22 Bulk read of window bytes would exceed
 		// the bounds of the window. (The bytes in the past to start the
 		// copy from; The number of bytes to read; The total number of
 		// bytes in the window)}
@@ -190,16 +190,16 @@ public class SlidingByteWindow
 		int total = this._total;
 		if (__ago <= 0 || ((total - __ago) + __l) > total)
 			throw new IndexOutOfBoundsException(String.format(
-				"AI03 %d %d %d", __ago, __l, total));
+				"BF22 %d %d %d", __ago, __l, total));
 		
-		// {@squirreljme.error AI01 Get of a sliding window read did not
+		// {@squirreljme.error BF23 Get of a sliding window read did not
 		// read the expected number of bytes. (The expected number of bytes
 		// to read; The actual number read)}
 		int rv;
 		if ((rv = this.deque.get(total - __ago, __b, __o,
 			__l)) != __l)
 			throw new IndexOutOfBoundsException(String.format(
-				"AI01 %d %d", __l, rv));
+				"BF23 %d %d", __l, rv));
 	}
 	
 	/**
