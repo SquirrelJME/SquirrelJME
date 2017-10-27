@@ -101,9 +101,9 @@ public class ByteDeque
 	public ByteDeque(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AE01 Negative deque capacity specified.}
+		// {@squirreljme.error AE02 Negative deque capacity specified.}
 		if (__cap < 0)
-			throw new IllegalArgumentException("AE01");
+			throw new IllegalArgumentException("AE02");
 		
 		// Set
 		capacity = __cap;
@@ -167,12 +167,12 @@ public class ByteDeque
 		if (__l == 0)
 			return;
 		
-		// {@squirreljme.error AE05 Adding bytes to the start would exceed
+		// {@squirreljme.error AE0c Adding bytes to the start would exceed
 		// the capacity of the queue.}
 		int total = this._total;
 		int newtotal = total + __l;
 		if (newtotal < 0 || newtotal > this.capacity)
-			throw new IllegalStateException("AE05");
+			throw new IllegalStateException("AE0c");
 		
 		// Get some things
 		LinkedList<byte[]> blocks = this._blocks;
@@ -332,10 +332,10 @@ public class ByteDeque
 	public final int deleteFirst(int __l)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AE0d Attempt to delete starting from a negative
+		// {@squirreljme.error AE05 Attempt to delete starting from a negative
 		// address.}
 		if (__l < 0)
-			throw new IndexOutOfBoundsException("AE0d");
+			throw new IndexOutOfBoundsException("AE05");
 		
 		// Do nothing
 		if (__l == 0)
@@ -414,18 +414,18 @@ public class ByteDeque
 	public final byte get(int __a)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AE0a Request get at a negative index.}
+		// {@squirreljme.error AE0b Request get at a negative index.}
 		if (__a < 0)
-			throw new IndexOutOfBoundsException("AE0a");
+			throw new IndexOutOfBoundsException("AE0b");
 		
 		byte[] solo = this._solo;
 		int rv = get(__a, solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error AE09 Could not get the byte at the
+		// {@squirreljme.error AE0a Could not get the byte at the
 		// given position because it exceeds the deque bounds. (The index)}
-		throw new IndexOutOfBoundsException(String.format("AE09 %d", __a));
+		throw new IndexOutOfBoundsException(String.format("AE0a %d", __a));
 	}
 	
 	/**
@@ -464,9 +464,9 @@ public class ByteDeque
 	public final int get(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// {@squirreljme.error AE0b Request get at a negative index.}
+		// {@squirreljme.error AE0d Request get at a negative index.}
 		if (__a < 0)
-			throw new IndexOutOfBoundsException("AE0b");
+			throw new IndexOutOfBoundsException("AE0d");
 		
 		// Check
 		if (__b == null)
@@ -474,12 +474,12 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// {@squirreljme.error AE0c The requested address is outside of
+		// {@squirreljme.error AE09 The requested address is outside of
 		// the bounds of the queue. (The requested address; The number of
 		// bytes in the queue)}
 		int total = this._total;
 		if (__a < 0 || __a >= total)
-			throw new IndexOutOfBoundsException(String.format("AE0c %d %d",
+			throw new IndexOutOfBoundsException(String.format("AE09 %d %d",
 				__a, total));
 		
 		// If there are no bytes, all reads do nothing
@@ -506,9 +506,9 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error AE07 Could not get the first byte
+		// {@squirreljme.error AE0a Could not get the first byte
 		// because the deque is empty.}
-		throw new NoSuchElementException("AE07");
+		throw new NoSuchElementException("AE0a");
 	}
 	
 	/**
@@ -560,9 +560,9 @@ public class ByteDeque
 		if (rv == 0)
 			return solo[0];
 		
-		// {@squirreljme.error AE06 Could not remove the last byte because
+		// {@squirreljme.error AE0b Could not remove the last byte because
 		// the deque is empty.}
-		throw new NoSuchElementException("AE06");
+		throw new NoSuchElementException("AE0b");
 	}
 	
 	/**
@@ -820,9 +820,9 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error AE03 Could not remove the first byte
+		// {@squirreljme.error AE0c Could not remove the first byte
 		// because the deque is empty.}
-		throw new NoSuchElementException("AE03");
+		throw new NoSuchElementException("AE0c");
 	}
 	
 	/**
@@ -897,9 +897,9 @@ public class ByteDeque
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error AE08 Could not remove the last byte because
+		// {@squirreljme.error AE0d Could not remove the last byte because
 		// the deque is empty.}
-		throw new NoSuchElementException("AE08");
+		throw new NoSuchElementException("AE0d");
 	}
 	
 	/**
