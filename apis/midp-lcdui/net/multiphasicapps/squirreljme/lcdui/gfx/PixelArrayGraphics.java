@@ -75,27 +75,27 @@ public abstract class PixelArrayGraphics
 		else if (__data instanceof double[])
 			datalen = ((double[])__data).length;
 		
-		// {@squirreljme.error EB25 The specified class is not an array or is
+		// {@squirreljme.error EB1k The specified class is not an array or is
 		// not a supported array for image data. (The class)} 
 		else
-			throw new IllegalArgumentException(String.format("EB25 %s",
+			throw new IllegalArgumentException(String.format("EB1k %s",
 				__data.getClass()));
 		
-		// {@squirreljme.error EB24 The specified parameters exceed the bounds
+		// {@squirreljme.error EB1l The specified parameters exceed the bounds
 		// of the array. (The pitch; The height; The offset; The array length)}
 		int elementcount = (__pitch * __height);
 		if (__offset < 0 || (__offset + elementcount) > datalen)
 			throw new ArrayIndexOutOfBoundsException(
-				String.format("EB24 %d %d %d %d", __pitch, __height, __offset,
+				String.format("EB1l %d %d %d %d", __pitch, __height, __offset,
 				datalen));
 		
-		// {@squirreljme.error EB0p Invalid width and/or height specified.}
+		// {@squirreljme.error EB1m Invalid width and/or height specified.}
 		if (__width <= 0 || __height <= 0)
-			throw new IllegalArgumentException("EB0p");
+			throw new IllegalArgumentException("EB1m");
 		
-		// {@squirreljme.error EB23 The pitch is less than the width.}
+		// {@squirreljme.error EB1n The pitch is less than the width.}
 		if (__pitch < __width)
-			throw new IllegalArgumentException("EB23");
+			throw new IllegalArgumentException("EB1n");
 		
 		// Set
 		this.width = __width;

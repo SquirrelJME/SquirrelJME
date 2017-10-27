@@ -109,11 +109,11 @@ public abstract class DisplayableWidget
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB22 The displayable has been garbage
+		// {@squirreljme.error EB21 The displayable has been garbage
 		// collected.}
 		Displayable rv = this.reference.get();
 		if (rv == null)
-			throw new IllegalStateException("EB22");
+			throw new IllegalStateException("EB21");
 		return __cl.cast(rv);
 	}
 	
@@ -174,10 +174,10 @@ public abstract class DisplayableWidget
 		// Use global lock
 		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
-			// {@squirreljme.error EB20 This widget has already had an
+			// {@squirreljme.error EB22 This widget has already had an
 			// embedded placed into it.}
 			if (this._embed != null)
-				throw new IllegalStateException("EB20");
+				throw new IllegalStateException("EB22");
 			
 			// Embed into this and store
 			__e.__embeddedInto(this);

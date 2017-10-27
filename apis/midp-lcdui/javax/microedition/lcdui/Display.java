@@ -617,9 +617,9 @@ public class Display
 		else if (__m == MODE_NORMAL)
 			throw new todo.TODO();
 	
-		// {@squirreljme.error EB02 Unknown activity mode specified.}
+		// {@squirreljme.error EB0c Unknown activity mode specified.}
 		else
-			throw new IllegalArgumentException("EB02");
+			throw new IllegalArgumentException("EB0c");
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
@@ -648,10 +648,10 @@ public class Display
 		throws DisplayCapabilityException, IllegalStateException,
 			NullPointerException
 	{
-		// {@squirreljme.error EB06 Cannot show another alert when the alert
+		// {@squirreljme.error EB0a Cannot show another alert when the alert
 		// to show is cleared.}
 		if (__exit instanceof Alert)
-			throw new IllegalStateException("EB06");
+			throw new IllegalStateException("EB0a");
 		
 		// Check
 		if (__show == null || __exit == null)
@@ -738,9 +738,9 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0q Cannot vibrate for a negative duration.}
+		// {@squirreljme.error EB0b Cannot vibrate for a negative duration.}
 		if (__d < 0)
-			throw new IllegalArgumentException("EB0q");
+			throw new IllegalArgumentException("EB0b");
 		
 		// Do not vibrate in the background
 		DisplayHead head = this._head;
@@ -796,10 +796,10 @@ public class Display
 				p = DisplayProperty.BEST_IMAGE_SIZE_MENU;
 				break;
 				
-				// {@squirreljme.error EB09 Cannot get the best image size of
+				// {@squirreljme.error EB0c Cannot get the best image size of
 				// the specified element. (The element specifier)}
 			default:
-				throw new IllegalArgumentException(String.format("EB09 %d",
+				throw new IllegalArgumentException(String.format("EB0c %d",
 					__e));
 		}
 		
@@ -840,15 +840,15 @@ public class Display
 			DisplayableWidget dw = NativeResourceManager.RESOURCE_MANAGER.
 				<DisplayableWidget>getNative(DisplayableWidget.class, __show);
 			
-			// {@squirreljme.error EB1o The displayable to display is currently
+			// {@squirreljme.error EB0d The displayable to display is currently
 			// bound to another display.}
 			if (__show._current != null)
-				throw new IllegalStateException("EB1o");
+				throw new IllegalStateException("EB0d");
 			
-			// {@squirreljme.error EB1p The alert to be displayed is currently
+			// {@squirreljme.error EB0e The alert to be displayed is currently
 			// bound to another display.}
 			if (__exit != null && __exit._current != null)
-				throw new IllegalStateException("EB1p");
+				throw new IllegalStateException("EB0e");
 			
 			// If any alert is currently being displayed then it will be
 			// removed along with its timer (if any)
@@ -918,9 +918,9 @@ public class Display
 		if (disp.length > 0)
 			return disp[0];
 		
-		// {@squirreljme.error EB01 Could not get the display for the specified
+		// {@squirreljme.error EB0f Could not get the display for the specified
 		// MIDlet because no displays are available.}
-		throw new IllegalStateException("EB01");
+		throw new IllegalStateException("EB0f");
 	}
 	
 	/**
@@ -938,9 +938,9 @@ public class Display
 		// Go through all heads
 		Display[] displays = _DISPLAYS;
 		
-		// {@squirreljme.error EB05 No displays are available.}
+		// {@squirreljme.error EB0g No displays are available.}
 		if (displays.length <= 0)
-			throw new IllegalStateException("EB05");
+			throw new IllegalStateException("EB0g");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();

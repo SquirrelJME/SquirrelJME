@@ -367,22 +367,22 @@ public final class Font
 	public static Font getFont(int __face, int __style, int __size)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1a Invalid font face specified. (The face)}
+		// {@squirreljme.error EB0h Invalid font face specified. (The face)}
 		if ((__face & ~(FACE_SYSTEM | FACE_MONOSPACE | FACE_PROPORTIONAL)) != 0
 			|| Integer.bitCount(__face) > 1)
-			throw new IllegalArgumentException(String.format("EB1a %d",
+			throw new IllegalArgumentException(String.format("EB0h %d",
 				__face));
 		
-		// {@squirreljme.error EB1b Invalid font size specified. (The size)}
+		// {@squirreljme.error EB0i Invalid font size specified. (The size)}
 		if ((__size & ~(SIZE_SMALL | SIZE_MEDIUM | SIZE_LARGE)) != 0
 			|| Integer.bitCount(__size) > 1)
-			throw new IllegalArgumentException(String.format("EB1b %d",
+			throw new IllegalArgumentException(String.format("EB0i %d",
 				__size));
 		
-		// {@squirreljme.error EB1c Invalid font style specified. (The style)}
+		// {@squirreljme.error EB0j Invalid font style specified. (The style)}
 		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD |
 			STYLE_ITALIC)) != 0)
-			throw new IllegalArgumentException(String.format("EB1c %d",
+			throw new IllegalArgumentException(String.format("EB0j %d",
 				__style));
 		
 		// Setup font to the given handle, the font size needs to be adjusted

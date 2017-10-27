@@ -66,11 +66,11 @@ final class __EventLoop__
 								cre.width, cre.height);
 							break;
 						
-							// {@squirreljme.error EB1t Unknown event.
+							// {@squirreljme.error EB0v Unknown event.
 							// (The type of event this is)}
 						default:
 							throw new RuntimeException(
-								String.format("EB1t %s", type));
+								String.format("EB0v %s", type));
 					}
 				}
 				

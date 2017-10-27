@@ -35,11 +35,11 @@ public abstract class Embedded
 	public final DisplayableWidget container()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB21 The displayable widget has been garbage
+		// {@squirreljme.error EB23 The displayable widget has been garbage
 		// collected.}
 		DisplayableWidget rv = this._inside.get();
 		if (rv == null)
-			throw new IllegalStateException("EB21");
+			throw new IllegalStateException("EB23");
 		return rv;
 	}
 	
@@ -60,10 +60,10 @@ public abstract class Embedded
 		// Use global lock
 		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
-			// {@squirreljme.error EB1z This embedded has already been
+			// {@squirreljme.error EB24 This embedded has already been
 			// embedded into a widget.}
 			if (this._inside != null)
-				throw new IllegalStateException("EB1z");
+				throw new IllegalStateException("EB24");
 			
 			// Store
 			this._inside = new WeakReference<>(__dw);

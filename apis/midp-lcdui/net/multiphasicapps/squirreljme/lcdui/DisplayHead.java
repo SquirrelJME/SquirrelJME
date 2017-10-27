@@ -169,11 +169,11 @@ public abstract class DisplayHead
 	public final DisplayHardwareState getHardwareState()
 		throws RuntimeException
 	{
-		// {@squirreljme.error EB1n The hardware state has not been set by
+		// {@squirreljme.error EB0x The hardware state has not been set by
 		// the display driver.}
 		DisplayHardwareState rv = this._hwstate;
 		if (rv == null)
-			throw new RuntimeException("EB1n");
+			throw new RuntimeException("EB0x");
 		return rv;
 	}
 	
@@ -205,10 +205,10 @@ public abstract class DisplayHead
 			// Setting a current displayable
 			else
 			{
-				// {@squirreljme.error EB1u Cannot set a new current
+				// {@squirreljme.error EB0y Cannot set a new current
 				// displayable because there is already one being displayed.}
 				if (this._current != null)
-					throw new IllegalStateException("EB1u");
+					throw new IllegalStateException("EB0y");
 			
 				// Set and register
 				this._current = __d;

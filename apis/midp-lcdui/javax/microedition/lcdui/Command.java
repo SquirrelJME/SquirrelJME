@@ -119,11 +119,11 @@ public class Command
 		if (__sl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0r And invalid command type was specified.
+		// {@squirreljme.error EB07 And invalid command type was specified.
 		// (The command type)}
 		if (__type < _FIRST_TYPE || __type > _LAST_TYPE)
 			throw new IllegalArgumentException(
-				String.format("EB0r %d", __type));
+				String.format("EB07 %d", __type));
 		
 		// Set
 		this._shortlabel = __sl;
