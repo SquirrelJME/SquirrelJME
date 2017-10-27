@@ -36,6 +36,12 @@ final class __DrawSpace__
 	/** The size of the content area. */
 	protected final int contentwidth, contentheight;
 	
+	/** The image to draw onto, may be null if not needed. */
+	protected final Image image;
+	
+	/** The display to draw onto, may be null if there is no display. */
+	protected final Display display;
+	
 	/** Draw space for the content area? */
 	private volatile __DrawSpace__ _contentdrawspace;
 	
@@ -59,6 +65,12 @@ final class __DrawSpace__
 		this.contenty = -1;
 		this.contentwidth = -1;
 		this.contentheight = -1;
+		
+		// Use a very small image
+		this.image = Image.createImage(1, 1);
+		
+		// Not used
+		this.display = null;
 	}
 	
 	/**
@@ -81,16 +93,31 @@ final class __DrawSpace__
 		DisplayOrientation orientation = head.orientation();
 		boolean naturalorientation = head.isNaturalOrientation(orientation);
 		
-		if (true)
+		// A virtual image which may be drawn on
+		Image image;
+		
+		// The draw space size
+		int spacewidth, spaceheight;
+		
+		// A wrapped image must be generated for this to work properly
+		if (!naturalorientation)
 			throw new todo.TODO();
 		
-		// Determine the content area size
-		int contentx = todo.TODO.missingInteger(),
-			contenty = todo.TODO.missingInteger(),
-			contentwidth = todo.TODO.missingInteger(),
-			contentheight = todo.TODO.missingInteger();
-		if (true)
-			throw new todo.TODO();
+		// Otherwise this is trivially setup
+		else
+		{
+			spacewidth = head.displayVirtualWidthPixels();
+			spaceheight = head.displayVirtualHeightPixels();
+			
+			// This is drawn naturally on the head
+			image = null;
+		}
+		
+		// For now use a content area which matches the whole area
+		int contentx = 0,
+			contenty = 0,
+			contentwidth = spacewidth,
+			contentheight = spaceheight;
 		
 		// Set properties
 		this.orientation = orientation;
@@ -101,6 +128,8 @@ final class __DrawSpace__
 		this.contenty = contenty;
 		this.contentwidth = contentwidth;
 		this.contentheight = contentheight;
+		this.image = image;
+		this.display = __d;
 	}
 	
 	/**
@@ -132,6 +161,16 @@ final class __DrawSpace__
 	 */
 	public Graphics graphics()
 	{
+		// If an image is specified always draw on that
+		Image image = this.image;
+		if (image != null)
+			return image.getGraphics();
+		
+		// Otherwise use the display's graphics to draw
+		Display display = this.display;
+		if (display != null)
+			return display._head.graphics();
+		
 		throw new todo.TODO();
 	}
 	
