@@ -195,9 +195,9 @@ public class ExtendedDataInputStream
 		// Read value
 		int rv = read();
 		
-		// {@squirreljme.error BD04 End of file reached.}
+		// {@squirreljme.error BD01 End of file reached.}
 		if (rv < 0)
-			throw new EOFException("BD04");
+			throw new EOFException("BD01");
 		
 		// Cast
 		return (byte)rv;

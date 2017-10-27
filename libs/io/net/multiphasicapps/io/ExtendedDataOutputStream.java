@@ -23,7 +23,7 @@ import java.io.OutputStream;
  *
  * This class is not thread safe.
  *
- * {@squirreljme.error BD01 Unhandled endianess. (The endianess)}
+ * {@squirreljme.error BD04 Unhandled endianess. (The endianess)}
  *
  * @since 2016/07/10
  */
@@ -320,7 +320,7 @@ public class ExtendedDataOutputStream
 			
 				// Unknown
 			default:
-				throw new IOException(String.format("BD01", endian));
+				throw new IOException(String.format("BD04", endian));
 		}
 		
 		// Increase
@@ -352,7 +352,7 @@ public class ExtendedDataOutputStream
 			
 				// Unknown
 			default:
-				throw new IOException(String.format("BD01", endian));
+				throw new IOException(String.format("BD04", endian));
 		}
 		
 		// Increase
@@ -384,7 +384,7 @@ public class ExtendedDataOutputStream
 			
 				// Unknown
 			default:
-				throw new IOException(String.format("BD01", endian));
+				throw new IOException(String.format("BD04", endian));
 		}
 		
 		// Increase
