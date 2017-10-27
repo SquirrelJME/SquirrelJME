@@ -23,6 +23,7 @@ do
 		continue
 	fi
 	
-	echo "$__dir"
+	echo ">> $__dir"
+	"$__exedir/reordererrors.sh" "$__dir"
 done
 
