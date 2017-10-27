@@ -195,13 +195,13 @@ public final class JavaManifest
 							continue;
 						}
 						
-						// {@squirreljme.error BB02 The specified character is
+						// {@squirreljme.error BB03 The specified character is
 						// not a valid key character. (The character; The
 						// character code)}
 						if ((!js && !__isKeyChar(c)) ||
 							(js && !__isAlphaNum(c)))
 							throw new JavaManifestException(
-								String.format("BB02 %c %04x", c, (int)c));
+								String.format("BB03 %c %04x", c, (int)c));
 						
 						// Add to key
 						curkey.append(c);
@@ -219,10 +219,10 @@ public final class JavaManifest
 							continue;
 						}
 						
-						// {@squirreljme.error BB03 Expected a space to follow
+						// {@squirreljme.error BB02 Expected a space to follow
 						// the colon following the start of the key.}
 						if (stage == _STAGE_VALUE_START)
-							throw new JavaManifestException("BB03");
+							throw new JavaManifestException("BB02");
 						
 						// Otherwise start reading line data
 						else
@@ -251,18 +251,18 @@ public final class JavaManifest
 					}
 					break;
 				
-					// {@squirreljme.error BB01 Unknown manifest parse stage.
+					// {@squirreljme.error BB03 Unknown manifest parse stage.
 					// (The stage identifier)}
 				default:
 					throw new JavaManifestException(
-						String.format("BB01 %d", stage));
+						String.format("BB03 %d", stage));
 			}
 		}
 		
-		// {@squirreljme.error BB05 End of file reached while reading a
+		// {@squirreljme.error BB04 End of file reached while reading a
 		// partial key value.}
 		if (stage == _STAGE_KEY && curkey.length() != 0)
-			throw new JavaManifestException("BB05");
+			throw new JavaManifestException("BB04");
 		
 		// Key and value waiting to be added to the working map?
 		if (curkey.length() != 0)
