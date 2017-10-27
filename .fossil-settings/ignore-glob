@@ -43,3 +43,5 @@ ci-comment*.txt
 *.s
 *.so
 *.png
+assets/wintercoat/wintercoat
+assets/wintercoat/wintercoat.exe
