@@ -65,17 +65,17 @@ public class FileChannelBlockAccessor
 	public byte read(long __addr)
 		throws EOFException, IOException
 	{
-		// {@squirreljme.error AT0f Cannot read from a negative offset.}
+		// {@squirreljme.error AT01 Cannot read from a negative offset.}
 		if (__addr < 0)
-			throw new IOException("AT0f");
+			throw new IOException("AT01");
 		
 		// Just forward to the array variant
 		byte[] val = new byte[1];
 		int rv = read(__addr, val, 0, 1);
 		
-		// {@squirreljme.error AT0g Read past end of file.}
+		// {@squirreljme.error AT02 Read past end of file.}
 		if (rv < 0)
-			throw new EOFException("AT0g");
+			throw new EOFException("AT02");
 		
 		return val[0];
 	}
@@ -95,9 +95,9 @@ public class FileChannelBlockAccessor
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		// {@squirreljme.error AT0e Cannot read from a negative offset.}
+		// {@squirreljme.error AT03 Cannot read from a negative offset.}
 		if (__addr < 0)
-			throw new IOException("AT0e");
+			throw new IOException("AT03");
 		
 		// Read until every byte has been read so that partial reads are not
 		// returned

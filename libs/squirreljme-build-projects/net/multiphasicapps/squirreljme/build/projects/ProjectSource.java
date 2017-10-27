@@ -130,10 +130,10 @@ public abstract class ProjectSource
 			}
 		}
 		
-		// {@squirreljme.error AT0h Could not create the binary manifest.}
+		// {@squirreljme.error AT0n Could not create the binary manifest.}
 		catch (JavaManifestException|IOException e)
 		{
-			throw new InvalidProjectException("AT0h", e);
+			throw new InvalidProjectException("AT0n", e);
 		}
 	}
 	
@@ -182,15 +182,15 @@ public abstract class ProjectSource
 					// Split project name
 					ProjectName name = new ProjectName(attr.substring(i, ls));
 					
-					// {@squirreljme.error AT0l The project depends on another
+					// {@squirreljme.error AT0n The project depends on another
 					// project which does not exist. (The name of this project;
 					// The missing project it depends on)}
 					Project p = pm.get(name);
 					if (p == null)
 						throw new InvalidProjectException(String.format(
-							"AT0l %s %s", name(), name));
+							"AT0n %s %s", name(), name));
 					
-					// {@squirreljme.error AT0m This project cannot depend on
+					// {@squirreljme.error AT0n This project cannot depend on
 					// the other project which is of the specified type. (The
 					// name of this project; The type of this project; The
 					// name of the project this depends on; The type of the
@@ -198,7 +198,7 @@ public abstract class ProjectSource
 					NamespaceType ot = p.type();
 					if (!nt.canDependOn(ot))
 						throw new InvalidProjectException(String.format(
-							"AT0m %s %s %s %s", name(), nt, name, ot));
+							"AT0n %s %s %s %s", name(), nt, name, ot));
 					
 					// Depends on it
 					rv.add(p);
@@ -245,18 +245,18 @@ public abstract class ProjectSource
 			JavaManifest man = manifest();
 			JavaManifestAttributes attr = man.getMainAttributes();
 			
-			// {@squirreljme.error AT0r This project is missing the project
+			// {@squirreljme.error AT0o This project is missing the project
 			// name key. (The name of this project)}
 			String name = attr.get(_SOURCE_NAME_KEY);
 			if (name == null)
-				throw new InvalidProjectException(String.format("AT0r %s",
+				throw new InvalidProjectException(String.format("AT0o %s",
 					name()));
 			
-			// {@squirreljme.error AT0s This project is missing the project
+			// {@squirreljme.error AT0p This project is missing the project
 			// vendor key. (The name of this project)}
 			String vendor = attr.get(_SOURCE_VENDOR_KEY);
 			if (vendor == null)
-				throw new InvalidProjectException(String.format("AT0s %s",
+				throw new InvalidProjectException(String.format("AT0p %s",
 					name()));
 			
 			// {@squirreljme.error AT0t This project is missing the project
@@ -299,11 +299,11 @@ public abstract class ProjectSource
 			sc = SourceCompilerProvider.newInstance();
 		}
 		
-		// {@squirreljme.error AT08 Could not compile the project because
+		// {@squirreljme.error AT0r Could not compile the project because
 		// no compiler is available.}
 		catch (RuntimeException e)
 		{
-			throw new InvalidProjectException("AT08", e);
+			throw new InvalidProjectException("AT0r", e);
 		}
 		
 		// Need to access directories during compilation
@@ -353,10 +353,10 @@ public abstract class ProjectSource
 				// Set output to write to this ZIP
 				sc.setOutput(new __CompilerOutput__(zsw));
 				
-				// {@squirreljme.error AT0a Failed to compile the given source
+				// {@squirreljme.error AT0s Failed to compile the given source
 				// project. (The name of this project)}
 				if (!sc.compile())
-					throw new InvalidProjectException(String.format("AT0a %s",
+					throw new InvalidProjectException(String.format("AT0s %s",
 						sname));
 				
 				// Add non-valid source files from the input source dir
@@ -419,12 +419,12 @@ public abstract class ProjectSource
 			// Just check if it has the given key
 			if (midlet)
 			{
-				// {@squirreljme.error AT0q The MIDlet is missing the required
+				// {@squirreljme.error AT0t The MIDlet is missing the required
 				// {@code MIDlet-1} property and does not have a fallback
 				// {@code Main-Class} property.}
 				if (null == attr.get(_FIRST_MIDLET) &&
 					null == attr.get(_MAIN_CLASS_KEY))
-					throw new IOException("AT0q");
+					throw new IOException("AT0t");
 			}
 			
 			// Write the name, vendor, and version

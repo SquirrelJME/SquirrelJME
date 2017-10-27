@@ -47,13 +47,13 @@ public final class ProjectName
 		{
 			char c = __s.charAt(i);
 			
-			// {@squirreljme.error AT03 The specified string is not a valid
+			// {@squirreljme.error AT0k The specified string is not a valid
 			// name for a package because it contains illegal characters.
 			// (The illegal package name)}
 			boolean upper = (c >= 'A' && c <= 'Z');
 			if (!((c >= 'a' && c <= 'z') || upper ||
 				(c >= '0' && c <= '9') || c == '-'))
-				throw new InvalidProjectException(String.format("AT03 %s",
+				throw new InvalidProjectException(String.format("AT0k %s",
 					__s));
 			
 			// Lower?

@@ -122,9 +122,9 @@ public enum NamespaceType
 			if (__s.equals(t.name()) || __s.equals(t.toString()))
 				return t;
 		
-		// {@squirreljme.error AT01 Unknown namespace type. (The input
+		// {@squirreljme.error AT04 Unknown namespace type. (The input
 		// namespace type)}
-		throw new IllegalArgumentException(String.format("AT01 %s", __s));
+		throw new IllegalArgumentException(String.format("AT04 %s", __s));
 	}
 	
 	/**

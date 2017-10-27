@@ -130,12 +130,12 @@ class __DirectoryFileDirectory__
 		if (__fn == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT09 The file does not exist in the file
+		// {@squirreljme.error AT0w The file does not exist in the file
 		// directory. (The file name which was requested)}
 		Map<String, Path> files = this.files;
 		Path p = files.get(__fn);
 		if (p == null)
-			throw new IOException(String.format("AT09 %s", __fn));
+			throw new IOException(String.format("AT0w %s", __fn));
 		
 		// Open it
 		try
@@ -144,12 +144,12 @@ class __DirectoryFileDirectory__
 				StandardOpenOption.READ));
 		}
 		
-		// {@squirreljme.error AT0o Could not find the specified file entry.
+		// {@squirreljme.error AT0x Could not find the specified file entry.
 		// (The entry name)}
 		catch (NoSuchFileException e)
 		{
 			throw new FileEntryNotFoundException(
-				String.format("AT0o %s", __fn), e);
+				String.format("AT0x %s", __fn), e);
 		}
 	}
 	

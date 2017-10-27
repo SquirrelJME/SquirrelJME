@@ -356,11 +356,11 @@ public final class Project
 		// Depends on the type
 		switch (this.type)
 		{
-				// {@squirreljme.error AT06 The specified project type
+				// {@squirreljme.error AT07 The specified project type
 				// cannot have a binary. (The project type)}
 			case ASSET:
 			case BUILD:
-				throw new InvalidProjectException(String.format("AT06 %s",
+				throw new InvalidProjectException(String.format("AT07 %s",
 					this.type));
 			
 				// An API
@@ -404,11 +404,11 @@ public final class Project
 			ProjectSource src;
 			switch (this.type)
 			{
-					// {@squirreljme.error AT04 The specified project type
+					// {@squirreljme.error AT08 The specified project type
 					// cannot have source code. (The project type)}
 				case ASSET:
 				case BUILD:
-					throw new InvalidProjectException(String.format("AT04 %s",
+					throw new InvalidProjectException(String.format("AT08 %s",
 						this.type));
 				
 					// An API
@@ -489,11 +489,11 @@ public final class Project
 					return __createBinary(binaryPath());
 				}
 				
-				// {@squirreljme.error AT0j Could not load the binary
+				// {@squirreljme.error AT09 Could not load the binary
 				// representation of this project. (The name of this project)}
 				catch (IOException e)
 				{
-					throw new InvalidProjectException(String.format("AT0j %s",
+					throw new InvalidProjectException(String.format("AT09 %s",
 						name()), e);
 				}
 		}
