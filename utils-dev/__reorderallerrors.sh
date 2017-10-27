@@ -25,5 +25,6 @@ do
 	
 	echo ">> $__dir"
 	"$__exedir/reordererrors.sh" "$__dir"
+	fossil commit -m "Reorder errors in $(basename "$(dirname "$__dir")")/$(basename "$__dir"))"
 done
 
