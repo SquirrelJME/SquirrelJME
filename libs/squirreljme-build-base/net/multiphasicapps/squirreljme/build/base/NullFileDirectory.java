@@ -71,9 +71,9 @@ public class NullFileDirectory
 		if (__fn == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AU02 The null file directory contains no
+		// {@squirreljme.error AU01 The null file directory contains no
 		// files. (The requested file)}
-		throw new IOException(String.format("AU02 %s", __fn));
+		throw new IOException(String.format("AU01 %s", __fn));
 	}
 }
 
