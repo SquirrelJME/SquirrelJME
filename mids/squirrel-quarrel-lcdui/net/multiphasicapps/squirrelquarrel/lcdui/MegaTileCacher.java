@@ -163,11 +163,11 @@ public class MegaTileCacher
 					(rv = _XPM_READER.readImage(__t.imageStream()))));
 			}
 			
-			// {@squirreljme.error BK01 Failed to read the image data for the
+			// {@squirreljme.error BE0i Failed to read the image data for the
 			// specified file. (The terrain type)}
 			catch (IOException e)
 			{
-				throw new RuntimeException(String.format("BK01 %s", __t), e);
+				throw new RuntimeException(String.format("BE0i %s", __t), e);
 			}
 		
 		return rv;
