@@ -58,6 +58,17 @@ public class TODO
 	}
 	
 	/**
+	 * Specifies that the integer value is missing.
+	 *
+	 * @return An integer, but is not returned from.
+	 * @since 2017/10/27
+	 */
+	public static final int missingInteger()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Specifies that the object value is missing.
 	 *
 	 * @param <T> The object to miss.
