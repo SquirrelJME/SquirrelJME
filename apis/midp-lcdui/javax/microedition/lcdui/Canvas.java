@@ -536,29 +536,21 @@ public abstract class Canvas
 	@__SerializedEvent__
 	void __doRepaint(int __x, int __y, int __w, int __h)
 	{
-		// Ignore repaints if there is no current display
-		Display current = super._current;
-		if (current == null)
-			return;
+		// Get the drawspace to draw onto, which can be a Display or a
+		// TabbedPane
+		__DrawSpace__ drawspace = __drawSpace();
 		
-		// Obtain the graphics which is used to draw on the canvas
-		Graphics g = current.__contentAreaPaint(this._isfullscreen);
+		// Obtain graphics to draw in the drawing area
+		Graphics g = drawspace.graphics();
 		
-		// Reset any parameters as possible and the clip
-		if (g instanceof BasicGraphics)
-		{
-			((BasicGraphics)g).resetParameters(true);
-			g.setClip(__x, __y, __w, __h);
-		}
-		else
-			g.setClip(__x - g.getTranslateX(), __y - g.getTranslateY(),
-				__w, __h);
+		// Clip to the area that needs to be redrawn
+		g.setClip(__x, __y, __w, __h);
 		
-		// Call paint on this graphics instance
+		// Perform the client specific painting operations
 		paint(g);
 		
-		// Tell the display that the client just finished repainting
-		current.__clientPainted();
+		// Tail paint call that goes up to indicate that things were drawn
+		drawspace.tailPaint();
 	}
 }
 
