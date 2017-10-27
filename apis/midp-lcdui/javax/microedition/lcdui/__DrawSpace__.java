@@ -21,6 +21,24 @@ import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
  */
 final class __DrawSpace__
 {
+	/** The current display orientation. */
+	protected final DisplayOrientation orientation;
+	
+	/** Is the orientation natural? */
+	protected final boolean naturalorientation;
+	
+	/** The dimensions of the draw space. */
+	protected final int spacewidth, spaceheight;
+	
+	/** The position of the content area. */
+	protected final int contentx, contenty;
+	
+	/** The size of the content area. */
+	protected final int contentwidth, contentheight;
+	
+	/** Draw space for the content area? */
+	private volatile __DrawSpace__ _contentdrawspace;
+	
 	/**
 	 * Initializes a virtual draw space which is used when no display has
 	 * been initialized, it is treated as a virtual one so that failure does
@@ -30,7 +48,17 @@ final class __DrawSpace__
 	 */
 	__DrawSpace__()
 	{
-		throw new todo.TODO();
+		// Default parameters
+		this.orientation = DisplayOrientation.LANDSCAPE;
+		this.naturalorientation = true;
+		this.spacewidth = 1;
+		this.spaceheight = 1;
+		
+		// There is no content area
+		this.contentx = -1;
+		this.contenty = -1;
+		this.contentwidth = -1;
+		this.contentheight = -1;
 	}
 	
 	/**
@@ -48,7 +76,31 @@ final class __DrawSpace__
 		// Need the display head for parameters
 		DisplayHead head = __d._head;
 		
-		throw new todo.TODO();
+		// Need the current orientation and it must be known if it is natural
+		// because if it is not natural it must be wrapped in an Image
+		DisplayOrientation orientation = head.orientation();
+		boolean naturalorientation = head.isNaturalOrientation(orientation);
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Determine the content area size
+		int contentx = todo.TODO.missingInteger(),
+			contenty = todo.TODO.missingInteger(),
+			contentwidth = todo.TODO.missingInteger(),
+			contentheight = todo.TODO.missingInteger();
+		if (true)
+			throw new todo.TODO();
+		
+		// Set properties
+		this.orientation = orientation;
+		this.naturalorientation = naturalorientation;
+		this.spacewidth = spacewidth;
+		this.spaceheight = spaceheight;
+		this.contentx = contentx;
+		this.contenty = contenty;
+		this.contentwidth = contentwidth;
+		this.contentheight = contentheight;
 	}
 	
 	/**
@@ -59,6 +111,16 @@ final class __DrawSpace__
 	 */
 	public __DrawSpace__ contentArea()
 	{
+		// No content area?
+		int contentwidth = this.contentwidth;
+		if (contentwidth < 0)
+			return null;
+		
+		// Has it already been created? Then use it without recreating it
+		__DrawSpace__ contentdrawspace = this._contentdrawspace;
+		if (contentdrawspace != null)
+			return contentdrawspace;
+		
 		throw new todo.TODO();
 	}
 	
@@ -81,7 +143,7 @@ final class __DrawSpace__
 	 */
 	public int height()
 	{
-		throw new todo.TODO();
+		return this.spaceheight;
 	}
 	
 	/**
@@ -106,7 +168,7 @@ final class __DrawSpace__
 	 */
 	public DisplayOrientation orientation()
 	{
-		throw new todo.TODO();
+		return this.orientation;
 	}
 	
 	/**
@@ -128,7 +190,7 @@ final class __DrawSpace__
 	 */
 	public int width()
 	{
-		throw new todo.TODO();
+		return this.spacewidth;
 	}
 }
 
