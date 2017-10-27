@@ -123,10 +123,10 @@ public class ZipStreamWriter
 			if (this._closed)
 				return;
 			
-			// {@squirreljme.error BC01 Cannot close the ZIP writer because
+			// {@squirreljme.error BF12 Cannot close the ZIP writer because
 			// an entry is still being written.}
 			if (this._inner != null || this._outer != null)
-				throw new IOException("BC01");
+				throw new IOException("BF12");
 			
 			// Mark closed to prevent failing closes from writing multiple
 			// times
@@ -278,27 +278,27 @@ public class ZipStreamWriter
 		LinkedList<__TOCEntry__> toc = this._toc;
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BC04 Cannot write new entry because the ZIP
+			// {@squirreljme.error BF13 Cannot write new entry because the ZIP
 			// has been closed.}
 			if (this._closed)
-				throw new IOException("BC04");
+				throw new IOException("BF13");
 			
-			// {@squirreljme.error BC02 Cannot create a new entry for output
+			// {@squirreljme.error BF14 Cannot create a new entry for output
 			// because the previous entry has not be closed.}
 			if (this._inner != null || this._outer != null)
-				throw new IOException("BC02");
+				throw new IOException("BF14");
 			
-			// {@squirreljme.error BC0a A ZIP file cannot have more than
+			// {@squirreljme.error BF15 A ZIP file cannot have more than
 			// 65536 entries.}
 			if (toc.size() >= 65535)
-				throw new IOException("BC0a");
+				throw new IOException("BF15");
 			
-			// {@squirreljme.error BC03 The length of the input file exceeds
+			// {@squirreljme.error BF16 The length of the input file exceeds
 			// 65535 UTF-8 characters. (The filename length)}
 			byte[] utfname = __name.getBytes("utf-8");
 			int fnn;
 			if ((fnn = utfname.length) > 65535)
-				throw new IOException(String.format("BC03 %d", fnn));
+				throw new IOException(String.format("BF16 %d", fnn));
 			
 			// Setup contents
 			__TOCEntry__ last = new __TOCEntry__(this.output.size(), utfname,
@@ -370,10 +370,10 @@ public class ZipStreamWriter
 			__InnerOutputStream__ inner = this._inner;
 			__OuterOutputStream__ outer = this._outer;
 			
-			// {@squirreljme.error BC09 Cannot close entry because a current
+			// {@squirreljme.error BF17 Cannot close entry because a current
 			// one is not being used.}
 			if (inner == null || outer == null)
-				throw new IOException("BC09");
+				throw new IOException("BF17");
 			
 			// Flush both sides
 			inner.flush();
@@ -386,11 +386,11 @@ public class ZipStreamWriter
 			long uncomp = outer._size;
 			long comp = inner._size;
 			
-			// {@squirreljme.error BC0b Either one or both of the compressed
+			// {@squirreljme.error BF18 Either one or both of the compressed
 			// or uncompressed file sizes exceeds 4GiB. (The uncompressed size;
 			// The compressed size)}
 			if (uncomp >= _MAX_FILE_SIZE || comp >= _MAX_FILE_SIZE)
-				throw new IOException(String.format("BC0b %d %d", uncomp,
+				throw new IOException(String.format("BF18 %d %d", uncomp,
 					comp));
 			
 			// Store sizes
@@ -493,16 +493,16 @@ public class ZipStreamWriter
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
-				// {@squirreljme.error BC05 Cannot write a single byte because
+				// {@squirreljme.error BF19 Cannot write a single byte because
 				// the stream is closed.}
 				if (this.finished)
-					throw new IOException("BC05");
+					throw new IOException("BF19");
 				
-				// {@squirreljme.error BC08 Cannot write a single byte because
+				// {@squirreljme.error BF1a Cannot write a single byte because
 				// the ZIP entry would exceed 4GiB.}
 				int oldsize = this._size, newsize = oldsize + 1;
 				if (newsize < 0 || newsize < oldsize)
-					throw new IOException("BC08");
+					throw new IOException("BF1a");
 				
 				// Write data and increase size
 				this.wrapped.write(__b);
@@ -528,16 +528,16 @@ public class ZipStreamWriter
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
-				// {@squirreljme.error BC06 Cannot write multiple bytes because
+				// {@squirreljme.error BF1b Cannot write multiple bytes because
 				// the stream is closed.}
 				if (this.finished)
-					throw new IOException("BC06");
+					throw new IOException("BF1b");
 				
-				// {@squirreljme.error BC07 Cannot write multiple bytes because
+				// {@squirreljme.error BF1c Cannot write multiple bytes because
 				// the ZIP entry would exceed 4GiB.}
 				int oldsize = this._size, newsize = oldsize + __l;
 				if (newsize < 0 || newsize < oldsize)
-					throw new IOException("BC07");
+					throw new IOException("BF1c");
 				
 				// Write data and increase size
 				this.wrapped.write(__b, __o, __l);
