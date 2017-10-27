@@ -57,8 +57,8 @@ public abstract class SourceCompilerProvider
 			}
 		}
 		
-		// {@squirreljme.error AU01 No compiler is available for usage.}
-		throw new RuntimeException("AU01");
+		// {@squirreljme.error AU02 No compiler is available for usage.}
+		throw new RuntimeException("AU02");
 	}
 }
 
