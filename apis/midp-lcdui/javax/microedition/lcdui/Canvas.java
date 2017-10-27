@@ -152,7 +152,7 @@ public abstract class Canvas
 	private volatile boolean _transparent;
 	
 	/** Should this be ran full-screen? */
-	private volatile boolean _isfullscreen;
+	volatile boolean _isfullscreen;
 	
 	/**
 	 * Initializes the base canvas.
@@ -542,25 +542,23 @@ public abstract class Canvas
 			return;
 		
 		// Obtain the graphics which is used to draw on the canvas
-		Graphics g = todo.TODO.<Graphics>missingObject();
-		if (true)
-			throw new todo.TODO();
+		Graphics g = current.__contentAreaPaint(this._isfullscreen);
 		
 		// Reset any parameters as possible and the clip
 		if (g instanceof BasicGraphics)
+		{
 			((BasicGraphics)g).resetParameters(true);
+			g.setClip(__x, __y, __w, __h);
+		}
 		else
 			g.setClip(__x - g.getTranslateX(), __y - g.getTranslateY(),
 				__w, __h);
 		
-		// Reclip so only the repainted area is drawn
-		g.setClip(__x, __y, __w, __h);
-		
 		// Call paint on this graphics instance
 		paint(g);
 		
-		// Tell the embedded that it should repaint
-		throw new todo.TODO();
+		// Tell the display that the client just finished repainting
+		current.__clientPainted();
 	}
 }
 

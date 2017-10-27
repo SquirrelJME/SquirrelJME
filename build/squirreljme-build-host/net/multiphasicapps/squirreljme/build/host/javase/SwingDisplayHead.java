@@ -19,6 +19,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 
 /**
@@ -191,6 +192,16 @@ public class SwingDisplayHead
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/10/27
+	 */
+	@Override
+	public void graphicsPainted()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/10/01
 	 */
 	@Override
@@ -217,12 +228,39 @@ public class SwingDisplayHead
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/10/27
+	 */
+	@Override
+	public boolean isNaturalOrientation(DisplayOrientation __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Is natural if it matches the current one
+		return __o == orientation();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/10/20
 	 */
 	@Override
 	public int numColors()
 	{
 		return 256 * 256 * 256;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/10/27
+	 */
+	@Override
+	public DisplayOrientation orientation()
+	{
+		if (displayVirtualWidthPixels() > displayVirtualHeightPixels())
+			return DisplayOrientation.LANDSCAPE;
+		return DisplayOrientation.PORTRAIT;
 	}
 }
 

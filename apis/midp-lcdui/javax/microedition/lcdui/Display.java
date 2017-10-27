@@ -25,6 +25,7 @@ import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.lcdui.CompatibilityDisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
 import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
+import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
 import net.multiphasicapps.squirreljme.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.lcdui.HeadlessDisplayManager;
 import net.multiphasicapps.squirreljme.lcdui.NativeResource;
@@ -204,6 +205,22 @@ public class Display
 	
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
+	
+	/** The temporary image which is used for the contents of the display. */
+	private volatile Image _contents;
+	
+	/** Is the content area size dirty? */
+	private volatile boolean _contentsizedirty =
+		true;
+	
+	/** The position of the content area. */
+	private volatile int _contentx, _contenth;
+	
+	/** The size of the content area. */
+	private volatile int _contentw, _contenth;
+	
+	/** The current display orientation. */
+	private volatile DisplayOrientation _orientation;
 	
 	/**
 	 * This initializes the native display which provides sub-display views.
@@ -501,9 +518,24 @@ public class Display
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the current orientation of the display.
+	 *
+	 * @return The display orientation.
+	 * @since 2017/10/27
+	 */
 	public int getOrientation()
 	{
-		throw new todo.TODO();
+		// If the orientation is not known, calculate the content area
+		DisplayOrientation orientation = this._orientation;
+		if (orientation == null)
+		{
+			__calculateContentArea();
+			orientation = this._orientation;
+		}
+		
+		// Use the orientation's code
+		return orientation.lcduiValue();
 	}
 	
 	/**
@@ -805,6 +837,102 @@ public class Display
 		// Get
 		return this._properties[p.ordinal()];
 		*/
+	}
+	
+	/**
+	 * Calculates the content area area.
+	 *
+	 * @since 2017/10/27
+	 */
+	private void __calculateContentArea()
+	{
+		// Does not need updating
+		if (!this._contentsizedirty)
+			return;
+		
+		throw new todo.TODO();
+		
+		// Clear flag last so variables are proper
+		this._contentsizedirty = false;
+		
+	/** Is the content area size dirty? */
+	private volatile boolean _contentsizedirty =
+		true;
+	
+	/** The size of the content area. */
+	private volatile int _contentw, _contenth;
+	}
+	
+	/**
+	 * This is called when the content area has been painted so that the
+	 * display head may be repainted.
+	 *
+	 * @since 2017/10/27
+	 */
+	void __clientPainted()
+	{
+		this._head.graphicsPainted();
+	}
+	
+	/**
+	 * Returns the height of the content area.
+	 *
+	 * @return The content area height.
+	 * @since 2017/10/27
+	 */
+	int __contentAreaHeight()
+	{
+		if (this._contentsizedirty)
+			__calculateContentArea();
+		return this._contenth;
+	}
+	
+	/**
+	 * This paints the coint
+	 *
+	 * @param __full If 
+	 * @since 2017/10/27
+	 */
+	Graphics __contentAreaPaint(boolean __full)
+	{
+		// Get the graphics for the head
+		DisplayHead head = this._head;
+		Graphics graphics = head.graphics();
+		
+		// If fullscreen just use the entire display directly without
+		// worrying about any non-display widgets
+		if (true || __full)
+			return graphics;
+			
+	/** The position of the content area. */
+	private volatile int _contentx, _contenth;
+	
+	/** The size of the content area. */
+	private volatile int _contentw, _contenth;
+		
+		// Determine if rotation is being used and if a virtual image buffer
+		// needs to be created to handle that rotation
+		if (true)
+			throw new todo.TODO();
+		
+		// If any virtually provided elements need to be drawn such as the
+		// keyboard or title bar then draw them here
+		// The area where the displayed thing is painted is drawn in an image
+		// which is then handled correctly
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the width of the content area.
+	 *
+	 * @return The content area width.
+	 * @since 2017/10/27
+	 */
+	int __contentAreaWidth()
+	{
+		if (this._contentsizedirty)
+			__calculateContentArea();
+		return this._contentw;
 	}
 	
 	/**
