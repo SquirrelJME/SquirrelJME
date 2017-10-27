@@ -79,10 +79,10 @@ public class IMCServer
 				__ver.hashCode(), __auth);
 		}
 		
-		// {@squirreljme.error EC0p Could not open a mailbox for listening.}
+		// {@squirreljme.error EC0h Could not open a mailbox for listening.}
 		catch (SystemMailException e)
 		{
-			throw new IOException("EC0p", e);
+			throw new IOException("EC0h", e);
 		}
 	}
 	
@@ -117,19 +117,19 @@ public class IMCServer
 					this.authmode, interrupt);
 			}
 			
-			// {@squirreljme.error EC0q Could not accept the mailbox
+			// {@squirreljme.error EC0k Could not accept the mailbox
 			// connection. (The descriptor)}
 			catch (SystemMailException e)
 			{
-				throw new IOException(String.format("EC0q %d", mailfd), e);
+				throw new IOException(String.format("EC0k %d", mailfd), e);
 			}
 			
 			// Request interrupted
 			catch (InterruptedException e)
 			{
-				// {@squirreljme.error EC0c Accept of connection interrupted.}
+				// {@squirreljme.error EC0l Accept of connection interrupted.}
 				if (interrupt)
-					throw new InterruptedIOException("EC0c");
+					throw new InterruptedIOException("EC0l");
 				
 				// Ignore otherwise
 				continue;
@@ -155,11 +155,11 @@ public class IMCServer
 			SystemMail.mailboxClose(this._mailfd);
 		}
 		
-		// {@squirreljme.error EC0r Could not close the server mailbox.
+		// {@squirreljme.error EC0m Could not close the server mailbox.
 		// (The descriptor)}
 		catch (SystemMailException e)
 		{
-			throw new IOException(String.format("EC0r %d", this._mailfd), e);
+			throw new IOException(String.format("EC0m %d", this._mailfd), e);
 		}
 	}
 	
