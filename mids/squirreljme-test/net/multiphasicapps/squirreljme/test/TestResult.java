@@ -420,11 +420,11 @@ public class TestResult
 	private void __checkResult(String __n, Object __v)
 		throws IllegalStateException, NullPointerException
 	{
-		// {@squirreljme.error BA03 A result has already been set. (The test
+		// {@squirreljme.error BA04 A result has already been set. (The test
 		// name; The sub-test name)}
 		Map<String, Object> results = this.results;
 		if (results.containsKey(__n))
-			throw new IllegalStateException(String.format("BA03 %s %s",
+			throw new IllegalStateException(String.format("BA04 %s %s",
 				this.name, __n));
 		
 		// Set

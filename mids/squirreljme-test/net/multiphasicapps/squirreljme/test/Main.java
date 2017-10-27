@@ -193,11 +193,11 @@ public class Main
 			}
 		}
 		
-		// {@squirreljme.error BA01 Failed to run the specified test
+		// {@squirreljme.error BA02 Failed to run the specified test
 		// directory due to a read/write error. (The test name)}
 		catch (IOException e)
 		{
-			throw new RuntimeException(String.format("BA01 %s", __tn));
+			throw new RuntimeException(String.format("BA02 %s", __tn));
 		}
 		
 		// Sort the tests
