@@ -42,6 +42,9 @@ final class __DrawSpace__
 	/** The display to draw onto, may be null if there is no display. */
 	protected final Display display;
 	
+	/** The parent draw space. */
+	protected final __DrawSpace__ parent;
+	
 	/** Draw space for the content area? */
 	private volatile __DrawSpace__ _contentdrawspace;
 	
@@ -71,6 +74,7 @@ final class __DrawSpace__
 		
 		// Not used
 		this.display = null;
+		this.parent = null;
 	}
 	
 	/**
@@ -130,6 +134,49 @@ final class __DrawSpace__
 		this.contentheight = contentheight;
 		this.image = image;
 		this.display = __d;
+		this.parent = null;
+	}
+	
+	/**
+	 * Initializes the drawspace for the client area.
+	 *
+	 * @param __parent The parent draw space.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/27
+	 */
+	public __DrawSpace__(__DrawSpace__ __parent)
+		throws NullPointerException
+	{
+		if (__parent == null)
+			throw new NullPointerException("NARG");
+		
+		// Get content area size
+		int contentwidth = __parent.contentwidth,
+			contentheight = __parent.contentheight;
+		
+		// Orientation is always natural
+		this.orientation = (contentwidth > contentheight ?
+			DisplayOrientation.LANDSCAPE : DisplayOrientation.PORTRAIT);
+		this.naturalorientation = true;
+		
+		// The size of the parent's content area
+		this.spacewidth = contentwidth;
+		this.spaceheight = contentheight;
+		
+		// There is no content area
+		this.contentx = -1;
+		this.contenty = -1;
+		this.contentwidth = -1;
+		this.contentheight = -1;
+		
+		// Generate image where contents are drawn
+		this.image = Image.createImage(contentwidth, contentheight);
+		
+		// Set parent
+		this.parent = __parent;
+		
+		// Display not used
+		this.display = null;
 	}
 	
 	/**
@@ -150,7 +197,9 @@ final class __DrawSpace__
 		if (contentdrawspace != null)
 			return contentdrawspace;
 		
-		throw new todo.TODO();
+		// Setup draw space for the client
+		this._contentdrawspace = (contentdrawspace = new __DrawSpace__(this));
+		return contentdrawspace;
 	}
 	
 	/**
@@ -171,7 +220,8 @@ final class __DrawSpace__
 		if (display != null)
 			return display._head.graphics();
 		
-		throw new todo.TODO();
+		// Should not occur
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**
@@ -196,7 +246,8 @@ final class __DrawSpace__
 	 */
 	public boolean isInvalid()
 	{
-		throw new todo.TODO();
+		return true;
+		/*throw new todo.TODO();*/
 	}
 	
 	/**
@@ -214,11 +265,34 @@ final class __DrawSpace__
 	 * This must be called at the tail of every paint operation which goes back
 	 * up the drawspace tree to draw the parent elements as required.
 	 *
+	 * @param __sncd Suppress non-client area draw, such as the parts which
+	 * are associated with title bars and such?
 	 * @since 2017/10/27
 	 */
-	public void tailPaint()
+	public void tailPaint(boolean __sncd)
 	{
-		throw new todo.TODO();
+		// Draw the content area on the parent draw space?
+		__DrawSpace__ contentarea = contentArea();
+		if (contentarea != null)
+		{
+			// Image is drawn here
+			Graphics g = graphics();
+			
+			// Client area always has an imahe
+			g.drawImage(contentarea.image, this.contentx, this.contenty, 0);
+		}
+		
+		// Is the orientation non-natural? then the image must be drawn on
+		// whatever this is to draw on correctly
+		if (!this.naturalorientation)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Recurse up to the parent draw space
+		__DrawSpace__ parent = this.parent;
+		if (parent != null)
+			parent.tailPaint(__sncd);
 	}	
 	
 	/**
