@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.jit.Groupable;
-import net.multiphasicapps.util.datadeque.ByteDeque;
+import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
  * This represents a single resource which may exist within a class.

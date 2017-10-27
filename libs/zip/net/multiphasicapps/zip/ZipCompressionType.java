@@ -15,10 +15,10 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.io.checksum.Checksum;
-import net.multiphasicapps.io.checksum.ChecksumInputStream;
-import net.multiphasicapps.io.compressionstream.DecompressionInputStream;
-import net.multiphasicapps.io.inflate.InflaterInputStream;
+import net.multiphasicapps.zip.util.Checksum;
+import net.multiphasicapps.zip.util.ChecksumInputStream;
+import net.multiphasicapps.zip.util.DecompressionInputStream;
+import net.multiphasicapps.zip.util.InflaterInputStream;
 
 /**
  * This represents the type of compression that is used in a ZIP file.

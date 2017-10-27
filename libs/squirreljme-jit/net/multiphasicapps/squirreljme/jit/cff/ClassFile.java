@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.jit.cff;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.io.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.jit.Groupable;
 
 /**
