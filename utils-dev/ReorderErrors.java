@@ -178,8 +178,7 @@ public class ReorderErrors
 			//System.err.printf("Remap %s%n", errormap);
 			
 			// Rewrite to file
-			System.out.println(rework);
-			throw new Error("TODO");
+			Files.write(file, rework.toString().getBytes("utf-8"));
 		}
 	}
 	
