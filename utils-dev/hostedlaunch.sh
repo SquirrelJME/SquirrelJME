@@ -40,7 +40,7 @@ fi
 __proj="$(basename "$__file" .jar)"
 
 # Build these projects because they are standard and may be relied upon
-for __maybe in midp-lcdui meep-rms squirreljme-rms-file media-api
+for __maybe in midp-lcdui meep-rms media-api
 do
 	if ! "$__exedir/../build.sh" build "$__maybe"
 	then
