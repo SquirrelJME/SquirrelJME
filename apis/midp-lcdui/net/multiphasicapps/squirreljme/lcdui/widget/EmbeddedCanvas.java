@@ -17,6 +17,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2017/10/25
  */
+@Deprecated
 public abstract class EmbeddedCanvas
 	extends Embedded
 {

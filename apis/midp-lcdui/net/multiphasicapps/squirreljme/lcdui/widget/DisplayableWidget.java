@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.lcdui.NativeResource;
  *
  * @since 2017/10/25
  */
+@Deprecated
 public abstract class DisplayableWidget
 	implements NativeResource
 {

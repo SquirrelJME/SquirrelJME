@@ -19,6 +19,7 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2017/10/25
  */
+@Deprecated
 public class DefaultEmbeddedCanvas
 	extends EmbeddedCanvas
 {
