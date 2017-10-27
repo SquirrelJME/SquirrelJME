@@ -83,11 +83,11 @@ class __IMCInputStream__
 			SystemMail.mailboxClose(this._fd);
 		}
 		
-		// {@squirreljme.error EC0l Could not close the mailbox for the
+		// {@squirreljme.error EC0n Could not close the mailbox for the
 		// input stream. (The descriptor)}
 		catch (SystemMailException e)
 		{
-			throw new IOException(String.format("EC0l %d", this._fd), e);
+			throw new IOException(String.format("EC0n %d", this._fd), e);
 		}
 	}
 	
@@ -183,11 +183,11 @@ class __IMCInputStream__
 							break;
 						}
 						
-						// {@squirreljme.error EC0m Could not read from the
+						// {@squirreljme.error EC0o Could not read from the
 						// remote destination. (The descriptor)}
 						catch (SystemMailException e)
 						{
-							throw new IOException(String.format("EC0m %d", fd),
+							throw new IOException(String.format("EC0o %d", fd),
 								e);
 						}
 						
@@ -203,10 +203,10 @@ class __IMCInputStream__
 						// number of read bytes
 						catch (InterruptedException|NoSuchElementException e)
 						{
-							// {@squirreljme.error EC0k Read interrupt and no
+							// {@squirreljme.error EC0p Read interrupt and no
 							// data was read.}
 							if (interrupt && count == 0)
-								throw new InterruptedIOException("EC0k");
+								throw new InterruptedIOException("EC0p");
 							return count;
 						}
 				}

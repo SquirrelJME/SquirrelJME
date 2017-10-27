@@ -323,10 +323,10 @@ public class Connector
 		// Open it, then close it
 		try (Connection c = open(__uri))
 		{
-			// {@squirreljme.error EC01 The specified URI is not an input
+			// {@squirreljme.error EC03 The specified URI is not an input
 			// connection. (The URI)}
 			if (!(c instanceof InputConnection))
-				throw new IllegalArgumentException(String.format("EC01 %s",
+				throw new IllegalArgumentException(String.format("EC03 %s",
 					__uri));
 			
 			// Open it
@@ -350,10 +350,10 @@ public class Connector
 		// Open it, then close it
 		try (Connection c = open(__uri))
 		{
-			// {@squirreljme.error EC02 The specified URI is not an output
+			// {@squirreljme.error EC04 The specified URI is not an output
 			// connection. (The URI)}
 			if (!(c instanceof OutputConnection))
-				throw new IllegalArgumentException(String.format("EC02 %s",
+				throw new IllegalArgumentException(String.format("EC04 %s",
 					__uri));
 			
 			// Open it

@@ -40,17 +40,17 @@ public class IMCFactory
 		if (__par == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EC05 IMC connections must start with two
+		// {@squirreljme.error EC0d IMC connections must start with two
 		// forward slashes. (The scheme specific part)}
 		if (!__par.startsWith("//"))
-			throw new IllegalArgumentException(String.format("EC05", __par));
+			throw new IllegalArgumentException(String.format("EC0d", __par));
 		
-		// {@squirreljme.error EC06 IMC connections must have a semi-colon
+		// {@squirreljme.error EC0e IMC connections must have a semi-colon
 		// before the flags, even if the flags are not specified. (The scheme
 		// specific part)}
 		int semi = __par.indexOf(';');
 		if (semi < 0)
-			throw new IllegalArgumentException(String.format("EC06", __par));
+			throw new IllegalArgumentException(String.format("EC0e", __par));
 		
 		// Split host and options
 		String rest = __par.substring(2, semi);
@@ -85,26 +85,26 @@ public class IMCFactory
 			// Connect to a specific midlet
 			else
 			{
-				// {@squirreljme.error EC09 Expected to find a colon in
+				// {@squirreljme.error EC0c Expected to find a colon in
 				// the IMC midlet target. (The scheme specific part)}
 				int cola = rest.indexOf(':');
 				if (cola < 0)
 					throw new IllegalArgumentException(String.format(
-						"EC09 %s", __par));
+						"EC0c %s", __par));
 				
-				// {@squirreljme.error EC0a Expected to find a second colon
+				// {@squirreljme.error EC0d Expected to find a second colon
 				// in the IMC midlet target. (The scheme specific part)}
 				int colb = rest.indexOf(':', cola + 1);
 				if (colb < 0)
 					throw new IllegalArgumentException(String.format(
-						"EC0a %s", __par));
+						"EC0d %s", __par));
 				
-				// {@squirreljme.error EC0b Expected to find a third colon
+				// {@squirreljme.error EC0e Expected to find a third colon
 				// in the IMC midlet target. (The scheme specific part)}
 				int colc = rest.indexOf(':', colb + 1);
 				if (colb < 0)
 					throw new IllegalArgumentException(String.format(
-						"EC0b %s", __par));
+						"EC0e %s", __par));
 				
 				// Parse suite ID
 				connect = new MidletSuiteID(rest.substring(0, colc),
@@ -115,13 +115,13 @@ public class IMCFactory
 			}
 		}
 		
-		// {@squirreljme.error EC07 IMC connection does not have a colon
+		// {@squirreljme.error EC0f IMC connection does not have a colon
 		// to separate the server name and the version. (The scheme specific
 		// part)}
 		int col = rest.indexOf(':');
 		if (col < 0)
 			throw new IllegalArgumentException(
-				String.format("EC07 %s", __par));
+				String.format("EC0f %s", __par));
 		
 		// Decode server name and version
 		String name = rest.substring(0, col);
@@ -135,10 +135,10 @@ public class IMCFactory
 			else if (flags.equals("authmode=false"))
 				authmode = false;
 			
-			// {@squirreljme.error EC08 Unknown flags specified in IMC
+			// {@squirreljme.error EC0g Unknown flags specified in IMC
 			// connection. (The scheme specific part)}
 			else
-				throw new IllegalArgumentException(String.format("EC08 %s",
+				throw new IllegalArgumentException(String.format("EC0g %s",
 					__par));
 		else
 			authmode = false;

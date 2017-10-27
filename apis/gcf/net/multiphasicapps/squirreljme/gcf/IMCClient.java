@@ -112,11 +112,11 @@ public class IMCClient
 				svnb, 0, svnb.length, __ver.hashCode(), __authmode));
 		}
 		
-		// {@squirreljme.error EC0d Could not connect to the remote server.}
+		// {@squirreljme.error EC05 Could not connect to the remote server.}
 		catch (SystemMailException e)
 		{
 			throw new ConnectionNotFoundException(Objects.toString(
-				e.getMessage(), "EC0d"));
+				e.getMessage(), "EC05"));
 		}
 		
 		// If specified, use the given MIDlet
@@ -132,11 +132,11 @@ public class IMCClient
 					MidletSuiteIDFormat.JAR);
 			}
 			
-			// {@squirreljme.error EC0s Could not determine the identifier
+			// {@squirreljme.error EC06 Could not determine the identifier
 			// of the remote system. (The descriptor)}
 			catch (SystemMailException e)
 			{
-				throw new IOException(String.format("EC0s %d", fd), e);
+				throw new IOException(String.format("EC06 %d", fd), e);
 			}
 	}
 	
@@ -214,11 +214,11 @@ public class IMCClient
 				SystemMail.mailboxClose(this._clientfd);
 			}
 			
-			// {@squirreljme.error EC0u Could not close the client connection.
+			// {@squirreljme.error EC07 Could not close the client connection.
 			// (The client descriptor)}
 			catch (SystemMailException e)
 			{
-				throw new IOException(String.format("EC0u %d", this._clientfd),
+				throw new IOException(String.format("EC07 %d", this._clientfd),
 					e);
 			}
 	}
@@ -283,10 +283,10 @@ public class IMCClient
 	public InputStream openInputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0e Cannot open input stream for a closed
+		// {@squirreljme.error EC08 Cannot open input stream for a closed
 		// connection.}
 		if (this._closed)
-			throw new IOException("EC0e");
+			throw new IOException("EC08");
 		
 		// Open stream
 		InputStream rv = new __IMCInputStream__(this._clientfd,
@@ -303,10 +303,10 @@ public class IMCClient
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0f Cannot open input stream for a closed
+		// {@squirreljme.error EC09 Cannot open input stream for a closed
 		// connection.}
 		if (this._closed)
-			throw new IOException("EC0f");
+			throw new IOException("EC09");
 		
 		// Open stream
 		OutputStream rv = new __IMCOutputStream__(this._clientfd);

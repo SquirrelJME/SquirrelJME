@@ -73,11 +73,11 @@ class __IMCOutputStream__
 			SystemMail.mailboxClose(this._fd);
 		}
 		
-		// {@squirreljme.error EC0n Could not close the mailbox for the output
+		// {@squirreljme.error EC0q Could not close the mailbox for the output
 		// stream. (The descriptor)}
 		catch (SystemMailException e)
 		{
-			throw new IOException(String.format("EC0n %d", this._fd), e);
+			throw new IOException(String.format("EC0q %d", this._fd), e);
 		}
 	}
 	
@@ -104,11 +104,11 @@ class __IMCOutputStream__
 				SystemMail.mailboxSend(this._fd, 0, buffer, 0, at);
 			}
 			
-			// {@squirreljme.error EC0o Could not flush the output mailbox.
+			// {@squirreljme.error EC0r Could not flush the output mailbox.
 			// (The descriptor)}
 			catch (SystemMailException e)
 			{
-				throw new IOException(String.format("EC0o %d", this._fd), e);
+				throw new IOException(String.format("EC0r %d", this._fd), e);
 			}
 			
 			// Clear
@@ -124,9 +124,9 @@ class __IMCOutputStream__
 	public void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error EC0g Cannot write single byte after close.}
+		// {@squirreljme.error EC0s Cannot write single byte after close.}
 		if (this._closed)
-			throw new IOException("EC0g");
+			throw new IOException("EC0s");
 		
 		// May need to flush depending on the new position
 		int at = this._at;
@@ -150,9 +150,9 @@ class __IMCOutputStream__
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
-		// {@squirreljme.error EC0h Cannot write multiple bytes after close.}
+		// {@squirreljme.error EC0t Cannot write multiple bytes after close.}
 		if (this._closed)
-			throw new IOException("EC0h");
+			throw new IOException("EC0t");
 		
 		// Check
 		if (__b == null)
