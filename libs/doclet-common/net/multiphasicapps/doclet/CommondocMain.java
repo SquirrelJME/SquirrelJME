@@ -251,10 +251,10 @@ public abstract class CommondocMain
 			}
 		}
 		
-		// {@squirreljme.error EN04 Could not list directory contents.}
+		// {@squirreljme.error EN03 Could not list directory contents.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("EN04", e);
+			throw new RuntimeException("EN03", e);
 		}
 		
 		// Unknown
@@ -352,11 +352,11 @@ public abstract class CommondocMain
 		if (__n == null || __mc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EN01 A class has been duplicated multiple
+		// {@squirreljme.error EN03 A class has been duplicated multiple
 		// times.}
 		Map<String, CommondocClass> classes = this.classes;
 		if (null != classes.put(__n, __mc))
-			throw new RuntimeException("EN01");
+			throw new RuntimeException("EN03");
 	}
 	
 	/**
