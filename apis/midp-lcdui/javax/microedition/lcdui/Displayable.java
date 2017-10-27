@@ -220,6 +220,31 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * Returns the draw space for this displayable as required.
+	 *
+	 * @return THe draw space to draw into.
+	 * @since 2017/10/27
+	 */
+	final __DrawSpace__ __drawSpace()
+	{
+		// If there is no current display then use a fake drawspace
+		Display d = __currentDisplay();
+		if (d == null)
+			return new __DrawSpace__();
+		
+		// Fullscreen?
+		boolean isfullscreen = (this instanceof Canvas &&
+			((Canvas)this)._isfullscreen);
+		
+		// Use the parent draw space for fullscreen but the content area
+		// otherwise
+		__DrawSpace__ rv = d.__drawSpace();
+		if (isfullscreen)
+			return rv;
+		return rv.contentArea();
+	}
+	
+	/**
 	 * Returns the height of the displayable or the maximum size of the
 	 * default display.
 	 *
@@ -234,14 +259,8 @@ public abstract class Displayable
 		if (d == null)
 			return Display.getDisplays(0)[0].getHeight();
 		
-		// Fullscreen?
-		boolean isfullscreen = (this instanceof Canvas &&
-			((Canvas)this)._isfullscreen);
-		
-		// Fullscreen uses virtual size, otherwise content size
-		if (isfullscreen)
-			return d.getHeight();
-		return d.__contentAreaHeight();
+		// Use the draw space size
+		return __drawSpace().height();
 	}
 	
 	/**
@@ -259,14 +278,8 @@ public abstract class Displayable
 		if (d == null)
 			return Display.getDisplays(0)[0].getWidth();
 		
-		// Fullscreen?
-		boolean isfullscreen = (this instanceof Canvas &&
-			((Canvas)this)._isfullscreen);
-		
-		// Fullscreen uses virtual size, otherwise content size
-		if (isfullscreen)
-			return d.getWidth();
-		return d.__contentAreaWidth();
+		// Use the draw space size
+		return __drawSpace().width();
 	}
 }
 
