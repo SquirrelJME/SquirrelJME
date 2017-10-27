@@ -29,7 +29,7 @@ which means if it searched correctly it would be found.
 ## 13:01
 
 Ok so with `DEBUG -- list(PLATFORM_CLASS_PATH, `
-`net.multiphasicapps.collections, [CLASS], false)` it appears that it is
+`net.multiphasicapps.util.unmodifiable, [CLASS], false)` it appears that it is
 actually looking for the unmodifiable package, but only in the platform
 class path before giving up.
 
