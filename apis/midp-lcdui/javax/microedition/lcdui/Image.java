@@ -17,6 +17,7 @@ import java.io.InputStream;
 import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
 import net.multiphasicapps.squirreljme.lcdui.gfx.IntArrayGraphics;
 import net.multiphasicapps.squirreljme.lcdui.gfx.PixelArrayGraphics;
+import net.multiphasicapps.squirreljme.lcdui.image.ImageReaderDispatcher;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 public class Image
@@ -361,7 +362,7 @@ public class Image
 			throw new NullPointerException("NARG");
 		
 		// Parse
-		return __ImageParseDispatcher__.__parse(new DataInputStream(__is));
+		return ImageReaderDispatcher.parse(new DataInputStream(__is));
 	}
 	
 	/**

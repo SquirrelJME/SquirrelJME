@@ -8,25 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package net.multiphasicapps.squirreljme.lcdui.image;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import javax.microedition.lcdui.Image;
 
 /**
  * This is used to dispatch to the correct parser when loading images.
  *
  * @since 2017/02/28
  */
-final class __ImageParseDispatcher__
+public class ImageReaderDispatcher
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2017/02/28
 	 */
-	private __ImageParseDispatcher__()
+	private ImageReaderDispatcher()
 	{
 	}
 	
@@ -37,7 +38,7 @@ final class __ImageParseDispatcher__
 	 * @return The parsed image data.
 	 * @throws IOException If it could not be parsed.
 	 */
-	static Image __parse(DataInputStream __is)
+	public static Image parse(DataInputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -53,7 +54,7 @@ final class __ImageParseDispatcher__
 		
 		// PNG?
 		else if (head == 0x89)
-			return new __PNGImageParser__(__is).__parse();
+			return new PNGReader(__is).__parse();
 		
 		// JPEG?
 		else if (head == 0xFF)
