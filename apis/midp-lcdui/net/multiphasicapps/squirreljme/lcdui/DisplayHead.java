@@ -63,6 +63,18 @@ public abstract class DisplayHead
 	public abstract int displayPhysicalWidthPixels();
 	
 	/**
+	 * Specifies that the display state has changed.
+	 *
+	 * @param __old The old display state.
+	 * @param __new The new display state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/01
+	 */
+	protected abstract void displayStateChanged(DisplayState __old,
+		DisplayState __new)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the virtual display height in pixels.
 	 *
 	 * @return The virtual display height in pixels.
@@ -77,18 +89,6 @@ public abstract class DisplayHead
 	 * @since 2017/10/27
 	 */
 	public abstract int displayVirtualWidthPixels();
-	
-	/**
-	 * Specifies that the display state has changed.
-	 *
-	 * @param __old The old display state.
-	 * @param __new The new display state.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/10/01
-	 */
-	protected abstract void displayStateChanged(DisplayState __old,
-		DisplayState __new)
-		throws NullPointerException;
 	
 	/**
 	 * Converts the specified abstract font size to a pixel size.
