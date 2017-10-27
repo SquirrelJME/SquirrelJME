@@ -187,10 +187,10 @@ public class Tokenizer
 			else if (c >= '0' && c <= '9')
 				return __getNumberLiteral((char)c);
 			
-			// {@squirreljme.error AQ05 Unknown character while tokenizing the
+			// {@squirreljme.error AQ03 Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
 			else
-				throw new TokenizerException(String.format("AQ05 %c %d %d",
+				throw new TokenizerException(String.format("AQ03 %c %d %d",
 					(char)c, line, column));
 		}
 	}
@@ -365,11 +365,11 @@ public class Tokenizer
 		StringBuilder sb = new StringBuilder();
 		for (;;)
 		{
-			// {@squirreljme.error AQ01 End of file reached while reading a
+			// {@squirreljme.error AQ05 End of file reached while reading a
 			// multi-line comment.}
 			int c = __peek();
 			if (c < 0)
-				throw new TokenizerException("AQ01");
+				throw new TokenizerException("AQ05");
 			
 			// Potential end of comment?
 			if (c == '*')
