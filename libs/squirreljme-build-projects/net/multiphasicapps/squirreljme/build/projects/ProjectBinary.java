@@ -104,11 +104,11 @@ public abstract class ProjectBinary
 				md = new MidletDependency(val);
 			}
 			
-			// {@squirreljme.error AT0x The dependency field for the given
+			// {@squirreljme.error AT0f The dependency field for the given
 			// midlet or liblet is not valid. (The name of this project)}
 			catch (IllegalArgumentException e)
 			{
-				throw new InvalidProjectException(String.format("AT0x %s",
+				throw new InvalidProjectException(String.format("AT0f %s",
 					name()), e);
 			}
 			
@@ -122,10 +122,10 @@ public abstract class ProjectBinary
 					break;
 				}
 			
-			// {@squirreljme.error AT0y A required dependency was not found.
+			// {@squirreljme.error AT0e A required dependency was not found.
 			// (The project name; The dependency)}
 			if (!found && md.level() != MidletDependencyLevel.OPTIONAL)
-				throw new InvalidProjectException(String.format("AT0y %s %s",
+				throw new InvalidProjectException(String.format("AT0e %s %s",
 					name(), md));
 		}
 	}
@@ -150,11 +150,11 @@ public abstract class ProjectBinary
 					(rv = new JavaManifest(is)));
 			}
 		
-			// {@squirreljme.error AT0d Could not parse the manifest for
+			// {@squirreljme.error AT0f Could not parse the manifest for
 			// the given project. (The project name)}
 			catch (JavaManifestException|IOException e)
 			{
-				throw new InvalidProjectException(String.format("AT0d %s",
+				throw new InvalidProjectException(String.format("AT0f %s",
 					name()), e);
 			}
 		
@@ -182,27 +182,27 @@ public abstract class ProjectBinary
 			// This a midlet?
 			boolean midlet = (type() == NamespaceType.MIDLET);
 			
-			// {@squirreljme.error AT0u This project is missing the project
+			// {@squirreljme.error AT0g This project is missing the project
 			// name key. (The name of this project)}
 			String name = attr.get((midlet ? _MIDLET_NAME : _LIBLET_NAME));
 			if (name == null)
-				throw new InvalidProjectException(String.format("AT0u %s",
+				throw new InvalidProjectException(String.format("AT0g %s",
 					name()));
 			
-			// {@squirreljme.error AT0v This project is missing the project
+			// {@squirreljme.error AT0h This project is missing the project
 			// vendor key. (The name of this project)}
 			String vendor = attr.get((midlet ? _MIDLET_VENDOR :
 				_LIBLET_VENDOR));
 			if (vendor == null)
-				throw new InvalidProjectException(String.format("AT0v %s",
+				throw new InvalidProjectException(String.format("AT0h %s",
 					name()));
 			
-			// {@squirreljme.error AT0w This project is missing the project
+			// {@squirreljme.error AT0i This project is missing the project
 			// version key. (The name of this project)}
 			String version = attr.get((midlet ? _MIDLET_VERSION :
 				_LIBLET_VERSION));
 			if (version == null)
-				throw new InvalidProjectException(String.format("AT0w %s",
+				throw new InvalidProjectException(String.format("AT0i %s",
 					name()));
 			
 			// Generate

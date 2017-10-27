@@ -95,12 +95,12 @@ class __ZipFileDirectory__
 			return this.zip.open(__fn);
 		}
 		
-		// {@squirreljme.error AT0n Could not find the specified file entry.
+		// {@squirreljme.error AT0y Could not find the specified file entry.
 		// (The entry name)}
 		catch (ZipEntryNotFoundException e)
 		{
 			throw new FileEntryNotFoundException(
-				String.format("AT0n %s", __fn), e);
+				String.format("AT0y %s", __fn), e);
 		}
 	}
 	

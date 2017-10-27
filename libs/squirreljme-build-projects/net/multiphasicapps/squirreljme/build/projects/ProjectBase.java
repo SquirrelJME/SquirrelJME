@@ -509,11 +509,11 @@ public abstract class ProjectBase
 					(rv = new ServiceSuiteID(val)));
 			}
 			
-			// {@squirreljme.error AT0p Could not parse the supplied service
+			// {@squirreljme.error AT0a Could not parse the supplied service
 			// identifier field.}
 			catch (IllegalArgumentException e)
 			{
-				throw new InvalidProjectException("AT0p", e);
+				throw new InvalidProjectException("AT0a", e);
 			}
 		}
 		
@@ -618,10 +618,10 @@ public abstract class ProjectBase
 			return rv;
 		}
 		
-		// {@squirreljme.error AT0k Could not determine the project time.}
+		// {@squirreljme.error AT0b Could not determine the project time.}
 		catch (IOException e)
 		{
-			throw new InvalidProjectException("AT0k", e);
+			throw new InvalidProjectException("AT0b", e);
 		}
 	}
 	
@@ -674,10 +674,10 @@ public abstract class ProjectBase
 		if (conf == null &&
 			!Boolean.valueOf(attr.get(_NO_DEPENDS_CONFIGURATION_KEY)))
 		{
-			// {@squirreljme.error AT0i The project is missing the required
+			// {@squirreljme.error AT0c The project is missing the required
 			// {@code MicroEdition-Configuration} key in its manifest. (The
 			// name of the project)}
-			throw new InvalidProjectException(String.format("AT0i %s",
+			throw new InvalidProjectException(String.format("AT0c %s",
 				name()));
 		}
 		

@@ -265,10 +265,10 @@ public class ProjectManager
 						"Namespace-Type");
 					if (rtype == null)
 					{
-						// {@squirreljme.error AT02 There is a namespace
+						// {@squirreljme.error AT0j There is a namespace
 						// manifest, however it lacks a type and as such it
 						// will ignored. (The path to the namespace)}
-						System.err.printf("AT02 %s%n", p);
+						System.err.printf("AT0j %s%n", p);
 						
 						// Ignore
 						continue;
