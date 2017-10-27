@@ -156,9 +156,9 @@ public final class PostDestination
 				// We got the lock back, check if there is an office waiting
 				for (;;)
 				{
-					// {@squirreljme.error BW04 The destination was closed.}
+					// {@squirreljme.error BW05 The destination was closed.}
 					if (this._closed)
-						throw new IOException("BW04");
+						throw new IOException("BW05");
 					
 					// See if an office was created
 					PostOffice rv = this._openoffice;
