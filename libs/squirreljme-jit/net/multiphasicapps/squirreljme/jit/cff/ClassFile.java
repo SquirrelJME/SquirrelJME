@@ -195,10 +195,10 @@ public final class ClassFile
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI3d Cannot create a special class because it
+		// {@squirreljme.error JI0t Cannot create a special class because it
 		// is not an array or primitive type. (The descriptor)}
 		if (!__d.isArray() && !__d.isPrimitive())
-			throw new IllegalArgumentException(String.format("JI3d %s", __d));
+			throw new IllegalArgumentException(String.format("JI0t %s", __d));
 		
 		// Build
 		return new ClassFile("", ClassVersion.MAX_VERSION,
@@ -228,20 +228,20 @@ public final class ClassFile
 		if (__g == null || __is == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI2u The magic number for the class is not
+		// {@squirreljme.error JI0u The magic number for the class is not
 		// valid. (The read magic number; The expected magic number)}
 		DataInputStream in = new DataInputStream(__is);
 		int magic = in.readInt();
 		if (magic != _MAGIC_NUMBER)
 			throw new InvalidClassFormatException(String.format(
-				"JI2u %08x %08x", magic, _MAGIC_NUMBER));
+				"JI0u %08x %08x", magic, _MAGIC_NUMBER));
 		
-		// {@squirreljme.error JI08 The version number of the input class
+		// {@squirreljme.error JI0v The version number of the input class
 		// file is not valid. (The version number)}
 		int cver = in.readShort() | (in.readShort() << 16);
 		ClassVersion version = ClassVersion.findVersion(cver);
 		if (version == null)
-			throw new InvalidClassFormatException(String.format("JI08 %d.%d",
+			throw new InvalidClassFormatException(String.format("JI0v %d.%d",
 				cver >>> 16, (cver & 0xFFFF)));
 		
 		// Decode the constant pool
@@ -283,11 +283,11 @@ public final class ClassFile
 				// of the information is really that important anyway
 			}
 		
-		// {@squirreljme.error JI12 Expected end of the class to follow the
+		// {@squirreljme.error JI0w Expected end of the class to follow the
 		// attributes in the class. (The name of this class)}
 		if (in.read() >= 0)
 			throw new InvalidClassFormatException(
-				String.format("JI12 %s", thisname));
+				String.format("JI0w %s", thisname));
 		
 		// Build
 		return new ClassFile(__g, version, classflags, thisname, supername,
@@ -319,11 +319,11 @@ public final class ClassFile
 		__aname[0] = __pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 			__in.readUnsignedShort()).toString();
 		
-		// {@squirreljme.error JI1a Attribute exceeds 2GiB in length. (The
+		// {@squirreljme.error JI0x Attribute exceeds 2GiB in length. (The
 		// size of the attribute)}
 		int len = __in.readInt();
 		if (len < 0)
-			throw new InvalidClassFormatException(String.format("JI1a %d",
+			throw new InvalidClassFormatException(String.format("JI0x %d",
 				len & 0xFFFFFFFFL));
 		
 		// Used as a hint

@@ -73,26 +73,26 @@ public final class FamilyNode
 		FamilyNode supernode;
 		if (supername != null)
 		{
-			// {@squirreljme.error JI39 Circular inheritence detected in
+			// {@squirreljme.error JI2g Circular inheritence detected in
 			// super class tree. (This class; The super class)}
 			supernode = tree.get(supername);
 			if (!supernode._finished)
-				throw new VerificationException(String.format("JI39 %s %s",
+				throw new VerificationException(String.format("JI2g %s %s",
 					thisname, supername));
 			
-			// {@squirreljme.error JI37 The specified class cannot extend the
+			// {@squirreljme.error JI2h The specified class cannot extend the
 			// other class because it has the incorrect flags. (The name of
 			// this class; The name of the super class; The super class flags)}
 			ClassFlags superflags = supernode.flags();
 			if (superflags.isFinal() || superflags.isInterface())
-				throw new VerificationException(String.format("JI37 %s %s %s",
+				throw new VerificationException(String.format("JI2h %s %s %s",
 					thisname, supername, superflags));
 			
-			// {@squirreljme.error JI38 The current class cannot extend the
+			// {@squirreljme.error JI2i The current class cannot extend the
 			// specified class because it is not visible. (The name of this
 			// class; The name of the super class; The super class flags)}
 			if (!__isClassVisibleFrom(this, supernode))
-				throw new VerificationException(String.format("JI38 %s %s %s",
+				throw new VerificationException(String.format("JI2i %s %s %s",
 					thisname, supername, superflags));
 		}
 		
@@ -104,26 +104,26 @@ public final class FamilyNode
 		// Handle all interfaces
 		for (ClassName interfacename : __f.interfaceNames())
 		{
-			// {@squirreljme.error JI3a Circular inheritence detected in
+			// {@squirreljme.error JI2j Circular inheritence detected in
 			// interface class tree. (This class; The interface class)}
 			FamilyNode interfacenode = tree.get(interfacename);
 			if (!interfacenode._finished)
-				throw new VerificationException(String.format("JI3a %s %s",
+				throw new VerificationException(String.format("JI2j %s %s",
 					thisname, interfacename));
 			
-			// {@squirreljme.error JI3b The specified class cannot implement
+			// {@squirreljme.error JI2k The specified class cannot implement
 			// the other class because it has the incorrect flags. (The name of
 			// this class; The interface class; The interface class flags)}
 			ClassFlags interfaceflags = interfacenode.flags();
 			if (!interfaceflags.isInterface())
-				throw new VerificationException(String.format("JI3b %s %s %s",
+				throw new VerificationException(String.format("JI2k %s %s %s",
 					thisname, interfacename, interfaceflags));
 			
-			// {@squirreljme.error JI3c The current class cannot implement the
+			// {@squirreljme.error JI2l The current class cannot implement the
 			// specified class because it is not visible. (The name of this
 			// class; The interface class; The interface class flags)}
 			if (!__isClassVisibleFrom(this, interfacenode))
-				throw new VerificationException(String.format("JI3c %s %s %s",
+				throw new VerificationException(String.format("JI2l %s %s %s",
 					thisname, interfacename, interfaceflags));
 		}
 		
@@ -232,11 +232,11 @@ public final class FamilyNode
 	final FamilyTree __tree()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JI36 The class tree has been garbage
+		// {@squirreljme.error JI2m The class tree has been garbage
 		// collected.}
 		FamilyTree rv = this._treeref.get();
 		if (rv == null)
-			throw new IllegalStateException("JI36");
+			throw new IllegalStateException("JI2m");
 		return rv;
 	}
 	

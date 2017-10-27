@@ -44,11 +44,11 @@ public abstract class Identifier
 		{
 			char c = __n.charAt(i);
 			
-			// {@squirreljme.error JI0i The specified identifier contains an
+			// {@squirreljme.error JI1e The specified identifier contains an
 			// invalid character. (The identifier)}
 			if (c == '.' || c == ';' || c == '[' || c == '/')
 				throw new InvalidClassFormatException(
-					String.format("JI0i %s", __n));
+					String.format("JI1e %s", __n));
 		}
 	}
 	

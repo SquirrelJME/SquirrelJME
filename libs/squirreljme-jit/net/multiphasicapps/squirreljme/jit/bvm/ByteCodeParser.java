@@ -193,11 +193,11 @@ public class ByteCodeParser
 						op - InstructionIndex.DSTORE_0);
 					break;
 					
-					// {@squirreljme.error JI3x Cannot execute the given
+					// {@squirreljme.error JI0e Cannot execute the given
 					// instruction because it is not implemented in the
 					// byte code parser. (The instruction)}
 				default:
-					throw new ParserException(String.format("JI3x %s", i));
+					throw new ParserException(String.format("JI0e %s", i));
 			}
 		}
 		
