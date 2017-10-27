@@ -100,10 +100,10 @@ public class MarkdocClass
 			Files.createDirectories(makemark.getParent());
 		}
 		
-		// {@squirreljme.error CF05 Could not create directories for files.}
+		// {@squirreljme.error CF01 Could not create directories for files.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("CF05", e);
+			throw new RuntimeException("CF01", e);
 		}
 		
 		// Setup output
@@ -259,7 +259,7 @@ public class MarkdocClass
 			md.flush();
 		}
 		
-		// {@squirreljme.error CF03 Could not write the output markdown file.}
+		// {@squirreljme.error CF02 Could not write the output markdown file.}
 		catch (RuntimeException|Error|IOException e)
 		{
 			// Delete the output
@@ -279,7 +279,7 @@ public class MarkdocClass
 			else if (e instanceof Error)
 				throw (Error)e;
 			else
-				throw new RuntimeException("CF03", e);
+				throw new RuntimeException("CF02", e);
 		}
 		
 		// End marker?

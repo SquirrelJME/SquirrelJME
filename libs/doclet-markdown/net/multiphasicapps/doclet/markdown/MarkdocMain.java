@@ -97,10 +97,10 @@ public class MarkdocMain
 			__addToFile(outdir.getParent().resolve(".projects"), project);
 		}
 		
-		// {@squirreljme.error CF07 Failed to create output directories.}
+		// {@squirreljme.error CF03 Failed to create output directories.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("CF07", e);
+			throw new RuntimeException("CF03", e);
 		}
 		
 		// Write project index and such also
@@ -168,9 +168,9 @@ public class MarkdocMain
 			else if (e instanceof Error)
 				throw (Error)e;
 			
-			// {@squirreljme.error CF06 Failed to write the class table.}
+			// {@squirreljme.error CF04 Failed to write the class table.}
 			else
-				throw new RuntimeException("CF06", e);
+				throw new RuntimeException("CF04", e);
 		}
 	}
 	
