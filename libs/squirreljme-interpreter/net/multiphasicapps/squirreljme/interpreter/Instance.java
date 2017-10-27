@@ -50,10 +50,10 @@ public class Instance
 	final VMProcess __process()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH03 The process has been garbage collected.}
+		// {@squirreljme.error AH01 The process has been garbage collected.}
 		VMProcess rv = this._processref.get();
 		if (rv == null)
-			throw new IllegalStateException("AH03");
+			throw new IllegalStateException("AH01");
 		return rv;
 	}
 }
