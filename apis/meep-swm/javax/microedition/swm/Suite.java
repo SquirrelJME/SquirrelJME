@@ -264,10 +264,10 @@ public class Suite
 		if (!isInstalled())
 			throw new IllegalStateException("DG02");
 		
-		// {@squirreljme.error DG01 The given state flag cannot be set.
+		// {@squirreljme.error DG02 The given state flag cannot be set.
 		// (The state flag)}
 		if (__f == SuiteStateFlag.SYSTEM || __f == SuiteStateFlag.PREINSTALLED)
-			throw new IllegalArgumentException(String.format("DG01 %s", __f));
+			throw new IllegalArgumentException(String.format("DG02 %s", __f));
 		
 		// Lock
 		synchronized (this._statelock)
