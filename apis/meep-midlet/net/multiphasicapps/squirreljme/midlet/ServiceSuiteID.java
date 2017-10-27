@@ -101,18 +101,18 @@ public final class ServiceSuiteID
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AD0c Expected a separator to appear in the
+		// {@squirreljme.error AD0k Expected a separator to appear in the
 		// specified string. (The input string; The separator)}
 		int cola = __s.indexOf(';');
 		if (cola < 0)
-			throw new IllegalArgumentException(String.format("AD0c %s %c",
+			throw new IllegalArgumentException(String.format("AD0k %s %c",
 				__s, ';'));
 		
-		// {@squirreljme.error AD0d Expected a second separator to appear in
+		// {@squirreljme.error AD0l Expected a second separator to appear in
 		// the specified string. (The input string; The separator)}
 		int colb = __s.indexOf(';', cola + 1);
 		if (colb < 0)
-			throw new IllegalArgumentException(String.format("AD0d %s %c",
+			throw new IllegalArgumentException(String.format("AD0l %s %c",
 				__s, ';'));
 		
 		// Some fields are optional, so if they are blank, ignore them

@@ -80,10 +80,10 @@ public final class MidletVersionRange
 		// Trim
 		__s = __s.trim();
 		
-		// {@squirreljme.error AD0f The version range cannot be blank.}
+		// {@squirreljme.error AD0j The version range cannot be blank.}
 		int sl = __s.length();
 		if (sl <= 0)
-			throw new IllegalArgumentException("AD0f");
+			throw new IllegalArgumentException("AD0j");
 		
 		// Get the last character
 		char lc = __s.charAt(__s.length() - 1);
@@ -109,10 +109,10 @@ public final class MidletVersionRange
 					this.to = new MidletVersion(99, 99, 99);
 				}
 				
-				// {@squirreljme.error AD0g Major only wildcard versions must
+				// {@squirreljme.error AD0j Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new IllegalArgumentException(String.format("AD0g %s",
+					throw new IllegalArgumentException(String.format("AD0j %s",
 						__s));
 			}
 			
@@ -120,10 +120,10 @@ public final class MidletVersionRange
 			// how deep it goes
 			else
 			{
-				// {@squirreljme.error AD0h The last dot in a wildcard must be
+				// {@squirreljme.error AD0j The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new IllegalArgumentException(String.format("AD0h %s",
+					throw new IllegalArgumentException(String.format("AD0j %s",
 						__s));
 				
 				// Source range is simple
@@ -145,10 +145,10 @@ public final class MidletVersionRange
 				else if (numdots == 2)
 					this.to = new MidletVersion(ver.major(), ver.minor(), 99);
 				
-				// {@squirreljme.error AD0i There are too many decimal points
+				// {@squirreljme.error AD0j There are too many decimal points
 				// in the wildcard version string. (The input string)}
 				else
-					throw new IllegalArgumentException(String.format("AD0i %s",
+					throw new IllegalArgumentException(String.format("AD0j %s",
 						__s));
 			}
 		}
