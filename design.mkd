@@ -400,6 +400,10 @@ This describes the design of standard implementations.
 The LCDUI API is used by a large number of older J2ME applications to display
 widgets and graphics on the screen.
 
+For simplicity and in general having common interfaces, any instances of
+`Displayable` will internally be drawn and handled by SquirrelJME rather than
+having native widgets.
+
 #### `javax.microedition.lcdui.Image`
 
 Since many systems may have varying image formats and supported native pixel
