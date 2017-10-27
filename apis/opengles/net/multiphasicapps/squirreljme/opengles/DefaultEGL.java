@@ -268,10 +268,10 @@ public class DefaultEGL
 	public EGLDisplay eglGetDisplay(Object __nd)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EJ02 No native display was specified when
+		// {@squirreljme.error EJ06 No native display was specified when
 		// obtaining an OpenGL ES display.}
 		if (__nd == null)
-			throw new IllegalArgumentException("EJ02");
+			throw new IllegalArgumentException("EJ06");
 		
 		// Just create a new display regardless of the native display object
 		// used.
@@ -298,17 +298,17 @@ public class DefaultEGL
 	public boolean eglInitialize(EGLDisplay __disp, int[] __ver)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EJ03 No display was specified.}
+		// {@squirreljme.error EJ07 No display was specified.}
 		if (__disp == null)
 		{
 			this._error = EGL11.EGL_BAD_DISPLAY;
-			throw new IllegalArgumentException("EJ03");
+			throw new IllegalArgumentException("EJ07");
 		}
 		
-		// {@squirreljme.error EJ04 An output version was specified, however
+		// {@squirreljme.error EJ08 An output version was specified, however
 		// it has a length lower than two.}
 		if (__ver != null && __ver.length < 2)
-			throw new IllegalArgumentException("EJ04");
+			throw new IllegalArgumentException("EJ08");
 		
 		// Not our kind of display?
 		if (!(__disp instanceof DefaultDisplay))
@@ -362,11 +362,11 @@ public class DefaultEGL
 	public String eglQueryString(EGLDisplay __disp, int __key)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EJ05 Cannot query string a null display.}
+		// {@squirreljme.error EJ09 Cannot query string a null display.}
 		if (__disp == null)
 		{
 			this._error = EGL10.EGL_BAD_DISPLAY;
-			throw new IllegalArgumentException("EJ05");
+			throw new IllegalArgumentException("EJ09");
 		}
 		
 		// Must be our own display
