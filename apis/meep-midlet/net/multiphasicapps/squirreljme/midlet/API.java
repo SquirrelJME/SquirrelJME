@@ -186,11 +186,11 @@ public abstract class API
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AD08 Could not extract the name from the
+		// {@squirreljme.error AD01 Could not extract the name from the
 		// API because it is not in the correct form. (The input string)}
 		int ld = __n.lastIndexOf('-');
 		if (ld < 0)
-			throw new IllegalArgumentException(String.format("AD08 %s", __n));
+			throw new IllegalArgumentException(String.format("AD01 %s", __n));
 		
 		// Simple split
 		return __n.substring(0, ld);
@@ -212,11 +212,11 @@ public abstract class API
 		if (__n == null)
 			throw new NullPointerException("NARG");
 			
-		// {@squirreljme.error AD09 Could not extract the version from the
+		// {@squirreljme.error AD02 Could not extract the version from the
 		// API because it is not in the correct form. (The input string)}
 		int ld = __n.lastIndexOf('-');
 		if (ld < 0)
-			throw new IllegalArgumentException(String.format("AD09 %s", __n));
+			throw new IllegalArgumentException(String.format("AD02 %s", __n));
 		
 		// Split and decode version
 		return new MidletVersion(__n.substring(ld + 1));

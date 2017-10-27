@@ -89,11 +89,11 @@ public final class APIConfiguration
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AD0a Expected a dash before the end of the
+		// {@squirreljme.error AD03 Expected a dash before the end of the
 		// string which is also not the last character. (The input string)}
 		int ld = __n.lastIndexOf('-'), n = __n.length();
 		if (ld < 0 || (ld + 1) >= n)
-			throw new IllegalArgumentException(String.format("AD0a %s", __n));
+			throw new IllegalArgumentException(String.format("AD03 %s", __n));
 		
 		// If the character after the dash is a number then the version
 		// will directly follow it
@@ -101,11 +101,11 @@ public final class APIConfiguration
 		if (cad >= '0' && cad <= '9')
 			return __n;
 		
-		// {@squirreljme.error AD0b Invalid configuration name, expected
+		// {@squirreljme.error AD04 Invalid configuration name, expected
 		// another dash. (The input string)}
 		int nld = __n.lastIndexOf('-', ld - 1);
 		if (nld < 0)
-			throw new IllegalArgumentException(String.format("AD0b %s", __n));
+			throw new IllegalArgumentException(String.format("AD04 %s", __n));
 		
 		// Swap around
 		return __n.substring(0, nld) + __n.substring(ld) +

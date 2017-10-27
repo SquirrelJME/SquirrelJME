@@ -48,7 +48,7 @@ public final class MidletSuiteVendor
 			// Invalid character?
 			switch (c)
 			{
-					// {@squirreljme.error AD02 An illegal character was
+					// {@squirreljme.error AD0c An illegal character was
 					// specified in the midlet suite vendor. (The midlet suite
 					// vendor)}
 				case '\0':
@@ -56,7 +56,7 @@ public final class MidletSuiteVendor
 				case '\n':
 				case ':':
 				case ';':
-					throw new IllegalArgumentException(String.format("AD02 %s",
+					throw new IllegalArgumentException(String.format("AD0c %s",
 						__v));
 				
 					// Valid

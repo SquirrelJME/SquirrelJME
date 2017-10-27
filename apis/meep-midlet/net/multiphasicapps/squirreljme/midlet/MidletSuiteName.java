@@ -48,7 +48,7 @@ public final class MidletSuiteName
 			// Invalid character?
 			switch (c)
 			{
-					// {@squirreljme.error AD01 An illegal character was
+					// {@squirreljme.error AD0b An illegal character was
 					// specified in the midlet suite name. (The midlet suite
 					// name)}
 				case '\0':
@@ -56,7 +56,7 @@ public final class MidletSuiteName
 				case '\n':
 				case ':':
 				case ';':
-					throw new IllegalArgumentException(String.format("AD01 %s",
+					throw new IllegalArgumentException(String.format("AD0b %s",
 						__v));
 				
 					// Valid
