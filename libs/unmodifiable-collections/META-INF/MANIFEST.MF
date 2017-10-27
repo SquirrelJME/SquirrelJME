@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: Unmodifiable Collections
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: This contains unmodifiable collections.
-X-SquirrelJME-UUID: ad15f3c2-9063-4981-810f-30570d07055d
-MicroEdition-Configuration: CLDC-1.8-Compact

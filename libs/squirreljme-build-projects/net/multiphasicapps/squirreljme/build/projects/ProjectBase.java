@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -33,7 +34,6 @@ import net.multiphasicapps.squirreljme.midlet.MidletDependency;
 import net.multiphasicapps.squirreljme.midlet.MidletDependencyType;
 import net.multiphasicapps.squirreljme.midlet.MidletSuiteID;
 import net.multiphasicapps.squirreljme.midlet.ServiceSuiteID;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
