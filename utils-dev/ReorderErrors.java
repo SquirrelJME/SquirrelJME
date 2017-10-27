@@ -84,7 +84,7 @@ public class ReorderErrors
 			forEach(files::add);
 		
 		// The next prefix to use
-		int next = 0;
+		int next = 1;
 		
 		// Go through all files since they must be parsed to recode versions
 		for (Path file : files)
@@ -142,9 +142,43 @@ public class ReorderErrors
 			// Note
 			System.err.printf("Recoding %s%n", file);
 			
+			// Although this is not as fast or elegant, it is quick to write
+			// and does what it needs to do. This is really just what is
+			// needed really
+			// This program is really only ran when it needs to be anyway
+			StringBuilder rework = new StringBuilder(sdata);
+			for (Map.Entry<Bi, Bi> e : errormap.entrySet())
+			{
+				Bi from = e.getKey(),
+					to = e.getValue();
+				String sfrom = from.toString(),
+					sto = to.toString();
+				
+				// Replace whenever it appears
+				for (int pos = 0;; pos++)
+				{
+					// Sequence appears?
+					pos = rework.indexOf(sfrom, pos);
+					if (pos < 0)
+						break;
+					
+					// To prevent changing other characters which might match
+					// the error code (such as hex values), the previous
+					// character must be a quote or whitespace
+					char before = rework.charAt(pos - 1);
+					if ((before != '"' && !(before == ' ' || before == '\t')))
+						continue;
+					
+					// Replace it
+					rework.replace(pos, pos + 4, sto);
+				}
+			}
+			
 			// Print codes for debugging
 			//System.err.printf("Remap %s%n", errormap);
 			
+			// Rewrite to file
+			System.out.println(rework);
 			throw new Error("TODO");
 		}
 	}
