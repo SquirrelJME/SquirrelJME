@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.test.collections;
 
 import java.util.Map;
 import net.multiphasicapps.squirreljme.test.TestResult;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This tests the sorted tree map to see if it operates correctly.

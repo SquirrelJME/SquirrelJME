@@ -16,7 +16,7 @@ import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.JITInput;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This contains the family tree of classes and is used to store the

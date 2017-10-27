@@ -21,8 +21,8 @@ import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.Method;
 import net.multiphasicapps.squirreljme.jit.cff.MethodHandle;
 import net.multiphasicapps.squirreljme.jit.JITInput;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class is used to contain all of the methods which exist within the

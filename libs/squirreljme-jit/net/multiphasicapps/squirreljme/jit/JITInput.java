@@ -24,9 +24,9 @@ import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.rc.Resource;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableCollection;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableCollection;
+import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 

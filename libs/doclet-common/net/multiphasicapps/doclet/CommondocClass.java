@@ -29,7 +29,7 @@ import net.multiphasicapps.doclet.CommondocClass;
 import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This is the base class for common details shared with multiple doclets.

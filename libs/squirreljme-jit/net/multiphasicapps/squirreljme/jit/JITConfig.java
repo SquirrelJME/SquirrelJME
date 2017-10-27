@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This is used to access the configuration which is needed by the JIT during

@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import net.multiphasicapps.util.empty.EmptyIterator;
+import net.multiphasicapps.collections.EmptyIterator;
 
 /**
  * This provides an interface to basic text based displays.

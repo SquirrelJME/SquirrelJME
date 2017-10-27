@@ -18,7 +18,7 @@ import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
 import net.multiphasicapps.squirreljme.jit.cff.MethodName;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This contains the interpreter which executes Java byte code in a contained

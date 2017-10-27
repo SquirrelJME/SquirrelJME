@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.cff.ClassName;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
-import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This represents a single process within the virtual machine.
