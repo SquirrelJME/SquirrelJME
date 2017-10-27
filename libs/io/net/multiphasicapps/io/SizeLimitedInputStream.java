@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.region;
+package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;

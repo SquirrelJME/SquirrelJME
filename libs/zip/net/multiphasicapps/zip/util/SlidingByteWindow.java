@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.slidingwindow;
+package net.multiphasicapps.zip.util;
 
-import net.multiphasicapps.util.datadeque.ByteDeque;
+import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
  * This represents a sliding byte window.

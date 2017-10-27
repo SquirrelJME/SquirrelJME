@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
-X-SquirrelJME-Name: Basic ZIP Classes
+X-SquirrelJME-Name: ZIP Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: This contains base ZIP classes.
-X-SquirrelJME-Depends: inflate-compression crc32 compression-stream
+X-SquirrelJME-Description: The library contains the support for ZIP 
+ files and any data interfaces needed for ZIP files.
+X-SquirrelJME-Depends: byte-deque io
 X-SquirrelJME-Error: BF
 X-SquirrelJME-UUID: 34332adb-2c68-4805-8adf-873e3ed6e136
 Microedition-Configuration: CLDC-1.8-Compact

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.data;
+package net.multiphasicapps.io;
 
 /**
  * This interface is used to describe classes which allow access to data via

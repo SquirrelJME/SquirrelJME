@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.data;
+package net.multiphasicapps.io;
 
 import java.io.DataInput;
 import java.io.DataInputStream;

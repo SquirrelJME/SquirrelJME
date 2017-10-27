@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.crc32;
+package net.multiphasicapps.zip.util;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

@@ -8,11 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the data related input and output streams.
- *
- * @since 2016/07/09
- */
+package net.multiphasicapps.io;
 
-package net.multiphasicapps.io.data;
+/**
+ * This interface is used for classes which can get their endianess obtained.
+ *
+ * @since 2016/08/11
+ */
+public interface GettableEndianess
+{
+	/**
+	 * Obtains the current default endianess of the data.
+	 *
+	 * @return The current endianess.
+	 * @since 2016/07/10
+	 */
+	public abstract DataEndianess getEndianess();
+}
 

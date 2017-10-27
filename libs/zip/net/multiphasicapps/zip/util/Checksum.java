@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.checksum;
+package net.multiphasicapps.zip.util;
 
 /**
  * This interface is implemented by checksum calculators and may be used to
