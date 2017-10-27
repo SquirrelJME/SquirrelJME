@@ -35,91 +35,9 @@ __docroot="$(pwd)/javadoc"
 cd "$__exedir/.."
 __srcdir="$__exedir/.."
 
-# Note 
+# Generate and update errors list
 echo "Generating error list..."
-
-# Header
-echo "# List of Errors" > /tmp/$$
-echo "" >> /tmp/$$
-__old="00"
-("$__exedir/listerror.sh" "$__srcdir" 2> /dev/null | while read __line
-do
-	# Code prefix
-	__pref="$(echo "$__line" | cut -c 1-2)"
-	
-	# Did the prefix change?
-	if [ "$__old" != "$__pref" ]
-	then
-		echo ""
-		echo "# "'`'"$__pref"'`'
-		echo ""
-		__old="$__pref"
-	fi
-	
-	# Extract code and description
-	__code="$(echo "$__line" | cut -c 1-4)"
-	__desc="$(echo "$__line" | cut -c 5- | sed 's/\([_\*<(\`]\)/\\\1/g')"
-	
-	# Are there parameters?
-	if echo "$__desc" | grep '([^)]*)[ \t]\{1,\}\\<' > /dev/null
-	then
-		# Extract and remove them
-		__parm="$(echo "$__desc" |
-			sed 's/^.*(\([^)]*\))[ \t]\{1,\}\\<.*$/\1/g' |
-			sed 's/[ \t]\{2,\}/ /g')"
-		__desc="$(echo "$__desc" |
-			sed 's/([^)]*)[ \t]\{1,\}\\</\\</g' |
-			sed 's/[ \t]\{2,\}/ /g')"
-		
-		# Base output
-		echo " * ***"'`'"$__code"'`'"***: $__desc"
-		
-		# No delimeter?
-		__nodelim="$(echo "$__parm" | grep '\;' > /dev/null; echo $?)"
-		
-		# Output all parameters
-		__i=1
-		while true
-		do
-			# Extract item
-			__item="$(echo "$__parm" | cut -d ';' -f "$__i" |
-				sed 's/^[ \t]*//g;s/[ \t]*$//g')"
-			
-			# Nothing
-			if [ -z "$__item" ]
-			then
-				break
-			fi
-			
-			# Print it
-			echo "   * $__item"
-			
-			# Increase
-			__i="$(expr "$__i" + 1)"
-			
-			# Stop if no delimeters are used
-			if [ "$__nodelim" -ne "0" ]
-			then
-				break;
-			fi
-		done
-		
-	# There are none
-	else
-		echo " * ***"'`'"$__code"'`'"***: $__desc"
-	fi
-done) >> /tmp/$$
-
-# Did the errors actually change?
-if [ "$(fossil unversion cat "errors.mkd" | fossil sha1sum - | \
-	cut -d ' ' -f 1)" != "$(fossil sha1sum - < /tmp/$$ | cut -d ' ' -f 1)" ]
-then
-	echo "Errors updated"
-	fossil unversion add /tmp/$$ --as "errors.mkd"
-else
-	echo "Errors untouched"
-fi
-rm -f /tmp/$$
+"$__exedir/updateerror.sh"
 
 # Do not bother updating the docs
 if [ "$__javadocfailed" -ne "0" ]
