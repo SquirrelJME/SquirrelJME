@@ -132,7 +132,7 @@ public abstract class DisplayHead
 	 * @return The ID of the current display head.
 	 * @since 2017/10/27
 	 */
-	public abstract int headID();
+	public abstract int headId();
 	
 	/**
 	 * Is this display head in color?

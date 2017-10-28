@@ -53,6 +53,8 @@ final class __EventLoop__
 				try
 				{
 					EventType type = e.type();
+					Display d;
+					Displayable da;
 					
 					// Debug
 					System.err.printf("DEBUG -- Event %s%n", type);
@@ -61,11 +63,12 @@ final class __EventLoop__
 					{
 							// Repaint this canvas
 						case REPAINT:
-							if (true)
-								throw new todo.TODO();
 							RepaintEvent cre = (RepaintEvent)e;
-							/*cre.canvas.__doRepaint(cre.x, cre.y,
-								cre.width, cre.height);*/
+							
+							da = Display.__displayableByHeadId(cre.headid);
+							if (da != null)
+								da.__doRepaint(cre.x, cre.y,
+									cre.width, cre.height);
 							break;
 						
 							// {@squirreljme.error EB0v Unknown event.

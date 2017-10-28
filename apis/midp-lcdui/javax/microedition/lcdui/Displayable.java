@@ -303,13 +303,13 @@ public abstract class Displayable
 	 * @return The ID of the current display head.
 	 * @since 2017/10/27
 	 */
-	final int __headID()
+	final int __headId()
 	{
 		Display d = __currentDisplay();
 		if (d == null)
 			return -1;
 		
-		return d._head.headID();
+		return d._head.headId();
 	}
 }
 
