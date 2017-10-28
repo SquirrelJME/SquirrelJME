@@ -974,5 +974,49 @@ public class Display
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Returns the displayable associated with the given ID.
+	 *
+	 * @param __id The ID of the display.
+	 * @return The displayable for the given ID or null otherwise.
+	 * @since 2017/10/27
+	 */
+	static Displayable __displayableByHeadId(int __id)
+	{
+		Display display = __displayByHeadId(__id);
+		if (display != null)
+			return display._current;
+		return null;
+	}
+	
+	/**
+	 * Returns the display associated with the given ID.
+	 *
+	 * @param __id The ID of the display.
+	 * @return The display for the given ID or null otherwise.
+	 * @since 2017/10/27
+	 */
+	static Display __displayByHeadId(int __id)
+	{
+		Display[] displays = _DISPLAYS;
+		
+		// See if the head directory associates with a head
+		int n = displays.length;
+		if (__id >= 0 && __id < n)
+		{
+			Display rv = displays[__id];
+			if (rv._head.headId() == __id)
+				return rv;
+		}
+		
+		// Search through all heads otherwise
+		for (Display d : displays)
+			if (d._head.headId() == __id)
+				return d;
+		
+		// Not found
+		return null;
+	}
 }
 

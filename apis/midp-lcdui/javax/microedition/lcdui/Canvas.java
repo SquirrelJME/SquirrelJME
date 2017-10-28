@@ -412,7 +412,7 @@ public abstract class Canvas
 		
 		// Send repaint
 		DisplayManager.DISPLAY_MANAGER.eventQueue().repaint(
-			__headID(), __x, __y, __w, __h);
+			__headId(), __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()

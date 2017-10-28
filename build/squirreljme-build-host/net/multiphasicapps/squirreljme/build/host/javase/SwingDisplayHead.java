@@ -251,7 +251,7 @@ public class SwingDisplayHead
 	 * @since 2017/10/27
 	 */
 	@Override
-	public int headID()
+	public int headId()
 	{
 		// Always zero
 		return 0;
@@ -365,7 +365,7 @@ public class SwingDisplayHead
 					BufferedImage.TYPE_INT_RGB);
 		
 			// Send repaint event
-			eventQueue().repaint(headID(), 0, 0, neww, newh);
+			eventQueue().repaint(headId(), 0, 0, neww, newh);
 		}
 
 		/**
@@ -385,10 +385,11 @@ public class SwingDisplayHead
 		 */
 		public Graphics lcduiGraphics()
 		{
-			int w = getWidth();
+			BufferedImage image = this._image;
 			return new IntArrayGraphics(
-				((DataBufferInt)this._image.getRaster().getDataBuffer()).
-				getData(), w, getHeight(), false, w, 0);
+				((DataBufferInt)image.getRaster().getDataBuffer()).
+				getData(), image.getWidth(), image.getHeight(), false,
+				image.getWidth(), 0);
 		}
 		
 		/**
