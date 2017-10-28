@@ -289,6 +289,11 @@ final class __DrawSpace__
 			throw new todo.TODO();
 		}
 		
+		// Tell display to repaint itself
+		Display display = this.display;
+		if (display != null)
+			display._head.graphicsPainted();
+		
 		// Recurse up to the parent draw space
 		__DrawSpace__ parent = this.parent;
 		if (parent != null)
