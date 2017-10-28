@@ -66,9 +66,6 @@ public final class EventQueue
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		System.err.printf("DEBUG -- Push %s%n", __e.type());
-		
 		// Lock on queue to add the event
 		Deque<Event> queue = this._queue;
 		synchronized (queue)
