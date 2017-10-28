@@ -56,9 +56,6 @@ final class __EventLoop__
 					Display d;
 					Displayable da;
 					
-					// Debug
-					System.err.printf("DEBUG -- Event %s%n", type);
-					
 					switch (type)
 					{
 							// Repaint this canvas
