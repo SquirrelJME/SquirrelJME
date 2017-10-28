@@ -1,0 +1,27 @@
+# 2017/10/27
+
+## 13:34
+
+Actually with the LCDUI code having the case where it is only in the
+simple way I planned yesterday, I can just have simplified fonts and
+such too. This really this is a great simplification.
+
+## 13:35
+
+Also an unrelated idea I had was that I could have maybe just what I
+codenamed _Booplets_ which are `cldc-compact` and a very simple UI and
+sound library which could be used for the very very limited systems. So things
+would still work, but it would be bare minimum support, not even like MIDlets
+and such for the most part. Of course the default implementation of the
+backing end would use the LCDUI code, but in the general native sense it
+otherwise would not be using it.
+
+## 14:58
+
+I need a cleaner bit of code which can manage the display properties such as
+where things are drawn and where the content area in the display actually is.
+Basically something mutable that can be calculated and updated in one simple
+and very easy step. It also can manage the content area which would be very
+important if one is provided. It would be recursive for the most part, but it
+would be very simple to do. But it would basically start with a `Display` and
+then go otherwise. This way it can handle tabbed panes too.
