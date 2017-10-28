@@ -542,6 +542,11 @@ public abstract class Canvas
 		// Clip to the area that needs to be redrawn
 		g.setClip(__x, __y, __w, __h);
 		
+		// If the canvas is transparent then it draws on top of some background
+		// such as perhaps the wallpaper or otherwise
+		if (this._transparent)
+			g.fillRect(__x, __y, __w, __h);
+		
 		// Perform the client specific painting operations
 		paint(g);
 		
