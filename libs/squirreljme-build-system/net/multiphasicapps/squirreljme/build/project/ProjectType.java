@@ -8,20 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.system;
-
-import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
+package net.multiphasicapps.squirreljme.build.project;
 
 /**
- * This class is used to specify the files and projects which are to be
- * compiled as input for the JIT with produced output for targets.
+ * This represents the type of library or application that the project is, this
+ * determines how it is used and depended upon.
  *
- * This pipe is just told which projects should be JIT compiled, when those
- * projects are obtained they will be returned from the compiler.
- *
- * @since 2017/10/30
+ * @since 2017/10/31
  */
-public class JITPipe
+public enum ProjectType
 {
+	/** APIs which implement configurations, profiles, and standards. */
+	API,
+	
+	/** Liblets which are only included by midlets and APIs. */
+	LIBLET,
+	
+	/** Midlets which are actual applications. */
+	MIDLET,
+	
+	/** End. */
+	;
 }
 
