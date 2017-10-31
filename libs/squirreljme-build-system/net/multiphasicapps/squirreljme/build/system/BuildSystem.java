@@ -76,6 +76,42 @@ public class BuildSystem
 	}
 	
 	/**
+	 * Builds the specified projects.
+	 *
+	 * @param __args The projects to build.
+	 * @return The built binary projects.
+	 * @throws IllegalArgumentException If the projects are not valid.
+	 * @throws IOException On read/write errors.
+	 * @since 2017/10/30
+	 */
+	public ProjectBinary[] build(String... __args)
+		throws IllegalArgumentException, IOException
+	{
+		if (__args == null)
+			return new ProjectBinary[0];
+		
+		// Setup return value
+		int n = __args.length;
+		ProjectBinary[] rv = new ProjectBinary[n];
+		
+		// Build projects one by one
+		for (int i = 0; i < n; i++)
+		{
+			// {@squirreljme.error AO06 The specified project is not
+			// valid. (The project name)}
+			Project p = projects.get(new ProjectName(__args[i]));
+			if (p == null)
+				throw new IllegalArgumentException(String.format(
+					"AO06 %s", __args[1]));
+			
+			// Build
+			rv[i] = p.binary();
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Runs the interpreter.
 	 *
 	 * @param __args The arguments for the interpreter.
@@ -234,6 +270,11 @@ public class BuildSystem
 		if (na <= 0)
 			throw new IllegalArgumentException("AO06");
 		
+		// Trim the command from the arguments
+		String[] trimmed;
+		System.arraycopy(__args, 1, (trimmed = new String[na - 1]), 0, na - 1);
+		int nt = trimmed.length;
+		
 		// Depends on the input command
 		String command;
 		ProjectManager projects = this.projects;
@@ -247,24 +288,7 @@ public class BuildSystem
 			
 				// Build a project
 			case "build":
-				{
-					// {@squirreljme.error AO06 The build command requires a
-					// project to build.}
-					if (na < 2)
-						throw new IllegalArgumentException("AO06");
-					
-					// Get project
-					Project p = projects.get(new ProjectName(__args[1]));
-					
-					// {@squirreljme.error AO06 The specified project is not
-					// valid. (The project name)}
-					if (p == null)
-						throw new IllegalArgumentException(String.format(
-							"AO06 %s", __args[1]));
-					
-					// Just get the binary (which tries to compile it)
-					p.binary();
-				}
+				build(trimmed);
 				break;
 			
 				// Generates all of the documentation
