@@ -10,12 +10,19 @@
 
 package net.multiphasicapps.squirreljme.build.project;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 
 /**
  * This class is used to provide access to source code that is available as
@@ -61,7 +68,7 @@ public final class SourceManager
 			
 			// Go through path and decode projects
 			for (Path p : e.getValue())
-				throw new todo.TODO();
+				__scanSources(p, sources, type);
 		}
 		
 		// Set
@@ -126,7 +133,78 @@ public final class SourceManager
 		if (__base == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Go through directories
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__base))
+		{
+			for (Path p : ds)
+			{
+				// Ignore non-directories
+				if (!Files.isDirectory(p))
+					continue;
+				
+				// Obtain the manifest
+				JavaManifestAttributes attr;
+				try (InputStream in = Files.newInputStream(
+					p.resolve("NAMESPACE.MF"), StandardOpenOption.READ))
+				{
+					attr = new JavaManifest(in).getMainAttributes();
+				}
+				
+				// No file here
+				catch (NoSuchFileException e)
+				{
+					continue;
+				}
+				
+				// Obtain the namespace type, ignore if none was specified
+				String type = attr.getValue("Namespace-Type");
+				if (type == null)
+					continue;
+				
+				// See if it is a valid project type
+				ProjectType ptype = ProjectType.ofString(type);
+				if (ptype == null)
+					continue;
+				
+				// Store into the map this path
+				Set<Path> put = __out.get(ptype);
+				if (put == null)
+					__out.put(ptype, (put = new SortedTreeSet<>()));
+				put.add(p);
+			}
+		}
+	}
+	
+	/**
+	 * This scans the given directory for source projects and adds them to the
+	 * given map.
+	 *
+	 * @param __base The base directory to scan.
+	 * @param __out The output map where projects are placed.
+	 * @param __type The type 
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/31
+	 */
+	private static final void __scanSources(Path __base,
+		Map<SourceName, Source> __out, ProjectType __type)
+		throws IOException, NullPointerException
+	{
+		if (__base == null || __out == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through directories
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__base))
+		{
+			for (Path p : ds)
+			{
+				// Ignore non-directories
+				if (!Files.isDirectory(p))
+					continue;
+				
+				throw new todo.TODO();
+			}
+		}
 	}
 }
 
