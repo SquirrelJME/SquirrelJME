@@ -1,0 +1,39 @@
+# 2017/10/30
+
+## 23:20
+
+I believe the `TargetBuilder` class is too big and parts of it are too
+attached to how the code used to be. Also, the template system is a bit ugly.
+I think what would be useful is to have a link of sorts which can be given
+a bunch of projects which are then flushed into the JIT as one. Then the
+target builder can use this class. That way, I can test the JIT standalone
+without actually needing to generate any kind of target.
+
+## 23:23
+
+Also, something which can be useful would be guest projects in the project
+manager. These would be projects which can be added dynamically as needed.
+
+## 23:27
+
+Luckily I can refactor the `ProjectManager` class and still have this
+compatiblity.
+
+## 23:36
+
+I suppose the build system could use some refactoring and merging so to speak.
+Also had an idea, if I could spawn other JVMs with similar property sets from
+Java and having a communication path too, I could hypothetically have a means
+where I can spawn other programs as if things were a standard SquirrelJME VM,
+although that would get a bit iffy since there are no spawning means.
+Additionally the host system would need to be detected to handle these cases.
+But for the build system, how about where instead it splits sources and
+binaries away completely. Basically, I have a `SourcesManager` which is rather
+fixed and knows about all the source code that exists. Manifests,
+dependency handling, and manifest extrapolation must be handled correctly. But
+basically my idea is that binaries are purely virtual objects that are cached.
+These binaries could be added without needing sources. I can make
+`SourceManager` just provide source information. For building a temporary
+class can be used which manages dependency lookup itself. This way, sources and
+binaries are completely standalone. I do however need something which can
+compare dates and such. Also I should support building without any sources.
