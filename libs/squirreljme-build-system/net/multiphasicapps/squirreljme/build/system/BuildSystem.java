@@ -301,6 +301,7 @@ public class BuildSystem
 					
 					new DocumentBuilder(projects, Paths.get(__args[1])).run();
 				}
+				break;
 				
 				// Target a specific system
 			case "target":
