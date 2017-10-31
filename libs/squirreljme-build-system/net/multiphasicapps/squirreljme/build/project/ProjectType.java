@@ -29,5 +29,31 @@ public enum ProjectType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the type of project that should be returned.
+	 *
+	 * @param __s The string to get the project type for.
+	 * @return The project type or {@code null} if it is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/10/31
+	 */
+	public static ProjectType ofString(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__s)
+		{
+			case "api":		return API;
+			case "liblet":	return LIBLET;
+			case "midlet":	return MIDLET;
+			
+			default:
+				return null;
+		}
+	}
 }
 
