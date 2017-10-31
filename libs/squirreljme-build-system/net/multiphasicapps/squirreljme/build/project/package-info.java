@@ -8,20 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.system;
-
-import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
-
 /**
- * This class is used to specify the files and projects which are to be
- * compiled as input for the JIT with produced output for targets.
+ * This package contains the project manager which is used to manage projects
+ * within the build system for usage.
  *
- * This pipe is just told which projects should be JIT compiled, when those
- * projects are obtained they will be returned from the compiler.
- *
- * @since 2017/10/30
+ * @since 2017/10/31
  */
-public class JITPipe
-{
-}
+
+package net.multiphasicapps.squirreljme.build.project;
 

@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.build.project.SourceManager;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
 import net.multiphasicapps.squirreljme.build.projects.ProjectManager;
@@ -52,7 +53,11 @@ import net.multiphasicapps.squirreljme.launcher.EntryPoints;
 public class BuildSystem
 {
 	/** The manager for projects. */
+	@Deprecated
 	protected final ProjectManager projects;
+	
+	/** The source manager. */
+	protected final SourceManager sources;
 	
 	/**
 	 * Initializes the build system.
@@ -73,6 +78,10 @@ public class BuildSystem
 		// Initializes the build system
 		ProjectManager projects = new ProjectManager(__bin, __src);
 		this.projects = projects;
+		
+		// Initialize sources
+		SourceManager sources = new SourceManager(__src);
+		this.sources = sources;
 	}
 	
 	/**
