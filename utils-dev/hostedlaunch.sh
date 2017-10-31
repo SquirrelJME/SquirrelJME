@@ -15,27 +15,54 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# May be replaced
+: ${JAVA:=java}
+
+__print_usage()
+{
+	echo "Usage: $0 [-w] [-p #] (project|file.jar)" 1>&2
+	echo "" 1>&2
+	echo "  [-w]   Run with Wine instead" 1>&2
+	echo "  [-p #] Can be 0 or greater to specify that an alternative" 1>&2
+	echo "         application be used for a given program." 1>&2
+}
+
 # Usage
 if [ "$#" -lt 1 ]
 then
-	echo "Usage: $0 [-#] (project|file.jar)" 1>&2
-	echo "" 1>&2
-	echo "  [-#] Can be 0 or greater to specify that an alternative" 1>&2
-	echo "       application be used for a given program." 1>&2
+	__print_usage
 	exit 1
 fi
 
-# Determine project name, if possible
-if echo "$1" | grep '^-' > /dev/null
-then
-	__numb="$1"
-	__file="$2"
-	shift 2
-else 
-	__numb="-0"
-	__file="$1"
-	shift 1
-fi
+# Parse arguments
+__javacmd="$JAVA"
+__sepchar=":"
+__numb=0
+while getopts wp: __opt
+do
+	case "$__opt" in
+		w)
+			__javacmd="$__exedir/winejava.sh"
+			__sepchar=";"
+			;;
+		
+		p)
+			__numb="$OPTARG"
+			;;
+		
+		*)
+			__print_usage
+			exit 1
+			;;
+	esac
+done
+
+# Done
+shift $(($OPTIND - 1))
+
+# File is the first one
+__file="$1"
+shift
 
 __proj="$(basename "$__file" .jar)"
 
@@ -65,7 +92,7 @@ __gen_classpath()
 	do
 		if [ "$__rv" != "" ]
 		then
-			__rv="$__rv:"
+			__rv="$__rv$__sepchar"
 		fi
 		
 		# Append
@@ -75,7 +102,7 @@ __gen_classpath()
 	# Add target file if it exists
 	if [ -f "$1" ]
 	then
-		__rv="$__rv:$1"
+		__rv="$__rv$__sepchar$1"
 	fi
 	
 	# Use it
@@ -94,9 +121,9 @@ else
 fi
 
 # Run the JVM with the bootstrap followed
-java -classpath "$(__gen_classpath "$__run")" \
+"$__javacmd" -classpath "$(__gen_classpath "$__run")" \
 	$HOSTED_JAVA_OPTIONS \
 	net.multiphasicapps.squirreljme.build.host.javase.HostedLaunch \
-	"$__numb" "$__run" "$@"
+	"-$__numb" "$__run" "$@"
 exit $?
 
