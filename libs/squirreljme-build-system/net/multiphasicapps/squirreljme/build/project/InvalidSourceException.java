@@ -10,21 +10,20 @@
 
 package net.multiphasicapps.squirreljme.build.project;
 
-
 /**
- * This is thrown when the name of a given source is not valid.
+ * This is thrown when the source project is not valid.
  *
  * @since 2017/10/31
  */
-public class InvalidSourceNameException
-	extends InvalidSourceException
+public class InvalidSourceException
+	extends ProjectException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
 	 * @since 2017/10/31
 	 */
-	public InvalidSourceNameException()
+	public InvalidSourceException()
 	{
 	}
 	
@@ -34,7 +33,7 @@ public class InvalidSourceNameException
 	 * @param __m The message.
 	 * @since 2017/10/31
 	 */
-	public InvalidSourceNameException(String __m)
+	public InvalidSourceException(String __m)
 	{
 		super(__m);
 	}
@@ -46,7 +45,7 @@ public class InvalidSourceNameException
 	 * @param __c The cause.
 	 * @since 2017/10/31
 	 */
-	public InvalidSourceNameException(String __m, Throwable __c)
+	public InvalidSourceException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,10 +56,9 @@ public class InvalidSourceNameException
 	 * @param __c The cause.
 	 * @since 2017/10/31
 	 */
-	public InvalidSourceNameException(Throwable __c)
+	public InvalidSourceException(Throwable __c)
 	{
 		super(__c);
 	}
 }
-
 
