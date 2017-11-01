@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.build.base.FileDirectory;
+import net.multiphasicapps.squirreljme.build.project.Binary;
+import net.multiphasicapps.squirreljme.build.project.BinaryManager;
 import net.multiphasicapps.squirreljme.build.project.SourceManager;
 import net.multiphasicapps.squirreljme.build.projects.Project;
 import net.multiphasicapps.squirreljme.build.projects.ProjectBinary;
@@ -43,6 +45,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
 import net.multiphasicapps.squirreljme.launcher.EntryPoint;
 import net.multiphasicapps.squirreljme.launcher.EntryPoints;
+
 
 /**
  * This is the build system which is used to dispatch the compiler to generate
@@ -58,6 +61,9 @@ public class BuildSystem
 	
 	/** The source manager. */
 	protected final SourceManager sources;
+	
+	/** Binary projects. */
+	protected final BinaryManager binaries;
 	
 	/**
 	 * Initializes the build system.
@@ -82,6 +88,10 @@ public class BuildSystem
 		// Initialize sources
 		SourceManager sources = new SourceManager(__src);
 		this.sources = sources;
+		
+		// Initialize binaries
+		BinaryManager binaries = new BinaryManager(__bin, sources);
+		this.binaries = binaries;
 	}
 	
 	/**
@@ -267,13 +277,16 @@ public class BuildSystem
 		// commands which are valid.
 		// ({@code target [template]}: Loads a pre-created target template and
 		// performs compilation of that target.;
-		// {@code build [project]}: Builds the specified project.;
+		// {@code build [project...]}: Builds the specified project(s).;
 		// {@code generate-docs [target]}: Parses the source code and generates
 		// documentation from it and places it within the target directory.;
 		// {@code interpret (-Dproperty=value) (-Rid) (-Ttemplate) [project]}:
 		// Launches the specified project and runs it in the interpreter;
 		// {@code ok}: Does nothing, is used to determine if the build system
-		// was able to be built.)
+		// was able to be built.;
+		// {@code verify [project|files...]}: Verifies the specified projects
+		// to see if they are valid Java byte code, all projects are included
+		// into a single unit. Dependencies are also included.)
 		// }
 		int na = __args.length;
 		if (na <= 0)
@@ -343,6 +356,11 @@ public class BuildSystem
 				interpret(__args);
 				break;
 				
+				// Verify projects
+			case "verify":
+				verify(trimmed);
+				break;
+				
 				// {@squirreljme.error AO09 An unknown command was specified.
 				// Check the description for error code AO06 to see which
 				// commands are valid. (The command)}
@@ -350,6 +368,39 @@ public class BuildSystem
 				throw new IllegalArgumentException(String.format("AO09 %s",
 					command));
 		}
+	}
+	
+	/**
+	 * Goes through all the specified projects and determines if they are
+	 * valid Java classes, they are run through the verifier. This also can
+	 * check
+	 *
+	 * @param __args The projects to check.
+	 * @throws IOException On read/write errors.
+	 * @since 2017/10/31
+	 */
+	public void verify(String... __args)
+		throws IOException
+	{
+		if (__args == null)
+			__args = new String[0];
+		
+		// Setup pipe for verification
+		JITPipe pipe = new JITPipe(this.binaries);
+		
+		// Load in pipe sources
+		for (String s : __args)
+		{
+			// Ignore
+			if (s == null)
+				continue;
+			
+			// Input is auto-calculated
+			pipe.addInput(s);
+		}
+		
+		// Just getting the verified input, verifies everything
+		VerifiedJITInput rv = pipe.verify();
 	}
 }
 
