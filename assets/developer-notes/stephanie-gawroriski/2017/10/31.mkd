@@ -1,0 +1,42 @@
+# 2017/10/31
+
+## 12:06
+
+I could refactor the project system, but I think I will hold off on that for
+now. I will just setup `JITPipe` which later on can be remade as needed to
+support a new refactored project system. The project system would keep the
+same layout, but it would just be new cleaner classes.
+
+## 12:18
+
+Okay, forget that I am writing new classes. But I will keep the old code
+around until nothing uses it. Basically my idea is `SourceManager`. A later
+`BinaryManager` will depend on a `SourceManager` but also have the  means to
+add new binary projects and such. Depending on the complexity I want, I can
+allow sources to be mutable. If sources are mutable then that would be a bit
+more complex. For the most part however, the build system runs, loads the
+needed information, then it will stop. But I can have it where new source code
+could dynamically be added. For the most part though, every source project
+will not have dependencies in any way, they will be completely standalone.
+This simplifies things. All the dependency logic will be in `BinaryManager`
+for the most part.
+
+## 12:24
+
+I can however, add support for checking ZIP files to see if they are source
+code. But, the main thing is that it would be nice to support building on
+limited systems, but that might not be worth it as much. But even then,
+there could be a ZIP extractor which handles the limited systems.
+
+## 12:27
+
+I would say immutable sources would be much cleaner and simpler to write.
+
+## 12:28
+
+But lazy initialization would be faster though, for the most part.
+
+## 14:32
+
+This means that the `squirreljme-build-base` project can go away too so that
+the build system is for the most part entirely within a single project.
