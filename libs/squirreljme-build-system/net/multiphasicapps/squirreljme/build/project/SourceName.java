@@ -18,6 +18,9 @@ package net.multiphasicapps.squirreljme.build.project;
 public final class SourceName
 	implements Comparable<SourceName>
 {
+	/** The name string. */
+	protected final String name;
+	
 	/**
 	 * Initailizes the source name.
 	 *
@@ -32,7 +35,27 @@ public final class SourceName
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Check for valid characters and lowercase
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __n.length(); i < n; i++)
+		{
+			char c = __n.charAt(i);
+			
+			// {@squirreljme.error AO0h The project source name contains an
+			// invalid character. (The specified character)}
+			if (c <= ' ' || c >= 0x7F)
+				throw new InvalidSourceNameException(
+					String.format("AO0h %c", c));
+			
+			// Lowercase
+			else if (c >= 'A' && c <= 'Z')
+				c = (char)((c - 'A') + 'a');
+			
+			sb.append(c);
+		}
+		
+		// Set
+		this.name = sb.toString();
 	}
 	
 	/**
@@ -42,7 +65,7 @@ public final class SourceName
 	@Override
 	public int compareTo(SourceName __n)
 	{
-		throw new todo.TODO();
+		return this.name.compareTo(__n.name);
 	}
 	
 	/**
@@ -52,7 +75,10 @@ public final class SourceName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (!(__o instanceof SourceName))
+			return false;
+		
+		return this.name.equals(((SourceName)__o).name);
 	}
 	
 	/**
@@ -62,7 +88,7 @@ public final class SourceName
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode();
 	}
 	
 	/**
@@ -72,7 +98,7 @@ public final class SourceName
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 }
 

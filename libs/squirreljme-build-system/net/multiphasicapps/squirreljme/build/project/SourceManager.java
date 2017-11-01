@@ -202,7 +202,22 @@ public final class SourceManager
 				if (!Files.isDirectory(p))
 					continue;
 				
-				throw new todo.TODO();
+				// Could fail
+				try
+				{
+					// Determine source name
+					SourceName name = new SourceName(
+						p.getFileName().toString());
+					
+					// Store into the map
+					__out.put(name, new Source(name, p));
+				}
+				
+				// Ignore
+				catch (NoSuchFileException|InvalidSourceException e)
+				{
+					continue;
+				}
 			}
 		}
 	}
