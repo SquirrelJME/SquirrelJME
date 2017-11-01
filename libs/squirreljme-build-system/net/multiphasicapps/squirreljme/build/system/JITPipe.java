@@ -81,7 +81,7 @@ public class JITPipe
 	 *
 	 * @param __p The path to the file to use as input.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2o017/10/31
+	 * @since 2017/10/31
 	 */
 	public void addInput(Path __p)
 		throws NullPointerException
@@ -97,7 +97,7 @@ public class JITPipe
 	 *
 	 * @param __b The project name to add.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2o017/10/31
+	 * @since 2017/10/31
 	 */
 	public void addInput(SourceName __b)
 		throws NullPointerException
