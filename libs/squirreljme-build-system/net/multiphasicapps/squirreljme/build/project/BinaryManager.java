@@ -121,6 +121,11 @@ public final class BinaryManager
 		String base = __p.getFileName().toString();
 		if (base.endsWith(".jar") || base.endsWith(".JAR"))
 			base = base.substring(0, base.length() - 4);
+			
+		// {@squirreljme.error AO0i Cannot open the specified path as a project
+		// because it does not exist. (The path to open as a binary)}
+		if (!Files.exists(__p))
+			throw new NoSuchBinaryException(String.format("AO0i %s", __p));
 		
 		// Just create the binary
 		return new Binary(this._selfref, new SourceName(base), null, __p);
