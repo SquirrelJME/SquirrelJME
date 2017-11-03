@@ -19,7 +19,10 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.build.project.Binary;
 import net.multiphasicapps.squirreljme.build.project.BinaryManager;
 import net.multiphasicapps.squirreljme.build.project.SourceName;
+import net.multiphasicapps.squirreljme.jit.JITInput;
+import net.multiphasicapps.squirreljme.jit.JITInputGroup;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This class is used to specify the files and projects which are to be
@@ -118,7 +121,28 @@ public class JITPipe
 	public VerifiedJITInput verify()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// Obtain the set of binaries which will be used as the input for the
+		// JIT
+		Binary[] binaries = __binaries();
+		
+		// Load all binaries into groups
+		int n = binaries.length;
+		JITInputGroup[] groups = new JITInputGroup[n];
+		for (int i = 0; i < n; i++)
+		{
+			Binary binary = binaries[i];
+			
+			try (ZipStreamReader z = binary.zipStream())
+			{
+				groups[i] = JITInputGroup.readZip(binary.name().toString(), z);
+			}
+		}
+		
+		// Setup input for the JIT
+		JITInput input = new JITInput(groups);
+		
+		// Verify the result in the JIT
+		return VerifiedJITInput.verify(input);
 	}
 	
 	/**
@@ -140,6 +164,17 @@ public class JITPipe
 		{
 			input.add(__b);
 		}
+	}
+	
+	/**
+	 * Obtains an array containing the set of binaries to compile.
+	 *
+	 * @return The array of input binaries in compilation (dependency order).
+	 * @since 2017/11/02
+	 */
+	private Binary[] __binaries()
+	{
+		throw new todo.TODO();
 	}
 }
 
