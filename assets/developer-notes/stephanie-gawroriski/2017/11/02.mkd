@@ -1,0 +1,12 @@
+# 2017/11/02
+
+## 22:31
+
+Okay so maybe `JITInputGroup` can instead have a kind of iterable for zip
+entries using some kind of basic interface of sorts to obtain entries.
+Basically, the block reader and the stream reader can be used in either
+case as needed. The only issue is that `InputStream` is needed for the
+base class. But since they are now both merged, I can instead have the
+block be able to create a ZIP entry stream from a given block. So that
+would work regardless.
+
