@@ -21,6 +21,18 @@ import java.nio.file.Path;
  */
 public final class Binary
 {
+	/** The name of this binary. */
+	protected final SourceName name;
+	
+	/** The source code for this binary, may be null if there is none. */
+	protected final Source source;
+	
+	/** The path to the binary for this executable. */
+	protected final Path path;
+	
+	/** Reference to the owning binary manager, used for dependencies. */
+	private final Reference<BinaryManager> _managerref;
+	
 	/**
 	 * Initializes the binary.
 	 *
@@ -33,18 +45,16 @@ public final class Binary
 	 */
 	Binary(Reference<BinaryManager> __ref, SourceName __name, Source __source,
 		Path __path)
-		throws NoSuchBinaryException, NullPointerException
+		throws NullPointerException
 	{
 		if (__ref == null || __name == null || __path == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AO0i Cannot open the specified path as a project
-		// because it does not exist and there is no base source code. (The
-		// path to open as a binary)}
-		if (__source == null && !Files.exists(__path))
-			throw new NoSuchBinaryException(String.format("AO0i %s", __path));
-		
-		throw new todo.TODO();
+		// Set
+		this._managerref = __ref;
+		this.name = __name;
+		this.source = __source;
+		this.path = __path;
 	}
 }
 
