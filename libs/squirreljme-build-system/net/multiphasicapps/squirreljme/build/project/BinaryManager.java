@@ -11,8 +11,13 @@
 package net.multiphasicapps.squirreljme.build.project;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This class is used to manage binaries which are available for running
@@ -27,6 +32,14 @@ public final class BinaryManager
 	
 	/** Projects which may exist that provide access to source code. */
 	protected final SourceManager sources;
+	
+	/** Projects which have been read by the manager. */
+	private final Map<SourceName, Binary> _binaries =
+		new SortedTreeMap<>();
+	
+	/** Reference to self. */
+	private final Reference<BinaryManager> _selfref =
+		new WeakReference<>(this);
 	
 	/**
 	 * Initializes the binary manager.
@@ -53,16 +66,39 @@ public final class BinaryManager
 	 *
 	 * @param __n The name of the project to get.
 	 * @return The binary for the given name.
+	 * @throws NoSuchBinaryException If no binary with the given name exists.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
 	public Binary get(SourceName __n)
-		throws NullPointerException
+		throws NoSuchBinaryException, NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Before locking see if the source package exists
+		SourceManager sources = this.sources;
+		Source source = sources.get(__n);
+		
+		// Resolve path to the binary root
+		Path binp = this.output.resolve(__n.toString() + ".jar");
+		
+		// Lock on the map since it is dynamically generated
+		Map<SourceName, Binary> binaries = this._binaries;
+		synchronized (binaries)
+		{
+			// 
+			Binary rv = binaries.get(__n);
+			if (rv != null)
+				return rv;
+			
+			// Create the project
+			rv = new Binary(this._selfref, __n, source, binp);
+			
+			// Cache it
+			binaries.put(__n, rv);
+			return rv;
+		}
 	}
 	
 	/**
@@ -71,16 +107,23 @@ public final class BinaryManager
 	 *
 	 * @param __p The path to JAR to be opened as a binary.
 	 * @return The binary for the given path.
+	 * @throws NoSuchBinaryException If no such binary exists.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
 	public Binary getVirtual(Path __p)
-		throws NullPointerException
+		throws NoSuchBinaryException, NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Try to determine the base name of the path
+		String base = __p.getFileName().toString();
+		if (base.endsWith(".jar") || base.endsWith(".JAR"))
+			base = base.substring(0, base.length() - 4);
+		
+		// Just create the binary
+		return new Binary(this._selfref, new SourceName(base), null, __p);
 	}
 }
 
