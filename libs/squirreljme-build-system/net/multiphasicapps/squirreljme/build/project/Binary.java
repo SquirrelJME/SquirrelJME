@@ -59,6 +59,18 @@ public final class Binary
 	}
 	
 	/**
+	 * Returns all binaries which are dependencies of this project, this
+	 * includes any binaries which are recursively depended upon.
+	 *
+	 * @return The dependencies for this binary.
+	 * @since 2017/11/02
+	 */
+	public final Binary[] dependencies()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the name of the project.
 	 *
 	 * @return The project name.
