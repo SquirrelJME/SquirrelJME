@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.build.project;
 import java.lang.ref.Reference;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This class represents a binary which has been loaded by the binary manager.
@@ -55,6 +56,28 @@ public final class Binary
 		this.name = __name;
 		this.source = __source;
 		this.path = __path;
+	}
+	
+	/**
+	 * Returns the name of the project.
+	 *
+	 * @return The project name.
+	 * @since 2017/11/02
+	 */
+	public final SourceName name()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * Opens the binary as a ZIP file for reading the contents.
+	 *
+	 * @return The stream over the ZIP's contents.
+	 * @since 2017/11/02
+	 */
+	public final ZipStreamReader zipStream()
+	{
+		throw new todo.TODO();
 	}
 }
 
