@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.build.project;
  * @since 2017/11/02
  */
 public class NoSuchBinaryException
-	extends ProjectException
+	extends InvalidBinaryException
 {
 	/**
 	 * Initialize the exception with no message or cause.

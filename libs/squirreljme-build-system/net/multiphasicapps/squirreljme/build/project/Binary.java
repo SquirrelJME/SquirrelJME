@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.build.project;
 import java.lang.ref.Reference;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
+import net.multiphasicapps.collections.SortedTreeSet;
 
 /**
  * This class represents a binary which has been loaded by the binary manager.
