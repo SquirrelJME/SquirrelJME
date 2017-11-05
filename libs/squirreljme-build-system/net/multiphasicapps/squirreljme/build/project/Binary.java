@@ -11,11 +11,17 @@
 package net.multiphasicapps.squirreljme.build.project;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This class represents a binary which has been loaded by the binary manager.
@@ -36,6 +42,9 @@ public final class Binary
 	/** Reference to the owning binary manager, used for dependencies. */
 	private final Reference<BinaryManager> _managerref;
 	
+	/** The cached manifest for this entry. */
+	private volatile Reference<JavaManifest> _manifest;
+	
 	/**
 	 * Initializes the binary.
 	 *
@@ -44,11 +53,15 @@ public final class Binary
 	 * @param __name The name of this binary.
 	 * @param __source The source of this binary, may be {@code null} if there
 	 * is no source.
-	 * @
+	 * @throws InvalidBinaryException If the tiven 
+	 * @throws NoSuchBinaryException If the given binary does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/02
 	 */
 	Binary(Reference<BinaryManager> __ref, SourceName __name, Source __source,
 		Path __path)
-		throws NullPointerException
+		throws InvalidBinaryException, NoSuchBinaryException,
+			NullPointerException
 	{
 		if (__ref == null || __name == null || __path == null)
 			throw new NullPointerException("NARG");
@@ -66,6 +79,39 @@ public final class Binary
 	 *
 	 * @return The dependencies for this binary.
 	 * @since 2017/11/02
+	 */
+	public final Binary[] allDependencies()
+	{
+		Set<Binary> rv = new SortedTreeSet<>(); 
+		Deque<Binary> queue = new ArrayDeque<>();
+		
+		// Initially start with the current dependencies
+		for (Binary b : dependencies())
+			queue.addLast(b);
+		
+		// Always drain the queue
+		while (!queue.isEmpty())
+		{
+			// Only process once
+			Binary b = queue.removeFirst();
+			if (!rv.add(b))
+				continue;
+			
+			// Go through those dependencies
+			for (Binary d : b.dependencies())
+				queue.addLast(d);
+		}
+		
+		// Always remove this from the return value
+		rv.remove(this);
+		return rv.<Binary>toArray(new Binary[rv.size()]);
+	}
+	 
+	/**
+	 * Returns the binaries which are direct dependencies of this binary.
+	 *
+	 * @return The dependencies for this binary.
+	 * @since 2017/11/05
 	 */
 	public final Binary[] dependencies()
 	{
