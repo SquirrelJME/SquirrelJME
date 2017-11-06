@@ -61,5 +61,17 @@ public final class Source
 			this.manifest = new JavaManifest(in);
 		}
 	}
+	
+	/**
+	 * Returns the time that the source code was last modified.
+	 *
+	 * @return The last modification date of the source code.
+	 * @throws IOException On read errors.
+	 * @since 2017/11/06
+	 */
+	public long lastModifiedTime()
+	{
+		throw new todo.TODO();
+	}
 }
 

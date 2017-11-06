@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.squirreljme.build.project;
 
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -21,6 +24,7 @@ import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
@@ -119,6 +123,69 @@ public final class Binary
 	}
 	
 	/**
+	 * Returns if the binary is newer.
+	 *
+	 * @return If the binary is newer.
+	 * @since 2017/11/06
+	 */
+	public final boolean isBinaryNewer()
+	{
+		Source source = this.source;
+		return lastModifiedTime() >=
+			(source != null ? source.lastModifiedTime() : Long.MIN_VALUE);
+	}
+	
+	/**
+	 * Returns if the source code is newer.
+	 *
+	 * @return If the source is newer.
+	 * @since 2017/11/06
+	 */
+	public final boolean isSourceNewer()
+	{
+		return !isBinaryNewer();
+	}
+	
+	/**
+	 * Returns the time that the binary was last modified.
+	 *
+	 * @return The time the binary was last modified.
+	 * @since 2017/11/06
+	 */
+	public final long lastModifiedTime()
+	{
+		// The file might not actually exist if it has not been built
+		try
+		{
+			FileTime t = Files.getLastModifiedTime(this.path);
+			if (t != null)
+				return t.toMillis();
+			return Long.MIN_VALUE;
+		}
+		
+		// File does not exist or another error, so unknown an unknown time
+		catch (IOException e)
+		{
+			return Long.MIN_VALUE;
+		}
+	}
+	
+	/**
+	 * Returns the manifest for this binary.
+	 *
+	 * @return The manifest for this project.
+	 * @since 2017/11/05
+	 */
+	public final JavaManifest manifest()
+	{
+		if (isSourceNewer())
+			throw new todo.TODO();
+		
+		// Open the binary instead
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the name of the project.
 	 *
 	 * @return The project name.
@@ -130,12 +197,38 @@ public final class Binary
 	}
 	
 	/**
+	 * Returns the source project that this binary is built from.
+	 *
+	 * @return The source project or {@code null} if there is no source.
+	 * @since 2017/11/06
+	 */
+	public final Source source()
+	{
+		return this.source;
+	}
+	
+	/**
 	 * Opens the binary as a ZIP file for reading the contents.
 	 *
+	 * @return The reader for the ZIP file as a block.
+	 * @throws IOException On read errors.
+	 * @since 2017/11/06
+	 */
+	public final ZipBlockReader zipBlock()
+		throws IOException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Opens the binary as a ZIP stream for reading the contents.
+	 *
 	 * @return The stream over the ZIP's contents.
+	 * @throws IOException On read errors.
 	 * @since 2017/11/02
 	 */
 	public final ZipStreamReader zipStream()
+		throws IOException
 	{
 		throw new todo.TODO();
 	}

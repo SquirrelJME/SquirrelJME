@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.build.project;
 
+import java.nio.file.Path;
+
 /**
  * This represents the name of a source project.
  *
@@ -99,6 +101,27 @@ public final class SourceName
 	public String toString()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Returns the source name for this binary path.
+	 *
+	 * @param __p The path to translate to the source name.
+	 * @return The source name for this associated binary path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/05
+	 */
+	public static final SourceName ofBinaryPath(Path __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to determine the base name of the path
+		String base = __p.getFileName().toString();
+		if (base.endsWith(".jar") || base.endsWith(".JAR"))
+			return new SourceName(base.substring(0, base.length() - 4));
+		return new SourceName(base);
 	}
 }
 
