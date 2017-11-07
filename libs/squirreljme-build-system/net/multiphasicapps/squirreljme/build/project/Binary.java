@@ -119,6 +119,9 @@ public final class Binary
 	 */
 	public final Binary[] dependencies()
 	{
+		// Get the up to date manifest to extract dependencies from
+		JavaManifest manifest = manifest();
+		
 		throw new todo.TODO();
 	}
 	
