@@ -161,6 +161,9 @@ public class NewBootstrap
 		__loadProjects(projects, __src.resolve("apis"));
 		__loadProjects(projects, __src.resolve("libs"));
 		__loadProjects(projects, __src.resolve("mids"));
+		__loadProjects(projects, __src.resolve("kern"));
+		__loadProjects(projects, __src.resolve("plat"));
+		__loadProjects(projects, __src.resolve("pbld"));
 		
 		// Use them
 		this.projects = projects;
