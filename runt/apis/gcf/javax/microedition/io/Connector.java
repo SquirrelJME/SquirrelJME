@@ -15,7 +15,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.gcf.IMCFactory;
+import net.multiphasicapps.squirreljme.runtime.gcf.IMCFactory;
 
 /**
  * This class is used to create new connections via the generic connection
