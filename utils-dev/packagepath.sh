@@ -4,10 +4,10 @@
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 #     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3, or later.
+# SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Prints the name of a project.
+# DESCRIPTION: This returns the directory based form for a package.
 
 # Force C locale
 export LC_ALL=C
@@ -23,6 +23,6 @@ else
 	__dir="$1"
 fi
 
-# The project name is the last component of the base directory
-"$__exedir/projectbase.sh" "$__dir" | sed 's/.*\/\(.*\)$/\1/'
+# Same as the package identifier but with dots instead
+"$__exedir/packageidentifier.sh" "$__dir" | tr '.' '/'
 

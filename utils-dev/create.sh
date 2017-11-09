@@ -120,8 +120,8 @@ __findpkname()
 		if [ "$__want" -eq "0" ]
 		then
 			# Has repository file right above this path
-			if [ -f "$__indir/../public-key.gpg" ] || \
-				[ -f "$__indir/../../public-key.gpg" ]
+			if [ -f "$__indir/META-INF/MANIFEST.MF" ] || 
+				[ -f "$__indir/squirrejme-version" ]
 			then
 				__pkout="$__chop"
 				break
@@ -131,8 +131,8 @@ __findpkname()
 		elif [ "$__want" -eq "1" ]
 		then
 			# If repository file in same dir
-			if [ -f "$__indir/../public-key.gpg" ] ||
-				[ -f "$__indir/public-key.gpg" ]
+			if [ -f "$__indir/META-INF/MANIFEST.MF" ]
+				[ -f "$__indir/squirrejme-version" ]
 			then
 				echo "$__chop" | \
 					sed 's/^\([a-zA-Z0-9-]\{1,\}\)[^a-zA-Z0-9-]*.*/\1/'
@@ -142,7 +142,8 @@ __findpkname()
 		# Want the namespace
 		elif [ "$__want" -eq "2" ]
 		then
-			if [ -f "$__indir/../public-key.gpg" ]
+			if [ -f "$__indir/NAMESPACE.MF" ] ||
+				[ -f "$__indir/squirrejme-version" ]
 			then
 				echo "$__indir" | \
 					sed 's/^.*\/\([a-zA-Z0-9_]*\)$/\1/' | \
@@ -251,13 +252,13 @@ do
 			if [ "$__notemplate" -eq "0" ]
 			then
 				# Name of the package
-				__tpack="$(__findpkname "$__tabsf" 0)"
+				__tpack="$("$__exedir/packageidentifier.sh" "$__tabsf")"
 			
 				# Name of the project
-				__tproj="$(__findpkname "$__tabsf" 1)"
+				__tproj="$("$__exedir/projectname.sh" "$__tabsf")"
 				
 				# Namespace of project
-				__tnamespace="$(__findpkname "$__tabsf" 2)"
+				__tnamespace="$("$__exedir/namespacename.sh" "$__tabsf")"
 			
 				# Name of class
 				__tclas="$__tbase"
