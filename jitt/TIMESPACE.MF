@@ -2,5 +2,6 @@ Manifest-Version: 1.0
 X-SquirrelJME-Timespace-Title: JIT Time
 X-SquirrelJME-Timespace-Type: jit
 X-SquirrelJME-Timespace-Description: This contains everything that 
- should be visible if the JIT is enabled.
+ should be visible if the JIT is enabled. This depends on the run-time 
+ but the build-time is not required in any way.
 

@@ -4,5 +4,5 @@ X-SquirrelJME-Timespace-Type: build
 X-SquirrelJME-Timespace-Description: This contains everything which is 
  only available to the SquirrelJME build system. This means that when 
  target is to be built, no projects which support building for a given 
- target are permitted to be used.
+ target are permitted to be used. This depends on the JIT time projects.
 
