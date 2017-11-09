@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 93aff4c4-5fa6-49d6-b64d-05a9a9c9db98
+X-SquirrelJME-Error: AF
+X-SquirrelJME-Name: Build Manager
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the build manager which 
+ manages all of the building for SquirrelJME. This acts as the entry 
+ point for the builder, actual builders for other supported platforms is 
+ done within the other applications.
+Microedition-Configuration: CLDC-1.8-Compact
+
