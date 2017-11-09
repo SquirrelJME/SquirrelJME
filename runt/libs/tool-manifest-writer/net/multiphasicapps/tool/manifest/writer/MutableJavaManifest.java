@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.manifest.mutable;
+package net.multiphasicapps.tool.manifest.writer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,9 +18,9 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This is a mutable version of {@link JavaManifest}.

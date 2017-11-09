@@ -15,5 +15,5 @@
  * @since 2016/12/26
  */
 
-package net.multiphasicapps.squirreljme.java.manifest.mutable;
+package net.multiphasicapps.tool.manifest.writer;
 
