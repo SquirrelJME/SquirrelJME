@@ -155,15 +155,22 @@ public class NewBootstrap
 		
 		// Load all projects in the build directory
 		Map<String, BuildProject> projects = new LinkedHashMap<>();
-		__loadProjects(projects, __src.resolve("build"));
 		
-		// Then add supporting projects also
-		__loadProjects(projects, __src.resolve("apis"));
-		__loadProjects(projects, __src.resolve("libs"));
-		__loadProjects(projects, __src.resolve("mids"));
-		__loadProjects(projects, __src.resolve("kern"));
-		__loadProjects(projects, __src.resolve("plat"));
-		__loadProjects(projects, __src.resolve("pbld"));
+		// Java SE special host libraries
+		__loadProjects(projects, __src.resolve("bldt/javase-host"));
+		
+		// Run-time projects
+		__loadProjects(projects, __src.resolve("runt/apis"));
+		__loadProjects(projects, __src.resolve("runt/libs"));
+		__loadProjects(projects, __src.resolve("runt/mids"));
+		__loadProjects(projects, __src.resolve("runt/kern"));
+		
+		// JIT-time projects
+		__loadProjects(projects, __src.resolve("jitt/libs"));
+		
+		// Build-time projects
+		__loadProjects(projects, __src.resolve("bldt/libs"));
+		__loadProjects(projects, __src.resolve("bldt/mids"));
 		
 		// Use them
 		this.projects = projects;
