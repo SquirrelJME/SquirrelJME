@@ -14,7 +14,6 @@ import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.runtime.lcdui.event.EventType;
 import net.multiphasicapps.squirreljme.runtime.lcdui.event.KeyNames;
 import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.BasicGraphics;
-import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 /**
  * The canvas acts as the base class for primary display interfaces that

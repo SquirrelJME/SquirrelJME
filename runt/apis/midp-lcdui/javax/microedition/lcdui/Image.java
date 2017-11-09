@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.PixelArrayGraphics;
 import net.multiphasicapps.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
-import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
+import net.multiphasicapps.squirreljme.runtime.midlet.ActiveMidlet;
 
 public class Image
 {
