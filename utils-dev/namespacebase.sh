@@ -4,10 +4,10 @@
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 #     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3, or later.
+# SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Gets the base of the current project
+# DESCRIPTION: Prints the base directory of a namespace.
 
 # Force C locale
 export LC_ALL=C
@@ -24,15 +24,17 @@ else
 fi
 
 # Keep adding .. until the version identifier is found
-# Include two sets of .. in the event that we are in a given project
-# Also try others since we may be in the project root.
+# Include two sets of .. in the event that we are in a given namespace
+# Also try others since we may be in the namespace root.
 while true
 do
 	__base="$("$__exedir/absolute.sh" "$__base")"
 	
 	# Find the manifest for a project
-	if [ -f "$__base/META-INF/MANIFEST.MF" ] ||
-		[ -f "$("$__exedir/absolute.sh" "$__base/../NAMESPACE.MF")" ] ||
+	__above="$("$__exedir/absolute.sh" "$__base/../")"
+	if [ -f "$__base/NAMESPACE.MF" ] ||
+		[ -f "$__above/TIMESPACE.MF" ] ||
+		[ -f "$__above/squirreljme-version" ] ||
 		[ -f "$__base/squirreljme-version" ] ||
 		[ "$__base" = "/" ]
 	then
