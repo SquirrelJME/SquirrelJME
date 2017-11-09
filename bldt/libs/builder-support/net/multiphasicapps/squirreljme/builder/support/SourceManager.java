@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.SortedTreeSet;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
  * This class is used to provide access to source code that is available as

@@ -22,8 +22,8 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 

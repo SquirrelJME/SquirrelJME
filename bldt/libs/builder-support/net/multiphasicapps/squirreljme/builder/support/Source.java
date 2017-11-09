@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
  * This represents a single source project which contains the source code for
