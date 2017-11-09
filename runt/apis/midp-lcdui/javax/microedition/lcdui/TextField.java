@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.lcdui.common.EditableText;
+import net.multiphasicapps.squirreljme.runtime.lcdui.common.EditableText;
 
 /**
  * This represents a field of editable or read-only text which may be placed
