@@ -8,17 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet;
 
 /**
- * This represents a profile that may be implemented, such as MIDP. Support
- * for profiles may or may not be complete.
+ * This represents the name of a standard API which implements some kind of
+ * interface or otherwise.
  *
  * @since 2016/12/14
  */
-public final class APIProfile
+public final class APIStandard
 	extends API
-	implements Comparable<APIProfile>
+	implements Comparable<APIStandard>
 {
 	/**
 	 * Initializes the constant in name and version form.
@@ -28,7 +28,7 @@ public final class APIProfile
 	 * valid.
 	 * @since 2016/12/14
 	 */
-	public APIProfile(String __n)
+	public APIStandard(String __n)
 		throws IllegalArgumentException
 	{
 		super(__n);
@@ -42,7 +42,7 @@ public final class APIProfile
 	 * @throws IllegalArgumentException If the arguments are not valid.
 	 * @since 2016/12/14
 	 */
-	public APIProfile(String __n, MidletVersion __v)
+	public APIStandard(String __n, MidletVersion __v)
 		throws IllegalArgumentException
 	{
 		super(__n, __v);
@@ -53,7 +53,7 @@ public final class APIProfile
 	 * @since 2017/01/21
 	 */
 	@Override
-	public int compareTo(APIProfile __o)
+	public int compareTo(APIStandard __o)
 	{
 		return super.__compareTo(__o);
 	}
@@ -66,7 +66,7 @@ public final class APIProfile
 	public boolean equals(Object __o)
 	{
 		// Must be the same class
-		if (!(__o instanceof APIProfile))
+		if (!(__o instanceof APIStandard))
 			return false;
 		
 		// Forward

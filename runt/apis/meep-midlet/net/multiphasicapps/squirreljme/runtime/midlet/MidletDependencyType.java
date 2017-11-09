@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet;
 
 /**
  * This represents the type of the dependency that is to be included.
