@@ -33,11 +33,11 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import net.multiphasicapps.squirreljme.lcdui.DisplayHardwareState;
-import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.lcdui.DisplayOrientation;
-import net.multiphasicapps.squirreljme.lcdui.DisplayState;
-import net.multiphasicapps.squirreljme.lcdui.gfx.IntArrayGraphics;
+import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHardwareState;
+import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayOrientation;
+import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayState;
+import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 
 /**
  * This is a display head which outputs to Swing.
