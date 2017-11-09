@@ -9,11 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the project manager which is used to manage projects
- * within the build system for usage.
+ * This package contains the base support for the build system.
  *
- * @since 2017/10/31
+ * @since 2017/11/09
  */
 
-package net.multiphasicapps.squirreljme.build.project;
+package net.multiphasicapps.squirreljme.builder.support;
 
