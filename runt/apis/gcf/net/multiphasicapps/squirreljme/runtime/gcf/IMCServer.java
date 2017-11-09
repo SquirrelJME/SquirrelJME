@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.gcf;
+package net.multiphasicapps.squirreljme.runtime.gcf;
 
 import java.io.InterruptedIOException;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
-import net.multiphasicapps.squirreljme.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
 import net.multiphasicapps.squirreljme.unsafe.SystemMail;
 import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 

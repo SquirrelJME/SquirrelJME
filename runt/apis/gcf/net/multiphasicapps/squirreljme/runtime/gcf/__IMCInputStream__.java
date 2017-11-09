@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.gcf;
+package net.multiphasicapps.squirreljme.runtime.gcf;
 
 import java.io.InputStream;
 import java.io.InterruptedIOException;
