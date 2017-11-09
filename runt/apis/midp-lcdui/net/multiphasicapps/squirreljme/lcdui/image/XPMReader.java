@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.xpm;
+package net.multiphasicapps.squirreljme.lcdui.image;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,14 +29,14 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2016/05/08
  */
-public class XPMImageReader
+public class XPMReader
 {
 	/**
 	 * Initializes the XPM image reader.
 	 *
 	 * @since 2016/05/08
 	 */
-	public XPMImageReader()
+	public XPMReader()
 	{
 	}
 	
