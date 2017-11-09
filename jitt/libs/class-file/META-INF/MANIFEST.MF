@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: 8d3e10bc-91f3-411d-a89e-db7397afab58
-X-SquirrelJME-Error: AC
+X-SquirrelJME-Error: JC
 X-SquirrelJME-Name: Class File Reader
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
