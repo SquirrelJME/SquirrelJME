@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Run-time MIDlets
+X-SquirrelJME-Namespace-Type: midlet
+X-SquirrelJME-Namespace-Description: This contains programs which may be 
+ run by the user and are potentially by default provided by SquirrelJME.
+
