@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.host.javase;
+package net.multiphasicapps.squirreljme.runtime.javase.lcdui;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
