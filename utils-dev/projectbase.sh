@@ -30,10 +30,9 @@ while true
 do
 	__base="$("$__exedir/absolute.sh" "$__base")"
 	
-	# If version here
-	if [ -f "$__base/squirreljme-version" ] ||
-		[ -f "$__base/../squirreljme-version" ] ||
-		[ -f "$__base/../../squirreljme-version" ] ||
+	# Find the manifest for a project
+	if [ -f "$__base/META-INF/MANIFEST.MF" ] ||
+		[ -f "$__base/squirreljme-version" ] ||
 		[ "$__base" = "/" ]
 	then
 		echo "$__base"
