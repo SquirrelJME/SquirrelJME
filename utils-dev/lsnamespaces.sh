@@ -15,12 +15,13 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Only ones with namespaces
-(for __file in "$__exedir/../"*
+# Scan every directory for namespaces
+__root="$__exedir/.."
+find "$__root" -type d | while read __dir
 do
-	if [ -d "$__file" ] && [ -f "$__file/NAMESPACE.MF" ]
+	if [ -f "$__dir/NAMESPACE.MF" ]
 	then
-		basename "$__file"
+		"$__exedir/relative.sh" "$__root" "$__dir"
 	fi
-done) | sort
+done
 
