@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Run-time Libraries
+X-SquirrelJME-Namespace-Type: liblet
+X-SquirrelJME-Namespace-Description: This namespace contains the extra 
+ run-time libraries which could be used by user applications and 
+ system applications/libraries as needed.
+
