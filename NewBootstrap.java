@@ -165,6 +165,7 @@ public class NewBootstrap
 		__loadProjects(projects, __src.resolve("runt/mids"));
 		__loadProjects(projects, __src.resolve("runt/klib"));
 		__loadProjects(projects, __src.resolve("runt/kmid"));
+		__loadProjects(projects, __src.resolve("runt/test"));
 		
 		// JIT-time projects
 		__loadProjects(projects, __src.resolve("jitt/libs"));
