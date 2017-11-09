@@ -312,6 +312,12 @@ do
 					# Cat
 					cat "$__exedir/crtmpl/namespace"
 				
+				# Time
+				elif [ "$__tfile" = "TIMESPACE.MF" ]
+				then
+					# Cat
+					cat "$__exedir/crtmpl/timespace"
+				
 				# Other template
 				elif [ -f "$__exedir/crtmpl/$__tfext" ]
 				then
