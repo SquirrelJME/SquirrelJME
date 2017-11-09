@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This is the base class for all flag collections.
@@ -130,12 +129,12 @@ public abstract class Flags<F extends Flag>
 	 * @param __i The input bitfield.
 	 * @param __f The flag values to decode.
 	 * @return The flags specified in the bitfield.
-	 * @throws JITException If extra flags were specified.
+	 * @throws InvalidClassFormatException If extra flags were specified.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/13
 	 */
 	static <F extends Flag> Iterable<F> __decode(int __i, F[] __f)
-		throws JITException, NullPointerException
+		throws InvalidClassFormatException, NullPointerException
 	{
 		// Find all matching flags in the bitfield
 		List<F> fl = new ArrayList<>(__f.length);
@@ -152,7 +151,7 @@ public abstract class Flags<F extends Flag>
 		// {@squirreljme.error JI1d An undefined flag has been specified.
 		// (The extra bitfield flags)}
 		if (__i != 0)
-			throw new JITException(String.format("JI1d %02x", __i));
+			throw new InvalidClassFormatException(String.format("JI1d %02x", __i));
 		
 		return fl;
 	}

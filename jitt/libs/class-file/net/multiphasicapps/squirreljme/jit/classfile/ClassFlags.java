@@ -12,7 +12,6 @@ package net.multiphasicapps.squirreljme.jit.classfile;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
  * This represents the flags which a class may be.
@@ -171,11 +170,11 @@ public class ClassFlags
 	/**
 	 * Checks that the given flags are valid.
 	 *
-	 * @throws JITException If they are not valid.
+	 * @throws InvalidClassFormatException If they are not valid.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags()
-		throws JITException
+		throws InvalidClassFormatException
 	{
 		// Interface?
 		if (isInterface())

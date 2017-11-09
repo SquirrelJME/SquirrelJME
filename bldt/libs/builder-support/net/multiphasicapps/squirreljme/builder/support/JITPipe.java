@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.system;
+package net.multiphasicapps.squirreljme.builder.support;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.build.project.Binary;
-import net.multiphasicapps.squirreljme.build.project.BinaryManager;
-import net.multiphasicapps.squirreljme.build.project.SourceName;
 import net.multiphasicapps.squirreljme.jit.JITInput;
 import net.multiphasicapps.squirreljme.jit.JITInputGroup;
 import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
