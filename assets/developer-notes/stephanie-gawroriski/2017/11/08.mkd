@@ -1,0 +1,108 @@
+# 2017/11/08
+
+## 14:17
+
+I had an idea, I can have another namespace which specifies platforms that can
+be targetted for SquirrelJME. They will essentially act the same as libraries
+but it would make things easier because they would be in a single location.
+Then this way the platform specific stuff is in a standard location. Then when
+it comes to building support for platforms, they can be added up together and
+such. There could be base unsafe stuff too.
+
+## 14:23
+
+I cannot dynamically load libraries, but I do have an idea. `plat` contains
+the support for platforms, such as the code in unsafe. Then I will also need
+platform specfic builders, which knows how to build for a given platform. So
+for a Java SE target that the build system runs in, I can have a kind of
+pseudo environment that the bootstrap can build. Well for a pseudo environment
+everything could be virtualized. It would still be byte code, but the
+generated JAR that is executed will have all of the code modified in a way
+which allows that code to run cleanly. So my idea is to have `plat` for
+in the run-time environment platform specific stuff, then the build system can
+instead launch and load projects which are in `pbld` which define builders
+that the build system can use to target a given system. It can use the liblet
+system. All targets would have been thrown in `libs` but at least with this, I
+can have dynamic determination and setting up of a build environment. So to
+basically target something, the build system will search for a library and
+peek within the manifests to determine which midlet should be launched. But
+the build system would be a launched MIDlet with some base MIDlet code in the
+library which is launched as needed. The build definitions and such can be
+placed in a system property so it is known how they are executed. I just need
+to check launching of other midlets, if properties can be set and such.
+
+## 14:31
+
+Also, additionally I can have the `kern` project which act like libraries but
+it defines anything that is used by the kernel specifically, such as the JIT
+or any implementation dependent stuff.
+
+## 14:34
+
+There can be a primitive recompilation of all of the Java byte code to code
+that works within a virtualized SquirrelJME environment. With thread locals
+there can be replacements and such for instructions directly to static
+methods. Those methods then perform what is needed, they access thread local
+variables which determines their process identifier along with any global and
+local state. So stuff like `getfield` will not be replaced because those are
+linked to objects, but stuff such as `getstatic` will be replaced by a static
+method call because it is not known how they inherit. This would produce a
+bit slower code, but it would run on the host JVM using SquirrelJME's internal
+run-time libraries and such.
+
+## 14:39
+
+So then basically, does the bootstrap build system bootstrap a build
+enviroment which runs with SquirrelJME's libraries internally how they would
+be if they were ran from within SquirrelJME itself?
+
+## 14:42
+
+This would mean an actual working suite manager and all that would entail for
+the most part. But it would mean that the build system would iterate through
+things to find the right builder. It is a bit complicated but it could work
+out. It would also allow builders to be dynamically plugged in without them
+needing to be part of the base SquirrelJME environment. But a bunch of the
+code I have for reading classes exists and I can just use that as a base.
+Take apart the JIT, the base bootstrap system can build the build environment
+which is SquirrelJME itself and then jump into it.
+
+## 14:47
+
+Of course when it comes to multiple processes running, there is no way to pass
+data back and forth, so an IMC connection would need to be made between the
+build master and the build target slaves.
+
+## 22:20
+
+Maybe one thing I can do instead is have master namespaces. Basically I keep
+the same distinction of APIs, LIBlets, and MIDlets and not provide any more
+complicated setups. But when it comes to different parts of the code I will
+have basically two things: run-time and build-time. build-time only contains
+things which will be available to the build system, while run-time stuff would
+be part of the run-time. I would also need one that is for the JIT. So that
+way if the JIT is not available then none of the packages are visible in any
+way. Then this means that when it comes to the source code, when no JIT is
+available it will just ignore all of those groups of projects. I can
+technically use the same existing source manager code and just not provide
+those areas. So that way, if there is no JIT it would never be possible ever
+include those applications and libraries. The JIT however would only contain
+libraries anyway. This way, there is more organization in the code. So this
+is really just an organization cleanup.
+
+ * `runt`: Run-time.
+ * `jitt`: JIT-time.
+ * `bldt`: Build-time.
+
+## 23:07
+
+I could do that pseudo environment thing, but that would be just too far
+complex and messy to setup initially and would very much complicate things
+greatly. So for simplicity I can just in a way hack the required support so
+that it works properly and such.
+
+## 23:08
+
+I could setup a system which allows me to spawn other processes and allow
+for communication back and forth like MIDlets being launched. It would work
+for most systems and the systems I actually care about for the most part.
