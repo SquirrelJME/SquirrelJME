@@ -14,5 +14,5 @@
  * @since 2016/10/11
  */
 
-package net.multiphasicapps.squirreljme.launcher.lcdui;
+package net.multiphasicapps.squirreljme.runtime.launcher.ui;
 
