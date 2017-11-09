@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.JITInput;
-import net.multiphasicapps.squirreljme.jit.JITInputGroup;
-import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import net.multiphasicapps.squirreljme.jit.input.JITInput;
+import net.multiphasicapps.squirreljme.jit.input.JITInputGroup;
+import net.multiphasicapps.squirreljme.jit.input.VerifiedJITInput;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
