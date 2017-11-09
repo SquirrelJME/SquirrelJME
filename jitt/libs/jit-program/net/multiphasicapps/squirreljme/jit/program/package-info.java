@@ -8,32 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
-
 /**
- * This represents the basic type that a variable may be, it only contains
- * basic information.
+ * This package contains the basic virtual machine which is used as a base to
+ * implement other virtual machines. Since the verifier, the interpreter, and
+ * the translator from the byte code to more optimized code will read the same
+ * set of instructions and handle them as such.
  *
- * @since 2017/10/17
+ * @since 2017/10/15
  */
-enum __BasicType__
-{
-	/** Integer. */
-	INTEGER,
-	
-	/** Long. */
-	LONG,
-	
-	/** Float. */
-	FLOAT,
-	
-	/** Double. */
-	DOUBLE,
-	
-	/** Object. */
-	OBJECT,
-	
-	/** End. */
-	;
-}
+
+package net.multiphasicapps.squirreljme.jit.program;
 

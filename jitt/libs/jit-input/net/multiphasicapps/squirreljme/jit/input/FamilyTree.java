@@ -8,14 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.verifier;
+package net.multiphasicapps.squirreljme.jit.input;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.JITInput;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassFile;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassName;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**

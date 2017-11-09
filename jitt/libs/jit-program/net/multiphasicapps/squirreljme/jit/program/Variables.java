@@ -8,13 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
+package net.multiphasicapps.squirreljme.jit.program;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.cff.JavaType;
-import net.multiphasicapps.squirreljme.jit.cff.StackMapTableEntry;
-import net.multiphasicapps.squirreljme.jit.cff.StackMapTableState;
+import net.multiphasicapps.squirreljme.jit.classfile.JavaType;
+import net.multiphasicapps.squirreljme.jit.classfile.StackMapTableEntry;
+import net.multiphasicapps.squirreljme.jit.classfile.StackMapTableState;
 
 /**
  * This class contains the variable treads for the stack, local, and

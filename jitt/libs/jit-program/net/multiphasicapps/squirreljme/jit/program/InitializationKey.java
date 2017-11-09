@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
+package net.multiphasicapps.squirreljme.jit.program;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

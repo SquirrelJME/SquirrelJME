@@ -8,17 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.input;
 
 import java.io.InputStream;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.rc.NoSuchResourceException;
-import net.multiphasicapps.squirreljme.jit.rc.Resource;
-import net.multiphasicapps.squirreljme.jit.verifier.ClassStructures;
-import net.multiphasicapps.squirreljme.jit.verifier.FamilyTree;
-import net.multiphasicapps.squirreljme.jit.verifier.VerifiedMethods;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassFile;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassName;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.collections.UnmodifiableSet;

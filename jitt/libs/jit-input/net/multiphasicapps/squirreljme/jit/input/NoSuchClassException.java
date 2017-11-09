@@ -8,25 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
+package net.multiphasicapps.squirreljme.jit.input;
 
 import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This is thrown when the instruction parser has not performed a correct
- * operation.
+ * This is thrown when the specified class was not found.
  *
- * @since 2017/10/15
+ * @since 2017/10/08
  */
-public class ParserException
+public class NoSuchClassException
 	extends JITException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/10/15
+	 * @since 2017/10/08
 	 */
-	public ParserException()
+	public NoSuchClassException()
 	{
 	}
 	
@@ -34,9 +33,9 @@ public class ParserException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/10/15
+	 * @since 2017/10/08
 	 */
-	public ParserException(String __m)
+	public NoSuchClassException(String __m)
 	{
 		super(__m);
 	}
@@ -46,9 +45,9 @@ public class ParserException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/10/15
+	 * @since 2017/10/08
 	 */
-	public ParserException(String __m, Throwable __c)
+	public NoSuchClassException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,9 +56,9 @@ public class ParserException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/10/15
+	 * @since 2017/10/08
 	 */
-	public ParserException(Throwable __c)
+	public NoSuchClassException(Throwable __c)
 	{
 		super(__c);
 	}

@@ -7,6 +7,7 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project provides handling of the input 
  classes to be processed by the JIT and also performs verification of 
  that input.
-X-SquirrelJME-Depends: class-file byte-deque io zip
+X-SquirrelJME-Depends: class-file byte-deque io zip jit-base 
+ jit-program
 Microedition-Configuration: CLDC-1.8-Compact
 

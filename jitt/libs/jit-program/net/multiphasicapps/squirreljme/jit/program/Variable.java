@@ -8,36 +8,43 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
+package net.multiphasicapps.squirreljme.jit.program;
 
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
- * This class is used to store a large number of data values which are
- * referred to by variables and are used to contain single values.
+ * This represents a single variable.
+ *
+ * The value in a variable (if it has one) will always point to a
+ * {@link DataValues} which represent unique values within variables. This
+ * makes it similar to SSA and may make certain optimizations available.
  *
  * @since 2017/10/19
  */
-public final class DataValues
+public final class Variable
 {
-	/** Reference to the variables which own this data set. */
-	private final Reference<Variables> _varsref;
+	/** The index of this variable. */
+	protected final int index;
+	
+	/** The owning tread. */
+	private final Reference<VariableTread> _treadref;
 	
 	/**
-	 * Initializes the data values.
+	 * Initializes the single variable.
 	 *
-	 * @param __vr Variable references to use.
+	 * @param __tr The owning variable tread.
+	 * @param __i The index of this variables.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/19
 	 */
-	DataValues(Reference<Variables> __vr)
+	Variable(Reference<VariableTread> __tr, int __i)
 		throws NullPointerException
 	{
-		if (__vr == null)
+		if (__tr == null)
 			throw new NullPointerException("NARG");
 		
-		this._varsref = __vr;
+		this.index = __i;
+		this._treadref = __tr;
 	}
 }
 
