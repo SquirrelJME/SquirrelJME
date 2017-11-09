@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: JavaSE Builder Libraries
+X-SquirrelJME-Namespace-Type: liblet
+X-SquirrelJME-Namespace-Description: Libraries which are needed for the 
+ builder to operate correctly on Java SE systems.
+

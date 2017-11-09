@@ -157,7 +157,7 @@ public class NewBootstrap
 		Map<String, BuildProject> projects = new LinkedHashMap<>();
 		
 		// Java SE special host libraries
-		__loadProjects(projects, __src.resolve("bldt/javase"));
+		__loadProjects(projects, __src.resolve("bldt/javase/libs"));
 		
 		// Run-time projects
 		__loadProjects(projects, __src.resolve("runt/apis"));
