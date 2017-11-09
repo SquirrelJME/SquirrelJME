@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-UUID: 49a27bc4-262c-44d8-83e1-92fb72bbdbab
-X-SquirrelJME-Error: AM
-X-SquirrelJME-Name: Math Library
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: math
-Microedition-Configuration: CLDC-1.8-Compact
-
