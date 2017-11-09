@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.xpm;
+package net.multiphasicapps.squirreljme.lcdui.image;
 
 import java.io.InputStream;
 import java.io.IOException;
