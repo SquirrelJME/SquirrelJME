@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.hexdumpstream;
+package net.multiphasicapps.io;
 
 import java.io.Closeable;
 import java.io.Flushable;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
-import net.multiphasicapps.io.psw.PrintStreamWriter;
 
 /**
  * This contains a stream which when given bytes hexadecimal bytes will
