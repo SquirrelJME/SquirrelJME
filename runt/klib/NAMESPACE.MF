@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Kernel Libraries
+X-SquirrelJME-Namespace-Type: liblet
+X-SquirrelJME-Namespace-Description: This contains kernel libraries which 
+ may be included but which should not be part of the user level system. 
+ The libraries here are for system use only.
+
