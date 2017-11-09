@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.project;
+package net.multiphasicapps.squirreljme.builder.support;
 
 import java.nio.file.Path;
 

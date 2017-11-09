@@ -8,22 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.build.project;
+package net.multiphasicapps.squirreljme.builder.support;
 
 /**
- * This is thrown when the specified source project does not exist.
+ * This is thrown when the source project is not valid.
  *
  * @since 2017/10/31
  */
-public class NoSuchSourceException
-	extends InvalidSourceException
+public class InvalidSourceException
+	extends ProjectException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
 	 * @since 2017/10/31
 	 */
-	public NoSuchSourceException()
+	public InvalidSourceException()
 	{
 	}
 	
@@ -33,7 +33,7 @@ public class NoSuchSourceException
 	 * @param __m The message.
 	 * @since 2017/10/31
 	 */
-	public NoSuchSourceException(String __m)
+	public InvalidSourceException(String __m)
 	{
 		super(__m);
 	}
@@ -45,7 +45,7 @@ public class NoSuchSourceException
 	 * @param __c The cause.
 	 * @since 2017/10/31
 	 */
-	public NoSuchSourceException(String __m, Throwable __c)
+	public InvalidSourceException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -56,7 +56,7 @@ public class NoSuchSourceException
 	 * @param __c The cause.
 	 * @since 2017/10/31
 	 */
-	public NoSuchSourceException(Throwable __c)
+	public InvalidSourceException(Throwable __c)
 	{
 		super(__c);
 	}
