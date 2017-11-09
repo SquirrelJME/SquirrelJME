@@ -188,7 +188,7 @@ public class NewBootstrap
 		// {@squirreljme.error NB03 The entry point project does not exist.}
 		Map<String, BuildProject> projects = this.projects;
 		BuildProject bp = projects.get((this.builddoclet ? "doclet-markdown" :
-			"squirreljme-build-host"));
+			"builder"));
 		if (bp == null)
 			throw new IllegalStateException("NB03");
 		
