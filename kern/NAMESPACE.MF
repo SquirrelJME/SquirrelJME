@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: Kernel
-X-SquirrelJME-Namespace-Type: kernel
-X-SquirrelJME-Namespace-Description: This project contains anything which 
- is specific to the SquirrelJME kernel where all of these projects are 
- not intended in any way to be used by end users. This includes the JIT.
-

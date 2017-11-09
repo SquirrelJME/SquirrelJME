@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: Platform Builders
-X-SquirrelJME-Namespace-Type: platformbuilder
-X-SquirrelJME-Namespace-Description: This contains the support MIDlets 
- which are used by the build system to actually generate code for a 
- given target system.
-
