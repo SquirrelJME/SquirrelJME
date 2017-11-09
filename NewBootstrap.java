@@ -120,9 +120,6 @@ public class NewBootstrap
 	/** The directory where JARs are placed. */
 	protected final Path buildjarout;
 	
-	/** Building the doclet? */
-	protected final boolean builddoclet;
-	
 	/**
 	 * Initializes the bootstrap base.
 	 *
@@ -140,18 +137,12 @@ public class NewBootstrap
 		if (__bin == null || __src == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Building doclet instead?
-		boolean builddoclet = (__args.length >= 1 &&
-			"build-doclet".equals(__args[0]));
-		this.builddoclet = builddoclet;
-		
 		// Set
 		this.binarypath = __bin;
 		this.sourcepath = __src;
 		this.launchargs = __args.clone();
 		this.buildjarout = __bin.resolve("bootsjme");
-		this.bootstrapout = __bin.resolve(
-			(builddoclet ? "sjmedoclet.jar" : "sjmeboot.jar"));
+		this.bootstrapout = __bin.resolve("sjmeboot.jar");
 		
 		// Load all projects in the build directory
 		Map<String, BuildProject> projects = new LinkedHashMap<>();
@@ -187,8 +178,7 @@ public class NewBootstrap
 	{
 		// {@squirreljme.error NB03 The entry point project does not exist.}
 		Map<String, BuildProject> projects = this.projects;
-		BuildProject bp = projects.get((this.builddoclet ? "doclet-markdown" :
-			"builder"));
+		BuildProject bp = projects.get("builder");
 		if (bp == null)
 			throw new IllegalStateException("NB03");
 		
