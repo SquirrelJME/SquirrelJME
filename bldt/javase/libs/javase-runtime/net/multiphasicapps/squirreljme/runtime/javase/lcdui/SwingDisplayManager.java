@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.runtime.javase.lcdui;
 
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
-import net.multiphasicapps.squirreljme.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.lcdui.DisplayManager;
+import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
+import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
 
 /**
  * This provides access to Swing display heads for displaying graphics.
