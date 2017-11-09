@@ -9,11 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the verifier which ensures that the class files are
- * correct and are valid within the Java specification.
+ * This project contains the support for reading in class files, verifying
+ * them, and providing them as input for the actual JIT.
  *
- * @since 2017/08/23
+ * @since 2017/11/09
  */
 
-package net.multiphasicapps.squirreljme.jit.verifier;
+package net.multiphasicapps.squirreljme.jit.input;
 
