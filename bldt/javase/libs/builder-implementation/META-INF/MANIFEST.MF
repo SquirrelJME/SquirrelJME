@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: fea37c1c-007d-462b-a417-e77f326cdf73
-X-SquirrelJME-Depends: builder-support midp-lcdui
+X-SquirrelJME-Depends: builder-support javase-platform
 X-SquirrelJME-Error: BM
 X-SquirrelJME-Description: This contains the builder implementation 
  which is used to allow the builder to run on Java SE systems.

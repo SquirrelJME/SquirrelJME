@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: d354b1ef-6941-4a0a-a20a-cec1191e995f
+X-SquirrelJME-Error: AB
+X-SquirrelJME-Name: javase-platform
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: javase-platform
+Microedition-Configuration: CLDC-1.8-Compact
+
