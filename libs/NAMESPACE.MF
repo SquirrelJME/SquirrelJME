@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Namespace-Title: LIBlets
-Namespace-Type: liblet
-Namespace-Description: This contains liblets that are 
- available in SquirrelJME and may be included in standard 
- distributions.
-
