@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Kernel MIDlets
+X-SquirrelJME-Namespace-Type: midlet
+X-SquirrelJME-Namespace-Description: These are applications which are 
+ ran like normal applications but are intended to only be executed by 
+ the kernel itself.
+

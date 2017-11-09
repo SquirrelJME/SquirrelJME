@@ -163,7 +163,8 @@ public class NewBootstrap
 		__loadProjects(projects, __src.resolve("runt/apis"));
 		__loadProjects(projects, __src.resolve("runt/libs"));
 		__loadProjects(projects, __src.resolve("runt/mids"));
-		__loadProjects(projects, __src.resolve("runt/kern"));
+		__loadProjects(projects, __src.resolve("runt/klib"));
+		__loadProjects(projects, __src.resolve("runt/kmid"));
 		
 		// JIT-time projects
 		__loadProjects(projects, __src.resolve("jitt/libs"));
