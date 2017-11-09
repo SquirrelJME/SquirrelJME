@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit.classfile;
 
-import net.multiphasicapps.squirreljme.jit.JITException;
-
 /**
  * This represents the set of flags for methods.
  *
@@ -201,12 +199,12 @@ public final class MethodFlags
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
-	 * @throws JITException If they are not valid.
+	 * @throws InvalidClassFormatException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags(ClassFlags __oc)
-		throws JITException
+		throws InvalidClassFormatException
 	{
 		// Check
 		if (__oc == null)
