@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Build Support Libraries
+X-SquirrelJME-Namespace-Type: liblet
+X-SquirrelJME-Namespace-Description: This project contains support for the
+ build system libraries and their support platform.
+
