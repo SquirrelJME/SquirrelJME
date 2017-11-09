@@ -4,7 +4,8 @@ X-SquirrelJME-Error: AU
 X-SquirrelJME-Name: Build System Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: collections
+X-SquirrelJME-Depends: collections tool-manifest-reader 
+ tool-manifest-writer
 X-SquirrelJME-Description: This contains basic support for the build 
  system and project manager. The interfaces declared by this class 
  must be implemented in order for the build system to be functional.

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.manifest;
+package net.multiphasicapps.tool.manifest;
 
 /**
  * This represents a key which is used in a manifest, it is case insensitive
