@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.hex;
+package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
