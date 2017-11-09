@@ -14,15 +14,15 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
-import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
+import net.multiphasicapps.squirreljme.runtime.midlet.ActiveMidlet;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 public abstract class MIDlet
 {
 	/** This is the prefix used to override settings. */
 	private static final String _APP_PROPERTY_OVERRIDE =
-		"net.multiphasicapps.squirreljme.midlet.override.";
+		"net.multiphasicapps.squirreljme.runtime.midlet.override.";
 	
 	/** The cached manifest for obtaining properties. */
 	private volatile Reference<JavaManifest> _manifest;

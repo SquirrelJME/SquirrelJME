@@ -8,28 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet;
 
 /**
- * This represents the vendor of a midlet suite.
+ * This represents the name of a midlet suite.
  *
  * @since 2016/10/12
  */
-public final class MidletSuiteVendor
-	implements Comparable<MidletSuiteVendor>
+public final class MidletSuiteName
+	implements Comparable<MidletSuiteName>
 {
 	/** String value. */
 	protected final String string;
 	
 	/**
-	 * Initializes the suite vendor.
+	 * Initializes the suite name.
 	 *
 	 * @param __v The value to parse.
 	 * @throws IllegalArgumentException If the input is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletSuiteVendor(String __v)
+	public MidletSuiteName(String __v)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -48,15 +48,15 @@ public final class MidletSuiteVendor
 			// Invalid character?
 			switch (c)
 			{
-					// {@squirreljme.error AD0c An illegal character was
-					// specified in the midlet suite vendor. (The midlet suite
-					// vendor)}
+					// {@squirreljme.error AD0b An illegal character was
+					// specified in the midlet suite name. (The midlet suite
+					// name)}
 				case '\0':
 				case '\r':
 				case '\n':
 				case ':':
 				case ';':
-					throw new IllegalArgumentException(String.format("AD0c %s",
+					throw new IllegalArgumentException(String.format("AD0b %s",
 						__v));
 				
 					// Valid
@@ -74,7 +74,7 @@ public final class MidletSuiteVendor
 	 * @since 2016/10/12
 	 */
 	@Override
-	public int compareTo(MidletSuiteVendor __o)
+	public int compareTo(MidletSuiteName __o)
 	{
 		return this.string.compareTo(__o.string);
 	}
@@ -87,10 +87,10 @@ public final class MidletSuiteVendor
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof MidletSuiteVendor))
+		if (!(__o instanceof MidletSuiteName))
 			return false;
 		
-		return this.string.equals(((MidletSuiteVendor)__o).string);
+		return this.string.equals(((MidletSuiteName)__o).string);
 	}
 	
 	/**
