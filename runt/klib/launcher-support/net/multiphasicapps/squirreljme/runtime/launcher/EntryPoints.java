@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.launcher;
+package net.multiphasicapps.squirreljme.runtime.launcher;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
