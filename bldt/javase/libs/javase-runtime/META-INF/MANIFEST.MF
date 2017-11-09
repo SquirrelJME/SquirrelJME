@@ -1,9 +1,12 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: d354b1ef-6941-4a0a-a20a-cec1191e995f
 X-SquirrelJME-Error: AF
-X-SquirrelJME-Name: javase-platform
+X-SquirrelJME-Name: Java SE Run-Time
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: javase-platform
+X-SquirrelJME-Description: This project contains the support for using 
+ SquirrelJME as a pseudo-runtime in Java SE, which is needed to run 
+ programs such as the build environment.
+X-SquirrelJME-Depends: midp-lcdui
 Microedition-Configuration: CLDC-1.8-Compact
 
