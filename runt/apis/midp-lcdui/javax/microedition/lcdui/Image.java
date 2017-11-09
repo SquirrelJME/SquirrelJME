@@ -14,10 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.lcdui.gfx.BasicGraphics;
-import net.multiphasicapps.squirreljme.lcdui.gfx.IntArrayGraphics;
-import net.multiphasicapps.squirreljme.lcdui.gfx.PixelArrayGraphics;
-import net.multiphasicapps.squirreljme.lcdui.image.ImageReaderDispatcher;
+import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.BasicGraphics;
+import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
+import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.PixelArrayGraphics;
+import net.multiphasicapps.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
 
 public class Image
