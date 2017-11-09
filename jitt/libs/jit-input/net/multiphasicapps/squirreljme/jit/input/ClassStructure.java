@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.verifier;
+package net.multiphasicapps.squirreljme.jit.input;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.jit.cff.AccessibleFlags;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.cff.Field;
-import net.multiphasicapps.squirreljme.jit.cff.FieldFlags;
-import net.multiphasicapps.squirreljme.jit.cff.FieldNameAndType;
-import net.multiphasicapps.squirreljme.jit.cff.Method;
-import net.multiphasicapps.squirreljme.jit.cff.MethodFlags;
-import net.multiphasicapps.squirreljme.jit.cff.MethodName;
-import net.multiphasicapps.squirreljme.jit.cff.MethodNameAndType;
+import net.multiphasicapps.squirreljme.jit.classfile.AccessibleFlags;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassName;
+import net.multiphasicapps.squirreljme.jit.classfile.Field;
+import net.multiphasicapps.squirreljme.jit.classfile.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.classfile.FieldNameAndType;
+import net.multiphasicapps.squirreljme.jit.classfile.Method;
+import net.multiphasicapps.squirreljme.jit.classfile.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.classfile.MethodName;
+import net.multiphasicapps.squirreljme.jit.classfile.MethodNameAndType;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
 

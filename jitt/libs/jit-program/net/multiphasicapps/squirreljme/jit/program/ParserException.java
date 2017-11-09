@@ -8,22 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.program;
+
+import net.multiphasicapps.squirreljme.jit.JITException;
 
 /**
- * This is thrown when a requested group was not found.
+ * This is thrown when the instruction parser has not performed a correct
+ * operation.
  *
- * @since 2017/10/05
+ * @since 2017/10/15
  */
-public class NoSuchGroupException
+public class ParserException
 	extends JITException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/10/05
+	 * @since 2017/10/15
 	 */
-	public NoSuchGroupException()
+	public ParserException()
 	{
 	}
 	
@@ -31,9 +34,9 @@ public class NoSuchGroupException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/10/05
+	 * @since 2017/10/15
 	 */
-	public NoSuchGroupException(String __m)
+	public ParserException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +46,9 @@ public class NoSuchGroupException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/10/05
+	 * @since 2017/10/15
 	 */
-	public NoSuchGroupException(String __m, Throwable __c)
+	public ParserException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +57,9 @@ public class NoSuchGroupException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/10/05
+	 * @since 2017/10/15
 	 */
-	public NoSuchGroupException(Throwable __c)
+	public ParserException(Throwable __c)
 	{
 		super(__c);
 	}

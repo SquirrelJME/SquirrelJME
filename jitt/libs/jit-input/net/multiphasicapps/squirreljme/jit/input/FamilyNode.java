@@ -8,18 +8,18 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.verifier;
+package net.multiphasicapps.squirreljme.jit.input;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.jit.cff.BinaryName;
-import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
-import net.multiphasicapps.squirreljme.jit.cff.ClassFlags;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.cff.Field;
-import net.multiphasicapps.squirreljme.jit.cff.Method;
+import net.multiphasicapps.squirreljme.jit.classfile.BinaryName;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassFile;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassFlags;
+import net.multiphasicapps.squirreljme.jit.classfile.ClassName;
+import net.multiphasicapps.squirreljme.jit.classfile.Field;
+import net.multiphasicapps.squirreljme.jit.classfile.Method;
 
 /**
  * This represents a single node within the class inheritence tree.

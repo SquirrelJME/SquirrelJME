@@ -8,15 +8,32 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
+package net.multiphasicapps.squirreljme.jit.program;
 
 /**
- * This represents a single data value which contains a known or unknown value
- * with potential transformations on input values.
+ * This represents the basic type that a variable may be, it only contains
+ * basic information.
  *
- * @since 2017/10/19
+ * @since 2017/10/17
  */
-public final class DataValue
+enum __BasicType__
 {
+	/** Integer. */
+	INTEGER,
+	
+	/** Long. */
+	LONG,
+	
+	/** Float. */
+	FLOAT,
+	
+	/** Double. */
+	DOUBLE,
+	
+	/** Object. */
+	OBJECT,
+	
+	/** End. */
+	;
 }
 

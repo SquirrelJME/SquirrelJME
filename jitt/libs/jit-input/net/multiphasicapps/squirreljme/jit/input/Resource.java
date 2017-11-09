@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.rc;
+package net.multiphasicapps.squirreljme.jit.input;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

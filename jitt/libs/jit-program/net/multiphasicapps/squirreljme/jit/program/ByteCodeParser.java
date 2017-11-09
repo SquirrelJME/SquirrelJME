@@ -8,11 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.bvm;
+package net.multiphasicapps.squirreljme.jit.program;
 
-import net.multiphasicapps.squirreljme.jit.cff.ByteCode;
-import net.multiphasicapps.squirreljme.jit.cff.Instruction;
-import net.multiphasicapps.squirreljme.jit.cff.InstructionIndex;
+import net.multiphasicapps.squirreljme.jit.classfile.ByteCode;
+import net.multiphasicapps.squirreljme.jit.classfile.Instruction;
+import net.multiphasicapps.squirreljme.jit.classfile.InstructionIndex;
 
 /**
  * This class parses the byte code for a method and creates a basic virtual
