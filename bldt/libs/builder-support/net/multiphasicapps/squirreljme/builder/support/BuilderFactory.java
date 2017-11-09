@@ -8,26 +8,41 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.entry;
-
-import net.multiphasicapps.squirreljme.builder.support.BuilderFactory;
+package net.multiphasicapps.squirreljme.builder.support;
 
 /**
- * Main entry point for the builder.
+ * This is a factory which can invoke the build system using a common set
+ * of input arguments.
  *
  * @since 2017/11/09
  */
-public class BuilderMain
+public class BuilderFactory
+	implements Runnable
 {
+	/** Arguments to the builder. */
+	private final String[] _args;
+	
 	/**
-	 * Main entry point.
+	 * Initializes the build factory.
 	 *
 	 * @param __args Program arguments.
 	 * @since 2017/11/09
 	 */
-	public static void main(String... __args)
+	public BuilderFactory(String... __args)
 	{
-		new BuilderFactory(__args).run();
+		// Copy arguments so they are not messed up
+		__args = (__args != null ? __args.clone() : new String[0]);
+		this._args = __args;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/09
+	 */
+	@Override
+	public void run()
+	{
+		throw new todo.TODO();
 	}
 }
 
