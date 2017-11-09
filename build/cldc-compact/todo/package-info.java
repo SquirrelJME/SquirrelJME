@@ -1,1 +1,0 @@
-../../../apis/cldc-compact/todo/package-info.java

@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-UUID: ba4a3568-d1d3-494c-a39e-d1bc0d19964c
-X-SquirrelJME-Error: AR
-X-SquirrelJME-Name: Empty Virtual Package For IPC
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: Empty Virtual Package For IPC
-Microedition-Configuration: CLDC-1.8-Compact
-
