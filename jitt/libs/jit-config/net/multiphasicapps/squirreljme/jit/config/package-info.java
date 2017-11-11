@@ -9,12 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the JIT for SquirrelJME. It handles parsing of the
- * class file format and translating byte code instructions into native machine
- * code.
+ * This package contains the configuration system for the JIT
  *
  * @since 2017/04/02
  */
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.config;
 
