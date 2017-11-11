@@ -145,11 +145,11 @@ public final class JITConfig
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI01 The specified key has no assigned
+		// {@squirreljme.error AL01 The specified key has no assigned
 		// value. (The key)}
 		JITConfigValue rv = get(__k);
 		if (rv == null)
-			throw new NumberFormatException(String.format("JI01 %s", __k));
+			throw new NumberFormatException(String.format("AL01 %s", __k));
 		return rv.toInteger();
 	}
 	
@@ -192,10 +192,10 @@ public final class JITConfig
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI02 The specified key is null. (The key)}
+		// {@squirreljme.error AL02 The specified key is null. (The key)}
 		JITConfigValue rv = get(__k);
 		if (rv == null)
-			throw new NumberFormatException(String.format("JI02 %s", __k));
+			throw new NumberFormatException(String.format("AL02 %s", __k));
 		return rv.toLong();
 	}
 	
