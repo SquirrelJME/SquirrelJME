@@ -105,12 +105,12 @@ public final class ByteCode
 			int maxstack = in.readUnsignedShort(),
 				maxlocals = in.readUnsignedShort();
 				
-			// {@squirreljme.error JI0h The specified code length is not valid.
+			// {@squirreljme.error JC01 The specified code length is not valid.
 			// (The code length)}
 			int codelen = in.readInt();
 			if (codelen <= 0 || codelen > _MAX_CODE_LENGTH)
 				throw new InvalidClassFormatException(
-					String.format("JI0h %d", codelen));
+					String.format("JC01 %d", codelen));
 		
 			// Ignore that many bytes
 			for (int i = 0; i < codelen; i++)
@@ -138,12 +138,12 @@ public final class ByteCode
 				int oplen;
 				lengths[i] = (oplen = __opLength(__ca, i));
 			
-				// {@squirreljme.error JI0i The operation exceeds the bounds of
+				// {@squirreljme.error JC02 The operation exceeds the bounds of
 				// the method byte code. (The operation pointer; The operation
 				// length; The code length)}
 				if ((i += oplen) > codelen)
 					throw new InvalidClassFormatException(
-						String.format("JI0i %d %d %d", i, oplen, codelen));
+						String.format("JC02 %d %d %d", i, oplen, codelen));
 			}
 			
 			// Read exception handler table
@@ -170,10 +170,10 @@ public final class ByteCode
 						case "StackMapTable":
 							newtable = true;
 						case "StackMap":
-							// {@squirreljme.error JI0j Duplicate stack map
+							// {@squirreljme.error JC03 Duplicate stack map
 							// tables exist within the method byte code.}
 							if (smt != null)
-								throw new InvalidClassFormatException("JI0j");
+								throw new InvalidClassFormatException("JC03");
 							
 							// Decode
 							ai.readFully((smt = new byte[alen[0]]));
@@ -212,10 +212,10 @@ public final class ByteCode
 				this._index = Arrays.copyOf(index, indexat);
 		}
 		
-		// {@squirreljme.error JI0k Failed to read from the code attribute.}
+		// {@squirreljme.error JC04 Failed to read from the code attribute.}
 		catch (IOException e)
 		{
-			throw new InvalidClassFormatException("JI0k", e);
+			throw new InvalidClassFormatException("JC04", e);
 		}
 	}
 	
@@ -232,11 +232,11 @@ public final class ByteCode
 	public int addressFollowing(int __a)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JI0l The instruction at the specified address is
+		// {@squirreljme.error JC05 The instruction at the specified address is
 		// not valid. (The address)}
 		if (!isValidAddress(__a))
 			throw new InvalidClassFormatException(
-				String.format("JI0l %d", __a));
+				String.format("JC05 %d", __a));
 		
 		return __a + this._lengths[__a];
 	}
@@ -275,11 +275,11 @@ public final class ByteCode
 	public Instruction getByAddress(int __a)
 		throws InvalidClassFormatException
 	{
-		// {@squirreljme.error JI0m The instruction at the specified address is
+		// {@squirreljme.error JC06 The instruction at the specified address is
 		// not valid. (The address)}
 		if (!isValidAddress(__a))
 			throw new InvalidClassFormatException(
-				String.format("JI0m %d", __a));
+				String.format("JC06 %d", __a));
 		
 		Reference<Instruction>[] icache = this._icache;
 		Reference<Instruction> ref = icache[__a];
@@ -482,11 +482,11 @@ public final class ByteCode
 	 */
 	private final Method __method()
 	{
-		// {@squirreljme.error JI0n The method owning this byte code has been
+		// {@squirreljme.error JC07 The method owning this byte code has been
 		// garbage collected.}
 		Method rv = this._methodref.get();
 		if (rv == null)
-			throw new IllegalStateException("JI0n");
+			throw new IllegalStateException("JC07");
 		return rv;
 	}
 	
@@ -529,11 +529,11 @@ public final class ByteCode
 		int op = (__code[aa] & 0xFF);
 		if (op == InstructionIndex.WIDE)
 		{
-			// {@squirreljme.error JI0o The wide instruction cannot be the
+			// {@squirreljme.error JC08 The wide instruction cannot be the
 			// last instruction in a method. (The address)}
 			if (aa + 1 >= __code.length)
 				throw new InvalidClassFormatException(
-					String.format("JI0o %d", __a));
+					String.format("JC08 %d", __a));
 			
 			op = (op << 8) | (__code[aa + 1] & 0xFF);
 			rv = 2;
@@ -542,7 +542,7 @@ public final class ByteCode
 		// Depends on the operation
 		switch (op)
 		{
-				// {@squirreljme.error JI0p Unsupported instruction specified
+				// {@squirreljme.error JC09 Unsupported instruction specified
 				// in the method byte code. (The operation; The address)}
 			case InstructionIndex.BREAKPOINT:
 			case InstructionIndex.IMPDEP1:
@@ -552,13 +552,13 @@ public final class ByteCode
 			case InstructionIndex.RET:
 			case InstructionIndex.WIDE:
 				throw new InvalidClassFormatException(
-					String.format("JI0p %d %d", op, __a));
+					String.format("JC09 %d %d", op, __a));
 			
-				// {@squirreljme.error JI0q Invokedynamic is not supported in
+				// {@squirreljme.error JC0a Invokedynamic is not supported in
 				// this virtual machine. (The address)}
 			case InstructionIndex.INVOKEDYNAMIC:
 				throw new InvalidClassFormatException(
-					String.format("JI0q %d", __a));
+					String.format("JC0a %d", __a));
 				
 				// Operands with no arguments
 			case InstructionIndex.AALOAD:
@@ -793,12 +793,12 @@ public final class ByteCode
 			case InstructionIndex.LOOKUPSWITCH:
 				throw new todo.TODO();
 			
-				// {@squirreljme.error JI0r Cannot get the length of the
+				// {@squirreljme.error JC0b Cannot get the length of the
 				// specified operation because it is not valid. (The operation;
 				// The address)}
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JI0r %d %d", op, __a));
+					String.format("JC0b %d %d", op, __a));
 		}
 		
 		return rv;

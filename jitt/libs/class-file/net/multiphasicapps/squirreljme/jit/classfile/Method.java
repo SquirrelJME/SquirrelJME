@@ -247,11 +247,11 @@ public final class Method
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JI1i A duplicate method exists within the
+			// {@squirreljme.error JC12 A duplicate method exists within the
 			// class. (The method name; The method descriptor)}
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
-					"JI1i %s %s", name, type));
+					"JC12 %s %s", name, type));
 			
 			// Handle attributes
 			int na = __in.readUnsignedShort();
@@ -266,12 +266,12 @@ public final class Method
 					if (!"Code".equals(attr[0]))
 						continue;
 			
-					// {@squirreljme.error JI1j The specified method
+					// {@squirreljme.error JC13 The specified method
 					// contains more than one code attribute. (The current
 					// class; The method name; The method type)}
 					if (code != null)
 						throw new InvalidClassFormatException(String.format(
-							"JI1j %s %s %s", __tn, name, type));
+							"JC13 %s %s %s", __tn, name, type));
 					
 					// Copy bytes
 					int rlen = alen[0];
@@ -279,13 +279,13 @@ public final class Method
 					ai.readFully(code, 0, rlen);
 				}
 		
-			// {@squirreljme.error JI1k The specified method does not have
+			// {@squirreljme.error JC14 The specified method does not have
 			// the correct matching for abstract and if code exists or not.
 			// (The current
 			// class; The method name; The method type; The method flags)}
 			if ((code == null) != (flags.isAbstract() | flags.isNative()))
 				throw new InvalidClassFormatException(String.format(
-					"JI1k %s %s %s", __tn, name, type, flags));
+					"JC14 %s %s %s", __tn, name, type, flags));
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,

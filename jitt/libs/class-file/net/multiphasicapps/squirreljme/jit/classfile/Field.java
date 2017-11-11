@@ -128,11 +128,11 @@ public final class Field
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JI15 A duplicate method exists within the
+			// {@squirreljme.error JC0p A duplicate method exists within the
 			// class. (The method name; The method descriptor)}
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
-					"JI15 %s %s", name, type));
+					"JC0p %s %s", name, type));
 			
 			// Handle attributes
 			int na = __in.readUnsignedShort();
@@ -147,12 +147,12 @@ public final class Field
 					if (!"ConstantValue".equals(attr[0]))
 						continue;
 					
-					// {@squirreljme.error JI16 There may only be one constant
+					// {@squirreljme.error JC0q There may only be one constant
 					// value for a field.}
 					if (constval != null)
-						throw new InvalidClassFormatException("JI16");
+						throw new InvalidClassFormatException("JC0q");
 					
-					// {@squirreljme.error JI17 Expected the constant value
+					// {@squirreljme.error JC0r Expected the constant value
 					// of a field to be a constant value type, not one that
 					// is another type. (The value that was input)}.
 					Object read = __pool.<Object>require(Object.class,
@@ -161,7 +161,7 @@ public final class Field
 						read instanceof Float || read instanceof Double ||
 						read instanceof String) || read == null)
 						throw new InvalidClassFormatException(String.format(
-							"JI17 %s", read));
+							"JC0r %s", read));
 					
 					// Set
 					constval = read;
