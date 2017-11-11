@@ -48,9 +48,9 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void beginJar(String __n)
 	{
-		// {@squirreljme.error JI09 Starting processing of the specified JAR.
+		// {@squirreljme.error AI01 Starting processing of the specified JAR.
 		// (The name of the JAR)}
-		this.out.printf("JI09 %s%n", __n);
+		this.out.printf("AI01 %s%n", __n);
 	}
 	
 	/**
@@ -60,10 +60,10 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void endJar(String __n, long __ns, int __lr, int __lc)
 	{
-		// {@squirreljme.error JI0a Finished processing the specified JAR.
+		// {@squirreljme.error AI02 Finished processing the specified JAR.
 		// (The name of the JAR; The number of nanoseconds it took to
 		// process; The number of resources; The number of classes)}
-		this.out.printf("JI0a %s %d %d %d%n", __n, __ns, __lr, __lc);
+		this.out.printf("AI02 %s %d %d %d%n", __n, __ns, __lr, __lc);
 	}
 	
 	/**
@@ -73,10 +73,10 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void processClass(String __n, String __cl, int __num)
 	{
-		// {@squirreljme.error JI0b Processing the specified class. (The name
+		// {@squirreljme.error AI03 Processing the specified class. (The name
 		// of the JAR; The name of the class; The number of classes which
 		// are being processed)}
-		this.out.printf("JI0b %s %s %d%n", __n, __cl, __num);
+		this.out.printf("AI03 %s %s %d%n", __n, __cl, __num);
 	}
 	
 	/**
@@ -86,10 +86,10 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void processResource(String __n, String __rc, int __num)
 	{
-		// {@squirreljme.error JI0c Processing the specified resource. (The
+		// {@squirreljme.error AI04 Processing the specified resource. (The
 		// name of the JAR; The name of the resource; The number of resource
 		// which are being processed)}
-		this.out.printf("JI0c %s %s %d%n", __n, __rc, __num);
+		this.out.printf("AI04 %s %s %d%n", __n, __rc, __num);
 	}
 }
 
