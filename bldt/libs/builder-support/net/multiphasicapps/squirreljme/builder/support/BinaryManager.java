@@ -117,10 +117,10 @@ public final class BinaryManager
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AO0i Cannot open the specified path as a project
+		// {@squirreljme.error AU01 Cannot open the specified path as a project
 		// because it does not exist. (The path to open as a binary)}
 		if (!Files.exists(__p))
-			throw new NoSuchBinaryException(String.format("AO0i %s", __p));
+			throw new NoSuchBinaryException(String.format("AU01 %s", __p));
 		
 		// Just create the binary
 		return new Binary(this._selfref, SourceName.ofBinaryPath(__p), null,

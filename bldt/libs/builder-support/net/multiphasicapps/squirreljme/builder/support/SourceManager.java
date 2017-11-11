@@ -108,11 +108,11 @@ public final class SourceManager
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AO0g No such source project exists. (The name
+		// {@squirreljme.error AU02 No such source project exists. (The name
 		// of the source project)}
 		Source rv = this._sources.get(__n);
 		if (rv == null)
-			throw new NoSuchSourceException(String.format("AO0g %s", __n));
+			throw new NoSuchSourceException(String.format("AU02 %s", __n));
 		return rv;
 	}
 	
