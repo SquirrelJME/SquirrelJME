@@ -15,5 +15,5 @@
  * @since 2016/09/07
  */
 
-package net.multiphasicapps.squirreljme.meep.lui;
+package net.multiphasicapps.squirreljme.runtime.lui;
 
