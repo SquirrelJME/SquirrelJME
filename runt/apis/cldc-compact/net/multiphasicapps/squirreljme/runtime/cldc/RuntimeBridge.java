@@ -22,6 +22,10 @@ public final class RuntimeBridge
 	public static final ObjectFunctions OBJECT =
 		__object();
 	
+	/** Standard process pipes. */
+	public static final PipeFunctions PIPE =
+		__pipe();
+	
 	/**
 	 * Only contains static instances.
 	 *
@@ -40,6 +44,17 @@ public final class RuntimeBridge
 	private static final ObjectFunctions __object()
 	{
 		return OBJECT;
+	}
+	
+	/**
+	 * Returns the {@link #PIPE} field.
+	 *
+	 * @return {@link #PIPE}.
+	 * @since 2017/11/10
+	 */
+	private static final PipeFunctions __pipe()
+	{
+		return PIPE;
 	}
 }
 
