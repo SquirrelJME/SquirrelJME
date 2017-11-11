@@ -17,7 +17,7 @@ __exedir="$(dirname -- "$0")"
 
 # Go through all namespaces
 __root="$__exedir/.."
-"$__exedir/lsnamespaces.sh" | while read __dir
+("$__exedir/lsnamespaces.sh" | while read __dir
 do
 	# And directories within the namespaces
 	for __file in "$__root/$__dir/"*
@@ -34,5 +34,5 @@ do
 			"$__exedir/relative.sh" "$__root" "$__file"
 		fi
 	done
-done
+done) | sort
 
