@@ -10,7 +10,7 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.unsafe.SystemVM;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 /**
  * This class is the root of all class trees in Java.
@@ -21,11 +21,7 @@ public class Object
 {
 	/** The type of class this object is. */
 	final Class<?> _classobj =
-		SystemVM.classOf(this);
-	
-	/** The identity hash code of this object. */
-	final short _idhashcode =
-		SystemVM.identityHashCode(this);
+		this.getClass();
 	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
@@ -83,7 +79,7 @@ public class Object
 	 */
 	public int hashCode()
 	{
-		return __identityHashCode();
+		return RuntimeBridge.OBJECT.identityHashCode(this);
 	}
 	
 	/**
@@ -186,20 +182,6 @@ public class Object
 			InterruptedException
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the identity hash code of this object.
-	 *
-	 * @return The identity hash code of this object.
-	 * @since 2016/06/13
-	 */
-	final int __identityHashCode()
-	{
-		// The hashcode is just a random value which is duplicated to the
-		// higher value
-		int lo = this._idhashcode;
-		return lo | (lo << 16);
 	}
 }
 

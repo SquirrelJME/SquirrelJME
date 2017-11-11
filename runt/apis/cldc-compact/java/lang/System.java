@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 import net.multiphasicapps.squirreljme.unsafe.SystemFile;
 import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
 import net.multiphasicapps.squirreljme.unsafe.SystemVM;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 public final class System
 {
@@ -328,7 +329,7 @@ public final class System
 			return 0;
 		
 		// Use object hash code data
-		return __a.__identityHashCode();
+		return RuntimeBridge.OBJECT.identityHashCode(__a);
 	}
 	
 	/**
