@@ -4,10 +4,10 @@
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 #     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3, or later.
+# SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: This shows the list of error prefixes.
+# DESCRIPTION: Gets the project name from the error prefix.
 
 # Force C locale
 export LC_ALL=C
@@ -15,20 +15,22 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Go through all projects
-("$__exedir/lsprojects.sh" | sed 's/\/$//g' | while read __project
+if [ "$#" -ne "1" ]
+then
+	echo "Usage: $0 (prefix)" 1>&2
+	exit 1
+fi
+
+# Go through prefixes and try to find it
+"$__exedir/errorprefixes.sh" | while read __line
 do
-	__man="$__exedir/../$__project/META-INF/MANIFEST.MF"
-	if [ -f "$__man" ]
+	__co="$(echo "$__line" | cut -d ' ' -f 1)"
+	__pr="$(echo "$__line" | cut -d ' ' -f 2)"
+	
+	if [ "$__co" = "$1" ]
 	then
-		__err="$(sed \
-			'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
-			< "$__man" | grep '^X-SQUIRRELJME-ERROR[ \t]*:' |
-			sed 's/^X-SQUIRRELJME-ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
-		if [ -n "$__err" ]
-		then
-			echo "$__err $__project"
-		fi
+		echo "$__pr"
+		break
 	fi
-done) | sort
+done
 
