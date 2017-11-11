@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.rms.file;
+package net.multiphasicapps.squirreljme.runtime.rms.file;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.microedition.rms.RecordStoreException;
-import net.multiphasicapps.squirreljme.rms.RecordCluster;
-import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
-import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
+import net.multiphasicapps.squirreljme.runtime.rms.RecordCluster;
+import net.multiphasicapps.squirreljme.runtime.rms.RecordClusterManager;
+import net.multiphasicapps.squirreljme.runtime.rms.RecordStoreOwner;
 
 /**
  * This is a record store manager which uses the local file system to manage
