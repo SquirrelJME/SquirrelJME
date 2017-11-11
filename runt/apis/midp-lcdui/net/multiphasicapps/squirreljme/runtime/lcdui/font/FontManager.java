@@ -14,8 +14,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import javax.microedition.lcdui.Font;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
@@ -52,7 +52,7 @@ public abstract class FontManager
 	static
 	{
 		// Use either the provided font manager or a default if none was set
-		FontManager fm = SystemEnvironment.<FontManager>systemService(
+		FontManager fm = RuntimeBridge.SERVICE.<FontManager>systemService(
 			FontManager.class);
 		FONT_MANAGER = (fm == null ? new DefaultFontManager() : fm);
 	}
