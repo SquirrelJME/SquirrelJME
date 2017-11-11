@@ -27,15 +27,6 @@ public abstract class PipeFunctions
 		2;
 	
 	/**
-	 * Must be extended.
-	 *
-	 * @since 2017/11/10
-	 */
-	protected PipeFunctions()
-	{
-	}
-	
-	/**
 	 * Internal implementation of {@link #write(int, int)}.
 	 *
 	 * @param __fd The pipe to write to.

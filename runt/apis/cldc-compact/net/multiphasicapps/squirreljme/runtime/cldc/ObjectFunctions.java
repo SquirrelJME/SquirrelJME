@@ -18,15 +18,6 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
 public abstract class ObjectFunctions
 {
 	/**
-	 * Must be extended.
-	 *
-	 * @since 2017/11/10
-	 */
-	protected ObjectFunctions()
-	{
-	}
-	
-	/**
 	 * Internal implementation of {@link #identityHashCode(Object)}.
 	 *
 	 * @param __o The object to get the hashcode for.

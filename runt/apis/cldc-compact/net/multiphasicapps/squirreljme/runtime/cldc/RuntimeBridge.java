@@ -18,6 +18,10 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  */
 public final class RuntimeBridge
 {
+	/** Access to the clock. */
+	public static final ClockFunctions CLOCK =
+		__clock();
+	
 	/** Controls objects. */
 	public static final ObjectFunctions OBJECT =
 		__object();
@@ -33,6 +37,17 @@ public final class RuntimeBridge
 	 */
 	private RuntimeBridge()
 	{
+	}
+	
+	/**
+	 * Returns the {@link #CLOCK} field.
+	 *
+	 * @return {@link #CLOCK}.
+	 * @since 2017/11/10
+	 */
+	private static final ClockFunctions __clock()
+	{
+		return CLOCK;
 	}
 	
 	/**
