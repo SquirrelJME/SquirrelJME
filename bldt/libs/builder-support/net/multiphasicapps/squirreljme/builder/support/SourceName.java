@@ -43,11 +43,11 @@ public final class SourceName
 		{
 			char c = __n.charAt(i);
 			
-			// {@squirreljme.error AO0h The project source name contains an
+			// {@squirreljme.error AU03 The project source name contains an
 			// invalid character. (The specified character)}
 			if (c <= ' ' || c >= 0x7F)
 				throw new InvalidSourceNameException(
-					String.format("AO0h %c", c));
+					String.format("AU03 %c", c));
 			
 			// Lowercase
 			else if (c >= 'A' && c <= 'Z')
