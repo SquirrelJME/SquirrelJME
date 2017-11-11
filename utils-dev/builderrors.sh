@@ -29,8 +29,10 @@ do
 	# Did the prefix change?
 	if [ "$__old" != "$__pref" ]
 	then
+		
+		# Output
 		echo ""
-		echo "# "'`'"$__pref"'`'
+		echo "# "'`'"$__pref"'` -- '"_$("$__exedir/prefixerrortoproject.sh" "$__pref")_"
 		echo ""
 		__old="$__pref"
 	fi
