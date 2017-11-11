@@ -117,7 +117,7 @@ public final class ClassStructure
 			{
 				MethodFlags pf = pre.flags();
 				
-				// {@squirreljme.error JI2f The specified method in the given
+				// {@squirreljme.error AJ01 The specified method in the given
 				// class overrides a method which cannot override the given
 				// method. (The name of the current class; The name of the
 				// method; The flags for the overriding method; The flags
@@ -125,7 +125,7 @@ public final class ClassStructure
 				if (pf.isFinal() || (mflags.isStatic() != pf.isStatic()) ||
 					__accessOrder(mflags) < __accessOrder(pf))
 					throw new VerificationException(String.format(
-						"JI2f %s %s %s %s", __cn, nat, mflags, pf));
+						"AJ01 %s %s %s %s", __cn, nat, mflags, pf));
 			}
 			
 			// Override method

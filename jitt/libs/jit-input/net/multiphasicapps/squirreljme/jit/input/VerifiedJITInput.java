@@ -85,11 +85,11 @@ public final class VerifiedJITInput
 		if (__g == null || __f == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI0d No such group with the given name exists.
+		// {@squirreljme.error AJ0f No such group with the given name exists.
 		// (The name of the group)}
 		JITInputGroup grp = this.input.getGroup(__g);
 		if (grp == null)
-			throw new NoSuchGroupException(String.format("JI0d %s", __g));
+			throw new NoSuchGroupException(String.format("AJ0f %s", __g));
 		
 		// Load from group
 		return grp.loadResource(__f);

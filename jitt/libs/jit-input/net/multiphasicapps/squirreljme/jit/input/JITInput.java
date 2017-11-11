@@ -78,11 +78,11 @@ public final class JITInput
 			if (g == null)
 				throw new NullPointerException("NARG");	
 			
-			// {@squirreljme.error JI03 A group with the specified name already
+			// {@squirreljme.error AJ09 A group with the specified name already
 			// is being used as input. (The name of the group)}
 			String grpname = g.name();
 			if (groups.containsKey(grpname))
-				throw new JITException(String.format("JI03 %s", grpname));
+				throw new JITException(String.format("AJ09 %s", grpname));
 			
 			// Add group
 			groups.put(grpname, g);
@@ -136,11 +136,11 @@ public final class JITInput
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI04 The specified class does not exist within
+		// {@squirreljme.error AJ0a The specified class does not exist within
 		// the input. (The name of the class)}
 		ClassFile rv = this._classes.get(__n);
 		if (rv == null)
-			throw new NoSuchClassException(String.format("JI04 %s", __n));
+			throw new NoSuchClassException(String.format("AJ0a %s", __n));
 		return rv;
 	}
 	
@@ -159,11 +159,11 @@ public final class JITInput
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI05 The specified group does not exist within
+		// {@squirreljme.error AJ0b The specified group does not exist within
 		// the input. (The name of the group)}
 		JITInputGroup rv = this._groups.get(__g);
 		if (rv == null)
-			throw new NoSuchGroupException(String.format("JI05 %s", __g));
+			throw new NoSuchGroupException(String.format("AJ0b %s", __g));
 		return rv;
 	}
 }
