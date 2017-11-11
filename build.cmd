@@ -58,12 +58,8 @@ if not exist %__HB_VCLS% (
 
 REM Execute Java
 %JAVA% -Dproject.root=%__EXEDIR% ^
-	-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=true ^
-	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
-	-Dnet.multiphasicapps.squirreljme.build.onlybuild=true ^
-	-Dnet.multiphasicapps.squirreljme.build.source=%__EXEDIR% ^
-	-Dnet.multiphasicapps.squirreljme.build.binary=bins ^
+	-Dnet.multiphasicapps.squirreljme.builder.root=%__EXEDIR% ^
 	%BOOTSTRAP_CLASS% %*
 
 REM Failed to build the bootstrap (stage 1)
@@ -75,12 +71,8 @@ if %ERRORLEVEL% neq 0 (
 REM Execute Java, since Proxy interfaces are a mess, a double invocation of
 REM the JVM is performed.
 %JAVA% -Dproject.root=%__EXEDIR% ^
-	-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=false ^
-	-Dnet.multiphasicapps.squirreljme.bootstrap.source=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.bootstrap.binary=. ^
-	-Dnet.multiphasicapps.squirreljme.build.onlybuild=false ^
-	-Dnet.multiphasicapps.squirreljme.build.source=%__EXEDIR% ^
-	-Dnet.multiphasicapps.squirreljme.build.binary=bins ^
+	-Dnet.multiphasicapps.squirreljme.builder.root=%__EXEDIR% ^
 	-Dnet.multiphasicapps.squirreljme.runtime.javase.java=%JAVA% ^
 	-Dnet.multiphasicapps.squirreljme.runtime.javase.bootpath=sjmeboot.jar ^
 	-Dnet.multiphasicapps.squirreljme.runtime.javase.classpath=bins ^
