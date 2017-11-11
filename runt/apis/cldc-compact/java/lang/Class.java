@@ -11,13 +11,13 @@
 package java.lang;
 
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.unsafe.SystemVM;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 public final class Class<T>
 {
 	/** This is the prefix that is used for assertion checks. */
 	private static final String _ASSERTION_PREFIX =
-		"net.multiphasicapps.squirreljme.noassert.";
+		"net.multiphasicapps.squirreljme.runtime.noassert.";
 	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
@@ -253,7 +253,7 @@ public final class Class<T>
 		
 		// {@squirreljme.error ZZ01 Could not find the specified class. (The
 		// name of the class)}
-		Class<?> rv = SystemVM.classForName(__a);
+		Class<?> rv = RuntimeBridge.OBJECT.classForName(__a);
 		if (rv == null)
 			throw new ClassNotFoundException(String.format("ZZ01 %s", __a));
 		return rv;

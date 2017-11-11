@@ -27,6 +27,24 @@ public abstract class ObjectFunctions
 	protected abstract int protectedIdentityHashCode(Object __o);
 	
 	/**
+	 * Returns the class object for the class that uses the specified name.
+	 *
+	 * @param __n The name of the class to get the class object for.
+	 * @return The class object for the given class or {@code null} if it was
+	 * not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/30
+	 */
+	public final Class<?> classForName(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the identity hash code for the given object.
 	 *
 	 * @param __o The object to get the identity hash code for.

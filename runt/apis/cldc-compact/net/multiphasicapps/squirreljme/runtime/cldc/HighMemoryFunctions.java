@@ -24,5 +24,25 @@ public abstract class HighMemoryFunctions
 	 * @since 2017/11/10
 	 */
 	public abstract void gc();
+	
+	
+	/**
+	 * This searches the the virtual machine executable memory space for
+	 * strings which exist within the binary (which are always interned).
+	 *
+	 * @param __s The string to find the interned instance of.
+	 * @return The interned string or {@code null} if it was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/08/15
+	 */
+	public final String internString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
