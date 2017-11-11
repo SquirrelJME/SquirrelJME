@@ -10,26 +10,29 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
-import net.multiphasicapps.squirreljme.unsafe.SystemVM;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 public class Runtime
 {
+	/** THere is only a single instance of the run-time. */
+	private static final Runtime _INSTANCE =
+		new Runtime();
+	
 	private Runtime()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
 	/**
 	 * Indicates that the application exits with the given code.
 	 *
-	 * @param __e The exit code.
+	 * @param __v The exit code, the value of this code may change according
+	 * to the host operating system and the resulting process might not exit
+	 * with the given code.
 	 * @since 2017/02/08
 	 */
-	public void exit(int __a)
+	public void exit(int __v)
 	{
-		SystemProcess.exit(__a);
+		RuntimeBridge.PROCESS.exit(__v);
 	}
 	
 	public long freeMemory()
@@ -45,7 +48,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		SystemVM.gc();
+		RuntimeBridge.HIGH_MEMORY.gc();
 	}
 	
 	public long maxMemory()
