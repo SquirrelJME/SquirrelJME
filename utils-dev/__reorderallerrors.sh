@@ -16,15 +16,10 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Go through every single project
-for __dir in "$__exedir/../apis/"* "$__exedir/../libs/"* "$__exedir/../mids/"*
+"$__exedir/lsprojects.sh" | while read __project
 do
-	if [ ! -d "$__dir" ]
-	then
-		continue
-	fi
-	
-	echo ">> $__dir"
-	"$__exedir/reordererrors.sh" "$__dir"
-	fossil commit -m "Reorder errors in $(basename "$(dirname "$__dir")")/$(basename "$__dir"))"
+	echo ">> $__project"
+	"$__exedir/reordererrors.sh" "$__exedir/../$__project"
+	fossil commit -m "Reorder errors in $__project"
 done
 
