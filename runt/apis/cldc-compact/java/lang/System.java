@@ -13,10 +13,6 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
-import net.multiphasicapps.squirreljme.unsafe.SystemFile;
-import net.multiphasicapps.squirreljme.unsafe.SystemProcess;
-import net.multiphasicapps.squirreljme.unsafe.SystemVM;
 import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 public final class System
@@ -40,10 +36,24 @@ public final class System
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the current time on the system's clock in UTC since the epoch
+	 * (January 1, 1970 UTC).
+	 *
+	 * Note that this clock is not monotonic in that if a system adjusts the
+	 * system clock this method may return values lower than previous calls
+	 * which are made.
+	 *
+	 * Depending on the host hardware and operating system, the granularity of
+	 * this clock may or may not be accurate.
+	 *
+	 * @return The number of milliseconds since the epoch.
+	 * @since 2017/11/10
+	 */
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return SystemProcess.currentTimeMillis();
+		return RuntimeBridge.CLOCK.currentTimeMillis();
 	}
 	
 	/**
@@ -355,7 +365,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return SystemProcess.nanoTime();
+		return RuntimeBridge.CLOCK.nanoTime();
 	}
 	
 	/**
