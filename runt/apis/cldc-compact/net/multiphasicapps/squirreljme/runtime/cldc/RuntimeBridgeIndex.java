@@ -37,8 +37,12 @@ public interface RuntimeBridgeIndex
 	public static final int PROCESS =
 		5;
 	
+	/** Services. */
+	public static final int SERVICE =
+		6;
+	
 	/** Version information. */
 	public static final int VERSION =
-		6;
+		7;
 }
 

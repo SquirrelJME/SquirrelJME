@@ -38,6 +38,10 @@ public final class RuntimeBridge
 	public static final ProcessFunctions PROCESS =
 		(ProcessFunctions)__get(RuntimeBridgeIndex.PROCESS);
 	
+	/** Access to services. */
+	public static final ServiceFunctions SERVICE =
+		(ServiceFunctions)__get(RuntimeBridgeIndex.SERVICE);
+	
 	/** Version information. */
 	public static final VersionFunctions VERSION =
 		(VersionFunctions)__get(RuntimeBridgeIndex.VERSION);
@@ -67,6 +71,7 @@ public final class RuntimeBridge
 			case RuntimeBridgeIndex.OBJECT:			return OBJECT;
 			case RuntimeBridgeIndex.PIPE:			return PIPE;
 			case RuntimeBridgeIndex.PROCESS:		return PROCESS;
+			case RuntimeBridgeIndex.SERVICE:		return SERVICE;
 			case RuntimeBridgeIndex.VERSION:		return VERSION;
 			
 			default:

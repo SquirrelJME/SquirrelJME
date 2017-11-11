@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.unsafe.SystemVM;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 public final class String
 	implements Comparable<String>, CharSequence
@@ -384,7 +384,7 @@ public final class String
 	public String intern()
 	{
 		// The string may exist within the executable in a static form, use it
-		String rv = SystemVM.locateInternString(this);
+		String rv = RuntimeBridge.HIGH_MEMORY.internString(this);
 		if (rv != null)
 			return rv;
 		

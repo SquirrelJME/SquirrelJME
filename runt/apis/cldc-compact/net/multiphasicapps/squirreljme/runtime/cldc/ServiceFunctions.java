@@ -8,86 +8,32 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.unsafe;
+package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This contains the interfaces for the system environment.
+ * This provides access to single services provided by the system.
  *
- * @see __Ext_systemenvironment__
- * @since 2017/08/10
+ * @since 2017/11/10
  */
-public final class SystemEnvironment
+public abstract class ServiceFunctions
 {
 	/** Cached system services. */
-	private static final Map<Class<?>, Object> _CACHED_SERVICES =
+	private final Map<Class<?>, Object> _CACHED_SERVICES =
 		new LinkedHashMap<>();
 	
 	/**
-	 * Not used.
+	 * Maps the given class service name to a class which implements the
+	 * given service.
 	 *
-	 * @since 2017/08/10
+	 * @param __v The class to map a service for.
+	 * @return The class which implements the given service or {@code null}
+	 * if it does not exist.
+	 * @sincem 2017/08/10 
 	 */
-	private SystemEnvironment()
-	{
-	}
-	
-	/**
-	 * Returns the UUID of the system device.
-	 *
-	 * @return The UUID of the host system.
-	 * @since 2017/08/13
-	 */
-	public static String deviceUUID()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the hostname of the current system.
-	 *
-	 * @return The hostname of the system.
-	 * @since 2017/08/13
-	 */
-	public static String hostName()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the architecture the OS is running on.
-	 *
-	 * @return The architecture of the operating system.
-	 * @since 2017/08/13
-	 */
-	public static String osArchitecture()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the name of the operating system.
-	 *
-	 * @return The operating system name.
-	 * @since 2017/08/13
-	 */
-	public static String osName()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the version of the operating system.
-	 *
-	 * @return The operating system version.
-	 * @since 2017/08/13
-	 */
-	public static String osVersion()
-	{
-		throw new todo.TODO();
-	}
+	protected abstract String protectedMapService(String __v);
 	
 	/**
 	 * This obtains a class which implements a system specific service.
@@ -101,7 +47,7 @@ public final class SystemEnvironment
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/20
 	 */
-	public static <C> C systemService(Class<C> __cl)
+	public final <C> C systemService(Class<C> __cl)
 		throws NullPointerException
 	{
 		// Check
@@ -126,7 +72,8 @@ public final class SystemEnvironment
 			// This allows custom services to be used apart from the standard
 			// services if required.}
 			String sname = __cl.getName(),
-				pname = "net.multiphasicapps.squirreljme.unsafe.service." +
+				pname =
+					"net.multiphasicapps.squirreljme.runtime.cldc.service." +
 					sname,
 				vclass = System.getProperty(pname);
 			
@@ -146,7 +93,7 @@ public final class SystemEnvironment
 			
 			// See if the system internally declares a service class for the
 			// given service
-			vclass = __Ext_systemenvironment__.mapService(sname);
+			vclass = protectedMapService(sname);
 			if (vclass == null)
 			{
 				services.put(__cl, null);
@@ -168,20 +115,6 @@ public final class SystemEnvironment
 				return null;
 			}
 		}
-	}
-	
-	/**
-	 * Returns the account name of the user. This is the simplified account
-	 * name of the user, rather than {@code Stephanie Gawroriski} this would
-	 * return {@code stephanie} assuming that is what the account exists under
-	 * on the system.
-	 *
-	 * @return The account name of the user.
-	 * @since 2017/08/13
-	 */
-	public static String userAccountName()
-	{
-		throw new todo.TODO();
 	}
 }
 
