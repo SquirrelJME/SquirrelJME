@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 /**
- * DESCRIBE THIS.
+ * This class provides native virtual machine access to objects.
  *
  * @since 2017/11/10
  */
