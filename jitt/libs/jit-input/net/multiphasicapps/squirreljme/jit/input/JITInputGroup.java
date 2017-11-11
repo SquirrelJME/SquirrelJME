@@ -78,11 +78,11 @@ public final class JITInputGroup
 		Map<ClassName, ClassFile> classes = this._classes;
 		for (ClassFile c : __tcl)
 		{
-			// {@squirreljme.error JI06 A duplicate class exists within the
+			// {@squirreljme.error AJ0c A duplicate class exists within the
 			// input group. (The name of the class)}
 			ClassName n = c.thisName();
 			if (classes.containsKey(n))
-				throw new JITException(String.format("JI06 %s", n));
+				throw new JITException(String.format("AJ0c %s", n));
 			
 			classes.put(n, c);
 		}
@@ -91,11 +91,11 @@ public final class JITInputGroup
 		Map<String, Resource> resource = this._resources;
 		for (Resource r : __trc)
 		{
-			// {@squirreljme.error JI07 A duplicate resource exists within the
+			// {@squirreljme.error AJ0d A duplicate resource exists within the
 			// input group. (The name of the resource)}
 			String n = r.name();
 			if (resource.containsKey(n))
-				throw new JITException(String.format("JI07 %s", n));
+				throw new JITException(String.format("AJ0d %s", n));
 			
 			resource.put(n, r);
 		}
@@ -134,12 +134,12 @@ public final class JITInputGroup
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI08 No such resource exists. (The name of
+		// {@squirreljme.error AJ0e No such resource exists. (The name of
 		// the resource)}
 		Map<String, Resource> resources = this._resources;
 		Resource rc = resources.get(__f);
 		if (rc == null)
-			throw new NoSuchResourceException(String.format("JI08 %s", __f));
+			throw new NoSuchResourceException(String.format("AJ0e %s", __f));
 		
 		// Load it
 		return rc.load();
