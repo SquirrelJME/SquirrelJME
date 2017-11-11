@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
 import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
+import net.multiphasicapps.squirreljme.runtime.cldc.VersionFunctions;
 
 public final class System
 {
@@ -59,7 +60,9 @@ public final class System
 	/**
 	 * Indicates that the application exits with the given code.
 	 *
-	 * @param __e The exit code.
+	 * @param __e The exit code, the value of this code may change according
+	 * to the host operating system and the resulting process might not exit
+	 * with the given code.
 	 * @since 2017/02/08
 	 */
 	public static void exit(int __e)
@@ -166,39 +169,40 @@ public final class System
 		getSecurityManager().checkPropertyAccess(__k);
 		
 		// Depends on the property
+		VersionFunctions version = RuntimeBridge.VERSION;
 		switch (__k)
 		{
 				// The file separator
 			case "file.separator":
-				return SystemFile.directorySeparator();
+				return version.directorySeparator();
 			
 				// Temporary directory
 			case "java.io.tmpdir":
-				return SystemFile.temporaryDirectory();
+				throw new todo.TODO();
 				
 				// The version of the Java virtual machine
 			case "java.version":
-				return SystemVM.javaVMVersionShort();
+				return version.javaVMVersionShort();
 				
 				// The version of the JVM (full)
 			case "java.vm.version":
-				return SystemVM.javaVMVersionFull();
+				return version.javaVMVersionFull();
 				
 				// The name of the JVM
 			case "java.vm.name":
-				return SystemVM.javaVMName();
+				return version.javaVMName();
 				
 				// The vendor of the JVM
 			case "java.vm.vendor":
-				return SystemVM.javaVMVendor();
+				return version.javaVMVendor();
 			
 				// The e-mail of the JVM
 			case "java.vm.vendor.email":
-				return SystemVM.javaVMEmail();
+				return version.javaVMEmail();
 			
 				// The URL of the JVM
 			case "java.vm.vendor.url":
-				return SystemVM.javaVMURL();
+				return version.javaVMURL();
 				
 				// The vendor of the class libraries
 			case "java.vendor":
@@ -218,11 +222,11 @@ public final class System
 				
 				// The version of the run-time
 			case "java.runtime.version":
-				return SystemVM.javaRuntimeVersion();
+				return version.javaRuntimeVersion();
 				
 				// The line separator used for text files on the system
 			case "line.separator":
-				return SystemFile.lineSeparator();
+				return version.lineSeparator();
 				
 				// The configuration used
 			case "microedition.configuration":
@@ -230,7 +234,7 @@ public final class System
 				
 				// The unique device identifier
 			case "microedition.deviceid.uuid":
-				return SystemEnvironment.deviceUUID();
+				return version.deviceUUID();
 				
 				// The encoding to use for reading/writing text files
 			case "microedition.encoding":
@@ -238,7 +242,7 @@ public final class System
 			
 				// The hostname used
 			case "microedition.hostname":
-				return SystemEnvironment.hostName();
+				return version.hostName();
 				
 				// The platform the device is running on, this is a model
 				// number and such
@@ -252,35 +256,36 @@ public final class System
 				// The architecture of the OS, using standard SquirrelJME
 				// architecture name format
 			case "os.arch":
-				return SystemEnvironment.osArchitecture();
+				return version.osArchitecture();
 				
 				// The name of the operating system
 			case "os.name":
-				return SystemEnvironment.osName();
+				return version.osName();
 				
 				// The version of the operating system
 			case "os.version":
-				return SystemEnvironment.osVersion();
+				return version.osVersion();
 			
 				// The PATH variable separator
 			case "path.separator":
-				return SystemFile.pathSeparator();
+				return version.pathSeparator();
 			
 				// Working directory
 			case "user.dir":
-				return SystemFile.workingDirectory();
+				throw new todo.TODO();
 				
 				// User home directory
 			case "user.home":
-				return SystemFile.userHome();
+				throw new todo.TODO();
 				
 				// User account name
 			case "user.name":
-				return SystemEnvironment.userAccountName();
+				return version.userAccountName();
 			
 				// Is this a SquirrelJME JVM?
-			case "net.multiphasicapps.squirreljme.isvm":
-				return Boolean.toString(SystemVM.isSquirrelJMEJVM());
+			case "net.multiphasicapps.squirreljme":
+				return Boolean.toString(RuntimeBridge.VERSION.
+					isSquirrelJMEJVM());
 			
 				// Unknown, get user supplied properties
 			default:
