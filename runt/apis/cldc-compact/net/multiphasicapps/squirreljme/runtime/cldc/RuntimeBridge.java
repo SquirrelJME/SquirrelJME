@@ -26,6 +26,10 @@ public final class RuntimeBridge
 	public static final HighMemoryFunctions HIGH_MEMORY =
 		(HighMemoryFunctions)__get(RuntimeBridgeIndex.HIGH_MEMORY);
 	
+	/** Mailbox access. */
+	public static final MailboxFunctions MAILBOX =
+		(MailboxFunctions)__get(RuntimeBridgeIndex.MAILBOX);
+	
 	/** Controls objects. */
 	public static final ObjectFunctions OBJECT =
 		(ObjectFunctions)__get(RuntimeBridgeIndex.OBJECT);
@@ -68,6 +72,7 @@ public final class RuntimeBridge
 		{
 			case RuntimeBridgeIndex.CLOCK:			return CLOCK;
 			case RuntimeBridgeIndex.HIGH_MEMORY:	return HIGH_MEMORY;
+			case RuntimeBridgeIndex.MAILBOX:		return MAILBOX;
 			case RuntimeBridgeIndex.OBJECT:			return OBJECT;
 			case RuntimeBridgeIndex.PIPE:			return PIPE;
 			case RuntimeBridgeIndex.PROCESS:		return PROCESS;

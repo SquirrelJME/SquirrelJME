@@ -16,9 +16,10 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
-import net.multiphasicapps.squirreljme.unsafe.SystemMail;
-import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 
 /**
  * This implements the server side of an IMC connection.
@@ -71,16 +72,19 @@ public class IMCServer
 		this.authmode = __auth;
 		this.interrupt = __int;
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Listen on the mailbox
 		byte[] encname = __name.getBytes("utf-8");
 		try
 		{
-			this._mailfd = SystemMail.mailboxListen(encname, 0, encname.length,
+			this._mailfd = mbfunc.listen(encname, 0, encname.length,
 				__ver.hashCode(), __auth);
 		}
 		
 		// {@squirreljme.error EC0h Could not open a mailbox for listening.}
-		catch (SystemMailException e)
+		catch (MailboxException e)
 		{
 			throw new IOException("EC0h", e);
 		}
@@ -98,6 +102,9 @@ public class IMCServer
 		// server has been closed.}
 		if (this._closed)
 			throw new IOException("EC0i");
+			
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
 		
 		// Listen on socket
 		int mailfd = this._mailfd;
@@ -106,7 +113,7 @@ public class IMCServer
 			try
 			{
 				// Accept socket
-				int clfd = SystemMail.mailboxAccept(mailfd);
+				int clfd = mbfunc.accept(mailfd);
 				
 				// {@squirreljme.error EC0j Connection closed during accept.}
 				if (clfd < 0)
@@ -119,7 +126,7 @@ public class IMCServer
 			
 			// {@squirreljme.error EC0k Could not accept the mailbox
 			// connection. (The descriptor)}
-			catch (SystemMailException e)
+			catch (MailboxException e)
 			{
 				throw new IOException(String.format("EC0k %d", mailfd), e);
 			}
@@ -149,15 +156,18 @@ public class IMCServer
 			return;
 		this._closed = true;
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Close it
 		try
 		{
-			SystemMail.mailboxClose(this._mailfd);
+			mbfunc.close(this._mailfd);
 		}
 		
 		// {@squirreljme.error EC0m Could not close the server mailbox.
 		// (The descriptor)}
-		catch (SystemMailException e)
+		catch (MailboxException e)
 		{
 			throw new IOException(String.format("EC0m %d", this._mailfd), e);
 		}

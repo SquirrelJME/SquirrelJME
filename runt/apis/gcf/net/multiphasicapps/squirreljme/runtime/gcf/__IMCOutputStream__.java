@@ -12,8 +12,9 @@ package net.multiphasicapps.squirreljme.runtime.gcf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.unsafe.SystemMail;
-import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 /**
  * This wraps the mailbox datagram connection for output.
@@ -67,15 +68,18 @@ class __IMCOutputStream__
 		flush();
 		this._closed = true;
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Close it
 		try
 		{
-			SystemMail.mailboxClose(this._fd);
+			mbfunc.close(this._fd);
 		}
 		
 		// {@squirreljme.error EC0q Could not close the mailbox for the output
 		// stream. (The descriptor)}
-		catch (SystemMailException e)
+		catch (MailboxException e)
 		{
 			throw new IOException(String.format("EC0q %d", this._fd), e);
 		}
@@ -92,6 +96,9 @@ class __IMCOutputStream__
 		// If closed, do nothing
 		if (this._closed)
 			return;
+			
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
 		
 		// Are there bytes to be flushed
 		int at = this._at;
@@ -101,12 +108,12 @@ class __IMCOutputStream__
 			byte[] buffer = this._buffer;
 			try
 			{
-				SystemMail.mailboxSend(this._fd, 0, buffer, 0, at);
+				mbfunc.send(this._fd, 0, buffer, 0, at);
 			}
 			
 			// {@squirreljme.error EC0r Could not flush the output mailbox.
 			// (The descriptor)}
-			catch (SystemMailException e)
+			catch (MailboxException e)
 			{
 				throw new IOException(String.format("EC0r %d", this._fd), e);
 			}
