@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.rms;
+package net.multiphasicapps.squirreljme.runtime.rms;
 
 import javax.microedition.rms.RecordStoreException;
 
