@@ -64,10 +64,10 @@ public class ImageReaderDispatcher
 		else if (head == '<')
 			throw new todo.TODO();
 		
-		// {@squirreljme.error EB1o Could not detect the image format used
+		// {@squirreljme.error EB1j Could not detect the image format used
 		// specified by the starting byte. (The starting byte)}
 		else
-			throw new IOException(String.format("EB1o %d", head));
+			throw new IOException(String.format("EB1j %d", head));
 	}
 }
 

@@ -101,16 +101,16 @@ public final class EditableText
 	public void setConstraints(int __c)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB13 The specified constraint type is not
+		// {@squirreljme.error EB0y The specified constraint type is not
 		// valid. (The type)}
 		int type = (__c & TextField.CONSTRAINT_MASK);
 		if (type < 0 || type > _MAX_CONSTRAINT)
-			throw new IllegalArgumentException(String.format("EB13 %d", type));
+			throw new IllegalArgumentException(String.format("EB0y %d", type));
 		
-		// {@squirreljme.error EB14 The specified constraint flags are not
+		// {@squirreljme.error EB0z The specified constraint flags are not
 		// valid. (The constraint flags)}
 		if (((__c ^ type) & ~_VALID_CONSTRAINT_FLAG_BITS) != 0)
-			throw new IllegalArgumentException(String.format("EB14 %04x",
+			throw new IllegalArgumentException(String.format("EB0z %04x",
 				__c >>> 16));
 		
 		// Lock
@@ -145,18 +145,18 @@ public final class EditableText
 	public int setMaxSize(int __ms)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB15 The maximum characters in the text field
+		// {@squirreljme.error EB10 The maximum characters in the text field
 		// cannot be zero or negative. (The maximum characters)}
 		if (__ms <= 0)
-			throw new IllegalArgumentException(String.format("EB15 %d", __ms));
+			throw new IllegalArgumentException(String.format("EB10 %d", __ms));
 		
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error EB16 Cannot set the maximum size because the
+			// {@squirreljme.error EB11 Cannot set the maximum size because the
 			// input text field would have an invalid value.}
 			if (!__check(this._value, __ms, this._constraints))
-				throw new IllegalArgumentException("EB16");
+				throw new IllegalArgumentException("EB11");
 		
 			// Set, SquirrelJME does not have a fixed limit on the size of text
 			// fields
@@ -184,10 +184,10 @@ public final class EditableText
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error EB17 Cannot set the specified string
+			// {@squirreljme.error EB12 Cannot set the specified string
 			// because it is not valid within the constraints.}
 			if (!__check(__s, this._maxlength, this._constraints))
-				throw new IllegalArgumentException("EB17");
+				throw new IllegalArgumentException("EB12");
 			
 			// Set value
 			StringBuilder value = this._value;
