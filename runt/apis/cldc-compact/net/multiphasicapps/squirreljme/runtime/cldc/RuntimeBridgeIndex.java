@@ -25,24 +25,28 @@ public interface RuntimeBridgeIndex
 	public static final int HIGH_MEMORY =
 		2;
 	
+	/** Mailbox methods. */
+	public static final int MAILBOX =
+		3;
+	
 	/** Controls objects. */
 	public static final int OBJECT =
-		3;
+		4;
 	
 	/** Standard process pipes. */
 	public static final int PIPE =
-		4;
+		5;
 	
 	/** Access to processes. */
 	public static final int PROCESS =
-		5;
+		6;
 	
 	/** Services. */
 	public static final int SERVICE =
-		6;
+		7;
 	
 	/** Version information. */
 	public static final int VERSION =
-		7;
+		8;
 }
 

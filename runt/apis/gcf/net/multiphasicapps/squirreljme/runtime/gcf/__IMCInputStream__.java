@@ -14,8 +14,9 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.unsafe.SystemMail;
-import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 /**
  * This wraps the mailbox datagram connection for input.
@@ -77,15 +78,19 @@ class __IMCInputStream__
 			return;
 		this._closed = true;
 		
+		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Close it
 		try
 		{
-			SystemMail.mailboxClose(this._fd);
+			mbfunc.close(this._fd);
 		}
 		
 		// {@squirreljme.error EC0n Could not close the mailbox for the
 		// input stream. (The descriptor)}
-		catch (SystemMailException e)
+		catch (MailboxException e)
 		{
 			throw new IOException(String.format("EC0n %d", this._fd), e);
 		}
@@ -143,6 +148,9 @@ class __IMCInputStream__
 		boolean interrupt = this.interrupt;
 		int[] chan = null;
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Try constantly filling the buffer
 		try
 		{
@@ -162,7 +170,7 @@ class __IMCInputStream__
 						try
 						{
 							// Read in datagram
-							int rc = SystemMail.mailboxReceive(fd, chan,
+							int rc = mbfunc.receive(fd, chan,
 								work, 0, work.length, true);
 							
 							// EOF? Return read bytes or EOF
@@ -185,7 +193,7 @@ class __IMCInputStream__
 						
 						// {@squirreljme.error EC0o Could not read from the
 						// remote destination. (The descriptor)}
-						catch (SystemMailException e)
+						catch (MailboxException e)
 						{
 							throw new IOException(String.format("EC0o %d", fd),
 								e);

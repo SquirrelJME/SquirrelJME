@@ -21,11 +21,12 @@ import java.util.Objects;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
+import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteIDFormat;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
-import net.multiphasicapps.squirreljme.unsafe.SystemMail;
-import net.multiphasicapps.squirreljme.unsafe.SystemMailException;
 
 /**
  * This implements the client side of the IMC connection.
@@ -103,17 +104,20 @@ public class IMCClient
 		// Encode server name
 		byte[] svnb = __sv.getBytes("utf-8");
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Connect to server
 		int fd;
 		try
 		{
 			// Connect to the remote server
-			this._clientfd = (fd = SystemMail.mailboxConnect(midb, mido, midl,
+			this._clientfd = (fd = mbfunc.connect(midb, mido, midl,
 				svnb, 0, svnb.length, __ver.hashCode(), __authmode));
 		}
 		
 		// {@squirreljme.error EC05 Could not connect to the remote server.}
-		catch (SystemMailException e)
+		catch (MailboxException e)
 		{
 			throw new ConnectionNotFoundException(Objects.toString(
 				e.getMessage(), "EC05"));
@@ -128,13 +132,13 @@ public class IMCClient
 			try
 			{
 				this.connectid = new MidletSuiteID(new String(
-					SystemMail.mailboxRemoteID(fd), "utf-8"),
+					mbfunc.remoteId(fd), "utf-8"),
 					MidletSuiteIDFormat.JAR);
 			}
 			
 			// {@squirreljme.error EC06 Could not determine the identifier
 			// of the remote system. (The descriptor)}
-			catch (SystemMailException e)
+			catch (MailboxException e)
 			{
 				throw new IOException(String.format("EC06 %d", fd), e);
 			}
@@ -168,17 +172,20 @@ public class IMCClient
 		this.authmode = __auth;
 		this.interrupt = __interrupt;
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// Determine remote end
 		try
 		{
 			this.connectid = new MidletSuiteID(new String(
-				SystemMail.mailboxRemoteID(__clfd), "utf-8"),
+				mbfunc.remoteId(__clfd), "utf-8"),
 				MidletSuiteIDFormat.JAR);
 		}
 		
 		// {@squrireljme.error EC0t Could not determine the name of the
 		// remote connection. (The descriptor)}
-		catch (SystemMailException e)
+		catch (MailboxException e)
 		{
 			throw new IOException(String.format("EC0t %d", __clfd), e);
 		}
@@ -206,17 +213,20 @@ public class IMCClient
 		// be closed later on.
 		this._closed = true;
 		
+		// Need the mailbox
+		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
+		
 		// If no streams were opened then the client descriptor must be closed
 		// so that the descriptors do not leak
 		if (!this._opened)
 			try
 			{
-				SystemMail.mailboxClose(this._clientfd);
+				mbfunc.close(this._clientfd);
 			}
 			
 			// {@squirreljme.error EC07 Could not close the client connection.
 			// (The client descriptor)}
-			catch (SystemMailException e)
+			catch (MailboxException e)
 			{
 				throw new IOException(String.format("EC07 %d", this._clientfd),
 					e);
