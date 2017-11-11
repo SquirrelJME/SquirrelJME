@@ -19,19 +19,31 @@ package net.multiphasicapps.squirreljme.builder.support;
 public class BuilderFactory
 	implements Runnable
 {
-	/** Arguments to the builder. */
+	/** The command to execute. */
+	protected final String command;
+	
+	/** Arguments to the builder command. */
 	private final String[] _args;
 	
 	/**
 	 * Initializes the build factory.
 	 *
 	 * @param __args Program arguments.
+	 * @throws IllegalArgumentException If the factory arguments are missing
+	 * the primary command.
 	 * @since 2017/11/09
 	 */
 	public BuilderFactory(String... __args)
+		throws IllegalArgumentException
 	{
 		// Copy arguments so they are not messed up
 		__args = (__args != null ? __args.clone() : new String[0]);
+		
+		// 
+		this.command = null;
+		if (true)
+			throw new todo.TODO();
+		
 		this._args = __args;
 	}
 	

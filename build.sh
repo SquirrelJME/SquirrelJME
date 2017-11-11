@@ -52,33 +52,17 @@ fi
 
 # Run it once to build the bootstrap
 if ! "$JAVA" $JAVA_OPTIONS \
-	"-Dproject.root=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=true" \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
-	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=true" \
-	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)/bins" \
+	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
 	"$BOOTSTRAP_CLASS" "$@"
 then
 	exit 1
 fi
 
-# If building the doclet, do not run it since there is nothing to run
-if [ "$1" = "build-doclet" ]
-then
-	exit 0
-fi
-
 # Run it again to run the bootstrap
 if ! "$JAVA" $JAVA_OPTIONS \
-	"-Dproject.root=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.onlybuild=false" \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.source=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
-	"-Dnet.multiphasicapps.squirreljme.build.onlybuild=false" \
-	"-Dnet.multiphasicapps.squirreljme.build.source=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.build.binary=$(pwd)/bins" \
+	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.java=$JAVA" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.bootpath=sjmeboot.jar" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.classpath=bins" \

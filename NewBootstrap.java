@@ -52,7 +52,7 @@ import javax.tools.ToolProvider;
  * {@code net.multiphasicapps.squirreljme.bootstrap.binary} is the location
  * where output binaries are to be placed when they are compiled, along with
  * the bootstrap.
- * {@code net.multiphasicapps.squirreljme.bootstrap.source} is the location
+ * {@code net.multiphasicapps.squirreljme.builder.root} is the location
  * of the SquirrelJME source tree.
  *
  * @since 2016/10/26
@@ -343,7 +343,7 @@ public class NewBootstrap
 			"net.multiphasicapps.squirreljme.bootstrap.binary")),
 			src = Paths
 			.get(System.getProperty(
-			"net.multiphasicapps.squirreljme.bootstrap.source"));
+			"net.multiphasicapps.squirreljme.builder.root"));
 		
 		// Only build?
 		NewBootstrap nb = new NewBootstrap(bin, src, __args);
