@@ -84,11 +84,11 @@ public final class ClassFile
 				if (f == null)
 					throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI0s Either Object has a superclass which it
+		// {@squirreljme.error JC0c Either Object has a superclass which it
 		// cannot extend any class or any other class does not have a super
 		// class. (The current class name; The super class name)}
 		if (__tn.equals(new ClassName("java/lang/Object")) != (__sn == null))
-			throw new InvalidClassFormatException(String.format("JI0s %s %s",
+			throw new InvalidClassFormatException(String.format("JC0c %s %s",
 				__tn, __sn));
 		
 		// Set
@@ -195,10 +195,10 @@ public final class ClassFile
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI0t Cannot create a special class because it
+		// {@squirreljme.error JC0d Cannot create a special class because it
 		// is not an array or primitive type. (The descriptor)}
 		if (!__d.isArray() && !__d.isPrimitive())
-			throw new IllegalArgumentException(String.format("JI0t %s", __d));
+			throw new IllegalArgumentException(String.format("JC0d %s", __d));
 		
 		// Build
 		return new ClassFile("", ClassVersion.MAX_VERSION,
@@ -228,20 +228,20 @@ public final class ClassFile
 		if (__g == null || __is == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JI0u The magic number for the class is not
+		// {@squirreljme.error JC0e The magic number for the class is not
 		// valid. (The read magic number; The expected magic number)}
 		DataInputStream in = new DataInputStream(__is);
 		int magic = in.readInt();
 		if (magic != _MAGIC_NUMBER)
 			throw new InvalidClassFormatException(String.format(
-				"JI0u %08x %08x", magic, _MAGIC_NUMBER));
+				"JC0e %08x %08x", magic, _MAGIC_NUMBER));
 		
-		// {@squirreljme.error JI0v The version number of the input class
+		// {@squirreljme.error JC0f The version number of the input class
 		// file is not valid. (The version number)}
 		int cver = in.readShort() | (in.readShort() << 16);
 		ClassVersion version = ClassVersion.findVersion(cver);
 		if (version == null)
-			throw new InvalidClassFormatException(String.format("JI0v %d.%d",
+			throw new InvalidClassFormatException(String.format("JC0f %d.%d",
 				cver >>> 16, (cver & 0xFFFF)));
 		
 		// Decode the constant pool
@@ -283,11 +283,11 @@ public final class ClassFile
 				// of the information is really that important anyway
 			}
 		
-		// {@squirreljme.error JI0w Expected end of the class to follow the
+		// {@squirreljme.error JC0g Expected end of the class to follow the
 		// attributes in the class. (The name of this class)}
 		if (in.read() >= 0)
 			throw new InvalidClassFormatException(
-				String.format("JI0w %s", thisname));
+				String.format("JC0g %s", thisname));
 		
 		// Build
 		return new ClassFile(__g, version, classflags, thisname, supername,
@@ -319,11 +319,11 @@ public final class ClassFile
 		__aname[0] = __pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 			__in.readUnsignedShort()).toString();
 		
-		// {@squirreljme.error JI0x Attribute exceeds 2GiB in length. (The
+		// {@squirreljme.error JC0h Attribute exceeds 2GiB in length. (The
 		// size of the attribute)}
 		int len = __in.readInt();
 		if (len < 0)
-			throw new InvalidClassFormatException(String.format("JI0x %d",
+			throw new InvalidClassFormatException(String.format("JC0h %d",
 				len & 0xFFFFFFFFL));
 		
 		// Used as a hint

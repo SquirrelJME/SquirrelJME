@@ -54,12 +54,12 @@ public final class FieldDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JI18 The field descriptor cannot be blank. (The
+		// {@squirreljme.error JC0s The field descriptor cannot be blank. (The
 		// field descriptor)}
 		int n = __n.length();
 		if (n <= 0)
 			throw new InvalidClassFormatException(
-				String.format("JI18 %s", __n));
+				String.format("JC0s %s", __n));
 		
 		// Depends on the first character
 		char c = __n.charAt(0);
@@ -104,21 +104,21 @@ public final class FieldDescriptor
 				this.dimensions = 0;
 				this.component = null;
 				
-				// {@squirreljme.error JI19 The field descriptor for a class
+				// {@squirreljme.error JC0t The field descriptor for a class
 				// must end with a semicolon. (The field descriptor)}
 				if (';' != __n.charAt(n - 1))
 					throw new InvalidClassFormatException(
-						String.format("JI19 %s", __n));
+						String.format("JC0t %s", __n));
 				
 				// Decode
 				this.classname = new ClassName(__n.substring(1, n - 1));
 				break;
 				
-				// {@squirreljme.error JI1a The field descriptor is not valid.
+				// {@squirreljme.error JC0u The field descriptor is not valid.
 				// (The field descriptor)}
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JI1a %s", __n));
+					String.format("JC0u %s", __n));
 		}
 	}
 	
