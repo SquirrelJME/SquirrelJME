@@ -1,0 +1,61 @@
+# 2017/11/10
+
+## 19:36
+
+I should continue the cleanup of the namespaces.
+
+## 19:39
+
+The main thing is the rewrite of the un-safe classes. Before my plan was to
+have something which was purely static, but I think it would be best if there
+were instances that provide direct native access and such. Rather than using
+static replacements which in my opinion seems a bit ugly when special things
+are needed. Instead of having external and internal classes, I can instead
+have only externally visible classes where the internal details of classes
+are then accessed via protected interfaces, they can also be exposed directly
+to the same class as package private. So those internal hidden methods are
+protected but then there are final public methods which are more secure. This
+would make more sense in Java than having purely static methods. Also it
+potentially allows the CLDC implementation to be rewritten or overridden for
+a given implementation. It would be a bit more complex but it would work out
+for the most part. I would not need to have compiler hacks just to override
+certain behavior, although assembly bits would be needed for the most part in
+some situations though. This means that if I want memory mapped byte buffers
+and such, then all arrays just point to memory for their array data instead
+of having it as part of their object.
+
+## 19:46
+
+This would also ensure that all the methods are implemented and not leaving it
+to the compiler to make sure it is.
+
+## 19:48
+
+Of course, how do I name the given classes? There would need to be a final
+class which contains all of the locally initiated interfaces of the primitive
+methods. Well, they are basically just `SystemCalls`, but really they provide
+access to internal run-time details.
+
+## 19:51
+
+This means that when SquirrelJME is compiled super statically like I intend it
+to be, this means the kernel and the userspace can easily be split by classes
+rather than doing some kind of special checking or split, makes things easier.
+
+## 19:54
+
+The only big thing however is, how are the classes initialized? I suppose I
+will need methods which return their own field value (which is null) and then
+the fields are set by the virtual machine. System properties and such would
+not be visible when those classes were initialized. So actually what I need is
+an alternative main entry point for the Java SE system which initializes those
+special fields magically and then continues to the main constructor. This is
+the only way the bootstrap environment would work correctly. So this means
+entry into a special method instead of what I currently have:
+`net.multiphasicapps.squirreljme.builder.entry.BuilderMain`. Then that is
+forwarded as a normal call, since the bootstrap must be setup.
+
+## 19:58
+
+At least on static SquirrelJME VMs, there will need to be special
+initialization of the fields to the VM operates properly anyway.
