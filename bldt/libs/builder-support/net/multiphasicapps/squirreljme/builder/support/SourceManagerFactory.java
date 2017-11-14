@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.nio.file.Path
+
 /**
  * This is the factory which is used to create instances of
  * {@code SourceManager} which provides access to specific timespaces
@@ -19,5 +21,23 @@ package net.multiphasicapps.squirreljme.builder.support;
  */
 public class SourceManagerFactory
 {
+	/** The root of the source tree. */
+	protected final Path root;
+	
+	/**
+	 * Initializes the source manager.
+	 *
+	 * @param __root The root of the source tree.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/14
+	 */
+	public SourceManagerFactory(Path __root)
+		throws NullPointerException
+	{
+		if (__root == null)
+			throw new NullPointerException("NARG");
+		
+		this.root = __root;
+	}
 }
 
