@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.io.IOException;
 import java.nio.file.Path
 
 /**
@@ -38,6 +39,21 @@ public class SourceManagerFactory
 			throw new NullPointerException("NARG");
 		
 		this.root = __root;
+	}
+	
+	/**
+	 * Obtains the source manager which uses the specified types.
+	 *
+	 * @param __t The timespaces to source projects from.
+	 * @return The source manager over those packages.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/14
+	 */
+	public SourceManager get(TimeSpaceType... __t)
+		throws IOException, NullPointerException
+	{
+		throw new todo.TODO();
 	}
 }
 
