@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: JavaSE Build Enviroment
-X-SquirrelJME-Namespace-Type: javase
-X-SquirrelJME-Namespace-Description: This namespace provides any 
- projects which the bootstrap system will override so that building 
- on Java SE is capable of being performed.
-
