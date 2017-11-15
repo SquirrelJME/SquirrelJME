@@ -1,0 +1,7 @@
+# JavaSE Pseudo-Environment
+
+This directory contains the pseudo environment for Java SE host systems. It
+still uses the host class libraries but this enables support for simulating a
+basic Java ME environment on Java SE which is not completely compatible as
+such.
+
