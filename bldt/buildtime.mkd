@@ -1,0 +1,9 @@
+# Build-time Projects
+
+These are projects which are only available at build-time to run SquirrelJME
+projects.
+
+ * `javase/` -- Pseudo-environment for Java SE.
+ * `libs/` -- Support libraries for building.
+ * `mids/` -- Building support for platforms.
+

@@ -1,0 +1,7 @@
+# JIT-time Projects
+
+These are projects which are available if a JIT is enabled and as such contain
+all of the JIT code.
+
+ * `libs/` -- JIT Libraries.
+
