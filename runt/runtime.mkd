@@ -1,0 +1,12 @@
+# Run-time Projects
+
+This contains all of the projects which are intended to be ran at run-time or
+within the run-time environment.
+
+ * `apis/` -- Standard APIs and JSRs.
+ * `klib/` -- Libraries which are to be considered part of the system.
+ * `kmid/` -- MIDlets which are considered to be part of the system.
+ * `libs/` -- Libraries intended to be used by users.
+ * `mids/` -- MIDlets intended to be used by users.
+ * `test/` -- Test framework.
+
