@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.builder.support;
 
 import java.io.IOException;
-import java.nio.file.Path
+import java.nio.file.Path;
 
 /**
  * This is the factory which is used to create instances of
