@@ -80,6 +80,10 @@ public class SourceManagerFactory
 		{
 			for (Path p : ds)
 			{
+				// Ignore non-directories
+				if (!Files.isDirectory(p))
+					continue;
+				
 				// Read manifest
 				JavaManifest man;
 				try (InputStream is = Files.newInputStream(
