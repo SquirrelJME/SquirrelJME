@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -26,8 +29,22 @@ public class BuilderFactory
 	/** The command to execute. */
 	protected final String command;
 	
+	/** The directory for the project root (source code). */
+	protected final Path sourceroot;
+	
 	/** Arguments to the builder command. */
 	private final String[] _args;
+	
+	/** The directory for each timespace binaries. */
+	private final Path[] _bin;
+	
+	/** The source managers for each timespace. */
+	private final SourceManager[] _sourcemanagers =
+		new SourceManager[TimeSpaceType.values().length];
+	
+	/** Binary managers for each timespace. */
+	private final BinaryManager[] _binarymanagers =
+		new BinaryManager[TimeSpaceType.values().length];
 	
 	/**
 	 * Initializes the build factory.
@@ -47,14 +64,108 @@ public class BuilderFactory
 				if (a != null)
 					args.addLast(a);
 		
+		// Use default paths based on system properties
+		Path sourceroot = Paths.get(
+			System.getProperty("net.multiphasicapps.squirreljme.builder.root",
+				System.getProperty("user.dir", "squirreljme"))),
+			binroot = Paths.get(
+				System.getProperty(
+					"net.multiphasicapps.squirreljme.builder.output",
+					System.getProperty("user.dir", "output"))),
+			binruntime = null,
+			binjit = null,
+			binbuild = null;
+		
+		// Allow paths to be modified
+		String[] parse;
+		while (null != (parse = __getopts(":?s:o:j:b:", args)))
+			switch (parse[0])
+			{
+					// Change source code root
+				case "-s":
+					sourceroot = Paths.get(parse[1]);
+					break;
+					
+					// Change binary output base root
+				case "-o":
+					binroot = Paths.get(parse[1]);
+					break;
+					
+					// Run-time build path
+				case "-r":
+					binruntime = Paths.get(parse[1]);
+					break;
+					
+					// JIT-time build path
+				case "-j":
+					binjit = Paths.get(parse[1]);
+					break;
+					
+					// Build-time build path
+				case "-b":
+					binbuild = Paths.get(parse[1]);
+					break;
+				
+					// {@squirreljme.error AU08 Unknown argument.
+					// Usage: [-s path] [-o path] [-r path] [-j path] [-b path]
+					// command (command arguments...);
+					// -s: The project source path;
+					// -o: The base directory for binary output;
+					// -r: The binary path for the run-time;
+					// -j: The binary path for the jit-time;
+					// -b: The binary path for the build-time;
+					// Valid commands are:
+					// build
+					// .(The switch)}
+				default:
+					throw new IllegalArgumentException(
+						String.format("AU08 %s", parse[1]));
+			}
+		
+		// Fill with defaults if missing
+		if (binruntime == null)
+			binruntime = binroot.resolve("runtime");
+		if (binjit == null)
+			binjit = binroot.resolve("jit");
+		if (binbuild == null)
+			binbuild = binroot.resolve("build");
+		
 		// {@squirreljme.error AU04 No command given.}
 		String command = args.pollFirst();
 		if (command == null)
 			throw new IllegalArgumentException("AU04");
 		this.command = command;
 		
+		// Set paths
+		this.sourceroot = sourceroot;
+		this._bin = new Path[]{binruntime, binjit, binbuild};
+		
 		// Use remaining arguments as input
 		this._args = args.<String>toArray(new String[args.size()]);
+	}
+	
+	/**
+	 * Returns the binary manager to use for binary project retrieval.
+	 *
+	 * @param __t The timespace to build for.
+	 * @return The manager for the given timespace.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/16
+	 */
+	public BinaryManager binaryManager(TimeSpaceType __t)
+		throws IOException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		int i = __t.ordinal();
+		BinaryManager[] binarymanagers = this._binarymanagers;
+		BinaryManager rv = binarymanagers[i];
+		if (rv == null)
+			binarymanagers[i] =
+				(rv = new BinaryManager(this._bin[i], sourceManager(__t)));
+		return null;
 	}
 	
 	/**
@@ -74,7 +185,21 @@ public class BuilderFactory
 		
 		System.err.printf("DEBUG -- %s: %s%n", __t, Arrays.asList(__p));
 		
-		throw new todo.TODO();
+		// May fail
+		try
+		{
+			// Need the binary manager to build these projects
+			BinaryManager bm = binaryManager(__t);
+		
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AU09 Failed to build the specified binary due
+		// to an I/O exception.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AU09", e);
+		}
 	}
 	
 	/**
@@ -116,10 +241,10 @@ public class BuilderFactory
 								break;
 							
 								// {@squirreljme.error AU06 Unknown argument.
-								// Usage: build [-r] [-j] [-b] (projects...).
-								// -r: Build for run-time.
-								// -j: Build for jit-time.
-								// -b: Build for build-time.
+								// Usage: build [-r] [-j] [-b] (projects...);
+								// -r: Build for run-time;
+								// -j: Build for jit-time;
+								// -b: Build for build-time;
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
@@ -138,6 +263,30 @@ public class BuilderFactory
 				throw new IllegalArgumentException(String.format("AU05 %s",
 					command));
 		}
+	}
+	
+	/**
+	 * Returns the source manager to use for source code retrieval.
+	 *
+	 * @param __t The timespace to build for.
+	 * @return The manager for the given timespace.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/16
+	 */
+	public SourceManager sourceManager(TimeSpaceType __t)
+		throws IOException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		int i = __t.ordinal();
+		SourceManager[] sourcemanagers = this._sourcemanagers;
+		SourceManager rv = sourcemanagers[i];
+		if (rv == null)
+			sourcemanagers[i] =
+				(rv = new SourceManagerFactory(this.sourceroot).get(__t));
+		return null;
 	}
 	
 	/**
