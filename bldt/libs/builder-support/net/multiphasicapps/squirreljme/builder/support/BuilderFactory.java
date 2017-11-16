@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * This is a factory which can invoke the build system using a common set
  * of input arguments.
@@ -36,15 +39,21 @@ public class BuilderFactory
 	public BuilderFactory(String... __args)
 		throws IllegalArgumentException
 	{
-		// Copy arguments so they are not messed up
-		__args = (__args != null ? __args.clone() : new String[0]);
+		// Copy arguments for processing
+		Deque<String> args = new ArrayDeque<>();
+		if (__args != null)
+			for (String a : __args)
+				if (a != null)
+					args.addLast(a);
 		
-		// 
-		this.command = null;
-		if (true)
-			throw new todo.TODO();
+		// {@squirreljme.error AU04 No command given.}
+		String command = args.pollFirst();
+		if (command == null)
+			throw new IllegalArgumentException("AU04");
+		this.command = command;
 		
-		this._args = __args;
+		// Use remaining arguments as input
+		this._args = args.<String>toArray(new String[args.size()]);
 	}
 	
 	/**
