@@ -157,7 +157,7 @@ public final class SourceManager
 				}
 				
 				// Obtain the namespace type, ignore if none was specified
-				String type = attr.getValue("Namespace-Type");
+				String type = attr.getValue("X-SquirrelJME-Namespace-Type");
 				if (type == null)
 					continue;
 				

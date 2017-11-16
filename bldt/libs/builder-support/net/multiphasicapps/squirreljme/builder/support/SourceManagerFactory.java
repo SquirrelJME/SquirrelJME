@@ -10,8 +10,18 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
+import java.util.Set;
+import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
  * This is the factory which is used to create instances of
@@ -53,7 +63,58 @@ public class SourceManagerFactory
 	public SourceManager get(TimeSpaceType... __t)
 		throws IOException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Only look for specific timespaces
+		Set<TimeSpaceType> want = new HashSet<>();
+		for (TimeSpaceType t : __t)
+		{
+			if (t == null)
+				throw new NullPointerException("NARG");
+			
+			want.add(t);
+		}
+		
+		// Go through root files searching for directories containing timespace
+		// manifests
+		Set<Path> from = new SortedTreeSet<>();
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.root))
+		{
+			for (Path p : ds)
+			{
+				// Read manifest
+				JavaManifest man;
+				try (InputStream is = Files.newInputStream(
+					p.resolve("TIMESPACE.MF"), StandardOpenOption.READ))
+				{
+					man = new JavaManifest(is);
+				}
+				
+				catch (NoSuchFileException e)
+				{
+					continue;
+				}
+				
+				// Ignore unspecified timespaces
+				String stype = man.getMainAttributes().getValue(
+					"X-SquirrelJME-Timespace-Type");
+				if (stype == null)
+					continue;
+				
+				// Ignore unknown timespaces
+				TimeSpaceType type = TimeSpaceType.ofString(stype);
+				if (type == null)
+					continue;
+				
+				// If this is a desired namespace, use that
+				if (want.contains(type))
+					from.add(p);
+			}	
+		}
+		
+		// Setup source manager
+		return new SourceManager(from.<Path>toArray(new Path[from.size()]));
 	}
 }
 

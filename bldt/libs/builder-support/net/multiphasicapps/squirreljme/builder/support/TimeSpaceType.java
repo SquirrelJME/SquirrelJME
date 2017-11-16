@@ -28,5 +28,30 @@ public enum TimeSpaceType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the timespace type for the given string.
+	 *
+	 * @param __s The input string.
+	 * @return The timespace for the given input or {@code null} if there is
+	 * no such timespace.
+	 * @since 2017/11/16
+	 */
+	public static TimeSpaceType ofString(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__s)
+		{
+			case "runtime":		return RUNTIME;
+			case "jit":			return JIT;
+			case "build":		return BUILD;
+			
+			default:
+				return null;
+		}
+	}
 }
 
