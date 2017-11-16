@@ -87,7 +87,7 @@ public final class BinaryManager
 		Map<SourceName, Binary> binaries = this._binaries;
 		synchronized (binaries)
 		{
-			// 
+			// If the binary has already been cached, use that
 			Binary rv = binaries.get(__n);
 			if (rv != null)
 				return rv;
