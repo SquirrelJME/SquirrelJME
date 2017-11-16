@@ -54,13 +54,13 @@ public class SourceManagerFactory
 	/**
 	 * Obtains the source manager which uses the specified types.
 	 *
-	 * @param __t The timespaces to source projects from.
+	 * @param __t The timespace to source projects from.
 	 * @return The source manager over those packages.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/14
 	 */
-	public SourceManager get(TimeSpaceType... __t)
+	public SourceManager get(TimeSpaceType __t)
 		throws IOException, NullPointerException
 	{
 		if (__t == null)
@@ -68,13 +68,10 @@ public class SourceManagerFactory
 		
 		// Only look for specific timespaces
 		Set<TimeSpaceType> want = new HashSet<>();
-		for (TimeSpaceType t : __t)
-		{
-			if (t == null)
-				throw new NullPointerException("NARG");
-			
-			want.add(t);
-		}
+		int basei = __t.ordinal();
+		for (TimeSpaceType t : TimeSpaceType.values())
+			if (t.ordinal() <= basei)
+				want.add(t);
 		
 		// Go through root files searching for directories containing timespace
 		// manifests
