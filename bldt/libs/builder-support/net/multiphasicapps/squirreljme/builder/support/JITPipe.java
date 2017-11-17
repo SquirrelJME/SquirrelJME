@@ -178,6 +178,7 @@ public class JITPipe
 		// Add all input binaries to the queue
 		Deque<Binary> queue;
 		Set<Binary> input = this._input;
+		BinaryManager binaries = this.binaries;
 		synchronized (input)
 		{
 			queue = new ArrayDeque<>(input);
@@ -198,7 +199,7 @@ public class JITPipe
 			// counts, counts are done backwards so that the most used
 			// binaries have the lowest valued numbers (as such, cldc-compact
 			// should always end up being the lowest value)
-			for (Binary dep : binary.allDependencies())
+			for (Binary dep : binaries.allDependencies(binary))
 			{
 				Integer was = counts.get(dep);
 				if (was == null)

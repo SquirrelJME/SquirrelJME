@@ -43,17 +43,12 @@ public final class Binary
 	/** The path to the binary for this executable. */
 	protected final Path path;
 	
-	/** Reference to the owning binary manager, used for dependencies. */
-	private final Reference<BinaryManager> _managerref;
-	
 	/** The cached manifest for this entry. */
 	private volatile Reference<JavaManifest> _manifest;
 	
 	/**
 	 * Initializes the binary.
 	 *
-	 * @param __ref The reference to the binary manager, to find other binaries
-	 * such as for dependencies.
 	 * @param __name The name of this binary.
 	 * @param __source The source of this binary, may be {@code null} if there
 	 * is no source.
@@ -62,53 +57,17 @@ public final class Binary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/02
 	 */
-	Binary(Reference<BinaryManager> __ref, SourceName __name, Source __source,
-		Path __path)
+	Binary(SourceName __name, Source __source, Path __path)
 		throws InvalidBinaryException, NoSuchBinaryException,
 			NullPointerException
 	{
-		if (__ref == null || __name == null || __path == null)
+		if (__name == null || __path == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._managerref = __ref;
 		this.name = __name;
 		this.source = __source;
 		this.path = __path;
-	}
-	
-	/**
-	 * Returns all binaries which are dependencies of this project, this
-	 * includes any binaries which are recursively depended upon.
-	 *
-	 * @return The dependencies for this binary.
-	 * @since 2017/11/02
-	 */
-	public final Binary[] allDependencies()
-	{
-		Set<Binary> rv = new SortedTreeSet<>(); 
-		Deque<Binary> queue = new ArrayDeque<>();
-		
-		// Initially start with the current dependencies
-		for (Binary b : dependencies())
-			queue.addLast(b);
-		
-		// Always drain the queue
-		while (!queue.isEmpty())
-		{
-			// Only process once
-			Binary b = queue.removeFirst();
-			if (!rv.add(b))
-				continue;
-			
-			// Go through those dependencies
-			for (Binary d : b.dependencies())
-				queue.addLast(d);
-		}
-		
-		// Always remove this from the return value
-		rv.remove(this);
-		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 	 
 	/**
