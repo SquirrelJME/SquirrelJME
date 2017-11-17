@@ -16,6 +16,8 @@ import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This is a factory which can invoke the build system using a common set
@@ -165,7 +167,7 @@ public class BuilderFactory
 		if (rv == null)
 			binarymanagers[i] =
 				(rv = new BinaryManager(this._bin[i], sourceManager(__t)));
-		return null;
+		return rv;
 	}
 	
 	/**
@@ -185,21 +187,36 @@ public class BuilderFactory
 		
 		System.err.printf("DEBUG -- %s: %s%n", __t, Arrays.asList(__p));
 		
-		// May fail
+		// Need the binary manager to build these projects
+		BinaryManager bm;
 		try
 		{
-			// Need the binary manager to build these projects
-			BinaryManager bm = binaryManager(__t);
-			
-			throw new todo.TODO();
+			bm = binaryManager(__t);
 		}
 		
-		// {@squirreljme.error AU09 Failed to build the specified binary due
-		// to an I/O exception.}
+		// {@squirreljme.error AU09 Could not obtain the binary manager.}
 		catch (IOException e)
 		{
 			throw new RuntimeException("AU09", e);
 		}
+		
+		// Get binaries
+		int n = __p.length;
+		Binary[] bins = new Binary[n];
+		for (int i = 0; i < n; i++)
+			bins[i] = bm.get(__p[i]);
+		
+		// Do not return duplicate binaries
+		Set<Binary> rv = new LinkedHashSet<>();
+		
+		// Compile all of the project and return required class path for
+		// it to operate
+		for (Binary i : bins)
+			for (Binary b : bm.compile(i))
+				rv.add(b);
+		
+		// Return the completed set
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 	
 	/**
@@ -286,7 +303,7 @@ public class BuilderFactory
 		if (rv == null)
 			sourcemanagers[i] =
 				(rv = new SourceManagerFactory(this.sourceroot).get(__t));
-		return null;
+		return rv;
 	}
 	
 	/**
