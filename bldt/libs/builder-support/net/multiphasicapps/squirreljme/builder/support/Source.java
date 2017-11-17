@@ -14,9 +14,13 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.attribute.FileTime;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
@@ -45,6 +49,10 @@ public final class Source
 	
 	/** The approximate binary dependency set. */
 	private volatile Reference<DependencySet> _approxds;
+	
+	/** Last modified time of the source code. */
+	private volatile long _lastmodtime =
+		Long.MIN_VALUE;
 	
 	/**
 	 * Initializes the project source.
@@ -139,7 +147,55 @@ public final class Source
 	 */
 	public long lastModifiedTime()
 	{
-		throw new todo.TODO();
+		// Could be pre-cached
+		long rv = this._lastmodtime;
+		if (rv != Long.MIN_VALUE)
+			return rv;
+		
+		// Need to go through every single file in every directory, the date of
+		// the newest file is used
+		rv = Long.MIN_VALUE;
+		try
+		{
+			// Start at the root directory
+			Deque<Path> queue = new ArrayDeque<>();
+			queue.add(this.root);
+			
+			// Process every directory
+			while (!queue.isEmpty())
+				try (DirectoryStream<Path> ds = Files.newDirectoryStream(
+					queue.removeFirst()))
+				{
+					for (Path p : ds)
+					{
+						// Handle directories later
+						if (Files.isDirectory(p))
+						{
+							queue.addLast(p);
+							continue;
+						}
+						
+						// Use the newer file time
+						FileTime ft = Files.getLastModifiedTime(p);
+						if (ft != null)
+						{
+							long now = ft.toMillis();
+							if (now > rv)
+								rv = now;
+						}
+					}
+				}
+			
+			// Cache for next time
+			this._lastmodtime = rv;
+			return rv;
+		}
+		
+		// Error so the time cannot be known
+		catch (IOException e)
+		{
+			return Long.MIN_VALUE;
+		}
 	}
 }
 
