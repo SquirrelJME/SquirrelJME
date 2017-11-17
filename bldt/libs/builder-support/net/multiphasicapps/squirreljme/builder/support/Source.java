@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.builder.support;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -34,6 +36,9 @@ public final class Source
 	
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
+	
+	/** Dependencies that this source code relies on. */
+	private volatile Reference<DependencySet> _dependencies;
 	
 	/**
 	 * Initializes the project source.
@@ -60,6 +65,26 @@ public final class Source
 		{
 			this.manifest = new JavaManifest(in);
 		}
+	}
+	
+	/**
+	 * Returns the set of dependencies which are needed for this project to
+	 * build and operate correctly.
+	 *
+	 * @return The set of dependencies.
+	 * @since 2017/11/17
+	 */
+	public final DependencySet dependencies()
+	{
+		Reference<DependencySet> ref = this._dependencies;
+		DependencySet rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			throw new todo.TODO();
+		}
+		
+		return rv;
 	}
 	
 	/**
