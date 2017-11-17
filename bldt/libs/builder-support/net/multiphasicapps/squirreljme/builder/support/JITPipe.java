@@ -15,9 +15,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.input.JITInput;
@@ -168,51 +170,32 @@ public class JITPipe
 	}
 	
 	/**
-	 * Obtains an array containing the set of binaries to compile.
+	 * Goes through all of the input, compiles all of the binaries which are
+	 * required to run the binary.
 	 *
-	 * @return The array of input binaries in compilation (dependency order).
+	 * @return The compiled set of binaries in compilation and dependency
+	 * order.
 	 * @since 2017/11/02
 	 */
 	private Binary[] __binaries()
 	{
 		// Add all input binaries to the queue
 		Deque<Binary> queue;
-		Set<Binary> input = this._input;
-		BinaryManager binaries = this.binaries;
+		Collection<Binary> input = this._input;
 		synchronized (input)
 		{
 			queue = new ArrayDeque<>(input);
 		}
 		
-		// Process binaries in the queue
-		Set<Binary> did = new HashSet<>();
-		Map<Binary, Integer> counts = new HashMap<>();
+		// All the binaries must be compiled before they can be used
+		BinaryManager binaries = this.binaries;
+		Set<Binary> rv = new LinkedHashSet<>();
 		while (!queue.isEmpty())
-		{
-			// Mark binary as processed, so it does not get processed
-			// multiple times
-			Binary binary = queue.removeFirst();
-			if (!did.add(binary))
-				continue;
-			
-			// Go through the binary dependencies and process them for their
-			// counts, counts are done backwards so that the most used
-			// binaries have the lowest valued numbers (as such, cldc-compact
-			// should always end up being the lowest value)
-			for (Binary dep : binaries.allDependencies(binary, false))
-			{
-				Integer was = counts.get(dep);
-				if (was == null)
-					counts.put(dep, -1);
-				else
-					counts.put(dep, was - 1);
-				
-				// Add to queue for later counting
-				queue.addLast(dep);
-			}
-		}
+			for (Binary b : binaries.compile(queue.removeFirst()))
+				rv.add(b);
 		
-		throw new todo.TODO();
+		// Return the set
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 }
 

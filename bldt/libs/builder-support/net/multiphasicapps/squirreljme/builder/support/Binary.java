@@ -47,6 +47,9 @@ public final class Binary
 	/** The cached manifest for this entry. */
 	private volatile Reference<JavaManifest> _manifest;
 	
+	/** Dependencies that this source code relies on. */
+	private volatile Reference<DependencySet> _dependencies;
+	
 	/**
 	 * Initializes the binary.
 	 *
@@ -76,11 +79,32 @@ public final class Binary
 	 * operate correctly.
 	 *
 	 * @return The set of dependencies.
+	 * @throws InvalidBinaryException If this binary is not valid.
 	 * @since 2017/11/17
 	 */
 	public final DependencySet dependencies()
+		throws InvalidBinaryException
 	{
-		throw new todo.TODO();
+		// If the binary is newer then use the dependencies read from the
+		// manifest
+		if (isBinaryNewer())
+		{
+			Reference<DependencySet> ref = this._dependencies;
+			DependencySet rv;
+		
+			if (ref == null || null == (rv = ref.get()))
+				this._dependencies = new WeakReference<>(
+					(rv = new DependencySet(manifest())));
+			
+			return rv;
+		}
+		
+		// {@squirreljme.error AU0a Cannot get dependencies for the binary
+		// because it has no source.}
+		Source source = this.source;
+		if (source == null)
+			throw new InvalidBinaryException("AU0a");
+		return source.approximateBinaryDependencySet();
 	}
 	
 	/**
@@ -153,10 +177,22 @@ public final class Binary
 	public final JavaManifest manifest()
 	{
 		if (isSourceNewer())
-			throw new todo.TODO();
+			return this.source.approximateBinaryManifest();
 		
 		// Open the binary instead
-		throw new todo.TODO();
+		try (ZipBlockReader zip = zipBlock())
+		{
+			try (InputStream in = zip.open("META-INF/MANIFEST.MF"))
+			{
+				return new JavaManifest(in);
+			}
+		}
+		
+		// {@squirreljme.error AU0b Could not read the binary manifest.}
+		catch (IOException e)
+		{
+			throw new InvalidBinaryException("AU0b", e);
+		}
 	}
 	
 	/**
