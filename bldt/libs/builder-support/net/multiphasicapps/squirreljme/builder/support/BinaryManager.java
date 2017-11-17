@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -78,6 +79,38 @@ public final class BinaryManager
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
+		
+		// Start with this binary in the queue
+		Deque<Binary> queue = new ArrayDeque<>();
+		queue.add(__b);
+		
+		// Process binaries in the queue
+		Set<Binary> did = new HashSet<>();
+		Map<Binary, Integer> counts = new HashMap<>();
+		while (!queue.isEmpty())
+		{
+			// Mark binary as processed, so it does not get processed
+			// multiple times
+			Binary binary = queue.removeFirst();
+			if (!did.add(binary))
+				continue;
+			
+			// Go through the binary dependencies and process them for their
+			// counts, counts are done backwards so that the most used
+			// binaries have the lowest valued numbers (as such, cldc-compact
+			// should always end up being the lowest value)
+			for (Binary dep : __basicAllDependencies(binary))
+			{
+				Integer was = counts.get(dep);
+				if (was == null)
+					counts.put(dep, -1);
+				else
+					counts.put(dep, was - 1);
+				
+				// Add to queue for later counting
+				queue.addLast(dep);
+			}
+		}
 		
 		throw new todo.TODO();
 	}
