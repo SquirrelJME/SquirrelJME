@@ -69,12 +69,13 @@ public final class BinaryManager
 	 * to build and operate correctly.
 	 *
 	 * @param __b The binary to get the dependencies of.
+	 * @param __opt If {@code true} include all optional dependencies.
 	 * @return All dependencies which are required for this project to
 	 * operate.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
-	public final Binary[] allDependencies(Binary __b)
+	public final Binary[] allDependencies(Binary __b, boolean __opt)
 		throws NullPointerException
 	{
 		if (__b == null)
@@ -99,7 +100,7 @@ public final class BinaryManager
 			// counts, counts are done backwards so that the most used
 			// binaries have the lowest valued numbers (as such, cldc-compact
 			// should always end up being the lowest value)
-			for (Binary dep : __basicAllDependencies(binary))
+			for (Binary dep : __basicAllDependencies(binary, __opt))
 			{
 				Integer was = counts.get(dep);
 				if (was == null)
@@ -131,7 +132,7 @@ public final class BinaryManager
 			throw new NullPointerException("NARG");
 		
 		// Get all the needed dependencies
-		Binary[] deps = allDependencies(__b);
+		Binary[] deps = allDependencies(__b, false);
 		int ndeps = deps.length;
 		
 		// Compile all of them first
@@ -159,14 +160,33 @@ public final class BinaryManager
 	 * binary.
 	 *
 	 * @param __b The binary to get the dependencies for.
+	 * @param __opt If {@code true} include all optional dependencies.
 	 * @return The direct dependencies for this binary.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
-	public final Binary[] dependencies(Binary __b)
+	public final Binary[] dependencies(Binary __b, boolean __opt)
 		throws NullPointerException
 	{
 		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains a set of binaries which meet the specified dependencies.
+	 *
+	 * @param __ds The set of dependencies to get binaries for.
+	 * @param __opt If this is {@code true}, also get optional dependencies.
+	 * @return The binaries which meet the specified dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary[] get(DependencySet __ds, boolean __opt)
+		throws NullPointerException
+	{
+		if (__ds == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -260,12 +280,13 @@ public final class BinaryManager
 	 * to build and operate correctly.
 	 *
 	 * @param __b The binary to get the dependencies of.
+	 * @param __opt If {@code true} include all optional dependencies.
 	 * @return All dependencies which are required for this project to
 	 * operate.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
-	private final Binary[] __basicAllDependencies(Binary __b)
+	private final Binary[] __basicAllDependencies(Binary __b, boolean __opt)
 		throws NullPointerException
 	{
 		if (__b == null)
@@ -275,7 +296,7 @@ public final class BinaryManager
 		Deque<Binary> queue = new ArrayDeque<>();
 		
 		// Initially start with the current dependencies
-		for (Binary b : dependencies(__b))
+		for (Binary b : dependencies(__b, __opt))
 			queue.addLast(b);
 		
 		// Always drain the queue
@@ -287,7 +308,7 @@ public final class BinaryManager
 				continue;
 			
 			// Go through those dependencies
-			for (Binary d : dependencies(b))
+			for (Binary d : dependencies(b, __opt))
 				queue.addLast(d);
 		}
 		

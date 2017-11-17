@@ -199,7 +199,7 @@ public class JITPipe
 			// counts, counts are done backwards so that the most used
 			// binaries have the lowest valued numbers (as such, cldc-compact
 			// should always end up being the lowest value)
-			for (Binary dep : binaries.allDependencies(binary))
+			for (Binary dep : binaries.allDependencies(binary, false))
 			{
 				Integer was = counts.get(dep);
 				if (was == null)
