@@ -65,55 +65,48 @@ public final class BinaryManager
 	}
 	
 	/**
-	 * This returns the set of binaries which are needed for this project
-	 * to build and operate correctly.
+	 * Returns the dependencies which statisfy the given set.
 	 *
-	 * @param __b The binary to get the dependencies of.
-	 * @param __opt If {@code true} include all optional dependencies.
-	 * @return All dependencies which are required for this project to
-	 * operate.
+	 * @param __set The set of dependencies to get.
+	 * @param __opt If {@code true} include optional dependencies.
+	 * @return Binaries which statisfy the given dependencies.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
-	public final Binary[] allDependencies(Binary __b, boolean __opt)
+	public final Binary[] dependencies(DependencySet __set, boolean __opt)
+		throws NullPointerException
+	{
+		if (__set == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the class path for the given binary.
+	 *
+	 * @param __b The binary to get the classpath for.
+	 * @return The binary class path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary[] classPath(Binary __b)
 		throws NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Start with this binary in the queue
-		Deque<Binary> queue = new ArrayDeque<>();
-		queue.add(__b);
+		// Return value to use run-time
+		Set<Binary> rv = new LinkedHashSet<>();
 		
-		// Process binaries in the queue
-		Set<Binary> did = new HashSet<>();
-		Map<Binary, Integer> counts = new HashMap<>();
-		while (!queue.isEmpty())
-		{
-			// Mark binary as processed, so it does not get processed
-			// multiple times
-			Binary binary = queue.removeFirst();
-			if (!did.add(binary))
-				continue;
-			
-			// Go through the binary dependencies and process them for their
-			// counts, counts are done backwards so that the most used
-			// binaries have the lowest valued numbers (as such, cldc-compact
-			// should always end up being the lowest value)
-			for (Binary dep : __basicAllDependencies(binary, __opt))
-			{
-				Integer was = counts.get(dep);
-				if (was == null)
-					counts.put(dep, -1);
-				else
-					counts.put(dep, was - 1);
-				
-				// Add to queue for later counting
-				queue.addLast(dep);
-			}
-		}
+		// Make sure all dependencies are used
+		for (Binary dep : dependencies(__b.dependencies(), false))
+			for (Binary c : classPath(dep))
+				rv.add(c);
 		
-		throw new todo.TODO();
+		// Include this in the run-time
+		rv.add(__b);
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 	
 	/**
@@ -131,65 +124,23 @@ public final class BinaryManager
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Get all the needed dependencies
-		Binary[] deps = allDependencies(__b, false);
-		int ndeps = deps.length;
+		// Return value to use run-time
+		Set<Binary> rv = new LinkedHashSet<>();
 		
-		// Compile all of them first
-		Binary[] rv = new Binary[ndeps + 1];
-		int i = 0;
-		for (Binary b : deps)
-		{
-			compile(b);
-			rv[i++] = b;
-		}
+		// Make sure all dependencies are compiled
+		for (Binary dep : dependencies(__b.dependencies(), false))
+			for (Binary c : compile(dep))
+				rv.add(c);
 		
-		// Final spot is this binary, compile it
-		rv[ndeps] = __b;
+		// Compile this package
 		if (true)
 		{
 			throw new todo.TODO();
 		}
 		
-		// Return the required binaries
-		return rv;
-	}
-	
-	/**
-	 * Returns all of the binaries which are direct dependencies of this
-	 * binary.
-	 *
-	 * @param __b The binary to get the dependencies for.
-	 * @param __opt If {@code true} include all optional dependencies.
-	 * @return The direct dependencies for this binary.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/17
-	 */
-	public final Binary[] dependencies(Binary __b, boolean __opt)
-		throws NullPointerException
-	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Obtains a set of binaries which meet the specified dependencies.
-	 *
-	 * @param __ds The set of dependencies to get binaries for.
-	 * @param __opt If this is {@code true}, also get optional dependencies.
-	 * @return The binaries which meet the specified dependencies.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/17
-	 */
-	public final Binary[] get(DependencySet __ds, boolean __opt)
-		throws NullPointerException
-	{
-		if (__ds == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
+		// Include this in the run-time
+		rv.add(__b);
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 	
 	/**
@@ -273,48 +224,6 @@ public final class BinaryManager
 		
 		// Just create the binary
 		return new Binary(SourceName.ofBinaryPath(__p), null, __p);
-	}
-	
-	/**
-	 * This returns the set of binaries which are needed for this project
-	 * to build and operate correctly.
-	 *
-	 * @param __b The binary to get the dependencies of.
-	 * @param __opt If {@code true} include all optional dependencies.
-	 * @return All dependencies which are required for this project to
-	 * operate.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/17
-	 */
-	private final Binary[] __basicAllDependencies(Binary __b, boolean __opt)
-		throws NullPointerException
-	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		
-		Set<Binary> rv = new LinkedHashSet<>(); 
-		Deque<Binary> queue = new ArrayDeque<>();
-		
-		// Initially start with the current dependencies
-		for (Binary b : dependencies(__b, __opt))
-			queue.addLast(b);
-		
-		// Always drain the queue
-		while (!queue.isEmpty())
-		{
-			// Only process once
-			Binary b = queue.removeFirst();
-			if (!rv.add(b))
-				continue;
-			
-			// Go through those dependencies
-			for (Binary d : dependencies(b, __opt))
-				queue.addLast(d);
-		}
-		
-		// Always remove this from the return value
-		rv.remove(this);
-		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 }
 

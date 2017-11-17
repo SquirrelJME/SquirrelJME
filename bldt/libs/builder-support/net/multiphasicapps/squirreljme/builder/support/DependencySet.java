@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
+
 /**
  * This represents a set of dependencies, since dependencies may be required
  * or optional.
@@ -18,5 +21,20 @@ package net.multiphasicapps.squirreljme.builder.support;
  */
 public final class DependencySet
 {
+	/**
+	 * Initializes the dependency set from the given manifest.
+	 *
+	 * @param __m The manifest to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public DependencySet(JavaManifest __m)
+		throws NullPointerException
+	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

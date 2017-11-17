@@ -40,6 +40,12 @@ public final class Source
 	/** Dependencies that this source code relies on. */
 	private volatile Reference<DependencySet> _dependencies;
 	
+	/** The approximate binary manifest. */
+	private volatile Reference<JavaManifest> _approxbm;
+	
+	/** The approximate binary dependency set. */
+	private volatile Reference<DependencySet> _approxds;
+	
 	/**
 	 * Initializes the project source.
 	 *
@@ -65,6 +71,43 @@ public final class Source
 		{
 			this.manifest = new JavaManifest(in);
 		}
+	}
+	
+	/**
+	 * Returns the manifest which would be used to approximate how the binary
+	 * manifest would be generated.
+	 *
+	 * @return The approximated binary manifest.
+	 * @since 2017/11/17
+	 */
+	public final JavaManifest approximateBinaryManifest()
+	{
+		Reference<JavaManifest> ref = this._approxbm;
+		JavaManifest rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			throw new todo.TODO();
+		
+		return rv;
+	}
+	
+	/**
+	 * This returns a dependency set which is approximated from the
+	 * approximated manifest for the binary.
+	 *
+	 * @return The approximated dependency set.
+	 * @since 2017/11/17
+	 */
+	public final DependencySet approximateBinaryDependencySet()
+	{
+		Reference<DependencySet> ref = this._approxds;
+		DependencySet rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._approxds = new WeakReference<>(
+				(rv = new DependencySet(approximateBinaryManifest())));
+		
+		return rv;
 	}
 	
 	/**
