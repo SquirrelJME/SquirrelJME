@@ -86,7 +86,8 @@ public final class BinaryManager
 	 * Compiles the specified binary and all of their dependencies.
 	 *
 	 * @param __b The binary to compile.
-	 * @return The 
+	 * @return The binaries which were compiled and are part of the class
+	 * path.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
@@ -96,7 +97,28 @@ public final class BinaryManager
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Get all the needed dependencies
+		Binary[] deps = allDependencies(__b);
+		int ndeps = deps.length;
+		
+		// Compile all of them first
+		Binary[] rv = new Binary[ndeps + 1];
+		int i = 0;
+		for (Binary b : deps)
+		{
+			compile(b);
+			rv[i++] = b;
+		}
+		
+		// Final spot is this binary, compile it
+		rv[ndeps] = __b;
+		if (true)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Return the required binaries
+		return rv;
 	}
 	
 	/**
