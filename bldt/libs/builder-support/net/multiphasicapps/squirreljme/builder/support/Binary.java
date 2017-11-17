@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -78,6 +79,19 @@ public final class Binary
 	 * @since 2017/11/17
 	 */
 	public final DependencySet dependencies()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the input stream over the binary itself.
+	 *
+	 * @return The input stream over the binary.
+	 * @throws IOException On read errors.
+	 * @since 2017/11/17
+	 */
+	public final InputStream inputStream()
+		throws IOException
 	{
 		throw new todo.TODO();
 	}

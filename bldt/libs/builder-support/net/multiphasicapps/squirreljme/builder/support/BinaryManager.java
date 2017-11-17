@@ -79,29 +79,24 @@ public final class BinaryManager
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		Set<Binary> rv = new LinkedHashSet<>(); 
-		Deque<Binary> queue = new ArrayDeque<>();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compiles the specified binary and all of their dependencies.
+	 *
+	 * @param __b The binary to compile.
+	 * @return The 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary[] compile(Binary __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
 		
-		// Initially start with the current dependencies
-		for (Binary b : dependencies(__b))
-			queue.addLast(b);
-		
-		// Always drain the queue
-		while (!queue.isEmpty())
-		{
-			// Only process once
-			Binary b = queue.removeFirst();
-			if (!rv.add(b))
-				continue;
-			
-			// Go through those dependencies
-			for (Binary d : dependencies(b))
-				queue.addLast(d);
-		}
-		
-		// Always remove this from the return value
-		rv.remove(this);
-		return rv.<Binary>toArray(new Binary[rv.size()]);
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -120,6 +115,24 @@ public final class BinaryManager
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the binary which uses the given source name.
+	 *
+	 * @param __n The name of the project to get.
+	 * @return The binary for the given name.
+	 * @throws NoSuchBinaryException If no binary with the given name exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary get(String __n)
+		throws NoSuchBinaryException, NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		return get(new SourceName(__n));
 	}
 	
 	/**
@@ -185,6 +198,47 @@ public final class BinaryManager
 		
 		// Just create the binary
 		return new Binary(SourceName.ofBinaryPath(__p), null, __p);
+	}
+	
+	/**
+	 * This returns the set of binaries which are needed for this project
+	 * to build and operate correctly.
+	 *
+	 * @param __b The binary to get the dependencies of.
+	 * @return All dependencies which are required for this project to
+	 * operate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	private final Binary[] __basicAllDependencies(Binary __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		Set<Binary> rv = new LinkedHashSet<>(); 
+		Deque<Binary> queue = new ArrayDeque<>();
+		
+		// Initially start with the current dependencies
+		for (Binary b : dependencies(__b))
+			queue.addLast(b);
+		
+		// Always drain the queue
+		while (!queue.isEmpty())
+		{
+			// Only process once
+			Binary b = queue.removeFirst();
+			if (!rv.add(b))
+				continue;
+			
+			// Go through those dependencies
+			for (Binary d : dependencies(b))
+				queue.addLast(d);
+		}
+		
+		// Always remove this from the return value
+		rv.remove(this);
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 }
 
