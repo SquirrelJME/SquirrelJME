@@ -23,6 +23,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 
 /**
  * This represents a single source project which contains the source code for
@@ -94,7 +96,20 @@ public final class Source
 		JavaManifest rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			throw new todo.TODO();
+		{
+			// Need the input manifest
+			JavaManifest rman = manifest();
+			JavaManifestAttributes rattr = rman.getMainAttributes();
+			MutableJavaManifest wman = new MutableJavaManifest();
+			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
+			
+			// Handle fields
+			if (true)
+				throw new todo.TODO();
+			
+			// Build
+			this._approxbm = new WeakReference<>((rv = wman.build()));
+		}
 		
 		return rv;
 	}
@@ -127,15 +142,8 @@ public final class Source
 	 */
 	public final DependencySet dependencies()
 	{
-		Reference<DependencySet> ref = this._dependencies;
-		DependencySet rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			throw new todo.TODO();
-		}
-		
-		return rv;
+		// This is exactly the same as the approximate binary dependencies
+		return approximateBinaryDependencySet();
 	}
 	
 	/**
@@ -196,6 +204,17 @@ public final class Source
 		{
 			return Long.MIN_VALUE;
 		}
+	}
+	
+	/**
+	 * The source manifest.
+	 *
+	 * @return The source manifest.
+	 * @since 2017/11/17
+	 */
+	public final JavaManifest manifest()
+	{
+		return this.manifest;
 	}
 }
 

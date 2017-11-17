@@ -120,6 +120,17 @@ public class MutableJavaManifest
 	}
 	
 	/**
+	 * Builds the specified manifest.
+	 *
+	 * @return The built manifest.
+	 * @since 2017/11/17
+	 */
+	public final JavaManifest build()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/19
 	 */
