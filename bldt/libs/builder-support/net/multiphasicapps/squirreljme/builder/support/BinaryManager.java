@@ -16,7 +16,13 @@ import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
@@ -36,10 +42,6 @@ public final class BinaryManager
 	/** Projects which have been read by the manager. */
 	private final Map<SourceName, Binary> _binaries =
 		new SortedTreeMap<>();
-	
-	/** Reference to self. */
-	private final Reference<BinaryManager> _selfref =
-		new WeakReference<>(this);
 	
 	/**
 	 * Initializes the binary manager.
@@ -62,6 +64,65 @@ public final class BinaryManager
 	}
 	
 	/**
+	 * This returns the set of binaries which are needed for this project
+	 * to build and operate correctly.
+	 *
+	 * @param __b The binary to get the dependencies of.
+	 * @return All dependencies which are required for this project to
+	 * operate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary[] allDependencies(Binary __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		Set<Binary> rv = new LinkedHashSet<>(); 
+		Deque<Binary> queue = new ArrayDeque<>();
+		
+		// Initially start with the current dependencies
+		for (Binary b : __b.dependencies())
+			queue.addLast(b);
+		
+		// Always drain the queue
+		while (!queue.isEmpty())
+		{
+			// Only process once
+			Binary b = queue.removeFirst();
+			if (!rv.add(b))
+				continue;
+			
+			// Go through those dependencies
+			for (Binary d : dependencies(b))
+				queue.addLast(d);
+		}
+		
+		// Always remove this from the return value
+		rv.remove(this);
+		return rv.<Binary>toArray(new Binary[rv.size()]);
+	}
+	
+	/**
+	 * Returns all of the binaries which are direct dependencies of this
+	 * binary.
+	 *
+	 * @param __b The binary to get the dependencies for.
+	 * @return The direct dependencies for this binary.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary[] dependencies(Binary __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Obtains the binary which uses the given source name.
 	 *
 	 * @param __n The name of the project to get.
@@ -70,7 +131,7 @@ public final class BinaryManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
-	public Binary get(SourceName __n)
+	public final Binary get(SourceName __n)
 		throws NoSuchBinaryException, NullPointerException
 	{
 		if (__n == null)
@@ -93,7 +154,7 @@ public final class BinaryManager
 				return rv;
 			
 			// Create the project
-			rv = new Binary(this._selfref, __n, source, binp);
+			rv = new Binary(__n, source, binp);
 			
 			// Cache it
 			binaries.put(__n, rv);
@@ -111,7 +172,7 @@ public final class BinaryManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
-	public Binary getVirtual(Path __p)
+	public final Binary getVirtual(Path __p)
 		throws NoSuchBinaryException, NullPointerException
 	{
 		if (__p == null)
@@ -123,8 +184,7 @@ public final class BinaryManager
 			throw new NoSuchBinaryException(String.format("AU01 %s", __p));
 		
 		// Just create the binary
-		return new Binary(this._selfref, SourceName.ofBinaryPath(__p), null,
-			__p);
+		return new Binary(SourceName.ofBinaryPath(__p), null, __p);
 	}
 }
 
