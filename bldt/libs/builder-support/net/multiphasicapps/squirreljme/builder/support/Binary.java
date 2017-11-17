@@ -69,18 +69,16 @@ public final class Binary
 		this.source = __source;
 		this.path = __path;
 	}
-	 
+	
 	/**
-	 * Returns the binaries which are direct dependencies of this binary.
+	 * Returns the set of dependencies which are needed for this project to
+	 * operate correctly.
 	 *
-	 * @return The dependencies for this binary.
-	 * @since 2017/11/05
+	 * @return The set of dependencies.
+	 * @since 2017/11/17
 	 */
-	public final Binary[] dependencies()
+	public final DependencySet dependencies()
 	{
-		// Get the up to date manifest to extract dependencies from
-		JavaManifest manifest = manifest();
-		
 		throw new todo.TODO();
 	}
 	

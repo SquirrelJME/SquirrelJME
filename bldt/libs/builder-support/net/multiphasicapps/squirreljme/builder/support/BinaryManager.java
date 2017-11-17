@@ -83,7 +83,7 @@ public final class BinaryManager
 		Deque<Binary> queue = new ArrayDeque<>();
 		
 		// Initially start with the current dependencies
-		for (Binary b : __b.dependencies())
+		for (Binary b : dependencies(__b))
 			queue.addLast(b);
 		
 		// Always drain the queue
