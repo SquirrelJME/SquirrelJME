@@ -1,0 +1,13 @@
+# 2017/11/17
+
+## 13:21
+
+Dependencies and anything related to getting dependencies working is always
+quite complex. There should be an easy way to do this.
+
+## 13:56
+
+Okay, so to keep things simple I am doing approximations on the binary
+manifest. I can do this and get away with it and it will work because it is
+only specific to the build system. In either case the result would always be
+the same anyway (just different forms for dependencies).

@@ -1,0 +1,9 @@
+# 2017/11/16
+
+## 23:24
+
+Okay so, I think when it comes to binaries, dependencies and building, that
+the `BinaryManager` does the dependency and building operations. This way the
+`Binary` does not refer to the manager itself and does not fully care about
+things. The binary manager doing the building would instead have the needed
+things.
