@@ -115,6 +115,10 @@ public final class Source
 				// Depends on the key, these are lowercase
 				switch (k.toString())
 				{
+						// Dependencies
+					case "x-squirreljme-depends":
+						throw new todo.TODO();
+					
 						// Unhandled
 					default:
 						wattr.put(k, v);
