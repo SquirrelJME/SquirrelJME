@@ -14,6 +14,7 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
@@ -27,6 +28,31 @@ public class MutableJavaManifestAttributes
 	/** The manifest values. */
 	protected final Map<JavaManifestKey, String> values =
 		new LinkedHashMap<>();
+	
+	/**
+	 * Initializes empty manifest attributes.
+	 *
+	 * @since 2017/11/19
+	 */
+	public MutableJavaManifestAttributes()
+	{
+	}
+	
+	/**
+	 * Initializes the attributes with a copy of the other attributes.
+	 *
+	 * @param __a The attributes to copy from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/19
+	 */
+	public MutableJavaManifestAttributes(JavaManifestAttributes __a)
+		throws NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		this.values.putAll(__a);
+	}
 	
 	/**
 	 * {@inheritDoc}

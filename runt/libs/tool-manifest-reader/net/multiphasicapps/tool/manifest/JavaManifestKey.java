@@ -52,10 +52,7 @@ public final class JavaManifestKey
 		// Is another key?
 		if (__o instanceof JavaManifestKey)
 			return __equals(((JavaManifestKey)__o).string);
-		
-		// Not equals
-		else
-			return false;
+		return false;
 	}
 	
 	/**
