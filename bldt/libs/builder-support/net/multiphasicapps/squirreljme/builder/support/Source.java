@@ -21,8 +21,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Map;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 
@@ -103,9 +105,27 @@ public final class Source
 			MutableJavaManifest wman = new MutableJavaManifest();
 			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
 			
-			// Handle fields
-			if (true)
-				throw new todo.TODO();
+			// Handle fields for the main attributes
+			int depdx = 1;
+			for (Map.Entry<JavaManifestKey, String> e : rattr.entrySet())
+			{
+				JavaManifestKey k = e.getKey();
+				String v = e.getValue();
+				
+				// Depends on the key, these are lowercase
+				switch (k.toString())
+				{
+						// Unhandled
+					default:
+						wattr.put(k, v);
+						break;
+				}
+			}
+			
+			// Copy other attributes that may exist
+			for (Map.Entry<String, JavaManifestAttributes> e : rman.entrySet())
+				wman.put(e.getKey(),
+					new MutableJavaManifestAttributes(e.getValue()));
 			
 			// Build
 			this._approxbm = new WeakReference<>((rv = wman.build()));
