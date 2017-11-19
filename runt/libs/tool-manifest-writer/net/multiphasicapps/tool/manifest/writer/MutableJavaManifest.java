@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.tool.manifest.writer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -20,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestException;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
@@ -123,11 +127,38 @@ public class MutableJavaManifest
 	 * Builds the specified manifest.
 	 *
 	 * @return The built manifest.
+	 * @throws RuntimeException If the manifest could not be built.
 	 * @since 2017/11/17
 	 */
 	public final JavaManifest build()
+		throws RuntimeException
 	{
-		throw new todo.TODO();
+		try
+		{
+			byte[] bytes;
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			{
+				// Write to output
+				write(baos);
+			
+				// Extract array
+				baos.flush();
+				bytes = baos.toByteArray();
+			}
+		
+			// Read in manifest
+			try (InputStream is = new ByteArrayInputStream(bytes))
+			{
+				return new JavaManifest(is);
+			}
+		}
+		
+		// {@squirreljme.error AB02 Failed to build the immutable manifest
+		// from the mutable one.}
+		catch (IOException e)
+		{
+			throw new JavaManifestException("AB02", e);
+		}
 	}
 	
 	/**
