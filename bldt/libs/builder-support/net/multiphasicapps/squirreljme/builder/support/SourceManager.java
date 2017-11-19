@@ -210,7 +210,7 @@ public final class SourceManager
 						p.getFileName().toString());
 					
 					// Store into the map
-					__out.put(name, new Source(name, p));
+					__out.put(name, new Source(name, p, __type));
 				}
 				
 				// Ignore

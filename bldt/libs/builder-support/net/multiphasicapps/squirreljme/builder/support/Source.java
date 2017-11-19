@@ -45,6 +45,9 @@ public final class Source
 	/** The manifest for the source code. */
 	protected final JavaManifest manifest;
 	
+	/** The type of project this is. */
+	protected final ProjectType type;
+	
 	/** Dependencies that this source code relies on. */
 	private volatile Reference<DependencySet> _dependencies;
 	
@@ -63,19 +66,21 @@ public final class Source
 	 *
 	 * @param __name The name of the source.
 	 * @param __p The path to the source code.
+	 * @param __t The type of project this is.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
-	public Source(SourceName __name, Path __p)
+	public Source(SourceName __name, Path __p, ProjectType __t)
 		throws IOException, NullPointerException
 	{
-		if (__name == null || __p == null)
+		if (__name == null || __p == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.name = __name;
 		this.root = __p;
+		this.type = __t;
 		
 		// Load manifest
 		try (InputStream in = Files.newInputStream(__p.resolve("META-INF").
