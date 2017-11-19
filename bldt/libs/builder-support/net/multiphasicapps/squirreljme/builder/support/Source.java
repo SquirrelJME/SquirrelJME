@@ -110,9 +110,9 @@ public final class Source
 			MutableJavaManifest wman = new MutableJavaManifest();
 			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
 			
-			// Determine the prefix for the dependency keys
+			// Determine the prefix for the type keys
 			String prefix = (this.type == ProjectType.MIDLET ?
-				"MIDlet-Dependency-" : "LIBlet-Dependency-");
+				"MIDlet" : "LIBlet");
 			
 			// Handle fields for the main attributes
 			int depdx = 1;
@@ -124,6 +124,26 @@ public final class Source
 				// Depends on the key, these are lowercase
 				switch (k.toString())
 				{
+						// Project name
+					case "x-squirreljme-name":
+						wattr.putValue(prefix + "-Name", v);
+						break;
+						
+						// Project vendor
+					case "x-squirreljme-vendor":
+						wattr.putValue(prefix + "-Vendor", v);
+						break;
+						
+						// Project version
+					case "x-squirreljme-version":
+						wattr.putValue(prefix + "-Version", v);
+						break;
+						
+						// Project Description
+					case "x-squirreljme-description":
+						wattr.putValue(prefix + "-Description", v);
+						break;
+					
 						// Dependencies, these are whitespace separated
 					case "x-squirreljme-depends":
 						boolean dows = true;
@@ -146,8 +166,8 @@ public final class Source
 								else
 								{
 									// Add dependency input
-									wattr.put(new JavaManifestKey(
-										prefix + (depdx++)),
+									wattr.putValue(
+										prefix + "-Dependency-" + (depdx++),
 										"squirreljme;required;" +
 											v.substring(mark, i) + ";;");
 									
