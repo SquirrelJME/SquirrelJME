@@ -110,6 +110,10 @@ public final class Source
 			MutableJavaManifest wman = new MutableJavaManifest();
 			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
 			
+			// Determine the prefix for the dependency keys
+			String prefix = (this.type == ProjectType.MIDLET ?
+				"MIDlet-Dependency-" : "LIBlet-Dependency-");
+			
 			// Handle fields for the main attributes
 			int depdx = 1;
 			for (Map.Entry<JavaManifestKey, String> e : rattr.entrySet())
