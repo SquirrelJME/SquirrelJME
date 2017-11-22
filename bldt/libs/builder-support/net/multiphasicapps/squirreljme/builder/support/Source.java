@@ -168,7 +168,7 @@ public final class Source
 									// Add dependency input
 									wattr.putValue(
 										prefix + "-Dependency-" + (depdx++),
-										"squirreljme;required;" +
+										"squirreljme-project;required;" +
 											v.substring(mark, i) + ";;");
 									
 									// Switch to handling whitespace

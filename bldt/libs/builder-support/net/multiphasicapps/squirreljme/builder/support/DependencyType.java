@@ -17,6 +17,24 @@ package net.multiphasicapps.squirreljme.builder.support;
  */
 public enum DependencyType
 {
+	/** Microedition Configuration. */
+	MICROEDITION_CONFIGURATION,
+	
+	/** Microedition profile. */
+	MICROEDITION_PROFILE,
+	
+	/** Liblet. */
+	LIBLET,
+	
+	/** A standard via a standard string. */
+	STANDARD,
+	
+	/** A service descriptor. */
+	SERVICE,
+	
+	/** SquirrelJME specific project. */
+	SQUIRRELJME_PROJECT,
+	
 	/** End. */
 	;
 }
