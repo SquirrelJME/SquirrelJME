@@ -21,6 +21,14 @@ import java.lang.ref.WeakReference;
 public final class MidletVersion
 	implements Comparable<MidletVersion>
 {
+	/** The minimum version number. */
+	public static final MidletVersion MIN_VERSION =
+		new MidletVersion(0, 0, 0);
+	
+	/** The maximum version number. */
+	public static final MidletVersion MAX_VERSION =
+		new MidletVersion(99, 99, 99);
+	
 	/** The major version. */
 	protected final int major;
 	

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -48,25 +49,27 @@ public final class DependencyList
 			throw new NullPointerException("NARG");
 		
 		JavaManifestAttributes attr = __m.getMainAttributes();
+		List<MidletDependency> deps = new ArrayList<>();
 		
 		// Normally required, configuration specifies CLDC and such
 		String config = attr.getValue("microedition-configuration");
 		if (config != null)
-			throw new todo.TODO();
+			deps.add(MidletDependency.ofMicroeditionConfiguration(config));
 		
 		// Normally required, this may or might not exist but normally when
 		// binaries are generated any dependencies that rely on APIs will
 		// be transformed to this
 		String profiles = attr.getValue("microedition-profile");
 		if (profiles != null)
-			throw new todo.TODO();
+			for (MidletDependency dep : MidletDependency.
+				ofMicroeditionProfile(profiles))
+				deps.add(dep);
 		
 		// Determine the prefix to use, for MIDlets or liblets
 		String prefix = (attr.getValue("midlet-name") != null ?
 			"midlet-dependency-" : "liblet-dependency-");
 		
 		// Parse entries in sequential order
-		List<MidletDependency> deps = new ArrayList<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			// Stop if no more values are read
@@ -74,7 +77,8 @@ public final class DependencyList
 			if (value == null)
 				break;
 			
-			throw new todo.TODO();
+			// Decode dependency
+			deps.add(new MidletDependency(value));
 		}
 		
 		// Set

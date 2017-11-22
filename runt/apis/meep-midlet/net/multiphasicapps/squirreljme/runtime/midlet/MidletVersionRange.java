@@ -22,6 +22,11 @@ import java.lang.ref.WeakReference;
  */
 public final class MidletVersionRange
 {
+	/** Any version. */
+	public static final MidletVersionRange ANY_VERSION =
+		new MidletVersionRange(MidletVersion.MIN_VERSION,
+			MidletVersion.MAX_VERSION);
+	
 	/** The starting range, inclusive. */
 	protected final MidletVersion from;
 	
