@@ -163,6 +163,28 @@ public final class MidletDependency
 	}
 	
 	/**
+	 * Is this an optional dependency?
+	 *
+	 * @return {@code true} if this is an optional dependency.
+	 * @since 2017/11/22
+	 */
+	public boolean isOptional()
+	{
+		return this.level.isOptional();
+	}
+	
+	/**
+	 * Is this an required dependency?
+	 *
+	 * @return {@code true} if this is an required dependency.
+	 * @since 2017/11/22
+	 */
+	public boolean isRequired()
+	{
+		return this.level.isRequired();
+	}
+	
+	/**
 	 * Returns the dependency level.
 	 *
 	 * @return The dependency level.

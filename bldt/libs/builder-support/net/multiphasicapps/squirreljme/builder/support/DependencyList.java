@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -26,11 +27,11 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  * @since 2017/11/17
  */
 public final class DependencyList
-	extends AbstractList<Dependency>
+	extends AbstractList<MidletDependency>
 	implements RandomAccess
 {
 	/** Dependencies that are used. */
-	private final Dependency[] _deps;
+	private final MidletDependency[] _deps;
 	
 	/**
 	 * Initializes the dependency set from the given manifest.
@@ -65,7 +66,7 @@ public final class DependencyList
 			"midlet-dependency-" : "liblet-dependency-");
 		
 		// Parse entries in sequential order
-		List<Dependency> deps = new ArrayList<>();
+		List<MidletDependency> deps = new ArrayList<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			// Stop if no more values are read
@@ -77,7 +78,8 @@ public final class DependencyList
 		}
 		
 		// Set
-		this._deps = deps.<Dependency>toArray(new Dependency[deps.size()]);
+		this._deps = deps.<MidletDependency>toArray(
+			new MidletDependency[deps.size()]);
 	}
 	
 	/**
@@ -85,7 +87,7 @@ public final class DependencyList
 	 * @since 2017/11/21
 	 */
 	@Override
-	public Dependency get(int __i)
+	public MidletDependency get(int __i)
 	{
 		return this._deps[__i];
 	}
