@@ -27,6 +27,28 @@ public enum MidletDependencyLevel
 	;
 	
 	/**
+	 * Is this an optional dependency level?
+	 *
+	 * @return {@code true} if this is an optional dependency level.
+	 * @since 2017/11/22
+	 */
+	public boolean isOptional()
+	{
+		return this == OPTIONAL;
+	}
+	
+	/**
+	 * Is this an required dependency level?
+	 *
+	 * @return {@code true} if this is an required dependency level.
+	 * @since 2017/11/22
+	 */
+	public boolean isRequired()
+	{
+		return this == REQUIRED;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/22
 	 */
