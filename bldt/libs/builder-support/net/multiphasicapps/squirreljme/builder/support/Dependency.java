@@ -18,5 +18,43 @@ package net.multiphasicapps.squirreljme.builder.support;
  */
 public final class Dependency
 {
+	/**
+	 * Initializes the dependency from the decoded manifest string.
+	 *
+	 * @param __s The String to decode.
+	 * @throws InvalidDependencyException If the dependency is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/21
+	 */
+	public Dependency(String __s)
+		throws InvalidDependencyException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns whether this dependency is optional.
+	 *
+	 * @return Whether this an optional dependency.
+	 * @since 2017/11/21
+	 */
+	public boolean isOptional()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns whether this dependency is required.
+	 *
+	 * @return Whether this is a required dependency.
+	 * @since 2017/11/21
+	 */
+	public boolean isRequired()
+	{
+		throw new todo.TODO();
+	}
 }
 

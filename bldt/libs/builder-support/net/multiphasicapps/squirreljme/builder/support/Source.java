@@ -49,13 +49,13 @@ public final class Source
 	protected final ProjectType type;
 	
 	/** Dependencies that this source code relies on. */
-	private volatile Reference<DependencySet> _dependencies;
+	private volatile Reference<DependencyList> _dependencies;
 	
 	/** The approximate binary manifest. */
 	private volatile Reference<JavaManifest> _approxbm;
 	
 	/** The approximate binary dependency set. */
-	private volatile Reference<DependencySet> _approxds;
+	private volatile Reference<DependencyList> _approxds;
 	
 	/** Last modified time of the source code. */
 	private volatile long _lastmodtime =
@@ -219,14 +219,14 @@ public final class Source
 	 * @return The approximated dependency set.
 	 * @since 2017/11/17
 	 */
-	public final DependencySet approximateBinaryDependencySet()
+	public final DependencyList approximateBinaryDependencyList()
 	{
-		Reference<DependencySet> ref = this._approxds;
-		DependencySet rv;
+		Reference<DependencyList> ref = this._approxds;
+		DependencyList rv;
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._approxds = new WeakReference<>(
-				(rv = new DependencySet(approximateBinaryManifest())));
+				(rv = new DependencyList(approximateBinaryManifest())));
 		
 		return rv;
 	}
@@ -238,10 +238,10 @@ public final class Source
 	 * @return The set of dependencies.
 	 * @since 2017/11/17
 	 */
-	public final DependencySet dependencies()
+	public final DependencyList dependencies()
 	{
 		// This is exactly the same as the approximate binary dependencies
-		return approximateBinaryDependencySet();
+		return approximateBinaryDependencyList();
 	}
 	
 	/**

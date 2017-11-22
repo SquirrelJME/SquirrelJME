@@ -73,7 +73,7 @@ public final class BinaryManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
-	public final Binary[] dependencies(DependencySet __set, boolean __opt)
+	public final Binary[] dependencies(DependencyList __set, boolean __opt)
 		throws NullPointerException
 	{
 		if (__set == null)
