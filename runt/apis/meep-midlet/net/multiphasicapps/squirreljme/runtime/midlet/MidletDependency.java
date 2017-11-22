@@ -269,5 +269,39 @@ public final class MidletDependency
 	{
 		return this.version;
 	}
+	
+	/**
+	 * Creates a dependency from the given microedition configuration string.
+	 *
+	 * @param __v The string to decode.
+	 * @return The dependency for the given string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/22
+	 */
+	public static MidletDependency ofMicroeditionConfiguration(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Creates an array of dependencies decoded from the given profile string.
+	 *
+	 * @param __v The string to decode.
+	 * @return The dependencies for the given string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/22
+	 */
+	public static MidletDependency[] ofMicroeditionProfile(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
