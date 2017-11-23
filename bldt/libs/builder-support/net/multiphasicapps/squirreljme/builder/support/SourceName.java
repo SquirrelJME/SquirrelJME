@@ -116,6 +116,30 @@ public final class SourceName
 	}
 	
 	/**
+	 * Checks whether the the given path refers to a valid binary.
+	 *
+	 * @param __p The path to check.
+	 * @return If the given path is a binary path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/23
+	 */
+	public static final boolean isBinaryPath(Path __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore no file name
+		Path fn = __p.getFileName();
+		if (fn == null)
+			return false;
+		
+		// Only use certain extensions
+		String base = fn.toString();
+		return base.endsWith(".jar") || base.endsWith(".JAR");
+	}
+	
+	/**
 	 * Returns the source name for this binary path.
 	 *
 	 * @param __p The path to translate to the source name.
@@ -131,7 +155,7 @@ public final class SourceName
 		
 		// Try to determine the base name of the path
 		String base = __p.getFileName().toString();
-		if (base.endsWith(".jar") || base.endsWith(".JAR"))
+		if (isBinaryPath(__p))
 			return new SourceName(base.substring(0, base.length() - 4));
 		return new SourceName(base);
 	}
