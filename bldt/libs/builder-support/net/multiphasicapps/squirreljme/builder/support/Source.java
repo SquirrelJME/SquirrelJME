@@ -152,7 +152,7 @@ public final class Source
 							wattr.putValue(
 								prefix + "-Dependency-" + (depdx++),
 								"proprietary;required; squirreljme.project@" +
-									split + ";;");
+									split + ";Stephanie Gawroriski;");
 						break;
 					
 						// Unhandled
