@@ -25,12 +25,12 @@ public final class MidletSuiteVendor
 	 * Initializes the suite vendor.
 	 *
 	 * @param __v The value to parse.
-	 * @throws IllegalArgumentException If the input is not valid.
+	 * @throws InvalidMidletException If the input is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public MidletSuiteVendor(String __v)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__v == null)
@@ -56,8 +56,8 @@ public final class MidletSuiteVendor
 				case '\n':
 				case ':':
 				case ';':
-					throw new IllegalArgumentException(String.format("AD0c %s",
-						__v));
+					throw new InvalidMidletException(
+						String.format("AD0c %s", __v));
 				
 					// Valid
 				default:

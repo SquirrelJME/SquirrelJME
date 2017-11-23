@@ -45,14 +45,14 @@ public final class MidletVersion
 	 * Initializes the version.
 	 *
 	 * @param __v The value to parse.
-	 * @throws IllegalArgumentException If there are too many or too little
+	 * @throws InvalidMidletException If there are too many or too little
 	 * version fields, they contain illegal charactes, or have an out of range
 	 * value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public MidletVersion(String __v)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		this(__decodeVersion(__v));
 	}
@@ -63,13 +63,13 @@ public final class MidletVersion
 	 *
 	 * @param __v The version triplet, up to the first three elements are
 	 * used by the version number.
-	 * @throws IllegalArgumentException If the version number has an out of
+	 * @throws InvalidMidletException If the version number has an out of
 	 * range value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public MidletVersion(int[] __v)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		this((__v.length > 0 ? __v[0] : 0),
 			(__v.length > 1 ? __v[1] : 0),
@@ -84,12 +84,12 @@ public final class MidletVersion
 	 * the hash code returned by this class.
 	 * @param __maj If {@code __hash} is {@code true} then this is the hash
 	 * code of a MidletVersion, otherwise it is the major version number.
-	 * @throws IllegalArgumentException If the version number has an out of
+	 * @throws InvalidMidletException If the version number has an out of
 	 * range value.
 	 * @since 2016/10/13
 	 */
 	public MidletVersion(boolean __hash, int __maj)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
 		this((__hash ? __maj / 10000 : __maj),
 			(__hash ? (__maj / 100) % 100 : 0),
@@ -127,17 +127,18 @@ public final class MidletVersion
 	 * @param __maj The major version.
 	 * @param __min The minor version.
 	 * @param __rel The release version.
-	 * @throws IllegalArgumentException If any value is out of range.
+	 * @throws InvalidMidletException If any value is out of range.
 	 * @since 2016/10/12
 	 */
 	public MidletVersion(int __maj, int __min, int __rel)
+		throws InvalidMidletException
 	{
 		// {@squirreljme.error AD0d Input version number is out of range, only
 		// 0 through 99 are valid. (The major version; The minor version; The
 		// release version)}
 		if (__maj < 0 || __maj > 99 || __min < 0 || __min > 99 ||
 			__rel < 0 || __rel > 99)
-			throw new IllegalArgumentException(String.format("AD0d %d %d %d",
+			throw new InvalidMidletException(String.format("AD0d %d %d %d",
 				__maj, __min, __rel));
 		
 		// Set
@@ -281,12 +282,12 @@ public final class MidletVersion
 	 *
 	 * @param __v The input string.
 	 * @return The version tuplet.
-	 * @throws IllegalArgumentException If the input is not valid.
+	 * @throws InvalidMidletException If the input is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	private static final int[] __decodeVersion(String __v)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__v == null)
@@ -313,7 +314,7 @@ public final class MidletVersion
 				// {@squirreljme.error AD0e Too many version fields in the
 				// specified string. (The input string)}
 				if (c != -1 && at >= 4)
-					throw new IllegalArgumentException(String.format("AD0e %s",
+					throw new InvalidMidletException(String.format("AD0e %s",
 						__v));
 				
 				// Clear
@@ -327,7 +328,7 @@ public final class MidletVersion
 			// {@squirreljme.error AD0f An illegal character is in the
 			// version string. (The input string)}
 			else
-				throw new IllegalArgumentException(String.format("AD0f %s",
+				throw new InvalidMidletException(String.format("AD0f %s",
 					__v));
 		}
 		

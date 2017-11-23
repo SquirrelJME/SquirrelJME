@@ -20,6 +20,7 @@ import java.util.Objects;
  * @since 2017/02/22
  */
 public final class MidletDependency
+	implements ManifestedDependency
 {
 	/** The dependency type. */
 	protected final MidletDependencyType type;
@@ -43,12 +44,12 @@ public final class MidletDependency
 	 * Initializes the dependency which is parsed from the given input string.
 	 *
 	 * @param __s The string to parse.
-	 * @throws IllegalArgumentException If the string is not valid.
+	 * @throws InvalidMidletException If the string is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
 	public MidletDependency(String __s)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -67,7 +68,7 @@ public final class MidletDependency
 			// dependency field. (The input dependency)}
 			int com = __s.indexOf(';', lastpos);
 			if ((i < 4 && com < 0) || (i >= 4 && com >= 0))
-				throw new IllegalArgumentException(String.format(
+				throw new InvalidMidletException(String.format(
 					"AD07 %s", __s));
 			
 			// Stop
@@ -105,7 +106,8 @@ public final class MidletDependency
 		// name, vendor, and version set. (The input string)}
 		if (type == MidletDependencyType.LIBLET && (name == null ||
 			vendor == null || version == null))
-			throw new IllegalArgumentException(String.format("AD08 %s", __s));
+			throw new InvalidMidletException(
+				String.format("AD08 %s", __s));
 	}
 	
 	/**
@@ -115,6 +117,9 @@ public final class MidletDependency
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Check
 		if (!(__o instanceof MidletDependency))
 			return false;
@@ -268,40 +273,6 @@ public final class MidletDependency
 	public MidletVersionRange version()
 	{
 		return this.version;
-	}
-	
-	/**
-	 * Creates a dependency from the given microedition configuration string.
-	 *
-	 * @param __v The string to decode.
-	 * @return The dependency for the given string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/22
-	 */
-	public static MidletDependency ofMicroeditionConfiguration(String __v)
-		throws NullPointerException
-	{
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Creates an array of dependencies decoded from the given profile string.
-	 *
-	 * @param __v The string to decode.
-	 * @return The dependencies for the given string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/22
-	 */
-	public static MidletDependency[] ofMicroeditionProfile(String __v)
-		throws NullPointerException
-	{
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
 	}
 }
 

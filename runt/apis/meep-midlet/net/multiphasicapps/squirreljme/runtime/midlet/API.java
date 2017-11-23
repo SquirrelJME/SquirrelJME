@@ -35,15 +35,15 @@ public abstract class API
 	 * Initializes the constant in name and version form.
 	 *
 	 * @param __n The input string.
-	 * @throws IllegalArgumentException If the name and version form is not
+	 * @throws InvalidMidletException If the name and version form is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/14
 	 */
 	API(String __n)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
-		this(__extractName(__n), __extractVersion(__n));
+		this(API.__extractName(__n), API.__extractVersion(__n));
 	}
 	
 	/**
@@ -51,12 +51,12 @@ public abstract class API
 	 *
 	 * @param __n The API name.
 	 * @param __v The API version.
-	 * @throws IllegalArgumentException If the arguments are not valid.
+	 * @throws InvalidMidletException If the arguments are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/14
 	 */
 	API(String __n, MidletVersion __v)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__n == null || __v == null)
@@ -88,6 +88,9 @@ public abstract class API
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Must also be an API
 		if (!(__o instanceof API))
 			return false;
@@ -175,12 +178,12 @@ public abstract class API
 	 *
 	 * @param __n The string to extract from.
 	 * @return The name.
-	 * @throws IllegalArgumentException If the input form is not valid.
+	 * @throws InvalidMidletException If the input form is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/21
 	 */
 	private static String __extractName(String __n)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -190,7 +193,7 @@ public abstract class API
 		// API because it is not in the correct form. (The input string)}
 		int ld = __n.lastIndexOf('-');
 		if (ld < 0)
-			throw new IllegalArgumentException(String.format("AD01 %s", __n));
+			throw new InvalidMidletException(String.format("AD01 %s", __n));
 		
 		// Simple split
 		return __n.substring(0, ld);
@@ -201,12 +204,12 @@ public abstract class API
 	 *
 	 * @param __n The string to extract from.
 	 * @return The version.
-	 * @throws IllegalArgumentException If the input form is not valid.
+	 * @throws InvalidMidletException If the input form is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/21
 	 */
 	private static MidletVersion __extractVersion(String __n)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -216,7 +219,7 @@ public abstract class API
 		// API because it is not in the correct form. (The input string)}
 		int ld = __n.lastIndexOf('-');
 		if (ld < 0)
-			throw new IllegalArgumentException(String.format("AD02 %s", __n));
+			throw new InvalidMidletException(String.format("AD02 %s", __n));
 		
 		// Split and decode version
 		return new MidletVersion(__n.substring(ld + 1));

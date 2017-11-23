@@ -46,6 +46,7 @@ public enum MidletDependencyType
 			case STANDARD:		return "standard";
 			case SERVICE:		return "service";
 			case PROPRIETARY:	return "proprietary";
+			
 			default:
 				throw new RuntimeException("OOPS");
 		}
@@ -56,11 +57,13 @@ public enum MidletDependencyType
 	 *
 	 * @param __s The input string to parse.
 	 * @return The dependency type for the given string.
+	 * @throws InvalidMidletException If the dependency type is not
+	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
 	public static MidletDependencyType of(String __s)
-		throws NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -74,9 +77,11 @@ public enum MidletDependencyType
 			case "service":		return SERVICE;
 			case "proprietary":	return PROPRIETARY;
 			
-				// Should not happen
+				// {@squirreljme.error AU0c The specified string is not a valid
+				// dependency type. (The input string)}
 			default:
-				throw new RuntimeException("OOPS");
+				throw new InvalidMidletException(
+					String.format("AU0c %s", __s));
 		}
 	}
 }
