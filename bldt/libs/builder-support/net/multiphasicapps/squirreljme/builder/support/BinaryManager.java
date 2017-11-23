@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.builder.support;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
@@ -74,7 +76,29 @@ public final class BinaryManager
 				new Binary(name, src, __out.resolve(name.toFileName())));
 		}
 		
-		throw new todo.TODO();
+		// Go through directory containing binaries and try building binaries
+		// that have no source
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__out))
+		{
+			for (Path p : ds)
+			{
+				// Ignore directories and non-binary files
+				if (Files.isDirectory(p) || !SourceName.isBinaryPath(p))
+					continue;
+				
+				// Only add a binary if it does not exist, this allows one
+				// to add external binaries
+				SourceName name = SourceName.ofBinaryPath(p);
+				Binary bin = binaries.get(name);
+				if (bin == null)
+					binaries.put(name, new Binary(name, null, p));
+			}
+		}
+		
+		// Ignore these
+		catch (NoSuchFileException e)
+		{
+		}
 	}
 	
 	/**
