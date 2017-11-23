@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.builder.support;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This represents the name of a source project.
@@ -91,6 +92,17 @@ public final class SourceName
 	public int hashCode()
 	{
 		return this.name.hashCode();
+	}
+	
+	/**
+	 * Returns the path to the file.
+	 *
+	 * @return The file name of the path.
+	 * @since 2017/11/23
+	 */
+	public final Path toFileName()
+	{
+		return Paths.get(this.name + ".jar");
 	}
 	
 	/**

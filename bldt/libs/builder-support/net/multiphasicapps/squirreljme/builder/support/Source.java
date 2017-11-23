@@ -18,6 +18,7 @@ import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -281,6 +282,17 @@ public final class Source
 	public final JavaManifest manifest()
 	{
 		return this.manifest;
+	}
+	
+	/**
+	 * Returns the name of the source.
+	 *
+	 * @return The source name.
+	 * @since 2017/11/23
+	 */
+	public final SourceName name()
+	{
+		return this.name;
 	}
 }
 

@@ -16,11 +16,14 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableCollection;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
@@ -31,6 +34,7 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
  * @since 2017/10/31
  */
 public final class SourceManager
+	implements Iterable<Source>
 {
 	/** Sources which are available. */
 	private final Map<SourceName, Source> _sources;
@@ -114,6 +118,17 @@ public final class SourceManager
 		if (rv == null)
 			throw new NoSuchSourceException(String.format("AU02 %s", __n));
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/23
+	 */
+	@Override
+	public final Iterator<Source> iterator()
+	{
+		return UnmodifiableCollection.<Source>of(this._sources.values()).
+			iterator();
 	}
 	
 	/**
