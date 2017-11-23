@@ -79,6 +79,16 @@ public final class APIProfile
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/23
+	 */
+	@Override
+	public boolean isOptional()
+	{
+		return false;
+	}
+	
+	/**
 	 * Parses the list of profiles.
 	 *
 	 * @param __s The string to parse.

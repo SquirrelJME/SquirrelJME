@@ -168,11 +168,10 @@ public final class MidletDependency
 	}
 	
 	/**
-	 * Is this an optional dependency?
-	 *
-	 * @return {@code true} if this is an optional dependency.
+	 * {@inheritDoc}
 	 * @since 2017/11/22
 	 */
+	@Override
 	public boolean isOptional()
 	{
 		return this.level.isOptional();

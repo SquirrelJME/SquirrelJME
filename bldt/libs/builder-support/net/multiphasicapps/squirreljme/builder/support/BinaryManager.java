@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 
 /**
  * This class is used to manage binaries which are available for running
@@ -79,7 +80,36 @@ public final class BinaryManager
 		if (__set == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// The returning set
+		Set<Binary> rv = new LinkedHashSet<>();
+		
+		// Go through the entire set and search for dependencies
+		for (ManifestedDependency md : __set)
+		{
+			// Not wanting an optional dependency
+			boolean mdopt = md.isOptional();
+			if (mdopt && !__opt)
+				continue;
+			
+			// {@squirreljme.error AU0c Could not locate the binary which
+			// statifies the given dependency. (The dependency to look for)}
+			Binary bin = this.findDependency(md);
+			if (bin == null)
+				if (mdopt)
+					continue;
+				else
+					throw new InvalidBinaryException(
+						String.format("AU0c %s", md));
+			
+			// Recursively obtain the dependencies of that dependency
+			for (Binary dep : this.dependencies(bin.dependencies(), false))
+				rv.add(dep);
+			
+			// Add the self dependency at the end
+			rv.add(bin);
+		}
+		
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 	
 	/**
@@ -100,9 +130,8 @@ public final class BinaryManager
 		Set<Binary> rv = new LinkedHashSet<>();
 		
 		// Make sure all dependencies are used
-		for (Binary dep : dependencies(__b.dependencies(), false))
-			for (Binary c : classPath(dep))
-				rv.add(c);
+		for (Binary dep : this.dependencies(__b.dependencies(), false))
+			rv.add(dep);
 		
 		// Include this in the run-time
 		rv.add(__b);
@@ -127,9 +156,10 @@ public final class BinaryManager
 		// Return value to use run-time
 		Set<Binary> rv = new LinkedHashSet<>();
 		
-		// Make sure all dependencies are compiled
-		for (Binary dep : dependencies(__b.dependencies(), false))
-			for (Binary c : compile(dep))
+		// Make sure all dependencies are compiled, this will result in the
+		// entire class path being determined aslso for compilation
+		for (Binary dep : this.dependencies(__b.dependencies(), false))
+			for (Binary c : this.compile(dep))
 				rv.add(c);
 		
 		// Compile this package
@@ -141,6 +171,23 @@ public final class BinaryManager
 		// Include this in the run-time
 		rv.add(__b);
 		return rv.<Binary>toArray(new Binary[rv.size()]);
+	}
+	
+	/**
+	 * Finds the binary project which statifies the given dependency.
+	 *
+	 * @param __dep The dependency to locate.
+	 * @return The binary if one was found, otherwise {@code null} if not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/23
+	 */
+	public final Binary findDependency(ManifestedDependency __dep)
+		throws NullPointerException
+	{
+		if (__dep == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -158,7 +205,7 @@ public final class BinaryManager
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		return get(new SourceName(__n));
+		return this.get(new SourceName(__n));
 	}
 	
 	/**

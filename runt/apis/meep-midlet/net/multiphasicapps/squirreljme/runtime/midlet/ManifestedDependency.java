@@ -18,5 +18,12 @@ package net.multiphasicapps.squirreljme.runtime.midlet;
  */
 public interface ManifestedDependency
 {
+	/**
+	 * Is this an optional dependency?
+	 *
+	 * @return {@code true} if this is an optional dependency.
+	 * @since 2017/11/23
+	 */
+	public abstract boolean isOptional();
 }
 
