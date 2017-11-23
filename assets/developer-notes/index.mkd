@@ -1555,7 +1555,7 @@
  * `19`
 `20`
 [**`21`**](stephanie-gawroriski/2017/11/21.mkd)
-`22`
+[**`22`**](stephanie-gawroriski/2017/11/22.mkd)
 `23`
 `24`
 `25`

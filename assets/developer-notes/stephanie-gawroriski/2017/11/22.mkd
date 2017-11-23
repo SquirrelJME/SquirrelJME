@@ -1,0 +1,7 @@
+# 2017/11/22
+
+## 12:27
+
+Actually, I already have the dependency stuff in the midlet code so I do not
+even have to write anything. I just need a way to describe SquirrelJME project
+dependencies.
