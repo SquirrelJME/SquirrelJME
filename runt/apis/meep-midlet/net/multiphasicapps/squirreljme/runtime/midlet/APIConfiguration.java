@@ -77,6 +77,16 @@ public final class APIConfiguration
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/23
+	 */
+	@Override
+	public boolean isOptional()
+	{
+		return false;
+	}
+	
+	/**
 	 * Normalizes the variant so that {@code CLDC-1.8-Compact} becomes
 	 * {@code CLDC-Compact-1.8}.
 	 *
