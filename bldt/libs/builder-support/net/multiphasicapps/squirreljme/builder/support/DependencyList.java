@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
+import net.multiphasicapps.squirreljme.runtime.midlet.APIConfiguration;
+import net.multiphasicapps.squirreljme.runtime.midlet.APIProfile;
+import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -28,11 +31,11 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  * @since 2017/11/17
  */
 public final class DependencyList
-	extends AbstractList<MidletDependency>
+	extends AbstractList<ManifestedDependency>
 	implements RandomAccess
 {
 	/** Dependencies that are used. */
-	private final MidletDependency[] _deps;
+	private final ManifestedDependency[] _deps;
 	
 	/**
 	 * Initializes the dependency set from the given manifest.
@@ -49,20 +52,19 @@ public final class DependencyList
 			throw new NullPointerException("NARG");
 		
 		JavaManifestAttributes attr = __m.getMainAttributes();
-		List<MidletDependency> deps = new ArrayList<>();
+		List<ManifestedDependency> deps = new ArrayList<>();
 		
 		// Normally required, configuration specifies CLDC and such
 		String config = attr.getValue("microedition-configuration");
 		if (config != null)
-			deps.add(MidletDependency.ofMicroeditionConfiguration(config));
+			deps.add(new APIConfiguration(config.trim()));
 		
 		// Normally required, this may or might not exist but normally when
 		// binaries are generated any dependencies that rely on APIs will
 		// be transformed to this
 		String profiles = attr.getValue("microedition-profile");
 		if (profiles != null)
-			for (MidletDependency dep : MidletDependency.
-				ofMicroeditionProfile(profiles))
+			for (APIProfile dep : APIProfile.parseList(profiles))
 				deps.add(dep);
 		
 		// Determine the prefix to use, for MIDlets or liblets
@@ -82,8 +84,8 @@ public final class DependencyList
 		}
 		
 		// Set
-		this._deps = deps.<MidletDependency>toArray(
-			new MidletDependency[deps.size()]);
+		this._deps = deps.<ManifestedDependency>toArray(
+			new ManifestedDependency[deps.size()]);
 	}
 	
 	/**
@@ -91,7 +93,7 @@ public final class DependencyList
 	 * @since 2017/11/21
 	 */
 	@Override
-	public MidletDependency get(int __i)
+	public ManifestedDependency get(int __i)
 	{
 		return this._deps[__i];
 	}

@@ -71,12 +71,12 @@ public final class MidletVersionRange
 	 * files.
 	 *
 	 * @param __s The string to parse.
-	 * @throws IllegalArgumentException If the range is not valid.
+	 * @throws InvalidMidletException If the range is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
 	public MidletVersionRange(String __s)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -117,7 +117,7 @@ public final class MidletVersionRange
 				// {@squirreljme.error AD0j Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new IllegalArgumentException(String.format("AD0j %s",
+					throw new InvalidMidletException(String.format("AD0j %s",
 						__s));
 			}
 			
@@ -128,7 +128,7 @@ public final class MidletVersionRange
 				// {@squirreljme.error AD0j The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new IllegalArgumentException(String.format("AD0j %s",
+					throw new InvalidMidletException(String.format("AD0j %s",
 						__s));
 				
 				// Source range is simple
@@ -153,7 +153,7 @@ public final class MidletVersionRange
 				// {@squirreljme.error AD0j There are too many decimal points
 				// in the wildcard version string. (The input string)}
 				else
-					throw new IllegalArgumentException(String.format("AD0j %s",
+					throw new InvalidMidletException(String.format("AD0j %s",
 						__s));
 			}
 		}

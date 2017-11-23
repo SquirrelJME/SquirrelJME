@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet;
 
+import net.multiphasicapps.strings.StringUtils;
+
 /**
  * This represents a profile that may be implemented, such as MIDP. Support
  * for profiles may or may not be complete.
@@ -18,18 +20,18 @@ package net.multiphasicapps.squirreljme.runtime.midlet;
  */
 public final class APIProfile
 	extends API
-	implements Comparable<APIProfile>
+	implements Comparable<APIProfile>, ManifestedDependency
 {
 	/**
 	 * Initializes the constant in name and version form.
 	 *
 	 * @param __n The input string.
-	 * @throws IllegalArgumentException If the name and version form is not
+	 * @throws InvalidMidletException If the name and version form is not
 	 * valid.
 	 * @since 2016/12/14
 	 */
 	public APIProfile(String __n)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
 		super(__n);
 	}
@@ -39,11 +41,11 @@ public final class APIProfile
 	 *
 	 * @param __n The API name.
 	 * @param __v The API version.
-	 * @throws IllegalArgumentException If the arguments are not valid.
+	 * @throws InvalidMidletException If the arguments are not valid.
 	 * @since 2016/12/14
 	 */
 	public APIProfile(String __n, MidletVersion __v)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
 		super(__n, __v);
 	}
@@ -65,12 +67,42 @@ public final class APIProfile
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Must be the same class
 		if (!(__o instanceof APIProfile))
 			return false;
 		
 		// Forward
 		return super.equals(__o);
+	}
+	
+	/**
+	 * Parses the list of profiles.
+	 *
+	 * @param __s The string to parse.
+	 * @return An array containing parsed profiles.
+	 * @throws InvalidMidletException If the API is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/23
+	 */
+	public static final APIProfile[] parseList(String __s)
+		throws InvalidMidletException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Split input strings with spaces
+		String[] split = StringUtils.basicSplit("\0 \t\r\n", __s);
+		
+		// Parse profiles for each
+		int n = split.length;
+		APIProfile[] rv = new APIProfile[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = new APIProfile(split[i]);
+		
+		return rv;
 	}
 }
 

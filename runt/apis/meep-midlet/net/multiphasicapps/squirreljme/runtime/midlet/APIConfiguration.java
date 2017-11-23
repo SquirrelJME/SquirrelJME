@@ -18,20 +18,20 @@ package net.multiphasicapps.squirreljme.runtime.midlet;
  */
 public final class APIConfiguration
 	extends API
-	implements Comparable<APIConfiguration>
+	implements Comparable<APIConfiguration>, ManifestedDependency
 {
 	/**
 	 * Initializes the constant in name and version form.
 	 *
 	 * @param __n The input string.
-	 * @throws IllegalArgumentException If the name and version form is not
+	 * @throws InvalidMidletException If the name and version form is not
 	 * valid.
 	 * @since 2016/12/14
 	 */
 	public APIConfiguration(String __n)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
-		super(__normalizeVariant(__n));
+		super(APIConfiguration.__normalizeVariant(__n));
 	}
 	
 	/**
@@ -39,11 +39,11 @@ public final class APIConfiguration
 	 *
 	 * @param __n The API name.
 	 * @param __v The API version.
-	 * @throws IllegalArgumentException If the arguments are not valid.
+	 * @throws InvalidMidletException If the arguments are not valid.
 	 * @since 2016/12/14
 	 */
 	public APIConfiguration(String __n, MidletVersion __v)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
 		super(__n, __v);
 	}
@@ -65,6 +65,9 @@ public final class APIConfiguration
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Must be the same class
 		if (!(__o instanceof APIConfiguration))
 			return false;
@@ -79,11 +82,12 @@ public final class APIConfiguration
 	 *
 	 * @param __n The string to potentially normalize.
 	 * @return The normalized name and variant.
+	 * @throws InvalidMidletException If the API is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/01/21
 	 */
 	private static String __normalizeVariant(String __n)
-		throws NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -93,7 +97,7 @@ public final class APIConfiguration
 		// string which is also not the last character. (The input string)}
 		int ld = __n.lastIndexOf('-'), n = __n.length();
 		if (ld < 0 || (ld + 1) >= n)
-			throw new IllegalArgumentException(String.format("AD03 %s", __n));
+			throw new InvalidMidletException(String.format("AD03 %s", __n));
 		
 		// If the character after the dash is a number then the version
 		// will directly follow it
@@ -105,7 +109,7 @@ public final class APIConfiguration
 		// another dash. (The input string)}
 		int nld = __n.lastIndexOf('-', ld - 1);
 		if (nld < 0)
-			throw new IllegalArgumentException(String.format("AD04 %s", __n));
+			throw new InvalidMidletException(String.format("AD04 %s", __n));
 		
 		// Swap around
 		return __n.substring(0, nld) + __n.substring(ld) +

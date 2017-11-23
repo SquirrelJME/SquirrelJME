@@ -22,6 +22,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
+import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -146,45 +147,12 @@ public final class Source
 					
 						// Dependencies, these are whitespace separated
 					case "x-squirreljme-depends":
-						boolean dows = true;
-						for (int i = 0, n = v.length(), mark = 0; i <= n; i++)
-						{
-							// Whitespace
-							char c = (i == n ? 0 : v.charAt(i));
-							if (c == 0 || c == ' ' || c == '\t' || c == '\r' ||
-								c == '\n')
-							{
-								// If reading whitespace, clear flag and mark
-								// to remember the current index
-								if (dows)
-								{
-									dows = false;
-									mark = i;
-								}
-								
-								// Otherwise end of sequence, generate string
-								else
-								{
-									// Add dependency input
-									wattr.putValue(
-										prefix + "-Dependency-" + (depdx++),
-										"squirreljme-project;required;" +
-											v.substring(mark, i) + ";;");
-									
-									// Switch to handling whitespace
-									dows = true;
-								}
-							}
-							
-							// If reading whitespace, clear flag and mark
-							// to remember the current index, is not whitespace
-							// here
-							else if (dows)
-							{
-								dows = false;
-								mark = i;
-							}
-						}
+						for (String split : StringUtils.basicSplit("\0 \t\r\n",
+							v))
+							wattr.putValue(
+								prefix + "-Dependency-" + (depdx++),
+								"proprietary;required; squirreljme.project@" +
+									split + ";;");
 						break;
 					
 						// Unhandled

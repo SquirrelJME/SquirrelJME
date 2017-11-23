@@ -84,12 +84,12 @@ public final class MidletSuiteID
 	 *
 	 * @param __s The string to decode.
 	 * @param __f The format of the suite identifier.
-	 * @throws IllegalArgumentException If the string is malformed.
+	 * @throws InvalidMidletException If the string is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
 	public MidletSuiteID(String __s, MidletSuiteIDFormat __f)
-		throws IllegalArgumentException, NullPointerException
+		throws InvalidMidletException, NullPointerException
 	{
 		// Check
 		if (__s == null || __f == null)
@@ -102,15 +102,15 @@ public final class MidletSuiteID
 		// specified string. (The input string; The separator)}
 		int cola = __s.indexOf(sep);
 		if (cola < 0)
-			throw new IllegalArgumentException(String.format("AD09 %s %c",
-				__s, sep));
+			throw new InvalidMidletException(
+				String.format("AD09 %s %c", __s, sep));
 		
 		// {@squirreljme.error AD0a Expected a second separator to appear in
 		// the specified string. (The input string; The separator)}
 		int colb = __s.indexOf(sep, cola + 1);
 		if (colb < 0)
-			throw new IllegalArgumentException(String.format("AD0a %s %c",
-				__s, sep));
+			throw new InvalidMidletException(
+				String.format("AD0a %s %c", __s, sep));
 		
 		// Depending on the format, the fields may be in a separate order
 		// Dependencies have the name first
@@ -140,6 +140,9 @@ public final class MidletSuiteID
 	@Override
 	public int compareTo(MidletSuiteID __o)
 	{
+		if (this == __o)
+			return 0;
+		
 		// Compare name
 		int rv = this.name.compareTo(__o.name);
 		if (rv != 0)
@@ -161,6 +164,9 @@ public final class MidletSuiteID
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Check
 		if (!(__o instanceof MidletSuiteID))
 			return false;

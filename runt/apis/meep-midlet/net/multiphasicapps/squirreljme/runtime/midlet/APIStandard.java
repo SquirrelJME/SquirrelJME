@@ -24,12 +24,12 @@ public final class APIStandard
 	 * Initializes the constant in name and version form.
 	 *
 	 * @param __n The input string.
-	 * @throws IllegalArgumentException If the name and version form is not
+	 * @throws InvalidMidletException If the name and version form is not
 	 * valid.
 	 * @since 2016/12/14
 	 */
 	public APIStandard(String __n)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
 		super(__n);
 	}
@@ -39,11 +39,11 @@ public final class APIStandard
 	 *
 	 * @param __n The API name.
 	 * @param __v The API version.
-	 * @throws IllegalArgumentException If the arguments are not valid.
+	 * @throws InvalidMidletException If the arguments are not valid.
 	 * @since 2016/12/14
 	 */
 	public APIStandard(String __n, MidletVersion __v)
-		throws IllegalArgumentException
+		throws InvalidMidletException
 	{
 		super(__n, __v);
 	}
@@ -65,6 +65,9 @@ public final class APIStandard
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		// Must be the same class
 		if (!(__o instanceof APIStandard))
 			return false;
