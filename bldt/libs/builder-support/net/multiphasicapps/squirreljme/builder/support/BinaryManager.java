@@ -52,17 +52,29 @@ public final class BinaryManager
 	 * binaries as requested.
 	 * @param __src The source code where projects may be sourced from, may
 	 * be {@code null} if there is no source code.
+	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException If no output path was specified.
 	 * @since 2017/10/31
 	 */
 	public BinaryManager(Path __out, SourceManager __src)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
 		this.output = __out;
 		this.sources = __src;
+		
+		// Load in binaries from source code first
+		Map<SourceName, Binary> binaries = this._binaries;
+		for (Source src : __src)
+		{
+			SourceName name = src.name();
+			binaries.put(name,
+				new Binary(name, src, __out.resolve(name.toFileName())));
+		}
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -223,29 +235,19 @@ public final class BinaryManager
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Before locking see if the source package exists
-		SourceManager sources = this.sources;
-		Source source = sources.get(__n);
-		
-		// Resolve path to the binary root
-		Path binp = this.output.resolve(__n.toString() + ".jar");
-		
 		// Lock on the map since it is dynamically generated
 		Map<SourceName, Binary> binaries = this._binaries;
+		Binary rv;
 		synchronized (binaries)
 		{
-			// If the binary has already been cached, use that
-			Binary rv = binaries.get(__n);
-			if (rv != null)
-				return rv;
-			
-			// Create the project
-			rv = new Binary(__n, source, binp);
-			
-			// Cache it
-			binaries.put(__n, rv);
-			return rv;
+			rv = binaries.get(__n);
 		}
+		
+		// {@squirreljme.error AU0d The specified binary does not exist.
+		// (The name of the binary)}
+		if (rv == null)
+			throw new NoSuchBinaryException(String.format("AU0d %s"));
+		return rv;
 	}
 	
 	/**
