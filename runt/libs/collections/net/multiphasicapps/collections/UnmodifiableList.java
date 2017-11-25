@@ -255,7 +255,7 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type to contain.
 	 * @since 2016/04/28
 	 */
-	static final class __Random__<V>
+	private static final class __Random__<V>
 		extends UnmodifiableList<V>
 		implements RandomAccess
 	{
@@ -279,7 +279,7 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type to contain.
 	 * @since 2016/04/28
 	 */
-	static final class __Sequential__<V>
+	private static final class __Sequential__<V>
 		extends UnmodifiableList<V>
 	{
 		/**
