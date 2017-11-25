@@ -13,6 +13,8 @@ package net.multiphasicapps.collections;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class represents a collection which cannot be modified.
@@ -127,13 +129,22 @@ public final class UnmodifiableCollection<T>
 	 * @return An unmodifiable view of the collection.
 	 * @since 2017/10/09
 	 */
+	@SuppressWarnings({"unchecked"})
 	public static <T> Collection<T> of(Collection<T> __c)
 	{
 		// If already one, return that set
 		if (__c instanceof UnmodifiableCollection)
 			return __c;
 		
-		// Otherwise create a new one
+		// Use List instead
+		else if (__c instanceof List)
+			return UnmodifiableList.<T>of((List<T>)__c);
+		
+		// Use Set instead
+		else if (__c instanceof Set)
+			return UnmodifiableSet.<T>of((Set<T>)__c);
+		
+		// Otherwise wrap as a collection
 		return new UnmodifiableCollection<T>(__c);
 	}
 }

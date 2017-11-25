@@ -22,11 +22,13 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableCollection;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 
 /**
@@ -36,6 +38,7 @@ import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
  * @since 2017/10/31
  */
 public final class BinaryManager
+	implements Iterable<Binary>
 {
 	/** The output directory where built binaries are to be placed. */
 	protected final Path output;
@@ -259,13 +262,8 @@ public final class BinaryManager
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock on the map since it is dynamically generated
-		Map<SourceName, Binary> binaries = this._binaries;
-		Binary rv;
-		synchronized (binaries)
-		{
-			rv = binaries.get(__n);
-		}
+		// Locate
+		Binary rv = this._binaries.get(__n);
 		
 		// {@squirreljme.error AU0d The specified binary does not exist.
 		// (The name of the binary)}
@@ -297,6 +295,17 @@ public final class BinaryManager
 		
 		// Just create the binary
 		return new Binary(SourceName.ofBinaryPath(__p), null, __p);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/25
+	 */
+	@Override
+	public final Iterator<Binary> iterator()
+	{
+		return UnmodifiableCollection.<Binary>of(this._binaries.values()).
+			iterator();
 	}
 }
 
