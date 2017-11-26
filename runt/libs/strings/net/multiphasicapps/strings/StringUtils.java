@@ -12,6 +12,8 @@ package net.multiphasicapps.strings;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import net.multiphasicapps.collections.IntegerList;
 
 /**
  * This class contains static methods which can be used for manipulating
@@ -154,6 +156,39 @@ public final class StringUtils
 			throw new NullPointerException("NARG");
 		
 		return basicSplit(__delim.toCharArray(), __s);
+	}
+	
+	/**
+	 * Returns an array containing all of the indexes that the specified
+	 * character appears in the given sequence.
+	 *
+	 * @param __s The sequence to check in.
+	 * @parma __c The character to get the indexes for.
+	 * @return An array containing the array indexes for the given character,
+	 * if there are none then the array will be empty.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/26
+	 */
+	public static final int[] multipleIndexOf(CharSequence __s, char __c)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		IntegerList list = new IntegerList();
+		
+		// Find every character index
+		for (int i = 0, n = __s.length(), lastdx = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Add index to list if found
+			if (c == __c)
+				list.addInteger(i);
+		}
+		
+		// Finish
+		return list.toIntegerArray();
 	}
 	
 	/**

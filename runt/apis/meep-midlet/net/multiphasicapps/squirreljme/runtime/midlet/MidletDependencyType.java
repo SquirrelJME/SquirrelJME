@@ -77,11 +77,11 @@ public enum MidletDependencyType
 			case "service":		return SERVICE;
 			case "proprietary":	return PROPRIETARY;
 			
-				// {@squirreljme.error AU0c The specified string is not a valid
+				// {@squirreljme.error AD0a The specified string is not a valid
 				// dependency type. (The input string)}
 			default:
 				throw new InvalidMidletException(
-					String.format("AU0c %s", __s));
+					String.format("AD0a %s", __s));
 		}
 	}
 }

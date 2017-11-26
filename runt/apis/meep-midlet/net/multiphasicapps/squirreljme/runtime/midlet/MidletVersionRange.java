@@ -85,10 +85,10 @@ public final class MidletVersionRange
 		// Trim
 		__s = __s.trim();
 		
-		// {@squirreljme.error AD0j The version range cannot be blank.}
+		// {@squirreljme.error AD0l The version range cannot be blank.}
 		int sl = __s.length();
 		if (sl <= 0)
-			throw new IllegalArgumentException("AD0j");
+			throw new IllegalArgumentException("AD0l");
 		
 		// Get the last character
 		char lc = __s.charAt(__s.length() - 1);
@@ -114,10 +114,10 @@ public final class MidletVersionRange
 					this.to = new MidletVersion(99, 99, 99);
 				}
 				
-				// {@squirreljme.error AD0j Major only wildcard versions must
+				// {@squirreljme.error AD0l Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new InvalidMidletException(String.format("AD0j %s",
+					throw new InvalidMidletException(String.format("AD0l %s",
 						__s));
 			}
 			
@@ -125,10 +125,10 @@ public final class MidletVersionRange
 			// how deep it goes
 			else
 			{
-				// {@squirreljme.error AD0j The last dot in a wildcard must be
+				// {@squirreljme.error AD0l The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new InvalidMidletException(String.format("AD0j %s",
+					throw new InvalidMidletException(String.format("AD0l %s",
 						__s));
 				
 				// Source range is simple
@@ -150,10 +150,10 @@ public final class MidletVersionRange
 				else if (numdots == 2)
 					this.to = new MidletVersion(ver.major(), ver.minor(), 99);
 				
-				// {@squirreljme.error AD0j There are too many decimal points
+				// {@squirreljme.error AD0l There are too many decimal points
 				// in the wildcard version string. (The input string)}
 				else
-					throw new InvalidMidletException(String.format("AD0j %s",
+					throw new InvalidMidletException(String.format("AD0l %s",
 						__s));
 			}
 		}
@@ -303,6 +303,40 @@ public final class MidletVersionRange
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns a version which at most implements the given version.
+	 *
+	 * @param __v The version.
+	 * @return The resulting version range.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/26
+	 */
+	public static final MidletVersionRange atMost(MidletVersion __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return new MidletVersionRange(MidletVersion.MIN_VERSION, __v);
+	}
+	
+	/**
+	 * Returns a version which exactly implements the given version.
+	 *
+	 * @param __v The version.
+	 * @return The resulting version range.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/26
+	 */
+	public static final MidletVersionRange exactly(MidletVersion __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return new MidletVersionRange(__v, __v);
 	}
 }
 

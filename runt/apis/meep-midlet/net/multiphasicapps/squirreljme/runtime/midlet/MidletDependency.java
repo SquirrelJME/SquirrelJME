@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This represents a dependency that a LIBlet or MIDlet may depend on.
@@ -59,25 +60,13 @@ public final class MidletDependency
 		__s = __s.trim();
 		
 		// Extract all semicolon positions
-		int[] sc = new int[4];
-		for (int i = 0; i < 5; i++)
-		{
-			int lastpos = (i == 0 ? 0 : sc[i - 1] + 1);
-			
-			// {@squirreljme.error AD07 Expected four semi-colons in the
-			// dependency field. (The input dependency)}
-			int com = __s.indexOf(';', lastpos);
-			if ((i < 4 && com < 0) || (i >= 4 && com >= 0))
-				throw new InvalidMidletException(String.format(
-					"AD07 %s", __s));
-			
-			// Stop
-			if (i == 4)
-				break;
-			
-			// Store
-			sc[i] = com;
-		}
+		int[] sc = StringUtils.multipleIndexOf(__s, ';');
+		
+		// {@squirreljme.error AD09 Expected four semi-colons in the
+		// dependency field. (The input dependency)}
+		if (sc.length != 4)
+			throw new InvalidMidletException(String.format(
+				"AD09 %s", __s));
 		
 		// Split fields
 		String intype = __s.substring(0, sc[0]).trim(),
@@ -102,12 +91,91 @@ public final class MidletDependency
 		this.version = (version = (inversion.isEmpty() ? null :
 			new MidletVersionRange(inversion)));
 		
-		// {@squirreljme.error AD08 Dependencies on LIBlets must have the
-		// name, vendor, and version set. (The input string)}
-		if (type == MidletDependencyType.LIBLET && (name == null ||
-			vendor == null || version == null))
-			throw new InvalidMidletException(
-				String.format("AD08 %s", __s));
+		// Check
+		__check(type, level, name, vendor, version);
+	}
+	
+	/**
+	 * Initializes the depedency with the given type, level, and where the
+	 * remainder of the dependencies are parsed from the specified string.
+	 *
+	 * @param __type The type of dependency this is.
+	 * @param __level The level of the dependency.
+	 * @param __s The string to decode for the remainder of the dependency.
+	 * @throws InvalidMidletException If the input parameters are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/26
+	 */
+	public MidletDependency(MidletDependencyType __type,
+		MidletDependencyLevel __level, String __s)
+		throws InvalidMidletException, NullPointerException
+	{
+		if (__type == null || __level == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Trim whitespace
+		__s = __s.trim();
+		
+		// Extract all semicolon positions
+		int[] sc = StringUtils.multipleIndexOf(__s, ';');
+		
+		// {@squirreljme.error AD0o Expected two semi-colons in the
+		// dependency field. (The input dependency)}
+		if (sc.length != 2)
+			throw new InvalidMidletException(String.format(
+				"AD0o %s", __s));
+		
+		// Split fields
+		String inname = __s.substring(0, sc[0]).trim(),
+			invendor = __s.substring(sc[0] + 1, sc[1]).trim(),
+			inversion = __s.substring(sc[1] + 1).trim();
+		
+		// Parse areas fields
+		MidletSuiteName name;
+		MidletSuiteVendor vendor;
+		MidletVersionRange version;
+		this.name = (name = (inname.isEmpty() ? null :
+			new MidletSuiteName(inname)));
+		this.vendor = (vendor = (invendor.isEmpty() ? null :
+			new MidletSuiteVendor(invendor)));
+		this.version = (version = (inversion.isEmpty() ? null :
+			new MidletVersionRange(inversion)));
+		
+		__check(__type, __level, name, vendor, version);
+		
+		// Set
+		this.type = __type;
+		this.level = __level;
+	}
+	
+	/**
+	 * Initializes the dependency using the given parameters.
+	 *
+	 * @param __type The type of dependency this is.
+	 * @param __level The level of the dependency.
+	 * @param __name The name.
+	 * @param __vendor The vendor.
+	 * @param __version The version.
+	 * @throws InvalidMidletException If the input parameters are not valid.
+	 * @throws NullPointerException If no type and/or name were specified.
+	 * @since 2017/11/26
+	 */
+	public MidletDependency(MidletDependencyType __type,
+		MidletDependencyLevel __level, MidletSuiteName __name,
+		MidletSuiteVendor __vendor, MidletVersionRange __version)
+		throws InvalidMidletException, NullPointerException
+	{
+		if (__type == null || __level == null)
+			throw new NullPointerException("NARG");
+		
+		__check(__type, __level, __name, __vendor, __version);
+		
+		// Set
+		this.type = __type;
+		this.level = __level;
+		this.name = __name;
+		this.vendor = __vendor;
+		this.version = __version;
 	}
 	
 	/**
@@ -211,6 +279,36 @@ public final class MidletDependency
 	}
 	
 	/**
+	 * Returns a dependency which is the same as this one except that it is
+	 * required.
+	 *
+	 * @return This dependency but required.
+	 * @since 2017/11/26
+	 */
+	public MidletDependency toRequired()
+	{
+		if (isRequired())
+			return this;
+		return new MidletDependency(this.type, MidletDependencyLevel.REQUIRED,
+			this.name, this.vendor, this.version);
+	}
+	
+	/**
+	 * Returns a dependency which is the same as this one except that it is
+	 * optional.
+	 *
+	 * @return This dependency but optional.
+	 * @since 2017/11/26
+	 */
+	public MidletDependency toOptional()
+	{
+		if (isOptional())
+			return this;
+		return new MidletDependency(this.type, MidletDependencyLevel.OPTIONAL,
+			this.name, this.vendor, this.version);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/22
 	 */
@@ -272,6 +370,32 @@ public final class MidletDependency
 	public MidletVersionRange version()
 	{
 		return this.version;
+	}
+	
+	/**
+	 * Checks whether the provided parameters are correct.
+	 *
+	 * @param __type The type of dependency this is.
+	 * @param __level The level of the dependency.
+	 * @param __name The name.
+	 * @param __vendor The vendor.
+	 * @param __version The version.
+	 * @throws InvalidMidletException If the input parameters are not valid.
+	 * @since 2017/11/26
+	 */
+	private static final void __check(MidletDependencyType __type,
+		MidletDependencyLevel __level, MidletSuiteName __name,
+		MidletSuiteVendor __vendor, MidletVersionRange __version)
+		throws InvalidMidletException
+	{
+		// {@squirreljme.error AD09 Dependencies on LIBlets must have the
+		// name, vendor, and version set. (The type; The level; The name;
+		// The vendor; The version)}
+		if (__type == MidletDependencyType.LIBLET && (__name == null ||
+			__vendor == null || __version == null))
+			throw new InvalidMidletException(
+				String.format("AD09 %s %s %s %s %s", __type, __level, __name,
+					__vendor, __version));
 	}
 }
 

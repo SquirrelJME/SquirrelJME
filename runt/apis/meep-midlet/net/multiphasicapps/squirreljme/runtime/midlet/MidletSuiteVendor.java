@@ -48,7 +48,7 @@ public final class MidletSuiteVendor
 			// Invalid character?
 			switch (c)
 			{
-					// {@squirreljme.error AD0c An illegal character was
+					// {@squirreljme.error AD0e An illegal character was
 					// specified in the midlet suite vendor. (The midlet suite
 					// vendor)}
 				case '\0':
@@ -57,7 +57,7 @@ public final class MidletSuiteVendor
 				case ':':
 				case ';':
 					throw new InvalidMidletException(
-						String.format("AD0c %s", __v));
+						String.format("AD0e %s", __v));
 				
 					// Valid
 				default:

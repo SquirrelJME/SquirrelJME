@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet;
 
+import net.multiphasicapps.strings.StringUtils;
+
 /**
  * This represents a configuration such as CLDC which specifies which base
  * classes are available.
@@ -84,6 +86,33 @@ public final class APIConfiguration
 	public boolean isOptional()
 	{
 		return false;
+	}
+	
+	/**
+	 * Parses the list of configurations.
+	 *
+	 * @param __s The string to parse for configurations.
+	 * @return An array containing parsed configurations.
+	 * @throws InvalidMidletException If the API is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/26
+	 */
+	public static final APIConfiguration[] parseList(String __s)
+		throws InvalidMidletException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Split input strings with spaces
+		String[] split = StringUtils.basicSplit("\0 \t\r\n", __s);
+		
+		// Parse profiles for each
+		int n = split.length;
+		APIConfiguration[] rv = new APIConfiguration[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = new APIConfiguration(split[i]);
+		
+		return rv;
 	}
 	
 	/**
