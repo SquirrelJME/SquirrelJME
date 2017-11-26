@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableCollection;
+import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 
 /**
@@ -113,7 +114,7 @@ public final class BinaryManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
-	public final Binary[] dependencies(DependencyList __set, boolean __opt)
+	public final Binary[] dependencies(DependencySet __set, boolean __opt)
 		throws NullPointerException
 	{
 		if (__set == null)

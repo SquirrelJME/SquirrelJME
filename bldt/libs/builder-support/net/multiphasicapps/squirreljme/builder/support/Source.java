@@ -23,6 +23,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -51,13 +52,13 @@ public final class Source
 	protected final ProjectType type;
 	
 	/** Dependencies that this source code relies on. */
-	private volatile Reference<DependencyList> _dependencies;
+	private volatile Reference<DependencySet> _dependencies;
 	
 	/** The approximate binary manifest. */
 	private volatile Reference<JavaManifest> _approxbm;
 	
 	/** The approximate binary dependency set. */
-	private volatile Reference<DependencyList> _approxds;
+	private volatile Reference<DependencySet> _approxds;
 	
 	/** Last modified time of the source code. */
 	private volatile long _lastmodtime =
@@ -181,6 +182,10 @@ public final class Source
 				}
 			}
 			
+			// Write the project name as it appears in the builder
+			wattr.putValue("X-SquirrelJME-InternalProjectName",
+				name().toString());
+			
 			// If an API was detected then flag it
 			if (apidetected)
 				wattr.putValue("X-SquirrelJME-IsAPI", "true");
@@ -210,14 +215,15 @@ public final class Source
 	 * @return The approximated dependency set.
 	 * @since 2017/11/17
 	 */
-	public final DependencyList approximateBinaryDependencyList()
+	public final DependencySet approximateBinaryDependencySet()
 	{
-		Reference<DependencyList> ref = this._approxds;
-		DependencyList rv;
+		Reference<DependencySet> ref = this._approxds;
+		DependencySet rv;
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._approxds = new WeakReference<>(
-				(rv = new DependencyList(approximateBinaryManifest())));
+				(rv = DependencySet.neededByManifest(
+					approximateBinaryManifest())));
 		
 		return rv;
 	}
@@ -229,10 +235,10 @@ public final class Source
 	 * @return The set of dependencies.
 	 * @since 2017/11/17
 	 */
-	public final DependencyList dependencies()
+	public final DependencySet dependencies()
 	{
 		// This is exactly the same as the approximate binary dependencies
-		return approximateBinaryDependencyList();
+		return approximateBinaryDependencySet();
 	}
 	
 	/**
