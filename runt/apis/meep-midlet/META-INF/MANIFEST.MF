@@ -9,6 +9,6 @@ X-SquirrelJME-Error: AD
 X-SquirrelJME-Group: required
 X-SquirrelJME-Standard: microedition.midlet;;
 X-SquirrelJME-UUID: 1d9e3c4f-b0ec-4e83-b656-0454dd661868
-X-SquirrelJME-Depends: tool-manifest-reader strings
+X-SquirrelJME-Depends: tool-manifest-reader strings collections
 Microedition-Configuration: CLDC-1.8-Compact
 

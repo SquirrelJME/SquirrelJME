@@ -21,6 +21,9 @@ public final class JavaManifestKey
 	/** The used string. */
 	protected final String string;
 	
+	/** The actual input string. */
+	protected final String inputstring;
+	
 	/**
 	 * Initializes the manifest key using the given string.
 	 *
@@ -40,6 +43,9 @@ public final class JavaManifestKey
 		for (int i = 0, n = __s.length(); i < n; i++)
 			sb.append(__toLower(__s.charAt(i)));
 		this.string = sb.toString();
+		
+		// Remember input string for case purposes
+		this.inputstring = __s;
 	}
 	
 	/**
@@ -63,6 +69,19 @@ public final class JavaManifestKey
 	public int hashCode()
 	{
 		return this.string.hashCode();
+	}
+	
+	/**
+	 * Returns the input string which was passed to this key, this string
+	 * cannot be used for comparative purposes and it intended to be used
+	 * for case matching in the output manifest.
+	 *
+	 * @return The input string.
+	 * @since 2017/11/26
+	 */
+	public String inputString()
+	{
+		return this.inputstring;
 	}
 	
 	/**

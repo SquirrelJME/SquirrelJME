@@ -279,7 +279,7 @@ public class MutableJavaManifest
 				continue;
 			
 			// Write pair
-			__write(__w, k.toString(), e.getValue());
+			__write(__w, k.inputString(), e.getValue());
 		}
 	}
 	

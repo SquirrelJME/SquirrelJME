@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -54,7 +55,7 @@ public final class Binary
 	private volatile Reference<JavaManifest> _manifest;
 	
 	/** Dependencies that this source code relies on. */
-	private volatile Reference<DependencyList> _dependencies;
+	private volatile Reference<DependencySet> _dependencies;
 	
 	/**
 	 * Initializes the binary.
@@ -88,19 +89,19 @@ public final class Binary
 	 * @throws InvalidBinaryException If this binary is not valid.
 	 * @since 2017/11/17
 	 */
-	public final DependencyList dependencies()
+	public final DependencySet dependencies()
 		throws InvalidBinaryException
 	{
 		// If the binary is newer then use the dependencies read from the
 		// manifest
 		if (isBinaryNewer())
 		{
-			Reference<DependencyList> ref = this._dependencies;
-			DependencyList rv;
+			Reference<DependencySet> ref = this._dependencies;
+			DependencySet rv;
 		
 			if (ref == null || null == (rv = ref.get()))
 				this._dependencies = new WeakReference<>(
-					(rv = new DependencyList(manifest())));
+					(rv = DependencySet.neededByManifest(manifest())));
 			
 			return rv;
 		}
@@ -110,7 +111,7 @@ public final class Binary
 		Source source = this.source;
 		if (source == null)
 			throw new InvalidBinaryException("AU0a");
-		return source.approximateBinaryDependencyList();
+		return source.approximateBinaryDependencySet();
 	}
 	
 	/**
