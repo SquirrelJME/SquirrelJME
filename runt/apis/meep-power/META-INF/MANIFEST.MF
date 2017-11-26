@@ -7,6 +7,6 @@ X-SquirrelJME-Description: This provides support for quering the current
   electrical state of the device along with the setting of potential new
   power modes.
 X-SquirrelJME-Error: DJ
-X-SquirrelJME-Standard: microedition.power;;
+X-SquirrelJME-DefinedStandards: microedition.power;;
 X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6
 Microedition-Configuration: CLDC-1.8-Compact

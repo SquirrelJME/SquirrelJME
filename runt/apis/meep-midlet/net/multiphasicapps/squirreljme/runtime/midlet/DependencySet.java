@@ -171,7 +171,43 @@ public final class DependencySet
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		JavaManifestAttributes attr = __m.getMainAttributes();
+		Set<ManifestedDependency> deps = new LinkedHashSet<>();
+		
+		// Configurations defined
+		String configs = attr.getValue("X-SquirrelJME-DefinesConfigurations");
+		if (configs != null)
+			throw new todo.TODO();
+		
+		// Profiles defined
+		String profiles = attr.getValue("X-SquirrelJME-DefinesProfiles");
+		if (profiles != null)
+			throw new todo.TODO();
+		
+		// Standards defined
+		String standards = attr.getValue("X-SquirrelJME-DefinedStandards");
+		if (standards != null)
+			throw new todo.TODO();
+		
+		// SquirrelJME project name specifier, not portable
+		String sjmeipn = attr.getValue("X-SquirrelJME-InternalProjectName");
+		if (sjmeipn != null)
+			throw new todo.TODO();
+		
+		// Handle liblets which may be provided.
+		if (!"true".equals(attr.getValue("X-SquirrelJME-IsAPI")))
+		{
+			String name = attr.getValue("LIBlet-Name"),
+				vendor = attr.getValue("LIBlet-Vendor"),
+				version = attr.getValue("LIBlet-Version");
+			
+			// All three must be set and valid
+			if (name != null && vendor != null && version != null)
+				throw new todo.TODO();
+		}
+		
+		// Build
+		return new DependencySet(deps);
 	}
 }
 

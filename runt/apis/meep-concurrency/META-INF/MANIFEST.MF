@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: The concurrency APIs allows multiple 
  applications to run at the same time.
 X-SquirrelJME-Error: DK
-X-SquirrelJME-Standard: microedition.concurrency;;
+X-SquirrelJME-DefinedStandards: microedition.concurrency;;
 X-SquirrelJME-UUID: 70d937c9-e6d1-4618-a299-8182ea5e612e
 Microedition-Configuration: CLDC-1.8-Compact

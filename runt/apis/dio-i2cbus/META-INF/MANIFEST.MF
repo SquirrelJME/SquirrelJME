@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to the I2C bus.
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CT
-X-SquirrelJME-Standard: dio.i2cbus;;1.0.1
+X-SquirrelJME-DefinedStandards: dio.i2cbus;;1.0.1
 X-SquirrelJME-UUID: 0d788331-6b08-45b6-a506-bb61efe926a9
 Microedition-Configuration: CLDC-1.8

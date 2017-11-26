@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides access to generic devices.
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DS
-X-SquirrelJME-Standard: dio.generic;;1.0.1
+X-SquirrelJME-DefinedStandards: dio.generic;;1.0.1
 X-SquirrelJME-UUID: 8ea65d38-ad58-4ce8-9b02-1ca66a7d8adf
 Microedition-Configuration: CLDC-1.8

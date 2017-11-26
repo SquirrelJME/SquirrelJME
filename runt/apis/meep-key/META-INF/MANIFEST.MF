@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains classes for handling key and 
  other user input events.
 X-SquirrelJME-Error: DB
-X-SquirrelJME-Standard: microedition.key;;
+X-SquirrelJME-DefinedStandards: microedition.key;;
 X-SquirrelJME-UUID: 90e52d37-a976-4f38-a194-9c65d34b6615
 Microedition-Configuration: CLDC-1.8-Compact
