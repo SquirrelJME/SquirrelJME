@@ -113,11 +113,14 @@ public final class Source
 			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
 			
 			// Determine the prefix for the type keys
-			String prefix = (this.type == ProjectType.MIDLET ?
+			ProjectType type = this.type;
+			boolean isapi = type == ProjectType.API;
+			String prefix = (type == ProjectType.MIDLET ?
 				"MIDlet" : "LIBlet");
 			
 			// Handle fields for the main attributes
 			int depdx = 1;
+			boolean apidetected = false;
 			for (Map.Entry<JavaManifestKey, String> e : rattr.entrySet())
 			{
 				JavaManifestKey k = e.getKey();
@@ -155,6 +158,21 @@ public final class Source
 								"proprietary;required; squirreljme.project@" +
 									split + ";Stephanie Gawroriski;");
 						break;
+						
+						// Never copy this flag
+					case "x-squirreljme-isapi":
+						break;
+						
+						// Only put API definitions in if these are actual APIs
+					case "x-squirreljme-definesconfigurations":
+					case "x-squirreljme-definesprofiles":
+					case "x-squirreljme-standard":
+						if (isapi)
+						{
+							wattr.put(k, v);
+							apidetected = true;
+						}
+						break;
 					
 						// Unhandled
 					default:
@@ -162,6 +180,10 @@ public final class Source
 						break;
 				}
 			}
+			
+			// If an API was detected then flag it
+			if (apidetected)
+				wattr.putValue("X-SquirrelJME-IsAPI", "true");
 			
 			// Copy other attributes that may exist
 			for (Map.Entry<String, JavaManifestAttributes> e : rman.entrySet())

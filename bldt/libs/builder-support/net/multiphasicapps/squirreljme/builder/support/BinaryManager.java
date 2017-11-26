@@ -226,7 +226,17 @@ public final class BinaryManager
 		if (__dep == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Look for the first matching dependency
+		for (Binary bin : this)
+		{
+			ManifestedDependency[] check = bin.matchedDependencies(__dep);
+			
+			if (check.length > 0)
+				return bin;
+		}
+		
+		// None found
+		return null;
 	}
 	
 	/**
