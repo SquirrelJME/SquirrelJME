@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
@@ -56,6 +57,9 @@ public final class Binary
 	
 	/** Dependencies that this source code relies on. */
 	private volatile Reference<DependencySet> _dependencies;
+	
+	/** Dependencies that are provided by this binary. */
+	private volatile Reference<DependencySet> _provideddeps;
 	
 	/**
 	 * Initializes the binary.
@@ -240,7 +244,7 @@ public final class Binary
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		List<ManifestedDependency> rv = new ArrayList<>();
+		Set<ManifestedDependency> rv = new LinkedHashSet<>();
 		
 		if (true)
 			throw new todo.TODO();
@@ -258,6 +262,36 @@ public final class Binary
 	public final SourceName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Returns the dependencies which are provided by this binary.
+	 *
+	 * @return The dependencies provided by this binary.
+	 * @since 2017/11/26
+	 */
+	public final DependencySet providedDependencies()
+	{
+		// If the binary is newer then use the dependencies read from the
+		// manifest
+		if (isBinaryNewer())
+		{
+			Reference<DependencySet> ref = this._provideddeps;
+			DependencySet rv;
+		
+			if (ref == null || null == (rv = ref.get()))
+				this._provideddeps = new WeakReference<>(
+					(rv = DependencySet.providedByManifest(manifest())));
+			
+			return rv;
+		}
+		
+		// {@squirreljme.error AU0e Cannot get provided dependencies for the
+		// binary because it has no source code.}
+		Source source = this.source;
+		if (source == null)
+			throw new InvalidBinaryException("AU0e");
+		return source.approximateBinaryProvidedDependencies();
 	}
 	
 	/**

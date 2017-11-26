@@ -60,6 +60,9 @@ public final class Source
 	/** The approximate binary dependency set. */
 	private volatile Reference<DependencySet> _approxds;
 	
+	/** The approximate provided binary dependency set. */
+	private volatile Reference<DependencySet> _approxpd;
+	
 	/** Last modified time of the source code. */
 	private volatile long _lastmodtime =
 		Long.MIN_VALUE;
@@ -223,6 +226,27 @@ public final class Source
 		if (ref == null || null == (rv = ref.get()))
 			this._approxds = new WeakReference<>(
 				(rv = DependencySet.neededByManifest(
+					approximateBinaryManifest())));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the approximated set of dependencies which are provided by
+	 * this source project.
+	 *
+	 * @return The approximated dependencies this provides for other projects
+	 * to use.
+	 * @since 2017/11/26
+	 */
+	public final DependencySet approximateBinaryProvidedDependencies()
+	{
+		Reference<DependencySet> ref = this._approxpd;
+		DependencySet rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._approxpd = new WeakReference<>(
+				(rv = DependencySet.providedByManifest(
 					approximateBinaryManifest())));
 		
 		return rv;
