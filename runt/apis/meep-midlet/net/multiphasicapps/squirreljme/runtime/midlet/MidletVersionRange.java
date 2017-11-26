@@ -85,10 +85,10 @@ public final class MidletVersionRange
 		// Trim
 		__s = __s.trim();
 		
-		// {@squirreljme.error AD0l The version range cannot be blank.}
+		// {@squirreljme.error AD0i The version range cannot be blank.}
 		int sl = __s.length();
 		if (sl <= 0)
-			throw new IllegalArgumentException("AD0l");
+			throw new IllegalArgumentException("AD0i");
 		
 		// Get the last character
 		char lc = __s.charAt(__s.length() - 1);
@@ -114,10 +114,10 @@ public final class MidletVersionRange
 					this.to = new MidletVersion(99, 99, 99);
 				}
 				
-				// {@squirreljme.error AD0l Major only wildcard versions must
+				// {@squirreljme.error AD0j Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new InvalidMidletException(String.format("AD0l %s",
+					throw new InvalidMidletException(String.format("AD0j %s",
 						__s));
 			}
 			
@@ -125,10 +125,10 @@ public final class MidletVersionRange
 			// how deep it goes
 			else
 			{
-				// {@squirreljme.error AD0l The last dot in a wildcard must be
+				// {@squirreljme.error AD0k The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new InvalidMidletException(String.format("AD0l %s",
+					throw new InvalidMidletException(String.format("AD0k %s",
 						__s));
 				
 				// Source range is simple
