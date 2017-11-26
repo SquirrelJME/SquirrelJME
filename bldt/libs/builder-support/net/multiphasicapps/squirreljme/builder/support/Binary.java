@@ -246,8 +246,14 @@ public final class Binary
 		
 		Set<ManifestedDependency> rv = new LinkedHashSet<>();
 		
-		if (true)
-			throw new todo.TODO();
+		// Go through input dependencies and just see return any dependencies
+		// we provide which are in there
+		DependencySet provided = this.providedDependencies();
+		for (ManifestedDependency d : __d)
+		{
+			if (provided.contains(d))
+				rv.add(d);
+		}
 		
 		return rv.<ManifestedDependency>toArray(
 			new ManifestedDependency[rv.size()]);
