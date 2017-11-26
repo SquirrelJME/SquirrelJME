@@ -133,12 +133,12 @@ public final class MidletVersion
 	public MidletVersion(int __maj, int __min, int __rel)
 		throws InvalidMidletException
 	{
-		// {@squirreljme.error AD0h Input version number is out of range, only
+		// {@squirreljme.error AD0f Input version number is out of range, only
 		// 0 through 99 are valid. (The major version; The minor version; The
 		// release version)}
 		if (__maj < 0 || __maj > 99 || __min < 0 || __min > 99 ||
 			__rel < 0 || __rel > 99)
-			throw new InvalidMidletException(String.format("AD0h %d %d %d",
+			throw new InvalidMidletException(String.format("AD0f %d %d %d",
 				__maj, __min, __rel));
 		
 		// Set

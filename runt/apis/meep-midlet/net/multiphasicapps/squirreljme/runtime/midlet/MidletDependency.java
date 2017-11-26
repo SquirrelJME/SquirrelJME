@@ -62,11 +62,11 @@ public final class MidletDependency
 		// Extract all semicolon positions
 		int[] sc = StringUtils.multipleIndexOf(__s, ';');
 		
-		// {@squirreljme.error AD09 Expected four semi-colons in the
+		// {@squirreljme.error AD0o Expected four semi-colons in the
 		// dependency field. (The input dependency)}
 		if (sc.length != 4)
 			throw new InvalidMidletException(String.format(
-				"AD09 %s", __s));
+				"AD0o %s", __s));
 		
 		// Split fields
 		String intype = __s.substring(0, sc[0]).trim(),
@@ -119,11 +119,11 @@ public final class MidletDependency
 		// Extract all semicolon positions
 		int[] sc = StringUtils.multipleIndexOf(__s, ';');
 		
-		// {@squirreljme.error AD0o Expected two semi-colons in the
+		// {@squirreljme.error AD08 Expected two semi-colons in the
 		// dependency field. (The input dependency)}
 		if (sc.length != 2)
 			throw new InvalidMidletException(String.format(
-				"AD0o %s", __s));
+				"AD08 %s", __s));
 		
 		// Split fields
 		String inname = __s.substring(0, sc[0]).trim(),
