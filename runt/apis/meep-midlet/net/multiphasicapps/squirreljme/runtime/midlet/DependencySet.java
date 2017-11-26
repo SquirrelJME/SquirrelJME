@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableSet;
+import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -177,17 +178,28 @@ public final class DependencySet
 		// Configurations defined
 		String configs = attr.getValue("X-SquirrelJME-DefinesConfigurations");
 		if (configs != null)
-			throw new todo.TODO();
+			for (APIConfiguration conf : APIConfiguration.parseList(configs))
+				deps.add(conf);
 		
 		// Profiles defined
 		String profiles = attr.getValue("X-SquirrelJME-DefinesProfiles");
 		if (profiles != null)
-			throw new todo.TODO();
+			for (APIProfile prof : APIProfile.parseList(profiles))
+				deps.add(prof);
 		
 		// Standards defined
 		String standards = attr.getValue("X-SquirrelJME-DefinedStandards");
 		if (standards != null)
-			throw new todo.TODO();
+			for (String s : StringUtils.basicSplit(",", standards))
+			{
+				MidletDependency dep = new MidletDependency(
+					MidletDependencyType.STANDARD,
+					MidletDependencyLevel.REQUIRED, s);
+				
+				// Includes required and optional
+				deps.add(dep);
+				deps.add(dep.toOptional());
+			}
 		
 		// SquirrelJME project name specifier, not portable
 		String sjmeipn = attr.getValue("X-SquirrelJME-InternalProjectName");
@@ -203,7 +215,19 @@ public final class DependencySet
 			
 			// All three must be set and valid
 			if (name != null && vendor != null && version != null)
-				throw new todo.TODO();
+			{
+				MidletDependency dep = new MidletDependency(
+					MidletDependencyType.LIBLET,
+					MidletDependencyLevel.REQUIRED,
+					new MidletSuiteName(name),
+					new MidletSuiteVendor(vendor),
+					MidletVersionRange.exactly(
+						new MidletVersion(version)));
+				
+				// Includes required and optional
+				deps.add(dep);
+				deps.add(dep.toOptional());
+			}
 		}
 		
 		// Build
