@@ -19,11 +19,17 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -196,6 +202,53 @@ public final class Binary
 	}
 	
 	/**
+	 * Returns an array containing the dependencies from the inpout
+	 * dependencies which match and which this binary statisfies.
+	 *
+	 * @param __d The input dependencies to check.
+	 * @return The dependencies which are matched by this binary, an empty
+	 * array will be returned if there are no matches.
+	 * @throws NullPointerException On null arguments.
+	 * @sine 2017/11/26
+	 */
+	public final ManifestedDependency[] matchedDependencies(
+		ManifestedDependency... __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		return this.matchedDependencies(
+			Arrays.<ManifestedDependency>asList(__d));
+	}
+	
+	/**
+	 * Returns an array containing the dependencies from the inpout
+	 * dependencies which match and which this binary statisfies.
+	 *
+	 * @param __d The input dependencies to check.
+	 * @return The dependencies which are matched by this binary, an empty
+	 * array will be returned if there are no matches.
+	 * @throws NullPointerException On null arguments.
+	 * @sine 2017/11/26
+	 */
+	public final ManifestedDependency[] matchedDependencies(
+		Collection<ManifestedDependency> __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		List<ManifestedDependency> rv = new ArrayList<>();
+		
+		if (true)
+			throw new todo.TODO();
+		
+		return rv.<ManifestedDependency>toArray(
+			new ManifestedDependency[rv.size()]);
+	}
+	
+	/**
 	 * Returns the name of the project.
 	 *
 	 * @return The project name.
@@ -215,6 +268,28 @@ public final class Binary
 	public final Source source()
 	{
 		return this.source;
+	}
+	
+	/**
+	 * Returns the type of project that this is.
+	 *
+	 * @return The project type.
+	 * @since 2017/11/26
+	 */
+	public final ProjectType type()
+	{
+		JavaManifestAttributes attr = this.manifest().getMainAttributes();
+		
+		// Midlet?
+		if (attr.definesValue("midlet-name"))
+			return ProjectType.MIDLET;
+		
+		// APIs are like liblets but have a special flag to them
+		else if ("true".equals(attr.getValue("x-squirreljme-isapi")))
+			return ProjectType.API;
+		
+		// Otherwise everything else is a liblet
+		return ProjectType.LIBLET;
 	}
 	
 	/**

@@ -61,6 +61,30 @@ public final class JavaManifestAttributes
 	}
 	
 	/**
+	 * Checks whether the specified key has a value defined for it.
+	 *
+	 * @param __k The key to check.
+	 * @return {@code true} if a value is defined.
+	 * @since 2017/11/26
+	 */
+	public boolean definesValue(JavaManifestKey __k)
+	{
+		return this.containsKey(__k);
+	}
+	
+	/**
+	 * Checks whether the specified key has a value defined for it.
+	 *
+	 * @param __k The key to check.
+	 * @return {@code true} if a value is defined.
+	 * @since 2017/11/26
+	 */
+	public boolean definesValue(String __k)
+	{
+		return this.containsKey(__k == null ? null : new JavaManifestKey(__k));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/20
 	 */
