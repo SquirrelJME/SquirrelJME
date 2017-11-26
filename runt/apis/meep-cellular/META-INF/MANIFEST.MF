@@ -6,6 +6,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This provides an implementation which is used
   to access cellular networks.
 X-SquirrelJME-Error: DH
-X-SquirrelJME-Standard: microedition.cellular;;
+X-SquirrelJME-DefinedStandards: microedition.cellular;;
 X-SquirrelJME-UUID: eac4a39d-b264-44ca-9e77-38a96a6e30cc
 Microedition-Configuration: CLDC-1.8-Compact

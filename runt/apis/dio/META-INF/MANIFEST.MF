@@ -7,6 +7,6 @@ X-SquirrelJME-Description: This provides the base support for devices
  that may be provided by an implementation.
 X-SquirrelJME-Depends: cldc
 X-SquirrelJME-Error: CR
-X-SquirrelJME-Standard: dio;;1.0.1
+X-SquirrelJME-DefinedStandards: dio;;1.0.1
 X-SquirrelJME-UUID: b45e9ac9-53bc-4e2a-9265-b5b5bca3d482
 Microedition-Configuration: CLDC-1.8-Compact

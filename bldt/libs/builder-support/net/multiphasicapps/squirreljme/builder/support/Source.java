@@ -170,7 +170,7 @@ public final class Source
 						// Only put API definitions in if these are actual APIs
 					case "x-squirreljme-definesconfigurations":
 					case "x-squirreljme-definesprofiles":
-					case "x-squirreljme-standard":
+					case "x-squirreljme-definedstandards":
 						if (isapi)
 						{
 							wattr.put(k, v);

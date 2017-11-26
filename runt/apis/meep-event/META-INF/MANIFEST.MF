@@ -7,6 +7,6 @@ X-SquirrelJME-Description: This provides an interface which allows an
  application to receive events from the system along withsending events 
  to other running applications.
 X-SquirrelJME-Error: DI
-X-SquirrelJME-Standard: microedition.event;;
+X-SquirrelJME-DefinedStandards: microedition.event;;
 X-SquirrelJME-UUID: a4f80eca-c186-420b-b160-e47e612695a1
 Microedition-Configuration: CLDC-1.8-Compact
