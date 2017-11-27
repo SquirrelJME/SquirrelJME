@@ -202,9 +202,31 @@ public final class BinaryManager
 			for (Binary c : this.compile(dep))
 				rv.add(c);
 		
-		// Compile this package
-		if (true)
+		// Always recompile if the source is newer, but go through all
+		// dependencies and recompile if any dependency is newer than this
+		// binary
+		boolean docompile = __b.isSourceNewer();
+		if (!docompile)
 		{
+			// Get the date for this binary
+			long mydate = __b.lastModifiedTime();
+			
+			// If any dependency has a newer binary than this one, compile
+			for (Binary dep : rv)
+				if (dep.isSourceNewer() || dep.lastModifiedTime() > mydate)
+				{
+					docompile = true;
+					break;
+				}
+		}
+		
+		// Compilation needs to be performed
+		if (docompile)
+		{
+			// {@squirreljme.error AU0f Compiling the given project.
+			// (The project name)}
+			System.err.printf("AU0f %s%n", __b.name());
+			
 			throw new todo.TODO();
 		}
 		
