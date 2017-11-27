@@ -224,6 +224,24 @@ public final class MidletVersionRange
 	}
 	
 	/**
+	 * Checks whether the given version is within range of the other version.
+	 *
+	 * @param __r The other version range to check.
+	 * @return If the other version range shares all or part of its range
+	 * with this range.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/27
+	 */
+	public boolean inRange(MidletVersionRange __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the end of the range.
 	 *
 	 * @return The range end.

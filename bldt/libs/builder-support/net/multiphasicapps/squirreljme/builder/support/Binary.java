@@ -31,6 +31,7 @@ import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteVendor;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
@@ -248,16 +249,30 @@ public final class Binary
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		Set<ManifestedDependency> rv = new LinkedHashSet<>();
+		if (__d instanceof DependencySet)
+			return this.matchedDependencies((DependencySet)__d);
+		return this.matchedDependencies(new DependencySet(__d));
+	}
+	
+	/**
+	 * Returns an array containing the dependencies from the inpout
+	 * dependencies which match and which this binary statisfies.
+	 *
+	 * @param __d The input dependencies to check.
+	 * @return The dependencies which are matched by this binary, an empty
+	 * array will be returned if there are no matches.
+	 * @throws NullPointerException On null arguments.
+	 * @sine 2017/11/27
+	 */
+	public final ManifestedDependency[] matchedDependencies(
+		DependencySet __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
 		
-		// Go through input dependencies and just see return any dependencies
-		// we provide which are in there
-		DependencySet provided = this.providedDependencies();
-		for (ManifestedDependency d : __d)
-		{
-			throw new todo.TODO();
-		}
-		
+		// Use conjunction
+		DependencySet rv = this.providedDependencies().conjunction(__d);
 		return rv.<ManifestedDependency>toArray(
 			new ManifestedDependency[rv.size()]);
 	}

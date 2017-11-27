@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: 890370ee-0c73-4552-a49e-b38c6c2c9bd1
 X-SquirrelJME-Error: AB
-X-SquirrelJME-Name: Mutabl Java Manifest
+X-SquirrelJME-Name: Mutable Java Manifest
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: tool-manifest-reader
