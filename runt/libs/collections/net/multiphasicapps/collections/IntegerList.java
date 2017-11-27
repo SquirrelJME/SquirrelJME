@@ -54,7 +54,15 @@ public final class IntegerList
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Iterate through collections
+		int n = __v.size(), i = 0;
+		int[] values = new int[n];
+		for (Integer v : __v)
+			values[i++] = v;
+		
+		// Set
+		this._values = values;
+		this._size = n;
 	}
 	
 	/**
@@ -70,7 +78,12 @@ public final class IntegerList
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Defensive copy
+		__v = __v.clone();
+		
+		// Simple set
+		this._values = __v;
+		this._size = __v.length;
 	}
 	
 	/**
@@ -79,8 +92,12 @@ public final class IntegerList
 	 */
 	@Override
 	public boolean add(Integer __a)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addInteger(__a);
 	}
 	
 	/**
@@ -88,9 +105,13 @@ public final class IntegerList
 	 * @since 2017/11/26
 	 */
 	@Override
-	public void add(int __a, Integer __b)
+	public void add(int __i, Integer __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this.addInteger(__i, __v);
 	}
 	
 	/**
@@ -110,10 +131,16 @@ public final class IntegerList
 	 *
 	 * @param __i The index to add the value at.
 	 * @param __v The value to add.
+	 * @throws IndexOutOfBoundsException If the index to add it outside of
+	 * the array bounds.
 	 * @since 2017/11/26
 	 */
 	public void addInteger(int __i, int __v)
+		throws IndexOutOfBoundsException
 	{
+		if (__i < 0 || __i > this._size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		throw new todo.TODO();
 	}
 	
@@ -124,7 +151,8 @@ public final class IntegerList
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		this._values = null;
+		this._size = 0;
 	}
 	
 	/**
@@ -134,7 +162,11 @@ public final class IntegerList
 	@Override
 	public boolean contains(Object __a)
 	{
-		throw new todo.TODO();
+		// Only contains integers
+		if (!(__a instanceof Integer))
+			return false;
+		
+		return this.containsInteger((Integer)__a);
 	}
 	
 	/**
@@ -174,17 +206,7 @@ public final class IntegerList
 		if (__i < 0 || __i >= this._size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/11/26
-	 */
-	@Override
-	public int hashCode()
-	{
-		throw new todo.TODO();
+		return this._values[__i];
 	}
 	
 	/**
@@ -194,7 +216,11 @@ public final class IntegerList
 	@Override
 	public int indexOf(Object __a)
 	{
-		throw new todo.TODO();
+		// Will never contain non-integers
+		if (!(__a instanceof Integer))
+			return -1;
+		
+		return this.indexOfInteger((Integer)__a);
 	}
 	
 	/**
@@ -207,7 +233,11 @@ public final class IntegerList
 	 */
 	public int indexOfInteger(int __v)
 	{
-		throw new todo.TODO();
+		int[] values = this._values;
+		for (int i = 0, n = values.length; i < n; i++)
+			if (values[i] == __v)
+				return i;
+		return -1;
 	}
 	
 	/**
@@ -217,7 +247,7 @@ public final class IntegerList
 	@Override
 	public boolean isEmpty()
 	{
-		throw new todo.TODO();
+		return this._size == 0;
 	}
 	
 	/**
@@ -227,7 +257,11 @@ public final class IntegerList
 	@Override
 	public int lastIndexOf(Object __a)
 	{
-		throw new todo.TODO();
+		// Will never contain non-integers
+		if (!(__a instanceof Integer))
+			return -1;
+		
+		return this.lastIndexOfInteger((Integer)__a);
 	}
 	
 	/**
@@ -241,7 +275,11 @@ public final class IntegerList
 	 */
 	public int lastIndexOfInteger(int __v)
 	{
-		throw new todo.TODO();
+		int[] values = this._values;
+		for (int n = values.length, i = n - 1; i >= 0; i--)
+			if (values[i] == __v)
+				return i;
+		return -1;
 	}
 	
 	/**
@@ -251,7 +289,16 @@ public final class IntegerList
 	@Override
 	public boolean remove(Object __a)
 	{
-		throw new todo.TODO();
+		// Will never contain non-integers
+		if (!(__a instanceof Integer))
+			return false;
+		
+		int dx = this.indexOf(__a);
+		if (dx < 0)
+			return false;
+		
+		this.remove(dx);
+		return true;
 	}
 	
 	/**
@@ -269,9 +316,13 @@ public final class IntegerList
 	 * @since 2017/11/26
 	 */
 	@Override
-	public Integer set(int __a, Integer __b)
+	public Integer set(int __i, Integer __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return this.setInteger(__i, __v);
 	}
 	
 	/**
@@ -286,6 +337,9 @@ public final class IntegerList
 	public int setInteger(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
+		if (__i < 0 || __i >= this._size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		throw new todo.TODO();
 	}
 	
@@ -307,7 +361,14 @@ public final class IntegerList
 	 */
 	public int[] toIntegerArray()
 	{
-		throw new todo.TODO();
+		int[] values = this._values;
+		int size = this._size;
+		
+		// Copy values
+		int[] rv = new int[size];
+		for (int i = 0; i < size; i++)
+			rv[i] = values[i];
+		return rv;
 	}
 }
 
