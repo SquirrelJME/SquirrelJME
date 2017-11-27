@@ -30,6 +30,10 @@ import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteVendor;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -251,8 +255,7 @@ public final class Binary
 		DependencySet provided = this.providedDependencies();
 		for (ManifestedDependency d : __d)
 		{
-			if (provided.contains(d))
-				rv.add(d);
+			throw new todo.TODO();
 		}
 		
 		return rv.<ManifestedDependency>toArray(
