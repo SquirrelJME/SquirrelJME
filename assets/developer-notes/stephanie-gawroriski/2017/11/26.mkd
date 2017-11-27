@@ -1,0 +1,18 @@
+# 2017/11/26
+
+## 08:54
+
+What I need for dependency lookup is a dependency queue or similar.
+
+## 09:08
+
+Dependencies as handled by the MIDlet code will generally be duplicated in the
+project manager. So I should definitely have common extraction of the
+dependencies which a manifest has an implementation for. Of course it would
+also include required and optional dependencies for both sets because services
+and such can be required but also optional.
+
+## 18:29
+
+Okay so my error prefix correcting code fails and messes up and if there are
+multiple errors per file, they all have the same error number.
