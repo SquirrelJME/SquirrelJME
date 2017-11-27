@@ -11,6 +11,7 @@
 package net.multiphasicapps.collections;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,10 @@ public final class IntegerList
 	extends AbstractList<Integer>
 	implements RandomAccess
 {
+	/** The array growing size. */
+	private static final int _GROW_SIZE =
+		8;
+	
 	/** The internal integer list. */
 	private volatile int[] _values;
 	
@@ -123,7 +128,8 @@ public final class IntegerList
 	 */
 	public boolean addInteger(int __v)
 	{
-		throw new todo.TODO();
+		this.addInteger(this._size, __v);
+		return true;
 	}
 	
 	/**
@@ -141,7 +147,31 @@ public final class IntegerList
 		if (__i < 0 || __i > this._size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		// Existing values
+		boolean realloced = false;
+		int[] values = this._values;
+		int nvalues = (values == null ? 0 : values.length),
+			size = this._size;
+		
+		// Need a larger array?
+		if ((realloced = (size + 1 > nvalues)))
+			if (values == null)
+				values = new int[_GROW_SIZE];
+			else
+				values = Arrays.copyOf(values, nvalues + _GROW_SIZE);
+		
+		// Move all values up
+		for (int o = size; o > __i; o++)
+			values[o] = values[o - 1];
+		
+		// Set this index
+		values[__i] = __v;
+		size++;
+		
+		// Store new values
+		if (realloced)
+			this._values = values;
+		this._size = size;
 	}
 	
 	/**
@@ -340,7 +370,10 @@ public final class IntegerList
 		if (__i < 0 || __i >= this._size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		int[] values = this._values;
+		int rv = values[__i];
+		values[__i] = __v;
+		return rv;
 	}
 	
 	/**
@@ -363,6 +396,10 @@ public final class IntegerList
 	{
 		int[] values = this._values;
 		int size = this._size;
+		
+		// Values would not be allocated
+		if (size == 0)
+			return new int[0];
 		
 		// Copy values
 		int[] rv = new int[size];

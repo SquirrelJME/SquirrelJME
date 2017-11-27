@@ -159,8 +159,8 @@ public final class Source
 							v))
 							wattr.putValue(
 								prefix + "-Dependency-" + (depdx++),
-								"proprietary;required; squirreljme.project@" +
-									split + ";Stephanie Gawroriski;");
+								"proprietary;required;squirreljme.project@" +
+									split + ";Stephanie Gawroriski;*");
 						break;
 						
 						// Never copy this flag
