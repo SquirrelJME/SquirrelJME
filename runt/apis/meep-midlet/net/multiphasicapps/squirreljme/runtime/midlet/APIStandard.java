@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet;
  */
 public final class APIStandard
 	extends API
-	implements Comparable<APIStandard>
+	implements Comparable<APIStandard>, ManifestedDependency
 {
 	/**
 	 * Initializes the constant in name and version form.
@@ -74,6 +74,16 @@ public final class APIStandard
 		
 		// Forward
 		return super.equals(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/27
+	 */
+	@Override
+	public boolean isOptional()
+	{
+		return false;
 	}
 }
 

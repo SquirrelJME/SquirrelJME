@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.strings.StringUtils;
@@ -78,6 +79,45 @@ public final class DependencySet
 				rv.add(dep);
 		
 		this.dependencies = UnmodifiableSet.<ManifestedDependency>of(rv);
+	}
+	
+	/**
+	 * Returns a dependency set which is a conjuction of this set and the
+	 * specified set. The resulting set will only include dependencies which
+	 * match in both sets.
+	 *
+	 * @param __o The other set to conjucate with.
+	 * @return The conjuction of the two sets.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/27
+	 */
+	public DependencySet conjunction(DependencySet __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		Set<ManifestedDependency> rv = new LinkedHashSet<>();
+		Set<ManifestedDependency> fill = new LinkedHashSet<>(__o);
+		
+		// Go through self
+		ManifestedDependency e;
+		for (ManifestedDependency d : this)
+		{
+			Iterator<ManifestedDependency> it = fill.iterator();
+			while (it.hasNext())
+				if (__isCompatible(d, (e = it.next())))
+				{
+					rv.add(d);
+					
+					// Remove dependency from the fill because it has been
+					// found, so there is no need to check it again for
+					// matches in the future
+					it.remove();
+				}
+		}
+		
+		return new DependencySet(rv);
 	}
 	
 	/**
@@ -248,6 +288,90 @@ public final class DependencySet
 		
 		// Build
 		return new DependencySet(deps);
+	}
+	
+	/**
+	 * Checks if the two manifested dependencies are compatible to each other.
+	 *
+	 * @param __a The first dependency.
+	 * @param __b The second dependency.
+	 * @return If they are equal or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/27
+	 */
+	private static boolean __isCompatible(ManifestedDependency __a,
+		ManifestedDependency __b)
+		throws NullPointerException
+	{
+		if (__a == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// They are exactly the same
+		if (__a.equals(__b))
+			return true;
+		
+		// Midlet may depend on a standard, which is represented a bit
+		// differently
+		if (((__a instanceof MidletDependency) &&
+				(__b instanceof APIStandard)) ||
+			((__a instanceof APIStandard) &&
+				(__b instanceof MidletDependency)))
+		{
+			MidletDependency a;
+			APIStandard b;
+			
+			// Make sure these are always facing the same way
+			if (__a instanceof MidletDependency)
+			{
+				a = (MidletDependency)__a;
+				b = (APIStandard)__b;
+			}
+			else
+			{
+				a = (MidletDependency)__b;
+				b = (APIStandard)__a;
+			}
+			
+			throw new todo.TODO();
+		}
+		
+		// Dependency on another dependency
+		else if ((__a instanceof MidletDependency) &&
+			(__b instanceof MidletDependency))
+		{
+			MidletDependency a = (MidletDependency)__a;
+			MidletDependency b = (MidletDependency)__b;
+			
+			// Non-equal types
+			if (!Objects.equals(a.type(), b.type()))
+				return false;
+			
+			// Non-equal names?
+			if (!Objects.equals(a.name(), b.name()))
+				return false;
+			
+			// Non-equal vendors
+			if (!Objects.equals(a.vendor(), b.vendor()))
+				return false;
+			
+			// Ranges are more complicated to check
+			MidletVersionRange va = a.version();
+			MidletVersionRange vb = b.version();
+		
+			// Both have no ranges specified or one or the other has any
+			// version
+			if ((va == null && vb == null) ||
+				MidletVersionRange.ANY_VERSION.equals(va) ||
+				MidletVersionRange.ANY_VERSION.equals(vb))
+				return true;
+			
+			// Compare ranges of the two
+			if (va != null && vb != null)
+				return va.inRange(vb);
+		}
+		
+		// No match
+		return false;
 	}
 	
 	/**
