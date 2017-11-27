@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +32,9 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
 public final class DependencySet
 	extends AbstractSet<ManifestedDependency>
 {
+	/** Project vendor reference. */
+	private static volatile Reference<MidletSuiteVendor> _PVENDOR;
+	
 	/** The input set of dependencies. */
 	protected final Set<ManifestedDependency> dependencies;
 	
@@ -204,7 +209,18 @@ public final class DependencySet
 		// SquirrelJME project name specifier, not portable
 		String sjmeipn = attr.getValue("X-SquirrelJME-InternalProjectName");
 		if (sjmeipn != null)
-			throw new todo.TODO();
+		{
+			MidletDependency dep = new MidletDependency(
+				MidletDependencyType.PROPRIETARY,
+				MidletDependencyLevel.REQUIRED,
+				new MidletSuiteName("squirreljme.project@" + sjmeipn.trim()),
+				DependencySet.__projectVendor(),
+				MidletVersionRange.ANY_VERSION);
+			
+			// Includes required and optional
+			deps.add(dep);
+			deps.add(dep.toOptional());
+		}
 		
 		// Handle liblets which may be provided.
 		if (!"true".equals(attr.getValue("X-SquirrelJME-IsAPI")))
@@ -232,6 +248,24 @@ public final class DependencySet
 		
 		// Build
 		return new DependencySet(deps);
+	}
+	
+	/**
+	 * Returns the project vendor.
+	 *
+	 * @return The project vendor.
+	 * @since 2017/11/26
+	 */
+	private static MidletSuiteVendor __projectVendor()
+	{
+		Reference<MidletSuiteVendor> ref = _PVENDOR;
+		MidletSuiteVendor rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			_PVENDOR = new WeakReference<>(
+				(rv = new MidletSuiteVendor("Stephanie Gawroriski")));
+			
+		return rv;
 	}
 }
 
