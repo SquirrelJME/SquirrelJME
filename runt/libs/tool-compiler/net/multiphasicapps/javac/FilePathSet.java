@@ -83,6 +83,7 @@ public final class FilePathSet
 	 */
 	@Override
 	public Iterator<CompilerInput> iterator()
+		throws CompilerException
 	{
 		// First iterate through every sub-directory and build a set of paths
 		// from the root
@@ -109,6 +110,12 @@ public final class FilePathSet
 					// Add files to input
 					throw new todo.TODO();
 				}
+			}
+			
+			// {@squirreljme.error AQ07 Could not list directory contents.}
+			catch (IOException e)
+			{
+				throw new CompilerException("AQ07", e);
 			}
 		
 		// Return iterator over entries
