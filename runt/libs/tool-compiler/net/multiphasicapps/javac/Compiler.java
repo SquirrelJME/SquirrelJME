@@ -20,6 +20,8 @@ import java.io.Writer;
  * Where the compilation log is initially output is undefined and unspecified
  * and it may be to standard error, a file on the disk, or not output at all.
  *
+ * This class must be thread safe.
+ *
  * This class is mutable, when {@link #compile()} is called all the options
  * will be passed to the compiler instance and any instance of this class may
  * be used again or modified as such.
