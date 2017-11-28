@@ -12,6 +12,8 @@ package net.multiphasicapps.javac;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -30,6 +32,9 @@ public final class FileInput
 	
 	/** The name of the file. */
 	protected final String name;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the file input.
@@ -125,7 +130,14 @@ public final class FileInput
 	@Override
 	public String toString()
 	{
-		return this.path.toString();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format("%s(%s)",
+				this.name, this.path)));
+		
+		return rv;
 	}
 }
 

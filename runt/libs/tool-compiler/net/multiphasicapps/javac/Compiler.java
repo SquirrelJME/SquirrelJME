@@ -12,6 +12,8 @@ package net.multiphasicapps.javac;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This interface is used to describe a compiler which is used to compile
@@ -39,6 +41,10 @@ public abstract class Compiler
 	private final Object _lock =
 		new Object();
 	
+	/** Input for the compiler. */
+	private final Set<CompilerInput> _input =
+		new LinkedHashSet<>();
+	
 	/**
 	 * Adds the specified input to be compiled by the compiler.
 	 *
@@ -56,7 +62,10 @@ public abstract class Compiler
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		synchronized (this._lock)
+		{
+			return this._input.add(__i);
+		}
 	}
 	
 	/**

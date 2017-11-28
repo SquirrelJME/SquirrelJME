@@ -108,7 +108,8 @@ public final class FilePathSet
 					}
 					
 					// Add files to input
-					throw new todo.TODO();
+					rv.add(new FileInput(p,
+						FilePathSet.__pathToName(root, p)));
 				}
 			}
 			
@@ -131,6 +132,42 @@ public final class FilePathSet
 	public String toString()
 	{
 		return this.root.toString();
+	}
+	
+	/**
+	 * Converts a path found from the walk to a string used for package
+	 * contents.
+	 *
+	 * @param __root Root directory.
+	 * @param __sub Sub-path based on the root.
+	 * @return The normalized name used for the contents key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/01/29
+	 */
+	private static String __pathToName(Path __root, Path __sub)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __sub == null)
+			throw new NullPointerException("NARG");
+		
+		// Calculate base
+		Path base = __root.relativize(__sub);
+		
+		// Build it
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : base)
+		{
+			// Directory slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp.toString());
+		}
+		
+		// Translate it
+		return sb.toString();
 	}
 }
 
