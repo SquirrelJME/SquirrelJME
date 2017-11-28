@@ -11,11 +11,17 @@
 package net.multiphasicapps.javac;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a path set which is used to access files on the file system.
@@ -37,12 +43,13 @@ public final class FilePathSet
 	 * @since 2017/11/28
 	 */
 	public FilePathSet(Path __root)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		if (__root == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.root = __root;
 	}
 	
 	/**
@@ -51,6 +58,7 @@ public final class FilePathSet
 	 */
 	@Override
 	public void close()
+		throws CompilerException
 	{
 		throw new todo.TODO();
 	}
@@ -61,6 +69,7 @@ public final class FilePathSet
 	 */
 	@Override
 	public CompilerInput input(String __n)
+		throws CompilerException, NoSuchInputException, NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
@@ -75,7 +84,36 @@ public final class FilePathSet
 	@Override
 	public Iterator<CompilerInput> iterator()
 	{
-		throw new todo.TODO();
+		// First iterate through every sub-directory and build a set of paths
+		// from the root
+		Deque<Path> queue = new ArrayDeque<>();
+		queue.add(this.root);
+		
+		// Return value will be an array
+		List<CompilerInput> rv = new ArrayList<>();
+		
+		// Process every directory
+		while (!queue.isEmpty())
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(
+				queue.removeFirst()))
+			{
+				for (Path p : ds)
+				{
+					// Handle directories later
+					if (Files.isDirectory(p))
+					{
+						queue.addLast(p);
+						continue;
+					}
+					
+					// Add files to input
+					throw new todo.TODO();
+				}
+			}
+		
+		// Return iterator over entries
+		return Arrays.<CompilerInput>asList(rv.<CompilerInput>toArray(
+			new CompilerInput[rv.size()])).iterator();
 	}
 	
 	/**

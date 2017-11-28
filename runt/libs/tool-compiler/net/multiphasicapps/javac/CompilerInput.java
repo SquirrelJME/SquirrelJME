@@ -18,10 +18,28 @@ import java.io.InputStream;
  *
  * All instances of this class must be thread safe.
  *
+ * Inputs which would logically refer to the same file must be equal to each
+ * other. As such it is required that {@link #equals(Object)} and
+ * {@link #hashCode()} are correctly implemented.
+ *
  * @since 2017/11/28
  */
 public interface CompilerInput
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/28
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/28
+	 */
+	@Override
+	public abstract int hashCode();
+
 	/**
 	 * Returns the name of the input file.
 	 *
@@ -38,10 +56,10 @@ public interface CompilerInput
 	 * @return The stream for the given input.
 	 * @throws CompilerException If the stream could not be opened for any
 	 * reason.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NoSuchInputException If the input does not exist.
 	 * @since 2017/11/28
 	 */
 	public abstract InputStream open()
-		throws CompilerException, NullPointerException;
+		throws CompilerException, NoSuchInputException;
 }
 
