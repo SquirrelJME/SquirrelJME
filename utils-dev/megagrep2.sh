@@ -29,6 +29,9 @@ __requested=0
 # The output is in the format of:
 #  1044 613351de24 file src/extra-io/net/multiphasicapps/io/BitInputStream.java
 # So these lines must be detected
+__count="1"
+__lastf=""
+__ldate="1970-01-01"
 echo "GET /bloblist?s=0&n=90000" | fossil http | 
 	html2text -width 1000 -style compact -ascii |
 	grep '^ *[0-9]\{1,\}  *[0-9a-fA-F]\{1,\}  *.*$' | sed 's/^ *//g' |
@@ -50,13 +53,27 @@ do
 	# Only consider files
 	if [ "$__at" != "file" ]
 	then
+		#
+		if [ "$__at" = "check-in" ]
+		then
+			__ldate="$(echo "$__line" | cut -d ' ' -f 5)"
+		fi
+		
 		continue
 	fi
 	
+	# Indicate the number of files read
+	if [ "$(($__count % 500))" -eq "0" ]
+	then
+		echo "...After $__ldate (counted $__count)..." 1>&2
+	fi
+	__count="$(($__count + 1))"
+	
 	# Cat the file and grep its contents, prefix each line with the artifact
 	# ID, note that the truncated form can be used
-	fossil artifact "$__uu" | grep -n -- $1 | while read __match
+	fossil artifact "$__uu" | grep -i -n -- "$1" | while read __match
 	do
 		echo "$__uu:$__dd:$__match"
 	done
 done
+
