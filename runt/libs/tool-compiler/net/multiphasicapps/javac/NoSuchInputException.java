@@ -11,19 +11,19 @@
 package net.multiphasicapps.javac;
 
 /**
- * This is thrown when there is an issue with compilation.
+ * This is thrown when the specified input file does not exists.
  *
- * @since 2017/09/05
+ * @since 2017/11/28
  */
-public class CompilerException
-	extends RuntimeException
+public class NoSuchInputException
+	extends CompilerException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/09/05
+	 * @since 2017/11/28
 	 */
-	public CompilerException()
+	public NoSuchInputException()
 	{
 	}
 	
@@ -31,9 +31,9 @@ public class CompilerException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/09/05
+	 * @since 2017/11/28
 	 */
-	public CompilerException(String __m)
+	public NoSuchInputException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +43,9 @@ public class CompilerException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/09/05
+	 * @since 2017/11/28
 	 */
-	public CompilerException(String __m, Throwable __c)
+	public NoSuchInputException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +54,9 @@ public class CompilerException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/09/05
+	 * @since 2017/11/28
 	 */
-	public CompilerException(Throwable __c)
+	public NoSuchInputException(Throwable __c)
 	{
 		super(__c);
 	}
