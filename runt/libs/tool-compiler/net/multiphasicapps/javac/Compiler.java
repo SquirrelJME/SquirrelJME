@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * This interfaced is used to describe a compiler which is used to compile
+ * This interface is used to describe a compiler which is used to compile
  * Java source code into Java class files.
  *
  * Where the compilation log is initially output is undefined and unspecified
@@ -33,8 +33,12 @@ import java.io.Writer;
  *
  * @since 2017/11/28
  */
-public interface Compiler
+public abstract class Compiler
 {
+	/** Internal lock. */
+	private final Object _lock =
+		new Object();
+	
 	/**
 	 * Adds the specified input to be compiled by the compiler.
 	 *
@@ -46,8 +50,14 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract boolean addInput(CompilerInput __i)
-		throws CompilerException, NullPointerException;
+	public final boolean addInput(CompilerInput __i)
+		throws CompilerException, NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Creates an instance of {@link Runnable} which can be used to perform
@@ -60,8 +70,14 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract Runnable compile(CompilerOutput __o)
-		throws CompilerException, NullPointerException;
+	public final Runnable compile(CompilerOutput __o)
+		throws CompilerException, NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Returns all of the input which has been specified for compilation.
@@ -70,8 +86,11 @@ public interface Compiler
 	 * @throws CompilerException If this could not be obtained.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerInput[] input()
-		throws CompilerException;
+	public final CompilerInput[] input()
+		throws CompilerException
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Returns the path set which is used for the given location.
@@ -82,8 +101,14 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerPathSet[] location(CompilerInputLocation __l)
-		throws CompilerException, NullPointerException;
+	public final CompilerPathSet[] location(CompilerInputLocation __l)
+		throws CompilerException, NullPointerException
+	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Returns the options which are currently specified for this compiler.
@@ -92,8 +117,11 @@ public interface Compiler
 	 * @throws CompilerException If the options could not be obtained.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerOptions options()
-		throws CompilerException;
+	public final CompilerOptions options()
+		throws CompilerException
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Removes the specified input file so that it is not compiled.
@@ -104,8 +132,14 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract boolean removeInput(CompilerInput __i)
-		throws CompilerException, NullPointerException;
+	public final boolean removeInput(CompilerInput __i)
+		throws CompilerException, NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Sets the specified location to the given path set.
@@ -117,9 +151,15 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerPathSet[] setLocation(CompilerInputLocation __l,
+	public final CompilerPathSet[] setLocation(CompilerInputLocation __l,
 		CompilerPathSet... __s)
-		throws CompilerException, NullPointerException;
+		throws CompilerException, NullPointerException
+	{
+		if (__l == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Sets the compilation options that are to be used during compilation.
@@ -131,7 +171,13 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerOptions setOptions(CompilerOptions __o)
-		throws CompilerException, NullPointerException;
+	public final CompilerOptions setOptions(CompilerOptions __o)
+		throws CompilerException, NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.builder.javase.javac;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerService;
 
@@ -28,7 +30,10 @@ public class HostCompilerService
 	@Override
 	public Compiler createInstance()
 	{
-		throw new todo.TODO();
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		if (javac == null)
+			return null;
+		return new HostCompiler(javac);
 	}
 }
 
