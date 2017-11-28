@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -107,6 +108,13 @@ public final class FileInput
 		catch (NoSuchFileException e)
 		{
 			throw new NoSuchInputException(String.format("AQ06 %s", path), e);
+		}
+		
+		// {@squirreljme.error AQ08 Could not read from the specified path.
+		// (The path to the file)}
+		catch (IOException e)
+		{
+			throw new NoSuchInputException(String.format("AQ08 %s", path), e);
 		}
 	}
 	
