@@ -82,7 +82,7 @@ public interface Compiler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerPathSet location(CompilerInputLocation __l)
+	public abstract CompilerPathSet[] location(CompilerInputLocation __l)
 		throws CompilerException, NullPointerException;
 	
 	/**
@@ -111,14 +111,14 @@ public interface Compiler
 	 * Sets the specified location to the given path set.
 	 *
 	 * @param __l The locatioin to set.
-	 * @param __s The path set to use instead.
+	 * @param __s The path sets to use.
 	 * @return The path set which was previously specified.
 	 * @throws CompilerException If it could not be set for some reason.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/28
 	 */
-	public abstract CompilerPathSet setLocation(CompilerInputLocation __l,
-		CompilerPathSet __s)
+	public abstract CompilerPathSet[] setLocation(CompilerInputLocation __l,
+		CompilerPathSet... __s)
 		throws CompilerException, NullPointerException;
 	
 	/**

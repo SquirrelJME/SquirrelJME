@@ -44,9 +44,10 @@ public interface CompilerOutput
 	 * same format that is used in ZIP files.
 	 * @return An output stream which writes bytes to the output.
 	 * @throws CompilerException If the output could not be created.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/18
 	 */
 	public abstract OutputStream output(String __n)
-		throws CompilerException;
+		throws CompilerException, NullPointerException;
 }
 

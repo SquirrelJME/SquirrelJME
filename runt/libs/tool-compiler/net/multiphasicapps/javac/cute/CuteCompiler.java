@@ -74,7 +74,7 @@ public class CuteCompiler
 	 * @since 2017/11/28
 	 */
 	@Override
-	public CompilerPathSet location(CompilerInputLocation __l)
+	public CompilerPathSet[] location(CompilerInputLocation __l)
 		throws CompilerException, NullPointerException
 	{
 		if (__l == null)
@@ -113,8 +113,8 @@ public class CuteCompiler
 	 * @since 2017/11/28
 	 */
 	@Override
-	public CompilerPathSet setLocation(CompilerInputLocation __l,
-		CompilerPathSet __s)
+	public CompilerPathSet[] setLocation(CompilerInputLocation __l,
+		CompilerPathSet... __s)
 		throws CompilerException, NullPointerException
 	{
 		if (__l == null || __s == null)
