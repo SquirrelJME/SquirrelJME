@@ -346,5 +346,16 @@ public final class Source
 	{
 		return this.name;
 	}
+	
+	/**
+	 * Returns the root directory of the project source code.
+	 *
+	 * @return The project source code root.
+	 * @since 2017/11/28
+	 */
+	public final Path root()
+	{
+		return this.root;
+	}
 }
 

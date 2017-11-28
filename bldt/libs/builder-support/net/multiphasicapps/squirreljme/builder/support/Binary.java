@@ -289,6 +289,17 @@ public final class Binary
 	}
 	
 	/**
+	 * Returns the path to the binary.
+	 *
+	 * @return The binary path.
+	 * @since 2017/11/28
+	 */
+	public final Path path()
+	{
+		return this.path;
+	}
+	
+	/**
 	 * Returns the dependencies which are provided by this binary.
 	 *
 	 * @return The dependencies provided by this binary.

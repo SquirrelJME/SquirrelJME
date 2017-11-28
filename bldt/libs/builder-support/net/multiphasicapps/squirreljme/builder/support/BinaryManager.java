@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.io.Closeable;
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.DirectoryStream;
@@ -18,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -27,10 +32,21 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.CloseableList;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableCollection;
+import net.multiphasicapps.javac.Compiler;
+import net.multiphasicapps.javac.CompilerException;
+import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.CompilerOutput;
+import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.DefaultCompiler;
+import net.multiphasicapps.javac.FilePathSet;
+import net.multiphasicapps.javac.ZipCompilerOutput;
+import net.multiphasicapps.javac.ZipPathSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This class is used to manage binaries which are available for running
@@ -184,11 +200,13 @@ public final class BinaryManager
 	 * @param __b The binary to compile.
 	 * @return The binaries which were compiled and are part of the class
 	 * path.
+	 * @throws InvalidBinaryException If the binary is not valid because it
+	 * could not be compiled or one of its dependencies could not be compiled.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/17
 	 */
 	public final Binary[] compile(Binary __b)
-		throws NullPointerException
+		throws InvalidBinaryException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
@@ -223,11 +241,124 @@ public final class BinaryManager
 		// Compilation needs to be performed
 		if (docompile)
 		{
-			// {@squirreljme.error AU0f Compiling the given project.
-			// (The project name)}
-			System.err.printf("AU0f %s%n", __b.name());
+			// Temporary output file to be cleaned
+			Path temp = null;
 			
-			throw new todo.TODO();
+			// {@squirreljme.error AU0h Cannot compile the specified project
+			// because it has no source code. (The name of the project)}
+			Source src = __b.source();
+			if (src == null)
+				throw new InvalidBinaryException(
+					String.format("AU0h %s", __b.name()));
+			
+			// Need to close everything that is opened
+			try (CloseableList<Closeable> closing = new CloseableList<>())
+			{
+				// {@squirreljme.error AU0f Compiling the given project.
+				// (The project name)}
+				System.err.printf("AU0f %s%n", __b.name());
+			
+				// Setup compiler instance
+				Compiler javac = DefaultCompiler.createInstance();
+				
+				// Use the source root to lookup source code
+				FilePathSet srcps = closing.<FilePathSet>addThis(
+					new FilePathSet(src.root()), FilePathSet.class);
+				
+				// Explicitly compile every source file
+				Set<CompilerInput> noninput = new LinkedHashSet<>();
+				for (CompilerInput i : srcps)
+				{
+					String name = i.name();
+					
+					// Compile any source file
+					if (name.endsWith(".java"))
+						javac.addInput(i);
+					
+					// Do not include the manifest ever
+					else if (!name.equals("META-INF/MANIFEST.MF"))
+						noninput.add(i);
+				}
+				
+				// Go through all binaries and load dependencies into the
+				// class path
+				int ndeps = rv.size(),
+					i = 0;
+				CompilerPathSet[] bins = new CompilerPathSet[ndeps];
+				for (Binary dep : rv)
+					bins[i++] = closing.<ZipPathSet>addThis(
+						new ZipPathSet(dep.zipBlock()), ZipPathSet.class);
+				
+				// Need temporary file for output
+				temp = Files.createTempFile("squirreljme-", ".ja_");
+				
+				// Output to a temporary ZIP file
+				try (ZipCompilerOutput out = new ZipCompilerOutput(
+					new ZipStreamWriter(Files.newOutputStream(temp,
+						StandardOpenOption.CREATE,
+						StandardOpenOption.WRITE,
+						StandardOpenOption.TRUNCATE_EXISTING))))
+				{
+					// Write the resulting actual manifest
+					try (OutputStream mos = out.output("META-INF/MANIFEST.MF"))
+					{
+						__writeRealManifest(mos, rv, __b);
+					}
+					
+					// Run compilation task
+					javac.compile(out).run();
+					
+					// Go through non-input and copy all of the data
+					byte[] buf = new byte[512];
+					for (CompilerInput j : noninput)
+						try (InputStream ei = j.open();
+							OutputStream eo = out.output(j.name()))
+						{
+							for (;;)
+							{
+								int rc = ei.read(buf);
+								
+								if (rc < 0)
+									break;
+								
+								eo.write(buf, 0, rc);
+							}
+						}
+					
+					// Flush the ZIP before it is closed
+					out.close();
+				}
+				
+				// Make sure the output directories exist
+				Path outpath = __b.path();
+				Files.createDirectories(outpath.getParent());
+				
+				// Replace output file with temporary one
+				Files.move(temp, outpath, StandardCopyOption.ATOMIC_MOVE,
+					StandardCopyOption.REPLACE_EXISTING);
+			}
+			
+			// {@squirreljme.error AU0g Could not compile the specified
+			// project. (The project which failed to compile)}
+			catch (CompilerException|IOException e)
+			{
+				throw new InvalidBinaryException(
+					String.format("AU0g %s", __b.name()));
+			}
+			
+			// Clean output temporary file as needed
+			finally
+			{
+				if (temp != null)
+					try
+					{
+						Files.deleteIfExists(temp);
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+			}
 		}
 		
 		// Include this in the run-time
@@ -339,6 +470,27 @@ public final class BinaryManager
 	{
 		return UnmodifiableCollection.<Binary>of(this._binaries.values()).
 			iterator();
+	}
+	
+	/**
+	 * Writes the real manifest to the output binary with non-proprietary
+	 * SquirrelJME dependencies.
+	 *
+	 * @param __os The stream to write to.
+	 * @param __deps The dependencies to use for lookup.
+	 * @param __bin The binary to write the manifest for.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/28
+	 */
+	private static void __writeRealManifest(OutputStream __os,
+		Set<Binary> __deps, Binary __bin)
+		throws IOException, NullPointerException
+	{
+		if (__os == null || __deps == null || __bin == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
