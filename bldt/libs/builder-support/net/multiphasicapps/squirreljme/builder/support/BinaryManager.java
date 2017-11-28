@@ -46,6 +46,12 @@ import net.multiphasicapps.javac.ZipCompilerOutput;
 import net.multiphasicapps.javac.ZipPathSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
+import net.multiphasicapps.strings.StringUtils;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -490,7 +496,22 @@ public final class BinaryManager
 		if (__os == null || __deps == null || __bin == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Initialize the output manifest with the initial approximated
+		// manifest first
+		MutableJavaManifest outman = new MutableJavaManifest(
+			__bin.source().approximateBinaryManifest());
+		MutableJavaManifestAttributes outarttr = outman.getMainAttributes();
+		
+		// Is this a midlet? Needed for correct dependency placement
+		boolean ismidlet = (__b.type() == ProjectType.MIDLET);
+		
+		// Debug
+		System.err.println("DEBUG -- Begin manifest...");
+		outman.write(System.err);
+		System.err.println("DEBUG -- ...end manifest.");
+		
+		// Write it
+		outman.write(__os);
 	}
 }
 
