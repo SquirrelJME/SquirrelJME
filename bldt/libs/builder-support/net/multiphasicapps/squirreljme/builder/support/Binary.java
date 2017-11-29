@@ -67,6 +67,9 @@ public final class Binary
 	/** Dependencies that are provided by this binary. */
 	private volatile Reference<DependencySet> _provideddeps;
 	
+	/** The suite ID. */
+	private volatile Reference<MidletSuiteID> _suiteid;
+	
 	/**
 	 * Initializes the binary.
 	 *
@@ -339,6 +342,33 @@ public final class Binary
 	public final Source source()
 	{
 		return this.source;
+	}
+	
+	/**
+	 * Returns the suite ID for this binary.
+	 *
+	 * @return The binary suite ID.
+	 * @since 2017/11/29
+	 */
+	public final MidletSuiteID suiteId()
+	{
+		Reference<MidletSuiteID> ref = this._suiteid;
+		MidletSuiteID rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			JavaManifestAttributes attr = this.manifest().getMainAttributes();
+			String prefix = (this.type() == ProjectType.MIDLET ? "MIDlet" :
+				"LIBlet");
+			
+			// Construct ID
+			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
+				new MidletSuiteName(attr.getValue(prefix + "-Name")),
+				new MidletSuiteVendor(attr.getValue(prefix + "-Vendor")),
+				new MidletVersion(attr.getValue(prefix + "-Version")))));
+		}
+		
+		return rv;
 	}
 	
 	/**
