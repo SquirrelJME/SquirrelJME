@@ -72,8 +72,7 @@ public class BuilderFactory
 				System.getProperty("user.dir", "squirreljme"))),
 			binroot = Paths.get(
 				System.getProperty(
-					"net.multiphasicapps.squirreljme.builder.output",
-					System.getProperty("user.dir", "output"))),
+					"net.multiphasicapps.squirreljme.builder.output", "bins")),
 			binruntime = null,
 			binjit = null,
 			binbuild = null;
@@ -126,11 +125,11 @@ public class BuilderFactory
 		
 		// Fill with defaults if missing
 		if (binruntime == null)
-			binruntime = binroot.resolve("runtime");
+			binruntime = binroot.resolve("brun");
 		if (binjit == null)
-			binjit = binroot.resolve("jit");
+			binjit = binroot.resolve("bjit");
 		if (binbuild == null)
-			binbuild = binroot.resolve("build");
+			binbuild = binroot.resolve("bbld");
 		
 		// {@squirreljme.error AU04 No command given.}
 		String command = args.pollFirst();
