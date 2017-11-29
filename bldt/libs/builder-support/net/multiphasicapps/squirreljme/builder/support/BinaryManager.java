@@ -513,6 +513,10 @@ public final class BinaryManager
 		// Is this a midlet? Needed for correct dependency placement
 		boolean ismidlet = (__bin.type() == ProjectType.MIDLET);
 		
+		// Correct depedencies so that proprietary ones stop being as such
+		if (true)
+			throw new todo.TODO();
+		
 		// Debug
 		System.err.println("DEBUG -- Begin manifest...");
 		outman.write(System.err);
