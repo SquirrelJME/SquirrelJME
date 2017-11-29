@@ -38,6 +38,7 @@ import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
+import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -372,7 +373,14 @@ public final class Binary
 	public final ZipBlockReader zipBlock()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error AU0i Cannot get the ZIP for this binary because
+		// it is out of date. (The name of this binary)}
+		if (isSourceNewer())
+			throw new OutOfDateBinaryException(
+				String.format("AU0i %s", this.name));
+		
+		// Open it
+		return new ZipBlockReader(new FileChannelBlockAccessor(this.path));
 	}
 	
 	/**
@@ -385,6 +393,12 @@ public final class Binary
 	public final ZipStreamReader zipStream()
 		throws IOException
 	{
+		// {@squirreljme.error AU0j Cannot get the ZIP for this binary because
+		// it is out of date. (The name of this binary)}
+		if (isSourceNewer())
+			throw new OutOfDateBinaryException(
+				String.format("AU0j %s", this.name));
+		
 		throw new todo.TODO();
 	}
 }
