@@ -20,7 +20,7 @@ import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.Level;
 import net.multiphasicapps.squirrelquarrel.MegaTile;
 import net.multiphasicapps.squirrelquarrel.TerrainType;
-import net.multiphasicapps.xpm.XPMImageReader;
+import net.multiphasicapps.squirreljme.runtime.lcdui.image.XPMReader;
 
 /**
  * This is used to cache mega tiles as single large images since drawing a
@@ -31,8 +31,8 @@ import net.multiphasicapps.xpm.XPMImageReader;
 public class MegaTileCacher
 {
 	/** The single image reader instance. */
-	private static final XPMImageReader _XPM_READER =
-		new XPMImageReader();
+	private static final XPMReader _XPM_READER =
+		new XPMReader();
 	
 	/** The cache of terrain tiles. */
 	private static final Map<TerrainType, Reference<Image>> _TILE_CACHE =

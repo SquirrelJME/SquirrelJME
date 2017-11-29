@@ -13,9 +13,9 @@ package net.multiphasicapps.squirrelquarrel;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
-import net.multiphasicapps.squirreljme.java.manifest.JavaManifestKey;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This contains a cachable.
