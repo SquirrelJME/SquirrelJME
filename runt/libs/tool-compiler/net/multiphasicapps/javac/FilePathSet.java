@@ -60,7 +60,7 @@ public final class FilePathSet
 	public void close()
 		throws CompilerException
 	{
-		throw new todo.TODO();
+		// Does nothing
 	}
 	
 	/**

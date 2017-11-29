@@ -80,6 +80,7 @@ public class HostCompiler
 		{
 			case JAVA_7:
 				targver = "1.7";
+				break;
 			
 				// {@squirreljme.error BM03 Unsupported Java version.}
 			default:
@@ -101,7 +102,7 @@ public class HostCompiler
 		// Wrap all input to file objects
 		Set<InputHostFileObject> input = new LinkedHashSet<>();
 		for (CompilerInput i : __input)
-			input.add(new InputHostFileObject(fm, i));
+			input.add(new InputHostFileObject(i));
 		
 		// Wrap task
 		return new HostCompilerRunnable(javac.getTask(

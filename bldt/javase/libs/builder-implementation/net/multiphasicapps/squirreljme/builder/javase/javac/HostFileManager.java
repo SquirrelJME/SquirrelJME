@@ -10,14 +10,22 @@
 
 package net.multiphasicapps.squirreljme.builder.javase.javac;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
+import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.NoSuchInputException;
 
 /**
  * This is used by the Java compiler to manage files used by the compiler
@@ -133,8 +141,15 @@ public class HostFileManager
 		FileObject __sib)
 		throws IOException
 	{
-		// NEEDS IMPLEMENTING
-		throw new todo.TODO();
+		// {@squirreljme.error BM04 Only class file output is supported.}
+		if (JavaFileObject.Kind.CLASS != __k)
+			throw new IllegalArgumentException("BM04");
+		
+		// Convert class to "class" name
+		String name = __cn.replace('.', '/') + __k.extension;
+		
+		// Open output file
+		return new OutputHostFileObject(this.output, name);
 	}
 	
 	/**
@@ -183,10 +198,24 @@ public class HostFileManager
 		getJavaFileObjectsFromStrings(Iterable<String> __a)
 	{
 		Set<JavaFileObject> rv = new LinkedHashSet<>();
-		FileDirectory sourcepath = this.sourcepath;
+		CompilerPathSet[] srcpaths =
+			this.paths[CompilerInputLocation.SOURCE.ordinal()];
+		
+		// Discover files
 		for (String s : __a)
 			if (s.endsWith(".java"))
-				rv.add(new __FileObject__(this, sourcepath, s));
+			{
+				// Go through sources and try to find the first file
+				for (CompilerPathSet ps : srcpaths)
+					try
+					{
+						rv.add(new InputHostFileObject(ps.input(s)));
+						break;
+					}
+					catch (NoSuchInputException e)
+					{
+					}
+			}
 			
 			// {@squirreljme.error BM07 Do not know how to handle getting a
 			// file object from the given file name. (The name of the file)}
@@ -217,7 +246,7 @@ public class HostFileManager
 					// This is required for Java 9's compiler to generate
 					// code
 				case CLASS_OUTPUT:
-					return Arrays.<File>asList(new File("virtual://"));
+					return Arrays.<File>asList(new File("squirreljme://"));
 				
 					// Unknown
 				default:
@@ -332,7 +361,8 @@ public class HostFileManager
 		Set<JavaFileObject> rv = new LinkedHashSet<>();
 		
 		// Determine which input file source to use
-		Iterable<String> files;
+		CompilerPathSet[][] paths = this.paths;
+		CompilerPathSet[] usesets;
 		if (!(__l instanceof StandardLocation))
 			return rv;
 		else
@@ -341,12 +371,12 @@ public class HostFileManager
 					// Class inputs
 				case CLASS_PATH:
 				case PLATFORM_CLASS_PATH:
-					files = __listClassPath();
+					usesets = paths[CompilerInputLocation.CLASS.ordinal()];
 					break;
 				
 					// Source inputs
 				case SOURCE_PATH:
-					files = __listSourcePath();
+					usesets = paths[CompilerInputLocation.SOURCE.ordinal()];
 					break;
 			
 					// Unknown, return nothing
@@ -354,23 +384,31 @@ public class HostFileManager
 					return rv;
 			}
 		
+		// Load in all files from every set
+		Set<CompilerInput> files = new LinkedHashSet<>();
+		for (CompilerPathSet set : usesets)
+			for (CompilerInput i : set)
+				files.add(i);
+		
 		// Prefix to consider?
 		String prefix = (__pk == null ? "" : __pk.replace('.', '/') + "/");
 		int prefixn = prefix.length();
 		
 		// Go through all files
 		boolean issource = (__l == StandardLocation.SOURCE_PATH);
-		for (String f : files)
+		for (CompilerInput f : files)
 		{
+			String fname = f.name();
+			
 			// Prefix does not match?
-			if (!f.startsWith(prefix))
+			if (!fname.startsWith(prefix))
 				continue;
 			
 			// If not recursive, then the last slash that appears must be
 			// at the same length of the prefix
 			if (!__rec)
 			{
-				int ls = Math.max(-1, f.lastIndexOf('/')) + 1;
+				int ls = Math.max(-1, fname.lastIndexOf('/')) + 1;
 				if (ls != prefixn)
 					continue;
 			}
@@ -378,7 +416,7 @@ public class HostFileManager
 			// Only consider files with these extensions
 			boolean hit = false;
 			for (JavaFileObject.Kind k : __kinds)
-				if (f.endsWith(k.extension))
+				if (fname.endsWith(k.extension))
 				{
 					hit = true;
 					break;
@@ -389,7 +427,7 @@ public class HostFileManager
 				continue;
 			
 			// Add file
-			rv.add(new __FileObject__(this, __findDirectory(issource, f), f));
+			rv.add(new InputHostFileObject(f));
 		}
 		
 		// Return

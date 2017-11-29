@@ -12,6 +12,7 @@ package net.multiphasicapps.javac;
 
 import java.io.IOException;
 import java.util.Iterator;
+import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -39,7 +40,7 @@ public final class ZipPathSet
 		if (__zip == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.zip = __zip;
 	}
 	
 	/**
@@ -49,7 +50,17 @@ public final class ZipPathSet
 	@Override
 	public void close()
 	{
-		throw new todo.TODO();
+		// Close the target ZIP
+		try
+		{
+			this.zip.close();
+		}
+		
+		// {@squirreljme.error AQ0d Could not close the source ZIP.}
+		catch (IOException e)
+		{
+			throw new CompilerException("AQ0d", e);
+		}
 	}
 	
 	/**
