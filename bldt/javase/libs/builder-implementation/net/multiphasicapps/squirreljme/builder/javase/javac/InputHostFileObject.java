@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import net.multiphasicapps.javac.CompilerInput;
 
 /**
  * This is a file object which is used for input.

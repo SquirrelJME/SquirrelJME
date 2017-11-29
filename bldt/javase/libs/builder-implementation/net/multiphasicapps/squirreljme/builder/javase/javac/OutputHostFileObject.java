@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import net.multiphasicapps.javac.CompilerOutput;
 
 /**
  * This is a file object which is used for output.
