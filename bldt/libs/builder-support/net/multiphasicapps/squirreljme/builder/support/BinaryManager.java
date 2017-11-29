@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.CloseableList;
 import net.multiphasicapps.collections.SortedTreeMap;
@@ -47,6 +48,13 @@ import net.multiphasicapps.javac.ZipCompilerOutput;
 import net.multiphasicapps.javac.ZipPathSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependencyLevel;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependencyType;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersionRange;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -508,14 +516,95 @@ public final class BinaryManager
 		// manifest first
 		MutableJavaManifest outman = new MutableJavaManifest(
 			__bin.source().approximateBinaryManifest());
-		MutableJavaManifestAttributes outarttr = outman.getMainAttributes();
+		MutableJavaManifestAttributes outattr = outman.getMainAttributes();
 		
 		// Is this a midlet? Needed for correct dependency placement
 		boolean ismidlet = (__bin.type() == ProjectType.MIDLET);
 		
-		// Correct depedencies so that proprietary ones stop being as such
-		if (true)
-			throw new todo.TODO();
+		// Read in all dependency values. Since SquirrelJME uses a rather
+		// abstract dependency system, project references will be converted to
+		// configurations, profiles, standard, or liblets.
+		Set<MidletDependency> mdeps = new LinkedHashSet<>();
+		for (int i = 1; i >= 1; i++)
+		{
+			JavaManifestKey key = new JavaManifestKey((ismidlet ?
+				"MIDlet-Dependency-" : "LIBlet-Dependency-") + i);
+			
+			// No more values to parse
+			String value = outattr.get(key);
+			if (value == null)
+				break;
+			
+			// Read in dependency and remove from original set, will be
+			// re-added later after being evaluated
+			mdeps.add(new MidletDependency(outattr.remove(key)));
+		}
+		
+		// Go through and remap dependencies
+		int next = 1;
+		for (MidletDependency dep : mdeps)
+		{
+			JavaManifestKey key = new JavaManifestKey((ismidlet ?
+				"MIDlet-Dependency-" : "LIBlet-Dependency-") + next);
+			
+			// Debug
+			System.err.printf("DEBUG -- Dep: %s%n", dep);
+			
+			// Non-proprietary dependency
+			String name = Objects.toString(dep.name(), "").trim();
+			if (dep.type() != MidletDependencyType.PROPRIETARY ||
+				!name.startsWith("squirreljme.project"))
+			{
+				// Just directly copy it since it has an unknown translation
+				outattr.put(key, dep.toString());
+				
+				// Next key
+				next++;
+				continue;
+			}
+			
+			// {@squirreljme.error AU0k Expected at sign in
+			// {@code squirreljme.project} type dependency. (This project)}
+			int at = name.indexOf('@');
+			if (at < 0)
+				throw new InvalidBinaryException(
+					String.format("AU0k %s", __bin.name()));
+			SourceName sname = new SourceName(name.substring(at + 1).trim());
+			
+			// Find the dependency using the given project
+			Binary found = null;
+			for (Binary bin : __deps)
+				if (sname.equals(bin.name()))
+				{
+					found = bin;
+					break;
+				}
+			
+			// {@squirreljme.error AU0l Could not locate the project with the
+			// specified dependency. (This project; The dependency)}
+			if (found == null)
+				throw new InvalidBinaryException(
+					String.format("AU0l %s %s", __bin.name(), sname));
+			
+			// Depending on an API, use standard or configuration
+			if (found.type() == ProjectType.API)
+				throw new todo.TODO();
+			
+			// Relying on a liblet
+			else
+			{
+				MidletSuiteID sid = found.suiteId();
+				outattr.put(key, new MidletDependency(
+					MidletDependencyType.LIBLET,
+					dep.level(),
+					sid.name(),
+					sid.vendor(),
+					MidletVersionRange.exactly(sid.version())).toString());
+				
+				// Use next key
+				next++;
+			}
+		}
 		
 		// Debug
 		System.err.println("DEBUG -- Begin manifest...");

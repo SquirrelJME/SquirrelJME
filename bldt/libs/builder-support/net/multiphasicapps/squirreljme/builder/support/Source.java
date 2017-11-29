@@ -122,8 +122,15 @@ public final class Source
 			String prefix = (type == ProjectType.MIDLET ?
 				"MIDlet" : "LIBlet");
 			
-			// Handle fields for the main attributes
+			// Projects might have dependencies, so find the actual base
+			// before putting dependencies on top
 			int depdx = 1;
+			for (; depdx >= 0; depdx++)
+				if (!rattr.containsKey(
+					new JavaManifestKey(prefix + "-Dependency-" + depdx)))
+					break;
+			
+			// Handle fields for the main attributes
 			boolean apidetected = false;
 			for (Map.Entry<JavaManifestKey, String> e : rattr.entrySet())
 			{
