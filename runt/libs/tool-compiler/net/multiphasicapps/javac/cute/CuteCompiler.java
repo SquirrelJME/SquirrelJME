@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.cute;
 
+import java.io.PrintStream;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
@@ -26,5 +27,21 @@ import net.multiphasicapps.javac.CompilerPathSet;
 public class CuteCompiler
 	extends Compiler
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/29
+	 */
+	@Override
+	protected Runnable newCompilerRunnable(CompilerOutput __out,
+		PrintStream __log, CompilerOptions __opt,
+		CompilerPathSet[][] __paths, CompilerInput[] __input)
+		throws CompilerException, NullPointerException
+	{
+		if (__out == null || __log == null || __opt == null ||
+			__paths == null || __input == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

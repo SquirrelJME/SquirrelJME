@@ -275,13 +275,17 @@ public final class BinaryManager
 				
 				// Explicitly compile every source file
 				Set<CompilerInput> noninput = new LinkedHashSet<>();
+				boolean hasinput = false;
 				for (CompilerInput i : srcps)
 				{
 					String name = i.name();
 					
 					// Compile any source file
 					if (name.endsWith(".java"))
+					{
+						hasinput = true;
 						javac.addInput(i);
+					}
 					
 					// Do not include the manifest ever
 					else if (!name.equals("META-INF/MANIFEST.MF"))
@@ -314,8 +318,9 @@ public final class BinaryManager
 						__writeRealManifest(mos, rv, __b);
 					}
 					
-					// Run compilation task
-					javac.compile(out).run();
+					// Run compilation task, but not if there is no input
+					if (hasinput)
+						javac.compile(out).run();
 					
 					// Go through non-input and copy all of the data
 					byte[] buf = new byte[512];
