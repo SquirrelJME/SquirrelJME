@@ -586,9 +586,11 @@ public final class BinaryManager
 				throw new InvalidBinaryException(
 					String.format("AU0l %s %s", __bin.name(), sname));
 			
-			// Depending on an API, use standard or configuration
+			// Depending on an API, use configuration, standard, or profile
 			if (found.type() == ProjectType.API)
+			{
 				throw new todo.TODO();
+			}
 			
 			// Relying on a liblet
 			else

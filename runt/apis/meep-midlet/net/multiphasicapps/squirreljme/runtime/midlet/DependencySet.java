@@ -221,13 +221,13 @@ public final class DependencySet
 		Set<ManifestedDependency> deps = new LinkedHashSet<>();
 		
 		// Configurations defined
-		String configs = attr.getValue("X-SquirrelJME-DefinesConfigurations");
+		String configs = attr.getValue("X-SquirrelJME-DefinedConfigurations");
 		if (configs != null)
 			for (APIConfiguration conf : APIConfiguration.parseList(configs))
 				deps.add(conf);
 		
 		// Profiles defined
-		String profiles = attr.getValue("X-SquirrelJME-DefinesProfiles");
+		String profiles = attr.getValue("X-SquirrelJME-DefinedProfiles");
 		if (profiles != null)
 			for (APIProfile prof : APIProfile.parseList(profiles))
 				deps.add(prof);
