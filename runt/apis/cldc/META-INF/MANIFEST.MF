@@ -8,5 +8,5 @@ X-SquirrelJME-Description: This is the standard Java ME 8 Connection
  Limited Device Configuration which contains the full set of classes 
  used by JavaME.
 Microedition-Configuration: CLDC-1.8-Compact
-X-SquirrelJME-DefinesConfigurations: CLDC-1.8
+X-SquirrelJME-DefinedConfigurations: CLDC-1.8
 
