@@ -11,9 +11,12 @@
 package net.multiphasicapps.javac;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This is a path set which may be used on top of a ZIP file.
@@ -73,7 +76,24 @@ public final class ZipPathSet
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		try
+		{
+			return new ZipInput(this.zip.get(__n));
+		}
+		
+		// {@squirreljme.error AQ0f No such entry exists within the ZIP.
+		// (The name of the entry)}
+		catch (ZipEntryNotFoundException e)
+		{
+			throw new NoSuchInputException(String.format("AQ0f %s", __n), e);
+		}
+		
+		// {@squirreljme.error AQ0g Read error attempting to open the input
+		// entry. (The name of the entry)}
+		catch (IOException e)
+		{
+			throw new NoSuchInputException(String.format("AQ0g %s", __n), e);
+		}
 	}
 	
 	/**
@@ -83,7 +103,7 @@ public final class ZipPathSet
 	@Override
 	public Iterator<CompilerInput> iterator()
 	{
-		throw new todo.TODO();
+		return new ZipPathSetIterator(this.zip.iterator());
 	}
 	
 	/**
