@@ -1,0 +1,20 @@
+# 2017/11/28
+
+## 09:58
+
+The FUSE feature for Fossil is very useful, I use it quite often.
+
+## 10:16
+
+What if I move the tools to their own namespace? Well that would not work well
+because the manifest needs to be written and such. There also is no problem
+at all with having the compiler in there. Also the class file reader will need
+to be moved down to the run-time libraries so that it can be used by the
+compiler because it will need it to lookup symbols and such.
+
+## 13:19
+
+Thinking that in `Compiler`, everything except a single method will for the
+most part have the same exact code. So to make things easier and less
+duplicated it will be an `abstract class` instead of an `interface` that way
+the duplicate code is not a problem.
