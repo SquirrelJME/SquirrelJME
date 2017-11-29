@@ -11,6 +11,8 @@
 package net.multiphasicapps.javac;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -51,6 +53,14 @@ public abstract class Compiler
 	private final Map<CompilerInputLocation, CompilerPathSet[]> _locations =
 		new HashMap<>();
 	
+	/** Compiler options. */
+	private volatile CompilerOptions _options =
+		new CompilerOptions();
+	
+	/** Writer for compilation errors. */
+	private volatile PrintStream _writer =
+		System.err;
+	
 	/**
 	 * Base initialization.
 	 *
@@ -62,6 +72,26 @@ public abstract class Compiler
 		for (CompilerInputLocation l : CompilerInputLocation.values())
 			locs.put(l, new CompilerPathSet[]{EmptyPathSet.instance()});
 	}
+	
+	/**
+	 * Creates a new runnable which runs the compiler when it is ran using
+	 * the given input.
+	 *
+	 * @param __out The location where generated files are to be placed.
+	 * @param __log Compilation log.
+	 * @param __opt The options for compilation.
+	 * @param __paths The paths to use for input files.
+	 * @param __input The files to implicitly compile.
+	 * @return A runnable which when ran calls the actual compiler.
+	 * @throws CompilerException If the runnable could not be created because
+	 * of an issue with the options or the compiler.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/29
+	 */
+	protected abstract Runnable newCompilerRunnable(CompilerOutput __out,
+		PrintStream __log, CompilerOptions __opt,
+		CompilerPathSet[][] __paths, CompilerInput[] __input)
+		throws CompilerException, NullPointerException;
 	
 	/**
 	 * Adds the specified input to be compiled by the compiler.
@@ -103,7 +133,40 @@ public abstract class Compiler
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Input for the compiler
+		CompilerInput[] rvinput;
+		CompilerOptions rvoptions;
+		CompilerPathSet[][] rvpathsets;
+		PrintStream rvwriter;
+		
+		// Read input options
+		synchronized (this._lock)
+		{
+			rvoptions = this._options;
+			rvwriter = this._writer;
+			
+			// Copy input
+			Set<CompilerInput> input = this._input;
+			rvinput = input.<CompilerInput>toArray(
+				new CompilerInput[input.size()]);
+			
+			// {@squirreljme.error AQ0c No input files.}
+			if (rvinput.length <= 0)
+				throw new CompilerException("AQ0c");
+			
+			// Copy path sets
+			Map<CompilerInputLocation, CompilerPathSet[]> locations =
+				this._locations;
+			CompilerInputLocation[] cils = CompilerInputLocation.values();
+			int ncils = cils.length;
+			rvpathsets = new CompilerPathSet[ncils][];
+			for (CompilerInputLocation cil : cils)
+				rvpathsets[cil.ordinal()] = locations.get(cil).clone();
+		}
+		
+		// Setup the compilation thread
+		return newCompilerRunnable(__o, rvwriter, rvoptions, rvpathsets,
+			rvinput);
 	}
 	
 	/**
@@ -147,7 +210,7 @@ public abstract class Compiler
 	public final CompilerOptions options()
 		throws CompilerException
 	{
-		throw new todo.TODO();
+		return this._options;
 	}
 	
 	/**
@@ -215,6 +278,30 @@ public abstract class Compiler
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the output stream which is used to output the compilation log.
+	 *
+	 * @param __o The output stream to write text to.
+	 * @throws CompilerException If it could not be set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/29
+	 */
+	public final void setWriter(OutputStream __o)
+		throws CompilerException, NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Normalize
+		PrintStream use = (__o instanceof PrintStream ?
+			(PrintStream)__o : new PrintStream(__o));
+		
+		synchronized (this._lock)
+		{
+			this._writer = use;
+		}
 	}
 }
 
