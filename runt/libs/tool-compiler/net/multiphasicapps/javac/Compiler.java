@@ -12,7 +12,9 @@ package net.multiphasicapps.javac;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -44,6 +46,22 @@ public abstract class Compiler
 	/** Input for the compiler. */
 	private final Set<CompilerInput> _input =
 		new LinkedHashSet<>();
+	
+	/** Paths for each location. */
+	private final Map<CompilerInputLocation, CompilerPathSet[]> _locations =
+		new HashMap<>();
+	
+	/**
+	 * Base initialization.
+	 *
+	 * @since 2017/11/29
+	 */
+	{
+		// Setup path sets with default locations
+		Map<CompilerInputLocation, CompilerPathSet[]> locs = this._locations;
+		for (CompilerInputLocation l : CompilerInputLocation.values())
+			locs.put(l, new CompilerPathSet[]{EmptyPathSet.instance()});
+	}
 	
 	/**
 	 * Adds the specified input to be compiled by the compiler.
@@ -167,7 +185,17 @@ public abstract class Compiler
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Defensive check for nulls
+		__s = __s.clone();
+		for (CompilerPathSet s : __s)
+			if (s == null)
+				throw new NullPointerException("NARG");
+		
+		Map<CompilerInputLocation, CompilerPathSet[]> locs = this._locations;
+		synchronized (this._lock)
+		{
+			return locs.put(__l, __s).clone();
+		}
 	}
 	
 	/**

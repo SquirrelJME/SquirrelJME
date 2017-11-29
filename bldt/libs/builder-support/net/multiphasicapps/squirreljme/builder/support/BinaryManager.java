@@ -38,6 +38,7 @@ import net.multiphasicapps.collections.UnmodifiableCollection;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.DefaultCompiler;
@@ -270,6 +271,7 @@ public final class BinaryManager
 				// Use the source root to lookup source code
 				FilePathSet srcps = closing.<FilePathSet>addThis(
 					new FilePathSet(src.root()), FilePathSet.class);
+				javac.setLocation(CompilerInputLocation.SOURCE, srcps);
 				
 				// Explicitly compile every source file
 				Set<CompilerInput> noninput = new LinkedHashSet<>();
@@ -294,6 +296,7 @@ public final class BinaryManager
 				for (Binary dep : rv)
 					bins[i++] = closing.<ZipPathSet>addThis(
 						new ZipPathSet(dep.zipBlock()), ZipPathSet.class);
+				javac.setLocation(CompilerInputLocation.SOURCE, bins);
 				
 				// Need temporary file for output
 				temp = Files.createTempFile("squirreljme-", ".ja_");
@@ -503,7 +506,7 @@ public final class BinaryManager
 		MutableJavaManifestAttributes outarttr = outman.getMainAttributes();
 		
 		// Is this a midlet? Needed for correct dependency placement
-		boolean ismidlet = (__b.type() == ProjectType.MIDLET);
+		boolean ismidlet = (__bin.type() == ProjectType.MIDLET);
 		
 		// Debug
 		System.err.println("DEBUG -- Begin manifest...");
