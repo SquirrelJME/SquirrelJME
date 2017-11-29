@@ -300,7 +300,7 @@ public final class BinaryManager
 				for (Binary dep : rv)
 					bins[i++] = closing.<ZipPathSet>addThis(
 						new ZipPathSet(dep.zipBlock()), ZipPathSet.class);
-				javac.setLocation(CompilerInputLocation.SOURCE, bins);
+				javac.setLocation(CompilerInputLocation.CLASS, bins);
 				
 				// Need temporary file for output
 				temp = Files.createTempFile("squirreljme-", ".ja_");
