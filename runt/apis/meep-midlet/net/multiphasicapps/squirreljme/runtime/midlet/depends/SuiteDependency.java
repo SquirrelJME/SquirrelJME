@@ -24,6 +24,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2017/02/22
  */
 public final class SuiteDependency
+	implements Comparable<SuiteDependency>
 {
 	/** The dependency type. */
 	protected final SuiteDependencyType type;
@@ -178,6 +179,20 @@ public final class SuiteDependency
 		this.name = __name;
 		this.vendor = __vendor;
 		this.version = __version;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/30
+	 */
+	@Override
+	public final int compareTo(SuiteDependency __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
