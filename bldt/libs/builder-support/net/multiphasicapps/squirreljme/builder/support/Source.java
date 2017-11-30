@@ -23,7 +23,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -51,17 +54,17 @@ public final class Source
 	/** The type of project this is. */
 	protected final ProjectType type;
 	
-	/** Dependencies that this source code relies on. */
-	private volatile Reference<DependencySet> _dependencies;
-	
 	/** The approximate binary manifest. */
 	private volatile Reference<JavaManifest> _approxbm;
 	
 	/** The approximate binary dependency set. */
-	private volatile Reference<DependencySet> _approxds;
+	private volatile Reference<DependencyInfo> _approxds;
 	
-	/** The approximate provided binary dependency set. */
-	private volatile Reference<DependencySet> _approxpd;
+	/** The approximate provided binary set. */
+	private volatile Reference<ProvidedInfo> _approxpd;
+	
+	/** The suite information. */
+	private volatile Reference<SuiteInfo> _suiteinfo;
 	
 	/** Last modified time of the source code. */
 	private volatile long _lastmodtime =
@@ -225,15 +228,26 @@ public final class Source
 	 * @return The approximated dependency set.
 	 * @since 2017/11/17
 	 */
-	public final DependencySet approximateBinaryDependencySet()
+	public final DependencyInfo approximateBinaryDependencyInfo()
 	{
-		Reference<DependencySet> ref = this._approxds;
-		DependencySet rv;
+		Reference<DependencyInfo> ref = this._approxds;
+		DependencyInfo rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._approxds = new WeakReference<>(
-				(rv = DependencySet.neededByManifest(
-					approximateBinaryManifest())));
+			try
+			{
+				this._approxds = new WeakReference<>(
+					(rv = DependencyInfo.parseManifest(
+						this.approximateBinaryManifest())));
+			}
+			
+			// {@squirreljme.error AU0m Could not approximate the binary
+			// dependency information. (The name of the project)}
+			catch (InvalidSuiteException e)
+			{
+				throw new InvalidSourceException(
+					String.format("AU0m %s", this.name), e);
+			}
 		
 		return rv;
 	}
@@ -246,15 +260,56 @@ public final class Source
 	 * to use.
 	 * @since 2017/11/26
 	 */
-	public final DependencySet approximateBinaryProvidedDependencies()
+	public final ProvidedInfo approximateBinaryProvidedInfo()
 	{
-		Reference<DependencySet> ref = this._approxpd;
+		Reference<ProvidedInfo> ref = this._approxpd;
 		DependencySet rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._approxpd = new WeakReference<>(
-				(rv = DependencySet.providedByManifest(
-					approximateBinaryManifest())));
+			try
+			{
+				this._approxpd = new WeakReference<>(
+					(rv = ProvidedInfo.parseManifest(
+						this.approximateBinaryManifest())));
+			}
+			
+			// {@squirreljme.error AU0n Could not approximate the binary
+			// provided libraries information. (The name of the project)}
+			catch (InvalidSuiteException e)
+			{
+				throw new InvalidSourceException(
+					String.format("AU0n %s", this.name), e);
+			}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the approximated suite information for the binary.
+	 *
+	 * @return The approximate binary suite information.
+	 * @since 2017/11/30
+	 */
+	public final SuiteInfo approximateBinarySuiteInfo()
+	{
+		Reference<SuiteInfo> ref = this._suiteinfo;
+		SuiteInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			try
+			{
+				this._suiteinfo = new WeakReference<>(
+					(rv = SuiteInfo.parseManifest(
+						this.approximateBinaryManifest())));
+			}
+			
+			// {@squirreljme.error AU0o Could not approximate the binary
+			// suite information. (The name of the project)}
+			catch (InvalidSuiteException e)
+			{
+				throw new InvalidSourceException(
+					String.format("AU0o %s", this.name), e);
+			}
 		
 		return rv;
 	}
@@ -266,10 +321,10 @@ public final class Source
 	 * @return The set of dependencies.
 	 * @since 2017/11/17
 	 */
-	public final DependencySet dependencies()
+	public final DependencyInfo dependencies()
 	{
 		// This is exactly the same as the approximate binary dependencies
-		return approximateBinaryDependencySet();
+		return approximateBinaryDependencyInfo();
 	}
 	
 	/**

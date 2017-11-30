@@ -46,15 +46,18 @@ import net.multiphasicapps.javac.DefaultCompiler;
 import net.multiphasicapps.javac.FilePathSet;
 import net.multiphasicapps.javac.ZipCompilerOutput;
 import net.multiphasicapps.javac.ZipPathSet;
-import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
-import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependencyLevel;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependencyType;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersionRange;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.MatchResult;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.SuiteDependency;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.
+	SuiteDependencyLevel;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.
+	SuiteDependencyType;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.
+	SuiteVersionRange;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteName;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -524,7 +527,7 @@ public final class BinaryManager
 		// Read in all dependency values. Since SquirrelJME uses a rather
 		// abstract dependency system, project references will be converted to
 		// configurations, profiles, standard, or liblets.
-		Set<MidletDependency> mdeps = new LinkedHashSet<>();
+		Set<SuiteDependency> mdeps = new LinkedHashSet<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			JavaManifestKey key = new JavaManifestKey((ismidlet ?
@@ -537,12 +540,12 @@ public final class BinaryManager
 			
 			// Read in dependency and remove from original set, will be
 			// re-added later after being evaluated
-			mdeps.add(new MidletDependency(outattr.remove(key)));
+			mdeps.add(new SuiteDependency(outattr.remove(key)));
 		}
 		
 		// Go through and remap dependencies
 		int next = 1;
-		for (MidletDependency dep : mdeps)
+		for (SuiteDependency dep : mdeps)
 		{
 			JavaManifestKey key = new JavaManifestKey((ismidlet ?
 				"MIDlet-Dependency-" : "LIBlet-Dependency-") + next);
@@ -552,7 +555,7 @@ public final class BinaryManager
 			
 			// Non-proprietary dependency
 			String name = Objects.toString(dep.name(), "").trim();
-			if (dep.type() != MidletDependencyType.PROPRIETARY ||
+			if (dep.type() != SuiteDependencyType.PROPRIETARY ||
 				!name.startsWith("squirreljme.project"))
 			{
 				// Just directly copy it since it has an unknown translation
@@ -596,12 +599,12 @@ public final class BinaryManager
 			else
 			{
 				MidletSuiteID sid = found.suiteId();
-				outattr.put(key, new MidletDependency(
-					MidletDependencyType.LIBLET,
+				outattr.put(key, new SuiteDependency(
+					SuiteDependencyType.LIBLET,
 					dep.level(),
 					sid.name(),
 					sid.vendor(),
-					MidletVersionRange.exactly(sid.version())).toString());
+					SuiteVersionRange.exactly(sid.version())).toString());
 				
 				// Use next key
 				next++;
