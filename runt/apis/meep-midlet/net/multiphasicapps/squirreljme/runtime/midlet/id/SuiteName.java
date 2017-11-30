@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+
 /**
  * This represents the name of a midlet suite.
  *
@@ -25,12 +27,12 @@ public final class SuiteName
 	 * Initializes the suite name.
 	 *
 	 * @param __v The value to parse.
-	 * @throws InvalidMidletException If the input is not valid.
+	 * @throws InvalidSuiteException If the input is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public SuiteName(String __v)
-		throws InvalidMidletException, NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		// Check
 		if (__v == null)
@@ -56,7 +58,7 @@ public final class SuiteName
 				case '\n':
 				case ':':
 				case ';':
-					throw new InvalidMidletException(
+					throw new InvalidSuiteException(
 						String.format("AD0d %s", __v));
 				
 					// Valid

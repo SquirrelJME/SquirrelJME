@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -28,14 +29,15 @@ public final class DependencyInfo
 	 *
 	 * @param __man The manifest to parse.
 	 * @return The parsed dependency information.
-	 * @throws NullPointerExcpetion On null arguments.
+	 * @throws InvalidSuiteException If the manifest is not correct.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
 	public static final DependencyInfo parseManifest(JavaManifest __man)
-		throws NullPointerExcpetion
+		throws InvalidSuiteException, NullPointerException
 	{
 		if (__man == null)
-			throw new NullPointerExcpetion("NARG");
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 		/*

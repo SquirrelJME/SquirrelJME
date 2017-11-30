@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 
 /**
  * This is used to handle version ranges that may be used for dependencies.
@@ -72,12 +73,12 @@ public final class SuiteVersionRange
 	 * files.
 	 *
 	 * @param __s The string to parse.
-	 * @throws InvalidMidletException If the range is not valid.
+	 * @throws InvalidSuiteException If the range is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
 	public SuiteVersionRange(String __s)
-		throws InvalidMidletException, NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -118,7 +119,7 @@ public final class SuiteVersionRange
 				// {@squirreljme.error AD0j Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new InvalidMidletException(String.format("AD0j %s",
+					throw new InvalidSuiteException(String.format("AD0j %s",
 						__s));
 			}
 			
@@ -129,7 +130,7 @@ public final class SuiteVersionRange
 				// {@squirreljme.error AD0k The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new InvalidMidletException(String.format("AD0k %s",
+					throw new InvalidSuiteException(String.format("AD0k %s",
 						__s));
 				
 				// Source range is simple
@@ -154,7 +155,7 @@ public final class SuiteVersionRange
 				// {@squirreljme.error AD0l There are too many decimal points
 				// in the wildcard version string. (The input string)}
 				else
-					throw new InvalidMidletException(String.format("AD0l %s",
+					throw new InvalidSuiteException(String.format("AD0l %s",
 						__s));
 			}
 		}

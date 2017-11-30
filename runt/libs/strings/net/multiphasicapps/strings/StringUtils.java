@@ -199,7 +199,7 @@ public final class StringUtils
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		CharSequence[] xrv = CharSequenceUtils.
+		CharSequence[] xrv = CharSequenceUtils.fieldSplit(__delim, __s);
 		return Arrays.<String, CharSequence>copyOf(xrv, xrv.length,
 			String[].class);
 	}

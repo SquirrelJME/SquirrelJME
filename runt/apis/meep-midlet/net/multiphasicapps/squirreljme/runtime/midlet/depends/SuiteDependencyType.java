@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+
 /**
  * This represents the type of the dependency that is to be included.
  *
@@ -57,13 +59,13 @@ public enum SuiteDependencyType
 	 *
 	 * @param __s The input string to parse.
 	 * @return The dependency type for the given string.
-	 * @throws InvalidMidletException If the dependency type is not
+	 * @throws InvalidSuiteException If the dependency type is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
 	public static SuiteDependencyType of(String __s)
-		throws InvalidMidletException, NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -80,7 +82,7 @@ public enum SuiteDependencyType
 				// {@squirreljme.error AD0a The specified string is not a valid
 				// dependency type. (The input string)}
 			default:
-				throw new InvalidMidletException(
+				throw new InvalidSuiteException(
 					String.format("AD0a %s", __s));
 		}
 	}
