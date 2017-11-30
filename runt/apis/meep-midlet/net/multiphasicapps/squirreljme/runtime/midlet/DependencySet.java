@@ -236,15 +236,7 @@ public final class DependencySet
 		String standards = attr.getValue("X-SquirrelJME-DefinedStandards");
 		if (standards != null)
 			for (String s : StringUtils.basicSplit(",", standards))
-			{
-				MidletDependency dep = new MidletDependency(
-					MidletDependencyType.STANDARD,
-					MidletDependencyLevel.REQUIRED, s);
-				
-				// Includes required and optional
-				deps.add(dep);
-				deps.add(dep.toOptional());
-			}
+				deps.add(new APIStandard(s));
 		
 		// SquirrelJME project name specifier, not portable
 		String sjmeipn = attr.getValue("X-SquirrelJME-InternalProjectName");

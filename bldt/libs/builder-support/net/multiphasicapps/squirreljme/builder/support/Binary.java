@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.squirreljme.runtime.midlet.APIStandard;
 import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
 import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
 import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
@@ -331,6 +332,26 @@ public final class Binary
 		if (source == null)
 			throw new InvalidBinaryException("AU0e");
 		return source.approximateBinaryProvidedDependencies();
+	}
+	
+	/**
+	 * Returns all of the implemented standards this binary provides.
+	 *
+	 * @return An array containing the implemented standards.
+	 * @throws IllegalBinaryException If the standards are not correct or the
+	 * binary has another issue.
+	 * @since 2017/11/30
+	 */
+	public final APIStandard[] providedStandards()
+	{
+		List<APIStandard> rv = new ArrayList<>();
+		
+		// Add all standards which are provided
+		for (ManifestedDependency dep : this.providedDependencies())
+			if (dep instanceof APIStandard)
+				rv.add((APIStandard)rv);
+		
+		return rv.<APIStandard>toArray(new APIStandard[rv.size()]);
 	}
 	
 	/**
