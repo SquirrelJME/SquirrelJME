@@ -8,10 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
  * This is used to handle version ranges that may be used for dependencies.
@@ -20,18 +21,18 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/02/22
  */
-public final class MidletVersionRange
+public final class SuiteVersionRange
 {
 	/** Any version. */
-	public static final MidletVersionRange ANY_VERSION =
-		new MidletVersionRange(MidletVersion.MIN_VERSION,
-			MidletVersion.MAX_VERSION);
+	public static final SuiteVersionRange ANY_VERSION =
+		new SuiteVersionRange(SuiteVersion.MIN_VERSION,
+			SuiteVersion.MAX_VERSION);
 	
 	/** The starting range, inclusive. */
-	protected final MidletVersion from;
+	protected final SuiteVersion from;
 	
 	/** Tne ending range, inclusive. */
-	protected final MidletVersion to;
+	protected final SuiteVersion to;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -44,7 +45,7 @@ public final class MidletVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public MidletVersionRange(MidletVersion __from, MidletVersion __to)
+	public SuiteVersionRange(SuiteVersion __from, SuiteVersion __to)
 		throws NullPointerException
 	{
 		// Check
@@ -75,7 +76,7 @@ public final class MidletVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public MidletVersionRange(String __s)
+	public SuiteVersionRange(String __s)
 		throws InvalidMidletException, NullPointerException
 	{
 		// Check
@@ -96,8 +97,8 @@ public final class MidletVersionRange
 		// All versions following this.
 		if (lc == '+')
 		{
-			this.from = new MidletVersion(__s.substring(0, sl - 1));
-			this.to = new MidletVersion(99, 99, 99);
+			this.from = new SuiteVersion(__s.substring(0, sl - 1));
+			this.to = new SuiteVersion(99, 99, 99);
 		}
 		
 		// All versions in the group
@@ -110,8 +111,8 @@ public final class MidletVersionRange
 				// Any version, does not matter
 				if (sl == 1)
 				{
-					this.from = new MidletVersion(0);
-					this.to = new MidletVersion(99, 99, 99);
+					this.from = new SuiteVersion(0);
+					this.to = new SuiteVersion(99, 99, 99);
 				}
 				
 				// {@squirreljme.error AD0j Major only wildcard versions must
@@ -132,7 +133,7 @@ public final class MidletVersionRange
 						__s));
 				
 				// Source range is simple
-				MidletVersion ver = new MidletVersion(
+				SuiteVersion ver = new SuiteVersion(
 					__s.substring(0, sl - 2));
 				this.from = ver;
 				
@@ -144,11 +145,11 @@ public final class MidletVersionRange
 				
 				// minor and release wildcard
 				if (numdots == 1)
-					this.to = new MidletVersion(ver.major(), 99, 99);
+					this.to = new SuiteVersion(ver.major(), 99, 99);
 				
 				// release ranged wildcard
 				else if (numdots == 2)
-					this.to = new MidletVersion(ver.major(), ver.minor(), 99);
+					this.to = new SuiteVersion(ver.major(), ver.minor(), 99);
 				
 				// {@squirreljme.error AD0l There are too many decimal points
 				// in the wildcard version string. (The input string)}
@@ -161,7 +162,7 @@ public final class MidletVersionRange
 		// Only this version
 		else
 		{
-			MidletVersion ver = new MidletVersion(__s);
+			SuiteVersion ver = new SuiteVersion(__s);
 			this.from = ver;
 			this.to = ver;
 		}
@@ -175,11 +176,11 @@ public final class MidletVersionRange
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof MidletVersionRange))
+		if (!(__o instanceof SuiteVersionRange))
 			return false;
 		
 		// Compare
-		MidletVersionRange o = (MidletVersionRange)__o;
+		SuiteVersionRange o = (SuiteVersionRange)__o;
 		return this.from.equals(o.from) && this.to.equals(o.to);
 	}
 	
@@ -189,7 +190,7 @@ public final class MidletVersionRange
 	 * @return The range start.
 	 * @since 2017/02/22
 	 */
-	public MidletVersion from()
+	public SuiteVersion from()
 	{
 		return this.from;
 	}
@@ -212,7 +213,7 @@ public final class MidletVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public boolean inRange(MidletVersion __v)
+	public boolean inRange(SuiteVersion __v)
 		throws NullPointerException
 	{
 		// Check
@@ -232,7 +233,7 @@ public final class MidletVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/27
 	 */
-	public boolean inRange(MidletVersionRange __r)
+	public boolean inRange(SuiteVersionRange __r)
 		throws NullPointerException
 	{
 		if (__r == null)
@@ -247,7 +248,7 @@ public final class MidletVersionRange
 	 * @return The range end.
 	 * @since 2017/02/22
 	 */
-	public MidletVersion to()
+	public SuiteVersion to()
 	{
 		return this.to;
 	}
@@ -268,8 +269,8 @@ public final class MidletVersionRange
 		{
 			// Slowly build version
 			StringBuilder sb = new StringBuilder();
-			MidletVersion from = this.from;
-			MidletVersion to = this.to;
+			SuiteVersion from = this.from;
+			SuiteVersion to = this.to;
 			
 			// Get all values
 			int amaj = from.major(),
@@ -331,13 +332,13 @@ public final class MidletVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public static final MidletVersionRange atMost(MidletVersion __v)
+	public static final SuiteVersionRange atMost(SuiteVersion __v)
 		throws NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		return new MidletVersionRange(MidletVersion.MIN_VERSION, __v);
+		return new SuiteVersionRange(SuiteVersion.MIN_VERSION, __v);
 	}
 	
 	/**
@@ -348,13 +349,13 @@ public final class MidletVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public static final MidletVersionRange exactly(MidletVersion __v)
+	public static final SuiteVersionRange exactly(SuiteVersion __v)
 		throws NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		return new MidletVersionRange(__v, __v);
+		return new SuiteVersionRange(__v, __v);
 	}
 }
 

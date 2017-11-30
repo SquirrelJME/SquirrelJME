@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
 /**
  * This represents the name of a midlet suite.
  *
  * @since 2016/10/12
  */
-public final class MidletSuiteName
-	implements Comparable<MidletSuiteName>
+public final class SuiteName
+	implements Comparable<SuiteName>
 {
 	/** String value. */
 	protected final String string;
@@ -29,7 +29,7 @@ public final class MidletSuiteName
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletSuiteName(String __v)
+	public SuiteName(String __v)
 		throws InvalidMidletException, NullPointerException
 	{
 		// Check
@@ -74,7 +74,7 @@ public final class MidletSuiteName
 	 * @since 2016/10/12
 	 */
 	@Override
-	public int compareTo(MidletSuiteName __o)
+	public int compareTo(SuiteName __o)
 	{
 		if (this == __o)
 			return 0;
@@ -92,10 +92,10 @@ public final class MidletSuiteName
 			return true;
 		
 		// Check
-		if (!(__o instanceof MidletSuiteName))
+		if (!(__o instanceof SuiteName))
 			return false;
 		
-		return this.string.equals(((MidletSuiteName)__o).string);
+		return this.string.equals(((SuiteName)__o).string);
 	}
 	
 	/**

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -21,7 +21,6 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2017/02/22
  */
 public final class MidletDependency
-	implements ManifestedDependency
 {
 	/** The dependency type. */
 	protected final MidletDependencyType type;
@@ -36,7 +35,7 @@ public final class MidletDependency
 	protected final MidletSuiteVendor vendor;
 	
 	/** The version range. */
-	protected final MidletVersionRange version;
+	protected final SuiteDependencyRange version;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -83,13 +82,13 @@ public final class MidletDependency
 		// Optional fields
 		MidletSuiteName name;
 		MidletSuiteVendor vendor;
-		MidletVersionRange version;
+		SuiteDependencyRange version;
 		this.name = (name = (inname.isEmpty() ? null :
 			new MidletSuiteName(inname)));
 		this.vendor = (vendor = (invendor.isEmpty() ? null :
 			new MidletSuiteVendor(invendor)));
 		this.version = (version = (inversion.isEmpty() ? null :
-			new MidletVersionRange(inversion)));
+			new SuiteDependencyRange(inversion)));
 		
 		// Check
 		__check(type, level, name, vendor, version);
@@ -133,13 +132,13 @@ public final class MidletDependency
 		// Parse areas fields
 		MidletSuiteName name;
 		MidletSuiteVendor vendor;
-		MidletVersionRange version;
+		SuiteDependencyRange version;
 		this.name = (name = (inname.isEmpty() ? null :
 			new MidletSuiteName(inname)));
 		this.vendor = (vendor = (invendor.isEmpty() ? null :
 			new MidletSuiteVendor(invendor)));
 		this.version = (version = (inversion.isEmpty() ? null :
-			new MidletVersionRange(inversion)));
+			new SuiteDependencyRange(inversion)));
 		
 		__check(__type, __level, name, vendor, version);
 		
@@ -162,7 +161,7 @@ public final class MidletDependency
 	 */
 	public MidletDependency(MidletDependencyType __type,
 		MidletDependencyLevel __level, MidletSuiteName __name,
-		MidletSuiteVendor __vendor, MidletVersionRange __version)
+		MidletSuiteVendor __vendor, SuiteDependencyRange __version)
 		throws InvalidMidletException, NullPointerException
 	{
 		if (__type == null || __level == null)
@@ -226,9 +225,9 @@ public final class MidletDependency
 	 * @since 2017/02/22
 	 */
 	public boolean isCompatible(MidletSuiteName __n, MidletSuiteVendor __e,
-		MidletVersion __v)
+		SuiteDependency __v)
 	{
-		MidletVersionRange version = this.version;
+		SuiteDependencyRange version = this.version;
 		return Objects.equals(this.name, __n) &&
 			Objects.equals(this.vendor, __e) &&
 			(version != null && __v != null ? version.inRange(__v) :
@@ -325,7 +324,7 @@ public final class MidletDependency
 			// These are optional
 			MidletSuiteName name = this.name;
 			MidletSuiteVendor vendor = this.vendor;
-			MidletVersionRange version = this.version;
+			SuiteDependencyRange version = this.version;
 			
 			// Generate
 			this._string = new WeakReference<>((rv = String.format(
@@ -367,7 +366,7 @@ public final class MidletDependency
 	 * @return The dependency version, may be {@code null}.
 	 * @since 2017/02/22
 	 */
-	public MidletVersionRange version()
+	public SuiteDependencyRange version()
 	{
 		return this.version;
 	}
@@ -385,7 +384,7 @@ public final class MidletDependency
 	 */
 	private static final void __check(MidletDependencyType __type,
 		MidletDependencyLevel __level, MidletSuiteName __name,
-		MidletSuiteVendor __vendor, MidletVersionRange __version)
+		MidletSuiteVendor __vendor, SuiteDependencyRange __version)
 		throws InvalidMidletException
 	{
 		// {@squirreljme.error AD09 Dependencies on LIBlets must have the

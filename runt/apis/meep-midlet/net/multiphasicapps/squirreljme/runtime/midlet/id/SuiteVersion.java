@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,16 +18,16 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/10/12
  */
-public final class MidletVersion
-	implements Comparable<MidletVersion>
+public final class SuiteVersion
+	implements Comparable<SuiteVersion>
 {
 	/** The minimum version number. */
-	public static final MidletVersion MIN_VERSION =
-		new MidletVersion(0, 0, 0);
+	public static final SuiteVersion MIN_VERSION =
+		new SuiteVersion(0, 0, 0);
 	
 	/** The maximum version number. */
-	public static final MidletVersion MAX_VERSION =
-		new MidletVersion(99, 99, 99);
+	public static final SuiteVersion MAX_VERSION =
+		new SuiteVersion(99, 99, 99);
 	
 	/** The major version. */
 	protected final int major;
@@ -51,7 +51,7 @@ public final class MidletVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletVersion(String __v)
+	public SuiteVersion(String __v)
 		throws InvalidMidletException, NullPointerException
 	{
 		this(__decodeVersion(__v));
@@ -68,7 +68,7 @@ public final class MidletVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletVersion(int[] __v)
+	public SuiteVersion(int[] __v)
 		throws InvalidMidletException, NullPointerException
 	{
 		this((__v.length > 0 ? __v[0] : 0),
@@ -83,12 +83,12 @@ public final class MidletVersion
 	 * @param __hash If {@code true} then the value to decode is treated as
 	 * the hash code returned by this class.
 	 * @param __maj If {@code __hash} is {@code true} then this is the hash
-	 * code of a MidletVersion, otherwise it is the major version number.
+	 * code of a SuiteVersion, otherwise it is the major version number.
 	 * @throws InvalidMidletException If the version number has an out of
 	 * range value.
 	 * @since 2016/10/13
 	 */
-	public MidletVersion(boolean __hash, int __maj)
+	public SuiteVersion(boolean __hash, int __maj)
 		throws InvalidMidletException
 	{
 		this((__hash ? __maj / 10000 : __maj),
@@ -103,7 +103,7 @@ public final class MidletVersion
 	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
-	public MidletVersion(int __maj)
+	public SuiteVersion(int __maj)
 	{
 		this(__maj, 0, 0);
 	}
@@ -116,7 +116,7 @@ public final class MidletVersion
 	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
-	public MidletVersion(int __maj, int __min)
+	public SuiteVersion(int __maj, int __min)
 	{
 		this(__maj, __min, 0);
 	}
@@ -130,7 +130,7 @@ public final class MidletVersion
 	 * @throws InvalidMidletException If any value is out of range.
 	 * @since 2016/10/12
 	 */
-	public MidletVersion(int __maj, int __min, int __rel)
+	public SuiteVersion(int __maj, int __min, int __rel)
 		throws InvalidMidletException
 	{
 		// {@squirreljme.error AD0f Input version number is out of range, only
@@ -154,7 +154,7 @@ public final class MidletVersion
 	 * @return {@code true} if this version is at least the other.
 	 * @throws NullPointerException On nul arguments.
 	 */
-	public boolean atLeast(MidletVersion __v)
+	public boolean atLeast(SuiteVersion __v)
 		throws NullPointerException
 	{
 		// Check
@@ -170,7 +170,7 @@ public final class MidletVersion
 	 * @since 2016/10/12
 	 */
 	@Override
-	public int compareTo(MidletVersion __o)
+	public int compareTo(SuiteVersion __o)
 	{
 		// Major first
 		int amaj = this.major, bmaj = __o.major;
@@ -202,11 +202,11 @@ public final class MidletVersion
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof MidletVersion))
+		if (!(__o instanceof SuiteVersion))
 			return false;
 		
 		// Cast
-		MidletVersion o = (MidletVersion)__o;
+		SuiteVersion o = (SuiteVersion)__o;
 		return this.major == o.major &&
 			this.minor == o.minor &&
 			this.release == o.release;

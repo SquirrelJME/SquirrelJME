@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
 /**
  * This represents the type of the dependency that is to be included.
  *
  * @since 2017/02/22
  */
-public enum MidletDependencyType
+public enum SuiteDependencyType
 {
 	/** Liblet. */
 	LIBLET,
@@ -62,7 +62,7 @@ public enum MidletDependencyType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public static MidletDependencyType of(String __s)
+	public static SuiteDependencyType of(String __s)
 		throws InvalidMidletException, NullPointerException
 	{
 		// Check

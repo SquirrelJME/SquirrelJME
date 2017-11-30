@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
 /**
  * This represents the level of the dependency.
  *
  * @since 2017/02/22
  */
-public enum MidletDependencyLevel
+public enum SuiteDependencyLevel
 {
 	/** Required. */
 	REQUIRED,
@@ -73,7 +73,7 @@ public enum MidletDependencyLevel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public static MidletDependencyLevel of(String __s)
+	public static SuiteDependencyLevel of(String __s)
 		throws NullPointerException
 	{
 		// Check
