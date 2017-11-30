@@ -335,26 +335,6 @@ public final class Binary
 	}
 	
 	/**
-	 * Returns all of the implemented standards this binary provides.
-	 *
-	 * @return An array containing the implemented standards.
-	 * @throws IllegalBinaryException If the standards are not correct or the
-	 * binary has another issue.
-	 * @since 2017/11/30
-	 */
-	public final APIStandard[] providedStandards()
-	{
-		List<APIStandard> rv = new ArrayList<>();
-		
-		// Add all standards which are provided
-		for (ManifestedDependency dep : this.providedDependencies())
-			if (dep instanceof APIStandard)
-				rv.add((APIStandard)rv);
-		
-		return rv.<APIStandard>toArray(new APIStandard[rv.size()]);
-	}
-	
-	/**
 	 * Returns the source project that this binary is built from.
 	 *
 	 * @return The source project or {@code null} if there is no source.
