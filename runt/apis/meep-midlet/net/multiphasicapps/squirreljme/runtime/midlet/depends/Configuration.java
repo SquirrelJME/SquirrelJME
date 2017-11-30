@@ -35,7 +35,7 @@ public final class Configuration
 	public Configuration(APIName __n, SuiteVersion __v)
 		throws NullPointerException
 	{
-		if (n == null)
+		if (__n == null || __v == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

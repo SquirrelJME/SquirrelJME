@@ -13,6 +13,9 @@ package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteName;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVendor;
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 
 /**
@@ -20,22 +23,22 @@ import net.multiphasicapps.strings.StringUtils;
  *
  * @since 2017/02/22
  */
-public final class MidletDependency
+public final class SuiteDependency
 {
 	/** The dependency type. */
-	protected final MidletDependencyType type;
+	protected final SuiteDependencyType type;
 	
 	/** The dependency level. */
-	protected final MidletDependencyLevel level;
+	protected final SuiteDependencyLevel level;
 	
 	/** The name. */
-	protected final MidletSuiteName name;
+	protected final SuiteName name;
 	
 	/** The vendor. */
-	protected final MidletSuiteVendor vendor;
+	protected final SuiteVendor vendor;
 	
 	/** The version range. */
-	protected final SuiteDependencyRange version;
+	protected final SuiteVersionRange version;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -44,12 +47,12 @@ public final class MidletDependency
 	 * Initializes the dependency which is parsed from the given input string.
 	 *
 	 * @param __s The string to parse.
-	 * @throws InvalidMidletException If the string is not valid.
+	 * @throws InvalidSuiteException If the string is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public MidletDependency(String __s)
-		throws InvalidMidletException, NullPointerException
+	public SuiteDependency(String __s)
+		throws InvalidSuiteException, NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -64,7 +67,7 @@ public final class MidletDependency
 		// {@squirreljme.error AD0o Expected four semi-colons in the
 		// dependency field. (The input dependency)}
 		if (sc.length != 4)
-			throw new InvalidMidletException(String.format(
+			throw new InvalidSuiteException(String.format(
 				"AD0o %s", __s));
 		
 		// Split fields
@@ -75,20 +78,20 @@ public final class MidletDependency
 			inversion = __s.substring(sc[3] + 1).trim();
 		
 		// Required fields
-		MidletDependencyType type;
-		this.type = (type = MidletDependencyType.of(intype));
-		this.level = MidletDependencyLevel.of(inlevel);
+		SuiteDependencyType type;
+		this.type = (type = SuiteDependencyType.of(intype));
+		this.level = SuiteDependencyLevel.of(inlevel);
 		
 		// Optional fields
-		MidletSuiteName name;
-		MidletSuiteVendor vendor;
-		SuiteDependencyRange version;
+		SuiteName name;
+		SuiteVendor vendor;
+		SuiteVersionRange version;
 		this.name = (name = (inname.isEmpty() ? null :
-			new MidletSuiteName(inname)));
+			new SuiteName(inname)));
 		this.vendor = (vendor = (invendor.isEmpty() ? null :
-			new MidletSuiteVendor(invendor)));
+			new SuiteVendor(invendor)));
 		this.version = (version = (inversion.isEmpty() ? null :
-			new SuiteDependencyRange(inversion)));
+			new SuiteVersionRange(inversion)));
 		
 		// Check
 		__check(type, level, name, vendor, version);
@@ -101,13 +104,13 @@ public final class MidletDependency
 	 * @param __type The type of dependency this is.
 	 * @param __level The level of the dependency.
 	 * @param __s The string to decode for the remainder of the dependency.
-	 * @throws InvalidMidletException If the input parameters are not valid.
+	 * @throws InvalidSuiteException If the input parameters are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public MidletDependency(MidletDependencyType __type,
-		MidletDependencyLevel __level, String __s)
-		throws InvalidMidletException, NullPointerException
+	public SuiteDependency(SuiteDependencyType __type,
+		SuiteDependencyLevel __level, String __s)
+		throws InvalidSuiteException, NullPointerException
 	{
 		if (__type == null || __level == null || __s == null)
 			throw new NullPointerException("NARG");
@@ -121,7 +124,7 @@ public final class MidletDependency
 		// {@squirreljme.error AD08 Expected two semi-colons in the
 		// dependency field. (The input dependency)}
 		if (sc.length != 2)
-			throw new InvalidMidletException(String.format(
+			throw new InvalidSuiteException(String.format(
 				"AD08 %s", __s));
 		
 		// Split fields
@@ -130,15 +133,15 @@ public final class MidletDependency
 			inversion = __s.substring(sc[1] + 1).trim();
 		
 		// Parse areas fields
-		MidletSuiteName name;
-		MidletSuiteVendor vendor;
-		SuiteDependencyRange version;
+		SuiteName name;
+		SuiteVendor vendor;
+		SuiteVersionRange version;
 		this.name = (name = (inname.isEmpty() ? null :
-			new MidletSuiteName(inname)));
+			new SuiteName(inname)));
 		this.vendor = (vendor = (invendor.isEmpty() ? null :
-			new MidletSuiteVendor(invendor)));
+			new SuiteVendor(invendor)));
 		this.version = (version = (inversion.isEmpty() ? null :
-			new SuiteDependencyRange(inversion)));
+			new SuiteVersionRange(inversion)));
 		
 		__check(__type, __level, name, vendor, version);
 		
@@ -155,14 +158,14 @@ public final class MidletDependency
 	 * @param __name The name.
 	 * @param __vendor The vendor.
 	 * @param __version The version.
-	 * @throws InvalidMidletException If the input parameters are not valid.
+	 * @throws InvalidSuiteException If the input parameters are not valid.
 	 * @throws NullPointerException If no type and/or name were specified.
 	 * @since 2017/11/26
 	 */
-	public MidletDependency(MidletDependencyType __type,
-		MidletDependencyLevel __level, MidletSuiteName __name,
-		MidletSuiteVendor __vendor, SuiteDependencyRange __version)
-		throws InvalidMidletException, NullPointerException
+	public SuiteDependency(SuiteDependencyType __type,
+		SuiteDependencyLevel __level, SuiteName __name,
+		SuiteVendor __vendor, SuiteVersionRange __version)
+		throws InvalidSuiteException, NullPointerException
 	{
 		if (__type == null || __level == null)
 			throw new NullPointerException("NARG");
@@ -188,11 +191,11 @@ public final class MidletDependency
 			return true;
 		
 		// Check
-		if (!(__o instanceof MidletDependency))
+		if (!(__o instanceof SuiteDependency))
 			return false;
 		
 		// Compare
-		MidletDependency o = (MidletDependency)__o;
+		SuiteDependency o = (SuiteDependency)__o;
 		return this.type.equals(o.type) &&
 			this.level.equals(o.level) &&
 			Objects.equals(this.name, o.name) &&
@@ -215,39 +218,20 @@ public final class MidletDependency
 	}
 	
 	/**
-	 * Checks if this dependency matches the specified name, vendor, and
-	 * version.
+	 * Is this an optional dependency?
 	 *
-	 * @param __n The name.
-	 * @param __e The vendor.
-	 * @param __v The version.
-	 * @return {@code true} if the details match for a library.
-	 * @since 2017/02/22
-	 */
-	public boolean isCompatible(MidletSuiteName __n, MidletSuiteVendor __e,
-		SuiteDependency __v)
-	{
-		SuiteDependencyRange version = this.version;
-		return Objects.equals(this.name, __n) &&
-			Objects.equals(this.vendor, __e) &&
-			(version != null && __v != null ? version.inRange(__v) :
-				(version == null) == (__v == null));
-	}
-	
-	/**
-	 * {@inheritDoc}
+	 * @return {@code true} if this is an optional dependency.
 	 * @since 2017/11/22
 	 */
-	@Override
 	public boolean isOptional()
 	{
 		return this.level.isOptional();
 	}
 	
 	/**
-	 * Is this an required dependency?
+	 * Is this a required dependency?
 	 *
-	 * @return {@code true} if this is an required dependency.
+	 * @return {@code true} if this is a required dependency.
 	 * @since 2017/11/22
 	 */
 	public boolean isRequired()
@@ -261,7 +245,7 @@ public final class MidletDependency
 	 * @return The dependency level.
 	 * @since 2017/02/22
 	 */
-	public MidletDependencyLevel level()
+	public SuiteDependencyLevel level()
 	{
 		return this.level;
 	}
@@ -272,7 +256,7 @@ public final class MidletDependency
 	 * @return The dependency name, may be {@code null}.
 	 * @since 2017/02/22
 	 */
-	public MidletSuiteName name()
+	public SuiteName name()
 	{
 		return this.name;
 	}
@@ -284,11 +268,11 @@ public final class MidletDependency
 	 * @return This dependency but required.
 	 * @since 2017/11/26
 	 */
-	public MidletDependency toRequired()
+	public SuiteDependency toRequired()
 	{
 		if (isRequired())
 			return this;
-		return new MidletDependency(this.type, MidletDependencyLevel.REQUIRED,
+		return new SuiteDependency(this.type, SuiteDependencyLevel.REQUIRED,
 			this.name, this.vendor, this.version);
 	}
 	
@@ -299,11 +283,11 @@ public final class MidletDependency
 	 * @return This dependency but optional.
 	 * @since 2017/11/26
 	 */
-	public MidletDependency toOptional()
+	public SuiteDependency toOptional()
 	{
 		if (isOptional())
 			return this;
-		return new MidletDependency(this.type, MidletDependencyLevel.OPTIONAL,
+		return new SuiteDependency(this.type, SuiteDependencyLevel.OPTIONAL,
 			this.name, this.vendor, this.version);
 	}
 	
@@ -322,9 +306,9 @@ public final class MidletDependency
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// These are optional
-			MidletSuiteName name = this.name;
-			MidletSuiteVendor vendor = this.vendor;
-			SuiteDependencyRange version = this.version;
+			SuiteName name = this.name;
+			SuiteVendor vendor = this.vendor;
+			SuiteVersionRange version = this.version;
 			
 			// Generate
 			this._string = new WeakReference<>((rv = String.format(
@@ -344,7 +328,7 @@ public final class MidletDependency
 	 * @return The dependency type.
 	 * @since 2017/02/22
 	 */
-	public MidletDependencyType type()
+	public SuiteDependencyType type()
 	{
 		return this.type;
 	}
@@ -355,7 +339,7 @@ public final class MidletDependency
 	 * @return The dependency vendor, may be {@code null}.
 	 * @since 2017/02/22
 	 */
-	public MidletSuiteVendor vendor()
+	public SuiteVendor vendor()
 	{
 		return this.vendor;
 	}
@@ -366,7 +350,7 @@ public final class MidletDependency
 	 * @return The dependency version, may be {@code null}.
 	 * @since 2017/02/22
 	 */
-	public SuiteDependencyRange version()
+	public SuiteVersionRange version()
 	{
 		return this.version;
 	}
@@ -379,20 +363,20 @@ public final class MidletDependency
 	 * @param __name The name.
 	 * @param __vendor The vendor.
 	 * @param __version The version.
-	 * @throws InvalidMidletException If the input parameters are not valid.
+	 * @throws InvalidSuiteException If the input parameters are not valid.
 	 * @since 2017/11/26
 	 */
-	private static final void __check(MidletDependencyType __type,
-		MidletDependencyLevel __level, MidletSuiteName __name,
-		MidletSuiteVendor __vendor, SuiteDependencyRange __version)
-		throws InvalidMidletException
+	private static final void __check(SuiteDependencyType __type,
+		SuiteDependencyLevel __level, SuiteName __name,
+		SuiteVendor __vendor, SuiteVersionRange __version)
+		throws InvalidSuiteException
 	{
 		// {@squirreljme.error AD09 Dependencies on LIBlets must have the
 		// name, vendor, and version set. (The type; The level; The name;
 		// The vendor; The version)}
-		if (__type == MidletDependencyType.LIBLET && (__name == null ||
+		if (__type == SuiteDependencyType.LIBLET && (__name == null ||
 			__vendor == null || __version == null))
-			throw new InvalidMidletException(
+			throw new InvalidSuiteException(
 				String.format("AD09 %s %s %s %s %s", __type, __level, __name,
 					__vendor, __version));
 	}

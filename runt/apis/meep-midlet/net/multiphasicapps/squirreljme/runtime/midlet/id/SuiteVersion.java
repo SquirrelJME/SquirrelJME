@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 
 /**
  * This represents a midlet version.
@@ -45,14 +46,14 @@ public final class SuiteVersion
 	 * Initializes the version.
 	 *
 	 * @param __v The value to parse.
-	 * @throws InvalidMidletException If there are too many or too little
+	 * @throws InvalidSuiteException If there are too many or too little
 	 * version fields, they contain illegal charactes, or have an out of range
 	 * value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public SuiteVersion(String __v)
-		throws InvalidMidletException, NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		this(__decodeVersion(__v));
 	}
@@ -63,13 +64,13 @@ public final class SuiteVersion
 	 *
 	 * @param __v The version triplet, up to the first three elements are
 	 * used by the version number.
-	 * @throws InvalidMidletException If the version number has an out of
+	 * @throws InvalidSuiteException If the version number has an out of
 	 * range value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	public SuiteVersion(int[] __v)
-		throws InvalidMidletException, NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		this((__v.length > 0 ? __v[0] : 0),
 			(__v.length > 1 ? __v[1] : 0),
@@ -84,12 +85,12 @@ public final class SuiteVersion
 	 * the hash code returned by this class.
 	 * @param __maj If {@code __hash} is {@code true} then this is the hash
 	 * code of a SuiteVersion, otherwise it is the major version number.
-	 * @throws InvalidMidletException If the version number has an out of
+	 * @throws InvalidSuiteException If the version number has an out of
 	 * range value.
 	 * @since 2016/10/13
 	 */
 	public SuiteVersion(boolean __hash, int __maj)
-		throws InvalidMidletException
+		throws InvalidSuiteException
 	{
 		this((__hash ? __maj / 10000 : __maj),
 			(__hash ? (__maj / 100) % 100 : 0),
@@ -127,18 +128,18 @@ public final class SuiteVersion
 	 * @param __maj The major version.
 	 * @param __min The minor version.
 	 * @param __rel The release version.
-	 * @throws InvalidMidletException If any value is out of range.
+	 * @throws InvalidSuiteException If any value is out of range.
 	 * @since 2016/10/12
 	 */
 	public SuiteVersion(int __maj, int __min, int __rel)
-		throws InvalidMidletException
+		throws InvalidSuiteException
 	{
 		// {@squirreljme.error AD0f Input version number is out of range, only
 		// 0 through 99 are valid. (The major version; The minor version; The
 		// release version)}
 		if (__maj < 0 || __maj > 99 || __min < 0 || __min > 99 ||
 			__rel < 0 || __rel > 99)
-			throw new InvalidMidletException(String.format("AD0f %d %d %d",
+			throw new InvalidSuiteException(String.format("AD0f %d %d %d",
 				__maj, __min, __rel));
 		
 		// Set
@@ -282,12 +283,12 @@ public final class SuiteVersion
 	 *
 	 * @param __v The input string.
 	 * @return The version tuplet.
-	 * @throws InvalidMidletException If the input is not valid.
+	 * @throws InvalidSuiteException If the input is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
 	private static final int[] __decodeVersion(String __v)
-		throws InvalidMidletException, NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		// Check
 		if (__v == null)
@@ -314,7 +315,7 @@ public final class SuiteVersion
 				// {@squirreljme.error AD0g Too many version fields in the
 				// specified string. (The input string)}
 				if (c != -1 && at >= 4)
-					throw new InvalidMidletException(String.format("AD0g %s",
+					throw new InvalidSuiteException(String.format("AD0g %s",
 						__v));
 				
 				// Clear
@@ -328,7 +329,7 @@ public final class SuiteVersion
 			// {@squirreljme.error AD0h An illegal character is in the
 			// version string. (The input string)}
 			else
-				throw new InvalidMidletException(String.format("AD0h %s",
+				throw new InvalidSuiteException(String.format("AD0h %s",
 					__v));
 		}
 		

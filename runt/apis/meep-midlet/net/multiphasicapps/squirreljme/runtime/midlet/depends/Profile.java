@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.id.APIName;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 import net.multiphasicapps.strings.StringUtils;
 
 /**
@@ -31,7 +33,7 @@ public final class Profile
 	public Profile(APIName __n, SuiteVersion __v)
 		throws NullPointerException
 	{
-		if (n == null)
+		if (__n == null || __v == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
