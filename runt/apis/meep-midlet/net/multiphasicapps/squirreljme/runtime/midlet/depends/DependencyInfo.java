@@ -24,6 +24,24 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
 public final class DependencyInfo
 {
 	/**
+	 * Matches this dependency information to see if any of the provided
+	 * fields would statisfy the dependencies that are needed.
+	 *
+	 * @param __prov The provided information.
+	 * @return The result of the match.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public final MatchResult match(ProvidedInfo __prov)
+		throws NullPointerException
+	{
+		if (__prov == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses the given manifest and returns all of the dependencies which
 	 * are required by what is specified in the manifest.
 	 *

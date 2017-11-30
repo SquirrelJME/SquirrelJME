@@ -28,14 +28,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
-import net.multiphasicapps.squirreljme.runtime.midlet.APIStandard;
-import net.multiphasicapps.squirreljme.runtime.midlet.DependencySet;
-import net.multiphasicapps.squirreljme.runtime.midlet.ManifestedDependency;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletDependency;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteVendor;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.MatchResult;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteName;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVendor;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -63,13 +62,13 @@ public final class Binary
 	private volatile Reference<JavaManifest> _manifest;
 	
 	/** Dependencies that this source code relies on. */
-	private volatile Reference<DependencySet> _dependencies;
+	private volatile Reference<DependencyInfo> _dependencies;
 	
 	/** Dependencies that are provided by this binary. */
-	private volatile Reference<DependencySet> _provideddeps;
+	private volatile Reference<ProvidedInfo> _provideddeps;
 	
-	/** The suite ID. */
-	private volatile Reference<MidletSuiteID> _suiteid;
+	/** The suite information. */
+	private volatile Reference<SuiteInfo> _suiteinfo;
 	
 	/**
 	 * Initializes the binary.
@@ -103,19 +102,19 @@ public final class Binary
 	 * @throws InvalidBinaryException If this binary is not valid.
 	 * @since 2017/11/17
 	 */
-	public final DependencySet dependencies()
+	public final DependencyInfo dependencies()
 		throws InvalidBinaryException
 	{
 		// If the binary is newer then use the dependencies read from the
 		// manifest
 		if (isBinaryNewer())
 		{
-			Reference<DependencySet> ref = this._dependencies;
-			DependencySet rv;
+			Reference<DependencyInfo> ref = this._dependencies;
+			DependencyInfo rv;
 		
 			if (ref == null || null == (rv = ref.get()))
 				this._dependencies = new WeakReference<>(
-					(rv = DependencySet.neededByManifest(manifest())));
+					(rv = DependencyInfo.parseManifest(this.manifest())));
 			
 			return rv;
 		}
@@ -125,7 +124,7 @@ public final class Binary
 		Source source = this.source;
 		if (source == null)
 			throw new InvalidBinaryException("AU0a");
-		return source.approximateBinaryDependencySet();
+		return source.approximateBinaryDependencyInfo();
 	}
 	
 	/**
@@ -197,6 +196,7 @@ public final class Binary
 	 */
 	public final JavaManifest manifest()
 	{
+		// Approximate the manifest to use
 		if (isSourceNewer())
 			return this.source.approximateBinaryManifest();
 		
@@ -217,69 +217,22 @@ public final class Binary
 	}
 	
 	/**
-	 * Returns an array containing the dependencies from the inpout
-	 * dependencies which match and which this binary statisfies.
+	 * Returns a dependency match result which contains the results of a
+	 * dependency match between the provided dependencies and the provided
+	 * dependencies for this project.
 	 *
 	 * @param __d The input dependencies to check.
-	 * @return The dependencies which are matched by this binary, an empty
-	 * array will be returned if there are no matches.
+	 * @return The result of the match.
 	 * @throws NullPointerException On null arguments.
-	 * @sine 2017/11/26
+	 * @sine 2017/11/30
 	 */
-	public final ManifestedDependency[] matchedDependencies(
-		ManifestedDependency... __d)
+	public final MatchResult matchedDependencies(DependencyInfo __d)
 		throws NullPointerException
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		return this.matchedDependencies(
-			Arrays.<ManifestedDependency>asList(__d));
-	}
-	
-	/**
-	 * Returns an array containing the dependencies from the inpout
-	 * dependencies which match and which this binary statisfies.
-	 *
-	 * @param __d The input dependencies to check.
-	 * @return The dependencies which are matched by this binary, an empty
-	 * array will be returned if there are no matches.
-	 * @throws NullPointerException On null arguments.
-	 * @sine 2017/11/26
-	 */
-	public final ManifestedDependency[] matchedDependencies(
-		Collection<ManifestedDependency> __d)
-		throws NullPointerException
-	{
-		if (__d == null)
-			throw new NullPointerException("NARG");
-		
-		if (__d instanceof DependencySet)
-			return this.matchedDependencies((DependencySet)__d);
-		return this.matchedDependencies(new DependencySet(__d));
-	}
-	
-	/**
-	 * Returns an array containing the dependencies from the inpout
-	 * dependencies which match and which this binary statisfies.
-	 *
-	 * @param __d The input dependencies to check.
-	 * @return The dependencies which are matched by this binary, an empty
-	 * array will be returned if there are no matches.
-	 * @throws NullPointerException On null arguments.
-	 * @sine 2017/11/27
-	 */
-	public final ManifestedDependency[] matchedDependencies(
-		DependencySet __d)
-		throws NullPointerException
-	{
-		if (__d == null)
-			throw new NullPointerException("NARG");
-		
-		// Use conjunction
-		DependencySet rv = this.providedDependencies().conjunction(__d);
-		return rv.<ManifestedDependency>toArray(
-			new ManifestedDependency[rv.size()]);
+		return __d.match(this.provided());
 	}
 	
 	/**
@@ -310,18 +263,18 @@ public final class Binary
 	 * @return The dependencies provided by this binary.
 	 * @since 2017/11/26
 	 */
-	public final DependencySet providedDependencies()
+	public final ProvidedInfo provided()
 	{
 		// If the binary is newer then use the dependencies read from the
 		// manifest
 		if (isBinaryNewer())
 		{
-			Reference<DependencySet> ref = this._provideddeps;
-			DependencySet rv;
+			Reference<ProvidedInfo> ref = this._provideddeps;
+			ProvidedInfo rv;
 		
 			if (ref == null || null == (rv = ref.get()))
 				this._provideddeps = new WeakReference<>(
-					(rv = DependencySet.providedByManifest(manifest())));
+					(rv = ProvidedInfo.parseManifest(this.manifest())));
 			
 			return rv;
 		}
@@ -331,7 +284,7 @@ public final class Binary
 		Source source = this.source;
 		if (source == null)
 			throw new InvalidBinaryException("AU0e");
-		return source.approximateBinaryProvidedDependencies();
+		return source.approximateBinaryProvidedInfo();
 	}
 	
 	/**
@@ -346,30 +299,32 @@ public final class Binary
 	}
 	
 	/**
-	 * Returns the suite ID for this binary.
+	 * Returns the suite information for this binary.
 	 *
-	 * @return The binary suite ID.
+	 * @return The binary suite information.
 	 * @since 2017/11/29
 	 */
-	public final MidletSuiteID suiteId()
+	public final SuiteInfo suiteInfo()
 	{
-		Reference<MidletSuiteID> ref = this._suiteid;
-		MidletSuiteID rv;
-		
-		if (ref == null || null == (rv = ref.get()))
+		// Use binary information
+		if (isBinaryNewer())
 		{
-			JavaManifestAttributes attr = this.manifest().getMainAttributes();
-			String prefix = (this.type() == ProjectType.MIDLET ? "MIDlet" :
-				"LIBlet");
+			Reference<SuiteInfo> ref = this._suiteinfo;
+			SuiteInfo rv;
+		
+			if (ref == null || null == (rv = ref.get()))
+				this._suiteinfo = new WeakReference<>((rv =
+					SuiteInfo.parseManifest(this.manifest())));
 			
-			// Construct ID
-			this._suiteid = new WeakReference<>((rv = new MidletSuiteID(
-				new MidletSuiteName(attr.getValue(prefix + "-Name")),
-				new MidletSuiteVendor(attr.getValue(prefix + "-Vendor")),
-				new MidletVersion(attr.getValue(prefix + "-Version")))));
+			return rv;
 		}
 		
-		return rv;
+		// {@squirreljme.error AU0p Cannot get suite information for the
+		// binary because there is no source code.}
+		Source source = this.source;
+		if (source == null)
+			throw new InvalidBinaryException("AU0p");
+		return this.source.approximateBinarySuiteInfo();
 	}
 	
 	/**
