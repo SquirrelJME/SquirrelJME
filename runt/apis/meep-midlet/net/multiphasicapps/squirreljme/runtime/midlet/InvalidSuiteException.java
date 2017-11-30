@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet;
  *
  * @since 2017/11/23
  */
-public class InvalidMidletException
+public class InvalidSuiteException
 	extends IllegalArgumentException
 {
 	/**
@@ -24,7 +24,7 @@ public class InvalidMidletException
 	 *
 	 * @since 2017/11/23
 	 */
-	public InvalidMidletException()
+	public InvalidSuiteException()
 	{
 	}
 	
@@ -34,7 +34,7 @@ public class InvalidMidletException
 	 * @param __m The message.
 	 * @since 2017/11/23
 	 */
-	public InvalidMidletException(String __m)
+	public InvalidSuiteException(String __m)
 	{
 		super(__m);
 	}
@@ -46,7 +46,7 @@ public class InvalidMidletException
 	 * @param __c The cause.
 	 * @since 2017/11/23
 	 */
-	public InvalidMidletException(String __m, Throwable __c)
+	public InvalidSuiteException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,7 +57,7 @@ public class InvalidMidletException
 	 * @param __c The cause.
 	 * @since 2017/11/23
 	 */
-	public InvalidMidletException(Throwable __c)
+	public InvalidSuiteException(Throwable __c)
 	{
 		super(__c);
 	}
