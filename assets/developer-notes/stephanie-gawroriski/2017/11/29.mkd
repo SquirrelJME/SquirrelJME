@@ -1,0 +1,32 @@
+# 2017/11/29
+
+## 11:26
+
+It seems that the compiler is a bit faster with this new front end.
+
+## 13:22
+
+So I have no class found in classpath, wonder if I can fix that.
+
+## 13:27
+
+It seems class files exist in the source path with class file extensions.
+So maybe I have the order wrong.
+
+## 13:28
+
+Yes, I was setting what should have been the class path to the source path.
+
+## 13:34
+
+Okay so from the looks of it, the compilation speed of the build system is
+definitely much faster than before. Before it was definitely slower but now
+it seems to be running quite optimally.
+
+## 14:37
+
+Okay so when the dependency is an API, the preferred order will be:
+
+ * Defined standards via `X-SquirrelJME-DefinedStandards`.
+ * Profiles via `X-SquirrelJME-DefinedProfiles`.
+ * Configurations will be ignored.
