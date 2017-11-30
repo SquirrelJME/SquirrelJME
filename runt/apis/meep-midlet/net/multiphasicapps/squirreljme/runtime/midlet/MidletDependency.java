@@ -235,13 +235,6 @@ public final class MidletDependency
 				(version == null) == (__v == null));
 	}
 	
-	public boolean isCompatible(APIStandard __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/11/22
