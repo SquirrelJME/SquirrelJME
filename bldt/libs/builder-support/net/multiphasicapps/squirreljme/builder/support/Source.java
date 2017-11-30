@@ -263,7 +263,7 @@ public final class Source
 	public final ProvidedInfo approximateBinaryProvidedInfo()
 	{
 		Reference<ProvidedInfo> ref = this._approxpd;
-		DependencySet rv;
+		ProvidedInfo rv;
 		
 		if (ref == null || null == (rv = ref.get()))
 			try

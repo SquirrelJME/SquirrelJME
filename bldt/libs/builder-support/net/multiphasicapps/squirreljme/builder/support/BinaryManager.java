@@ -140,53 +140,6 @@ public final class BinaryManager
 	}
 	
 	/**
-	 * Returns the dependencies which statisfy the given set.
-	 *
-	 * @param __set The set of dependencies to get.
-	 * @param __opt If {@code true} include optional dependencies.
-	 * @return Binaries which statisfy the given dependencies.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/17
-	 */
-	public final Binary[] dependencies(DependencySet __set, boolean __opt)
-		throws NullPointerException
-	{
-		if (__set == null)
-			throw new NullPointerException("NARG");
-		
-		// The returning set
-		Set<Binary> rv = new LinkedHashSet<>();
-		
-		// Go through the entire set and search for dependencies
-		for (ManifestedDependency md : __set)
-		{
-			// Not wanting an optional dependency
-			boolean mdopt = md.isOptional();
-			if (mdopt && !__opt)
-				continue;
-			
-			// {@squirreljme.error AU0c Could not locate the binary which
-			// statifies the given dependency. (The dependency to look for)}
-			Binary bin = this.findDependency(md);
-			if (bin == null)
-				if (mdopt)
-					continue;
-				else
-					throw new InvalidBinaryException(
-						String.format("AU0c %s", md));
-			
-			// Recursively obtain the dependencies of that dependency
-			for (Binary dep : this.dependencies(bin.dependencies(), false))
-				rv.add(dep);
-			
-			// Add the self dependency at the end
-			rv.add(bin);
-		}
-		
-		return rv.<Binary>toArray(new Binary[rv.size()]);
-	}
-	
-	/**
 	 * Returns the class path for the given binary.
 	 *
 	 * @param __b The binary to get the classpath for.
@@ -204,7 +157,7 @@ public final class BinaryManager
 		Set<Binary> rv = new LinkedHashSet<>();
 		
 		// Make sure all dependencies are used
-		for (Binary dep : this.dependencies(__b.dependencies(), false))
+		for (Binary dep : this.matchDependencies(__b.dependencies(), false))
 			rv.add(dep);
 		
 		// Include this in the run-time
@@ -234,7 +187,7 @@ public final class BinaryManager
 		
 		// Make sure all dependencies are compiled, this will result in the
 		// entire class path being determined aslso for compilation
-		for (Binary dep : this.dependencies(__b.dependencies(), false))
+		for (Binary dep : this.matchDependencies(__b.dependencies(), false))
 			for (Binary c : this.compile(dep))
 				rv.add(c);
 		
@@ -392,33 +345,6 @@ public final class BinaryManager
 	}
 	
 	/**
-	 * Finds the binary project which statifies the given dependency.
-	 *
-	 * @param __dep The dependency to locate.
-	 * @return The binary if one was found, otherwise {@code null} if not.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/11/23
-	 */
-	public final Binary findDependency(ManifestedDependency __dep)
-		throws NullPointerException
-	{
-		if (__dep == null)
-			throw new NullPointerException("NARG");
-		
-		// Look for the first matching dependency
-		for (Binary bin : this)
-		{
-			ManifestedDependency[] check = bin.matchedDependencies(__dep);
-			
-			if (check.length > 0)
-				return bin;
-		}
-		
-		// None found
-		return null;
-	}
-	
-	/**
 	 * Obtains the binary which uses the given source name.
 	 *
 	 * @param __n The name of the project to get.
@@ -495,6 +421,69 @@ public final class BinaryManager
 	{
 		return UnmodifiableCollection.<Binary>of(this._binaries.values()).
 			iterator();
+	}
+	
+	/**
+	 * Returns the binaries which statisfy the given set.
+	 *
+	 * @param __set The set of dependencies to get.
+	 * @param __opt If {@code true} include optional dependencies.
+	 * @return Binaries which statisfy the given dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/17
+	 */
+	public final Binary[] matchDependencies(DependencyInfo __set,
+		boolean __opt)
+		throws NullPointerException
+	{
+		if (__set == null)
+			throw new NullPointerException("NARG");
+		
+		// Clear all optionals if they are not included
+		if (!__opt)
+			__set = __set.noOptionals();
+		
+		// No dependencies to search for
+		if (__set.isEmpty())
+			return new Binary[0];
+		
+		// Remember the original set for recursive dependency checks
+		DependencyInfo original = __set;
+		
+		// The returning set
+		Set<Binary> rv = new LinkedHashSet<>();
+		
+		// Go through all binaries and attempt to match
+		for (Binary bin : this)
+		{
+			// Only consider matches
+			MatchResult result = bin.matchedDependencies(__set);
+			if (!result.hasMatches())
+				continue;
+			
+			// Use this as a dependency
+			rv.add(bin);
+			
+			// Recursively go down
+			for (Binary sub : this.matchDependencies(
+				bin.dependencies(), false))
+				rv.add(sub);
+			
+			// Use remaining unmatched set
+			__set = result.unmatched();
+			
+			// If the set was emptied then it will never have any more matches
+			if (__set.isEmpty())
+				break;
+		}
+		
+		// {@squirreljme.error AU0c Could not locate the binary which
+		// statifies the given dependency. (The dependency to look for)}
+		if (rv.isEmpty())
+			throw new InvalidBinaryException(
+				String.format("AU0c %s", __set));
+		
+		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
 	
 	/**
@@ -598,6 +587,8 @@ public final class BinaryManager
 			// Relying on a liblet
 			else
 			{
+				throw new todo.TODO();
+				/*
 				MidletSuiteID sid = found.suiteId();
 				outattr.put(key, new SuiteDependency(
 					SuiteDependencyType.LIBLET,
@@ -608,6 +599,7 @@ public final class BinaryManager
 				
 				// Use next key
 				next++;
+				*/
 			}
 		}
 		
