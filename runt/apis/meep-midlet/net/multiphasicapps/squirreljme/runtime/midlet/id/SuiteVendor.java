@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
 /**
  * This represents the vendor of a midlet suite.
  *
  * @since 2016/10/12
  */
-public final class MidletSuiteVendor
-	implements Comparable<MidletSuiteVendor>
+public final class SuiteVendor
+	implements Comparable<SuiteVendor>
 {
 	/** String value. */
 	protected final String string;
@@ -29,7 +29,7 @@ public final class MidletSuiteVendor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public MidletSuiteVendor(String __v)
+	public SuiteVendor(String __v)
 		throws InvalidMidletException, NullPointerException
 	{
 		// Check
@@ -74,7 +74,7 @@ public final class MidletSuiteVendor
 	 * @since 2016/10/12
 	 */
 	@Override
-	public int compareTo(MidletSuiteVendor __o)
+	public int compareTo(SuiteVendor __o)
 	{
 		return this.string.compareTo(__o.string);
 	}
@@ -87,10 +87,10 @@ public final class MidletSuiteVendor
 	public boolean equals(Object __o)
 	{
 		// Check
-		if (!(__o instanceof MidletSuiteVendor))
+		if (!(__o instanceof SuiteVendor))
 			return false;
 		
-		return this.string.equals(((MidletSuiteVendor)__o).string);
+		return this.string.equals(((SuiteVendor)__o).string);
 	}
 	
 	/**

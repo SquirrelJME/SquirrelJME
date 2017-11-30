@@ -38,6 +38,74 @@ public final class ProvidedInfo
 			throw new NullPointerExcpetion("NARG");
 		
 		throw new todo.TODO();
+		/*
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		JavaManifestAttributes attr = __m.getMainAttributes();
+		Set<ManifestedDependency> deps = new LinkedHashSet<>();
+		
+		// Configurations defined
+		String configs = attr.getValue("X-SquirrelJME-DefinedConfigurations");
+		if (configs != null)
+			for (APIConfiguration conf : APIConfiguration.parseList(configs))
+				deps.add(conf);
+		
+		// Profiles defined
+		String profiles = attr.getValue("X-SquirrelJME-DefinedProfiles");
+		if (profiles != null)
+			for (APIProfile prof : APIProfile.parseList(profiles))
+				deps.add(prof);
+		
+		// Standards defined
+		String standards = attr.getValue("X-SquirrelJME-DefinedStandards");
+		if (standards != null)
+			for (String s : StringUtils.basicSplit(",", standards))
+				deps.add(new APIStandard(s));
+		
+		// SquirrelJME project name specifier, not portable
+		String sjmeipn = attr.getValue("X-SquirrelJME-InternalProjectName");
+		if (sjmeipn != null)
+		{
+			MidletDependency dep = new MidletDependency(
+				MidletDependencyType.PROPRIETARY,
+				MidletDependencyLevel.REQUIRED,
+				new MidletSuiteName("squirreljme.project@" + sjmeipn.trim()),
+				DependencySet.__projectVendor(),
+				MidletVersionRange.ANY_VERSION);
+			
+			// Includes required and optional
+			deps.add(dep);
+			deps.add(dep.toOptional());
+		}
+		
+		// Handle liblets which may be provided.
+		if (!"true".equals(attr.getValue("X-SquirrelJME-IsAPI")))
+		{
+			String name = attr.getValue("LIBlet-Name"),
+				vendor = attr.getValue("LIBlet-Vendor"),
+				version = attr.getValue("LIBlet-Version");
+			
+			// All three must be set and valid
+			if (name != null && vendor != null && version != null)
+			{
+				MidletDependency dep = new MidletDependency(
+					MidletDependencyType.LIBLET,
+					MidletDependencyLevel.REQUIRED,
+					new MidletSuiteName(name),
+					new MidletSuiteVendor(vendor),
+					MidletVersionRange.exactly(
+						new MidletVersion(version)));
+				
+				// Includes required and optional
+				deps.add(dep);
+				deps.add(dep.toOptional());
+			}
+		}
+		
+		// Build
+		return new DependencySet(deps);
+		*/
 	}
 }
 

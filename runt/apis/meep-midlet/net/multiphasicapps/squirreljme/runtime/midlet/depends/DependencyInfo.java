@@ -38,6 +38,46 @@ public final class DependencyInfo
 			throw new NullPointerExcpetion("NARG");
 		
 		throw new todo.TODO();
+		/*
+		
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		JavaManifestAttributes attr = __m.getMainAttributes();
+		Set<ManifestedDependency> deps = new LinkedHashSet<>();
+		
+		// Normally required, configuration specifies CLDC and such
+		String config = attr.getValue("microedition-configuration");
+		if (config != null)
+			deps.add(new APIConfiguration(config.trim()));
+		
+		// Normally required, this may or might not exist but normally when
+		// binaries are generated any dependencies that rely on APIs will
+		// be transformed to this
+		String profiles = attr.getValue("microedition-profile");
+		if (profiles != null)
+			for (APIProfile dep : APIProfile.parseList(profiles))
+				deps.add(dep);
+		
+		// Determine the prefix to use, for MIDlets or liblets
+		String prefix = (attr.getValue("midlet-name") != null ?
+			"midlet-dependency-" : "liblet-dependency-");
+		
+		// Parse entries in sequential order
+		for (int i = 1; i >= 1; i++)
+		{
+			// Stop if no more values are read
+			String value = attr.getValue(prefix + i);
+			if (value == null)
+				break;
+			
+			// Decode dependency
+			deps.add(new MidletDependency(value));
+		}
+		
+		// Build
+		return new DependencySet(deps);
+		*/
 	}
 }
 

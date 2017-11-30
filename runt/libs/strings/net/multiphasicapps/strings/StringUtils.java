@@ -11,9 +11,9 @@
 package net.multiphasicapps.strings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import net.multiphasicapps.collections.IntegerList;
 
 /**
  * This class contains static methods which can be used for manipulating
@@ -159,36 +159,66 @@ public final class StringUtils
 	}
 	
 	/**
-	 * Returns an array containing all of the indexes that the specified
-	 * character appears in the given sequence.
+	 * Splits the specified string using the given delimeter and returns all
+	 * of the fields which are contained within, any leading and trailing
+	 * whitespace is trimmed.
 	 *
-	 * @param __s The sequence to check in.
+	 * @param __delim The delimeter to split fields by.
+	 * @param __s The string to split.
+	 * @return An array containing all of the fields.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final String[] fieldSplitAndTrim(char __delim, String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Split and trim
+		String[] rv = StringUtils.fieldSplit(__delim, __s);
+		for (int i = 0, n = rv.length; i < n; i++)
+			rv[i] = rv[i].trim();
+		return rv;
+	}
+	
+	/**
+	 * Splits the specified string using the given delimeter and returns all
+	 * of the fields which are contained within. Extra whitespace within
+	 * fields are not trimmed.
+	 *
+	 * @param __delim The delimeter to split fields by.
+	 * @param __s The string to split.
+	 * @return An array containing all of the fields.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final String[] fieldSplit(char __delim, String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		CharSequence[] xrv = CharSequenceUtils.
+		return Arrays.<String, CharSequence>copyOf(xrv, xrv.length,
+			String[].class);
+	}
+	
+	/**
+	 * Returns an array containing all of the indexes that the specified
+	 * character appears in the given string.
+	 *
+	 * @param __s The string to check in.
 	 * @parma __c The character to get the indexes for.
 	 * @return An array containing the array indexes for the given character,
 	 * if there are none then the array will be empty.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public static final int[] multipleIndexOf(CharSequence __s, char __c)
+	public static final int[] multipleIndexOf(String __s, char __c)
 		throws NullPointerException
 	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		IntegerList list = new IntegerList();
-		
-		// Find every character index
-		for (int i = 0, n = __s.length(), lastdx = 0; i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			// Add index to list if found
-			if (c == __c)
-				list.addInteger(i);
-		}
-		
-		// Finish
-		return list.toIntegerArray();
+		return CharSequenceUtils.multipleIndexOf(__s, __c);
 	}
 	
 	/**
