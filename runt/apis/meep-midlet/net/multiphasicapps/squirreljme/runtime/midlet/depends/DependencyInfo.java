@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -23,6 +28,37 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  */
 public final class DependencyInfo
 {
+	/**
+	 * Initializes the dependency information.
+	 *
+	 * @param __config The configuration to use.
+	 * @param __profiles The profiles to implement.
+	 * @param __depends The dependencies to use.
+	 * @since 2017/11/30
+	 */
+	public DependencyInfo(Configuration __config, Profile[] __profiles,
+		SuiteDependency[] __depends)
+	{
+		this(__config,
+			(__profiles == null ? null : Arrays.<Profile>asList(__profiles)),
+			(__depends == null ? null :
+				Arrays.<SuiteDependency>asList(__depends)));
+	}
+	
+	/**
+	 * Initializes the dependency information.
+	 *
+	 * @param __config The configuration to use.
+	 * @param __profiles The profiles to implement.
+	 * @param __depends The dependencies to use.
+	 * @since 2017/11/30
+	 */
+	public DependencyInfo(Configuration __config,
+		Collection<Profile> __profiles, Collection<SuiteDependency> __depends)
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Checks if the dependency information is empty.
 	 *
@@ -80,27 +116,23 @@ public final class DependencyInfo
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
+		JavaManifestAttributes attr = __man.getMainAttributes();
 		
-		if (__m == null)
-			throw new NullPointerException("NARG");
+		// Resulting dependencies
+		Configuration config = null;
+		Set<Profile> profiles = new LinkedHashSet<>();
+		Set<SuiteDependency> dependencies = new LinkedHashSet<>();
 		
-		JavaManifestAttributes attr = __m.getMainAttributes();
-		Set<ManifestedDependency> deps = new LinkedHashSet<>();
+		// The CLDC library to use
+		String xconfig = attr.getValue("microedition-configuration");
+		if (xconfig != null)
+			config = new Configuration(xconfig.trim());
 		
-		// Normally required, configuration specifies CLDC and such
-		String config = attr.getValue("microedition-configuration");
-		if (config != null)
-			deps.add(new APIConfiguration(config.trim()));
-		
-		// Normally required, this may or might not exist but normally when
-		// binaries are generated any dependencies that rely on APIs will
-		// be transformed to this
-		String profiles = attr.getValue("microedition-profile");
-		if (profiles != null)
-			for (APIProfile dep : APIProfile.parseList(profiles))
-				deps.add(dep);
+		// Profiles needed to run
+		String xprofiles = attr.getValue("microedition-configuration");
+		if (xprofiles != null)
+			for (String s : StringUtils.basicSplit(" \t", xprofiles))
+				profiles.add(new Profile(s));
 		
 		// Determine the prefix to use, for MIDlets or liblets
 		String prefix = (attr.getValue("midlet-name") != null ?
@@ -115,12 +147,11 @@ public final class DependencyInfo
 				break;
 			
 			// Decode dependency
-			deps.add(new MidletDependency(value));
+			dependencies.add(new SuiteDependency(value));
 		}
 		
 		// Build
-		return new DependencySet(deps);
-		*/
+		return new DependencyInfo(config, profiles, dependencies);
 	}
 }
 
