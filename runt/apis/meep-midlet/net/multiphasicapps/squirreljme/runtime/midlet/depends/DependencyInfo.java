@@ -24,6 +24,17 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
 public final class DependencyInfo
 {
 	/**
+	 * Checks if the dependency information is empty.
+	 *
+	 * @return If the dependency info is empty.
+	 * @since 2017/11/30
+	 */
+	public final boolean isEmpty()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Matches this dependency information to see if any of the provided
 	 * fields would statisfy the dependencies that are needed.
 	 *
@@ -38,6 +49,18 @@ public final class DependencyInfo
 		if (__prov == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns dependency information which contains no optional
+	 * dependencies.
+	 *
+	 * @return Dependency information with no optionals.
+	 * @since 2017/11/30
+	 */
+	public final DependencyInfo noOptionals()
+	{
 		throw new todo.TODO();
 	}
 	
