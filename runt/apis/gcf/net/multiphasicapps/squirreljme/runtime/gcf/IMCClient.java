@@ -24,9 +24,7 @@ import javax.microedition.midlet.MIDletIdentity;
 import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
 import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
 import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteIDFormat;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
  * This implements the client side of the IMC connection.
@@ -37,13 +35,13 @@ public class IMCClient
 	implements IMCConnection
 {
 	/** The actually connected remote end. */
-	protected final MidletSuiteID connectid;
+	protected final IMCHostName connectid;
 	
 	/** The server name. */
 	protected final String servername;
 	
 	/** The server version. */
-	protected final MidletVersion serverversion;
+	protected final SuiteVersion serverversion;
 	
 	/** Use authorization? */
 	protected final boolean authmode;
@@ -75,7 +73,7 @@ public class IMCClient
 	 * specified.
 	 * @since 2016/10/13
 	 */
-	public IMCClient(MidletSuiteID __id, String __sv, MidletVersion __ver,
+	public IMCClient(IMCHostName __id, String __sv, SuiteVersion __ver,
 		boolean __authmode, boolean __interrupt)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
@@ -131,9 +129,8 @@ public class IMCClient
 		else
 			try
 			{
-				this.connectid = new MidletSuiteID(new String(
-					mbfunc.remoteId(fd), "utf-8"),
-					MidletSuiteIDFormat.JAR);
+				this.connectid = new IMCHostName(new String(
+					mbfunc.remoteId(fd), "utf-8"));
 			}
 			
 			// {@squirreljme.error EC06 Could not determine the identifier
@@ -157,7 +154,7 @@ public class IMCClient
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	IMCClient(int __clfd, String __name, MidletVersion __ver, boolean __auth,
+	IMCClient(int __clfd, String __name, SuiteVersion __ver, boolean __auth,
 		boolean __interrupt)
 		throws IOException, NullPointerException
 	{
@@ -178,9 +175,8 @@ public class IMCClient
 		// Determine remote end
 		try
 		{
-			this.connectid = new MidletSuiteID(new String(
-				mbfunc.remoteId(__clfd), "utf-8"),
-				MidletSuiteIDFormat.JAR);
+			this.connectid = new IMCHostName(new String(
+				mbfunc.remoteId(__clfd), "utf-8"));
 		}
 		
 		// {@squrireljme.error EC0t Could not determine the name of the

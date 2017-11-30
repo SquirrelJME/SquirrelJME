@@ -19,7 +19,7 @@ import javax.microedition.io.StreamConnection;
 import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
 import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
 import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
  * This implements the server side of an IMC connection.
@@ -33,7 +33,7 @@ public class IMCServer
 	protected final String name;
 	
 	/** The server version. */
-	protected final MidletVersion version;
+	protected final SuiteVersion version;
 	
 	/** Use authentication mode? */
 	protected final boolean authmode;
@@ -58,7 +58,7 @@ public class IMCServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	public IMCServer(String __name, MidletVersion __ver, boolean __auth,
+	public IMCServer(String __name, SuiteVersion __ver, boolean __auth,
 		boolean __int)
 		throws IOException, NullPointerException
 	{

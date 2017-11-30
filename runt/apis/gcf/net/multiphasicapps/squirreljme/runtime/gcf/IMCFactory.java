@@ -12,9 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.gcf;
 
 import java.io.IOException;
 import javax.microedition.io.Connection;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteID;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteIDFormat;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
  * This class is used to create instances of inter-midlet connections.
@@ -58,7 +56,7 @@ public class IMCFactory
 		
 		// Host server?
 		boolean isclient;
-		MidletSuiteID connect;
+		IMCHostName connect;
 		if (rest.startsWith(":"))
 		{
 			isclient = false;
@@ -107,8 +105,7 @@ public class IMCFactory
 						"EC0e %s", __par));
 				
 				// Parse suite ID
-				connect = new MidletSuiteID(rest.substring(0, colc),
-					MidletSuiteIDFormat.IMC);
+				connect = new IMCHostName(rest.substring(0, colc));
 				
 				// The rest is anything after the third
 				rest = rest.substring(colc + 1);
@@ -125,7 +122,7 @@ public class IMCFactory
 		
 		// Decode server name and version
 		String name = rest.substring(0, col);
-		MidletVersion version = new MidletVersion(rest.substring(col + 1));
+		SuiteVersion version = new SuiteVersion(rest.substring(col + 1));
 		
 		// Parse authorization mode
 		boolean authmode;
