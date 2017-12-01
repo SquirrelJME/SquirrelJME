@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
 import net.multiphasicapps.squirreljme.runtime.midlet.id.APIName;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 
 /**
@@ -24,21 +25,34 @@ import net.multiphasicapps.strings.StringUtils;
 public final class Configuration
 	implements Comparable<Configuration>
 {
+	/** Name. */
+	protected final APIName name;
+	
+	/** Version. */
+	protected final SuiteVersion version;
+	
+	/** Is this configuration compact? */
+	protected final boolean compact;
+	
 	/**
 	 * Initializes the configuration using the given API name and version.
 	 *
 	 * @param __n The name to use.
 	 * @param __v The version of the suite.
+	 * @param __c If {@code true} then the configuration is compact.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	public Configuration(APIName __n, SuiteVersion __v)
+	public Configuration(APIName __n, SuiteVersion __v, boolean __c)
 		throws NullPointerException
 	{
 		if (__n == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set
+		this.name = __n;
+		this.version = __v;
+		this.compact = __c;
 	}
 	
 	/**
@@ -54,7 +68,20 @@ public final class Configuration
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AD0p Expected two or three fields for the
+		// configuration. (The input string)}
+		String[] fields = StringUtils.fieldSplit('-', __n);
+		int fn = fields.length;
+		if (fn != 2 && fn != 3)
+			throw new InvalidSuiteException(String.format("AD0p %s", __n));
+		
+		// Potentially compact?
+		this.compact = (fn >= 2 &&
+			0 == fields[2].compareToIgnoreCase("compact"));
+		
+		// Parse name and version
+		this.name = new APIName(fields[0]);
+		this.version = new SuiteVersion(fields[1]);
 	}
 	
 	/**
