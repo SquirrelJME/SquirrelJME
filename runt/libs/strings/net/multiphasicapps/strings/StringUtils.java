@@ -205,20 +205,127 @@ public final class StringUtils
 	}
 	
 	/**
+	 * Searches the given sequence for the first occurrence of the specified
+	 * character.
+	 *
+	 * @param __c The character to locate.
+	 * @param __s The sequence to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndex(char __c, String __s)
+		throws NullPointerException
+	{
+		return CharSequenceUtils.firstIndex(__c, __s);
+	}
+	
+	/**
+	 * Searches the given string for the first occurrence of the specified
+	 * characters.
+	 *
+	 * @param __c The characters to locate.
+	 * @param __s The string to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndex(char[] __c, String __s)
+		throws NullPointerException
+	{
+		return CharSequenceUtils.firstIndex(__c, __s);
+	}
+	
+	/**
+	 * Searches the given string for the first occurrence of the specified
+	 * characters.
+	 *
+	 * @param __c The characters to locate.
+	 * @param __s The string to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndex(String __c, String __s)
+		throws NullPointerException
+	{
+		return CharSequenceUtils.firstIndex(__c, __s);
+	}
+	
+	/**
+	 * Searches the given string for the first occurrence of the specified
+	 * characters. This assumes that the character set has already been
+	 * sorted.
+	 *
+	 * @param __c The characters to locate, this is required to be sorted.
+	 * @param __s The string to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndexSorted(char[] __c, String __s)
+		throws NullPointerException
+	{
+		return CharSequenceUtils.firstIndexSorted(__c, __s);
+	}
+	
+	/**
 	 * Returns an array containing all of the indexes that the specified
 	 * character appears in the given string.
 	 *
-	 * @param __s The string to check in.
 	 * @parma __c The character to get the indexes for.
+	 * @param __s The string to check in.
 	 * @return An array containing the array indexes for the given character,
 	 * if there are none then the array will be empty.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public static final int[] multipleIndexOf(String __s, char __c)
+	public static final int[] multipleIndexOf(char __c, String __s)
 		throws NullPointerException
 	{
-		return CharSequenceUtils.multipleIndexOf(__s, __c);
+		return CharSequenceUtils.multipleIndexOf(__c, __s);
+	}
+	
+	/**
+	 * Converts the specified string to lowercase ignoring locale, this uses
+	 * {@link Character#toLowerCase(char)}.
+	 *
+	 * @param __s The string to convert.
+	 * @return The lowercased string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final String toLowerCaseNoLocale(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = sb.length(); i < n; i++)
+			sb.append(Character.toLowerCase(__s.charAt(i)));
+		return sb.toString();
+	}
+	
+	/**
+	 * Converts the specified string to uppercase ignoring locale, this uses
+	 * {@link Character#toUpperCase(char)}.
+	 *
+	 * @param __s The string to convert.
+	 * @return The uppercased string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final String toUpperCaseNoLocale(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = sb.length(); i < n; i++)
+			sb.append(Character.toUpperCase(__s.charAt(i)));
+		return sb.toString();
 	}
 	
 	/**

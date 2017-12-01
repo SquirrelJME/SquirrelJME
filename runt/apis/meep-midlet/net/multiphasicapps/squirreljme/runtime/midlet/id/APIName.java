@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+import net.multiphasicapps.strings.StringUtils;
+
 /**
  * This represents the name of an API.
  *
@@ -18,20 +21,32 @@ package net.multiphasicapps.squirreljme.runtime.midlet.id;
 public final class APIName
 	implements Comparable<APIName>
 {
+	/** The name of the API. */
+	protected final String string;
+	
 	/**
 	 * Initializes the API name from the given string.
 	 *
 	 * @param __n The name of the API.
+	 * @throws InvalidSuiteException If the suite is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
 	public APIName(String __n)
-		throws NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Force all APIs to be uppercase
+		__n = StringUtils.toUpperCaseNoLocale(__n);
+		
+		// {@squirreljme.error AD0q An illegal character was
+		// specified in the API name. (The API name)
+		if (StringUtils.firstIndex("\0\r\n:;", __n) >= 0)
+			throw new InvalidSuiteException(String.format("AD0q %s", __n));
+		
+		this.string = __n;
 	}
 	
 	/**
@@ -41,7 +56,7 @@ public final class APIName
 	@Override
 	public int compareTo(APIName __o)
 	{
-		throw new todo.TODO();
+		return this.string.compareTo(__o.string);
 	}
 	
 	/**
@@ -51,7 +66,13 @@ public final class APIName
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof APIName))
+			return false;
+		
+		return this.string.equals(((APIName)__o).string);
 	}
 	
 	/**
@@ -61,7 +82,7 @@ public final class APIName
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**
@@ -71,7 +92,7 @@ public final class APIName
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.string;
 	}
 }
 
