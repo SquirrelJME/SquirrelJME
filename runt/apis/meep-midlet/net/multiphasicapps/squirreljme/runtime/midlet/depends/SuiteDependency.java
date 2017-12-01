@@ -63,7 +63,7 @@ public final class SuiteDependency
 		__s = __s.trim();
 		
 		// Extract all semicolon positions
-		int[] sc = StringUtils.multipleIndexOf(__s, ';');
+		int[] sc = StringUtils.multipleIndexOf(';', __s);
 		
 		// {@squirreljme.error AD0o Expected four semi-colons in the
 		// dependency field. (The input dependency)}
@@ -120,7 +120,7 @@ public final class SuiteDependency
 		__s = __s.trim();
 		
 		// Extract all semicolon positions
-		int[] sc = StringUtils.multipleIndexOf(__s, ';');
+		int[] sc = StringUtils.multipleIndexOf(';', __s);
 		
 		// {@squirreljme.error AD08 Expected two semi-colons in the
 		// dependency field. (The input dependency)}

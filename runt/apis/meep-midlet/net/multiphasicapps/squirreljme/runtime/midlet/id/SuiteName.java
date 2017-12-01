@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This represents the name of a midlet suite.
@@ -38,36 +39,12 @@ public final class SuiteName
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// Trim whitespace
-		__v = __v.trim();
+		// {@squirreljme.error AD0d An illegal character was
+		// specified in the midlet suite name. (The midlet suite
+		// name)}
+		if (StringUtils.firstIndex("\0\r\n:;", __v) >= 0)
+			throw new InvalidSuiteException(String.format("AD0d %s", __v));
 		
-		// Go through all characters
-		int n = __v.length();
-		for (int i = 0; i < n; i++)
-		{
-			char c = __v.charAt(i);
-			
-			// Invalid character?
-			switch (c)
-			{
-					// {@squirreljme.error AD0d An illegal character was
-					// specified in the midlet suite name. (The midlet suite
-					// name)}
-				case '\0':
-				case '\r':
-				case '\n':
-				case ':':
-				case ';':
-					throw new InvalidSuiteException(
-						String.format("AD0d %s", __v));
-				
-					// Valid
-				default:
-					continue;
-			}
-		}
-		
-		// Set
 		this.string = __v;
 	}
 	

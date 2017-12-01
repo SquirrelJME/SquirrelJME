@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.strings;
 
+import java.util.Arrays;
 import net.multiphasicapps.collections.IntegerList;
 
 /**
@@ -47,7 +48,7 @@ public final class CharSequenceUtils
 			throw new NullPointerException("NARG");
 		
 		// Get all indexes of that given character
-		int[] ind = CharSequenceUtils.multipleIndexOf(__s, __delim);
+		int[] ind = CharSequenceUtils.multipleIndexOf(__delim, __s);
 		int delcount = ind.length;
 		
 		int n = delcount + 1;
@@ -60,17 +61,113 @@ public final class CharSequenceUtils
 	}
 	
 	/**
+	 * Searches the given sequence for the first occurrence of the specified
+	 * character.
+	 *
+	 * @param __c The character to locate.
+	 * @param __s The sequence to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndex(char __c, CharSequence __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		for (int i = 0, n = __s.length(); i < n; i++)
+			if (__c == __s.charAt(i))
+				return i;
+		return -1;
+	}
+	
+	/**
+	 * Searches the given sequence for the first occurrence of the specified
+	 * characters.
+	 *
+	 * @param __c The characters to locate.
+	 * @param __s The sequence to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndex(char[] __c, CharSequence __s)
+		throws NullPointerException
+	{
+		if (__c == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// For optimization sort the input array to find characters faster
+		__c = __c.clone();
+		Arrays.sort(__c);
+		
+		// Forward to one which assumes sorted input
+		return CharSequenceUtils.firstIndexSorted(__c, __s);
+	}
+	
+	/**
+	 * Searches the given sequence for the first occurrence of the specified
+	 * characters.
+	 *
+	 * @param __c The characters to locate.
+	 * @param __s The sequence to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndex(String __c, CharSequence __s)
+		throws NullPointerException
+	{
+		if (__c == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		return CharSequenceUtils.firstIndex(__c.toCharArray(), __s);
+	}
+	
+	/**
+	 * Searches the given sequence for the first occurrence of the specified
+	 * characters. This assumes that the character set has already been
+	 * sorted.
+	 *
+	 * @param __c The characters to locate, this is required to be sorted.
+	 * @param __s The sequence to look inside.
+	 * @return The index of the first occurrence.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/11/30
+	 */
+	public static final int firstIndexSorted(char[] __c, CharSequence __s)
+		throws NullPointerException
+	{
+		if (__c == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through ever character
+		for (int i = 0, n = __s.length(), y = __c.length; i < n; i++)
+		{
+			// Use binary search because it is faster than checking each
+			// and every element
+			char c = __s.charAt(i);
+			if (Arrays.binarySearch(__c, c) >= 0)
+				return i;
+		}
+		
+		// Not found
+		return -1;
+	}
+	
+	/**
 	 * Returns an array containing all of the indexes that the specified
 	 * character appears in the given sequence.
 	 *
-	 * @param __s The sequence to check in.
 	 * @parma __c The character to get the indexes for.
+	 * @param __s The sequence to check in.
 	 * @return An array containing the array indexes for the given character,
 	 * if there are none then the array will be empty.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	public static final int[] multipleIndexOf(CharSequence __s, char __c)
+	public static final int[] multipleIndexOf(char __c, CharSequence __s)
 		throws NullPointerException
 	{
 		if (__s == null)

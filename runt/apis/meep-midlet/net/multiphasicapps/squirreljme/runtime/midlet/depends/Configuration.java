@@ -76,8 +76,6 @@ public final class Configuration
 		if (fn != 2 && fn != 3)
 			throw new InvalidSuiteException(String.format("AD0p %s", __n));
 		
-		System.err.printf("DEBUG -- %s%n", Arrays.asList(fields));
-		
 		// Potentially compact?
 		this.compact = (fn >= 2 &&
 			0 == fields[2].compareToIgnoreCase("compact"));
@@ -114,7 +112,9 @@ public final class Configuration
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode() ^
+			Objects.hashCode(this.version) ^
+			(this.compact ? 0xFFFFFFFF : 0);
 	}
 	
 	/**
