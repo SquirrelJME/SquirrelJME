@@ -1,0 +1,46 @@
+# 2017/11/30
+
+## 13:18
+
+Okay so `APIStandard` is not correct because standards have name, vendor, and
+version information. I just have name and version. Also the API base only does
+dashes.
+
+## 13:20
+
+Also using `DependencySet` for provided dependencies and dependencies
+themselves is a bit ugly. So definitely I am going to refactor how
+dependencies and provided ones are represented. Because right now having just
+that one class is ratehr ugly. So a re-thinking will definitely be much better
+and would allow less error prone usage.
+
+## 13:24
+
+Also going to remove `MidletSuiteIDFormat` and have separate classes for that,
+for simplicity purposes.
+
+## 13:25
+
+Also `DependencySet` will change. Instead of having a list of
+`ManifestedDependency` there will just be configurations, profiles, and then
+the standard dependency lines. This will be more better represented in the
+manifests. So then `DependencySet` can then have a conjunction with
+`ProvidedSet`. But instead of _Set_ I will have it as _Info_. That way it is
+not seen by name to be like a set, when it should not be. Then the conjunction
+and such will be much simpler and faster for the most part. So I would say
+that new dependency code should be in its own subpackage.
+
+## 17:30
+
+Okay, so the building and compiling part of `BinaryManager` can definitely be
+done much better and in its own class as to not clutter the class up with
+all the building logic. That would be a great thing.
+
+## 20:58
+
+Neat to `String.compareToIgnoreCase()` is locale independent, which is nice.
+
+## 22:01
+
+Let me see, if a string is as follows: "aaa;bbb;ccc" then there are two
+delimeters. So that means that.
