@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import net.multiphasicapps.collections.NaturalComparator;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteName;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVendor;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
@@ -192,7 +193,31 @@ public final class SuiteDependency
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Type first
+		int rv = this.type.compareTo(__d.type);
+		if (rv != 0)
+			return rv;
+			
+		// Optionality
+		rv = this.level.compareTo(__d.level);
+		if (rv != 0)
+			return rv;
+		
+		// Name
+		rv = Objects.<SuiteName>compare(this.name, __d.name,
+			NaturalComparator.<SuiteName>instance());
+		if (rv != 0)
+			return rv;
+		
+		// Vendor
+		rv = Objects.<SuiteVendor>compare(this.vendor, __d.vendor,
+			NaturalComparator.<SuiteVendor>instance());
+		if (rv != 0)
+			return rv;
+		
+		// Version
+		return Objects.<SuiteVersionRange>compare(this.version, __d.version,
+			NaturalComparator.<SuiteVersionRange>instance());
 	}
 	
 	/**
