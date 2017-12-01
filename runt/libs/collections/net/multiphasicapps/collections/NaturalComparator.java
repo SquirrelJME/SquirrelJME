@@ -19,11 +19,20 @@ import java.util.Comparator;
  *
  * @since 2016/09/06
  */
-final class __Natural__<V>
+public final class NaturalComparator<V>
 	implements Comparator<V>
 {
 	/** The single instance. */
-	private static volatile Reference<__Natural__> _REF;
+	private static volatile Reference<NaturalComparator> _REF;
+	
+	/**
+	 * Only one is ever needed.
+	 *
+	 * @since 2017/11/30
+	 */
+	private NaturalComparator()
+	{
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -56,17 +65,17 @@ final class __Natural__<V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static final <V> __Natural__<V> instance()
+	public static final <V> NaturalComparator<V> instance()
 	{
-		Reference<__Natural__> ref = _REF;
-		__Natural__ rv;
+		Reference<NaturalComparator> ref = _REF;
+		NaturalComparator rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			_REF = new WeakReference<>((rv = new __Natural__()));
+			_REF = new WeakReference<>((rv = new NaturalComparator()));
 		
 		// Return it
-		return (__Natural__<V>)rv;
+		return (NaturalComparator<V>)rv;
 	}
 }
 
