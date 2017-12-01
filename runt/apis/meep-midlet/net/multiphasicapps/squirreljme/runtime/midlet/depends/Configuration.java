@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import java.util.Arrays;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.APIName;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
@@ -74,6 +75,8 @@ public final class Configuration
 		int fn = fields.length;
 		if (fn != 2 && fn != 3)
 			throw new InvalidSuiteException(String.format("AD0p %s", __n));
+		
+		System.err.printf("DEBUG -- %s%n", Arrays.asList(fields));
 		
 		// Potentially compact?
 		this.compact = (fn >= 2 &&

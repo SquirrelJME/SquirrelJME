@@ -46,7 +46,17 @@ public final class CharSequenceUtils
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Get all indexes of that given character
+		int[] ind = CharSequenceUtils.multipleIndexOf(__s, __delim);
+		int delcount = ind.length;
+		
+		int n = delcount + 1;
+		CharSequence[] rv = new CharSequence[n];
+		for (int l = -1, r = 0, i = 0; i < n; i++, l++, r++)
+			rv[i] = __s.subSequence((l >= 0 ? ind[l] + 1 : 0),
+				(r < delcount ? ind[r] : __s.length()));
+		
+		return rv;
 	}
 	
 	/**
