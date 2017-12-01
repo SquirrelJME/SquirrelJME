@@ -83,7 +83,9 @@ public final class DependencyInfo
 	 */
 	public final boolean isEmpty()
 	{
-		throw new todo.TODO();
+		return this.config == null &&
+			this.profiles.isEmpty() &&
+			this.depends.isEmpty();
 	}
 	
 	/**
@@ -113,7 +115,23 @@ public final class DependencyInfo
 	 */
 	public final DependencyInfo noOptionals()
 	{
-		throw new todo.TODO();
+		// Ignore if there are no dependencies
+		Set<SuiteDependency> depends = this.depends;
+		if (depends.isEmpty())
+			return this;
+		
+		// Get all non-optional dependencies
+		Set<SuiteDependency> instead = new LinkedHashSet<>();
+		for (SuiteDependency dep : depends)
+			if (dep.isRequired())
+				instead.add(dep);
+		
+		// There are no optional dependencies
+		if (instead.size() == depends.size())
+			return this;
+		
+		// Create new
+		return new DependencyInfo(this.config, this.profiles, instead);
 	}
 	
 	/**

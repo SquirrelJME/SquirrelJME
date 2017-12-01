@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
  * @since 2017/02/22
  */
 public final class SuiteVersionRange
+	implements Comparable<SuiteVersionRange>
 {
 	/** Any version. */
 	public static final SuiteVersionRange ANY_VERSION =
@@ -167,6 +168,21 @@ public final class SuiteVersionRange
 			this.from = ver;
 			this.to = ver;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/30
+	 */
+	@Override
+	public int compareTo(SuiteVersionRange __o)
+	{
+		// From version is always first
+		int rv = this.from.compareTo(__o.from);
+		if (rv != 0)
+			return rv;
+		
+		return this.to.compareTo(__o.to);
 	}
 	
 	/**
