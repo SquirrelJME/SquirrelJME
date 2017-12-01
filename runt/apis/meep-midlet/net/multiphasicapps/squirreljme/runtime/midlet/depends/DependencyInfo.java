@@ -14,6 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.collections.ArrayUtils;
+import net.multiphasicapps.collections.EmptySet;
+import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -28,21 +32,29 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  */
 public final class DependencyInfo
 {
+	/** The configuration. */
+	protected final Configuration config;
+	
+	/** Profiles to use. */
+	private final Set<Profile> profiles;
+	
+	/** Dependencies. */
+	private final Set<SuiteDependency> depends;
+	
 	/**
 	 * Initializes the dependency information.
 	 *
 	 * @param __config The configuration to use.
 	 * @param __profiles The profiles to implement.
-	 * @param __depends The dependencies to use.
+	 * @param __deps The dependencies to use.
 	 * @since 2017/11/30
 	 */
 	public DependencyInfo(Configuration __config, Profile[] __profiles,
-		SuiteDependency[] __depends)
+		SuiteDependency[] __deps)
 	{
 		this(__config,
 			(__profiles == null ? null : Arrays.<Profile>asList(__profiles)),
-			(__depends == null ? null :
-				Arrays.<SuiteDependency>asList(__depends)));
+			(__deps == null ? null : Arrays.<SuiteDependency>asList(__deps)));
 	}
 	
 	/**
@@ -50,13 +62,17 @@ public final class DependencyInfo
 	 *
 	 * @param __config The configuration to use.
 	 * @param __profiles The profiles to implement.
-	 * @param __depends The dependencies to use.
+	 * @param __deps The dependencies to use.
 	 * @since 2017/11/30
 	 */
 	public DependencyInfo(Configuration __config,
-		Collection<Profile> __profiles, Collection<SuiteDependency> __depends)
+		Collection<Profile> __profiles, Collection<SuiteDependency> __deps)
 	{
-		throw new todo.TODO();
+		this.config = __config;
+		this.profiles = (__profiles == null ? EmptySet.<Profile>empty() :
+			UnmodifiableSet.<Profile>of(new SortedTreeSet<>(__profiles)));
+		this.depends = (__deps == null ? EmptySet.<SuiteDependency>empty() :
+			UnmodifiableSet.<SuiteDependency>of(new SortedTreeSet<>(__deps)));
 	}
 	
 	/**

@@ -46,7 +46,7 @@ public class SortedTreeSet<V>
 	 */
 	public SortedTreeSet()
 	{
-		this(__Natural__.<V>instance());
+		this(NaturalComparator.<V>instance());
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class SortedTreeSet<V>
 	public SortedTreeSet(Collection<? extends Comparable<V>> __s)
 		throws NullPointerException
 	{
-		this(__Natural__.<V>instance(), (Collection<? extends V>)__s);
+		this(NaturalComparator.<V>instance(), (Collection<? extends V>)__s);
 	}
 	
 	/**

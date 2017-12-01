@@ -59,7 +59,7 @@ public class SortedTreeMap<K, V>
 	 */
 	public SortedTreeMap()
 	{
-		this(__Natural__.<K>instance());
+		this(NaturalComparator.<K>instance());
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class SortedTreeMap<K, V>
 	public SortedTreeMap(Map<? extends Comparable<K>, ? extends V> __m)
 		throws NullPointerException
 	{
-		this(__Natural__.<K>instance(), (Map<? extends K, ? extends V>)__m);
+		this(NaturalComparator.<K>instance(), (Map<? extends K, ? extends V>)__m);
 	}
 	
 	/**
