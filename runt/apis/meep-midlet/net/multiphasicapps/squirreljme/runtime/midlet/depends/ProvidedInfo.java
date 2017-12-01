@@ -39,12 +39,13 @@ public final class ProvidedInfo
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
+		JavaManifestAttributes attr = __man.getMainAttributes();
+		
 		throw new todo.TODO();
 		/*
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		JavaManifestAttributes attr = __m.getMainAttributes();
 		Set<ManifestedDependency> deps = new LinkedHashSet<>();
 		
 		// Configurations defined
