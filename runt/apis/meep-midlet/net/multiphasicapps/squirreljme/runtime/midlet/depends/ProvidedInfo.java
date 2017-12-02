@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -40,6 +45,21 @@ public final class ProvidedInfo
 			throw new NullPointerException("NARG");
 		
 		JavaManifestAttributes attr = __man.getMainAttributes();
+		String value;
+		
+		// Defined configurations
+		Set<Configuration> configs = new LinkedHashSet<>();
+		value = attr.getValue("X-SquirrelJME-DefinedConfigurations");
+		if (value != null)
+			for (String s : StringUtils.basicSplit(" \t", value))
+				configs.add(new Configuration(s));
+		
+		// Defined profiles
+		Set<Profile> profiles = new LinkedHashSet<>();
+		value = attr.getValue("X-SquirrelJME-DefinedProfiles");
+		if (value != null)
+			for (String s : StringUtils.basicSplit(" \t", value))
+				profiles.add(new Profile(s));
 		
 		throw new todo.TODO();
 		/*
