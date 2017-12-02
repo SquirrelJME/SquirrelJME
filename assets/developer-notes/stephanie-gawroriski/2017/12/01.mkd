@@ -1,0 +1,14 @@
+# 2017/12/01
+
+## 12:15
+
+New month now.
+
+## 22:27
+
+Okay so for the profiles the best thing to do would be to have it where...
+Well for the `ProvidedInfo` it does not really make sense for profiles to
+be alone. The best thing to do would be to group them by API name and then
+their version information. APIs would be in groups in the info so it would
+be like: `Map<APIName, SuiteVersions>`. I can make a special class for that
+which keeps them sorted and such.
