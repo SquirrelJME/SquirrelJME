@@ -151,21 +151,19 @@ public final class DependencyInfo
 			throw new NullPointerException("NARG");
 		
 		JavaManifestAttributes attr = __man.getMainAttributes();
-		
-		// Resulting dependencies
-		Configuration config = null;
-		Set<Profile> profiles = new LinkedHashSet<>();
-		Set<SuiteDependency> dependencies = new LinkedHashSet<>();
+		String value;
 		
 		// The CLDC library to use
-		String xconfig = attr.getValue("microedition-configuration");
-		if (xconfig != null)
-			config = new Configuration(xconfig.trim());
+		Configuration config = null;
+		value = attr.getValue("microedition-configuration");
+		if (value != null)
+			config = new Configuration(value.trim());
 		
 		// Profiles needed to run
-		String xprofiles = attr.getValue("microedition-configuration");
-		if (xprofiles != null)
-			for (String s : StringUtils.basicSplit(" \t", xprofiles))
+		Set<Profile> profiles = new LinkedHashSet<>();
+		value = attr.getValue("microedition-configuration");
+		if (value != null)
+			for (String s : StringUtils.basicSplit(" \t", value))
 				profiles.add(new Profile(s));
 		
 		// Determine the prefix to use, for MIDlets or liblets
@@ -173,10 +171,11 @@ public final class DependencyInfo
 			"midlet-dependency-" : "liblet-dependency-");
 		
 		// Parse entries in sequential order
+		Set<SuiteDependency> dependencies = new LinkedHashSet<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			// Stop if no more values are read
-			String value = attr.getValue(prefix + i);
+			value = attr.getValue(prefix + i);
 			if (value == null)
 				break;
 			
