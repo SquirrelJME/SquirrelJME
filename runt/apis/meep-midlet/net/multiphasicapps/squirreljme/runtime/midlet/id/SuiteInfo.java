@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
 import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
@@ -28,6 +29,15 @@ public final class SuiteInfo
 {
 	/** The type of suite this is. */
 	protected final SuiteType type;
+	
+	/** The suite name. */
+	protected final SuiteName name;
+	
+	/** The suite vendor. */
+	protected final SuiteVendor vendor;
+	
+	/** The suite version. */
+	protected final SuiteVersion version;
 	
 	/** Required dependency information. */
 	private volatile Reference<DependencyInfo> _dependencies;
@@ -49,11 +59,29 @@ public final class SuiteInfo
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
+		JavaManifestAttributes attr = __man.getMainAttributes();
+		
 		// First determine the type
 		SuiteType type = SuiteType.ofManifest(__man);
 		this.type = type;
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AD0s No suite name was specified.}
+		SuiteName name = new SuiteName(
+			Objects.<String>requireNonNull(attr.getValue(type.nameKey()),
+			"AD0s"));
+		this.name = name;
+		
+		// {@squirreljme.error AD0t No suite vendor was specified.}
+		SuiteVendor vendor = new SuiteVendor(
+			Objects.<String>requireNonNull(attr.getValue(type.vendorKey()),
+			"AD0t"));
+		this.vendor = vendor;
+		
+		// {@squirreljme.error AD0u No suite version was specified.}
+		SuiteVersion version = new SuiteVersion(
+			Objects.<String>requireNonNull(attr.getValue(type.versionKey()),
+			"AD0u"));
+		this.version = version;
 	}
 	
 	/**
