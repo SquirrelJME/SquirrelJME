@@ -61,12 +61,6 @@ public final class Binary
 	/** The cached manifest for this entry. */
 	private volatile Reference<JavaManifest> _manifest;
 	
-	/** Dependencies that this source code relies on. */
-	private volatile Reference<DependencyInfo> _dependencies;
-	
-	/** Dependencies that are provided by this binary. */
-	private volatile Reference<ProvidedInfo> _provideddeps;
-	
 	/** The suite information. */
 	private volatile Reference<SuiteInfo> _suiteinfo;
 	
@@ -92,39 +86,6 @@ public final class Binary
 		this.name = __name;
 		this.source = __source;
 		this.path = __path;
-	}
-	
-	/**
-	 * Returns the set of dependencies which are needed for this project to
-	 * operate correctly.
-	 *
-	 * @return The set of dependencies.
-	 * @throws InvalidBinaryException If this binary is not valid.
-	 * @since 2017/11/17
-	 */
-	public final DependencyInfo dependencies()
-		throws InvalidBinaryException
-	{
-		// If the binary is newer then use the dependencies read from the
-		// manifest
-		if (isBinaryNewer())
-		{
-			Reference<DependencyInfo> ref = this._dependencies;
-			DependencyInfo rv;
-		
-			if (ref == null || null == (rv = ref.get()))
-				this._dependencies = new WeakReference<>(
-					(rv = DependencyInfo.parseManifest(this.manifest())));
-			
-			return rv;
-		}
-		
-		// {@squirreljme.error AU0a Cannot get dependencies for the binary
-		// because it has no source.}
-		Source source = this.source;
-		if (source == null)
-			throw new InvalidBinaryException("AU0a");
-		return source.approximateBinaryDependencyInfo();
 	}
 	
 	/**
@@ -198,7 +159,7 @@ public final class Binary
 	{
 		// Approximate the manifest to use
 		if (isSourceNewer())
-			return this.source.approximateBinaryManifest();
+			return this.source.manifest();
 		
 		// Open the binary instead
 		try (ZipBlockReader zip = zipBlock())
@@ -232,7 +193,7 @@ public final class Binary
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		return __d.match(this.provided());
+		return __d.match(this.suiteInfo().provided());
 	}
 	
 	/**
@@ -255,36 +216,6 @@ public final class Binary
 	public final Path path()
 	{
 		return this.path;
-	}
-	
-	/**
-	 * Returns the dependencies which are provided by this binary.
-	 *
-	 * @return The dependencies provided by this binary.
-	 * @since 2017/11/26
-	 */
-	public final ProvidedInfo provided()
-	{
-		// If the binary is newer then use the dependencies read from the
-		// manifest
-		if (isBinaryNewer())
-		{
-			Reference<ProvidedInfo> ref = this._provideddeps;
-			ProvidedInfo rv;
-		
-			if (ref == null || null == (rv = ref.get()))
-				this._provideddeps = new WeakReference<>(
-					(rv = ProvidedInfo.parseManifest(this.manifest())));
-			
-			return rv;
-		}
-		
-		// {@squirreljme.error AU0e Cannot get provided dependencies for the
-		// binary because it has no source code.}
-		Source source = this.source;
-		if (source == null)
-			throw new InvalidBinaryException("AU0e");
-		return source.approximateBinaryProvidedInfo();
 	}
 	
 	/**
@@ -314,7 +245,7 @@ public final class Binary
 		
 			if (ref == null || null == (rv = ref.get()))
 				this._suiteinfo = new WeakReference<>((rv =
-					SuiteInfo.parseManifest(this.manifest())));
+					new SuiteInfo(this.manifest())));
 			
 			return rv;
 		}
@@ -324,7 +255,7 @@ public final class Binary
 		Source source = this.source;
 		if (source == null)
 			throw new InvalidBinaryException("AU0p");
-		return this.source.approximateBinarySuiteInfo();
+		return this.source.suiteInfo();
 	}
 	
 	/**

@@ -55,8 +55,6 @@ public final class JavaManifestAttributes
 	@Override
 	public boolean containsKey(Object __o)
 	{
-		if (__o instanceof String)
-			return this.pairs.containsKey(new JavaManifestKey((String)__o));
 		return this.pairs.containsKey(__o);
 	}
 	
@@ -107,6 +105,22 @@ public final class JavaManifestAttributes
 	/**
 	 * Returns the value used by the given key.
 	 *
+	 * @param __k The key to get the value for.
+	 * @return The value for the given key or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/04
+	 */
+	public String getValue(JavaManifestKey __k)
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		return this.get(__k);
+	}
+	
+	/**
+	 * Returns the value used by the given key.
+	 *
 	 * @param __s The key to get the value for.
 	 * @return The value for the given key or {@code null} if not found.
 	 * @throws NullPointerException On null arguments.
@@ -120,7 +134,7 @@ public final class JavaManifestAttributes
 			throw new NullPointerException("NARG");
 		
 		// Find it
-		return get(new JavaManifestKey(__s));
+		return this.get(new JavaManifestKey(__s));
 	}
 	
 	/**

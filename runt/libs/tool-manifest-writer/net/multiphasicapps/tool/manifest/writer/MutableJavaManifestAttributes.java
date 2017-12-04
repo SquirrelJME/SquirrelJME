@@ -55,6 +55,30 @@ public class MutableJavaManifestAttributes
 	}
 	
 	/**
+	 * Checks whether the specified key has a value defined for it.
+	 *
+	 * @param __k The key to check.
+	 * @return {@code true} if a value is defined.
+	 * @since 2017/12/04
+	 */
+	public boolean definesValue(JavaManifestKey __k)
+	{
+		return this.containsKey(__k);
+	}
+	
+	/**
+	 * Checks whether the specified key has a value defined for it.
+	 *
+	 * @param __k The key to check.
+	 * @return {@code true} if a value is defined.
+	 * @since 2017/12/04
+	 */
+	public boolean definesValue(String __k)
+	{
+		return this.containsKey(__k == null ? null : new JavaManifestKey(__k));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/19
 	 */
@@ -62,6 +86,22 @@ public class MutableJavaManifestAttributes
 	public final Set<Map.Entry<JavaManifestKey, String>> entrySet()
 	{
 		return this.values.entrySet();
+	}
+	
+	/**
+	 * Returns the value used by the given key.
+	 *
+	 * @param __k The key to get the value for.
+	 * @return The value for the given key or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/04
+	 */
+	public String getValue(JavaManifestKey __k)
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		return this.get(__k);
 	}
 	
 	/**
@@ -80,7 +120,7 @@ public class MutableJavaManifestAttributes
 			throw new NullPointerException("NARG");
 		
 		// Find it
-		return get(new JavaManifestKey(__s));
+		return this.get(new JavaManifestKey(__s));
 	}
 	
 	/**

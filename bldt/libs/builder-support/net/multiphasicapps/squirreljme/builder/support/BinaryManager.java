@@ -157,7 +157,8 @@ public final class BinaryManager
 		Set<Binary> rv = new LinkedHashSet<>();
 		
 		// Make sure all dependencies are used
-		for (Binary dep : this.matchDependencies(__b.dependencies(), false))
+		for (Binary dep : this.matchDependencies(
+			__b.suiteInfo().dependencies(), false))
 			rv.add(dep);
 		
 		// Include this in the run-time
@@ -187,7 +188,8 @@ public final class BinaryManager
 		
 		// Make sure all dependencies are compiled, this will result in the
 		// entire class path being determined aslso for compilation
-		for (Binary dep : this.matchDependencies(__b.dependencies(), false))
+		for (Binary dep : this.matchDependencies(
+			__b.suiteInfo().dependencies(), false))
 			for (Binary c : this.compile(dep))
 				rv.add(c);
 		
@@ -466,7 +468,7 @@ public final class BinaryManager
 			
 			// Recursively go down
 			for (Binary sub : this.matchDependencies(
-				bin.dependencies(), false))
+				bin.suiteInfo().dependencies(), false))
 				rv.add(sub);
 			
 			// Use remaining unmatched set
@@ -507,7 +509,7 @@ public final class BinaryManager
 		// Initialize the output manifest with the initial approximated
 		// manifest first
 		MutableJavaManifest outman = new MutableJavaManifest(
-			__bin.source().approximateBinaryManifest());
+			__bin.source().manifest());
 		MutableJavaManifestAttributes outattr = outman.getMainAttributes();
 		
 		// Is this a midlet? Needed for correct dependency placement

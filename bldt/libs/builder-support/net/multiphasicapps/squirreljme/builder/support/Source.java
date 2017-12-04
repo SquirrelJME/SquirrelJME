@@ -57,12 +57,6 @@ public final class Source
 	/** The approximate binary manifest. */
 	private volatile Reference<JavaManifest> _approxbm;
 	
-	/** The approximate binary dependency set. */
-	private volatile Reference<DependencyInfo> _approxds;
-	
-	/** The approximate provided binary set. */
-	private volatile Reference<ProvidedInfo> _approxpd;
-	
 	/** The suite information. */
 	private volatile Reference<SuiteInfo> _suiteinfo;
 	
@@ -100,13 +94,72 @@ public final class Source
 	}
 	
 	/**
-	 * Returns the manifest which would be used to approximate how the binary
-	 * manifest would be generated.
+	 * Returns the time that the source code was last modified.
 	 *
-	 * @return The approximated binary manifest.
+	 * @return The last modification date of the source code.
+	 * @throws IOException On read errors.
+	 * @since 2017/11/06
+	 */
+	public long lastModifiedTime()
+	{
+		// Could be pre-cached
+		long rv = this._lastmodtime;
+		if (rv != Long.MIN_VALUE)
+			return rv;
+		
+		// Need to go through every single file in every directory, the date of
+		// the newest file is used
+		rv = Long.MIN_VALUE;
+		try
+		{
+			// Start at the root directory
+			Deque<Path> queue = new ArrayDeque<>();
+			queue.add(this.root);
+			
+			// Process every directory
+			while (!queue.isEmpty())
+				try (DirectoryStream<Path> ds = Files.newDirectoryStream(
+					queue.removeFirst()))
+				{
+					for (Path p : ds)
+					{
+						// Handle directories later
+						if (Files.isDirectory(p))
+						{
+							queue.addLast(p);
+							continue;
+						}
+						
+						// Use the newer file time
+						FileTime ft = Files.getLastModifiedTime(p);
+						if (ft != null)
+						{
+							long now = ft.toMillis();
+							if (now > rv)
+								rv = now;
+						}
+					}
+				}
+			
+			// Cache for next time
+			this._lastmodtime = rv;
+			return rv;
+		}
+		
+		// Error so the time cannot be known
+		catch (IOException e)
+		{
+			return Long.MIN_VALUE;
+		}
+	}
+	
+	/**
+	 * The approximated manifest which would be used for binary output.
+	 *
+	 * @return The approximated manifest.
 	 * @since 2017/11/17
 	 */
-	public final JavaManifest approximateBinaryManifest()
+	public final JavaManifest manifest()
 	{
 		Reference<JavaManifest> ref = this._approxbm;
 		JavaManifest rv;
@@ -114,7 +167,7 @@ public final class Source
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Need the input manifest
-			JavaManifest rman = manifest();
+			JavaManifest rman = this.sourceManifest();
 			JavaManifestAttributes rattr = rman.getMainAttributes();
 			MutableJavaManifest wman = new MutableJavaManifest();
 			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
@@ -222,183 +275,6 @@ public final class Source
 	}
 	
 	/**
-	 * This returns a dependency set which is approximated from the
-	 * approximated manifest for the binary.
-	 *
-	 * @return The approximated dependency set.
-	 * @since 2017/11/17
-	 */
-	public final DependencyInfo approximateBinaryDependencyInfo()
-	{
-		Reference<DependencyInfo> ref = this._approxds;
-		DependencyInfo rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			try
-			{
-				this._approxds = new WeakReference<>(
-					(rv = DependencyInfo.parseManifest(
-						this.approximateBinaryManifest())));
-			}
-			
-			// {@squirreljme.error AU0m Could not approximate the binary
-			// dependency information. (The name of the project)}
-			catch (InvalidSuiteException e)
-			{
-				throw new InvalidSourceException(
-					String.format("AU0m %s", this.name), e);
-			}
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the approximated set of dependencies which are provided by
-	 * this source project.
-	 *
-	 * @return The approximated dependencies this provides for other projects
-	 * to use.
-	 * @since 2017/11/26
-	 */
-	public final ProvidedInfo approximateBinaryProvidedInfo()
-	{
-		Reference<ProvidedInfo> ref = this._approxpd;
-		ProvidedInfo rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			try
-			{
-				this._approxpd = new WeakReference<>(
-					(rv = ProvidedInfo.parseManifest(
-						this.approximateBinaryManifest())));
-			}
-			
-			// {@squirreljme.error AU0n Could not approximate the binary
-			// provided libraries information. (The name of the project)}
-			catch (InvalidSuiteException e)
-			{
-				throw new InvalidSourceException(
-					String.format("AU0n %s", this.name), e);
-			}
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the approximated suite information for the binary.
-	 *
-	 * @return The approximate binary suite information.
-	 * @since 2017/11/30
-	 */
-	public final SuiteInfo approximateBinarySuiteInfo()
-	{
-		Reference<SuiteInfo> ref = this._suiteinfo;
-		SuiteInfo rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			try
-			{
-				this._suiteinfo = new WeakReference<>(
-					(rv = SuiteInfo.parseManifest(
-						this.approximateBinaryManifest())));
-			}
-			
-			// {@squirreljme.error AU0o Could not approximate the binary
-			// suite information. (The name of the project)}
-			catch (InvalidSuiteException e)
-			{
-				throw new InvalidSourceException(
-					String.format("AU0o %s", this.name), e);
-			}
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the set of dependencies which are needed for this project to
-	 * build and operate correctly.
-	 *
-	 * @return The set of dependencies.
-	 * @since 2017/11/17
-	 */
-	public final DependencyInfo dependencies()
-	{
-		// This is exactly the same as the approximate binary dependencies
-		return approximateBinaryDependencyInfo();
-	}
-	
-	/**
-	 * Returns the time that the source code was last modified.
-	 *
-	 * @return The last modification date of the source code.
-	 * @throws IOException On read errors.
-	 * @since 2017/11/06
-	 */
-	public long lastModifiedTime()
-	{
-		// Could be pre-cached
-		long rv = this._lastmodtime;
-		if (rv != Long.MIN_VALUE)
-			return rv;
-		
-		// Need to go through every single file in every directory, the date of
-		// the newest file is used
-		rv = Long.MIN_VALUE;
-		try
-		{
-			// Start at the root directory
-			Deque<Path> queue = new ArrayDeque<>();
-			queue.add(this.root);
-			
-			// Process every directory
-			while (!queue.isEmpty())
-				try (DirectoryStream<Path> ds = Files.newDirectoryStream(
-					queue.removeFirst()))
-				{
-					for (Path p : ds)
-					{
-						// Handle directories later
-						if (Files.isDirectory(p))
-						{
-							queue.addLast(p);
-							continue;
-						}
-						
-						// Use the newer file time
-						FileTime ft = Files.getLastModifiedTime(p);
-						if (ft != null)
-						{
-							long now = ft.toMillis();
-							if (now > rv)
-								rv = now;
-						}
-					}
-				}
-			
-			// Cache for next time
-			this._lastmodtime = rv;
-			return rv;
-		}
-		
-		// Error so the time cannot be known
-		catch (IOException e)
-		{
-			return Long.MIN_VALUE;
-		}
-	}
-	
-	/**
-	 * The source manifest.
-	 *
-	 * @return The source manifest.
-	 * @since 2017/11/17
-	 */
-	public final JavaManifest manifest()
-	{
-		return this.manifest;
-	}
-	
-	/**
 	 * Returns the name of the source.
 	 *
 	 * @return The source name.
@@ -418,6 +294,48 @@ public final class Source
 	public final Path root()
 	{
 		return this.root;
+	}
+	
+	/**
+	 * The source manifest.
+	 *
+	 * @return The source manifest.
+	 * @since 2017/11/17
+	 */
+	public final JavaManifest sourceManifest()
+	{
+		return this.manifest;
+	}
+	
+	/**
+	 * Returns the suite information for this source project.
+	 *
+	 * @return The suite information to use.
+	 * @throws InvalidSourceException If the source project is not valid.
+	 * @since 2017/12/04
+	 */
+	public final SuiteInfo suiteInfo()
+		throws InvalidSourceException
+	{
+		Reference<SuiteInfo> ref = this._suiteinfo;
+		SuiteInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			try
+			{
+				this._suiteinfo = new WeakReference<>(
+					(rv = new SuiteInfo(this.manifest())));
+			}
+			
+			// {@squirreljme.error AU0o Could not approximate the binary
+			// suite information. (The name of the project)}
+			catch (InvalidSuiteException e)
+			{
+				throw new InvalidSourceException(
+					String.format("AU0o %s", this.name), e);
+			}
+		
+		return rv;
 	}
 }
 
