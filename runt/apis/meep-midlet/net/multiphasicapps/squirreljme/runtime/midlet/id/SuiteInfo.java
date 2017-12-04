@@ -27,6 +27,9 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  */
 public final class SuiteInfo
 {
+	/** The manifest for this suite. */
+	protected final JavaManifest manifest;
+	
 	/** The type of suite this is. */
 	protected final SuiteType type;
 	
@@ -59,6 +62,7 @@ public final class SuiteInfo
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
+		this.manifest = __man;
 		JavaManifestAttributes attr = __man.getMainAttributes();
 		
 		// First determine the type
@@ -92,7 +96,14 @@ public final class SuiteInfo
 	 */
 	public final DependencyInfo dependencies()
 	{
-		throw new todo.TODO();
+		Reference<DependencyInfo> ref = this._dependencies;
+		DependencyInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._dependencies = new WeakReference<>(
+				(rv = DependencyInfo.of(this)));
+		
+		return rv;
 	}
 	
 	/**
@@ -103,7 +114,14 @@ public final class SuiteInfo
 	 */
 	public final ProvidedInfo provided()
 	{
-		throw new todo.TODO();
+		Reference<ProvidedInfo> ref = this._provided;
+		ProvidedInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._provided = new WeakReference<>(
+				(rv = ProvidedInfo.of(this)));
+		
+		return rv;
 	}
 	
 	/**

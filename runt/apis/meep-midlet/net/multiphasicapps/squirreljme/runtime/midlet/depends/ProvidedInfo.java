@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteType;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
@@ -30,18 +31,24 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
 public final class ProvidedInfo
 {
 	/**
-	 * Parses the given manifest and returns all of the provided resolutions
-	 * for dependencies which are specified in the manifest.
+	 * Parses the given suite information and returns all of the provided
+	 * resolutions for dependencies which are specified in the manifest.
 	 *
-	 * @param __man The manifest to parse.
+	 * @param __info The suite information to parse.
 	 * @return The parsed provided resolution information.
 	 * @throws InvalidSuiteException If the manifest is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
-	public static final ProvidedInfo parseManifest(JavaManifest __man)
+	public static final ProvidedInfo of(SuiteInfo __info)
 		throws InvalidSuiteException, NullPointerException
 	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		/*
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		

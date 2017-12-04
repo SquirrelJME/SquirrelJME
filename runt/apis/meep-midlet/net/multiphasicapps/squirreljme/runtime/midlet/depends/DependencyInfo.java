@@ -18,6 +18,7 @@ import net.multiphasicapps.collections.ArrayUtils;
 import net.multiphasicapps.collections.EmptySet;
 import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.collections.UnmodifiableSet;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -135,18 +136,24 @@ public final class DependencyInfo
 	}
 	
 	/**
-	 * Parses the given manifest and returns all of the dependencies which
-	 * are required by what is specified in the manifest.
+	 * Parses the given suite information and returns the dependency
+	 * information.
 	 *
-	 * @param __man The manifest to parse.
+	 * @param __info The suite information to parse.
 	 * @return The parsed dependency information.
-	 * @throws InvalidSuiteException If the manifest is not correct.
+	 * @throws InvalidSuiteException If the dependencies is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
-	public static final DependencyInfo parseManifest(JavaManifest __man)
+	public static final DependencyInfo of(SuiteInfo __info)
 		throws InvalidSuiteException, NullPointerException
 	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		/*
 		if (__man == null)
 			throw new NullPointerException("NARG");
 		
@@ -185,6 +192,7 @@ public final class DependencyInfo
 		
 		// Build
 		return new DependencyInfo(config, profiles, dependencies);
+		*/
 	}
 }
 
