@@ -46,13 +46,7 @@ public final class ProvidedInfo
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		
-		/*
-		if (__man == null)
-			throw new NullPointerException("NARG");
-		
-		JavaManifestAttributes attr = __man.getMainAttributes();
+		JavaManifestAttributes attr = __info.manifest().getMainAttributes();
 		String value;
 		
 		// Defined configurations
@@ -69,74 +63,20 @@ public final class ProvidedInfo
 			for (String s : StringUtils.basicSplit(" \t", value))
 				profiles.add(new Profile(s));
 		
-		throw new todo.TODO();
-		/*
-		if (__m == null)
-			throw new NullPointerException("NARG");
+		// Defined standards
+		Set<Profile> standards = new LinkedHashSet<>();
+		value = attr.getValue("X-SquirrelJME-DefinedStandards");
+		if (value != null)
+			for (String s : StringUtils.basicSplit(",", value))
+				standards.add(new Standard(s.trim()));
 		
-		Set<ManifestedDependency> deps = new LinkedHashSet<>();
+		// Has internal project name?
+		String internalname = attr.getValue(
+			"X-SquirrelJME-InternalProjectName");
 		
-		// Configurations defined
-		String configs = attr.getValue("X-SquirrelJME-DefinedConfigurations");
-		if (configs != null)
-			for (APIConfiguration conf : APIConfiguration.parseList(configs))
-				deps.add(conf);
-		
-		// Profiles defined
-		String profiles = attr.getValue("X-SquirrelJME-DefinedProfiles");
-		if (profiles != null)
-			for (APIProfile prof : APIProfile.parseList(profiles))
-				deps.add(prof);
-		
-		// Standards defined
-		String standards = attr.getValue("X-SquirrelJME-DefinedStandards");
-		if (standards != null)
-			for (String s : StringUtils.basicSplit(",", standards))
-				deps.add(new APIStandard(s));
-		
-		// SquirrelJME project name specifier, not portable
-		String sjmeipn = attr.getValue("X-SquirrelJME-InternalProjectName");
-		if (sjmeipn != null)
-		{
-			MidletDependency dep = new MidletDependency(
-				MidletDependencyType.PROPRIETARY,
-				MidletDependencyLevel.REQUIRED,
-				new MidletSuiteName("squirreljme.project@" + sjmeipn.trim()),
-				DependencySet.__projectVendor(),
-				MidletVersionRange.ANY_VERSION);
-			
-			// Includes required and optional
-			deps.add(dep);
-			deps.add(dep.toOptional());
-		}
-		
-		// Handle liblets which may be provided.
-		if (!"true".equals(attr.getValue("X-SquirrelJME-IsAPI")))
-		{
-			String name = attr.getValue("LIBlet-Name"),
-				vendor = attr.getValue("LIBlet-Vendor"),
-				version = attr.getValue("LIBlet-Version");
-			
-			// All three must be set and valid
-			if (name != null && vendor != null && version != null)
-			{
-				MidletDependency dep = new MidletDependency(
-					MidletDependencyType.LIBLET,
-					MidletDependencyLevel.REQUIRED,
-					new MidletSuiteName(name),
-					new MidletSuiteVendor(vendor),
-					MidletVersionRange.exactly(
-						new MidletVersion(version)));
-				
-				// Includes required and optional
-				deps.add(dep);
-				deps.add(dep.toOptional());
-			}
-		}
-		
-		// Build
-		return new DependencySet(deps);
-		*/
+		// Initialize
+		return new ProvidedInfo(__info, configs, profiles, standards,
+			internalname);
 	}
 }
 
