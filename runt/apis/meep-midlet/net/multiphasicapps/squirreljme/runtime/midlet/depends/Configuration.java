@@ -25,7 +25,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2016/12/14
  */
 public final class Configuration
-	implements Comparable<Configuration>
+	implements BasicAPI, Comparable<Configuration>
 {
 	/** Name. */
 	protected final APIName name;
@@ -126,6 +126,16 @@ public final class Configuration
 	public String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/05
+	 */
+	@Override
+	public SuiteVersion version()
+	{
+		return this.version;
 	}
 }
 

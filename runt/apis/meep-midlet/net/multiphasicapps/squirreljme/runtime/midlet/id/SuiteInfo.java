@@ -136,6 +136,17 @@ public final class SuiteInfo
 	}
 	
 	/**
+	 * Returns the suite for this.
+	 *
+	 * @return The suite.
+	 * @since 2017/12/05
+	 */
+	public final Suite suite()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the type of suite this is.
 	 *
 	 * @return The type of suite.

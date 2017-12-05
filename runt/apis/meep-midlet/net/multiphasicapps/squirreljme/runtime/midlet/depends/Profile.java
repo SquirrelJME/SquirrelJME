@@ -21,7 +21,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2016/12/14
  */
 public final class Profile
-	implements Comparable<Profile>
+	implements BasicAPI, Comparable<Profile>
 {
 	/** Name. */
 	protected final APIName name;
@@ -117,6 +117,16 @@ public final class Profile
 	public String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/05
+	 */
+	@Override
+	public SuiteVersion version()
+	{
+		return this.version;
 	}
 }
 
