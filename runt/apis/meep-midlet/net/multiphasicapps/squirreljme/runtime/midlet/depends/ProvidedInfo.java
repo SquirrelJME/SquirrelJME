@@ -64,19 +64,26 @@ public final class ProvidedInfo
 				profiles.add(new Profile(s));
 		
 		// Defined standards
-		Set<Profile> standards = new LinkedHashSet<>();
+		Set<Standard> standards = new LinkedHashSet<>();
+		if (true)
+			throw new todo.TODO();
+		/*
 		value = attr.getValue("X-SquirrelJME-DefinedStandards");
 		if (value != null)
 			for (String s : StringUtils.basicSplit(",", value))
 				standards.add(new Standard(s.trim()));
+		*/
 		
 		// Has internal project name?
 		String internalname = attr.getValue(
 			"X-SquirrelJME-InternalProjectName");
 		
 		// Initialize
+		throw new todo.TODO();
+		/*
 		return new ProvidedInfo(__info, configs, profiles, standards,
 			internalname);
+		*/
 	}
 }
 

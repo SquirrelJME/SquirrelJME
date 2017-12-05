@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.id;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+
 /**
  * This represents the name of a standard.
  *

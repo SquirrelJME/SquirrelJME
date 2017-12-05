@@ -25,7 +25,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2016/12/14
  */
 public final class Configuration
-	implements BasicAPI, Comparable<Configuration>
+	implements Comparable<Configuration>
 {
 	/** Name. */
 	protected final APIName name;
@@ -129,10 +129,11 @@ public final class Configuration
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the version of this configuration.
+	 *
+	 * @return The configuration version.
 	 * @since 2017/12/05
 	 */
-	@Override
 	public SuiteVersion version()
 	{
 		return this.version;
