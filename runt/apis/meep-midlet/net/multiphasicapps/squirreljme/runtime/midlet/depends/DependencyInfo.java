@@ -19,6 +19,7 @@ import net.multiphasicapps.collections.EmptySet;
 import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteType;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -151,13 +152,7 @@ public final class DependencyInfo
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		
-		/*
-		if (__man == null)
-			throw new NullPointerException("NARG");
-		
-		JavaManifestAttributes attr = __man.getMainAttributes();
+		JavaManifestAttributes attr = __info.manifest().getMainAttributes();
 		String value;
 		
 		// The CLDC library to use
@@ -173,16 +168,13 @@ public final class DependencyInfo
 			for (String s : StringUtils.basicSplit(" \t", value))
 				profiles.add(new Profile(s));
 		
-		// Determine the prefix to use, for MIDlets or liblets
-		String prefix = (attr.getValue("midlet-name") != null ?
-			"midlet-dependency-" : "liblet-dependency-");
-		
 		// Parse entries in sequential order
+		SuiteType type = __info.type();
 		Set<SuiteDependency> dependencies = new LinkedHashSet<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			// Stop if no more values are read
-			value = attr.getValue(prefix + i);
+			value = attr.getValue(type.dependencyKey(i));
 			if (value == null)
 				break;
 			
@@ -192,7 +184,6 @@ public final class DependencyInfo
 		
 		// Build
 		return new DependencyInfo(config, profiles, dependencies);
-		*/
 	}
 }
 

@@ -107,6 +107,17 @@ public final class SuiteInfo
 	}
 	
 	/**
+	 * Returns the manifest used for this suite.
+	 *
+	 * @return The manifest suite.
+	 * @since 2017/12/05
+	 */
+	public final JavaManifest manifest()
+	{
+		return this.manifest;
+	}
+	
+	/**
 	 * Returns the dependencies provided by this suite.
 	 *
 	 * @return The provided dependencies for this suite.
