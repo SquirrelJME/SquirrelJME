@@ -1,0 +1,10 @@
+# 2017/12/04
+
+## 16:24
+
+Slow progress, but it is getting along.
+
+## 16:33
+
+Going to clean up the suite information and dependency related information.
+The build system will in a way share it from dependencies.
