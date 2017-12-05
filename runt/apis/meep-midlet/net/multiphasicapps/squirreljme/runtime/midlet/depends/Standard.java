@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
+import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
+
 /**
  * This represents a standard which is provided by an API.
  *
