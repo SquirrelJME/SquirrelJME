@@ -68,6 +68,23 @@ public enum SuiteType
 	}
 	
 	/**
+	 * Returns the key which is used to refer to dependencies.
+	 *
+	 * @param __i The index of the dependency to get.
+	 * @return The key for the given dependency index.
+	 * @since 2017/12/05
+	 */
+	public JavaManifestKey dependencyKey(int __i)
+	{
+		// {@squirreljme.error AD0v Cannot have a zero or negative dependency
+		// index.}
+		if (__i <= 0)
+			throw new IllegalArgumentException("AD0v");
+		
+		return new JavaManifestKey(this.prefix + "-Dependency-" + __i);
+	}
+	
+	/**
 	 * Returns the manifest key used for the description.
 	 *
 	 * @return The description manifest key.
