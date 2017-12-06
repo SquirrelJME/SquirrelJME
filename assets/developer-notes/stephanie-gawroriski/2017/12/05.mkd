@@ -1,0 +1,18 @@
+# 2017/12/05
+
+## 14:29
+
+The names for my classes conflict with SWM so they need to be
+changed a bit.
+
+## 14:32
+
+Thinking about it, the midlet code and the SWM code are very similar and very
+likely complement each other. In fact...
+
+## 14:45
+
+I ate some food. I think one major component that I do plan on using in the
+builder which is SWM needs to be implemented. I also need to implement some
+kind of launcher. The build system could launch suites and list them and such
+but I think that would be very important to do.
