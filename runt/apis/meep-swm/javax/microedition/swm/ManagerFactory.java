@@ -18,6 +18,10 @@ package javax.microedition.swm;
  */
 public class ManagerFactory
 {
+	/** There is always just a single instance of the manager bridge. */
+	private static final TaskManager _TASK_MANAGER =
+		new __SystemTaskManager__();
+	
 	/**
 	 * Returns an instance of the suite manager that the application may use
 	 * to manage suites on the system.
@@ -49,7 +53,7 @@ public class ManagerFactory
 	public static TaskManager getTaskManager()
 		throws SecurityException
 	{
-		throw new todo.TODO();
+		return _TASK_MANAGER;
 	}
 }
 
