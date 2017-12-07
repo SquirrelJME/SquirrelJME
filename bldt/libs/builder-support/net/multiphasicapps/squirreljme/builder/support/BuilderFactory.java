@@ -18,9 +18,6 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.microedition.swm.ManagerFactory;
-import javax.microedition.swm.Task;
-import javax.microedition.swm.TaskManager;
 
 /**
  * This is a factory which can invoke the build system using a common set
@@ -278,7 +275,8 @@ public class BuilderFactory
 				
 				// Perform task related operations
 			case "task":
-				task(args.<String>toArray(new String[args.size()]));
+				this.task(
+					args.<String>toArray(new String[args.size()]));
 				break;
 			
 				// {@squirreljme.error AU05 The specified command is not
@@ -321,46 +319,7 @@ public class BuilderFactory
 	 */
 	public void task(String... __args)
 	{
-		// Push in all arguments.
-		Deque<String> args = new ArrayDeque<>();
-		if (__args != null)
-			for (String s : __args)
-				if (s != null)
-					args.add(s);
-		
-		// {@squirreljme.error AQ0q Expected command for task operation.}
-		String command = args.pollFirst();
-		if (command == null)
-			throw new IllegalArgumentException("AQ0q");
-		
-		// Depends on the command
-		switch (command)
-		{
-				// List tasks
-			case "ls":
-			case "list":
-				{
-					// Iterate through all tasks
-					for (Task t : ManagerFactory.getTaskManager().
-						getTaskList(true))
-					{
-						System.out.printf("%c %s%n",
-							(t.isSystemTask() ? "S" : "U"), t.getName());	
-						
-						System.out.printf("\tSuite: %s%n",
-							t.getSuite().getName());
-						System.out.printf("\tHeap : %d bytes%n",
-							t.getHeapUse());
-					}
-				}
-				break;
-			
-				// {@squirreljme.error AU0r The specified task command is not
-				// valid. (The command)}
-			default:
-				throw new IllegalArgumentException(String.format("AU0r %s",
-					command));
-		}
+		new SWMTaskFactory(__args).run();
 	}
 	
 	/**
