@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
+
 /**
  * This is used to provide access to SquirrelJME specific APIs.
  *
@@ -25,7 +27,7 @@ public final class APIAccessor
 	 * return the appropriate object.
 	 * Setting this field to an object array containing the valid set of APIs.
 	 */
-	private static final Object _APILIST[] =
+	private static final Object[] _APILIST =
 		__apiList();
 	
 	/**
@@ -35,6 +37,17 @@ public final class APIAccessor
 	 */
 	private APIAccessor()
 	{
+	}
+	
+	/**
+	 * Returns the clock.
+	 *
+	 * @return The system clock.
+	 * @since 2017/12/07
+	 */
+	public static final Clock clock()
+	{
+		return APIAccessor.<Clock>of(APIList.CLOCK, Clock.class);
 	}
 	
 	/**

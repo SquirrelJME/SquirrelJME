@@ -11,27 +11,18 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 /**
- * This contains functions which are used to interface with the clock.
+ * This contains the integer based index of the available APIs.
  *
- * @since 2017/11/10
+ * @since 2017/12/07
  */
-public abstract class ClockFunctions
+public interface APIList
 {
-	/**
-	 * Returns a value within the constraints of
-	 * {@link System#currentTimeMillis()}.
-	 *
-	 * @return The milliseconds since the epoch, in UTC.
-	 * @since 2017/11/10
-	 */
-	public abstract long currentTimeMillis();
+	/** Access to the clock. */
+	public static final int CLOCK =
+		1;
 	
-	/**
-	 * Returns a value within the constraints of {@link System#nanoTime()}.
-	 *
-	 * @return The number of nanoseconds which have passed.
-	 * @since 2017/11/10
-	 */
-	public abstract long nanoTime();
+	/** The maximum number of APIs. */
+	public static final int MAX_API =
+		2;
 }
 
