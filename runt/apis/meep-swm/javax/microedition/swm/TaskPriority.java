@@ -24,7 +24,7 @@ public enum TaskPriority
 	MIN,
 	
 	/** Normal priority. */
-	NORMAL,
+	NORM,
 	
 	/** End. */
 	;

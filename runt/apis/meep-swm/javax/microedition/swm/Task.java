@@ -101,7 +101,26 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		throw new todo.TODO();
+		int id = this.id,
+			flags;
+		switch ((flags = APIAccessor.chores().flags(id)) &
+			ChoreManager.FLAG_PRIORITY_MASK)
+		{
+			case ChoreManager.PRIORITY_MINIMUM:
+				return TaskPriority.MIN;
+				
+			case ChoreManager.PRIORITY_NORMAL:
+				return TaskPriority.NORM;
+				
+			case ChoreManager.PRIORITY_MAXIMUM:
+				return TaskPriority.MAX;
+			
+				// {@squirreljme.error DG04 The specified task is not valid.
+				// (The task ID; The task flags)}
+			default:
+				throw new IllegalStateException(
+					String.format("DG04 %d %d", id, flags));
+		}
 	}
 	
 	/**
@@ -112,7 +131,35 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		throw new todo.TODO();
+		int id = this.id,
+			flags;
+		switch ((flags = APIAccessor.chores().flags(id)) &
+			ChoreManager.FLAG_STATUS_MASK)
+		{
+			case ChoreManager.STATUS_EXITED_FATAL:
+				return TaskStatus.EXITED_FATAL;
+
+			case ChoreManager.STATUS_EXITED_REGULAR:
+				return TaskStatus.EXITED_REGULAR;
+
+			case ChoreManager.STATUS_EXITED_TERMINATED:
+				return TaskStatus.EXITED_TERMINATED;
+
+			case ChoreManager.STATUS_RUNNING:
+				return TaskStatus.RUNNING;
+
+			case ChoreManager.STATUS_START_FAILED:
+				return TaskStatus.START_FAILED;
+
+			case ChoreManager.STATUS_STARTING:
+				return TaskStatus.STARTING;
+			
+				// {@squirreljme.error DG05 The specified task is not valid.
+				// (The task ID; The task flags)}
+			default:
+				throw new IllegalStateException(
+					String.format("DG04 %5 %d", id, flags));
+		}
 	}
 	
 	/**
@@ -123,6 +170,10 @@ public final class Task
 	 */
 	public Suite getSuite()
 	{
+		// All system tasks are hidden behind the system suite
+		if (this.isSystemTask())
+			return Suite.SYSTEM_SUITE;
+		
 		throw new todo.TODO();
 	}
 	
@@ -153,7 +204,8 @@ public final class Task
 			return this._issystem;
 		
 		// Determine if this is a system chore
-		boolean issystem = APIAccessor.chores().isSystem(this.id);
+		boolean issystem = ((APIAccessor.chores().flags(this.id) &
+			ChoreManager.FLAG_SYSTEM) != 0);
 		
 		// Set as cache
 		this._issystem = issystem;
