@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.builder.entry;
 
+import java.io.PrintStream;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
 import net.multiphasicapps.squirreljme.builder.support.BuilderFactory;
 
 /**
@@ -27,6 +29,12 @@ public class BuilderMain
 	 */
 	public static void main(String... __args)
 	{
+		// Print some basic information about the build system
+		PrintStream out = System.err;
+		out.println("SquirrelJME Build System");
+		out.println(APIAccessor.clock().currentTimeMillis());
+		
+		// Run the builder
 		new BuilderFactory(__args).run();
 	}
 }

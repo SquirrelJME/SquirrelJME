@@ -18,10 +18,6 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  */
 public final class RuntimeBridge
 {
-	/** Access to the clock. */
-	public static final ClockFunctions CLOCK =
-		(ClockFunctions)__get(RuntimeBridgeIndex.CLOCK);
-	
 	/** High memory access. */
 	public static final HighMemoryFunctions HIGH_MEMORY =
 		(HighMemoryFunctions)__get(RuntimeBridgeIndex.HIGH_MEMORY);
@@ -70,7 +66,6 @@ public final class RuntimeBridge
 	{
 		switch (__id)
 		{
-			case RuntimeBridgeIndex.CLOCK:			return CLOCK;
 			case RuntimeBridgeIndex.HIGH_MEMORY:	return HIGH_MEMORY;
 			case RuntimeBridgeIndex.MAILBOX:		return MAILBOX;
 			case RuntimeBridgeIndex.OBJECT:			return OBJECT;

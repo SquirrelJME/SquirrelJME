@@ -11,12 +11,14 @@
 package net.multiphasicapps.squirreljme.runtime.javase;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIList;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -36,6 +38,37 @@ public class Main
 	public static void main(String... __args)
 		throws Throwable
 	{
+		// Need to obtain the API field so that it is initialized
+		Class<?> apiaccessor = Class.forName(
+			"net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor");
+		Field apilistfield = apiaccessor.getDeclaredField("_APILIST");
+		
+		// There is an internal modifiers field which needs to be cleared so
+		// that the data can be accessed as such
+		Field modifiersfield = Field.class.getDeclaredField("modifiers");
+		modifiersfield.setAccessible(true);
+		
+		// Remember the old modifiers and clear the final field
+		int oldmods = modifiersfield.getInt(apilistfield);
+		modifiersfield.setInt(apilistfield,
+			apilistfield.getModifiers() & ~Modifier.FINAL);
+		
+		// It is private and final so it must be settable
+		apilistfield.setAccessible(true);
+		
+		// Set that object to use this API list
+		Object[] apilist = new Object[APIList.MAX_API];
+		apilistfield.set(null, apilist);
+		
+		// Protect everything again
+		modifiersfield.setInt(apilistfield, oldmods);
+		modifiersfield.setAccessible(false);
+		apilistfield.setAccessible(false);
+		
+		// Since we control that object now, we can create the needed instances
+		// to do internal things
+		apilist[APIList.CLOCK] = new JavaClock();
+		
 		// Determine the main class to actually call using the copied
 		// manifest
 		String mainclassname;

@@ -13,6 +13,7 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
 import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 import net.multiphasicapps.squirreljme.runtime.cldc.VersionFunctions;
 
@@ -54,7 +55,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return RuntimeBridge.CLOCK.currentTimeMillis();
+		return APIAccessor.clock().currentTimeMillis();
 	}
 	
 	/**
@@ -370,7 +371,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return RuntimeBridge.CLOCK.nanoTime();
+		return APIAccessor.clock().nanoTime();
 	}
 	
 	/**
