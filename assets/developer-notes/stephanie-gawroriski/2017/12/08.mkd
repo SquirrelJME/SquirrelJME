@@ -1,0 +1,9 @@
+# 2017/12/08
+
+## 00:45
+
+Okay so the pipe based communication between the system task and client tasks
+will be done by a new class I created: `PacketStream`. That class will just
+have a common implementation. The first use would be it being used by the
+Java SE host to communicate to sub-processes. Then later on when user-space
+stuff comes along, it will be used for that communication as needed.
