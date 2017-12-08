@@ -81,12 +81,6 @@ public class TaskFactory
 		String command = this.command;
 		switch (command)
 		{
-				// List tasks
-			case "ls":
-			case "list":
-				listTasks(System.out);
-				break;
-				
 				// Launch a task
 			case "launch":
 				{
@@ -140,9 +134,15 @@ public class TaskFactory
 				}
 				break;
 				
+				// List tasks
+			case "ls":
+			case "list":
+				listTasks(System.out);
+				break;
+				
 				// {@squirreljme.error AU0r The specified task command is not
 				// valid. Valid commands are:
-				// ls, list, system-start
+				// ls, list, launch
 				// .(The command)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0r %s",
