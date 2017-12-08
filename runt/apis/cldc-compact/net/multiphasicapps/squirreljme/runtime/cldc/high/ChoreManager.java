@@ -80,6 +80,16 @@ public abstract class ChoreManager
 	public abstract int flags(int __id);
 	
 	/**
+	 * Returns the approximate number of bytes which are in use by the
+	 * process.
+	 *
+	 * @param __id The process to get the heap size for.
+	 * @return The amount of memory being used by the given process.
+	 * @since 2017/12/08
+	 */
+	public abstract long heapUsed(int __id);
+	
+	/**
 	 * Lists the chores which are currently running.
 	 *
 	 * @param __sys If {@code true} then system chores are included.
