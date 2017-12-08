@@ -77,5 +77,16 @@ public abstract class Chore
 	 * @since 2017/12/08
 	 */
 	public abstract ChoreGroup group();
+	
+	/**
+	 * Returns {@code true} if this is a system chore.
+	 *
+	 * @return {@code true} if this is a system chore.
+	 * @since 2017/12/08
+	 */
+	public final boolean isSystem()
+	{
+		return this.group().isSystem();
+	}
 }
 

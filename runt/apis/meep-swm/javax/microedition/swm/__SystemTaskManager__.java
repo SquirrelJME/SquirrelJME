@@ -17,7 +17,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chores;
 
 /**
  * This is the task manager which interfaces with the CLDC system support
@@ -31,6 +35,10 @@ final class __SystemTaskManager__
 	/** Internal lock for chore management. */
 	protected final Object lock =
 		new Object();
+	
+	/** The mapping of chores to tasks. */
+	private final Map<Chore, Reference<Task>> _tasks =
+		new WeakHashMap<>();
 	
 	/**
 	 * {@inheritDoc}
@@ -62,22 +70,33 @@ final class __SystemTaskManager__
 	@Override
 	public List<Task> getTaskList(boolean __incsys)
 	{
-		throw new todo.TODO();
-		/*
-		List<Task> rv = new ArrayList<>();
+		ArrayList<Task> rv = new ArrayList<>();
 		
-		// First get the raw chore IDs
-		ChoreManager chores = APIAccessor.chores();
-		int[] ids = chores.list(__incsys);
-		
-		// Need to inquiry multiple tasks at a time
+		// Lock so that the task list is always up to date
+		Map<Chore, Reference<Task>> tasks = this._tasks;
 		synchronized (this.lock)
 		{
-			this.__byIdBulk(rv, ids);
+			// As a slight optimization, pre-allocate the returned list
+			Chore[] chores = APIAccessor.chores().list(__incsys);
+			rv.ensureCapacity(chores.length);
+			
+			for (Chore c : chores)
+			{
+				// Ignore system tasks
+				if (!__incsys && c.isSystem())
+					continue;
+				
+				Reference<Task> ref = tasks.get(c);
+				Task task;
+				
+				if (ref == null || null == (task = ref.get()))
+					tasks.put(c, new WeakReference<>((task = new Task(c))));
+				
+				rv.add(task);
+			}
 		}
 		
 		return rv;
-		*/
 	}
 	
 	/**

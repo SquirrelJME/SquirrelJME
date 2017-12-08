@@ -31,6 +31,10 @@ public class JavaChores
 	/** The current chore. */
 	protected final JavaChore current;
 	
+	/** The chores which are currenly existing. */
+	private final List<JavaChore> _chores =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the chore manager.
 	 *
@@ -45,6 +49,9 @@ public class JavaChores
 			throw new NullPointerException("NARG");
 		
 		this.current = __current;
+		
+		// Always add the current chore to the chore list
+		this._chores.add(__current);
 	}
 	
 	/**
@@ -55,6 +62,30 @@ public class JavaChores
 	public Chore current()
 	{
 		return this.current;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	protected Chore[] internalList(boolean __sys)
+	{
+		List<Chore> rv = new ArrayList<>();
+		
+		List<JavaChore> chores = this._chores;
+		synchronized (this.lock)
+		{
+			for (JavaChore c : chores)
+			{
+				if (!__sys && c.isSystem())
+					continue;
+				
+				rv.add(c);
+			}
+		}
+		
+		return rv.<Chore>toArray(new Chore[rv.size()]);
 	}
 }
 

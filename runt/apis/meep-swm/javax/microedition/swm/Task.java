@@ -213,21 +213,7 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		throw new todo.TODO();
-		/*
-		// Has this flag been cached? Use that
-		if (this._cachedissystem)
-			return this._issystem;
-		
-		// Determine if this is a system chore
-		boolean issystem = ((APIAccessor.chores().flags(this.id) &
-			ChoreManager.FLAG_SYSTEM) != 0);
-		
-		// Set as cache
-		this._issystem = issystem;
-		this._cachedissystem = true;
-		return issystem;
-		*/
+		return this._chore.isSystem();
 	}
 }
 
