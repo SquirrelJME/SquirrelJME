@@ -8,37 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.chore;
+package net.multiphasicapps.squirreljme.runtime.javase;
+
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 
 /**
- * This represents a chore which not part of the current chore and needs to be
- * accessed through the system communication bridge. Note that the current
- * chore may actually be an instance of this class if for example this is
- * a remote client.
+ * This represents a chore which is associated with a given process rather
+ * than being purely local.
  *
  * @since 2017/12/08
  */
-public final class RemoteChore
-	extends Chore
+public class JavaProcessChore
+	extends JavaChore
 {
 	/**
-	 * Initializes the remote chore.
+	 * Initializes the process backed chore.
 	 *
+	 * @param __group The group the chore is in.
 	 * @since 2017/12/08
 	 */
-	public RemoteChore()
+	public JavaProcessChore(JavaChoreGroup __group)
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/08
-	 */
-	@Override
-	public ChoreGroup group()
-	{
-		throw new todo.TODO();
+		super(__group);
 	}
 }
 

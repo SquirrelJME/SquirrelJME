@@ -11,32 +11,36 @@
 package net.multiphasicapps.squirreljme.runtime.cldc.chore;
 
 /**
- * This represents a chore which not part of the current chore and needs to be
- * accessed through the system communication bridge. Note that the current
- * chore may actually be an instance of this class if for example this is
- * a remote client.
+ * This is used to provide native access to system chores.
  *
- * @since 2017/12/08
+ * @since 2017/12/07
  */
-public final class RemoteChore
-	extends Chore
+public abstract class Chores
 {
-	/**
-	 * Initializes the remote chore.
-	 *
-	 * @since 2017/12/08
-	 */
-	public RemoteChore()
-	{
-		throw new todo.TODO();
-	}
+	/** Shared lock to use to prevent concurrency issues. */
+	protected final Object lock =
+		new Object();
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the current chore.
+	 *
+	 * @return The current chore.
 	 * @since 2017/12/08
 	 */
-	@Override
-	public ChoreGroup group()
+	public abstract Chore current();
+	
+	/**
+	 * Returns the list of chores which are currently running.
+	 *
+	 * @param __sys If {@code true} then system chores are included in the
+	 * list.
+	 * @return An array containing the available chores.
+	 * @throws SecurityException If obtaining the list of chores is not
+	 * permitted.
+	 * @since 2017/12/08
+	 */
+	public final Chore[] list(boolean __sys)
+		throws SecurityException
 	{
 		throw new todo.TODO();
 	}

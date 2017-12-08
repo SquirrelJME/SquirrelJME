@@ -11,8 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chores;
 import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
-import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 import net.multiphasicapps.squirreljme.runtime.cldc.high.SecuritySystem;
 
 /**
@@ -48,10 +48,9 @@ public final class APIAccessor
 	 * @return The chore manager.
 	 * @since 2017/12/07
 	 */
-	public static final ChoreManager chores()
+	public static final Chores chores()
 	{
-		return APIAccessor.<ChoreManager>of(APIList.CHORES,
-			ChoreManager.class);
+		return APIAccessor.<Chores>of(APIList.CHORES, Chores.class);
 	}
 	
 	/**
@@ -123,18 +122,6 @@ public final class APIAccessor
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(APIAccessor.of(__id));
-	}
-	
-	/**
-	 * Returns the security system being used.
-	 *
-	 * @return The current security system.
-	 * @since 2017/12/09
-	 */
-	public static final SecuritySystem security()
-	{
-		return APIAccessor.<SecuritySystem>of(APIList.SECURITY,
-			SecuritySystem.class);
 	}
 	
 	/**

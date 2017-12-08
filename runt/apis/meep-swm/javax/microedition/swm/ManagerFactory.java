@@ -18,9 +18,12 @@ package javax.microedition.swm;
  */
 public class ManagerFactory
 {
-	/** There is always just a single instance of the manager bridge. */
-	private static final TaskManager _TASK_MANAGER =
-		new __SystemTaskManager__();
+	/** Lock for initialization. */
+	private static final Object _LOCK =
+		new Object();
+	
+	/** The task manager. */
+	private static volatile TaskManager _TASK_MANAGER;
 	
 	/**
 	 * Returns an instance of the suite manager that the application may use
@@ -53,7 +56,16 @@ public class ManagerFactory
 	public static TaskManager getTaskManager()
 		throws SecurityException
 	{
-		return _TASK_MANAGER;
+		// Lazily initialize so that the class is easier to bring up rather
+		// than at class initialization time
+		synchronized (ManagerFactory._LOCK)
+		{
+			TaskManager rv = ManagerFactory._TASK_MANAGER;
+			if (rv == null)
+				ManagerFactory._TASK_MANAGER =
+					(rv = new __SystemTaskManager__());
+			return rv;
+		}
 	}
 }
 
