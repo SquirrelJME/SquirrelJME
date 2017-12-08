@@ -445,7 +445,8 @@ public class NewBootstrap
 				// If the entry is the manifest, only use it if it was
 				// requested
 				String name = e.getName();
-				if (name.equals("META-INF/MANIFEST.MF"))
+				boolean ismanifest;
+				if ((ismanifest = name.equals("META-INF/MANIFEST.MF")))
 					if (!__useman)
 					{
 						zis.closeEntry();
@@ -511,10 +512,48 @@ public class NewBootstrap
 				// Write to target
 				__zos.putNextEntry(e);
 				
+				// Input source for where to read actual data
+				InputStream sourcedata;
+				Manifest realman = null;
+				if (!ismanifest || !__useman)
+					sourcedata = zis;
+				
+				// Make a fake manifest which is used instead
+				else
+				{
+					Manifest fakeman = new Manifest(zis);
+					Attributes fakeattr = fakeman.getMainAttributes();
+					
+					// Copy the real manifest so that it is placed in the
+					// output tree
+					realman = new Manifest(fakeman);
+					
+					// Move the main-class to a fake class
+					fakeattr.putValue("X-SquirrelJME-Booted-Main-Class",
+						fakeattr.getValue("Main-Class"));
+					
+					// Use instead a wrapped main which sets up the CLDC stuff
+					// as needed so the run-time functions
+					fakeattr.putValue("Main-Class",
+						"net.multiphasicapps.squirreljme.runtime.javase.Main");
+					
+					// Read from the fake manifest instead
+					try (ByteArrayOutputStream baos = 
+						new ByteArrayOutputStream())
+					{
+						fakeman.write(baos);
+						baos.flush();
+						
+						// Use this manifest as the source instead
+						sourcedata = new ByteArrayInputStream(
+							baos.toByteArray());
+					}
+				}
+				
 				// Copy loop
 				for (;;)
 				{
-					int rc = zis.read(buf);
+					int rc = sourcedata.read(buf);
 					
 					// EOF?
 					if (rc < 0)
@@ -527,6 +566,15 @@ public class NewBootstrap
 				// Close
 				__zos.closeEntry();
 				zis.closeEntry();
+				
+				// Write real manifest as backup?
+				if (realman != null)
+				{
+					__zos.putNextEntry(
+						new ZipEntry("SQUIRRELJME-BOOTSTRAP.MF"));
+					realman.write(__zos);
+					__zos.closeEntry();
+				}
 			}
 		}
 	}
