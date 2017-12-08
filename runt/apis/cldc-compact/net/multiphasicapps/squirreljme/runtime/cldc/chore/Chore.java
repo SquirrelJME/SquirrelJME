@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc.chore;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
+
 /**
  * This class represents a chore which is used to identify and store
  * information about tasks running on the system.
@@ -51,6 +53,14 @@ public abstract class Chore
 	public abstract ChoreGroup group();
 	
 	/**
+	 * Returns the main class of the chore.
+	 *
+	 * @return The main class.
+	 * @since 2017/12/08
+	 */
+	public abstract String mainClass();
+	
+	/**
 	 * Returns the amount of used memory.
 	 *
 	 * @return The amount of memory used.
@@ -66,6 +76,14 @@ public abstract class Chore
 	 * @since 2017/12/08
 	 */
 	public abstract int priority();
+	
+	/**
+	 * Returns the program the chore is running under.
+	 *
+	 * @return The program the chore is using.
+	 * @since 2017/12/08
+	 */
+	public abstract Program program();
 	
 	/**
 	 * Returns the status of the task.

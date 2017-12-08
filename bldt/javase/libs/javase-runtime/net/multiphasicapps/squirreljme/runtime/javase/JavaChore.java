@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.javase;
 
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.ChoreGroup;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
 
 /**
  * This represents the base for a Java chore.
@@ -55,11 +56,31 @@ public abstract class JavaChore
 	 * @since 2017/12/08
 	 */
 	@Override
+	public String mainClass()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
 	public final int priority()
 	{
 		// Just refer to threads using normal priorities since that is the
 		// most simple approach
 		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public Program program()
+	{
+		throw new todo.TODO();
 	}
 }
 

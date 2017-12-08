@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc.chore;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
+
 /**
  * This represents a chore which not part of the current chore and needs to be
  * accessed through the system communication bridge. Note that the current
@@ -46,6 +48,16 @@ public final class RemoteChore
 	 * @since 2017/12/08
 	 */
 	@Override
+	public String mainClass()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
 	public long memoryUsed()
 	{
 		throw new todo.TODO();
@@ -57,6 +69,16 @@ public final class RemoteChore
 	 */
 	@Override
 	public int priority()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public Program program()
 	{
 		throw new todo.TODO();
 	}
