@@ -44,7 +44,8 @@ public class JavaChoreManager
 	{
 		// The zero task is an always constant flag set
 		if (__id == 0)
-			return ChoreManager.FLAG_SYSTEM | ChoreManager.PRIORITY_MAXIMUM;
+			return ChoreManager.FLAG_SYSTEM | ChoreManager.PRIORITY_MAXIMUM |
+				ChoreManager.STATUS_RUNNING;
 		
 		List<Chore> chores = this._chores;
 		synchronized (chores)
