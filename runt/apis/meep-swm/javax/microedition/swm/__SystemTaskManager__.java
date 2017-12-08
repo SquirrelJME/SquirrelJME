@@ -152,21 +152,17 @@ final class __SystemTaskManager__
 		synchronized (this.lock)
 		{
 			// If the specified program is already running, try to restart it
-			for (Map.Entry<Chore, Reference<Task>> e : tasks.entrySet())
+			// Use task list get because there could be new chores which were
+			// launched which we do not know about
+			for (Task t :this.getTaskList(true))
 			{
-				Chore c = e.getKey();
+				Chore c = t.__chore();
 				if (c.program().equals(program) &&
 					c.mainClass().equals(__cn))
 				{
-					// If the task was GCed recreate the object
-					Reference<Task> ref = e.getValue();
-					if (ref == null || null == (task = ref.get()))
-						tasks.put(c, new WeakReference<>(
-							(task = new Task(c))));
-					
 					// Attempt to restart it
-					task.__restart();
-					return task;
+					t.__restart();
+					return t;
 				}
 			}
 			
