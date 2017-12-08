@@ -8,25 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.runtime.cldc.high;
 
 /**
- * This contains the integer based index of the available APIs.
+ * This is used to manage tasks within the system and is intended to be used
+ * by the SWM sub-system.
  *
  * @since 2017/12/07
  */
-public interface APIList
+public abstract class ChoreManager
 {
-	/** Access to the clock. */
-	public static final int CLOCK =
-		1;
-	
-	/** Chores. */
-	public static final int CHORES =
-		2;
-	
-	/** The maximum number of APIs. */
-	public static final int MAX_API =
-		3;
 }
 

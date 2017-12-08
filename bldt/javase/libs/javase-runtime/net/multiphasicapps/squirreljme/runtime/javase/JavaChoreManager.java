@@ -8,15 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.high;
+package net.multiphasicapps.squirreljme.runtime.javase;
+
+import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 
 /**
- * This is the high-level task manager which contains the needed implementation
- * for managing tasks via the system management interface.
+ * This is used to manage and launch chores within the Java run-time.
  *
  * @since 2017/12/07
  */
-public abstract class HighTaskManager
+public class JavaChoreManager
+	extends ChoreManager
 {
 }
 
