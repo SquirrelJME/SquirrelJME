@@ -95,6 +95,20 @@ public class JavaChoreManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public long heapUsed(int __id)
+	{
+		// System process always returns the memory count
+		if (__id == 0)
+			return Runtime.getRuntime().totalMemory();
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/12/07
 	 */
 	@Override

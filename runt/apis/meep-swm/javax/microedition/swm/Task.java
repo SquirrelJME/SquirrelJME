@@ -75,7 +75,13 @@ public final class Task
 	 */
 	public int getHeapUse()
 	{
-		throw new todo.TODO();
+		// Make sure the amount of memory used does not overflow ever
+		long rv = APIAccessor.chores().heapUsed(id);
+		if (rv < 0L)
+			return 0;
+		else if (rv > Integer.MAX_VALUE)
+			return Integer.MAX_VALUE;
+		return (int)rv;
 	}
 	
 	/**
