@@ -17,13 +17,12 @@ import java.io.DataOutputStream;
 import java.io.OutputStream;
 
 /**
- * This class handles the stream on the client side which manages an
- * asynchronous event based system that enables two way communication between
- * client user-space processes and the system-space process.
+ * This class handles an asynchronous packet based stream with both input
+ * and output to a remote stream.
  *
  * @since 2017/12/08
  */
-public final class ClientStream
+public final class PacketStream
 {
 	/** The input stream. */
 	protected final DataInputStream input;
@@ -32,7 +31,7 @@ public final class ClientStream
 	protected final DataOutputStream output;
 	
 	/**
-	 * Initializes the client stream which reads events from the given
+	 * Initializes the packet stream which reads events from the given
 	 * input stream (from the server) and writes to the server (from the
 	 * client) using the output stream.
 	 *
@@ -41,7 +40,7 @@ public final class ClientStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	public ClientStream(InputStream __is, OutputStream __os)
+	public PacketStream(InputStream __is, OutputStream __os)
 		throws NullPointerException
 	{
 		if (__os == null)
