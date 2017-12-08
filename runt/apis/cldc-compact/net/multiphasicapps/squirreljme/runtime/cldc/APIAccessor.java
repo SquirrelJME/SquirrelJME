@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
+import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 
 /**
  * This is used to provide access to SquirrelJME specific APIs.
@@ -37,6 +38,18 @@ public final class APIAccessor
 	 */
 	private APIAccessor()
 	{
+	}
+	
+	/**
+	 * Returns the chore manager.
+	 *
+	 * @return The chore manager.
+	 * @since 2017/12/07
+	 */
+	public static final ChoreManager chores()
+	{
+		return APIAccessor.<ChoreManager>of(APIList.CHORES,
+			ChoreManager.class);
 	}
 	
 	/**

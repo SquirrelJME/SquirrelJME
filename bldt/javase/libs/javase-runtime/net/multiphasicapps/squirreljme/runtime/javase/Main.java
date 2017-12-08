@@ -68,6 +68,7 @@ public class Main
 		// Since we control that object now, we can create the needed instances
 		// to do internal things
 		apilist[APIList.CLOCK] = new JavaClock();
+		apilist[APIList.CHORES] = new JavaChoreManager();
 		
 		// Determine the main class to actually call using the copied
 		// manifest
