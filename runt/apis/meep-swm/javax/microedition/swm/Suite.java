@@ -15,6 +15,9 @@ import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
 
 /**
  * This represents an application suite.
@@ -28,24 +31,40 @@ public class Suite
 {
 	/** This is a suite that represents the system. */
 	public static Suite SYSTEM_SUITE =
-		new Suite(0);
+		new Suite(Suite.class);
 	
 	/** The state lock. */
 	private final Object _lock =
 		new Object();
 	
-	/** The suite ID. */
-	private final int _id;
+	/** The suite program. */
+	private final Program _program;
+	
+	/**
+	 * Initializes the system suite.
+	 *
+	 * @param __cl Ignored parameter.
+	 * @since 2017/12/08
+	 */
+	private Suite(Class<Suite> __cl)
+	{
+		this._program = APIAccessor.programs().systemProgram();
+	}
 	
 	/**
 	 * Initializes the suite.
 	 *
-	 * @param __id The ID of the suite.
-	 * @since 2016/06/24
+	 * @param __p The program for suite data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/08
 	 */
-	Suite(int __id)
+	Suite(Program __p)
+		throws NullPointerException
 	{
-		this._id = __id;
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		this._program = __p;
 	}
 	
 	/**
@@ -296,6 +315,17 @@ public class Suite
 				this._state &= bit;
 		}
 		*/
+	}
+	
+	/**
+	 * Returns the program the suite uses.
+	 *
+	 * @return The used program.
+	 * @since 2017/12/08
+	 */
+	final Program __program()
+	{
+		return this._program;
 	}
 }
 

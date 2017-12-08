@@ -112,7 +112,7 @@ public class Main
 		apilistfield.setAccessible(true);
 		
 		// Set that object to use this API list
-		Object[] apilist = new Object[APIList.MAX_API];
+		Object[] apilist = new Object[APIList.values().length];
 		apilistfield.set(null, apilist);
 		
 		// Protect everything again
@@ -121,7 +121,7 @@ public class Main
 		apilistfield.setAccessible(false);
 		
 		// These APIs are shared between the server and client
-		apilist[APIList.CLOCK] = new JavaClock();
+		apilist[APIList.CLOCK.ordinal()] = new JavaClock();
 		
 		// Client
 		if (__client)
@@ -134,10 +134,11 @@ public class Main
 		{
 			// Setup system chore first
 			JavaChore thischore = new JavaLocalChore(new JavaChoreGroup(true));
-			apilist[APIList.CURRENT_CHORE] = thischore;
+			apilist[APIList.CURRENT_CHORE.ordinal()] = thischore;
 			
 			// Need to refer to the current chore to permit access to them
-			apilist[APIList.CHORES] = new JavaChores(thischore);
+			apilist[APIList.CHORES.ordinal()] = new JavaChores(thischore);
+			apilist[APIList.PROGRAMS.ordinal()] = new JavaPrograms();
 		}
 	}
 	

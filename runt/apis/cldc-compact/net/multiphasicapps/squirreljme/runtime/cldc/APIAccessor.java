@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chores;
 import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
-import net.multiphasicapps.squirreljme.runtime.cldc.high.SecuritySystem;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
 
 /**
  * This is used to provide access to SquirrelJME specific APIs.
@@ -89,7 +89,7 @@ public final class APIAccessor
 		throws IllegalArgumentException, SecurityException
 	{
 		// {@squirreljme.error ZZ0e Cannot obtain the communication bridge.}
-		if (__id == APIList.COMM_BRIDGE)
+		if (__id == APIList.COMM_BRIDGE.ordinal())
 			throw new SecurityException("ZZ0e");
 		
 		// {@squirreljme.error ZZ0c API index is outside of bounds.}
@@ -122,6 +122,57 @@ public final class APIAccessor
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(APIAccessor.of(__id));
+	}
+	
+	/**
+	 * Returns the object which is associated with the given API.
+	 *
+	 * @param __id The ID of the API to get.
+	 * @return The object for the class interface of the given API.
+	 * @throws IllegalArgumentException If the API is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the API cannot be accessed.
+	 * @since 2017/12/08
+	 */
+	public static final Object of(APIList __id)
+		throws IllegalArgumentException, NullPointerException,
+			SecurityException
+	{
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		return APIAccessor.of(__id.ordinal());
+	}
+	
+	/**
+	 * Obtains the API with the given index and casts to the given class.
+	 *
+	 * @param <T> The class to cast to.
+	 * @param __id The ID of the API to return.
+	 * @param __cl The class to cast to.
+	 * @return The casted class of the given API.
+	 * @throws ClassCastException If the class type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/08
+	 */
+	public static final <T> T of(APIList __id, Class<T> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		if (__id == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(APIAccessor.of(__id.ordinal()));
+	}
+	
+	/**
+	 * Returns the program manager.
+	 *
+	 * @return The program manager.
+	 * @since 2017/12/08
+	 */
+	public static final Programs programs()
+	{
+		return APIAccessor.<Programs>of(APIList.PROGRAMS, Programs.class);
 	}
 	
 	/**

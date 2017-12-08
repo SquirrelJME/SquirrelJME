@@ -8,34 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.runtime.javase;
+
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
 
 /**
- * This contains the integer based index of the available APIs.
+ * This represents a program which is available to the run-time.
  *
- * @since 2017/12/07
+ * @since 2017/12/08
  */
-public enum APIList
+public class JavaProgram
+	extends Program
 {
-	/** The primary communication bridge. */
-	COMM_BRIDGE,
-	
-	/** The current chore. */
-	CURRENT_CHORE,
-	
-	/** Start of non-system use objects. */
-	START_OF_NON_SYSTEM,
-	
-	/** Access to the clock. */
-	CLOCK,
-	
-	/** Chores. */
-	CHORES,
-	
-	/** Programs. */
-	PROGRAMS,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the system program.
+	 *
+	 * @param __cl Not used.
+	 * @since 2017/12/08
+	 */
+	JavaProgram(Class<JavaProgram> __cl)
+	{
+	}
 }
 

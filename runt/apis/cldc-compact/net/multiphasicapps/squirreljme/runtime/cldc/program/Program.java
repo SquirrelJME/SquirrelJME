@@ -8,34 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.runtime.cldc.program;
 
 /**
- * This contains the integer based index of the available APIs.
+ * This represents a program which maps to SWM suites.
  *
- * @since 2017/12/07
+ * @since 2017/12/08
  */
-public enum APIList
+public abstract class Program
 {
-	/** The primary communication bridge. */
-	COMM_BRIDGE,
-	
-	/** The current chore. */
-	CURRENT_CHORE,
-	
-	/** Start of non-system use objects. */
-	START_OF_NON_SYSTEM,
-	
-	/** Access to the clock. */
-	CLOCK,
-	
-	/** Chores. */
-	CHORES,
-	
-	/** Programs. */
-	PROGRAMS,
-	
-	/** End. */
-	;
 }
 
