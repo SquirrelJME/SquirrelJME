@@ -20,5 +20,14 @@ import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 public class JavaChoreManager
 	extends ChoreManager
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/07
+	 */
+	@Override
+	public int[] listChores(boolean __sys)
+	{
+		throw new todo.TODO();
+	}
 }
 

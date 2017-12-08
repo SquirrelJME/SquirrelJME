@@ -11,6 +11,8 @@
 package javax.microedition.swm;
 
 import java.util.List;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
+import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 
 /**
  * This is the task manager which interfaces with the CLDC system support
@@ -21,6 +23,10 @@ import java.util.List;
 final class __SystemTaskManager__
 	implements TaskManager
 {
+	/** This is used to provide access to chores. */
+	protected final ChoreManager chores =
+		APIAccessor.chores();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/07

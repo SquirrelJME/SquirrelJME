@@ -27,6 +27,14 @@ public interface APIList
 	
 	/** The maximum number of APIs. */
 	public static final int MAX_API =
-		3;
+		CHORES + 1;
+	
+	/** The start of the user-space APIs. */
+	public static final int USERSPACE_START =
+		MAX_API;
+	
+	/** The number of userspace APIs. */
+	public static final int USERSPACE_COUNT =
+		MAX_API - USERSPACE_START;
 }
 
