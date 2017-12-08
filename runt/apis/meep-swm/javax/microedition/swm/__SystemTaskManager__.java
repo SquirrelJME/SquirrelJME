@@ -16,12 +16,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chores;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
 
 /**
  * This is the task manager which interfaces with the CLDC system support
@@ -143,16 +146,28 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		SuiteType type = __s.getSuiteType();
-		if (type == SuiteType.SYSTEM)
-		{
+		// Always start the class path with the system program
+		Set<Program> classpath = new LinkedHashSet<>();
+		classpath.add(APIAccessor.programs().systemProgram());
+		
+		// Go through the suite and determine which programs need to be used
+		// so the program operates correctly. This performs dependency lookup.
+		if (true)
 			throw new todo.TODO();
+		
+		// Launch
+		Chore chore = APIAccessor.chores().launch(
+			classpath.<Program>toArray(new Program[classpath.size()]), __cn);
+		
+		// Link in the chore and create a task for it
+		Task task;
+		Map<Chore, Reference<Task>> tasks = this._tasks;
+		synchronized (this.lock)
+		{
+			tasks.put(chore, new WeakReference<>((task = new Task(chore))));
 		}
 		
-		throw new todo.TODO();
-		*/
+		return task;
 	}
 	
 	/**
