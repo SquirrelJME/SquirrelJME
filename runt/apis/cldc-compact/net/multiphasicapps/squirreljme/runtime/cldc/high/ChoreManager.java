@@ -19,6 +19,14 @@ package net.multiphasicapps.squirreljme.runtime.cldc.high;
 public abstract class ChoreManager
 {
 	/**
+	 * Returns {@code true} if the given chore is a system chore.
+	 *
+	 * @return If the chore is a system chore.
+	 * @since 2017/12/07
+	 */
+	public abstract boolean isSystem(int __id);
+	
+	/**
 	 * Lists the chores which are currently running.
 	 *
 	 * @param __sys If {@code true} then system chores are included.
@@ -26,6 +34,6 @@ public abstract class ChoreManager
 	 * SquirrelJME.
 	 * @since 2017/12/07
 	 */
-	public abstract int[] listChores(boolean __sys);
+	public abstract int[] list(boolean __sys);
 }
 

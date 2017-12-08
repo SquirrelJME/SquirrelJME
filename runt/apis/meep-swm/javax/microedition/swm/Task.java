@@ -10,7 +10,11 @@
 
 package javax.microedition.swm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
+import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 
 /**
  * This describes a task which is currently running on the system. Each task
@@ -22,14 +26,24 @@ import java.util.Objects;
  */
 public final class Task
 {
+	/** Thread identifier. */
+	protected final int id;
+	
+	/** Has the system task flag been cached? */
+	private volatile boolean _cachedissystem;
+	
+	/** Is this a system task? */
+	private volatile boolean _issystem;
+	
 	/**
 	 * The constructor of this class is assumed to be internal use.
 	 *
+	 * @param __id The ID of the task.
 	 * @since 2016/06/24
 	 */
-	private Task()
+	Task(int __id)
 	{
-		throw new todo.TODO();
+		this.id = __id;
 	}
 	
 	/**
@@ -49,8 +63,8 @@ public final class Task
 		
 		// Check
 		Task o = (Task)__o;
-		return Objects.equals(getSuite(), o.getSuite()) &&
-			Objects.equals(getName(), o.getName());
+		return Objects.equals(this.getSuite(), o.getSuite()) &&
+			Objects.equals(this.getName(), o.getName());
 	}
 	
 	/**
@@ -72,6 +86,10 @@ public final class Task
 	 */
 	public String getName()
 	{
+		// System tasks have no name
+		if (this.isSystemTask())
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
@@ -118,7 +136,8 @@ public final class Task
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(getSuite()) ^ Objects.hashCode(getName());
+		return Objects.hashCode(this.getSuite()) ^
+			Objects.hashCode(this.getName());
 	}
 	
 	/**
@@ -129,7 +148,28 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		throw new todo.TODO();
+		// Has this flag been cached? Use that
+		if (this._cachedissystem)
+			return this._issystem;
+		
+		// Determine if this is a system chore
+		boolean issystem = APIAccessor.chores().isSystem(this.id);
+		
+		// Set as cache
+		this._issystem = issystem;
+		this._cachedissystem = true;
+		return issystem;
+	}
+	
+	/**
+	 * Returns the ID of this task.
+	 *
+	 * @return The internal task ID.
+	 * @since 2017/12/07
+	 */
+	final int __id()
+	{
+		return this.id;
 	}
 }
 
