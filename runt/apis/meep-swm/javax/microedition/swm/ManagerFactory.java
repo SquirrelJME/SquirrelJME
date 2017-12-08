@@ -22,6 +22,9 @@ public class ManagerFactory
 	private static final Object _LOCK =
 		new Object();
 	
+	/** The suite manager. */
+	private static volatile SuiteManager _SUITE_MANAGER;
+	
 	/** The task manager. */
 	private static volatile TaskManager _TASK_MANAGER;
 	
@@ -39,7 +42,15 @@ public class ManagerFactory
 	public static SuiteManager getSuiteManager()
 		throws SecurityException
 	{
-		throw new todo.TODO();
+		// Lazily initialize
+		synchronized (ManagerFactory._LOCK)
+		{
+			SuiteManager rv = ManagerFactory._SUITE_MANAGER;
+			if (rv == null)
+				ManagerFactory._SUITE_MANAGER =
+					(rv = new __SystemSuiteManager__());
+			return rv;
+		}
 	}
 	
 	/**
