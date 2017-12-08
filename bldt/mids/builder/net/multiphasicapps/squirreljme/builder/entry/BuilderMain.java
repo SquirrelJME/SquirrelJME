@@ -32,7 +32,9 @@ public class BuilderMain
 		// Print some basic information about the build system
 		PrintStream out = System.err;
 		out.println("SquirrelJME Build System");
-		out.println(APIAccessor.clock().currentTimeMillis());
+		
+		// Space
+		out.println();
 		
 		// Run the builder
 		new BuilderFactory(__args).run();
