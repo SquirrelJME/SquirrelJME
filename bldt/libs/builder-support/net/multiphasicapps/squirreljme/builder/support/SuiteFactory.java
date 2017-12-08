@@ -14,9 +14,12 @@ import java.io.PrintStream;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.Iterator;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.SuiteManager;
+import javax.microedition.swm.SuiteStateFlag;
+import javax.microedition.swm.SuiteType;
 
 /**
  * This manages suites which are available to the build system.
@@ -77,7 +80,14 @@ public class SuiteFactory
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Print application suites
+		SuiteManager manager = this.manager;
+		for (Suite s : manager.getSuites(SuiteType.APPLICATION))
+			printSuite(__out, s);
+		
+		// Then print libraries
+		for (Suite s : manager.getSuites(SuiteType.LIBRARY))
+			printSuite(__out, s);
 	}
 	
 	/**
@@ -108,6 +118,52 @@ public class SuiteFactory
 			default:
 				throw new IllegalArgumentException(String.format("AU0w %s",
 					command));
+		}
+	}
+	
+	/**
+	 * Prints the specified suite to the output stream.
+	 *
+	 * @param __out The stream to print the suite information to.
+	 * @param __s The suite to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/08
+	 */
+	public static void printSuite(PrintStream __out, Suite __s)
+		throws NullPointerException
+	{
+		if (__out == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		__out.printf("Suite: %s (%s)%n", __s.getName(), __s.getSuiteType());
+		
+		__out.printf("\tInstalled ? %s%n", __s.isInstalled());
+		__out.printf("\tTrusted   ? %s%n", __s.isTrusted());
+		__out.printf("\tVendor    : %s%n", __s.getVendor());
+		__out.printf("\tVersion   : %s%n", __s.getVersion());
+		__out.printf("\tSource URL: %s%n", __s.getDownloadUrl());
+		
+		__out.println("\tFlags:");
+		for (SuiteStateFlag f : SuiteStateFlag.values())
+			if (__s.isSuiteState(f))
+				__out.printf("\t\tFlag %s is set%n", f);
+		
+		__out.println("\tMIDlets:");
+		for (Iterator<String> it = __s.getMIDlets(); it.hasNext();)
+			__out.printf("\t\t%s%n", it.next());
+		
+		__out.println("\\tAttributes:");
+		for (Iterator<String> it = __s.getAttributes(); it.hasNext();)
+		{
+			String key = it.next();
+			__out.printf("\t\t%s: %s%n", key, __s.getAttributeValue(key));
+		}
+			
+		__out.println("\tDependencies:");
+		for (Iterator<Suite> it = __s.getDependencies(); it.hasNext();)
+		{
+			Suite dep = it.next();
+			__out.printf("\t\t%s %s%n", dep.getName(), dep.getVendor());
 		}
 	}
 }
