@@ -10,6 +10,7 @@
 
 package javax.microedition.swm;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
 import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
@@ -23,6 +24,10 @@ import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 final class __SystemTaskManager__
 	implements TaskManager
 {
+	/** Internal lock for chore management. */
+	protected final Object lock =
+		new Object();
+	
 	/** This is used to provide access to chores. */
 	protected final ChoreManager chores =
 		APIAccessor.chores();
@@ -54,7 +59,20 @@ final class __SystemTaskManager__
 	@Override
 	public List<Task> getTaskList(boolean __incsys)
 	{
-		throw new todo.TODO();
+		List<Task> rv = new ArrayList<>();
+		
+		// First get the raw chore IDs
+		ChoreManager chores = this.chores;
+		int[] ids = chores.listChores(__incsys);
+		
+		// Need to inquiry multiple tasks at a time
+		synchronized (this.lock)
+		{
+			for (int i = 0, n = ids.length; i < n; i++)
+				rv.add(this.__byId(ids[i]));
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -107,6 +125,18 @@ final class __SystemTaskManager__
 	@Override
 	public boolean stopTask(Task __t)
 		throws IllegalArgumentException, IllegalStateException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Searches for the task by the given ID.
+	 *
+	 * @param __id The ID of the task to get.
+	 * @return The task for the given ID.
+	 * @since 2017/12/07
+	 */
+	private final Task __byId(int __id)
 	{
 		throw new todo.TODO();
 	}
