@@ -28,23 +28,27 @@ public class Suite
 {
 	/** This is a suite that represents the system. */
 	public static Suite SYSTEM_SUITE =
-		new __SystemSuite__();
+		new Suite(0);
 	
 	/** The state lock. */
-	private volatile Object _statelock =
+	private final Object _lock =
 		new Object();
+	
+	/** The suite ID. */
+	private final int _id;
 	
 	/** The flags associated with this suite. */
 	private volatile int _state;
 	
 	/**
-	 * The constructor of this class is assumed to be internal use.
+	 * Initializes the suite.
 	 *
+	 * @param __id The ID of the suite.
 	 * @since 2016/06/24
 	 */
-	private Suite()
+	Suite(int __id)
 	{
-		throw new todo.TODO();
+		this._id = __id;
 	}
 	
 	/**
@@ -219,7 +223,7 @@ public class Suite
 			return false;
 		
 		// Lock
-		synchronized (this._statelock)
+		synchronized (this._lock)
 		{
 			return 0 != (this._state & (1 << __f.ordinal()));
 		}
@@ -270,7 +274,7 @@ public class Suite
 			throw new IllegalArgumentException(String.format("DG02 %s", __f));
 		
 		// Lock
-		synchronized (this._statelock)
+		synchronized (this._lock)
 		{
 			// {@squirreljme.error DG03 Cannot change flags of the system
 			// suite.}

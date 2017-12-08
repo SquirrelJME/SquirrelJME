@@ -70,6 +70,18 @@ public abstract class ChoreManager
 	public static final int STATUS_STARTING =
 		0b0000_0000__0010_1000;
 	
+	/** Shared lock to use to prevent concurrency issues. */
+	protected final Object lock =
+		new Object();
+	
+	/**
+	 * Returns the ID of the current task.
+	 *
+	 * @return The current task ID.
+	 * @since 2017/12/08
+	 */
+	public abstract int currentId();
+	
 	/**
 	 * Returns the flags for the given chore.
 	 *
