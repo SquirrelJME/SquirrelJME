@@ -40,5 +40,35 @@ public final class RemoteChore
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public long memoryUsed()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int priority()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int status()
+	{
+		throw new todo.TODO();
+	}
 }
 

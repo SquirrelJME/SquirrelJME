@@ -31,5 +31,27 @@ public class JavaLocalChore
 	{
 		super(__group);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public long memoryUsed()
+	{
+		// Just use the total memory count
+		return Runtime.getRuntime().totalMemory();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int status()
+	{
+		// The local chore is always running
+		return Chore.STATUS_RUNNING;
+	}
 }
 

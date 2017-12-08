@@ -49,5 +49,17 @@ public abstract class JavaChore
 	{
 		return this.group;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public final int priority()
+	{
+		// Just refer to threads using normal priorities since that is the
+		// most simple approach
+		return 0;
+	}
 }
 

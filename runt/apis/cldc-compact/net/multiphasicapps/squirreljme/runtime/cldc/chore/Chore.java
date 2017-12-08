@@ -18,57 +18,29 @@ package net.multiphasicapps.squirreljme.runtime.cldc.chore;
  */
 public abstract class Chore
 {
-	/** System task flag. */
-	public static final int FLAG_SYSTEM =
-		0b0000_0000__0000_0100;
-	
-	/** The mask for priority. */
-	public static final int FLAG_PRIORITY_MASK =
-		0b0000_0000__0000_0011;
-	
-	/** Minimum priority. */
-	public static final int PRIORITY_MINIMUM =
-		0b0000_0000__0000_0000;
-	
-	/** Normal priority. */
-	public static final int PRIORITY_NORMAL =
-		0b0000_0000__0000_0001;
-	
-	/** Maximum priority. */
-	public static final int PRIORITY_MAXIMUM =
-		0b0000_0000__0000_0010;
-	
-	/** Undefined priority. */
-	public static final int PRIORITY_INVALID =
-		0b0000_0000__0000_0011;
-	
-	/** The mask for status. */
-	public static final int FLAG_STATUS_MASK =
-		0b0000_0000__0011_1000;
-	
 	/** Exit with fatal error. */
 	public static final int STATUS_EXITED_FATAL =
-		0b0000_0000__0000_0000;
+		0;
 	
 	/** Normal exit. */
 	public static final int STATUS_EXITED_REGULAR =
-		0b0000_0000__0000_1000;
+		1;
 
 	/** Terminated. */
 	public static final int STATUS_EXITED_TERMINATED =
-		0b0000_0000__0001_0000;
+		2;
 
 	/** Running. */
 	public static final int STATUS_RUNNING =
-		0b0000_0000__0001_1000;
+		3;
 
 	/** Failed to start. */
 	public static final int STATUS_START_FAILED =
-		0b0000_0000__0010_0000;
+		4;
 
 	/** Starting. */
 	public static final int STATUS_STARTING =
-		0b0000_0000__0010_1000;
+		5;
 	
 	/**
 	 * Returns the group which this chore is within.
@@ -77,6 +49,31 @@ public abstract class Chore
 	 * @since 2017/12/08
 	 */
 	public abstract ChoreGroup group();
+	
+	/**
+	 * Returns the amount of used memory.
+	 *
+	 * @return The amount of memory used.
+	 * @since 2017/12/08
+	 */
+	public abstract long memoryUsed();
+	
+	/**
+	 * Returns the priority of the chore.
+	 *
+	 * @return The chore priority, the lower the value the higher the
+	 * priority.
+	 * @since 2017/12/08
+	 */
+	public abstract int priority();
+	
+	/**
+	 * Returns the status of the task.
+	 *
+	 * @return The task status.
+	 * @since 2017/12/08
+	 */
+	public abstract int status();
 	
 	/**
 	 * Returns {@code true} if this is a system chore.
