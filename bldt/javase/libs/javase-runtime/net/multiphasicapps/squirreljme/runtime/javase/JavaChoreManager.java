@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
+import net.multiphasicapps.squirreljme.runtime.cldc.secu.SecurityContext;
 
 /**
  * This is used to manage and launch chores within the Java run-time.

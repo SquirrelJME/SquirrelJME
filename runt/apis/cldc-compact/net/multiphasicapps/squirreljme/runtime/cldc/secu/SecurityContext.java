@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.runtime.cldc.secu;
 
 /**
  * This is used to manage and provide access to the security of running

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc.high;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.secu.SecurityContext;
+
 /**
  * This is used to manage tasks within the system and is intended to be used
  * by the SWM sub-system.
@@ -74,41 +76,99 @@ public abstract class ChoreManager
 	protected final Object lock =
 		new Object();
 	
+	/** Cached ID of the current thread. */
+	private volatile int _cachedid =
+		Integer.MIN_VALUE;
+	
 	/**
 	 * Returns the ID of the current task.
+	 *
+	 * This action is always permitted.
 	 *
 	 * @return The current task ID.
 	 * @since 2017/12/08
 	 */
-	public abstract int currentId();
+	public final int currentId()
+	{
+		int rv = this._cachedid;
+		if (rv == Integer.MIN_VALUE)
+			this._cachedid = (rv = actualCurrentId());
+		return rv;
+	}
 	
 	/**
 	 * Returns the flags for the given chore.
 	 *
+	 * @param __sec The security context of the chore requesting access.
+	 * @param __id The chore identifier.
 	 * @return A bitfield representing the chore flags, if the chore is not
 	 * valid then {@code -1} is returned.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2017/12/07
 	 */
-	public abstract int flags(int __id);
+	public final flags(SecurityContext __sec, int __id)
+		throws NullPointerException, SecurityException
+	{
+		if (__sec == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Returns the approximate number of bytes which are in use by the
 	 * process.
 	 *
-	 * @param __id The process to get the heap size for.
+	 * @param __sec The security context of the chore requesting access.
+	 * @param __id The chore to get the heap size for.
 	 * @return The amount of memory being used by the given process.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2017/12/08
 	 */
-	public abstract long heapUsed(int __id);
+	public final long heapUsed(SecurityContext __sec, int __id)
+		throws NullPointerException, SecurityException
+	{
+		if (__sec == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Lists the chores which are currently running.
 	 *
+	 * @param __sec The security context of the chore requesting access.
 	 * @param __sys If {@code true} then system chores are included.
 	 * @return The identifiers of the chores which are running within
 	 * SquirrelJME.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2017/12/07
 	 */
-	public abstract int[] list(boolean __sys);
+	public final int[] list(SecurityContext __sec, boolean __sys)
+		throws NullPointerException, SecurityException
+	{
+		if (__sec == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Checks if the specified action is permitted.
+	 *
+	 * @param __sec The context to check within.
+	 * @throws SecurityException If this operation is not permitted.
+	 */
+	private final void __checkSecurity(SecurityContext __sec)
+		throws NullPointerException, SecurityException
+	{
+		if (__sec == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

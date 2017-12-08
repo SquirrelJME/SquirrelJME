@@ -8,17 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
-
 /**
- * This class acts as a base which provides every single permission and which
- * can do anything it desires. The main purpose of this class is to reduce
- * the number of security contexts which allow every permission.
+ * This package contains the internal security system which simplifies the
+ * Java security system into simpler means.
  *
  * @since 2017/12/08
  */
-public final class SystemSecurityContext
-	extends SecurityContext
-{
-}
+
+package net.multiphasicapps.squirreljme.runtime.cldc.secu;
 
