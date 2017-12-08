@@ -18,13 +18,66 @@ package net.multiphasicapps.squirreljme.runtime.cldc.high;
  */
 public abstract class ChoreManager
 {
+	/** System task flag. */
+	public static final int FLAG_SYSTEM =
+		0b0000_0000__0000_0100;
+	
+	/** The mask for priority. */
+	public static final int FLAG_PRIORITY_MASK =
+		0b0000_0000__0000_0011;
+	
+	/** Minimum priority. */
+	public static final int PRIORITY_MINIMUM =
+		0b0000_0000__0000_0000;
+	
+	/** Normal priority. */
+	public static final int PRIORITY_NORMAL =
+		0b0000_0000__0000_0001;
+	
+	/** Maximum priority. */
+	public static final int PRIORITY_MAXIMUM =
+		0b0000_0000__0000_0010;
+	
+	/** Undefined priority. */
+	public static final int PRIORITY_INVALID =
+		0b0000_0000__0000_0011;
+	
+	/** The mask for status. */
+	public static final int FLAG_STATUS_MASK =
+		0b0000_0000__0011_1000;
+	
+	/** Exit with fatal error. */
+	public static final int STATUS_EXITED_FATAL =
+		0b0000_0000__0000_0000;
+	
+	/** Normal exit. */
+	public static final int STATUS_EXITED_REGULAR =
+		0b0000_0000__0000_1000;
+
+	/** Terminated. */
+	public static final int STATUS_EXITED_TERMINATED =
+		0b0000_0000__0001_0000;
+
+	/** Running. */
+	public static final int STATUS_RUNNING =
+		0b0000_0000__0001_1000;
+
+	/** Failed to start. */
+	public static final int STATUS_START_FAILED =
+		0b0000_0000__0010_0000;
+
+	/** Starting. */
+	public static final int STATUS_STARTING =
+		0b0000_0000__0010_1000;
+	
 	/**
-	 * Returns {@code true} if the given chore is a system chore.
+	 * Returns the flags for the given chore.
 	 *
-	 * @return If the chore is a system chore.
+	 * @return A bitfield representing the chore flags, if the chore is not
+	 * valid then {@code -1} is returned.
 	 * @since 2017/12/07
 	 */
-	public abstract boolean isSystem(int __id);
+	public abstract int flags(int __id);
 	
 	/**
 	 * Lists the chores which are currently running.

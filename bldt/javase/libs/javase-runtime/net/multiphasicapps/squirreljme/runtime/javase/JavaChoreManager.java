@@ -40,22 +40,57 @@ public class JavaChoreManager
 	 * @since 2017/12/07
 	 */
 	@Override
-	public boolean isSystem(int __id)
+	public int flags(int __id)
 	{
-		// The zero task is always a system task
+		// The zero task is an always constant flag set
 		if (__id == 0)
-			return true;
+			return ChoreManager.FLAG_SYSTEM | ChoreManager.PRIORITY_MAXIMUM;
 		
 		List<Chore> chores = this._chores;
 		synchronized (chores)
 		{
 			Chore rv = this.__byId(__id);
 			if (rv != null)
-				return rv.isSystem();
+			{
+				int flags = 0;
+				
+				// System task?
+				if (rv.isSystem())
+					flags |= ChoreManager.FLAG_SYSTEM;
+				
+				// Java SE has no concept of priorities so the normal
+				// priority is always used
+				flags |= ChoreManager.PRIORITY_NORMAL;
+				
+				// There is no mechanism to see if a process is being
+				// executed at the time of the inquiry 
+				Process process = rv.process();
+				if (process.isAlive())
+					flags |= ChoreManager.STATUS_RUNNING;
+				
+				// Otherwise it depends on the exit status
+				else
+					try
+					{
+						int ev = process.exitValue();
+						if (ev == 0)
+							flags |= ChoreManager.STATUS_EXITED_REGULAR;
+						else
+							flags |= ChoreManager.STATUS_EXITED_FATAL;
+					}
+					catch (IllegalThreadStateException e)
+					{
+						// If the exit value is not set and it is not running
+						// then treat it as starting up
+						flags |= ChoreManager.STATUS_STARTING;
+					}
+				
+				return flags;
+			}
 		}
 		
 		// Unknown
-		return false;
+		return -1;
 	}
 	
 	/**
@@ -124,17 +159,27 @@ public class JavaChoreManager
 		/** Is this a system chore? */
 		protected final boolean system;
 		
+		/** The native process for the chore. */
+		protected final Process process;
+		
 		/**
 		 * Initializes the chore represenation.
 		 *
 		 * @param __id The ID of the chore.
 		 * @param __sys Is this a system chore?
+		 * @param __proc The executed process.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2017/12/07
 		 */
-		private Chore(int __id, boolean __sys)
+		private Chore(int __id, boolean __sys, Process __proc)
+			throws NullPointerException
 		{
+			if (__proc == null)
+				throw new NullPointerException("NARG");
+			
 			this.id = __id;
 			this.system = __sys;
+			this.process = __proc;
 		}
 		
 		/**
@@ -157,6 +202,17 @@ public class JavaChoreManager
 		public boolean isSystem()
 		{
 			return this.system;
+		}
+		
+		/**
+		 * Returns the linked process for the chore.
+		 *
+		 * @return The process for the chore.
+		 * @since 2017/12/08
+		 */
+		public Process process()
+		{
+			return this.process;
 		}
 	}
 }
