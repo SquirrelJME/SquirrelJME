@@ -25,7 +25,7 @@ import javax.microedition.swm.TaskStatus;
  *
  * @since 2017/12/07
  */
-public class SWMTaskFactory
+public class TaskFactory
 	implements Runnable
 {
 	/** The command to execute. */
@@ -43,7 +43,7 @@ public class SWMTaskFactory
 	 * @param __args The argument to the factory.
 	 * @since 2017/12/07
 	 */
-	public SWMTaskFactory(String... __args)
+	public TaskFactory(String... __args)
 	{
 		// Copy arguments for processing
 		Deque<String> args = new ArrayDeque<>();

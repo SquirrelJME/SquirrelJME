@@ -336,7 +336,7 @@ public class BuilderFactory
 	 */
 	public void task(String... __args)
 	{
-		new SWMTaskFactory(__args).run();
+		new TaskFactory(__args).run();
 	}
 	
 	/**
