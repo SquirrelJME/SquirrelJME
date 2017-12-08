@@ -190,5 +190,26 @@ public final class Task
 	{
 		return this._chore.isSystem();
 	}
+	
+	/**
+	 * Returns the chore of this task.
+	 *
+	 * @return The chore used.
+	 * @since 2017/12/08
+	 */
+	final Chore __chore()
+	{
+		return this._chore;
+	}
+	
+	/**
+	 * Attempts to restart the task.
+	 *
+	 * @since 2017/12/08
+	 */
+	final void __restart()
+	{
+		throw new todo.TODO();
+	}
 }
 

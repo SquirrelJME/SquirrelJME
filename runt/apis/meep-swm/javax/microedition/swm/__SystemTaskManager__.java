@@ -146,24 +146,32 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Always start the class path with the system program
-		Set<Program> classpath = new LinkedHashSet<>();
-		classpath.add(APIAccessor.programs().systemProgram());
-		
-		// Go through the suite and determine which programs need to be used
-		// so the program operates correctly. This performs dependency lookup.
-		if (true)
-			throw new todo.TODO();
-		
-		// Launch
-		Chore chore = APIAccessor.chores().launch(
-			classpath.<Program>toArray(new Program[classpath.size()]), __cn);
-		
-		// Link in the chore and create a task for it
 		Task task;
+		Program program = __s.__program();
 		Map<Chore, Reference<Task>> tasks = this._tasks;
 		synchronized (this.lock)
 		{
+			// If the specified program is already running, try to restart it
+			for (Map.Entry<Chore, Reference<Task>> e : tasks.entrySet())
+			{
+				Chore c = e.getKey();
+				if (c.program().equals(program) &&
+					c.mainClass().equals(__cn))
+				{
+					// If the task was GCed recreate the object
+					Reference<Task> ref = e.getValue();
+					if (ref == null || null == (task = ref.get()))
+						tasks.put(c, new WeakReference<>(
+							(task = new Task(c))));
+					
+					// Attempt to restart it
+					task.__restart();
+					return task;
+				}
+			}
+			
+			// Launch and link into running tasks
+			Chore chore = APIAccessor.chores().launch(program, __cn);
 			tasks.put(chore, new WeakReference<>((task = new Task(chore))));
 		}
 		

@@ -56,7 +56,7 @@ public abstract class Chores
 	 * Note that even if the chore fails to start it will still be created
 	 * except that it will be in the start failed state.
 	 *
-	 * @param __cp The class path consisting of programs to use for execution.
+	 * @param __p The program to launch.
 	 * @param __cl The midlet class to enter.
 	 * @return The chore which represents the given launched program.
 	 * @throws SecurityException If this chore is not permitted to launch the
@@ -64,10 +64,10 @@ public abstract class Chores
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	public final Chore launch(Program[] __cp, String __cl)
+	public final Chore launch(Program __p, String __cl)
 		throws SecurityException, NullPointerException
 	{
-		if (__cp == null || __cl == null)
+		if (__p == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ0g The current chore is not permitted to
