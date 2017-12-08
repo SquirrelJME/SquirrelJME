@@ -34,5 +34,34 @@ public class JavaChoreGroup
 	{
 		this.issystem = __sys;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int basicPermissions()
+	{
+		// Grant the system every permission available
+		if (this.issystem)
+			return ~0;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int flags()
+	{
+		int rv = 0;
+		
+		if (this.issystem)
+			rv |= ChoreGroup.FLAG_SYSTEM;
+		
+		return rv;
+	}
 }
 

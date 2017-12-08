@@ -30,6 +30,25 @@ public abstract class Chores
 	public abstract Chore current();
 	
 	/**
+	 * Internally lists the chores which exist within the system.
+	 *
+	 * @return The list of chores.
+	 * @since 2017/12/08
+	 */
+	protected abstract Chore[] internalList(boolean __sys);
+	
+	/**
+	 * Returns the current chore group.
+	 *
+	 * @return The current chore group.
+	 * @since 2017/12/08
+	 */
+	public final ChoreGroup currentGroup()
+	{
+		return this.current().group();
+	}
+	
+	/**
 	 * Returns the list of chores which are currently running.
 	 *
 	 * @param __sys If {@code true} then system chores are included in the
@@ -42,7 +61,14 @@ public abstract class Chores
 	public final Chore[] list(boolean __sys)
 		throws SecurityException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ0f The current process is not permitted to
+		// list the available chores.}
+		if (0 == (this.currentGroup().basicPermissions() &
+			(ChoreGroup.BASIC_PERMISSION_CLIENT_MANAGE_TASKS |
+			ChoreGroup.BASIC_PERMISSION_CROSSCLIENT_MANAGE_TASKS)))
+			throw new SecurityException("ZZ0f");
+		
+		return this.internalList(__sys);
 	}
 }
 
