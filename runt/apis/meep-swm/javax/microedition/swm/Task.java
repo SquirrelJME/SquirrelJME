@@ -14,7 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
-import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 
 /**
  * This describes a task which is currently running on the system. Each task
@@ -26,24 +26,23 @@ import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
  */
 public final class Task
 {
-	/** Thread identifier. */
-	protected final int id;
-	
-	/** Has the system task flag been cached? */
-	private volatile boolean _cachedissystem;
-	
-	/** Is this a system task? */
-	private volatile boolean _issystem;
+	/** The actual chore being wrapped. */
+	private final Chore _chore;
 	
 	/**
-	 * The constructor of this class is assumed to be internal use.
+	 * Initializes the task.
 	 *
-	 * @param __id The ID of the task.
+	 * @param __chore The chore to wrap.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	Task(int __id)
+	Task(Chore __chore)
+		throws NullPointerException
 	{
-		this.id = __id;
+		if (__chore == null)
+			throw new NullPointerException("NARG");
+		
+		this._chore = __chore;
 	}
 	
 	/**
@@ -75,6 +74,8 @@ public final class Task
 	 */
 	public int getHeapUse()
 	{
+		throw new todo.TODO();
+		/*
 		// Make sure the amount of memory used does not overflow ever
 		long rv = APIAccessor.chores().heapUsed(id);
 		if (rv < 0L)
@@ -82,6 +83,7 @@ public final class Task
 		else if (rv > Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		return (int)rv;
+		*/
 	}
 	
 	/**
@@ -107,6 +109,8 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
+		throw new todo.TODO();
+		/*
 		int id = this.id,
 			flags;
 		switch ((flags = APIAccessor.chores().flags(id)) &
@@ -127,6 +131,7 @@ public final class Task
 				throw new IllegalStateException(
 					String.format("DG04 %d %d", id, flags));
 		}
+		*/
 	}
 	
 	/**
@@ -137,6 +142,8 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
+		throw new todo.TODO();
+		/*
 		int id = this.id,
 			flags;
 		switch ((flags = APIAccessor.chores().flags(id)) &
@@ -166,6 +173,7 @@ public final class Task
 				throw new IllegalStateException(
 					String.format("DG04 %5 %d", id, flags));
 		}
+		*/
 	}
 	
 	/**
@@ -205,6 +213,8 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
+		throw new todo.TODO();
+		/*
 		// Has this flag been cached? Use that
 		if (this._cachedissystem)
 			return this._issystem;
@@ -217,17 +227,7 @@ public final class Task
 		this._issystem = issystem;
 		this._cachedissystem = true;
 		return issystem;
-	}
-	
-	/**
-	 * Returns the ID of this task.
-	 *
-	 * @return The internal task ID.
-	 * @since 2017/12/07
-	 */
-	final int __id()
-	{
-		return this.id;
+		*/
 	}
 }
 

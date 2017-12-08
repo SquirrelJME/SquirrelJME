@@ -11,34 +11,16 @@
 package net.multiphasicapps.squirreljme.runtime.cldc.chore;
 
 /**
- * This represents a chore which not part of the current chore and needs to be
- * accessed through the system communication bridge. Note that the current
- * chore may actually be an instance of this class if for example this is
- * a remote client.
+ * This represents a group of chores which a running application may be within,
+ * it is used for security purposes. All chores within the same group share
+ * the same set of permissions.
+ *
+ * Groups do contain chores but this class is used in a way as a marker by
+ * chores to indicate the group they are in.
  *
  * @since 2017/12/08
  */
-public final class RemoteChore
-	extends Chore
+public abstract class ChoreGroup
 {
-	/**
-	 * Initializes the remote chore.
-	 *
-	 * @since 2017/12/08
-	 */
-	public RemoteChore()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/08
-	 */
-	@Override
-	public ChoreGroup group()
-	{
-		throw new todo.TODO();
-	}
 }
 

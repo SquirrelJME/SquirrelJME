@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import net.multiphasicapps.squirreljme.runtime.cldc.APIList;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -122,17 +123,21 @@ public class Main
 		// These APIs are shared between the server and client
 		apilist[APIList.CLOCK] = new JavaClock();
 		
-		// Client APIs
+		// Client
 		if (__client)
 		{
 			throw new todo.TODO();
 		}
 		
-		// Server only APIs
+		// Server
 		else
 		{
-			apilist[APIList.SECURITY] = new JavaSecuritySystem();
-			apilist[APIList.CHORES] = new JavaChoreManager();
+			// Setup system chore first
+			JavaChore thischore = new JavaLocalChore(new JavaChoreGroup(true));
+			apilist[APIList.CURRENT_CHORE] = thischore;
+			
+			// Need to refer to the current chore to permit access to them
+			apilist[APIList.CHORES] = new JavaChores(thischore);
 		}
 	}
 	

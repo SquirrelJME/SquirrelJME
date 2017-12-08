@@ -33,13 +33,9 @@ public interface APIList
 	public static final int CLOCK =
 		START_OF_NON_SYSTEM + 1;
 	
-	/** Security system. */
-	public static final int SECURITY =
-		START_OF_NON_SYSTEM + 2;
-	
 	/** Chores. */
 	public static final int CHORES =
-		START_OF_NON_SYSTEM + 3;
+		START_OF_NON_SYSTEM + 2;
 	
 	/** The maximum number of APIs. */
 	public static final int MAX_API =

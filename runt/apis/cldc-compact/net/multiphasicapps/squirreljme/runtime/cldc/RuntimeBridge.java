@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  *
  * @since 2017/11/10
  */
+@Deprecated
 public final class RuntimeBridge
 {
 	/** High memory access. */

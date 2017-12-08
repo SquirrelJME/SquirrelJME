@@ -10,30 +10,44 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.high.SecuritySystem;
-import net.multiphasicapps.squirreljme.runtime.cldc.SecurityContext;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemSecurityContext;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.ChoreGroup;
 
 /**
- * This provides the security system for the host Java SE environment.
+ * This represents the base for a Java chore.
  *
  * @since 2017/12/08
  */
-public class JavaSecuritySystem
-	extends SecuritySystem
+public abstract class JavaChore
+	extends Chore
 {
-	/** Always use the same context. */
-	protected final SecurityContext context =
-		new SystemSecurityContext();
+	/** The group the chore is in. */
+	protected final JavaChoreGroup group;
+	
+	/**
+	 * Initializes the base chore.
+	 *
+	 * @param __group The group the chore is in.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/08
+	 */
+	public JavaChore(JavaChoreGroup __group)
+		throws NullPointerException
+	{
+		if (__group == null)
+			throw new NullPointerException("NARG");
+		
+		this.group = __group;
+	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/08
 	 */
 	@Override
-	public SecurityContext current()
+	public final ChoreGroup group()
 	{
-		return this.context;
+		return this.group;
 	}
 }
 
