@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
  *
  * @since 2017/11/10
  */
+@Deprecated
 public abstract class MailboxFunctions
 {
 	/**

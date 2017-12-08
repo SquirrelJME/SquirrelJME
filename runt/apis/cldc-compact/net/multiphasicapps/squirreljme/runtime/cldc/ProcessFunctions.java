@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  *
  * @since 2017/11/10
  */
+@Deprecated
 public abstract class ProcessFunctions
 {
 	/**
