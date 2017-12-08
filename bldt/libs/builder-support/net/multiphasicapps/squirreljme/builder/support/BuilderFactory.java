@@ -116,7 +116,7 @@ public class BuilderFactory
 					// -j: The binary path for the jit-time;
 					// -b: The binary path for the build-time;
 					// Valid commands are:
-					// build, task
+					// build, suite, task
 					// .(The switch)}
 				default:
 					throw new IllegalArgumentException(
@@ -273,6 +273,12 @@ public class BuilderFactory
 				}
 				break;
 				
+				// Perform suite related operations
+			case "suite":
+				this.suite(
+					args.<String>toArray(new String[args.size()]));
+				break;
+				
 				// Perform task related operations
 			case "task":
 				this.task(
@@ -309,6 +315,17 @@ public class BuilderFactory
 			sourcemanagers[i] =
 				(rv = new SourceManagerFactory(this.sourceroot).get(__t));
 		return rv;
+	}
+	
+	/**
+	 * Performs suite related operations.
+	 *
+	 * @param __args Arguments to the suite command.
+	 * @since 2017/12/08
+	 */
+	public void suite(String... __args)
+	{
+		new SuiteFactory(__args).run();
 	}
 	
 	/**
