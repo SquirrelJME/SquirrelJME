@@ -21,15 +21,58 @@ import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 public class JavaProcessChore
 	extends JavaChore
 {
+	/** The remote process. */
+	protected final Process process;
+	
 	/**
 	 * Initializes the process backed chore.
 	 *
 	 * @param __group The group the chore is in.
+	 * @param __proc The process to watch.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	public JavaProcessChore(JavaChoreGroup __group)
+	public JavaProcessChore(JavaChoreGroup __group, Process __proc)
+		throws NullPointerException
 	{
 		super(__group);
+		
+		if (__proc == null)
+			throw new NullPointerException("NARG");
+		
+		this.process = __proc;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public long memoryUsed()
+	{
+		// The only way to get the details of another process memory usage is
+		// to query it or use native system methods to access it
+		// So for simplicity just return no memory used
+		return 0L;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int status()
+	{
+		// Treat living processes as running
+		Process process = this.process;
+		if (process.isAlive())
+			return Chore.STATUS_RUNNING;
+		
+		// A zero exit value is success
+		int ev = process.exitValue();
+		if (ev == 0)
+			return Chore.STATUS_EXITED_REGULAR;
+		return Chore.STATUS_EXITED_FATAL;
 	}
 }
 

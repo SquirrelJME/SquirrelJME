@@ -74,16 +74,13 @@ public final class Task
 	 */
 	public int getHeapUse()
 	{
-		throw new todo.TODO();
-		/*
 		// Make sure the amount of memory used does not overflow ever
-		long rv = APIAccessor.chores().heapUsed(id);
+		long rv = this._chore.memoryUsed();
 		if (rv < 0L)
 			return 0;
 		else if (rv > Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		return (int)rv;
-		*/
 	}
 	
 	/**
@@ -109,29 +106,12 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		throw new todo.TODO();
-		/*
-		int id = this.id,
-			flags;
-		switch ((flags = APIAccessor.chores().flags(id)) &
-			ChoreManager.FLAG_PRIORITY_MASK)
-		{
-			case ChoreManager.PRIORITY_MINIMUM:
-				return TaskPriority.MIN;
-				
-			case ChoreManager.PRIORITY_NORMAL:
-				return TaskPriority.NORM;
-				
-			case ChoreManager.PRIORITY_MAXIMUM:
-				return TaskPriority.MAX;
-			
-				// {@squirreljme.error DG04 The specified task is not valid.
-				// (The task ID; The task flags)}
-			default:
-				throw new IllegalStateException(
-					String.format("DG04 %d %d", id, flags));
-		}
-		*/
+		int rv = this._chore.priority();
+		if (rv < 0)
+			return TaskPriority.MIN;
+		else if (rv > 0)
+			return TaskPriority.MAX;
+		return TaskPriority.NORM;
 	}
 	
 	/**
@@ -142,38 +122,33 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		throw new todo.TODO();
-		/*
-		int id = this.id,
-			flags;
-		switch ((flags = APIAccessor.chores().flags(id)) &
-			ChoreManager.FLAG_STATUS_MASK)
+		int status = this._chore.status();
+		switch (status)
 		{
-			case ChoreManager.STATUS_EXITED_FATAL:
+			case Chore.STATUS_EXITED_FATAL:
 				return TaskStatus.EXITED_FATAL;
 
-			case ChoreManager.STATUS_EXITED_REGULAR:
+			case Chore.STATUS_EXITED_REGULAR:
 				return TaskStatus.EXITED_REGULAR;
 
-			case ChoreManager.STATUS_EXITED_TERMINATED:
+			case Chore.STATUS_EXITED_TERMINATED:
 				return TaskStatus.EXITED_TERMINATED;
 
-			case ChoreManager.STATUS_RUNNING:
+			case Chore.STATUS_RUNNING:
 				return TaskStatus.RUNNING;
 
-			case ChoreManager.STATUS_START_FAILED:
+			case Chore.STATUS_START_FAILED:
 				return TaskStatus.START_FAILED;
 
-			case ChoreManager.STATUS_STARTING:
+			case Chore.STATUS_STARTING:
 				return TaskStatus.STARTING;
 			
-				// {@squirreljme.error DG05 The specified task is not valid.
-				// (The task ID; The task flags)}
+				// {@squirreljme.error DG05 Task is in an invalid status
+				// state. (The status)}
 			default:
 				throw new IllegalStateException(
-					String.format("DG04 %5 %d", id, flags));
+					String.format("DG04 %d", status));
 		}
-		*/
 	}
 	
 	/**
