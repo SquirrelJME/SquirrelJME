@@ -28,7 +28,7 @@ public class JavaChoreManager
 	extends ChoreManager
 {
 	/** The current chore ID. */
-	protected final currentchoreid =
+	protected final int currentchoreid =
 		Integer.getInteger(
 			"net.multiphasicapps.squirreljme.runtime.javase.choreid", 0);
 	

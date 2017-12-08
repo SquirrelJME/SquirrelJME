@@ -126,8 +126,7 @@ final class __SystemTaskManager__
 		SuiteType type = __s.getSuiteType();
 		if (type == SuiteType.SYSTEM)
 		{
-			if (!getCurrentTask().isSystemTask())
-				throw new 
+			throw new todo.TODO();
 		}
 		
 		throw new todo.TODO();

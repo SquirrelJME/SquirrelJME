@@ -37,9 +37,6 @@ public class Suite
 	/** The suite ID. */
 	private final int _id;
 	
-	/** The flags associated with this suite. */
-	private volatile int _state;
-	
 	/**
 	 * Initializes the suite.
 	 *
@@ -158,7 +155,10 @@ public class Suite
 	 */
 	public SuiteType getSuiteType()
 	{
+		throw new todo.TODO();
+		/*
 		return SuiteType.INVALID;
+		*/
 	}
 	
 	/**
@@ -222,11 +222,14 @@ public class Suite
 		if (__f == null)
 			return false;
 		
+		throw new todo.TODO();
+		/*
 		// Lock
 		synchronized (this._lock)
 		{
 			return 0 != (this._state & (1 << __f.ordinal()));
 		}
+		*/
 	}
 	
 	/**
@@ -264,6 +267,8 @@ public class Suite
 		if (__f == null)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error DG02 The current suite has been removed.}
 		if (!isInstalled())
 			throw new IllegalStateException("DG02");
@@ -290,61 +295,7 @@ public class Suite
 			else
 				this._state &= bit;
 		}
-	}
-	
-	/**
-	 * The system suite.
-	 *
-	 * @since 2016/06/24
-	 */
-	private static final class __SystemSuite__
-		extends Suite
-	{
-		/**
-		 * Initializes the base suite.
-		 *
-		 * @since 2016/06/24
-		 */
-		private __SystemSuite__()
-		{
-			// The system always has these states
-			super._state = 
-				(1 << SuiteStateFlag.SYSTEM.ordinal()) |
-				(1 << SuiteStateFlag.PREINSTALLED.ordinal()) |
-				(1 << SuiteStateFlag.REMOVE_DENIED.ordinal()) |
-				(1 << SuiteStateFlag.ENABLED.ordinal()) |
-				(1 << SuiteStateFlag.AVAILABLE.ordinal());
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/06/24
-		 */
-		@Override
-		public SuiteType getSuiteType()
-		{
-			return SuiteType.SYSTEM;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/06/24
-		 */
-		@Override
-		public boolean isInstalled()
-		{
-			return true;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/06/24
-		 */
-		@Override
-		public boolean isTrusted()
-		{
-			return true;
-		}
+		*/
 	}
 }
 
