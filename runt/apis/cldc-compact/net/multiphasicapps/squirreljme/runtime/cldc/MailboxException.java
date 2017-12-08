@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  *
  * @since 2017/08/10
  */
+@Deprecated
 public class MailboxException
 	extends Exception
 {

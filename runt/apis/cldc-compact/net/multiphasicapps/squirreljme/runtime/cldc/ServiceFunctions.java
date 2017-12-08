@@ -18,6 +18,7 @@ import java.util.Map;
  *
  * @since 2017/11/10
  */
+@Deprecated
 public abstract class ServiceFunctions
 {
 	/** Cached system services. */
