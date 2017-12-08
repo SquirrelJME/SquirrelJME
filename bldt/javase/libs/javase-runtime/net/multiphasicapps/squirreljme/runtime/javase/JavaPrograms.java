@@ -8,14 +8,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.high;
+package net.multiphasicapps.squirreljme.runtime.javase;
+
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
 
 /**
- * This class is used to manage programs which are installed on the system.
+ * Provides access to the programs which are available.
  *
  * @since 2017/12/08
  */
-public abstract class ProgramManager
+public class JavaPrograms
+	extends Programs
 {
+	/** The system program. */
+	protected final JavaProgram system =
+		new JavaProgram(JavaProgram.class);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public Program systemProgram()
+	{
+		return this.system;
+	}
 }
 
