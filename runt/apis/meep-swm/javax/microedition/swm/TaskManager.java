@@ -109,10 +109,12 @@ public interface TaskManager
 	 * class does not exist, or the given class does not extend
 	 * {@link javax.microedition.midlet.MIDlet}.
 	 * @throws IllegalStateException If the suite has been removed.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
 	public abstract Task startTask(Suite __s, String __cn)
-		throws IllegalArgumentException, IllegalStateException;
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException;
 	
 	/**
 	 * Attempts to stop the given task and destroy it so that it does not

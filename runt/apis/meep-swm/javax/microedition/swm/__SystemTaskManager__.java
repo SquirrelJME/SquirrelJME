@@ -33,10 +33,6 @@ final class __SystemTaskManager__
 	protected final Object lock =
 		new Object();
 	
-	/** This is used to provide access to chores. */
-	protected final ChoreManager chores =
-		APIAccessor.chores();
-	
 	/** The tasks which are currently available. */
 	private final List<Task> _tasks =
 		new ArrayList<>();
@@ -58,7 +54,7 @@ final class __SystemTaskManager__
 	@Override
 	public Task getCurrentTask()
 	{
-		throw new todo.TODO();
+		return this.__byId(APIAccessor.chores().currentId());
 	}
 	
 	/**
@@ -71,7 +67,7 @@ final class __SystemTaskManager__
 		List<Task> rv = new ArrayList<>();
 		
 		// First get the raw chore IDs
-		ChoreManager chores = this.chores;
+		ChoreManager chores = APIAccessor.chores();
 		int[] ids = chores.list(__incsys);
 		
 		// Need to inquiry multiple tasks at a time
@@ -121,8 +117,19 @@ final class __SystemTaskManager__
 	 */
 	@Override
 	public Task startTask(Suite __s, String __cn)
-		throws IllegalArgumentException, IllegalStateException
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException
 	{
+		if (__s == null || __cn == null)
+			throw new NullPointerException("NARG");
+		
+		SuiteType type = __s.getSuiteType();
+		if (type == SuiteType.SYSTEM)
+		{
+			if (!getCurrentTask().isSystemTask())
+				throw new 
+		}
+		
 		throw new todo.TODO();
 	}
 	

@@ -27,6 +27,11 @@ import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 public class JavaChoreManager
 	extends ChoreManager
 {
+	/** The current chore ID. */
+	protected final currentchoreid =
+		Integer.getInteger(
+			"net.multiphasicapps.squirreljme.runtime.javase.choreid", 0);
+	
 	/** Chores which are currently available. */
 	private final List<Chore> _chores =
 		new ArrayList<>();
@@ -34,6 +39,16 @@ public class JavaChoreManager
 	/** The identifier for the next chore. */
 	private volatile int _nextid =
 		1;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/08
+	 */
+	@Override
+	public int currentId()
+	{
+		return this.currentchoreid;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -48,7 +63,7 @@ public class JavaChoreManager
 				ChoreManager.STATUS_RUNNING;
 		
 		List<Chore> chores = this._chores;
-		synchronized (chores)
+		synchronized (this.lock)
 		{
 			Chore rv = this.__byId(__id);
 			if (rv != null)
@@ -119,7 +134,7 @@ public class JavaChoreManager
 		int[] rv;
 		
 		List<Chore> chores = this._chores;
-		synchronized (chores)
+		synchronized (this.lock)
 		{
 			// The chores will not be changed so the size is stable
 			int n = chores.size();
@@ -149,7 +164,7 @@ public class JavaChoreManager
 	private final Chore __byId(int __id)
 	{
 		List<Chore> chores = this._chores;
-		synchronized (chores)
+		synchronized (this.lock)
 		{
 			Chore rv;
 			for (int i = 0, n = chores.size(); i < n; i++)

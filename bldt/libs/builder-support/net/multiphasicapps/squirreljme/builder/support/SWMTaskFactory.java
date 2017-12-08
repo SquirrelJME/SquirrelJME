@@ -15,6 +15,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import javax.microedition.swm.ManagerFactory;
+import javax.microedition.swm.Suite;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskManager;
 
@@ -54,10 +55,10 @@ public class SWMTaskFactory
 		// no permissions to do so
 		this.manager = ManagerFactory.getTaskManager();
 		
-		// {@squirreljme.error AQ0q Expected command for task operation.}
+		// {@squirreljme.error AU0q Expected command for task operation.}
 		String command = args.pollFirst();
 		if (command == null)
-			throw new IllegalArgumentException("AQ0q");
+			throw new IllegalArgumentException("AU0q");
 		this.command = command;
 		
 		// Use remaining arguments as input
@@ -85,9 +86,22 @@ public class SWMTaskFactory
 				listTasks(System.out);
 				break;
 				
+				// Start a system task
+			case "system-start":
+				{
+					// {@squirreljme.error AU0s Expected name of class to
+					// start as a system task.}
+					String name = args.removeFirst();
+					if (name == null)
+						throw new IllegalArgumentException("AU0s");
+					
+					systemStart(name);
+				}
+				break;
+				
 				// {@squirreljme.error AU0r The specified task command is not
 				// valid. Valid commands are:
-				// ls list -- List tasks.
+				// ls, list, system-start
 				// .(The command)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0r %s",
@@ -118,6 +132,25 @@ public class SWMTaskFactory
 			__ps.printf("\tstatus   : %s%n", t.getStatus());
 			__ps.printf("\tused heap: %d bytes%n", t.getHeapUse());
 		}
+	}
+	
+	/**
+	 * Starts the specified class as a system task, this blocks until the
+	 * task terminates.
+	 *
+	 * @param __n The task to start under the system.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/08
+	 */
+	public Task systemStart(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		Task task = this.manager.startTask(Suite.SYSTEM_SUITE, __n);
+		
+		throw new todo.TODO();
 	}
 }
 
