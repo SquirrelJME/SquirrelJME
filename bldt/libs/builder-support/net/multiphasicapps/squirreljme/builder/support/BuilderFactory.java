@@ -338,7 +338,7 @@ public class BuilderFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/16
 	 */
-	private static String[] __getopts(String __optstring, Deque<String> __q)
+	static String[] __getopts(String __optstring, Deque<String> __q)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__optstring == null || __q == null)

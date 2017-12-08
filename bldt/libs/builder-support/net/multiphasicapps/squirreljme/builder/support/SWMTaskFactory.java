@@ -18,6 +18,7 @@ import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskManager;
+import javax.microedition.swm.TaskStatus;
 
 /**
  * This is a factory which is used to handle tasks via the SWM sub-system.
@@ -86,16 +87,56 @@ public class SWMTaskFactory
 				listTasks(System.out);
 				break;
 				
-				// Start a system task
-			case "system-start":
+				// Launch a task
+			case "launch":
 				{
+					// Parse arguments
+					String[] parse;
+					while (null != (parse = BuilderFactory.
+						__getopts(":?", args)))
+						switch (parse[0])
+						{
+								// {@squirreljme.error AU0t Unknown argument.
+								// Usage: launch [suite] (class name).
+								// }
+							default:
+								throw new IllegalArgumentException("AU0t");
+						}
+					
 					// {@squirreljme.error AU0s Expected name of class to
 					// start as a system task.}
-					String name = args.removeFirst();
-					if (name == null)
+					String arga = args.pollFirst();
+					if (arga == null)
 						throw new IllegalArgumentException("AU0s");
 					
-					systemStart(name);
+					// Secondary argument is optional
+					String argb = args.pollFirst();
+					
+					// Launch task
+					Task task;
+					if (argb == null)
+						task = launch(null, arga);
+					else
+						task = launch(arga, argb);
+					
+					// Wait for the task to terminate
+					// There is no non-blocking mechanism which waits until
+					// the task terminates, so just keep quering the state
+					// until it is not running
+					TaskStatus status;
+					for (;;)
+					{
+						status = task.getStatus();
+						if (status != TaskStatus.STARTING &&
+							status != TaskStatus.RUNNING)
+							break;
+					}
+					
+					// {@squirreljme.error AU0u The task exited with the
+					// given status. (The status)}
+					if (status != TaskStatus.EXITED_REGULAR)
+						throw new RuntimeException(String.format(
+							"AU0u %s%n", status));
 				}
 				break;
 				
@@ -135,22 +176,31 @@ public class SWMTaskFactory
 	}
 	
 	/**
-	 * Starts the specified class as a system task, this blocks until the
-	 * task terminates.
+	 * Launches the optional suite and via the given class.
 	 *
-	 * @param __n The task to start under the system.
-	 * @throws NullPointerException On null arguments.
+	 * @param __su The suite to launch, if {@code null} then the system suite
+	 * is used.
+	 * @param __cl The class to use as the entry point.
+	 * @throws NullPointerException If no class was specified.
 	 * @since 2017/12/08
 	 */
-	public Task systemStart(String __n)
+	public Task launch(String __su, String __cl)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		Task task = this.manager.startTask(Suite.SYSTEM_SUITE, __n);
+		// Locate the suite to use
+		Suite suite = null;
+		if (__su != null)
+			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Use system suite
+		else
+			suite = Suite.SYSTEM_SUITE;
+		
+		// Start the task
+		return this.manager.startTask(suite, __cl);
 	}
 }
 
