@@ -21,17 +21,29 @@ public interface APIList
 	public static final int CLOCK =
 		1;
 	
+	/** Security system. */
+	public static final int SECURITY =
+		2;
+	
 	/** Chores. */
 	public static final int CHORES =
-		2;
+		3;
 	
 	/** The maximum number of APIs. */
 	public static final int MAX_API =
 		CHORES + 1;
 	
+	/** The start of high permission APIs. */
+	public static final int HIGH_START =
+		SECURITY;
+	
 	/** The start of the user-space APIs. */
 	public static final int USERSPACE_START =
 		MAX_API;
+	
+	/** The number of high permission APIs. */
+	public static final int HIGH_COUNT =
+		USERSPACE_START - HIGH_START;
 	
 	/** The number of userspace APIs. */
 	public static final int USERSPACE_COUNT =

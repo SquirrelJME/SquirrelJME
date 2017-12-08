@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
 import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
+import net.multiphasicapps.squirreljme.runtime.cldc.high.SecuritySystem;
 
 /**
  * This is used to provide access to SquirrelJME specific APIs.
@@ -64,6 +65,17 @@ public final class APIAccessor
 	}
 	
 	/**
+	 * Returns the current security context for this chore.
+	 *
+	 * @return The security context for this chore.
+	 * @since 2017/12/08
+	 */
+	public static final SecurityContext currentSecurityContext()
+	{
+		return APIAccessor.security().current();
+	}
+	
+	/**
 	 * Returns the object which is associated with the given API.
 	 *
 	 * @param __id The ID of the API to get.
@@ -104,6 +116,18 @@ public final class APIAccessor
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(APIAccessor.of(__id));
+	}
+	
+	/**
+	 * Returns the security system being used.
+	 *
+	 * @return The current security system.
+	 * @since 2017/12/09
+	 */
+	public static final SecuritySystem security()
+	{
+		return APIAccessor.<SecuritySystem>of(APIList.SECURITY,
+			SecuritySystem.class);
 	}
 	
 	/**

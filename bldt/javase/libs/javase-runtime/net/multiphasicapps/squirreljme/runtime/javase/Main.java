@@ -131,6 +131,7 @@ public class Main
 		// Server only APIs
 		else
 		{
+			apilist[APIList.SECURITY] = new JavaSecuritySystem();
 			apilist[APIList.CHORES] = new JavaChoreManager();
 		}
 	}
