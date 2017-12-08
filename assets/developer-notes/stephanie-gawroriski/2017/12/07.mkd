@@ -1,0 +1,77 @@
+# 2017/12/07
+
+## 17:33
+
+Okay, so I need to determine how to create factories for tasks and the main
+thing will be setting up the CLDC interfaces for managing tasks. But that
+should be simple for the most part. Due to the way it seems tasks will operate
+I will basically just have new processes for newly created tasks with the
+correct classpath and such. This would be consistent with Java ME. Then on top
+of that I can implement the launcher for example for running programs. I would
+say that the intended program to be ran is always the launcher, but I can have
+like a virtual interface which starts the launcher from the build system so
+that it provides a pseudo-ish environment.
+
+## 17:57
+
+The only issue would actually be the security manager. Like I would need to
+obtain some internal SquirrelJME stuff but still have permission checks
+performed and all of that. Otherwise code could just skip checks and directly
+use the system interface. So basically, the system libraries would need to
+perform the checks as needed.
+
+## 18:00
+
+Alternatively the system services like I have it now, the way they are
+provided there could just be a single security check. Then if it is not
+permitted then there would be a failing thing which always throws a given
+exception. This of course would need to be initialized by the system. It would
+always need to make sure there is an instance of the system interfaces to be
+initialized _magically_.
+
+## 18:07
+
+Okay, so I think the best thing to do would be to split the CLDC run-time
+bridge stuff. Basically I will have a low level bridge which does the more
+native things. Then there will be a high level bridge that is initialized
+after the fact. It still uses the low level stuff but it should work a bit
+cleaner. For example, the task manager would be high level in that it can use
+similar and common interfaces. So for example, when it comes to user-mode
+processes. Instead of the task manager being provided by the initializer it
+will just be initialized by the task runner for the system. But the initial
+task manager which is owned by the system, it will not cause the same thing to
+happen.
+
+## 19:49
+
+Well that is a bit hacky, but it works on Linux. Really with it this way the
+hack is contained to only a single class which initializes the internal APIs
+at least on Java SE systems.
+
+## 20:19
+
+One thing I will need for tasks is the initialization and keeping track of
+tasks and their wrapped representations. Basically what I need to do is have
+it where there are cached task representations, but ones where they are kept
+and such. So that will be very much needed.
+
+## 21:19
+
+One thing that would need to be handled is communication between the server
+and the client for each process that is spawned. I could use a network socket
+but I could also use standard I/O. However the problem with standard I/O is
+that I will need to replace the system provided input and output streams to
+handle cases such as this. I could then use a packet based network similar to
+TCP to send data back and forth. At least this way I do not need to worry
+about setting up a server or other such things. It will actually work out. It
+can be a very basic IPC for the most part and it should work on every system
+for the most part too. I will just need a thread for each sub-process for
+the communication system. Standard error though can just be spit out to the
+console or whatever as usual.
+
+## 23:03
+
+One thing I will need is to have to a general event system that is global for
+everything. There are many things which have listeners and I need a common
+interface that just uses a single thread rather than a large number of threads
+for each subsystem.
