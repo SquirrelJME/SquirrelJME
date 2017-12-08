@@ -92,7 +92,7 @@ public abstract class ChoreManager
 	{
 		int rv = this._cachedid;
 		if (rv == Integer.MIN_VALUE)
-			this._cachedid = (rv = actualCurrentId());
+			throw new todo.TODO();
 		return rv;
 	}
 	
@@ -107,7 +107,7 @@ public abstract class ChoreManager
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2017/12/07
 	 */
-	public final flags(SecurityContext __sec, int __id)
+	public final int flags(SecurityContext __sec, int __id)
 		throws NullPointerException, SecurityException
 	{
 		if (__sec == null)

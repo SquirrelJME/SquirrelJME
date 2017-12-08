@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
 import net.multiphasicapps.squirreljme.runtime.cldc.high.ChoreManager;
 import net.multiphasicapps.squirreljme.runtime.cldc.high.SecuritySystem;
@@ -65,14 +66,15 @@ public final class APIAccessor
 	}
 	
 	/**
-	 * Returns the current security context for this chore.
+	 * Returns the current chore which represents the currently running
+	 * task.
 	 *
 	 * @return The security context for this chore.
 	 * @since 2017/12/08
 	 */
-	public static final SecurityContext currentSecurityContext()
+	public static final Chore currentChore()
 	{
-		return APIAccessor.security().current();
+		return APIAccessor.<Chore>of(APIList.CURRENT_CHORE, Chore.class);
 	}
 	
 	/**
@@ -81,11 +83,16 @@ public final class APIAccessor
 	 * @param __id The ID of the API to get.
 	 * @return The object for the class interface of the given API.
 	 * @throws IllegalArgumentException If the API is not valid.
+	 * @throws SecurityException If the API cannot be accessed.
 	 * @since 2017/12/07
 	 */
 	public static final Object of(int __id)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, SecurityException
 	{
+		// {@squirreljme.error ZZ0e Cannot obtain the communication bridge.}
+		if (__id == APIList.COMM_BRIDGE)
+			throw new SecurityException("ZZ0e");
+		
 		// {@squirreljme.error ZZ0c API index is outside of bounds.}
 		Object[] apilist = APIAccessor._APILIST;
 		if (__id < 0 || __id >= apilist.length)

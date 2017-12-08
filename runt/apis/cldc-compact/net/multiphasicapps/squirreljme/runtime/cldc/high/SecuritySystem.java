@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc.high;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.SecurityContext;
+import net.multiphasicapps.squirreljme.runtime.cldc.secu.SecurityContext;
 
 /**
  * This class contains the security system which is used to provide access
