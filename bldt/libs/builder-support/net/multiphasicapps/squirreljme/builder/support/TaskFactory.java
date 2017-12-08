@@ -172,6 +172,11 @@ public class TaskFactory
 			__ps.printf("\tpriority : %s%n", t.getPriority());
 			__ps.printf("\tstatus   : %s%n", t.getStatus());
 			__ps.printf("\tused heap: %d bytes%n", t.getHeapUse());
+			
+			// Print suite information
+			Suite s = t.getSuite();
+			if (s != null)
+				SuiteFactory.printSuite(__ps, s);
 		}
 	}
 	
