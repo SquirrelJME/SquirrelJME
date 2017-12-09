@@ -18,8 +18,10 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIList;
-import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
+import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.KernelInterface;
+import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.ContextInterface;
+import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.Context;
+import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.MicroKernel;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -93,10 +95,24 @@ public class Main
 	private static void __initializeRunTime(boolean __client)
 		throws Throwable
 	{
-		// Need to obtain the API field so that it is initialized
-		Class<?> apiaccessor = Class.forName(
-			"net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor");
-		Field apilistfield = apiaccessor.getDeclaredField("_APILIST");
+		// Clients use a bi-directional bridge on top of the standard
+		// input and output streams to interact with the system
+		KernelInterface ki;
+		if (__client)
+		{
+			throw new todo.TODO();
+		}
+		
+		// The server uses the actual kernel
+		else
+		{
+			MicroKernel uk = new JavaMicroKernel();
+			ki = new ContextInterface(uk, uk.systemContext());
+		}
+		
+		// Need to obtain the interface field so that it is initialized
+		Class<?> kiclass = KernelInterface.class;
+		Field kifield = kiclass.getDeclaredField("INSTANCE");
 		
 		// There is an internal modifiers field which needs to be cleared so
 		// that the data can be accessed as such
@@ -104,42 +120,20 @@ public class Main
 		modifiersfield.setAccessible(true);
 		
 		// Remember the old modifiers and clear the final field
-		int oldmods = modifiersfield.getInt(apilistfield);
-		modifiersfield.setInt(apilistfield,
-			apilistfield.getModifiers() & ~Modifier.FINAL);
+		int oldmods = modifiersfield.getInt(kifield);
+		modifiersfield.setInt(kifield,
+			kifield.getModifiers() & ~Modifier.FINAL);
 		
-		// It is private and final so it must be settable
-		apilistfield.setAccessible(true);
+		// It is final so it must be settable
+		kifield.setAccessible(true);
 		
-		// Set that object to use this API list
-		Object[] apilist = new Object[APIList.values().length];
-		apilistfield.set(null, apilist);
+		// Set the interface used to interact with the kernel
+		kifield.set(null, ki);
 		
 		// Protect everything again
-		modifiersfield.setInt(apilistfield, oldmods);
+		modifiersfield.setInt(kifield, oldmods);
 		modifiersfield.setAccessible(false);
-		apilistfield.setAccessible(false);
-		
-		// These APIs are shared between the server and client
-		apilist[APIList.CLOCK.ordinal()] = new JavaClock();
-		
-		// Client
-		if (__client)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Server
-		else
-		{
-			// Setup system chore first
-			JavaChore thischore = new JavaLocalChore(new JavaChoreGroup(true));
-			apilist[APIList.CURRENT_CHORE.ordinal()] = thischore;
-			
-			// Need to refer to the current chore to permit access to them
-			apilist[APIList.CHORES.ordinal()] = new JavaChores(thischore);
-			apilist[APIList.PROGRAMS.ordinal()] = new JavaPrograms();
-		}
+		kifield.setAccessible(false);
 	}
 	
 	/**
