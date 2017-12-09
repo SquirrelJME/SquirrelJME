@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
-import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
-import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
+import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.KernelInterface;
 
 /**
  * This class manages the bridge for the suite manager to the native program

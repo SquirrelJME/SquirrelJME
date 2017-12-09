@@ -15,9 +15,7 @@ import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
-import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
-import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
+import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.KernelInterface;
 
 /**
  * This represents an application suite.
