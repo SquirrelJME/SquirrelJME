@@ -54,7 +54,7 @@ public class Suite
 	/**
 	 * Initializes the suite.
 	 *
-	 * @param __p The program for suite data.
+	 * @param __p The program for this suite.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
