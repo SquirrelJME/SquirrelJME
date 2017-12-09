@@ -7,3 +7,91 @@ will be done by a new class I created: `PacketStream`. That class will just
 have a common implementation. The first use would be it being used by the
 Java SE host to communicate to sub-processes. Then later on when user-space
 stuff comes along, it will be used for that communication as needed.
+
+## 08:07
+
+I am definitely going to need a security context and such. Basically within
+the system when tasks are performed everything will need to be checked against
+the task that is performing the action's security levels. This also needs to
+be integrated into the task and suite handling systems too. So there will have
+to be some kind of generic handling with the base system classes. Clients
+could potentially lie by using another client's security context but I will
+make it where obtaining security contexts is not possible (unless someone
+finds an exploit for that). The `SecurityManager` will then use the context to
+handle permissions and such.
+
+## 08:53
+
+Okay so, maybe what I need instead of `SecurityContext` is an object which
+knows all the details of the current chore. Basically there will need to be a
+`Chore` which can represent the current chore an any of its details. Basically
+an object which can represent any running chore on the system. It would also
+need to include a means of referring to other chores and potentially
+performing actions on them as such. Each chore would also need the security
+system in place and a means to check security flags. There would basically be
+the following instances:
+
+ * The current chore.
+   * This is always valid and always just represents the current chore.
+ * Other chores.
+   * On the system it will represent actual process data and managing them,
+     like normal operating system tasks.
+   * On the client, these will just be very shallow and just forward over the
+     internal communication stream.
+
+## 09:32
+
+I believe I understand the "client" permission. Basically for the means of
+permissions. These clients act as a group. Every application is always
+assigned to a single client, but libraries can be assigned to multiple clients
+as needed. It personally is a bit confusing the terminology. But I will say
+that it is for permission handling. So depending on the permissions, there
+are two sets: chores which can access only other chores in the same group, or
+chores which can access any other group (except the system).
+
+## 11:52
+
+Okay there is an issue. `Program`s and `Suite`s are a bit different. Programs
+are just a bunch of classes clumped together, sort of. Actually, they are
+pretty much the same, except that Suites themselves represent programs and all
+of their classes in a single classpath. So currently `Program`s are just
+single archives. This needs to be changed where they are a one to one mapping
+with Suites. This means that for launching, dependency handling will have to
+be in the core CLDC libraries. The dependency system can be quite complex also
+so there is that too. Dependency handling also needs to be recursive too. So
+since this stuff will have to be in the CLDC code it will need to be very
+light. However this would then include all of the auxiliary classes which are
+currently sitting in `meep-midlet`. At least to the native system, when it is
+told to launch the specified program it will know which libraries should be
+included. But I will have a means to get the programs that it depends upon.
+
+## 12:46
+
+But `Suite` itself can refer to multiple programs. So really apart from the
+system suite it really does not matter. So for the most part, things are
+handled exactly as to how they are, single archives with multiple potential
+entry points. So basically what I can do is handle dependencies at
+installation time and hardcode them sort of in a way. It would be rather
+fixed but it would be simpler. Although there still has to be dependency
+handling and such.
+
+## 22:52
+
+Okay, so I have the same problem with contexts. Basically all system calls
+will need to be called with a context so that they work properly. I
+essentially need to write an actual kernel in the CLDC libraries to handle
+these things. There would be the actual kernel code itself but then there
+would need to be a specially initialized API bridge that is magically
+initialized and such. So ther would be some native internal kernel
+implementations, then those can be exposed by user-space calls. So this will
+end up like an actual operating system and such.
+
+## 23:34
+
+The stream which connects the client with the kernel will need a quickly
+accessed flag which determines if the operation was a success or not.
+Basically a synchronous return value. So basically there will need to be
+a response system for it to operate correctly, but it still can be
+asynchronous for the most part. Just the client's data stream to the kernel
+will need to handle that case such as providing responses along with commands
+and such.
