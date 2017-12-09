@@ -146,245 +146,22 @@ itself and allow building and compiling itself from source. This would also
 allow other programs to be built from source and can be used as a self
 contained Java development environment.
 
-# Compilation Time
+# Micro-Kernel
 
-This section contains information related to the operation of the Ahead-Of-Time
-Compiler and the Just-In-Time Compiler.
+This details the SquirrelJME micro-kernel. The kernel is used to manage
+SquirrelJME and is the most important part of SquirrelJME as it makes sure
+that everything runs and operates correctly.
 
-## Unsafe Renaming
+## Why A Micro-Kernel?
 
-In the `net.multiphasicapps.squirreljme.unsafe` package, there are classes
-which are `public` and others which are internal and package private. The
-internal package private classes in the form of `__Ext_<Name>__` contain
-internal and to be renamed by the JIT implementations of class `<Name>`. So for
-example the public class `net.multiphasicapps.squirreljme.unsafe.SystemVM`. It
-internally checks and then calls methods within
-`net.multiphasicapps.squirreljme.unsafe.__Ext_systemvm__` or other internal
-classes as needed. When the JIT sees a static method call to an `__Ext_` class
-it will rename it according to the JIT configuration. This means that any calls
-to that class end up turning into calls to
-`net.multiphasicapps.squirreljme.unsafe.__Int_mipssystemvm__` which implements
-the required classes to support the VM on MIPS systems.
+A micro-kernel was chosen because it is very simple and communication between
+processes can be protected by separation.
 
-This renaming in turn allows the build environment to work like a normal Java
-program without requiring major rewriting or having various kludges between
-the build environment and SquirrelJME. This also reduces duplicate code since
-the code can be shared between the two.
+## Server-Client Bridge
 
-Note that all renames are lowercase and only lowercased renames are used.
-
-# Virtual Machine
-
-This section contains information related to the target independent virtual
-machine at run-time.
-
-## Garbage Collection
-
-For simplicity the garbage collector is a reference counter with sweeping when
-no more memory is available (or GC is called manually). As such, cyclic
-object references will not be freed unless one or both directions are
-weakly referenced (using `WeakReference`). This means that the following
-situations would permit both objects to be potentially collected:
-
- * A has a strong reference to B, B does not reference A.
- * A has a weak reference to B, B does not reference A.
- * A has a strong reference to B, B has a weak reference to A.
- * A has a weak reference to B, B has a strong reference to A.
- * A and B both have weak references to each other.
-
-Although reference counting may increase lock contention on the CPU and memory
-buses it simplifies the design greatly by not requiring complex garbage
-collection algorithms. In most cases with reference counting, SquirrelJME is
-capable of using always a minimum footprint of memory depending on whether that
-memory should be freed to the operating system or within SquirrelJME's own
-memory for other programs running in it.
-
-Objects will have two counts: The number of strong references pointed to this
-object and the number of weak references pointed to this object. These two
-counts determine if an object can be garbage collected. If any object has a
-strong reference count that is non-zero then it will be garbage collected as
-long as it has zero weak count also. Thus, an object which is never referenced
-at all will be garbage collected. In a standard Java VM, a `WeakReference` in
-most cases will only give an object if it has at least one strong reference.
-
-### Strongly reached, weakly reached (`WeakReference`)
-
-In Java ME with Java being garbage collected, there are two types of
-references to objects which affects how garbage collection is performed.
-Similar to other languages this can be seen as a smart pointer or a special
-kind of reference counting pointer.
-
-A strong reference is a normal reference to an object, like a value which is
-placed within a field (a static field or an instance field) or a local
-variable in a method. Any objects that are strongly referenced cannot be
-garbage collected because they are used.
-
-A weak reference is another kind of reference to an object which is provided
-by the `WeakReference` class. Essentially it does not have a strong bond to
-the object it points to and that object may be garbage collected and
-return `null` as long as no strong references point to it. Weak references
-cannot really be used as a cache due to the way the garbage collector works,
-for a cache a `SoftReference` should be used by Java ME does not have such a
-class. At least with weak references, the virtual machine will in the most
-average case always use the least amount of memory. In short, weak references
-are garbage collected as soon as possible. If used for memoization it will
-not have the best intended effect of reducing calculations but it would reduce
-the memory footprint.
-
-### Strong Count of Zero, Non-Zero Weak Count
-
-When an object has no strong references and only weak references, that means
-that it can soon be garbage collected. For simplicity when `WeakReference`
-detects that a target object has no strong references to it, it will detach
-itself from that object, reduce the weak reference count, and return `null`.
-If a `WeakReference` is no longer strongly referenced it will also cause a
-detach to occur.
-
-If the system is out of memory then all objects will be iterated and any
-objects which only have weak references to them will be removed.
-
-### Strong Count of Zero, Zero Weak Count
-
-This object can be garbage collected, it will be removed and that memory will
-be made available for other allocations.
-
-## Processes
-
-MIDP 3 allows multiple programs to be ran at the same time (provided they
-are actual different MIDlets). One thing to simplify the design of SquirrelJME
-without needing much work
-
-## `String` Implementation
-
-The `String` class is a Java class which is used virtually in every single
-program. One main consideration about strings are that to the virtual machine
-they are UTF-16 strings, which may have codepoints in them (but internally
-those are not considered at all).
-
-The following assumptions are made for the best case memory optimization:
-
- * Most strings have a maximum length of 127 characters.
- * At most strings have at most 127 unique non-ASCII characters.
- * Most used characters are in the ASCII range (0-127).
-   * Latin languages may use a number of characters from other ranges.
-   * Characters for other languages usually do not have a massive number of
-     character combinations (except for Chinese character sets).
-
-To reduce the memory footprint of strings, the string itself is represented as
-a `byte` array and has interpretations depending on the value of a character
-within that given string.
-
-For characters within `[0, 127]` they will be treated as standard ASCII
-characters. These characters are the most used characters and require no
-special handling otherwise.
-
-Characters within `[128, 255]` will be translated to an index (via `AND 127`)
-which will point to an array of `char` specifying the character to use. Any
-non-ASCII character will use a character within the map.
-
-If the best case assumptions are not met, then the string will be represented
-using 16-bit characters so that variable length strings are not encoded to
-support `char`.
-
-## Synchronization and Locks
-
-Java naturally provides synchronization which is used for writing code which
-is thread safe. Since synchronization and monitors are very intertwined, the
-design will reference future information. Since there are a number of different
-ways different CPUs and targets could have thread safety, those details have
-been removed and replaced with easy to determine common means.
-
-Every object will have the specified fields in their structure which indicates
-the synchronization state of the object:
-
- * _threadid_  - The ID of the thread which has synchronized the object.
- * _lockcount_ - The number of times the lock has been triggered.
-   * All objects have re-entrant locks.
- * _waitcount_ - The number of threads waiting on this handler.
-
-Notifications are handled by going through all threads and locating threads
-which are waiting on a given object.
-
-### Loop Threading for Multi-Threading
-
-Since Java is multi-threaded and SquirrelJME may run on top of a number of
-system which may have different threading models, the following differences
-determine what happens when a loop needs to be repeated due to a failed
-operation.
-
-#### Preemptive
-
-The loop should perform a given number of checks, then once a certain
-threshold is reached a longer duration sleep should be entered so that CPU
-cycles are not spent deadlocking. Essentially it waits upon a signal where
-possible.
-
-#### Cooperative
-
-The loop should yield and not attempt another try (because only a single thread
-can run at one time) that way another thread which is able to be ran can
-executed, potentially one which controls the monitor for the given object.
-
-It is possible that an internal threading manager can determine the best
-thread to choose for consecutive execution.
-
-### `synchronized` (aka `monitorenter`)
-
-When a monitor on an object is to be locked the following actions will be
-performed:
-
- 1. Start of loop
- 2. Atomic check of _threadid_ against zero.
-    * If zero, atomically set the value to the current thread ID.
-    * If non-zero, fail, thread the loop, and try again.
- 3. Increment _lockcount_.
-
-### End of `synchronized` (aka `monitorexit`)
-
-This is performed when the current thread wishes to exit the monitor for the
-given object:
-
- 1. Atomic check of _threadid_ against the current thread ID.
-    * If the value matches the thread ID, continue the operations.
-    * If it mismatches, keep the same value but throw
-      `IllegalMonitorStateException`.
- 2. Decrement _lockcount_.
- 3. If _lockcount_ is zero, atomically set _threadid_ to zero.
-
-### `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
-
-This indicates that the thread wishes to wait for a notification for the
-object. This effectively prepares some state then unlocks the monitor.
-
-On calling of a wait:
-
- 1. If applicable, determine the nanoseconds for the program clock for when
-    the wait should expire.
- 2. Atomic check of _threadid_ against the current thread ID.
-    * If the value matches the thread ID, continue the operations.
-    * If it mismatches, keep the same value but throw
-      `IllegalMonitorStateException`.
- 3. Lock the state of the current thread.
- 4. Set the timeout flag and timeout appropriately.
- 5. Set the current object being waited on.
- 6. Increment _waitcount_.
- 7. Exit the monitor for the given object.
- 8. Switch to other threads and enter the background waiting state.
-
-When a notification occurs:
-
- 1. Lock the current monitor.
- 2. Decrement _waitcount_.
-
-When timeout or interrupt occurs:
-
- 1. Lock the current monitor.
- 2. Decrement _waitcount_.
- 3. If applicable, throw `InterruptedException`.
-
-### `Object.notify()` and `Object.notifyAll()`
-
-This notifies other threads waiting on the given object.
+The connection between the server (the kernel) and each client (running
+processes) operates with a single asynchronous data packet stream. The packet
+stream is used for two-way communication as needed.
 
 # Environment
 
@@ -423,7 +200,9 @@ maximum of 8 characters for a file name and 3 characters for an extension along
 with other naming restrictions. As such getting a path which does not produce
 a valid DOS pathname will result in an exception being thrown.
 
-## System Services
+## ***OLD*** System Services
+
+***SYSTEM SERVICES USE ANOTHER CLASS, NOT THE ONE SPECIFIED BELOW***
 
 The `net.multiphasicapps.squirreljme.unsafe.SystemEnvironment` has a method
 called `<C>systemService(Class<C>)` which is used to obtain a system service.
@@ -437,4 +216,244 @@ Custom system services can be specified by setting system properties with the
 given prefix `net.multiphasicapps.squirreljme.unsafe.service.` where anything
 following that is the target class to provide a service for, the value for the
 property is the implementation of that.
+
+# ***OLD*** Compilation Time
+
+This section contains information related to the operation of the Ahead-Of-Time
+Compiler and the Just-In-Time Compiler.
+
+## ***OLD*** Unsafe Renaming
+
+In the `net.multiphasicapps.squirreljme.unsafe` package, there are classes
+which are `public` and others which are internal and package private. The
+internal package private classes in the form of `__Ext_<Name>__` contain
+internal and to be renamed by the JIT implementations of class `<Name>`. So for
+example the public class `net.multiphasicapps.squirreljme.unsafe.SystemVM`. It
+internally checks and then calls methods within
+`net.multiphasicapps.squirreljme.unsafe.__Ext_systemvm__` or other internal
+classes as needed. When the JIT sees a static method call to an `__Ext_` class
+it will rename it according to the JIT configuration. This means that any calls
+to that class end up turning into calls to
+`net.multiphasicapps.squirreljme.unsafe.__Int_mipssystemvm__` which implements
+the required classes to support the VM on MIPS systems.
+
+This renaming in turn allows the build environment to work like a normal Java
+program without requiring major rewriting or having various kludges between
+the build environment and SquirrelJME. This also reduces duplicate code since
+the code can be shared between the two.
+
+Note that all renames are lowercase and only lowercased renames are used.
+
+# ***OLD*** Virtual Machine
+
+This section contains information related to the target independent virtual
+machine at run-time.
+
+## ***OLD*** Garbage Collection
+
+For simplicity the garbage collector is a reference counter with sweeping when
+no more memory is available (or GC is called manually). As such, cyclic
+object references will not be freed unless one or both directions are
+weakly referenced (using `WeakReference`). This means that the following
+situations would permit both objects to be potentially collected:
+
+ * A has a strong reference to B, B does not reference A.
+ * A has a weak reference to B, B does not reference A.
+ * A has a strong reference to B, B has a weak reference to A.
+ * A has a weak reference to B, B has a strong reference to A.
+ * A and B both have weak references to each other.
+
+Although reference counting may increase lock contention on the CPU and memory
+buses it simplifies the design greatly by not requiring complex garbage
+collection algorithms. In most cases with reference counting, SquirrelJME is
+capable of using always a minimum footprint of memory depending on whether that
+memory should be freed to the operating system or within SquirrelJME's own
+memory for other programs running in it.
+
+Objects will have two counts: The number of strong references pointed to this
+object and the number of weak references pointed to this object. These two
+counts determine if an object can be garbage collected. If any object has a
+strong reference count that is non-zero then it will be garbage collected as
+long as it has zero weak count also. Thus, an object which is never referenced
+at all will be garbage collected. In a standard Java VM, a `WeakReference` in
+most cases will only give an object if it has at least one strong reference.
+
+### ***OLD*** Strongly reached, weakly reached (`WeakReference`)
+
+In Java ME with Java being garbage collected, there are two types of
+references to objects which affects how garbage collection is performed.
+Similar to other languages this can be seen as a smart pointer or a special
+kind of reference counting pointer.
+
+A strong reference is a normal reference to an object, like a value which is
+placed within a field (a static field or an instance field) or a local
+variable in a method. Any objects that are strongly referenced cannot be
+garbage collected because they are used.
+
+A weak reference is another kind of reference to an object which is provided
+by the `WeakReference` class. Essentially it does not have a strong bond to
+the object it points to and that object may be garbage collected and
+return `null` as long as no strong references point to it. Weak references
+cannot really be used as a cache due to the way the garbage collector works,
+for a cache a `SoftReference` should be used by Java ME does not have such a
+class. At least with weak references, the virtual machine will in the most
+average case always use the least amount of memory. In short, weak references
+are garbage collected as soon as possible. If used for memoization it will
+not have the best intended effect of reducing calculations but it would reduce
+the memory footprint.
+
+### ***OLD*** Strong Count of Zero, Non-Zero Weak Count
+
+When an object has no strong references and only weak references, that means
+that it can soon be garbage collected. For simplicity when `WeakReference`
+detects that a target object has no strong references to it, it will detach
+itself from that object, reduce the weak reference count, and return `null`.
+If a `WeakReference` is no longer strongly referenced it will also cause a
+detach to occur.
+
+If the system is out of memory then all objects will be iterated and any
+objects which only have weak references to them will be removed.
+
+### ***OLD*** Strong Count of Zero, Zero Weak Count
+
+This object can be garbage collected, it will be removed and that memory will
+be made available for other allocations.
+
+## ***OLD*** Processes
+
+MIDP 3 allows multiple programs to be ran at the same time (provided they
+are actual different MIDlets). One thing to simplify the design of SquirrelJME
+without needing much work
+
+## ***OLD*** `String` Implementation
+
+The `String` class is a Java class which is used virtually in every single
+program. One main consideration about strings are that to the virtual machine
+they are UTF-16 strings, which may have codepoints in them (but internally
+those are not considered at all).
+
+The following assumptions are made for the best case memory optimization:
+
+ * Most strings have a maximum length of 127 characters.
+ * At most strings have at most 127 unique non-ASCII characters.
+ * Most used characters are in the ASCII range (0-127).
+   * Latin languages may use a number of characters from other ranges.
+   * Characters for other languages usually do not have a massive number of
+     character combinations (except for Chinese character sets).
+
+To reduce the memory footprint of strings, the string itself is represented as
+a `byte` array and has interpretations depending on the value of a character
+within that given string.
+
+For characters within `[0, 127]` they will be treated as standard ASCII
+characters. These characters are the most used characters and require no
+special handling otherwise.
+
+Characters within `[128, 255]` will be translated to an index (via `AND 127`)
+which will point to an array of `char` specifying the character to use. Any
+non-ASCII character will use a character within the map.
+
+If the best case assumptions are not met, then the string will be represented
+using 16-bit characters so that variable length strings are not encoded to
+support `char`.
+
+## ***OLD*** Synchronization and Locks
+
+Java naturally provides synchronization which is used for writing code which
+is thread safe. Since synchronization and monitors are very intertwined, the
+design will reference future information. Since there are a number of different
+ways different CPUs and targets could have thread safety, those details have
+been removed and replaced with easy to determine common means.
+
+Every object will have the specified fields in their structure which indicates
+the synchronization state of the object:
+
+ * _threadid_  - The ID of the thread which has synchronized the object.
+ * _lockcount_ - The number of times the lock has been triggered.
+   * All objects have re-entrant locks.
+ * _waitcount_ - The number of threads waiting on this handler.
+
+Notifications are handled by going through all threads and locating threads
+which are waiting on a given object.
+
+### ***OLD*** Loop Threading for Multi-Threading
+
+Since Java is multi-threaded and SquirrelJME may run on top of a number of
+system which may have different threading models, the following differences
+determine what happens when a loop needs to be repeated due to a failed
+operation.
+
+#### ***OLD*** Preemptive
+
+The loop should perform a given number of checks, then once a certain
+threshold is reached a longer duration sleep should be entered so that CPU
+cycles are not spent deadlocking. Essentially it waits upon a signal where
+possible.
+
+#### ***OLD*** Cooperative
+
+The loop should yield and not attempt another try (because only a single thread
+can run at one time) that way another thread which is able to be ran can
+executed, potentially one which controls the monitor for the given object.
+
+It is possible that an internal threading manager can determine the best
+thread to choose for consecutive execution.
+
+### ***OLD*** `synchronized` (aka `monitorenter`)
+
+When a monitor on an object is to be locked the following actions will be
+performed:
+
+ 1. Start of loop
+ 2. Atomic check of _threadid_ against zero.
+    * If zero, atomically set the value to the current thread ID.
+    * If non-zero, fail, thread the loop, and try again.
+ 3. Increment _lockcount_.
+
+### ***OLD*** End of `synchronized` (aka `monitorexit`)
+
+This is performed when the current thread wishes to exit the monitor for the
+given object:
+
+ 1. Atomic check of _threadid_ against the current thread ID.
+    * If the value matches the thread ID, continue the operations.
+    * If it mismatches, keep the same value but throw
+      `IllegalMonitorStateException`.
+ 2. Decrement _lockcount_.
+ 3. If _lockcount_ is zero, atomically set _threadid_ to zero.
+
+### ***OLD*** `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
+
+This indicates that the thread wishes to wait for a notification for the
+object. This effectively prepares some state then unlocks the monitor.
+
+On calling of a wait:
+
+ 1. If applicable, determine the nanoseconds for the program clock for when
+    the wait should expire.
+ 2. Atomic check of _threadid_ against the current thread ID.
+    * If the value matches the thread ID, continue the operations.
+    * If it mismatches, keep the same value but throw
+      `IllegalMonitorStateException`.
+ 3. Lock the state of the current thread.
+ 4. Set the timeout flag and timeout appropriately.
+ 5. Set the current object being waited on.
+ 6. Increment _waitcount_.
+ 7. Exit the monitor for the given object.
+ 8. Switch to other threads and enter the background waiting state.
+
+When a notification occurs:
+
+ 1. Lock the current monitor.
+ 2. Decrement _waitcount_.
+
+When timeout or interrupt occurs:
+
+ 1. Lock the current monitor.
+ 2. Decrement _waitcount_.
+ 3. If applicable, throw `InterruptedException`.
+
+### ***OLD*** `Object.notify()` and `Object.notifyAll()`
+
+This notifies other threads waiting on the given object.
 
