@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
+import net.multiphasicapps.squirreljme.runtime.cldc.chore.ChoreGroup;
 import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chores;
 import net.multiphasicapps.squirreljme.runtime.cldc.core.Clock;
 import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
@@ -74,6 +75,17 @@ public final class APIAccessor
 	public static final Chore currentChore()
 	{
 		return APIAccessor.<Chore>of(APIList.CURRENT_CHORE, Chore.class);
+	}
+	
+	/**
+	 * Returns the current chore group.
+	 *
+	 * @return The current chore group.
+	 * @since 2017/12/08
+	 */
+	public static final ChoreGroup currentChoreGroup()
+	{
+		return currentChore().group();
 	}
 	
 	/**

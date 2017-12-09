@@ -24,15 +24,23 @@ public abstract class ChoreGroup
 {
 	/** Is this a system group? */
 	public static final int FLAG_SYSTEM =
-		0b0000_0000__0000_0000___0000_0000__0000_0001;
+		0x0000_0001;
 	
 	/** Client can manage tasks? */
 	public static final int BASIC_PERMISSION_CLIENT_MANAGE_TASKS =
-		0b0000_0000__0000_0000___0000_0000__0000_0001;
+		0x0000_0002;
+	
+	/** Client can manage tasks? */
+	public static final int BASIC_PERMISSION_CLIENT_MANAGE_SUITES =
+		0x0000_0004;
 	
 	/** Cross client can manage tasks? */
 	public static final int BASIC_PERMISSION_CROSSCLIENT_MANAGE_TASKS =
-		0b0000_0000__0000_0000___0000_0000__0000_0010;
+		0x0000_0008;
+	
+	/** Cross client can manage tasks? */
+	public static final int BASIC_PERMISSION_CROSSCLIENT_MANAGE_SUITES =
+		0x0000_0010;
 	
 	/**
 	 * Returns the basic permissions of the group.

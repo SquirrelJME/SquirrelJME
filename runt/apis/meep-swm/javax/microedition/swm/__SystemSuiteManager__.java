@@ -10,7 +10,15 @@
 
 package javax.microedition.swm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
+import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
 
 /**
  * This class manages the bridge for the suite manager to the native program
@@ -21,6 +29,14 @@ import java.util.List;
 final class __SystemSuiteManager__
 	implements SuiteManager
 {
+	/** Internal lock for suite management. */
+	protected final Object lock =
+		new Object();
+	
+	/** Cached suites. */
+	protected final Map<Program, Reference<Suite>> _suites =
+		new WeakHashMap<>();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/08
@@ -73,7 +89,30 @@ final class __SystemSuiteManager__
 	public List<Suite> getSuites(SuiteType __t)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		ArrayList<Suite> rv = new ArrayList<>();
+		
+		// Lock so the suites are always up to date
+		Map<Program, Reference<Suite>> suites = this._suites;
+		synchronized (this.lock)
+		{
+			// Optimize for half the number of programs
+			Program[] programs = APIAccessor.programs().list();
+			rv.ensureCapacity((programs.length / 2) + 1);
+			
+			for (Program p : programs)
+			{
+				Reference<Suite> ref = suites.get(p);
+				Suite suite;
+				
+				if (ref == null || null == (suite = ref.get()))
+					suites.put(p, new WeakReference<>((suite = new Suite(p))));
+				
+				if (__t == suite.getSuiteType())
+					rv.add(suite);
+			}
+		}
+		
+		return rv;
 	}
 	
 	/**
