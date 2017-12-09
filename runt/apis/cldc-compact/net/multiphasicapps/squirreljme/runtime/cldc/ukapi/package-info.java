@@ -9,15 +9,17 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the SquirrelJME micro-kernel and contains the needed
- * interfaces and such which are needed for SquirrelJME to operate correctly.
+ * This package contains userspace APIs which are used to interact with the
+ * kernel.
  *
- * The classes used within this package are only to be used by the core chore
- * within SquirrelJME and not any user-space process. In fact it is an error
- * if any of these classes are initialized within user-space.
+ * In kernel space, the API itself will always call kernel functions
+ * without much hassle.
+ *
+ * In user space, the API will be linked to the packet system which attaches
+ * the current client to the kernel.
  *
  * @since 2017/12/08
  */
 
-package net.multiphasicapps.squirreljme.runtime.cldc.ukernel;
+package net.multiphasicapps.squirreljme.runtime.cldc.ukapi;
 
