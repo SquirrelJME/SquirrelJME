@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.program.Programs;
  *
  * @since 2017/12/07
  */
+@Deprecated
 public final class APIAccessor
 {
 	/**
