@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  * @since 2017/08/10
  */
 @Deprecated
-public class MailboxException
+public class KernelMailBoxException
 	extends Exception
 {
 	/**
@@ -25,7 +25,7 @@ public class MailboxException
 	 *
 	 * @since 2017/08/10
 	 */
-	public MailboxException()
+	public KernelMailBoxException()
 	{
 	}
 	
@@ -35,7 +35,7 @@ public class MailboxException
 	 * @param __m The message.
 	 * @since 2017/08/10
 	 */
-	public MailboxException(String __m)
+	public KernelMailBoxException(String __m)
 	{
 		super(__m);
 	}
@@ -47,7 +47,7 @@ public class MailboxException
 	 * @param __c The cause.
 	 * @since 2017/08/10
 	 */
-	public MailboxException(String __m, Throwable __c)
+	public KernelMailBoxException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -58,7 +58,7 @@ public class MailboxException
 	 * @param __c The cause.
 	 * @since 2017/08/10
 	 */
-	public MailboxException(Throwable __c)
+	public KernelMailBoxException(Throwable __c)
 	{
 		super(__c);
 	}

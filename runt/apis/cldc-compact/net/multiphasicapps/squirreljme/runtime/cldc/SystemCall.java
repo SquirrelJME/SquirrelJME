@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxListener;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
@@ -111,6 +113,57 @@ public final class SystemCall
 	 */
 	public static final SystemTask[] listTasks(boolean __incsys)
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Connects to a remote mailbox that is listening. 
+	 *
+	 * @param __remote The remote program to connect to, if {@code null} then
+	 * any program is connected to.
+	 * @param __svname The name of the server to connect to.
+	 * @param __sv The encoded version of the server to connect to, the server
+	 * must have a version that is at least this value.
+	 * @param __am If {@code true} then authorized mode to use.
+	 * @throws IllegalArgumentException If the remote midlet is malformed or
+	 * the server name and/or version are malformed.
+	 * @throws NullPointerException If no server was specified.
+	 * @throws KernelMailBoxException If the server does not exist or if the
+	 * remote destination is closed.
+	 * @since 2016/10/13
+	 */
+	public final SystemMailBoxConnection connect(String __remote,
+		String __svname, int __sv, boolean __am)
+		throws ArrayIndexOutOfBoundsException,
+			IllegalArgumentException, NullPointerException,
+			KernelMailBoxException
+	{
+		if (__svname == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets up a listening mailbox that waits for incoming mailbox connections.
+	 *
+	 * @param __name The name of the server.
+	 * @param __v The integer encoded version number.
+	 * @param __am If {@code true} then authorization mode is used.
+	 * @return The descriptor of the mailbox destination.
+	 * @throws IllegalArgumentException If the version number is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @throws KernelMailBoxException If the mailbox was closed.
+	 * @since 2016/10/13
+	 */
+	public final SystemMailBoxListener mailboxListen(String __name, int __v,
+		boolean __am)
+		throws IllegalArgumentException, NullPointerException,
+			KernelMailBoxException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
