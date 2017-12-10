@@ -8,26 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
-
-import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.MicroKernel;
+package net.multiphasicapps.squirreljme.runtime.syscall;
 
 /**
- * This implements the microkernel which is used on the initial Java SE
- * process and not the client processes.
+ * This class acts as the base for classes which need to call the kernel to
+ * perform a task.
  *
- * @since 2017/12/08
+ * @since 2017/12/10
  */
-public class JavaMicroKernel
-	extends MicroKernel
+public abstract class SystemCaller
 {
-	/**
-	 * Initializes the microkernel.
-	 *
-	 * @since 2017/12/08
-	 */
-	JavaMicroKernel()
-	{
-	}
 }
 
