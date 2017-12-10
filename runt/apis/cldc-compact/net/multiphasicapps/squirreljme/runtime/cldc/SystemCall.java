@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxListener;

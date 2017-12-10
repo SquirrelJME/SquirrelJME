@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
-
 /**
  * This class is the root of all class trees in Java.
  *

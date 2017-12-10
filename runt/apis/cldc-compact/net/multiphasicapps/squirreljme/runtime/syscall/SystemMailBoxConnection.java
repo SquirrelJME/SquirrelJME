@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.syscall;
 
 import java.io.Closeable;
+import java.util.NoSuchElementException;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
 
 /**
  * This represents a mailbox which is used as the basis for inter-midlet
