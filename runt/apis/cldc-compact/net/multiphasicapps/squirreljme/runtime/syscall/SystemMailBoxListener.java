@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.syscall;
 
 import java.io.Closeable;
-import net.multiphasicapps.squirreljme.runtime.syscall.KernelMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
 
 /**
  * This represents a listener for incoming mailbox connections and acts as
@@ -35,6 +35,6 @@ public interface SystemMailBoxListener
 	 */
 	public abstract SystemMailBoxConnection accept(int __ld)
 		throws IllegalArgumentException, InterruptedException,
-			KernerlMailBoxException;
+			KernelMailBoxException;
 }
 

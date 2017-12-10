@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
  * This exception is thrown when there were mailbox operations which could not
@@ -16,7 +16,6 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  *
  * @since 2017/08/10
  */
-@Deprecated
 public class KernelMailBoxException
 	extends Exception
 {
