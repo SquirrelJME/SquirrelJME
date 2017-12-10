@@ -99,10 +99,11 @@ public interface SuiteManager
 	 * if there are no suites then this may be empty.
 	 * @throws IllegalArgumentException If the requested type is neither
 	 * an application or a library.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
 	public abstract List<Suite> getSuites(SuiteType __t)
-		throws IllegalArgumentException;
+		throws IllegalArgumentException, NullPointerException;
 	
 	/**
 	 * Synchronously removes the given installed suite.
