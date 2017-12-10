@@ -26,7 +26,7 @@ public abstract class KernelInterface
 		__instance();
 	
 	/**
-	 * Returns the instance of the kernel.
+	 * Returns the instance of the kernel interface.
 	 *
 	 * This method may virtually be replaced to return the correct interface
 	 * or the field could be set before or after the fact.
