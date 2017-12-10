@@ -8,27 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.ukapi;
-
-import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.Context;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.MicroKernel;
+package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
 
 /**
- * This is a kernel interface where all implementations.
+ * This is a kernel interface which directly interacts with a kernel.
  *
  * @since 2017/12/08
  */
-public final class ContextInterface
+public final class ContextKernelInterface
 	extends KernelInterface
 {
 	/** The micro kernel to interact with. */
-	protected final MicroKernel kernel;
+	protected final Kernel kernel;
 	
 	/** All operations on the kernel must operate within this context. */
 	protected final Context context;
 	
 	/**
-	 * Initializes the interface which interacts with the given microkernel
+	 * Initializes the interface which interacts with the given Kernel
 	 * using the given context.
 	 *
 	 * @param __uk The kernel to interact with.
@@ -36,7 +33,7 @@ public final class ContextInterface
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	public ContextInterface(MicroKernel __uk, Context __c)
+	public ContextKernelInterface(Kernel __uk, Context __c)
 		throws NullPointerException
 	{
 		if (__uk == null || __c == null)

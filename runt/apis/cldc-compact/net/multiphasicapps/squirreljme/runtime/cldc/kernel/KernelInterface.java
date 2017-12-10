@@ -8,14 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.ukapi;
+package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
 
 /**
  * This class provides access to the kernel interface which allows the
  * process to interact with the kernel.
- *
- * For stability purposes this class should only have abstract methods to be
- * implemented by a sub-class.
  *
  * @since 2017/12/08
  */
