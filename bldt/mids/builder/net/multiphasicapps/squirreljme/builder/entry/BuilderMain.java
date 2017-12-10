@@ -11,7 +11,6 @@
 package net.multiphasicapps.squirreljme.builder.entry;
 
 import java.io.PrintStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
 import net.multiphasicapps.squirreljme.builder.support.BuilderFactory;
 
 /**

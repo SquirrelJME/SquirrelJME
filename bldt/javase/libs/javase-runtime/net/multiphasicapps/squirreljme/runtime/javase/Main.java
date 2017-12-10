@@ -107,7 +107,7 @@ public class Main
 		// The server uses the actual kernel
 		else
 		{
-			Kernel kernel = new Kernel();
+			Kernel kernel = new JavaKernel();
 			syscaller = new InKernelSystemCaller(kernel, null);
 		}
 		
@@ -133,7 +133,7 @@ public class Main
 		// Protect everything again
 		modifiersfield.setInt(callerfield, oldmods);
 		modifiersfield.setAccessible(false);
-		kifield.setAccessible(false);
+		callerfield.setAccessible(false);
 	}
 	
 	/**
