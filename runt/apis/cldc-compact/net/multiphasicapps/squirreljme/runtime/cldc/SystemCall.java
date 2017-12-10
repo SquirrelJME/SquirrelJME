@@ -133,7 +133,7 @@ public final class SystemCall
 	 * remote destination is closed.
 	 * @since 2016/10/13
 	 */
-	public final SystemMailBoxConnection connect(String __remote,
+	public static final SystemMailBoxConnection mailboxConnect(String __remote,
 		String __svname, int __sv, boolean __am)
 		throws ArrayIndexOutOfBoundsException,
 			IllegalArgumentException, NullPointerException,
@@ -157,8 +157,8 @@ public final class SystemCall
 	 * @throws KernelMailBoxException If the mailbox was closed.
 	 * @since 2016/10/13
 	 */
-	public final SystemMailBoxListener mailboxListen(String __name, int __v,
-		boolean __am)
+	public static final SystemMailBoxListener mailboxListen(String __name,
+		int __v, boolean __am)
 		throws IllegalArgumentException, NullPointerException,
 			KernelMailBoxException
 	{

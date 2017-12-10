@@ -20,21 +20,28 @@ import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
  * @since 2017/12/10
  */
 public interface SystemMailBoxListener
-	extends Closeable
+	extends AutoCloseable
 {
 	/**
 	 * Accepts an incoming mailbox request to create a mailbox connection.
 	 *
-	 * @param __id The listening mailbox to accept.
 	 * @return The mailbox descriptor for the server end of the mailbox.
-	 * @throws IllegalArgumentException If the mailbox is not valid.
 	 * @throws InterruptedException If the thread was interrupted accepting
 	 * a connection.
 	 * @throws KernelMailBoxException If the mailbox is closed.
 	 * @since 2016/10/13
 	 */
-	public abstract SystemMailBoxConnection accept(int __ld)
+	public abstract SystemMailBoxConnection accept()
 		throws IllegalArgumentException, InterruptedException,
 			KernelMailBoxException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/10
+	 */
+	@Override
+	public abstract void close()
+		throws KernelMailBoxException;
+	
 }
 
