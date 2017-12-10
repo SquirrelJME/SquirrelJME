@@ -13,8 +13,10 @@ package javax.microedition.swm;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
-import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskMetric;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskStatus;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
 /**
  * This describes a task which is currently running on the system. Each task
@@ -27,22 +29,22 @@ import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
 public final class Task
 {
 	/** The actual chore being wrapped. */
-	private final Chore _chore;
+	private final SystemTask _task;
 	
 	/**
 	 * Initializes the task.
 	 *
-	 * @param __chore The chore to wrap.
+	 * @param __task The chore to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	Task(Chore __chore)
+	Task(SystemTask __task)
 		throws NullPointerException
 	{
-		if (__chore == null)
+		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		this._chore = __chore;
+		this._task = __task;
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public final class Task
 	public int getHeapUse()
 	{
 		// Make sure the amount of memory used does not overflow ever
-		long rv = this._chore.memoryUsed();
+		long rv = this._task.metric(KernelTaskMetric.MEMORY_USED);
 		if (rv < 0L)
 			return 0;
 		else if (rv > Integer.MAX_VALUE)
@@ -106,11 +108,11 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		int rv = this._chore.priority();
+		int rv = this._task.priority();
 		if (rv < 0)
-			return TaskPriority.MIN;
-		else if (rv > 0)
 			return TaskPriority.MAX;
+		else if (rv > 0)
+			return TaskPriority.MIN;
 		return TaskPriority.NORM;
 	}
 	
@@ -122,25 +124,25 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		int status = this._chore.status();
+		int status = this._task.status();
 		switch (status)
 		{
-			case Chore.STATUS_EXITED_FATAL:
+			case KernelTaskStatus.EXITED_FATAL:
 				return TaskStatus.EXITED_FATAL;
 
-			case Chore.STATUS_EXITED_REGULAR:
+			case KernelTaskStatus.EXITED_REGULAR:
 				return TaskStatus.EXITED_REGULAR;
 
-			case Chore.STATUS_EXITED_TERMINATED:
+			case KernelTaskStatus.EXITED_TERMINATED:
 				return TaskStatus.EXITED_TERMINATED;
 
-			case Chore.STATUS_RUNNING:
+			case KernelTaskStatus.RUNNING:
 				return TaskStatus.RUNNING;
 
-			case Chore.STATUS_START_FAILED:
+			case KernelTaskStatus.START_FAILED:
 				return TaskStatus.START_FAILED;
 
-			case Chore.STATUS_STARTING:
+			case KernelTaskStatus.STARTING:
 				return TaskStatus.STARTING;
 			
 				// {@squirreljme.error DG05 Task is in an invalid status
@@ -188,28 +190,18 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		return this._chore.isSystem();
+		return this._task.isSystem();
 	}
 	
 	/**
-	 * Returns the chore of this task.
+	 * Returns the system task of this task.
 	 *
-	 * @return The chore used.
+	 * @return The system task.
 	 * @since 2017/12/08
 	 */
-	final Chore __chore()
+	final SystemTask __task()
 	{
-		return this._chore;
-	}
-	
-	/**
-	 * Attempts to restart the task.
-	 *
-	 * @since 2017/12/08
-	 */
-	final void __restart()
-	{
-		throw new todo.TODO();
+		return this._task;
 	}
 }
 

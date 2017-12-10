@@ -13,10 +13,13 @@ package javax.microedition.swm;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.KernelInterface;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramType;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
 
 /**
  * This class manages the bridge for the suite manager to the native program
@@ -32,7 +35,7 @@ final class __SystemSuiteManager__
 		new Object();
 	
 	/** Cached suites. */
-	protected final Map<Program, Reference<Suite>> _suites =
+	protected final Map<SystemProgram, Reference<Suite>> _suites =
 		new WeakHashMap<>();
 	
 	/**
@@ -85,32 +88,40 @@ final class __SystemSuiteManager__
 	 */
 	@Override
 	public List<Suite> getSuites(SuiteType __t)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, NullPointerException
 	{
-		ArrayList<Suite> rv = new ArrayList<>();
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// The system call can be masked to filter out unwanted suites
+		int mask;
+		if (__t == SuiteType.APPLICATION)
+			mask = KernelProgramType.APPLICATION;
+		else if (__t == SuiteType.LIBRARY)
+			mask = KernelProgramType.LIBRARY;
+		
+		// {@squirreljme.error DG04 The specified suite type cannot be
+		// listed. (The type)}
+		else
+			throw new IllegalArgumentException(String.format("DG04 %s", __t));
 		
 		// Lock so the suites are always up to date
-		Map<Program, Reference<Suite>> suites = this._suites;
+		Suite[] rv;
 		synchronized (this.lock)
 		{
-			// Optimize for half the number of programs
-			Program[] programs = APIAccessor.programs().list();
-			rv.ensureCapacity((programs.length / 2) + 1);
+			SystemProgram[] programs = SystemCall.listPrograms(mask);
+			int n = programs.length;
 			
-			for (Program p : programs)
-			{
-				Reference<Suite> ref = suites.get(p);
-				Suite suite;
-				
-				if (ref == null || null == (suite = ref.get()))
-					suites.put(p, new WeakReference<>((suite = new Suite(p))));
-				
-				if (__t == suite.getSuiteType())
-					rv.add(suite);
-			}
+			// Return wrappers
+			rv = new Suite[n];
+			for (int i = 0; i < n; i++)
+				rv[i] = __ofProgram(programs[i]);
 		}
 		
-		return rv;
+		// Since the returned set of programs is an array, just wrap the
+		// returning array because it is faster than seting up the logic
+		// for a new one.
+		return Arrays.<Suite>asList(rv);
 	}
 	
 	/**
@@ -132,6 +143,35 @@ final class __SystemSuiteManager__
 	public void removeSuiteListener(SuiteListener __sl)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the suite which maps to the given program.
+	 *
+	 * @param __p The program to wrap.
+	 * @return The suite for the given program.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/10
+	 */
+	final Suite __ofProgram(SystemProgram __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Use pre-existing suite when possible
+		Map<SystemProgram, Reference<Suite>> suites = this._suites;
+		synchronized (this.lock)
+		{
+			Reference<Suite> ref = suites.get(__p);
+			Suite rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				suites.put(__p, new WeakReference<>(
+					(rv = new Suite(__p))));
+			
+			return rv;
+		}
 	}
 }
 

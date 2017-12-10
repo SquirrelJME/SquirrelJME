@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
  *
  * @since 2017/12/10
  */
-public interface ProgramType
+public interface KernelProgramType
 {
 	/** An application (MIDlet). */
 	public static final int APPLICATION =

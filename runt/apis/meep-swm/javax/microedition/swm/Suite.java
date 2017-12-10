@@ -15,7 +15,9 @@ import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.KernelInterface;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramType;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
 
 /**
  * This represents an application suite.
@@ -36,7 +38,7 @@ public class Suite
 		new Object();
 	
 	/** The suite program. */
-	private final Program _program;
+	private final SystemProgram _program;
 	
 	/**
 	 * Initializes the system suite.
@@ -46,7 +48,7 @@ public class Suite
 	 */
 	private Suite(Class<Suite> __cl)
 	{
-		this._program = APIAccessor.programs().systemProgram();
+		this._program = null;
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class Suite
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	Suite(Program __p)
+	Suite(SystemProgram __p)
 		throws NullPointerException
 	{
 		if (__p == null)
@@ -321,7 +323,7 @@ public class Suite
 	 * @return The used program.
 	 * @since 2017/12/08
 	 */
-	final Program __program()
+	final SystemProgram __program()
 	{
 		return this._program;
 	}

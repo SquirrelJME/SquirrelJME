@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
 /**
  * This class provides access to the system's default system call interface
@@ -62,6 +64,52 @@ public final class SystemCall
 	 * @since 2017/11/10
 	 */
 	public static final void gc()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Attempts to launch the specified program with the specified entry
+	 * point. If a task with the same program and entry point is already
+	 * running the it will be restarted.
+	 *
+	 * @param __p The program to launch.
+	 * @param __main The main entry point for the task.
+	 * @return The system task for the launched task, if a task was restarted
+	 * then it will return the same task identifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/10
+	 */
+	public static final SystemTask launchTask(SystemProgram __p, String __main)
+		throws NullPointerException
+	{
+		if (__p == null || __main == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Lists programs which are available on the system.
+	 *
+	 * @param __typemask A mask which is used to filter programs of a given
+	 * type.
+	 * @return Programs which match the specified mask and exist.
+	 * @since 2017/12/10
+	 */
+	public static final SystemProgram[] listPrograms(int __typemask)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Lists tasks which currently exist and may be running on the system.
+	 *
+	 * @param __incsys If {@code true} then system tasks are included.
+	 * @return Tasks which currently exist on the system.
+	 * @since 2017/12/10
+	 */
+	public static final SystemTask[] listTasks(boolean __incsys)
 	{
 		throw new todo.TODO();
 	}

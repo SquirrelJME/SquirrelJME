@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
-import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chore;
-import net.multiphasicapps.squirreljme.runtime.cldc.chore.Chores;
-import net.multiphasicapps.squirreljme.runtime.cldc.program.Program;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
 /**
  * This is the task manager which interfaces with the CLDC system support
@@ -39,8 +38,8 @@ final class __SystemTaskManager__
 	protected final Object lock =
 		new Object();
 	
-	/** The mapping of chores to tasks. */
-	private final Map<Chore, Reference<Task>> _tasks =
+	/** The mapping of system tasks to tasks. */
+	private final Map<SystemTask, Reference<Task>> _tasks =
 		new WeakHashMap<>();
 	
 	/**
@@ -73,33 +72,21 @@ final class __SystemTaskManager__
 	@Override
 	public List<Task> getTaskList(boolean __incsys)
 	{
-		ArrayList<Task> rv = new ArrayList<>();
-		
 		// Lock so that the task list is always up to date
-		Map<Chore, Reference<Task>> tasks = this._tasks;
+		Task[] rv;
 		synchronized (this.lock)
 		{
-			// As a slight optimization, pre-allocate the returned list
-			Chore[] chores = APIAccessor.chores().list(__incsys);
-			rv.ensureCapacity(chores.length);
+			SystemTask[] tasks = SystemCall.listTasks(__incsys);
+			int n = tasks.length;
 			
-			for (Chore c : chores)
-			{
-				// Ignore system tasks
-				if (!__incsys && c.isSystem())
-					continue;
-				
-				Reference<Task> ref = tasks.get(c);
-				Task task;
-				
-				if (ref == null || null == (task = ref.get()))
-					tasks.put(c, new WeakReference<>((task = new Task(c))));
-				
-				rv.add(task);
-			}
+			// Return wrappers
+			rv = new Task[n];
+			for (int i = 0; i < n; i++)
+				rv[i] = __ofTask(tasks[i]);
 		}
 		
-		return rv;
+		// Wrap array instead of creating a new list for speed
+		return Arrays.<Task>asList(rv);
 	}
 	
 	/**
@@ -146,32 +133,13 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
-		Task task;
-		Program program = __s.__program();
-		Map<Chore, Reference<Task>> tasks = this._tasks;
-		synchronized (this.lock)
-		{
-			// If the specified program is already running, try to restart it
-			// Use task list get because there could be new chores which were
-			// launched which we do not know about
-			for (Task t :this.getTaskList(true))
-			{
-				Chore c = t.__chore();
-				if (c.program().equals(program) &&
-					c.mainClass().equals(__cn))
-				{
-					// Attempt to restart it
-					t.__restart();
-					return t;
-				}
-			}
-			
-			// Launch and link into running tasks
-			Chore chore = APIAccessor.chores().launch(program, __cn);
-			tasks.put(chore, new WeakReference<>((task = new Task(chore))));
-		}
-		
-		return task;
+		// {@squirreljme.error DG06 Cannot launch the specified program
+		// because it is of the system suite.}
+		SystemProgram program = __s.__program();
+		if (program == null)
+			throw new IllegalArgumentException(String.format("DG06 %s %s",
+				__s.getName(), __cn));
+		return this.__ofTask(SystemCall.launchTask(program, __cn));
 	}
 	
 	/**
@@ -183,6 +151,35 @@ final class __SystemTaskManager__
 		throws IllegalArgumentException, IllegalStateException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns a wrapped task for the given system task.
+	 *
+	 * @param __t The task to wrap.
+	 * @return The wrapped task for the system task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/10
+	 */
+	final Task __ofTask(SystemTask __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Use pre-existing task or rewrap
+		Map<SystemTask, Reference<Task>> tasks = this._tasks;
+		synchronized (this.lock)
+		{
+			Reference<Task> ref = tasks.get(__t);
+			Task rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				tasks.put(__t, new WeakReference<>(
+					(rv = new Task(__t))));
+			
+			return rv;
+		}
 	}
 }
 
