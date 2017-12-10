@@ -19,6 +19,14 @@ import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
  */
 public class Object
 {
+	/** The seed used for the next hashcode. */
+	private static volatile int _SEED =
+		0x917F_25C9;
+	
+	/** The "identity" hashcode for this object. */
+	final int _hashcode =
+		Object.__nextHash();
+	
 	/** The type of class this object is. */
 	final Class<?> _classobj =
 		this.getClass();
@@ -53,7 +61,7 @@ public class Object
 	 */
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		return this == __o;
 	}
 	
 	/**
@@ -79,7 +87,7 @@ public class Object
 	 */
 	public int hashCode()
 	{
-		return RuntimeBridge.OBJECT.identityHashCode(this);
+		return this._hashcode;
 	}
 	
 	/**
@@ -182,6 +190,22 @@ public class Object
 			InterruptedException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the next hash code to use for the identity value.
+	 *
+	 * Internally this uses the same logic as {@link java.util.Random}.
+	 *
+	 * @return The next identity hashcode.
+	 * @since 2017/12/10
+	 */
+	private static final int __nextHash()
+	{
+		int seed = Object._SEED;
+		seed = (seed >>> 1) ^ (-(seed & 1) & 0x80200003);
+		Object._SEED = seed;
+		return seed;
 	}
 }
 
