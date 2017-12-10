@@ -12,10 +12,6 @@
  * This package contains the SquirrelJME micro-kernel and contains the needed
  * interfaces and such which are needed for SquirrelJME to operate correctly.
  *
- * The classes used within this package are only to be used by the core chore
- * within SquirrelJME and not any user-space process. In fact it is an error
- * if any of these classes are initialized within user-space.
- *
  * @since 2017/12/08
  */
 

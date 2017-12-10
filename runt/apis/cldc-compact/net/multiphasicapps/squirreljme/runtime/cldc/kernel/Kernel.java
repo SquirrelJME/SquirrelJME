@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.ukernel;
+package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
 
 /**
  * This class represents the micro-kernel which manages the entire SquirrelJME
@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.runtime.cldc.ukernel;
  *
  * @since 2017/12/08
  */
-public abstract class MicroKernel
+public abstract class Kernel
 {
 	/**
 	 * Returns the context which represents the system.

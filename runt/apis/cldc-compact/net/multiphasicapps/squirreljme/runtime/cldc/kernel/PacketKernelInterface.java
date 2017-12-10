@@ -11,22 +11,13 @@
 package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
 
 /**
- * This interface bitflags which represents the type of a program.
+ * This is a kernel interface which interacts with the kernel via the
+ * packet interface.
  *
  * @since 2017/12/10
  */
-public interface ProgramType
+public class PacketKernelInterface
+	extends KernelInterface
 {
-	/** An application (MIDlet). */
-	public static final int APPLICATION =
-		0x0000_0001;
-	
-	/** A library (LIBlet). */
-	public static final int LIBRARY =
-		0x0000_0002;
-	
-	/** A system suite. */
-	public static final int SYSTEM =
-		0x0000_0004;
 }
 

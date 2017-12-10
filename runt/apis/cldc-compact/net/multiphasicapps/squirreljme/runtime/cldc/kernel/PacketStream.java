@@ -8,13 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.comm;
-
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.OutputStream;
+package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
 
 /**
  * This class handles an asynchronous packet based stream with both input
