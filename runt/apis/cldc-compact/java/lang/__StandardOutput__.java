@@ -12,8 +12,7 @@ package java.lang;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
-import net.multiphasicapps.squirreljme.runtime.cldc.PipeFunctions;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This wraps the standard default output stream.
@@ -30,7 +29,7 @@ final class __StandardOutput__
 	@Override
 	public void write(int __b)
 	{
-		RuntimeBridge.PIPE.write(PipeFunctions.STANDARD_OUTPUT, __b);
+		SystemCall.pipeOutput(false, (byte)__b);
 	}
 	
 	/**
@@ -40,7 +39,7 @@ final class __StandardOutput__
 	@Override
 	public void write(byte[] __b, int __o, int __l)
 	{
-		RuntimeBridge.PIPE.write(PipeFunctions.STANDARD_OUTPUT, __b, __o, __l);
+		SystemCall.pipeOutput(false, __b, __o, __l);
 	}
 }
 

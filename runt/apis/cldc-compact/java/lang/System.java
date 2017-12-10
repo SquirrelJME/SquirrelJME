@@ -13,9 +13,8 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.runtime.cldc.APIAccessor;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
-import net.multiphasicapps.squirreljme.runtime.cldc.VersionFunctions;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemVersion;
 
 public final class System
 {
@@ -55,7 +54,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return APIAccessor.clock().currentTimeMillis();
+		return SystemCall.currentTimeMillis();
 	}
 	
 	/**
@@ -170,12 +169,11 @@ public final class System
 		getSecurityManager().checkPropertyAccess(__k);
 		
 		// Depends on the property
-		VersionFunctions version = RuntimeBridge.VERSION;
 		switch (__k)
 		{
 				// The file separator
 			case "file.separator":
-				return version.directorySeparator();
+				throw new todo.TODO();
 			
 				// Temporary directory
 			case "java.io.tmpdir":
@@ -183,27 +181,27 @@ public final class System
 				
 				// The version of the Java virtual machine
 			case "java.version":
-				return version.javaVMVersionShort();
+				return SystemVersion.javaVMVersionShort();
 				
 				// The version of the JVM (full)
 			case "java.vm.version":
-				return version.javaVMVersionFull();
+				return SystemVersion.javaVMVersionFull();
 				
 				// The name of the JVM
 			case "java.vm.name":
-				return version.javaVMName();
+				return SystemVersion.javaVMName();
 				
 				// The vendor of the JVM
 			case "java.vm.vendor":
-				return version.javaVMVendor();
+				return SystemVersion.javaVMVendor();
 			
 				// The e-mail of the JVM
 			case "java.vm.vendor.email":
-				return version.javaVMEmail();
+				return SystemVersion.javaVMEmail();
 			
 				// The URL of the JVM
 			case "java.vm.vendor.url":
-				return version.javaVMURL();
+				return SystemVersion.javaVMURL();
 				
 				// The vendor of the class libraries
 			case "java.vendor":
@@ -223,11 +221,11 @@ public final class System
 				
 				// The version of the run-time
 			case "java.runtime.version":
-				return version.javaRuntimeVersion();
+				return SystemVersion.javaRuntimeVersion();
 				
 				// The line separator used for text files on the system
 			case "line.separator":
-				return version.lineSeparator();
+				throw new todo.TODO();
 				
 				// The configuration used
 			case "microedition.configuration":
@@ -235,7 +233,7 @@ public final class System
 				
 				// The unique device identifier
 			case "microedition.deviceid.uuid":
-				return version.deviceUUID();
+				throw new todo.TODO();
 				
 				// The encoding to use for reading/writing text files
 			case "microedition.encoding":
@@ -243,7 +241,7 @@ public final class System
 			
 				// The hostname used
 			case "microedition.hostname":
-				return version.hostName();
+				throw new todo.TODO();
 				
 				// The platform the device is running on, this is a model
 				// number and such
@@ -257,19 +255,19 @@ public final class System
 				// The architecture of the OS, using standard SquirrelJME
 				// architecture name format
 			case "os.arch":
-				return version.osArchitecture();
+				throw new todo.TODO();
 				
 				// The name of the operating system
 			case "os.name":
-				return version.osName();
+				throw new todo.TODO();
 				
 				// The version of the operating system
 			case "os.version":
-				return version.osVersion();
+				throw new todo.TODO();
 			
 				// The PATH variable separator
 			case "path.separator":
-				return version.pathSeparator();
+				throw new todo.TODO();
 			
 				// Working directory
 			case "user.dir":
@@ -281,12 +279,7 @@ public final class System
 				
 				// User account name
 			case "user.name":
-				return version.userAccountName();
-			
-				// Is this a SquirrelJME JVM?
-			case "net.multiphasicapps.squirreljme":
-				return Boolean.toString(RuntimeBridge.VERSION.
-					isSquirrelJMEJVM());
+				throw new todo.TODO();
 			
 				// Unknown, get user supplied properties
 			default:
@@ -371,7 +364,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return APIAccessor.clock().nanoTime();
+		return SystemCall.nanoTime();
 	}
 	
 	/**
