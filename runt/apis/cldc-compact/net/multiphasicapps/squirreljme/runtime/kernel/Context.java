@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
+package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
  * This represents the context in which represents the calling task performing

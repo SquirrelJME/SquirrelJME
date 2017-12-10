@@ -8,16 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
+package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
- * This is a kernel interface which interacts with the kernel via the
- * packet interface.
+ * This interface bitflags which represents the type of a program.
  *
  * @since 2017/12/10
  */
-public class PacketKernelInterface
-	extends KernelInterface
+public interface ProgramType
 {
+	/** An application (MIDlet). */
+	public static final int APPLICATION =
+		0x0000_0001;
+	
+	/** A library (LIBlet). */
+	public static final int LIBRARY =
+		0x0000_0002;
+	
+	/** A system suite. */
+	public static final int SYSTEM =
+		0x0000_0004;
 }
 

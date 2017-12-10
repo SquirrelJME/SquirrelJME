@@ -8,39 +8,40 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
+package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
- * This is a kernel interface which directly interacts with a kernel.
+ * This class handles an asynchronous packet based stream with both input
+ * and output to a remote stream.
  *
  * @since 2017/12/08
  */
-public final class ContextKernelInterface
-	extends KernelInterface
+public final class PacketStream
 {
-	/** The micro kernel to interact with. */
-	protected final Kernel kernel;
+	/** The input stream. */
+	protected final DataInputStream input;
 	
-	/** All operations on the kernel must operate within this context. */
-	protected final Context context;
+	/** The output stream. */
+	protected final DataOutputStream output;
 	
 	/**
-	 * Initializes the interface which interacts with the given Kernel
-	 * using the given context.
+	 * Initializes the packet stream which reads events from the given
+	 * input stream (from the server) and writes to the server (from the
+	 * client) using the output stream.
 	 *
-	 * @param __uk The kernel to interact with.
-	 * @param __c The context the interface operates under.
+	 * @param __is The stream to read events from.
+	 * @param __os The stream to write events to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	public ContextKernelInterface(Kernel __uk, Context __c)
+	public PacketStream(InputStream __is, OutputStream __os)
 		throws NullPointerException
 	{
-		if (__uk == null || __c == null)
+		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		this.kernel = __uk;
-		this.context = __c;
+		this.input = new DataInputStream(__is);
+		this.output = new DataOutputStream(__os);
 	}
 }
 
