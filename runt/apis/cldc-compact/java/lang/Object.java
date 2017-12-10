@@ -197,6 +197,10 @@ public class Object
 	 *
 	 * Internally this uses the same logic as {@link java.util.Random}.
 	 *
+	 * Hash codes are not meant to be secure and they are not meant to be used
+	 * for cryptography. Although you can potentially guess when an object has
+	 * been initialized in what order depending on its hashcode.
+	 *
 	 * @return The next identity hashcode.
 	 * @since 2017/12/10
 	 */
