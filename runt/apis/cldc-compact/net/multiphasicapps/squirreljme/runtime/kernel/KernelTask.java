@@ -11,13 +11,11 @@
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
- * This is a kernel interface which interacts with the kernel via the
- * packet interface.
+ * This represents a task which is running within SquirrelJME.
  *
  * @since 2017/12/10
  */
-public class PacketKernelInterface
-	extends KernelInterface
+public abstract class KernelTask
 {
 }
 

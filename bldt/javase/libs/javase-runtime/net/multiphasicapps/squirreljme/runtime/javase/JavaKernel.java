@@ -8,28 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.runtime.javase;
+
+import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 
 /**
- * This class represents the micro-kernel which manages the entire SquirrelJME
- * system and all of the needed IPC and running tasks/threads.
- *
- * There must be no way for an instance of this class to be obtained by any
- * client library, this means that once the kernel is initialized and passed to
- * an API bridge the pointer should be tossed out. It can however be
- * initialized as normal.
+ * This implements the kernel which is used on the initial Java SE
+ * process and not the client processes.
  *
  * @since 2017/12/08
  */
-public abstract class Kernel
+public class JavaKernel
+	extends Kernel
 {
 	/**
-	 * Initializes the base kernel.
+	 * Initializes the kernel to run on Java systems.
 	 *
-	 * @since 2017/12/10
+	 * @since 2017/12/08
 	 */
-	protected Kernel()
-		throws NullPointerException
+	JavaKernel()
 	{
 	}
 }

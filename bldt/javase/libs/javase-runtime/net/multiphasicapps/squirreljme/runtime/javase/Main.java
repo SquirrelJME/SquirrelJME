@@ -18,10 +18,11 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.KernelInterface;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukapi.ContextInterface;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.Context;
-import net.multiphasicapps.squirreljme.runtime.cldc.ukernel.MicroKernel;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.syscall.InKernelSystemCaller;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -97,7 +98,7 @@ public class Main
 	{
 		// Clients use a bi-directional bridge on top of the standard
 		// input and output streams to interact with the system
-		KernelInterface ki;
+		SystemCaller syscaller;
 		if (__client)
 		{
 			throw new todo.TODO();
@@ -106,13 +107,12 @@ public class Main
 		// The server uses the actual kernel
 		else
 		{
-			MicroKernel uk = new JavaMicroKernel();
-			ki = new ContextInterface(uk, uk.systemContext());
+			Kernel kernel = new Kernel();
+			syscaller = new InKernelSystemCaller(kernel, null);
 		}
 		
 		// Need to obtain the interface field so that it is initialized
-		Class<?> kiclass = KernelInterface.class;
-		Field kifield = kiclass.getDeclaredField("INSTANCE");
+		Field callerfield = SystemCall.class.getDeclaredField("_CALLER");
 		
 		// There is an internal modifiers field which needs to be cleared so
 		// that the data can be accessed as such
@@ -120,18 +120,18 @@ public class Main
 		modifiersfield.setAccessible(true);
 		
 		// Remember the old modifiers and clear the final field
-		int oldmods = modifiersfield.getInt(kifield);
-		modifiersfield.setInt(kifield,
-			kifield.getModifiers() & ~Modifier.FINAL);
+		int oldmods = modifiersfield.getInt(callerfield);
+		modifiersfield.setInt(callerfield,
+			callerfield.getModifiers() & ~Modifier.FINAL);
 		
 		// It is final so it must be settable
-		kifield.setAccessible(true);
+		callerfield.setAccessible(true);
 		
 		// Set the interface used to interact with the kernel
-		kifield.set(null, ki);
+		callerfield.set(null, syscaller);
 		
 		// Protect everything again
-		modifiersfield.setInt(kifield, oldmods);
+		modifiersfield.setInt(callerfield, oldmods);
 		modifiersfield.setAccessible(false);
 		kifield.setAccessible(false);
 	}
