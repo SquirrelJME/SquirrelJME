@@ -21,14 +21,15 @@ import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
  * @since 2017/12/10
  */
 public interface SystemMailBoxConnection
-	extends Closeable
+	extends AutoCloseable
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/10
 	 */
 	@Override
-	public void close();
+	public abstract void close()
+		throws KernelMailBoxException;
 	
 	/**
 	 * Receives a single datagram from the input mailbox.
@@ -66,15 +67,13 @@ public interface SystemMailBoxConnection
 	/**
 	 * Returns the remote ID of the connected mailbox.
 	 *
-	 * @param __fd The remote file descriptor.
 	 * @return The byte array representing the remote ID, the format is in the
 	 * form of {@code <vendor>;<name>;<version>}.
-	 * @throws IllegalArgumentException If the mailbox descriptor is not valid.
 	 * @throws KernelMailBoxException If the ID could not be obtained.
 	 * @since 2016/10/13
 	 */
-	public abstract String remoteId(int __fd)
-		throws IllegalArgumentException, KernelMailBoxException;
+	public abstract String remoteId()
+		throws KernelMailBoxException;
 	
 	/**
 	 * Sends a single datagram to the destination mailbox.

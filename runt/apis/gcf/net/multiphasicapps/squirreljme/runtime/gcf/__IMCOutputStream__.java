@@ -12,9 +12,8 @@ package net.multiphasicapps.squirreljme.runtime.gcf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
-import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
 
 /**
  * This wraps the mailbox datagram connection for output.
@@ -29,7 +28,7 @@ class __IMCOutputStream__
 		256;
 	
 	/** The mailbox descriptor. */
-	private final int _fd;
+	private final SystemMailBoxConnection _fd;
 	
 	/** IMC buffer size. */
 	private final byte[] _buffer =
@@ -45,10 +44,15 @@ class __IMCOutputStream__
 	 * Initializes the output stream.
 	 *
 	 * @param __fd The descriptor to write to.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	__IMCOutputStream__(int __fd)
+	__IMCOutputStream__(SystemMailBoxConnection __fd)
+		throws NullPointerException
 	{
+		if (__fd == null)
+			throw new NullPointerException("NARG");
+		
 		this._fd = __fd;
 	}
 	
@@ -68,18 +72,15 @@ class __IMCOutputStream__
 		flush();
 		this._closed = true;
 		
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
-		
 		// Close it
 		try
 		{
-			mbfunc.close(this._fd);
+			this._fd.close();
 		}
 		
 		// {@squirreljme.error EC0q Could not close the mailbox for the output
 		// stream. (The descriptor)}
-		catch (MailboxException e)
+		catch (KernelMailBoxException e)
 		{
 			throw new IOException(String.format("EC0q %d", this._fd), e);
 		}
@@ -96,9 +97,6 @@ class __IMCOutputStream__
 		// If closed, do nothing
 		if (this._closed)
 			return;
-			
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
 		
 		// Are there bytes to be flushed
 		int at = this._at;
@@ -108,12 +106,12 @@ class __IMCOutputStream__
 			byte[] buffer = this._buffer;
 			try
 			{
-				mbfunc.send(this._fd, 0, buffer, 0, at);
+				this._fd.send(0, buffer, 0, at);
 			}
 			
 			// {@squirreljme.error EC0r Could not flush the output mailbox.
 			// (The descriptor)}
-			catch (MailboxException e)
+			catch (KernelMailBoxException e)
 			{
 				throw new IOException(String.format("EC0r %d", this._fd), e);
 			}

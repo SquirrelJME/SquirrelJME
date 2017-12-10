@@ -21,9 +21,9 @@ import java.util.Objects;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
-import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
-import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
@@ -50,7 +50,7 @@ public class IMCClient
 	protected final boolean interrupt;
 	
 	/** The client mailbox descriptor. */
-	private final int _clientfd;
+	private final SystemMailBoxConnection _clientfd;
 	
 	/** Has a stream been opened? */
 	private volatile boolean _opened;
@@ -87,35 +87,17 @@ public class IMCClient
 		this.authmode = __authmode;
 		this.interrupt = __interrupt;
 		
-		// Encode target midlet
-		byte[] midb = (__id == null ? null :
-			__id.toString().getBytes("utf-8"));
-		int mido, midl;
-		if (midb == null)
-			mido = midl = -1;
-		else
-		{
-			mido = 0;
-			midl = midb.length;
-		}
-		
-		// Encode server name
-		byte[] svnb = __sv.getBytes("utf-8");
-		
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
-		
 		// Connect to server
-		int fd;
+		SystemMailBoxConnection fd;
 		try
 		{
 			// Connect to the remote server
-			this._clientfd = (fd = mbfunc.connect(midb, mido, midl,
-				svnb, 0, svnb.length, __ver.hashCode(), __authmode));
+			this._clientfd = (fd = SystemCall.mailboxConnect(__id.toString(),
+				__sv, __ver.hashCode(), __authmode));
 		}
 		
 		// {@squirreljme.error EC05 Could not connect to the remote server.}
-		catch (MailboxException e)
+		catch (KernelMailBoxException e)
 		{
 			throw new ConnectionNotFoundException(Objects.toString(
 				e.getMessage(), "EC05"));
@@ -129,13 +111,12 @@ public class IMCClient
 		else
 			try
 			{
-				this.connectid = new IMCHostName(new String(
-					mbfunc.remoteId(fd), "utf-8"));
+				this.connectid = new IMCHostName(fd.remoteId());
 			}
 			
 			// {@squirreljme.error EC06 Could not determine the identifier
 			// of the remote system. (The descriptor)}
-			catch (MailboxException e)
+			catch (KernelMailBoxException e)
 			{
 				throw new IOException(String.format("EC06 %d", fd), e);
 			}
@@ -154,12 +135,12 @@ public class IMCClient
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	IMCClient(int __clfd, String __name, SuiteVersion __ver, boolean __auth,
-		boolean __interrupt)
+	IMCClient(SystemMailBoxConnection __clfd, String __name,
+		SuiteVersion __ver, boolean __auth, boolean __interrupt)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__name == null || __ver == null)
+		if (__clfd == null || __name == null || __ver == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -169,27 +150,17 @@ public class IMCClient
 		this.authmode = __auth;
 		this.interrupt = __interrupt;
 		
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
-		
 		// Determine remote end
 		try
 		{
-			this.connectid = new IMCHostName(new String(
-				mbfunc.remoteId(__clfd), "utf-8"));
+			this.connectid = new IMCHostName(__clfd.remoteId());
 		}
 		
 		// {@squrireljme.error EC0t Could not determine the name of the
 		// remote connection. (The descriptor)}
-		catch (MailboxException e)
+		catch (KernelMailBoxException e)
 		{
 			throw new IOException(String.format("EC0t %d", __clfd), e);
-		}
-		
-		// Should never occur
-		catch (UnsupportedEncodingException e)
-		{
-			throw new RuntimeException("OOPS", e);
 		}
 	}
 	
@@ -209,20 +180,17 @@ public class IMCClient
 		// be closed later on.
 		this._closed = true;
 		
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
-		
 		// If no streams were opened then the client descriptor must be closed
 		// so that the descriptors do not leak
 		if (!this._opened)
 			try
 			{
-				mbfunc.close(this._clientfd);
+				this._clientfd.close();
 			}
 			
 			// {@squirreljme.error EC07 Could not close the client connection.
 			// (The client descriptor)}
-			catch (MailboxException e)
+			catch (KernelMailBoxException e)
 			{
 				throw new IOException(String.format("EC07 %d", this._clientfd),
 					e);

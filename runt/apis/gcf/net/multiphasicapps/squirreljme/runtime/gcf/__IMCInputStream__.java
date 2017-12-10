@@ -14,9 +14,8 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.runtime.cldc.MailboxException;
-import net.multiphasicapps.squirreljme.runtime.cldc.MailboxFunctions;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
 
 /**
  * This wraps the mailbox datagram connection for input.
@@ -30,7 +29,7 @@ class __IMCInputStream__
 	protected final boolean interrupt;
 	
 	/** The mailbox descriptor. */
-	private final int _fd;
+	private final SystemMailBoxConnection _fd;
 	
 	/** Single byte read. */
 	private final byte[] _solo =
@@ -57,10 +56,15 @@ class __IMCInputStream__
 	 *
 	 * @param __fd The descriptor to read from.
 	 * @param __int Are interrupts to be generated?
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/13
 	 */
-	__IMCInputStream__(int __fd, boolean __int)
+	__IMCInputStream__(SystemMailBoxConnection __fd, boolean __int)
+		throws NullPointerException
 	{
+		if (__fd == null)
+			throw new NullPointerException("NARG");
+		
 		this._fd = __fd;
 		this.interrupt = __int;
 	}
@@ -78,19 +82,15 @@ class __IMCInputStream__
 			return;
 		this._closed = true;
 		
-		
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
-		
 		// Close it
 		try
 		{
-			mbfunc.close(this._fd);
+			this._fd.close();
 		}
 		
 		// {@squirreljme.error EC0n Could not close the mailbox for the
 		// input stream. (The descriptor)}
-		catch (MailboxException e)
+		catch (KernelMailBoxException e)
 		{
 			throw new IOException(String.format("EC0n %d", this._fd), e);
 		}
@@ -144,12 +144,9 @@ class __IMCInputStream__
 		// Initial arguments
 		byte[] work = this._work;
 		int at = this._at, end = this._end;
-		int fd = this._fd;
+		SystemMailBoxConnection fd = this._fd;
 		boolean interrupt = this.interrupt;
 		int[] chan = null;
-		
-		// Need the mailbox
-		MailboxFunctions mbfunc = RuntimeBridge.MAILBOX;
 		
 		// Try constantly filling the buffer
 		try
@@ -170,7 +167,7 @@ class __IMCInputStream__
 						try
 						{
 							// Read in datagram
-							int rc = mbfunc.receive(fd, chan,
+							int rc = fd.receive(chan,
 								work, 0, work.length, true);
 							
 							// EOF? Return read bytes or EOF
@@ -193,7 +190,7 @@ class __IMCInputStream__
 						
 						// {@squirreljme.error EC0o Could not read from the
 						// remote destination. (The descriptor)}
-						catch (MailboxException e)
+						catch (KernelMailBoxException e)
 						{
 							throw new IOException(String.format("EC0o %d", fd),
 								e);
