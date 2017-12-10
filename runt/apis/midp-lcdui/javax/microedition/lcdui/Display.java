@@ -28,7 +28,7 @@ import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayOrientation;
 import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.runtime.lcdui.HeadlessDisplayManager;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
+import net.multiphasicapps.squirreljme.runtime.cldc.Services;
 
 public class Display
 {
@@ -228,7 +228,7 @@ public class Display
 		
 		// Setup event loop
 		Thread t;
-		_EVENT_LOOP_THREAD = (t = RuntimeBridge.PROCESS.createDaemonThread(
+		_EVENT_LOOP_THREAD = (t = new Thread(
 			new __EventLoop__(), "LCDUIEventLoop"));
 		t.start();
 	}
