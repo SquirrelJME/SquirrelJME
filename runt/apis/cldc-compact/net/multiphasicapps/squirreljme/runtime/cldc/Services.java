@@ -18,23 +18,11 @@ import java.util.Map;
  *
  * @since 2017/11/10
  */
-@Deprecated
-public abstract class ServiceFunctions
+public final class Services
 {
 	/** Cached system services. */
-	private final Map<Class<?>, Object> _CACHED_SERVICES =
+	private static final Map<Class<?>, Object> _CACHED_SERVICES =
 		new LinkedHashMap<>();
-	
-	/**
-	 * Maps the given class service name to a class which implements the
-	 * given service.
-	 *
-	 * @param __v The class to map a service for.
-	 * @return The class which implements the given service or {@code null}
-	 * if it does not exist.
-	 * @sincem 2017/08/10 
-	 */
-	protected abstract String protectedMapService(String __v);
 	
 	/**
 	 * This obtains a class which implements a system specific service.
@@ -48,7 +36,7 @@ public abstract class ServiceFunctions
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/20
 	 */
-	public final <C> C systemService(Class<C> __cl)
+	public static final <C> C systemService(Class<C> __cl)
 		throws NullPointerException
 	{
 		// Check
@@ -56,7 +44,7 @@ public abstract class ServiceFunctions
 			throw new NullPointerException("NARG");
 		
 		// Only a single thread may access services
-		Map<Class<?>, Object> services = _CACHED_SERVICES;
+		Map<Class<?>, Object> services = Services._CACHED_SERVICES;
 		synchronized (services)
 		{
 			// If the service is already loaded use it, use contains key
@@ -94,7 +82,7 @@ public abstract class ServiceFunctions
 			
 			// See if the system internally declares a service class for the
 			// given service
-			vclass = protectedMapService(sname);
+			vclass = SystemCall.mapService(sname);
 			if (vclass == null)
 			{
 				services.put(__cl, null);
