@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc.kernel;
+package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
  * This class provides access to the kernel interface which allows the
