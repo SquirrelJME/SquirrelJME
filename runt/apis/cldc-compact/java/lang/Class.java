@@ -11,7 +11,6 @@
 package java.lang;
 
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
 
 public final class Class<T>
 {
@@ -253,7 +252,9 @@ public final class Class<T>
 		
 		// {@squirreljme.error ZZ01 Could not find the specified class. (The
 		// name of the class)}
-		Class<?> rv = RuntimeBridge.OBJECT.classForName(__a);
+		Class<?> rv = null;
+		if (true)
+			throw new todo.TODO();
 		if (rv == null)
 			throw new ClassNotFoundException(String.format("ZZ01 %s", __a));
 		return rv;

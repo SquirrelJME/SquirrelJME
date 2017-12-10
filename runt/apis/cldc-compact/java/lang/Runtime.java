@@ -10,7 +10,7 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.RuntimeBridge;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 
 public class Runtime
 {
@@ -32,7 +32,7 @@ public class Runtime
 	 */
 	public void exit(int __v)
 	{
-		RuntimeBridge.PROCESS.exit(__v);
+		SystemCall.exit(__v);
 	}
 	
 	public long freeMemory()
@@ -48,7 +48,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		RuntimeBridge.HIGH_MEMORY.gc();
+		SystemCall.gc();
 	}
 	
 	public long maxMemory()
