@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.syscall;
 
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 
 /**
@@ -48,6 +49,20 @@ public final class InKernelSystemCaller
 		
 		this.kernel = __k;
 		this.task = __t;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/11
+	 */
+	@Override
+	public final SystemProgram[] listPrograms(int __typemask)
+	{
+		// The programs returned by the kernel are wrapped internally
+		KernelProgram[] programs = this.kernel.listPrograms(this.task,
+			__typemask);
+		
+		throw new todo.TODO();
 	}
 }
 
