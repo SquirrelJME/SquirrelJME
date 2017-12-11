@@ -108,7 +108,7 @@ public class Main
 		else
 		{
 			Kernel kernel = new JavaKernel();
-			syscaller = new InKernelSystemCaller(kernel, null);
+			syscaller = new InKernelSystemCaller(kernel, kernel.kernelTask());
 		}
 		
 		// Need to obtain the interface field so that it is initialized

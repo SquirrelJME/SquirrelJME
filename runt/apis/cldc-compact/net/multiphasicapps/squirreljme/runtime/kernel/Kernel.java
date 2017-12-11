@@ -23,6 +23,9 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
  */
 public abstract class Kernel
 {
+	/** The kernel's task. */
+	protected final KernelTask kerneltask;
+	
 	/**
 	 * Initializes the base kernel.
 	 *
@@ -31,6 +34,40 @@ public abstract class Kernel
 	protected Kernel()
 		throws NullPointerException
 	{
+		// Initialize the kernel task
+		this.kerneltask = this.initializeTask(KernelTask.class);
+	}
+	
+	/**
+	 * Initializes the task which is used to represent the kernel itself, this
+	 * should only be called once.
+	 *
+	 * @param __cl This parameter is ignored.
+	 * @return The task representing the kernel itself.
+	 * @since 2017/12/11
+	 */
+	protected abstract KernelTask initializeTask(Class<KernelTask> __cl);
+	
+	/**
+	 * Creates a new task for the given program.
+	 *
+	 * @param __p The program to use as the basis for the new task.
+	 * @return The newly created task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/11
+	 */
+	protected abstract KernelTask initializeTask(KernelProgram __p)
+		throws NullPointerException;
+	
+	/**
+	 * This returns the kernel task.
+	 *
+	 * @return The kernel task.
+	 * @since 2017/12/11
+	 */
+	public final KernelTask kernelTask()
+	{
+		return this.kerneltask;
 	}
 }
 

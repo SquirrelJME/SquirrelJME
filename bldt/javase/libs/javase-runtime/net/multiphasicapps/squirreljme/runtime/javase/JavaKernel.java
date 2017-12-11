@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.javase;
 
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 
 /**
  * This implements the kernel which is used on the initial Java SE
@@ -18,7 +20,7 @@ import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
  *
  * @since 2017/12/08
  */
-public class JavaKernel
+public final class JavaKernel
 	extends Kernel
 {
 	/**
@@ -28,6 +30,27 @@ public class JavaKernel
 	 */
 	JavaKernel()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/11
+	 */
+	@Override
+	protected KernelTask initializeTask(Class<KernelTask> __cl)
+	{
+		return new JavaSelfKernelTask();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/11
+	 */
+	@Override
+	protected KernelTask initializeTask(KernelProgram __p)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
 	}
 }
 
