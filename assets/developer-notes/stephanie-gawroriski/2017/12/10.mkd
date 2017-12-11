@@ -1,0 +1,31 @@
+# 2017/12/10
+
+## 09:26
+
+Neat so you can run Java code on Android as raw classes assuming you convert
+them to dex files. You additionally do not need to compile an APK to run them
+at all. So personally I wonder if since it is now based on OpenJDK instead in
+Nougat if it will have the JavaCompiler classes.
+
+## 09:46
+
+But it seems there is no `java.nio.file.Paths`. So I will need to get a list
+of classes which exist within my own Android system.
+
+## 14:47
+
+I think what would simplify the kernel a bit would to have a low-level kernel
+area and then a higher level area. Basically a kernel which is initialized by
+class which provides access to all of the internal kernel details and such.
+This would be used by the system process. Then the user-space bridge could be
+in CLDC which can use the kernel and such.
+
+## 16:23
+
+Actually system suites when used in `Suite` do not do anything at all, so I
+do not need to initialize a suite or anything.
+
+## 17:19
+
+The next thing to move over are the mailboxes. With the new interface it could
+be done a bit better for the most part.
