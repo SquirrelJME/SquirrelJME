@@ -8,7 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.syscall;
+package net.multiphasicapps.squirreljme.runtime.syscall.in;
+
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
 /**
  * This is a system caller which is intended to be used by sub-tasks which are
