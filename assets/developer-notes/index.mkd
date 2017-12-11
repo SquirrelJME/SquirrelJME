@@ -1578,7 +1578,7 @@
 [**`07`**](stephanie-gawroriski/2017/12/07.mkd)
 [**`08`**](stephanie-gawroriski/2017/12/08.mkd)
 `09`
- * `10`
+ * [**`10`**](stephanie-gawroriski/2017/12/10.mkd)
 `11`
 `12`
 `13`
