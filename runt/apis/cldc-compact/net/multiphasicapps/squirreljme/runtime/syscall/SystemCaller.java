@@ -18,5 +18,14 @@ package net.multiphasicapps.squirreljme.runtime.syscall;
  */
 public abstract class SystemCaller
 {
+	/**
+	 * Lists programs which are available on the system.
+	 *
+	 * @param __typemask A mask which is used to filter programs of a given
+	 * type.
+	 * @return Programs which match the specified mask and exist.
+	 * @since 2017/12/11
+	 */
+	public abstract SystemProgram[] listPrograms(int __typemask);
 }
 

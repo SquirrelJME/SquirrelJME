@@ -69,5 +69,25 @@ public abstract class Kernel
 	{
 		return this.kerneltask;
 	}
+	
+	/**
+	 * Returns the list of programs which are available.
+	 *
+	 * @param __by The task requesting the program list.
+	 * @param __typemask A mask which is used to filter programs of a given
+	 * type.
+	 * @return An array containing the programs under the specified mask.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the operation is not permitted.
+	 * @since 2017/12/11
+	 */
+	public final KernelProgram[] listPrograms(KernelTask __by, int __typemask)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

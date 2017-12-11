@@ -20,5 +20,14 @@ package net.multiphasicapps.squirreljme.runtime.syscall;
 public final class SubTaskSystemCaller
 	extends SystemCaller
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/11
+	 */
+	@Override
+	public final SystemProgram[] listPrograms(int __typemask)
+	{
+		throw new todo.TODO();
+	}
 }
 

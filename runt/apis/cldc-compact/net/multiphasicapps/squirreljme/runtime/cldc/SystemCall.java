@@ -102,7 +102,7 @@ public final class SystemCall
 	 */
 	public static final SystemProgram[] listPrograms(int __typemask)
 	{
-		throw new todo.TODO();
+		return SystemCall._CALLER.listPrograms(__typemask);
 	}
 	
 	/**
