@@ -21,7 +21,7 @@ import java.util.jar.Manifest;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.syscall.InKernelSystemCaller;
+import net.multiphasicapps.squirreljme.runtime.syscall.in.InKernelSystemCaller;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
 
 /**
