@@ -26,6 +26,9 @@ public abstract class Kernel
 	/** The kernel's task. */
 	protected final KernelTask kerneltask;
 	
+	/** Program manager. */
+	protected final KernelPrograms kernelprograms;
+	
 	/**
 	 * Initializes the base kernel.
 	 *
@@ -36,7 +39,16 @@ public abstract class Kernel
 	{
 		// Initialize the kernel task
 		this.kerneltask = this.initializeTask(KernelTask.class);
+		this.kernelprograms = this.initializePrograms();
 	}
+	
+	/**
+	 * This initializes the program manager.
+	 *
+	 * @return The newly initialized program manager.
+	 * @since 2017/12/14
+	 */
+	protected abstract KernelPrograms initializePrograms();
 	
 	/**
 	 * Initializes the task which is used to represent the kernel itself, this
@@ -71,23 +83,28 @@ public abstract class Kernel
 	}
 	
 	/**
-	 * Returns the list of programs which are available.
+	 * Returns the program manager.
 	 *
-	 * @param __by The task requesting the program list.
-	 * @param __typemask A mask which is used to filter programs of a given
-	 * type.
-	 * @return An array containing the programs under the specified mask.
+	 * @param __by The task requesting the manager.
 	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If the operation is not permitted.
-	 * @since 2017/12/11
+	 * @throws SecurityException If the task is not permitted access to the
+	 * program manager.
+	 * @since 2017/12/14
 	 */
-	public final KernelProgram[] listPrograms(KernelTask __by, int __typemask)
+	public final KernelPrograms programs(KernelTask __by)
 		throws NullPointerException, SecurityException
 	{
 		if (__by == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ0g The specified task is not permitted to get
+		// the Programs instance. (The task requesting the program list)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_PROGRAMS_INSTANCE))
+			throw new SecurityException(
+				String.format("ZZ0g %s", __by));
+		
+		return this.kernelprograms;
 	}
 }
 

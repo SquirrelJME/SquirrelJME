@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.javase;
 
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 
 /**
@@ -30,6 +31,16 @@ public final class JavaKernel
 	 */
 	JavaKernel()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/14
+	 */
+	@Override
+	protected KernelPrograms initializePrograms()
+	{
+		return new JavaPrograms();
 	}
 	
 	/**

@@ -62,8 +62,9 @@ public final class InKernelSystemCaller
 	public final SystemProgram[] listPrograms(int __typemask)
 	{
 		// The programs returned by the kernel are wrapped internally
-		KernelProgram[] programs = this.kernel.listPrograms(this.task,
-			__typemask);
+		KernelTask task = this.task;
+		KernelProgram[] programs = this.kernel.programs(task).
+			listPrograms(task, __typemask);
 		
 		throw new todo.TODO();
 	}
