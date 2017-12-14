@@ -10,25 +10,15 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
 
 /**
- * This task represents the kernel itself, this task is granted all
- * permissions.
+ * This manages programs on the Java host.
  *
- * @since 2017/12/11
+ * @since 2017/12/14
  */
-public final class JavaSelfKernelTask
-	extends KernelTask
+public class JavaPrograms
+	extends KernelPrograms
 {
-	/**
-	 * Initializes the self task.
-	 *
-	 * @since 2017/12/14
-	 */
-	public JavaSelfKernelTask()
-	{
-		super(~0);
-	}
 }
 

@@ -24,5 +24,13 @@ public interface KernelSimplePermission
 	/** Can read simple permissions? */
 	public static final int GET_SIMPLE_PERMISSION =
 		0x0000_0002;
+	
+	/** Can obtain the program manager. */
+	public static final int GET_PROGRAMS_INSTANCE =
+		0x0000_0004;
+	
+	/** Can list programs which are installed. */
+	public static final int LIST_PROGRAMS =
+		0x0000_0008;
 }
 
