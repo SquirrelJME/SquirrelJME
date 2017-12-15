@@ -1,0 +1,7 @@
+# 2017/12/14
+
+## 11:18
+
+I should definitely have an internal program manager rather than just shoving
+it all into the `Kernel` class.
+
