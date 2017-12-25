@@ -10,8 +10,15 @@
 
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This class is used to manage the programs which are available for usage.
+ *
+ * Each program has an identifier which identitifies, that identifier is mapped
+ * to a slot within the program list so that the same program will always have
+ * the same identifier.
  *
  * @since 2017/12/14
  */
