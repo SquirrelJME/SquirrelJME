@@ -15,24 +15,35 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
  * with suites within the Java ME environment. Each program is identified by
  * an identifier which represents the program index. The index remains constant
  * for the same program (unless that program has been changed). The index is
- * used to refer to the program slot. Since programs in the same slot may be
- * changed, there is a separate change mask which indicates the change number
- * of a program.
+ * used to refer to the program slot.
  *
  * @since 2017/12/11
  */
 public abstract class KernelProgram
 {
-	/** This is the mask used to represent the slot position. */
-	public static final int SLOT_MASK =
-		0b0000_0000__0000_0000___0000_1111__1111_1111;
+	/** The index of the program. */
+	protected final int index;
 	
-	/** This represents the number of times the program has changed. */
-	public static final int CHANGE_MASK =
-		0b1111_1111__1111_1111___1111_0000__0000_0000;
+	/**
+	 * Initializes the base program.
+	 *
+	 * @param __dx The index of the program, the slot it is in.
+	 * @since 2017/12/25
+	 */
+	protected KernelProgram(int __dx)
+	{
+		this.index = __dx;
+	}
 	
-	/** This represents the shift used to read and write the change mask. */
-	public static final int CHANGE_SHIFT =
-		12;
+	/**
+	 * Returns the program index.
+	 *
+	 * @return The program index.
+	 * @since 2017/12/25
+	 */
+	public abstract int index()
+	{
+		return this.index;
+	}
 }
 
