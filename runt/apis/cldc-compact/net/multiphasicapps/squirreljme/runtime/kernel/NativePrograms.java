@@ -8,28 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
-
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
-import net.multiphasicapps.squirreljme.runtime.kernel.NativeProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.NativePrograms;
+package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
- * This manages programs on the Java host.
+ * This interface is used as the raw low-level access to the program manager
+ * on the host system.
  *
- * @since 2017/12/14
+ * @since 2017/12/25
  */
-public class JavaPrograms
-	implements NativePrograms
+public interface NativePrograms
 {
 	/**
-	 * {@inheritDoc}
+	 * Lists programs which are currently available on the underlying
+	 * set of programs.
+	 *
+	 * @return An array containing the available programs.
 	 * @since 2017/12/25
 	 */
-	@Override
-	public NativeProgram[] list()
-	{
-		throw new todo.TODO();
-	}
+	public abstract NativeProgram[] list();
 }
 

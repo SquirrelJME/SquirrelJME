@@ -39,16 +39,17 @@ public abstract class Kernel
 	{
 		// Initialize the kernel task
 		this.kerneltask = this.initializeTask(KernelTask.class);
-		this.kernelprograms = this.initializePrograms();
+		this.kernelprograms = new KernelPrograms(
+			this.initializeNativePrograms());
 	}
 	
 	/**
-	 * This initializes the program manager.
+	 * This initializes the native program manager.
 	 *
-	 * @return The newly initialized program manager.
+	 * @return The newly initialized native program manager.
 	 * @since 2017/12/14
 	 */
-	protected abstract KernelPrograms initializePrograms();
+	protected abstract NativePrograms initializeNativePrograms();
 	
 	/**
 	 * Initializes the task which is used to represent the kernel itself, this

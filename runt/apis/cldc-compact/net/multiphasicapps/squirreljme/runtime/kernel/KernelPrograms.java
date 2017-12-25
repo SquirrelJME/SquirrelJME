@@ -24,23 +24,38 @@ import java.util.List;
  *
  * @since 2017/12/14
  */
-public abstract class KernelPrograms
+public final class KernelPrograms
 {
-	/** Program list lock. */
-	private final Object _lock =
+	/** Internal lock. */
+	protected final Object lock =
 		new Object();
 	
-	/** Cached program representations. */
-	private final List<Reference<KernelProgram>> _cache =
+	/** Native program mananger. */
+	private final NativePrograms _natives;
+	
+	/** Programs which are available for usage. */
+	private final List<KernelProgram> _programs =
 		new ArrayList<>();
 	
 	/**
 	 * Initializes the program manager.
 	 *
+	 * @param __nps Native program manager.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/14
 	 */
-	protected KernelPrograms()
+	protected KernelPrograms(NativePrograms __nps)
+		throws NullPointerException
 	{
+		if (__nps == null)
+			throw new NullPointerException("NARG");
+		
+		this._natives = __nps;
+		
+		// Register all initial native programs so that they are known to
+		// the kernel
+		for (NativeProgram np : __nps.list())
+			__register(np);
 	}
 	
 	/**
@@ -67,10 +82,51 @@ public abstract class KernelPrograms
 			throw new SecurityException(
 				String.format("ZZ0f %s", __by));
 		
-		// Lock
-		synchronized (this._lock)
+		// Go through registered programs and find matches
+		List<KernelProgram> programs = this._programs;
+		synchronized (this.lock)
 		{
 			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Registers the specified program with the kernel manager.
+	 *
+	 * @param __np The program to register.
+	 * @return The wrapped program representation.
+	 * @throws IllegalStateException If the index has already been registered
+	 * or is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/25
+	 */
+	private final KernelProgram __register(NativeProgram __np)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__np == null)
+			throw new NullPointerException("NARG");
+		
+		int dx = __np.index();
+		
+		// Progams may only be registered once
+		List<KernelProgram> programs = this._programs;
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error ZZ0h Program with the given index has
+			// already been registred. (The program index)}
+			int n = programs.size();
+			for (int i = 0; i < n; i++)
+			{
+				int pdx = programs.get(i).index();
+				if (dx == pdx)
+					throw new IllegalStateException(
+						String.format("ZZ0h %d", dx));
+			}
+			
+			// Insert new program
+			KernelProgram rv = new KernelProgram(__np, dx);
+			programs.add(rv);
+			return rv;
 		}
 	}
 }
