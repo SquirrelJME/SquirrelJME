@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is used to manage the programs which are available for usage.
@@ -24,6 +26,14 @@ import java.lang.ref.WeakReference;
  */
 public abstract class KernelPrograms
 {
+	/** Program list lock. */
+	private final Object _lock =
+		new Object();
+	
+	/** Cached program representations. */
+	private final List<Reference<KernelProgram>> _cache =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the program manager.
 	 *
@@ -57,7 +67,11 @@ public abstract class KernelPrograms
 			throw new SecurityException(
 				String.format("ZZ0f %s", __by));
 		
-		throw new todo.TODO();
+		// Lock
+		synchronized (this._lock)
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
