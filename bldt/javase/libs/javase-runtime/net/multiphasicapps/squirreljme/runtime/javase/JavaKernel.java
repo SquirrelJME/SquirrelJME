@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.kernel.NativePrograms;
 
 /**
  * This implements the kernel which is used on the initial Java SE
@@ -38,7 +39,7 @@ public final class JavaKernel
 	 * @since 2017/12/14
 	 */
 	@Override
-	protected KernelPrograms initializePrograms()
+	protected NativePrograms initializeNativePrograms()
 	{
 		return new JavaPrograms();
 	}
