@@ -1,0 +1,24 @@
+# 2017/12/25
+
+## 10:46
+
+Okay so I will be having some more free time available so I can resume working
+on SquirrelJME. I have not touched it in awhile and I know where I left off,
+just need to figure out how to continue.
+
+## 11:35
+
+Okay so access to program information and such will need to be reference
+counted so that way entries are not freed when they are no longer referenced
+by anything. Well, this is needed tracking for dependency handling so that way
+a program which is dependended on by another is not removed, which would be
+quite bad.
+
+## 11:37
+
+Before a program can be used or installed, it will need to have its
+dependencies changed to just indexes of other programs since once a suite is
+installed that is known. So I believe the best thing would be for
+`KernelProgram` is to just refer to indexes and keep them all on at the same
+time. At start, iterate all known programs and just keep them in memory
+always.
