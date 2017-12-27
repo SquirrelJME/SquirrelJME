@@ -75,5 +75,15 @@ public final class InKernelSystemCaller
 		
 		return rv;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	public SystemTask[] listTasks(boolean __incsys)
+	{
+		throw new todo.TODO();
+	}
 }
 
