@@ -10,9 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
-import net.multiphasicapps.squirreljme.runtime.kernel.NativeProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.NativePrograms;
 
 /**
  * This manages programs on the Java host.
@@ -20,16 +19,7 @@ import net.multiphasicapps.squirreljme.runtime.kernel.NativePrograms;
  * @since 2017/12/14
  */
 public class JavaPrograms
-	implements NativePrograms
+	extends KernelPrograms
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/25
-	 */
-	@Override
-	public NativeProgram[] list()
-	{
-		throw new todo.TODO();
-	}
 }
 

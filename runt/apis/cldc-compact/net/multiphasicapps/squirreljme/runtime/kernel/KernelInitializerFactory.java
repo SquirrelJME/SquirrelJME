@@ -11,20 +11,29 @@
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
- * This interface is used as the raw low-level access to the program manager
- * on the host system.
+ * This interface is used as a factory and is used to initialize the various
+ * parts of the kernel as needed during initialization.
  *
- * @since 2017/12/25
+ * @since 2017/12/27
  */
-public interface NativePrograms
+public interface KernelInitializerFactory
 {
 	/**
-	 * Lists programs which are currently available on the underlying
-	 * set of programs.
+	 * Initializes the task which is used to represent the kernel itself.
 	 *
-	 * @return An array containing the available programs.
-	 * @since 2017/12/25
+	 * @param __k The owning kernel.
+	 * @return The task representing the kernel itself.
+	 * @since 2017/12/11
 	 */
-	public abstract NativeProgram[] list();
+	public abstract KernelTask initializeKernelTask(Kernel __k);
+	
+	/**
+	 * This initializes the program manager.
+	 *
+	 * @param __k The owning kernel.
+	 * @return The newly initialized program manager.
+	 * @since 2017/12/14
+	 */
+	public abstract KernelPrograms initializePrograms(Kernel __k);
 }
 

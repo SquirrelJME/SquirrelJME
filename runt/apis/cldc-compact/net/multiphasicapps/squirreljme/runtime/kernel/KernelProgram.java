@@ -19,29 +19,19 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
  *
  * @since 2017/12/11
  */
-public final class KernelProgram
+public abstract class KernelProgram
 {
-	/** The native program reference. */
-	protected final NativeProgram program;
-	
 	/** The index of the program. */
 	protected final int index;
 	
 	/**
 	 * Initializes the base program.
 	 *
-	 * @param __np The reference to the native program.
 	 * @param __dx The index of the program, the slot it is in.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/25
 	 */
-	KernelProgram(NativeProgram __np, int __dx)
-		throws NullPointerException
+	protected KernelProgram(int __dx)
 	{
-		if (__np == null)
-			throw new NullPointerException("NARG");
-		
-		this.program = __np;
 		this.index = __dx;
 	}
 	

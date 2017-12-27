@@ -32,34 +32,20 @@ public abstract class Kernel
 	/**
 	 * Initializes the base kernel.
 	 *
+	 * @param __kif Initialization factory.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	protected Kernel()
+	protected Kernel(KernelInitializerFactory __kif)
 		throws NullPointerException
 	{
+		if (__kif == null)
+			throw new NullPointerException("NARG");
+		
 		// Initialize the kernel task
-		this.kerneltask = this.initializeTask(KernelTask.class);
-		this.kernelprograms = new KernelPrograms(
-			this.initializeNativePrograms());
+		this.kerneltask = __kif.initializeKernelTask(this);
+		this.kernelprograms = __kif.initializePrograms(this);
 	}
-	
-	/**
-	 * This initializes the native program manager.
-	 *
-	 * @return The newly initialized native program manager.
-	 * @since 2017/12/14
-	 */
-	protected abstract NativePrograms initializeNativePrograms();
-	
-	/**
-	 * Initializes the task which is used to represent the kernel itself, this
-	 * should only be called once.
-	 *
-	 * @param __cl This parameter is ignored.
-	 * @return The task representing the kernel itself.
-	 * @since 2017/12/11
-	 */
-	protected abstract KernelTask initializeTask(Class<KernelTask> __cl);
 	
 	/**
 	 * Creates a new task for the given program.
