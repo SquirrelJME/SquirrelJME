@@ -45,5 +45,29 @@ public abstract class KernelProgram
 	{
 		return this.index;
 	}
+	
+	/**
+	 * Returns the type of this program.
+	 *
+	 * @param __by The task requesting the program type.
+	 * @return The type of program this is.
+	 * @throws SecurityException If the task cannot obtain the program type.
+	 * @since 2017/12/27
+	 */
+	public final int type(KernelTask __by)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0i The specified task is not permitted to
+		// obtain the program type. (The task requesting the program list)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_PROGRAM_PROPERTY))
+			throw new SecurityException(
+				String.format("ZZ0i %s", __by));
+		
+		throw new todo.TODO();
+	}
 }
 

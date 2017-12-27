@@ -32,5 +32,9 @@ public interface KernelSimplePermission
 	/** Can list programs which are installed. */
 	public static final int LIST_PROGRAMS =
 		0x0000_0008;
+	
+	/** Can get properties about a program. */
+	public static final int GET_PROGRAM_PROPERTY =
+		0x0000_0010;
 }
 
