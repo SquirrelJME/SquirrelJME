@@ -11,25 +11,34 @@
 package net.multiphasicapps.squirreljme.runtime.javase;
 
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramType;
 
 /**
- * This manages programs on the Java host.
+ * This is a program which represents the system itself.
  *
- * @since 2017/12/14
+ * @since 2017/12/27
  */
-public class JavaPrograms
-	extends KernelPrograms
+public class JavaSystemProgram
+	extends KernelProgram
 {
 	/**
-	 * Initializes the Java program manager.
+	 * Initializes the system program.
 	 *
 	 * @since 2017/12/27
 	 */
-	public JavaPrograms()
+	public JavaSystemProgram()
 	{
-		// Always register the system program
-		registerProgram(new JavaSystemProgram());
+		super(0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	protected int accessType()
+	{
+		return KernelProgramType.SYSTEM;
 	}
 }
 

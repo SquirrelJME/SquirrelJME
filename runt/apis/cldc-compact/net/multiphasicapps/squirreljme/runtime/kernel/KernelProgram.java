@@ -36,6 +36,14 @@ public abstract class KernelProgram
 	}
 	
 	/**
+	 * Returns the type of program this is.
+	 *
+	 * @return The program type.
+	 * @since 2017/12/27
+	 */
+	protected abstract int accessType();
+	
+	/**
 	 * Returns the program index.
 	 *
 	 * @return The program index.
@@ -67,7 +75,7 @@ public abstract class KernelProgram
 			throw new SecurityException(
 				String.format("ZZ0i %s", __by));
 		
-		throw new todo.TODO();
+		return this.accessType();
 	}
 }
 
