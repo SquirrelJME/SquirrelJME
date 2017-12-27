@@ -27,5 +27,14 @@ public abstract class SystemCaller
 	 * @since 2017/12/11
 	 */
 	public abstract SystemProgram[] listPrograms(int __typemask);
+	
+	/**
+	 * Lists tasks which are currently running within the system.
+	 *
+	 * @param __incsys If {@code true} then system tasks are included.
+	 * @return Tasks which are currently running within the system.
+	 * @since 2017/12/27
+	 */
+	public abstract SystemTask[] listTasks(boolean __incsys);
 }
 

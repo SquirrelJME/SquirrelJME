@@ -114,7 +114,7 @@ public final class SystemCall
 	 */
 	public static final SystemTask[] listTasks(boolean __incsys)
 	{
-		throw new todo.TODO();
+		return SystemCall._CALLER.listTasks(__incsys);
 	}
 	
 	/**
