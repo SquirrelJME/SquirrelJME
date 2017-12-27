@@ -24,14 +24,11 @@ import java.util.List;
  *
  * @since 2017/12/14
  */
-public final class KernelPrograms
+public abstract class KernelPrograms
 {
 	/** Internal lock. */
 	protected final Object lock =
 		new Object();
-	
-	/** Native program mananger. */
-	private final NativePrograms _natives;
 	
 	/** Programs which are available for usage. */
 	private final List<KernelProgram> _programs =
@@ -40,22 +37,10 @@ public final class KernelPrograms
 	/**
 	 * Initializes the program manager.
 	 *
-	 * @param __nps Native program manager.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/14
 	 */
-	protected KernelPrograms(NativePrograms __nps)
-		throws NullPointerException
+	protected KernelPrograms()
 	{
-		if (__nps == null)
-			throw new NullPointerException("NARG");
-		
-		this._natives = __nps;
-		
-		// Register all initial native programs so that they are known to
-		// the kernel
-		for (NativeProgram np : __nps.list())
-			__register(np);
 	}
 	
 	/**
@@ -82,31 +67,35 @@ public final class KernelPrograms
 			throw new SecurityException(
 				String.format("ZZ0f %s", __by));
 		
+		List<KernelProgram> rv = new ArrayList<>();
+		
 		// Go through registered programs and find matches
 		List<KernelProgram> programs = this._programs;
 		synchronized (this.lock)
 		{
-			throw new todo.TODO();
+			if (true)
+				throw new todo.TODO();
 		}
+		
+		return rv.<KernelProgram>toArray(new KernelProgram[rv.size()]);
 	}
 	
 	/**
 	 * Registers the specified program with the kernel manager.
 	 *
-	 * @param __np The program to register.
-	 * @return The wrapped program representation.
+	 * @param __n The program to register.
 	 * @throws IllegalStateException If the index has already been registered
 	 * or is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/25
 	 */
-	private final KernelProgram __register(NativeProgram __np)
+	protected final void registerProgram(KernelProgram __p)
 		throws IllegalStateException, NullPointerException
 	{
-		if (__np == null)
+		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		int dx = __np.index();
+		int dx = __p.index();
 		
 		// Progams may only be registered once
 		List<KernelProgram> programs = this._programs;
@@ -124,9 +113,7 @@ public final class KernelPrograms
 			}
 			
 			// Insert new program
-			KernelProgram rv = new KernelProgram(__np, dx);
-			programs.add(rv);
-			return rv;
+			programs.add(__p);
 		}
 	}
 }
