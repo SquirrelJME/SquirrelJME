@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.syscall.in;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
@@ -61,12 +63,17 @@ public final class InKernelSystemCaller
 	@Override
 	public final SystemProgram[] listPrograms(int __typemask)
 	{
-		// The programs returned by the kernel are wrapped internally
 		KernelTask task = this.task;
 		KernelProgram[] programs = this.kernel.programs(task).
 			listPrograms(task, __typemask);
 		
-		throw new todo.TODO();
+		// The programs returned by the kernel are wrapped internally
+		int n = programs.length;
+		SystemProgram[] rv = new SystemProgram[n];
+		for (int i = 0; i < n; i++)
+			throw new todo.TODO();
+		
+		return rv;
 	}
 }
 

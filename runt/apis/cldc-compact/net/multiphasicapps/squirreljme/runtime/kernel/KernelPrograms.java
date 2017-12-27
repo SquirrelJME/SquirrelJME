@@ -73,8 +73,15 @@ public abstract class KernelPrograms
 		List<KernelProgram> programs = this._programs;
 		synchronized (this.lock)
 		{
-			if (true)
-				throw new todo.TODO();
+			for (KernelProgram p : programs)
+				try
+				{
+					if ((p.type(__by) & __typemask) != 0)
+						rv.add(p);
+				}
+				catch (SecurityException e)
+				{
+				}
 		}
 		
 		return rv.<KernelProgram>toArray(new KernelProgram[rv.size()]);
