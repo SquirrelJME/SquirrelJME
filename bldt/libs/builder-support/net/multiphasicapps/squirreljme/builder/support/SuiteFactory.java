@@ -10,13 +10,25 @@
 
 package net.multiphasicapps.squirreljme.builder.support;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
+import javax.microedition.swm.InstallErrorCodes;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
+import javax.microedition.swm.SuiteInstaller;
+import javax.microedition.swm.SuiteInstallListener;
+import javax.microedition.swm.SuiteInstallStage;
+import javax.microedition.swm.SuiteManagementTracker;
 import javax.microedition.swm.SuiteManager;
 import javax.microedition.swm.SuiteStateFlag;
 import javax.microedition.swm.SuiteType;
@@ -68,6 +80,87 @@ public class SuiteFactory
 	}
 	
 	/**
+	 * Installs the specified path which points to a JAR.
+	 *
+	 * @param __p The path to the JAR to install.
+	 * @return The suite for the installed JAR.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/27
+	 */
+	public Suite installSuite(Path __p)
+		throws IOException, NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Read in the JAR
+		byte[] jardata;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			InputStream is = Files.newInputStream(__p,
+				StandardOpenOption.READ))
+		{
+			byte[] buf = new byte[512];
+			for (;;)
+			{
+				int rv = is.read(buf);
+				
+				if (rv < 0)
+					break;
+				
+				baos.write(buf, 0, rv);
+			}
+			
+			baos.flush();
+			jardata = baos.toByteArray();
+		}
+		
+		// Obtain installer for the JAR
+		SuiteInstaller installer = this.manager.getSuiteInstaller(jardata, 0,
+			jardata.length, false);
+		
+		// Add installation listener to show installation progress
+		installer.addInstallationListener(new SuiteInstallListener()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2017/12/27
+				 */
+				@Override
+				public void installationDone(InstallErrorCodes __err,
+					SuiteManagementTracker __tracker)
+				{
+					System.out.printf("Finished: %s%n", __err);
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2017/12/27
+				 */
+				@Override
+				public void updateStatus(SuiteManagementTracker __tracker,
+					SuiteInstallStage __stage, int __percent)
+				{
+					System.out.printf("%s: %d%%%n", __stage, __percent);
+				}
+			});
+		
+		// Start the installation
+		SuiteManagementTracker tracker = installer.start();
+		for (;;)
+		{
+			Suite rv = tracker.getSuite();
+			if (rv == null)
+			{
+				Thread.yield();
+				continue;
+			}
+			
+			return rv;
+		}
+	}
+	
+	/**
 	 * Lists the suites which are available for usage.
 	 *
 	 * @param __out Where the suite list is output.
@@ -111,10 +204,32 @@ public class SuiteFactory
 				listSuites(System.out);
 				break;
 				
+				// Install a suite
+			case "install":
+				try
+				{
+					// {@squirreljme.error AU0x The "suite install" command
+					// requires a path to a JAR file to install.}
+					String path = args.pollFirst();
+					if (path == null)
+						throw new IllegalArgumentException("AU0x");
+					
+					// Install and print suite information
+					printSuite(System.out, installSuite(Paths.get(path)));
+				}
+				
+				// {@squirreljme.error AU0y Read/write error installing suite.}
+				catch (IOException e)
+				{
+					throw new RuntimeException("AU0y", e);
+				}
+				break;
+				
 				// {@squirreljme.error AU0w The specified suite command is not
 				// valid. Valid commands are:
-				// ls, list
-				// .(The command)}
+				// ls, list;
+				// install (path);
+				// . (The command)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0w %s",
 					command));
