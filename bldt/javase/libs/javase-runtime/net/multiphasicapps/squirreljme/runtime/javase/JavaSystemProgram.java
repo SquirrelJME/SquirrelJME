@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramType;
 
 /**
  * This is a program which represents the system itself.
@@ -38,7 +38,7 @@ public class JavaSystemProgram
 	@Override
 	protected int accessType()
 	{
-		return KernelProgramType.SYSTEM;
+		return SystemProgramType.SYSTEM;
 	}
 }
 

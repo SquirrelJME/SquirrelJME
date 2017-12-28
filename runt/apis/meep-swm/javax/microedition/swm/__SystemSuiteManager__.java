@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramType;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 
 /**
  * This class manages the bridge for the suite manager to the native program
@@ -96,9 +96,9 @@ final class __SystemSuiteManager__
 		// The system call can be masked to filter out unwanted suites
 		int mask;
 		if (__t == SuiteType.APPLICATION)
-			mask = KernelProgramType.APPLICATION;
+			mask = SystemProgramType.APPLICATION;
 		else if (__t == SuiteType.LIBRARY)
-			mask = KernelProgramType.LIBRARY;
+			mask = SystemProgramType.LIBRARY;
 		
 		// {@squirreljme.error DG04 The specified suite type cannot be
 		// listed. (The type)}

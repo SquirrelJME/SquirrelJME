@@ -8,11 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.syscall;
+package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import java.io.Closeable;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
 
 /**
  * This represents a mailbox which is used as the basis for inter-midlet
@@ -29,7 +28,7 @@ public interface SystemMailBoxConnection
 	 */
 	@Override
 	public abstract void close()
-		throws KernelMailBoxException;
+		throws SystemMailBoxException;
 	
 	/**
 	 * Receives a single datagram from the input mailbox.
@@ -55,25 +54,25 @@ public interface SystemMailBoxConnection
 	 * @throws NoSuchElementException If not waiting and there are no datagrams
 	 * available.
 	 * @throws NullPointerException On null arguments.
-	 * @throws KernelMailBoxException If receiving could not happen.
+	 * @throws SystemMailBoxException If receiving could not happen.
 	 * @since 2016/10/13
 	 */
 	public abstract int receive(int[] __chan, byte[] __b,
 		int __o, int __l, boolean __wait)
 		throws ArrayIndexOutOfBoundsException, ArrayStoreException,
 			InterruptedException, NoSuchElementException, NullPointerException,
-			KernelMailBoxException;
+			SystemMailBoxException;
 	
 	/**
 	 * Returns the remote ID of the connected mailbox.
 	 *
 	 * @return The byte array representing the remote ID, the format is in the
 	 * form of {@code <vendor>;<name>;<version>}.
-	 * @throws KernelMailBoxException If the ID could not be obtained.
+	 * @throws SystemMailBoxException If the ID could not be obtained.
 	 * @since 2016/10/13
 	 */
 	public abstract String remoteId()
-		throws KernelMailBoxException;
+		throws SystemMailBoxException;
 	
 	/**
 	 * Sends a single datagram to the destination mailbox.
@@ -87,11 +86,11 @@ public interface SystemMailBoxConnection
 	 * are negative or exceed the length of the array.
 	 * @throws IllegalArgumentException If the descriptor is not valid.
 	 * @throws NullPointerException On null arguments.
-	 * @throws KernelMailBoxException If the remote end was closed.
+	 * @throws SystemMailBoxException If the remote end was closed.
 	 * @since 2016/10/13
 	 */
 	public abstract void send(int __chan, byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
-			NullPointerException, KernelMailBoxException;
+			NullPointerException, SystemMailBoxException;
 }
 

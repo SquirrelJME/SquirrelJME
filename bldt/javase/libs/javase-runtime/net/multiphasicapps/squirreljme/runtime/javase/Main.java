@@ -19,10 +19,10 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.syscall.in.InKernelSystemCaller;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
+import net.multiphasicapps.squirreljme.runtime.kernel.syscall.DirectCaller;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -109,7 +109,7 @@ public class Main
 		{
 			KernelTask[] kerneltask = new KernelTask[1];
 			Kernel kernel = new JavaKernel(kerneltask);
-			syscaller = new InKernelSystemCaller(kernel, kerneltask[0]);
+			syscaller = new DirectCaller(kernel, kerneltask[0]);
 		}
 		
 		// Need to obtain the interface field so that it is initialized

@@ -8,25 +8,29 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.runtime.cldc;
 
 /**
- * This interface bitflags which represents the type of a program.
+ * This is used to specify which kind of metric to obtain from a task.
  *
  * @since 2017/12/10
  */
-public interface KernelProgramType
+public interface SystemTaskMetric
 {
-	/** An application (MIDlet). */
-	public static final int APPLICATION =
-		0x0000_0001;
+	/** The task priority. */
+	public static final int PRIORITY =
+		1;
 	
-	/** A library (LIBlet). */
-	public static final int LIBRARY =
-		0x0000_0002;
+	/** Used memory. */
+	public static final int MEMORY_USED =
+		2;
 	
-	/** A system suite. */
-	public static final int SYSTEM =
-		0x0000_0004;
+	/** Free memory. */
+	public static final int MEMORY_FREE =
+		3;
+	
+	/** Total memory. */
+	public static final int MEMORY_TOTAL =
+		4;
 }
 

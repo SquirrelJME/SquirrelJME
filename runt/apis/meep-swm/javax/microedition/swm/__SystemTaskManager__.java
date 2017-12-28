@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
 /**
  * This is the task manager which interfaces with the CLDC system support

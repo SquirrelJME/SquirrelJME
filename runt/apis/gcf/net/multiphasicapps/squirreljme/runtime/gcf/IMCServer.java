@@ -17,9 +17,9 @@ import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxListener;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxConnection;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxListener;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
@@ -81,7 +81,7 @@ public class IMCServer
 		}
 		
 		// {@squirreljme.error EC0h Could not open a mailbox for listening.}
-		catch (KernelMailBoxException e)
+		catch (SystemMailBoxException e)
 		{
 			throw new IOException("EC0h", e);
 		}
@@ -116,7 +116,7 @@ public class IMCServer
 			
 			// {@squirreljme.error EC0k Could not accept the mailbox
 			// connection. (The descriptor)}
-			catch (KernelMailBoxException e)
+			catch (SystemMailBoxException e)
 			{
 				throw new IOException(String.format("EC0k %d", mailfd), e);
 			}
@@ -154,7 +154,7 @@ public class IMCServer
 		
 		// {@squirreljme.error EC0m Could not close the server mailbox.
 		// (The descriptor)}
-		catch (KernelMailBoxException e)
+		catch (SystemMailBoxException e)
 		{
 			throw new IOException(String.format("EC0m %d", this._mailfd), e);
 		}
