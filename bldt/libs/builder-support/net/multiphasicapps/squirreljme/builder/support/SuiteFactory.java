@@ -119,55 +119,13 @@ public class SuiteFactory
 		SuiteInstaller installer = this.manager.getSuiteInstaller(jardata, 0,
 			jardata.length, false);
 		
-		// Add installation listener to show installation progress
-		final InstallErrorCodes[] finished = new InstallErrorCodes[1];
-		installer.addInstallationListener(new SuiteInstallListener()
-			{
-				/**
-				 * {@inheritDoc}
-				 * @since 2017/12/27
-				 */
-				@Override
-				public void installationDone(InstallErrorCodes __err,
-					SuiteManagementTracker __tracker)
-				{
-					finished[0] = __err;
-					System.out.printf("Finished: %s%n", __err);
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2017/12/27
-				 */
-				@Override
-				public void updateStatus(SuiteManagementTracker __tracker,
-					SuiteInstallStage __stage, int __percent)
-				{
-					System.out.printf("%s: %d%%%n", __stage, __percent);
-				}
-			});
+		// Setup a class which nicely waits for the suite to install
+		__SuiteInstallWaiter__ waiter = new __SuiteInstallWaiter__(System.out);
+		installer.addInstallationListener(waiter);
 		
-		// Start the installation
+		// Run the installer and then wait for it to finish
 		SuiteManagementTracker tracker = installer.start();
-		for (;;)
-		{
-			// Keep trying to read the suite since it is not fully known when
-			// it is installed or not?
-			Suite rv = tracker.getSuite();
-			if (rv == null)
-			{
-				// {@squirreljme.error AU0z Installation of the suite failed.
-				// (The error code specified)}
-				InstallErrorCodes err = finished[0];
-				if (err != null)
-					throw new RuntimeException(String.format("AU0z %s", err));
-				
-				Thread.yield();
-				continue;
-			}
-			
-			return rv;
-		}
+		return waiter.get();
 	}
 	
 	/**
