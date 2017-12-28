@@ -120,6 +120,7 @@ public class SuiteFactory
 			jardata.length, false);
 		
 		// Add installation listener to show installation progress
+		final InstallErrorCodes[] finished = new InstallErrorCodes[1];
 		installer.addInstallationListener(new SuiteInstallListener()
 			{
 				/**
@@ -130,6 +131,7 @@ public class SuiteFactory
 				public void installationDone(InstallErrorCodes __err,
 					SuiteManagementTracker __tracker)
 				{
+					finished[0] = __err;
 					System.out.printf("Finished: %s%n", __err);
 				}
 				
@@ -149,9 +151,17 @@ public class SuiteFactory
 		SuiteManagementTracker tracker = installer.start();
 		for (;;)
 		{
+			// Keep trying to read the suite since it is not fully known when
+			// it is installed or not?
 			Suite rv = tracker.getSuite();
 			if (rv == null)
 			{
+				// {@squirreljme.error AU0z Installation of the suite failed.
+				// (The error code specified)}
+				InstallErrorCodes err = finished[0];
+				if (err != null)
+					throw new RuntimeException(String.format("AU0z %s", err));
+				
 				Thread.yield();
 				continue;
 			}
