@@ -42,6 +42,7 @@ public final class SystemCall
 	{
 		throw new todo.TODO();
 	}
+	
 	/**
 	 * This exits the virtual machine using the specifed exit code according
 	 * to the specification of {@link Runtime#exit(int)}.
@@ -61,6 +62,31 @@ public final class SystemCall
 	 */
 	public static final void gc()
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * This installs the specified byte array as a new program or as an update
+	 * to an existing one on the system.
+	 *
+	 * @param __b The bytes which make up the JAR.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the array.
+	 * @param __progress A notifier which is used to obtain progress.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	public static final SystemProgramInstaller install(byte[] __b, int __o,
+		int __l, SystemProgramInstallProgress __progress)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null || __progress == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
 		throw new todo.TODO();
 	}
 	
