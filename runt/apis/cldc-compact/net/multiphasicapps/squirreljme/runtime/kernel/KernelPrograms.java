@@ -22,6 +22,9 @@ import java.util.List;
  * to a slot within the program list so that the same program will always have
  * the same identifier.
  *
+ * There should always be a program with the type of
+ * {@link KernelProgramType#SYSTEM} in the first index slot.
+ *
  * @since 2017/12/14
  */
 public abstract class KernelPrograms
