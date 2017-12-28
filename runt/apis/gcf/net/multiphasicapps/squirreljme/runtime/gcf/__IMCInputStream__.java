@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxConnection;
 
 /**
  * This wraps the mailbox datagram connection for input.
@@ -90,7 +90,7 @@ class __IMCInputStream__
 		
 		// {@squirreljme.error EC0n Could not close the mailbox for the
 		// input stream. (The descriptor)}
-		catch (KernelMailBoxException e)
+		catch (SystemMailBoxException e)
 		{
 			throw new IOException(String.format("EC0n %d", this._fd), e);
 		}
@@ -190,7 +190,7 @@ class __IMCInputStream__
 						
 						// {@squirreljme.error EC0o Could not read from the
 						// remote destination. (The descriptor)}
-						catch (KernelMailBoxException e)
+						catch (SystemMailBoxException e)
 						{
 							throw new IOException(String.format("EC0o %d", fd),
 								e);

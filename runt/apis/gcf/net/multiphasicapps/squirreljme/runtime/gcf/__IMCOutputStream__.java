@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.runtime.gcf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxConnection;
 
 /**
  * This wraps the mailbox datagram connection for output.
@@ -80,7 +80,7 @@ class __IMCOutputStream__
 		
 		// {@squirreljme.error EC0q Could not close the mailbox for the output
 		// stream. (The descriptor)}
-		catch (KernelMailBoxException e)
+		catch (SystemMailBoxException e)
 		{
 			throw new IOException(String.format("EC0q %d", this._fd), e);
 		}
@@ -111,7 +111,7 @@ class __IMCOutputStream__
 			
 			// {@squirreljme.error EC0r Could not flush the output mailbox.
 			// (The descriptor)}
-			catch (KernelMailBoxException e)
+			catch (SystemMailBoxException e)
 			{
 				throw new IOException(String.format("EC0r %d", this._fd), e);
 			}

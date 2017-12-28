@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramType;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 
 /**
  * This represents an application suite.

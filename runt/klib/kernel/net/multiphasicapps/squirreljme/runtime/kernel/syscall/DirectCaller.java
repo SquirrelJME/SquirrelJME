@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.syscall.in;
+package net.multiphasicapps.squirreljme.runtime.kernel.syscall;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
 /**
  * This is a system caller which directly calls the kernel and uses the
@@ -34,7 +34,7 @@ import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
  *
  * @since 2017/12/10
  */
-public final class InKernelSystemCaller
+public final class DirectCaller
 	extends SystemCaller
 {
 	/** The kernel to call. */
@@ -55,7 +55,7 @@ public final class InKernelSystemCaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	public InKernelSystemCaller(Kernel __k, KernelTask __t)
+	public DirectCaller(Kernel __k, KernelTask __t)
 		throws NullPointerException
 	{
 		if (__k == null || __t == null)
@@ -110,7 +110,7 @@ public final class InKernelSystemCaller
 				// Need to wrap the task?
 				if (ref == null || null == (st = ref.get()))
 					taskmap.put(kt, new WeakReference<>((st =
-						new InKernelSystemTask(task, kt))));
+						new DirectTask(task, kt))));
 				
 				rv[i] = st;
 			}

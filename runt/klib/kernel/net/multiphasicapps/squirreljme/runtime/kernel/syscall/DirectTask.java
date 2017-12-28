@@ -8,11 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.syscall.in;
+package net.multiphasicapps.squirreljme.runtime.kernel.syscall;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
 
 /**
  * This class wraps the system task and provides access to kernel tasks from
@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
  *
  * @since 2017/12/27
  */
-public final class InKernelSystemTask
+public final class DirectTask
 	implements SystemTask
 {
 	/** The task of the current process. */
@@ -37,7 +37,7 @@ public final class InKernelSystemTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/27
 	 */
-	public InKernelSystemTask(KernelTask __current, KernelTask __wrapped)
+	public DirectTask(KernelTask __current, KernelTask __wrapped)
 		throws NullPointerException
 	{
 		if (__current == null || __wrapped == null)

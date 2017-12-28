@@ -14,10 +14,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskFlag;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskMetric;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskStatus;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskMetric;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
 
 /**
  * This describes a task which is currently running on the system. Each task
@@ -78,7 +78,7 @@ public final class Task
 	public int getHeapUse()
 	{
 		// Make sure the amount of memory used does not overflow ever
-		long rv = this._task.metric(KernelTaskMetric.MEMORY_USED);
+		long rv = this._task.metric(SystemTaskMetric.MEMORY_USED);
 		if (rv < 0L)
 			return 0;
 		else if (rv > Integer.MAX_VALUE)
@@ -109,7 +109,7 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		long rv = this._task.metric(KernelTaskMetric.PRIORITY);
+		long rv = this._task.metric(SystemTaskMetric.PRIORITY);
 		if (rv < 0L)
 			return TaskPriority.MAX;
 		else if (rv > 0L)
@@ -125,25 +125,25 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		int status = (this._task.flags() & KernelTaskFlag.STATUS_MASK);
+		int status = (this._task.flags() & SystemTaskFlag.STATUS_MASK);
 		switch (status)
 		{
-			case KernelTaskStatus.EXITED_FATAL:
+			case SystemTaskStatus.EXITED_FATAL:
 				return TaskStatus.EXITED_FATAL;
 
-			case KernelTaskStatus.EXITED_REGULAR:
+			case SystemTaskStatus.EXITED_REGULAR:
 				return TaskStatus.EXITED_REGULAR;
 
-			case KernelTaskStatus.EXITED_TERMINATED:
+			case SystemTaskStatus.EXITED_TERMINATED:
 				return TaskStatus.EXITED_TERMINATED;
 
-			case KernelTaskStatus.RUNNING:
+			case SystemTaskStatus.RUNNING:
 				return TaskStatus.RUNNING;
 
-			case KernelTaskStatus.START_FAILED:
+			case SystemTaskStatus.START_FAILED:
 				return TaskStatus.START_FAILED;
 
-			case KernelTaskStatus.STARTING:
+			case SystemTaskStatus.STARTING:
 				return TaskStatus.STARTING;
 			
 				// {@squirreljme.error DG05 Task is in an invalid status
@@ -191,7 +191,7 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		return (0 != (this._task.flags() & KernelTaskFlag.SYSTEM));
+		return (0 != (this._task.flags() & SystemTaskFlag.SYSTEM));
 	}
 	
 	/**

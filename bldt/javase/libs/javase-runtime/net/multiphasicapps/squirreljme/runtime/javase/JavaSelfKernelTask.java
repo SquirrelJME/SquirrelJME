@@ -10,10 +10,10 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskMetric;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskFlag;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskMetric;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskStatus;
 
 /**
  * This task represents the kernel itself, this task is granted all
@@ -41,8 +41,8 @@ public final class JavaSelfKernelTask
 	@Override
 	protected int accessFlags()
 	{
-		return KernelTaskFlag.SYSTEM |
-			KernelTaskStatus.RUNNING;
+		return SystemTaskFlag.SYSTEM |
+			SystemTaskStatus.RUNNING;
 	}
 	
 	/**
@@ -54,17 +54,17 @@ public final class JavaSelfKernelTask
 	{
 		switch (__m)
 		{
-			case KernelTaskMetric.PRIORITY:
+			case SystemTaskMetric.PRIORITY:
 				return -100;
 				
-			case KernelTaskMetric.MEMORY_USED:
-				return this.accessMetric(KernelTaskMetric.MEMORY_TOTAL) -
-					this.accessMetric(KernelTaskMetric.MEMORY_FREE);
+			case SystemTaskMetric.MEMORY_USED:
+				return this.accessMetric(SystemTaskMetric.MEMORY_TOTAL) -
+					this.accessMetric(SystemTaskMetric.MEMORY_FREE);
 				
-			case KernelTaskMetric.MEMORY_FREE:
+			case SystemTaskMetric.MEMORY_FREE:
 				return Runtime.getRuntime().freeMemory();
 				
-			case KernelTaskMetric.MEMORY_TOTAL:
+			case SystemTaskMetric.MEMORY_TOTAL:
 				return Runtime.getRuntime().totalMemory();
 				
 			default:

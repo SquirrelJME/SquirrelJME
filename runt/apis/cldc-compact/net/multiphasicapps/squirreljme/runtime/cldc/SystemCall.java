@@ -10,13 +10,6 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemCaller;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxListener;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
-
 /**
  * This class provides access to the system's default system call interface
  * which interacts with the kernel.
@@ -129,7 +122,7 @@ public final class SystemCall
 	 * @throws IllegalArgumentException If the remote midlet is malformed or
 	 * the server name and/or version are malformed.
 	 * @throws NullPointerException If no server was specified.
-	 * @throws KernelMailBoxException If the server does not exist or if the
+	 * @throws SystemMailBoxException If the server does not exist or if the
 	 * remote destination is closed.
 	 * @since 2016/10/13
 	 */
@@ -137,7 +130,7 @@ public final class SystemCall
 		String __svname, int __sv, boolean __am)
 		throws ArrayIndexOutOfBoundsException,
 			IllegalArgumentException, NullPointerException,
-			KernelMailBoxException
+			SystemMailBoxException
 	{
 		if (__svname == null)
 			throw new NullPointerException("NARG");
@@ -154,13 +147,13 @@ public final class SystemCall
 	 * @return The descriptor of the mailbox destination.
 	 * @throws IllegalArgumentException If the version number is not correct.
 	 * @throws NullPointerException On null arguments.
-	 * @throws KernelMailBoxException If the mailbox was closed.
+	 * @throws SystemMailBoxException If the mailbox was closed.
 	 * @since 2016/10/13
 	 */
 	public static final SystemMailBoxListener mailboxListen(String __name,
 		int __v, boolean __am)
 		throws IllegalArgumentException, NullPointerException,
-			KernelMailBoxException
+			SystemMailBoxException
 	{
 		if (__name == null)
 			throw new NullPointerException("NARG");

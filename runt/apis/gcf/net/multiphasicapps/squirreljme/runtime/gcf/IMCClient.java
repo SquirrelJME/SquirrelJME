@@ -22,8 +22,8 @@ import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCConnection;
 import javax.microedition.midlet.MIDletIdentity;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
-import net.multiphasicapps.squirreljme.runtime.syscall.SystemMailBoxConnection;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxException;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxConnection;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
@@ -97,7 +97,7 @@ public class IMCClient
 		}
 		
 		// {@squirreljme.error EC05 Could not connect to the remote server.}
-		catch (KernelMailBoxException e)
+		catch (SystemMailBoxException e)
 		{
 			throw new ConnectionNotFoundException(Objects.toString(
 				e.getMessage(), "EC05"));
@@ -116,7 +116,7 @@ public class IMCClient
 			
 			// {@squirreljme.error EC06 Could not determine the identifier
 			// of the remote system. (The descriptor)}
-			catch (KernelMailBoxException e)
+			catch (SystemMailBoxException e)
 			{
 				throw new IOException(String.format("EC06 %d", fd), e);
 			}
@@ -158,7 +158,7 @@ public class IMCClient
 		
 		// {@squrireljme.error EC0t Could not determine the name of the
 		// remote connection. (The descriptor)}
-		catch (KernelMailBoxException e)
+		catch (SystemMailBoxException e)
 		{
 			throw new IOException(String.format("EC0t %d", __clfd), e);
 		}
@@ -190,7 +190,7 @@ public class IMCClient
 			
 			// {@squirreljme.error EC07 Could not close the client connection.
 			// (The client descriptor)}
-			catch (KernelMailBoxException e)
+			catch (SystemMailBoxException e)
 			{
 				throw new IOException(String.format("EC07 %d", this._clientfd),
 					e);

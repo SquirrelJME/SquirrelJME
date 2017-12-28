@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
 
 /**
  * This class is used by the kernel to manage the current tasks which are
@@ -78,7 +79,7 @@ public abstract class KernelTasks
 		{
 			for (KernelTask t : tasks)
 			{
-				boolean issys = (0 != (t.flags(__by) & KernelTaskFlag.SYSTEM));
+				boolean issys = (0 != (t.flags(__by) & SystemTaskFlag.SYSTEM));
 				if (__incsys || (!__incsys && !issys))
 					rv.add(t);
 			}

@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.runtime.cldc;
 
 /**
  * This represents the status of a task.
  *
  * @since 2017/12/10
  */
-public interface KernelTaskStatus
+public interface SystemTaskStatus
 {
 	/** Exit with fatal error. */
 	public static final int EXITED_FATAL =

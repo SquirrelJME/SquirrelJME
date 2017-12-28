@@ -8,10 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.syscall;
+package net.multiphasicapps.squirreljme.runtime.cldc;
 
 import java.io.Closeable;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelMailBoxException;
 
 /**
  * This represents a listener for incoming mailbox connections and acts as
@@ -33,7 +32,7 @@ public interface SystemMailBoxListener
 	 */
 	public abstract SystemMailBoxConnection accept()
 		throws IllegalArgumentException, InterruptedException,
-			KernelMailBoxException;
+			SystemMailBoxException;
 	
 	/**
 	 * {@inheritDoc}
@@ -41,7 +40,6 @@ public interface SystemMailBoxListener
 	 */
 	@Override
 	public abstract void close()
-		throws KernelMailBoxException;
-	
+		throws SystemMailBoxException;
 }
 

@@ -8,12 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the system caller for one which runs within the
- * kernel task itself.
- *
- * @since 2017/12/11
- */
+package net.multiphasicapps.squirreljme.runtime.cldc;
 
-package net.multiphasicapps.squirreljme.runtime.syscall.in;
+/**
+ * This represents the flags which may be used to represent a task.
+ *
+ * @since 2017/12/27
+ */
+public interface SystemTaskFlag
+{
+	/** The mask which is used for the process status. */
+	public static final int STATUS_MASK =
+		0x0000_0007;
+	
+	/** Is this a system task? */
+	public static final int SYSTEM =
+		0x0000_0008;
+}
 

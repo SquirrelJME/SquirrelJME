@@ -9,10 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * The package explicitely contains the system call interfaces.
+ * This package contains the system caller for one which runs within the
+ * kernel task itself.
  *
- * @since 2017/12/10
+ * @since 2017/12/11
  */
 
-package net.multiphasicapps.squirreljme.runtime.syscall;
+package net.multiphasicapps.squirreljme.runtime.kernel.syscall;
 
