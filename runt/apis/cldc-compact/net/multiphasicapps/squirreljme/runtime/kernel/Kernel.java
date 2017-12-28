@@ -23,27 +23,32 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
  */
 public abstract class Kernel
 {
-	/** The kernel's task. */
-	protected final KernelTask kerneltask;
-	
 	/** Program manager. */
 	protected final KernelPrograms kernelprograms;
+	
+	/** Task manager. */
+	protected final KernelTasks kerneltasks;
 	
 	/**
 	 * Initializes the base kernel.
 	 *
+	 * @param __kt The output array which is placed the kernel task.
 	 * @param __kif Initialization factory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	protected Kernel(KernelInitializerFactory __kif)
+	protected Kernel(KernelTask[] __kt, KernelInitializerFactory __kif)
 		throws NullPointerException
 	{
-		if (__kif == null)
+		if (__kt == null || __kif == null)
 			throw new NullPointerException("NARG");
 		
-		// Initialize the kernel task
-		this.kerneltask = __kif.initializeKernelTask(this);
+		// Initialize the base kernel task
+		KernelTask kerneltask = __kif.initializeKernelTask(this);
+		__kt[0] = kerneltask;
+		
+		// Initialize the kernel
+		this.kerneltasks = __kif.initializeTasks(this, kerneltask);
 		this.kernelprograms = __kif.initializePrograms(this);
 	}
 	
@@ -59,20 +64,10 @@ public abstract class Kernel
 		throws NullPointerException;
 	
 	/**
-	 * This returns the kernel task.
-	 *
-	 * @return The kernel task.
-	 * @since 2017/12/11
-	 */
-	public final KernelTask kernelTask()
-	{
-		return this.kerneltask;
-	}
-	
-	/**
 	 * Returns the program manager.
 	 *
 	 * @param __by The task requesting the manager.
+	 * @return The program manager.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SecurityException If the task is not permitted access to the
 	 * program manager.
@@ -85,13 +80,40 @@ public abstract class Kernel
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ0g The specified task is not permitted to get
-		// the Programs instance. (The task requesting the program list)}
+		// the program manager instance. (The task requesting the program
+		// manager)}
 		if (!__by.hasSimplePermissions(__by,
 			KernelSimplePermission.GET_PROGRAMS_INSTANCE))
 			throw new SecurityException(
 				String.format("ZZ0g %s", __by));
 		
 		return this.kernelprograms;
+	}
+	
+	/**
+	 * Returns the task manager.
+	 *
+	 * @param __by The thread requesting the manager.
+	 * @return The task manager.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the task is not permitted to access the
+	 * task manager.
+	 * @since 2017/12/27
+	 */
+	public final KernelTasks tasks(KernelTask __by)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0j The specified task is not permitted to get
+		// the task manager instance. (The task requesting the task manager)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_TASKS_INSTANCE))
+			throw new SecurityException(
+				String.format("ZZ0j %s", __by));
+		
+		return this.kerneltasks;
 	}
 }
 

@@ -36,5 +36,13 @@ public interface KernelSimplePermission
 	/** Can get properties about a program. */
 	public static final int GET_PROGRAM_PROPERTY =
 		0x0000_0010;
+	
+	/** Return the instance of the task manager. */
+	public static final int GET_TASKS_INSTANCE =
+		0x0000_0020;
+	
+	/** Return the list of available tasks. */
+	public static final int LIST_TASKS =
+		0x0000_0040;
 }
 
