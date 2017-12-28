@@ -111,7 +111,15 @@ abstract class __IdentityBaseSet__<T>
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Set))
+			return false;
+		
+		Set<?> o = (Set<?>)__o;
+		return this.size() == o.size() &&
+			this.containsAll(o);
 	}
 	
 	/**
