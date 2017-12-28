@@ -145,14 +145,14 @@ public class SuiteFactory
 		
 		__out.println("\tFlags:");
 		for (SuiteStateFlag f : SuiteStateFlag.values())
-			if (__s.isSuiteState(f))
-				__out.printf("\t\tFlag %s is set%n", f);
+			__out.printf("\t\tFlag %s is %s%n", f,
+				(__s.isSuiteState(f) ? "set" : "not set"));
 		
 		__out.println("\tMIDlets:");
 		for (Iterator<String> it = __s.getMIDlets(); it.hasNext();)
 			__out.printf("\t\t%s%n", it.next());
 		
-		__out.println("\\tAttributes:");
+		__out.println("\tAttributes:");
 		for (Iterator<String> it = __s.getAttributes(); it.hasNext();)
 		{
 			String key = it.next();
