@@ -27,13 +27,13 @@ package net.multiphasicapps.squirreljme.runtime.syscall;
 public interface SystemTask
 {
 	/**
-	 * Is this a system task?
+	 * Returns the task flags.
 	 *
-	 * @return {@code true} if this is a system task.
-	 * @since 2017/12/10
+	 * @return The flags for the task.
+	 * @since 2017/12/27
 	 */
-	public abstract boolean isSystem();
-
+	public abstract int flags();
+	
 	/**
 	 * Returns the main entry point of this task.
 	 *
@@ -52,15 +52,6 @@ public interface SystemTask
 	public abstract long metric(int __m);
 	
 	/**
-	 * Returns the priority of the task, the lower the value the more
-	 * priority it has.
-	 *
-	 * @return The task priority.
-	 * @since 2017/12/20
-	 */
-	public abstract int priority();
-	
-	/**
 	 * Returns the program which this task is currently running under.
 	 *
 	 * @return The system program for this task.
@@ -77,13 +68,5 @@ public interface SystemTask
 	 * @since 2017/12/10
 	 */
 	public abstract void restart();
-	
-	/**
-	 * Returns the current status of the task.
-	 *
-	 * @return The task status.
-	 * @since 2017/12/10
-	 */
-	public abstract int status();
 }
 

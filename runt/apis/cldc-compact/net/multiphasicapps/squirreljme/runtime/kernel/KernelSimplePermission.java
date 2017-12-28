@@ -44,5 +44,9 @@ public interface KernelSimplePermission
 	/** Return the list of available tasks. */
 	public static final int LIST_TASKS =
 		0x0000_0040;
+	
+	/** Can get a property about a task. */
+	public static final int GET_TASK_PROPERTY =
+		0x0000_0080;
 }
 

@@ -10,8 +10,13 @@
 
 package net.multiphasicapps.squirreljme.runtime.syscall.in;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
@@ -37,6 +42,10 @@ public final class InKernelSystemCaller
 	
 	/** The task to call the kernel as. */
 	protected final KernelTask task;
+	
+	/** The mapping of kernel tasks to system tasks. */
+	private static final Map<KernelTask, Reference<SystemTask>> _taskmap =
+		new WeakHashMap<>();
 	
 	/**
 	 * Initializes the in-kernel system caller.
@@ -89,8 +98,23 @@ public final class InKernelSystemCaller
 		// The returned tasks must be wrapped
 		int n = tasks.length;
 		SystemTask[] rv = new SystemTask[n];
-		for (int i = 0; i < n; i++)
-			throw new todo.TODO();
+		Map<KernelTask, Reference<SystemTask>> taskmap = this._taskmap;
+		synchronized (taskmap)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				KernelTask kt = tasks[i];
+				Reference<SystemTask> ref = taskmap.get(kt);
+				SystemTask st;
+				
+				// Need to wrap the task?
+				if (ref == null || null == (st = ref.get()))
+					taskmap.put(kt, new WeakReference<>((st =
+						new InKernelSystemTask(task, kt))));
+				
+				rv[i] = st;
+			}
+		}
 		
 		return rv;
 	}

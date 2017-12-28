@@ -11,26 +11,18 @@
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
 /**
- * This is used to specify which kind of metric to obtain from a task.
+ * This represents the flags which may be used to represent a task.
  *
- * @since 2017/12/10
+ * @since 2017/12/27
  */
-public interface KernelTaskMetric
+public interface KernelTaskFlag
 {
-	/** The task priority. */
-	public static final int PRIORITY =
-		1;
+	/** The mask which is used for the process status. */
+	public static final int STATUS_MASK =
+		0x0000_0007;
 	
-	/** Used memory. */
-	public static final int MEMORY_USED =
-		2;
-	
-	/** Free memory. */
-	public static final int MEMORY_FREE =
-		3;
-	
-	/** Total memory. */
-	public static final int MEMORY_TOTAL =
-		4;
+	/** Is this a system task? */
+	public static final int SYSTEM =
+		0x0000_0008;
 }
 
