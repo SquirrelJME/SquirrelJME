@@ -48,5 +48,9 @@ public interface KernelSimplePermission
 	/** Can get a property about a task. */
 	public static final int GET_TASK_PROPERTY =
 		0x0000_0080;
+	
+	/** Can install new programs? */
+	public static final int INSTALL_PROGRAM =
+		0x0000_0100;
 }
 

@@ -47,6 +47,41 @@ public abstract class KernelPrograms
 	}
 	
 	/**
+	 * Installs the specified JAR file into the program list.
+	 *
+	 * @param __by The task which is installing the given program.
+	 * @param __b The bytes which make up the JAR file.
+	 * @param __o The offset into the byte array.
+	 * @param __l The number of bytes which are part of the JAR.
+	 * @return The resulting installed program.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the task is not permitted to install
+	 * programs.
+	 * @since 2017/12/28
+	 */
+	public final KernelProgram install(KernelTask __by, byte[] __b, int __o,
+		int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+			SecurityException
+	{
+		if (__by == null || __b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// {@squirreljme.error ZZ0o The specified task is not permitted to
+		// install new programs. (The task installing a program)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.INSTALL_PROGRAM))
+			throw new SecurityException(
+				String.format("ZZ0o %s", __by));
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the list of programs which are available.
 	 *
 	 * @param __by The task requesting the program list.
