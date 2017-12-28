@@ -81,7 +81,7 @@ abstract class __IdentityBaseSet__<T>
 	@Override
 	public final void clear()
 	{
-		throw new todo.TODO();
+		this._backing.clear();
 	}
 	
 	/**
@@ -121,7 +121,7 @@ abstract class __IdentityBaseSet__<T>
 	@Override
 	public final boolean isEmpty()
 	{
-		throw new todo.TODO();
+		return this._backing.isEmpty();
 	}
 	
 	/**
@@ -171,7 +171,7 @@ abstract class __IdentityBaseSet__<T>
 	@Override
 	public final int size()
 	{
-		throw new todo.TODO();
+		return this._backing.size();
 	}
 }
 
