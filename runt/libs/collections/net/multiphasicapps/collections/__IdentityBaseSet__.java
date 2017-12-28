@@ -69,7 +69,9 @@ abstract class __IdentityBaseSet__<T>
 	@Override
 	public final boolean add(T __t)
 	{
-		throw new todo.TODO();
+		if (__t == null)
+			return this._backing.add(null);
+		return this._backing.add(new __IdentityWrapper__<T>(__t));
 	}
 	
 	/**
