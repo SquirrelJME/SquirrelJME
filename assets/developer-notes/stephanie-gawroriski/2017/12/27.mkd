@@ -1,0 +1,13 @@
+# 2017/12/27
+
+## 21:00
+
+So when it comes to stuff such as `KernelTask` and `KernelProgram` I have it
+where their `equals`/`hashCode` are identity since they should never be
+replaced.
+
+## 22:09
+
+I suppose if one tries to install a JAR and there is not JIT or whatever to
+handle the installation of a JAR, then it will just say the device is not
+compatible or give another error. I think other error will be best.
