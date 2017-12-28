@@ -26,5 +26,12 @@ package net.multiphasicapps.squirreljme.runtime.syscall;
  */
 public interface SystemProgram
 {
+	/**
+	 * Returns the index of the program.
+	 *
+	 * @return The program index.
+	 * @since 2017/12/27
+	 */
+	public abstract int index();
 }
 
