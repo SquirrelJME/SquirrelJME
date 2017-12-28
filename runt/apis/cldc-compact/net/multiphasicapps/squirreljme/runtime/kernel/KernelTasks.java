@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class is used by the kernel to manage the current tasks which are
  * running.
@@ -20,6 +23,10 @@ public abstract class KernelTasks
 {
 	/** This task represents the kernel itself. */
 	protected final KernelTask kerneltask;
+	
+	/** Tasks which are currently available. */
+	private final List<KernelTask> _tasks =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the base kernel task manager.
@@ -34,7 +41,9 @@ public abstract class KernelTasks
 		if (__st == null)
 			throw new NullPointerException("NARG");
 		
+		// Always remember the system's task
 		this.kerneltask = __st;
+		this._tasks.add(__st);
 	}
 	
 	/**
@@ -61,7 +70,21 @@ public abstract class KernelTasks
 			throw new SecurityException(
 				String.format("ZZ0k %s", __by));
 		
-		throw new todo.TODO();
+		List<KernelTask> rv = new ArrayList<>();
+		
+		// Lock
+		List<KernelTask> tasks = this._tasks;
+		synchronized (tasks)
+		{
+			for (KernelTask t : tasks)
+			{
+				boolean issys = (0 != (t.flags(__by) & KernelTaskFlag.SYSTEM));
+				if (__incsys || (!__incsys && !issys))
+					rv.add(t);
+			}
+		}
+		
+		return rv.<KernelTask>toArray(new KernelTask[rv.size()]);
 	}
 }
 

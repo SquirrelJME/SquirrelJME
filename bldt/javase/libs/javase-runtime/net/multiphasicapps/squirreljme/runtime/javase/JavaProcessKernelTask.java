@@ -20,5 +20,35 @@ import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 public final class JavaProcessKernelTask
 	extends KernelTask
 {
+	/**
+	 * Initializes the process task.
+	 *
+	 * @param __dx The task index.
+	 * @since 2017/12/27
+	 */
+	public JavaProcessKernelTask(int __dx)
+	{
+		super(__dx);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	protected int accessFlags()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	protected long accessMetric(int __m)
+	{
+		throw new todo.TODO();
+	}
 }
 

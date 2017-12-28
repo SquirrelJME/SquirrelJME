@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskFlag;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskMetric;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTaskStatus;
 import net.multiphasicapps.squirreljme.runtime.syscall.SystemTask;
@@ -108,10 +109,10 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
-		int rv = this._task.priority();
-		if (rv < 0)
+		long rv = this._task.metric(KernelTaskMetric.PRIORITY);
+		if (rv < 0L)
 			return TaskPriority.MAX;
-		else if (rv > 0)
+		else if (rv > 0L)
 			return TaskPriority.MIN;
 		return TaskPriority.NORM;
 	}
@@ -124,7 +125,7 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		int status = this._task.status();
+		int status = (this._task.flags() & KernelTaskFlag.STATUS_MASK);
 		switch (status)
 		{
 			case KernelTaskStatus.EXITED_FATAL:
@@ -190,7 +191,7 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		return this._task.isSystem();
+		return (0 != (this._task.flags() & KernelTaskFlag.SYSTEM));
 	}
 	
 	/**

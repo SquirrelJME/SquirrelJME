@@ -17,33 +17,103 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
  */
 public abstract class KernelTask
 {
+	/** The task index. */
+	protected final int index;
+	
 	/** Permissions granted by the kernel. */
 	private volatile int _simpleperms;
 	
 	/**
 	 * Default constructor.
 	 *
+	 * @param __dx The index of the task.
 	 * @since 2017/12/12
 	 */
-	public KernelTask()
+	public KernelTask(int __dx)
 	{
+		this.index = __dx;
 	}
 	
 	/**
 	 * Initializes the task with the initial basic permissions.
 	 *
+	 * @param __dx The index of the task.
 	 * @param __sp The basic permissions to start with.
 	 * @since 2017/12/12
 	 */
-	public KernelTask(int __sp)
+	public KernelTask(int __dx, int __sp)
 	{
+		this.index = __dx;
 		this._simpleperms = __sp;
+	}
+	
+	/**
+	 * Returns the current flags for the task.
+	 *
+	 * @return The task flags.
+	 * @since 2017/12/27
+	 */
+	protected abstract int accessFlags();
+	
+	/**
+	 * Obtains the specified metric.
+	 *
+	 * @param __m The metric to obtain.
+	 * @return The value of the given metric or {@code Long#MIN_VALUE} if it is
+	 * not known.
+	 * @since 2017/12/27
+	 */
+	protected abstract long accessMetric(int __m);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		return this == __o;
+	}
+	
+	/**
+	 * Returns the flags which represent the current task.
+	 *
+	 * @param __by The task requesting the flags.
+	 * @return The task flags.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If getting the task flags is not permitted.
+	 * @since 2017/12/27
+	 */
+	public final int flags(KernelTask __by)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0l The specified task is not permitted to
+		// obtain the task flags. (The task requesting the task flags)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_TASK_PROPERTY))
+			throw new SecurityException(
+				String.format("ZZ0l %s", __by));
+		
+		return this.accessFlags();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.index;
 	}
 	
 	/**
 	 * Checks whether all of the given permissions are set.
 	 *
-	 * @param __task The task which is requesting this task's permissions.
+	 * @param __by The task which is requesting this task's permissions.
 	 * @param __mask The permission mask to check.
 	 * @return {@code true} if all permissions are set.
 	 * @throws IllegalArgumentException If the mask is empty.
@@ -51,11 +121,11 @@ public abstract class KernelTask
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2017/12/12
 	 */
-	public final boolean hasSimplePermissions(KernelTask __task, int __mask)
+	public final boolean hasSimplePermissions(KernelTask __by, int __mask)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
 	{
-		if (__task == null)
+		if (__by == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ0e Cannot get permissions with an empty mask.}
@@ -66,18 +136,56 @@ public abstract class KernelTask
 		// by the requesting task. (This task; The requesting task)}
 		// Prevent infinite recursion by allowing the current task to always
 		// get permissions
-		if (this != __task && !__task.hasSimplePermissions(__task,
+		if (this != __by && !__by.hasSimplePermissions(__by,
 			KernelSimplePermission.GET_SIMPLE_PERMISSION))
 			throw new SecurityException(
-				String.format("ZZ0c %s %s", this, __task));
+				String.format("ZZ0c %s %s", this, __by));
 		
 		return (__mask == (this._simpleperms & __mask));
 	}
 	
 	/**
+	 * Returns the index of this task.
+	 *
+	 * @return The task index.
+	 * @since 2017/12/27
+	 */
+	public final int index()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * Obtains a given metric for the given task.
+	 *
+	 * @param __by The task reading the metric.
+	 * @param __metric The metric to read.
+	 * @return The value of the given metric or {@code Long#MIN_VALUE} if it is
+	 * not known.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the specified task cannot read metrics.
+	 * @since 2017/12/27
+	 */
+	public final long metric(KernelTask __by, int __metric)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0m The specified task is not permitted to
+		// obtain the task metrics. (The task requesting the task metrics)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_TASK_PROPERTY))
+			throw new SecurityException(
+				String.format("ZZ0m %s", __by));
+		
+		return this.accessMetric(__metric);
+	}
+	
+	/**
 	 * Sets the simple permissions for a task.
 	 *
-	 * @param __task The task which is setting permissions.
+	 * @param __by The task which is setting permissions.
 	 * @param __mask The permission mask.
 	 * @param __enable Whether to enable or disable a given permission. 
 	 * @return The old state of the permission.
@@ -87,12 +195,12 @@ public abstract class KernelTask
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2017/12/12
 	 */
-	public final boolean setSimplePermission(KernelTask __task, int __mask,
+	public final boolean setSimplePermission(KernelTask __by, int __mask,
 		boolean __enable)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
 	{
-		if (__task == null)
+		if (__by == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ0d Cannot set permissions with an empty mask
@@ -102,10 +210,10 @@ public abstract class KernelTask
 		
 		// {@squirreljme.error ZZ0b Permissions cannot be set on this task by
 		// the requested task. (This task; The requesting task)}
-		if (!__task.hasSimplePermissions(__task,
+		if (!__by.hasSimplePermissions(__by,
 			KernelSimplePermission.SET_SIMPLE_PERMISSION))
 			throw new SecurityException(
-				String.format("ZZ0b %s %s", this, __task));
+				String.format("ZZ0b %s %s", this, __by));
 		
 		// Set new permissions
 		int simpleperms = this._simpleperms;

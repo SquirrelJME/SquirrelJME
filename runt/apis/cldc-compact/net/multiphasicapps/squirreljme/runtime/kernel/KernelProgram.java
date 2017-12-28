@@ -44,6 +44,26 @@ public abstract class KernelProgram
 	protected abstract int accessType();
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		return this == __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.index;
+	}
+	
+	/**
 	 * Returns the program index.
 	 *
 	 * @return The program index.
