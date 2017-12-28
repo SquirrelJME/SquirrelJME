@@ -10,21 +10,28 @@
 
 package javax.microedition.swm;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * This is the base class for suite installers.
  *
  * @since 2016/06/24
  */
-public class SuiteInstaller
+public abstract class SuiteInstaller
 {
+	/** Listeners for suites. */
+	private final List<SuiteInstallListener> _listeners =
+		new ArrayList<>();
+	
 	/**
-	 * The constructor of this class is assumed to be internal use.
+	 * Internal use only.
 	 *
 	 * @since 2016/06/24
 	 */
-	private SuiteInstaller()
+	SuiteInstaller()
 	{
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -34,13 +41,13 @@ public class SuiteInstaller
 	 * @param __sl The listener to add.
 	 * @since 2016/06/24
 	 */
-	public void addInstallationListener(SuiteInstallListener __sl)
+	public final void addInstallationListener(SuiteInstallListener __sl)
 	{
 		// Ignore
 		if (__sl == null)
 			return;
 		
-		throw new todo.TODO();
+		this._listeners.add(__sl);
 	}
 	
 	/**
@@ -48,7 +55,7 @@ public class SuiteInstaller
 	 *
 	 * @since 2016/06/24
 	 */
-	public void cancel()
+	public final void cancel()
 	{
 		throw new todo.TODO();
 	}
@@ -60,13 +67,16 @@ public class SuiteInstaller
 	 * @param __sl The listener to remove.
 	 * @since 2016/06/24
 	 */
-	public void removeInstallationListener(SuiteInstallListener __sl)
+	public final void removeInstallationListener(SuiteInstallListener __sl)
 	{
 		// Ignore
 		if (__sl == null)
 			return;
 		
-		throw new todo.TODO();
+		for (Iterator<SuiteInstallListener> it = this._listeners.iterator();
+			it.hasNext();)
+			if (__sl == it.next())
+				it.remove();
 	}
 	
 	/**
@@ -82,7 +92,7 @@ public class SuiteInstaller
 	 * @return The tracker for the given suite.
 	 * @since 2016/06/24
 	 */
-	public SuiteManagementTracker start()
+	public final SuiteManagementTracker start()
 	{
 		throw new todo.TODO();
 	}

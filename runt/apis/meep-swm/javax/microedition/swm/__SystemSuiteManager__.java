@@ -67,7 +67,7 @@ final class __SystemSuiteManager__
 		int __l, boolean __ignuplock)
 		throws IllegalArgumentException, SecurityException
 	{
-		throw new todo.TODO();
+		return new __JarSuiteInstaller__(__b, __o, __l);
 	}
 	
 	/**
