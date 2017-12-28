@@ -98,6 +98,10 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return EmptyIterator.<String>empty();
+		
 		throw new todo.TODO();
 	}
 	
@@ -111,6 +115,10 @@ public class Suite
 	 */
 	public String getAttributeValue(String __a)
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
@@ -123,6 +131,10 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return EmptyIterator.<Suite>empty();
+		
 		throw new todo.TODO();
 	}
 	
@@ -137,6 +149,10 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
@@ -151,6 +167,10 @@ public class Suite
 	 */
 	public Iterator<String> getMIDlets()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return EmptyIterator.<String>empty();
+		
 		throw new todo.TODO();
 	}
 	
@@ -162,6 +182,10 @@ public class Suite
 	 */
 	public String getName()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
@@ -174,6 +198,10 @@ public class Suite
 	 */
 	public SuiteType getSuiteType()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return SuiteType.SYSTEM;
+		
 		throw new todo.TODO();
 		/*
 		return SuiteType.INVALID;
@@ -188,6 +216,10 @@ public class Suite
 	 */
 	public String getVendor()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
@@ -199,6 +231,10 @@ public class Suite
 	 */
 	public String getVersion()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
@@ -225,6 +261,10 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return true;
+		
 		throw new todo.TODO();
 	}
 	
@@ -241,14 +281,23 @@ public class Suite
 		if (__f == null)
 			return false;
 		
+		// The system suite always has a fixed set of flags
+		SystemProgram program = this._program;
+		if (program == null)
+			switch (__f)
+			{
+				case AVAILABLE:
+				case ENABLED:
+				case PREINSTALLED:
+				case REMOVE_DENIED:
+				case SYSTEM:
+				case UPDATE_DENIED:
+					return true;
+				default:
+					return false;
+			}
+		
 		throw new todo.TODO();
-		/*
-		// Lock
-		synchronized (this._lock)
-		{
-			return 0 != (this._state & (1 << __f.ordinal()));
-		}
-		*/
 	}
 	
 	/**
@@ -260,6 +309,10 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
+		SystemProgram program = this._program;
+		if (program == null)
+			return true;
+		
 		throw new todo.TODO();
 	}
 	
