@@ -10,9 +10,8 @@
 
 package javax.microedition.swm;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
+import net.multiphasicapps.collections.IdentityLinkedHashSet;
 
 /**
  * This is the base class for suite installers.
@@ -22,8 +21,8 @@ import java.util.List;
 public abstract class SuiteInstaller
 {
 	/** Listeners for suites. */
-	private final List<SuiteInstallListener> _listeners =
-		new ArrayList<>();
+	private final Set<SuiteInstallListener> _listeners =
+		new IdentityLinkedHashSet<>();
 	
 	/**
 	 * Internal use only.
@@ -73,10 +72,7 @@ public abstract class SuiteInstaller
 		if (__sl == null)
 			return;
 		
-		for (Iterator<SuiteInstallListener> it = this._listeners.iterator();
-			it.hasNext();)
-			if (__sl == it.next())
-				it.remove();
+		this._listeners.remove(__sl);
 	}
 	
 	/**
