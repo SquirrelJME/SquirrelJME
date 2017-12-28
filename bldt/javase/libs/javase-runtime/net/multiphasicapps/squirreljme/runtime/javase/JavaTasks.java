@@ -10,40 +10,26 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTasks;
 
 /**
- * This implements the kernel which is used on the initial Java SE
- * process and not the client processes.
+ * This is the task manager which runs on the Java SE host system.
  *
- * @since 2017/12/08
+ * @since 2017/12/27
  */
-public final class JavaKernel
-	extends Kernel
+public class JavaTasks
+	extends KernelTasks
 {
 	/**
-	 * Initializes the kernel to run on Java systems.
+	 * Initializes the task manager.
 	 *
-	 * @param __kt The output kernel task array.
-	 * @since 2017/12/08
+	 * @param __st The system task.
+	 * @since 2017/12/27
 	 */
-	JavaKernel(KernelTask[] __kt)
+	public JavaTasks(KernelTask __st)
 	{
-		super(__kt, new JavaInitializerFactory());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/11
-	 */
-	@Override
-	protected KernelTask initializeTask(KernelProgram __p)
-		throws NullPointerException
-	{
-		throw new todo.TODO();
+		super(__st);
 	}
 }
 

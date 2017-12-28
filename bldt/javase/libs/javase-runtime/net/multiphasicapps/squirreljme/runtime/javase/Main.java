@@ -107,8 +107,9 @@ public class Main
 		// The server uses the actual kernel
 		else
 		{
-			Kernel kernel = new JavaKernel();
-			syscaller = new InKernelSystemCaller(kernel, kernel.kernelTask());
+			KernelTask[] kerneltask = new KernelTask[1];
+			Kernel kernel = new JavaKernel(kerneltask);
+			syscaller = new InKernelSystemCaller(kernel, kerneltask[0]);
 		}
 		
 		// Need to obtain the interface field so that it is initialized

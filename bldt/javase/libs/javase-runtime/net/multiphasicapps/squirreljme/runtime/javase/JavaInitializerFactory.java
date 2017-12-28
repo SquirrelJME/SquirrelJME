@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelInitializerFactory;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTasks;
 
 /**
  * This factory is used to initialize the other parts of the kernel.
@@ -41,6 +42,16 @@ public class JavaInitializerFactory
 	public KernelPrograms initializePrograms(Kernel __k)
 	{
 		return new JavaPrograms();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/27
+	 */
+	@Override
+	public KernelTasks initializeTasks(Kernel __k, KernelTask __st)
+	{
+		return new JavaTasks(__st);
 	}
 }
 

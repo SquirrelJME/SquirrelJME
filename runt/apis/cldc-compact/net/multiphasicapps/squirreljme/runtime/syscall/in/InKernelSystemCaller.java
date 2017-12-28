@@ -65,7 +65,7 @@ public final class InKernelSystemCaller
 	{
 		KernelTask task = this.task;
 		KernelProgram[] programs = this.kernel.programs(task).
-			listPrograms(task, __typemask);
+			list(task, __typemask);
 		
 		// The programs returned by the kernel are wrapped internally
 		int n = programs.length;
@@ -83,7 +83,16 @@ public final class InKernelSystemCaller
 	@Override
 	public SystemTask[] listTasks(boolean __incsys)
 	{
-		throw new todo.TODO();
+		KernelTask task = this.task;
+		KernelTask[] tasks = this.kernel.tasks(task).list(task, __incsys);
+		
+		// The returned tasks must be wrapped
+		int n = tasks.length;
+		SystemTask[] rv = new SystemTask[n];
+		for (int i = 0; i < n; i++)
+			throw new todo.TODO();
+		
+		return rv;
 	}
 }
 

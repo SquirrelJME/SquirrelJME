@@ -35,5 +35,15 @@ public interface KernelInitializerFactory
 	 * @since 2017/12/14
 	 */
 	public abstract KernelPrograms initializePrograms(Kernel __k);
+	
+	/**
+	 * This initializes the task manager.
+	 *
+	 * @param __k The owning kernel.
+	 * @param __st The kernel's task.
+	 * @return The task manager.
+	 * @since 2017/12/27
+	 */
+	public abstract KernelTasks initializeTasks(Kernel __k, KernelTask __st);
 }
 

@@ -57,7 +57,7 @@ public abstract class KernelPrograms
 	 * @throws SecurityException If the operation is not permitted.
 	 * @since 2017/12/11
 	 */
-	public final KernelProgram[] listPrograms(KernelTask __by, int __typemask)
+	public final KernelProgram[] list(KernelTask __by, int __typemask)
 		throws NullPointerException, SecurityException
 	{
 		if (__by == null)
