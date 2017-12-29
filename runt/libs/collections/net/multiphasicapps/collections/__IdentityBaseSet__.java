@@ -139,7 +139,7 @@ abstract class __IdentityBaseSet__<T>
 	@Override
 	public final Iterator<T> iterator()
 	{
-		throw new todo.TODO();
+		return new __Iterator__();
 	}
 	
 	/**
@@ -180,6 +180,52 @@ abstract class __IdentityBaseSet__<T>
 	public final int size()
 	{
 		return this._backing.size();
+	}
+	
+	/**
+	 * Iterates over wrapped entries.
+	 *
+	 * @since 2017/12/28
+	 */
+	private final class __Iterator__
+		implements Iterator<T>
+	{
+		/** The boxed iterator. */
+		protected final Iterator<__IdentityWrapper__<T>> boxed =
+			__IdentityBaseSet__.this._backing.iterator();
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/12/28
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this.boxed.hasNext();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/12/28
+		 */
+		@Override
+		public T next()
+		{
+			__IdentityWrapper__<T> rv = this.boxed.next();
+			if (rv == null)
+				return null;
+			return rv.get();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/12/28
+		 */
+		@Override
+		public void remove()
+		{
+			this.boxed.remove();
+		}
 	}
 }
 
