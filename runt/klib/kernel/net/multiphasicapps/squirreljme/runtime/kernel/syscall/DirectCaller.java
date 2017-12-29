@@ -118,5 +118,19 @@ public final class DirectCaller
 		
 		return rv;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/28
+	 */
+	@Override
+	public void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		this.kernel.setDaemonThread(__t);
+	}
 }
 

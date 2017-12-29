@@ -45,5 +45,19 @@ public final class JavaKernel
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/28
+	 */
+	@Override
+	public void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		__t.setDaemon(true);
+	}
 }
 

@@ -267,7 +267,7 @@ public final class SystemCall
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		SystemCall._CALLER.setDaemonThread(__t);
 	}
 	
 	/**
