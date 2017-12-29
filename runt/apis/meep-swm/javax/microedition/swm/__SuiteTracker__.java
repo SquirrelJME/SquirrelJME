@@ -26,6 +26,10 @@ import net.multiphasicapps.squirreljme.runtime.swm.JarStreamSupplier;
 final class __SuiteTracker__
 	extends SuiteManagementTracker
 {
+	/** Bytes per percent threshold. */
+	private static final int _PERCENT_THRESHOLD =
+		4096;
+	
 	/** The suite when it is installed. */
 	volatile Suite _suite;
 	
@@ -110,7 +114,7 @@ final class __SuiteTracker__
 			{
 				// Read in source data
 				byte[] buf = new byte[512];
-				for (int tracking = 1;; tracking++)
+				for (int count = 0, last = 0;;)
 				{
 					int rc = is.read(buf);
 					
@@ -120,8 +124,16 @@ final class __SuiteTracker__
 					baos.write(buf, 0, rc);
 					
 					// Update progress for the first initial set of blocks
-					if (tracking <= 99)
-						__update(SuiteInstallStage.DOWNLOAD_DATA, tracking);
+					if (last < 99)
+					{
+						count += rc;
+						int now = count / _PERCENT_THRESHOLD;
+						if (last != now && now <= 99)
+						{
+							__update(SuiteInstallStage.DOWNLOAD_DATA, now);
+							last = now;
+						}
+					}
 				}
 				
 				// Get the entire data buffer

@@ -54,6 +54,17 @@ final class __IdentityWrapper__<T>
 	}
 	
 	/**
+	 * Returns the wrapped object.
+	 *
+	 * @return The wrapped object.
+	 * @since 2017/12/28
+	 */
+	public T get()
+	{
+		return this.value;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/28
 	 */
