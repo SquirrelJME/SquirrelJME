@@ -72,17 +72,17 @@ public final class SystemCall
 	 * @param __b The bytes which make up the JAR.
 	 * @param __o The offset into the array.
 	 * @param __l The length of the array.
-	 * @param __progress A notifier which is used to obtain progress.
+	 * @return The program which was installed.
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	public static final SystemProgramInstaller install(byte[] __b, int __o,
-		int __l, SystemProgramInstallProgress __progress)
+	public static final SystemProgramInstallReport install(
+		byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
-		if (__b == null || __progress == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
