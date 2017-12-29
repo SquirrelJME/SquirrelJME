@@ -42,6 +42,18 @@ public abstract class SystemCaller
 		throws SecurityException;
 	
 	/**
+	 * Specifies that the specified thread should become a daemon thread.
+	 *
+	 * @param __t The thread to set as a daemon.
+	 * @throws IllegalThreadStateException If the thread has already been
+	 * started or is already a daemon thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	public abstract void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException;
+	
+	/**
 	 * Locates the specified program by the given index.
 	 *
 	 * @param __dx The index of the program to get.

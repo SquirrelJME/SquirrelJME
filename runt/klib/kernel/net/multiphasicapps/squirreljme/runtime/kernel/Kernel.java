@@ -64,6 +64,18 @@ public abstract class Kernel
 		throws NullPointerException;
 	
 	/**
+	 * Specifies that the specified thread should become a daemon thread.
+	 *
+	 * @param __t The thread to set as a daemon.
+	 * @throws IllegalThreadStateException If the thread has already been
+	 * started or is already a daemon thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	public abstract void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException;
+	
+	/**
 	 * Returns the program manager.
 	 *
 	 * @param __by The task requesting the manager.
