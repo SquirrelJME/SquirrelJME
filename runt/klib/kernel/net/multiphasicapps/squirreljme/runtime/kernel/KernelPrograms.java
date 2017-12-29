@@ -61,8 +61,8 @@ public abstract class KernelPrograms
 	 * programs.
 	 * @since 2017/12/28
 	 */
-	public final KernelProgram install(KernelTask __by, byte[] __b, int __o,
-		int __l)
+	public final KernelProgramInstallReport install(KernelTask __by,
+		byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException,
 			SecurityException
 	{
@@ -78,7 +78,12 @@ public abstract class KernelPrograms
 			throw new SecurityException(
 				String.format("ZZ0o %s", __by));
 		
-		throw new todo.TODO();
+		// Programs are verified against other programs
+		List<KernelProgram> programs = this._programs;
+		synchronized (programs)
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**

@@ -78,7 +78,7 @@ public final class SystemCall
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	public static final SystemProgramInstallReport install(
+	public static final SystemProgramInstallReport installProgram(
 		byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
@@ -87,7 +87,7 @@ public final class SystemCall
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		return SystemCall._CALLER.installProgram(__b, __o, __l);
 	}
 	
 	/**
