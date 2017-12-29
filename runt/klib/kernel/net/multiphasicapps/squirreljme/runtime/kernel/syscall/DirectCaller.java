@@ -19,9 +19,12 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
+import net.multiphasicapps.squirreljme.runtime.kernel.
+	KernelProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 
 /**
@@ -47,6 +50,10 @@ public final class DirectCaller
 	private static final Map<KernelTask, Reference<SystemTask>> _taskmap =
 		new WeakHashMap<>();
 	
+	/** Mapping of kernel programs to system programs. */
+	private static final Map<KernelProgram, Reference<SystemProgram>> _promap =
+		new WeakHashMap<>();
+	
 	/**
 	 * Initializes the in-kernel system caller.
 	 *
@@ -63,6 +70,25 @@ public final class DirectCaller
 		
 		this.kernel = __k;
 		this.task = __t;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/28
+	 */
+	@Override
+	public final SystemProgramInstallReport installProgram(
+		byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		KernelTask task = this.task;
+		KernelProgramInstallReport report = this.kernel.programs(task).install(
+			task, __b, __o, __l);
+		
+		int error = report.error();
+		if (error != 0)
+			return new SystemProgramInstallReport(error);
+		return new SystemProgramInstallReport(__wrapProgram(report.program()));
 	}
 	
 	/**
@@ -131,6 +157,23 @@ public final class DirectCaller
 			throw new NullPointerException("NARG");
 		
 		this.kernel.setDaemonThread(__t);
+	}
+	
+	/**
+	 * Wraps the specified program.
+	 *
+	 * @param __p The program to wrap.
+	 * @return The wrapped program.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	private SystemProgram __wrapProgram(KernelProgram __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

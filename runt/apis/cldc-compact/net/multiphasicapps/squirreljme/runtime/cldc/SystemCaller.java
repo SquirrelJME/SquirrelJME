@@ -19,6 +19,23 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
 public abstract class SystemCaller
 {
 	/**
+	 * This installs the specified byte array as a new program or as an update
+	 * to an existing one on the system.
+	 *
+	 * @param __b The bytes which make up the JAR.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the array.
+	 * @return The program which was installed.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	public abstract SystemProgramInstallReport installProgram(
+		byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException;
+	
+	/**
 	 * Lists programs which are available on the system.
 	 *
 	 * @param __typemask A mask which is used to filter programs of a given

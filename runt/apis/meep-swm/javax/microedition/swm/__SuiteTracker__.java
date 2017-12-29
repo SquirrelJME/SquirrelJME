@@ -151,8 +151,8 @@ final class __SuiteTracker__
 			
 			// Send it to the kernel
 			__update(SuiteInstallStage.VERIFYING, 0);
-			SystemProgramInstallReport report = SystemCall.install(data, 0,
-				data.length);
+			SystemProgramInstallReport report = SystemCall.installProgram(
+				data, 0, data.length);
 			
 			// Failed
 			int error = report.error();
