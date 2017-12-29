@@ -12,25 +12,36 @@ package javax.microedition.swm;
 
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
+import net.multiphasicapps.squirreljme.runtime.swm.JarStreamSupplier;
 
 /**
- * This is the base class for suite installers.
+ * This class is created when a suite is to be installed.
  *
  * @since 2016/06/24
  */
-public abstract class SuiteInstaller
+public final class SuiteInstaller
 {
+	/** The supplier for the JAR data. */
+	final JarStreamSupplier _supplier;
+	
 	/** Listeners for suites. */
-	private final Set<SuiteInstallListener> _listeners =
+	final Set<SuiteInstallListener> _listeners =
 		new IdentityLinkedHashSet<>();
 	
 	/**
 	 * Internal use only.
 	 *
+	 * @param __sup The supplier for JAR files.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	SuiteInstaller()
+	SuiteInstaller(JarStreamSupplier __sup)
+		throws NullPointerException
 	{
+		if (__sup == null)
+			throw new NullPointerException("NARG");
+		
+		this._supplier = __sup;
 	}
 	
 	/**
@@ -90,7 +101,7 @@ public abstract class SuiteInstaller
 	 */
 	public final SuiteManagementTracker start()
 	{
-		throw new todo.TODO();
+		return new __SuiteTracker__(this);
 	}
 }
 

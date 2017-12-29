@@ -253,6 +253,24 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Specifies that the specified thread should become a daemon thread.
+	 *
+	 * @param __t The thread to set as a daemon.
+	 * @throws IllegalThreadStateException If the thread has already been
+	 * started or is already a daemon thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	public static final void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * This returns the instance of the system caller which is to be used.
 	 *
 	 * @return The system caller interface.

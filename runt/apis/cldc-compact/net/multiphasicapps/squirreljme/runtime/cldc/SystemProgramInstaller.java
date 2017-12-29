@@ -11,7 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
 /**
- * DESCRIBE THIS.
+ * This interface is used when a program is to be installed and allows it to
+ * be installed.
  *
  * @since 2017/12/28
  */

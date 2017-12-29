@@ -8,33 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.swm;
+package net.multiphasicapps.squirreljme.runtime.swm;
+
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
- * This is used to track the the progress of a suite that is currently
- * being installed.
+ * This is used to obtain an input stream which contains JAR file data which
+ * would then be passed through the JIT for recompilation.
  *
- * @since 2016/06/24
+ * @since 2017/12/28
  */
-public abstract class SuiteManagementTracker
+public interface JarStreamSupplier
 {
 	/**
-	 * Prevents implicit instantiation of trackers.
+	 * Returns an input stream over the JAR data.
 	 *
-	 * @since 2016/06/24
+	 * @return The input stream over the JAR data.
+	 * @throws IOException If it could not be obtained.
+	 * @since 2017/12/28
 	 */
-	protected SuiteManagementTracker()
-	{
-	}
-	
-	/**
-	 * Returns the suite that this tracker is assigned to or {@code null} if it
-	 * is not install yet.
-	 *
-	 * @return The suite this tracker is assigned to or {@code null} if it
-	 * has not yet been installed.
-	 * @since 2016/06/24
-	 */
-	public abstract Suite getSuite();
+	public abstract InputStream get()
+		throws IOException;
 }
 

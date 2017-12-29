@@ -20,6 +20,7 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
+import net.multiphasicapps.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 
 /**
  * This class manages the bridge for the suite manager to the native program
@@ -67,7 +68,8 @@ final class __SystemSuiteManager__
 		int __l, boolean __ignuplock)
 		throws IllegalArgumentException, SecurityException
 	{
-		return new __JarSuiteInstaller__(__b, __o, __l);
+		return new SuiteInstaller(
+			new ByteArrayJarStreamSupplier(__b, __o, __l));
 	}
 	
 	/**
