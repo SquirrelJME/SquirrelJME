@@ -8,38 +8,40 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.swm;
+package net.multiphasicapps.squirreljme.runtime.swm;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
- * This is an installer which will install the specified byte array into the
- * host system.
+ * This class provides a stream of a JAR file through a byte array.
  *
  * @since 2017/12/28
  */
-final class __JarSuiteInstaller__
-	extends SuiteInstaller
+public final class ByteArrayJarStreamSupplier
+	implements JarStreamSupplier
 {
-	/** Offset into the array. */
+	/** The offset. */
 	protected final int offset;
 	
-	/** Number of bytes to read. */
+	/** The length. */
 	protected final int length;
 	
-	/** The data buffer. */
+	/** The byte array. */
 	private final byte[] _data;
 	
 	/**
-	 * Initializes the installer for installing the given bytes.
+	 * Initializes the stream supplier for a simple byte array.
 	 *
-	 * @param __b The JAR file data.
-	 * @param __o Offset into the array.
-	 * @param __l Length of the array.
+	 * @param __b The byte array to wrap.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to read.
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
 	 * are negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	__JarSuiteInstaller__(byte[] __b, int __o, int __l)
+	public ByteArrayJarStreamSupplier(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
@@ -50,6 +52,16 @@ final class __JarSuiteInstaller__
 		this._data = __b;
 		this.offset = __o;
 		this.length = __l;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/28
+	 */
+	@Override
+	public InputStream get()
+	{
+		return new ByteArrayInputStream(this._data, this.offset, this.length);
 	}
 }
 
