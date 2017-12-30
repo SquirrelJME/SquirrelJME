@@ -323,14 +323,14 @@ public final class SuiteVersion
 			}
 			
 			// Add to string
-			else if (c >= '0' && c < '9')
+			else if (c >= '0' && c <= '9')
 				sb.append((char)c);
 			
 			// {@squirreljme.error AD0h An illegal character is in the
-			// version string. (The input string)}
+			// version string. (The input string; The illegal character)}
 			else
-				throw new InvalidSuiteException(String.format("AD0h %s",
-					__v));
+				throw new InvalidSuiteException(String.format("AD0h %s %04x",
+					__v, c));
 		}
 		
 		// Return it
