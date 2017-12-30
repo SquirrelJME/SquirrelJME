@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.io.InputStream;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 
@@ -29,6 +30,20 @@ public class JavaSystemProgram
 	public JavaSystemProgram()
 	{
 		super(0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/28
+	 */
+	@Override
+	protected InputStream accessLoadResource(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		return null;
 	}
 	
 	/**
