@@ -13,7 +13,7 @@ package javax.microedition.midlet;
 public final class MIDletIdentity
 {
 	/**
-	 * Internally intiailized.
+	 * Internally intialized.
 	 *
 	 * @since 2016/08/30
 	 */

@@ -16,6 +16,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.MatchResult;
+import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -98,10 +101,35 @@ public abstract class KernelPrograms
 				info = new SuiteInfo(new JavaManifest(in));
 			}
 			
+			// Need to make sure that all dependencies are checked and recorded
+			List<KernelProgram> depends = new ArrayList<>();
+			DependencyInfo origdeps = info.dependencies(),
+				restdeps = origdeps;
+			
 			// Programs are verified against other programs
 			List<KernelProgram> programs = this._programs;
 			synchronized (programs)
 			{
+				// Go through other programs and try to find dependency
+				// matches
+				for (KernelProgram program : programs)
+				{
+					// No more matches to be made
+					if (restdeps.isEmpty())
+						break;
+					
+					// This program provides dependencies
+					MatchResult result = restdeps.match(
+						program.suiteInfo().provided());
+					if (result.hasMatches())
+					{
+						depends.add(program);
+						
+						// Filter away those matches
+						restdeps = result.unmatched();
+					}
+				}
+				
 				throw new todo.TODO();
 			}
 		}
