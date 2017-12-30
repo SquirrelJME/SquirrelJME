@@ -1,0 +1,19 @@
+# 2017/12/28
+
+## 09:58
+
+Actually, programs could still be installed and ran by the kernel by having a
+JITless non-native operation. So even if a JIT is not supported, there could
+still be a kind of interpreter that can run programs. `KernelProgram` can then
+be simulated by the kernel itself. This would be a kind of hybrid approach so
+to speak but it can work. The interpreter would just run as threads from
+within the kernel, using the kernel's execution domain to run code and such.
+The only problem with this is that there would need to be JARs for the native
+run-time and such. So basically for an interpretive setup for non-JIT systems
+there would need to be a copy of everything that exists anyway. So basically
+it cannot be done anyway, not without having hacks in the native code to allow
+such a mixed state.
+
+## 18:32
+
+The SWM classes are pretty ugly.
