@@ -78,7 +78,7 @@ public final class Configuration
 			throw new InvalidSuiteException(String.format("AD0p %s", __n));
 		
 		// Potentially compact?
-		this.compact = (fn >= 2 &&
+		this.compact = (fn > 2 &&
 			0 == fields[2].compareToIgnoreCase("compact"));
 		
 		// Parse name and version

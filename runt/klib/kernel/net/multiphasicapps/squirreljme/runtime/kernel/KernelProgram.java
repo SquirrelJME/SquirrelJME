@@ -141,11 +141,16 @@ public abstract class KernelProgram
 		JavaManifest rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			try
+			try (InputStream in = this.accessLoadResource(
+				"META-INF/MANIFEST.MF"))
 			{
+				// {@squirreljme.error AP03 A program with no manifest
+				// resource exists within the kernel.}
+				if (in == null)
+					throw new RuntimeException("AP03");
+				
 				this._manifest = new WeakReference<>(
-					(rv = new JavaManifest(
-						this.accessLoadResource("META-INF/MANIFEST.MF"))));
+					(rv = new JavaManifest(in)));
 			}
 			
 			// {@squirreljme.error AP02 Could not read the program manifest.}
