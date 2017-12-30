@@ -11,6 +11,11 @@
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
 import java.io.InputStream;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This represents a single program which exists within the kernel and maps
@@ -25,6 +30,12 @@ public abstract class KernelProgram
 {
 	/** The index of the program. */
 	protected final int index;
+	
+	/** Information about the suite. */
+	private volatile Reference<SuiteInfo> _info;
+	
+	/** The manifest for this suite. */
+	private volatile Reference<JavaManifest> _manifest;
 	
 	/**
 	 * Initializes the base program.
@@ -115,6 +126,54 @@ public abstract class KernelProgram
 	public final int index()
 	{
 		return this.index;
+	}
+	
+	/**
+	 * This returns the manifest for the program which will contain the
+	 * information about it.
+	 *
+	 * @return The manifest for this program.
+	 * @since 2017/12/30
+	 */
+	public final JavaManifest manifest()
+	{
+		Reference<JavaManifest> ref = this._manifest;
+		JavaManifest rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			try
+			{
+				this._manifest = new WeakReference<>(
+					(rv = new JavaManifest(
+						this.accessLoadResource("META-INF/MANIFEST.MF"))));
+			}
+			
+			// {@squirreljme.error AP02 Could not read the program manifest.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AP02", e);
+			}
+		
+		return rv;
+	}
+	
+	/**
+	 * This returns information about the program suite such as its
+	 * dependencies and such.
+	 *
+	 * @return The suite information.
+	 * @since 2017/12/30
+	 */
+	public final SuiteInfo suiteInfo()
+	{
+		Reference<SuiteInfo> ref = this._info;
+		SuiteInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._info = new WeakReference<>(
+				(rv = new SuiteInfo(this.manifest())));
+		
+		return rv;
 	}
 	
 	/**
