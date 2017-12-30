@@ -65,14 +65,10 @@ public final class ProvidedInfo
 		
 		// Defined standards
 		Set<Standard> standards = new LinkedHashSet<>();
-		if (true)
-			throw new todo.TODO();
-		/*
 		value = attr.getValue("X-SquirrelJME-DefinedStandards");
 		if (value != null)
 			for (String s : StringUtils.basicSplit(",", value))
 				standards.add(new Standard(s.trim()));
-		*/
 		
 		// Has internal project name?
 		String internalname = attr.getValue(

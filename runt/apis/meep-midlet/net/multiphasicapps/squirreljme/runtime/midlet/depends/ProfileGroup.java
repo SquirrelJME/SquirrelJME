@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.depends;
  *
  * @since 2017/12/05
  */
+@Deprecated
 public final class ProfileGroup
 {
 }
