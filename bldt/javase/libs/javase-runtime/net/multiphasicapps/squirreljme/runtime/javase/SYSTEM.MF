@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-API-Name: Java SE Runtime
+X-SquirrelJME-API-Vendor: Stephanie Gawroriski
+X-SquirrelJME-API-Version: 0.0.2
+X-SquirrelJME-API-Description: This permits the SquirrelJME APIs to be 
+ ran on a Java SE host virtualizing as best as it can.
+X-SquirrelJME-DefinedConfigurations: CLDC-1.8 CLDC-1.8-Compact 
+ CLDC-1.1 CLDC-1.0
+X-SquirrelJME-DefinedProfiles: MIDP-1.0 MIDP-2.0 MIDP-2.1 MEEP-8.0
+

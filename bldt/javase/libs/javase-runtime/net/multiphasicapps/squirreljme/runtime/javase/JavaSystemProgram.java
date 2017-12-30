@@ -43,6 +43,8 @@ public class JavaSystemProgram
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
+		if (__name.equals("META-INF/MANIFEST.MF"))
+			return JavaSystemProgram.class.getResourceAsStream("SYSTEM.MF");
 		return null;
 	}
 	
