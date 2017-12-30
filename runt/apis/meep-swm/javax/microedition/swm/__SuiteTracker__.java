@@ -106,74 +106,87 @@ final class __SuiteTracker__
 		@Override
 		public void run()
 		{
-			// Read the JAR data stream 
-			byte[] data;
-			__update(SuiteInstallStage.DOWNLOAD_DATA, 0);
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = this.supplier.get())
+			try
 			{
-				// Read in source data
-				byte[] buf = new byte[512];
-				for (int count = 0, last = 0;;)
+				// Read the JAR data stream 
+				byte[] data;
+				__update(SuiteInstallStage.DOWNLOAD_DATA, 0);
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					InputStream is = this.supplier.get())
 				{
-					int rc = is.read(buf);
-					
-					if (rc < 0)
-						break;
-					
-					baos.write(buf, 0, rc);
-					
-					// Update progress for the first initial set of blocks
-					if (last < 99)
+					// Read in source data
+					byte[] buf = new byte[512];
+					for (int count = 0, last = 0;;)
 					{
-						count += rc;
-						int now = count / _PERCENT_THRESHOLD;
-						if (last != now && now <= 99)
+						int rc = is.read(buf);
+					
+						if (rc < 0)
+							break;
+					
+						baos.write(buf, 0, rc);
+					
+						// Update progress for the first initial set of blocks
+						if (last < 99)
 						{
-							__update(SuiteInstallStage.DOWNLOAD_DATA, now);
-							last = now;
+							count += rc;
+							int now = count / _PERCENT_THRESHOLD;
+							if (last != now && now <= 99)
+							{
+								__update(SuiteInstallStage.DOWNLOAD_DATA, now);
+								last = now;
+							}
 						}
 					}
-				}
 				
-				// Get the entire data buffer
-				baos.flush();
-				data = baos.toByteArray();
+					// Get the entire data buffer
+					baos.flush();
+					data = baos.toByteArray();
+				}
+			
+				// Could not read the JAR
+				catch (IOException e)
+				{
+					__done(InstallErrorCodes.IO_FILE_ERROR);
+					return;
+				}
+				__update(SuiteInstallStage.DOWNLOAD_DATA, 100);
+			
+				// Send it to the kernel
+				__update(SuiteInstallStage.VERIFYING, 0);
+				SystemProgramInstallReport report = SystemCall.installProgram(
+					data, 0, data.length);
+			
+				// Failed
+				int error = report.error();
+				if (error != 0)
+				{
+					error--;
+					InstallErrorCodes[] codes = InstallErrorCodes.values();
+					__done((error >= 0 && error < codes.length ? codes[error] :
+						InstallErrorCodes.OTHER_ERROR));
+					return;
+				}
+			
+				// Set the suite used
+				this.tracker._suite = new Suite(report.program());
+			
+				// Did not fail, but report it anyway
+				__update(SuiteInstallStage.VERIFYING, 100);
+			
+				// Finished
+				__update(SuiteInstallStage.DONE, 100);
+				__done(InstallErrorCodes.NO_ERROR);
 			}
 			
-			// Could not read the JAR
-			catch (IOException e)
+			// Oops
+			catch (Throwable t)
 			{
-				__done(InstallErrorCodes.IO_FILE_ERROR);
-				return;
+				// Just print the trace
+				t.printStackTrace();
+				
+				// And use some other error code to indicate failure 
+				__done(InstallErrorCodes.OTHER_ERROR);
 			}
-			__update(SuiteInstallStage.DOWNLOAD_DATA, 100);
-			
-			// Send it to the kernel
-			__update(SuiteInstallStage.VERIFYING, 0);
-			SystemProgramInstallReport report = SystemCall.installProgram(
-				data, 0, data.length);
-			
-			// Failed
-			int error = report.error();
-			if (error != 0)
-			{
-				error--;
-				InstallErrorCodes[] codes = InstallErrorCodes.values();
-				__done((error >= 0 && error < codes.length ? codes[error] :
-					InstallErrorCodes.OTHER_ERROR));
-				return;
-			}
-			
-			// Set the suite used
-			this.tracker._suite = new Suite(report.program());
-			
-			// Did not fail, but report it anyway
-			__update(SuiteInstallStage.VERIFYING, 100);
-			
-			// Finished
-			__update(SuiteInstallStage.DONE, 100);
-			__done(InstallErrorCodes.NO_ERROR);
 		}
 		
 		/**
