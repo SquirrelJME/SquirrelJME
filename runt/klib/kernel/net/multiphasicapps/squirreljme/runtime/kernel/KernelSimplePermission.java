@@ -52,5 +52,9 @@ public interface KernelSimplePermission
 	/** Can install new programs? */
 	public static final int INSTALL_PROGRAM =
 		0x0000_0100;
+	
+	/** Load a resource within a program. */
+	public static final int LOAD_PROGRAM_RESOURCE =
+		0x0000_0200;
 }
 

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
+import java.io.InputStream;
+
 /**
  * This represents a single program which exists within the kernel and maps
  * with suites within the Java ME environment. Each program is identified by
@@ -34,6 +36,19 @@ public abstract class KernelProgram
 	{
 		this.index = __dx;
 	}
+	
+	/**
+	 * Returns an input stream which can be used to read the given resource
+	 * data.
+	 *
+	 * @param __name The name of the resource to load.
+	 * @return An input stream over the resource data or {@code null} if it
+	 * does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/30
+	 */
+	protected abstract InputStream accessLoadResource(String __name)
+		throws NullPointerException;
 	
 	/**
 	 * Returns the type of program this is.
@@ -61,6 +76,34 @@ public abstract class KernelProgram
 	public final int hashCode()
 	{
 		return this.index;
+	}
+	
+	/**
+	 * This loads a resource from this program.
+	 *
+	 * @param __by The task which wants to load the resource.
+	 * @param __name The name of the resource to load.
+	 * @return An input stream which will return the resource data or
+	 * {@code null} if the specified resource does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the task cannot load resources from
+	 * programs.
+	 * @since 2017/12/20
+	 */
+	public final InputStream loadResource(KernelTask __by, String __name)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AP01 The specified task is not permitted to
+		// load a program resource. (The task requesting the resource)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_PROGRAM_PROPERTY))
+			throw new SecurityException(
+				String.format("AP01 %s", __by));
+		
+		return accessLoadResource(__name);
 	}
 	
 	/**
