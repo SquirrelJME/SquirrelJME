@@ -71,7 +71,8 @@ class __SuiteInstallWaiter__
 				// the given error code. (The error code)}
 				InstallErrorCodes error = this._error;
 				if (error != null)
-					throw new RuntimeException(String.format("AU0z %s"));
+					throw new RuntimeException(String.format("AU0z %s",
+						error));
 				
 				// Installation can be notified from another thread
 				try

@@ -10,20 +10,23 @@
 
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This class is used to manage the programs which are available for usage.
  *
- * Each program has an identifier which identitifies, that identifier is mapped
- * to a slot within the program list so that the same program will always have
- * the same identifier.
- *
  * There should always be a program with the type of
- * {@link KernelProgramType#SYSTEM} in the first index slot.
+ * {@link KernelProgramType#SYSTEM} in the first index slot. The first program
+ * is used to determine what the system natively supports.
  *
  * @since 2017/12/14
  */
@@ -78,11 +81,43 @@ public abstract class KernelPrograms
 			throw new SecurityException(
 				String.format("ZZ0o %s", __by));
 		
-		// Programs are verified against other programs
-		List<KernelProgram> programs = this._programs;
-		synchronized (programs)
+		// Defensive copy of the input array so that it is not modified as
+		// it is processed by the kernel
+		byte[] copy = new byte[__l];
+		System.arraycopy(__b, __o, copy, 0, __l);
+		try (ZipBlockReader zip = new ZipBlockReader(copy))
 		{
-			throw new todo.TODO();
+			// Open suite information for the program to be installed
+			SuiteInfo info;
+			try (InputStream in = zip.open("META-INF/MANIFEST.MF"))
+			{
+				if (in == null)
+					return new KernelProgramInstallReport(
+						InstallErrorCodes.CORRUPT_JAR);
+				
+				info = new SuiteInfo(new JavaManifest(in));
+			}
+			
+			// Programs are verified against other programs
+			List<KernelProgram> programs = this._programs;
+			synchronized (programs)
+			{
+				throw new todo.TODO();
+			}
+		}
+		
+		// Invalid JAR
+		catch (ZipEntryNotFoundException e)
+		{
+			return new KernelProgramInstallReport(
+				InstallErrorCodes.CORRUPT_JAR);
+		}
+		
+		// Failed to read the ZIP
+		catch (IOException e)
+		{
+			return new KernelProgramInstallReport(
+				InstallErrorCodes.IO_FILE_ERROR);
 		}
 	}
 	
