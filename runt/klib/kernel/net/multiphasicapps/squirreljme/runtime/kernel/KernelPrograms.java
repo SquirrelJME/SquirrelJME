@@ -118,16 +118,14 @@ public abstract class KernelPrograms
 					if (restdeps.isEmpty())
 						break;
 					
-					// This program provides dependencies
+					// This program provides dependencies, do not remove any
+					// dependencies because some dependencies such as MEEP-8
+					// may be provided by a large number of programs and if
+					// they are added on they may become missing
 					MatchResult result = restdeps.match(
 						program.suiteInfo().provided());
 					if (result.hasMatches())
-					{
 						depends.add(program);
-						
-						// Filter away those matches
-						restdeps = result.unmatched();
-					}
 				}
 				
 				throw new todo.TODO();
