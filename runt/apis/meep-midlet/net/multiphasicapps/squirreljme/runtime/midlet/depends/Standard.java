@@ -24,7 +24,7 @@ import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
  * @since 2017/12/05
  */
 public final class Standard
-	implements Comparable<Standard>
+	implements Comparable<Standard>, MarkedProvided
 {
 	/** The standard name. */
 	protected final SuiteName name;

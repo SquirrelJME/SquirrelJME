@@ -34,47 +34,52 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  */
 public final class DependencyInfo
 {
-	/** The configuration. */
-	protected final Configuration config;
-	
-	/** Profiles to use. */
-	private final Set<Profile> profiles;
-	
-	/** Dependencies. */
-	private final Set<SuiteDependency> depends;
+	/** The dependencies. */
+	protected final Set<MarkedDependency> depends;
 	
 	/**
 	 * Initializes the dependency information.
 	 *
-	 * @param __config The configuration to use.
-	 * @param __profiles The profiles to implement.
-	 * @param __deps The dependencies to use.
-	 * @since 2017/11/30
+	 * @param __deps The dependencies to depend on.
+	 * @since 2017/12/31
 	 */
-	public DependencyInfo(Configuration __config, Profile[] __profiles,
-		SuiteDependency[] __deps)
+	public DependencyInfo(MarkedDependency... __deps)
 	{
-		this(__config,
-			(__profiles == null ? null : Arrays.<Profile>asList(__profiles)),
-			(__deps == null ? null : Arrays.<SuiteDependency>asList(__deps)));
+		this((__deps == null ? EmptySet.<MarkedDependency>empty() :
+			Arrays.<MarkedDependency>asList(__deps)));
 	}
 	
 	/**
-	 * Initializes the dependency information.
+	 * Initialzies the dependency information.
 	 *
-	 * @param __config The configuration to use.
-	 * @param __profiles The profiles to implement.
 	 * @param __deps The dependencies to use.
-	 * @since 2017/11/30
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
 	 */
-	public DependencyInfo(Configuration __config,
-		Collection<Profile> __profiles, Collection<SuiteDependency> __deps)
+	public DependencyInfo(Collection<MarkedDependency> __deps)
+		throws NullPointerException
 	{
-		this.config = __config;
-		this.profiles = (__profiles == null ? EmptySet.<Profile>empty() :
-			UnmodifiableSet.<Profile>of(new SortedTreeSet<>(__profiles)));
-		this.depends = (__deps == null ? EmptySet.<SuiteDependency>empty() :
-			UnmodifiableSet.<SuiteDependency>of(new SortedTreeSet<>(__deps)));
+		if (__deps == null)
+			throw new NullPointerException("NARG");
+		
+		Set<MarkedDependency> depends = new LinkedHashSet<>();
+		for (MarkedDependency d : __deps)
+			if (d == null)
+				throw new NullPointerException("NARG");
+			else
+				depends.add(d);
+		this.depends = UnmodifiableSet.<MarkedDependency>of(depends);
+	}
+	
+	/**
+	 * Returns the dependency set.
+	 *
+	 * @return The dependency set.
+	 * @since 2017/12/31
+	 */
+	public Set<MarkedDependency> dependencies()
+	{
+		return this.depends;
 	}
 	
 	/**
@@ -84,7 +89,13 @@ public final class DependencyInfo
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof DependencyInfo))
+			return false;
+		
+		return this.depends.equals(((DependencyInfo)__o).depends);
 	}
 	
 	/**
@@ -94,7 +105,7 @@ public final class DependencyInfo
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.depends.hashCode();
 	}
 	
 	/**
@@ -105,9 +116,7 @@ public final class DependencyInfo
 	 */
 	public final boolean isEmpty()
 	{
-		return this.config == null &&
-			this.profiles.isEmpty() &&
-			this.depends.isEmpty();
+		return this.depends.isEmpty();
 	}
 	
 	/**
@@ -125,47 +134,7 @@ public final class DependencyInfo
 		if (__prov == null)
 			throw new NullPointerException("NARG");
 		
-		// Try to match the configurations
-		Configuration config = this.config,
-			matchedconfig = null,
-			unmatchedconfig = null;
-		if (config != null)
-		{
-			if (__prov.configurations().contains(config))
-				matchedconfig = config;
-			else
-				unmatchedconfig = config;
-		}
-		
-		// Match profiles
-		Set<Profile> profiles = this.profiles,
-			provprofiles = __prov.profiles(),
-			matchedprofiles = new HashSet<>(profiles),
-			unmatchedprofiles = new HashSet<>(profiles);
-		matchedprofiles.retainAll(provprofiles);
-		unmatchedprofiles.removeAll(provprofiles);
-		
-		// Match Dependencies
-		Set<SuiteDependency> matcheddepends = new HashSet<>(),
-			unmatcheddepends = new HashSet<>();
-		for (SuiteDependency sd : this.dependencies)
-		{
-			boolean matched = false;
-			
-			if (true)
-				throw new todo.TODO();
-			
-			if (matched)
-				matcheddepends.add(sd);
-			else
-				unmatcheddepends.add(sd);
-		}
-		
-		// Build result
-		return new MatchResult(new DependencyInfo(matchedconfig,
-			matchedprofiles, matcheddepends),
-			new DependencyInfo(unmatchedconfig, unmatchedprofiles,
-			unmatchedprofiles));
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -178,22 +147,20 @@ public final class DependencyInfo
 	public final DependencyInfo noOptionals()
 	{
 		// Ignore if there are no dependencies
-		Set<SuiteDependency> depends = this.depends;
+		Set<MarkedDependency> depends = this.depends;
 		if (depends.isEmpty())
 			return this;
 		
-		// Get all non-optional dependencies
-		Set<SuiteDependency> instead = new LinkedHashSet<>();
-		for (SuiteDependency dep : depends)
-			if (dep.isRequired())
-				instead.add(dep);
+		// Include only required dependencies
+		Set<MarkedDependency> instead = new LinkedHashSet<>();
+		for (MarkedDependency md : depends)
+			if (!md.isOptional())
+				instead.add(md);
 		
-		// There are no optional dependencies
-		if (instead.size() == depends.size())
+		// There were no optional dependencies
+		if (depends.size() == instead.size())
 			return this;
-		
-		// Create new
-		return new DependencyInfo(this.config, this.profiles, instead);
+		return new DependencyInfo(instead);
 	}
 	
 	/**
@@ -222,25 +189,23 @@ public final class DependencyInfo
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
+		Set<MarkedDependency> depends = new LinkedHashSet<>();
 		JavaManifestAttributes attr = __info.manifest().getMainAttributes();
 		String value;
 		
 		// The CLDC library to use
-		Configuration config = null;
 		value = attr.getValue("microedition-configuration");
 		if (value != null)
-			config = new Configuration(value.trim());
+			depends.add(new Configuration(value.trim()));
 		
 		// Profiles needed to run
-		Set<Profile> profiles = new LinkedHashSet<>();
 		value = attr.getValue("microedition-configuration");
 		if (value != null)
 			for (String s : StringUtils.basicSplit(" \t", value))
-				profiles.add(new Profile(s));
+				depends.add(new Profile(s));
 		
 		// Parse entries in sequential order
 		SuiteType type = __info.type();
-		Set<SuiteDependency> dependencies = new LinkedHashSet<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			// Stop if no more values are read
@@ -249,11 +214,11 @@ public final class DependencyInfo
 				break;
 			
 			// Decode dependency
-			dependencies.add(new SuiteDependency(value));
+			depends.add(new SuiteDependency(value));
 		}
 		
 		// Build
-		return new DependencyInfo(config, profiles, dependencies);
+		return new DependencyInfo(depends);
 	}
 }
 

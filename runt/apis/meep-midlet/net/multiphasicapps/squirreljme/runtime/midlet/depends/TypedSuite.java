@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteType;
  * @since 2017/12/30
  */
 public final class TypedSuite
+	implements MarkedProvided
 {
 	/** The suite type. */
 	protected final SuiteType type;

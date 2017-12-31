@@ -21,7 +21,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2016/12/14
  */
 public final class Profile
-	implements Comparable<Profile>
+	implements Comparable<Profile>, MarkedDependency, MarkedProvided
 {
 	/** Name. */
 	protected final APIName name;
@@ -125,6 +125,30 @@ public final class Profile
 	{
 		return this.name.hashCode() ^
 			Objects.hashCode(this.version);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public boolean isOptional()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public boolean matchesProvided(MarkedProvided __mp)
+		throws NullPointerException
+	{
+		if (__mp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
