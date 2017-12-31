@@ -74,6 +74,10 @@ public final class ProvidedInfo
 		String internalname = attr.getValue(
 			"X-SquirrelJME-InternalProjectName");
 		
+		// This provides a library or otherwise
+		TypedSuite typedsuite = new TypedSuite(
+			__info.type(), __info.suite());
+		
 		// Initialize
 		throw new todo.TODO();
 		/*

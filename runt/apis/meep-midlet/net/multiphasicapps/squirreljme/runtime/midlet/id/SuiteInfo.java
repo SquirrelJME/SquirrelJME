@@ -48,6 +48,9 @@ public final class SuiteInfo
 	/** Provided dependency information. */
 	private volatile Reference<ProvidedInfo> _provided;
 	
+	/** Suite cache. */
+	private volatile Reference<Suite> _suite;
+	
 	/**
 	 * Initializes the suite information.
 	 *
@@ -143,7 +146,14 @@ public final class SuiteInfo
 	 */
 	public final Suite suite()
 	{
-		throw new todo.TODO();
+		Reference<Suite> ref = this._suite;
+		Suite rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._suite = new WeakReference<>(
+				(rv = new Suite(this.name, this.vendor, this.version)));
+		
+		return rv;
 	}
 	
 	/**
