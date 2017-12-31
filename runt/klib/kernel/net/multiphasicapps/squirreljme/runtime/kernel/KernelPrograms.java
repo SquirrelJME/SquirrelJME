@@ -114,19 +114,30 @@ public abstract class KernelPrograms
 				// matches
 				for (KernelProgram program : programs)
 				{
-					// No more matches to be made
-					if (restdeps.isEmpty())
-						break;
-					
 					// This program provides dependencies, do not remove any
 					// dependencies because some dependencies such as MEEP-8
 					// may be provided by a large number of programs and if
 					// they are added on they may become missing
-					MatchResult result = restdeps.match(
-						program.suiteInfo().provided());
+					ProvidedInfo provided = program.suiteInfo().provided();
+					MatchResult result = origdeps.match(provided);
 					if (result.hasMatches())
 						depends.add(program);
+					
+					// But it still needs to be detected if any dependencies
+					// have not been met at all, so keep removing them
+					if (!restdeps.isEmpty())
+					{
+						MatchResult restres = restdeps.match(provided);
+						restdeps = restres.unmatched();
+					}
 				}
+				
+				// Dependencies are missing so the application cannot be
+				// installed
+				if (!restdeps.noOptionals().isEmpty())
+					return new KernelProgramInstallReport(
+						InstallErrorCodes.
+							APP_INTEGRITY_FAILURE_DEPENDENCY_MISMATCH);
 				
 				throw new todo.TODO();
 			}
