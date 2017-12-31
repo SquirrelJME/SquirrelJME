@@ -137,7 +137,20 @@ final class __ProgramInstaller__
 						APP_INTEGRITY_FAILURE_DEPENDENCY_MISMATCH,
 					String.format("AP05 %s", restdeps));
 			
-			throw new todo.TODO();
+			// Determine the next index
+			int nextid = 1;
+			for (KernelProgram program : programs)
+			{
+				int pdx = program.index();
+				if (pdx >= nextid)
+					nextid = pdx + 1;
+			}
+			
+			// Perform installation
+			return this.manager.__jitAndInstall(new KernelProgramInstallInfo(
+				depends.<KernelProgram>toArray(
+				new KernelProgram[depends.size()]), zip, info.suite(),
+				nextid));
 		}
 		
 		// Easily reported exception
