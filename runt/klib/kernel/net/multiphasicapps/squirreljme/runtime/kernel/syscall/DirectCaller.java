@@ -105,8 +105,12 @@ public final class DirectCaller
 		// The programs returned by the kernel are wrapped internally
 		int n = programs.length;
 		SystemProgram[] rv = new SystemProgram[n];
-		for (int i = 0; i < n; i++)
-			throw new todo.TODO();
+		Map<KernelProgram, Reference<SystemProgram>> promap = this._promap;
+		synchronized (promap)
+		{
+			for (int i = 0; i < n; i++)
+				rv[i] = __wrapProgram(programs[i]);
+		}
 		
 		return rv;
 	}

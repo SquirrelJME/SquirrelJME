@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -37,6 +38,9 @@ public abstract class KernelProgram
 	
 	/** The manifest for this suite. */
 	private volatile Reference<JavaManifest> _manifest;
+	
+	/** Cache for the type this program is. */
+	private volatile int _type;
 	
 	/**
 	 * Initializes the base program.
@@ -199,8 +203,16 @@ public abstract class KernelProgram
 		if (this.index == 0)
 			return SystemProgramType.SYSTEM;
 		
+		// Use cached value to prevent manifest read
+		int rv = this._type;
+		if (rv != 0)
+			return rv;
+		
 		// Otherwise it depends on the JAR itself
-		throw new todo.TODO();
+		SuiteInfo info = this.suiteInfo();
+		this._type = (rv = (info.type() == SuiteType.MIDLET ?
+			SystemProgramType.APPLICATION : SystemProgramType.LIBRARY));
+		return rv;
 	}
 }
 

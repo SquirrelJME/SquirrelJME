@@ -10,6 +10,10 @@
 
 package javax.microedition.swm;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.HashSet;
@@ -18,6 +22,8 @@ import net.multiphasicapps.collections.EmptyIterator;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
+import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This represents an application suite.
@@ -39,6 +45,12 @@ public class Suite
 	
 	/** The suite program. */
 	private final SystemProgram _program;
+	
+	/** Cached manifest information. */
+	private volatile Reference<JavaManifest> _manifest;
+	
+	/** Cached suite information. */
+	private volatile Reference<SuiteInfo> _suiteinfo;
 	
 	/**
 	 * Initializes the system suite.
@@ -186,7 +198,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		throw new todo.TODO();
+		return __suiteInfo().name().toString();
 	}
 	
 	/**
@@ -202,10 +214,20 @@ public class Suite
 		if (program == null)
 			return SuiteType.SYSTEM;
 		
-		throw new todo.TODO();
-		/*
-		return SuiteType.INVALID;
-		*/
+		switch (program.type())
+		{
+			case SystemProgramType.APPLICATION:
+				return SuiteType.APPLICATION;
+				
+			case SystemProgramType.LIBRARY:
+				return SuiteType.LIBRARY;
+				
+			case SystemProgramType.SYSTEM:
+				return SuiteType.SYSTEM;
+			
+			default:
+				return SuiteType.INVALID;
+		}
 	}
 	
 	/**
@@ -220,7 +242,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		throw new todo.TODO();
+		return __suiteInfo().vendor().toString();
 	}
 	
 	/**
@@ -235,7 +257,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		throw new todo.TODO();
+		return __suiteInfo().version().toString();
 	}
 	
 	/**
@@ -371,6 +393,38 @@ public class Suite
 	}
 	
 	/**
+	 * Returns the suite manifest.
+	 *
+	 * @return The suite manifest.
+	 * @since 2017/12/31
+	 */
+	final JavaManifest __manifest()
+	{
+		Reference<JavaManifest> ref = this._manifest;
+		JavaManifest rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			try (InputStream in =
+				this._program.loadResource("META-INF/MANIFEST.MF"))
+			{
+				// {@squirreljme.error DG09 Suite has no manifest file.}
+				if (in == null)
+					throw new RuntimeException("DG09");
+				
+				this._manifest = new WeakReference<>(
+					(rv = new JavaManifest(in)));
+			}
+			
+			// {@squirreljme.error DG08 Could not read the suite manifest.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("DG08");
+			}
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the program the suite uses.
 	 *
 	 * @return The used program.
@@ -379,6 +433,24 @@ public class Suite
 	final SystemProgram __program()
 	{
 		return this._program;
+	}
+	
+	/**
+	 * Returns the information about this suite.
+	 *
+	 * @return The suite information.
+	 * @since 2017/12/31
+	 */
+	final SuiteInfo __suiteInfo()
+	{
+		Reference<SuiteInfo> ref = this._suiteinfo;
+		SuiteInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._suiteinfo = new WeakReference<>(
+				(rv = new SuiteInfo(this.__manifest())));
+		
+		return rv;
 	}
 }
 
