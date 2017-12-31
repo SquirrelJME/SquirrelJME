@@ -10,8 +10,15 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgramInstallInfo;
+import net.multiphasicapps.squirreljme.runtime.kernel.
+	KernelProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
  * This manages programs on the Java host.
@@ -30,6 +37,21 @@ public class JavaPrograms
 	{
 		// Always register the system program
 		registerProgram(new JavaSystemProgram());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	protected KernelProgramInstallReport accessJitAndInstall(
+		KernelProgramInstallInfo __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
  * This class is used to manage the programs which are available for usage.
@@ -44,6 +45,22 @@ public abstract class KernelPrograms
 	protected KernelPrograms()
 	{
 	}
+	
+	/**
+	 * Specifies that the input ZIP be JIT compiled and installed.
+	 *
+	 * The implementation of this method must not register the program, it
+	 * just needs to return one. The method which calls this method will handle
+	 * registration.
+	 *
+	 * @param __info Installation information.
+	 * @return The result of compilation and installation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	protected abstract KernelProgramInstallReport accessJitAndInstall(
+		KernelProgramInstallInfo __info)
+		throws NullPointerException;
 	
 	/**
 	 * Installs the specified JAR file into the program list.
@@ -170,6 +187,32 @@ public abstract class KernelPrograms
 			// Insert new program
 			programs.add(__p);
 		}
+	}
+	
+	/**
+	 * Specifies that the input ZIP be JIT compiled and installed.
+	 *
+	 * @param __info Installation information.
+	 * @return The result of compilation and installation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	final KernelProgramInstallReport __jitAndInstall(
+		KernelProgramInstallInfo __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		KernelProgramInstallReport result = this.accessJitAndInstall(__info);
+		
+		// If a program was generated then it becomes registered
+		KernelProgram program = result.program();
+		if (program != null)
+			registerProgram(program);
+		
+		// Return the input result
+		return result;
 	}
 }
 
