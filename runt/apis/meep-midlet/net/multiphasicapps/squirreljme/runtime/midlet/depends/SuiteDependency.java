@@ -25,7 +25,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2017/02/22
  */
 public final class SuiteDependency
-	implements Comparable<SuiteDependency>
+	implements Comparable<SuiteDependency>, MarkedDependency
 {
 	/** The dependency type. */
 	protected final SuiteDependencyType type;
@@ -258,11 +258,10 @@ public final class SuiteDependency
 	}
 	
 	/**
-	 * Is this an optional dependency?
-	 *
-	 * @return {@code true} if this is an optional dependency.
+	 * {@inheritDoc}
 	 * @since 2017/11/22
 	 */
+	@Override
 	public boolean isOptional()
 	{
 		return this.level.isOptional();
@@ -299,6 +298,20 @@ public final class SuiteDependency
 	public SuiteName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public boolean matchesProvided(MarkedProvided __mp)
+		throws NullPointerException
+	{
+		if (__mp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -25,7 +25,7 @@ import net.multiphasicapps.strings.StringUtils;
  * @since 2016/12/14
  */
 public final class Configuration
-	implements Comparable<Configuration>
+	implements Comparable<Configuration>, MarkedDependency, MarkedProvided
 {
 	/** Name. */
 	protected final APIName name;
@@ -138,6 +138,30 @@ public final class Configuration
 		return this.name.hashCode() ^
 			Objects.hashCode(this.version) ^
 			(this.compact ? 0xFFFFFFFF : 0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public boolean isOptional()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public boolean matchesProvided(MarkedProvided __mp)
+		throws NullPointerException
+	{
+		if (__mp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
