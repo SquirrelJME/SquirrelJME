@@ -56,5 +56,9 @@ public interface KernelSimplePermission
 	/** Load a resource within a program. */
 	public static final int LOAD_PROGRAM_RESOURCE =
 		0x0000_0200;
+	
+	/** Get program control key. */
+	public static final int GET_PROGRAM_CONTROL =
+		0x0000_0400;
 }
 

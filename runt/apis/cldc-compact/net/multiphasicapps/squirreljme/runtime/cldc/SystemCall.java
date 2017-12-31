@@ -253,6 +253,20 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Locates the specified program by the given index.
+	 *
+	 * @param __dx The index of the program to get.
+	 * @return The program for the given index or {@code null} if not found.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2017/12/31
+	 */
+	public static final SystemProgram programByIndex(int __dx)
+		throws SecurityException
+	{
+		return SystemCall._CALLER.programByIndex(__dx);
+	}
+	
+	/**
 	 * Specifies that the specified thread should become a daemon thread.
 	 *
 	 * @param __t The thread to set as a daemon.

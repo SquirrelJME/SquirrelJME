@@ -29,6 +29,17 @@ import java.io.InputStream;
 public interface SystemProgram
 {
 	/**
+	 * Returns the value of a control key.
+	 *
+	 * @param __k The control key to read.
+	 * @return The value of the key or {@code null} if it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	public abstract String controlGet(String __k)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the index of the program.
 	 *
 	 * @return The program index.
