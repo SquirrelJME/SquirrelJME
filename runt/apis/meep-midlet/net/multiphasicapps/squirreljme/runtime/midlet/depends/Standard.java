@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
  * @since 2017/12/05
  */
 public final class Standard
+	implements Comparable<Standard>
 {
 	/** The standard name. */
 	protected final SuiteName name;
@@ -71,6 +72,37 @@ public final class Standard
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/30
+	 */
+	@Override
+	public int compareTo(Standard __o)
+	{
+		int rv = this.name.compareTo(__o.name);
+		if (rv != 0)
+			return rv;
+		
+		SuiteVendor aven = this.vendor,
+			bven = __o.vendor;
+		if ((aven == null) != (bven == null))
+			return (aven == null ? -1 : 1);
+		else if (aven != null)
+		{
+			rv = aven.compareTo(bven);
+			if (rv != 0)
+				return rv;
+		}
+			
+		SuiteVersion aver = this.version,
+			bver = __o.version;
+		if ((aver == null) != (bver == null))
+			return (aver == null ? -1 : 1);
+		else if (aver != null)
+			return aver.compareTo(bver);
+		return 0;
 	}
 	
 	/**
