@@ -148,5 +148,90 @@ public final class ProvidedInfo
 		return new ProvidedInfo(configs, profiles, standards, internalname,
 			typedsuite);
 	}
+	
+	/**
+	 * Returns the used configurations.
+	 *
+	 * @return The configurations.
+	 * @since 2017/12/31
+	 */
+	public final Set<Configuration> configurations()
+	{
+		return this.configurations;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the internal name.
+	 *
+	 * @return The internal name or {@code null} if there is none.
+	 * @since 2017/12/31
+	 */
+	public final String internalName()
+	{
+		return this.internalname;
+	}
+	
+	/**
+	 * Returns the profiles.
+	 *
+	 * @return The profiles.
+	 * @since 2017/12/31
+	 */
+	public final Set<Profile> profiles()
+	{
+		return this.profiles;
+	}
+	
+	/**
+	 * Returns the standards.
+	 *
+	 * @return The standards.
+	 * @since 2017/12/31
+	 */
+	public final Set<Standard> standards()
+	{
+		return this.standards;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the typed suite.
+	 *
+	 * @return The typed suite or {@code null} if there is none.
+	 * @since 2017/12/31
+	 */
+	public final TypedSuite typedSuite()
+	{
+		return this.typedsuite;
+	}
 }
 

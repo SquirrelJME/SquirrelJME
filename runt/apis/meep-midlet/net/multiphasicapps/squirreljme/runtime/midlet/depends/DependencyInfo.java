@@ -78,6 +78,26 @@ public final class DependencyInfo
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Checks if the dependency information is empty.
 	 *
 	 * @return If the dependency info is empty.
@@ -134,6 +154,16 @@ public final class DependencyInfo
 		
 		// Create new
 		return new DependencyInfo(this.config, this.profiles, instead);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
