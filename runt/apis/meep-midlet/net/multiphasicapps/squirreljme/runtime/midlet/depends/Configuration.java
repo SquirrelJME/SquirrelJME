@@ -161,7 +161,7 @@ public final class Configuration
 		if (__mp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this.equals(__mp);
 	}
 	
 	/**

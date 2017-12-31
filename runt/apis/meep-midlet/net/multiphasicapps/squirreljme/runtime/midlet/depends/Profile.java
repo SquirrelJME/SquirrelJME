@@ -148,7 +148,7 @@ public final class Profile
 		if (__mp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this.equals(__mp);
 	}
 	
 	/**

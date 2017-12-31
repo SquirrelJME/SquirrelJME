@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.midlet.depends;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.collections.ArrayUtils;
@@ -134,7 +135,27 @@ public final class DependencyInfo
 		if (__prov == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Remove matching dependencies from the input while keeping the
+		// matching ones
+		Set<MarkedDependency> depends = new LinkedHashSet<>(this.depends),
+			matched = new LinkedHashSet<>();
+		for (MarkedProvided p : __prov.provided())
+		{
+			for (Iterator<MarkedDependency> it = depends.iterator();
+				it.hasNext();)
+			{
+				MarkedDependency d = it.next();
+				
+				if (d.matchesProvided(p))
+				{
+					matched.add(d);
+					it.remove();
+				}
+			}
+		}
+		
+		return new MatchResult(new DependencyInfo(matched),
+			new DependencyInfo(depends));
 	}
 	
 	/**

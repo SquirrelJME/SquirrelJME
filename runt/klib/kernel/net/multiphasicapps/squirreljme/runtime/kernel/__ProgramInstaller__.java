@@ -103,45 +103,41 @@ final class __ProgramInstaller__
 			DependencyInfo origdeps = info.dependencies(),
 				restdeps = origdeps;
 			
-			// Programs are verified against other programs
+			// Go through other programs and try to find dependency
+			// matches
 			List<KernelProgram> programs = this._programs;
-			synchronized (programs)
+			for (KernelProgram program : programs)
 			{
-				// Go through other programs and try to find dependency
-				// matches
-				for (KernelProgram program : programs)
+				// This program provides dependencies, do not remove any
+				// dependencies because some dependencies such as MEEP-8
+				// may be provided by a large number of programs and if
+				// they are added on they may become missing
+				ProvidedInfo provided = program.suiteInfo().provided();
+				MatchResult result = origdeps.match(provided);
+				if (result.hasMatches())
+					depends.add(program);
+				
+				// But it still needs to be detected if any dependencies
+				// have not been met at all, so keep removing them
+				if (!restdeps.isEmpty())
 				{
-					// This program provides dependencies, do not remove any
-					// dependencies because some dependencies such as MEEP-8
-					// may be provided by a large number of programs and if
-					// they are added on they may become missing
-					ProvidedInfo provided = program.suiteInfo().provided();
-					MatchResult result = origdeps.match(provided);
-					if (result.hasMatches())
-						depends.add(program);
-					
-					// But it still needs to be detected if any dependencies
-					// have not been met at all, so keep removing them
-					if (!restdeps.isEmpty())
-					{
-						MatchResult restres = restdeps.match(provided);
-						restdeps = restres.unmatched();
-					}
+					MatchResult restres = restdeps.match(provided);
+					restdeps = restres.unmatched();
 				}
-				
-				// Dependencies are missing so the application cannot be
-				// installed
-				// {@squirreljme.error AP05 Cannot install the JAR because some
-				// dependencies have not been statisfied. (The remaining
-				// dependencies)}
-				if (!restdeps.noOptionals().isEmpty())
-					throw new __InstallException__(
-						InstallErrorCodes.
-							APP_INTEGRITY_FAILURE_DEPENDENCY_MISMATCH,
-						String.format("AP05 %s", restdeps));
-				
-				throw new todo.TODO();
 			}
+			
+			// Dependencies are missing so the application cannot be
+			// installed
+			// {@squirreljme.error AP05 Cannot install the JAR because some
+			// dependencies have not been statisfied. (The remaining
+			// dependencies)}
+			if (!restdeps.noOptionals().isEmpty())
+				throw new __InstallException__(
+					InstallErrorCodes.
+						APP_INTEGRITY_FAILURE_DEPENDENCY_MISMATCH,
+					String.format("AP05 %s", restdeps));
+			
+			throw new todo.TODO();
 		}
 		
 		// Easily reported exception
