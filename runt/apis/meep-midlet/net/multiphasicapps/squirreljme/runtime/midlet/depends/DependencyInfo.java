@@ -125,7 +125,47 @@ public final class DependencyInfo
 		if (__prov == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Try to match the configurations
+		Configuration config = this.config,
+			matchedconfig = null,
+			unmatchedconfig = null;
+		if (config != null)
+		{
+			if (__prov.configurations().contains(config))
+				matchedconfig = config;
+			else
+				unmatchedconfig = config;
+		}
+		
+		// Match profiles
+		Set<Profile> profiles = this.profiles,
+			provprofiles = __prov.profiles(),
+			matchedprofiles = new HashSet<>(profiles),
+			unmatchedprofiles = new HashSet<>(profiles);
+		matchedprofiles.retainAll(provprofiles);
+		unmatchedprofiles.removeAll(provprofiles);
+		
+		// Match Dependencies
+		Set<SuiteDependency> matcheddepends = new HashSet<>(),
+			unmatcheddepends = new HashSet<>();
+		for (SuiteDependency sd : this.dependencies)
+		{
+			boolean matched = false;
+			
+			if (true)
+				throw new todo.TODO();
+			
+			if (matched)
+				matcheddepends.add(sd);
+			else
+				unmatcheddepends.add(sd);
+		}
+		
+		// Build result
+		return new MatchResult(new DependencyInfo(matchedconfig,
+			matchedprofiles, matcheddepends),
+			new DependencyInfo(unmatchedconfig, unmatchedprofiles,
+			unmatchedprofiles));
 	}
 	
 	/**
