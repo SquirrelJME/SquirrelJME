@@ -1,0 +1,31 @@
+# 2017/12/30
+
+## 16:22
+
+So when it comes to the kernel and the installation code, the stuff is quite
+intertwined. But I can have common dependency checking and such before passing
+it off to the JIT or another thing which processes the program.
+
+## 16:31
+
+For the JIT to operate, there will need to be a means of storing the class
+information and any linkage information. It will need to know which classes
+actually exist and can be linked to. Otherwise it is just a mystery as to
+what is even available.
+
+## 16:58
+
+I wonder if I should care about ranges of versions, even for those that do not
+exist. So basically you could say: Depends on CLDC-3, which that of course
+does not exist as a standard at all. But, I suppose the best way to put it
+would be to have exact versioning. So if nothing provides support for CLDC-3
+then it will not be provided even if it gives CLDC-8. This would make things
+much simpler to implement and I would not need to worry about complex
+interactions between things.
+
+## 17:33
+
+I believe for dependencies it might be best to just not remove any
+dependencies which were matched. Because a dependency like MEEP-8 could be
+taken away from a project which partially implements it, so all programs
+need to be considered as such.
