@@ -54,6 +54,18 @@ public abstract class KernelProgram
 	}
 	
 	/**
+	 * Returns a value from the control manifest.
+	 *
+	 * @param __k The control key.
+	 * @return The value of the control key or {@code null} if it has not been
+	 * set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	protected abstract String accessControlGet(String __k)
+		throws NullPointerException;
+	
+	/**
 	 * Returns an input stream which can be used to read the given resource
 	 * data.
 	 *
@@ -65,6 +77,33 @@ public abstract class KernelProgram
 	 */
 	protected abstract InputStream accessLoadResource(String __name)
 		throws NullPointerException;
+	
+	/**
+	 * Returns a value from the control manifest for the given key.
+	 *
+	 * @param __by The task requesting the value.
+	 * @param __k The value to read.
+	 * @return The value of the control key.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the task is not permitted to read control
+	 * values.
+	 * @since 2017/12/31
+	 */
+	public final String controlGet(KernelTask __by, String __k)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AP06 The specified task is not permitted to
+		// get a control value. (The task requesting the value)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.GET_PROGRAM_CONTROL))
+			throw new SecurityException(
+				String.format("AP06 %s", __by));
+		
+		return this.accessControlGet(__k);
+	}
 	
 	/**
 	 * {@inheritDoc}

@@ -14,9 +14,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -32,6 +37,9 @@ public final class JavaInstalledProgram
 {
 	/** The path to the JAR. */
 	protected final Path path;
+	
+	/** The control manifest. */
+	protected final Path control;
 	
 	/**
 	 * Initializes the installed program.
@@ -49,11 +57,37 @@ public final class JavaInstalledProgram
 			throw new NullPointerException("NARG");
 		
 		this.path = __p;
+		this.control = __p.resolveSibling(__p.getFileName() + ".MF");
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/28
+	 * @since 2017/12/31
+	 */
+	@Override
+	protected String accessControlGet(String __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		try (InputStream in = Files.newInputStream(this.control,
+				StandardOpenOption.READ))
+		{
+			JavaManifest man = new JavaManifest(in);
+			return man.getMainAttributes().get(new JavaManifestKey(__k));
+		}
+		
+		// Could not read, treat as null always
+		catch (IOException e)
+		{
+			return null;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
 	 */
 	@Override
 	protected InputStream accessLoadResource(String __name)

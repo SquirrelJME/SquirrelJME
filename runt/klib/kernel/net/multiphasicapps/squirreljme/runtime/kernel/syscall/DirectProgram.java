@@ -52,6 +52,16 @@ public final class DirectProgram
 	 * @since 2017/12/31
 	 */
 	@Override
+	public String controlGet(String __n)
+	{
+		return this.wrapped.controlGet(this.current, __n);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
 	public int index()
 	{
 		return this.wrapped.index();

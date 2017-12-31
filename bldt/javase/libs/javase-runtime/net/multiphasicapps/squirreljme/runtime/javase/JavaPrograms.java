@@ -59,7 +59,8 @@ public class JavaPrograms
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(runtimepath))
 		{
 			for (Path p : ds)
-				registerProgram(new JavaInstalledProgram(p));
+				if (p.getFileName().toString().endsWith(".jar"))
+					registerProgram(new JavaInstalledProgram(p));
 		}
 		
 		// Ignore

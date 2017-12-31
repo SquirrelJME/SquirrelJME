@@ -14,16 +14,24 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramControlKey;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
+import net.multiphasicapps.squirreljme.runtime.launcher.EntryPoint;
+import net.multiphasicapps.squirreljme.runtime.launcher.EntryPoints;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
 import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This represents an application suite.
@@ -114,7 +122,11 @@ public class Suite
 		if (program == null)
 			return EmptyIterator.<String>empty();
 		
-		throw new todo.TODO();
+		Set<String> rv = new LinkedHashSet<>();
+		for (JavaManifestKey k : this.__manifest().getMainAttributes().
+			keySet())
+			rv.add(k.toString());
+		return rv.iterator();
 	}
 	
 	/**
@@ -131,7 +143,8 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		throw new todo.TODO();
+		return this.__manifest().getMainAttributes().get(
+			new JavaManifestKey(__a));
 	}
 	
 	/**
@@ -147,7 +160,30 @@ public class Suite
 		if (program == null)
 			return EmptyIterator.<Suite>empty();
 		
-		throw new todo.TODO();
+		List<Suite> rv = new ArrayList<>();
+		
+		// Use the suite manager to wrap suites so that a large number of
+		// suites pointing to the same program are not created
+		__SystemSuiteManager__ ssm =
+			(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
+		
+		// Dependencies are internally provided in the control interface
+		for (int i = 1; i >= 0; i++)
+		{
+			// Read all dependency values
+			String val = program.controlGet(
+				SystemProgramControlKey.DEPENDENCY_PREFIX + i);
+			if (val == null)
+				break;
+			
+			// Try to find the system program for each index
+			SystemProgram sp = SystemCall.programByIndex(
+				Integer.parseInt(val));
+			if (sp != null)
+				rv.add(ssm.__ofProgram(sp));
+		}
+		
+		return rv.iterator();
 	}
 	
 	/**
@@ -165,7 +201,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		throw new todo.TODO();
+		return program.controlGet(SystemProgramControlKey.DOWNLOAD_URL);
 	}
 	
 	/**
@@ -183,7 +219,14 @@ public class Suite
 		if (program == null)
 			return EmptyIterator.<String>empty();
 		
-		throw new todo.TODO();
+		EntryPoints entries = new EntryPoints(
+			this.__manifest().getMainAttributes());
+		Set<String> rv = new LinkedHashSet<>();
+		
+		for (EntryPoint e : entries)
+			rv.add(e.entryPoint());
+		
+		return rv.iterator();
 	}
 	
 	/**
@@ -198,7 +241,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		return __suiteInfo().name().toString();
+		return this.__suiteInfo().name().toString();
 	}
 	
 	/**
@@ -242,7 +285,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		return __suiteInfo().vendor().toString();
+		return this.__suiteInfo().vendor().toString();
 	}
 	
 	/**
@@ -257,7 +300,7 @@ public class Suite
 		if (program == null)
 			return null;
 		
-		return __suiteInfo().version().toString();
+		return this.__suiteInfo().version().toString();
 	}
 	
 	/**
@@ -287,7 +330,8 @@ public class Suite
 		if (program == null)
 			return true;
 		
-		throw new todo.TODO();
+		return Boolean.valueOf(
+			program.controlGet(SystemProgramControlKey.IS_INSTALLED));
 	}
 	
 	/**
@@ -319,7 +363,9 @@ public class Suite
 					return false;
 			}
 		
-		throw new todo.TODO();
+		return Boolean.valueOf(
+			program.controlGet(SystemProgramControlKey.STATE_FLAG_PREFIX +
+				__f.name()));
 	}
 	
 	/**
@@ -335,7 +381,8 @@ public class Suite
 		if (program == null)
 			return true;
 		
-		throw new todo.TODO();
+		return Boolean.valueOf(
+			program.controlGet(SystemProgramControlKey.IS_TRUSTED));
 	}
 	
 	/**
