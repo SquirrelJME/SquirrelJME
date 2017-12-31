@@ -87,7 +87,7 @@ public final class DirectCaller
 		
 		int error = report.error();
 		if (error != 0)
-			return new SystemProgramInstallReport(error);
+			return new SystemProgramInstallReport(error, report.message());
 		return new SystemProgramInstallReport(__wrapProgram(report.program()));
 	}
 	

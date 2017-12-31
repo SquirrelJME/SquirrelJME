@@ -160,10 +160,22 @@ final class __SuiteTracker__
 				int error = report.error();
 				if (error != 0)
 				{
+					// Determine the error code
 					error--;
 					InstallErrorCodes[] codes = InstallErrorCodes.values();
-					__done((error >= 0 && error < codes.length ? codes[error] :
-						InstallErrorCodes.OTHER_ERROR));
+					InstallErrorCodes code = (error >= 0 &&
+						error < codes.length ? codes[error] :
+						InstallErrorCodes.OTHER_ERROR);
+					
+					// This will be the only chance to print the installation
+					// report
+					// {@squirreljme.error DG07 Failed to install the program
+					// due to the specified error. (The error code; The more
+					// detailed message associated with the error)}
+					System.err.printf("DG07 %s %s%n", code, report.message());
+					
+					// Mark as done
+					__done(code);
 					return;
 				}
 			
