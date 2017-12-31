@@ -40,6 +40,17 @@ public interface SystemProgram
 		throws NullPointerException;
 	
 	/**
+	 * Sets the specified control key to the given value.
+	 *
+	 * @param __k The key to set.
+	 * @param __v The value to set, if {@code null} then it is cleared.
+	 * @throws NullPointerException If no key was set.
+	 * @since 2017/12/31
+	 */
+	public abstract void controlSet(String __k, String __v)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the index of the program.
 	 *
 	 * @return The program index.

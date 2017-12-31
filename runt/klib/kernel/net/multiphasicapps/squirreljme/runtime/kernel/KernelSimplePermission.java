@@ -60,5 +60,9 @@ public interface KernelSimplePermission
 	/** Get program control key. */
 	public static final int GET_PROGRAM_CONTROL =
 		0x0000_0400;
+	
+	/** Set program control key. */
+	public static final int SET_PROGRAM_CONTROL =
+		0x0000_0800;
 }
 

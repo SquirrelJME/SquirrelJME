@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramControlKey;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**
@@ -209,7 +210,25 @@ public abstract class KernelPrograms
 		// If a program was generated then it becomes registered
 		KernelProgram program = result.program();
 		if (program != null)
+		{
+			// Set program control information
+			program.__controlSet(
+				SystemProgramControlKey.IS_INSTALLED, "true");
+			program.__controlSet(
+				SystemProgramControlKey.STATE_FLAG_AVAILABLE, "true");
+			program.__controlSet(
+				SystemProgramControlKey.STATE_FLAG_ENABLED, "true");
+			
+			// Record dependency IDs
+			KernelProgram[] depends = __info.depends();
+			for (int i = 0, n = depends.length; i < n; i++)
+				program.__controlSet(
+					SystemProgramControlKey.DEPENDENCY_PREFIX + (i + 1),
+					Integer.toString(depends[i].index()));
+			
+			// Register the program
 			registerProgram(program);
+		}
 		
 		// Return the input result
 		return result;

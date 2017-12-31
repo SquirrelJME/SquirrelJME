@@ -14,14 +14,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 import net.multiphasicapps.zip.blockreader.FileChannelBlockAccessor;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -35,6 +39,10 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 public final class JavaInstalledProgram
 	extends KernelProgram
 {
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The path to the JAR. */
 	protected final Path path;
 	
@@ -71,17 +79,78 @@ public final class JavaInstalledProgram
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		try (InputStream in = Files.newInputStream(this.control,
-				StandardOpenOption.READ))
+		synchronized (this.lock)
 		{
-			JavaManifest man = new JavaManifest(in);
-			return man.getMainAttributes().get(new JavaManifestKey(__k));
+			try (InputStream in = Files.newInputStream(this.control,
+					StandardOpenOption.READ))
+			{
+				JavaManifest man = new JavaManifest(in);
+				return man.getMainAttributes().get(new JavaManifestKey(__k));
+			}
+		
+			// Could not read, treat as null always
+			catch (IOException e)
+			{
+				return null;
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	protected void accessControlSet(String __k, String __v)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Could fail, but write errors are ignored
+		try
+		{
+			synchronized (this.lock)
+			{
+				// Load pre-existing manifest if it exists
+				MutableJavaManifest wman;
+				Path control = this.control;
+				try (InputStream in = Files.newInputStream(control,
+						StandardOpenOption.READ))
+				{
+					wman = new MutableJavaManifest(new JavaManifest(in));
+				}
+				catch (IOException e)
+				{
+					wman = new MutableJavaManifest();
+				}
+			
+				// Write or remove value
+				JavaManifestKey k = new JavaManifestKey(__k);
+				MutableJavaManifestAttributes wattr = wman.getMainAttributes();
+				if (__v != null)
+					wattr.put(k, __v);
+				else
+					wattr.remove(k);
+			
+				// Write new manifest
+				Path temp = Files.createTempFile("squirreljme-program", ".MF");
+				try (OutputStream os = Files.newOutputStream(temp,
+					StandardOpenOption.TRUNCATE_EXISTING,
+					StandardOpenOption.WRITE))
+				{
+					wman.write(os);
+				}
+				
+				// Replace old manifest file
+				Files.move(temp, control, StandardCopyOption.REPLACE_EXISTING);
+			}
 		}
 		
-		// Could not read, treat as null always
+		// Could not write value
 		catch (IOException e)
 		{
-			return null;
+			e.printStackTrace();
 		}
 	}
 	

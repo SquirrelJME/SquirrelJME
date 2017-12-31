@@ -48,6 +48,18 @@ public class JavaSystemProgram
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	protected void accessControlSet(String __k, String __v)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/12/28
 	 */
 	@Override

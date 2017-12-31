@@ -57,6 +57,17 @@ public final class KernelProgramInstallInfo
 	}
 	
 	/**
+	 * Program dependencies.
+	 *
+	 * @return The program dependencies.
+	 * @since 2017/12/31
+	 */
+	public KernelProgram[] depends()
+	{
+		return this._depends.clone();
+	}
+	
+	/**
 	 * Returns the index to use when installing the program.
 	 *
 	 * @return The program index to use.
