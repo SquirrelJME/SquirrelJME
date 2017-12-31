@@ -121,6 +121,17 @@ public final class SuiteInfo
 	}
 	
 	/**
+	 * Returns the suite name.
+	 *
+	 * @return The name.
+	 * @since 2017/12/31
+	 */
+	public final SuiteName name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * Returns the dependencies provided by this suite.
 	 *
 	 * @return The provided dependencies for this suite.
@@ -165,6 +176,28 @@ public final class SuiteInfo
 	public final SuiteType type()
 	{
 		return this.type;
+	}
+	
+	/**
+	 * Returns the suite vendor.
+	 *
+	 * @return The vendor.
+	 * @since 2017/12/31
+	 */
+	public final SuiteVendor vendor()
+	{
+		return this.vendor;
+	}
+	
+	/**
+	 * Returns the suite version.
+	 *
+	 * @return The version.
+	 * @since 2017/12/31
+	 */
+	public final SuiteVersion version()
+	{
+		return this.version;
 	}
 }
 

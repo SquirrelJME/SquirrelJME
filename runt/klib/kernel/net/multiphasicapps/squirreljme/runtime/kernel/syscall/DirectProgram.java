@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.kernel.syscall;
 
+import java.io.InputStream;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
@@ -48,12 +49,36 @@ public final class DirectProgram
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/27
+	 * @since 2017/12/31
 	 */
 	@Override
 	public int index()
 	{
 		return this.wrapped.index();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public InputStream loadResource(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		return this.wrapped.loadResource(this.current, __n);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public int type()
+	{
+		return this.wrapped.type(this.current);
 	}
 }
 

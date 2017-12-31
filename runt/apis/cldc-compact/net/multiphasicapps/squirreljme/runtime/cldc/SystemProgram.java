@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
+import java.io.InputStream;
+
 /**
  * This interface is used to represent generic access to a program that exists
  * within the kernel.
@@ -33,5 +35,25 @@ public interface SystemProgram
 	 * @since 2017/12/27
 	 */
 	public abstract int index();
+	
+	/**
+	 * Loads the given resource from the program.
+	 *
+	 * @param __n The resource to load.
+	 * @return The input stream over the resource or {@code null} if it does
+	 * not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	public abstract InputStream loadResource(String __n)
+		throws NullPointerException;
+	
+	/**
+	 * Returns the program type.
+	 *
+	 * @return The program type.
+	 * @since 2017/12/31
+	 */
+	public abstract int type();
 }
 
