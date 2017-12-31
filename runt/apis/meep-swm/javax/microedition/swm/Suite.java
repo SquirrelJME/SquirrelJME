@@ -180,7 +180,11 @@ public class Suite
 			SystemProgram sp = SystemCall.programByIndex(
 				Integer.parseInt(val));
 			if (sp != null)
-				rv.add(ssm.__ofProgram(sp));
+			{
+				Suite su = ssm.__ofProgram(sp);
+				if (su.getSuiteType() != SuiteType.SYSTEM)
+					rv.add(su);
+			}
 		}
 		
 		return rv.iterator();
