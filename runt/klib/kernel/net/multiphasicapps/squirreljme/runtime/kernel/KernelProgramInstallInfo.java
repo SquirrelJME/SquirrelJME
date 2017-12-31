@@ -55,5 +55,27 @@ public final class KernelProgramInstallInfo
 		this.suite = __s;
 		this.index = __id;
 	}
+	
+	/**
+	 * Returns the index to use when installing the program.
+	 *
+	 * @return The program index to use.
+	 * @since 2017/12/31
+	 */
+	public int index()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * Returns the ZIP to be recompiled.
+	 *
+	 * @return The ZIP to recompile.
+	 * @since 2017/12/31
+	 */
+	public ZipBlockReader zip()
+	{
+		return this.zip;
+	}
 }
 
