@@ -66,6 +66,17 @@ public abstract class KernelProgram
 		throws NullPointerException;
 	
 	/**
+	 * Sets a new value for the given control key.
+	 *
+	 * @param __k The key to set.
+	 * @param __v The value to set, if {@code null} then it is removed.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2017/12/31
+	 */
+	protected abstract void accessControlSet(String __k, String __v)
+		throws NullPointerException;
+	
+	/**
 	 * Returns an input stream which can be used to read the given resource
 	 * data.
 	 *
@@ -92,7 +103,7 @@ public abstract class KernelProgram
 	public final String controlGet(KernelTask __by, String __k)
 		throws NullPointerException, SecurityException
 	{
-		if (__by == null)
+		if (__by == null || __k == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error AP06 The specified task is not permitted to
@@ -103,6 +114,31 @@ public abstract class KernelProgram
 				String.format("AP06 %s", __by));
 		
 		return this.accessControlGet(__k);
+	}
+	
+	/**
+	 * Sets a new value for the given control key.
+	 *
+	 * @param __by The task setting the value.
+	 * @param __k The key to set.
+	 * @param __v The value to set, if {@code null} then it is removed.
+	 * @throws NullPointerException If no task or key was specified.
+	 * @since 2017/12/31
+	 */
+	public final void controlSet(KernelTask __by, String __k, String __v)
+		throws NullPointerException, SecurityException
+	{
+		if (__by == null || __k == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AP08 The specified task is not permitted to
+		// set a control value. (The task requesting the value)}
+		if (!__by.hasSimplePermissions(__by,
+			KernelSimplePermission.SET_PROGRAM_CONTROL))
+			throw new SecurityException(
+				String.format("AP08 %s", __by));
+		
+		this.accessControlSet(__k, __v);
 	}
 	
 	/**
@@ -252,6 +288,24 @@ public abstract class KernelProgram
 		this._type = (rv = (info.type() == SuiteType.MIDLET ?
 			SystemProgramType.APPLICATION : SystemProgramType.LIBRARY));
 		return rv;
+	}
+	
+	/**
+	 * This method allows programs to get their control codes set without
+	 * having access checks be performed.
+	 *
+	 * @param __k The key to set.
+	 * @param __v The value to set, {@code null} clears it.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	final void __controlSet(String __k, String __v)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		this.accessControlSet(__k, __v);
 	}
 }
 

@@ -52,9 +52,25 @@ public final class DirectProgram
 	 * @since 2017/12/31
 	 */
 	@Override
-	public String controlGet(String __n)
+	public String controlGet(String __k)
 	{
-		return this.wrapped.controlGet(this.current, __n);
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		return this.wrapped.controlGet(this.current, __k);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public void controlSet(String __k, String __v)
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		this.wrapped.controlSet(this.current, __k, __v);
 	}
 	
 	/**

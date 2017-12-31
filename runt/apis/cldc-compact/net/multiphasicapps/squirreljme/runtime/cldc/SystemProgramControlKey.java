@@ -33,6 +33,14 @@ public interface SystemProgramControlKey
 	public static final String STATE_FLAG_PREFIX =
 		"X-SquirrelJME-State-Flag-";
 	
+	/** Is the program available? */
+	public static final String STATE_FLAG_AVAILABLE =
+		"X-SquirrelJME-State-Flag-AVAILABLE";
+	
+	/** Is the program enabled? */
+	public static final String STATE_FLAG_ENABLED =
+		"X-SquirrelJME-State-Flag-ENABLED";
+	
 	/** Dependency prefix. */
 	public static final String DEPENDENCY_PREFIX =
 		"X-SquirrelJME-Dependency-";
