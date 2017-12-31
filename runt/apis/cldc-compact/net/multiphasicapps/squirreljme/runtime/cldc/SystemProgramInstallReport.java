@@ -23,6 +23,9 @@ public final class SystemProgramInstallReport
 	/** The error code if installation failed. */
 	protected final int error;
 	
+	/** The error message supplied. */
+	protected final String message;
+	
 	/**
 	 * Specifies that the program installed without error.
 	 *
@@ -38,18 +41,24 @@ public final class SystemProgramInstallReport
 		
 		this.program = __p;
 		this.error = 0;
+		this.message = null;
 	}
 	
 	/**
 	 * Specifies that the program could not be installed.
 	 *
 	 * @param __e The error code.
+	 * @param __m The message associated with the error.
 	 * @throws IllegalArgumentException If the error code is zero.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	public SystemProgramInstallReport(int __e)
-		throws IllegalArgumentException
+	public SystemProgramInstallReport(int __e, String __m)
+		throws IllegalArgumentException, NullPointerException
 	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error ZZ0b Cannot initialize an error report with no
 		// error.}
 		if (__e == 0)
@@ -57,6 +66,7 @@ public final class SystemProgramInstallReport
 		
 		this.program = null;
 		this.error = __e;
+		this.message = __m;
 	}
 	
 	/**
@@ -68,6 +78,17 @@ public final class SystemProgramInstallReport
 	public final int error()
 	{
 		return this.error;
+	}
+	
+	/**
+	 * Returns the message associated with the error.
+	 *
+	 * @return The error message.
+	 * @since 2017/12/31
+	 */
+	public final String message()
+	{
+		return this.message;
 	}
 	
 	/**

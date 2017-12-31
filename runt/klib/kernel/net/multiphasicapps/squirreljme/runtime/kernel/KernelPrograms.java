@@ -16,13 +16,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
-import net.multiphasicapps.squirreljme.runtime.midlet.depends.MatchResult;
-import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
-import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.zip.blockreader.ZipBlockReader;
-import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This class is used to manage the programs which are available for usage.
@@ -88,73 +81,13 @@ public abstract class KernelPrograms
 		// it is processed by the kernel
 		byte[] copy = new byte[__l];
 		System.arraycopy(__b, __o, copy, 0, __l);
-		try (ZipBlockReader zip = new ZipBlockReader(copy))
-		{
-			// Open suite information for the program to be installed
-			SuiteInfo info;
-			try (InputStream in = zip.open("META-INF/MANIFEST.MF"))
-			{
-				if (in == null)
-					return new KernelProgramInstallReport(
-						InstallErrorCodes.CORRUPT_JAR);
-				
-				info = new SuiteInfo(new JavaManifest(in));
-			}
-			
-			// Need to make sure that all dependencies are checked and recorded
-			List<KernelProgram> depends = new ArrayList<>();
-			DependencyInfo origdeps = info.dependencies(),
-				restdeps = origdeps;
-			
-			// Programs are verified against other programs
-			List<KernelProgram> programs = this._programs;
-			synchronized (programs)
-			{
-				// Go through other programs and try to find dependency
-				// matches
-				for (KernelProgram program : programs)
-				{
-					// This program provides dependencies, do not remove any
-					// dependencies because some dependencies such as MEEP-8
-					// may be provided by a large number of programs and if
-					// they are added on they may become missing
-					ProvidedInfo provided = program.suiteInfo().provided();
-					MatchResult result = origdeps.match(provided);
-					if (result.hasMatches())
-						depends.add(program);
-					
-					// But it still needs to be detected if any dependencies
-					// have not been met at all, so keep removing them
-					if (!restdeps.isEmpty())
-					{
-						MatchResult restres = restdeps.match(provided);
-						restdeps = restres.unmatched();
-					}
-				}
-				
-				// Dependencies are missing so the application cannot be
-				// installed
-				if (!restdeps.noOptionals().isEmpty())
-					return new KernelProgramInstallReport(
-						InstallErrorCodes.
-							APP_INTEGRITY_FAILURE_DEPENDENCY_MISMATCH);
-				
-				throw new todo.TODO();
-			}
-		}
 		
-		// Invalid JAR
-		catch (ZipEntryNotFoundException e)
+		// Setup and run installer
+		List<KernelProgram> programs = this._programs;
+		synchronized (programs)
 		{
-			return new KernelProgramInstallReport(
-				InstallErrorCodes.CORRUPT_JAR);
-		}
-		
-		// Failed to read the ZIP
-		catch (IOException e)
-		{
-			return new KernelProgramInstallReport(
-				InstallErrorCodes.IO_FILE_ERROR);
+			return new __ProgramInstaller__(this, programs, copy, 0, __l).
+				run();
 		}
 	}
 	
