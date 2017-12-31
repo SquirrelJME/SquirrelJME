@@ -269,6 +269,8 @@ public class MutableJavaManifest
 		String ver = __a.get(verk);
 		if (ver != null)
 			__write(__w, "MANIFEST-VERSION", ver);
+		else
+			__write(__w, "MANIFEST-VERSION", "1.0");
 		
 		// Write all value
 		for (Map.Entry<JavaManifestKey, String> e : __a.entrySet())
