@@ -93,7 +93,20 @@ public final class Configuration
 	@Override
 	public int compareTo(Configuration __o)
 	{
-		throw new todo.TODO();
+		int rv = this.name.compareTo(__o.name);
+		if (rv != 0)
+			return rv;
+		
+		rv = this.version.compareTo(__o.version);
+		if (rv != 0)
+			return rv;
+		
+		// Compact is before non-compact
+		boolean a = this.compact,
+			b = __o.compact;
+		if (a != b)
+			return (a ? -1 : 1);
+		return 0;
 	}
 	
 	/**
@@ -103,7 +116,16 @@ public final class Configuration
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Configuration))
+			return false;
+		
+		Configuration o = (Configuration)__o;
+		return this.name.equals(o.name) &&
+			this.version.equals(o.version) &&
+			this.compact == o.compact;
 	}
 	
 	/**

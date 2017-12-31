@@ -14,6 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.collections.ArrayUtils;
+import net.multiphasicapps.collections.EmptySet;
+import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableSet;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteType;
 import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
@@ -30,6 +34,68 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  */
 public final class ProvidedInfo
 {
+	/** Configurations. */
+	protected final Set<Configuration> configurations;
+	
+	/** Profiles. */
+	protected final Set<Profile> profiles;
+	
+	/** Standards. */
+	protected final Set<Standard> standards;
+	
+	/** Internal project name. */
+	protected final String internalname;
+	
+	/** Typed suite. */
+	protected final TypedSuite typedsuite;
+	
+	/**
+	 * Initializes the provided dependency info.
+	 *
+	 * @param __confs The configurations provided.
+	 * @param __profs The profiles provided.
+	 * @param __stds The standards provided.
+	 * @param __intname The internal project name.
+	 * @param __typedsuite The suite information with the type.
+	 * @since 2017/12/30
+	 */
+	public ProvidedInfo(Configuration[] __confs,
+		Profile[] __profs, Standard[] __stds,
+		String __intname, TypedSuite __typedsuite)
+	{
+		this((__confs == null ? null : Arrays.<Configuration>asList(__confs)),
+			(__profs == null ? null : Arrays.<Profile>asList(__profs)),
+			(__stds == null ? null : Arrays.<Standard>asList(__stds)),
+			__intname, __typedsuite);
+	}
+	
+	/**
+	 * Initializes the provided dependency info.
+	 *
+	 * @param __confs The configurations provided.
+	 * @param __profs The profiles provided.
+	 * @param __stds The standards provided.
+	 * @param __intname The internal project name.
+	 * @param __typedsuite The suite information with the type.
+	 * @since 2017/12/30
+	 */
+	public ProvidedInfo(Collection<Configuration> __confs,
+		Collection<Profile> __profs, Collection<Standard> __stds,
+		String __intname, TypedSuite __typedsuite)
+	{
+		this.configurations = (__confs == null || __confs.isEmpty() ?
+			EmptySet.<Configuration>empty() :
+			UnmodifiableSet.<Configuration>of(new SortedTreeSet<>(__confs)));
+		this.profiles = (__profs == null || __profs.isEmpty() ?
+			EmptySet.<Profile>empty() :
+			UnmodifiableSet.<Profile>of(new SortedTreeSet<>(__profs)));
+		this.standards = (__stds == null || __stds.isEmpty() ?
+			EmptySet.<Standard>empty() :
+			UnmodifiableSet.<Standard>of(new SortedTreeSet<>(__stds)));
+		this.internalname = __intname;
+		this.typedsuite = __typedsuite;
+	}
+	
 	/**
 	 * Parses the given suite information and returns all of the provided
 	 * resolutions for dependencies which are specified in the manifest.
@@ -79,11 +145,8 @@ public final class ProvidedInfo
 			__info.type(), __info.suite());
 		
 		// Initialize
-		throw new todo.TODO();
-		/*
-		return new ProvidedInfo(__info, configs, profiles, standards,
-			internalname);
-		*/
+		return new ProvidedInfo(configs, profiles, standards, internalname,
+			typedsuite);
 	}
 }
 
