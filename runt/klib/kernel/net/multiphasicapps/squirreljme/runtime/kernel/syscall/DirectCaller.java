@@ -173,7 +173,18 @@ public final class DirectCaller
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<KernelProgram, Reference<SystemProgram>> promap = this._promap;
+		synchronized (promap)
+		{
+			Reference<SystemProgram> ref = promap.get(__p);
+			SystemProgram rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				promap.put(__p, new WeakReference<>((rv =
+					new DirectProgram(task, __p))));
+			
+			return rv;
+		}
 	}
 }
 

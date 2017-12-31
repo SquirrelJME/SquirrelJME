@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.runtime.javase;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,6 +53,20 @@ public class JavaPrograms
 		// Determine the run-time path
 		Path runtimepath = Paths.get("installed");
 		this.runtimepath = runtimepath;
+		
+		// Go through the directory contents and register any JARs which
+		// already exist
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(runtimepath))
+		{
+			for (Path p : ds)
+				registerProgram(new JavaInstalledProgram(p));
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -132,7 +147,9 @@ public class JavaPrograms
 				}
 		}
 		
-		throw new todo.TODO();
+		// Setup resulting program
+		return new KernelProgramInstallReport(
+			new JavaInstalledProgram(outjar));
 	}
 }
 

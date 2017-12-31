@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteInfo;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
@@ -60,14 +61,6 @@ public abstract class KernelProgram
 	 */
 	protected abstract InputStream accessLoadResource(String __name)
 		throws NullPointerException;
-	
-	/**
-	 * Returns the type of program this is.
-	 *
-	 * @return The program type.
-	 * @since 2017/12/27
-	 */
-	protected abstract int accessType();
 	
 	/**
 	 * {@inheritDoc}
@@ -202,7 +195,12 @@ public abstract class KernelProgram
 			throw new SecurityException(
 				String.format("ZZ0i %s", __by));
 		
-		return this.accessType();
+		// The zero index is always the system program
+		if (this.index == 0)
+			return SystemProgramType.SYSTEM;
+		
+		// Otherwise it depends on the JAR itself
+		throw new todo.TODO();
 	}
 }
 

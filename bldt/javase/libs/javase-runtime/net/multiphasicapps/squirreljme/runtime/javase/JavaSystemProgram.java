@@ -47,15 +47,5 @@ public class JavaSystemProgram
 			return JavaSystemProgram.class.getResourceAsStream("SYSTEM.MF");
 		return null;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/27
-	 */
-	@Override
-	protected int accessType()
-	{
-		return SystemProgramType.SYSTEM;
-	}
 }
 
