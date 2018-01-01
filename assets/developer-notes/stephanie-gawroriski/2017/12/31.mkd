@@ -1,0 +1,56 @@
+# 2017/12/31
+
+## 10:05
+
+Okay so when I get suites installed, I should work on a new test framework
+which can run on other implementations and such. Basically these will be a
+ton of unit tests but also conformance testing by supplying results and
+such. I do need to measure existing systems to make sure they work, but
+there is only pretty much a single instance for the most part. So basically
+these will just be unit tests and such. I could also probably get the
+JavaDoc generation working too so that there is actual documentation that
+can be used. The documentation would be useful for looking things up for the
+most part. I could keep it simple, or I can do more fancy things but have it
+all in markdown. I think fancy bits would be helpful because there could be
+usages and such. If I could have a cross-project usage of things, it would
+be handy for the most part to see how the code is laid out. However it would
+complicate things a bit. I think I should just keep it simple.
+
+## 14:51
+
+The multiple set of dependencies is a bit complicated, so they need to be
+simplified. So I am just going to have sets of classes which implement
+dependencies. Then basically I can just go through two sets sort of. The only
+issue would be actually the dependencies because they could potentially have
+ranges and such.
+
+## 17:47
+
+So suites right now can be installed, I just need to implement having them
+be able to be ran.
+
+## 17:52
+
+I should definitely eat first, but hopefully I can get suite installation
+and then client applications communicating with the server. I am going to go
+with my planned input/output pipe to communicate with child processes.
+
+## 20:37
+
+It is is the new year soon and I also am 3 commits away from 8000 commits!
+So that is rather nice! But anyway, I will need a base class for the Java
+tasks since I will want to know the JAR paths to use for programs. This is
+the base class for programs.
+
+## 21:01
+
+One more commit until 8,000! yipee!	
+
+## 21:54
+
+Okay so `ClientCaller` is going to need a daemon thread which for the most
+part just acts as IPC when communicating with the kernel.
+
+## 23:08
+
+So a new year will be here in a few hours.
