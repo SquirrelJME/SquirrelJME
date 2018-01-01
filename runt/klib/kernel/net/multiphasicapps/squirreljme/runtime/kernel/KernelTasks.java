@@ -60,6 +60,7 @@ public abstract class KernelTasks
 	/**
 	 * Launches the specified program.
 	 *
+	 * @param __id The ID of the task to be launched.
 	 * @param __cp The classpath used by the program, which includes all the
 	 * dependencies.
 	 * @param __program The main program to be launched.
@@ -70,7 +71,7 @@ public abstract class KernelTasks
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
-	protected abstract KernelTask accessLaunch(KernelProgram[] __cp,
+	protected abstract KernelTask accessLaunch(int __id, KernelProgram[] __cp,
 		KernelProgram __program, String __mainclass, int __perms,
 		Map<String, String> __properties)
 		throws NullPointerException;
@@ -125,8 +126,24 @@ public abstract class KernelTasks
 		List<KernelTask> tasks = this._tasks;
 		synchronized (tasks)
 		{
-			return accessLaunch(classpath, __program, __mainclass, __perms,
-				properties);
+			// Determine the index to use for the new task
+			int nextid = 1;
+			for (int i = 0, n = tasks.size(); i < n; i++)
+			{
+				int tid = tasks.get(i).index();
+				if (tid >= nextid)
+					nextid = tid + 1;
+			}
+			
+			// {@squirreljme.error AP0c Task launch returned null task, which
+			// is not valid.}
+			KernelTask rv = this.accessLaunch(nextid, classpath, __program,
+				__mainclass, __perms, properties);
+			if (rv == null)
+				throw new RuntimeException("AP0c");
+			
+			tasks.add(rv);
+			return rv;
 		}
 	}
 	

@@ -42,7 +42,7 @@ public class JavaTasks
 	 * @since 2017/12/31
 	 */
 	@Override
-	protected KernelTask accessLaunch(KernelProgram[] __cp,
+	protected KernelTask accessLaunch(int __id, KernelProgram[] __cp,
 		KernelProgram __program, String __mainclass, int __perms,
 		Map<String, String> __properties)
 		throws NullPointerException
