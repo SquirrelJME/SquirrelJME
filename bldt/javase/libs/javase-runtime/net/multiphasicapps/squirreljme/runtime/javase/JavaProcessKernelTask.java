@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 
 /**
@@ -22,6 +23,9 @@ public final class JavaProcessKernelTask
 {
 	/** The process to watch. */
 	protected final Process process;
+	
+	/** Has the sub-process fully booted? */
+	private volatile boolean _booted;
 	
 	/**
 	 * Initializes the process task.
@@ -47,7 +51,39 @@ public final class JavaProcessKernelTask
 	@Override
 	protected int accessFlags()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		
+		// If there is an exit value then set status according to failure or
+		// success
+		try
+		{
+			int ev = this.process.exitValue();
+			if (this._booted)
+				if (ev == 0)
+					rv |= SystemTaskStatus.EXITED_REGULAR;
+				else
+					rv |= SystemTaskStatus.EXITED_FATAL;
+			
+			// If there is an exit code and the boot flag was never set then
+			// start failed
+			else
+				rv |= SystemTaskStatus.START_FAILED;
+		}
+		
+		// Has not terminated yet, so assume it is running
+		catch (IllegalThreadStateException e)
+		{
+			// This flag is set when the client sends the boot response
+			// to the kernel IPC
+			if (this._booted)
+				rv |= SystemTaskStatus.RUNNING;
+			
+			// Otherwise it sits at starting until that happens.
+			else
+				rv |= SystemTaskStatus.STARTING;
+		}
+		
+		return rv;
 	}
 	
 	/**
