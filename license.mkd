@@ -2,8 +2,8 @@
 
 SquirrelJME is copyright:
 
- * Copyright (C) 2013-2017 Stephanie Gawroriski <xer@multiphasicapps.net>
- * Copyright (C) 2013-2017 Multi-Phasic Applications <multiphasicapps.net>
+ * Copyright (C) 2013-2018 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * Copyright (C) 2013-2018 Multi-Phasic Applications <multiphasicapps.net>
 
 SquirrelJME has two primary types of files, source code and non-source code.
 
