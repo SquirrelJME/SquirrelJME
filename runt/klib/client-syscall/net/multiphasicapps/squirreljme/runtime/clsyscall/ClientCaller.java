@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.runtime.clsyscall;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramInstallReport;
@@ -29,11 +31,12 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 public abstract class ClientCaller
 	extends SystemCaller
 {
-	/** The input stream. */
-	protected final InputStream in;
+	/** The packet stream used to communicate with the kernel. */
+	protected final PacketStream stream;
 	
-	/** The output stream. */
-	protected final OutputStream out;
+	/** Mapped service cache. */
+	private final Map<String, String> _svcache =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the client caller.
@@ -49,8 +52,7 @@ public abstract class ClientCaller
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		this.in = __in;
-		this.out = __out;
+		this.stream = new PacketStream(__in, __out);
 	}
 	
 	/**
@@ -110,7 +112,16 @@ public abstract class ClientCaller
 		if (__sv == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Cache the service so IPC calls are reduced
+		Map<String, String> svcache = this._svcache;
+		synchronized (svcache)
+		{
+			// This allows null to be cached as needed
+			if (svcache.containsKey(__sv))
+				return svcache.get(__sv);
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
