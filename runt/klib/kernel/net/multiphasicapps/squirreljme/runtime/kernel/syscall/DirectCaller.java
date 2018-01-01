@@ -163,6 +163,20 @@ public final class DirectCaller
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final String mapService(String __sv)
+		throws NullPointerException
+	{
+		if (__sv == null)
+			throw new NullPointerException("NARG");
+		
+		return this.kernel.mapService(__sv);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/12/28
 	 */
 	@Override

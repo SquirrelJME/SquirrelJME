@@ -98,5 +98,19 @@ public abstract class ClientCaller
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public final String mapService(String __sv)
+		throws NullPointerException
+	{
+		if (__sv == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

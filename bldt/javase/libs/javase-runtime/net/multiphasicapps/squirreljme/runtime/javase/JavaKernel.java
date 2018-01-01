@@ -37,13 +37,16 @@ public final class JavaKernel
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/11
+	 * @since 2017/12/31
 	 */
 	@Override
-	protected KernelTask initializeTask(KernelProgram __p)
+	public String mapService(String __sv)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__sv == null)
+			throw new NullPointerException("NARG");
+		
+		return null;
 	}
 	
 	/**
