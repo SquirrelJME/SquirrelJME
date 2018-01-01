@@ -46,6 +46,13 @@ public final class PacketStream
 	protected final PacketFarm farm =
 		new PacketFarm();
 	
+	/** The next key to use for a packet. */
+	private volatile int _nextkey =
+		1;
+	
+	/** Has the stream finished? */
+	private volatile boolean _done;
+	
 	/**
 	 * Initializes the packet stream.
 	 *
@@ -115,6 +122,68 @@ public final class PacketStream
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
+		return this.__send(0, __p);
+	}
+	
+	/**
+	 * Sends the specified packet to the remote end.
+	 *
+	 * @param __key The key to use, if {@code 0} then one is generated.
+	 * @param __p The packet to send to the remote end.
+	 * @return The resulting packet, if the type of one that does not generate
+	 * a response then this will be {@code null}. The return value of a
+	 * response should be used with try-with-resources.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RemoteThrowable If the remote handler threw an exception.
+	 * @since 2018/01/01
+	 */
+	final Packet __send(int __key, Packet __p)
+		throws NullPointerException, RemoteThrowable
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		DataOutputStream out = this.out;
+		
+		// Lock to prevent multiple threads from sending packets at the same
+		// time
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error AT05 The stream has been disconnected.}
+			if (this._done)
+				throw new PacketStreamDisconnected("AT05");
+			
+			try
+			{
+				// Generate key to use for the send
+				if (__key == 0)
+					__key = this._nextkey++;
+			
+				// Write key, this is used to find responses when they are
+				// generated
+				out.writeInt(__key);
+				
+				// Write the type
+				int type = __p.type();
+				out.writeShort(type);
+				
+				// Write the packet data
+				__p.__writeToOutput(out);
+				
+				// No response expected
+				if (type <= 0)
+					return null;
+			}
+			
+			// {@squirreljme.error AT06 Could not write to the remote end.}
+			catch (IOException e)
+			{
+				throw new PacketStreamDisconnected("AT06", e);
+			}
+		}
+		
+		// If this point was reached then a response is expected from the
+		// remote end, so wait for one to happen
 		throw new todo.TODO();
 	}
 	
@@ -157,7 +226,80 @@ public final class PacketStream
 		@Override
 		public void run()
 		{
-			throw new todo.TODO();
+			PacketStreamHandler handler = this.handler;
+			PacketFarm farm = PacketStream.this.farm;
+			
+			try (DataInputStream in = this.in)
+			{
+				// Always try reading packets
+				for (;;)
+				{
+					// Read packet key, but also detect EOF
+					int pkey;
+					try
+					{
+						pkey = in.readInt();
+					}
+					
+					// Report that the remote end has closed
+					catch (EOFException e)
+					{
+						handler.end();
+						return;
+					}
+					
+					// Read packet details
+					int ptype = in.readShort(),
+						plen = in.readInt();
+					
+					// Load in packet details
+					Packet rv = null;
+					try (Packet p = farm.create(ptype, plen))
+					{
+						// Read in packet data
+						p.__readFromInput(in, plen);
+						
+						// Allow all exceptions to be caught so that
+						// responses can be generated for them
+						try
+						{
+							// Handle response
+							rv = handler.handle(p);
+							
+							// A packet was returned when none was expected
+							if (ptype <= 0)
+								rv = null;
+							
+							// A response was expected, but none was given
+							// Force one to exist
+							else if (rv == null)
+								rv = farm.create(0, 0);
+						}
+						
+						// Send failure response
+						catch (Throwable t)
+						{
+							// Only generate exception response if one was
+							// expected
+							if (ptype > 0)
+							{
+								throw new todo.TODO();
+							}
+						}
+					}
+					
+					// Send response packet to the remote end
+					if (rv != null)
+						PacketStream.this.__send(pkey, rv);
+				}
+			}
+			
+			// {@squirreljme.error AT03 IOException in the input packet stream
+			// handler.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AT03", e);
+			}
 		}
 	}
 }
