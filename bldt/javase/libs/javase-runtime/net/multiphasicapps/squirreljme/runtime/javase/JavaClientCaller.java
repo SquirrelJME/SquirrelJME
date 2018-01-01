@@ -8,38 +8,44 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
+package net.multiphasicapps.squirreljme.runtime.javase;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import net.multiphasicapps.squirreljme.runtime.clsyscall.ClientCaller;
 
 /**
- * This wraps the standard default output stream.
+ * This is the Java implementation of the client caller.
  *
- * @since 2016/06/16
+ * @since 2017/12/31
  */
-final class __StandardOutput__
-	extends OutputStream
+public class JavaClientCaller
+	extends ClientCaller
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/16
+	 * Initializes the caller.
+	 *
+	 * @param __in The input stream.
+	 * @param __out The output stream.
+	 * @since 2017/12/31
 	 */
-	@Override
-	public void write(int __b)
+	public JavaClientCaller(InputStream __in, OutputStream __out)
 	{
-		SystemCall.pipeOutput(false, (byte)__b);
+		super(__in, __out);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/08/07
+	 * @since 2017/12/31
 	 */
 	@Override
-	public void write(byte[] __b, int __o, int __l)
+	public void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException
 	{
-		SystemCall.pipeOutput(false, __b, __o, __l);
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		__t.setDaemon(true);
 	}
 }
 
