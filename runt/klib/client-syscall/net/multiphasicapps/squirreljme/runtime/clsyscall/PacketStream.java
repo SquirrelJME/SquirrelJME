@@ -378,5 +378,57 @@ public final class PacketStream
 			}
 		}
 	}
+	
+	/**
+	 * This represents a response.
+	 *
+	 * @since 2018/01/01
+	 */
+	private static final class __Response__
+	{
+		/** The key this is a response for. */
+		public final int key;
+		
+		/** Is this an okay response? */
+		public final boolean okay;
+		
+		/** The response result data. */
+		public final byte[] data;
+		
+		/** The offset into the array. */
+		public final int offset;
+		
+		/** The length into the array. */
+		public final int length;
+		
+		/**
+		 * Initializes the response.
+		 *
+		 * @param __key The key this is a response for.
+		 * @param __okay 
+		 * @param __b The response data.
+		 * @param __o The offset to the response.
+		 * @param __l The length of the response.
+		 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+		 * are negative or exceed the array bounds.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/01
+		 */
+		private __Response__(int __key, boolean __okay, byte[] __b, int __o,
+			int __l)
+			throws ArrayIndexOutOfBoundsException, NullPointerException
+		{
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+				throw new ArrayIndexOutOfBoundsException("IOOB");
+			
+			this.key = __key;
+			this.okay = __okay;
+			this.data = __b;
+			this.offset = __o;
+			this.length = __l;
+		}
+	}
 }
 
