@@ -37,15 +37,8 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
  * @since 2017/12/31
  */
 public final class JavaInstalledProgram
-	extends KernelProgram
+	extends JavaProgram
 {
-	/** Internal lock. */
-	protected final Object lock =
-		new Object();
-	
-	/** The path to the JAR. */
-	protected final Path path;
-	
 	/** The control manifest. */
 	protected final Path control;
 	
@@ -59,12 +52,8 @@ public final class JavaInstalledProgram
 	public JavaInstalledProgram(Path __p)
 		throws NullPointerException
 	{
-		super(__extractIndex(__p));
+		super(__extractIndex(__p), __p);
 		
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		this.path = __p;
 		this.control = __p.resolveSibling(__p.getFileName() + ".MF");
 	}
 	

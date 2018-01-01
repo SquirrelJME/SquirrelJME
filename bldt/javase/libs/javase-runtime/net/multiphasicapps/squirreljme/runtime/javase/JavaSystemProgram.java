@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.runtime.javase;
 
 import java.io.InputStream;
+import java.nio.file.Paths;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 
@@ -20,7 +21,7 @@ import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
  * @since 2017/12/27
  */
 public class JavaSystemProgram
-	extends KernelProgram
+	extends JavaProgram
 {
 	/**
 	 * Initializes the system program.
@@ -29,7 +30,9 @@ public class JavaSystemProgram
 	 */
 	public JavaSystemProgram()
 	{
-		super(0);
+		super(0, Paths.get(System.getProperty(
+			"net.multiphasicapps.squirreljme.runtime.javase.bootpath",
+			"sjmeboot.jar")));
 	}
 	
 	/**
