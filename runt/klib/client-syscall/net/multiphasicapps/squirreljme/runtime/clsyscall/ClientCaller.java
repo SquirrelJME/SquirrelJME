@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.clsyscall;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,7 +123,14 @@ public abstract class ClientCaller
 			if (svcache.containsKey(__sv))
 				return svcache.get(__sv);
 			
-			throw new todo.TODO();
+			byte[] rv = this.stream.send(PacketTypes.MAP_SERVICE,
+				__stringToBytes(__sv));
+			String str = (rv == null || rv.length == 0 ? null :
+				__bytesToString(rv));
+			
+			// Cache and return the string
+			svcache.put(__sv, str);
+			return str;
 		}
 	}
 	
@@ -134,6 +142,58 @@ public abstract class ClientCaller
 	public final void sendInitializationComplete()
 	{
 		this.stream.send(PacketTypes.INITIALIZATION_COMPLETE, new byte[0]);
+	}
+	
+	/**
+	 * Converts byte array to string.
+	 *
+	 * @param __b The byte array to convert.
+	 * @return The converted string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	static final String __bytesToString(byte[] __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			return new String(__b, "utf-8");
+		}
+		
+		// {@squirreljme.error AR08 Encoding from UTF-8 should be supported.}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("AR08", e);
+		}
+	}
+	
+	/**
+	 * Converts a String to a byte array.
+	 *
+	 * @param __s The string to convert.
+	 * @return The resulting string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	static final byte[] __stringToBytes(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			return __s.getBytes("utf-8");
+		}
+		
+		// {@squirreljme.error AR07 Encoding to UTF-8 should be supported.}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("AR07", e);
+		}
 	}
 }
 
