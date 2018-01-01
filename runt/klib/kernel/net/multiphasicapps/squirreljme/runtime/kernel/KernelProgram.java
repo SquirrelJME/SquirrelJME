@@ -30,6 +30,10 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
  */
 public abstract class KernelProgram
 {
+	/** Locking object. */
+	protected final Object lock =
+		new Object();
+	
 	/** The index of the program. */
 	protected final int index;
 	
