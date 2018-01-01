@@ -18,6 +18,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
@@ -68,14 +69,34 @@ public class Main
 		// wrapped so they must be unwrapped
 		try
 		{
-			// {@squirreljme.error AF03 The main method is not static.}
-			Method mainmethod = Class.forName(mainclassname).
-				getMethod("main", String[].class);
-			if ((mainmethod.getModifiers() & Modifier.STATIC) == 0)
-				throw new RuntimeException("AF03");
+			Class<?> mainclass = Class.forName(mainclassname);
 			
-			// Call it
-			mainmethod.invoke(null, new Object[]{__args});
+			// Is an instance of MIDlet
+			if (MIDlet.class.isAssignableFrom(mainclass))
+			{
+				MIDlet mid = (MIDlet)mainclass.newInstance();
+				
+				// startApp is protected so it has to be made callable
+				Method startmethod = MIDlet.class.getDeclaredMethod(
+					"startApp");
+				startmethod.setAccessible(true);
+				
+				// Invoke the start method
+				startmethod.invoke(mid);
+			}
+			
+			// Use a main method instead
+			else
+			{
+				// {@squirreljme.error AF03 The main method is not static.}
+				Method mainmethod = mainclass.getMethod("main",
+					String[].class);
+				if ((mainmethod.getModifiers() & Modifier.STATIC) == 0)
+					throw new RuntimeException("AF03");
+			
+				// Call it
+				mainmethod.invoke(null, new Object[]{__args});
+			}
 		}
 		
 		// Completely hide call exceptions
