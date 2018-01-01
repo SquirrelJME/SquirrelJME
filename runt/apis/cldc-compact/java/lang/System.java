@@ -13,6 +13,7 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
+import net.multiphasicapps.squirreljme.runtime.cldc.StandardOutput;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemVersion;
 
@@ -20,11 +21,12 @@ public final class System
 {
 	/** Standard error stream (stderr). */
 	public static final PrintStream err =
-		new __CanSetPrintStream__(new PrintStream(new __StandardError__()));
+		new __CanSetPrintStream__(new PrintStream(new __StandardError__(),
+			true));
 	
 	/** Standard output stream (stdout). */
 	public static final PrintStream out =
-		new __CanSetPrintStream__(new PrintStream(new __StandardOutput__()));
+		new __CanSetPrintStream__(new PrintStream(new StandardOutput(), true));
 	
 	private System()
 	{

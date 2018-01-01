@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.javase;
 
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.runtime.cldc.StandardOutput;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
@@ -127,7 +130,17 @@ public class Main
 		{
 			System.err.println("SquirrelJME Client Launch!");
 			
-			throw new todo.TODO();
+			// The client uses the process's normal input and output stream
+			// to communicate with the kernel, so they need to be remapped
+			InputStream win = System.in;
+			OutputStream wout = System.out;
+			
+			// Redirect standard output to use the system caller interface
+			// instead
+			System.setOut(new PrintStream(new StandardOutput(), true));
+			
+			// Use the original streams instead
+			syscaller = new JavaClientCaller(win, wout);
 		}
 		
 		// The server uses the actual kernel
