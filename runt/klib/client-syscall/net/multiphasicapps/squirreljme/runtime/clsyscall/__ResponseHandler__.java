@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.runtime.clsyscall;
 
 import java.lang.ref.Reference;
+import net.multiphasicapps.squirreljme.runtime.packets.Packet;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketStreamHandler;
 
 /**
  * This handles responses for the system call interface.
@@ -56,9 +58,14 @@ final class __ResponseHandler__
 	 * @since 2018/01/01
 	 */
 	@Override
-	public byte[] handle(int __t, byte[] __b, int __o, int __l)
-		throws ArrayIndexOutOfBoundsException, NullPointerException
+	public Packet handle(Packet __p)
+		throws NullPointerException
 	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		/*
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
@@ -72,6 +79,7 @@ final class __ResponseHandler__
 			default:
 				throw new RuntimeException(String.format("AR06", __t));
 		}
+		*/
 	}
 	
 	/**

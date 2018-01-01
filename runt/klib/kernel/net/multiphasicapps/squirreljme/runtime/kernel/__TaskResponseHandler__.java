@@ -11,9 +11,11 @@
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
 import java.lang.ref.Reference;
-import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStreamHandler;
 import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketTypes;
-import net.multiphasicapps.squirreljme.runtime.clsyscall.StringConvert;
+import net.multiphasicapps.squirreljme.runtime.packets.Packet;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketReader;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketWriter;
 
 /**
  * This handles responses for kernel tasks.
@@ -59,17 +61,16 @@ final class __TaskResponseHandler__
 	 * @since 2018/01/01
 	 */
 	@Override
-	public byte[] handle(int __t, byte[] __b, int __o, int __l)
+	public Packet handle(Packet __p)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
-		if (__b == null)
+		if (__p == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		KernelTask task = this.__task();
 		
-		switch (__t)
+		// Depends on the type
+		switch (__p.type())
 		{
 				// Client said hello
 			case PacketTypes.HELLO:
@@ -77,21 +78,31 @@ final class __TaskResponseHandler__
 				return null;
 				
 				// Initialization complete
-			case PacketTypes.INITIALIZATION_COMPLETE:
+			case PacketTypes.INITIALIZED:
 				task._gotinitcomplete = true;
 				return null;
 				
 				// Map service
 			case PacketTypes.MAP_SERVICE:
-				String rv = task.__tasks().__kernel().
-					mapService(StringConvert.bytesToString(__b, __o, __l));
-				if (rv == null)
-					return null;
-				return StringConvert.stringToBytes(rv);
-			
-				// {@squirreljme.error AP0e Unknown response type. (The type)}
+				{
+					PacketReader r = __p.createReader();
+					String service = r.readString();
+					
+					// Map service
+					String mapped = task.__tasks().__kernel().
+						mapService(service);
+					if (mapped == null)
+						mapped = "";
+					
+					// Respond
+					Packet rv = __p.respond();
+					rv.createWriter().writeString(mapped);
+					return rv;
+				}
+				
+				// {@squirreljme.error AP0e Unknown packet. (The packet)}
 			default:
-				throw new RuntimeException(String.format("AP0e", __t));
+				throw new RuntimeException(String.format("AP0e %s", __p));
 		}
 	}
 	
