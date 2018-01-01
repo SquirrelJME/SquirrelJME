@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Deque;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
+import javax.microedition.swm.SuiteManager;
+import javax.microedition.swm.SuiteType;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskManager;
 import javax.microedition.swm.TaskStatus;
@@ -198,11 +200,42 @@ public class TaskFactory
 		// Locate the suite to use
 		Suite suite = null;
 		if (__su != null)
-			throw new todo.TODO();
+		{
+			// For simplicity have an index lookup
+			int wantdx = -1;
+			try
+			{
+				wantdx = Integer.parseInt(__su);
+			}
+			catch (NumberFormatException e)
+			{
+			}
+			
+			// Go through suites and try to find a match
+			SuiteManager sm = ManagerFactory.getSuiteManager();
+			int atdx = 0;
+			for (Suite s : sm.getSuites(SuiteType.APPLICATION))
+				if (wantdx == (atdx++) ||
+					__su.equals(s.getName()) ||
+					__su.equals(s.getVendor()))
+				{
+					suite = s;
+					break;
+				}
+			
+			// {@squirreljme.error AU10 Could not locate a suite with the
+			// given name. (The input name)}
+			if (suite == null)
+				throw new IllegalArgumentException(
+					String.format("AU10 %s", __su));
+		}
 		
 		// Use system suite
 		else
 			suite = Suite.SYSTEM_SUITE;
+		
+		// Show suite to launch
+		SuiteFactory.printSuite(System.out, suite);
 		
 		// Start the task
 		return this.manager.startTask(suite, __cl);
