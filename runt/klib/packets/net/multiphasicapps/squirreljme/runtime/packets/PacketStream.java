@@ -122,13 +122,14 @@ public final class PacketStream
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		return this.__send(0, __p);
+		return this.__send(0, false, __p);
 	}
 	
 	/**
 	 * Sends the specified packet to the remote end.
 	 *
 	 * @param __key The key to use, if {@code 0} then one is generated.
+	 * @param __forceresponse Force a response type to be used?
 	 * @param __p The packet to send to the remote end.
 	 * @return The resulting packet, if the type of one that does not generate
 	 * a response then this will be {@code null}. The return value of a
@@ -137,7 +138,7 @@ public final class PacketStream
 	 * @throws RemoteThrowable If the remote handler threw an exception.
 	 * @since 2018/01/01
 	 */
-	final Packet __send(int __key, Packet __p)
+	final Packet __send(int __key, boolean __forceresponse, Packet __p)
 		throws NullPointerException, RemoteThrowable
 	{
 		if (__p == null)
@@ -164,13 +165,13 @@ public final class PacketStream
 				out.writeInt(__key);
 				
 				// Write the type
-				int type = __p.type();
+				int type = (__forceresponse ? 0 : __p.type());
 				out.writeShort(type);
 				
 				// Write the packet data
 				__p.__writeToOutput(out);
 				
-				// No response expected
+				// No response expected, can stop here
 				if (type <= 0)
 					return null;
 			}
@@ -290,7 +291,7 @@ public final class PacketStream
 					
 					// Send response packet to the remote end
 					if (rv != null)
-						PacketStream.this.__send(pkey, rv);
+						PacketStream.this.__send(pkey, true, rv);
 				}
 			}
 			
