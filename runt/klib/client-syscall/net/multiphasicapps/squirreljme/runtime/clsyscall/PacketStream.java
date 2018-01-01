@@ -183,6 +183,10 @@ public final class PacketStream
 				// Flush so the other side sees it
 				out.flush();
 				
+				System.err.printf("DEBUG -- Write %08x " +
+					"(key=%d) %d -> sz=%d%n",
+					this.hashCode(), __key, __t, __l);
+				
 				// Any types which are negative never get a responmse
 				if (__t < 0)
 					return null;
@@ -270,16 +274,15 @@ public final class PacketStream
 						throw new todo.TODO();
 					}
 					
-					System.err.printf("DEBUG -- Read key %d%n", pkey);
-					
 					// Read packet details
 					int ptype = in.readShort(),
 						plen = in.readInt();
 					byte[] pdata = new byte[plen];
 					in.readFully(pdata);
 					
-					System.err.printf("DEBUG -- Read (key=%d) %d -> sz=%d%n",
-						pkey, ptype, plen);
+					System.err.printf("DEBUG -- Read %08x " +
+						"(key=%d) %d -> sz=%d%n",
+						stream.hashCode(), pkey, ptype, plen);
 					
 					// Do not send responses to the handler because otherwise
 					// there will be an infinite loop
