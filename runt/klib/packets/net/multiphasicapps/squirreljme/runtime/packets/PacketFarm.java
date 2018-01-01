@@ -22,19 +22,34 @@ package net.multiphasicapps.squirreljme.runtime.packets;
 public final class PacketFarm
 {
 	/**
-	 * Creates a new packet with the specified length.
+	 * Creates a new variable length packet.
 	 *
+	 * @param __t The type of the packet, if the type is negative then no
+	 * response will be used.
+	 * @return The newly created packet of a variable length.
+	 * @since 2018/01/01
+	 */
+	public final Packet create(int __t)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Creates a new fixed length packet with the specified length.
+	 *
+	 * @param __t The type of the packet, if the type is negative then no
+	 * response will be used.
 	 * @param __l The length of the packet to create.
 	 * @return The newly created packet of the given length.
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @since 2018/01/01
 	 */
-	public final Packet create(int __l)
+	public final Packet create(int __t, int __l)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AT01 Cannot have a packet with a negative
 		// length.}
-		if (__l == null)
+		if (__l < 0)
 			throw new IllegalArgumentException("AT01");
 		
 		throw new todo.TODO();

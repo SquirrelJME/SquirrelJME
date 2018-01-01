@@ -7,5 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project provides a system caller which 
  uses the basic input/output pipe to communicate with the kernel
  process.
+X-SquirrelJME-Depends: packets
 Microedition-Configuration: CLDC-1.8-Compact
 

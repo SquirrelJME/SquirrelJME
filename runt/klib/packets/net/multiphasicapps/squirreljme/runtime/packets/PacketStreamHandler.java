@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.clsyscall;
+package net.multiphasicapps.squirreljme.runtime.packets;
 
 /**
  * This interface is used by the incoming side to handle incoming requests
@@ -28,18 +28,14 @@ public interface PacketStreamHandler
 	/**
 	 * Handles a request sent from the remote end.
 	 *
-	 * @param __t The type of request made.
-	 * @param __b The data contained in the response.
-	 * @param __o The offset into the array.
-	 * @param __l The length of the data.
-	 * @return The response data, may be {@code null} if there is no data
-	 * to be sent and it may be blank.
-	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
-	 * negative or exceed the array bounds.
+	 * @param __p The packet received from the remote end.
+	 * @return The packet to respond with, this may be {@code null} if there
+	 * is no response. The return value is ignored if the type is not one
+	 * which generates a response.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
-	public abstract byte[] handle(int __t, byte[] __b, int __o, int __l)
-		throws ArrayIndexOutOfBoundsException, NullPointerException;
+	public abstract Packet handle(Packet __p)
+		throws NullPointerException;
 }
 

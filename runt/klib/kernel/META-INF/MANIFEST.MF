@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the kernel which is 
  used by SquirrelJME to run and operate the system.
 X-SquirrelJME-Depends: tool-manifest-reader meep-midlet zip 
- client-syscall
+ client-syscall packets
 Microedition-Configuration: CLDC-1.8-Compact
 

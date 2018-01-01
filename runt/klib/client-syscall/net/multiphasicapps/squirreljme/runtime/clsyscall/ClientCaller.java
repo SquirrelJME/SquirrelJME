@@ -20,6 +20,9 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
+import net.multiphasicapps.squirreljme.runtime.packets.Packet;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketStream;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketWriter;
 
 /**
  * This is a system caller which uses a basic input stream and a basic output
@@ -115,6 +118,8 @@ public abstract class ClientCaller
 		if (__sv == null)
 			throw new NullPointerException("NARG");
 		
+		PacketStream stream = this.stream;
+			
 		// Cache the service so IPC calls are reduced
 		Map<String, String> svcache = this._svcache;
 		synchronized (svcache)
@@ -123,14 +128,26 @@ public abstract class ClientCaller
 			if (svcache.containsKey(__sv))
 				return svcache.get(__sv);
 			
-			byte[] rv = this.stream.send(PacketTypes.MAP_SERVICE,
-				StringConvert.stringToBytes(__sv));
-			String str = (rv == null || rv.length == 0 ? null :
-				StringConvert.bytesToString(rv));
-			
-			// Cache and return the string
-			svcache.put(__sv, str);
-			return str;
+			try (Packet p = stream.farm().create(PacketTypes.MAP_SERVICE))
+			{
+				// Write the service to map
+				PacketWriter w = p.createWriter();
+				w.writeString(__sv);
+				
+				// Send packet to the server, await response
+				try (Packet r = stream.send(p))
+				{
+					// Treat empty strings as null
+					String rv = r.createReader().readString();
+					if (rv == null || rv.length() <= 0)
+						rv = null;
+					
+					// Cache string so the server does not need to be
+					// queried again
+					svcache.put(__sv, rv);
+					return rv;
+				}
+			}
 		}
 	}
 	
@@ -141,7 +158,11 @@ public abstract class ClientCaller
 	 */
 	public final void sendInitializationComplete()
 	{
-		this.stream.send(PacketTypes.INITIALIZATION_COMPLETE, new byte[0]);
+		PacketStream stream = this.stream;
+		try (Packet p = stream.farm().create(PacketTypes.INITIALIZED, 0))
+		{
+			stream.send(p);
+		}
 	}
 }
 

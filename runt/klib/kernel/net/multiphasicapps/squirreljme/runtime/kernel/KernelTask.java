@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStream;
+import net.multiphasicapps.squirreljme.runtime.packets.PacketStream;
 
 /**
  * This represents a task which is running within SquirrelJME.

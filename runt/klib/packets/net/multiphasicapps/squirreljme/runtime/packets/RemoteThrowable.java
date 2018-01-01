@@ -8,28 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.clsyscall;
+package net.multiphasicapps.squirreljme.runtime.packets;
 
 /**
- * This represents the packet types which are sent between the clients.
+ * This class is thrown by the {@link PacketStream#send(Packet)} method if the
+ * remote end threw an exception while handling a packet.
  *
- * Packet types which are negative do not have a response value returned and
- * are essentially just events.
+ * This will wrap as much detail as needed from the exception which was caught
+ * on the remote end.
+ *
+ * Responseless packets do not respond with this exception.
  *
  * @since 2018/01/01
  */
-public interface PacketTypes
+public final class RemoteThrowable
+	extends RuntimeException
 {
-	/** The hello packet which indicates the remote side is alive. */
-	public static final int HELLO =
-		-1;
-	
-	/** The client has been started (constructors are okay). */
-	public static final int INITIALIZED =
-		-2;
-	
-	/** Map service. */
-	public static final int MAP_SERVICE =
-		1;
 }
 

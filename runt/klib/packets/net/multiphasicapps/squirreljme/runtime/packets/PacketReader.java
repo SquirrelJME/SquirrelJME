@@ -8,28 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.clsyscall;
+package net.multiphasicapps.squirreljme.runtime.packets;
 
 /**
- * This represents the packet types which are sent between the clients.
- *
- * Packet types which are negative do not have a response value returned and
- * are essentially just events.
+ * This class is used to read from packets in a stream like manner.
  *
  * @since 2018/01/01
  */
-public interface PacketTypes
+public final class PacketReader
 {
-	/** The hello packet which indicates the remote side is alive. */
-	public static final int HELLO =
-		-1;
-	
-	/** The client has been started (constructors are okay). */
-	public static final int INITIALIZED =
-		-2;
-	
-	/** Map service. */
-	public static final int MAP_SERVICE =
-		1;
+	/**
+	 * Reads a string from the given packet.
+	 *
+	 * @return The read string.
+	 * @since 2018/01/01
+	 */
+	public final String readString()
+	{
+		throw new todo.TODO();
+	}
 }
 
