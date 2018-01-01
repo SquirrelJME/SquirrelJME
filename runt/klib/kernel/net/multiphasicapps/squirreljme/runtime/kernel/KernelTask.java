@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStream;
 
@@ -22,6 +23,9 @@ import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStream;
  */
 public abstract class KernelTask
 {
+	/** Reference to the owning task manager. */
+	protected final Reference<KernelTasks> tasks;
+	
 	/** The task index. */
 	protected final int index;
 	
@@ -41,6 +45,8 @@ public abstract class KernelTask
 	 * Initializes the task with the initial basic permissions and the
 	 * streams used for the packet interface.
 	 *
+	 * @param __ref Reference to the owning task manager, this may be null if
+	 * this is the system task.
 	 * @param __dx The index of the task.
 	 * @param __sp The basic permissions to start with.
 	 * @param __in The input stream from the process.
@@ -49,12 +55,14 @@ public abstract class KernelTask
 	 * streams were not specified.
 	 * @since 2017/12/12
 	 */
-	public KernelTask(int __dx, int __sp, InputStream __in, OutputStream __out)
+	public KernelTask(Reference<KernelTasks> __ref, int __dx, int __sp,
+		InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
-		if (__dx != 0 && (__in == null || __out == null))
+		if (__dx != 0 && (__ref == null || __in == null || __out == null))
 			throw new NullPointerException("NARG");
 		
+		this.tasks = __ref;
 		this.index = __dx;
 		this._simpleperms = __sp;
 		
@@ -88,6 +96,13 @@ public abstract class KernelTask
 	 * @since 2017/12/27
 	 */
 	protected abstract long accessMetric(int __m);
+	
+	/**
+	 * This is called when the task has been terminated.
+	 *
+	 * @since 2018/01/01
+	 */
+	protected abstract void accessTerminated();
 	
 	/**
 	 * {@inheritDoc}
@@ -271,6 +286,38 @@ public abstract class KernelTask
 	final int __simplePermissions()
 	{
 		return this._simpleperms;
+	}
+	
+	/**
+	 * Returns the task manager.
+	 *
+	 * @return The task manager.
+	 * @throws RuntimeException If it was garbage collected.
+	 * @since 2018/01/01
+	 */
+	final KernelTasks __tasks()
+		throws RuntimeException
+	{
+		// {@squirreljme.error AP0f The task manager was garbage collected.}
+		KernelTasks rv = this.tasks.get();
+		if (rv == null)
+			throw new RuntimeException("AP0f");
+		return rv;
+	}
+	
+	/**
+	 * This is called when the task has been terminated and that it should
+	 * be removed from the kernel.
+	 *
+	 * @since 2017/08/01
+	 */
+	final void __terminated()
+	{
+		// Tell the task itself it was terminated
+		this.accessTerminated();
+		
+		// Then tell the task manager the task is gone now
+		this.__tasks().__terminated(this);
 	}
 }
 

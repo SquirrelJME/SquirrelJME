@@ -204,5 +204,31 @@ public abstract class KernelTasks
 			throw new RuntimeException("AP0a");
 		return rv;
 	}
+	
+	/**
+	 * This is called when the client task has been terminated.
+	 *
+	 * @param __t The task which was terminated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	final void __terminated(KernelTask __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		List<KernelTask> tasks = this._tasks;
+		synchronized (tasks)
+		{
+			for (int i = 0, n = tasks.size(); i < n; i++)
+				if (tasks.get(i) == __t)
+				{
+					tasks.remove(i);
+					break;
+				}
+		}
+	}
 }
 

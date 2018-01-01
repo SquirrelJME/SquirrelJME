@@ -19,6 +19,13 @@ package net.multiphasicapps.squirreljme.runtime.clsyscall;
 public interface PacketStreamHandler
 {
 	/**
+	 * This is called when the remote side has ended the connection.
+	 *
+	 * @since 2018/01/01
+	 */
+	public abstract void end();
+	
+	/**
 	 * Handles a request sent from the remote end.
 	 *
 	 * @param __t The type of request made.

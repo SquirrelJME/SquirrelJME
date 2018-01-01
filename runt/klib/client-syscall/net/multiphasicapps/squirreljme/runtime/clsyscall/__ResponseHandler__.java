@@ -44,6 +44,18 @@ final class __ResponseHandler__
 	 * @since 2018/01/01
 	 */
 	@Override
+	public void end()
+	{
+		// Just terminate the VM becuse there is nothing else to do since
+		// it seems the kernel just died
+		System.exit(1);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/01
+	 */
+	@Override
 	public byte[] handle(int __t, byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
