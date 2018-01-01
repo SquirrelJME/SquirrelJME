@@ -1,7 +1,5 @@
 # SquirrelJME As A Runtime
 
-***THIS DOCUMENT IS OUT OF DATE AND NEEDS TO BE UPDATED***
-
 There are two portions of SquirrelJME, the _SquirrelJME Virtual Machine_ and
 the _SquirrelJME Runtime_. The virtual machine is the one which executes the
 program and provides an environment that runs on the operating system or
@@ -108,6 +106,12 @@ execution contexts and they cannot lookup each others classes. Thus if two
 JARs have the same class, it will only use the class that is in their same
 JAR.
 
+# Virtual Machine Structure
+
+The virtual machine is structured like a micro-kernel in that there is a kernel
+and each task which runs on the machine is its own process with its own
+memory space.
+
 # Required Methods
 
 For simplicity, sanity, and portability; SquirrelJME has a very simple means to
@@ -116,50 +120,26 @@ of work that is required to support various systems. This means that porting
 SquirrelJME will be very simple and straightforward once the base semantics of
 the virtual machine are implemented.
 
-The package `net.multiphasicapps.squirreljme.unsafe` is a very special package
-which contains the methods which are used as a bridge to native code or
-other bridging code. The package is designed in a public and private fashion.
-Since the methods will be needed across many methods in other packages, the
-first major interface are the public interfaces. The public interfaces allow
-for checks to be performed so that sane values and such are used on input for
-the private implementation. The private implementation are the ones that
-porters will implement to provide functionality, all of these classes are in
-the form of `__Ext_foo__` where `foo` is the functionality group. These classes
-are only visible to the `net.multiphasicapps.squirreljme.unsafe` package which
-means that they do not have to worry as much of being exposed for exploitive
-purposes. This also allows for virtual functionality to be provided and a means
-for backwards compatibility and migration.
+Both kernel and user-space tasks require that system calls be made available.
+This means an implementation of the
+`net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller` class. Regardless
+for the kernel or the user-space, the `_CALLER` field must be set in
+`net.multiphasicapps.squirreljme.runtime.cldc.SystemCall`. For additional
+support, it is possible for `__systemCaller()` be replaced as needed to return
+the appropriate instance of `SystemCaller` if the field cannot statically
+be set by the virtual machine.
 
-The public classes call into the private classes, but due to the hidden nature
-it is not required for the classes to actually exist, just that they have the
-functionality provided. For example, the JVM can replace any instance of a call
-in the `unsafe` package to the private class with just a function pointer while
-disregarding the actual class. This would mean that these private classes
-could just be declared `native` and be linked by the JVM as required.
+The kernel task is required to create an implementation of the
+`net.multiphasicapps.squirreljme.runtime.kernel.Kernel` class. The actual
+implementation can vary according to the required means.
+The system call interface that can be used in the kernel task is an
+instance of
+`net.multiphasicapps.squirreljme.runtime.kernel.syscall.DirectCaller` which
+is capable of calling into the kernel as needed. The `_CALLER` field is set to
+this caller.
 
-Since SquirrelJME's JVM is not being used, there are some requirements of
-how some of these classes are implemented.
-
-## `SystemEnvironment` (__Ext_systemenvironment__`)
-
-SquirrelJME uses a basic service system similar to `ServiceLoader` except it
-provides services on a system level. Unlike `ServiceLoader` which provides
-multiple services, only single services are available at a time and once a
-service object is initialized it will remain available to the program until it
-exits always returning the same instance (that is, it is a singleton).
-
-As an example, the JVM may provide a framebuffer which needs to be accessed
-by SquirrelJME's LCDUI API. In this case the
-`net.multiphasicapps.squirreljme.lcdui.DisplayManager` class needs to be
-implemented. In this example environment, that class is implemented as
-`foo.FooDisplayManager`. In order for the runtime to find that class, the
-full name of the class must be returned in the
-`__Ext_systemenvironment__.mapService()` method. When that service is
-requested, that class will be loaded and stored and returned so that the LCDUI
-code may use it to provide a display interface.
-
-## `SystemVM` (`__Ext_systemvm__`)
-
-`__Ext_systemvm__.isSquirrelJMEJVM()` should always return `false` because
-using just the run-time is not using the JVM.
+User-space tasks use IPC to communicate with the kernel process and as such the
+recommended means of handling that is by implementing
+`net.multiphasicapps.squirreljme.runtime.clsyscall.ClientCaller`. The `_CALLER`
+field is set to this caller.
 
