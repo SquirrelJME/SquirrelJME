@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.clsyscall;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
@@ -52,7 +53,8 @@ public abstract class ClientCaller
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		this.stream = new PacketStream(__in, __out);
+		this.stream = new PacketStream(__in, __out,
+			new __ResponseHandler__(new WeakReference<>(this)));
 	}
 	
 	/**
@@ -122,6 +124,16 @@ public abstract class ClientCaller
 			
 			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Tells the remote end that the initialization has been complete.
+	 *
+	 * @since 2018/01/01
+	 */
+	public final void sendInitializationComplete()
+	{
+		this.stream.send(PacketTypes.INITIALIZATION_COMPLETE, new byte[0]);
 	}
 }
 

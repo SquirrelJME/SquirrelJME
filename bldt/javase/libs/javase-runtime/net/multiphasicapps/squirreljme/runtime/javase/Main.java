@@ -57,7 +57,7 @@ public class Main
 		
 		// Initialize the run-time which sets up the SquirrelJME specific
 		// APIs
-		__initializeRunTime(isclient);
+		SystemCaller caller = __initializeRunTime(isclient);
 		
 		// The client just uses the specified main class
 		String mainclassname;
@@ -77,7 +77,10 @@ public class Main
 			// Is an instance of MIDlet
 			if (MIDlet.class.isAssignableFrom(mainclass))
 			{
+				// Construct new object but only say start is valid once it
+				// has been fully constructed
 				MIDlet mid = (MIDlet)mainclass.newInstance();
+				((JavaClientCaller)caller).sendInitializationComplete();
 				
 				// startApp is protected so it has to be made callable
 				Method startmethod = MIDlet.class.getDeclaredMethod(
@@ -117,10 +120,11 @@ public class Main
 	 * Initializes the run-time.
 	 *
 	 * @param __client If {@code true} then it is initialized for the client.
+	 * @return The system caller used.
 	 * @throws Throwable On any throwable.
 	 * @since 2017/12/07
 	 */
-	private static void __initializeRunTime(boolean __client)
+	private static SystemCaller __initializeRunTime(boolean __client)
 		throws Throwable
 	{
 		// Clients use a bi-directional bridge on top of the standard
@@ -174,6 +178,10 @@ public class Main
 		modifiersfield.setInt(callerfield, oldmods);
 		modifiersfield.setAccessible(false);
 		callerfield.setAccessible(false);
+		
+		// Return the system caller, used to send initialization complete
+		// message
+		return syscaller;
 	}
 	
 	/**
