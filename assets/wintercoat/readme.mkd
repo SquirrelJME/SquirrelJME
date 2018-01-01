@@ -1,8 +1,8 @@
 # Wintercoat
 
- * Copyright (C) 2017-2017 Stephanie Gawroriski
+ * Copyright (C) 2017-2018 Stephanie Gawroriski
    <xer@multiphasicapps.net>
- * Copyright (C) 2017-2017 Multi-Phasic Applications
+ * Copyright (C) 2017-2018 Multi-Phasic Applications
    <http://multiphasicapps.net/>
  * _Lex_ (The SquirrelJME Mascot) was drawn by...
    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
