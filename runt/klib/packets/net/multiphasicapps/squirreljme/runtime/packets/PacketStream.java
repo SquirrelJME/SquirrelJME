@@ -72,7 +72,18 @@ public final class PacketStream
 		
 		// Make sure it is a daemon thread so that it terminates when every
 		// other thread is terminated
-		SystemCall.setDaemonThread(thread);
+		try
+		{
+			SystemCall.setDaemonThread(thread);
+		}
+		catch (IllegalThreadStateException e)
+		{
+			// This will happen when the client tries to initialize the packet
+			// interface because the caller might not be setup yet, ignore it
+			// in this case
+		}
+		
+		// Start it
 		thread.start();
 	}
 	
