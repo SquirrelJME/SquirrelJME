@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
 import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStreamHandler;
 import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketTypes;
+import net.multiphasicapps.squirreljme.runtime.clsyscall.StringConvert;
 
 /**
  * This handles responses for kernel tasks.
@@ -79,6 +80,14 @@ final class __TaskResponseHandler__
 			case PacketTypes.INITIALIZATION_COMPLETE:
 				task._gotinitcomplete = true;
 				return null;
+				
+				// Map service
+			case PacketTypes.MAP_SERVICE:
+				String rv = task.__tasks().__kernel().
+					mapService(StringConvert.bytesToString(__b, __o, __l));
+				if (rv == null)
+					return null;
+				return StringConvert.stringToBytes(rv);
 			
 				// {@squirreljme.error AP0e Unknown response type. (The type)}
 			default:
