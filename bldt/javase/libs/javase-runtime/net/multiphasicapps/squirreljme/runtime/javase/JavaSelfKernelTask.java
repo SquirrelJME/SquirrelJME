@@ -31,7 +31,7 @@ public final class JavaSelfKernelTask
 	 */
 	public JavaSelfKernelTask()
 	{
-		super(0, ~0);
+		super(0, ~0, null, null);
 	}
 	
 	/**

@@ -104,7 +104,7 @@ public class JavaTasks
 			pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 			
 			// Start it
-			return new JavaProcessKernelTask(__id, pb.start());
+			return new JavaProcessKernelTask(__id, __perms, pb.start());
 		}
 		
 		// {@squirreljme.error AF05 Could not launch the sub-process. (The

@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.runtime.kernel;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStream;
+
 /**
  * This represents a task which is running within SquirrelJME.
  *
@@ -20,31 +24,36 @@ public abstract class KernelTask
 	/** The task index. */
 	protected final int index;
 	
+	/** Packet stream to use when communicating with the client. */
+	protected final PacketStream stream;
+	
 	/** Permissions granted by the kernel. */
 	private volatile int _simpleperms;
 	
 	/**
-	 * Default constructor.
-	 *
-	 * @param __dx The index of the task.
-	 * @since 2017/12/12
-	 */
-	public KernelTask(int __dx)
-	{
-		this.index = __dx;
-	}
-	
-	/**
-	 * Initializes the task with the initial basic permissions.
+	 * Initializes the task with the initial basic permissions and the
+	 * streams used for the packet interface.
 	 *
 	 * @param __dx The index of the task.
 	 * @param __sp The basic permissions to start with.
+	 * @param __in The input stream from the process.
+	 * @param __out The output steam to the process.
+	 * @throws NullPointerException If this is not the system task and the
+	 * streams were not specified.
 	 * @since 2017/12/12
 	 */
-	public KernelTask(int __dx, int __sp)
+	public KernelTask(int __dx, int __sp, InputStream __in, OutputStream __out)
+		throws NullPointerException
 	{
+		if (__dx != 0 && (__in == null || __out == null))
+			throw new NullPointerException("NARG");
+		
 		this.index = __dx;
 		this._simpleperms = __sp;
+		
+		// The kernel process does not have a packet stream because everything
+		// is always local
+		this.stream = (__dx == 0 ? null : new PacketStream(__in, __out));
 	}
 	
 	/**
