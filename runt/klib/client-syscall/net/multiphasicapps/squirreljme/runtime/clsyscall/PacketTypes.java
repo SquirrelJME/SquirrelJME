@@ -35,5 +35,9 @@ public interface PacketTypes
 	/** The client has been started (constructors are okay). */
 	public static final int INITIALIZATION_COMPLETE =
 		-4;
+	
+	/** Map service. */
+	public static final int MAP_SERVICE =
+		1;
 }
 
