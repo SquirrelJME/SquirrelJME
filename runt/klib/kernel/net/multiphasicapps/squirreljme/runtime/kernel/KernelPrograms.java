@@ -15,7 +15,11 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramControlKey;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
@@ -102,7 +106,7 @@ public abstract class KernelPrograms
 		
 		// Setup and run installer
 		List<KernelProgram> programs = this._programs;
-		synchronized (programs)
+		synchronized (this.lock)
 		{
 			return new __ProgramInstaller__(this, programs, copy, 0, __l).
 				run();
@@ -191,6 +195,31 @@ public abstract class KernelPrograms
 	}
 	
 	/**
+	 * Returns the kernel program associated by the given Id.
+	 *
+	 * @param __id The ID of the program to get.
+	 * @return The program associated with the given ID or {@code null} if
+	 * no such program exists.
+	 * @since 2017/12/31
+	 */
+	final KernelProgram __byId(int __id)
+	{
+		List<KernelProgram> programs = this._programs;
+		synchronized (this.lock)
+		{
+			for (int i = 0, n = programs.size(); i < n; i++)
+			{
+				KernelProgram rv;
+				if (__id == (rv = programs.get(i)).index())
+					return rv;
+			}
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Returns the classpath which is needed to launch the target program.
 	 *
 	 * @param __program The program to launch.
@@ -204,7 +233,38 @@ public abstract class KernelPrograms
 		if (__program == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Return value
+		Set<KernelProgram> rv = new LinkedHashSet<>();
+		
+		// Recursively get the dependencies for this program
+		synchronized (this.lock)
+		{
+			// Go through dependencies of this program
+			for (int i = 1; i >= 0; i++)
+			{
+				String val = __program.__controlGet(
+					SystemProgramControlKey.DEPENDENCY_PREFIX + i);
+				if (val == null)
+					break;
+				
+				// {@squirreljme.error AP0b Could not locate a dependency, it
+				// may have been deleted.}
+				KernelProgram found = this.__byId(Integer.parseInt(val));
+				if (found == null)
+					throw new IllegalStateException("AP0b");
+				
+				// Recursively add the dependencies
+				for (KernelProgram fc : this.__classPath(found))
+					rv.add(fc);
+				rv.add(found);
+			}
+			
+			// Always add this program to the path because it technically is
+			// a part of the classpath
+			rv.add(__program);
+		}
+		
+		return rv.<KernelProgram>toArray(new KernelProgram[rv.size()]);
 	}
 	
 	/**

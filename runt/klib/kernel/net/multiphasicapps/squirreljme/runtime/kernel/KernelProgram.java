@@ -291,7 +291,25 @@ public abstract class KernelProgram
 	}
 	
 	/**
-	 * This method allows programs to get their control codes set without
+	 * This method allows classes to get the value of control codes without
+	 * performing access checks.
+	 *
+	 * @param __k The key to get.
+	 * @return The value of the given key or {@code null} if it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	final String __controlGet(String __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		return this.accessControlGet(__k);
+	}
+	
+	/**
+	 * This method allows classes to get the control codes set without
 	 * having access checks be performed.
 	 *
 	 * @param __k The key to set.
