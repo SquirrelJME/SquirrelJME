@@ -297,6 +297,10 @@ public final class PacketStream
 					// Also handle failed responses
 					else if (ptype == PacketTypes.RESPONSE_FAIL)
 					{
+						// Parse exceptin message
+						String message = new String(pdata, 0, plen, "utf-8");
+						System.err.printf("DEBUG -- Response %s%n", message);
+						
 						if (true)
 							throw new todo.TODO();
 						continue;
@@ -325,12 +329,40 @@ public final class PacketStream
 						// Send fail response to the given key
 						if (ptype >= 0)
 						{
-							// Write the exception message to the client
+							// Build message which is used to give some more
+							// information based on what went wrong in the
+							// kernel
+							StringBuilder sb = new StringBuilder();
+							
 							// {@squirreljme.error AR04 Thrown exception from
 							// handler has no message.}
-							byte[] rv = Objects.toString(t.getMessage(),
-								"AR04").getBytes("utf-8");
-						
+							sb.append(Objects.toString(t.getMessage(),
+								"AR04"));
+							sb.append('\f');
+							
+							// Class of the exception
+							sb.append(t.getClass().toString());
+							sb.append('\f');
+							
+							// Cause of the exception
+							Throwable c = t.getCause();
+							if (c == null)
+								sb.append("\f\f");
+							else
+							{
+								// {@squirreljme.error AR09 Cause of
+								// exception has no message.}
+								sb.append(Objects.toString(c.getMessage(),
+									"AR09"));
+								sb.append('\f');
+								
+								// Print the cause class
+								sb.append(c.getClass().toString());
+								sb.append('\f');
+							}
+							
+							// Write the exception message to the client
+							byte[] rv = sb.toString().getBytes("utf-8");
 							stream.__send(PacketTypes.RESPONSE_FAIL, pkey,
 								rv, 0, rv.length);
 						}
