@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.kernel;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketStream;
 
 /**
@@ -29,6 +30,9 @@ public abstract class KernelTask
 	
 	/** Permissions granted by the kernel. */
 	private volatile int _simpleperms;
+	
+	/** Got hello from the client? */
+	volatile boolean _gothello;
 	
 	/**
 	 * Initializes the task with the initial basic permissions and the
@@ -53,7 +57,8 @@ public abstract class KernelTask
 		
 		// The kernel process does not have a packet stream because everything
 		// is always local
-		this.stream = (__dx == 0 ? null : new PacketStream(__in, __out));
+		this.stream = (__dx == 0 ? null : new PacketStream(__in, __out,
+			new __TaskResponseHandler__(new WeakReference<>(this))));
 	}
 	
 	/**
