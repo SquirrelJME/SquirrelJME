@@ -24,9 +24,6 @@ public final class JavaProcessKernelTask
 	/** The process to watch. */
 	protected final Process process;
 	
-	/** Has the sub-process fully booted? */
-	private volatile boolean _booted;
-	
 	/**
 	 * Initializes the process task.
 	 *
@@ -57,12 +54,15 @@ public final class JavaProcessKernelTask
 	{
 		int rv = 0;
 		
+		// Has initialization been completed?
+		boolean initcomplete = this.isInitializationComplete();
+		
 		// If there is an exit value then set status according to failure or
 		// success
 		try
 		{
 			int ev = this.process.exitValue();
-			if (this._booted)
+			if (initcomplete)
 				if (ev == 0)
 					rv |= SystemTaskStatus.EXITED_REGULAR;
 				else
@@ -79,7 +79,7 @@ public final class JavaProcessKernelTask
 		{
 			// This flag is set when the client sends the boot response
 			// to the kernel IPC
-			if (this._booted)
+			if (initcomplete)
 				rv |= SystemTaskStatus.RUNNING;
 			
 			// Otherwise it sits at starting until that happens.

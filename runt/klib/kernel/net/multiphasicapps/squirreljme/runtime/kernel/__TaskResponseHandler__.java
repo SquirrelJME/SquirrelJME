@@ -62,6 +62,11 @@ final class __TaskResponseHandler__
 			case PacketTypes.HELLO:
 				task._gothello = true;
 				return null;
+				
+				// Initialization complete
+			case PacketTypes.INITIALIZATION_COMPLETE:
+				task._gotinitcomplete = true;
+				return null;
 			
 				// {@squirreljme.error AP0e Unknown response type. (The type)}
 			default:

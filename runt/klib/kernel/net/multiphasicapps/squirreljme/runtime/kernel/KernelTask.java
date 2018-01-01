@@ -34,6 +34,9 @@ public abstract class KernelTask
 	/** Got hello from the client? */
 	volatile boolean _gothello;
 	
+	/** Got initialization complete from task? */
+	volatile boolean _gotinitcomplete;
+	
 	/**
 	 * Initializes the task with the initial basic permissions and the
 	 * streams used for the packet interface.
@@ -59,6 +62,13 @@ public abstract class KernelTask
 		// is always local
 		this.stream = (__dx == 0 ? null : new PacketStream(__in, __out,
 			new __TaskResponseHandler__(new WeakReference<>(this))));
+		
+		// If this is the kernel task, set these always
+		if (__dx == 0)
+		{
+			this._gothello = true;
+			this._gotinitcomplete = true;
+		}
 	}
 	
 	/**
@@ -167,6 +177,17 @@ public abstract class KernelTask
 	public final int index()
 	{
 		return this.index;
+	}
+	
+	/**
+	 * Checks if the task has finished initializing and it succeeded.
+	 *
+	 * @return {@code true} if initialization completed.
+	 * @since 2018/01/01
+	 */
+	public final boolean isInitializationComplete()
+	{
+		return this._gotinitcomplete;
 	}
 	
 	/**
