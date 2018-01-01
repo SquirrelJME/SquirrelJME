@@ -285,7 +285,13 @@ public final class SystemCall
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		SystemCall._CALLER.setDaemonThread(__t);
+		// {@squirreljme.error ZZ0c Cannot set daemon thread because the
+		// system caller has not been set yet.}
+		SystemCaller caller = SystemCall._CALLER;
+		if (caller == null)
+			throw new IllegalThreadStateException("ZZ0c");
+		
+		caller.setDaemonThread(__t);
 	}
 	
 	/**
