@@ -20,15 +20,24 @@ import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 public final class JavaProcessKernelTask
 	extends KernelTask
 {
+	/** The process to watch. */
+	protected final Process process;
+	
 	/**
 	 * Initializes the process task.
 	 *
 	 * @param __dx The task index.
 	 * @since 2017/12/27
 	 */
-	public JavaProcessKernelTask(int __dx)
+	public JavaProcessKernelTask(int __dx, Process __proc)
+		throws NullPointerException
 	{
 		super(__dx);
+		
+		if (__proc == null)
+			throw new NullPointerException("NARG");
+		
+		this.process = __proc;
 	}
 	
 	/**

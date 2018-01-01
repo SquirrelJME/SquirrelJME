@@ -32,6 +32,10 @@ import net.multiphasicapps.squirreljme.runtime.kernel.syscall.DirectCaller;
  */
 public class Main
 {
+	/** Property which specifies the client main entry point. */
+	public static final String CLIENT_MAIN =
+		"net.multiphasicapps.squirreljme.runtime.javase.clientmain";
+	
 	/**
 	 * Wrapped main entry point.
 	 *
@@ -44,8 +48,7 @@ public class Main
 	{
 		// These are launch parameters which are used by the actual Java SE
 		// wrappers to spawn new tasks
-		String clientmain = System.getProperty(
-			"net.multiphasicapps.squirreljme.runtime.javase.clientmain");
+		String clientmain = System.getProperty(CLIENT_MAIN);
 		boolean isclient = (clientmain != null);
 		
 		// Initialize the run-time which sets up the SquirrelJME specific
@@ -101,6 +104,8 @@ public class Main
 		SystemCaller syscaller;
 		if (__client)
 		{
+			System.err.println("SquirrelJME Client Launch!");
+			
 			throw new todo.TODO();
 		}
 		
