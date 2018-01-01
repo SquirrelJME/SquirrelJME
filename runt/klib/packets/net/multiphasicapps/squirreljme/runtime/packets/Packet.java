@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.runtime.packets;
 
 import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * This class represents a single packet which may be sent through the
@@ -65,6 +68,17 @@ public final class Packet
 	 * @since 2018/01/01
 	 */
 	public final boolean hasResponse()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the current length of the packet.
+	 *
+	 * @return The current packet length.
+	 * @since 2018/01/01
+	 */
+	public final int length()
 	{
 		throw new todo.TODO();
 	}
@@ -134,6 +148,47 @@ public final class Packet
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Reads the packet data from the input stream.
+	 *
+	 * @param __in The stream to read from.
+	 * @param __len The length to read.
+	 * @throws IllegalArgumentException If the read length does not match
+	 * the packet length.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	final void __readFromInput(DataInputStream __in, int __len)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AT04 Direct input read packet length mismatch.}
+		if (this.length() != __len)
+			throw new IllegalArgumentException("AT04");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the packet data to the given output stream.
+	 *
+	 * @param __out The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	final void __writeToOutput(DataOutputStream __out)
+		throws IOException, NullPointerException
+	{
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
