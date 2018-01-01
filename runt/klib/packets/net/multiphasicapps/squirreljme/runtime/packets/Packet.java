@@ -27,6 +27,14 @@ import java.io.IOException;
 public final class Packet
 	implements Closeable
 {
+	/** The okay response type. */
+	static final int _RESPONSE_OKAY =
+		0;
+	
+	/** The failure response type. */
+	static final int _RESPONSE_FAIL =
+		Integer.MIN_VALUE;
+	
 	/** The owning packet farm. */
 	protected final PacketFarm farm;
 	
@@ -83,6 +91,17 @@ public final class Packet
 	 * @since 2018/01/01
 	 */
 	public final PacketWriter createWriter()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Duplicate the packet.
+	 *
+	 * @return The packet, but duplicated.
+	 * @since 2018/01/01
+	 */
+	public final Packet duplicate()
 	{
 		throw new todo.TODO();
 	}

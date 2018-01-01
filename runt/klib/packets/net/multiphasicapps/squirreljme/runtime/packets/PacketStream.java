@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 
 /**
@@ -45,6 +47,10 @@ public final class PacketStream
 	/** The farm for packets. */
 	protected final PacketFarm farm =
 		new PacketFarm();
+	
+	/** Responses to packets. */
+	private final Map<Integer, Packet> _responses =
+		new HashMap<>();
 	
 	/** The next key to use for a packet. */
 	private volatile int _nextkey =
@@ -183,9 +189,42 @@ public final class PacketStream
 			}
 		}
 		
+		// The key is used as the key in the response map
+		Integer ki = __key;
+		
 		// If this point was reached then a response is expected from the
 		// remote end, so wait for one to happen
-		throw new todo.TODO();
+		Map<Integer, Packet> responses = this._responses;
+		Packet rv;
+		synchronized (responses)
+		{
+			for (;;)
+			{
+				// If a packet was stored in the map return it
+				rv = responses.remove(ki);
+				if (rv != null)
+					break;
+				
+				// Wait for a signal to be generated, but wait at most one
+				// second for responses to appear before trying to grab
+				// it again
+				try
+				{
+					responses.wait(1_000L);
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
+		}
+		
+		// An exception was thrown on the remote end, to report that response
+		if (rv.type() == Packet._RESPONSE_FAIL)
+		{
+			throw new todo.TODO();
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -229,6 +268,7 @@ public final class PacketStream
 		{
 			PacketStreamHandler handler = this.handler;
 			PacketFarm farm = PacketStream.this.farm;
+			Map<Integer, Packet> responses = PacketStream.this._responses;
 			
 			try (DataInputStream in = this.in)
 			{
@@ -255,39 +295,54 @@ public final class PacketStream
 					
 					// Load in packet details
 					Packet rv = null;
-					try (Packet p = farm.create(ptype, plen))
+					
+					// Read in packet data
+					Packet p = farm.create(ptype, plen);
+					p.__readFromInput(in, plen);
+					
+					// Handle responses
+					int type = p.type();
+					if (type == Packet._RESPONSE_OKAY ||
+						type == Packet._RESPONSE_FAIL)
 					{
-						// Read in packet data
-						p.__readFromInput(in, plen);
-						
-						// Allow all exceptions to be caught so that
-						// responses can be generated for them
-						try
+						synchronized (responses)
 						{
-							// Handle response
-							rv = handler.handle(p);
-							
-							// A packet was returned when none was expected
-							if (ptype <= 0)
-								rv = null;
-							
-							// A response was expected, but none was given
-							// Force one to exist
-							else if (rv == null)
-								rv = farm.create(0, 0);
-						}
-						
-						// Send failure response
-						catch (Throwable t)
-						{
-							// Only generate exception response if one was
-							// expected
-							if (ptype > 0)
-							{
-								throw new todo.TODO();
-							}
+							responses.put(pkey, p.duplicate());
+							responses.notifyAll();
+							continue;
 						}
 					}
+					
+					// Allow all exceptions to be caught so that
+					// responses can be generated for them
+					try
+					{
+						// Handle response
+						rv = handler.handle(p);
+						
+						// A packet was returned when none was expected
+						if (ptype <= 0)
+							rv = null;
+						
+						// A response was expected, but none was given
+						// Force one to exist
+						else if (rv == null)
+							rv = farm.create(0, 0);
+					}
+					
+					// Send failure response
+					catch (Throwable t)
+					{
+						// Only generate exception response if one was
+						// expected
+						if (ptype > 0)
+						{
+							throw new todo.TODO();
+						}
+					}
+					
+					// Close the source packet, it is not needed anymore
+					p.close();
 					
 					// Send response packet to the remote end
 					if (rv != null)
