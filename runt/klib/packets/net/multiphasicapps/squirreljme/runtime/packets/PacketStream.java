@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This represents a packet stream which is used to read and write events from
@@ -65,7 +66,14 @@ public final class PacketStream
 		// while another thread handles input events
 		this.out = new DataOutputStream(__out);
 		
-		throw new todo.TODO();
+		// Create thread which reads the input side and allows for handling
+		Thread thread = new Thread(new __Reader__(new DataInputStream(__in),
+			__handler), this.toString());
+		
+		// Make sure it is a daemon thread so that it terminates when every
+		// other thread is terminated
+		SystemCall.setDaemonThread(thread);
+		thread.start();
 	}
 	
 	/**
@@ -97,6 +105,49 @@ public final class PacketStream
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * This class reads incoming packets and handles events.
+	 *
+	 * @since 2018/01/01
+	 */
+	private final class __Reader__
+		implements Runnable
+	{
+		/** The stream to read packets from. */
+		protected final DataInputStream in;
+		
+		/** The handler for input events. */
+		protected final PacketStreamHandler handler;
+		
+		/**
+		 * Initializes the reader.
+		 *
+		 * @param __in The stream to read packets from.
+		 * @param __handler The handler for incoming packets.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/01
+		 */
+		private __Reader__(DataInputStream __in, PacketStreamHandler __handler)
+			throws NullPointerException
+		{
+			if (__in == null || __handler == null)
+				throw new NullPointerException("NARG");
+			
+			this.in = __in;
+			this.handler = __handler;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @sine 2018/01/01
+		 */
+		@Override
+		public void run()
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 

@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.runtime.clsyscall.PacketTypes;
+import net.multiphasicapps.squirreljme.runtime.packets.Packet;
 import net.multiphasicapps.squirreljme.runtime.packets.PacketStream;
 
 /**
@@ -68,8 +70,9 @@ public abstract class KernelTask
 		
 		// The kernel process does not have a packet stream because everything
 		// is always local
-		this.stream = (__dx == 0 ? null : new PacketStream(__in, __out,
-			new __TaskResponseHandler__(new WeakReference<>(this))));
+		PacketStream stream = (__dx == 0 ? null : new PacketStream(__in, __out,
+			new __TaskResponseHandler__(new WeakReference<>(this))));;
+		this.stream = stream;
 		
 		// If this is the kernel task, set these always
 		if (__dx == 0)
@@ -77,6 +80,13 @@ public abstract class KernelTask
 			this._gothello = true;
 			this._gotinitcomplete = true;
 		}
+		
+		// Send hello packet to the other end
+		else
+			try (Packet p = stream.farm().create(PacketTypes.HELLO, 0))
+			{
+				stream.send(p);
+			}
 	}
 	
 	/**

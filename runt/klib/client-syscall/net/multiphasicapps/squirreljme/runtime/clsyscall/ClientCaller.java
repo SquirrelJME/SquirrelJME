@@ -57,8 +57,15 @@ public abstract class ClientCaller
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		this.stream = new PacketStream(__in, __out,
+		PacketStream stream = new PacketStream(__in, __out,
 			new __ResponseHandler__(new WeakReference<>(this)));
+		this.stream = stream;
+		
+		// Send hello packet to the other end
+		try (Packet p = stream.farm().create(PacketTypes.HELLO, 0))
+		{
+			stream.send(p);
+		}
 	}
 	
 	/**
