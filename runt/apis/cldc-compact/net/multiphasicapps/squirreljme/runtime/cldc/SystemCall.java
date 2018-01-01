@@ -207,7 +207,7 @@ public final class SystemCall
 		if (__sv == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return SystemCall._CALLER.mapService(__sv);
 	}
 	
 	/**

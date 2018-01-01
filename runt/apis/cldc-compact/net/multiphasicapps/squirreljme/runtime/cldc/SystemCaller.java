@@ -78,6 +78,19 @@ public abstract class SystemCaller
 		throws SecurityException;
 	
 	/**
+	 * Requests that the system map the specified service class to a default
+	 * provided service name.
+	 *
+	 * @param __s The service to map.
+	 * @return The default service to map to or {@code null} if there is no
+	 * mapping for the given service.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	public abstract String mapService(String __sv)
+		throws NullPointerException;
+	
+	/**
 	 * Specifies that the specified thread should become a daemon thread.
 	 *
 	 * @param __t The thread to set as a daemon.

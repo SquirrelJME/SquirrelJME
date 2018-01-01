@@ -53,14 +53,16 @@ public abstract class Kernel
 	}
 	
 	/**
-	 * Creates a new task for the given program.
+	 * Requests that the system map the specified service class to a default
+	 * provided service name.
 	 *
-	 * @param __p The program to use as the basis for the new task.
-	 * @return The newly created task.
+	 * @param __s The service to map.
+	 * @return The default service to map to or {@code null} if there is no
+	 * mapping for the given service.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/11
+	 * @since 2017/12/31
 	 */
-	protected abstract KernelTask initializeTask(KernelProgram __p)
+	public abstract String mapService(String __sv)
 		throws NullPointerException;
 	
 	/**
