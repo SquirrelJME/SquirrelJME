@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.javase;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -104,7 +105,9 @@ public class JavaTasks
 			pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 			
 			// Start it
-			return new JavaProcessKernelTask(__id, __perms, pb.start());
+			return new JavaProcessKernelTask(
+				new WeakReference<>((KernelTasks)this),
+				__id, __perms, pb.start());
 		}
 		
 		// {@squirreljme.error AF05 Could not launch the sub-process. (The

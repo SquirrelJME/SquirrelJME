@@ -271,7 +271,8 @@ public final class PacketStream
 					// Process closed the pipe so no more events are possible
 					catch (EOFException e)
 					{
-						throw new todo.TODO();
+						handler.end();
+						return;
 					}
 					
 					// Read packet details

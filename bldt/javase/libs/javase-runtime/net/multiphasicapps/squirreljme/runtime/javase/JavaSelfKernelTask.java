@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskMetric;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTasks;
 
 /**
  * This task represents the kernel itself, this task is granted all
@@ -31,7 +33,7 @@ public final class JavaSelfKernelTask
 	 */
 	public JavaSelfKernelTask()
 	{
-		super(0, ~0, null, null);
+		super(null, 0, ~0, null, null);
 	}
 	
 	/**
@@ -70,6 +72,16 @@ public final class JavaSelfKernelTask
 			default:
 				return Long.MIN_VALUE;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/01
+	 */
+	@Override
+	protected void accessTerminated()
+	{
+		// The kernel is dead at this point, so this never happens
 	}
 }
 

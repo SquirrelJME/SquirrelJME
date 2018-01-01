@@ -46,6 +46,18 @@ final class __TaskResponseHandler__
 	 * @since 2018/01/01
 	 */
 	@Override
+	public void end()
+	{
+		// Tell the handler that the task was terminated and that it should
+		// go away now
+		this.__task().__terminated();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/01
+	 */
+	@Override
 	public byte[] handle(int __t, byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{

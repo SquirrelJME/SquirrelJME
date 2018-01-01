@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelTasks;
 
 /**
  * This represents a task which is provided by a standard process.
@@ -27,16 +29,18 @@ public final class JavaProcessKernelTask
 	/**
 	 * Initializes the process task.
 	 *
+	 * @param __ref Reference to the kernel tasks.
 	 * @param __dx The task index.
 	 * @param __perms The permissions for the task.
 	 * @param __proc The child process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/27
 	 */
-	public JavaProcessKernelTask(int __dx, int __perms, Process __proc)
+	public JavaProcessKernelTask(Reference<KernelTasks> __ref, int __dx,
+		int __perms, Process __proc)
 		throws NullPointerException
 	{
-		super(__dx, __perms, __proc.getInputStream(),
+		super(__ref, __dx, __perms, __proc.getInputStream(),
 			__proc.getOutputStream());
 		
 		if (__proc == null)
@@ -98,6 +102,15 @@ public final class JavaProcessKernelTask
 	protected long accessMetric(int __m)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/01
+	 */
+	@Override
+	protected void accessTerminated()
+	{
 	}
 }
 
