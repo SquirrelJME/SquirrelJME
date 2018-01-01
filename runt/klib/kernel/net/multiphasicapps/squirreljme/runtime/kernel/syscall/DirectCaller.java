@@ -117,6 +117,29 @@ public final class DirectCaller
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	public SystemTask launchTask(SystemProgram __program,
+		String __mainclass, int __perms, String... __props)
+		throws NullPointerException
+	{
+		if (__program == null || __mainclass == null)
+			throw new NullPointerException("NARG");
+		
+		KernelTask task = this.task;
+		
+		Map<KernelTask, Reference<SystemTask>> taskmap = this._taskmap;
+		synchronized (taskmap)
+		{
+			return __wrapTask(this.kernel.tasks(task).launch(this.task,
+				((DirectProgram)__program).__program(), __mainclass, __perms,
+				__props));
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/12/27
 	 */
 	@Override
@@ -132,18 +155,7 @@ public final class DirectCaller
 		synchronized (taskmap)
 		{
 			for (int i = 0; i < n; i++)
-			{
-				KernelTask kt = tasks[i];
-				Reference<SystemTask> ref = taskmap.get(kt);
-				SystemTask st;
-				
-				// Need to wrap the task?
-				if (ref == null || null == (st = ref.get()))
-					taskmap.put(kt, new WeakReference<>((st =
-						new DirectTask(task, kt))));
-				
-				rv[i] = st;
-			}
+				rv[i] = __wrapTask(tasks[i]);
 		}
 		
 		return rv;
@@ -186,6 +198,35 @@ public final class DirectCaller
 			if (ref == null || null == (rv = ref.get()))
 				promap.put(__p, new WeakReference<>((rv =
 					new DirectProgram(task, __p))));
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Wraps the specified task.
+	 *
+	 * @param __t The task to wrap.
+	 * @return The wrapped task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/28
+	 */
+	private SystemTask __wrapTask(KernelTask __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		Map<KernelTask, Reference<SystemTask>> taskmap = this._taskmap;
+		synchronized (taskmap)
+		{
+			Reference<SystemTask> ref = taskmap.get(__t);
+			SystemTask rv;
+			
+			// Need to wrap the task?
+			if (ref == null || null == (rv = ref.get()))
+				taskmap.put(__t, new WeakReference<>((rv =
+					new DirectTask(task, __t))));
 			
 			return rv;
 		}

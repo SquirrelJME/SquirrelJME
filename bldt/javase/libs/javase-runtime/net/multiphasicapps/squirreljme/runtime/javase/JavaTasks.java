@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.lang.ref.Reference;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
+import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTasks;
 
@@ -24,12 +28,30 @@ public class JavaTasks
 	/**
 	 * Initializes the task manager.
 	 *
+	 * @param __rk Owning kernel reference.
 	 * @param __st The system task.
 	 * @since 2017/12/27
 	 */
-	public JavaTasks(KernelTask __st)
+	public JavaTasks(Reference<Kernel> __rk, KernelTask __st)
 	{
-		super(__st);
+		super(__rk, __st);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/12/31
+	 */
+	@Override
+	protected KernelTask accessLaunch(KernelProgram[] __cp,
+		KernelProgram __program, String __mainclass, int __perms,
+		Map<String, String> __properties)
+		throws NullPointerException
+	{
+		if (__cp == null || __program == null || __mainclass == null ||
+			__properties == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

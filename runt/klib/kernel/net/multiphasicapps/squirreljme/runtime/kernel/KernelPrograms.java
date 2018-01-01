@@ -191,6 +191,23 @@ public abstract class KernelPrograms
 	}
 	
 	/**
+	 * Returns the classpath which is needed to launch the target program.
+	 *
+	 * @param __program The program to launch.
+	 * @return The classpath for the program.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	final KernelProgram[] __classPath(KernelProgram __program)
+		throws NullPointerException
+	{
+		if (__program == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Specifies that the input ZIP be JIT compiled and installed.
 	 *
 	 * @param __info Installation information.
