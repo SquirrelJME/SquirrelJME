@@ -31,12 +31,16 @@ public final class JavaProcessKernelTask
 	 * Initializes the process task.
 	 *
 	 * @param __dx The task index.
+	 * @param __perms The permissions for the task.
+	 * @param __proc The child process.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/27
 	 */
-	public JavaProcessKernelTask(int __dx, Process __proc)
+	public JavaProcessKernelTask(int __dx, int __perms, Process __proc)
 		throws NullPointerException
 	{
-		super(__dx);
+		super(__dx, __perms, __proc.getInputStream(),
+			__proc.getOutputStream());
 		
 		if (__proc == null)
 			throw new NullPointerException("NARG");
