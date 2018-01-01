@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelInitializerFactory;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelPrograms;
@@ -51,7 +52,7 @@ public class JavaInitializerFactory
 	@Override
 	public KernelTasks initializeTasks(Kernel __k, KernelTask __st)
 	{
-		return new JavaTasks(__st);
+		return new JavaTasks(new WeakReference<>(__k), __st);
 	}
 }
 

@@ -106,5 +106,16 @@ public final class DirectProgram
 	{
 		return this.wrapped.type(this.current);
 	}
+	
+	/**
+	 * Returns the wrapped program.
+	 *
+	 * @return The wrapped program.
+	 * @since 2017/12/31
+	 */
+	final KernelProgram __program()
+	{
+		return this.wrapped;
+	}
 }
 

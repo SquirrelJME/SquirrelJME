@@ -139,7 +139,7 @@ final class __SystemTaskManager__
 		if (program == null)
 			throw new IllegalArgumentException(String.format("DG06 %s %s",
 				__s.getName(), __cn));
-		return this.__ofTask(SystemCall.launchTask(program, __cn));
+		return this.__ofTask(SystemCall.launchTask(program, __cn, ~0));
 	}
 	
 	/**

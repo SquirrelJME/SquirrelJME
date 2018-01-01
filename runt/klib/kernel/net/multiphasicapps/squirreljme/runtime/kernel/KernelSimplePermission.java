@@ -64,5 +64,9 @@ public interface KernelSimplePermission
 	/** Set program control key. */
 	public static final int SET_PROGRAM_CONTROL =
 		0x0000_0800;
+	
+	/** Launch new tasks. */
+	public static final int LAUNCH_TASK =
+		0x0000_1000;
 }
 

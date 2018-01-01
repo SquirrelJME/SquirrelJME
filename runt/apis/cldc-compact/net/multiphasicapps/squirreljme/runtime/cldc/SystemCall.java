@@ -97,18 +97,22 @@ public final class SystemCall
 	 *
 	 * @param __p The program to launch.
 	 * @param __main The main entry point for the task.
+	 * @param __perms The permissions to use for the new task.
+	 * @param __props System properties in key/value pairs to define, this
+	 * argument is optional.
 	 * @return The system task for the launched task, if a task was restarted
 	 * then it will return the same task identifier.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	public static final SystemTask launchTask(SystemProgram __p, String __main)
+	public static final SystemTask launchTask(SystemProgram __p, String __main,
+		int __perms, String... __props)
 		throws NullPointerException
 	{
 		if (__p == null || __main == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return SystemCall._CALLER.launchTask(__p, __main, __perms, __props);
 	}
 	
 	/**

@@ -36,6 +36,25 @@ public abstract class SystemCaller
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
 	/**
+	 * Attempts to launch the specified program with the specified entry
+	 * point. If a task with the same program and entry point is already
+	 * running the it will be restarted.
+	 *
+	 * @param __p The program to launch.
+	 * @param __main The main entry point for the task.
+	 * @param __perms The permissions to use for the new task.
+	 * @param __props System properties in key/value pairs to define, this
+	 * argument is optional.
+	 * @return The system task for the launched task, if a task was restarted
+	 * then it will return the same task identifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/12/31
+	 */
+	public abstract SystemTask launchTask(SystemProgram __program,
+		String __mainclass, int __perms, String... __props)
+		throws NullPointerException;
+	
+	/**
 	 * Lists programs which are available on the system.
 	 *
 	 * @param __typemask A mask which is used to filter programs of a given

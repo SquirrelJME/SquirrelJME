@@ -127,5 +127,16 @@ public abstract class Kernel
 		
 		return this.kerneltasks;
 	}
+	
+	/**
+	 * Returns the kernel program manager with no access check.
+	 *
+	 * @return The kernel program manager.
+	 * @since 2017/12/31
+	 */
+	final KernelPrograms __programs()
+	{
+		return this.kernelprograms;
+	}
 }
 

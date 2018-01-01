@@ -226,5 +226,16 @@ public abstract class KernelTask
 		
 		return was;
 	}
+	
+	/**
+	 * Returns the simple permissions of the task.
+	 *
+	 * @return The task simple permissions.
+	 * @since 2017/12/31
+	 */
+	final int __simplePermissions()
+	{
+		return this._simpleperms;
+	}
 }
 
