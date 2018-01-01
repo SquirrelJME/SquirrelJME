@@ -27,6 +27,32 @@ import java.io.IOException;
 public final class Packet
 	implements Closeable
 {
+	/** The owning packet farm. */
+	protected final PacketFarm farm;
+	
+	/** The type of packet this is. */
+	protected final int type;
+	
+	/**
+	 * Initializes the packet.
+	 *
+	 * @param __farm The owning farm.
+	 * @param __type The packet type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	Packet(PacketFarm __farm, int __type)
+		throws NullPointerException
+	{
+		if (__farm == null)
+			throw new NullPointerException("NARG");
+		
+		this.farm = __farm;
+		this.type = __type;
+		
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Closes this packet and frees the byte array it uses so that it can be
 	 * re-used by the packet farm.
@@ -69,7 +95,7 @@ public final class Packet
 	 */
 	public final boolean hasResponse()
 	{
-		throw new todo.TODO();
+		return this.type > 0;
 	}
 	
 	/**
@@ -91,7 +117,7 @@ public final class Packet
 	 */
 	public final Packet respond()
 	{
-		throw new todo.TODO();
+		return this.farm.create(0);
 	}
 	
 	/**
@@ -110,7 +136,7 @@ public final class Packet
 		if (__l < 0)
 			throw new IllegalArgumentException("AT02");
 		
-		throw new todo.TODO();
+		return this.farm.create(0, __l);
 	}
 	
 	/**
@@ -120,7 +146,8 @@ public final class Packet
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		return String.format("{Packet: type=%d, length=%d}",
+			this.type, this.length());
 	}
 	
 	/**
@@ -131,7 +158,7 @@ public final class Packet
 	 */
 	public final int type()
 	{
-		throw new todo.TODO();
+		return this.type;
 	}
 	
 	/**
