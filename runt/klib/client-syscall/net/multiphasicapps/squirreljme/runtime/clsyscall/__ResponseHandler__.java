@@ -64,22 +64,19 @@ final class __ResponseHandler__
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new ArrayIndexOutOfBoundsException("IOOB");
-	
 		ClientCaller caller = this.__caller();
 		
-		switch (__t)
+		switch (__p.type())
 		{
-				// {@squirreljme.error AR06 Unknown response type. (The type)}
+				// Kernel said hello
+			case PacketTypes.HELLO:
+				caller._gothello = true;
+				return null;
+			
+				// {@squirreljme.error AR06 Unknown packet type. (The packet)}
 			default:
-				throw new RuntimeException(String.format("AR06", __t));
+				throw new RuntimeException(String.format("AR06", __p));
 		}
-		*/
 	}
 	
 	/**
