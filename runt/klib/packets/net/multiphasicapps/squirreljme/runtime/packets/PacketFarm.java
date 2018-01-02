@@ -39,6 +39,15 @@ public final class PacketFarm
 	protected final Object lock =
 		new Object();
 	
+	/** The size of the farm. */
+	protected final int farmsize;
+	
+	/** The crop size used. */
+	protected final int cropsize;
+	
+	/** The mask for the crop size. */
+	protected final int cropmask;
+	
 	/** The number of crops in the farm. */
 	protected final int numcrops;
 	
@@ -55,7 +64,7 @@ public final class PacketFarm
 	 */
 	public PacketFarm()
 	{
-		this(PacketFarm._FARM_SIZE, _CROP_SIZE);
+		this(PacketFarm._FARM_SIZE, PacketFarm._CROP_SIZE);
 	}
 	
 	/**
@@ -70,13 +79,17 @@ public final class PacketFarm
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AT07 Invalid farm and/or crop size specified.}
-		if (__l <= 0 || __cs <= 0 || (__l % __cs) != 0)
+		if (__l <= 0 || __cs <= 0 || (__l % __cs) != 0 ||
+			Integer.bitCount(__cs) != 1)
 			throw new IllegalArgumentException("AT07");
 		
+		this.farmsize = __l;
 		this._field = new byte[__l];
 		
 		// The field is split into crops which are then allocated
 		int numcrops = __l / __cs;
+		this.cropsize = __cs;
+		this.cropmask = __cs - 1;
 		this.numcrops = numcrops;
 		
 		// Use simple flags to determine which crops are allocated
@@ -93,7 +106,7 @@ public final class PacketFarm
 	 */
 	public final Packet create(int __t)
 	{
-		return __create(true, __t, PacketFarm,_CROP_SIZE, 0);
+		return __create(true, __t, 0, 0);
 	}
 	
 	/**
@@ -130,8 +143,11 @@ public final class PacketFarm
 	private final Packet __create(boolean __var, int __t, int __a, int __l)
 	{
 		// Round up the allocation size to the crop size
-		if (true)
-			throw new todo.TODO();
+		int cropsize = this.cropsize,
+			cropmask = this.cropmask;
+		__a = ((__a + cropsize) & (~cropmask));
+		
+		System.err.printf("DEBUG -- Allocate: %d%n", __a);
 		
 		// Determine if this packet is just way to large to fit
 		if (true)
