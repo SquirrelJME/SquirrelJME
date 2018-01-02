@@ -156,23 +156,32 @@ public final class PacketFarm
 		System.err.printf("DEBUG -- Allocate: %d%n", __a);
 		
 		// Determine if this packet is just way to large to fit
-		// If the packet is small enough to nicely fit then search for a free
-		// allocation spot
 		boolean cropless = (__a > this.maxcropuse);
-		if (!cropless)
+		if (cropless)
+			return new Packet(this, __t, __var, new byte[__l], 0, __l, __l,
+				false);
+		
+		// Lock to prevent contention among the field
+		synchronized (this.lock)
 		{
+			// Search for free field space to consume
+			if (!cropless)
+			{
+				throw new todo.TODO();
+			}
+		
+			// If there are no free allocation spots, then just create the
+			// packet
+			if (cropless)
+				return new Packet(this, __t, __var, new byte[__l], 0, __l, __l,
+					false);
+		
+			// Otherwise, allocate some space
+			if (true)
+				throw new todo.TODO();
+		
 			throw new todo.TODO();
 		}
-		
-		// If there are no free allocation spots, then just create the packet
-		if (cropless)
-			throw new todo.TODO();
-		
-		// Otherwise, allocate some space
-		if (true)
-			throw new todo.TODO();
-		
-		throw new todo.TODO();
 	}
 }
 
