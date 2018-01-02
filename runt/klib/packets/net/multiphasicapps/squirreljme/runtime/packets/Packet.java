@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * This class represents a single packet which may be sent through the
@@ -27,6 +28,10 @@ import java.io.IOException;
 public final class Packet
 	implements Closeable
 {
+	/** The number of characters which can be written from a string. */
+	static final int _STRING_LIMIT =
+		32767;
+	
 	/** The okay response type. */
 	static final int _RESPONSE_OKAY =
 		0;
@@ -34,6 +39,14 @@ public final class Packet
 	/** The failure response type. */
 	static final int _RESPONSE_FAIL =
 		Integer.MIN_VALUE;
+	
+	/** The grow step for the packet. */
+	private static final int _GROW_SIZE =
+		128;
+	
+	/** The mask for the grow. */
+	private static final int _GROW_MASK =
+		_GROW_SIZE - 1;
 	
 	/** The owning packet farm. */
 	protected final PacketFarm farm;
@@ -45,7 +58,7 @@ public final class Packet
 	protected final boolean variable;
 	
 	/** Is this packet in the field? */
-	protected final boolean infield;
+	private volatile boolean _infield;
 	
 	/** Packet data. */
 	private volatile byte[] _data;
@@ -74,15 +87,22 @@ public final class Packet
 	 * @param __l The length of the packet.
 	 * @param __infield If {@code true} then the packet is in the field and
 	 * it may grow within it.
+	 * @throws IllegalArgumentException If this is not an infield packet and
+	 * the offset is non-zero.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
 	Packet(PacketFarm __farm, int __type, boolean __var, byte[] __b, int __o,
 		int __a, int __l, boolean __infield)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__farm == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AT0d Cannot have an outside of field packet with
+		// an offset which is not zero.}
+		if (!__infield && __o != 0)
+			throw new IllegalArgumentException("AT0d");
 		
 		this.farm = __farm;
 		this.type = __type;
@@ -91,7 +111,7 @@ public final class Packet
 		this._offset = __o;
 		this._allocation = __a;
 		this._length = __l;
-		this.infield = __infield;
+		this._infield = __infield;
 	}
 	
 	/**
@@ -109,7 +129,7 @@ public final class Packet
 		this._closed = true;
 		
 		// Tell the farm to free up this packet space
-		if (this.infield)
+		if (this._infield)
 			this.farm.__close(this._offset, this._allocation);
 		
 		// Clear data points to invalidate them and prevent corruption
@@ -127,7 +147,7 @@ public final class Packet
 	 */
 	public final PacketReader createReader()
 	{
-		throw new todo.TODO();
+		return new PacketReader(this);
 	}
 	
 	/**
@@ -138,7 +158,7 @@ public final class Packet
 	 */
 	public final PacketWriter createWriter()
 	{
-		throw new todo.TODO();
+		return new PacketWriter(this);
 	}
 	
 	/**
@@ -188,7 +208,7 @@ public final class Packet
 	/**
 	 * Creates a response packet with a fixed length.
 	 *
-	 * @param __l
+	 * @param __l The length of the response.
 	 * @return The packet to use for the response.
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @since 2018/01/01
@@ -227,6 +247,139 @@ public final class Packet
 	}
 	
 	/**
+	 * Writes the specified byte to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write, only the lowest 8-bits are considered.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	public final void writeByte(int __p, int __v)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified integer to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	public final void writeInt(int __p, int __v)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified long to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	public final void writeLong(int __p, long __v)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified short to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write, only the lowest 16-bits are considered.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	public final void writeShort(int __p, int __v)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Ensures that the number of bytes written to the specified location will
+	 * fit in the packet.
+	 *
+	 * Variable length packets will be grown accordingly.
+	 *
+	 * @param __p The base position tow write to.
+	 * @param __l The length to write.
+	 * @return The data array to write into.
+	 * @throws IllegalArgumentException If the length is negative.
+	 * @throws IndexOutOfBoundsException If the write would exceed the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	private final byte[] __ensure(int __p, int __l)
+		throws IllegalArgumentException, IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AT0b Cannot write at a negative position.}
+		if (__p < 0)
+			throw new IndexOutOfBoundsException("AT0b");
+		
+		// {@squirreljme.error AT0a Cannot write negative length.}
+		if (__l < 0)
+			throw new IllegalArgumentException("AT0a");
+		
+		int length = this._length,
+			endpos = __p + __l;
+			
+		// Variable length packet
+		byte[] data = this._data;
+		if (this.variable)
+		{
+			// Still fits within the allocation
+			int allocation = this._allocation;
+			if (endpos <= allocation)
+			{
+				this._length = endpos;
+				return data;
+			}
+			
+			// If the packet is in the field, try to grow it in there
+			if (this._infield)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Otherwise just setup a new byte array
+			else
+			{
+				// Make a new copy of the data
+				int newalloc = ((endpos + _GROW_SIZE) & (~_GROW_MASK));
+				byte[] newdata = Arrays.copyOf(data, newalloc);
+				
+				// Set new properties
+				this._data = newdata;
+				this._offset = 0;
+				this._allocation = newalloc;
+				this._length = endpos;
+				
+				return newdata;
+			}
+		}
+		
+		// Fixed length packet
+		else
+		{
+			// {@squirreljme.error AT0c Write exceeds the packet bounds.}
+			if (endpos > length)
+				throw new IndexOutOfBoundsException("AT0c");
+			return data;
+		}
+	}
+	
+	/**
 	 * Writes a string at the specified position.
 	 *
 	 * @param __p The position to write at.
@@ -242,7 +395,7 @@ public final class Packet
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		__writeString(__p, __v);
 	}
 	
 	/**
@@ -267,6 +420,76 @@ public final class Packet
 			throw new IllegalArgumentException("AT04");
 		
 		__in.readFully(this._data, this._offset, this._length);
+	}
+	
+	/**
+	 * Writes the specified string to the output, returning the number of
+	 * written bytes.
+	 *
+	 * Strings are limited to 32,767 characters.
+	 *
+	 * If a string contains a character outside of the bounds of 8-bit
+	 * then the string will consume double the space and be encoded in
+	 * char form, otherwise it will use byte form.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @return The number of bytes written.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/02
+	 */
+	final int __writeString(int __p, String __v)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AT09 The string length is too long to write to
+		// the packet.}
+		int strlen = __v.length();
+		if (strlen > Packet._STRING_LIMIT)
+			throw new IndexOutOfBoundsException("AT09");
+		
+		// Determine if this is a long string
+		boolean longstr = false;
+		for (int i = 0; i < strlen; i++)
+			if (__v.charAt(i) > 0xFF)
+			{
+				longstr = true;
+				break;
+			}
+		
+		// Determine the actual length of the data to write
+		int writelen = 2 + (longstr ? (strlen * 2) : strlen);
+		
+		// Ensure we can write this data
+		byte[] data = this.__ensure(__p, writelen);
+		int baseoffset = this._offset + __p;
+		
+		// Record the string length
+		data[baseoffset] = (byte)((strlen >>> 8) | (longstr ? 0x80 : 0x00));
+		data[baseoffset + 1] = (byte)(strlen);
+		
+		// Write long string
+		int charoffset = baseoffset + 2;
+		if (longstr)
+			for (int i = 0, lowchar = charoffset, hichar = charoffset + strlen;
+				i < strlen; i++)
+			{
+				char c = __v.charAt(i);
+				
+				data[lowchar++] = (byte)(c >>> 8);
+				data[hichar++] = (byte)c;
+			}
+		
+		// Write narrow string
+		else
+			for (int i = 0; i < strlen; i++)
+				data[charoffset++] = (byte)__v.charAt(i);
+		
+		return writelen;
 	}
 	
 	/**
