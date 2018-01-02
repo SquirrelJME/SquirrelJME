@@ -44,6 +44,24 @@ public final class Packet
 	/** Is this a variable size packet? */
 	protected final boolean variable;
 	
+	/** Is this packet in the field? */
+	protected final boolean infield;
+	
+	/** Packet data. */
+	private volatile byte[] _data;
+	
+	/** Packet offset. */
+	private volatile int _offset;
+	
+	/** Allocation length. */
+	private volatile int _allocation;
+	
+	/** Packet length. */
+	private volatile int _length;
+	
+	/** Has the packet been closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the packet.
 	 *
@@ -69,8 +87,11 @@ public final class Packet
 		this.farm = __farm;
 		this.type = __type;
 		this.variable = __var;
-		
-		throw new todo.TODO();
+		this._data = __b;
+		this._offset = __o;
+		this._allocation = __a;
+		this._length = __l;
+		this.infield = __infield;
 	}
 	
 	/**
@@ -82,7 +103,20 @@ public final class Packet
 	@Override
 	public final void close()
 	{
-		throw new todo.TODO();
+		// Only close once
+		if (this._closed)
+			return;
+		this._closed = true;
+		
+		// Tell the farm to free up this packet space
+		if (this.infield)
+			this.farm.__close(this._offset, this._allocation);
+		
+		// Clear data points to invalidate them and prevent corruption
+		this._data = null;
+		this._offset = Integer.MIN_VALUE;
+		this._allocation = Integer.MIN_VALUE;
+		this._length = Integer.MIN_VALUE;
 	}
 	
 	/**
@@ -137,7 +171,7 @@ public final class Packet
 	 */
 	public final int length()
 	{
-		throw new todo.TODO();
+		return this._length;
 	}
 	
 	/**
@@ -232,7 +266,7 @@ public final class Packet
 		if (this.length() != __len)
 			throw new IllegalArgumentException("AT04");
 		
-		throw new todo.TODO();
+		__in.readFully(this._data, this._offset, this._length);
 	}
 	
 	/**
@@ -249,7 +283,9 @@ public final class Packet
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		int length = this._length;
+		__out.writeInt(length);
+		__out.write(this._data, this._offset, length);
 	}
 }
 
