@@ -41,15 +41,19 @@ public final class Packet
 	/** The type of packet this is. */
 	protected final int type;
 	
+	/** Is this a variable size packet? */
+	protected final boolean variable;
+	
 	/**
 	 * Initializes the packet.
 	 *
 	 * @param __farm The owning farm.
 	 * @param __type The packet type.
+	 * @param __var Is the packet variable sized?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
-	Packet(PacketFarm __farm, int __type)
+	Packet(PacketFarm __farm, int __type, boolean __var)
 		throws NullPointerException
 	{
 		if (__farm == null)
@@ -57,6 +61,7 @@ public final class Packet
 		
 		this.farm = __farm;
 		this.type = __type;
+		this.variable = __var;
 		
 		throw new todo.TODO();
 	}
