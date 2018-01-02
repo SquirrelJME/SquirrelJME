@@ -43,6 +43,9 @@ public abstract class ClientCaller
 	private final Map<String, String> _svcache =
 		new HashMap<>();
 	
+	/** The kernel sent a hello message. */
+	volatile boolean _gothello;
+	
 	/**
 	 * Initializes the client caller.
 	 *
