@@ -4,3 +4,24 @@
 
 Happy new year!
 
+## 10:32
+
+The big thing will be figuring out the best way to handle the IPC in the
+`KernelTask` in the kernel so that it does not require duplicate code all
+over the place. Naturally the system task will not need an IPC interface.
+I suppose the task should be created with `InputStream` and `OutputStream`
+which is used when communicating with the client.
+
+## 14:24
+
+Okay so it would be far more efficient memory wise and simplicity wise if
+packets themselves were in their own class. I can also move the packet code
+to its own project to be used by the kernel too. Then other projects can
+use it if needed to perform some things. Also, having raw byte arrays is a
+bit ugly. I can have a packet factory which can be used to give packets which
+can be written into, along with providing streams to read and write data.
+That would make things a bit easier to use. Then also, I can have a single
+chunk of byte array data where packets can be source from. If packets can
+then be closed, those byte array resources can be recovered and such. That
+would definitely reduce the memory requirements and reduce code doing ugly
+things like string conversion and such.
