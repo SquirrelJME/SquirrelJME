@@ -148,10 +148,12 @@ public final class PacketFarm
 	{
 		// Round up the allocation size to the crop size
 		int cropsize = this.cropsize,
-			cropmask = this.cropmask;
+			cropmask = this.cropmask,
+			numcrops = this.numcrops;
 		if (__a < __l)
 			__a = __l;
-		__a = ((__a + cropsize) & (~cropmask));
+		if (__a == 0 || (__a & cropmask) != 0)
+			__a = ((__a + cropsize) & (~cropmask));
 		
 		System.err.printf("DEBUG -- Allocate: %d%n", __a);
 		
@@ -164,23 +166,71 @@ public final class PacketFarm
 		// Lock to prevent contention among the field
 		synchronized (this.lock)
 		{
-			// Search for free field space to consume
-			if (!cropless)
+			boolean[] allocation = this._allocation;
+			int usecrops = __a / cropsize;
+			
+			// Search for free crop space to consume
+			int pivot = -1;
+			for (int i = 0; i < numcrops; i++)
 			{
-				throw new todo.TODO();
+				// This spot is taken
+				if (allocation[i])
+					continue;
+				
+				// Determine if there is room to fit this crop
+				boolean taken = false;
+				for (int j = i, je = i + usecrops; j < je; j++)
+					if (allocation[j])
+					{
+						taken = true;
+						break;
+					}
+				
+				// No room
+				if (taken)
+					continue;
+				
+				// Otherwise use this spot
+				pivot = i;
+				break;
 			}
 		
 			// If there are no free allocation spots, then just create the
-			// packet
-			if (cropless)
+			// packet outside of the farm
+			if (pivot < 0)
 				return new Packet(this, __t, __var, new byte[__l], 0, __l, __l,
 					false);
-		
-			// Otherwise, allocate some space
-			if (true)
-				throw new todo.TODO();
-		
-			throw new todo.TODO();
+			
+			// The end of crop usage
+			int endpivot = pivot + usecrops;
+			
+			// Debug usage
+			System.err.printf("DEBUG -- Allocate (%2d-%2d) ", pivot, endpivot);
+			for (int i = 0; i < numcrops; i++)
+			{
+				boolean alloc = allocation[i];
+				
+				if (i >= pivot && i < endpivot)
+					if (alloc)
+						System.err.print('A');
+					else
+						System.err.print('a');
+				else
+					if (alloc)
+						System.err.print('+');
+					else
+						System.err.print('-');
+			}
+			System.err.println();
+			
+			// Allocate the space
+			for (int i = pivot; i < endpivot; i++)
+				allocation[i] = true;
+			
+			// Use that area in the field
+			byte[] field = this._field;
+			return new Packet(this, __t, __var, field, pivot * cropsize,
+				__a, __l, true);
 		}
 	}
 }
