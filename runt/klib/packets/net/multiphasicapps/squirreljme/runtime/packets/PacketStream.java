@@ -319,7 +319,7 @@ public final class PacketStream
 						
 						synchronized (responses)
 						{
-							responses.put(pkey, p.duplicate());
+							responses.put(pkey, p);
 							responses.notifyAll();
 							continue;
 						}
