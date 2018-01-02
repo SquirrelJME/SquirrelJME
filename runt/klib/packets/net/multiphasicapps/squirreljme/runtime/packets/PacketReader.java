@@ -17,6 +17,39 @@ package net.multiphasicapps.squirreljme.runtime.packets;
  */
 public final class PacketReader
 {
+	/** The packet. */
+	protected final Packet packet;
+	
+	/** The position. */
+	private volatile int _position;
+	
+	/**
+	 * Initializes a packet reader.
+	 *
+	 * @param __p The packet to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/02
+	 */
+	public PacketReader(Packet __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		this.packet = __p;
+	}
+	
+	/**
+	 * Returns the current position of the head.
+	 *
+	 * @return The current head position.
+	 * @since 2018/01/02
+	 */
+	public final int position()
+	{
+		return this._position;
+	}
+	
 	/**
 	 * Reads a string from the given packet.
 	 *
