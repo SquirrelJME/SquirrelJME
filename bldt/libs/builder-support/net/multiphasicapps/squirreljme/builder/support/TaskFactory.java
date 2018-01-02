@@ -126,6 +126,15 @@ public class TaskFactory
 						if (status != TaskStatus.STARTING &&
 							status != TaskStatus.RUNNING)
 							break;
+						
+						// Sleep so the CPU is not burnt out
+						try
+						{
+							Thread.sleep(500);
+						}
+						catch (InterruptedException e)
+						{
+						}
 					}
 					
 					// {@squirreljme.error AU0u The task exited with the
