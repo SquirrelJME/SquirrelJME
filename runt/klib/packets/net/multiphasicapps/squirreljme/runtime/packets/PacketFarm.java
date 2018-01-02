@@ -35,8 +35,15 @@ public final class PacketFarm
 	private static final int _CROP_SIZE =
 		128;
 	
+	/** Lock to protect access to the crops. */
+	protected final Object lock =
+		new Object();
+	
 	/** The number of crops in the farm. */
 	protected final int numcrops;
+	
+	/** Crops which are currently being used. */
+	private final boolean[] _allocation;
 	
 	/** The bytes which make up the farm. */
 	private final byte[] _field;
@@ -72,7 +79,8 @@ public final class PacketFarm
 		int numcrops = __l / __cs;
 		this.numcrops = numcrops;
 		
-		throw new todo.TODO();
+		// Use simple flags to determine which crops are allocated
+		this._allocation = new boolean[numcrops];
 	}
 	
 	/**
@@ -85,7 +93,7 @@ public final class PacketFarm
 	 */
 	public final Packet create(int __t)
 	{
-		throw new todo.TODO();
+		return __create(true, __t, PacketFarm,_CROP_SIZE, 0);
 	}
 	
 	/**
@@ -105,6 +113,42 @@ public final class PacketFarm
 		// length.}
 		if (__l < 0)
 			throw new IllegalArgumentException("AT01");
+		
+		return __create(false, __t, __l, __l);
+	}
+	
+	/**
+	 * Creates a new packet.
+	 *
+	 * @param __var If {@code true} then the packet is variable.
+	 * @param __t The type of packet to create.
+	 * @param __a The number of bytes to allocate.
+	 * @param __l The actual length of the initial packet.
+	 * @return The packet.
+	 * @since 2018/01/01
+	 */
+	private final Packet __create(boolean __var, int __t, int __a, int __l)
+	{
+		// Round up the allocation size to the crop size
+		if (true)
+			throw new todo.TODO();
+		
+		// Determine if this packet is just way to large to fit
+		if (true)
+			throw new todo.TODO();
+		
+		// If the packet is small enough to nicely fit then search for a free
+		// allocation spot
+		if (true)
+			throw new todo.TODO();
+		
+		// If there are no free allocation spots, then just create the packet
+		if (true)
+			throw new todo.TODO();
+		
+		// Otherwise, allocate some space
+		if (true)
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 	}
