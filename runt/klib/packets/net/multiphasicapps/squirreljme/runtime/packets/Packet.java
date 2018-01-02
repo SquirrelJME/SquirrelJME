@@ -50,10 +50,17 @@ public final class Packet
 	 * @param __farm The owning farm.
 	 * @param __type The packet type.
 	 * @param __var Is the packet variable sized?
+	 * @param __b The byte array for the output packet.
+	 * @param __o Offset into the array.
+	 * @param __a The allocation size.
+	 * @param __l The length of the packet.
+	 * @param __infield If {@code true} then the packet is in the field and
+	 * it may grow within it.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
-	Packet(PacketFarm __farm, int __type, boolean __var)
+	Packet(PacketFarm __farm, int __type, boolean __var, byte[] __b, int __o,
+		int __a, int __l, boolean __infield)
 		throws NullPointerException
 	{
 		if (__farm == null)
