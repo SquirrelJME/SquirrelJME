@@ -46,7 +46,16 @@ public final class JavaKernel
 		if (__sv == null)
 			throw new NullPointerException("NARG");
 		
-		return null;
+		switch (__sv)
+		{
+			case "net.multiphasicapps.squirreljme.runtime.lcdui." +
+				"DisplayManager":
+				return "net.multiphasicapps.squirreljme.runtime.javase." +
+					"lcdui.SwingDisplayManager";
+			
+			default:
+				return null;
+		}
 	}
 	
 	/**
