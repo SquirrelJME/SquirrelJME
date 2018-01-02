@@ -58,7 +58,23 @@ public final class PacketReader
 	 */
 	public final String readString()
 	{
-		throw new todo.TODO();
+		Packet packet = this.packet;
+		int position = this._position;
+		
+		// It can be determined how many bytes to skip based on the string
+		// length.
+		int strlen = packet.readUnsignedShort(position);
+		
+		// Is this a long string?
+		boolean longstr = ((strlen & 0x8000) != 0);
+		strlen &= 0x7FFF;
+		
+		// Read in string data
+		String rv = packet.readString(position);
+		
+		// Skip the string data bytes
+		this._position = position + 2 + (longstr ? (strlen * 2) : strlen);
+		return rv;
 	}
 }
 
