@@ -195,6 +195,66 @@ public final class Packet
 	}
 	
 	/**
+	 * Reads a string from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/02
+	 */
+	public final String readString(int __p)
+		throws IndexOutOfBoundsException
+	{
+		// Determine if this is a long string
+		int strlen = readUnsignedShort(__p);
+		boolean longstr = ((strlen & 0x8000) != 0);
+		strlen &= 0x7FFF;
+		
+		// Make sure we can read the full string
+		byte[] data = this.__check(__p, 2 + (longstr ? (strlen * 2) : strlen));
+		int baseoffset = this._offset + __p + 2;
+		
+		// Read long string
+		char[] chars = new char[strlen];
+		if (longstr)
+			for (int i = 0, lochar = baseoffset, hichar = baseoffset + strlen;
+				i < strlen; i++)
+			{
+				char v = (char)(data[lochar++] & 0xFF);
+				v |= (char)((data[hichar++] & 0xFF) << 8);
+				
+				chars[i] = v;
+			}
+		
+		// Read narrow string
+		else
+			for (int i = 0; i < strlen; i++)
+				chars[i] = (char)(data[baseoffset++] & 0xFF);
+		
+		System.err.printf("DEBUG -- Read string (%d): %s%n", strlen,
+			new String(chars));
+		return new String(chars);
+	}
+	
+	/**
+	 * Reads an unsigned short from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/02
+	 */
+	public final int readUnsignedShort(int __p)
+		throws IndexOutOfBoundsException
+	{
+		byte[] data = this.__check(__p, 2);
+		int baseoffset = this._offset + __p;
+		
+		return ((((int)data[baseoffset]) & 0xFF) << 8) |
+			(((int)data[baseoffset]) & 0xFF);
+	}
+	
+	/**
 	 * Creates a response packet with a variable length.
 	 *
 	 * @return The packet to use for the response.
@@ -304,6 +364,32 @@ public final class Packet
 		throws IndexOutOfBoundsException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Checks to make sure that the given number of bytes can be read from
+	 * the packet.
+	 *
+	 * @param __p The position to read from.
+	 * @param __l The number of bytes to read.
+	 * @return The data array.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/02
+	 */
+	private final byte[] __check(int __p, int __l)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AT0e Cannot read from a negative position or
+		// a negative length.}
+		if (__p < 0 || __l < 0)
+			throw new IndexOutOfBoundsException("AT0e");
+		
+		// {@squirreljme.error AT0f Read exceeds the packet bounds.}
+		int endpos = __p + __l;
+		if (endpos > this._length)
+			throw new IndexOutOfBoundsException("AT0f");
+		
+		return this._data;
 	}
 	
 	/**
@@ -480,14 +566,16 @@ public final class Packet
 			{
 				char c = __v.charAt(i);
 				
-				data[lowchar++] = (byte)(c >>> 8);
-				data[hichar++] = (byte)c;
+				data[hichar++] = (byte)(c >>> 8);
+				data[lowchar++] = (byte)c;
 			}
 		
 		// Write narrow string
 		else
 			for (int i = 0; i < strlen; i++)
 				data[charoffset++] = (byte)__v.charAt(i);
+		
+		System.err.printf("DEBUG -- Wrote string %s%n", __v);
 		
 		return writelen;
 	}
