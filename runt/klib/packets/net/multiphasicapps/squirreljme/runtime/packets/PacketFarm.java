@@ -51,6 +51,9 @@ public final class PacketFarm
 	/** The number of crops in the farm. */
 	protected final int numcrops;
 	
+	/** The maximum size for a packet before it is not in the farm. */
+	protected final int maxcropuse;
+	
 	/** Crops which are currently being used. */
 	private final boolean[] _allocation;
 	
@@ -91,6 +94,7 @@ public final class PacketFarm
 		this.cropsize = __cs;
 		this.cropmask = __cs - 1;
 		this.numcrops = numcrops;
+		this.maxcropuse = (__cs * (numcrops - (numcrops / 4)));
 		
 		// Use simple flags to determine which crops are allocated
 		this._allocation = new boolean[numcrops];
@@ -145,21 +149,23 @@ public final class PacketFarm
 		// Round up the allocation size to the crop size
 		int cropsize = this.cropsize,
 			cropmask = this.cropmask;
+		if (__a < __l)
+			__a = __l;
 		__a = ((__a + cropsize) & (~cropmask));
 		
 		System.err.printf("DEBUG -- Allocate: %d%n", __a);
 		
 		// Determine if this packet is just way to large to fit
-		if (true)
-			throw new todo.TODO();
-		
 		// If the packet is small enough to nicely fit then search for a free
 		// allocation spot
-		if (true)
+		boolean cropless = (__a > this.maxcropuse);
+		if (!cropless)
+		{
 			throw new todo.TODO();
+		}
 		
 		// If there are no free allocation spots, then just create the packet
-		if (true)
+		if (cropless)
 			throw new todo.TODO();
 		
 		// Otherwise, allocate some space
