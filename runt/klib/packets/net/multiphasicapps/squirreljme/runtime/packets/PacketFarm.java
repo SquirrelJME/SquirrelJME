@@ -135,6 +135,61 @@ public final class PacketFarm
 	}
 	
 	/**
+	 * Closes the specified region and frees the crop space up.
+	 *
+	 * @param __o The starting offset.
+	 * @param __a The allocation.
+	 * @throws IllegalStateException If the offset and/or allocation size is
+	 * not a multiple of the crop size.
+	 * @since 2018/01/02
+	 */
+	final void __close(int __o, int __a)
+		throws IllegalStateException
+	{
+		int cropsize = this.cropsize,
+			cropmask = this.cropmask,
+			numcrops = this.numcrops;
+		
+		// {@squirreljme.error AT08 The crop mask or allocation size is not
+		// a multiple of the crop size.}
+		if ((__o & cropmask) != 0 || (__a & cropmask) != 0)
+			throw new IllegalStateException("AT08");
+		
+		// Determine allocation positions
+		int pivot = __o / cropsize,
+			endpivot = pivot + (__a / cropsize);
+		
+		// Lock to prevent contention among the field
+		synchronized (this.lock)
+		{
+			boolean[] allocation = this._allocation;
+			
+			// Debug usage
+			System.err.printf("DEBUG -- Free (%2d-%2d) ", pivot, endpivot);
+			for (int i = 0; i < numcrops; i++)
+			{
+				boolean alloc = allocation[i];
+				
+				if (i >= pivot && i < endpivot)
+					if (alloc)
+						System.err.print('F');
+					else
+						System.err.print('f');
+				else
+					if (alloc)
+						System.err.print('+');
+					else
+						System.err.print('-');
+			}
+			System.err.println();
+			
+			// Free the space
+			for (int i = pivot; i < endpivot; i++)
+				allocation[i] = false;
+		}
+	}
+	
+	/**
 	 * Creates a new packet.
 	 *
 	 * @param __var If {@code true} then the packet is variable.
