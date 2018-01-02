@@ -251,7 +251,7 @@ public final class Packet
 		int baseoffset = this._offset + __p;
 		
 		return ((((int)data[baseoffset]) & 0xFF) << 8) |
-			(((int)data[baseoffset]) & 0xFF);
+			(((int)data[baseoffset + 1]) & 0xFF);
 	}
 	
 	/**
