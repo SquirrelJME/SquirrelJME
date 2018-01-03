@@ -14,8 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryInstallationReport;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryManager;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.swm.JarStreamSupplier;
 
 /**
@@ -150,10 +151,15 @@ final class __SuiteTracker__
 					return;
 				}
 				__update(SuiteInstallStage.DOWNLOAD_DATA, 100);
+				
+				// Need the library manager
+				__SystemSuiteManager__ ssm =
+					(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
+				LibraryManager manager = ssm._manager;
 			
 				// Send it to the kernel
 				__update(SuiteInstallStage.VERIFYING, 0);
-				SystemProgramInstallReport report = SystemCall.installProgram(
+				LibraryInstallationReport report = manager.install(
 					data, 0, data.length);
 			
 				// Failed
@@ -180,7 +186,7 @@ final class __SuiteTracker__
 				}
 			
 				// Set the suite used
-				this.tracker._suite = new Suite(report.program());
+				this.tracker._suite = new Suite(report.library());
 			
 				// Did not fail, but report it anyway
 				__update(SuiteInstallStage.VERIFYING, 100);
