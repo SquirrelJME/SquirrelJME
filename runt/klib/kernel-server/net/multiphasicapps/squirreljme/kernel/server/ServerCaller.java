@@ -30,6 +30,25 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 public abstract class ServerCaller
 	extends SystemCaller
 {
+	/** The kernel to call into. */
+	protected final Kernel kernel;
+	
+	/**
+	 * Initializes the system caller with the given kernel.
+	 *
+	 * @param __k The kernel to call into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/03
+	 */
+	protected ServerCaller(Kernel __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		this.kernel = __k;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/03

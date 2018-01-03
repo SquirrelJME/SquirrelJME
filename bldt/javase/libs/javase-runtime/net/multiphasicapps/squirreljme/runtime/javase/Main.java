@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -21,12 +22,10 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.runtime.cldc.StandardOutput;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
-import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.kernel.syscall.DirectCaller;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -139,6 +138,27 @@ public class Main
 			InputStream win = System.in;
 			OutputStream wout = System.out;
 			
+			// Wipe the input stream so that it does not accidentally get used
+			// by anything
+			Field fin = System.class.getDeclaredField("in");
+			
+			// It is final, so it must be cleared
+			Field modifiersfield = Field.class.getDeclaredField("modifiers");
+			modifiersfield.setAccessible(true);
+			
+			// Remember the old modifiers and clear the final field
+			int oldmods = modifiersfield.getInt(fin);
+			modifiersfield.setInt(fin, fin.getModifiers() & ~Modifier.FINAL);
+			
+			// Change field to an empty byte array so it ends right away
+			fin.setAccessible(true);
+			fin.set(null, new ByteArrayInputStream(new byte[0]));
+			
+			// Revert state
+			modifiersfield.setInt(fin, oldmods);
+			modifiersfield.setAccessible(false);
+			fin.setAccessible(false);
+			
 			// Redirect standard output to use the system caller interface
 			// instead
 			System.setOut(new PrintStream(new StandardOutput(), true));
@@ -150,9 +170,8 @@ public class Main
 		// The server uses the actual kernel
 		else
 		{
-			KernelTask[] kerneltask = new KernelTask[1];
-			Kernel kernel = new JavaKernel(kerneltask);
-			syscaller = new DirectCaller(kernel, kerneltask[0]);
+			JavaKernel kernel = new JavaKernel();
+			syscaller = new JavaServerCaller(kernel);
 		}
 		
 		// Need to obtain the interface field so that it is initialized

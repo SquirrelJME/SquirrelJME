@@ -35,7 +35,7 @@ public abstract class Kernel
 	 *
 	 * @since 2018/01/02
 	 */
-	public Kernel()
+	protected Kernel()
 	{
 	}
 	

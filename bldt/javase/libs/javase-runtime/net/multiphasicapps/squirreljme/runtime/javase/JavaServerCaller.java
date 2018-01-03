@@ -10,25 +10,25 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.kernel.server.ServerCaller;
 
 /**
- * This implements the kernel which is used on the initial Java SE
- * process and not the client processes.
+ * This supports system calls on the kernel itself.
  *
- * @since 2017/12/08
+ * @since 2018/01/03
  */
-public final class JavaKernel
-	extends Kernel
+public class JavaServerCaller
+	extends ServerCaller
 {
 	/**
-	 * Initializes the kernel to run on Java systems.
+	 * Initializes the server caller.
 	 *
-	 * @since 2017/12/08
+	 * @param __k The kernel to call into.
+	 * @since 2018/01/03
 	 */
-	public JavaKernel()
+	public JavaServerCaller(JavaKernel __k)
 	{
+		super(__k);
 	}
 }
 

@@ -36,11 +36,28 @@ public abstract class ClientCaller
 	extends SystemCaller
 {
 	/**
+	 * Initializes the client caller with a stream to the kernel IPC.
+	 *
+	 * @param __in The input stream from the kernel.
+	 * @param __out The output stream to the kernel.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/03
+	 */
+	protected ClientCaller(InputStream __in, OutputStream __out)
+		throws NullPointerException
+	{
+		if (__in == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/03
 	 */
 	@Override
-	public SystemTask[] listTasks(boolean __incsys)
+	public final SystemTask[] listTasks(boolean __incsys)
 		throws SecurityException
 	{
 		throw new todo.TODO();
@@ -51,19 +68,18 @@ public abstract class ClientCaller
 	 * @since 2018/01/03
 	 */
 	@Override
-	public String mapService(String __sv)
+	public final String mapService(String __sv)
 		throws NullPointerException
 	{
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Tell the kernel that the initialization of the task has been completed.
+	 *
 	 * @since 2018/01/03
 	 */
-	@Override
-	public void setDaemonThread(Thread __t)
-		throws IllegalThreadStateException, NullPointerException
+	public final void sendInitializationComplete()
 	{
 		throw new todo.TODO();
 	}
