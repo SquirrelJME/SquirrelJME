@@ -17,9 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.kernel.lib.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryManager;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryType;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 
 /**
@@ -35,8 +36,12 @@ final class __SystemSuiteManager__
 	protected final Object lock =
 		new Object();
 	
+	/** The library manager. */
+	final LibraryManager _manager =
+		SystemCall.<LibraryManager>kernelService(LibraryManager.class);
+	
 	/** Cached suites. */
-	protected final Map<SystemProgram, Reference<Suite>> _suites =
+	protected final Map<Library, Reference<Suite>> _suites =
 		new WeakHashMap<>();
 	
 	/**
@@ -94,13 +99,15 @@ final class __SystemSuiteManager__
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
+			
+		LibraryManager manager = this._manager;
 		
 		// The system call can be masked to filter out unwanted suites
 		int mask;
 		if (__t == SuiteType.APPLICATION)
-			mask = SystemProgramType.APPLICATION;
+			mask = LibraryType.APPLICATION;
 		else if (__t == SuiteType.LIBRARY)
-			mask = SystemProgramType.LIBRARY;
+			mask = LibraryType.LIBRARY;
 		
 		// {@squirreljme.error DG04 The specified suite type cannot be
 		// listed. (The type)}
@@ -111,7 +118,7 @@ final class __SystemSuiteManager__
 		Suite[] rv;
 		synchronized (this.lock)
 		{
-			SystemProgram[] programs = SystemCall.listPrograms(mask);
+			Library[] programs = manager.list(mask);
 			int n = programs.length;
 			
 			// Return wrappers
@@ -155,14 +162,14 @@ final class __SystemSuiteManager__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	final Suite __ofProgram(SystemProgram __p)
+	final Suite __ofProgram(Library __p)
 		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
 		// Use pre-existing suite when possible
-		Map<SystemProgram, Reference<Suite>> suites = this._suites;
+		Map<Library, Reference<Suite>> suites = this._suites;
 		synchronized (this.lock)
 		{
 			Reference<Suite> ref = suites.get(__p);

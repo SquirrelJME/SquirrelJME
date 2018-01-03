@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.kernel.lib.Library;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
 /**
@@ -135,11 +135,14 @@ final class __SystemTaskManager__
 		
 		// {@squirreljme.error DG06 Cannot launch the specified program
 		// because it is of the system suite.}
-		SystemProgram program = __s.__program();
+		Library program = __s.__library();
 		if (program == null)
 			throw new IllegalArgumentException(String.format("DG06 %s %s",
 				__s.getName(), __cn));
+		throw new todo.TODO();
+		/*
 		return this.__ofTask(SystemCall.launchTask(program, __cn, ~0));
+		*/
 	}
 	
 	/**

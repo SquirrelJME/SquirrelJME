@@ -25,10 +25,11 @@ import net.multiphasicapps.collections.EmptyIterator;
 import net.multiphasicapps.squirreljme.kernel.libinfo.EntryPoint;
 import net.multiphasicapps.squirreljme.kernel.libinfo.EntryPoints;
 import net.multiphasicapps.squirreljme.kernel.libinfo.SuiteInfo;
+import net.multiphasicapps.squirreljme.kernel.lib.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryControlKey;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryManager;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryType;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramControlKey;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -52,7 +53,7 @@ public class Suite
 		new Object();
 	
 	/** The suite program. */
-	private final SystemProgram _program;
+	private final Library _library;
 	
 	/** Cached manifest information. */
 	private volatile Reference<JavaManifest> _manifest;
@@ -68,7 +69,7 @@ public class Suite
 	 */
 	private Suite(Class<Suite> __cl)
 	{
-		this._program = null;
+		this._library = null;
 	}
 	
 	/**
@@ -78,13 +79,13 @@ public class Suite
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	Suite(SystemProgram __p)
+	Suite(Library __p)
 		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		this._program = __p;
+		this._library = __p;
 	}
 	
 	/**
@@ -118,7 +119,7 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return EmptyIterator.<String>empty();
 		
@@ -139,7 +140,7 @@ public class Suite
 	 */
 	public String getAttributeValue(String __a)
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return null;
 		
@@ -156,7 +157,7 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return EmptyIterator.<Suite>empty();
 		
@@ -166,19 +167,19 @@ public class Suite
 		// suites pointing to the same program are not created
 		__SystemSuiteManager__ ssm =
 			(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
+		LibraryManager manager = ssm._manager;
 		
 		// Dependencies are internally provided in the control interface
 		for (int i = 1; i >= 0; i++)
 		{
 			// Read all dependency values
 			String val = program.controlGet(
-				SystemProgramControlKey.DEPENDENCY_PREFIX + i);
+				LibraryControlKey.DEPENDENCY_PREFIX + i);
 			if (val == null)
 				break;
 			
 			// Try to find the system program for each index
-			SystemProgram sp = SystemCall.programByIndex(
-				Integer.parseInt(val));
+			Library sp = manager.byIndex(Integer.parseInt(val));
 			if (sp != null)
 			{
 				Suite su = ssm.__ofProgram(sp);
@@ -201,11 +202,11 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return null;
 		
-		return program.controlGet(SystemProgramControlKey.DOWNLOAD_URL);
+		return program.controlGet(LibraryControlKey.DOWNLOAD_URL);
 	}
 	
 	/**
@@ -219,7 +220,7 @@ public class Suite
 	 */
 	public Iterator<String> getMIDlets()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return EmptyIterator.<String>empty();
 		
@@ -241,7 +242,7 @@ public class Suite
 	 */
 	public String getName()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return null;
 		
@@ -257,19 +258,19 @@ public class Suite
 	 */
 	public SuiteType getSuiteType()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return SuiteType.SYSTEM;
 		
 		switch (program.type())
 		{
-			case SystemProgramType.APPLICATION:
+			case LibraryType.APPLICATION:
 				return SuiteType.APPLICATION;
 				
-			case SystemProgramType.LIBRARY:
+			case LibraryType.LIBRARY:
 				return SuiteType.LIBRARY;
 				
-			case SystemProgramType.SYSTEM:
+			case LibraryType.SYSTEM:
 				return SuiteType.SYSTEM;
 			
 			default:
@@ -285,7 +286,7 @@ public class Suite
 	 */
 	public String getVendor()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return null;
 		
@@ -300,7 +301,7 @@ public class Suite
 	 */
 	public String getVersion()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return null;
 		
@@ -330,12 +331,12 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return true;
 		
 		return Boolean.valueOf(
-			program.controlGet(SystemProgramControlKey.IS_INSTALLED));
+			program.controlGet(LibraryControlKey.IS_INSTALLED));
 	}
 	
 	/**
@@ -352,7 +353,7 @@ public class Suite
 			return false;
 		
 		// The system suite always has a fixed set of flags
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			switch (__f)
 			{
@@ -368,7 +369,7 @@ public class Suite
 			}
 		
 		return Boolean.valueOf(
-			program.controlGet(SystemProgramControlKey.STATE_FLAG_PREFIX +
+			program.controlGet(LibraryControlKey.STATE_FLAG_PREFIX +
 				__f.name()));
 	}
 	
@@ -381,12 +382,12 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
-		SystemProgram program = this._program;
+		Library program = this._library;
 		if (program == null)
 			return true;
 		
 		return Boolean.valueOf(
-			program.controlGet(SystemProgramControlKey.IS_TRUSTED));
+			program.controlGet(LibraryControlKey.IS_TRUSTED));
 	}
 	
 	/**
@@ -456,7 +457,7 @@ public class Suite
 		
 		if (ref == null || null == (rv = ref.get()))
 			try (InputStream in =
-				this._program.loadResource("META-INF/MANIFEST.MF"))
+				this._library.loadResource("META-INF/MANIFEST.MF"))
 			{
 				// {@squirreljme.error DG09 Suite has no manifest file.}
 				if (in == null)
@@ -481,9 +482,9 @@ public class Suite
 	 * @return The used program.
 	 * @since 2017/12/08
 	 */
-	final SystemProgram __program()
+	final Library __library()
 	{
-		return this._program;
+		return this._library;
 	}
 	
 	/**

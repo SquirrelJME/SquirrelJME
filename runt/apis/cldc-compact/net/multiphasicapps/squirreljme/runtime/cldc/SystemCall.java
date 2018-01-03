@@ -66,6 +66,25 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Returns the kernel service for the given class.
+	 *
+	 * @param <C> The class of the service.
+	 * @param __cl The class of the service.
+	 * @return The instance of the service or {@code null} if it does not
+	 * exist or is not available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/02
+	 */
+	public static final <C> C kernelService(Class<C> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Lists tasks which currently exist and may be running on the system.
 	 *
 	 * @param __incsys If {@code true} then system tasks are included.
