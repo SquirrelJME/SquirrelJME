@@ -8,18 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package net.multiphasicapps.squirreljme.kernel.lib;
 
 /**
- * This is called after a program has been installed and is used as a report.
+ * This is called after a library has been installed and is used as a report.
  *
  * @since 2017/12/28
  */
-@Deprecated
-public final class KernelProgramInstallReport
+public final class LibraryInstallationReport
 {
-	/** The program which was installed. */
-	protected final KernelProgram program;
+	/** The library which was installed. */
+	protected final Library library;
 	
 	/** The error code if installation failed. */
 	protected final int error;
@@ -30,17 +29,17 @@ public final class KernelProgramInstallReport
 	/**
 	 * Specifies that the program installed without error.
 	 *
-	 * @param __p The program which was installed.
+	 * @param __l The library which was installed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	public KernelProgramInstallReport(KernelProgram __p)
+	public LibraryInstallationReport(Library __l)
 		throws NullPointerException
 	{
-		if (__p == null)
+		if (__l == null)
 			throw new NullPointerException("NARG");
 		
-		this.program = __p;
+		this.library = __l;
 		this.error = 0;
 		this.message = null;
 	}
@@ -54,18 +53,18 @@ public final class KernelProgramInstallReport
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	public KernelProgramInstallReport(int __e, String __m)
+	public LibraryInstallationReport(int __e, String __m)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0b Cannot initialize an error report with no
+		// {@squirreljme.error BC01 Cannot initialize an error report with no
 		// error.}
 		if (__e == 0)
-			throw new IllegalArgumentException("ZZ0b");
+			throw new IllegalArgumentException("BC01");
 		
-		this.program = null;
+		this.library = null;
 		this.error = __e;
 		this.message = __m;
 	}
@@ -82,6 +81,17 @@ public final class KernelProgramInstallReport
 	}
 	
 	/**
+	 * Returns the installed library.
+	 *
+	 * @return The installed library or {@code null} if it failed.
+	 * @since 2017/12/28
+	 */
+	public final Library library()
+	{
+		return this.library;
+	}
+	
+	/**
 	 * Returns the message associated with the error.
 	 *
 	 * @return The error message.
@@ -90,17 +100,6 @@ public final class KernelProgramInstallReport
 	public final String message()
 	{
 		return this.message;
-	}
-	
-	/**
-	 * Returns the installed program.
-	 *
-	 * @return The installed program or {@code null} if it failed.
-	 * @since 2017/12/28
-	 */
-	public final KernelProgram program()
-	{
-		return this.program;
 	}
 }
 

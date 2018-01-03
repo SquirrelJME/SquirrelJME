@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.kernel.lib;
 
 /**
  * System defined control keys.
  *
  * @since 2017/12/31
  */
-public interface SystemProgramControlKey
+public interface LibraryControlKey
 {
 	/** Download URL. */
 	public static final String DOWNLOAD_URL =
