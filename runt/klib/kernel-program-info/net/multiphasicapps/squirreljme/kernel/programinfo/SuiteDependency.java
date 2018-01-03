@@ -14,9 +14,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.collections.NaturalComparator;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVendor;
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 
 /**

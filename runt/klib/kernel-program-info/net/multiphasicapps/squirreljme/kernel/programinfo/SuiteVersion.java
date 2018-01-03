@@ -12,7 +12,6 @@ package net.multiphasicapps.squirreljme.kernel.programinfo;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 
 /**
  * This represents a midlet version.

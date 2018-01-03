@@ -13,10 +13,6 @@ package net.multiphasicapps.squirreljme.kernel.programinfo;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVendor;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 
 /**
  * This represents a standard which is provided by an API.

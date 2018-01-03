@@ -13,9 +13,6 @@ package net.multiphasicapps.squirreljme.kernel.programinfo;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.runtime.midlet.depends.ProvidedInfo;
-import net.multiphasicapps.squirreljme.runtime.midlet.depends.DependencyInfo;
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -49,7 +46,7 @@ public final class SuiteInfo
 	private volatile Reference<ProvidedInfo> _provided;
 	
 	/** Suite cache. */
-	private volatile Reference<Suite> _suite;
+	private volatile Reference<SuiteIdentifier> _suite;
 	
 	/**
 	 * Initializes the suite information.
@@ -155,14 +152,14 @@ public final class SuiteInfo
 	 * @return The suite.
 	 * @since 2017/12/05
 	 */
-	public final Suite suite()
+	public final SuiteIdentifier suite()
 	{
-		Reference<Suite> ref = this._suite;
-		Suite rv;
+		Reference<SuiteIdentifier> ref = this._suite;
+		SuiteIdentifier rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._suite = new WeakReference<>(
-				(rv = new Suite(this.name, this.vendor, this.version)));
+			this._suite = new WeakReference<>((rv = new SuiteIdentifier(
+				this.name, this.vendor, this.version)));
 		
 		return rv;
 	}

@@ -12,8 +12,6 @@ package net.multiphasicapps.squirreljme.kernel.programinfo;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.Suite;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteType;
 
 /**
  * This represents a suite with an associated type.
@@ -27,7 +25,7 @@ public final class TypedSuite
 	protected final SuiteType type;
 	
 	/** The suite. */
-	protected final Suite suite;
+	protected final SuiteIdentifier suite;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -40,7 +38,7 @@ public final class TypedSuite
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/30
 	 */
-	public TypedSuite(SuiteType __type, Suite __suite)
+	public TypedSuite(SuiteType __type, SuiteIdentifier __suite)
 		throws NullPointerException
 	{
 		if (__type == null || __suite == null)
@@ -85,7 +83,7 @@ public final class TypedSuite
 	 * @return The suite.
 	 * @since 2017/12/30
 	 */
-	public Suite suite()
+	public SuiteIdentifier suite()
 	{
 		return this.suite;
 	}
