@@ -11,40 +11,13 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This is thrown when there is an issue with installation.
+ * This stores the information which is needed to launch a new task.
  *
- * @since 2017/12/31
+ * This class is immutable.
+ *
+ * @since 2018/01/02
  */
-@Deprecated
-class __InstallException__
-	extends RuntimeException
+public final class KernelTaskLaunch
 {
-	/** The error code. */
-	protected final int code;
-	
-	/**
-	 * Initializes the exception with the given code and message.
-	 *
-	 * @param __code The error code.
-	 * @param __m The message.
-	 * @since 2017/12/31
-	 */
-	public __InstallException__(int __code, String __m)
-	{
-		super(__m);
-		
-		this.code = __code;
-	}
-	
-	/**
-	 * Returns the error code.
-	 *
-	 * @return The error code.
-	 * @since 2017/12/31
-	 */
-	public final int code()
-	{
-		return code;
-	}
 }
 

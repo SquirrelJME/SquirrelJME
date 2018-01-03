@@ -11,29 +11,12 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This class provides access to the kernel interface which allows the
- * process to interact with the kernel.
+ * This class is used to manage permissions which are used to determine what
+ * a task can or cannot do.
  *
- * @since 2017/12/08
+ * @since 2018/01/02
  */
-public abstract class KernelInterface
+public final class KernelPermissions
 {
-	/** This represents a singleton which interacts with the kernel. */
-	public static final KernelInterface INSTANCE =
-		__instance();
-	
-	/**
-	 * Returns the instance of the kernel interface.
-	 *
-	 * This method may virtually be replaced to return the correct interface
-	 * or the field could be set before or after the fact.
-	 *
-	 * @return The kernel interface instance.
-	 * @since 2017/12/08
-	 */
-	private static final KernelInterface __instance()
-	{
-		return KernelInterface.INSTANCE;
-	}
 }
 

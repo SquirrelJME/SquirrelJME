@@ -62,5 +62,22 @@ public abstract class Kernel
 			return rv;
 		}
 	}
+	
+	/**
+	 * Launches the specified task.
+	 *
+	 * @param __l The properties of the task to launch.
+	 * @return The launched task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/02
+	 */
+	public final KernelTask taskLaunch(KernelTaskLaunch __l)
+		throws NullPointerException
+	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
