@@ -11,15 +11,16 @@
 package net.multiphasicapps.squirreljme.kernel.client;
 
 import java.lang.ref.Reference;
-import net.multiphasicapps.squirreljme.runtime.packets.Packet;
-import net.multiphasicapps.squirreljme.runtime.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
+import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
 
 /**
  * This handles responses for the system call interface.
  *
  * @since 2018/01/01
  */
-final class __ResponseHandler__
+final class __Handler__
 	implements PacketStreamHandler
 {
 	/** The client caller to handle. */
@@ -32,7 +33,7 @@ final class __ResponseHandler__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
-	__ResponseHandler__(Reference<ClientCaller> __cr)
+	__Handler__(Reference<ClientCaller> __cr)
 		throws NullPointerException
 	{
 		if (__cr == null)
