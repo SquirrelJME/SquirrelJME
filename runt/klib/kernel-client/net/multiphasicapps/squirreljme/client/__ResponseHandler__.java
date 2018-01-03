@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.clsyscall;
+package net.multiphasicapps.squirreljme.kernel.client;
 
 import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.runtime.packets.Packet;
