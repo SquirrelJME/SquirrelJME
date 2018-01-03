@@ -1,0 +1,126 @@
+# 2018/01/02
+
+## 10:06
+
+So allocation and de-allocation of packets was quite simple.
+
+## 11:03
+
+Okay, so strings are written and then just:
+
+	DEBUG -- Wrote string net.multiphasicapps.squirreljme.runtime.lcdui.Dis...
+	DEBUG -- Allocate: 128
+	DEBUG -- Allocate ( 0- 1) a-------
+	DEBUG -- Read string (0):
+
+No string is read from the other side?
+
+## 11:04
+
+Oh well, the lower bits of unsigned short was not read because it just read
+the first value.
+
+## 12:06
+
+Okay so, it seems DoomRPG is waiting at `at net.multiphasicapps.squirreljme.`
+`runtime.packets.PacketStream.__send(PacketStream.java:213)` which naturally
+would be probably waiting for a response from the remote end for the mapped
+service.
+
+## 13:00
+
+Okay so now I must bring in the RMS code and have that brought back up to
+speed.
+
+## 13:09
+
+It would be useful if service mapping could be different for the kernal and
+the client. For example, RMS for the client could use IPC to communicate with
+the kernel, while the kernel itself uses the actual means for storing
+records. Of course the client can have forced mapping so this might be the
+best thing to do. So for the most part, I would say that ...
+
+## 13:14
+
+I would say that `mapService` in `ClientCaller` can be virtually wrapped to
+always map some services the same way if it is called. So for the most part
+there never needs to be an implementation specified and such.
+
+## 13:21
+
+Okay, so one application can load record stores for another application. There
+are encrypted record stores with passwords, which means that I am going to
+have to write an encryption algorithm. I believe the best thing to do in this
+case would be to have it where encrypted records are the same as non-encrypted
+ones except that there are special keys. Basically the application itself
+manages its own encryption. This means that it is hidden from the kernel,
+which could be useful. So encrypted stores will be completely virtual. This
+also means that I will need to see if there is an encryption API and if not
+find a good means of encryption. I will also need a good algorithm and a
+secure number source potentially too. The kernel will need a secure random
+source and that will need to be provided to clients via system calls also.
+
+## 16:34
+
+Okay so what I need is some kind of service for the kernel. Basically these
+would be kernel services. Instead of adding a bunch of new APIs to the system
+call interface, I can just have packets being sent back and forth to
+communicate with said services using their own types and such. Then each
+service can be made to exist in the kernel itself and it can be automatically
+managed across any and all systems. The same packet interface can be used so
+I do not need to duplicate it. The existing IPC code can be backed on this
+interface too and it can all be managed by the kernel. `KernelTasks` do need
+to be remembered though. I can have a base class which can create sub-services
+for each task which wants to use a service in the kernel. Then when a task
+dies, all services it uses can be cleared up. Each...
+
+## 16:58
+
+Each service can then automatically be managed and there will be no need to
+clutter up and add new system calls to implement. Everything will be done via
+the IPC and the required methods for implementation for each port will be
+reduced. Reducing the number of things to implement is a good thing.
+
+## 21:07
+
+Okay, so I suppose what I need is a slight simplification of the kernel. Also
+I need to have more advanced permissions because stuff like RMS and other
+things will need it. One of the major things now that I have working IPC will
+definitely be the packet interface. I definitely need sub-packets for
+communication and event grabbers.
+
+## 21:38
+
+I think anything kernel related that is specific to SquirrelJME will be
+dropped into an upper package `kernel` rather than just be in `runtime`. Then
+anything that needs to use the stuff there can depend on it as needed.
+
+## 21:39
+
+Also the packets can probably be put in some kind of `kernel-io` kind of
+area.
+
+## 22:00
+
+Also, I had an idea. The kernel itself can just consist of tasks and the
+services. The program management stuff along with installation, can just be
+an actual sub-service. This means it would be possible to have it where
+no programs exist and it is just some minimal bits that make up the kernel.
+This definitely has quite the potential. Additionally it simplifies the
+design because it is just another service. Basically, everything can be
+a service and this can be an actual microkernel more and more.
+
+## 22:57
+
+Also, the kernel caller does not need to implement some methods. So stuff
+like setting daemon threads can be abstract. Then the kernel can get that
+removed so that it has no daemon setting things.
+
+## 23:11
+
+Task launching can be hidden behing a special interface.
+
+## 23:34
+
+Need to clean up the CLDC stuff. The IPC stuff in GCF where mailboxes are
+used will be replaced by the service IPC code instead.
