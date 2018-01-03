@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.packets;
+package net.multiphasicapps.squirreljme.kernel.packets;
 
 /**
  * This class is used to read from packets in a stream like manner.

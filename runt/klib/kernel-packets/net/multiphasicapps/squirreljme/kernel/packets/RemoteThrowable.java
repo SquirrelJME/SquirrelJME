@@ -8,37 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.packets;
+package net.multiphasicapps.squirreljme.kernel.packets;
 
 /**
- * This is thrown when the packet stream has been disconnected.
+ * This class is thrown by the {@link PacketStream#send(Packet)} method if the
+ * remote end threw an exception while handling a packet.
+ *
+ * This will wrap as much detail as needed from the exception which was caught
+ * on the remote end.
+ *
+ * Responseless packets do not respond with this exception.
  *
  * @since 2018/01/01
  */
-public class PacketStreamDisconnected
+public final class RemoteThrowable
 	extends RuntimeException
 {
-	/**
-	 * Initializes exception with the given message.
-	 *
-	 * @param __m The message.
-	 * @since 2018/01/01
-	 */
-	public PacketStreamDisconnected(String __m)
-	{
-		super(__m);
-	}
-	
-	/**
-	 * Initializes exception with the given message and cause.
-	 *
-	 * @param __m The message.
-	 * @param __c The cause.
-	 * @since 2018/01/01
-	 */
-	public PacketStreamDisconnected(String __m, Throwable __c)
-	{
-		super(__m, __c);
-	}
 }
 

@@ -8,21 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.packets;
-
 /**
- * This class is thrown by the {@link PacketStream#send(Packet)} method if the
- * remote end threw an exception while handling a packet.
- *
- * This will wrap as much detail as needed from the exception which was caught
- * on the remote end.
- *
- * Responseless packets do not respond with this exception.
+ * This package contains the packet interface which is used primarily by the
+ * kernel and sub-processes to communicate with each other as needed.
  *
  * @since 2018/01/01
  */
-public final class RemoteThrowable
-	extends RuntimeException
-{
-}
+
+package net.multiphasicapps.squirreljme.kernel.packets;
 
