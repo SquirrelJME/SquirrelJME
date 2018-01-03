@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package net.multiphasicapps.squirreljme.kernel.lib;
 
 /**
  * This interface contains the list of error codes which may occur when an
@@ -16,7 +16,6 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2017/12/30
  */
-@Deprecated
 public interface InstallErrorCodes
 {
 	/** The applicaton is already installed. */
