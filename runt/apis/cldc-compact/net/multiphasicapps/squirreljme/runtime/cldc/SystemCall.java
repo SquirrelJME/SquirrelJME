@@ -75,7 +75,8 @@ public final class SystemCall
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/02
 	 */
-	public static final <C> C kernelService(Class<C> __cl)
+	public static final <C> SystemServiceSupplier<C> kernelService(
+		Class<C> __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
