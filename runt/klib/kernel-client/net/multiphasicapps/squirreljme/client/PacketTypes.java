@@ -8,12 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package the client system call interface which uses an input and output
- * stream to communicate with the host kernel.
- *
- * @since 2017/12/31
- */
+package net.multiphasicapps.squirreljme.kernel.client;
 
-package net.multiphasicapps.squirreljme.runtime.clsyscall;
+/**
+ * This represents the packet types which are sent between the clients.
+ *
+ * Packet types which are negative do not have a response value returned and
+ * are essentially just events.
+ *
+ * @since 2018/01/01
+ */
+public interface PacketTypes
+{
+	/** The hello packet which indicates the remote side is alive. */
+	public static final int HELLO =
+		-1;
+	
+	/** The client has been started (constructors are okay). */
+	public static final int INITIALIZED =
+		-2;
+	
+	/** Map service. */
+	public static final int MAP_SERVICE =
+		1;
+}
 
