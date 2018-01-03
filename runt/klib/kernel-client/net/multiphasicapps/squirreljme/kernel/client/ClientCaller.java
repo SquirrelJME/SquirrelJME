@@ -16,13 +16,14 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
+import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketWriter;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
-import net.multiphasicapps.squirreljme.runtime.packets.Packet;
-import net.multiphasicapps.squirreljme.runtime.packets.PacketStream;
-import net.multiphasicapps.squirreljme.runtime.packets.PacketWriter;
 
 /**
  * This is a system caller which uses a basic input stream and a basic output
@@ -61,7 +62,7 @@ public abstract class ClientCaller
 			throw new NullPointerException("NARG");
 		
 		PacketStream stream = new PacketStream(__in, __out,
-			new __ResponseHandler__(new WeakReference<>(this)));
+			new __Handler__(new WeakReference<>(this)));
 		this.stream = stream;
 		
 		// Send hello packet to the other end
