@@ -12,9 +12,6 @@ package net.multiphasicapps.squirreljme.kernel.programinfo;
 
 import java.util.Arrays;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.APIName;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 
 /**

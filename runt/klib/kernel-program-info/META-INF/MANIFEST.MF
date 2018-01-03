@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This projects contains the part of the kernel 
  which can parse and read manifest files to provide dependencies and 
  other information about a suite.
-X-SquirrelJME-Depends: tool-manifest-reader
+X-SquirrelJME-Depends: tool-manifest-reader collections strings
 Microedition-Configuration: CLDC-1.8-Compact
 

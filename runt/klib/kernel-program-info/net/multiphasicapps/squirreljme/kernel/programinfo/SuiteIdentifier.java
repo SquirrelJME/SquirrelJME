@@ -78,7 +78,7 @@ public final class SuiteIdentifier
 	 * @since 2016/10/12
 	 */
 	@Override
-	public int compareTo(Suite __o)
+	public int compareTo(SuiteIdentifier __o)
 	{
 		if (this == __o)
 			return 0;
@@ -108,10 +108,10 @@ public final class SuiteIdentifier
 			return true;
 		
 		// Check
-		if (!(__o instanceof Suite))
+		if (!(__o instanceof SuiteIdentifier))
 			return false;
 		
-		return 0 == (compareTo((Suite)__o));
+		return 0 == (compareTo((SuiteIdentifier)__o));
 	}
 	
 	/**

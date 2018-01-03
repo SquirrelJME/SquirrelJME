@@ -12,8 +12,6 @@ package net.multiphasicapps.squirreljme.kernel.programinfo;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 
 /**
  * This is used to handle version ranges that may be used for dependencies.

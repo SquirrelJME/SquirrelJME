@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.squirreljme.kernel.programinfo;
 
-import net.multiphasicapps.squirreljme.runtime.midlet.InvalidSuiteException;
 import net.multiphasicapps.strings.StringUtils;
 
 /**

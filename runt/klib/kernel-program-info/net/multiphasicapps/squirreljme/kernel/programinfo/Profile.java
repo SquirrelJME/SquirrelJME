@@ -11,8 +11,6 @@
 package net.multiphasicapps.squirreljme.kernel.programinfo;
 
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.APIName;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 import net.multiphasicapps.strings.StringUtils;
 
 /**
