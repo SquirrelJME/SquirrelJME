@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2017/12/28
  */
+@Deprecated
 public final class KernelProgramInstallReport
 {
 	/** The program which was installed. */

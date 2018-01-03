@@ -29,6 +29,7 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
  *
  * @since 2017/12/31
  */
+@Deprecated
 final class __ProgramInstaller__
 {
 	/** The program manager. */

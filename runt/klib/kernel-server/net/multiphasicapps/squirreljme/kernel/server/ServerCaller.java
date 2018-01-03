@@ -37,7 +37,7 @@ import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
  *
  * @since 2017/12/10
  */
-public final class DirectCaller
+public final class ServerCaller
 	extends SystemCaller
 {
 	/** The kernel to call. */
@@ -62,7 +62,7 @@ public final class DirectCaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	public DirectCaller(Kernel __k, KernelTask __t)
+	public ServerCaller(Kernel __k, KernelTask __t)
 		throws NullPointerException
 	{
 		if (__k == null || __t == null)

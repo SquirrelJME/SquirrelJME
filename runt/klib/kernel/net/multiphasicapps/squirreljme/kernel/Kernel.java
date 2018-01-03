@@ -24,6 +24,7 @@ package net.multiphasicapps.squirreljme.kernel;
 public abstract class Kernel
 {
 	/** Program manager. */
+	@Deprecated
 	protected final KernelPrograms kernelprograms;
 	
 	/** Task manager. */
@@ -74,6 +75,7 @@ public abstract class Kernel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
+	@Deprecated
 	public abstract void setDaemonThread(Thread __t)
 		throws IllegalThreadStateException, NullPointerException;
 	
@@ -87,6 +89,7 @@ public abstract class Kernel
 	 * program manager.
 	 * @since 2017/12/14
 	 */
+	@Deprecated
 	public final KernelPrograms programs(KernelTask __by)
 		throws NullPointerException, SecurityException
 	{
@@ -136,6 +139,7 @@ public abstract class Kernel
 	 * @return The kernel program manager.
 	 * @since 2017/12/31
 	 */
+	@Deprecated
 	final KernelPrograms __programs()
 	{
 		return this.kernelprograms;

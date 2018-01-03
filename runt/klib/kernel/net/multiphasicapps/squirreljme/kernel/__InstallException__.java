@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2017/12/31
  */
+@Deprecated
 class __InstallException__
 	extends RuntimeException
 {
