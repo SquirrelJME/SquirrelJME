@@ -16,11 +16,11 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.IMCServerConnection;
 import javax.microedition.io.StreamConnection;
+import net.multiphasicapps.squirreljme.kernel.libinfo.SuiteVersion;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxException;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxConnection;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemMailBoxListener;
-import net.multiphasicapps.squirreljme.runtime.midlet.id.SuiteVersion;
 
 /**
  * This implements the server side of an IMC connection.
