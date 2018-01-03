@@ -21,23 +21,15 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgramInstallReport;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
-import net.multiphasicapps.squirreljme.runtime.kernel.Kernel;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.
-	KernelProgramInstallReport;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
- * This is a system caller which directly calls the kernel and uses the
- * provided task as the context for permissions and the source performing any
- * given action.
- *
- * This class must never expose the {@link Kernel} or {@link KernelTask}
- * instances.
+ * This class provides the system call interfaces to the kernel by directly
+ * accessing the kernel, this is intended to be used for the kernel task.
  *
  * @since 2017/12/10
  */
-public final class ServerCaller
+public abstract class ServerCaller
 	extends SystemCaller
 {
 	/** The kernel to call. */
@@ -240,7 +232,7 @@ public final class ServerCaller
 			// Need to wrap the task?
 			if (ref == null || null == (rv = ref.get()))
 				taskmap.put(__t, new WeakReference<>((rv =
-					new DirectTask(task, __t))));
+					new ServerTask(task, __t))));
 			
 			return rv;
 		}

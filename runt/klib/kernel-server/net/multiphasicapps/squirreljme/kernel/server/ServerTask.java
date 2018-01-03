@@ -10,34 +10,34 @@
 
 package net.multiphasicapps.squirreljme.kernel.server;
 
-import java.io.InputStream;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
-import net.multiphasicapps.squirreljme.runtime.kernel.KernelProgram;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 import net.multiphasicapps.squirreljme.runtime.kernel.KernelTask;
 
 /**
- * This represents a wrapped program within the kernel.
+ * This class wraps the system task and provides access to kernel tasks from
+ * within the kernel itself.
  *
- * @since 2017/12/31
+ * @since 2017/12/27
  */
-public final class DirectProgram
-	implements SystemProgram
+public final class ServerTask
+	implements SystemTask
 {
 	/** The task of the current process. */
 	protected final KernelTask current;
 	
-	/** The wrapped program to access. */
-	protected final KernelProgram wrapped;
+	/** The wrapped task to access. */
+	protected final KernelTask wrapped;
 	
 	/**
-	 * Initializes the wrapped program.
+	 * Initializes the wrapped task.
 	 *
 	 * @param __current The current execution task.
-	 * @param __wrapped The program to be wrapped.
+	 * @param __wrapped The task to provide access to.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/31
+	 * @since 2017/12/27
 	 */
-	public DirectProgram(KernelTask __current, KernelProgram __wrapped)
+	public ServerTask(KernelTask __current, KernelTask __wrapped)
 		throws NullPointerException
 	{
 		if (__current == null || __wrapped == null)
@@ -49,73 +49,52 @@ public final class DirectProgram
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/31
+	 * @since 2017/12/27
 	 */
 	@Override
-	public String controlGet(String __k)
+	public int flags()
 	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		return this.wrapped.controlGet(this.current, __k);
+		return this.wrapped.flags(this.current);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/31
+	 * @since 2017/12/27
 	 */
 	@Override
-	public void controlSet(String __k, String __v)
+	public String mainClass()
 	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		this.wrapped.controlSet(this.current, __k, __v);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/31
+	 * @since 2017/12/27
 	 */
 	@Override
-	public int index()
+	public long metric(int __m)
 	{
-		return this.wrapped.index();
+		return this.wrapped.metric(this.current, __m);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/31
+	 * @since 2017/12/27
 	 */
 	@Override
-	public InputStream loadResource(String __n)
-		throws NullPointerException
+	public SystemProgram program()
 	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		return this.wrapped.loadResource(this.current, __n);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/31
+	 * @since 2017/12/27
 	 */
 	@Override
-	public int type()
+	public void restart()
 	{
-		return this.wrapped.type(this.current);
-	}
-	
-	/**
-	 * Returns the wrapped program.
-	 *
-	 * @return The wrapped program.
-	 * @since 2017/12/31
-	 */
-	final KernelProgram __program()
-	{
-		return this.wrapped;
+		throw new todo.TODO();
 	}
 }
 
