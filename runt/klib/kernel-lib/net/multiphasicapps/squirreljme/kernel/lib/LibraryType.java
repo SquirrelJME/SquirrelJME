@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.kernel.lib;
 
 /**
  * This interface bitflags which represents the type of a program.
  *
  * @since 2017/12/10
  */
-public interface SystemProgramType
+public interface LibraryType
 {
 	/** An application (MIDlet). */
 	public static final int APPLICATION =
