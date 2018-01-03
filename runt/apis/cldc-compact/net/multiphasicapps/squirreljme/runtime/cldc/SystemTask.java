@@ -52,14 +52,6 @@ public interface SystemTask
 	public abstract long metric(int __m);
 	
 	/**
-	 * Returns the program which this task is currently running under.
-	 *
-	 * @return The system program for this task.
-	 * @since 2017/12/10
-	 */
-	public abstract SystemProgram program();
-	
-	/**
 	 * Attempts to restart the specified task, if permitted to.
 	 *
 	 * This should perform the same operation as destroying and starting it
