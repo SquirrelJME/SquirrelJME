@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.InputStream;
 import java.io.IOException;

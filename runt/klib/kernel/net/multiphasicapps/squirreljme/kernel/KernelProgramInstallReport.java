@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.kernel;
 
 /**
  * This is called after a program has been installed and is used as a report.

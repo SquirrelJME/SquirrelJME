@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.kernel;
 
 import net.multiphasicapps.squirreljme.runtime.midlet.id.Suite;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
