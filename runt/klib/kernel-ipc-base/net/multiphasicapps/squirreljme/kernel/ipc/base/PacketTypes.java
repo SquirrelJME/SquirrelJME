@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.client;
+package net.multiphasicapps.squirreljme.kernel.ipc.base;
 
 /**
  * This represents the packet types which are sent between the clients.
@@ -20,6 +20,14 @@ package net.multiphasicapps.squirreljme.kernel.client;
  */
 public interface PacketTypes
 {
+	/** This is a special type used to indicate an okay response. */
+	public static final int SPECIAL_RESPONSE_OKAY =
+		0;
+	
+	/** This is a special type used to indicate a failed response. */
+	public static final int SPECIAL_RESPONSE_FAIL =
+		Integer.MIN_VALUE;
+	
 	/** The hello packet which indicates the remote side is alive. */
 	public static final int HELLO =
 		-1;
