@@ -32,6 +32,7 @@ import net.multiphasicapps.zip.blockreader.ZipBlockReader;
  *
  * @since 2017/12/14
  */
+@Deprecated
 public abstract class KernelPrograms
 {
 	/** Internal lock. */

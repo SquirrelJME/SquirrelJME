@@ -19,6 +19,7 @@ import net.multiphasicapps.zip.blockreader.ZipBlockReader;
  *
  * @since 2017/12/31
  */
+@Deprecated
 public final class KernelProgramInstallInfo
 {
 	/** The ZIP to use for installation. */

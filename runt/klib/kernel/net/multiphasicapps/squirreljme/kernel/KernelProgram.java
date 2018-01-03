@@ -28,6 +28,7 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
  *
  * @since 2017/12/11
  */
+@Deprecated
 public abstract class KernelProgram
 {
 	/** Locking object. */

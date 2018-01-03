@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2017/12/30
  */
+@Deprecated
 public interface InstallErrorCodes
 {
 	/** The applicaton is already installed. */
