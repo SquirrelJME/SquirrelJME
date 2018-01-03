@@ -28,6 +28,7 @@ public abstract class Kernel
 	protected final KernelPrograms kernelprograms;
 	
 	/** Task manager. */
+	@Deprecated
 	protected final KernelTasks kerneltasks;
 	
 	/**
@@ -117,6 +118,7 @@ public abstract class Kernel
 	 * task manager.
 	 * @since 2017/12/27
 	 */
+	@Deprecated
 	public final KernelTasks tasks(KernelTask __by)
 		throws NullPointerException, SecurityException
 	{

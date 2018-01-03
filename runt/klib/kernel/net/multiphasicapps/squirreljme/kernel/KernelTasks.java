@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
  *
  * @since 2017/12/27
  */
+@Deprecated
 public abstract class KernelTasks
 {
 	/** Reference to the owning kernel. */
