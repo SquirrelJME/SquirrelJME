@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.javase;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.runtime.clsyscall.ClientCaller;
+import net.multiphasicapps.squirreljme.kernel.client.ClientCaller;
 
 /**
  * This is the Java implementation of the client caller.
