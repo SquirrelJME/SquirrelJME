@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel;
+package net.multiphasicapps.squirreljme.kernel;
 
 /**
  * This exception is thrown when there were mailbox operations which could not

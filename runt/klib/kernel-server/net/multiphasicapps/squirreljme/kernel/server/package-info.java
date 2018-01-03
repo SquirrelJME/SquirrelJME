@@ -15,5 +15,5 @@
  * @since 2017/12/11
  */
 
-package net.multiphasicapps.squirreljme.runtime.kernel.syscall;
+package net.multiphasicapps.squirreljme.kernel.server;
 

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.kernel.syscall;
+package net.multiphasicapps.squirreljme.kernel.server;
 
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemProgram;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
