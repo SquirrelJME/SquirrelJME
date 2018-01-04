@@ -37,6 +37,9 @@ public abstract class KernelTask
 	/** The task index. */
 	protected final int index;
 	
+	/** The main class. */
+	protected final String mainclass;
+	
 	/** The packet stream to the child process. */
 	private final PacketStream _stream;
 	
@@ -65,7 +68,25 @@ public abstract class KernelTask
 			(__id != 0 && (__l == null || __in == null || __out == null)))
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.kernel = __k;
+		this.index = __id;
+		
+		// The server requires special initialization especially with the
+		// streams because of the pipe nature.
+		if (__id == 0)
+		{
+			// Main class represents the kernel, despite it having no main
+			// method or MIDlet implementation
+			this.mainclass = Kernel.class.getName();
+			
+			throw new todo.TODO();
+		}
+		
+		// Clients initialize with other means
+		else
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -112,7 +133,7 @@ public abstract class KernelTask
 	@Override
 	public final String mainClass()
 	{
-		throw new todo.TODO();
+		return this.mainclass;
 	}
 	
 	/**
