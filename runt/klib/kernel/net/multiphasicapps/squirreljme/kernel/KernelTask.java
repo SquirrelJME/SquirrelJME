@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
 /**
  * This represents a task which is running within SquirrelJME.
@@ -25,6 +26,7 @@ import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
  * @since 2017/12/10
  */
 public abstract class KernelTask
+	implements SystemTask
 {
 	/** Reference to the owning kernel. */
 	protected final Reference<Kernel> kernel;

@@ -8,22 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package net.multiphasicapps.squirreljme.kernel.service;
 
 /**
- * This class is used to obtain the client instance of a service.
+ * This class is used to create instances.
  *
- * @param <C> The client service to get.
  * @since 2018/01/03
  */
-public interface SystemServiceSupplier<C>
+public abstract class ServiceFactory
 {
-	/**
-	 * Obtains the single instance of the service.
-	 *
-	 * @return The service instance.
-	 * @since 2018/01/03
-	 */
-	public abstract C get();
 }
 
