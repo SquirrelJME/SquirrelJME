@@ -30,16 +30,16 @@ public abstract class SystemCaller
 		throws SecurityException;
 	
 	/**
-	 * Requests that the system map the specified service class to a default
-	 * provided service name.
+	 * Returns the kernel service for the given class.
 	 *
-	 * @param __s The service to map.
-	 * @return The default service to map to or {@code null} if there is no
-	 * mapping for the given service.
+	 * @param <C> The class of the service.
+	 * @param __cl The class of the service.
+	 * @return The instance of the service or {@code null} if it does not
+	 * exist or is not available.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/31
+	 * @since 2018/01/02
 	 */
-	public abstract String mapService(String __sv)
+	public abstract <C> C service(Class<C> __cl)
 		throws NullPointerException;
 	
 	/**

@@ -65,9 +65,12 @@ public abstract class ServerCaller
 	 * @since 2018/01/03
 	 */
 	@Override
-	public String mapService(String __sv)
+	public final <C> C service(Class<C> __cl)
 		throws NullPointerException
 	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	

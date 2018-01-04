@@ -64,23 +64,26 @@ public abstract class ClientCaller
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/03
-	 */
-	@Override
-	public final String mapService(String __sv)
-		throws NullPointerException
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Tell the kernel that the initialization of the task has been completed.
 	 *
 	 * @since 2018/01/03
 	 */
 	public final void sendInitializationComplete()
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/03
+	 */
+	@Override
+	public final <C> C service(Class<C> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }

@@ -38,7 +38,7 @@ final class __SystemSuiteManager__
 	
 	/** The library manager. */
 	final LibraryManager _manager =
-		SystemCall.<LibraryManager>kernelService(LibraryManager.class);
+		SystemCall.<LibraryManager>service(LibraryManager.class);
 	
 	/** Cached suites. */
 	protected final Map<Library, Reference<Suite>> _suites =

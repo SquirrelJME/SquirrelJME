@@ -28,7 +28,6 @@ import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
 import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayOrientation;
 import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayState;
 import net.multiphasicapps.squirreljme.runtime.lcdui.HeadlessDisplayManager;
-import net.multiphasicapps.squirreljme.runtime.cldc.Services;
 
 public class Display
 {
