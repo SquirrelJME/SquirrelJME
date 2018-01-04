@@ -14,7 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Displayable;
 import net.multiphasicapps.squirreljme.runtime.lcdui.event.EventQueue;
-import net.multiphasicapps.squirreljme.runtime.cldc.Services;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This is a provider which always returns a fixed set of display heads that
@@ -51,8 +51,8 @@ public abstract class DisplayManager
 	static
 	{
 		// Use the default display head manager
-		DisplayManager dhp = Services.
-			<DisplayManager>systemService(DisplayManager.class);
+		DisplayManager dhp = SystemCall.
+			<DisplayManager>service(DisplayManager.class);
 		
 		// If no manager is available, use a null display manager that does
 		// not actually have any real function

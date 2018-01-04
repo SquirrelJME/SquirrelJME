@@ -66,25 +66,6 @@ public final class SystemCall
 	}
 	
 	/**
-	 * Returns the kernel service for the given class.
-	 *
-	 * @param <C> The class of the service.
-	 * @param __cl The class of the service.
-	 * @return The instance of the service or {@code null} if it does not
-	 * exist or is not available.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/02
-	 */
-	public static final <C> C kernelService(Class<C> __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Lists tasks which currently exist and may be running on the system.
 	 *
 	 * @param __incsys If {@code true} then system tasks are included.
@@ -94,25 +75,6 @@ public final class SystemCall
 	public static final SystemTask[] listTasks(boolean __incsys)
 	{
 		return SystemCall._CALLER.listTasks(__incsys);
-	}
-	
-	/**
-	 * Requests that the system map the specified service class to a default
-	 * provided service name.
-	 *
-	 * @param __s The service to map.
-	 * @return The default service to map to or {@code null} if there is no
-	 * mapping for the given service.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/10
-	 */
-	public static final String mapService(String __sv)
-		throws NullPointerException
-	{
-		if (__sv == null)
-			throw new NullPointerException("NARG");
-		
-		return SystemCall._CALLER.mapService(__sv);
 	}
 	
 	/**
@@ -159,6 +121,25 @@ public final class SystemCall
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the kernel service for the given class.
+	 *
+	 * @param <C> The class of the service.
+	 * @param __cl The class of the service.
+	 * @return The instance of the service or {@code null} if it does not
+	 * exist or is not available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/02
+	 */
+	public static final <C> C service(Class<C> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return SystemCall._CALLER.service(__cl);
 	}
 	
 	/**

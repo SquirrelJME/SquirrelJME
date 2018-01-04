@@ -14,7 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import javax.microedition.lcdui.Font;
-import net.multiphasicapps.squirreljme.runtime.cldc.Services;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
 import net.multiphasicapps.collections.SortedTreeMap;
 
@@ -52,8 +52,7 @@ public abstract class FontManager
 	static
 	{
 		// Use either the provided font manager or a default if none was set
-		FontManager fm = Services.<FontManager>systemService(
-			FontManager.class);
+		FontManager fm = SystemCall.<FontManager>service(FontManager.class);
 		FONT_MANAGER = (fm == null ? new DefaultFontManager() : fm);
 	}
 	
