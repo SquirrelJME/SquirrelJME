@@ -35,6 +35,14 @@ public interface SystemTask
 	public abstract int flags();
 	
 	/**
+	 * Returns the index of the task.
+	 *
+	 * @return The task index.
+	 * @since 2018/01/03
+	 */
+	public abstract int index();
+	
+	/**
 	 * Returns the main entry point of this task.
 	 *
 	 * @return The task main entry point.
