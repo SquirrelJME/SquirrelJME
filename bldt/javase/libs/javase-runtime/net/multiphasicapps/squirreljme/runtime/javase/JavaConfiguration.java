@@ -10,26 +10,43 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.KernelTask;
+import java.util.Arrays;
+import net.multiphasicapps.squirreljme.kernel.KernelConfiguration;
 
 /**
- * This implements the kernel which is used on the initial Java SE
- * process and not the client processes.
+ * This is used to specify instances of services as required.
  *
- * @since 2017/12/08
+ * @since 2018/01/03
  */
-public final class JavaKernel
-	extends Kernel
+public class JavaConfiguration
+	implements KernelConfiguration
 {
 	/**
-	 * Initializes the kernel to run on Java systems.
-	 *
-	 * @since 2017/12/08
+	 * {@inheritDoc}
+	 * @since 2018/01/03
 	 */
-	public JavaKernel()
+	@Override
+	public String mapService(String __sv)
+		throws NullPointerException
 	{
-		super(new JavaConfiguration());
+		if (__sv == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__sv)
+		{
+			default:
+				return null;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/03
+	 */
+	@Override
+	public Iterable<String> services()
+	{
+		return Arrays.<String>asList(new String[0]);
 	}
 }
 

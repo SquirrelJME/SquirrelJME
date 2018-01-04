@@ -11,9 +11,10 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
@@ -40,22 +41,82 @@ public abstract class Kernel
 	 * Services are indexed by an integer value for speed to prevent massive
 	 * lookups based on class types or strings every time they are used.
 	 */
-	private ServiceServer[] _servers;
+	private final ServiceServer[] _servers;
 	
 	/**
 	 * Initializes the base kernel.
 	 *
+	 * @param __config The configuration to use when initializing the kernel.
 	 * @since 2018/01/02
 	 */
-	protected Kernel()
+	protected Kernel(KernelConfiguration __config)
+		throws NullPointerException
 	{
-		// Go through all service factories and initialize services that the
-		// kernel uses for all clients.
+		if (__config == null)
+			throw new NullPointerException("NARG");
+		
+		// Fill in the services which are potentially going to exist, use the
+		// ones provided by the implementation configuration
+		Set<String> serviceclasses = new LinkedHashSet<>();
+		for (String s : __config.services())
+			if (s != null)
+				serviceclasses.add(s);
+		
+		// Add ones which are provided by default
+		for (String s : DefaultKernelServices.services())
+			if (s != null)
+				serviceclasses.add(s);
+		
+		// Always make the zero index server invalid
 		List<ServiceServer> servers = new ArrayList<>();
 		servers.add(null);
-		for (ServiceServerFactory f : ServiceLoader.<ServiceServerFactory>load(
-			ServiceServerFactory.class))
-			servers.add(f.createServer());
+		
+		// Go through and attempt to locate implementations of services that
+		// clients can use, the mapping is the client used class to the server
+		// factory class. This means that for each client class, there may
+		// only be one server which exists for it
+		for (String sv : serviceclasses)
+		{
+			// The created server service
+			ServiceServer rv = null;
+			
+			// Map to the config and the default
+			for (int i = 0; i < 2; i++)
+			{
+				String mapped = (i == 0 ? __config.mapService(sv) :
+					DefaultKernelServices.mapService(sv));
+				if (mapped != null)
+					try
+					{
+						Class<?> svclass = Class.forName(mapped);
+						rv = (ServiceServer)svclass.newInstance();
+					}
+				
+					// {@squirreljme.error AP01 Could not initialize the
+					// service. (The service class)}
+					catch (IllegalAccessException|InstantiationException e)
+					{
+						throw new RuntimeException(
+							String.format("AP01 %s", sv), e);
+					}
+				
+					// No such class exists
+					catch (ClassNotFoundException e)
+					{
+						mapped = null;
+					}
+				
+				// Service mapped
+				if (rv != null)
+					break;
+			}
+			
+			// Store service and make its instance available
+			if (rv != null)
+				servers.add(rv);
+		}
+		
+		// Store services for later usage by tasks
 		this._servers = servers.<ServiceServer>toArray(
 			new ServiceServer[servers.size()]);
 	}
