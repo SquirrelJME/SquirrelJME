@@ -10,8 +10,13 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
 
 /**
  * This class represents the micro-kernel which manages the entire SquirrelJME
@@ -31,12 +36,28 @@ public abstract class Kernel
 		new SortedTreeMap<>();
 	
 	/**
+	 * Servers which are available for usage by the kernel.
+	 * Services are indexed by an integer value for speed to prevent massive
+	 * lookups based on class types or strings every time they are used.
+	 */
+	private ServiceServer[] _servers;
+	
+	/**
 	 * Initializes the base kernel.
 	 *
 	 * @since 2018/01/02
 	 */
 	protected Kernel()
 	{
+		// Go through all service factories and initialize services that the
+		// kernel uses for all clients.
+		List<ServiceServer> servers = new ArrayList<>();
+		servers.add(null);
+		for (ServiceServerFactory f : ServiceLoader.<ServiceServerFactory>load(
+			ServiceServerFactory.class))
+			servers.add(f.createServer());
+		this._servers = servers.<ServiceServer>toArray(
+			new ServiceServer[servers.size()]);
 	}
 	
 	/**
