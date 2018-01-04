@@ -272,7 +272,13 @@ public final class LoopbackStreams
 		@Override
 		public void flush()
 		{
-			throw new todo.TODO();
+			// Flushing just notifies the other thread that data might be
+			// available
+			ByteDeque out = this.out;
+			synchronized (out)
+			{
+				out.notify();
+			}
 		}
 		
 		/**
