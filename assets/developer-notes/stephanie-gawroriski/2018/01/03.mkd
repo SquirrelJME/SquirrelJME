@@ -1,0 +1,71 @@
+# 2018/01/03
+
+## 10:07
+
+I need a good way to access kernel services. There definitely will be a
+factory of sorts. I will need two parts. One end which runs on the kernel
+itself and the other end which runs on the client. When a client requests a
+service, the service class must be looked up and then initialized. Basically
+when the client requests a service it has to be checked if the service is
+cached and then if not the server side has to be initialized. Then once the
+server is initialized a connection to the client is made, a sort of context.
+Then following that, the IPC is linked to the client and it can then access
+everything as needed. So this is a bit complicated. I will need a good means
+of initializing services. So in effect, what I need is an interface in the
+system caller. Basically it returns a getter instance of a service client,
+where that getter can then be gotten accordingly. This way the same instance
+can be used and it can be hidden away behind the getter.
+
+## 20:19
+
+Definitely need a good way to manage services. Basically I will need a kind of
+factory which produces instances of classes accordingly.
+
+## 20:27
+
+I completely am not sure the best way to handle service creation. Services
+definitely will use the packet interface to communicate. I will definitely
+need a kind of service dispatching so packets reach the server as intended.
+Maybe I am going about creation the wrong way. I want to make it where the
+client for the most part has only a single connection for each service.
+Basically, I need a service web. For any services which are active within
+the web a connection can be made to them. I suppose in this case the way
+to have service servers would be to have actual `ServiceLoader` classes
+which specify server side services. Then for the client side, the client
+only refers to classes. The server specifies the client class for its
+factory. So at kernel initialization time, all of the factories are loaded,
+mapped, and initialized. Then the client will make an IPC request to open
+a connection for that single task. Event handling would then be tied to
+individual `KernelTasks`. So since the CLDC stuff is the same, I suppose
+that `KernelTask` should implement `SystemTask` rather than having them
+virtually wrapped. This would simplify things because services need to be
+created for each task which exists.
+
+## 20:53
+
+Using `ServiceLoader` is bad because it is unknown which services to actually
+use. There could be multiple classes trying to use the same services. It makes
+it easier to use, but take for example if SWM is used. Basically there could
+be a setup where one wants to use the filesystem to store records while
+another could use a byte array in some kind of RAM space. If I use the service
+loader then any number of those could be used for services. So what I need to
+do is to actually send in a map of services which should be used because there
+can only be a single service. This needs to be initialized with the kernel so
+I will need some kind of structure for initialization which says which
+services should be used. Basically, my own service mapping. So for stuff such
+as the library manager, it will need to implemented for native systems but it
+will vary as to which services are used. But, also additionally if there is
+no specific service available, I can have defaults. So effectively this ends
+up being a fixed set of services to enumerate for initialization. So new
+services will be less hard to initialize. Of course there can be system
+properties which specify custom services to use potentially. So this
+essentially is the same as `mapService`.
+
+## 22:16
+
+For common things, I will need an `InputStream` and `OutputStream` which are
+bound to each other. I can actually get away with it because `PacketStream`
+uses two threads, so it will not be an issue. The main reason is so that there
+is a uniform feel between the kernel and the client, especially when it comes
+to stuff like the IPC. Basically the kernel will be in IPC with itself, that
+will make things a bit easier to implement.
