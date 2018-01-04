@@ -99,6 +99,12 @@ public final class LoopbackStreams
 		/** The output queue. */
 		protected final ByteDeque out;
 		
+		/** Input stream. */
+		private Reference<InputStream> _instream;
+		
+		/** Output stream. */
+		private Reference<OutputStream> _outstream;
+		
 		/**
 		 * Initializes the side.
 		 *
@@ -125,7 +131,14 @@ public final class LoopbackStreams
 		 */
 		public final InputStream input()
 		{
-			throw new todo.TODO();
+			Reference<InputStream> ref = this._instream;
+			InputStream rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._instream = new WeakReference<>(
+					(rv = new __Input__(this.in)));
+			
+			return rv;
 		}
 		
 		/**
@@ -135,6 +148,149 @@ public final class LoopbackStreams
 		 * @since 2018/01/04
 		 */
 		public final OutputStream output()
+		{
+			Reference<OutputStream> ref = this._outstream;
+			OutputStream rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._outstream = new WeakReference<>(
+					(rv = new __Output__(this.out)));
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Input stream from the queue.
+	 *
+	 * @since 2018/01/04
+	 */
+	private static final class __Input__
+		extends InputStream
+	{
+		/** The input source. */
+		protected final ByteDeque in;
+		
+		/**
+		 * Initializes the input.
+		 *
+		 * @param __in The input source.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/04
+		 */
+		private __Input__(ByteDeque __in)
+			throws NullPointerException
+		{
+			if (__in == null)
+				throw new NullPointerException("NARG");
+			
+			this.in = __in;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public void close()
+		{
+			// Close has no effect
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public int available()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public int read()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public int read(byte[] __b, int __o, int __l)
+		{
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Output stream to the queue.
+	 *
+	 * @since 2018/01/04
+	 */
+	private static final class __Output__
+		extends OutputStream
+	{
+		/** The output source. */
+		protected final ByteDeque out;
+		
+		/**
+		 * Initializes the output.
+		 *
+		 * @param __out The output source.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/04
+		 */
+		private __Output__(ByteDeque __out)
+			throws NullPointerException
+		{
+			if (__out == null)
+				throw new NullPointerException("NARG");
+			
+			this.out = __out;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public void close()
+		{
+			// Close has no effect
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public void flush()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public void write(int __b)
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public void write(byte[] __b, int __o, int __l)
 		{
 			throw new todo.TODO();
 		}

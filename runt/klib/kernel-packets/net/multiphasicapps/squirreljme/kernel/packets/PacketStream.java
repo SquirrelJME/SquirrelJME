@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel.packets;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -32,6 +33,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
  * @since 2018/01/01
  */
 public final class PacketStream
+	implements Closeable
 {
 	/**
 	 * This lock is used to prevent threads from writing intertwined data
@@ -98,6 +100,20 @@ public final class PacketStream
 		
 		// Start it
 		thread.start();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/04
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		synchronized (this.lock)
+		{
+			this.out.close();
+		}
 	}
 	
 	/**
