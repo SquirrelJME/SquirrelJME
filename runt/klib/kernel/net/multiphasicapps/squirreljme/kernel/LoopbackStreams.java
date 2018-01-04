@@ -23,6 +23,28 @@ import java.io.OutputStream;
 public final class LoopbackStreams
 {
 	/**
+	 * Returns side A.
+	 *
+	 * @return Side A.
+	 * @since 2018/01/04
+	 */
+	public final Side sideA()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns side B.
+	 *
+	 * @return Side B.
+	 * @since 2018/01/04
+	 */
+	public final Side sideB()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * This represents the side of the loopback stream.
 	 *
 	 * @since 2018/01/04
@@ -36,6 +58,28 @@ public final class LoopbackStreams
 		 */
 		private Side()
 		{
+		}
+		
+		/**
+		 * Returns the input for this side.
+		 *
+		 * @return The side input.
+		 * @since 2018/01/04
+		 */
+		public final InputStream input()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Returns the output for this side.
+		 *
+		 * @return The side output.
+		 * @since 2018/01/04
+		 */
+		public final OutputStream output()
+		{
+			throw new todo.TODO();
 		}
 	}
 }

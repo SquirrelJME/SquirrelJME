@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.kernel.callerbase.BaseCaller;
 import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
@@ -33,7 +34,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  * @since 2017/12/31
  */
 public abstract class ClientCaller
-	extends SystemCaller
+	extends BaseCaller
 {
 	/**
 	 * Initializes the client caller with a stream to the kernel IPC.
@@ -46,8 +47,7 @@ public abstract class ClientCaller
 	protected ClientCaller(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
-		if (__in == null || __out == null)
-			throw new NullPointerException("NARG");
+		super(__in, __out);
 		
 		throw new todo.TODO();
 	}

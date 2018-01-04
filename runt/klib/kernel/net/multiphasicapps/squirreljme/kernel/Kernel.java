@@ -38,6 +38,9 @@ public abstract class Kernel
 	/** The task which represents the kernel itself. */
 	protected final KernelTask systemtask;
 	
+	/** The kernel's loopback stream. */
+	protected final LoopbackStreams loopback;
+	
 	/** Tasks which exist within the kernel. */
 	private final Map<Integer, KernelTask> _tasks =
 		new SortedTreeMap<>();
@@ -127,6 +130,7 @@ public abstract class Kernel
 			new ServiceServer[servers.size()]);
 		
 		// Initialize the system task, which acts as a special task
+		this.loopback = new LoopbackStreams();
 		KernelTask systemtask = __config.systemTask(new WeakReference<>(this));
 		
 		// {@squirreljme.error AP02 System task initialized with the wrong
@@ -137,6 +141,17 @@ public abstract class Kernel
 		// Need to remember this task
 		_tasks.put(0, systemtask);
 		this.systemtask = systemtask;
+	}
+	
+	/**
+	 * Returns the kernel's loopback stream.
+	 *
+	 * @return The kernel loopback stream.
+	 * @since 2018/01/04
+	 */
+	public final LoopbackStreams loopback()
+	{
+		return this.loopback;
 	}
 	
 	/**

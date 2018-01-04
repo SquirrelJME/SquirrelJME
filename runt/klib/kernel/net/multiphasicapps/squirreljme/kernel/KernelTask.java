@@ -79,7 +79,10 @@ public abstract class KernelTask
 			// method or MIDlet implementation
 			this.mainclass = Kernel.class.getName();
 			
-			throw new todo.TODO();
+			// Set the stream for this side to side A
+			LoopbackStreams.Side side = __k.get().loopback().sideA();
+			__in = side.input();
+			__out = side.output();
 		}
 		
 		// Clients initialize with other means
@@ -87,6 +90,10 @@ public abstract class KernelTask
 		{
 			throw new todo.TODO();
 		}
+		
+		// Initialize the packet stream which is used to communicate between
+		// the process and the kernel
+		throw new todo.TODO();
 	}
 	
 	/**

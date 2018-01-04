@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the system call interface which 
  communicates directly with the kernel and is intended to be used on 
  the kernel process itself.
-X-SquirrelJME-Depends: kernel
+X-SquirrelJME-Depends: kernel kernel-caller-base
 Microedition-Configuration: CLDC-1.8-Compact
 
