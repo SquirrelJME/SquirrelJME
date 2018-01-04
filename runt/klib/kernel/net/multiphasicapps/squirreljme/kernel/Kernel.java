@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +35,11 @@ import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
  */
 public abstract class Kernel
 {
+	/** The task which represents the kernel itself. */
+	protected final KernelTask systemtask;
+	
 	/** Tasks which exist within the kernel. */
-	private Map<Integer, KernelTask> _tasks =
+	private final Map<Integer, KernelTask> _tasks =
 		new SortedTreeMap<>();
 	
 	/**
@@ -119,6 +125,18 @@ public abstract class Kernel
 		// Store services for later usage by tasks
 		this._servers = servers.<ServiceServer>toArray(
 			new ServiceServer[servers.size()]);
+		
+		// Initialize the system task, which acts as a special task
+		KernelTask systemtask = __config.systemTask(new WeakReference<>(this));
+		
+		// {@squirreljme.error AP02 System task initialized with the wrong
+		// properties.}
+		if (systemtask == null || systemtask.index() != 0)
+			throw new RuntimeException("AP02");
+		
+		// Need to remember this task
+		_tasks.put(0, systemtask);
+		this.systemtask = systemtask;
 	}
 	
 	/**
