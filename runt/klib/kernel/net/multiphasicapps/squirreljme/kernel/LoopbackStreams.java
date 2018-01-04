@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.io.InputStream;
 import java.io.OutputStream;
+import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
  * This is a set of streams which loop into each other, this allows for
@@ -22,6 +25,25 @@ import java.io.OutputStream;
  */
 public final class LoopbackStreams
 {
+	/** A double deque is used from one side to another. */
+	private final ByteDeque[] _queues =
+		new ByteDeque[]{new ByteDeque(), new ByteDeque()};
+	
+	/** Side A reference. */
+	private volatile Reference<Side> _a;
+	
+	/** Side B reference. */
+	private volatile Reference<Side> _b;
+	
+	/**
+	 * Initializes the loop back streams.
+	 *
+	 * @since 2018/01/04
+	 */
+	public LoopbackStreams()
+	{
+	}
+	
 	/**
 	 * Returns side A.
 	 *
@@ -30,7 +52,17 @@ public final class LoopbackStreams
 	 */
 	public final Side sideA()
 	{
-		throw new todo.TODO();
+		Reference<Side> ref = this._a;
+		Side rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			ByteDeque[] queues = this._queues;
+			this._a = new WeakReference<>(
+				(rv = new Side(queues[0], queues[1])));
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -41,7 +73,17 @@ public final class LoopbackStreams
 	 */
 	public final Side sideB()
 	{
-		throw new todo.TODO();
+		Reference<Side> ref = this._b;
+		Side rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			ByteDeque[] queues = this._queues;
+			this._b = new WeakReference<>(
+				(rv = new Side(queues[1], queues[0])));
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -49,15 +91,30 @@ public final class LoopbackStreams
 	 *
 	 * @since 2018/01/04
 	 */
-	public final class Side
+	public static final class Side
 	{
+		/** The input queue. */
+		protected final ByteDeque in;
+		
+		/** The output queue. */
+		protected final ByteDeque out;
+		
 		/**
 		 * Initializes the side.
 		 *
+		 * @param __in The input queue.
+		 * @param __out The output queue.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2018/01/04
 		 */
-		private Side()
+		private Side(ByteDeque __in, ByteDeque __out)
+			throws NullPointerException
 		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			this.in = __in;
+			this.out = __out;
 		}
 		
 		/**
