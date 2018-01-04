@@ -14,10 +14,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceInstance;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
 /**
@@ -37,6 +40,9 @@ public abstract class KernelTask
 	/** The packet stream to the child process. */
 	private final PacketStream _stream;
 	
+	/** Instances of each service which is mapped to the kernel service set. */
+	private final ServiceInstance[] _instances;
+	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -55,7 +61,8 @@ public abstract class KernelTask
 		InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
-		if (__k == null || __l == null || __in == null || __out == null)
+		if (__k == null ||
+			(__id != 0 && (__l == null || __in == null || __out == null)))
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -72,11 +79,10 @@ public abstract class KernelTask
 	}
 	
 	/**
-	 * Returns the index of this task.
-	 *
-	 * @return The task index.
+	 * {@inheritDoc}
 	 * @since 2017/12/27
 	 */
+	@Override
 	public final int index()
 	{
 		return this.index;
@@ -97,6 +103,16 @@ public abstract class KernelTask
 		if (rv == null)
 			throw new RuntimeException("AP0h");
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/03
+	 */
+	@Override
+	public final String mainClass()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

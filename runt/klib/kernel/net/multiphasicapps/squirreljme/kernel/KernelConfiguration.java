@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.lang.ref.Reference;
+
 /**
  * This interface is used to initialize the kernel with a configuration which
  * initializes some of its parameters as needed.
@@ -39,5 +41,16 @@ public interface KernelConfiguration
 	 * @since 2018/01/03
 	 */
 	public abstract Iterable<String> services();
+	
+	/**
+	 * Returns the task which represents the kernel itself.
+	 *
+	 * @param __k The owning kernel.
+	 * @return The task for the system.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/03
+	 */
+	public abstract KernelTask systemTask(Reference<Kernel> __k)
+		throws NullPointerException;
 }
 

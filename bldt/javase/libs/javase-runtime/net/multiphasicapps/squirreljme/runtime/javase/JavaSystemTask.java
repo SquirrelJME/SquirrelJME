@@ -11,35 +11,26 @@
 package net.multiphasicapps.squirreljme.runtime.javase;
 
 import java.lang.ref.Reference;
-import java.util.Arrays;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.KernelConfiguration;
 import net.multiphasicapps.squirreljme.kernel.KernelTask;
 
 /**
- * This is used to specify instances of services as required.
+ * This task represents the kernel itself.
  *
  * @since 2018/01/03
  */
-public class JavaConfiguration
-	implements KernelConfiguration
+public class JavaSystemTask
+	extends KernelTask
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the system task.
+	 *
+	 * @param __k The owning kernel.
 	 * @since 2018/01/03
 	 */
-	@Override
-	public String mapService(String __sv)
-		throws NullPointerException
+	public JavaSystemTask(Reference<Kernel> __k)
 	{
-		if (__sv == null)
-			throw new NullPointerException("NARG");
-		
-		switch (__sv)
-		{
-			default:
-				return null;
-		}
+		super(__k, 0, null, null, null);
 	}
 	
 	/**
@@ -47,9 +38,9 @@ public class JavaConfiguration
 	 * @since 2018/01/03
 	 */
 	@Override
-	public Iterable<String> services()
+	public final int flags()
 	{
-		return Arrays.<String>asList(new String[0]);
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -57,13 +48,19 @@ public class JavaConfiguration
 	 * @since 2018/01/03
 	 */
 	@Override
-	public KernelTask systemTask(Reference<Kernel> __k)
-		throws NullPointerException
+	public final long metric(int __m)
 	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		return new JavaSystemTask(__k);
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/03
+	 */
+	@Override
+	public final void restart()
+	{
+		throw new todo.TODO();
 	}
 }
 
