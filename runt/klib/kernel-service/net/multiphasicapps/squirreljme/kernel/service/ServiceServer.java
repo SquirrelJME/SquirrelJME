@@ -11,11 +11,12 @@
 package net.multiphasicapps.squirreljme.kernel.service;
 
 /**
- * This class is used to create instances.
+ * This is the base class for services which exist on the kernel side which
+ * are used to initialize instances for each client as needed.
  *
  * @since 2018/01/03
  */
-public abstract class ServiceFactory
+public abstract class ServiceServer
 {
 }
 
