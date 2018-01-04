@@ -71,6 +71,8 @@ public abstract class KernelTask
 		this.kernel = __k;
 		this.index = __id;
 		
+		Kernel kernel = __k.get();
+		
 		// The server requires special initialization especially with the
 		// streams because of the pipe nature.
 		if (__id == 0)
@@ -80,7 +82,7 @@ public abstract class KernelTask
 			this.mainclass = Kernel.class.getName();
 			
 			// Set the stream for this side to side A
-			LoopbackStreams.Side side = __k.get().loopback().sideA();
+			LoopbackStreams.Side side = kernel.loopback().sideA();
 			__in = side.input();
 			__out = side.output();
 		}
@@ -93,7 +95,11 @@ public abstract class KernelTask
 		
 		// Initialize the packet stream which is used to communicate between
 		// the process and the kernel
-		throw new todo.TODO();
+		this._stream = new PacketStream(__in, __out, new __Handler__());
+		
+		// Initialize a base array for instances of services when they are
+		// initialized when they are needed to
+		this._instances = new ServiceInstance[kernel.serviceCount()];
 	}
 	
 	/**

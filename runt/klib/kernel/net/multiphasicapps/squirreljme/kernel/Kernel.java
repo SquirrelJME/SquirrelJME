@@ -155,6 +155,17 @@ public abstract class Kernel
 	}
 	
 	/**
+	 * Returns the number of services which are available.
+	 *
+	 * @return The number of available services.
+	 * @since 2018/01/04
+	 */
+	public final int serviceCount()
+	{
+		return this._servers.length;
+	}
+	
+	/**
 	 * Returns the task associated with the given index.
 	 *
 	 * @param __id The index of the task to get.
