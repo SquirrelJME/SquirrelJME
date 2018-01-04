@@ -7,6 +7,7 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the client 
  implementation of the system call interface and is used to 
  interact directly with the remote kernel.
-X-SquirrelJME-Depends: kernel-packets kernel-ipc-base
+X-SquirrelJME-Depends: kernel-packets kernel-ipc-base 
+ kernel-caller-base
 Microedition-Configuration: CLDC-1.8-Compact
 

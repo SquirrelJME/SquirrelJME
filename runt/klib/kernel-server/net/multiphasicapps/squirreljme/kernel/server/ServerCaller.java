@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.kernel.callerbase.BaseCaller;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.LoopbackStreams;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
@@ -28,7 +30,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  * @since 2017/12/10
  */
 public abstract class ServerCaller
-	extends SystemCaller
+	extends BaseCaller
 {
 	/** The kernel to call into. */
 	protected final Kernel kernel;
@@ -43,6 +45,9 @@ public abstract class ServerCaller
 	protected ServerCaller(Kernel __k)
 		throws NullPointerException
 	{
+		super(__k.loopback().sideB().input(),
+			__k.loopback().sideB().output());
+		
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
