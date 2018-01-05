@@ -207,6 +207,20 @@ public final class Packet
 	}
 	
 	/**
+	 * Reads a boolean from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/05
+	 */
+	public final boolean readBoolean(int __p)
+		throws IndexOutOfBoundsException
+	{
+		return (this.readByte(__p) != 0);
+	}
+	
+	/**
 	 * Reads a byte from the given position.
 	 *
 	 * @param __p The position to read from.
@@ -437,6 +451,21 @@ public final class Packet
 	}
 	
 	/**
+	 * Writes the specified boolean to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/05
+	 */
+	public final void writeBoolean(int __p, boolean __v)
+		throws IndexOutOfBoundsException
+	{
+		this.writeByte(__p, (__v ? 1 : 0));
+	}
+	
+	/**
 	 * Writes the specified byte to the given position.
 	 *
 	 * @param __p The position to write at.
@@ -448,7 +477,9 @@ public final class Packet
 	public final void writeByte(int __p, int __v)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		byte[] data = this.__ensure(__p, 1);
+		int baseoffset = this._offset + __p;
+		data[baseoffset] = (byte)__v;
 	}
 	
 	/**
@@ -491,7 +522,12 @@ public final class Packet
 	public final void writeInteger(int __p, int __v)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		byte[] data = this.__ensure(__p, 4);
+		int baseoffset = this._offset + __p;
+		data[baseoffset] = (byte)(__v >>> 24);
+		data[baseoffset + 1] = (byte)(__v >>> 16);
+		data[baseoffset + 2] = (byte)(__v >>> 8);
+		data[baseoffset + 3] = (byte)(__v);
 	}
 	
 	/**
@@ -506,7 +542,16 @@ public final class Packet
 	public final void writeLong(int __p, long __v)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		byte[] data = this.__ensure(__p, 8);
+		int baseoffset = this._offset + __p;
+		data[baseoffset] = (byte)(__v >>> 56);
+		data[baseoffset + 1] = (byte)(__v >>> 48);
+		data[baseoffset + 2] = (byte)(__v >>> 40);
+		data[baseoffset + 3] = (byte)(__v >>> 32);
+		data[baseoffset + 4] = (byte)(__v >>> 24);
+		data[baseoffset + 5] = (byte)(__v >>> 16);
+		data[baseoffset + 6] = (byte)(__v >>> 8);
+		data[baseoffset + 7] = (byte)(__v);
 	}
 	
 	/**
@@ -521,7 +566,29 @@ public final class Packet
 	public final void writeShort(int __p, int __v)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		byte[] data = this.__ensure(__p, 2);
+		int baseoffset = this._offset + __p;
+		data[baseoffset] = (byte)(__v >>> 8);
+		data[baseoffset + 1] = (byte)(__v);
+	}
+	
+	/**
+	 * Writes a string at the specified position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/01
+	 */
+	public final void writeString(int __p, String __v)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this.__writeString(__p, __v);
 	}
 	
 	/**
@@ -637,25 +704,6 @@ public final class Packet
 				throw new IndexOutOfBoundsException("AT0c");
 			return data;
 		}
-	}
-	
-	/**
-	 * Writes a string at the specified position.
-	 *
-	 * @param __p The position to write at.
-	 * @param __v The value to write.
-	 * @throws IndexOutOfBoundsException If the write exceeds the packet
-	 * bounds.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/01
-	 */
-	public final void writeString(int __p, String __v)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		__writeString(__p, __v);
 	}
 	
 	/**

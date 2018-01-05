@@ -51,6 +51,17 @@ public final class PacketWriter
 	}
 	
 	/**
+	 * Writes the specified boolean to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeBoolean(boolean __v)
+	{
+		this.writeByte((__v ? 1 : 0));
+	}
+	
+	/**
 	 * Writes the specified byte to the packet.
 	 *
 	 * @param __v The value to write.
