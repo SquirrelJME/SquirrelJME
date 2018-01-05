@@ -282,10 +282,14 @@ public final class PacketFarm
 			for (int i = pivot; i < endpivot; i++)
 				allocation[i] = true;
 			
-			// Use that area in the field
+			// Zero out the space
 			byte[] field = this._field;
-			return new Packet(this, __t, __var, field, pivot * cropsize,
-				__a, __l, true);
+			int doff = pivot * cropsize;
+			for (int woff = doff, end = doff + __l; woff < end; woff++)
+				field[woff] = 0;
+			
+			// Use that area in the field
+			return new Packet(this, __t, __var, field, doff, __a, __l, true);
 		}
 	}
 }
