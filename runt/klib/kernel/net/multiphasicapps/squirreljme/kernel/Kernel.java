@@ -98,7 +98,22 @@ public abstract class Kernel
 					try
 					{
 						Class<?> svclass = Class.forName(mapped);
-						rv = (ServiceServer)svclass.newInstance();
+						ServiceServer s = (ServiceServer)svclass.newInstance();
+						
+						// Make sure that the client class for the server
+						// matches the service string, otherwise odd things
+						// will happen
+						// {@squirreljme.error AP05 The server provides a
+						// service for a different client than than the one
+						// which was expected. (The server class; The expected
+						// client class; The actual client class)}
+						Class<?> clclass = s.clientClass();
+						if (!sv.equals(clclass.getName()))
+							throw new RuntimeException(String.format(
+								"AP05 %s %s %s", svclass, sv, clclass));
+						
+						// Is okay!
+						rv = s;
 					}
 				
 					// {@squirreljme.error AP01 Could not initialize the
@@ -163,6 +178,50 @@ public abstract class Kernel
 	public final int serviceCount()
 	{
 		return this._servers.length;
+	}
+	
+	/**
+	 * Returns the service associated with the given index.
+	 *
+	 * @param __dx The index to get.
+	 * @return The service at the given index.
+	 * @throws IndexOutOfBoundsException If the service index is not valid.
+	 * @since 2018/01/05
+	 */
+	public final ServiceServer serviceGet(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AP06 Invalid service index. (The index)}
+		ServiceServer[] servers = this._servers;
+		if (__dx <= 0 || __dx > servers.length)
+			throw new IndexOutOfBoundsException(
+				String.format("AP06 %d", __dx));
+		return this._servers[__dx];
+	}
+	
+	/**
+	 * Returns the service index for the given class.
+	 *
+	 * @param __cl The class to get the service index for.
+	 * @return The index for the class or {@code 0} if there is no service.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	public final int serviceIndex(Class<?> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through services and ask them each if they implement for the
+		// given class.
+		ServiceServer[] servers = this._servers;
+		for (int i = 1, n = servers.length; i < n; i++)
+			if (__cl == servers[i].clientClass())
+				return i;
+		
+		// No service found
+		return 0;
 	}
 	
 	/**

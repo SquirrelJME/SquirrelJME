@@ -128,13 +128,13 @@ public final class SystemCall
 	 *
 	 * @param <C> The class of the service.
 	 * @param __cl The class of the service.
-	 * @return The instance of the service or {@code null} if it does not
-	 * exist or is not available.
+	 * @return The instance of the service client.
+	 * @throws NoSuchServiceException If no service is available.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/02
 	 */
 	public static final <C> C service(Class<C> __cl)
-		throws NullPointerException
+		throws NoSuchServiceException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");

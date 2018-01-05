@@ -18,9 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketReader;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketWriter;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
 /**
@@ -196,10 +200,74 @@ public abstract class KernelTask
 			
 			switch (__p.type())
 			{
+				case PacketTypes.MAP_SERVICE:
+					return this.__mapService(__p);
+				
 					// {@squirreljme.error AP03 Unknown packet. (The packet)}
 				default:
 					throw new IllegalArgumentException(
 						String.format("AP03 %s", __p));
+			}
+		}
+		
+		/**
+		 * Maps the service.
+		 *
+		 * @param __p The packet with the service request.
+		 * @return The service result.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/05
+		 */
+		private final Packet __mapService(Packet __p)
+			throws NullPointerException
+		{
+			if (__p == null)
+				throw new NullPointerException("NARG");
+				
+			Kernel kernel = KernelTask.this.kernel();
+			PacketReader r = __p.createReader();
+			
+			try
+			{
+				Packet rv = __p.respond();
+				PacketWriter w = rv.createWriter();
+				
+				// Locate class which was requested to be mapped
+				Class<?> clclass = Class.forName(r.readString());
+				
+				// Get the index for this service
+				int svdx = kernel.serviceIndex(clclass);
+				if (svdx <= 0)
+				{
+					w.writeInteger(0);
+					return rv;
+				}
+				
+				// Always respond with the service server
+				ServiceServer sv = kernel.serviceGet(svdx);
+				
+				// See if a new server instance needs to be initialized
+				ServiceInstance[] instances = KernelTask.this._instances;
+				synchronized (instances)
+				{
+					ServiceInstance i = instances[svdx];
+					if (i == null)
+						instances[svdx] = sv.createInstance(KernelTask.this,
+							new ServicePacketStream(KernelTask.this._stream,
+								svdx));
+				}
+				
+				// Record the response
+				w.writeInteger(svdx);
+				w.writeString(sv.getClass().getName());
+				return rv;
+			}
+			
+			// {@squirreljme.error AP04 Could not obtain the class
+			// for the client type.}
+			catch (ClassNotFoundException e)
+			{
+				throw new RuntimeException("AP04", e);
 			}
 		}
 	}

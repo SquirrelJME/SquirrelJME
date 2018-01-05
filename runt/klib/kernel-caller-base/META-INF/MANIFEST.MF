@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the base for the ClientCaller 
  and SystemCaller classes so that duplicate code between them is 
  removed as needed.
-X-SquirrelJME-Depends: kernel-packets kernel-ipc-base
+X-SquirrelJME-Depends: kernel-packets kernel-ipc-base kernel-service
 Microedition-Configuration: CLDC-1.8-Compact
 
