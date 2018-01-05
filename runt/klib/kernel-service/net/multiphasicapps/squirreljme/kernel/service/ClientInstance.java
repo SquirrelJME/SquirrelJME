@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.service;
 
+import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+
 /**
  * This class represents a client connection to a server instance.
  *
@@ -35,5 +37,17 @@ public abstract class ClientInstance
 		
 		this.stream = __sps;
 	}
+	
+	/**
+	 * Handles a packet which has been sent from the remote side.
+	 *
+	 * @param __p The packet which was transmitted.
+	 * @return The resulting packet, if no result is expected then this may be
+	 * {@code null}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	protected abstract Packet handlePacket(Packet __p)
+		throws NullPointerException;
 }
 
