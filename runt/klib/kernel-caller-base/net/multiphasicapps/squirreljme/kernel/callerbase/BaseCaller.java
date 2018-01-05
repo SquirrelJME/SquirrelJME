@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.kernel.callerbase;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 
 /**
@@ -23,13 +26,57 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 public abstract class BaseCaller
 	extends SystemCaller
 {
+	/** The packet stream which links to the kernel. */
+	protected final PacketStream stream;
+	
+	/**
+	 * Initializes the base caller.
+	 *
+	 * @param __in The input stream.
+	 * @param __out The output stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/04
+	 */
 	protected BaseCaller(InputStream __in, OutputStream __out)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.stream = new PacketStream(__in, __out, new __Handler__());
+	}
+	
+	/**
+	 * Handler interface.
+	 *
+	 * @since 2018/01/04
+	 */
+	private final class __Handler__
+		implements PacketStreamHandler
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public void end()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
+		public Packet handle(Packet __p)
+			throws NullPointerException
+		{
+			if (__p == null)
+				throw new NullPointerException("NARG");
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
