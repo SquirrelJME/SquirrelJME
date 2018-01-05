@@ -21,14 +21,14 @@ import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
  * @since 2018/01/05
  */
 public final class LibraryClientFactory
-	implements ClientInstanceFactory
+	extends ClientInstanceFactory
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/05
 	 */
 	@Override
-	public final ClientInstance createClient(ServicePacketStream __sps)
+	protected final ClientInstance initializeClient(ServicePacketStream __sps)
 		throws NullPointerException
 	{
 		if (__sps == null)

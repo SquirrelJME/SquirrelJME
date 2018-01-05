@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceAccessor;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceFactory;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
@@ -43,7 +44,7 @@ public abstract class BaseCaller
 		new HashMap<>();
 	
 	/** Services which have been initialized for clients. */
-	private final ClientInstance[] _instances;
+	private final ClientInstanceAccessor[] _instances;
 	
 	/**
 	 * Initializes the base caller.
@@ -68,7 +69,7 @@ public abstract class BaseCaller
 		{
 			try (Packet r = stream.send(p))
 			{
-				this._instances = new ClientInstance[r.readInteger(0)];
+				this._instances = new ClientInstanceAccessor[r.readInteger(0)];
 			}
 		}
 	}
@@ -126,13 +127,13 @@ public abstract class BaseCaller
 			throw new NoSuchServiceException(String.format("BG03 %s", __cl));
 		
 		// Use a pre-initialized instance or setup a new one
-		ClientInstance[] instances = this._instances;
+		ClientInstanceAccessor[] instances = this._instances;
 		synchronized (instances)
 		{
 			// Has it already been initialized?
-			ClientInstance rv = instances[svdx];
+			ClientInstanceAccessor rv = instances[svdx];
 			if (rv != null)
-				return __cl.cast(rv);
+				return __cl.cast(rv.instance());
 			
 			// The factory creates client instances
 			ClientInstanceFactory ssf;
@@ -154,7 +155,7 @@ public abstract class BaseCaller
 			// Create instance of the client service
 			rv = ssf.createClient(new ServicePacketStream(stream, svdx));
 			instances[svdx] = rv;
-			return __cl.cast(rv);
+			return __cl.cast(rv.instance());
 		}
 	}
 	
