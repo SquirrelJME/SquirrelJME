@@ -41,7 +41,7 @@ public final class LibraryInstance
 	 * @since 2018/01/05
 	 */
 	@Override
-	protected Packet handlePacket(Packet __p)
+	public Packet handlePacket(Packet __p)
 		throws NullPointerException
 	{
 		if (__p == null)
