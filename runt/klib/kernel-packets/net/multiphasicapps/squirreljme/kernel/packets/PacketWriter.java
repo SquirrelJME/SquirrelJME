@@ -51,6 +51,80 @@ public final class PacketWriter
 	}
 	
 	/**
+	 * Writes the specified byte to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeByte(int __v)
+	{
+		int position = this._position;
+		this.packet.writeByte(position, __v);
+		this._position = position + 1;
+	}
+	
+	/**
+	 * Writes the specified double to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeDouble(double __v)
+	{
+		this.writeLong(Double.doubleToRawLongBits(__v));
+	}
+	
+	/**
+	 * Writes the specified float to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeFloat(float __v)
+	{
+		this.writeInteger(Float.floatToRawIntBits(__v));
+	}
+	
+	/**
+	 * Writes the specified int to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeInteger(int __v)
+	{
+		int position = this._position;
+		this.packet.writeInteger(position, __v);
+		this._position = position + 4;
+	}
+	
+	/**
+	 * Writes the specified long to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeLong(long __v)
+	{
+		int position = this._position;
+		this.packet.writeLong(position, __v);
+		this._position = position + 8;
+	}
+	
+	/**
+	 * Writes the specified short to the packet.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/01/05
+	 */
+	public final void writeShort(int __v)
+	{
+		int position = this._position;
+		this.packet.writeShort(position, __v);
+		this._position = position + 2;
+	}
+	
+	/**
 	 * Writes the specified string to the packet.
 	 *
 	 * @param __v The value to write.

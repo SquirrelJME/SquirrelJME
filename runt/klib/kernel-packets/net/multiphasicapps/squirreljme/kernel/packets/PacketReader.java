@@ -51,6 +51,84 @@ public final class PacketReader
 	}
 	
 	/**
+	 * Reads a byte from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final byte readByte()
+	{
+		int position = this._position;
+		byte rv = this.packet.readByte(position);
+		this._position = position + 1;
+		return rv;
+	}
+	
+	/**
+	 * Reads a double from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final double readDouble()
+	{
+		return Double.longBitsToDouble(this.readLong());
+	}
+	
+	/**
+	 * Reads a float from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final float readFloat()
+	{
+		return Float.intBitsToFloat(this.readInteger());
+	}
+	
+	/**
+	 * Reads an int from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final int readInteger()
+	{
+		int position = this._position;
+		int rv = this.packet.readInteger(position);
+		this._position = position + 4;
+		return rv;
+	}
+	
+	/**
+	 * Reads a long from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final long readLong()
+	{
+		int position = this._position;
+		long rv = this.packet.readLong(position);
+		this._position = position + 8;
+		return rv;
+	}
+	
+	/**
+	 * Reads a short from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final short readShort()
+	{
+		int position = this._position;
+		short rv = this.packet.readShort(position);
+		this._position = position + 2;
+		return rv;
+	}
+	
+	/**
 	 * Reads a string from the given packet.
 	 *
 	 * @return The read string.
@@ -75,6 +153,28 @@ public final class PacketReader
 		// Skip the string data bytes
 		this._position = position + 2 + (longstr ? (strlen * 2) : strlen);
 		return rv;
+	}
+	
+	/**
+	 * Reads an unsigned byte from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final int readUnsignedByte()
+	{
+		return this.readByte() & 0xFF;
+	}
+	
+	/**
+	 * Reads an unsigned short from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final int readUnsignedShort()
+	{
+		return this.readShort() & 0xFFFF;
 	}
 }
 
