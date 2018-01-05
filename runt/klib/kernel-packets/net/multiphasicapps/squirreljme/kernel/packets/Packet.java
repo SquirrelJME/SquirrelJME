@@ -446,7 +446,8 @@ public final class Packet
 			throw new IllegalArgumentException("AT0a");
 		
 		int length = this._length,
-			endpos = __p + __l;
+			endpos = __p + __l,
+			offset = this._offset;
 			
 		// Variable length packet
 		byte[] data = this._data;
@@ -456,6 +457,10 @@ public final class Packet
 			int allocation = this._allocation;
 			if (endpos <= allocation)
 			{
+				// Clear allocation data
+				for (int i = offset + length, e = offset + endpos; i < e; i++)
+					data[i] = 0;
+				
 				this._length = endpos;
 				return data;
 			}
