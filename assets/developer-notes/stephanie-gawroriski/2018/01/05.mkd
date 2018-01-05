@@ -1,0 +1,15 @@
+# 2018/01/05
+
+## 00:18
+
+Encoding of throwables to be sent to the other side will need to be
+recursively written. Basically it would be best to record the entire state
+of the `Throwable`, this includes causes, suppressed throwables, and the
+stack trace. At least with all of the information it should be much simpler
+to determine where failure has occurred on the remote end.
+
+## 00:30
+
+Also for easier usage, the `printStackTrace()` methods will be replaced in
+`RemoteThrowable`. So this way I can much better represent on the console
+itself the exception which was thrown on the other side.

@@ -1,0 +1,9 @@
+# 2018/01/04
+
+## 09:36
+
+Actually if the `ServerCaller` will take input and output streams for a packet
+interface the same as the client caller, I can really just remove the server
+caller and use `ClientCaller`. However I might want some special logic for
+that. What I can do is have a base class which has common code which neither
+has to implement.
