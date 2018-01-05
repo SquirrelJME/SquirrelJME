@@ -18,6 +18,9 @@ import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
+import net.multiphasicapps.squirreljme.runtime.cldc.NoSuchServiceException;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 
 /**
@@ -59,7 +62,7 @@ public abstract class BaseCaller
 	 */
 	@Override
 	public final <C> C service(Class<C> __cl)
-		throws NullPointerException
+		throws NoSuchServiceException, NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
@@ -70,8 +73,16 @@ public abstract class BaseCaller
 		{
 			// If the service already exists then use it
 			Object rv = services.get(__cl);
-			if (rv != null)
+			if (services.containsKey(__cl))
+			{
+				// {@squirreljme.error BG03 No such service for the
+				// given class exists, this was previously cached. (The class)}
+				if (rv == null)
+					throw new NoSuchServiceException(
+						String.format("BG03 %s", __cl));
+				
 				return __cl.cast(rv);
+			}
 			
 			// Ask the kernel to map the service to a class which can create
 			// client instances
@@ -87,12 +98,19 @@ public abstract class BaseCaller
 				// communication on the channels is done by index only
 				try (Packet r = stream.send(p))
 				{
+					// A zero/negative index indicates no service available
 					index = r.readInteger(0);
-					mapped = r.readString(4);
+					if (index <= 0)
+					{
+						// {@squirreljme.error BG02 No such service for the
+						// given class exists. (The class)}
+						services.put(__cl, null);
+						throw new NoSuchServiceException(
+							String.format("BG02 %s", __cl));
+					}
 					
-					// No service exists for this class
-					if (index <= 0 || mapped.length() <= 0)
-						return null;
+					// Otherwise read the service class which is used
+					mapped = r.readString(4);
 				}
 			}
 			
