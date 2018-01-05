@@ -38,9 +38,12 @@ public abstract class BaseCaller
 	/** The packet stream which links to the kernel. */
 	protected final PacketStream stream;
 	
-	/** Service map cache, since they always have single instances. */
-	private final Map<Class<?>, ClientInstance> _services =
+	/** Mapping of client classes to instances. */
+	private final Map<Class<?>, Integer> _instancemap =
 		new HashMap<>();
+	
+	/** Services which have been initialized for clients. */
+	private final ClientInstance[] _instances;
 	
 	/**
 	 * Initializes the base caller.
@@ -56,7 +59,18 @@ public abstract class BaseCaller
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		this.stream = new PacketStream(__in, __out, new __Handler__());
+		PacketStream stream = new PacketStream(__in, __out, new __Handler__());
+		this.stream = stream;
+		
+		// Initializes the client instance set with the fixed number of
+		// services which are available
+		try (Packet p = stream.farm().create(PacketTypes.SERVICE_COUNT, 0))
+		{
+			try (Packet r = stream.send(p))
+			{
+				this._instances = new ClientInstance[r.readInteger(0)];
+			}
+		}
 	}
 	
 	/**
@@ -70,59 +84,62 @@ public abstract class BaseCaller
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		int svdx;
+		String rawcif;
+		
 		PacketStream stream = this.stream;
-		Map<Class<?>, ClientInstance> services = this._services;
-		synchronized (services)
+		
+		// First try to map the service to an index
+		Map<Class<?>, Integer> instancemap = this._instancemap;
+		synchronized (instancemap)
 		{
-			// If the service already exists then use it
-			ClientInstance rv = services.get(__cl);
-			if (services.containsKey(__cl))
+			Integer idxi = instancemap.get(__cl);
+			if (idxi != null)
 			{
-				// {@squirreljme.error BG03 No such service for the
-				// given class exists, this was previously cached. (The class)}
-				if (rv == null)
-					throw new NoSuchServiceException(
-						String.format("BG03 %s", __cl));
-				
-				return __cl.cast(rv);
+				svdx = idxi;
+				rawcif = null;
 			}
 			
-			// Ask the kernel to map the service to a class which can create
-			// client instances
-			int index;
-			String mapped;
-			try (Packet p = stream.farm().create(PacketTypes.MAP_SERVICE))
-			{
-				// Just a single class is sent to the server
-				p.writeString(0, __cl.getName());
-				
-				// The server responds with the index the server is located at
-				// along with the class it maps to. The index is needed because
-				// communication on the channels is done by index only
-				try (Packet r = stream.send(p))
+			// Request it from the server
+			else
+				try (Packet p = stream.farm().create(PacketTypes.MAP_SERVICE))
 				{
-					// A zero/negative index indicates no service available
-					index = r.readInteger(0);
-					if (index <= 0)
-					{
-						// {@squirreljme.error BG02 No such service for the
-						// given class exists. (The class)}
-						services.put(__cl, null);
-						throw new NoSuchServiceException(
-							String.format("BG02 %s", __cl));
-					}
+					p.writeString(0, __cl.getName());
 					
-					// Otherwise read the service class which is used
-					mapped = r.readString(4);
+					// Tell server to map it
+					try (Packet r = stream.send(p))
+					{
+						svdx = r.readInteger(0);
+						
+						// The class will only be set if the service is valid
+						if (svdx > 0)
+							rawcif = r.readString(4);
+						else
+							rawcif = null;
+					}
 				}
-			}
+		}
+		
+		// {@squirreljme.error BG02 No such service for the given class exists.
+		// (The class to provide a service for)}
+		if (svdx <= 0)
+			throw new NoSuchServiceException(String.format("BG03 %s", __cl));
+		
+		// Use a pre-initialized instance or setup a new one
+		ClientInstance[] instances = this._instances;
+		synchronized (instances)
+		{
+			// Has it already been initialized?
+			ClientInstance rv = instances[svdx];
+			if (rv != null)
+				return __cl.cast(rv);
 			
 			// The factory creates client instances
 			ClientInstanceFactory ssf;
 			try
 			{
 				ssf = (ClientInstanceFactory)
-					(Class.forName(mapped).newInstance());
+					(Class.forName(rawcif).newInstance());
 			}
 			
 			// {@squirreljme.error BG04 Failed to initialize the factory for
@@ -135,8 +152,8 @@ public abstract class BaseCaller
 			}
 			
 			// Create instance of the client service
-			rv = ssf.createClient(new ServicePacketStream(stream, index));
-			services.put(__cl, rv);
+			rv = ssf.createClient(new ServicePacketStream(stream, svdx));
+			instances[svdx] = rv;
 			return __cl.cast(rv);
 		}
 	}

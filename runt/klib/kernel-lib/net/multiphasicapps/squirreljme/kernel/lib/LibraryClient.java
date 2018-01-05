@@ -21,23 +21,15 @@ import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 public final class LibraryClient
 	extends ClientInstance
 {
-	/** The stream to the server. */
-	protected final ServicePacketStream stream;
-	
 	/**
 	 * Initializes the library client.
 	 *
 	 * @param __sps The stream to the server.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
 	public LibraryClient(ServicePacketStream __sps)
-		throws NullPointerException
 	{
-		if (__sps == null)
-			throw new NullPointerException("NARG");
-		
-		this.stream = __sps;
+		super(__sps);
 	}
 	
 	/**

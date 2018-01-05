@@ -200,6 +200,9 @@ public abstract class KernelTask
 			
 			switch (__p.type())
 			{
+				case PacketTypes.SERVICE_COUNT:
+					return this.__serviceCount(__p);
+				
 				case PacketTypes.MAP_SERVICE:
 					return this.__mapService(__p);
 				
@@ -227,40 +230,11 @@ public abstract class KernelTask
 			Kernel kernel = KernelTask.this.kernel();
 			PacketReader r = __p.createReader();
 			
+			// Locate class which was requested to be mapped
+			Class<?> clclass;
 			try
 			{
-				Packet rv = __p.respond();
-				PacketWriter w = rv.createWriter();
-				
-				// Locate class which was requested to be mapped
-				Class<?> clclass = Class.forName(r.readString());
-				
-				// Get the index for this service
-				int svdx = kernel.serviceIndex(clclass);
-				if (svdx <= 0)
-				{
-					w.writeInteger(0);
-					return rv;
-				}
-				
-				// Always respond with the service server
-				ServiceServer sv = kernel.serviceGet(svdx);
-				
-				// See if a new server instance needs to be initialized
-				ServiceInstance[] instances = KernelTask.this._instances;
-				synchronized (instances)
-				{
-					ServiceInstance i = instances[svdx];
-					if (i == null)
-						instances[svdx] = sv.createInstance(KernelTask.this,
-							new ServicePacketStream(KernelTask.this._stream,
-								svdx));
-				}
-				
-				// Record the response
-				w.writeInteger(svdx);
-				w.writeString(sv.clientFactoryClass().getName());
-				return rv;
+				clclass = Class.forName(r.readString());
 			}
 			
 			// {@squirreljme.error AP04 Could not obtain the class
@@ -269,6 +243,55 @@ public abstract class KernelTask
 			{
 				throw new RuntimeException("AP04", e);
 			}
+			
+			Packet rv = __p.respond();
+			PacketWriter w = rv.createWriter();
+			
+			// Get the index for this service
+			int svdx = kernel.serviceIndex(clclass);
+			if (svdx <= 0)
+			{
+				w.writeInteger(0);
+				return rv;
+			}
+			
+			// Always respond with the service server
+			ServiceServer sv = kernel.serviceGet(svdx);
+			
+			// See if a new server instance needs to be initialized
+			ServiceInstance[] instances = KernelTask.this._instances;
+			synchronized (instances)
+			{
+				ServiceInstance i = instances[svdx];
+				if (i == null)
+					instances[svdx] = sv.createInstance(KernelTask.this,
+						new ServicePacketStream(KernelTask.this._stream,
+							svdx));
+			}
+			
+			// Record the response
+			w.writeInteger(svdx);
+			w.writeString(sv.clientFactoryClass().getName());
+			return rv;
+		}
+		
+		/**
+		 * Returns the number of available services.
+		 *
+		 * @param __p The incoming packet.
+		 * @return The number of available services.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/05
+		 */
+		private final Packet __serviceCount(Packet __p)
+			throws NullPointerException
+		{
+			if (__p == null)
+				throw new NullPointerException("NARG");
+			
+			Packet rv = __p.respond(4);
+			rv.writeInteger(0, KernelTask.this._instances.length);
+			return rv;
 		}
 	}
 }

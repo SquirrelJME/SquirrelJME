@@ -43,5 +43,9 @@ public interface PacketTypes
 	/** Map service. */
 	public static final int MAP_SERVICE =
 		1;
+	
+	/** Return the number of services available. */
+	public static final int SERVICE_COUNT =
+		2;
 }
 
