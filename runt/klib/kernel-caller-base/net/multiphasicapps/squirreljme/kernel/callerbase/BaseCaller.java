@@ -87,7 +87,7 @@ public abstract class BaseCaller
 				// communication on the channels is done by index only
 				try (Packet r = stream.send(p))
 				{
-					index = r.readInt(0);
+					index = r.readInteger(0);
 					mapped = r.readString(4);
 					
 					// No service exists for this class

@@ -207,6 +207,47 @@ public final class Packet
 	}
 	
 	/**
+	 * Reads a byte from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/05
+	 */
+	public final byte readByte(int __p)
+		throws IndexOutOfBoundsException
+	{
+		byte[] data = this.__check(__p, 1);
+		return data[this._offset + __p];
+	}
+	
+	/**
+	 * Reads a double from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/05
+	 */
+	public final double readDouble(int __p)
+	{
+		return Double.longBitsToDouble(this.readLong(__p));
+	}
+	
+	/**
+	 * Reads a float from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/05
+	 */
+	public final float readFloat(int __p)
+	{
+		return Float.intBitsToFloat(this.readInteger(__p));
+	}
+	
+	/**
 	 * Reads an integer from the given position.
 	 *
 	 * @param __p The position to read from.
@@ -214,7 +255,7 @@ public final class Packet
 	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
 	 * @since 2018/01/04
 	 */
-	public final int readInt(int __p)
+	public final int readInteger(int __p)
 		throws IndexOutOfBoundsException
 	{
 		byte[] data = this.__check(__p, 4);
@@ -224,6 +265,48 @@ public final class Packet
 			((((int)data[baseoffset + 1]) & 0xFF) << 16) |
 			((((int)data[baseoffset + 2]) & 0xFF) << 8) |
 			(((int)data[baseoffset + 3]) & 0xFF);
+	}
+	
+	/**
+	 * Reads a long from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/04
+	 */
+	public final long readLong(int __p)
+		throws IndexOutOfBoundsException
+	{
+		byte[] data = this.__check(__p, 8);
+		int baseoffset = this._offset + __p;
+		
+		return ((((int)data[baseoffset]) & 0xFF) << 56) |
+			((((int)data[baseoffset + 1]) & 0xFF) << 48) |
+			((((int)data[baseoffset + 2]) & 0xFF) << 40) |
+			((((int)data[baseoffset + 3]) & 0xFF) << 32) |
+			((((int)data[baseoffset + 4]) & 0xFF) << 24) |
+			((((int)data[baseoffset + 5]) & 0xFF) << 16) |
+			((((int)data[baseoffset + 6]) & 0xFF) << 8) |
+			(((int)data[baseoffset + 7]) & 0xFF);
+	}
+	
+	/**
+	 * Reads a short from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/04
+	 */
+	public final short readShort(int __p)
+		throws IndexOutOfBoundsException
+	{
+		byte[] data = this.__check(__p, 2);
+		int baseoffset = this._offset + __p;
+		
+		return (short)(((((int)data[baseoffset]) & 0xFF) << 8) |
+			(((int)data[baseoffset + 1]) & 0xFF));
 	}
 	
 	/**
@@ -266,6 +349,21 @@ public final class Packet
 		System.err.printf("DEBUG -- Read string (%d): %s%n", strlen,
 			new String(chars));
 		return new String(chars);
+	}
+	
+	/**
+	 * Reads an unsigned byte from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/05
+	 */
+	public final int readUnsignedByte(int __p)
+		throws IndexOutOfBoundsException
+	{
+		byte[] data = this.__check(__p, 1);
+		return data[this._offset + __p] & 0xFF;
 	}
 	
 	/**
@@ -354,6 +452,34 @@ public final class Packet
 	}
 	
 	/**
+	 * Writes the specified double to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	public final void writeDouble(int __p, double __v)
+	{
+		this.writeLong(__p, Double.doubleToRawLongBits(__v));
+	}
+	
+	/**
+	 * Writes the specified f;pat to the given position.
+	 *
+	 * @param __p The position to write at.
+	 * @param __v The value to write.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @since 2018/01/02
+	 */
+	public final void writeFloat(int __p, float __v)
+	{
+		this.writeInteger(__p, Float.floatToRawIntBits(__v));
+	}
+	
+	/**
 	 * Writes the specified integer to the given position.
 	 *
 	 * @param __p The position to write at.
@@ -362,7 +488,7 @@ public final class Packet
 	 * bounds.
 	 * @since 2018/01/02
 	 */
-	public final void writeInt(int __p, int __v)
+	public final void writeInteger(int __p, int __v)
 		throws IndexOutOfBoundsException
 	{
 		throw new todo.TODO();
