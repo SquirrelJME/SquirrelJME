@@ -28,11 +28,12 @@ public abstract class LibraryServer
 	/**
 	 * Initializes the base library server.
 	 *
+	 * @param __fc The factory class.
 	 * @since 2018/01/05
 	 */
-	public LibraryServer()
+	public LibraryServer(Class<? extends LibraryServerFactory> __fc)
 	{
-		super(LibraryClient.class);
+		super(LibraryClient.class, __fc);
 	}
 	
 	/**
