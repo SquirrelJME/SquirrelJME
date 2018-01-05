@@ -8,6 +8,6 @@ X-SquirrelJME-Description: This project contains the support for using
  SquirrelJME as a pseudo-runtime in Java SE, which is needed to run 
  programs such as the build environment.
 X-SquirrelJME-Depends: midp-lcdui kernel tool-manifest-writer 
- kernel-client kernel-server
+ kernel-client kernel-server kernel-lib
 Microedition-Configuration: CLDC-1.8-Compact
 

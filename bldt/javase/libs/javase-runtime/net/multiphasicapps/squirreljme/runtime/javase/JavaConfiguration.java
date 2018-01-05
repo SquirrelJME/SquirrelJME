@@ -37,6 +37,9 @@ public class JavaConfiguration
 		
 		switch (__sv)
 		{
+			case "net.multiphasicapps.squirreljme.kernel.lib.LibraryClient":
+				return JavaLibraryServerFactory.class.getName();
+				
 			default:
 				return null;
 		}
@@ -49,7 +52,8 @@ public class JavaConfiguration
 	@Override
 	public Iterable<String> services()
 	{
-		return Arrays.<String>asList(new String[0]);
+		return Arrays.<String>asList(
+			"net.multiphasicapps.squirreljme.kernel.lib.LibraryClient");
 	}
 	
 	/**
