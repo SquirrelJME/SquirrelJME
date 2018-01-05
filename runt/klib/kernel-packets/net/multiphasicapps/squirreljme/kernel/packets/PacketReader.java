@@ -51,6 +51,17 @@ public final class PacketReader
 	}
 	
 	/**
+	 * Reads a boolean from the given packet.
+	 *
+	 * @return The read value.
+	 * @since 2018/01/05
+	 */
+	public final boolean readBoolean()
+	{
+		return (0 != this.readByte());
+	}
+	
+	/**
 	 * Reads a byte from the given packet.
 	 *
 	 * @return The read value.

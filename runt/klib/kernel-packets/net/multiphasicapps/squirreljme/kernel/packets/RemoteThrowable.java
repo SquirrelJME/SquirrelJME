@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.squirreljme.kernel.packets;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 
 /**
  * This class is thrown by the {@link PacketStream#send(Packet)} method if the
@@ -124,7 +128,49 @@ public final class RemoteThrowable
 		if (__t == null || __w == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Record suppressed exceptions
+		Throwable[] suppressed = __t.getSuppressed();
+		int n = Math.min(suppressed.length, Byte.MAX_VALUE);
+		__w.writeByte(n);
+		for (int i = 0; i < n; i++)
+			RemoteThrowable.encode(suppressed[i], __w);
+		
+		// Is there a cause?
+		Throwable cause = __t.getCause();
+		boolean hascause;
+		__w.writeBoolean((hascause = (cause != null)));
+		if (hascause)
+			RemoteThrowable.encode(cause, __w);
+		
+		// Class type
+		__w.writeString(__t.getClass().getName());
+		
+		// Message, if there is any
+		// {@squirreljme.error AT0g Throwable has no message.}
+		__w.writeString(Objects.toString(__t.getLocalizedMessage(), "AT0g"));
+		
+		// Write the stack trace, this is the one which is printed in the
+		// printStackTrace call
+		String trace = null;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PrintStream ps = new PrintStream(baos, true, "utf-8"))
+		{
+			// Write and flush so it actually exists
+			__t.printStackTrace(ps);
+			ps.flush();
+			
+			// Encode string from written bytes
+			trace = new String(baos.toByteArray(), "utf-8");
+		}
+		
+		// Ignore these
+		catch (IOException|OutOfMemoryError e)
+		{
+			trace = "";
+		}
+		
+		// Write it out
+		__w.writeString(trace);
 	}
 }
 
