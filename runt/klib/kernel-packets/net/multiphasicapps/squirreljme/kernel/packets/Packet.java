@@ -38,7 +38,11 @@ public final class Packet
 	
 	/** The failure response type. */
 	static final int _RESPONSE_FAIL =
-		Integer.MIN_VALUE;
+		-32768;
+	
+	/** An exception response, this is given for responseless ones. */
+	static final int _RESPONSE_EXCEPTION =
+		-32767;
 	
 	/** The grow step for the packet. */
 	private static final int _GROW_SIZE =
@@ -226,7 +230,7 @@ public final class Packet
 		throws IndexOutOfBoundsException
 	{
 		// Determine if this is a long string
-		int strlen = readUnsignedShort(__p);
+		int strlen = this.readUnsignedShort(__p);
 		boolean longstr = ((strlen & 0x8000) != 0);
 		strlen &= 0x7FFF;
 		
@@ -404,10 +408,14 @@ public final class Packet
 		if (__p < 0 || __l < 0)
 			throw new IndexOutOfBoundsException("AT0e");
 		
-		// {@squirreljme.error AT0f Read exceeds the packet bounds.}
-		int endpos = __p + __l;
-		if (endpos > this._length)
-			throw new IndexOutOfBoundsException("AT0f");
+		// {@squirreljme.error AT0f Read exceeds the packet bounds.
+		// (The position; The read length; The length of the packet;
+		// The end position)}
+		int endpos = __p + __l,
+			plen = this._length;
+		if (endpos > plen)
+			throw new IndexOutOfBoundsException(
+				String.format("AT0f %d %d %d %d", __p, __l, plen, endpos));
 		
 		return this._data;
 	}

@@ -194,7 +194,13 @@ public abstract class KernelTask
 			if (__p == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			switch (__p.type())
+			{
+					// {@squirreljme.error AP03 Unknown packet. (The packet)}
+				default:
+					throw new IllegalArgumentException(
+						String.format("AP03 %s", __p));
+			}
 		}
 	}
 }
