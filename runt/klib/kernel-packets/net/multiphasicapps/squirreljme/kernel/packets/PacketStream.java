@@ -187,7 +187,10 @@ public final class PacketStream
 				out.writeInt(__key);
 				
 				// Write the type
-				int type = (__forceresponse ? 0 : __p.type());
+				int type = __p.type();
+				if (__forceresponse && (type != Packet._RESPONSE_OKAY &&
+					type != Packet._RESPONSE_FAIL))
+					type = 0;
 				out.writeShort(type);
 				
 				// Write the packet data
