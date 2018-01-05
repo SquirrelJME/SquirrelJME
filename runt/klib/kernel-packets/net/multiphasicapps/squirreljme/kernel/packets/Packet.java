@@ -669,10 +669,27 @@ public final class Packet
 				return data;
 			}
 			
-			// If the packet is in the field, try to grow it in there
+			// If the packet is in the field, just create a new packet then
 			if (this._infield)
 			{
-				throw new todo.TODO();
+				int newalloc = ((endpos + _GROW_SIZE) & (~_GROW_MASK));
+				byte[] newdata = new byte[newalloc];
+				
+				// Copy old data over
+				for (int p = offset, o = 0; p < offsetlength; p++, o++)
+					newdata[o] = data[p];
+				
+				// Store new information
+				this._data = newdata;
+				this._offset = 0;
+				this._allocation = newalloc;
+				this._length = endpos;
+				this._infield = false;
+				
+				// Remember to free the packet so it can be used elsewhere
+				this.farm.__close(offset, allocation);
+				
+				return newdata;
 			}
 			
 			// Otherwise just setup a new byte array
