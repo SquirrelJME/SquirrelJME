@@ -11,35 +11,30 @@
 package net.multiphasicapps.squirreljme.kernel.lib;
 
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceFactory;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
 
 /**
- * This acts as the base class for the library server which is required to be
- * implemented by native services if they wish to access libraries.
+ * This factory is used by the client and enables communication with the
+ * library service on the remote side.
  *
  * @since 2018/01/05
  */
-public abstract class LibraryServerFactory
-	implements ServiceServerFactory
+public final class LibraryClientFactory
+	implements ClientInstanceFactory
 {
-	/**
-	 * Creates a library server instance.
-	 *
-	 * @return The instance of the library server.
-	 * @since 2018/01/05
-	 */
-	protected abstract LibraryServer createLibraryServer();
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/05
 	 */
 	@Override
-	public final ServiceServer createServer()
+	public final ClientInstance createClient(ServicePacketStream __sps)
+		throws NullPointerException
 	{
-		return this.createLibraryServer();
+		if (__sps == null)
+			throw new NullPointerException("NARG");
+		
+		return new LibraryClient(__sps);
 	}
 }
 
