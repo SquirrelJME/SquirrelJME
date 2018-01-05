@@ -13,29 +13,42 @@ package net.multiphasicapps.squirreljme.kernel.service;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 
 /**
- * This class represents a client connection to a server instance.
+ * This class enables access to the client instance along with allowing the
+ * handler to be called without exposing the method in the implementing
+ * class.
  *
  * @since 2018/01/05
  */
-public abstract class ClientInstance
+public final class ClientInstanceAccessor
 {
-	/** Packet stream to the server. */
-	protected final ServicePacketStream stream;
+	/** The client instance. */
+	protected final ClientInstance instance;
 	
 	/**
-	 * Initializes the base client interface.
+	 * Initializes the client instance accessor.
 	 *
-	 * @param __sps The packet stream to the server.
+	 * @param __ci The client to be accessed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public ClientInstance(ServicePacketStream __sps)
+	public ClientInstanceAccessor(ClientInstance __ci)
 		throws NullPointerException
 	{
-		if (__sps == null)
+		if (__ci == null)
 			throw new NullPointerException("NARG");
 		
-		this.stream = __sps;
+		this.instance = __ci;
+	}
+	
+	/**
+	 * Returns the instance of the client.
+	 *
+	 * @return The client instance.
+	 * @since 2018/01/05
+	 */
+	public final ClientInstance instance()
+	{
+		return this.instance;
 	}
 	
 	/**
@@ -47,24 +60,13 @@ public abstract class ClientInstance
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	protected abstract Packet handlePacket(Packet __p)
-		throws NullPointerException;
-	
-	/**
-	 * This allows remote access to packet handling from the accessor.
-	 *
-	 * @param __p The packet to handle.
-	 * @return The resulting packet.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/05
-	 */
-	final Packet __handlePacket(Packet __p)
+	public final Packet handlePacket(Packet __p)
 		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		return this.handlePacket(__p);
+		return this.instance.__handlePacket(__p);
 	}
 }
 

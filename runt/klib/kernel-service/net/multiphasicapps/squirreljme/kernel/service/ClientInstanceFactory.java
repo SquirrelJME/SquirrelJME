@@ -16,17 +16,38 @@ package net.multiphasicapps.squirreljme.kernel.service;
  *
  * @since 2018/01/05
  */
-public interface ClientInstanceFactory
+public abstract class ClientInstanceFactory
 {
 	/**
 	 * Creates a new client which uses the given packet stream to
 	 * communicate with the service instance in the kernel.
 	 *
 	 * @param __sps The stream to send packets into.
+	 * @return The client service.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public abstract ClientInstance createClient(ServicePacketStream __sps)
+	protected abstract ClientInstance initializeClient(
+		ServicePacketStream __sps)
 		throws NullPointerException;
+	
+	/**
+	 * Initializes a new client handler for the remote server but additionally
+	 * provides a means of sending events to the client for handling.
+	 *
+	 * @param __sps The stream to send packets into.
+	 * @return The client service with an accessible packet sending interface.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	public final ClientInstanceAccessor createClient(ServicePacketStream __sps)
+		throws NullPointerException
+	{
+		if (__sps == null)
+			throw new NullPointerException("NARG");
+		
+		// Create instance but also provide a handler to send events to
+		return new ClientInstanceAccessor(this.initializeClient(__sps));
+	}	
 }
 
