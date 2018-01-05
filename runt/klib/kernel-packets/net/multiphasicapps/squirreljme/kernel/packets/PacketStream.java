@@ -341,6 +341,11 @@ public final class PacketStream
 						}
 					}
 					
+					// Is this information about a remote exception which was
+					// thrown during a response?
+					boolean isexception = (type == Packet._RESPONSE_EXCEPTION),
+						wantsresponse = (type > 0);
+					
 					// Allow all exceptions to be caught so that
 					// responses can be generated for them
 					try
@@ -361,11 +366,30 @@ public final class PacketStream
 					// Send failure response
 					catch (Throwable t)
 					{
-						// Only generate exception response if one was
-						// expected
-						if (ptype > 0)
+						// Do not generate exception responses if the
+						// exception type was not handled because it will
+						// end up being a gigantic recursive mess
+						if (!isexception)
 						{
-							throw new todo.TODO();
+							rv = farm.create(Packet._RESPONSE_EXCEPTION);
+							
+							// Write in details about the exception as they
+							// are known
+							PacketWriter w = rv.createWriter();
+							
+							// What this exception is
+							w.writeString(t.getClass().getName());
+							w.writeString(Objects.toString(
+								t.getMessage(), ""));
+							
+							// Is there a cause?
+							Throwable c = t.getCause();
+							if (c != null)
+							{
+								w.writeString(c.getClass().getName());
+								w.writeString(Objects.toString(
+									c.getMessage(), ""));
+							}
 						}
 					}
 					
@@ -374,7 +398,7 @@ public final class PacketStream
 					
 					// Send response packet to the remote end
 					if (rv != null)
-						PacketStream.this.__send(pkey, true, rv);
+						PacketStream.this.__send(pkey, wantsresponse, rv);
 				}
 			}
 			

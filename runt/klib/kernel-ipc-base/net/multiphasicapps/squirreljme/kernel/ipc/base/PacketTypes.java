@@ -26,7 +26,11 @@ public interface PacketTypes
 	
 	/** This is a special type used to indicate a failed response. */
 	public static final int SPECIAL_RESPONSE_FAIL =
-		Integer.MIN_VALUE;
+		-32768;
+	
+	/** This is used to indicate that an exception was thrown. */
+	public static final int SPECIAL_REPONSE_EXCEPTION =
+		-32767;
 	
 	/** The hello packet which indicates the remote side is alive. */
 	public static final int HELLO =

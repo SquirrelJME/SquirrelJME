@@ -129,7 +129,13 @@ public abstract class BaseCaller
 			if (__p == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			switch (__p.type())
+			{
+					// {@squirreljme.error BG01 Unknown packet. (The packet)}
+				default:
+					throw new IllegalArgumentException(
+						String.format("BG01 %s", __p));
+			}
 		}
 	}
 }
