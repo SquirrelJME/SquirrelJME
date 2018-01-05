@@ -98,7 +98,8 @@ public abstract class Kernel
 					try
 					{
 						Class<?> svclass = Class.forName(mapped);
-						ServiceServer s = (ServiceServer)svclass.newInstance();
+						ServiceServer s = ((ServiceServerFactory)svclass.
+							newInstance()).createServer();
 						
 						// Make sure that the client class for the server
 						// matches the service string, otherwise odd things

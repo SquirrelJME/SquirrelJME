@@ -14,8 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryClient;
 import net.multiphasicapps.squirreljme.kernel.lib.LibraryInstallationReport;
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryManager;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.swm.JarStreamSupplier;
 
@@ -155,7 +155,7 @@ final class __SuiteTracker__
 				// Need the library manager
 				__SystemSuiteManager__ ssm =
 					(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
-				LibraryManager manager = ssm._manager;
+				LibraryClient manager = ssm._manager;
 			
 				// Send it to the kernel
 				__update(SuiteInstallStage.VERIFYING, 0);

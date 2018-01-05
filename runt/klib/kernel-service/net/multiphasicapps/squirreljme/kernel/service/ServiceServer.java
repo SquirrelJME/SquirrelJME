@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 public abstract class ServiceServer
 {
 	/** The client class this provides a server for. */
-	protected final Class<?> clientclass;
+	protected final Class<? extends ClientInstance> clientclass;
 	
 	/**
 	 * Initializes the base server.
@@ -30,42 +30,13 @@ public abstract class ServiceServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	protected ServiceServer(Class<?> __cl)
+	protected ServiceServer(Class<? extends ClientInstance> __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		this.clientclass = __cl;
-	}
-	
-	/**
-	 * Returns the client class which this server provides an implementation
-	 * for.
-	 *
-	 * @return The client class for the server.
-	 * @since 2018/01/05
-	 */
-	public final Class<?> clientClass()
-	{
-		return this.clientclass;
-	}
-	
-	/**
-	 * Creates a new client which uses the given packet stream to
-	 * communicate with the service instance in the kernel.
-	 *
-	 * @param __sps The stream to send packets into.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/05
-	 */
-	public final Object createClient(ServicePacketStream __sps)
-		throws NullPointerException
-	{
-		if (__sps == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -77,14 +48,20 @@ public abstract class ServiceServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public final ServiceInstance createInstance(SystemTask __task,
+	public abstract ServiceInstance createInstance(SystemTask __task,
 		ServicePacketStream __sps)
-		throws NullPointerException
+		throws NullPointerException;
+	
+	/**
+	 * Returns the client class which this server provides an implementation
+	 * for.
+	 *
+	 * @return The client class for the server.
+	 * @since 2018/01/05
+	 */
+	public final Class<? extends ClientInstance> clientClass()
 	{
-		if (__task == null || __sps == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
+		return this.clientclass;
 	}
 }
 

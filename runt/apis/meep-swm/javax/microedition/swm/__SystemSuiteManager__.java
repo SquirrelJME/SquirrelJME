@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.multiphasicapps.squirreljme.kernel.lib.Library;
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryManager;
+import net.multiphasicapps.squirreljme.kernel.lib.LibraryClient;
 import net.multiphasicapps.squirreljme.kernel.lib.LibraryType;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
@@ -37,8 +37,8 @@ final class __SystemSuiteManager__
 		new Object();
 	
 	/** The library manager. */
-	final LibraryManager _manager =
-		SystemCall.<LibraryManager>service(LibraryManager.class);
+	final LibraryClient _manager =
+		SystemCall.<LibraryClient>service(LibraryClient.class);
 	
 	/** Cached suites. */
 	protected final Map<Library, Reference<Suite>> _suites =
@@ -100,7 +100,7 @@ final class __SystemSuiteManager__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 			
-		LibraryManager manager = this._manager;
+		LibraryClient manager = this._manager;
 		
 		// The system call can be masked to filter out unwanted suites
 		int mask;

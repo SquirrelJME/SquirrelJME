@@ -19,6 +19,12 @@ import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
  */
 public final class ServicePacketStream
 {
+	/** The stream to send packets through. */
+	protected final PacketStream stream;
+	
+	/** The service index. */
+	protected final int index;
+	
 	/**
 	 * Initializes the service packet stream.
 	 *
@@ -33,7 +39,8 @@ public final class ServicePacketStream
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.stream = __ps;
+		this.index = __dx;
 	}
 }
 

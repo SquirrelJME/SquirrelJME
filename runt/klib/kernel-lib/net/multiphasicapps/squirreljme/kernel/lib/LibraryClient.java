@@ -10,12 +10,15 @@
 
 package net.multiphasicapps.squirreljme.kernel.lib;
 
+import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
+
 /**
  * This class is used to manage libraries as needed by client tasks.
  *
  * @since 2018/01/02
  */
-public final class LibraryManager
+public final class LibraryClient
+	extends ClientInstance
 {
 	/**
 	 * Returns the library by the given index.
