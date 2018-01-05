@@ -132,9 +132,17 @@ public final class Packet
 			return;
 		this._closed = true;
 		
+		// Clear the written data in the packet for security purposes
+		byte[] data = this._data;
+		int offset = this._offset,
+			allocation = this._allocation,
+			length = this._length;
+		for (int i = offset, e = offset + length; i < e; i++)
+			data[i] = 0;
+		
 		// Tell the farm to free up this packet space
 		if (this._infield)
-			this.farm.__close(this._offset, this._allocation);
+			this.farm.__close(offset, allocation);
 		
 		// Clear data points to invalidate them and prevent corruption
 		this._data = null;
