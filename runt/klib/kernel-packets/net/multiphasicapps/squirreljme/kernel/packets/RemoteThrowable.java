@@ -30,6 +30,12 @@ import java.util.Objects;
 public final class RemoteThrowable
 	extends RuntimeException
 {
+	/** The class type. */
+	protected final String type;
+	
+	/** The stack trace. */
+	protected final String trace;
+	
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
@@ -37,6 +43,8 @@ public final class RemoteThrowable
 	 */
 	public RemoteThrowable()
 	{
+		this.type = null;
+		this.trace = null;
 	}
 	
 	/**
@@ -48,6 +56,9 @@ public final class RemoteThrowable
 	public RemoteThrowable(String __m)
 	{
 		super(__m);
+		
+		this.type = null;
+		this.trace = null;
 	}
 	
 	/**
@@ -60,6 +71,9 @@ public final class RemoteThrowable
 	public RemoteThrowable(String __m, Throwable __c)
 	{
 		super(__m, __c);
+		
+		this.type = null;
+		this.trace = null;
 	}
 	
 	/**
@@ -71,23 +85,26 @@ public final class RemoteThrowable
 	public RemoteThrowable(Throwable __c)
 	{
 		super(__c);
+		
+		this.type = null;
+		this.trace = null;
 	}
 	
 	/**
-	 * This decodes a throwable which was stored in a packet.
+	 * Initialize the exception with a message, cause, class type, and trace.
 	 *
-	 * @param __r The reader to decode from.
-	 * @return The decoded throwable from the remote end.
-	 * @throws NullPointerException On null arguments.
+	 * @param __m The message.
+	 * @param __c The cause.
+	 * @param __t The class type.
+	 * @param __s The stack trace
 	 * @since 2018/01/05
 	 */
-	public static final RemoteThrowable decode(PacketReader __r)
-		throws NullPointerException
+	public RemoteThrowable(String __m, Throwable __c, String __t, String __s)
 	{
-		if (__r == null)
-			throw new NullPointerException("NARG");
+		super(__m, __c);
 		
-		throw new todo.TODO();
+		this.type = __t;
+		this.trace = __s;
 	}
 	
 	/**
@@ -111,7 +128,65 @@ public final class RemoteThrowable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// If there is no trace then just use the one for this actual
+		// exception
+		String trace = this.trace;
+		if (trace == null)
+		{
+			super.printStackTrace(__ps);
+			return;
+		}
+		
+		// Print a message saying this is from another process
+		__ps.println("------------------------------");
+		__ps.println("REMOTE STACK TRACE:");
+		__ps.println(trace);
+		
+		// Also print the local side because that can be important!
+		__ps.println("LOCAL STACK TRACE:");
+		super.printStackTrace(__ps);
+		__ps.println("------------------------------");
+	}
+	
+	/**
+	 * This decodes a throwable which was stored in a packet.
+	 *
+	 * @param __r The reader to decode from.
+	 * @return The decoded throwable from the remote end.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	public static final RemoteThrowable decode(PacketReader __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Read suppressed exceptions
+		int n = __r.readUnsignedByte();
+		Throwable[] suppressed = new Throwable[n];
+		for (int i = 0; i < n; i++)
+			suppressed[i] = RemoteThrowable.decode(__r);
+		
+		// Is there a cause?
+		Throwable cause = null;
+		if (__r.readBoolean())
+			cause = RemoteThrowable.decode(__r);
+		
+		// Read class type
+		String type = __r.readString();
+		
+		// Read message
+		String message = __r.readString();
+		
+		// Read stack trace
+		String trace = __r.readString();
+		
+		// Build exception
+		RemoteThrowable rv = new RemoteThrowable(message, cause, type, trace);
+		for (Throwable t : suppressed)
+			rv.addSuppressed(t);
+		return rv;
 	}
 	
 	/**
