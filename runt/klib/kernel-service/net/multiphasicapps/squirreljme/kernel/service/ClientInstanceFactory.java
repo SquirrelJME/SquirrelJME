@@ -8,26 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
-
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryServer;
+package net.multiphasicapps.squirreljme.kernel.service;
 
 /**
- * This is used to manage programs which are natively installed on the Java
- * SE virtualized system.
+ * This is used to create instances of {@link ClientInstance} which is used
+ * to communicate with a remote service.
  *
  * @since 2018/01/05
  */
-public class JavaLibraryServer
-	extends LibraryServer
+public interface ClientInstanceFactory
 {
 	/**
-	 * Initializes the server.
+	 * Creates a new client which uses the given packet stream to
+	 * communicate with the service instance in the kernel.
 	 *
+	 * @param __sps The stream to send packets into.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public JavaLibraryServer()
-	{
-	}
+	public abstract ClientInstance createClient(ServicePacketStream __sps)
+		throws NullPointerException;
 }
 

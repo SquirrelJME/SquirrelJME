@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceFactory;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
@@ -117,10 +118,10 @@ public abstract class BaseCaller
 			}
 			
 			// The factory creates client instances
-			ServiceServerFactory ssf;
+			ClientInstanceFactory ssf;
 			try
 			{
-				ssf = (ServiceServerFactory)
+				ssf = (ClientInstanceFactory)
 					(Class.forName(mapped).newInstance());
 			}
 			

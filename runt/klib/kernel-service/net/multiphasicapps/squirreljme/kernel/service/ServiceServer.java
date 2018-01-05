@@ -23,26 +23,26 @@ public abstract class ServiceServer
 	/** The client class this provides a server for. */
 	protected final Class<? extends ClientInstance> clientclass;
 	
-	/** The class which creates the service. */
-	protected final Class<? extends ServiceServerFactory> factoryclass;
+	/** The factory for creating client instances. */
+	protected final Class<? extends ClientInstanceFactory> clientfactoryclass;
 	
 	/**
 	 * Initializes the base server.
 	 *
 	 * @param __cl The client class which is used.
-	 * @param __fc The factory class which makes this.
+	 * @param __fc The factory class for creating clients.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
 	protected ServiceServer(Class<? extends ClientInstance> __cl,
-		Class<? extends ServiceServerFactory> __fc)
+		Class<? extends ClientInstanceFactory> __fc)
 		throws NullPointerException
 	{
 		if (__cl == null || __fc == null)
 			throw new NullPointerException("NARG");
 		
 		this.clientclass = __cl;
-		this.factoryclass = __fc;
+		this.clientfactoryclass = __fc;
 	}
 	
 	/**
@@ -71,14 +71,14 @@ public abstract class ServiceServer
 	}
 	
 	/**
-	 * Returns the factory which created this server.
+	 * Returns the factory class for creating client instances.
 	 *
-	 * @return The factory which creates this class.
+	 * @return The factory class for creating client instances.
 	 * @since 2018/01/05
 	 */
-	public final Class<? extends ServiceServerFactory> factoryClass()
+	public final Class<? extends ClientInstanceFactory> clientFactoryClass()
 	{
-		return this.factoryclass;
+		return this.clientfactoryclass;
 	}
 }
 

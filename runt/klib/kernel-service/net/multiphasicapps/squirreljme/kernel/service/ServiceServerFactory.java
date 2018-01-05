@@ -21,17 +21,6 @@ package net.multiphasicapps.squirreljme.kernel.service;
 public interface ServiceServerFactory
 {
 	/**
-	 * Creates a new client which uses the given packet stream to
-	 * communicate with the service instance in the kernel.
-	 *
-	 * @param __sps The stream to send packets into.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/05
-	 */
-	public abstract ClientInstance createClient(ServicePacketStream __sps)
-		throws NullPointerException;
-	
-	/**
 	 * Creates the service server which will be used by clients.
 	 *
 	 * @return The newly created service server.
