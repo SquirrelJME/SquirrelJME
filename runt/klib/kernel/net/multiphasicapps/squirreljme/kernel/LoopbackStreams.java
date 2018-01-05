@@ -346,7 +346,11 @@ public final class LoopbackStreams
 		@Override
 		public void write(int __b)
 		{
-			throw new todo.TODO();
+			ByteDeque out = this.out;
+			synchronized (out)
+			{
+				out.addLast((byte)__b);
+			}
 		}
 		
 		/**
@@ -355,8 +359,18 @@ public final class LoopbackStreams
 		 */
 		@Override
 		public void write(byte[] __b, int __o, int __l)
+			throws ArrayIndexOutOfBoundsException, NullPointerException
 		{
-			throw new todo.TODO();
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+				throw new ArrayIndexOutOfBoundsException("IOOB");
+			
+			ByteDeque out = this.out;
+			synchronized (out)
+			{
+				out.addLast(__b, __o, __l);
+			}
 		}
 	}
 }
