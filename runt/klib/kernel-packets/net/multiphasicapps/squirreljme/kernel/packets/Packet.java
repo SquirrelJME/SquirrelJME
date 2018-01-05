@@ -195,6 +195,26 @@ public final class Packet
 	}
 	
 	/**
+	 * Reads an integer from the given position.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @since 2018/01/04
+	 */
+	public final int readInt(int __p)
+		throws IndexOutOfBoundsException
+	{
+		byte[] data = this.__check(__p, 4);
+		int baseoffset = this._offset + __p;
+		
+		return ((((int)data[baseoffset]) & 0xFF) << 24) |
+			((((int)data[baseoffset + 1]) & 0xFF) << 16) |
+			((((int)data[baseoffset + 2]) & 0xFF) << 8) |
+			(((int)data[baseoffset + 3]) & 0xFF);
+	}
+	
+	/**
 	 * Reads a string from the given position.
 	 *
 	 * @param __p The position to read from.
