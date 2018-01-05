@@ -241,7 +241,7 @@ public final class LoopbackStreams
 					}
 					
 					// Read data
-					return in.getFirst() & 0xFF;
+					return in.removeFirst() & 0xFF;
 				}
 			}
 		}
@@ -279,8 +279,7 @@ public final class LoopbackStreams
 						continue;
 					}
 					
-					int rv = in.getFirst(__b, __o, Math.min(__l, avail));
-					return (rv < 0 ? 0 : rv);
+					return in.removeFirst(__b, __o, Math.min(__l, avail));
 				}
 			}
 		}
