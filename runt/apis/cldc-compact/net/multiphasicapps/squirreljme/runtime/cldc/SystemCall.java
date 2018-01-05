@@ -157,11 +157,40 @@ public final class SystemCall
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0c Cannot set daemon thread because the
-		// system caller has not been set yet.}
+		// The packet interface needs this class to set daemon threads
+		// before the system caller is initialized.
 		SystemCaller caller = SystemCall._CALLER;
 		if (caller == null)
-			throw new IllegalThreadStateException("ZZ0c");
+		{
+			// {@squirreljme.error ZZ0c Cannot set daemon thread because
+			// the system caller has not been set yet.}
+			String altname = System.getProperty(
+				DaemonThreadSetter.class.getName());
+			if (altname == null)
+				throw new IllegalThreadStateException("ZZ0c");
+			
+			try
+			{
+				// Setup class instance
+				Class<?> cl = Class.forName(altname);
+				DaemonThreadSetter dts = (DaemonThreadSetter)cl.newInstance();
+				
+				// Call that instead
+				dts.setDaemonThread(__t);
+				return;
+			}
+			
+			// {@squirreljme.error ZZ0b Could not set the daemon thread using
+			// the alternative means.}
+			catch (ClassCastException|ClassNotFoundException|
+				IllegalAccessException|InstantiationException e)
+			{
+				IllegalThreadStateException t =
+					new IllegalThreadStateException("ZZ0b");
+				t.initCause(e);
+				throw t;
+			}
+		}
 		
 		caller.setDaemonThread(__t);
 	}

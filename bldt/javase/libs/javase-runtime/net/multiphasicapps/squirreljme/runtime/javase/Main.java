@@ -23,6 +23,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.runtime.cldc.DaemonThreadSetter;
 import net.multiphasicapps.squirreljme.runtime.cldc.StandardOutput;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
@@ -126,6 +127,10 @@ public class Main
 	private static SystemCaller __initializeRunTime(boolean __client)
 		throws Throwable
 	{
+		// Initialize the daemon setter
+		System.setProperty(DaemonThreadSetter.class.getName(),
+			DaemonSetter.class.getName());
+		
 		// Clients use a bi-directional bridge on top of the standard
 		// input and output streams to interact with the system
 		SystemCaller syscaller;
