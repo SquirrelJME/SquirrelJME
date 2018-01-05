@@ -17,5 +17,23 @@ package net.multiphasicapps.squirreljme.kernel.service;
  */
 public abstract class ClientInstance
 {
+	/** Packet stream to the server. */
+	protected final ServicePacketStream stream;
+	
+	/**
+	 * Initializes the base client interface.
+	 *
+	 * @param __sps The packet stream to the server.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	public ClientInstance(ServicePacketStream __sps)
+		throws NullPointerException
+	{
+		if (__sps == null)
+			throw new NullPointerException("NARG");
+		
+		this.stream = __sps;
+	}
 }
 
