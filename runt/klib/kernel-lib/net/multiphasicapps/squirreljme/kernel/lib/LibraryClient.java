@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.lib;
 
+import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 
@@ -44,6 +45,26 @@ public final class LibraryClient
 		throws NoSuchLibraryException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/05
+	 */
+	@Override
+	protected Packet handlePacket(Packet __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		switch (__p.type())
+		{
+				// {@squirreljme.error BC03 Unknown packet. (The packet)}
+			default:
+				throw new IllegalArgumentException(
+					String.format("BC03 %s", __p));
+		}
 	}
 	
 	/**

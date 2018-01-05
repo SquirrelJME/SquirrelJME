@@ -40,6 +40,10 @@ public interface PacketTypes
 	public static final int INITIALIZED =
 		-2;
 	
+	/** Service with no result. */
+	public static final int SERVICE_NO_RESULT =
+		-3;
+	
 	/** Map service. */
 	public static final int MAP_SERVICE =
 		1;
@@ -47,5 +51,9 @@ public interface PacketTypes
 	/** Return the number of services available. */
 	public static final int SERVICE_COUNT =
 		2;
+	
+	/** Service with a result. */
+	public static final int SERVICE_WITH_RESULT =
+		3;
 }
 

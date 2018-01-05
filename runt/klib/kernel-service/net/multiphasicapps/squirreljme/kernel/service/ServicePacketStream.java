@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.service;
 
+import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
+import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 
 /**
