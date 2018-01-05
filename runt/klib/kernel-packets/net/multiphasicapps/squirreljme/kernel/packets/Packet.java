@@ -447,7 +447,10 @@ public final class Packet
 		
 		int length = this._length,
 			endpos = __p + __l,
-			offset = this._offset;
+			offset = this._offset,
+			offsetbase = offset + __p,
+			offsetlength = offset + length,
+			offsetendpos = offset + endpos;
 			
 		// Variable length packet
 		byte[] data = this._data;
@@ -457,9 +460,9 @@ public final class Packet
 			int allocation = this._allocation;
 			if (endpos <= allocation)
 			{
-				// Clear allocation data
-				for (int i = offset + length, e = offset + endpos; i < e; i++)
-					data[i] = 0;
+				// Zero old data
+				while (offsetlength < offsetendpos)
+					data[offsetlength++] = 0;
 				
 				this._length = endpos;
 				return data;
@@ -483,6 +486,10 @@ public final class Packet
 				this._offset = 0;
 				this._allocation = newalloc;
 				this._length = endpos;
+				
+				// Zero old data
+				while (offsetlength < offsetendpos)
+					newdata[offsetlength++] = 0;
 				
 				return newdata;
 			}
