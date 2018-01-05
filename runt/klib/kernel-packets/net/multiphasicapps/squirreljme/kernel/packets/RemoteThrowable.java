@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.packets;
 
+import java.io.PrintStream;
+
 /**
  * This class is thrown by the {@link PacketStream#send(Packet)} method if the
  * remote end threw an exception while handling a packet.
@@ -79,6 +81,30 @@ public final class RemoteThrowable
 		throws NullPointerException
 	{
 		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/05
+	 */
+	@Override
+	public void printStackTrace()
+	{
+		this.printStackTrace(System.err);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/05
+	 */
+	@Override
+	public void printStackTrace(PrintStream __ps)
+		throws NullPointerException
+	{
+		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
