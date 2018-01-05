@@ -371,7 +371,9 @@ public final class PacketStream
 						// end up being a gigantic recursive mess
 						if (!isexception)
 						{
-							rv = farm.create(Packet._RESPONSE_EXCEPTION);
+							rv = farm.create((wantsresponse ?
+								Packet._RESPONSE_FAIL :
+								Packet._RESPONSE_EXCEPTION));
 							
 							// Write in details about the exception as they
 							// are known
@@ -398,7 +400,12 @@ public final class PacketStream
 					
 					// Send response packet to the remote end
 					if (rv != null)
+					{
 						PacketStream.this.__send(pkey, wantsresponse, rv);
+						
+						// Response sent, so no longer is it needed
+						rv.close();
+					}
 				}
 			}
 			
