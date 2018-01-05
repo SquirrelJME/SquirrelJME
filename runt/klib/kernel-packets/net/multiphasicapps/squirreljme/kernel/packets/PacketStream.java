@@ -245,9 +245,7 @@ public final class PacketStream
 		
 		// An exception was thrown on the remote end, to report that response
 		if (rv.type() == Packet._RESPONSE_FAIL)
-		{
-			throw new todo.TODO();
-		}
+			throw RemoteThrowable.decode(rv.createReader());
 		
 		return rv;
 	}
@@ -380,21 +378,7 @@ public final class PacketStream
 							
 							// Write in details about the exception as they
 							// are known
-							PacketWriter w = rv.createWriter();
-							
-							// What this exception is
-							w.writeString(t.getClass().getName());
-							w.writeString(Objects.toString(
-								t.getMessage(), ""));
-							
-							// Is there a cause?
-							Throwable c = t.getCause();
-							if (c != null)
-							{
-								w.writeString(c.getClass().getName());
-								w.writeString(Objects.toString(
-									c.getMessage(), ""));
-							}
+							RemoteThrowable.encode(t, rv.createWriter());
 						}
 					}
 					
