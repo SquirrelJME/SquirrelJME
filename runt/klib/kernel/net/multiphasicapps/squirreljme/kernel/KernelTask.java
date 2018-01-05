@@ -259,7 +259,7 @@ public abstract class KernelTask
 				
 				// Record the response
 				w.writeInteger(svdx);
-				w.writeString(sv.factoryClass().getClass().getName());
+				w.writeString(sv.factoryClass().getName());
 				return rv;
 			}
 			
