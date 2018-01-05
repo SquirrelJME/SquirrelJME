@@ -54,7 +54,7 @@ public abstract class ServiceInstance
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	protected abstract Packet handlePacket(Packet __p)
+	public abstract Packet handlePacket(Packet __p)
 		throws NullPointerException;
 }
 
