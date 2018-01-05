@@ -18,8 +18,10 @@ import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
+import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
 import net.multiphasicapps.squirreljme.runtime.cldc.NoSuchServiceException;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 
@@ -36,7 +38,7 @@ public abstract class BaseCaller
 	protected final PacketStream stream;
 	
 	/** Service map cache, since they always have single instances. */
-	private final Map<Class<?>, Object> _services =
+	private final Map<Class<?>, ClientInstance> _services =
 		new HashMap<>();
 	
 	/**
@@ -68,11 +70,11 @@ public abstract class BaseCaller
 			throw new NullPointerException("NARG");
 		
 		PacketStream stream = this.stream;
-		Map<Class<?>, Object> services = this._services;
+		Map<Class<?>, ClientInstance> services = this._services;
 		synchronized (services)
 		{
 			// If the service already exists then use it
-			Object rv = services.get(__cl);
+			ClientInstance rv = services.get(__cl);
 			if (services.containsKey(__cl))
 			{
 				// {@squirreljme.error BG03 No such service for the
@@ -114,7 +116,27 @@ public abstract class BaseCaller
 				}
 			}
 			
-			throw new todo.TODO();
+			// The factory creates client instances
+			ServiceServerFactory ssf;
+			try
+			{
+				ssf = (ServiceServerFactory)
+					(Class.forName(mapped).newInstance());
+			}
+			
+			// {@squirreljme.error BG04 Failed to initialize the factory for
+			// creating the client instance for a service. (The requested
+			// service)}
+			catch (ClassNotFoundException|IllegalAccessException|
+				InstantiationException e)
+			{
+				throw new RuntimeException(String.format("BG04 %s", __cl), e);
+			}
+			
+			// Create instance of the client service
+			rv = ssf.createClient(new ServicePacketStream(stream, index));
+			services.put(__cl, rv);
+			return __cl.cast(rv);
 		}
 	}
 	

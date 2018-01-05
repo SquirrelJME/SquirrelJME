@@ -21,5 +21,14 @@ import net.multiphasicapps.squirreljme.kernel.lib.LibraryServer;
 public class JavaLibraryServer
 	extends LibraryServer
 {
+	/**
+	 * Initializes the server.
+	 *
+	 * @since 2018/01/05
+	 */
+	public JavaLibraryServer()
+	{
+		super(JavaLibraryServerFactory.class);
+	}
 }
 
