@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.kernel.callerbase;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
@@ -29,6 +32,10 @@ public abstract class BaseCaller
 	/** The packet stream which links to the kernel. */
 	protected final PacketStream stream;
 	
+	/** Service map cache, since they always have single instances. */
+	private final Map<Class<?>, Object> _services =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the base caller.
 	 *
@@ -44,6 +51,53 @@ public abstract class BaseCaller
 			throw new NullPointerException("NARG");
 		
 		this.stream = new PacketStream(__in, __out, new __Handler__());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/03
+	 */
+	@Override
+	public final <C> C service(Class<C> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		PacketStream stream = this.stream;
+		Map<Class<?>, Object> services = this._services;
+		synchronized (services)
+		{
+			// If the service already exists then use it
+			Object rv = services.get(__cl);
+			if (rv != null)
+				return __cl.cast(rv);
+			
+			// Ask the kernel to map the service to a class which can create
+			// client instances
+			int index;
+			String mapped;
+			try (Packet p = stream.farm().create(PacketTypes.MAP_SERVICE))
+			{
+				// Just a single class is sent to the server
+				p.writeString(0, __cl.getName());
+				
+				// The server responds with the index the server is located at
+				// along with the class it maps to. The index is needed because
+				// communication on the channels is done by index only
+				try (Packet r = stream.send(p))
+				{
+					index = r.readInt(0);
+					mapped = r.readString(4);
+					
+					// No service exists for this class
+					if (index <= 0 || mapped.length() <= 0)
+						return null;
+				}
+			}
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**

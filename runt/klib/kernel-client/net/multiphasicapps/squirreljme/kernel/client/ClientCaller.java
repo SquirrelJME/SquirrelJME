@@ -72,19 +72,5 @@ public abstract class ClientCaller
 	{
 		throw new todo.TODO();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/03
-	 */
-	@Override
-	public final <C> C service(Class<C> __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
 }
 
