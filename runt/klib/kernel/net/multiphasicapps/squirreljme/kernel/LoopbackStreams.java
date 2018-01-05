@@ -21,6 +21,8 @@ import net.multiphasicapps.util.bytedeque.ByteDeque;
  * communication where one source of streams writes into the stream of the
  * other side.
  *
+ * The streams within this class cannot be closed.
+ *
  * @since 2018/01/04
  */
 public final class LoopbackStreams
@@ -192,6 +194,20 @@ public final class LoopbackStreams
 		 * @since 2018/01/04
 		 */
 		@Override
+		public int available()
+		{
+			ByteDeque in = this.in;
+			synchronized (in)
+			{
+				return in.available();
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/04
+		 */
+		@Override
 		public void close()
 		{
 			// Close has no effect
@@ -202,19 +218,32 @@ public final class LoopbackStreams
 		 * @since 2018/01/04
 		 */
 		@Override
-		public int available()
-		{
-			throw new todo.TODO();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/01/04
-		 */
-		@Override
 		public int read()
 		{
-			throw new todo.TODO();
+			ByteDeque in = this.in;
+			synchronized (in)
+			{
+				for (;;)
+				{
+					// If not enough data is available, then wait
+					int avail = in.available();
+					if (avail <= 0)
+					{
+						try
+						{
+							in.wait();
+						}
+						catch (InterruptedException e)
+						{
+						}
+						
+						continue;
+					}
+					
+					// Read data
+					return in.getFirst() & 0xFF;
+				}
+			}
 		}
 		
 		/**
@@ -223,8 +252,37 @@ public final class LoopbackStreams
 		 */
 		@Override
 		public int read(byte[] __b, int __o, int __l)
+			throws ArrayIndexOutOfBoundsException, NullPointerException
 		{
-			throw new todo.TODO();
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+				throw new ArrayIndexOutOfBoundsException("IOOB");
+			
+			ByteDeque in = this.in;
+			synchronized (in)
+			{
+				for (;;)
+				{
+					// If there is no data available then wait for it
+					int avail = in.available();
+					if (avail <= 0)
+					{
+						try
+						{
+							in.wait();
+						}
+						catch (InterruptedException e)
+						{
+						}
+						
+						continue;
+					}
+					
+					int rv = in.getFirst(__b, __o, Math.min(__l, avail));
+					return (rv < 0 ? 0 : rv);
+				}
+			}
 		}
 	}
 	
