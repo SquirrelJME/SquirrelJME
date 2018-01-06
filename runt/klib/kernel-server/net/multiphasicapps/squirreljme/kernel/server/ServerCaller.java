@@ -59,21 +59,10 @@ public abstract class ServerCaller
 	 * @since 2018/01/03
 	 */
 	@Override
-	public SystemTask[] listTasks(boolean __incsys)
+	public final SystemTask[] listTasks(boolean __incsys)
 		throws SecurityException
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/03
-	 */
-	@Override
-	public void setDaemonThread(Thread __t)
-		throws IllegalThreadStateException, NullPointerException
-	{
-		throw new todo.TODO();
+		return this.kernel.taskList(__incsys);
 	}
 }
 
