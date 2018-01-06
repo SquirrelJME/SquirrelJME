@@ -110,8 +110,6 @@ public final class LibraryClient
 			// Send to server
 			try (Packet r = stream.send(p))
 			{
-				System.err.printf("DEBUG -- List got: %s%n", r);
-				
 				throw new todo.TODO();
 			}
 		}
