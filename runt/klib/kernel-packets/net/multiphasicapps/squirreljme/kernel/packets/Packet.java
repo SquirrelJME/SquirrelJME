@@ -247,6 +247,33 @@ public final class Packet
 	}
 	
 	/**
+	 * Reads bytes from the packet into the given array.
+	 *
+	 * @param __p The position to read from.
+	 * @param __b The destination array.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to read.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IndexOutOfBoundsException If the read exceeds the packet bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/06
+	 */
+	public final void readBytes(int __p, byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		byte[] data = this.__check(__p, __l);
+		for (int i = this._offset + __p, o = __o, oe = __o + __l; o < oe;)
+			__b[o++] = data[i++];
+	}
+	
+	/**
 	 * Reads a double from the given position.
 	 *
 	 * @param __p The position to read from.
@@ -338,7 +365,8 @@ public final class Packet
 		if (__v.variable)
 			throw new IllegalArgumentException("AT0h");
 		
-		throw new todo.TODO();
+		// Forward to the array reading method
+		this.readBytes(__p, __v._data, __v._offset, __v._length);
 	}
 	
 	/**
@@ -519,6 +547,34 @@ public final class Packet
 	}
 	
 	/**
+	 * Writes bytes from the array to the packet.
+	 *
+	 * @param __p The position to write to.
+	 * @param __b The source array.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to write.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IndexOutOfBoundsException If the write exceeds the packet
+	 * bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/06
+	 */
+	public final void writeBytes(int __p, byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		byte[] data = this.__ensure(__p, __l);
+		for (int i = this._offset + __p, o = __o, oe = __o + __l; o < oe;)
+			data[i++] = __b[o++];
+	}
+	
+	/**
 	 * Writes the specified double to the given position.
 	 *
 	 * @param __p The position to write at.
@@ -606,7 +662,8 @@ public final class Packet
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Just forward to writing bytes
+		this.writeBytes(__p, __v._data, __v._offset, __v._length);
 	}
 	
 	/**
