@@ -206,6 +206,10 @@ public abstract class KernelTask
 				case PacketTypes.MAP_SERVICE:
 					return this.__mapService(__p);
 				
+				case PacketTypes.SERVICE_WITH_RESULT:
+				case PacketTypes.SERVICE_NO_RESULT:
+					return this.__servicePacket(__p);
+				
 					// {@squirreljme.error AP03 Unknown packet. (The packet)}
 				default:
 					throw new IllegalArgumentException(
@@ -292,6 +296,51 @@ public abstract class KernelTask
 			Packet rv = __p.respond(4);
 			rv.writeInteger(0, KernelTask.this._instances.length);
 			return rv;
+		}
+		
+		/**
+		 * Handles a service packet.
+		 *
+		 * @param __p The packet from the service.
+		 * @return The result of the service call, if one is expected.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/06
+		 */
+		private final Packet __servicePacket(Packet __p)
+			throws NullPointerException
+		{
+			if (__p == null)
+				throw new NullPointerException("NARG");
+			
+			// Read service details
+			int svdx = __p.readUnsignedShort(0),
+				type = __p.readUnsignedShort(2),
+				plen = __p.readInteger(4);
+			
+			// Obtain the instance of the service.
+			ServiceInstance i;
+			ServiceInstance[] instances = KernelTask.this._instances;
+			synchronized (instances)
+			{
+				// {@squirreljme.error AP07 Invalid service index.
+				// (The service index)}
+				if (svdx < 0 || svdx >= instances.length)
+					throw new RuntimeException(String.format("AP07 %d", svdx));
+				
+				// {@squirreljme.error AP08 The service index is valid however
+				// no service has been mapped and initialized yet.}
+				i = instances[svdx];
+				if (i == null)
+					throw new RuntimeException(String.format("AP08 %d", svdx));
+			}
+			
+			// Send to service
+			try (Packet q = __p.farm().create(type, plen))
+			{
+				__p.readPacketData(8, q);
+				
+				return i.handlePacket(q);
+			}
 		}
 	}
 }

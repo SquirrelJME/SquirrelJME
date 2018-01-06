@@ -92,20 +92,7 @@ public final class ServicePacketStream
 			p.writePacketData(8, __p);
 			
 			// Send packet to server
-			try (Packet r = stream.send(p))
-			{
-				// No response was expected
-				if (ptype <= 0)
-					return null;
-				
-				// Only the size is needed
-				plen = r.readInteger(0);
-				
-				// Read response from the remote server
-				Packet rv = r.respond(plen);
-				rv.readPacketData(4, rv);
-				return rv;
-			}
+			return stream.send(p);
 		}
 	}
 }
