@@ -13,3 +13,19 @@ to determine where failure has occurred on the remote end.
 Also for easier usage, the `printStackTrace()` methods will be replaced in
 `RemoteThrowable`. So this way I can much better represent on the console
 itself the exception which was thrown on the other side.
+
+## 10:14
+
+Okay so the the `PacketStream` threads not being daemon threads is quite a
+problem, I will need to figure that one out so that they appear as such
+because otherwise the VM will just sit there waiting for them to die
+afterwards.
+
+## 16:06
+
+A `ClientInstance` interface factory would be better.
+
+## 17:55
+
+Going to need a way to send packets to handlers, but I believe I know a
+way I can do that.
