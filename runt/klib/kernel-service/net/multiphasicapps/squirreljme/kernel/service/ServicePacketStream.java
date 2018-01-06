@@ -12,7 +12,9 @@ package net.multiphasicapps.squirreljme.kernel.service;
 
 import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import net.multiphasicapps.squirreljme.kernel.packets.PacketFarm;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
+import net.multiphasicapps.squirreljme.kernel.packets.RemoteThrowable;
 
 /**
  * This is a wrapped packet stream which .
@@ -43,6 +45,68 @@ public final class ServicePacketStream
 		
 		this.stream = __ps;
 		this.index = __dx;
+	}
+	
+	/**
+	 * Returns the packet farm for creating packets.
+	 *
+	 * @return The packet farm.
+	 * @since 2018/01/05
+	 */
+	public final PacketFarm farm()
+	{
+		return this.stream.farm();
+	}
+	
+	/**
+	 * Sends the given packet to the remote server.
+	 *
+	 * @param __p The packet to send to the remote.
+	 * @return The result from the packet, if it does not produce a result
+	 * then {@code null} is returned.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RemoteException If the remote end threw an exception.
+	 * @since 2018/01/05
+	 */
+	public final Packet send(Packet __p)
+		throws NullPointerException, RemoteThrowable
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		PacketStream stream = this.stream;
+		
+		int plen = __p.length(),
+			ptype = __p.type();
+		boolean wantresponse = (ptype > 0);
+		
+		// Build the appropriate packet that can fit this packet
+		try (Packet p = stream.farm().create(
+			(wantresponse ? PacketTypes.SERVICE_NO_RESULT :
+				PacketTypes.SERVICE_NO_RESULT), 4 + 4 + plen))
+		{
+			// Write service details
+			p.writeShort(0, this.index);
+			p.writeShort(2, ptype);
+			p.writeInteger(4, plen);
+			p.writePacketData(8, __p);
+			
+			// Send packet to server
+			try (Packet r = stream.send(p))
+			{
+				// No response was expected
+				if (r == null)
+					return null;
+				
+				// Only the size is needed
+				plen = r.readInteger(0);
+				
+				// Read response from the remote server
+				Packet rv = r.respond(plen);
+				rv.readPacketData(4, rv);
+				return rv;
+			}
+		}
 	}
 }
 

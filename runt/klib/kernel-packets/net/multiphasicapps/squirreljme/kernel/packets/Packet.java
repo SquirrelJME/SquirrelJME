@@ -185,6 +185,17 @@ public final class Packet
 	}
 	
 	/**
+	 * Returns the farm used to create this packet.
+	 *
+	 * @return The farm which created this packet.
+	 * @since 2018/01/05
+	 */
+	public final PacketFarm farm()
+	{
+		return this.farm;
+	}
+	
+	/**
 	 * Returns {@code true} if the packet generates a response.
 	 *
 	 * @return {@code true} if the packet generates a response.
@@ -303,6 +314,31 @@ public final class Packet
 			((((int)data[baseoffset + 5]) & 0xFF) << 16) |
 			((((int)data[baseoffset + 6]) & 0xFF) << 8) |
 			(((int)data[baseoffset + 7]) & 0xFF);
+	}
+	
+	/**
+	 * Reads data from this packet and stores it in the specified packet.
+	 *
+	 * @param __p The position to read from..
+	 * @param __v The packet to read data into,
+	 * @throws IllegalArgumentException If the packet is of variable size.
+	 * @throws IndexOutOfBoundsException If the read exceeds the bounds of
+	 * the packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	public final void readPacketData(int __p, Packet __v)
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AT0h Cannot read into a variable sized packet.}
+		if (__v.variable)
+			throw new IllegalArgumentException("AT0h");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -552,6 +588,25 @@ public final class Packet
 		data[baseoffset + 5] = (byte)(__v >>> 16);
 		data[baseoffset + 6] = (byte)(__v >>> 8);
 		data[baseoffset + 7] = (byte)(__v);
+	}
+	
+	/**
+	 * Writes the data from the specified packet to this packet.
+	 *
+	 * @param __p The position to write at.
+	 * @param __w The packet to write data from.
+	 * @throws IndexOutOfBoundsException If the write exceeds the bounds of
+	 * this packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
+	 */
+	public final void writePacketData(int __p, Packet __v)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
