@@ -100,7 +100,19 @@ public final class LibraryClient
 	 */
 	public final Library[] list(int __mask)
 	{
-		throw new todo.TODO();
+		ServicePacketStream stream = this.stream;
+		try (Packet p = stream.farm().create(
+			LibraryPacketTypes.LIST_PROGRAMS, 4))
+		{
+			// Just send the mask used to filter programs
+			p.writeInteger(0, __mask);
+			
+			// Send to server
+			try (Packet r = stream.send(p))
+			{
+				throw new todo.TODO();
+			}
+		}
 	}
 }
 
