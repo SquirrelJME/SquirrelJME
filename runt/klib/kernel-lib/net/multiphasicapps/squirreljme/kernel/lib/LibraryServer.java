@@ -47,7 +47,7 @@ public abstract class LibraryServer
 		if (__task == null || __sps == null)
 			throw new NullPointerException("NARG");
 		
-		return new LibraryInstance(__task, __sps);
+		return new LibraryInstance(__task, __sps, this);
 	}
 }
 
