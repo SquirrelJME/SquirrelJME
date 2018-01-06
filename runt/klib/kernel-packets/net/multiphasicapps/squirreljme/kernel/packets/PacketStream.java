@@ -35,6 +35,14 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 public final class PacketStream
 	implements Closeable
 {
+	/** The number of key locks to use. */
+	private static final int _KEY_LOCK_SIZE =
+		8;
+	
+	/** The lower mask for key lock values. */
+	private static final int _KEY_LOCK_MASK =
+		7;
+	
 	/**
 	 * This lock is used to prevent threads from writing intertwined data
 	 * when they send packets, which will completely cause communication to
@@ -50,6 +58,9 @@ public final class PacketStream
 	protected final PacketFarm farm =
 		new PacketFarm();
 	
+	/** Key locks to prevent long response locks and miss-notifies. */
+	private final Object[] _keylocks;
+	
 	/** Responses to packets. */
 	private final Map<Integer, Packet> _responses =
 		new HashMap<>();
@@ -60,6 +71,19 @@ public final class PacketStream
 	
 	/** Has the stream finished? */
 	private volatile boolean _done;
+	
+	/**
+	 * Initializes the key locks.
+	 *
+	 * @since 2018/10/06
+	 */
+	{
+		int n = PacketStream._KEY_LOCK_SIZE;
+		Object[] keylocks = new Object[n];
+		for (int i = 0; i < n; i++)
+			keylocks[i] = new Object();
+		this._keylocks = keylocks;
+	}
 	
 	/**
 	 * Initializes the packet stream.
@@ -219,23 +243,27 @@ public final class PacketStream
 		
 		// If this point was reached then a response is expected from the
 		// remote end, so wait for one to happen
+		Object keylock = this._keylocks[__key & _KEY_LOCK_MASK];
 		Map<Integer, Packet> responses = this._responses;
 		Packet rv;
-		synchronized (responses)
+		for (;;)
 		{
-			for (;;)
+			// Try to read a response
+			synchronized (responses)
 			{
-				// If a packet was stored in the map return it
 				rv = responses.remove(ki);
 				if (rv != null)
 					break;
-				
-				// Wait for a signal to be generated, but wait at most one
-				// second for responses to appear before trying to grab
-				// it again
+			}
+			
+			// Otherwise wait on the keylock and hope something was triggered
+			synchronized (keylock)
+			{
 				try
 				{
-					responses.wait(1_000L);
+					// The timeout is needed because the signal could actually
+					// be missed potentially
+					keylock.wait(10);
 				}
 				catch (InterruptedException e)
 				{
@@ -292,6 +320,7 @@ public final class PacketStream
 			PacketStreamHandler handler = this.handler;
 			PacketFarm farm = PacketStream.this.farm;
 			Map<Integer, Packet> responses = PacketStream.this._responses;
+			Object[] keylocks = PacketStream.this._keylocks;
 			
 			try (DataInputStream in = this.in)
 			{
@@ -334,12 +363,20 @@ public final class PacketStream
 						System.err.printf("DEBUG -- Got response for %d%n",
 							pkey);
 						
+						// Store response into the response mask
 						synchronized (responses)
 						{
 							responses.put(pkey, p);
-							responses.notifyAll();
-							continue;
 						}
+						
+						// But notify on the key lock
+						Object keylock = keylocks[pkey & _KEY_LOCK_MASK];
+						synchronized (keylock)
+						{
+							keylock.notifyAll();
+						}
+						
+						continue;
 					}
 					
 					// Is this information about a remote exception which was
