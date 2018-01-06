@@ -30,5 +30,19 @@ public class JavaServerCaller
 	{
 		super(__k);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/06
+	 */
+	@Override
+	public void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		__t.setDaemon(true);
+	}
 }
 

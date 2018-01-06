@@ -265,5 +265,26 @@ public abstract class Kernel
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Lists tasks.
+	 *
+	 * @param __incsys Should system tasks be included?
+	 * @return The list of tasks.
+	 * @since 2018/01/06
+	 */
+	public final KernelTask[] taskList(boolean __incsys)
+	{
+		Map<Integer, KernelTask> tasks = this._tasks;
+		synchronized (tasks)
+		{
+			List<KernelTask> rv = new ArrayList<>(tasks.size());
+			
+			for (KernelTask t : tasks.values())
+				rv.add(t);
+			
+			return rv.<KernelTask>toArray(new KernelTask[tasks.size()]);
+		}
+	}
 }
 
