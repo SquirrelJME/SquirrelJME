@@ -29,7 +29,7 @@ public final class PacketFarm
 {
 	/** The default farm size */
 	private static final int _FARM_SIZE =
-		1024;
+		2048;
 	
 	/** The size of a sub-division in the farm. */
 	private static final int _CROP_SIZE =
