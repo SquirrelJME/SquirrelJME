@@ -82,7 +82,7 @@ public final class ServicePacketStream
 		
 		// Build the appropriate packet that can fit this packet
 		try (Packet p = stream.farm().create(
-			(wantresponse ? PacketTypes.SERVICE_NO_RESULT :
+			(wantresponse ? PacketTypes.SERVICE_WITH_RESULT :
 				PacketTypes.SERVICE_NO_RESULT), 4 + 4 + plen))
 		{
 			// Write service details
@@ -95,7 +95,7 @@ public final class ServicePacketStream
 			try (Packet r = stream.send(p))
 			{
 				// No response was expected
-				if (r == null)
+				if (ptype <= 0)
 					return null;
 				
 				// Only the size is needed
