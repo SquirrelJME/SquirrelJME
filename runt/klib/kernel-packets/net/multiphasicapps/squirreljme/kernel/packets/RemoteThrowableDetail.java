@@ -76,7 +76,7 @@ public final class RemoteThrowableDetail
 	 */
 	public final Throwable cause()
 	{
-		return this.cause();
+		return this.cause;
 	}
 	
 	/**
