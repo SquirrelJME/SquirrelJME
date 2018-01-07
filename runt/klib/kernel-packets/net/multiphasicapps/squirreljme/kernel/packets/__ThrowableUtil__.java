@@ -47,7 +47,9 @@ final class __ThrowableUtil__
 		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		if (SecurityException.class.isAssignableFrom(__c))
+		if (Error.class.isAssignableFrom(__c))
+			return RemoteError.class;
+		else if (SecurityException.class.isAssignableFrom(__c))
 			return RemoteSecurityException.class;
 		
 		// Unknown, use RuntimeException
@@ -105,7 +107,9 @@ final class __ThrowableUtil__
 		
 		// Build exception
 		RemoteThrowable rv;
-		if (basetype == RemoteSecurityException.class)
+		if (basetype == RemoteError.class)
+			rv = new RemoteError(detail);
+		else if (basetype == RemoteSecurityException.class)
 			rv = new RemoteSecurityException(detail);
 		else
 			rv = new RemoteException(detail);
