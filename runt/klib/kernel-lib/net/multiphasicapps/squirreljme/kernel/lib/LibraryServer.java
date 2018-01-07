@@ -49,5 +49,17 @@ public abstract class LibraryServer
 		
 		return new LibraryInstance(__task, __sps, this);
 	}
+	
+	/**
+	 * Lists the libraries which currently exist.
+	 *
+	 * @param __mask The mask for the library type.
+	 * @return The list of libraries.
+	 * @since 2018/01/07
+	 */
+	public final Library[] list(int __mask)
+	{
+		throw new todo.TODO();
+	}
 }
 

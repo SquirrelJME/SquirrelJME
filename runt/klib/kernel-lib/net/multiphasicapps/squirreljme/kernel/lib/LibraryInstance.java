@@ -83,10 +83,21 @@ public final class LibraryInstance
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// Read the type mask
-		int mask = __p.readInteger(0);
+		// Read the library set
+		Library[] libs = this.server.list(__p.readInteger(0));
 		
-		throw new todo.TODO();
+		// The response is just the library identifiers
+		int n = libs.length;
+		Packet rv = __p.respond(2 + (2 * n));
+		
+		// Write library count
+		rv.writeShort(0, n);
+		
+		// Write the library indexes
+		for (int i = 0, o = 2; i < n; i++, o += 2)
+			rv.writeShort(o, libs[i].index());
+		
+		return rv;
 	}
 }
 

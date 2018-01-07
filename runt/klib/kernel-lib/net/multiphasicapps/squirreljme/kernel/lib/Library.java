@@ -23,6 +23,20 @@ import java.io.InputStream;
  */
 public abstract class Library
 {
+	/** The index of the library. */
+	protected final int index;
+	
+	/**
+	 * Initializes the base library.
+	 *
+	 * @param __dx The index of the library.
+	 * @since 2018/01/07
+	 */
+	protected Library(int __dx)
+	{
+		this.index = __dx;
+	}
+	
 	/**
 	 * Returns the value of the given control key.
 	 *
@@ -55,6 +69,17 @@ public abstract class Library
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the library index.
+	 *
+	 * @return The library index.
+	 * @since 2018/01/07
+	 */
+	public final int index()
+	{
+		return this.index;
 	}
 	
 	/**
