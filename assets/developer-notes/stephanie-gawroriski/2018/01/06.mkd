@@ -1,0 +1,17 @@
+# 2018/01/06
+
+## 09:48
+
+Actually the response to a RPC call to the server does not need to in any way
+encoding the returning packet value at all because of the way responses work
+since they are linked to keys.
+
+## 10:21
+
+I had an idea, instead of waiting on a single lock for responses, it could
+instead wait on a lock based on a lower set of bits in the key. So say if two
+packets are waiting for a response on a given key at the same time, when a
+single response is generated all threads are notified of the response. But
+with them waiting on one lock, the wake up order is random, so two threads
+awaiting a response might not wake up in the correct order wasting some
+cycles.
