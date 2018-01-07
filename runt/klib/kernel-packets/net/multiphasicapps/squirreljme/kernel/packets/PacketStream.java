@@ -163,7 +163,7 @@ public final class PacketStream
 	 * @since 2018/01/01
 	 */
 	public final Packet send(Packet __p)
-		throws NullPointerException, RemoteThrowable
+		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
@@ -185,7 +185,7 @@ public final class PacketStream
 	 * @since 2018/01/01
 	 */
 	final Packet __send(int __key, boolean __forceresponse, Packet __p)
-		throws NullPointerException, RemoteThrowable
+		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
@@ -273,7 +273,13 @@ public final class PacketStream
 		
 		// An exception was thrown on the remote end, to report that response
 		if (rv.type() == Packet._RESPONSE_FAIL)
-			throw RemoteThrowable.decode(rv.createReader());
+		{
+			RemoteThrowable t = __ThrowableUtil__.__decode(rv.createReader());
+			if (t instanceof RuntimeException)
+				throw (RuntimeException)t;
+			else
+				throw (Error)t;
+		}
 		
 		return rv;
 	}
@@ -415,7 +421,7 @@ public final class PacketStream
 							
 							// Write in details about the exception as they
 							// are known
-							RemoteThrowable.encode(t, rv.createWriter());
+							__ThrowableUtil__.__encode(t, rv.createWriter());
 						}
 					}
 					

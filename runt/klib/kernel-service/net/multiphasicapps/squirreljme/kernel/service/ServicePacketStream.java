@@ -69,7 +69,7 @@ public final class ServicePacketStream
 	 * @since 2018/01/05
 	 */
 	public final Packet send(Packet __p)
-		throws NullPointerException, RemoteThrowable
+		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
