@@ -1,0 +1,10 @@
+# 2018/01/07
+
+## 09:45
+
+So will continue work on library management.
+
+## 11:14
+
+I was going to have a distinction for `InterruptedException` but that one
+is checked, so that cannot be done at all.
