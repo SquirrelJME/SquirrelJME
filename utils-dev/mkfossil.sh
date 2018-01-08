@@ -40,7 +40,7 @@ echo "Serving local copy to clone it..." 1>&2
 fossil serve -P $PORT &
 FOSSILPID=$!
 echo $FOSSILPID > /tmp/squirreljme-fossil-pid
-fossil clone -A squirreljme "http://127.0.0.1:$PORT" \
+time fossil clone -A squirreljme "http://127.0.0.1:$PORT" \
 	"/tmp/$$.fsl"
 kill -- $FOSSILPID
 wait
@@ -54,7 +54,7 @@ then
 	
 	# Set difficult to use password to discourage people
 	echo "Setting a random password..." 1>&2
-	RPASS="$( (sha1sum "/tmp/$$.fsl" || md5sum "/tmp/$$.fsl") | tr '\t' ' ' | \
+	RPASS="$( (dd if=/dev/urandom bs=4096 count=1 2> /dev/null | fossil sha1sum -) | tr '\t' ' ' | \
 		cut -d ' ' -f 1)"
 	echo "which is: '$RPASS'" 1>&2
 	fossil user password squirreljme "$RPASS" -R "/tmp/$$.fsl"
