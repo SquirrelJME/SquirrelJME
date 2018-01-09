@@ -8,10 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib;
+package net.multiphasicapps.squirreljme.kernel.lib.server;
 
+import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.client.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;	
 
@@ -21,34 +23,35 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  *
  * @since 2018/01/05
  */
-public final class LibraryInstance
-	extends ServiceInstance
+public final class LibrariesServer
+	extends ServerInstance
 {
 	/** The class where permissions are checked against. */
 	private static final String _PERMISSION_CLASS =
 		"javax.microedition.swm.SWMPermission";
 	
 	/** The library server since libraries are managed in unison. */
-	protected final LibraryServer server;
+	protected final LibrariesProvider provider;
 	
 	/**
 	 * Initializes the library instance.
 	 *
 	 * @param __task The task which has the instance open.
 	 * @param __stream The stream for communicating with the task.
+	 * @param __p The provider for the actual library service.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public LibraryInstance(SystemTask __task, ServicePacketStream __stream,
-		LibraryServer __sv)
+	public LibrariesServer(SystemTask __task, ServicePacketStream __stream,
+		LibrariesProvider __p)
 		throws NullPointerException
 	{
 		super(__task, __stream);
 		
-		if (__sv == null)
+		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		this.server = __sv;
+		this.provider = __p;
 	}
 	
 	/**
@@ -64,7 +67,7 @@ public final class LibraryInstance
 		
 		switch (__p.type())
 		{
-			case LibraryPacketTypes.LIST_PROGRAMS:
+			case PacketTypes.LIST_PROGRAMS:
 				return this.__list(__p);
 			
 				// {@squirreljme.error BC02 Unknown packet. (The packet)}
@@ -91,7 +94,7 @@ public final class LibraryInstance
 		__checkPermission("manageSuite");
 		
 		// Read the library set
-		Library[] libs = this.server.list(__p.readInteger(0));
+		Library[] libs = this.provider.list(__p.readInteger(0));
 		
 		// The response is just the library identifiers
 		int n = libs.length;
@@ -127,7 +130,7 @@ public final class LibraryInstance
 		if (true)
 			throw new todo.TODO();
 		
-		this.task.checkPermission(LibraryInstance._PERMISSION_CLASS,
+		this.task.checkPermission(LibraryServer._PERMISSION_CLASS,
 			(sameclient ? : ));*/
 	}
 }

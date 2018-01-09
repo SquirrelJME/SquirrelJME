@@ -14,5 +14,5 @@
  * @since 2018/01/02
  */
 
-package net.multiphasicapps.squirreljme.kernel.lib;
+package net.multiphasicapps.squirreljme.kernel.lib.server;
 

@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib;
+package net.multiphasicapps.squirreljme.kernel.lib.server;
 
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceProviderFactory;
 
 /**
  * This acts as the base class for the library server which is required to be
@@ -21,8 +21,8 @@ import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
  *
  * @since 2018/01/05
  */
-public abstract class LibraryServerFactory
-	implements ServiceServerFactory
+public abstract class LibrariesProviderFactory
+	implements ServiceProviderFactory
 {
 	/**
 	 * Creates a library server instance.
@@ -30,16 +30,16 @@ public abstract class LibraryServerFactory
 	 * @return The instance of the library server.
 	 * @since 2018/01/05
 	 */
-	protected abstract LibraryServer createLibraryServer();
+	protected abstract LibrariesProvider createLibrariesProvider();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/05
 	 */
 	@Override
-	public final ServiceServer createServer()
+	public final ServiceProvider createProvider()
 	{
-		return this.createLibraryServer();
+		return this.createLibrariesProvider();
 	}
 }
 

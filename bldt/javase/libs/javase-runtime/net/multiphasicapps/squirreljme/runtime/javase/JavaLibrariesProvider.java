@@ -10,25 +10,24 @@
 
 package net.multiphasicapps.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryServer;
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryServerFactory;
+import net.multiphasicapps.squirreljme.kernel.lib.server.LibrariesProvider;
 
 /**
- * This allows the Java kernel to manage libraries as needed.
+ * This is used to manage programs which are natively installed on the Java
+ * SE virtualized system.
  *
  * @since 2018/01/05
  */
-public class JavaLibraryServerFactory
-	extends LibraryServerFactory
+public class JavaLibrariesProvider
+	extends LibrariesProvider
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the server.
+	 *
 	 * @since 2018/01/05
 	 */
-	@Override
-	protected LibraryServer createLibraryServer()
+	public JavaLibrariesProvider()
 	{
-		return new JavaLibraryServer();
 	}
 }
 

@@ -8,12 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib;
+package net.multiphasicapps.squirreljme.kernel.lib.server;
 
+import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
+import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClientFactory;
+import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;	
 
 /**
@@ -22,17 +25,17 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  *
  * @since 2018/01/05
  */
-public abstract class LibraryServer
-	extends ServiceServer
+public abstract class LibrariesProvider
+	extends ServiceProvider
 {
 	/**
 	 * Initializes the base library server.
 	 *
 	 * @since 2018/01/05
 	 */
-	public LibraryServer()
+	public LibrariesProvider()
 	{
-		super(LibraryClient.class, LibraryClientFactory.class);
+		super(LibrariesClient.class, LibrariesClientFactory.class);
 	}
 	
 	/**
@@ -40,14 +43,14 @@ public abstract class LibraryServer
 	 * @since 2018/01/05
 	 */
 	@Override
-	public final ServiceInstance createInstance(SystemTask __task,
+	public final ServerInstance createInstance(SystemTask __task,
 		ServicePacketStream __sps)
 		throws NullPointerException
 	{
 		if (__task == null || __sps == null)
 			throw new NullPointerException("NARG");
 		
-		return new LibraryInstance(__task, __sps, this);
+		return new LibrariesServer(__task, __sps, this);
 	}
 	
 	/**
