@@ -81,5 +81,13 @@ public interface SystemTask
 	 * @since 2017/12/10
 	 */
 	public abstract void restart();
+	
+	/**
+	 * Returns the trust group which this task runs under.
+	 *
+	 * @return The trust group of the task.
+	 * @since 2018/01/09
+	 */
+	public abstract SystemTrustGroup trustGroup();
 }
 
