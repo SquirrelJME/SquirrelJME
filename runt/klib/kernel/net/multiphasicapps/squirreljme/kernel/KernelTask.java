@@ -202,6 +202,16 @@ public abstract class KernelTask
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/09
+	 */
+	@Override
+	public final SystemTrustGroup trustGroup()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Handler for packets sent from the remote end of this task.
 	 *
 	 * @since 2018/01/02
