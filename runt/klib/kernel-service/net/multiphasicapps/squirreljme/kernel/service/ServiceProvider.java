@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  *
  * @since 2018/01/03
  */
-public abstract class ServiceServer
+public abstract class ServiceProvider
 {
 	/** The client class this provides a server for. */
 	protected final Class<? extends ClientInstance> clientclass;
@@ -34,7 +34,7 @@ public abstract class ServiceServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	protected ServiceServer(Class<? extends ClientInstance> __cl,
+	protected ServiceProvider(Class<? extends ClientInstance> __cl,
 		Class<? extends ClientInstanceFactory> __fc)
 		throws NullPointerException
 	{
@@ -54,7 +54,7 @@ public abstract class ServiceServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public abstract ServiceInstance createInstance(SystemTask __task,
+	public abstract ServerInstance createInstance(SystemTask __task,
 		ServicePacketStream __sps)
 		throws NullPointerException;
 	

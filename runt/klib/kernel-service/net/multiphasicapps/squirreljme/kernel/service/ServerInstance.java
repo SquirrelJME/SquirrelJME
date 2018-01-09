@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  *
  * @since 2018/01/03
  */
-public abstract class ServiceInstance
+public abstract class ServerInstance
 {
 	/** The task this provides an instance for. */
 	protected final SystemTask task;
@@ -35,7 +35,7 @@ public abstract class ServiceInstance
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public ServiceInstance(SystemTask __task, ServicePacketStream __stream)
+	public ServerInstance(SystemTask __task, ServicePacketStream __stream)
 		throws NullPointerException
 	{
 		if (__task == null || __stream == null)
