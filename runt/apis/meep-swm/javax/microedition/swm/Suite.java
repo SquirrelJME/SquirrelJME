@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
-import net.multiphasicapps.squirreljme.kernel.libinfo.EntryPoint;
-import net.multiphasicapps.squirreljme.kernel.libinfo.EntryPoints;
-import net.multiphasicapps.squirreljme.kernel.libinfo.SuiteInfo;
-import net.multiphasicapps.squirreljme.kernel.lib.Library;
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryClient;
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryControlKey;
-import net.multiphasicapps.squirreljme.kernel.lib.LibraryType;
+import net.multiphasicapps.squirreljme.kernel.lib.client.EntryPoint;
+import net.multiphasicapps.squirreljme.kernel.lib.client.EntryPoints;
+import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
+import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.client.LibraryControlKey;
+import net.multiphasicapps.squirreljme.kernel.lib.client.LibraryType;
+import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteInfo;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -167,7 +167,7 @@ public class Suite
 		// suites pointing to the same program are not created
 		__SystemSuiteManager__ ssm =
 			(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
-		LibraryClient manager = ssm._manager;
+		LibrariesClient manager = ssm._manager;
 		
 		// Dependencies are internally provided in the control interface
 		for (int i = 1; i >= 0; i++)

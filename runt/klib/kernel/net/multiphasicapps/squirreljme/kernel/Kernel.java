@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceProviderFactory;
 
 /**
  * This class represents the micro-kernel which manages the entire SquirrelJME
@@ -50,7 +50,7 @@ public abstract class Kernel
 	 * Services are indexed by an integer value for speed to prevent massive
 	 * lookups based on class types or strings every time they are used.
 	 */
-	private final ServiceServer[] _servers;
+	private final ServiceProvider[] _servers;
 	
 	/**
 	 * Initializes the base kernel.
@@ -77,7 +77,7 @@ public abstract class Kernel
 				serviceclasses.add(s);
 		
 		// Always make the zero index server invalid
-		List<ServiceServer> servers = new ArrayList<>();
+		List<ServiceProvider> servers = new ArrayList<>();
 		servers.add(null);
 		
 		// Go through and attempt to locate implementations of services that
@@ -87,7 +87,7 @@ public abstract class Kernel
 		for (String sv : serviceclasses)
 		{
 			// The created server service
-			ServiceServer rv = null;
+			ServiceProvider rv = null;
 			
 			// Map to the config and the default
 			for (int i = 0; i < 2; i++)
@@ -98,8 +98,8 @@ public abstract class Kernel
 					try
 					{
 						Class<?> svclass = Class.forName(mapped);
-						ServiceServer s = ((ServiceServerFactory)svclass.
-							newInstance()).createServer();
+						ServiceProvider s = ((ServiceProviderFactory)svclass.
+							newInstance()).createProvider();
 						
 						// Make sure that the client class for the server
 						// matches the service string, otherwise odd things
@@ -142,8 +142,8 @@ public abstract class Kernel
 		}
 		
 		// Store services for later usage by tasks
-		this._servers = servers.<ServiceServer>toArray(
-			new ServiceServer[servers.size()]);
+		this._servers = servers.<ServiceProvider>toArray(
+			new ServiceProvider[servers.size()]);
 		
 		// Initialize the system task, which acts as a special task
 		this.loopback = new LoopbackStreams();
@@ -189,11 +189,11 @@ public abstract class Kernel
 	 * @throws IndexOutOfBoundsException If the service index is not valid.
 	 * @since 2018/01/05
 	 */
-	public final ServiceServer serviceGet(int __dx)
+	public final ServiceProvider serviceGet(int __dx)
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error AP06 Invalid service index. (The index)}
-		ServiceServer[] servers = this._servers;
+		ServiceProvider[] servers = this._servers;
 		if (__dx <= 0 || __dx > servers.length)
 			throw new IndexOutOfBoundsException(
 				String.format("AP06 %d", __dx));
@@ -216,7 +216,7 @@ public abstract class Kernel
 		
 		// Go through services and ask them each if they implement for the
 		// given class.
-		ServiceServer[] servers = this._servers;
+		ServiceProvider[] servers = this._servers;
 		for (int i = 1, n = servers.length; i < n; i++)
 			if (__cl == servers[i].clientClass())
 				return i;
