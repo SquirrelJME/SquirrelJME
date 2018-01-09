@@ -22,9 +22,9 @@ import net.multiphasicapps.squirreljme.kernel.packets.PacketReader;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
 import net.multiphasicapps.squirreljme.kernel.packets.PacketWriter;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceInstance;
+import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
+import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
 /**
@@ -51,7 +51,7 @@ public abstract class KernelTask
 	private final PacketStream _stream;
 	
 	/** Instances of each service which is mapped to the kernel service set. */
-	private final ServiceInstance[] _instances;
+	private final ServerInstance[] _instances;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -121,7 +121,7 @@ public abstract class KernelTask
 		
 		// Initialize a base array for instances of services when they are
 		// initialized when they are needed to
-		this._instances = new ServiceInstance[kernel.serviceCount()];
+		this._instances = new ServerInstance[kernel.serviceCount()];
 	}
 	
 	/**
@@ -292,13 +292,13 @@ public abstract class KernelTask
 			}
 			
 			// Always respond with the service server
-			ServiceServer sv = kernel.serviceGet(svdx);
+			ServiceProvider sv = kernel.serviceGet(svdx);
 			
 			// See if a new server instance needs to be initialized
-			ServiceInstance[] instances = KernelTask.this._instances;
+			ServerInstance[] instances = KernelTask.this._instances;
 			synchronized (instances)
 			{
-				ServiceInstance i = instances[svdx];
+				ServerInstance i = instances[svdx];
 				if (i == null)
 					instances[svdx] = sv.createInstance(KernelTask.this,
 						new ServicePacketStream(KernelTask.this._stream,
@@ -350,8 +350,8 @@ public abstract class KernelTask
 				plen = __p.readInteger(4);
 			
 			// Obtain the instance of the service.
-			ServiceInstance i;
-			ServiceInstance[] instances = KernelTask.this._instances;
+			ServerInstance i;
+			ServerInstance[] instances = KernelTask.this._instances;
 			synchronized (instances)
 			{
 				// {@squirreljme.error AP07 Invalid service index.

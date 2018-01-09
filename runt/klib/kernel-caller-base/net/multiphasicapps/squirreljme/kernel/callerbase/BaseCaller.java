@@ -22,8 +22,6 @@ import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceAccessor;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceFactory;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServer;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceServerFactory;
 import net.multiphasicapps.squirreljme.runtime.cldc.NoSuchServiceException;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 

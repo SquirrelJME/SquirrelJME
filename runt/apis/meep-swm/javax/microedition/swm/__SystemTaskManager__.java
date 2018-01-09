@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.kernel.lib.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 
