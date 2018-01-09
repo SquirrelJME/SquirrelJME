@@ -44,6 +44,9 @@ public abstract class KernelTask
 	/** The main class. */
 	protected final String mainclass;
 	
+	/** Permissions for this task. */
+	protected final KernelPermissions permissions;
+	
 	/** The packet stream to the child process. */
 	private final PacketStream _stream;
 	
@@ -77,6 +80,9 @@ public abstract class KernelTask
 		
 		Kernel kernel = __k.get();
 		
+		// Permissions will be setup accordingly
+		KernelPermissions permissions = new KernelPermissions();
+		
 		// The server requires special initialization especially with the
 		// streams because of the pipe nature.
 		if (__id == 0)
@@ -89,13 +95,25 @@ public abstract class KernelTask
 			LoopbackStreams.Side side = kernel.loopback().sideA();
 			__in = side.input();
 			__out = side.output();
+			
+			// By default, grant all permissions to the kernel so that it can
+			// do whatever it wants
 		}
 		
 		// Clients initialize with other means
 		else
 		{
-			throw new todo.TODO();
+			// Set main class based on launched class
+			if (true)
+				throw new todo.TODO();
+			
+			// Initialize permissions
+			if (true)
+				throw new todo.TODO();
 		}
+		
+		// Set permissions
+		this.permissions = permissions;
 		
 		// Initialize the packet stream which is used to communicate between
 		// the process and the kernel
@@ -104,6 +122,20 @@ public abstract class KernelTask
 		// Initialize a base array for instances of services when they are
 		// initialized when they are needed to
 		this._instances = new ServiceInstance[kernel.serviceCount()];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/09
+	 */
+	@Override
+	public final void checkPermission(String __cl, String __n, String __a)
+		throws NullPointerException, SecurityException
+	{
+		if (__cl == null || __n == null || __a == null)
+			throw new NullPointerException("NARG");
+		
+		this.permissions.checkPermission(__cl, __n, __a);
 	}
 	
 	/**
