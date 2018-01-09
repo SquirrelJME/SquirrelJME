@@ -24,6 +24,10 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 public final class LibraryInstance
 	extends ServiceInstance
 {
+	/** The class where permissions are checked against. */
+	private static final String _PERMISSION_CLASS =
+		"javax.microedition.swm.SWMPermission";
+	
 	/** The library server since libraries are managed in unison. */
 	protected final LibraryServer server;
 	
@@ -83,6 +87,9 @@ public final class LibraryInstance
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
+		// Need permission to do this
+		__checkPermission("manageSuite");
+		
 		// Read the library set
 		Library[] libs = this.server.list(__p.readInteger(0));
 		
@@ -98,6 +105,30 @@ public final class LibraryInstance
 			rv.writeShort(o, libs[i].index());
 		
 		return rv;
+	}
+	
+	/**
+	 * Checks whether the specified permission is valid.
+	 *
+	 * @param __act The action to check.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the permission is not granted.
+	 * @since 2018/01/09
+	 */
+	private final void __checkPermission(String __act)
+		throws NullPointerException, SecurityException
+	{
+		if (__act == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		/*
+		boolean sameclient;
+		if (true)
+			throw new todo.TODO();
+		
+		this.task.checkPermission(LibraryInstance._PERMISSION_CLASS,
+			(sameclient ? : ));*/
 	}
 }
 
