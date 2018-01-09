@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
 X-SquirrelJME-UUID: 175f6c6b-f51d-45b8-ac8e-8bd8d664f72a
 X-SquirrelJME-Error: AV
-X-SquirrelJME-Name: Kernel Program Information
+X-SquirrelJME-Name: Kernel Library Client
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: This projects contains the part of the kernel 
- which can parse and read manifest files to provide dependencies and 
- other information about a suite.
+X-SquirrelJME-Description: This contains the client portion of the library 
+ manager which provides access to a remote library server.
 X-SquirrelJME-Depends: tool-manifest-reader collections strings
 Microedition-Configuration: CLDC-1.8-Compact
 
