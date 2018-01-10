@@ -1,0 +1,81 @@
+# 2018/01/09
+
+## 09:28
+
+Okay so what I need for tasks and such is a permission manager. The
+permissions in Java are a bit complex, but at other times they are
+just two simple strings I believe. I will need to investigate further so I can
+understand how it works.
+
+## 09:43
+
+Okay so permissions are very basic and just consist of names and actions. I
+will just need a good means of initializing and checking them. But for the
+most part, when it comes to checking permissions that is done by the
+`SecurityManager` class and it does not really specify how permissions are
+checked. So basically I will need a kernel side permission manager which of
+course client processes can access through their own task.
+
+## 10:16
+
+Did a new version of Java ME 8 come out? Because documents online show 8.1?
+
+## 10:18
+
+No, the JSR is still the same so it must be just a new sub-release, must
+remember that.
+
+## 10:21
+
+I need to remember what "client" means when it comes to SWM. I also need to
+write it down since it can be a rather confusing context.
+
+## 10:26
+
+Okay so from what it seems this is how it works. There are clients which
+applications are a part of. There is the untrusted client which is given to
+all clients which are not trusted. Basically clients pertain to signatures of
+the installed JAR files for the most part. So basically applications which are
+signed under the same certificate will be part of the same client. For
+untrusted clients however it seems that it would like to place them all in the
+same group, but that can be a bit bad. So I think the best thing to do in this
+case would be to assign them to their own individual group. So basically the
+client is the signing group.
+
+## 10:33
+
+Okay, so I believe the library code will be a bit complicated, so I should
+split it between client and server side so that it is not all over the place.
+
+## 10:35
+
+You know, when it comes to SWM, only the SWM stuff uses the things. But I will
+want the launcher to use the library code since it is more advanced and such
+rather than just having purely SWM stuff (the launcher needs that advanced
+functionality). How about I have `kernel-lib-client` and `kernel-lib-server`
+of which the latter depends on the former. Then I can merge `kernel-lib-info`
+into the client.
+
+## 10:40
+
+Additionally I think there should be a better name for services. There is
+the server, but maybe it should be instead be called `ServiceProvider` and
+then creates servers for single clients become `ServerInstance`.
+
+## 12:08
+
+Okay so tasks will have to run within a trust group, there will need to be
+these trust groups:
+
+ * Full -- Used for the kernel and things you really trust.
+ * Trusted -- Trusted applications.
+ * Untrusted -- Not trusted at all and very minimal.
+
+## 12:17
+
+Okay, so tasks will exist within trust groups. Libraries will also exist
+within trust groups. They will be managed by the kernel but for the most
+part they will contain the core permissions of what things can do and such.
+The groups will share permissions and can modify each other's tasks but not
+those in another trust group, unless that trust group is allowed to modify
+other trust groups.
