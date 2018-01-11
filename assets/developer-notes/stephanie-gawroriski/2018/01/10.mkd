@@ -1,0 +1,6 @@
+# 2018/01/10
+
+## 13:45
+
+I wonder if I can use a service like CircleCI to run tests and such whenever
+things are pushed to the Git repository.
