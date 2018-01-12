@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.kernel.lib.server;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
 import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
@@ -28,6 +32,14 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
 public abstract class LibrariesProvider
 	extends ServiceProvider
 {
+	/** Thread safety lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** Libraries which are availble for usage. */
+	private final Map<Integer, Library> _libraries =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the base library server.
 	 *
@@ -62,7 +74,18 @@ public abstract class LibrariesProvider
 	 */
 	public final Library[] list(int __mask)
 	{
-		throw new todo.TODO();
+		List<Library> rv = new ArrayList<>();
+		
+		Map<Integer, Library> libraries = this._libraries;
+		synchronized (this.lock)
+		{
+			// Only add libraries which match the mask
+			for (Library l : libraries.values())
+				if ((l.type() & __mask) != 0)
+					rv.add(l);
+		}
+		
+		return rv.<Library>toArray(new Library[rv.size()]);
 	}
 }
 
