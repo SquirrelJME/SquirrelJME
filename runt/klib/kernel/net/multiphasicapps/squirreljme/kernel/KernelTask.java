@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This represents a task which is running within SquirrelJME.
