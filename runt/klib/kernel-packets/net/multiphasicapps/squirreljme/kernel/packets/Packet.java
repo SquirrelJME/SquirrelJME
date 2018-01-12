@@ -424,8 +424,6 @@ public final class Packet
 			for (int i = 0; i < strlen; i++)
 				chars[i] = (char)(data[baseoffset++] & 0xFF);
 		
-		System.err.printf("DEBUG -- Read string (%d): %s%n", strlen,
-			new String(chars));
 		return new String(chars);
 	}
 	
@@ -925,8 +923,6 @@ public final class Packet
 		else
 			for (int i = 0; i < strlen; i++)
 				data[charoffset++] = (byte)__v.charAt(i);
-		
-		System.err.printf("DEBUG -- Wrote string %s%n", __v);
 		
 		return writelen;
 	}

@@ -164,25 +164,6 @@ public final class PacketFarm
 		{
 			boolean[] allocation = this._allocation;
 			
-			// Debug usage
-			System.err.printf("DEBUG -- Free (%2d-%2d) ", pivot, endpivot);
-			for (int i = 0; i < numcrops; i++)
-			{
-				boolean alloc = allocation[i];
-				
-				if (i >= pivot && i < endpivot)
-					if (alloc)
-						System.err.print('F');
-					else
-						System.err.print('f');
-				else
-					if (alloc)
-						System.err.print('+');
-					else
-						System.err.print('-');
-			}
-			System.err.println();
-			
 			// Free the space
 			for (int i = pivot; i < endpivot; i++)
 				allocation[i] = false;
@@ -209,8 +190,6 @@ public final class PacketFarm
 			__a = __l;
 		if (__a == 0 || (__a & cropmask) != 0)
 			__a = ((__a + cropsize) & (~cropmask));
-		
-		System.err.printf("DEBUG -- Allocate: %d%n", __a);
 		
 		// Determine if this packet is just way to large to fit
 		boolean cropless = (__a > this.maxcropuse);
@@ -258,25 +237,6 @@ public final class PacketFarm
 			
 			// The end of crop usage
 			int endpivot = pivot + usecrops;
-			
-			// Debug usage
-			System.err.printf("DEBUG -- Allocate (%2d-%2d) ", pivot, endpivot);
-			for (int i = 0; i < numcrops; i++)
-			{
-				boolean alloc = allocation[i];
-				
-				if (i >= pivot && i < endpivot)
-					if (alloc)
-						System.err.print('A');
-					else
-						System.err.print('a');
-				else
-					if (alloc)
-						System.err.print('+');
-					else
-						System.err.print('-');
-			}
-			System.err.println();
 			
 			// Allocate the space
 			for (int i = pivot; i < endpivot; i++)

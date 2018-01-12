@@ -242,9 +242,6 @@ public final class PacketStream
 				// Count it
 				this.counter.__countWrite(len);
 				
-				System.err.printf("DEBUG -- Sent k=%d t=%d%n",
-					__key, type);
-				
 				// No response expected, can stop here
 				if (type <= 0)
 					return null;
@@ -381,17 +378,11 @@ public final class PacketStream
 					// Count it
 					counter.__countRead(plen);
 					
-					System.err.printf("DEBUG -- Recv k=%d t=%d l=%d%n",
-						pkey, ptype, plen);
-					
 					// Handle responses
 					int type = p.type();
 					if (type == Packet._RESPONSE_OKAY ||
 						type == Packet._RESPONSE_FAIL)
 					{
-						System.err.printf("DEBUG -- Got response for %d%n",
-							pkey);
-						
 						// Store response into the response mask
 						synchronized (responses)
 						{
