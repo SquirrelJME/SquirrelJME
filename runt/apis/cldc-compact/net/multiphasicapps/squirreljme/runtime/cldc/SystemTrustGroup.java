@@ -18,5 +18,25 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  */
 public interface SystemTrustGroup
 {
+	/**
+	 * Checks that the specified permission is valid.
+	 *
+	 * @param __cl The class type of the permission.
+	 * @param __n The name of the permission.
+	 * @param __a The actions in the permission.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the permissions is not permitted.
+	 * @since 2018/01/11
+	 */
+	public abstract void checkPermission(String __cl, String __n, String __a)
+		throws NullPointerException, SecurityException;
+	
+	/**
+	 * Returns the index of the trust group.
+	 *
+	 * @return The trust group index.
+	 * @since 2018/01/11
+	 */
+	public abstract int index();
 }
 

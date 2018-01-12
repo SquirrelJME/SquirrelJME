@@ -19,5 +19,15 @@ package net.multiphasicapps.squirreljme.kernel;
  */
 public final class KernelTaskLaunch
 {
+	/**
+	 * Returns the trust group the task will be under.
+	 *
+	 * @return The trust group of the task.
+	 * @since 2018/01/11
+	 */
+	public final KernelTrustGroup trustGroup()
+	{
+		throw new todo.TODO();
+	}
 }
 
