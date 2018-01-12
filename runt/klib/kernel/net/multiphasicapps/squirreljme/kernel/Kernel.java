@@ -45,6 +45,10 @@ public abstract class Kernel
 	private final Map<Integer, KernelTask> _tasks =
 		new SortedTreeMap<>();
 	
+	/** Trust group for the system. */
+	private final KernelTrustGroup _systemtrustgroup =
+		new KernelTrustGroup(true, 0);
+	
 	/**
 	 * Servers which are available for usage by the kernel.
 	 * Services are indexed by an integer value for speed to prevent massive
@@ -285,6 +289,17 @@ public abstract class Kernel
 			
 			return rv.<KernelTask>toArray(new KernelTask[tasks.size()]);
 		}
+	}
+	
+	/**
+	 * Returns the system trust group.
+	 *
+	 * @return The system trust group.
+	 * @since 2018/01/11
+	 */
+	final KernelTrustGroup __systemTrustGroup()
+	{
+		return this._systemtrustgroup;
 	}
 }
 

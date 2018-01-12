@@ -45,8 +45,8 @@ public abstract class KernelTask
 	/** The main class. */
 	protected final String mainclass;
 	
-	/** Permissions for this task. */
-	protected final KernelPermissions permissions;
+	/** The trust group this task is within. */
+	protected final KernelTrustGroup trustgroup;
 	
 	/** The packet stream to the child process. */
 	private final PacketStream _stream;
@@ -97,8 +97,9 @@ public abstract class KernelTask
 			__in = side.input();
 			__out = side.output();
 			
-			// By default, grant all permissions to the kernel so that it can
-			// do whatever it wants
+			// Use the trust group representing the kernel, which allows
+			// anything
+			this.trustgroup = kernel.__systemTrustGroup();
 		}
 		
 		// Clients initialize with other means
@@ -108,13 +109,9 @@ public abstract class KernelTask
 			if (true)
 				throw new todo.TODO();
 			
-			// Initialize permissions
-			if (true)
-				throw new todo.TODO();
+			// Initialize trust group
+			this.trustgroup = __l.trustGroup();
 		}
-		
-		// Set permissions
-		this.permissions = permissions;
 		
 		// Initialize the packet stream which is used to communicate between
 		// the process and the kernel
@@ -136,7 +133,7 @@ public abstract class KernelTask
 		if (__cl == null || __n == null || __a == null)
 			throw new NullPointerException("NARG");
 		
-		this.permissions.checkPermission(__cl, __n, __a);
+		this.trustgroup.checkPermission(__cl, __n, __a);
 	}
 	
 	/**
@@ -209,7 +206,7 @@ public abstract class KernelTask
 	@Override
 	public final SystemTrustGroup trustGroup()
 	{
-		throw new todo.TODO();
+		return this.trustgroup;
 	}
 	
 	/**
