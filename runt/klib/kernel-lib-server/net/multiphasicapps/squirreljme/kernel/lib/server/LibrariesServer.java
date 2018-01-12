@@ -15,7 +15,8 @@ import net.multiphasicapps.squirreljme.kernel.lib.client.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;	
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This manages communication between the client process and the library
@@ -89,49 +90,84 @@ public final class LibrariesServer
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
+			
+		SystemTask task = this.task;
+		SystemTrustGroup mygroup = task.trustGroup();
 		
 		// Need permission to do this
-		__checkPermission("manageSuite");
+		LibrariesAccessMode accessmode = __accessMode("manageSuite");
 		
 		// Read the library set
 		Library[] libs = this.provider.list(__p.readInteger(0));
 		
 		// The response is just the library identifiers
 		int n = libs.length;
-		Packet rv = __p.respond(2 + (2 * n));
-		
-		// Write library count
-		rv.writeShort(0, n);
+		Packet rv = __p.respond();
 		
 		// Write the library indexes
+		int counted = 0;
 		for (int i = 0, o = 2; i < n; i++, o += 2)
-			rv.writeShort(o, libs[i].index());
+		{
+			Library lib = libs[i];
+			SystemTrustGroup libgroup = lib.trustGroup();
+			
+			// If the library belongs to another group
+			if (accessmode.isAccessible(mygroup, libgroup))
+				rv.writeInteger(o, libs[i].index());
+		}
+		
+		// Write library count
+		rv.writeShort(0, Math.max(counted, Short.MAX_VALUE));
 		
 		return rv;
 	}
 	
 	/**
-	 * Checks whether the specified permission is valid.
+	 * Returns the access mode for the current task which specifies which
+	 * libraries it may access.
 	 *
 	 * @param __act The action to check.
+	 * @return The permitted access mode.
 	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If the permission is not granted.
-	 * @since 2018/01/09
+	 * @since 2019/01/11
 	 */
-	private final void __checkPermission(String __act)
-		throws NullPointerException, SecurityException
+	private final LibrariesAccessMode __accessMode(String __act)
+		throws NullPointerException
 	{
 		if (__act == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		boolean sameclient;
-		if (true)
-			throw new todo.TODO();
+		SystemTask task = this.task;
 		
-		this.task.checkPermission(LibraryServer._PERMISSION_CLASS,
-			(sameclient ? : ));*/
+		// "crossClient" is the most important and it will for the most part
+		// imply "client" because it would be rather pointless if a program
+		// could modify other clients but not its own
+		try
+		{
+			task.checkPermission(LibrariesServer._PERMISSION_CLASS,
+				"crossClient", __act);
+			
+			return LibrariesAccessMode.ANY;
+		}
+		
+		// Cannot access other clients, try in our same trust group
+		catch (SecurityException e)
+		{
+			// This can also fail
+			try
+			{
+				task.checkPermission(LibrariesServer._PERMISSION_CLASS,
+					"client", __act);
+				
+				return LibrariesAccessMode.SAME_GROUP;
+			}
+			
+			// No access at all
+			catch (SecurityException f)
+			{
+				return LibrariesAccessMode.NONE;
+			}
+		}
 	}
 }
 

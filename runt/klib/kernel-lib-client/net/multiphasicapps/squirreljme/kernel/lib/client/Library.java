@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.lib.client;
 
 import java.io.InputStream;
+import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This represents a single program which exists within the kernel and maps
@@ -23,6 +24,7 @@ import java.io.InputStream;
  */
 public abstract class Library
 {
+	
 	/** The index of the library. */
 	protected final int index;
 	
@@ -30,10 +32,17 @@ public abstract class Library
 	 * Initializes the base library.
 	 *
 	 * @param __dx The index of the library.
+	 * @throws IllegalArgumentException If the library index is negative.
 	 * @since 2018/01/07
 	 */
 	protected Library(int __dx)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error AV01 Cannot have a library index which is
+		// negative.}
+		if (__dx < 0)
+			throw new IllegalArgumentException("AV01");
+		
 		this.index = __dx;
 	}
 	
@@ -95,6 +104,17 @@ public abstract class Library
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the trust group which this library is under.
+	 *
+	 * @return The trust group the library exists under.
+	 * @since 2018/01/11
+	 */
+	public final SystemTrustGroup trustGroup()
+	{
 		throw new todo.TODO();
 	}
 	
