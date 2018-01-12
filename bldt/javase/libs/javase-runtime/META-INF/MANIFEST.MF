@@ -7,7 +7,7 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the support for using 
  SquirrelJME as a pseudo-runtime in Java SE, which is needed to run 
  programs such as the build environment.
-X-SquirrelJME-Depends: midp-lcdui kernel tool-manifest-writer 
- kernel-client kernel-server kernel-lib-server
+X-SquirrelJME-Depends: midp-lcdui kernel-impl-base-file kernel-server 
+ kernel-client
 Microedition-Configuration: CLDC-1.8-Compact
 
