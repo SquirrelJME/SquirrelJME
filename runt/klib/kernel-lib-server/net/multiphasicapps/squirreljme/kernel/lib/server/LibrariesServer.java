@@ -117,7 +117,7 @@ public final class LibrariesServer
 		}
 		
 		// Write library count
-		rv.writeShort(0, Math.max(counted, Short.MAX_VALUE));
+		rv.writeShort(0, Math.min(counted, 65535));
 		
 		return rv;
 	}

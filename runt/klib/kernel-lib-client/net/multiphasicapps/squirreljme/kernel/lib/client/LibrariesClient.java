@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.kernel.lib.client;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
@@ -22,6 +26,10 @@ import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 public final class LibrariesClient
 	extends ClientInstance
 {
+	/** Mapping of libraries. */
+	private final Map<Integer, Reference<Library>> _libraries =
+		new SortedTreeMap<>();
+	
 	/**
 	 * Initializes the library client.
 	 *
@@ -100,6 +108,10 @@ public final class LibrariesClient
 	 */
 	public final Library[] list(int __mask)
 	{
+		int[] indexes;
+		Library[] rv;
+		
+		// Read library indexes from the server
 		ServicePacketStream stream = this.stream;
 		try (Packet p = stream.farm().create(
 			PacketTypes.LIST_PROGRAMS, 4))
@@ -110,8 +122,49 @@ public final class LibrariesClient
 			// Send to server
 			try (Packet r = stream.send(p))
 			{
-				throw new todo.TODO();
+				// Read count
+				int n = r.readUnsignedShort(0);
+				indexes = new int[n];
+				rv = new Library[n];
+				
+				// Read in values
+				for (int i = 0, q = 2; i < n; i++, q += 4)
+					indexes[i] = r.readInteger(q);
 			}
+		}
+		
+		// Map libraries
+		Map<Integer, Reference<Library>> libraries = this._libraries;
+		synchronized (libraries)
+		{
+			for (int i = 0, n = indexes.length; i < n; i++)
+				rv[i] = __mapLibrary(indexes[i]);
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Maps the index to a cached library.
+	 *
+	 * @param __dx The library index.
+	 * @return The library for the given index.
+	 * @since 2018/01/12
+	 */
+	private final Library __mapLibrary(int __dx)
+	{
+		Map<Integer, Reference<Library>> libraries = this._libraries;
+		synchronized (libraries)
+		{
+			Integer idx = __dx;
+			Reference<Library> ref = libraries.get(idx);
+			Library rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				libraries.put(idx, new WeakReference<>(
+					(rv = new __ClientLibrary__(__dx))));
+			
+			return rv;
 		}
 	}
 }
