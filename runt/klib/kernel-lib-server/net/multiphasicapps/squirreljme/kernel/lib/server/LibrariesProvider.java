@@ -27,6 +27,9 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
  * This is the base class which manages the library of installed programs
  * on the server.
  *
+ * The first library should always have an index of zero and be the library
+ * which represents the system.
+ *
  * @since 2018/01/05
  */
 public abstract class LibrariesProvider
@@ -86,6 +89,31 @@ public abstract class LibrariesProvider
 		}
 		
 		return rv.<Library>toArray(new Library[rv.size()]);
+	}
+	
+	/**
+	 * Registers the specified library to the library list.
+	 *
+	 * @param __l The library to register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/12
+	 */
+	protected final void registerLibrary(Library __l)
+		throws NullPointerException
+	{
+		Map<Integer, Library> libraries = this._libraries;
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BC01 The library with the specified index
+			// has already been registered. (The library index)}
+			Integer idx = __l.index();
+			if (libraries.containsKey(idx))
+				throw new IllegalArgumentException(String.format("BC01 %d",
+					idx));
+			
+			// Store it
+			libraries.put(idx, __l);
+		}
 	}
 }
 
