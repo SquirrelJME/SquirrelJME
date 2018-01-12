@@ -1,0 +1,21 @@
+# 2018/01/11
+
+## 21:48
+
+I think what I need is a permission domain. Basically I have a permission
+check, but then additionally there is a permission domain kind of thing. So
+when I list libraries, if there are no permissions then it will just
+return a blank list. There will be:
+
+ * No access.
+ * In same trust group. ("client").
+ * All access. ("crossClient").
+
+## 22:08
+
+So that enumeration helps quite a bunch.
+
+## 22:09
+
+Question is, is permissions per-task or per trust-group? I would say per
+trust group.
