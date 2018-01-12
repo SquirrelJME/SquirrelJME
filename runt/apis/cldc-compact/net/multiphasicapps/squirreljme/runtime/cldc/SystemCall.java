@@ -32,6 +32,25 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Checks that the specified permission is valid.
+	 *
+	 * @param __cl The class type of the permission.
+	 * @param __n The name of the permission.
+	 * @param __a The actions in the permission.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the permissions is not permitted.
+	 * @since 2018/01/11
+	 */
+	public void checkPermission(String __cl, String __n, String __a)
+		throws NullPointerException, SecurityException
+	{
+		if (__cl == null || __n == null || __a == null)
+			throw new NullPointerException("NARG");
+		
+		SystemCall._CALLER.checkPermission(__cl, __n, __a);
+	}
+	
+	/**
 	 * Returns a value within the constraints of
 	 * {@link System#currentTimeMillis()}.
 	 *

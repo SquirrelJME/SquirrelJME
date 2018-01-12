@@ -74,6 +74,20 @@ public abstract class BaseCaller
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/01/11
+	 */
+	@Override
+	public final void checkPermission(String __cl, String __n, String __a)
+		throws NullPointerException, SecurityException
+	{
+		if (__cl == null || __n == null || __a == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/01/03
 	 */
 	@Override

@@ -19,6 +19,19 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
 public abstract class SystemCaller
 {
 	/**
+	 * Checks that the specified permission is valid.
+	 *
+	 * @param __cl The class type of the permission.
+	 * @param __n The name of the permission.
+	 * @param __a The actions in the permission.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the permissions is not permitted.
+	 * @since 2018/01/11
+	 */
+	public abstract void checkPermission(String __cl, String __n, String __a)
+		throws NullPointerException, SecurityException;
+	
+	/**
 	 * Lists tasks which are currently running within the system.
 	 *
 	 * @param __incsys If {@code true} then system tasks are included.
