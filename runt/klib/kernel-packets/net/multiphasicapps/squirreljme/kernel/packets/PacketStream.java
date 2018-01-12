@@ -58,6 +58,10 @@ public final class PacketStream
 	protected final PacketFarm farm =
 		new PacketFarm();
 	
+	/** Used to measure bytes transmitted. */
+	protected final PacketStreamCounter counter =
+		new PacketStreamCounter();
+	
 	/** Key locks to prevent long response locks and miss-notifies. */
 	private final Object[] _keylocks;
 	
@@ -141,6 +145,17 @@ public final class PacketStream
 	}
 	
 	/**
+	 * Returns the counter for packet streams.
+	 *
+	 * @return The packet stream counter.
+	 * @since 2019/01/12
+	 */
+	public final PacketStreamCounter counter()
+	{
+		return this.counter;
+	}
+	
+	/**
 	 * Returns the packet farm.
 	 *
 	 * @return The packet farm.
@@ -218,10 +233,14 @@ public final class PacketStream
 				out.writeShort(type);
 				
 				// Write the packet data
+				int len = __p.length();
 				__p.__writeToOutput(out);
 				
 				// Flush to force data through
 				out.flush();
+				
+				// Count it
+				this.counter.__countWrite(len);
 				
 				System.err.printf("DEBUG -- Sent k=%d t=%d%n",
 					__key, type);
@@ -323,6 +342,7 @@ public final class PacketStream
 		@Override
 		public void run()
 		{
+			PacketStreamCounter counter = PacketStream.this.counter;
 			PacketStreamHandler handler = this.handler;
 			PacketFarm farm = PacketStream.this.farm;
 			Map<Integer, Packet> responses = PacketStream.this._responses;
@@ -357,6 +377,9 @@ public final class PacketStream
 					// Read in packet data
 					Packet p = farm.create(ptype, plen);
 					p.__readFromInput(in, plen);
+					
+					// Count it
+					counter.__countRead(plen);
 					
 					System.err.printf("DEBUG -- Recv k=%d t=%d l=%d%n",
 						pkey, ptype, plen);
