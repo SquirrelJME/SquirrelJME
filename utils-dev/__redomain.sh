@@ -33,8 +33,7 @@ do
 	# Replace all instances of the old domain with the new one
 	grep -rl 'net\.multiphasicapps\.squirreljme' "$__path" | while read __file
 	do
-		sed 's/net\.multiphasicapps\.squirreljme/cc.squirreljme' < "$__file" \
-			> /tmp/$$
+		sed 's/net\.multiphasicapps\.squirreljme/cc.squirreljme/g' < "$__file" > /tmp/$$
 		mv -v /tmp/$$ "$__file"
 	done
 	
