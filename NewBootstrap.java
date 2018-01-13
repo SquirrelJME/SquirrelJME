@@ -50,10 +50,10 @@ import javax.tools.ToolProvider;
  * able to use the pre-existing build scripts. If this is the case then you
  * must set the following system properties:
  *
- * {@code net.multiphasicapps.squirreljme.bootstrap.binary} is the location
+ * {@code cc.squirreljme.bootstrap.binary} is the location
  * where output binaries are to be placed when they are compiled, along with
  * the bootstrap.
- * {@code net.multiphasicapps.squirreljme.builder.root} is the location
+ * {@code cc.squirreljme.builder.root} is the location
  * of the SquirrelJME source tree.
  *
  * @since 2016/10/26
@@ -353,10 +353,10 @@ public class NewBootstrap
 		
 		// Get directories for input and output
 		Path bin = Paths.get(System.getProperty(
-			"net.multiphasicapps.squirreljme.bootstrap.binary")),
+			"cc.squirreljme.bootstrap.binary")),
 			src = Paths
 			.get(System.getProperty(
-			"net.multiphasicapps.squirreljme.builder.root"));
+			"cc.squirreljme.builder.root"));
 		
 		// Only build?
 		NewBootstrap nb = new NewBootstrap(bin, src, __args);
@@ -622,7 +622,7 @@ public class NewBootstrap
 					// Use instead a wrapped main which sets up the CLDC stuff
 					// as needed so the run-time functions
 					fakeattr.putValue("Main-Class",
-						"net.multiphasicapps.squirreljme.runtime.javase.Main");
+						"cc.squirreljme.runtime.javase.Main");
 					
 					// Read from the fake manifest instead
 					try (ByteArrayOutputStream baos = 

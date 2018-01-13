@@ -27,8 +27,8 @@ fi
 # Perform the build and run it
 rm -f "$$.zip"
 __jo="$JAVA_OPTIONS"
-if JAVA_OPTIONS="-Dnet.multiphasicapps.squirreljme.builder.dumptarget=true \
-	-Dnet.multiphasicapps.squirreljme.builder.hexdump=true $__jo" \
+if JAVA_OPTIONS="-Dcc.squirreljme.builder.dumptarget=true \
+	-Dcc.squirreljme.builder.hexdump=true $__jo" \
 	"$__exedir/../build.sh" "$@" "$$.zip"
 then
 	# Unzip then delete the ZIP

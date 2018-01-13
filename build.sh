@@ -72,8 +72,8 @@ fi
 
 # Run it once to build the bootstrap
 if ! "$JAVA" $JAVA_OPTIONS \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
-	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
+	"-Dcc.squirreljme.bootstrap.binary=$(pwd)" \
+	"-Dcc.squirreljme.builder.root=$__exedir" \
 	-classpath "$__cpflaw" "$BOOTSTRAP_CLASS" "$@"
 then
 	exit 1
@@ -81,12 +81,12 @@ fi
 
 # Run it again to run the bootstrap
 if ! "$JAVA" $JAVA_OPTIONS \
-	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
-	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
-	"-Dnet.multiphasicapps.squirreljme.runtime.javase.java=$JAVA" \
-	"-Dnet.multiphasicapps.squirreljme.runtime.javase.bootpath=sjmeboot.jar" \
+	"-Dcc.squirreljme.bootstrap.binary=$(pwd)" \
+	"-Dcc.squirreljme.builder.root=$__exedir" \
+	"-Dcc.squirreljme.runtime.javase.java=$JAVA" \
+	"-Dcc.squirreljme.runtime.javase.bootpath=sjmeboot.jar" \
 	-classpath "$__bsflaw" \
-	"net.multiphasicapps.squirreljme.runtime.javase.Main" "$@"
+	"cc.squirreljme.runtime.javase.Main" "$@"
 then
 	exit 1
 fi
