@@ -166,10 +166,10 @@ public abstract class KernelTask
 	protected final Kernel kernel()
 		throws RuntimeException
 	{
-		// {@squirreljme.error AP0h The kernel was garbage collected.}
+		// {@squirreljme.error AP06 The kernel was garbage collected.}
 		Kernel rv = this.kernel.get();
 		if (rv == null)
-			throw new RuntimeException("AP0h");
+			throw new RuntimeException("AP06");
 		return rv;
 	}
 	
@@ -250,10 +250,10 @@ public abstract class KernelTask
 				case PacketTypes.SERVICE_NO_RESULT:
 					return this.__servicePacket(__p);
 				
-					// {@squirreljme.error AP03 Unknown packet. (The packet)}
+					// {@squirreljme.error AP09 Unknown packet. (The packet)}
 				default:
 					throw new IllegalArgumentException(
-						String.format("AP03 %s", __p));
+						String.format("AP09 %s", __p));
 			}
 		}
 		
@@ -281,11 +281,11 @@ public abstract class KernelTask
 				clclass = Class.forName(r.readString());
 			}
 			
-			// {@squirreljme.error AP04 Could not obtain the class
+			// {@squirreljme.error AP0a Could not obtain the class
 			// for the client type.}
 			catch (ClassNotFoundException e)
 			{
-				throw new RuntimeException("AP04", e);
+				throw new RuntimeException("AP0a", e);
 			}
 			
 			Packet rv = __p.respond();
@@ -362,16 +362,16 @@ public abstract class KernelTask
 			ServerInstance[] instances = KernelTask.this._instances;
 			synchronized (instances)
 			{
-				// {@squirreljme.error AP07 Invalid service index.
+				// {@squirreljme.error AP09 Invalid service index.
 				// (The service index)}
 				if (svdx < 0 || svdx >= instances.length)
-					throw new RuntimeException(String.format("AP07 %d", svdx));
+					throw new RuntimeException(String.format("AP09 %d", svdx));
 				
-				// {@squirreljme.error AP08 The service index is valid however
+				// {@squirreljme.error AP0a The service index is valid however
 				// no service has been mapped and initialized yet.}
 				i = instances[svdx];
 				if (i == null)
-					throw new RuntimeException(String.format("AP08 %d", svdx));
+					throw new RuntimeException(String.format("AP0a %d", svdx));
 			}
 			
 			// Send to service
