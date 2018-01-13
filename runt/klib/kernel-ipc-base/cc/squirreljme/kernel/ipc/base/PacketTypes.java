@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.ipc.base;
+package cc.squirreljme.kernel.ipc.base;
 
 /**
  * This represents the packet types which are sent between the clients.
