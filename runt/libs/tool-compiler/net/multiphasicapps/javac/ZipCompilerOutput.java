@@ -110,12 +110,12 @@ public final class ZipCompilerOutput
 					v.wrapped.writeTo(os);
 				}
 				
-				// {@squirreljme.error AQ0b Failed to write the specified file
+				// {@squirreljme.error AQ05 Failed to write the specified file
 				// to the output stream. (The file name)}
 				catch (IOException f)
 				{
 					throw new CompilerException(
-						String.format("AQ0b %s", k), f);
+						String.format("AQ05 %s", k), f);
 				}
 			}
 		}
@@ -240,10 +240,10 @@ public final class ZipCompilerOutput
 		public void write(int __b)
 			throws IOException
 		{
-			// {@squirreljme.error AQ09 Cannot write a single byte after the
+			// {@squirreljme.error AQ06 Cannot write a single byte after the
 			// output has been closed.}
 			if (this._closed)
-				throw new IOException("AQ09");
+				throw new IOException("AQ06");
 			
 			// Forward
 			this.wrapped.write(__b);
@@ -257,10 +257,10 @@ public final class ZipCompilerOutput
 		public void write(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			// {@squirreljme.error AQ0a Cannot write multiple bytes after the
+			// {@squirreljme.error AQ07 Cannot write multiple bytes after the
 			// output has been closed.}
 			if (this._closed)
-				throw new IOException("AQ0a");
+				throw new IOException("AQ07");
 			
 			// Forward
 			this.wrapped.write(__b, __o, __l);

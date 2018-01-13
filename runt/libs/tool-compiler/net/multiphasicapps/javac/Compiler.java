@@ -150,9 +150,9 @@ public abstract class Compiler
 			rvinput = input.<CompilerInput>toArray(
 				new CompilerInput[input.size()]);
 			
-			// {@squirreljme.error AQ0c No input files.}
+			// {@squirreljme.error AQ01 No input files.}
 			if (rvinput.length <= 0)
-				throw new CompilerException("AQ0c");
+				throw new CompilerException("AQ01");
 			
 			// Copy path sets
 			Map<CompilerInputLocation, CompilerPathSet[]> locations =

@@ -187,10 +187,10 @@ public class Tokenizer
 			else if (c >= '0' && c <= '9')
 				return __getNumberLiteral((char)c);
 			
-			// {@squirreljme.error AQ03 Unknown character while tokenizing the
+			// {@squirreljme.error AQ0e Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
 			else
-				throw new TokenizerException(String.format("AQ03 %c %d %d",
+				throw new TokenizerException(String.format("AQ0e %c %d %d",
 					(char)c, line, column));
 		}
 	}
@@ -276,11 +276,11 @@ public class Tokenizer
 				TokenType t;
 				switch (s)
 				{
-						// {@squirreljme.error AQ04 The specified keywords
+						// {@squirreljme.error AQ0f The specified keywords
 						// are reserved and not valid. (The keyword)}
 					case "const":
 					case "goto":
-						throw new TokenizerException(String.format("AQ04 %s",
+						throw new TokenizerException(String.format("AQ0f %s",
 							__token(TokenType.IDENTIFIER, s)));
 					
 					case "abstract":	t = TokenType.KEYWORD_ABSTRACT; break;
@@ -365,11 +365,11 @@ public class Tokenizer
 		StringBuilder sb = new StringBuilder();
 		for (;;)
 		{
-			// {@squirreljme.error AQ05 End of file reached while reading a
+			// {@squirreljme.error AQ0g End of file reached while reading a
 			// multi-line comment.}
 			int c = __peek();
 			if (c < 0)
-				throw new TokenizerException("AQ05");
+				throw new TokenizerException("AQ0g");
 			
 			// Potential end of comment?
 			if (c == '*')
