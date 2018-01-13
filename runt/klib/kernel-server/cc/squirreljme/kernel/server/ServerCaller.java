@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.server;
+package cc.squirreljme.kernel.server;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.kernel.callerbase.BaseCaller;
-import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.LoopbackStreams;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.kernel.callerbase.BaseCaller;
+import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.kernel.LoopbackStreams;
+import cc.squirreljme.runtime.cldc.SystemCaller;
+import cc.squirreljme.runtime.cldc.SystemTask;
 
 /**
  * This class provides the system call interfaces to the kernel by directly
