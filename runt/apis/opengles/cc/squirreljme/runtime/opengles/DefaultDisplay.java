@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.opengles;
+package cc.squirreljme.runtime.opengles;
 
 import javax.microedition.khronos.egl.EGLDisplay;
 
