@@ -199,13 +199,13 @@ public final class SystemCall
 				return;
 			}
 			
-			// {@squirreljme.error ZZ0b Could not set the daemon thread using
+			// {@squirreljme.error ZZ0c Could not set the daemon thread using
 			// the alternative means.}
 			catch (ClassCastException|ClassNotFoundException|
 				IllegalAccessException|InstantiationException e)
 			{
 				IllegalThreadStateException t =
-					new IllegalThreadStateException("ZZ0b");
+					new IllegalThreadStateException("ZZ0c");
 				t.initCause(e);
 				throw t;
 			}
