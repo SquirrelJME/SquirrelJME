@@ -12,7 +12,7 @@ package java.lang;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This wraps the standard default error stream.

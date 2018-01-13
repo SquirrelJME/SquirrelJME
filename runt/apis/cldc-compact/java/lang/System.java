@@ -13,9 +13,9 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.runtime.cldc.StandardOutput;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemVersion;
+import cc.squirreljme.runtime.cldc.StandardOutput;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemVersion;
 
 public final class System
 {

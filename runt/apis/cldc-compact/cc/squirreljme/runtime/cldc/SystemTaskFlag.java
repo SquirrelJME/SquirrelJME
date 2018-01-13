@@ -8,37 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc;
 
 /**
- * This represents the status of a task.
+ * This represents the flags which may be used to represent a task.
  *
- * @since 2017/12/10
+ * @since 2017/12/27
  */
-public interface SystemTaskStatus
+public interface SystemTaskFlag
 {
-	/** Exit with fatal error. */
-	public static final int EXITED_FATAL =
-		1;
+	/** The mask which is used for the process status. */
+	public static final int STATUS_MASK =
+		0x0000_0007;
 	
-	/** Normal exit. */
-	public static final int EXITED_REGULAR =
-		2;
-
-	/** Terminated. */
-	public static final int EXITED_TERMINATED =
-		3;
-
-	/** Running. */
-	public static final int RUNNING =
-		4;
-
-	/** Failed to start. */
-	public static final int START_FAILED =
-		5;
-
-	/** Starting. */
-	public static final int STARTING =
-		6;
+	/** Is this a system task? */
+	public static final int SYSTEM =
+		0x0000_0008;
 }
 

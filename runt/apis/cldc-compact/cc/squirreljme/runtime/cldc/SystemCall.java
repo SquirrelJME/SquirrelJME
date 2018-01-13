@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc;
 
 /**
  * This class provides access to the system's default system call interface

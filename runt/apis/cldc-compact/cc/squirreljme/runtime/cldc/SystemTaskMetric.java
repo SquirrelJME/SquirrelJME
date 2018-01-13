@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc;
 
 /**
  * This is used to specify which kind of metric to obtain from a task.
