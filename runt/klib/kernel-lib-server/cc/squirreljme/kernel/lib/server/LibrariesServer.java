@@ -8,17 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib.server;
+package cc.squirreljme.kernel.lib.server;
 
-import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
-import net.multiphasicapps.squirreljme.kernel.lib.client.
+import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.client.
 	LibraryInstallationReport;
-import net.multiphasicapps.squirreljme.kernel.lib.client.PacketTypes;
-import net.multiphasicapps.squirreljme.kernel.packets.Packet;
-import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.kernel.lib.client.PacketTypes;
+import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.service.ServerInstance;
+import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This manages communication between the client process and the library
