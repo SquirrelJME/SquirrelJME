@@ -63,11 +63,11 @@ public final class SuiteDependency
 		// Extract all semicolon positions
 		int[] sc = StringUtils.multipleIndexOf(';', __s);
 		
-		// {@squirreljme.error AD0o Expected four semi-colons in the
+		// {@squirreljme.error AV07 Expected four semi-colons in the
 		// dependency field. (The input dependency)}
 		if (sc.length != 4)
 			throw new InvalidSuiteException(String.format(
-				"AD0o %s", __s));
+				"AV07 %s", __s));
 		
 		// Split fields
 		String intype = __s.substring(0, sc[0]).trim(),
@@ -120,11 +120,11 @@ public final class SuiteDependency
 		// Extract all semicolon positions
 		int[] sc = StringUtils.multipleIndexOf(';', __s);
 		
-		// {@squirreljme.error AD08 Expected two semi-colons in the
+		// {@squirreljme.error AV08 Expected two semi-colons in the
 		// dependency field. (The input dependency)}
 		if (sc.length != 2)
 			throw new InvalidSuiteException(String.format(
-				"AD08 %s", __s));
+				"AV08 %s", __s));
 		
 		// Split fields
 		String inname = __s.substring(0, sc[0]).trim(),
@@ -421,13 +421,13 @@ public final class SuiteDependency
 		SuiteVendor __vendor, SuiteVersionRange __version)
 		throws InvalidSuiteException
 	{
-		// {@squirreljme.error AD09 Dependencies on LIBlets must have the
+		// {@squirreljme.error AV09 Dependencies on LIBlets must have the
 		// name, vendor, and version set. (The type; The level; The name;
 		// The vendor; The version)}
 		if (__type == SuiteDependencyType.LIBLET && (__name == null ||
 			__vendor == null || __version == null))
 			throw new InvalidSuiteException(
-				String.format("AD09 %s %s %s %s %s", __type, __level, __name,
+				String.format("AV09 %s %s %s %s %s", __type, __level, __name,
 					__vendor, __version));
 	}
 }

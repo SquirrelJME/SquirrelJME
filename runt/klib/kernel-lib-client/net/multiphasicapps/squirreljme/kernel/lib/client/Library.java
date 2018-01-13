@@ -38,10 +38,10 @@ public abstract class Library
 	protected Library(int __dx)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AV01 Cannot have a library index which is
+		// {@squirreljme.error AV05 Cannot have a library index which is
 		// negative.}
 		if (__dx < 0)
-			throw new IllegalArgumentException("AV01");
+			throw new IllegalArgumentException("AV05");
 		
 		this.index = __dx;
 	}

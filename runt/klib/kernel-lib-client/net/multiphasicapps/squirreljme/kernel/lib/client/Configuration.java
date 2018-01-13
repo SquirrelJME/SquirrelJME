@@ -67,12 +67,12 @@ public final class Configuration
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AD0p Expected two or three fields for the
+		// {@squirreljme.error AV02 Expected two or three fields for the
 		// configuration. (The input string)}
 		String[] fields = StringUtils.fieldSplit('-', __n);
 		int fn = fields.length;
 		if (fn != 2 && fn != 3)
-			throw new InvalidSuiteException(String.format("AD0p %s", __n));
+			throw new InvalidSuiteException(String.format("AV02 %s", __n));
 		
 		// Potentially compact?
 		this.compact = (fn > 2 &&

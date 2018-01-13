@@ -86,10 +86,10 @@ public final class SuiteVersionRange
 		// Trim
 		__s = __s.trim();
 		
-		// {@squirreljme.error AD0i The version range cannot be blank.}
+		// {@squirreljme.error AV0l The version range cannot be blank.}
 		int sl = __s.length();
 		if (sl <= 0)
-			throw new IllegalArgumentException("AD0i");
+			throw new IllegalArgumentException("AV0l");
 		
 		// Get the last character
 		char lc = __s.charAt(__s.length() - 1);
@@ -115,10 +115,10 @@ public final class SuiteVersionRange
 					this.to = new SuiteVersion(99, 99, 99);
 				}
 				
-				// {@squirreljme.error AD0j Major only wildcard versions must
+				// {@squirreljme.error AV0m Major only wildcard versions must
 				// be a single asterisk. (The input string)}
 				else
-					throw new InvalidSuiteException(String.format("AD0j %s",
+					throw new InvalidSuiteException(String.format("AV0m %s",
 						__s));
 			}
 			
@@ -126,10 +126,10 @@ public final class SuiteVersionRange
 			// how deep it goes
 			else
 			{
-				// {@squirreljme.error AD0k The last dot in a wildcard must be
+				// {@squirreljme.error AV0n The last dot in a wildcard must be
 				// before the asterisk. (The input string)}
 				if (ld != sl - 1)
-					throw new InvalidSuiteException(String.format("AD0k %s",
+					throw new InvalidSuiteException(String.format("AV0n %s",
 						__s));
 				
 				// Source range is simple
@@ -151,10 +151,10 @@ public final class SuiteVersionRange
 				else if (numdots == 2)
 					this.to = new SuiteVersion(ver.major(), ver.minor(), 99);
 				
-				// {@squirreljme.error AD0l There are too many decimal points
+				// {@squirreljme.error AV0o There are too many decimal points
 				// in the wildcard version string. (The input string)}
 				else
-					throw new InvalidSuiteException(String.format("AD0l %s",
+					throw new InvalidSuiteException(String.format("AV0o %s",
 						__s));
 			}
 		}

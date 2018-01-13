@@ -68,10 +68,10 @@ public final class LibrariesClient
 		
 		switch (__p.type())
 		{
-				// {@squirreljme.error BC03 Unknown packet. (The packet)}
+				// {@squirreljme.error AV04 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
-					String.format("BC03 %s", __p));
+					String.format("AV04 %s", __p));
 		}
 	}
 	

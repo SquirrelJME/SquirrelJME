@@ -40,10 +40,10 @@ public final class APIName
 		// Force all APIs to be uppercase
 		__n = StringUtils.toUpperCaseNoLocale(__n);
 		
-		// {@squirreljme.error AD0q An illegal character was
+		// {@squirreljme.error AV01 An illegal character was
 		// specified in the API name. (The API name)
 		if (StringUtils.firstIndex("\0\r\n:;", __n) >= 0)
-			throw new InvalidSuiteException(String.format("AD0q %s", __n));
+			throw new InvalidSuiteException(String.format("AV01 %s", __n));
 		
 		this.string = __n;
 	}
