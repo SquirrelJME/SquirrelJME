@@ -23,6 +23,10 @@ import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
  */
 public final class StandardPaths
 {
+	/** Determines the default paths to use. */
+	public static final StandardPaths DEFAULT =
+		__defaultPaths();
+	
 	/** The configuration path. */
 	protected final Path config;
 	
@@ -64,6 +68,52 @@ public final class StandardPaths
 		this.config = __conf;
 		this.data = __data;
 		this.cache = __cache;
+	}
+	
+	/**
+	 * Determines how to get the default paths.
+	 *
+	 * @return The set of standard paths.
+	 * @since 2018/01/13
+	 */
+	private static StandardPaths __defaultPaths()
+	{
+		OperatingSystemType ostype = SystemCall.operatingSystemType();
+		
+		Path userhome = StandardPaths.__getPropertyPath("user.home");
+		Path userdir = StandardPaths.__getPropertyPath("user.dir");
+		
+		// Unix systems
+		if (ostype.isUnix())
+		{
+			throw new todo.TODO();
+		}
+		
+		// Unknown
+		else
+		{
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Returns the path of a system property.
+	 *
+	 * @param __s The system property to get.
+	 * @return The path of the property or {@code null} if it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/13
+	 */
+	private static Path __getPropertyPath(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		String v = System.getProperty(__s);
+		if (v != null)
+			return Paths.get(v);
+		return null;
 	}
 }
 

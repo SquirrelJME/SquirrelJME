@@ -25,8 +25,14 @@ public enum OperatingSystemType
 	/** Unknown. */
 	UNKNOWN,
 	
+	/** Amiga. */
+	AMIGA,
+	
 	/** Linux. */
 	LINUX,
+	
+	/** Class Mac OS. */
+	MAC_OS_CLASSIC,
 	
 	/** Mac OS X. */
 	MAC_OS_X,
@@ -34,11 +40,17 @@ public enum OperatingSystemType
 	/** MS-DOS and compatibles. */
 	MS_DOS,
 	
+	/** Palm OS. */
+	PALM_OS,
+	
 	/** Solaris. */
 	SOLARIS,
 	
 	/** Windows 16-bit. */
 	WINDOWS_WIN16,
+	
+	/** Windows CE. */
+	WINDOWS_CE,
 	
 	/** Windows 9x. */
 	WINDOWS_9X,
