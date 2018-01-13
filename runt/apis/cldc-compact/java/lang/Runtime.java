@@ -10,7 +10,7 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemCall;
 
 public class Runtime
 {

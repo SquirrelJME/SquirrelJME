@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc;
 
 /**
  * This is thrown when there is no service available.

@@ -8,35 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.asm;
+package cc.squirreljme.runtime.cldc;
 
 /**
- * This represents a pointer type and contains a pointer value.
+ * This interface is used to set a daemon thread before the system call
+ * interface has been initialized, this is needed by the packet interface.
  *
- * This class represents a virtual object which is replaced by the compiler to
- * represent a native pointer.
- *
- * @since 2017/12/27
+ * @since 2018/01/05
  */
-public final class Pointer
+public interface DaemonThreadSetter
 {
 	/**
-	 * Not used.
+	 * Sets the specified thread to be a daemon thread.
 	 *
-	 * @since 2017/12/27
+	 * @param __t The thread to set as a daemon.
+	 * @throws IllegalThreadStateException If it could not be set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/05
 	 */
-	private Pointer()
-	{
-	}
-	
-	/**
-	 * This translates an address represented in the given long value to a
-	 * pointer address.
-	 *
-	 * @param __a The address to translate.
-	 * @return The pointer of that address.
-	 * @since 2017/12/27
-	 */
-	public static native Pointer longToPointer(long __a);
+	public abstract void setDaemonThread(Thread __t)
+		throws IllegalThreadStateException, NullPointerException;
 }
 

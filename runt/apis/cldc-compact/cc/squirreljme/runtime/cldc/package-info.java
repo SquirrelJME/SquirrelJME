@@ -8,23 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.asm;
-
 /**
- * This class contains static methods which are replaced by the compiler to
- * provide native access to memory.
+ * This package contains support for the CLDC runtime and contains the
+ * classes and their implementations which are required and needed for the
+ * run-time to operate properly.
  *
- * @since 2017/12/27
+ * For security purposes, all classes which extend the abstract interfaces to
+ * provide an API should and must have package private constructors so that
+ * they can be initialized properly.
+ *
+ * @since 2017/11/10
  */
-public final class MemoryAccess
-{
-	/**
-	 * Not used.
-	 *
-	 * @since 2017/12/27
-	 */
-	private MemoryAccess()
-	{
-	}
-}
+
+package cc.squirreljme.runtime.cldc;
 

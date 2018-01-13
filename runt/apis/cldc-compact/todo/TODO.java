@@ -41,11 +41,11 @@ public class TODO
 		ps.println("*******************************************************");
 		
 		// {@squirreljme.property
-		// net.multiphasicapps.squirreljme.notodoexit=(boolean)
+		// cc.squirreljme.notodoexit=(boolean)
 		// If this is {@code true} then the ToDo exception will not tell the
 		// virtual machine to exit.}
 		if (!Boolean.valueOf(
-			System.getProperty("net.multiphasicapps.squirreljme.notodoexit")))
+			System.getProperty("cc.squirreljme.notodoexit")))
 			try
 			{
 				System.exit(3);

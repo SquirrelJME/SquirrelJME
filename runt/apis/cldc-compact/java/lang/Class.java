@@ -16,7 +16,7 @@ public final class Class<T>
 {
 	/** This is the prefix that is used for assertion checks. */
 	private static final String _ASSERTION_PREFIX =
-		"net.multiphasicapps.squirreljme.runtime.noassert.";
+		"cc.squirreljme.runtime.noassert.";
 	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
@@ -77,7 +77,7 @@ public final class Class<T>
 	 * In SquirrelJME, this defaults to returning {@code true}. To disable
 	 * assertions for a class or an entire package then the following system
 	 * property may be specified to disable them:
-	 * {@code net.multiphasicapps.squirreljme.noassert.(package)(.class)=true}.
+	 * {@code cc.squirreljme.noassert.(package)(.class)=true}.
 	 *
 	 * @return In SquirrelJME this returns by default {@code true}, otherwise
 	 * this may return {@code false} if they are disabled for a class.

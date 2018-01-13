@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemCall;
 
 public final class String
 	implements Comparable<String>, CharSequence

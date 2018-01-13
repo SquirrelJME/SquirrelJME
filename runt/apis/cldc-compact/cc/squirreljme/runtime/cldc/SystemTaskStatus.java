@@ -8,25 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc;
 
 /**
- * This interface is used to set a daemon thread before the system call
- * interface has been initialized, this is needed by the packet interface.
+ * This represents the status of a task.
  *
- * @since 2018/01/05
+ * @since 2017/12/10
  */
-public interface DaemonThreadSetter
+public interface SystemTaskStatus
 {
-	/**
-	 * Sets the specified thread to be a daemon thread.
-	 *
-	 * @param __t The thread to set as a daemon.
-	 * @throws IllegalThreadStateException If it could not be set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/05
-	 */
-	public abstract void setDaemonThread(Thread __t)
-		throws IllegalThreadStateException, NullPointerException;
+	/** Exit with fatal error. */
+	public static final int EXITED_FATAL =
+		1;
+	
+	/** Normal exit. */
+	public static final int EXITED_REGULAR =
+		2;
+
+	/** Terminated. */
+	public static final int EXITED_TERMINATED =
+		3;
+
+	/** Running. */
+	public static final int RUNNING =
+		4;
+
+	/** Failed to start. */
+	public static final int START_FAILED =
+		5;
+
+	/** Starting. */
+	public static final int STARTING =
+		6;
 }
 

@@ -8,12 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.runtime.asm;
+
 /**
- * This package contains static methods which in which invocations of methods
- * in the package are replaced by the compiler using native means.
+ * This class contains static methods which are replaced by the compiler to
+ * provide native access to memory.
  *
  * @since 2017/12/27
  */
-
-package net.multiphasicapps.squirreljme.runtime.asm;
+public final class MemoryAccess
+{
+	/**
+	 * Not used.
+	 *
+	 * @since 2017/12/27
+	 */
+	private MemoryAccess()
+	{
+	}
+}
 

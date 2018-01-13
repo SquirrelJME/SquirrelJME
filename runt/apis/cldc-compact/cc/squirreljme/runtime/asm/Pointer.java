@@ -8,21 +8,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.asm;
 
 /**
- * This represents the flags which may be used to represent a task.
+ * This represents a pointer type and contains a pointer value.
+ *
+ * This class represents a virtual object which is replaced by the compiler to
+ * represent a native pointer.
  *
  * @since 2017/12/27
  */
-public interface SystemTaskFlag
+public final class Pointer
 {
-	/** The mask which is used for the process status. */
-	public static final int STATUS_MASK =
-		0x0000_0007;
+	/**
+	 * Not used.
+	 *
+	 * @since 2017/12/27
+	 */
+	private Pointer()
+	{
+	}
 	
-	/** Is this a system task? */
-	public static final int SYSTEM =
-		0x0000_0008;
+	/**
+	 * This translates an address represented in the given long value to a
+	 * pointer address.
+	 *
+	 * @param __a The address to translate.
+	 * @return The pointer of that address.
+	 * @since 2017/12/27
+	 */
+	public static native Pointer longToPointer(long __a);
 }
 

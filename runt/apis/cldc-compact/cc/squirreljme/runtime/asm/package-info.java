@@ -9,16 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains support for the CLDC runtime and contains the
- * classes and their implementations which are required and needed for the
- * run-time to operate properly.
+ * This package contains static methods which in which invocations of methods
+ * in the package are replaced by the compiler using native means.
  *
- * For security purposes, all classes which extend the abstract interfaces to
- * provide an API should and must have package private constructors so that
- * they can be initialized properly.
- *
- * @since 2017/11/10
+ * @since 2017/12/27
  */
 
-package net.multiphasicapps.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.asm;
 
