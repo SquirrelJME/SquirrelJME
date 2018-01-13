@@ -10,11 +10,11 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.runtime.lcdui.event.Event;
-import net.multiphasicapps.squirreljme.runtime.lcdui.event.EventQueue;
-import net.multiphasicapps.squirreljme.runtime.lcdui.event.EventType;
-import net.multiphasicapps.squirreljme.runtime.lcdui.event.RepaintEvent;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.event.Event;
+import cc.squirreljme.runtime.lcdui.event.EventQueue;
+import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.event.RepaintEvent;
 
 /**
  * This class manages the event loop for the LCDUI sub-system, all events and

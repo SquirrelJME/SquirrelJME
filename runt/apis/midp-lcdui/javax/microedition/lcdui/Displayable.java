@@ -12,9 +12,9 @@ package javax.microedition.lcdui;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.event.EventType;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be

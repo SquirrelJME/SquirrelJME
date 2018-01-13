@@ -16,10 +16,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.runtime.lcdui.font.FontHandle;
-import net.multiphasicapps.squirreljme.runtime.lcdui.font.FontManager;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.font.FontHandle;
+import cc.squirreljme.runtime.lcdui.font.FontManager;
 
 /**
  * This class represents a font which is a representation of the glyphs which
