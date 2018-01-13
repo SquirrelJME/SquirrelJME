@@ -8,22 +8,46 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+package cc.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.DaemonThreadSetter;
+import cc.squirreljme.kernel.server.ServerCaller;
 
 /**
- * This sets the daemon thread before the caller is ready, this is needed by
- * the packet interfaces.
+ * This supports system calls on the kernel itself.
  *
- * @since 2018/01/05
+ * @since 2018/01/03
  */
-public final class DaemonSetter
-	implements DaemonThreadSetter
+public class JavaServerCaller
+	extends ServerCaller
 {
 	/**
+	 * Initializes the server caller.
+	 *
+	 * @param __k The kernel to call into.
+	 * @since 2018/01/03
+	 */
+	public JavaServerCaller(JavaKernel __k)
+	{
+		super(__k);
+	}
+	
+	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/05
+	 * @since 2018/01/013
+	 */
+	@Override
+	public final String getEnv(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return System.getenv(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/06
 	 */
 	@Override
 	public void setDaemonThread(Thread __t)

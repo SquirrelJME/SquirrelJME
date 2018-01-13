@@ -8,28 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
-
-import net.multiphasicapps.squirreljme.kernel.impl.base.file.
-	FileLibrariesProvider;
-import net.multiphasicapps.squirreljme.kernel.lib.server.LibrariesProvider;
-
 /**
- * This is used to manage programs which are natively installed on the Java
- * SE virtualized system.
+ * This package contains the support for SquirrelJME which runs on an existing
+ * Java SE run-time by providing basic support for implemented classes and
+ * such.
  *
- * @since 2018/01/05
+ * @since 2017/11/09
  */
-public class JavaLibrariesProvider
-	extends FileLibrariesProvider
-{
-	/**
-	 * Initializes the server.
-	 *
-	 * @since 2018/01/05
-	 */
-	public JavaLibrariesProvider()
-	{
-	}
-}
+
+package cc.squirreljme.runtime.javase;
 

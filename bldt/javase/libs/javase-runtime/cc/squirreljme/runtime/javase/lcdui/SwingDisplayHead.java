@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase.lcdui;
+package cc.squirreljme.runtime.javase.lcdui;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
@@ -33,11 +33,11 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHardwareState;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayOrientation;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayState;
-import net.multiphasicapps.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
+import cc.squirreljme.runtime.lcdui.DisplayHardwareState;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayOrientation;
+import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 
 /**
  * This is a display head which outputs to Swing.

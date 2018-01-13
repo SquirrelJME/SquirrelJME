@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+package cc.squirreljme.runtime.javase;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.runtime.cldc.DaemonThreadSetter;
-import net.multiphasicapps.squirreljme.runtime.cldc.StandardOutput;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
+import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.runtime.cldc.DaemonThreadSetter;
+import cc.squirreljme.runtime.cldc.StandardOutput;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemCaller;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -38,7 +38,7 @@ public class Main
 {
 	/** Property which specifies the client main entry point. */
 	public static final String CLIENT_MAIN =
-		"net.multiphasicapps.squirreljme.runtime.javase.clientmain";
+		"cc.squirreljme.runtime.javase.clientmain";
 	
 	/**
 	 * Wrapped main entry point.

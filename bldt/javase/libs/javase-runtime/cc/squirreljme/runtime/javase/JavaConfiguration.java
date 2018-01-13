@@ -8,13 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+package cc.squirreljme.runtime.javase;
 
 import java.lang.ref.Reference;
 import java.util.Arrays;
-import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.KernelConfiguration;
-import net.multiphasicapps.squirreljme.kernel.KernelTask;
+import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.kernel.KernelConfiguration;
+import cc.squirreljme.kernel.KernelTask;
 
 /**
  * This is used to specify instances of services as required.
@@ -37,7 +37,7 @@ public class JavaConfiguration
 		
 		switch (__sv)
 		{
-			case "net.multiphasicapps.squirreljme.kernel.lib.client." +
+			case "cc.squirreljme.kernel.lib.client." +
 				"LibrariesClient":
 				return JavaLibrariesProviderFactory.class.getName();
 				
@@ -54,7 +54,7 @@ public class JavaConfiguration
 	public Iterable<String> services()
 	{
 		return Arrays.<String>asList(
-			"net.multiphasicapps.squirreljme.kernel.lib.client." +
+			"cc.squirreljme.kernel.lib.client." +
 				"LibrariesClient");
 	}
 	

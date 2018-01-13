@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase.lcdui;
+package cc.squirreljme.runtime.javase.lcdui;
 
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Displayable;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
 
 /**
  * This provides access to Swing display heads for displaying graphics.
