@@ -49,10 +49,10 @@ public final class ActiveMidlet
 		// Lock
 		synchronized (_ACTIVE_LOCK)
 		{
-			// {@squirreljme.error AD05 No MIDlet is currently active.}
+			// {@squirreljme.error AD01 No MIDlet is currently active.}
 			MIDlet rv = _ACTIVE_MIDLET;
 			if (rv == null)
-				throw new IllegalStateException("AD05");
+				throw new IllegalStateException("AD01");
 			
 			return rv;
 		}
@@ -76,11 +76,11 @@ public final class ActiveMidlet
 		// Prevent multiple MIDlet launches
 		synchronized (_ACTIVE_LOCK)
 		{
-			// {@squirreljme.error AD06 Only a single MIDlet may be active at
+			// {@squirreljme.error AD02 Only a single MIDlet may be active at
 			// a time.}
 			MIDlet active = _ACTIVE_MIDLET;
 			if (active != null)
-				throw new IllegalStateException("AD06");
+				throw new IllegalStateException("AD02");
 			
 			// Set active midlet
 			_ACTIVE_MIDLET = __m;
