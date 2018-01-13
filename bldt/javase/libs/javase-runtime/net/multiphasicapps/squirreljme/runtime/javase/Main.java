@@ -223,15 +223,15 @@ public class Main
 		try (InputStream is = Main.class.getResourceAsStream(
 			"/SQUIRRELJME-BOOTSTRAP.MF"))
 		{
-			// {@squirreljme.error AF01 No manifest is available?}
+			// {@squirreljme.error AF03 No manifest is available?}
 			if (is == null)
-				throw new RuntimeException("AF01");
+				throw new RuntimeException("AF03");
 		
-			// {@squirreljme.error AF02 No main class is available?}
+			// {@squirreljme.error AF03 No main class is available?}
 			String mainclassname = new Manifest(is).getMainAttributes().
 				getValue("Main-Class");
 			if (mainclassname == null || mainclassname.isEmpty())
-				throw new RuntimeException("AF02");
+				throw new RuntimeException("AF03");
 			return mainclassname;
 		}
 	}
