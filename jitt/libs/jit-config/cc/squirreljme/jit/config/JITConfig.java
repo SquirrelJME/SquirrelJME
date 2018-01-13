@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.config;
+package cc.squirreljme.jit.config;
 
 import java.io.InputStream;
 import java.lang.ref.Reference;
