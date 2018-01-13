@@ -8,11 +8,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.builder.entry;
+
+import java.io.PrintStream;
+import cc.squirreljme.builder.support.BuilderFactory;
+
 /**
- * This package contains the main entry point for the builder.
+ * Main entry point for the builder.
  *
  * @since 2017/11/09
  */
-
-package net.multiphasicapps.squirreljme.builder.entry;
+public class BuilderMain
+{
+	/**
+	 * Main entry point.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2017/11/09
+	 */
+	public static void main(String... __args)
+	{
+		// Print some basic information about the build system
+		PrintStream out = System.err;
+		out.println("SquirrelJME Build System");
+		
+		// Space
+		out.println();
+		
+		// Run the builder
+		new BuilderFactory(__args).run();
+	}
+}
 
