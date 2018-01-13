@@ -204,7 +204,7 @@ a valid DOS pathname will result in an exception being thrown.
 
 ***SYSTEM SERVICES USE ANOTHER CLASS, NOT THE ONE SPECIFIED BELOW***
 
-The `net.multiphasicapps.squirreljme.unsafe.SystemEnvironment` has a method
+The `cc.squirreljme.unsafe.SystemEnvironment` has a method
 called `<C>systemService(Class<C>)` which is used to obtain a system service.
 The purpose of this class is mostly by the APIs which need to access some
 implementation of an API but one which may vary across various systems and
@@ -213,7 +213,7 @@ of branches or complexities to support multiple systems. The services means
 that things can be implemented on an as used basis.
 
 Custom system services can be specified by setting system properties with the
-given prefix `net.multiphasicapps.squirreljme.unsafe.service.` where anything
+given prefix `cc.squirreljme.unsafe.service.` where anything
 following that is the target class to provide a service for, the value for the
 property is the implementation of that.
 
@@ -224,17 +224,17 @@ Compiler and the Just-In-Time Compiler.
 
 ## ***OLD*** Unsafe Renaming
 
-In the `net.multiphasicapps.squirreljme.unsafe` package, there are classes
+In the `cc.squirreljme.unsafe` package, there are classes
 which are `public` and others which are internal and package private. The
 internal package private classes in the form of `__Ext_<Name>__` contain
 internal and to be renamed by the JIT implementations of class `<Name>`. So for
-example the public class `net.multiphasicapps.squirreljme.unsafe.SystemVM`. It
+example the public class `cc.squirreljme.unsafe.SystemVM`. It
 internally checks and then calls methods within
-`net.multiphasicapps.squirreljme.unsafe.__Ext_systemvm__` or other internal
+`cc.squirreljme.unsafe.__Ext_systemvm__` or other internal
 classes as needed. When the JIT sees a static method call to an `__Ext_` class
 it will rename it according to the JIT configuration. This means that any calls
 to that class end up turning into calls to
-`net.multiphasicapps.squirreljme.unsafe.__Int_mipssystemvm__` which implements
+`cc.squirreljme.unsafe.__Int_mipssystemvm__` which implements
 the required classes to support the VM on MIPS systems.
 
 This renaming in turn allows the build environment to work like a normal Java

@@ -123,7 +123,7 @@ fi
 # Run the JVM with the bootstrap followed
 "$__javacmd" -classpath "$(__gen_classpath "$__run")" \
 	$HOSTED_JAVA_OPTIONS \
-	net.multiphasicapps.squirreljme.build.host.javase.HostedLaunch \
+	cc.squirreljme.build.host.javase.HostedLaunch \
 	"-$__numb" "$__run" "$@"
 exit $?
 

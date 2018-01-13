@@ -122,24 +122,24 @@ the virtual machine are implemented.
 
 Both kernel and user-space tasks require that system calls be made available.
 This means an implementation of the
-`net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller` class. Regardless
+`cc.squirreljme.runtime.cldc.SystemCaller` class. Regardless
 for the kernel or the user-space, the `_CALLER` field must be set in
-`net.multiphasicapps.squirreljme.runtime.cldc.SystemCall`. For additional
+`cc.squirreljme.runtime.cldc.SystemCall`. For additional
 support, it is possible for `__systemCaller()` be replaced as needed to return
 the appropriate instance of `SystemCaller` if the field cannot statically
 be set by the virtual machine.
 
 The kernel task is required to create an implementation of the
-`net.multiphasicapps.squirreljme.runtime.kernel.Kernel` class. The actual
+`cc.squirreljme.runtime.kernel.Kernel` class. The actual
 implementation can vary according to the required means.
 The system call interface that can be used in the kernel task is an
 instance of
-`net.multiphasicapps.squirreljme.runtime.kernel.syscall.DirectCaller` which
+`cc.squirreljme.runtime.kernel.syscall.DirectCaller` which
 is capable of calling into the kernel as needed. The `_CALLER` field is set to
 this caller.
 
 User-space tasks use IPC to communicate with the kernel process and as such the
 recommended means of handling that is by implementing
-`net.multiphasicapps.squirreljme.runtime.clsyscall.ClientCaller`. The `_CALLER`
+`cc.squirreljme.runtime.clsyscall.ClientCaller`. The `_CALLER`
 field is set to this caller.
 
