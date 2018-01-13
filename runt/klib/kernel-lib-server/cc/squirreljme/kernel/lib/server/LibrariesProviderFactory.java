@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib.server;
+package cc.squirreljme.kernel.lib.server;
 
-import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceProviderFactory;
+import cc.squirreljme.kernel.service.ClientInstance;
+import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.kernel.service.ServiceProviderFactory;
 
 /**
  * This acts as the base class for the library server which is required to be

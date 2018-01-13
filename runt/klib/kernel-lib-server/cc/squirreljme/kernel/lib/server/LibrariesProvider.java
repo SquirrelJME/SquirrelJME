@@ -8,22 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib.server;
+package cc.squirreljme.kernel.lib.server;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
-import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
-import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClientFactory;
-import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
-import net.multiphasicapps.squirreljme.kernel.lib.client.
+import cc.squirreljme.kernel.lib.client.LibrariesClient;
+import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
+import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.client.
 	LibraryInstallationReport;
-import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;	
+import cc.squirreljme.kernel.service.ClientInstance;
+import cc.squirreljme.kernel.service.ServerInstance;
+import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.runtime.cldc.SystemTask;	
 
 /**
  * This is the base class which manages the library of installed programs

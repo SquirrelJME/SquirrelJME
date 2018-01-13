@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.lib.server;
+package cc.squirreljme.kernel.lib.server;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This represents the type of access which can be performed.
