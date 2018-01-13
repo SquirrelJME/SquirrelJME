@@ -96,7 +96,29 @@ public final class LibrariesClient
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		LibraryInstallationReport report;
+		
+		// Need to send the JAR to the server so it may install it
+		ServicePacketStream stream = this.stream;
+		try (Packet p = stream.farm().create(PacketTypes.INSTALL_PROGRAM,
+			4 + __l))
+		{
+			// Write the JAR file data
+			p.writeInteger(0, __l);
+			p.writeBytes(4, __b, __o, __l);
+			
+			// Send to server to install
+			try (Packet r = stream.send(p))
+			{
+				// Parse report
+				report = null;
+				if (true)
+					throw new todo.TODO();
+			}
+		}
+		
+		// Return the report
+		return report;
 	}
 	
 	/**

@@ -20,5 +20,9 @@ public interface PacketTypes
 	/** List programs which are available. */
 	public static final int LIST_PROGRAMS =
 		1;
+	
+	/** Install a program. */
+	public static final int INSTALL_PROGRAM =
+		2;
 }
 
