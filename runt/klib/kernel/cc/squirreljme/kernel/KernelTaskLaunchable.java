@@ -8,24 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
 /**
- * This class is used to build information needed to launch a task.
+ * This interface describes an object which is launchable by the kernel, it
+ * is up the the kernel implementation to correctly interpret this class.
  *
  * @since 2018/01/02
  */
-public final class KernelTaskLaunchBuilder
+public interface KernelTaskLaunchable
 {
-	/**
-	 * Builds the information used to launch new tasks.
-	 *
-	 * @return The built task launching information.
-	 * @since 2018/01/02
-	 */
-	public final KernelTaskLaunch build()
-	{
-		throw new todo.TODO();
-	}
 }
 

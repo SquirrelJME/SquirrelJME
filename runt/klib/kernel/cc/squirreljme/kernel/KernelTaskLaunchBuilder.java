@@ -8,12 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the SquirrelJME micro-kernel and contains the needed
- * interfaces and such which are needed for SquirrelJME to operate correctly.
- *
- * @since 2017/12/08
- */
+package cc.squirreljme.kernel;
 
-package net.multiphasicapps.squirreljme.kernel;
+/**
+ * This class is used to build information needed to launch a task.
+ *
+ * @since 2018/01/02
+ */
+public final class KernelTaskLaunchBuilder
+{
+	/**
+	 * Builds the information used to launch new tasks.
+	 *
+	 * @return The built task launching information.
+	 * @since 2018/01/02
+	 */
+	public final KernelTaskLaunch build()
+	{
+		throw new todo.TODO();
+	}
+}
 

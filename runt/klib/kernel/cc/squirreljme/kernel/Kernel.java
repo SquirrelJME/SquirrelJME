@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceProviderFactory;
-import net.multiphasicapps.squirreljme.runtime.cldc.OperatingSystemType;
+import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.kernel.service.ServiceProviderFactory;
+import cc.squirreljme.runtime.cldc.OperatingSystemType;
 
 /**
  * This class represents the micro-kernel which manages the entire SquirrelJME

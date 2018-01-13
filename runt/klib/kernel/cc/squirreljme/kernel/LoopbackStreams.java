@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

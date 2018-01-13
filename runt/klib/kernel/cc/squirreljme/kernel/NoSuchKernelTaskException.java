@@ -8,26 +8,34 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
 /**
- * This stores the information which is needed to launch a new task.
- *
- * This class is immutable.
+ * This is thrown when a request is made to use a task which does not exist.
  *
  * @since 2018/01/02
  */
-public final class KernelTaskLaunch
+public class NoSuchKernelTaskException
+	extends RuntimeException
 {
 	/**
-	 * Returns the trust group the task will be under.
+	 * Initializes the exception with no message.
 	 *
-	 * @return The trust group of the task.
-	 * @since 2018/01/11
+	 * @since 2018/01/02
 	 */
-	public final KernelTrustGroup trustGroup()
+	public NoSuchKernelTaskException()
 	{
-		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the exception with the given message.
+	 *
+	 * @param __m The message to use.
+	 * @since 2018/01/02
+	 */
+	public NoSuchKernelTaskException(String __m)
+	{
+		super(__m);
 	}
 }
 

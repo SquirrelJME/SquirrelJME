@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,17 +16,17 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
-import net.multiphasicapps.squirreljme.kernel.packets.Packet;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketReader;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketWriter;
-import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.kernel.ipc.base.PacketTypes;
+import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketReader;
+import cc.squirreljme.kernel.packets.PacketStream;
+import cc.squirreljme.kernel.packets.PacketStreamHandler;
+import cc.squirreljme.kernel.packets.PacketWriter;
+import cc.squirreljme.kernel.service.ServerInstance;
+import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This represents a task which is running within SquirrelJME.

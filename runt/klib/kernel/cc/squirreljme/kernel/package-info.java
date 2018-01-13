@@ -8,34 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
-
 /**
- * This is thrown when a request is made to use a task which does not exist.
+ * This package contains the SquirrelJME micro-kernel and contains the needed
+ * interfaces and such which are needed for SquirrelJME to operate correctly.
  *
- * @since 2018/01/02
+ * @since 2017/12/08
  */
-public class NoSuchKernelTaskException
-	extends RuntimeException
-{
-	/**
-	 * Initializes the exception with no message.
-	 *
-	 * @since 2018/01/02
-	 */
-	public NoSuchKernelTaskException()
-	{
-	}
-	
-	/**
-	 * Initializes the exception with the given message.
-	 *
-	 * @param __m The message to use.
-	 * @since 2018/01/02
-	 */
-	public NoSuchKernelTaskException(String __m)
-	{
-		super(__m);
-	}
-}
+
+package cc.squirreljme.kernel;
 
