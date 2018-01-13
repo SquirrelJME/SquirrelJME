@@ -10,8 +10,8 @@
 
 package javax.microedition.lcdui;
 
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayOrientation;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 
 /**
  * This class is used to manage the draw space of a display or a tabbed area

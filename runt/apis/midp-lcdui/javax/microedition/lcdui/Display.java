@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.squirreljme.runtime.lcdui.CompatibilityDisplayManager;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayHead;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayManager;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayOrientation;
-import net.multiphasicapps.squirreljme.runtime.lcdui.DisplayState;
-import net.multiphasicapps.squirreljme.runtime.lcdui.HeadlessDisplayManager;
+import cc.squirreljme.runtime.lcdui.CompatibilityDisplayManager;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.DisplayOrientation;
+import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.HeadlessDisplayManager;
 
 public class Display
 {
