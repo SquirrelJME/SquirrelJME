@@ -9,11 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the support for the host Java compiler to run on
- * existing Java SE systems.
+ * This package contains the support for Java SE based systems.
  *
- * @since 2017/11/28
+ * @since 2017/11/09
  */
 
-package net.multiphasicapps.squirreljme.builder.javase.javac;
+package cc.squirreljme.builder.javase;
 

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.javase.javac;
+package cc.squirreljme.builder.javase.javac;
 
 import javax.tools.JavaCompiler;
 import net.multiphasicapps.javac.CompilationFailedException;
