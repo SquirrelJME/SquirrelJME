@@ -8,11 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.program;
+package cc.squirreljme.jit.program;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.classfile.JavaType;
+import cc.squirreljme.jit.classfile.JavaType;
 
 /**
  * This contains a single tread of variables and may optionally be used as
