@@ -108,18 +108,18 @@ public final class FileInput
 			return Files.newInputStream(path, StandardOpenOption.READ);
 		}
 		
-		// {@squirreljme.error AQ06 The specified path does not exist.
+		// {@squirreljme.error AQ02 The specified path does not exist.
 		// (The path to the file)}
 		catch (NoSuchFileException e)
 		{
-			throw new NoSuchInputException(String.format("AQ06 %s", path), e);
+			throw new NoSuchInputException(String.format("AQ02 %s", path), e);
 		}
 		
-		// {@squirreljme.error AQ08 Could not read from the specified path.
+		// {@squirreljme.error AQ03 Could not read from the specified path.
 		// (The path to the file)}
 		catch (IOException e)
 		{
-			throw new NoSuchInputException(String.format("AQ08 %s", path), e);
+			throw new NoSuchInputException(String.format("AQ03 %s", path), e);
 		}
 	}
 	

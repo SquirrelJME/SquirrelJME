@@ -113,10 +113,10 @@ public final class FilePathSet
 				}
 			}
 			
-			// {@squirreljme.error AQ07 Could not list directory contents.}
+			// {@squirreljme.error AQ04 Could not list directory contents.}
 			catch (IOException e)
 			{
-				throw new CompilerException("AQ07", e);
+				throw new CompilerException("AQ04", e);
 			}
 		
 		// Return iterator over entries
