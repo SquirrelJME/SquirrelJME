@@ -16,5 +16,5 @@
  * @since 2018/01/12
  */
 
-package net.multiphasicapps.squirreljme.kernel.impl.base.file;
+package cc.squirreljme.kernel.impl.base.file;
 
