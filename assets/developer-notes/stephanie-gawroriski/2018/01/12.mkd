@@ -1,0 +1,57 @@
+# 2018/01/12
+
+## 14:28
+
+I will need the system library returned in the list if the system is
+included, technically.
+
+## 16:40
+
+It would be good to see how much data was sent over a packet stream and it
+could be returned as a metric.
+
+## 16:55
+
+Actually the remote side is going to need to handle trust groups and installed
+libraries. That code could be shared among a large number of clients using the
+filesystem to manage things. So what I could have is a common set of classes
+which use the filesystem to store and manage the VM state such as installed
+programs and such. That way there is no duplicated code. The kernel itself
+could just use the NIO methods because that is quite direct.
+
+## 17:28
+
+So what do I call these classes? Well the classes will use files and it
+basically will use them all completely. Basically all of the classes could be
+used as a base for a kernel regardless of the system. Like it can support
+using files for everything from record storage to installed things and trust
+groups and such.
+
+## 17:33
+
+So basically what I would be looking at maybe is `kernel-implbase-file`.
+
+## 23:25
+
+Seems that trying to build SquirrelJME on a rather dated Debian Jessie system
+with an old Java 7 version does not work. It fails to find the javac resource
+in the resource bundle. Maybe what I can do is catch `InternalError` and try
+a restart of the compiler using a fallback one. That way it will never fail.
+Of course I will then need to write an actual Java compiler. It might not be
+too troublesome and it could be made to be as simple as it possibly can be.
+The most confusing things however will be generics for the most part.
+
+## 23:28
+
+However `InternalError` does not exist, so I can just try instead `Error`.
+
+## 23:29
+
+The problem is that it appears in `NewBootstrap` and not my build system
+itself. So this will be quite the thing to solve.
+
+## 23:51
+
+It works on Zero, but breaks on JamVM. I can fix it by including the tools in
+the classpath when it runs. So basically I need to modify the bootstrap to
+handle this case, have it detect JamVM to see if it needs JAR inclusion.
