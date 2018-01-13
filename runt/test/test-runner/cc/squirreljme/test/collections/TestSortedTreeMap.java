@@ -8,12 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the test framework which is used for testing in
- * SquirrelJME.
- *
- * @since 2017/03/25
- */
+package cc.squirreljme.test.collections;
 
-package net.multiphasicapps.squirreljme.test;
+import java.util.Map;
+import cc.squirreljme.test.TestResult;
+import net.multiphasicapps.collections.SortedTreeMap;
+
+/**
+ * This tests the sorted tree map to see if it operates correctly.
+ *
+ * @since 2017/03/28
+ */
+public class TestSortedTreeMap
+	extends __BaseMap__
+{
+	/**
+	 * Initializes the test.
+	 *
+	 * @since 2017/03/28
+	 */
+	public TestSortedTreeMap()
+	{
+		super(true, new SortedTreeMap<String, String>());
+	}
+}
 

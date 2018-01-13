@@ -8,11 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.test.collections;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import cc.squirreljme.test.TestResult;
+
 /**
- * This contains tests for collections.
+ * This tests the linked hash map.
  *
  * @since 2017/03/28
  */
-
-package net.multiphasicapps.squirreljme.test.collections;
+public class TestLinkedHashMapInsert
+	extends __BaseMap__
+{
+	/**
+	 * Initializes the test.
+	 *
+	 * @since 2017/03/28
+	 */
+	public TestLinkedHashMapInsert()
+	{
+		super(true, new LinkedHashMap<String, String>(16, 0.75F, false));
+	}
+}
 

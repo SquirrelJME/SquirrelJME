@@ -8,11 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains basic tests.
- *
- * @since 2017/03/27
- */
+package cc.squirreljme.test.collections;
 
-package net.multiphasicapps.squirreljme.test.basic;
+import java.util.HashMap;
+import java.util.Map;
+import cc.squirreljme.test.TestResult;
+
+/**
+ * This tests the standard hash map.
+ *
+ * @since 2017/03/28
+ */
+public class TestHashMap
+	extends __BaseMap__
+{
+	/**
+	 * Initializes the test.
+	 *
+	 * @since 2017/03/28
+	 */
+	public TestHashMap()
+	{
+		super(false, new HashMap<String, String>());
+	}
+}
 

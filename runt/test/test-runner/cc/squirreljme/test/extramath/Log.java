@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test.extramath;
+package cc.squirreljme.test.extramath;
 
 import net.multiphasicapps.math.ExtraMath;
-import net.multiphasicapps.squirreljme.test.TestDefaultFunction;
-import net.multiphasicapps.squirreljme.test.TestFunction;
-import net.multiphasicapps.squirreljme.test.TestResult;
+import cc.squirreljme.test.TestDefaultFunction;
+import cc.squirreljme.test.TestFunction;
+import cc.squirreljme.test.TestResult;
 
 /**
  * This tests the logarithms in the math library.

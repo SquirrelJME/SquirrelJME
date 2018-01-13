@@ -8,30 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test.collections;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import net.multiphasicapps.squirreljme.test.TestResult;
-
 /**
- * This tests the linked hash map but with the iteration order determined by
- * the access order. Put an get operations specify the access order of the
- * values in the set.
+ * This contains tests for the extra math library.
  *
- * @since 2017/03/28
+ * @since 2017/07/25
  */
-public class TestLinkedHashMapAccess
-	extends __BaseMap__
-{
-	/**
-	 * Initializes the test.
-	 *
-	 * @since 2017/03/28
-	 */
-	public TestLinkedHashMapAccess()
-	{
-		super(true, new LinkedHashMap<String, String>(16, 0.75F, true));
-	}
-}
+
+package cc.squirreljme.test.extramath;
 

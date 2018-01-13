@@ -11,5 +11,5 @@ X-SquirrelJME-Description: This project contains all of the tests
  there can either be a default profile set or an input profile set.
 X-SquirrelJME-Depends: collections math
 MicroEdition-Configuration: CLDC-1.8
-Main-Class: net.multiphasicapps.squirreljme.test.Main
+Main-Class: cc.squirreljme.test.Main
 

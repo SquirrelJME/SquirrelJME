@@ -8,24 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test;
-
 /**
- * This is used to describe a test that may be ran.
+ * This package contains the test framework which is used for testing in
+ * SquirrelJME.
  *
- * @see TestDefaultFunction
- * @since 2017/03/27
+ * @since 2017/03/25
  */
-public interface TestFunction
-{
-	/**
-	 * Runs the specified test and places the result in the specified result.
-	 *
-	 * @param __r Where the result of the test is to be stored.
-	 * @throws Throwable On any errors or exceptions.
-	 * @since 2017/03/27
-	 */
-	public abstract void run(TestResult __r)
-		throws Throwable;
-}
+
+package cc.squirreljme.test;
 
