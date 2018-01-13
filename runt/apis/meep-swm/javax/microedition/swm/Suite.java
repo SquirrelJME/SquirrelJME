@@ -459,18 +459,18 @@ public class Suite
 			try (InputStream in =
 				this._library.loadResource("META-INF/MANIFEST.MF"))
 			{
-				// {@squirreljme.error DG09 Suite has no manifest file.}
+				// {@squirreljme.error DG04 Suite has no manifest file.}
 				if (in == null)
-					throw new RuntimeException("DG09");
+					throw new RuntimeException("DG04");
 				
 				this._manifest = new WeakReference<>(
 					(rv = new JavaManifest(in)));
 			}
 			
-			// {@squirreljme.error DG08 Could not read the suite manifest.}
+			// {@squirreljme.error DG05 Could not read the suite manifest.}
 			catch (IOException e)
 			{
-				throw new RuntimeException("DG08");
+				throw new RuntimeException("DG05");
 			}
 		
 		return rv;

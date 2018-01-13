@@ -109,10 +109,10 @@ final class __SystemSuiteManager__
 		else if (__t == SuiteType.LIBRARY)
 			mask = LibraryType.LIBRARY;
 		
-		// {@squirreljme.error DG04 The specified suite type cannot be
+		// {@squirreljme.error DG08 The specified suite type cannot be
 		// listed. (The type)}
 		else
-			throw new IllegalArgumentException(String.format("DG04 %s", __t));
+			throw new IllegalArgumentException(String.format("DG08 %s", __t));
 		
 		// Lock so the suites are always up to date
 		Suite[] rv;
