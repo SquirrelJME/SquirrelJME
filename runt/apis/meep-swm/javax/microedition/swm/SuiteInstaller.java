@@ -12,7 +12,7 @@ package javax.microedition.swm;
 
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
-import net.multiphasicapps.squirreljme.runtime.swm.JarStreamSupplier;
+import cc.squirreljme.runtime.swm.JarStreamSupplier;
 
 /**
  * This class is created when a suite is to be installed.

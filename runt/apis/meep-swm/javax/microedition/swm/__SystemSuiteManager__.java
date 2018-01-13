@@ -17,11 +17,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
-import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
-import net.multiphasicapps.squirreljme.kernel.lib.client.LibraryType;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
+import cc.squirreljme.kernel.lib.client.LibrariesClient;
+import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.client.LibraryType;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 
 /**
  * This class manages the bridge for the suite manager to the native program

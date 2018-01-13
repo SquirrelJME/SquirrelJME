@@ -14,11 +14,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
-import net.multiphasicapps.squirreljme.kernel.lib.client.
+import cc.squirreljme.kernel.lib.client.LibrariesClient;
+import cc.squirreljme.kernel.lib.client.
 	LibraryInstallationReport;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.swm.JarStreamSupplier;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.swm.JarStreamSupplier;
 
 /**
  * This performs the installation and tracks progress.
