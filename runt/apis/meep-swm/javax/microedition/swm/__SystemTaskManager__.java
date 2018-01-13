@@ -133,11 +133,11 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG06 Cannot launch the specified program
+		// {@squirreljme.error DG09 Cannot launch the specified program
 		// because it is of the system suite.}
 		Library program = __s.__library();
 		if (program == null)
-			throw new IllegalArgumentException(String.format("DG06 %s %s",
+			throw new IllegalArgumentException(String.format("DG09 %s %s",
 				__s.getName(), __cn));
 		throw new todo.TODO();
 		/*

@@ -146,7 +146,7 @@ public final class Task
 			case SystemTaskStatus.STARTING:
 				return TaskStatus.STARTING;
 			
-				// {@squirreljme.error DG05 Task is in an invalid status
+				// {@squirreljme.error DG06 Task is in an invalid status
 				// state. (The status)}
 			default:
 				throw new IllegalStateException(
