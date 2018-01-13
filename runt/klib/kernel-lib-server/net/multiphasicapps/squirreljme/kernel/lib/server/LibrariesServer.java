@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.kernel.lib.server;
 
 import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.client.
+	LibraryInstallationReport;
 import net.multiphasicapps.squirreljme.kernel.lib.client.PacketTypes;
 import net.multiphasicapps.squirreljme.kernel.packets.Packet;
 import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
@@ -71,11 +73,71 @@ public final class LibrariesServer
 			case PacketTypes.LIST_PROGRAMS:
 				return this.__list(__p);
 			
+			case PacketTypes.INSTALL_PROGRAM:
+				return this.__install(__p);
+			
 				// {@squirreljme.error BC02 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
 					String.format("BC02 %s", __p));
 		}
+	}
+	
+	/**
+	 * Reads the JAR from the specified packet and then installs it.
+	 *
+	 * @param __p The packet containing the JAR to be installed.
+	 * @return The installation report.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/13
+	 */
+	private final Packet __install(Packet __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BC03 The task is not permitted to install new
+		// applications.}
+		LibrariesAccessMode accessmode = this.__accessMode("installation");
+		if (accessmode == LibrariesAccessMode.NONE)
+			throw new SecurityException("BC03");
+		
+		SystemTask task = this.task;
+		SystemTrustGroup mygroup = task.trustGroup();
+		
+		// Read in the packet data, but close it so its data is not consumed
+		// as it will be wasted data in memory
+		int jarlen = __p.readInteger(0);
+		byte[] jardata = new byte[jarlen];
+		__p.readBytes(4, jardata, 0, jarlen);
+		
+		// But we need a response packet before it goes away
+		Packet rv = __p.respond();
+		__p.close();
+		
+		// Run the installation step
+		LibraryInstallationReport r = this.provider.
+			install(jardata, 0, jarlen);
+		
+		Library lib = r.library();
+		int ldx = lib.index(),
+			error = r.error();
+		String message = r.message();
+		
+		// Failing?
+		if (error != 0)
+		{
+			rv.writeInteger(0, -1);
+			rv.writeInteger(4, error);
+			rv.writeString(8, message);
+		}
+		
+		// Success
+		else
+			rv.writeInteger(0, ldx);
+		
+		return rv;
 	}
 	
 	/**
@@ -95,7 +157,7 @@ public final class LibrariesServer
 		SystemTrustGroup mygroup = task.trustGroup();
 		
 		// Need permission to do this
-		LibrariesAccessMode accessmode = __accessMode("manageSuite");
+		LibrariesAccessMode accessmode = this.__accessMode("manageSuite");
 		
 		// Read the library set
 		Library[] libs = this.provider.list(__p.readInteger(0));

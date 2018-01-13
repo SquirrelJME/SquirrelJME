@@ -108,12 +108,20 @@ public final class LibrariesClient
 			p.writeBytes(4, __b, __o, __l);
 			
 			// Send to server to install
-			try (Packet r = stream.send(p))
+			try (Packet r = stream.send(p, true))
 			{
-				// Parse report
-				report = null;
-				if (true)
-					throw new todo.TODO();
+				// Reload report data
+				int ldx = r.readInteger(0);
+				
+				// It failed
+				if (ldx < 0)
+					report = new LibraryInstallationReport(
+						r.readInteger(4), r.readString(8));
+				
+				// Was okay
+				else
+					report = new LibraryInstallationReport(
+						this.__mapLibrary(ldx));
 			}
 		}
 		
@@ -142,7 +150,7 @@ public final class LibrariesClient
 			p.writeInteger(0, __mask);
 			
 			// Send to server
-			try (Packet r = stream.send(p))
+			try (Packet r = stream.send(p, true))
 			{
 				// Read count
 				int n = r.readUnsignedShort(0);
@@ -160,7 +168,7 @@ public final class LibrariesClient
 		synchronized (libraries)
 		{
 			for (int i = 0, n = indexes.length; i < n; i++)
-				rv[i] = __mapLibrary(indexes[i]);
+				rv[i] = this.__mapLibrary(indexes[i]);
 		}
 		
 		return rv;

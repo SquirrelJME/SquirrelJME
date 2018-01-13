@@ -62,6 +62,7 @@ public final class ServicePacketStream
 	 * Sends the given packet to the remote server.
 	 *
 	 * @param __p The packet to send to the remote.
+	 * @param __close Should the packet be closed after it is sent?
 	 * @return The result from the packet, if it does not produce a result
 	 * then {@code null} is returned.
 	 * @throws NullPointerException On null arguments.
@@ -69,6 +70,24 @@ public final class ServicePacketStream
 	 * @since 2018/01/05
 	 */
 	public final Packet send(Packet __p)
+		throws NullPointerException
+	{
+		return this.send(__p, false);
+	}
+	
+	/**
+	 * Sends the given packet to the remote server, optionally closing it
+	 * after it is sent.
+	 *
+	 * @param __p The packet to send to the remote.
+	 * @param __close Should the packet be closed after it is sent?
+	 * @return The result from the packet, if it does not produce a result
+	 * then {@code null} is returned.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RemoteException If the remote end threw an exception.
+	 * @since 2018/01/05
+	 */
+	public final Packet send(Packet __p, boolean __close)
 		throws NullPointerException
 	{
 		if (__p == null)
@@ -91,8 +110,13 @@ public final class ServicePacketStream
 			p.writeInteger(4, plen);
 			p.writePacketData(8, __p);
 			
-			// Send packet to server
-			return stream.send(p);
+			// Close the source packet if it is requested
+			if (__close)
+				__p.close();
+			
+			// Send packet to server, it can always be closed because it is
+			// only temporarily used here
+			return stream.send(p, true);
 		}
 	}
 }
