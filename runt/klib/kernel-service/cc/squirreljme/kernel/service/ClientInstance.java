@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.service;
+package cc.squirreljme.kernel.service;
 
-import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.Packet;
 
 /**
  * This class represents a client connection to a server instance.

@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.service;
+package cc.squirreljme.kernel.service;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.SystemTask;
 
 /**
  * This is the base class for services which exist on the kernel side which

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.service;
+package cc.squirreljme.kernel.service;
 
 /**
  * This is used to create instances of {@link ClientInstance} which is used

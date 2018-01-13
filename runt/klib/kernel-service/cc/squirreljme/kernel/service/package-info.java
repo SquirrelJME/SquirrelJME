@@ -15,5 +15,5 @@
  * @since 2018/01/02
  */
 
-package net.multiphasicapps.squirreljme.kernel.service;
+package cc.squirreljme.kernel.service;
 

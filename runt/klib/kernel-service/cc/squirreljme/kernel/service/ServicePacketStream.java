@@ -8,13 +8,13 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.service;
+package cc.squirreljme.kernel.service;
 
-import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
-import net.multiphasicapps.squirreljme.kernel.packets.Packet;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketFarm;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
-import net.multiphasicapps.squirreljme.kernel.packets.RemoteThrowable;
+import cc.squirreljme.kernel.ipc.base.PacketTypes;
+import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketFarm;
+import cc.squirreljme.kernel.packets.PacketStream;
+import cc.squirreljme.kernel.packets.RemoteThrowable;
 
 /**
  * This is a wrapped packet stream which .
