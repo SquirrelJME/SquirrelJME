@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package cc.squirreljme.interpreter;
 
-import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import cc.squirreljme.jit.VerifiedJITInput;
 
 /**
  * This class is used to make SquirrelJME interpreter and Wintercoat ROMs.

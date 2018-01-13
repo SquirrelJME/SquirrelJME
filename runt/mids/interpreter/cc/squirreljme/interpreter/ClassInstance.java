@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package cc.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
 import java.util.Collection;
 import java.util.Deque;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
-import net.multiphasicapps.squirreljme.jit.cff.MethodName;
-import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import cc.squirreljme.jit.cff.ClassName;
+import cc.squirreljme.jit.cff.MethodDescriptor;
+import cc.squirreljme.jit.cff.MethodName;
+import cc.squirreljme.jit.VerifiedJITInput;
 
 /**
  * This represents the instance of a class object. This is specially handled

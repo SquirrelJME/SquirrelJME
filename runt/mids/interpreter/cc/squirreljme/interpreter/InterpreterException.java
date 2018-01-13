@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package cc.squirreljme.interpreter;
 
 /**
  * This is thrown when there is a problem with the interpreter.

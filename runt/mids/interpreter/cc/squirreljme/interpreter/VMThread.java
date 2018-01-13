@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package cc.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -19,10 +19,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.cff.ClassFile;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.NoSuchClassException;
-import net.multiphasicapps.squirreljme.jit.VerifiedJITInput;
+import cc.squirreljme.jit.cff.ClassFile;
+import cc.squirreljme.jit.cff.ClassName;
+import cc.squirreljme.jit.NoSuchClassException;
+import cc.squirreljme.jit.VerifiedJITInput;
 
 /**
  * This represents a thread within the virtual machine.
